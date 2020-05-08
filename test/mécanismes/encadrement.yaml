@@ -1,0 +1,52 @@
+plafonnement:
+  formule:
+    encadrement:
+      valeur: 1000 €
+      plafond: 250 €
+
+  exemples:
+    - valeur attendue: 250
+
+plafond nouvelle ecriture:
+  formule:
+    valeur: 1000 €
+    plafond: 250 €
+
+  exemples:
+    - valeur attendue: 250
+
+plancher nouvelle ecriture:
+  formule:
+    valeur: 1000 €
+    plancher: 2000 €
+
+  exemples:
+    - valeur attendue: 2000
+
+plafonnement inactif:
+  formule:
+    encadrement:
+      valeur: 1000 €
+      plafond: non
+
+  exemples:
+    - valeur attendue: 1000
+
+plafonnement reference inactive:
+  formule:
+    encadrement:
+      valeur: 1000 €
+      plafond: plafond
+
+  exemples:
+    - valeur attendue: 1000
+
+plafonnement reference inactive . plafond: non
+plancher:
+  formule:
+    encadrement:
+      valeur: 1000 €
+      plancher: 2500 €
+
+  exemples:
+    - valeur attendue: 2500

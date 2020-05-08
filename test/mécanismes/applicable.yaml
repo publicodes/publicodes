@@ -1,0 +1,17 @@
+statut cadre:
+
+prévoyance obligatoire cadre:
+  applicable si: statut cadre
+  formule:
+    produit:
+      assiette: 1500
+      taux: 1.5%
+  exemples:
+    - nom: Applicabilité
+      situation:
+        statut cadre: oui
+      valeur attendue: 22.5
+    - nom: Non Applicabilité
+      situation:
+        statut cadre: non
+      valeur attendue: false

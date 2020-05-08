@@ -1,0 +1,12 @@
+.composantes > ol {
+	list-style: none;
+	counter-reset: li;
+	padding-left: 1em;
+}
+.composantes > ol > li > ul > li {
+	list-style-type: none;
+}
+
+.composantes .composanteAttributes {
+	display: inline-block;
+}
