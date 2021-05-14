@@ -1,4 +1,12 @@
-## Installation ![béta](https://img.shields.io/badge/-beta-blue)
+---
+sidebar_position: 1
+title: Se lancer
+---
+
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+## Installation
 
 Publicodes est distribué sous la forme d'une librairie
 [Node.js](https://nodejs.org/fr/) permettant de compiler un jeu de règles
@@ -26,7 +34,7 @@ prix . champignons: 5€/kg
 prix . avocat: 2€/avocat
 
 dépenses primeur:
-  formule: 
+  formule:
     somme:
       - prix . carottes * 1.5 kg
       - prix . champignons * 500g
@@ -38,32 +46,54 @@ dépenses primeur:
 const engine = new Engine(rules)
 ```
 
-> ### Note : importer sans bundler
->
-> Voici comment importer publicodes en fonction de l'environnement.
->
-> -   **Node >= 15.0.0**
->     ```js
->     import Engine from 'publicodes'
->     ```
+:::note Importer sans bundler
 
-> -   **Node < 15.0.0**
->
->     ```js
->     const Engine = require('publicodes').default
->     ```
+Voici comment importer publicodes en fonction de l'environnement.
 
-> -   **ESModule sans npm install** (`<script type="module">` et deno)
->     ```js
->     import Engine from 'https://unpkg.com/publicodes@next/esm/index.min.js'
->     ```
-> -   **`<script>` dans navigateur**
->     ```html
->     <script src="https://unpkg.com/publicodes@next/dist/index.min.js"></script>
->     <script>
->         const Engine = window.publicodes.default
->     </script>
->     ```
+<Tabs
+    defaultValue="nodejs-modern"
+    values={[
+    	{ label: 'NodeJS >= 15.0.0', value: 'nodejs-modern' },
+    	{ label: 'NodeJS < 15.0.0', value: 'nodejs-old' },
+    	{ label: 'Deno', value: 'esmodule-unpkg' },
+    	{ label: 'Navigateur', value: 'script-unpkg' },
+    ]}
+>
+
+<TabItem value="nodejs-modern">
+
+```js
+import Engine from 'publicodes'
+```
+
+</TabItem>
+<TabItem value="nodejs-old">
+
+```js
+const Engine = require('publicodes').default
+```
+
+</TabItem>
+<TabItem value="esmodule-unpkg">
+
+```js
+import Engine from 'https://unpkg.com/publicodes@next/esm/index.min.js'
+```
+
+</TabItem>
+<TabItem value="script-unpkg">
+
+```html
+<script src="https://unpkg.com/publicodes@next/dist/index.min.js"></script>
+<script>
+	const Engine = window.publicodes.default
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+:::
 
 La variable `engine` permet en ensuite de calculer la valeur d'une règle avec la
 méthode `evaluate` :
@@ -89,7 +119,7 @@ est utile pour préciser les paramètres spécifiques à une simulation :
 ```js
 // Ici on change le prix des avocats
 engine.setSituation({
-    'prix . avocat': '3€/avocat',
+	'prix . avocat': '3€/avocat',
 })
 ```
 
@@ -98,15 +128,15 @@ La valeur de `dépenses primeur` se base maintenant sur un avocat à 3€ :
 ```js
 // On ré-évalue la règle dans la nouvelle situation
 console.log(
-    `Nouveau prix ! Dépenses mises à jour: ${formatValue(
-        engine.evaluate('dépenses primeur')
-    )}.`
+	`Nouveau prix ! Dépenses mises à jour: ${formatValue(
+		engine.evaluate('dépenses primeur')
+	)}.`
 )
 ```
 
 ### Évaluation d'expressions
 
-La fonction `evaluate` permet d'évaluer des expressions publicodes complètes :
+La fonction `evaluate` permet d'évaluer des expressions Publicodes complètes :
 
 ```js
 // On va au marché une fois par semaine, amortissons la dépense sur 7 jours
@@ -122,13 +152,17 @@ indiquer l'unité désirée via le mécanisme [`unité`](https://publi.codes/doc
 ```js
 // on va au marché une fois par semaine en moyenne, combien dépense-t-on par mois ?
 const depensesParMois = engine.evaluate({
-    valeur: 'dépenses primeur / 7 jours',
-    unité: '€/mois',
+	valeur: 'dépenses primeur / 7 jours',
+	unité: '€/mois',
 })
 console.log(`J'ai dépensé ${formatValue(depensesParMois)}.`)
 ```
 
-[➡ en savoir plus sur les unités](https://publi.codes/documentation/principes-de-base#unités)
+:::info
+
+[➡ en savoir plus sur les unités](./principes-de-base.mdx)
+
+:::
 
 ### Variables manquantes
 
@@ -146,7 +180,7 @@ y:
 console.log(missingYEngine.evaluate('x').missingVariables)
 ```
 
-Cette information est utile pour intégrer publicodes à votre application.
+Cette information est utile pour intégrer Publicodes à votre application.
 
 Il est aussi possible d'utiliser des valeurs par défaut. Dans ce cas la règle
 sera calculée avec la valeur par défaut de sa dépendance, mais cette dernière
@@ -176,20 +210,26 @@ $ npm install publicodes-react
 ```
 
 ```jsx
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router, Link } from 'react-router-dom'
 import { Documentation } from 'publicodes-react'
 
 function MonApp() {
-    return (
-        <Router>
-            <Documentation
-                engine={engine}
-                documentationPath={'/documentation'}
-                language={'fr'}
-            />
-            {/* Composants de l'app */}
-        </Router>
-    )
+	return (
+		<Router>
+			<Route
+				path="documentation/:name+"
+				render={({ match }) => (
+					<RulePage
+						documentationPath="/documentation"
+						rulePath={match.params.name}
+						language="fr"
+						renderers={{ Link }}
+					/>
+				)}
+			/>
+			{/* Composants de l'app */}
+		</Router>
+	)
 }
 ```
 
@@ -197,18 +237,20 @@ Vous pourrez ensuite faire un lien vers la documentation avec le composant
 `RuleLink`.
 
 ```jsx
+import { Link } from 'react-router-dom'
 import { RuleLink } from 'publicodes'
 
 function MesDépenses() {
-    return (
-        <p>
-            Accéder aux{' '}
-            <RuleLink
-                dottedName={'dépenses primeur'}
-                engine={engine}
-                documentationPath={'/documentation'}
-            />
-        </p>
-    )
+	return (
+		<p>
+			Accéder aux{' '}
+			<RuleLink
+				dottedName={'dépenses primeur'}
+				engine={engine}
+				documentationPath={'/documentation'}
+				linkComponent={Link}
+			/>
+		</p>
+	)
 }
 ```

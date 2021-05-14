@@ -1,4 +1,7 @@
-# Principes de base
+---
+sidebar_position: 2
+title: Principes de base
+---
 
 La syntaxe de Publicodes est basée sur le langage
 [Yaml](https://en.wikipedia.org/wiki/YAML).
@@ -75,8 +78,8 @@ prime faible salaire applicable: salaire < 20 k€/an
 
 **Types de base disponibles pour la conversion :**
 
--   `jour` / `mois` / `an`
--   `€` / `k€`
+- `jour` / `mois` / `an`
+- `€` / `k€`
 
 ## Mécanismes
 
@@ -92,20 +95,20 @@ peut également s'écrire en utilisant le mécanisme [`produit`](/mécanismes/pr
 
 ```yaml
 prix total:
-    produit:
-        assiette: prix d'un repas
-        facteur: 5 repas
+  produit:
+    assiette: prix d'un repas
+    facteur: 5 repas
 ```
 
 Un des avantages de cette écriture est que la syntaxe hiérarchique de Yaml permet d'imbriquer les mécanismes :
 
 ```yaml
 prix TTC:
-    somme:
-        - prix d'un repas
-        - produit:
-              assiette: prix d'un repas
-              taux: TVA
+  somme:
+    - prix d'un repas
+    - produit:
+        assiette: prix d'un repas
+        taux: TVA
 ```
 
 ### Mécanismes chaînés
@@ -114,10 +117,10 @@ Certains mécanismes peuvent apparaître au même niveau d'indentation. Dans ce 
 
 ```yaml
 remboursement repas:
-    valeur: nombre de repas * remboursement forfaitaire
-    plafond: 500 €/an
-    unité: €/an
-    arrondi: oui
+  valeur: nombre de repas * remboursement forfaitaire
+  plafond: 500 €/an
+  unité: €/an
+  arrondi: oui
 ```
 
 > **[Pour en savoir plus sur les mécanismes](./mécanismes)**
@@ -132,27 +135,27 @@ mise en regard des calculs eux-mêmes.
 
 Plusieurs propriétés sont reprises dans ces pages d'explications :
 
--   le **titre**, qui s'affiche en haut de la page. Par défaut on utilise le nom
-    de la règle, mais la propriété `titre` permet de choisir un titre plus
-    approprié ;
--   la **description** qui peut être rédigée en Markdown et est généralement
-    affichée comme paragraphe d'introduction sur la page. On utilise le caractère
-    `|` pour indiquer au parseur Yaml que la description est sur plusieurs lignes ;
--   les **références** externes (documentation utile) affichées en
-    bas de page et qui sont constituées d'une liste de liens avec une description.
+- le **titre**, qui s'affiche en haut de la page. Par défaut on utilise le nom
+  de la règle, mais la propriété `titre` permet de choisir un titre plus
+  approprié ;
+- la **description** qui peut être rédigée en Markdown et est généralement
+  affichée comme paragraphe d'introduction sur la page. On utilise le caractère
+  `|` pour indiquer au parseur Yaml que la description est sur plusieurs lignes ;
+- les **références** externes (documentation utile) affichées en
+  bas de page et qui sont constituées d'une liste de liens avec une description.
 
 ```yaml
 ticket resto:
-    titre: Prise en charge des titres-restaurants
-    formule: 4 €/repas
-    description: |
-        L'employeur peut remettre des titres restaurants sous plusieurs formats:
-        - ticket *papier*
-        - carte à *puce*
-        - appli *mobile*
-    références:
-        Fiche service public: https://www.service-public.fr/professionnels-entreprises/vosdroits/F21059
-        Fiche Urssaf: https://www.urssaf.fr/portail/home/taux-et-baremes/frais-professionnels/les-titres-restaurant.html
+  titre: Prise en charge des titres-restaurants
+  formule: 4 €/repas
+  description: |
+    L'employeur peut remettre des titres restaurants sous plusieurs formats:
+    - ticket *papier*
+    - carte à *puce*
+    - appli *mobile*
+  références:
+    Fiche service public: https://www.service-public.fr/professionnels-entreprises/vosdroits/F21059
+    Fiche Urssaf: https://www.urssaf.fr/portail/home/taux-et-baremes/frais-professionnels/les-titres-restaurant.html
 ```
 
 ## Conditions booléennes
@@ -165,11 +168,11 @@ mineur émancipé: non
 nationalité française: oui
 
 droit de vote:
-    toutes ces conditions:
-        - nationalité française
-        - une de ces conditions:
-              - âge >= 18 ans
-              - mineur émancipé
+  toutes ces conditions:
+    - nationalité française
+    - une de ces conditions:
+        - âge >= 18 ans
+        - mineur émancipé
 ```
 
 Il est possible de faire des branchements conditionnels via le mécanisme [`variations`](/mécansime/variations)
@@ -182,13 +185,13 @@ On peut définir des conditions d'applicabilité pour des valeurs :
 date de début: 12/02/2020
 
 ancienneté en fin d'année:
-    durée:
-        depuis: date de début
-        jusqu'à: 31/12/2020
+  durée:
+    depuis: date de début
+    jusqu'à: 31/12/2020
 
 prime de vacances:
-    applicable si: ancienneté en fin d'année > 1 an
-    valeur: 200€
+  applicable si: ancienneté en fin d'année > 1 an
+  valeur: 200€
 ```
 
 Ici, si l'ancienneté est inférieure à un an, alors la prime de vacances ne sera pas
@@ -199,8 +202,8 @@ La syntaxe suivante est également valable :
 
 ```yaml
 assimilé salarié:
-    valeur: oui
-    rend non applicable: convention collective
+  valeur: oui
+  rend non applicable: convention collective
 ```
 
 ## Espaces de noms
@@ -210,10 +213,10 @@ utilise le `.` pour exprimer la hiérarchie des noms.
 
 ```yaml
 prime de vacances:
-    formule: taux * 1000 €
+  formule: taux * 1000 €
 
 prime de vacances . taux:
-    formule: 6%
+  formule: 6%
 ```
 
 Ici, `prime de vacances` est à la fois une règle et un espace de noms. La variable
@@ -228,7 +231,7 @@ différent, sans que cela entre en conflit :
 ```yaml
 # Ceci n'entre pas dans le calcul de `prime de vacances` définie plus haut
 autre prime . taux:
-    formule: 19%
+  formule: 19%
 ```
 
 On dit que la formule de la règle `prime de vacances` fait référence à la
@@ -239,7 +242,7 @@ nom complet de cette règle:
 
 ```yaml
 prime de vacances v2:
-    formule: autre prime . taux * 1000 €
+  formule: autre prime . taux * 1000 €
 ```
 
 Dans le cas d'espaces de noms imbriqués (à plus qu'un étage), le nom inscrit
@@ -248,10 +251,10 @@ espaces de nom jusqu'à la racine.
 
 ```yaml
 contrat salarié . rémunération . primes . prime de vacances:
-    formule: taux générique * 1000 €
+  formule: taux générique * 1000 €
 
 contrat salarié . rémunération . taux générique:
-    formule: 10%
+  formule: 10%
 ```
 
 Ici `contrat salarié . rémunération . primes . prime de vacances` va faire
@@ -269,9 +272,9 @@ CDD: non
 CDD . indemnité de précarité: 10% * 1500€/mois * 6 mois
 
 indemnités:
-    somme:
-        - 100 €
-        - CDD . indemnité de précarité # non
+  somme:
+    - 100 €
+    - CDD . indemnité de précarité # non
 ```
 
 ## Remplacement
@@ -289,8 +292,8 @@ frais de repas: 5 €/repas
 
 convention hôtels cafés restaurants: oui
 convention hôtels cafés restaurants . frais de repas:
-    remplace: frais de repas
-    valeur: 6 €/repas
+  remplace: frais de repas
+  valeur: 6 €/repas
 
 montant repas mensuels: 20 repas * frais de repas
 ```
@@ -302,17 +305,17 @@ temps de préparation: 20 min
 temps de cuisson: 20 min
 
 robot de cuisine:
-    remplace:
-        - règle: temps de préparation
-          sauf dans: temps original
-          par: 10 min
-    valeur: oui
+  remplace:
+    - règle: temps de préparation
+      sauf dans: temps original
+      par: 10 min
+  valeur: oui
 
 temps original:
-    formule: temps de préparation + temps de cuisson # résultat : 40 min
+  formule: temps de préparation + temps de cuisson # résultat : 40 min
 
 temps modifié:
-    formule: temps de préparation + temps de cuisson # résultat : 30 min
+  formule: temps de préparation + temps de cuisson # résultat : 30 min
 ```
 
 > [En savoir plus sur les remplacements](/manuel#remplacement)
@@ -330,17 +333,17 @@ l'extérieur :
 
 ```yaml
 prime:
-    formule:
-        multiplication:
-            assiette: 1000€
-            taux: taux
+  formule:
+    multiplication:
+      assiette: 1000€
+      taux: taux
 
 prime . taux:
-    formule: 5%
+  formule: 5%
 
 super-prime:
-    remplace: prime . taux
-    formule: 10%
+  remplace: prime . taux
+  formule: 10%
 ```
 
 Ce code fonctionne mais il nous oblige a créer une règle `prime . taux` qui
@@ -356,16 +359,16 @@ on veut accéder depuis l'extérieur avec le mot clé `nom` :
 
 ```yaml
 prime:
-    formule:
-        multiplication:
-            assiette: 1000€
-            taux:
-                nom: taux
-                valeur: 5%
+  formule:
+    multiplication:
+      assiette: 1000€
+      taux:
+        nom: taux
+        valeur: 5%
 
 super-prime:
-    remplace: prime . taux
-    formule: 10%
+  remplace: prime . taux
+  formule: 10%
 ```
 
 ## Évaluation
@@ -376,10 +379,10 @@ Il est possible de donner une valeur par défaut. Les variables manquantes seron
 
 ```yaml
 durée:
-    par défaut: 2 mois
+  par défaut: 2 mois
 
 salaire brut:
-    par défaut: 1500 €/mois
+  par défaut: 1500 €/mois
 
 indemnité de CDD: 10 % * salaire brut * durée
 ```
