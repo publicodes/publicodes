@@ -1,0 +1,25 @@
+---
+sidebar_position: 4
+title: Liste des mécanismes
+---
+
+<!-- We should find a way to better integrate this generated Markdown document
+with Docusaurus navigation but I couldn't find any. I asked the question to the
+Docusaurus community https://github.com/facebook/docusaurus/discussions/6009
+-->
+
+import mecanismsData from '../../ui-react/source/data/mecanisms.json'
+
+export const MechanismsList = ({ children, color }) => (
+	<>
+		{Object.entries(mecanismsData).map(([mecanismName, meta]) => (
+			<div key={mecanismName}>
+				<h2>{mecanismName}</h2>
+				<p>{meta.description}</p>
+				{/* Ajouter les exemples et les autres meta-données */}
+			</div>
+		))}
+	</>
+)
+
+<MechanismsList />

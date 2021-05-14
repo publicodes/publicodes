@@ -9,7 +9,7 @@
 	"scripts": {
 		"clean": "rimraf dist node_modules data",
 		"build": "tsc",
-		"prepare": "mkdir -p ./source/data && yarn run --silent js-yaml ../docs/mecanisms.yaml >| ./source/data/mecanisms.json && yarn run build",
+		"prepare": "mkdir -p ./source/data && yarn run --silent js-yaml ./source/data/mecanisms.yaml >| ./source/data/mecanisms.json && yarn run build",
 		"test": "echo \"Error: no test specified\""
 	},
 	"files": [
