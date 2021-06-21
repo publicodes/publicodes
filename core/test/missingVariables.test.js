@@ -132,6 +132,26 @@ sum . evt . ko:
     expect(result).to.be.empty;
   });
 
+  it("should report missing variables in simple variations", function () {
+    const rawRules = parse(`
+
+somme: a + b
+a: 10
+b:
+  formule:
+    variations: 
+      - si: a > 100
+        alors: c
+      - sinon: 0
+c:
+  question: Alors ?`);
+    const result = Object.keys(
+      new Engine(rawRules).evaluate("somme").missingVariables
+    );
+
+    expect(result).to.have.lengthOf(0);
+  });
+
   // TODO : réparer ce test
   it.skip("should report missing variables in variations", function () {
     const rawRules = parse(`
