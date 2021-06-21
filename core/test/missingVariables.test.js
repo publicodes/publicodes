@@ -153,14 +153,13 @@ c:
   });
 
   // TODO : réparer ce test
-  it.skip("should report missing variables in variations", function () {
+  it("should report missing variables in variations", function () {
     const rawRules = parse(`
-top: oui
-top . startHere:
+startHere:
   formule:
     somme:
       - variations
-top . variations:
+variations:
   formule:
     variations:
       - si: dix
@@ -175,31 +174,21 @@ top . variations:
                 taux: trois
               - taux: 10
       - si: 3 > 4
-        alors:
-          barème:
-            assiette: 2008
-            multiplicateur: quatre
-            tranches:
-              - plafond: 1
-                taux: 0.1
-              - plafond: 2
-                taux: 1.8
-              - au-dessus de: 2
-                taux: 10
-top . dix: {}
-top . deux: {}
-top . trois: {}
-top . quatre: {}
+        alors: quatre
+dix: {}
+deux: {}
+trois: {}
+quatre: {}
 
 		  `);
     const result = Object.keys(
-      new Engine(rawRules).evaluate("top . startHere").missingVariables
+      new Engine(rawRules).evaluate("startHere").missingVariables
     );
 
-    expect(result).to.include("top . dix");
-    expect(result).to.include("top . deux");
-    expect(result).to.include("top . trois");
-    expect(result).not.to.include("top . quatre");
+    expect(result).to.include("dix");
+    expect(result).to.include("deux");
+    expect(result).to.include("trois");
+    expect(result).not.to.include("quatre");
   });
 });
 
