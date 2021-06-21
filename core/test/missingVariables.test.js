@@ -134,50 +134,44 @@ sum . evt . ko:
 
   // TODO : réparer ce test
   it.skip("should report missing variables in variations", function () {
-    const rawRules = {
-      top: "oui",
-      "top . startHere": {
-        formule: { somme: ["variations"] },
-      },
-      "top . variations": {
-        formule: {
-          variations: [
-            {
-              si: "dix",
-              alors: {
-                barème: {
-                  assiette: 2008,
-                  multiplicateur: "deux",
-                  tranches: [
-                    { plafond: 1, taux: 0.1 },
-                    { plafond: 2, taux: "trois" },
-                    { taux: 10 },
-                  ],
-                },
-              },
-            },
-            {
-              si: "3 > 4",
-              alors: {
-                barème: {
-                  assiette: 2008,
-                  multiplicateur: "quatre",
-                  tranches: [
-                    { plafond: 1, taux: 0.1 },
-                    { plafond: 2, taux: 1.8 },
-                    { "au-dessus de": 2, taux: 10 },
-                  ],
-                },
-              },
-            },
-          ],
-        },
-      },
-      "top . dix": {},
-      "top . deux": {},
-      "top . trois": {},
-      "top . quatre": {},
-    };
+    const rawRules = parse(`
+top: oui
+top . startHere:
+  formule:
+    somme:
+      - variations
+top . variations:
+  formule:
+    variations:
+      - si: dix
+        alors:
+          barème:
+            assiette: 2008
+            multiplicateur: deux
+            tranches:
+              - plafond: 1
+                taux: 0.1
+              - plafond: 2
+                taux: trois
+              - taux: 10
+      - si: 3 > 4
+        alors:
+          barème:
+            assiette: 2008
+            multiplicateur: quatre
+            tranches:
+              - plafond: 1
+                taux: 0.1
+              - plafond: 2
+                taux: 1.8
+              - au-dessus de: 2
+                taux: 10
+top . dix: {}
+top . deux: {}
+top . trois: {}
+top . quatre: {}
+
+		  `);
     const result = Object.keys(
       new Engine(rawRules).evaluate("top . startHere").missingVariables
     );
