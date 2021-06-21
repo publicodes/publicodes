@@ -174,13 +174,24 @@ variations:
                 taux: trois
               - taux: 10
       - si: 3 > 4
-        alors: quatre
+        alors: 
+          barème:
+            assiette: 2008
+            multiplicateur: quatre
+            tranches:
+              - plafond: 1
+                taux: 0.1
+              - plafond: 2
+                taux: 1.8
+              - au-dessus de: 2
+                taux: 10
+
 dix: {}
 deux: {}
 trois: {}
 quatre: {}
 
-		  `);
+      `);
     const result = Object.keys(
       new Engine(rawRules).evaluate("startHere").missingVariables
     );
