@@ -267,7 +267,7 @@ describe("nextSteps", function () {
     expect(result).to.eql(["top . sum . evt"]);
   });
 
-  it.skip("Parent's other descendands in sums should not be included as missing variables", function () {
+  it("Parent's other descendands in sums should not be included as missing variables", function () {
     // See https://github.com/betagouv/publicodes/issues/33
     const rawRules = parse(`
 transport:
@@ -307,6 +307,38 @@ transport . avion . usager:
       "transport . avion . km",
       "transport . avion . usager",
     ]);
+    expect(result).to.have.lengthOf(1);
+  });
+  it.skip("Parent's other descendands in sums should not be included as missing variables - 2", function () {
+    // See https://github.com/betagouv/publicodes/issues/33
+    const rawRules = parse(`
+avion:
+  question: prenez-vous l'avion ?
+  par défaut: oui
+
+avion . impact: 
+  formule: 
+    somme: 
+      - au sol
+      - en vol
+
+avion . impact . en vol: 
+  question: Combien de temps passé en vol ? 
+  par défaut: 10
+
+avion . impact . au sol: 5
+
+
+`);
+    const result = Object.keys(
+      new Engine(rawRules).evaluate("avion . impact . au sol").missingVariables
+    );
+    console.log(
+      "missing en vol",
+      new Engine(rawRules).evaluate("avion . impact . en vol").missingVariables
+    );
+
+    expect(result).deep.to.equal(["avion"]);
     expect(result).to.have.lengthOf(1);
   });
 });
