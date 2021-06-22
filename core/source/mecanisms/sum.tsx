@@ -18,4 +18,14 @@ export const mecanismSum = (v, context) => {
 	} as SommeNode
 }
 
-registerEvaluationFunction('somme', evaluate)
+registerEvaluationFunction('somme', function (node) {
+	if (this.cache._meta.parentRuleStack.length > 0) {
+		return {
+			nodeValue: true,
+			nodeKind: 'somme',
+			missingVariables: {},
+			explanation: [],
+		}
+	}
+	return evaluate.call(this, node)
+})
