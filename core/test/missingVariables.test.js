@@ -296,46 +296,38 @@ transport . avion . empreinte: 0.300
 transport . avion . usager:
   question: Prenez-vous l'avion ?
   par défaut: oui
-
-
 `)
     const result = Object.keys(
       new Engine(rawRules).evaluate('transport . avion').missingVariables
     )
 
-    expect(result).to.equal([
+    expect(result).deep.to.equal([
       'transport . avion . km',
       'transport . avion . usager',
     ])
-    expect(result).to.have.lengthOf(1)
+    expect(result).to.have.lengthOf(2)
   })
-  it.skip("Parent's other descendands in sums should not be included as missing variables - 2", function () {
+  it("Parent's other descendands in sums should not be included as missing variables - 2", function () {
     // See https://github.com/betagouv/publicodes/issues/33
     const rawRules = parse(`
 avion:
   question: prenez-vous l'avion ?
   par défaut: oui
 
-avion . impact: 
-  formule: 
-    somme: 
+avion . impact:
+  formule:
+    somme:
       - au sol
       - en vol
 
-avion . impact . en vol: 
-  question: Combien de temps passé en vol ? 
+avion . impact . en vol:
+  question: Combien de temps passé en vol ?
   par défaut: 10
 
 avion . impact . au sol: 5
-
-
 `)
     const result = Object.keys(
       new Engine(rawRules).evaluate('avion . impact . au sol').missingVariables
-    )
-    console.log(
-      'missing en vol',
-      new Engine(rawRules).evaluate('avion . impact . en vol').missingVariables
     )
 
     expect(result).deep.to.equal(['avion'])

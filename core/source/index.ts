@@ -180,7 +180,12 @@ export default class Engine<Name extends string = string> {
 			this,
 			parsedNode
 		)
-		this.cache.nodes.set(value, evaluatedNode)
+		// The evaluation of parent applicabilty is slightly different from
+		// regular rules since we cut some of the paths (sums) for optimization.
+		// TODO: We could support a separate cache for applicability evaluation.
+		if (this.cache._meta.parentRuleStack.length === 0) {
+			this.cache.nodes.set(value, evaluatedNode)
+		}
 		return evaluatedNode
 	}
 
