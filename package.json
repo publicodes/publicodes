@@ -1,0 +1,10 @@
+{
+	"name": "publicodes-monorepo",
+	"private": true,
+	"workspaces": [
+		"core"
+	],
+	"scripts": {
+		"test": "yarn workspaces run test"
+	}
+}
