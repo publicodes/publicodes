@@ -12,3 +12,4 @@ jobs:
           node-version: 14
       - run: yarn install
       - run: yarn test
+      - run: yarn test:type
