@@ -3,9 +3,9 @@ import Engine from '../source/index'
 import { parse } from 'yaml'
 
 describe('Missing variables', function () {
-  it('should identify missing variables', function () {
-    // Rules in tests can be expressed in YAML like to for more clarity than JS objects
-    const rawRules = parse(`
+	it('should identify missing variables', function () {
+		// Rules in tests can be expressed in YAML like to for more clarity than JS objects
+		const rawRules = parse(`
 ko: oui
 sum: oui
 sum . startHere:
@@ -20,120 +20,120 @@ sum . evt:
 sum . evt . ko:
 `)
 
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('sum . startHere').missingVariables
-    )
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('sum . startHere').missingVariables
+		)
 
-    expect(result).to.include('sum . evt')
-  })
+		expect(result).to.include('sum . evt')
+	})
 
-  it('should identify missing variables mentioned in expressions', function () {
-    const rawRules = {
-      sum: 'oui',
-      'sum . evt': 'oui',
-      'sum . startHere': {
-        formule: 2,
-        'non applicable si': 'evt . nyet > evt . nope',
-      },
-      'sum . evt . nope': {},
-      'sum . evt . nyet': {},
-    }
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('sum . startHere').missingVariables
-    )
+	it('should identify missing variables mentioned in expressions', function () {
+		const rawRules = {
+			sum: 'oui',
+			'sum . evt': 'oui',
+			'sum . startHere': {
+				formule: 2,
+				'non applicable si': 'evt . nyet > evt . nope',
+			},
+			'sum . evt . nope': {},
+			'sum . evt . nyet': {},
+		}
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('sum . startHere').missingVariables
+		)
 
-    expect(result).to.include('sum . evt . nyet')
-    expect(result).to.include('sum . evt . nope')
-  })
+		expect(result).to.include('sum . evt . nyet')
+		expect(result).to.include('sum . evt . nope')
+	})
 
-  it('should ignore missing variables in the formula if not applicable', function () {
-    const rawRules = {
-      sum: 'oui',
-      'sum . startHere': {
-        formule: 'trois',
-        'non applicable si': '3 > 2',
-      },
-      'sum . trois': {},
-    }
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('sum . startHere').missingVariables
-    )
+	it('should ignore missing variables in the formula if not applicable', function () {
+		const rawRules = {
+			sum: 'oui',
+			'sum . startHere': {
+				formule: 'trois',
+				'non applicable si': '3 > 2',
+			},
+			'sum . trois': {},
+		}
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('sum . startHere').missingVariables
+		)
 
-    expect(result).to.be.empty
-  })
+		expect(result).to.be.empty
+	})
 
-  it('should not report missing variables when "one of these" short-circuits', function () {
-    const rawRules = {
-      sum: 'oui',
-      'sum . startHere': {
-        formule: 'trois',
-        'non applicable si': {
-          'une de ces conditions': ['3 > 2', 'trois'],
-        },
-      },
-      'sum . trois': {},
-    }
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('sum . startHere').missingVariables
-    )
+	it('should not report missing variables when "one of these" short-circuits', function () {
+		const rawRules = {
+			sum: 'oui',
+			'sum . startHere': {
+				formule: 'trois',
+				'non applicable si': {
+					'une de ces conditions': ['3 > 2', 'trois'],
+				},
+			},
+			'sum . trois': {},
+		}
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('sum . startHere').missingVariables
+		)
 
-    expect(result).to.be.empty
-  })
+		expect(result).to.be.empty
+	})
 
-  it('should report "une possibilité" as a missing variable even though it has a formula', function () {
-    const rawRules = {
-      top: 'oui',
-      ko: 'oui',
-      'top . startHere': { formule: 'trois' },
-      'top . trois': {
-        formule: { 'une possibilité': ['ko'] },
-      },
-    }
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('top . startHere').missingVariables
-    )
+	it('should report "une possibilité" as a missing variable even though it has a formula', function () {
+		const rawRules = {
+			top: 'oui',
+			ko: 'oui',
+			'top . startHere': { formule: 'trois' },
+			'top . trois': {
+				formule: { 'une possibilité': ['ko'] },
+			},
+		}
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('top . startHere').missingVariables
+		)
 
-    expect(result).to.include('top . trois')
-  })
+		expect(result).to.include('top . trois')
+	})
 
-  it('should not report missing variables when "une possibilité" is inapplicable', function () {
-    const rawRules = {
-      top: 'oui',
-      ko: 'oui',
-      'top . startHere': { formule: 'trois' },
-      'top . trois': {
-        formule: { 'une possibilité': ['ko'] },
-        'non applicable si': 'oui',
-      },
-    }
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('top . startHere').missingVariables
-    )
+	it('should not report missing variables when "une possibilité" is inapplicable', function () {
+		const rawRules = {
+			top: 'oui',
+			ko: 'oui',
+			'top . startHere': { formule: 'trois' },
+			'top . trois': {
+				formule: { 'une possibilité': ['ko'] },
+				'non applicable si': 'oui',
+			},
+		}
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('top . startHere').missingVariables
+		)
 
-    expect(result).to.be.empty
-    null
-  })
+		expect(result).to.be.empty
+		null
+	})
 
-  it('should not report missing variables when "une possibilité" was answered', function () {
-    const rawRules = {
-      top: 'oui',
-      ko: 'oui',
-      'top . startHere': { formule: 'trois' },
-      'top . trois': {
-        formule: { 'une possibilité': ['ko'] },
-      },
-    }
-    const result = Object.keys(
-      new Engine(rawRules)
-        .setSituation({ 'top . trois': "'ko'" })
-        .evaluate('top . startHere').missingVariables
-    )
+	it('should not report missing variables when "une possibilité" was answered', function () {
+		const rawRules = {
+			top: 'oui',
+			ko: 'oui',
+			'top . startHere': { formule: 'trois' },
+			'top . trois': {
+				formule: { 'une possibilité': ['ko'] },
+			},
+		}
+		const result = Object.keys(
+			new Engine(rawRules)
+				.setSituation({ 'top . trois': "'ko'" })
+				.evaluate('top . startHere').missingVariables
+		)
 
-    expect(result).to.be.empty
-  })
+		expect(result).to.be.empty
+	})
 
-  it('should report missing variables in simple variations', function () {
-    const rawRules = parse(`
+	it('should report missing variables in simple variations', function () {
+		const rawRules = parse(`
 
 somme: a + b
 a: 10
@@ -145,16 +145,16 @@ b:
       - sinon: 0
 c:
   question: Alors ?`)
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('somme').missingVariables
-    )
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('somme').missingVariables
+		)
 
-    expect(result).to.have.lengthOf(0)
-  })
+		expect(result).to.have.lengthOf(0)
+	})
 
-  // TODO : réparer ce test
-  it('should report missing variables in variations', function () {
-    const rawRules = parse(`
+	// TODO : réparer ce test
+	it('should report missing variables in variations', function () {
+		const rawRules = parse(`
 startHere:
   formule:
     somme:
@@ -192,84 +192,84 @@ trois: {}
 quatre: {}
 
       `)
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('startHere').missingVariables
-    )
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('startHere').missingVariables
+		)
 
-    expect(result).to.include('dix')
-    expect(result).to.include('deux')
-    expect(result).to.include('trois')
-    expect(result).not.to.include('quatre')
-  })
+		expect(result).to.include('dix')
+		expect(result).to.include('deux')
+		expect(result).to.include('trois')
+		expect(result).not.to.include('quatre')
+	})
 })
 
 describe('nextSteps', function () {
-  it('should generate questions for simple situations', function () {
-    const rawRules = {
-      top: 'oui',
-      'top . sum': { formule: 'deux' },
-      'top . deux': {
-        'non applicable si': 'top . sum . evt',
-        formule: 2,
-      },
-      'top . sum . evt': {
-        titre: 'Truc',
-        question: '?',
-      },
-    }
+	it('should generate questions for simple situations', function () {
+		const rawRules = {
+			top: 'oui',
+			'top . sum': { formule: 'deux' },
+			'top . deux': {
+				'non applicable si': 'top . sum . evt',
+				formule: 2,
+			},
+			'top . sum . evt': {
+				titre: 'Truc',
+				question: '?',
+			},
+		}
 
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('top . sum').missingVariables
-    )
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('top . sum').missingVariables
+		)
 
-    expect(result).to.have.lengthOf(1)
-    expect(result[0]).to.equal('top . sum . evt')
-  })
-  it('should generate questions', function () {
-    const rawRules = {
-      top: 'oui',
-      'top . sum': { formule: 'deux' },
-      'top . deux': {
-        formule: 'sum . evt',
-      },
-      'top . sum . evt': {
-        question: '?',
-      },
-    }
+		expect(result).to.have.lengthOf(1)
+		expect(result[0]).to.equal('top . sum . evt')
+	})
+	it('should generate questions', function () {
+		const rawRules = {
+			top: 'oui',
+			'top . sum': { formule: 'deux' },
+			'top . deux': {
+				formule: 'sum . evt',
+			},
+			'top . sum . evt': {
+				question: '?',
+			},
+		}
 
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('top . sum').missingVariables
-    )
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('top . sum').missingVariables
+		)
 
-    expect(result).to.have.lengthOf(1)
-    expect(result[0]).to.equal('top . sum . evt')
-  })
+		expect(result).to.have.lengthOf(1)
+		expect(result[0]).to.equal('top . sum . evt')
+	})
 
-  it('should generate questions with more intricate situation', function () {
-    const rawRules = {
-      top: 'oui',
-      'top . sum': { formule: { somme: [2, 'deux'] } },
-      'top . deux': {
-        formule: 2,
-        'non applicable si': "top . sum . evt = 'ko'",
-      },
-      'top . sum . evt': {
-        formule: { 'une possibilité': ['ko'] },
-        titre: 'Truc',
-        question: '?',
-      },
-      'top . sum . evt . ko': {},
-    }
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('top . sum').missingVariables
-    )
+	it('should generate questions with more intricate situation', function () {
+		const rawRules = {
+			top: 'oui',
+			'top . sum': { formule: { somme: [2, 'deux'] } },
+			'top . deux': {
+				formule: 2,
+				'non applicable si': "top . sum . evt = 'ko'",
+			},
+			'top . sum . evt': {
+				formule: { 'une possibilité': ['ko'] },
+				titre: 'Truc',
+				question: '?',
+			},
+			'top . sum . evt . ko': {},
+		}
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('top . sum').missingVariables
+		)
 
-    expect(result).to.eql(['top . sum . evt'])
-  })
+		expect(result).to.eql(['top . sum . evt'])
+	})
 
-  it("Parent's other descendands in sums should not be included as missing variables", function () {
-    // See https://github.com/betagouv/publicodes/issues/33
-    const rawRules = parse(`
+	it("Parent's other descendands in sums should not be included as missing variables", function () {
+		// See https://github.com/betagouv/publicodes/issues/33
+		const rawRules = parse(`
 transport:
   somme: 
     - voiture
@@ -297,19 +297,19 @@ transport . avion . usager:
   question: Prenez-vous l'avion ?
   par défaut: oui
 `)
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('transport . avion').missingVariables
-    )
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('transport . avion').missingVariables
+		)
 
-    expect(result).deep.to.equal([
-      'transport . avion . km',
-      'transport . avion . usager',
-    ])
-    expect(result).to.have.lengthOf(2)
-  })
-  it("Parent's other descendands in sums should not be included as missing variables - 2", function () {
-    // See https://github.com/betagouv/publicodes/issues/33
-    const rawRules = parse(`
+		expect(result).deep.to.equal([
+			'transport . avion . km',
+			'transport . avion . usager',
+		])
+		expect(result).to.have.lengthOf(2)
+	})
+	it("Parent's other descendands in sums should not be included as missing variables - 2", function () {
+		// See https://github.com/betagouv/publicodes/issues/33
+		const rawRules = parse(`
 avion:
   question: prenez-vous l'avion ?
   par défaut: oui
@@ -326,11 +326,11 @@ avion . impact . en vol:
 
 avion . impact . au sol: 5
 `)
-    const result = Object.keys(
-      new Engine(rawRules).evaluate('avion . impact . au sol').missingVariables
-    )
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('avion . impact . au sol').missingVariables
+		)
 
-    expect(result).deep.to.equal(['avion'])
-    expect(result).to.have.lengthOf(1)
-  })
+		expect(result).deep.to.equal(['avion'])
+		expect(result).to.have.lengthOf(1)
+	})
 })
