@@ -18,6 +18,7 @@ const emptyCache = (): Cache => ({
 		evaluationRuleStack: [],
 	},
 	nodes: new Map(),
+	nodesApplicability: new Map(),
 })
 
 type Cache = {
@@ -34,6 +35,7 @@ type Cache = {
 		filter?: string
 	}
 	nodes: Map<PublicodesExpression | ASTNode, EvaluatedNode>
+	nodesApplicability: Map<PublicodesExpression | ASTNode, EvaluatedNode>
 }
 
 export type EvaluationOptions = Partial<{
@@ -157,8 +159,19 @@ export default class Engine<Name extends string = string> {
 	evaluate(value: PublicodesExpression): EvaluatedNode
 	evaluate(value: PublicodesExpression | ASTNode): EvaluatedNode {
 		const cachedNode = this.cache.nodes.get(value)
+		// The evaluation of parent applicabilty is slightly different from
+		// regular rules since we cut some of the paths (sums) for optimization.
+		// That's why we need to have a separate cache for this evaluation.
+		const inApplicabilityEvaluationContext =
+			this.cache._meta.parentRuleStack.length > 0
+
 		if (cachedNode !== undefined) {
 			return cachedNode
+		} else if (inApplicabilityEvaluationContext) {
+			const cachedNodeApplicability = this.cache.nodesApplicability.get(value)
+			if (cachedNodeApplicability) {
+				return cachedNodeApplicability
+			}
 		}
 
 		let parsedNode: ASTNode
@@ -180,11 +193,15 @@ export default class Engine<Name extends string = string> {
 			this,
 			parsedNode
 		)
-		// The evaluation of parent applicabilty is slightly different from
-		// regular rules since we cut some of the paths (sums) for optimization.
-		// TODO: We could support a separate cache for applicability evaluation.
-		if (this.cache._meta.parentRuleStack.length === 0) {
+
+		// TODO: In most cases the two evaluation provide the same result, this
+		// could be optimized. The idea would be to use the “nodesApplicability”
+		// cache iff the rule uses a sum mechanism (ie, some paths are cut from
+		// the full evaluaiton).
+		if (!inApplicabilityEvaluationContext) {
 			this.cache.nodes.set(value, evaluatedNode)
+		} else {
+			this.cache.nodesApplicability.set(value, evaluatedNode)
 		}
 		return evaluatedNode
 	}
