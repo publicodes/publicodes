@@ -1,26 +1,13 @@
-name: Publish on npm
-on: push
+name: Publish on NPM
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types: [completed]
 
 jobs:
-  #TODO: should be moved in test.yaml
-  test:
-    if: contains(join(github.event.commits.*.message, ' | '), '📦 Publicodes v1.0.0-beta.')
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-v2
-    - run: yarn install --frozen-lockfile
-    - working-directory: ./example/publicodes-react
-      run: |
-        yarn install
-        yarn test
-
   publish:
-    needs: test
-    runs-on: ubuntu-18.04
+    if: contains(join(github.event.commits.*.message, ' | '), '📦 Publicodes v1.0.0-beta.')
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
