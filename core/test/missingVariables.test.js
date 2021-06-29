@@ -339,6 +339,7 @@ avion . impact . au sol: 5
 		const rawRules = parse(`
 a:
   applicable si: d > 3
+  valeur: oui
 
 d: 
  formule: 
