@@ -333,4 +333,30 @@ avion . impact . au sol: 5
 		expect(result).deep.to.equal(['avion'])
 		expect(result).to.have.lengthOf(1)
 	})
+
+	it("Parent's other descendands in sums in applicability should be included as missing variables", function () {
+		// See https://github.com/betagouv/publicodes/issues/33
+		const rawRules = parse(`
+a:
+  applicable si: d > 3
+
+d: 
+ formule: 
+   somme: 
+     - e
+     - 8
+
+e: 
+  question: Vous venez à combien à la soirée ?
+  par défaut: 3
+
+a . b: 20 + 9
+`)
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('a . b').missingVariables
+		)
+
+		expect(result).deep.to.equal(['e'])
+		expect(result).to.have.lengthOf(1)
+	})
 })
