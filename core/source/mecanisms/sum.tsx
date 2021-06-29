@@ -19,8 +19,11 @@ export const mecanismSum = (v, context) => {
 }
 
 registerEvaluationFunction('somme', function (node) {
-	if (this.cache._meta.parentRuleStack.length > 0) {
+	if (this.inApplicabilityEvaluationContext) {
 		return {
+			// With a clearer distinction between `getApplicability` and
+			// `getValue` we could avoid faking a `nodeValue: true` and instead
+			// simply return `isApplicable: true, nodeValue: undefined`
 			nodeValue: true,
 			nodeKind: 'somme',
 			missingVariables: {},

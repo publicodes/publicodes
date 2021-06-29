@@ -16,6 +16,7 @@ const emptyCache = (): Cache => ({
 	_meta: {
 		parentRuleStack: [],
 		evaluationRuleStack: [],
+		disableApplicabilityContextCounter: 0,
 	},
 	nodes: new Map(),
 	nodesApplicability: new Map(),
@@ -25,6 +26,7 @@ type Cache = {
 	_meta: {
 		parentRuleStack: Array<string>
 		evaluationRuleStack: Array<string>
+		disableApplicabilityContextCounter: number
 		inversionFail?:
 			| {
 					given: string
@@ -162,12 +164,10 @@ export default class Engine<Name extends string = string> {
 		// The evaluation of parent applicabilty is slightly different from
 		// regular rules since we cut some of the paths (sums) for optimization.
 		// That's why we need to have a separate cache for this evaluation.
-		const inApplicabilityEvaluationContext =
-			this.cache._meta.parentRuleStack.length > 0
 
 		if (cachedNode !== undefined) {
 			return cachedNode
-		} else if (inApplicabilityEvaluationContext) {
+		} else if (this.inApplicabilityEvaluationContext) {
 			const cachedNodeApplicability = this.cache.nodesApplicability.get(value)
 			if (cachedNodeApplicability) {
 				return cachedNodeApplicability
@@ -198,7 +198,7 @@ export default class Engine<Name extends string = string> {
 		// could be optimized. The idea would be to use the “nodesApplicability”
 		// cache iff the rule uses a sum mechanism (ie, some paths are cut from
 		// the full evaluaiton).
-		if (!inApplicabilityEvaluationContext) {
+		if (!this.inApplicabilityEvaluationContext) {
 			this.cache.nodes.set(value, evaluatedNode)
 		} else {
 			this.cache.nodesApplicability.set(value, evaluatedNode)
@@ -217,6 +217,13 @@ export default class Engine<Name extends string = string> {
 		newEngine.parsedSituation = this.parsedSituation
 		newEngine.cache = this.cache
 		return newEngine
+	}
+
+	get inApplicabilityEvaluationContext(): boolean {
+		return (
+			this.cache._meta.parentRuleStack.length > 0 &&
+			this.cache._meta.disableApplicabilityContextCounter === 0
+		)
 	}
 }
 
