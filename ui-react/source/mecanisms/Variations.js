@@ -1,4 +1,3 @@
-import classnames from 'classnames'
 import { useState } from 'react'
 import emoji from 'react-easy-emoji'
 import styled from 'styled-components'
@@ -80,16 +79,16 @@ export default function Variations({ nodeValue, explanation, unit }) {
 											}}
 										>
 											<span
-												className={classnames('consequenceType', {
-													satisfied,
-												})}
+												className={`consequenceType ${
+													satisfied ? 'satisfied' : ''
+												}`}
 											>
 												{!condition.isDefault ? 'Alors' : 'Sinon'} :&nbsp;
 											</span>
 											<span
-												className={classnames('consequenceContent', {
-													satisfied,
-												})}
+												className={`consequenceContent ${
+													satisfied ? 'satisfied' : ''
+												}`}
 											>
 												{consequence && <Explanation node={consequence} />}
 											</span>
