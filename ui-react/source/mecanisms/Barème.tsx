@@ -1,4 +1,3 @@
-import classNames from 'classnames'
 import { parseUnit } from 'publicodes'
 import styled from 'styled-components'
 import Explanation from '../Explanation'
@@ -77,7 +76,7 @@ export const TrancheTable = ({ tranches, multiplicateur }) => {
 const Tranche = ({ tranche, multiplicateur }) => {
 	const isHighlighted = tranche.isActive
 	return (
-		<tr className={classNames('tranche', { activated: isHighlighted })}>
+		<tr className={`tranche ${isHighlighted ? 'activated' : ''}`}>
 			<td key="tranche">
 				{tranche.plafond.nodeValue === Infinity ? (
 					'Au-delà du dernier plafond'
