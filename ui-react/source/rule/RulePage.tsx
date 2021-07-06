@@ -4,7 +4,6 @@ import Engine, {
 	simplifyNodeUnit,
 	utils,
 } from 'publicodes'
-import { isEmpty } from 'ramda'
 import { useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { EngineContext } from '../contexts'
@@ -92,7 +91,7 @@ export default function Rule({ dottedName, language, situationName }) {
 			<Explanation node={valeur} />
 			<RuleSource key={dottedName} dottedName={dottedName} engine={engine} />
 
-			{!isEmpty(rule.missingVariables) && (
+			{Object.entries(rule.missingVariables).length > 0 && (
 				<>
 					<h3>Données manquantes</h3>
 					<p className="ui__ notice">

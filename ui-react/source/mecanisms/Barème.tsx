@@ -1,6 +1,5 @@
 import classNames from 'classnames'
 import { parseUnit } from 'publicodes'
-import React from 'react'
 import styled from 'styled-components'
 import Explanation from '../Explanation'
 import { Mecanism, NodeValuePointer } from './common'

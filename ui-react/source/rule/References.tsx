@@ -1,4 +1,3 @@
-import { toPairs } from 'ramda'
 import { capitalise0 } from 'publicodes'
 import styled from 'styled-components'
 import { useContext } from 'react'
@@ -55,7 +54,7 @@ type ReferencesProps = {
 }
 
 export default function References({ refs }: ReferencesProps) {
-	const references = toPairs(refs)
+	const references = Object.entries(refs)
 	return (
 		<StyledComponent>
 			{references.map(([name, link]) => (
