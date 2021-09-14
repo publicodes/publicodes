@@ -41,6 +41,10 @@ const common = {
 				test: /\.yaml$/,
 				use: ['json-loader', 'yaml-loader'],
 			},
+			{
+				test: /.node$/,
+				loader: 'node-loader',
+			},
 		],
 	},
 }
