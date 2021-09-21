@@ -1,4 +1,3 @@
-import emoji from 'react-easy-emoji'
 import yaml from 'yaml'
 import Engine, { formatValue, reduceAST, utils } from 'publicodes'
 const { encodeRuleName } = utils
@@ -85,7 +84,7 @@ export default function RuleSource({ engine, dottedName }: Props) {
 					dottedName
 				)}?code=${encodeURIComponent(source)}`}
 			>
-				{emoji('✍️')} Voir la règle dans le bac à sable Publicodes
+				✍️ Voir la règle dans le bac à sable Publicodes
 			</a>
 		</div>
 	)

@@ -1,6 +1,5 @@
 import Engine, { utils } from 'publicodes'
 import React, { useContext } from 'react'
-import emoji from 'react-easy-emoji'
 import { Link, useLocation } from 'react-router-dom'
 import {
 	BasepathContext,
@@ -63,9 +62,7 @@ export function RuleLink<Name extends string>({
 			{...props}
 		>
 			{children || rule.title}{' '}
-			{displayIcon && rule.rawNode.icônes && (
-				<span>{emoji(rule.rawNode.icônes)} </span>
-			)}
+			{displayIcon && rule.rawNode.icônes && <span>{rule.rawNode.icônes}</span>}
 		</Link>
 	)
 }

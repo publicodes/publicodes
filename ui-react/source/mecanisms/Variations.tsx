@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import emoji from 'react-easy-emoji'
 import styled from 'styled-components'
 import { EvaluatedNode } from 'publicodes/source/AST/types'
 import { VariationNode } from 'publicodes/dist/types/mecanisms/variations'
@@ -46,14 +45,14 @@ export default function Variations({
 												className="ui__ link-button"
 												onClick={() => toggleVariation(i)}
 											>
-												détails {emoji('▶️')}
+												détails ▶️
 											</button>
 										) : (
 											<button
 												className="ui__ link-button"
 												onClick={() => toggleVariation(null)}
 											>
-												replier {emoji('🔽')}
+												replier 🔽
 											</button>
 										)}
 									</>

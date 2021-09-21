@@ -2,7 +2,6 @@ import Engine from 'publicodes'
 import { Documentation, getDocumentationSiteMap } from 'publicodes-react'
 import { invertObj, last } from 'ramda'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import emoji from 'react-easy-emoji'
 import MonacoEditor from 'react-monaco-editor'
 import { useHistory, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
@@ -166,7 +165,7 @@ export const Results = ({ onClickShare, rules }: ResultsProps) => {
 				</small>
 				<div className="ui__ answer-group">
 					<button className="ui__ simple small button" onClick={onClickShare}>
-						{emoji('🔗')} Copier le lien
+						🔗 Copier le lien
 					</button>
 				</div>
 			</div>

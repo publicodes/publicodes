@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import emoji from 'react-easy-emoji'
 import ReactMarkdown, { ReactMarkdownProps } from 'react-markdown'
 import { HashLink as Link } from 'react-router-hash-link'
 import { EngineContext } from './contexts'
@@ -48,9 +47,7 @@ const CodeBlock = ({ value, language }: { value: string; language: string }) =>
 		</pre>
 	)
 
-const TextRenderer = ({ children }: { children: string }) => (
-	<>{emoji(children)}</>
-)
+const TextRenderer = ({ children }: { children: string }) => <>{children}</>
 
 type MarkdownProps = ReactMarkdownProps & {
 	source: string | undefined
