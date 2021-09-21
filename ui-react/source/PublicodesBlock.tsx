@@ -1,4 +1,3 @@
-import emoji from 'react-easy-emoji'
 import styled from 'styled-components'
 
 export default function PublicodesBlock({ source }: { source: string }) {
@@ -17,7 +16,7 @@ export default function PublicodesBlock({ source }: { source: string }) {
 				href={`${baseURL}/studio?code=${encodeURIComponent(source)}`}
 				target="_blank"
 			>
-				{emoji('⚡')} Lancer le calcul
+				⚡ Lancer le calcul
 			</LaunchButton>
 		</div>
 	)

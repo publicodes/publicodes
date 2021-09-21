@@ -1,5 +1,4 @@
 import React, { Suspense, useContext, useEffect } from 'react'
-import emoji from 'react-easy-emoji'
 import ReactMarkdown, { ReactMarkdownProps } from 'react-markdown'
 import { useLocation } from 'react-router-dom'
 import { HashLink as Link } from 'react-router-hash-link'
@@ -56,9 +55,7 @@ export function LinkRenderer({
 		</a>
 	)
 }
-const TextRenderer = ({ children }: { children: string }) => (
-	<>{emoji(children)}</>
-)
+const TextRenderer = ({ children }: { children: string }) => <>{children}</>
 
 type MarkdownProps = ReactMarkdownProps & {
 	source: string | undefined
@@ -93,7 +90,7 @@ const CodeBlock = ({
 				target="_blank"
 				css="position: absolute; bottom: 5px; right: 10px; color: white !important;"
 			>
-				{emoji('⚡')} Lancer le calcul
+				⚡ Lancer le calcul
 			</a>
 		)}
 	</div>

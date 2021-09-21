@@ -1,6 +1,5 @@
 import { VariationNode } from 'publicodes/source/mecanisms/variations'
 import { useState } from 'react'
-import emoji from 'react-easy-emoji'
 import Variations from './Variations'
 import Overlay from '../Overlay'
 import Explanation from '../Explanation'
@@ -24,7 +23,7 @@ export default function Replacement(node: VariationNode & EvaluatedNode) {
 				onClick={() => changeDisplayReplacement(true)}
 				className="ui__ simple small button"
 			>
-				{emoji('🔄')}
+				🔄
 			</button>
 			{displayReplacements && (
 				<Overlay onClose={() => changeDisplayReplacement(false)}>
