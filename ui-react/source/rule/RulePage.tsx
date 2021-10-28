@@ -2,10 +2,16 @@ import Engine, {
 	formatValue,
 	serializeUnit,
 	simplifyNodeUnit,
-	utils,
+	utils
 } from 'publicodes'
 import { useContext } from 'react'
-import { EngineContext } from '../contexts'
+import {
+	BasepathContext,
+	EngineContext,
+	ReferencesImagesContext,
+	RenderersContext,
+	SupportedRenderers
+} from '../contexts'
 import Explanation from '../Explanation'
 import { Markdown } from '../Markdown'
 import { RuleLinkWithContext } from '../RuleLink'
@@ -13,7 +19,53 @@ import RuleHeader from './Header'
 import References from './References'
 import RuleSource from './RuleSource'
 
-export default function Rule({ dottedName, language, subEngineId }) {
+type RulePageProps = {
+	documentationPath: string
+	rulePath: string
+	engine: Engine
+	language: 'fr' | 'en'
+	referenceImages?: Record<string, string>
+	renderers: SupportedRenderers
+}
+
+export default function RulePage({
+	documentationPath,
+	rulePath,
+	engine,
+	renderers,
+	language,
+	referenceImages = {},
+}: RulePageProps) {
+	const currentEngineId = new URLSearchParams(window.location.search).get(
+		'currentEngineId'
+	)
+
+	return (
+		<EngineContext.Provider value={engine}>
+			<BasepathContext.Provider value={documentationPath}>
+				<RenderersContext.Provider value={renderers}>
+					<ReferencesImagesContext.Provider value={referenceImages}>
+						<Rule
+							dottedName={utils.decodeRuleName(rulePath)}
+							subEngineId={
+								currentEngineId ? parseInt(currentEngineId) : undefined
+							}
+							language={language}
+						/>
+					</ReferencesImagesContext.Provider>
+				</RenderersContext.Provider>
+			</BasepathContext.Provider>
+		</EngineContext.Provider>
+	)
+}
+
+type RuleProps = {
+	dottedName: string
+	subEngineId?: number
+	language: RulePageProps['language']
+}
+
+export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 	const baseEngine = useContext(EngineContext)
 	if (!baseEngine) {
 		throw new Error('Engine expected')
@@ -22,8 +74,11 @@ export default function Rule({ dottedName, language, subEngineId }) {
 	const useSubEngine =
 		subEngineId && baseEngine.subEngines.length >= subEngineId
 
-	const engine = useSubEngine ? baseEngine.subEngines[subEngineId] : baseEngine
-	// HACK : currently we only use the subEngine feature in “recalcul”, we should attach this label to the subEngine
+	const engine = useSubEngine
+		? baseEngine.subEngines[subEngineId as number]
+		: baseEngine
+	// HACK : currently we only use the subEngine feature in “recalcul”, we should
+	// attach this label to the subEngine
 	const situationName = useSubEngine ? 'recalcul' : null
 
 	if (!(dottedName in engine.getParsedRules())) {
