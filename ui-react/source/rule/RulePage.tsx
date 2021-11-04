@@ -2,21 +2,19 @@ import Engine, {
 	formatValue,
 	serializeUnit,
 	simplifyNodeUnit,
-	utils
+	utils,
 } from 'publicodes'
 import { useContext } from 'react'
 import {
 	BasepathContext,
 	EngineContext,
-	ReferencesImagesContext,
 	RenderersContext,
-	SupportedRenderers
+	SupportedRenderers,
 } from '../contexts'
 import Explanation from '../Explanation'
 import { Markdown } from '../Markdown'
 import { RuleLinkWithContext } from '../RuleLink'
 import RuleHeader from './Header'
-import References from './References'
 import RuleSource from './RuleSource'
 
 type RulePageProps = {
@@ -24,7 +22,6 @@ type RulePageProps = {
 	rulePath: string
 	engine: Engine
 	language: 'fr' | 'en'
-	referenceImages?: Record<string, string>
 	renderers: SupportedRenderers
 }
 
@@ -34,7 +31,6 @@ export default function RulePage({
 	engine,
 	renderers,
 	language,
-	referenceImages = {},
 }: RulePageProps) {
 	const currentEngineId = new URLSearchParams(window.location.search).get(
 		'currentEngineId'
@@ -44,15 +40,13 @@ export default function RulePage({
 		<EngineContext.Provider value={engine}>
 			<BasepathContext.Provider value={documentationPath}>
 				<RenderersContext.Provider value={renderers}>
-					<ReferencesImagesContext.Provider value={referenceImages}>
-						<Rule
-							dottedName={utils.decodeRuleName(rulePath)}
-							subEngineId={
-								currentEngineId ? parseInt(currentEngineId) : undefined
-							}
-							language={language}
-						/>
-					</ReferencesImagesContext.Provider>
+					<Rule
+						dottedName={utils.decodeRuleName(rulePath)}
+						subEngineId={
+							currentEngineId ? parseInt(currentEngineId) : undefined
+						}
+						language={language}
+					/>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
 		</EngineContext.Provider>
@@ -67,6 +61,7 @@ type RuleProps = {
 
 export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 	const baseEngine = useContext(EngineContext)
+	const { References } = useContext(RenderersContext)
 	if (!baseEngine) {
 		throw new Error('Engine expected')
 	}
@@ -190,10 +185,10 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 					</div>
 				</>
 			)}
-			{rule.rawNode.références && (
+			{rule.rawNode.références && References && (
 				<>
-					<h2>Références</h2>
-					<References refs={rule.rawNode.références} />
+					<h3>Références</h3>
+					<References references={rule.rawNode.références} />
 				</>
 			)}
 			{/* <Examples
