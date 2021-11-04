@@ -72,9 +72,6 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 	const engine = useSubEngine
 		? baseEngine.subEngines[subEngineId as number]
 		: baseEngine
-	// HACK : currently we only use the subEngine feature in “recalcul”, we should
-	// attach this label to the subEngine
-	const situationName = useSubEngine ? 'recalcul' : null
 
 	if (!(dottedName in engine.getParsedRules())) {
 		return <p>Cette règle est introuvable dans la base</p>
@@ -84,7 +81,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 	const { parent, valeur } = rule.explanation
 	return (
 		<div id="documentationRuleRoot">
-			{situationName && (
+			{useSubEngine && (
 				<div
 					className="ui__ card notice light-bg"
 					style={{
@@ -98,7 +95,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 				>
 					<div>
 						Vous explorez la documentation avec le contexte{' '}
-						<strong className="ui__ label">{situationName}</strong>{' '}
+						<strong className="ui__ label">mécanisme recalcul</strong>
 					</div>
 					<div style={{ flex: 1 }} />
 					<div>
