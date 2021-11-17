@@ -75,7 +75,11 @@ const evaluate: EvaluationFunction<'grille'> = function (node) {
 	return {
 		...node,
 		nodeValue,
-		missingVariables: mergeAllMissing(activeTranches),
+		missingVariables: mergeAllMissing([
+			assiette,
+			multiplicateur,
+			...activeTranches,
+		]),
 		explanation: {
 			...node.explanation,
 			assiette,

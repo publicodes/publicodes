@@ -89,7 +89,7 @@ const evaluate: EvaluationFunction<'barème'> = function (node) {
 	return {
 		...node,
 		nodeValue,
-		missingVariables: mergeAllMissing(tranches),
+		missingVariables: mergeAllMissing([assiette, multiplicateur, ...tranches]),
 		explanation: {
 			assiette,
 			multiplicateur,
