@@ -1,6 +1,6 @@
 {
 	"name": "publicodes-react",
-	"version": "1.0.0-beta.16",
+	"version": "1.0.0-beta.17",
 	"description": "UI to explore publicodes computations",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -22,7 +22,7 @@
 		"yaml": "^1.9.2"
 	},
 	"peerDependencies": {
-		"publicodes": "1.0.0-beta.16",
+		"publicodes": "1.0.0-beta.17",
 		"react": "^17.0.2"
 	},
 	"devDependencies": {

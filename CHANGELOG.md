@@ -34,3 +34,19 @@
 -   Suppression des variables temporelles
 -   Optimisation de la désactivation de branches
 -   Meilleures performances
+
+## 1.0.0-beta.17
+
+**core**
+
+-   Prise en compte des variables manquantes pour l'assiette des grilles et barèmes
+
+**publicodes-react**
+
+-   Changement cassant : Le composant `<Documentation />` n'est plus exporté
+-   Nouveau composant exporté `<RulePage />` qui affiche une seule page
+-   Possibilité de fournir des composants personnalisés pour l'affichage
+-   Suppression de la dépendance à react-router et react-helmet
+-   Suppression de dépendences utilitaires : ramda, classnames, react-easy-emoji
+-   Corrige le style du remplacement dans les sommes
+-   Corrige l'affichage des règles remplacées
