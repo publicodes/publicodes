@@ -1,7 +1,7 @@
 import Engine from 'publicodes'
-import { Documentation, getDocumentationSiteMap } from 'publicodes-react'
+import { RulePage, getDocumentationSiteMap } from 'publicodes-react'
 import { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Link, Route } from 'react-router-dom'
 
 const rulesURL = require('./CO2-douche.publicodes.yaml').default
 async function initEngine(setEngine) {
@@ -21,7 +21,17 @@ export default function Publicodes() {
 	return (
 		<Router>
 			<div style={{ margin: 'auto', maxWidth: '800px' }}>
-				<Documentation engine={engine} documentationPath={''} />
+				<Route
+					path="/:name+"
+					render={({ match }) => (
+						<RulePage
+							engine={engine}
+							documentationPath=""
+							rulePath={match.params.name}
+							renderers={{ Link }}
+						/>
+					)}
+				/>
 				<h2>Toutes les règles</h2>
 				<ul>
 					{Object.entries(
