@@ -307,6 +307,55 @@ transport . avion . usager:
 		])
 		expect(result).to.have.lengthOf(2)
 	})
+
+	it.skip("Parent's other descendands in sums should not be included as missing variables, even when parent evluation is triggered by a comparison", function () {
+		// See https://github.com/betagouv/publicodes/issues/33
+		const rawRules = parse(`
+transport:
+  somme: 
+    - voiture
+    - avion
+
+transport . voiture:
+  formule: empreinte * km
+
+transport . voiture . gabarit:
+  question: Quel gabarit ?
+  par défaut: 2
+transport . voiture . empreinte:
+  formule: 
+    variations: 
+      - si: gabarit > 3
+        alors: 800
+      - sinon: 500
+transport . voiture . km: 
+  question: COMBIENKM
+  par défaut: 1000
+
+transport . avion:
+  applicable si: usager
+  formule: empreinte * km
+
+transport . avion . km: 
+  question: COMBIENKM
+  par défaut: 10000
+
+transport . avion . empreinte: 0.300
+
+transport . avion . usager:
+  question: Prenez-vous l'avion ?
+  par défaut: oui
+`)
+		const result = Object.keys(
+			new Engine(rawRules).evaluate('transport . voiture').missingVariables
+		)
+
+		expect(result).deep.to.equal([
+			'transport . voiture . gabarit',
+			'transport . voiture . km',
+		])
+		expect(result).to.have.lengthOf(2)
+	})
 	it("Parent's other descendands in sums should not be included as missing variables - 2", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
 		const rawRules = parse(`
