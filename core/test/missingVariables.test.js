@@ -308,7 +308,7 @@ transport . avion . usager:
 		expect(result).to.have.lengthOf(2)
 	})
 
-	it("Parent's other descendands in sums should not be included as missing variables, even when parent evluation is triggered by a comparison", function () {
+	it.skip("Parent's other descendands in sums should not be included as missing variables, even when parent evluation is triggered by a comparison", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
 		const rawRules = parse(`
 transport:
