@@ -1,5 +1,4 @@
 /* eslint-env node */
-
 const path = require('path')
 
 const babelLoader = {
@@ -51,6 +50,18 @@ module.exports = [
 		...common,
 		output: {
 			filename: 'index.js',
+			path: path.join(__dirname, 'dist', 'esm'),
+			libraryTarget: 'module',
+		},
+		experiments: {
+			outputModule: true,
+		},
+	},
+	{
+		...common,
+		output: {
+			filename: 'index.js',
+			path: path.join(__dirname, 'dist', 'umd'),
 			library: 'publicodes',
 			libraryTarget: 'umd',
 			globalObject: 'this',
