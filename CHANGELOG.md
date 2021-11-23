@@ -50,3 +50,9 @@
 -   Suppression de dépendences utilitaires : ramda, classnames, react-easy-emoji
 -   Corrige le style du remplacement dans les sommes
 -   Corrige l'affichage des règles remplacées
+
+## 1.0.0-beta.18
+
+**core**
+
+-   Export ESM sans dépendance à d'autres formats de module (UMD)
