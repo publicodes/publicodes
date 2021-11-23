@@ -54,7 +54,7 @@ jobs:
   # using the `workflow_run` event, but it makes it difficult to retrieve the
   # commit message.
   publish:
-    if: contains(join(github.event.commits.*.message, ' | '), '📦 Publicodes v1.0.0-beta.')
+    if: contains(join(github.event.commits.*.message, ' | '), '📦 Publicodes v1.0.0-beta.') && github.ref == 'refs/heads/master'
     needs: [test, test-type, test-example-app]
     runs-on: ubuntu-20.04
     steps:
