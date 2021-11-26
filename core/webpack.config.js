@@ -41,6 +41,11 @@ const common = {
 				test: /\.yaml$/,
 				use: ['json-loader', 'yaml-loader'],
 			},
+			// Fixes fsevents bug import bug, see https://stackoverflow.com/questions/64103792/fsevents-causes-module-parse-failed-unexpected-character
+			{
+				test: /.node$/,
+				loader: 'node-loader',
+			},
 		],
 	},
 }
