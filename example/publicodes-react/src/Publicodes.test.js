@@ -39,6 +39,5 @@ test('correctly render result in documentation', async () => {
 	render(<Publicodes />)
 	const douche = await screen.findByText('douche')
 	fireEvent.click(douche)
-	const result = await screen.findByText('134,65 kgCO2eq / an')
-	expect(result).toBeInTheDocument()
+	expect(document.body).toHaveTextContent('134,65 kgCO2eq / an')
 })
