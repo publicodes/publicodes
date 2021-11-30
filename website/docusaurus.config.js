@@ -51,6 +51,19 @@ module.exports = {
 			// but it doesn't exist in dark mode variant in the default list.
 			theme: require('prism-react-renderer/themes/palenight'),
 		},
+		footer: {
+			links: [
+				{
+					title: 'À propos',
+					items: [
+						{
+							label: 'Statistiques de consultation',
+							to: '/statistiques',
+						},
+					],
+				},
+			],
+		},
 	},
 	presets: [
 		[
@@ -72,6 +85,14 @@ module.exports = {
 				},
 			},
 		],
+	],
+	scripts: [
+		'plausible',
+		{
+			src: 'https://plausible.io/js/plausible.js',
+			'data-domain': 'publi.codes',
+			defer: true,
+		},
 	],
 	plugins: [
 		// Hacky Webpack config magic in order to display the Publicodes
