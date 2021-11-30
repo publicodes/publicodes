@@ -87,9 +87,7 @@ const StyledRow = styled.div`
 		display: flex;
 		max-width: 100%;
 		align-items: baseline;
-
-		padding: 0.1em 0.4em;
-		padding-top: 0.2em;
+		line-height: 2rem;
 		overflow: hidden;
 		flex-wrap: wrap;
 	}
