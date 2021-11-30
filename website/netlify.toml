@@ -1,0 +1,11 @@
+# In the previous version of the website, the current rule selected in the
+# Studio was visible as a path in the main site URL such as
+# https://publi.codes/studio/my/publicodes/rule
+# This is no longer possible with Docusaurus nor really desirable so we
+# redirect these old URL format to the studio. It would be preferable to
+# keep the rule name and convert it to a `?rule=my.publicodes.rule` query
+# parameter but this is not trivial in the Netlify config file.
+[[redirects]]
+  from = "/studio/:rule/*"
+  to = "/studio"
+  status = 301
