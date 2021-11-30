@@ -25,8 +25,8 @@ npm install publicodes
 
 ## Documentation
 
--   [Se lancer](https://publi.codes/langage/se-lancer)
--   [Principes de base](https://publi.codes/langage/principes-de-base)
+-   [Se lancer](https://publi.codes/docs/se-lancer)
+-   [Principes de base](https://publi.codes/docs/principes-de-base)
 -   [Bac à sable](https://publi.codes/studio)
 
 ## Projets phares
