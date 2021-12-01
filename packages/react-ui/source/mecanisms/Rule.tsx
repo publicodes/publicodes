@@ -37,10 +37,6 @@ const Styled = styled.div`
 	}
 `
 
-// const StyledTitle = styled.small`
-
-// `
-
 const StyledExplanation = styled.div`
 	border: 1px solid #18457b;
 	padding: 1rem;

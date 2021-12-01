@@ -40,13 +40,16 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-v2
-      - run: yarn install --frozen-lockfile
-      - working-directory: ./example/publicodes-react
-        run: |
+      - run: yarn install
+      - run: |
+          cd ./examples/publicodes-react
           yarn install
           yarn test
 
@@ -68,9 +71,9 @@ jobs:
         with:
           token: ${{ secrets.NPM_PUBLISH_SECRET }}
           dry-run: ${{ github.ref != 'refs/heads/master' }}
-          package: ./core/package.json
+          package: ./packages/core/package.json
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_PUBLISH_SECRET }}
           dry-run: ${{ github.ref != 'refs/heads/master' }}
-          package: ./ui-react/package.json
+          package: ./packages/react-ui/package.json

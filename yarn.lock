@@ -1950,19 +1950,19 @@ flat@^5.0.2:
   resolved "https://registry.yarnpkg.com/flat/-/flat-5.0.2.tgz#8ca6fe332069ffa9d324c327198c598259ceb241"
   integrity sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==
 
-focus-trap-react@^3.1.2:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/focus-trap-react/-/focus-trap-react-3.1.4.tgz#e95f4aece5c493be4d3653dfccd5036d11ad24d5"
-  integrity sha512-uqMKMg9Xlny0LKHW0HqA7ncLafW57SxgeedjE7/Xt+NB7sdOBUG4eD/9sMsq1O0+7zD3palpniTs2n0PDLc3uA==
+focus-trap-react@^8.8.2:
+  version "8.8.2"
+  resolved "https://registry.yarnpkg.com/focus-trap-react/-/focus-trap-react-8.8.2.tgz#ac374819cddd8937b8687eaf7f351b3c10ed3c34"
+  integrity sha512-YgacIMxeAOytHOEbzBWL7+itBkn4ARMwQhtt6hYVHqHzPUPhmfEyKJ/nqsyMerzOK1DzlDv8Q8phRAY8vpa0rA==
   dependencies:
-    focus-trap "^2.0.1"
+    focus-trap "^6.7.1"
 
-focus-trap@^2.0.1:
-  version "2.4.6"
-  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-2.4.6.tgz#332b475b317cec6a4a129f5307ce7ebc0da90b40"
-  integrity sha512-vWZTPtBU6pBoyWZDRZJHkXsyP2ZCZBHE3DRVXnSVdQKH/mcDtu9S5Kz8CUDyIqpfZfLEyI9rjKJLnc4Y40BRBg==
+focus-trap@^6.7.1:
+  version "6.7.1"
+  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-6.7.1.tgz#d474f86dbaf3c7fbf0d53cf0b12295f4f4068d10"
+  integrity sha512-a6czHbT9twVpy2RpkWQA9vIgwQgB9Nx1PIxNNUxQT4nugG/3QibwxO+tWTh9i+zSY2SFiX4pnYhTaFaQF/6ZAg==
   dependencies:
-    tabbable "^1.0.3"
+    tabbable "^5.2.1"
 
 fs.realpath@^1.0.0:
   version "1.0.0"
@@ -3282,10 +3282,10 @@ supports-color@^7.1.0, supports-color@^7.2.0:
   dependencies:
     has-flag "^4.0.0"
 
-tabbable@^1.0.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-1.1.3.tgz#0e4ee376f3631e42d7977a074dbd2b3827843081"
-  integrity sha512-nOWwx35/JuDI4ONuF0ZTo6lYvI0fY0tZCH1ErzY2EXfu4az50ZyiUX8X073FLiZtmWUVlkRnuXsehjJgCw9tYg==
+tabbable@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.2.1.tgz#e3fda7367ddbb172dcda9f871c0fdb36d1c4cd9c"
+  integrity sha512-40pEZ2mhjaZzK0BnI+QGNjJO8UYx9pP5v7BGe17SORTO0OEuuaAwQTkAp8whcZvqon44wKFOikD+Al11K3JICQ==
 
 tapable@^2.1.1, tapable@^2.2.0:
   version "2.2.0"

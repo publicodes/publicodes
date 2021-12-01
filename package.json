@@ -2,8 +2,8 @@
 	"name": "publicodes-monorepo",
 	"private": true,
 	"workspaces": [
-		"core",
-		"ui-react"
+		"packages/core",
+		"packages/react-ui"
 	],
 	"scripts": {
 		"test": "yarn workspaces run test",
