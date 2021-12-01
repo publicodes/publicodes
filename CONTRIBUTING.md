@@ -6,7 +6,11 @@ Voici quelques informations pour démarrer :
 
 ## Rapport de bug, nouvelles fonctionnalités
 
-Nous utilisons GitHub pour suivre tous les bugs et discussions sur les nouvelles fonctionnalités. Pour rapporter un bug ou proposer une évolution vous pouvez [ouvrir une nouvelle discussion](https://github.com/betagouv/publicodes/discussions). N'hésitez pas à utiliser la recherche pour vérifier si le sujet n'est pas déjà traité dans une discussion ouverte.
+Nous utilisons GitHub pour suivre tous les bugs et discussions sur les nouvelles fonctionnalités. Pour rapporter un bug ou proposer une évolution vous pouvez [ouvrir une nouvelle discussion](https://github.com/betagouv/publicodes/discussions). N'hésitez pas à utiliser la recherche pour vérifier si le sujet n'est pas déjà traité dans une discussion ouverte. Si vous avez identifié une coquille ou une petite amélioration vous pouvez ouvrir une « Pull Request » directement !
+
+## Site web https://publi.codes
+
+Le site public est développé avec le framework [Docursaurus](https://docusaurus.io/) et hebergé sur [Netlify](https://netlify.com/).
 
 ## Publier une nouvelle version sur NPM
 
