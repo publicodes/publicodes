@@ -9,3 +9,8 @@
   from = "/studio/:rule/*"
   to = "/studio"
   status = 301
+
+[[redirects]]
+  from = "/documentation/:page"
+  to = "/docs/:page"
+  status = 301
