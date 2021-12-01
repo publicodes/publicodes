@@ -56,3 +56,14 @@
 **core**
 
 -   Export ESM sans dépendance à d'autres formats de module (UMD)
+
+## 1.0.0-beta.19
+
+**core**
+
+-   Ajout d'un export `cyclicDependencies` pour permettant de détecter un cycle de références dans les règles
+
+**publicodes-react**
+
+-   Meilleur affichage des données manquantes et règles associées dans la documentation
+-   Legères retouches visuelles
