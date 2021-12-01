@@ -1,6 +1,8 @@
 import { syntaxError } from './error'
 import { RuleNode } from './rule'
 
+export { cyclicDependencies } from './AST/graph'
+
 const splitName = (str: string) => str.split(' . ')
 const joinName = (strs: Array<string>) => strs.join(' . ')
 export const nameLeaf = (name: string) => splitName(name).slice(-1)?.[0]
