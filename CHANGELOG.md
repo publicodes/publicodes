@@ -67,3 +67,9 @@
 
 -   Meilleur affichage des données manquantes et règles associées dans la documentation
 -   Legères retouches visuelles
+
+## 1.0.0-beta.20
+
+**core**
+
+-   Corrige l'omission des types Typescript dans le paquet

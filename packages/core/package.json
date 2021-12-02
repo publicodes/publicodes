@@ -1,6 +1,6 @@
 {
 	"name": "publicodes",
-	"version": "1.0.0-beta.19",
+	"version": "1.0.0-beta.20",
 	"description": "A declarative language for encoding public algorithm",
 	"main": "dist/umd/index.js",
 	"types": "dist/types/index.d.ts",
@@ -18,9 +18,7 @@
 	"license": "MIT",
 	"readme": "../README.md",
 	"files": [
-		"dist/esm/index.js",
-		"dist/umd/index.js",
-		"esm"
+		"dist/"
 	],
 	"private": false,
 	"devDependencies": {
