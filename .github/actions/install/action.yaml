@@ -1,0 +1,13 @@
+name: Install
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@v2
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - run: yarn install --frozen-lockfile
+      shell: bash
