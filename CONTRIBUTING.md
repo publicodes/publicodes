@@ -17,10 +17,5 @@ Le site public est développé avec le framework [Docursaurus](https://docusauru
 Voici la marche à suivre pour publier une nouvelle version :
 
 1. Renseigner les modifications dans `CHANGELOG.md`
-2. Remplacer les références à la précédente version par la nouvelle version dans les packages.json
-3. Ajouter tous les changements dans un commit avec le message suivant :
-    ```
-     📦 Publicodes v1.0.0-beta.<n>
-    ```
-    > **Important** Le message doit être exactement celui-ci (emoji compris), car le script de déploiement automatique sur le CI se base sur ce dernier.
-4. Laisser faire le CI, une fois le commit mergé sur master, le paquet sera déployé effectivement
+2. Remplacer les références à la précédente version par la nouvelle version dans les fichiers `package.json`
+3. Laisser faire le CI, le paquet sera déployé effectivement une fois le commit mergé sur `master`
