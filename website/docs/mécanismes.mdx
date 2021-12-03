@@ -13,7 +13,7 @@ import ReactMarkdown from 'react-markdown'
 
 export const MechanismsList = ({ children, color }) => (
 	<>
-		{Object.entries(mecanismsData).map(([mecanismName, meta]) => console.log(meta) ||(
+		{Object.entries(mecanismsData).map(([mecanismName, meta]) => (
 			<div key={mecanismName}>
 				<h2>{mecanismName}</h2>
 				<ReactMarkdown>{meta.description}</ReactMarkdown>
