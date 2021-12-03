@@ -285,9 +285,7 @@ grille:
     le mécanisme de calcul de l'impôt neutre, aussi appelé impôt non
     personnalisé.
 
-    Il est composé de tranches qui se suivent. Il suffit de trouver l'assiette
-    qui correspond à la tranche, et de selectionner le montant associé à
-    l'assiette.
+    Il est composé de tranches qui se suivent. Il suffit de trouver la tranche qui correspond à l'assiette, et de selectionner le montant associé à cette tranche.
   exemples:
     grille avec multiplicateur et unité: >-
       SMIC horaire: 10 €/heure
