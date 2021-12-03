@@ -9,13 +9,14 @@ Docusaurus community https://github.com/facebook/docusaurus/discussions/6009
 -->
 
 import mecanismsData from '../../packages/react-ui/source/data/mecanisms.json'
+import ReactMarkdown from 'react-markdown'
 
 export const MechanismsList = ({ children, color }) => (
 	<>
 		{Object.entries(mecanismsData).map(([mecanismName, meta]) => (
 			<div key={mecanismName}>
 				<h2>{mecanismName}</h2>
-				<p>{meta.description}</p>
+				<ReactMarkdown>{meta.description}</ReactMarkdown>
 				{/* Ajouter les exemples et les autres meta-données */}
 			</div>
 		))}
