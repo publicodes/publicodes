@@ -13,11 +13,17 @@ import ReactMarkdown from 'react-markdown'
 
 export const MechanismsList = ({ children, color }) => (
 	<>
-		{Object.entries(mecanismsData).map(([mecanismName, meta]) => (
+		{Object.entries(mecanismsData).map(([mecanismName, meta]) => console.log(meta) ||(
 			<div key={mecanismName}>
 				<h2>{mecanismName}</h2>
 				<ReactMarkdown>{meta.description}</ReactMarkdown>
 				{/* Ajouter les exemples et les autres meta-données */}
+				{Object.entries(meta.exemples ||{}).map(([name, exemple]) => (
+						<Fragment key={name}>
+							<h3>{name === 'base' ? 'Exemple' : name}</h3>
+							<ReactMarkdown>{`\`\`\`yaml\n${exemple}\n\`\`\``}</ReactMarkdown>
+						</Fragment>
+					))}
 			</div>
 		))}
 	</>
