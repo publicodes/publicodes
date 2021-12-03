@@ -1,0 +1,37 @@
+name: Test
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install
+      - run: yarn lint:prettier
+
+  test:
+    name: Unit tests
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install
+      - run: yarn test
+
+  test-type:
+    name: Type checking
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install
+      - run: yarn test:type
+
+  test-example-app:
+    name: Test example app
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install
+      - run: |
+          cd ./examples/publicodes-react
+          yarn install
+          yarn test
