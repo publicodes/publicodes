@@ -107,7 +107,7 @@
     }
   },
   "grille": {
-    "description": "C'est un barème sous la forme d'une grille de correspondance simple. C'est le mécanisme de calcul de l'impôt neutre, aussi appelé impôt non personnalisé.\nIl est composé de tranches qui se suivent. Il suffit de trouver l'assiette qui correspond à la tranche, et de selectionner le montant associé à l'assiette.",
+    "description": "C'est un barème sous la forme d'une grille de correspondance simple. C'est le mécanisme de calcul de l'impôt neutre, aussi appelé impôt non personnalisé.\nIl est composé de tranches qui se suivent. Il suffit de trouver la tranche qui correspond à l'assiette, et de selectionner le montant associé à cette tranche.",
     "exemples": {
       "grille avec multiplicateur et unité": "SMIC horaire: 10 €/heure revenu moyen: 1200€/an trimestres validés:\n  grille:\n    unité: trimestres validés/an\n    assiette: revenu moyen\n    multiplicateur: SMIC horaire\n    tranches:\n      - montant: 0\n        plafond: 150 heures/an\n      - montant: 1\n        plafond: 300 heures/an\n      - montant: 2\n        plafond: 450 heures/an\n      - montant: 3\n        plafond: 600 heures/an\n      - montant: 4"
     }
