@@ -49,9 +49,7 @@
 		"yaml": "^1.9.2"
 	},
 	"scripts": {
-		"prepublishOnly": "yarn test && NODE_ENV=production yarn run build",
 		"clean": "rimraf dist node_modules",
-		"prepare": "yarn run build",
 		"build": "yarn run rimraf dist && yarn run webpack --config webpack.config.js && yarn run tsc",
 		"build:watch": "concurrently \"yarn run webpack --watch --config webpack.config.js\" \"yarn run tsc -w\"",
 		"test:file": "yarn mochapack --include test/setupIntl.js --webpack-config ./webpack.test.js ",

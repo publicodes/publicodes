@@ -8,8 +8,7 @@
 	"readme": "../README.md",
 	"scripts": {
 		"clean": "rimraf dist node_modules data",
-		"build": "tsc",
-		"prepare": "mkdir -p ./source/data && yarn run --silent js-yaml ./source/data/mecanisms.yaml >| ./source/data/mecanisms.json && yarn run build",
+		"build": "mkdir -p ./source/data && yarn run --silent js-yaml ./source/data/mecanisms.yaml >| ./source/data/mecanisms.json && tsc",
 		"test": "echo \"Error: no test specified\""
 	},
 	"files": [
