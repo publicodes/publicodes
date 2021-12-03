@@ -1,0 +1,21 @@
+name: Publish
+on:
+  workflow_run:
+    workflows: ['Test']
+    types: [completed]
+
+jobs:
+  publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        package: ['core', 'react-ui']
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_PUBLISH_SECRET }}
+          dry-run: ${{ github.ref != 'refs/heads/master' }}
+          package: ./packages/${{ matrix.package }}/package.json
