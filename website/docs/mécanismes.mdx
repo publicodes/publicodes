@@ -18,12 +18,14 @@ export const MechanismsList = ({ children, color }) => (
 				<h2>{mecanismName}</h2>
 				<ReactMarkdown>{meta.description}</ReactMarkdown>
 				{/* Ajouter les exemples et les autres meta-données */}
+				{meta.exemples && <ul>
 				{Object.entries(meta.exemples ||{}).map(([name, exemple]) => (
-						<Fragment key={name}>
-							<h3>{name === 'base' ? 'Exemple' : name}</h3>
+						<li key={name}>
+							<h3>{name === 'base' ? 'Exemple de base' : name}</h3>
 							<ReactMarkdown>{`\`\`\`yaml\n${exemple}\n\`\`\``}</ReactMarkdown>
-						</Fragment>
+						</li>
 					))}
+					</ul>}
 			</div>
 		))}
 	</>
