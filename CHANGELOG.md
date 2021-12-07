@@ -74,7 +74,7 @@
 
 -   Corrige l'omission des types Typescript dans le paquet
 
-## 1.0.0-beta.21
+## 1.0.0-beta.22
 
 **core**
 

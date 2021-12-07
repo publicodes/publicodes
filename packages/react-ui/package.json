@@ -1,6 +1,6 @@
 {
 	"name": "publicodes-react",
-	"version": "1.0.0-beta.21",
+	"version": "1.0.0-beta.22",
 	"description": "UI to explore publicodes computations",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -8,7 +8,6 @@
 	"readme": "../README.md",
 	"scripts": {
 		"clean": "rimraf dist node_modules data",
-		"postinstall": "yarn run --silent js-yaml ./source/data/mecanisms.yaml >| ./source/data/mecanisms.json",
 		"build": "tsc",
 		"test": "echo \"Error: no test specified\""
 	},
@@ -22,7 +21,7 @@
 		"yaml": "^1.9.2"
 	},
 	"peerDependencies": {
-		"publicodes": "1.0.0-beta.21",
+		"publicodes": "1.0.0-beta.22",
 		"react": "^17.0.2"
 	},
 	"devDependencies": {
