@@ -1,6 +1,6 @@
 > 🇬🇧 Most of the documentation (including issues and commit messages) is written in French, please raise an [issue](https://github.com/betagouv/publicodes/issues/new) if you are interested and do not speak French. We intend to translate the language and the documentation in the coming weeks.
 
-## <a href="https://publi.codes"><img src="https://mon-entreprise.fr/images/logo-publicodes.png" alt="Publicodes" width="200"/></a>
+## Publicodes
 
 [![Npm version](https://img.shields.io/npm/v/publicodes)](https://www.npmjs.com/package/publicodes)
 [![Gitter chat](https://badges.gitter.im/publicodes/publicodes.png)](https://gitter.im/publicodes/community)
@@ -31,7 +31,7 @@ npm install publicodes
 
 ## Projets phares
 
--   **[mon-entreprise.fr](https://mon-entreprise.fr/simulateurs)** utilise publicodes
+-   **[mon-entreprise.fr](https://mon-entreprise.urssaf.fr/simulateurs)** utilise publicodes
     pour spécifier l'ensemble des calculs relatifs à la législation socio-fiscale
     en France. Le site permet entre autre de simuler une fiche de paie complète,
     de calculer les cotisations sociales pour un indépendant ou encore connaître
