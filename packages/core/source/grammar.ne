@@ -2,15 +2,13 @@
 
 # Look for the PEMDAS system : Parentheses, Exponents (omitted here), Multiplication, and you should guess the rest :)
 
-# This preprocessor was disabled because it doesn't work with Jest
-# @preprocessor esmodule
+@preprocessor esmodule
 
 @{%
-const {
+import {
   string, date, variable, binaryOperation, unaryOperation, boolean, number, numberWithUnit, JSONObject
-} = require('./grammarFunctions')
-
-const moo = require("moo");
+} from './grammarFunctions';
+import moo from "moo";
 
 const dateRegexp = `(?:(?:0?[1-9]|[12][0-9]|3[01])\\/)?(?:0?[1-9]|1[012])\\/\\d{4}`
 const letter = '[a-zA-Z\u00C0-\u017F€$%]';

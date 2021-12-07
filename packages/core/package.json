@@ -4,6 +4,7 @@
 	"description": "A declarative language for encoding public algorithm",
 	"main": "dist/umd/index.js",
 	"types": "dist/types/index.d.ts",
+	"type": "module",
 	"exports": {
 		"require": "./dist/umd/index.js",
 		"import": "./dist/esm/index.js"
