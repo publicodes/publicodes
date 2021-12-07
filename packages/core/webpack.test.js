@@ -1,7 +1,7 @@
-const { EnvironmentPlugin } = require('webpack')
-const config = require('./webpack.config')
+import { EnvironmentPlugin } from 'webpack'
+import config from './webpack.config'
 
-module.exports = {
+export default {
 	...config[0],
 	externals: [],
 	target: 'node',

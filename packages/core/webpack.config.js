@@ -1,5 +1,5 @@
 /* eslint-env node */
-const path = require('path')
+import path from 'path'
 
 const babelLoader = {
 	loader: 'babel-loader',
@@ -25,7 +25,7 @@ const common = {
 		extensions: ['.ts', '.tsx', '.js'],
 	},
 	mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-	entry: path.resolve(__dirname, 'source', 'index.ts'),
+	entry: new URL('./source/index.ts', import.meta.url).pathname,
 	module: {
 		rules: [
 			{
@@ -50,12 +50,12 @@ const common = {
 	},
 }
 
-module.exports = [
+export default [
 	{
 		...common,
 		output: {
 			filename: 'index.js',
-			path: path.join(__dirname, 'dist', 'esm'),
+			path: new URL('./dist/esm', import.meta.url).pathname,
 			libraryTarget: 'module',
 		},
 		experiments: {
@@ -66,7 +66,7 @@ module.exports = [
 		...common,
 		output: {
 			filename: 'index.js',
-			path: path.join(__dirname, 'dist', 'umd'),
+			path: new URL('./dist/umd', import.meta.url).pathname,
 			library: 'publicodes',
 			libraryTarget: 'umd',
 			globalObject: 'this',
