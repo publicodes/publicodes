@@ -73,3 +73,9 @@
 **core**
 
 -   Corrige l'omission des types Typescript dans le paquet
+
+## 1.0.0-beta.21
+
+**core**
+
+-   Correction: Build en mode "production"
