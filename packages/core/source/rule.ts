@@ -92,6 +92,11 @@ export default function parseRule(
 	const ruleContext = { ...context, dottedName, ruleTitle }
 
 	const [parent] = ruleParents(dottedName)
+
+	// The following ensures that nested rules appears after the root rule when
+	// iterating over parsedRule
+	context.parsedRules[dottedName] = undefined as any
+
 	const explanation = {
 		valeur: parse(ruleValue, ruleContext),
 		parent: !!parent && parse(parent, context),

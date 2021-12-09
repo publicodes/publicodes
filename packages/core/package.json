@@ -1,6 +1,6 @@
 {
 	"name": "publicodes",
-	"version": "1.0.0-beta.22",
+	"version": "1.0.0-beta.23",
 	"description": "A declarative language for encoding public algorithm",
 	"main": "dist/umd/index.js",
 	"types": "dist/types/index.d.ts",
@@ -26,6 +26,7 @@
 		"@babel/preset-typescript": "^7.14.5",
 		"babel-loader": "^8.2.2",
 		"chai": "^4.2.0",
+		"concurrently": "^6.4.0",
 		"dedent-js": "1.0.1",
 		"intl": "^1.2.5",
 		"json-loader": "^0.5.7",
