@@ -1,8 +1,15 @@
 # Changelog
 
+## 1.0.0-beta.24
+
+**core**
+
+-   Correction: Import dans le REPL svelte.dev
+
 ## 1.0.0-beta.23
 
 **core**
+
 -   Corrige l'ordre des règles imbriquées dans l'objet parsedRules
 
 ## 1.0.0-beta.22
@@ -22,6 +29,11 @@
 **core**
 
 -   Ajout d'un export `cyclicDependencies` pour permettant de détecter un cycle de références dans les règles
+
+**publicodes-react**
+
+-   Meilleur affichage des données manquantes et règles associées dans la documentation
+-   Legères retouches visuelles
 
 ## 1.0.0-beta.18
 
@@ -59,6 +71,7 @@
 **core**
 
 -   Fix bug sur le mécanisme minimum, une valeur non applicable n'est plus considérée comme valant "0" (#1493)
+
 ## 1.0.0-beta.14
 
 **publicodes-react**
@@ -78,9 +91,3 @@
 
 -   Améliore l'affichage des règles virtuelles dépliée dans une somme
 -   Ajoute les meta dans les pages de règles (#1411)
-
-
-**publicodes-react**
-
--   Meilleur affichage des données manquantes et règles associées dans la documentation
--   Legères retouches visuelles
