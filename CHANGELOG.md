@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.25
+
+**core**
+
+-   Correction: Import Node.js UMD
+
 ## 1.0.0-beta.24
 
 **core**

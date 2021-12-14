@@ -65,7 +65,7 @@ export default [
 	{
 		...common,
 		output: {
-			filename: 'index.js',
+			filename: 'index.cjs',
 			path: new URL('./dist/umd', import.meta.url).pathname,
 			library: 'publicodes',
 			libraryTarget: 'umd',

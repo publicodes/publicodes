@@ -1,13 +1,13 @@
 {
 	"name": "publicodes",
-	"version": "1.0.0-beta.24",
+	"version": "1.0.0-beta.25",
 	"description": "A declarative language for encoding public algorithm",
 	"types": "dist/types/index.d.ts",
 	"type": "module",
-	"main": "dist/umd/index.js",
+	"main": "dist/umd/index.cjs",
 	"module": "dist/esm/index.js",
 	"exports": {
-		"require": "./dist/umd/index.js",
+		"require": "./dist/umd/index.cjs",
 		"import": "./dist/esm/index.js"
 	},
 	"repository": {
