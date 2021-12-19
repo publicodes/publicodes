@@ -1,5 +1,5 @@
 /* eslint-env node */
-import path from 'path'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 
 const babelLoader = {
 	loader: 'babel-loader',
@@ -53,6 +53,7 @@ const common = {
 export default [
 	{
 		...common,
+		plugins: process.env.ANALYZE_BUNDLE ? [new BundleAnalyzerPlugin()] : [],
 		output: {
 			filename: 'index.js',
 			path: new URL('./dist/esm', import.meta.url).pathname,
