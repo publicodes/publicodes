@@ -1,6 +1,6 @@
 {
 	"name": "publicodes-react",
-	"version": "1.0.0-beta.25",
+	"version": "1.0.0-beta.26",
 	"description": "UI to explore publicodes computations",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -16,12 +16,11 @@
 	],
 	"dependencies": {
 		"focus-trap-react": "^8.8.2",
-		"react-markdown": "^4.3.1",
 		"styled-components": "^5.1.0",
 		"yaml": "^1.9.2"
 	},
 	"peerDependencies": {
-		"publicodes": "1.0.0-beta.25",
+		"publicodes": "1.0.0-beta.26",
 		"react": "^17.0.2"
 	},
 	"devDependencies": {

@@ -8,10 +8,9 @@ import {
 import { ReferenceNode } from 'publicodes/source/reference'
 import React, { createContext, useContext, useState } from 'react'
 import styled from 'styled-components'
-import { EngineContext } from '../contexts'
+import { EngineContext, RenderersContext } from '../contexts'
 import mecanismsDoc from '../data/mecanisms.json'
 import Explanation from '../Explanation'
-import { Markdown } from '../Markdown'
 import Overlay from '../Overlay'
 import { RuleLinkWithContext } from '../RuleLink'
 import mecanismColors from './colors'
@@ -206,6 +205,7 @@ export default function RuleExplanation({
 	description,
 	exemples,
 }: RuleExplanationProps) {
+	const { Text } = useContext(RenderersContext)
 	return (
 		<>
 			{!!name && (
@@ -213,15 +213,15 @@ export default function RuleExplanation({
 					<pre>{name}</pre>
 				</h2>
 			)}
-			<Markdown source={description} />
+			<Text>{description}</Text>
 			{exemples && (
 				<>
 					{Object.entries(exemples).map(([name, exemple]) => (
 						<React.Fragment key={name}>
 							<h3>{name === 'base' ? 'Exemple' : capitalise0(name)}</h3>
-							<Markdown source={`\`\`\`yaml\n${exemple}\n\`\`\``} />
+							<Text>{`\`\`\`yaml\n${exemple}\n\`\`\``}</Text>
 						</React.Fragment>
-					))}{' '}
+					))}
 				</>
 			)}
 		</>
