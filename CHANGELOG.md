@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.26
+
+**publicodes-react**
+
+-   ⚠ Changement cassant: `react-markdown` n'est plus utilisé pour afficher les textes. L'utilisateur peut fournir son propre composant de rendu.
+
 ## 1.0.0-beta.25
 
 **core**

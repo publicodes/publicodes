@@ -9,12 +9,12 @@ import Engine, {
 import { useContext, useEffect, useState } from 'react'
 import {
 	BasepathContext,
+	DefaultTextRenderer,
 	EngineContext,
 	RenderersContext,
 	SupportedRenderers,
 } from '../contexts'
 import Explanation from '../Explanation'
-import { Markdown } from '../Markdown'
 import { RuleLinkWithContext } from '../RuleLink'
 import RuleHeader from './Header'
 import RuleSource from './RuleSource'
@@ -41,7 +41,9 @@ export default function RulePage({
 	return (
 		<EngineContext.Provider value={engine}>
 			<BasepathContext.Provider value={documentationPath}>
-				<RenderersContext.Provider value={renderers}>
+				<RenderersContext.Provider
+					value={{ Text: DefaultTextRenderer, ...renderers }}
+				>
 					<Rule
 						dottedName={utils.decodeRuleName(rulePath)}
 						subEngineId={
@@ -63,7 +65,7 @@ type RuleProps = {
 
 export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 	const baseEngine = useContext(EngineContext)
-	const { References } = useContext(RenderersContext)
+	const { References, Text } = useContext(RenderersContext)
 	if (!baseEngine) {
 		throw new Error('Engine expected')
 	}
@@ -116,7 +118,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 			)}
 			<RuleHeader dottedName={dottedName} />
 			<section>
-				<Markdown source={description || question} />
+				<Text>{description || question}</Text>
 			</section>
 			{
 				<>
@@ -182,7 +184,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 				<>
 					<h3>Note</h3>
 					<div className="ui__ notice">
-						<Markdown source={rule.rawNode.note} />
+						<Text>{rule.rawNode.note}</Text>
 					</div>
 				</>
 			)}
