@@ -129,14 +129,11 @@ export default class Engine<Name extends string = string> {
 				if (value && typeof value === 'object' && 'nodeKind' in value) {
 					return [key, value as ASTNode]
 				}
-				const parsedValue =
-					value && typeof value === 'object' && 'nodeKind' in value
-						? (value as ASTNode)
-						: this.parse(value, {
-								dottedName: `situation [${key}]`,
-								parsedRules: {},
-								...this.options,
-						  })
+				const parsedValue = this.parse(value, {
+					dottedName: `situation [${key}]`,
+					parsedRules: {},
+					...this.options,
+				})
 				return [key, parsedValue]
 			})
 		)
