@@ -143,6 +143,31 @@ export default class Engine<Name extends string = string> {
 		return this
 	}
 
+	checkSituation(
+		situation: Partial<Record<Name, PublicodesExpression | ASTNode>> = {}
+	): Record<Name, { value: PublicodesExpression | ASTNode; error: Error }> {
+		const errors = Object.entries(situation)
+			.map(([key, value]) => {
+				if (value && typeof value === 'object' && 'nodeKind' in value) {
+					return []
+				}
+
+				try {
+					this.parse(value, {
+						dottedName: `situation [${key}]`,
+						parsedRules: {},
+						...this.options,
+					})
+					return []
+				} catch (error) {
+					return [key, { value, error }]
+				}
+			})
+			.filter((a) => a.length)
+
+		return Object.fromEntries(errors)
+	}
+
 	private parse(...args: Parameters<typeof parse>) {
 		return inlineReplacements(
 			this.replacements,
