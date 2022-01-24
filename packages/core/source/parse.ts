@@ -1,7 +1,7 @@
-import { Grammar, Parser } from 'nearley'
+import nearley from 'nearley'
 import { ASTNode } from './AST/types'
 import { EngineError, syntaxError } from './error'
-import grammar from './grammar.ne'
+import grammar from './grammar'
 import abattement from './mecanisms/abattement'
 import applicable from './mecanisms/applicable'
 import arrondi from './mecanisms/arrondi'
@@ -32,6 +32,8 @@ import variations, { devariate } from './mecanisms/variations'
 import { Context } from './parsePublicodes'
 import parseReference from './reference'
 import parseRule from './rule'
+
+const { Grammar, Parser } = nearley
 
 export default function parse(rawNode, context: Context): ASTNode {
 	if (rawNode == null) {

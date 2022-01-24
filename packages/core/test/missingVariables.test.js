@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import Engine from '../source/index'
-import { parse } from 'yaml'
+import yaml from 'yaml'
 
 describe('Missing variables', function () {
 	it('should identify missing variables in applicability', function () {
@@ -179,7 +179,7 @@ describe('Missing variables', function () {
 	})
 
 	it('should report missing variables in simple variations', function () {
-		const rawRules = parse(`
+		const rawRules = yaml.parse(`
 
 somme: a + b
 a: 10
@@ -200,7 +200,7 @@ c:
 
 	// TODO : réparer ce test
 	it('should report missing variables in variations', function () {
-		const rawRules = parse(`
+		const rawRules = yaml.parse(`
 startHere:
   formule:
     somme:
@@ -315,7 +315,7 @@ describe('nextSteps', function () {
 
 	it("Parent's other descendands in sums should not be included as missing variables", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
-		const rawRules = parse(`
+		const rawRules = yaml.parse(`
 transport:
   somme:
     - voiture
@@ -356,7 +356,7 @@ transport . avion . usager:
 
 	it.skip("Parent's other descendands in sums should not be included as missing variables, even when parent evluation is triggered by a comparison", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
-		const rawRules = parse(`
+		const rawRules = yaml.parse(`
 transport:
   somme: 
     - voiture
@@ -404,7 +404,7 @@ transport . avion . usager:
 	})
 	it("Parent's other descendands in sums should not be included as missing variables - 2", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
-		const rawRules = parse(`
+		const rawRules = yaml.parse(`
 avion:
   question: prenez-vous l'avion ?
   par défaut: oui
@@ -431,7 +431,7 @@ avion . impact . au sol: 5
 
 	it("Parent's other descendands in sums in applicability should be included as missing variables", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
-		const rawRules = parse(`
+		const rawRules = yaml.parse(`
 a:
   applicable si: d > 3
   valeur: oui

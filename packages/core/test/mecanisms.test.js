@@ -8,7 +8,7 @@
 import { expect } from 'chai'
 import Engine from '../source/index'
 import { parseUnit } from '../source/units'
-import testSuites from './load-mecanism-tests'
+import testSuites from './mécanismes/index	'
 testSuites.forEach(([suiteName, suite]) => {
 	const engine = new Engine(suite)
 

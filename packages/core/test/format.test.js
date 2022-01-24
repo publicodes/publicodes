@@ -5,7 +5,7 @@ import { formatValue, capitalise0 } from '../source/format'
 describe('format engine values', () => {
 	it('format currencies', () => {
 		expect(formatValue(12, { displayedUnit: '€' })).to.equal('12 €')
-		expect(formatValue(1200, { displayedUnit: '€' })).to.equal('1 200 €')
+		expect(formatValue(1200, { displayedUnit: '€' })).to.match(/1[\s]200 €/)
 		expect(formatValue(12, { displayedUnit: '€', language: 'en' })).to.equal(
 			'€12'
 		)
@@ -30,7 +30,7 @@ describe('format engine values', () => {
 	})
 
 	it('format values', () => {
-		expect(formatValue(1200)).to.equal('1 200')
+		expect(formatValue(1200)).to.match(/1[\s]200/)
 	})
 })
 
