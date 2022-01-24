@@ -1,0 +1,2 @@
+# Ignore grammar.js built during `yarn prepare`
+packages/core/source/grammar.js
