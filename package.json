@@ -10,7 +10,7 @@
 		"test:type": "yarn workspaces run tsc",
 		"lint:prettier": "yarn run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml}\"",
 		"lint:prettier:fix": "yarn lint:prettier --write",
-		"prepare": "yarn run --silent js-yaml ./packages/react-ui/source/data/mecanisms.yaml >| ./packages/react-ui/source/data/mecanisms.json"
+		"prepare": "yarn workspaces run prepare"
 	},
 	"dependencies": {},
 	"devDependencies": {
