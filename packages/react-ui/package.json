@@ -7,6 +7,8 @@
 	"license": "MIT",
 	"readme": "../README.md",
 	"scripts": {
+		"build:mecanisms": "yarn run js-yaml ./source/data/mecanisms.yaml >| ./source/data/mecanisms.json",
+		"prepare": "yarn run build:mecanisms",
 		"clean": "rimraf dist node_modules data",
 		"build": "tsc",
 		"test": "echo \"Error: no test specified\""
