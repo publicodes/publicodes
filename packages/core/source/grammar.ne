@@ -2,6 +2,8 @@
 
 # Look for the PEMDAS system : Parentheses, Exponents (omitted here), Multiplication, and you should guess the rest :)
 
+# IMPORTANT : this file is not watched by webpack, use `yarn run build:grammar` to update the js file.
+
 @preprocessor esmodule
 
 @{%
