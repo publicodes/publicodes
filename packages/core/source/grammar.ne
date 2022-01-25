@@ -9,7 +9,7 @@
 @{%
 import {
   string, date, variable, binaryOperation, unaryOperation, boolean, number, numberWithUnit, JSONObject
-} from './grammarFunctions';
+} from './grammarFunctions.js';
 import moo from "moo";
 
 const dateRegexp = `(?:(?:0?[1-9]|[12][0-9]|3[01])\\/)?(?:0?[1-9]|1[012])\\/\\d{4}`
