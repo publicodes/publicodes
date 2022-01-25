@@ -14,7 +14,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/install-v16
+      - uses: ./.github/actions/install
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
       - run: yarn test
 
   test-type:
