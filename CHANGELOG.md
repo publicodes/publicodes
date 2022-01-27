@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.28
+
+**publicodes-react**
+
+-   Retour en publication CommonJS
+
 ## 1.0.0-beta.27
 
 **publicodes-react**
