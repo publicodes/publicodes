@@ -4,6 +4,7 @@
 
 **publicodes-react**
 
+-   Correction d'un type de renderer
 -   Le paquet est désormais publié sous forme d'ES Module
 
 **core**
