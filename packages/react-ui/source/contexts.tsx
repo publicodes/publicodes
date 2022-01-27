@@ -10,13 +10,14 @@ export type SupportedRenderers = {
 	 * Used to render a rule description or title. Useful to parse markdown, links
 	 * or emojies.
 	 */
-	Text?: React.ComponentType
+	Text?: React.ComponentType<{ children: string }>
 	References?: typeof References
 }
 
-export const DefaultTextRenderer: React.ComponentType = ({ children }) => (
-	<>{children}</>
-)
+export const DefaultTextRenderer: React.ComponentType<{ children: string }> = ({
+	children,
+}) => <>{children}</>
+
 export const BasepathContext = createContext<string>('/documentation')
 export const EngineContext = createContext<Engine<string> | null>(null)
 export const RenderersContext = createContext<

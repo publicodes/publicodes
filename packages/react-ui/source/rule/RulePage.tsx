@@ -118,7 +118,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 			)}
 			<RuleHeader dottedName={dottedName} />
 			<section>
-				<Text>{description || question}</Text>
+				<Text>{description || question || ''}</Text>
 			</section>
 			{
 				<>
