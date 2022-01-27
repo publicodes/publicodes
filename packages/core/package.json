@@ -18,7 +18,6 @@
 	"bugs": "https://github.com/betagouv/publicodes/issues",
 	"homepage": "https://publi.codes/",
 	"license": "MIT",
-	"readme": "../README.md",
 	"files": [
 		"dist/"
 	],
