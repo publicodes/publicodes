@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.0-beta.27
+
+**publicodes-react**
+
+-   Le paquet est désormais publié sous forme d'ES Module
+
+**core**
+
+-   Réparation des tests mocha
+
 ## 1.0.0-beta.26
 
 **publicodes-react**
