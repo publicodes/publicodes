@@ -5,7 +5,8 @@
 		"target": "es2015",
 		"lib": ["es2019", "dom"],
 		"outDir": "./dist/",
-		"declaration": true
+		"declaration": true,
+		"emitDeclarationOnly": true
 	},
 	"include": ["source/index.tsx", "source/types"]
 }

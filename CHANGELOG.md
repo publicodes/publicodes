@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.29
+
+**publicodes-react**
+
+-   Publication des 2 formats : CommonJS et ESModule
+
 ## 1.0.0-beta.28
 
 **publicodes-react**
