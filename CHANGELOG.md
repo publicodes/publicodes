@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.30
+
+**publicodes-react**
+
+-   Correction d'une erreur de runtime JSX manquant dans la version ESModule.
+
 ## 1.0.0-beta.29
 
 **publicodes-react**
