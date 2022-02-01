@@ -1,6 +1,6 @@
 {
 	"name": "publicodes-react",
-	"version": "1.0.0-beta.29",
+	"version": "1.0.0-beta.30",
 	"description": "UI to explore publicodes computations",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -16,7 +16,7 @@
 		"build:mecanisms": "yarn run --silent js-yaml ./source/data/mecanisms.yaml >| ./source/data/mecanisms.json",
 		"prepare": "yarn run build:mecanisms",
 		"clean": "rimraf dist node_modules data",
-		"build": "tsup source/index.tsx --format cjs,esm && tsc",
+		"build": "tsup source/index.tsx --format cjs,esm --dts --inject ./react-shim.js --sourcemap",
 		"test": "echo \"Error: no test specified\""
 	},
 	"files": [
@@ -28,7 +28,7 @@
 		"yaml": "^1.9.2"
 	},
 	"peerDependencies": {
-		"publicodes": "1.0.0-beta.29",
+		"publicodes": "1.0.0-beta.30",
 		"react": "^17.0.2"
 	},
 	"devDependencies": {
