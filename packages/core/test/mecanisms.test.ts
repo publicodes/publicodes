@@ -8,22 +8,26 @@
 import { expect } from 'chai'
 import Engine from '../source/index'
 import { parseUnit } from '../source/units'
-import testSuites from './mécanismes/index	'
+import testSuites from './mécanismes/index'
+import { it, describe } from 'mocha'
+import { Rule } from '../source/rule'
+
 testSuites.forEach(([suiteName, suite]) => {
 	const engine = new Engine(suite)
 
 	describe(`Mécanisme ${suiteName}`, () => {
-		Object.entries(suite)
-			.filter(([, rule]) => rule?.exemples)
+		Object.entries(engine.getParsedRules())
+			.filter(([, rule]) => !!rule.rawNode.exemples)
 			.forEach(([name, test]) => {
-				const { exemples, 'unité attendue': unit } = test
+				const { exemples, 'unité attendue': unit } = test.rawNode as Rule & {
+					'unité attendue': string
+				}
 				const exemplesArray = Array.isArray(exemples) ? exemples : [exemples]
 				exemplesArray.forEach(
 					(
 						{
 							nom: testName,
 							situation,
-							'unité par défaut': defaultUnit,
 							'valeur attendue': valeur,
 							'variables manquantes': expectedMissing,
 						},
@@ -39,9 +43,7 @@ testSuites.forEach(([suiteName, suite]) => {
 							() => {
 								const result = engine
 									.setSituation(situation ?? {})
-									.evaluate(name, {
-										unit: defaultUnit,
-									})
+									.evaluate(name)
 
 								if (typeof valeur === 'number') {
 									expect(result.nodeValue).to.be.closeTo(valeur, 0.001)

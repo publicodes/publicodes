@@ -195,7 +195,6 @@ Conversion de situation:
       - retraite
       - mutuelle
   exemples:
-    unité par défaut: €/an
     situation:
       retraite: 4000 €/an
     valeur attendue: 4360
