@@ -5,6 +5,10 @@
 		"declaration": true,
 		"emitDeclarationOnly": true
 	},
+	"ts-node": {
+		"transpileOnly": true,
+		"files": true,
+	},
 	"exclude": ["./node_modules/", "./dist/"],
 	"include": ["source/**/*.ts"]
 }
