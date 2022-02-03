@@ -32,7 +32,9 @@ export type Rule = {
 	note?: string
 	remplace?: RendNonApplicable | Array<RendNonApplicable>
 	'rend non applicable'?: Remplace | Array<string>
-	suggestions?: Record<string, string | number | Record<string, unknown>>
+	suggestions?:
+		| Array<Rule>
+		| Record<string, string | number | Record<string, unknown>>
 	références?: { [source: string]: string }
 	API?: string
 	'identifiant court'?: string
@@ -59,7 +61,7 @@ export type RuleNode = {
 		parent: ASTNode | false
 		valeur: ASTNode
 	}
-	suggestions: Record<string, ASTNode>
+	suggestions: Array<ASTNode>
 	'identifiant court'?: string
 }
 
@@ -101,6 +103,14 @@ export default function parseRule(
 		valeur: parse(ruleValue, ruleContext),
 		parent: !!parent && parse(parent, context),
 	}
+
+	const suggestions = Array.isArray(rawRule.suggestions)
+		? rawRule.suggestions.map((rule) => parse(rule, ruleContext))
+		: Object.entries(rawRule.suggestions ?? {}).map(([nom, node]) => ({
+				nom,
+				...parse(node, ruleContext),
+		  }))
+
 	context.parsedRules[dottedName] = {
 		dottedName,
 		replacements: [
@@ -108,12 +118,7 @@ export default function parseRule(
 			...parseReplacements(rawRule.remplace, ruleContext),
 		],
 		title: ruleTitle,
-		suggestions: Object.fromEntries(
-			Object.entries(rawRule.suggestions ?? {}).map(([name, node]) => [
-				name,
-				parse(node, ruleContext),
-			])
-		),
+		suggestions,
 		nodeKind: 'rule',
 		explanation,
 		rawNode: rawRule,
