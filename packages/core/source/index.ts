@@ -1,14 +1,14 @@
 import { reduceAST } from './AST'
-import { ASTNode, EvaluatedNode, NodeKind } from './AST/types'
+import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
 import { evaluationFunctions } from './evaluationFunctions'
 import parse from './parse'
 import parsePublicodes, { disambiguateReference } from './parsePublicodes'
 import {
 	getReplacements,
 	inlineReplacements,
-	ReplacementRule,
+	type ReplacementRule,
 } from './replacement'
-import { Rule, RuleNode } from './rule'
+import { type Rule, type RuleNode } from './rule'
 import * as utils from './ruleUtils'
 import { formatUnit, getUnitKey } from './units'
 
@@ -46,11 +46,11 @@ export type EvaluationOptions = Partial<{
 
 export { reduceAST, makeASTTransformer as transformAST } from './AST/index'
 export {
-	Evaluation,
-	Unit,
-	NotYetDefined,
+	type Evaluation,
+	type Unit,
+	type NotYetDefined,
+	type NotApplicable,
 	isNotYetDefined,
-	NotApplicable,
 	isNotApplicable,
 } from './AST/types'
 export { capitalise0, formatValue } from './format'
@@ -58,7 +58,7 @@ export { simplifyNodeUnit } from './nodeUnits'
 export { default as serializeEvaluation } from './serializeEvaluation'
 export { parseUnit, serializeUnit } from './units'
 export { parsePublicodes, utils }
-export { Rule, RuleNode, ASTNode, EvaluatedNode }
+export { type Rule, type RuleNode, type ASTNode, type EvaluatedNode }
 
 export type PublicodesExpression = string | Record<string, unknown> | number
 
