@@ -13,6 +13,7 @@ import durée from './mecanisms/durée'
 import grille from './mecanisms/grille'
 import { mecanismInversion } from './mecanisms/inversion'
 import { mecanismMax } from './mecanisms/max'
+import texte from './mecanisms/texte'
 import { mecanismMin } from './mecanisms/min'
 import nonApplicable from './mecanisms/nonApplicable'
 import { mecanismOnePossibility } from './mecanisms/one-possibility'
@@ -182,24 +183,25 @@ function parseChainedMecanisms(rawNode, context: Context): ASTNode {
 const parseFunctions = {
 	...operations,
 	...chainableMecanisms.reduce((acc, fn) => ({ [fn.nom]: fn, ...acc }), {}),
-	'une possibilité': mecanismOnePossibility,
 	'inversion numérique': mecanismInversion,
-	recalcul: mecanismRecalcul,
-	variable: parseReference,
-	'une de ces conditions': mecanismOneOf,
-	'toutes ces conditions': mecanismAllOf,
-	somme: mecanismSum,
-	multiplication: mecanismProduct,
-	produit: mecanismProduct,
-	barème,
-	grille,
-	'taux progressif': tauxProgressif,
-	durée,
 	'le maximum de': mecanismMax,
 	'le minimum de': mecanismMin,
-	variations,
+	'taux progressif': tauxProgressif,
+	'toutes ces conditions': mecanismAllOf,
+	'une de ces conditions': mecanismOneOf,
+	'une possibilité': mecanismOnePossibility,
+	barème,
+	durée,
+	grille,
+	multiplication: mecanismProduct,
+	produit: mecanismProduct,
+	recalcul: mecanismRecalcul,
+	somme: mecanismSum,
 	synchronisation: mecanismSynchronisation,
+	[texte.nom]: texte,
 	valeur: parse,
+	variable: parseReference,
+	variations,
 	objet: (v) => ({
 		type: 'objet',
 		nodeValue: v,

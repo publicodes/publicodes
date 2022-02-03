@@ -44,6 +44,7 @@ export function evaluationError(
 	)
 }
 
+export function neverHappens(_: never) {}
 export class InternalError extends EngineError {
 	constructor(payload) {
 		super(

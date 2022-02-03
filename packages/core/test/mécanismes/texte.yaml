@@ -1,0 +1,53 @@
+texte simple:
+  texte: Exemple de texte sans mise en forme
+  exemples:
+    - valeur attendue: Exemple de texte sans mise en forme
+
+texte multiligne:
+  texte: |
+    Exemple de texte...
+    ...sur plusieurs lignes
+  exemples:
+    - valeur attendue: |
+        Exemple de texte...
+        ...sur plusieurs lignes
+
+variable:
+interpolation de chaine de caractères:
+  texte: Mon animal préféré est {{ variable }}.
+  exemples:
+    - situation:
+        variable: "'le dauphin'"
+      valeur attendue: Mon animal préféré est le dauphin.
+    - situation:
+        variable: "'la licorne'"
+      valeur attendue: Mon animal préféré est la licorne.
+
+interpolation de booléen:
+  texte: Je ne dis jamais {{ variable }}.
+  exemples:
+    - situation:
+        variable: oui
+      valeur attendue: Je ne dis jamais oui.
+    - situation:
+        variable: non
+      valeur attendue: Je ne dis jamais non.
+
+prise en charge: 50%
+interpolation de nombre . plafond: 1500 €
+interpolation de nombre:
+  texte: |
+    La région subventionne l’achat d’un vélo à hauteur de {{ prise en charge }}
+    et jusqu’à un plafond de {{ plafond }}. Les éventuelles aides locales déjà
+    perçues sont déduites de ce montant.
+
+  exemples:
+    - valeur attendue: |
+        La région subventionne l’achat d’un vélo à hauteur de 50 %
+        et jusqu’à un plafond de 1 500 €. Les éventuelles aides locales déjà
+        perçues sont déduites de ce montant.
+
+interpolation avec expression:
+  texte: 5 + 6 = {{ 5 + 6 }}
+  exemples:
+    - valeur attendue: 5 + 6 = 11
