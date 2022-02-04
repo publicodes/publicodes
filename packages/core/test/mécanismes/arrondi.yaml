@@ -70,12 +70,12 @@ Arrondi avec precision:
     - nom: pas de décimales
       situation:
         cotisation retraite: 1200.21
-        nombre de décimales: 0
+        nombre de décimales: 0 décimales
       valeur attendue: 1200
     - nom: deux décimales
       situation:
         cotisation retraite: 1200.21
-        nombre de décimales: 2
+        nombre de décimales: 2 décimales
       valeur attendue: 1200.21
 
 arrondi avec conversion d'unités:
