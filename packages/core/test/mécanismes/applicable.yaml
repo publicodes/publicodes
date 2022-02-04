@@ -14,7 +14,7 @@ prévoyance obligatoire cadre:
     - nom: Non Applicabilité
       situation:
         statut cadre: non
-      valeur attendue: false
+      valeur attendue: null
 
 variable:
   par défaut: oui
@@ -26,4 +26,4 @@ applicable comme mécanisme chainé:
     - valeur attendue: 5
     - situation:
         variable: non
-      valeur attendue: false
+      valeur attendue: null

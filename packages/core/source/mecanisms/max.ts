@@ -18,10 +18,10 @@ export const mecanismMax = (v, context) => {
 }
 
 const max = (a, b) => {
-	if (a === false) {
+	if (a === null) {
 		return b
 	}
-	if (b === false) {
+	if (b === null) {
 		return a
 	}
 	if (a === undefined || b === undefined) {
@@ -29,5 +29,5 @@ const max = (a, b) => {
 	}
 	return Math.max(a, b)
 }
-const evaluate = evaluateArray<'maximum'>(max, false)
+const evaluate = evaluateArray<'maximum'>(max, null)
 registerEvaluationFunction('maximum', evaluate)

@@ -167,21 +167,11 @@ function unitsConversionFactor(from: string[], to: string[]): number {
 	return factor
 }
 
-export function convertUnit(
+export function convertUnit<ValType extends Evaluation<number>>(
 	from: Unit | undefined,
 	to: Unit | undefined,
-	value: number
-): number
-export function convertUnit(
-	from: Unit | undefined,
-	to: Unit | undefined,
-	value: Evaluation<number>
-): Evaluation<number>
-export function convertUnit(
-	from: Unit | undefined,
-	to: Unit | undefined,
-	value: number | Evaluation<number>
-) {
+	value: ValType
+): ValType {
 	if (!areUnitConvertible(from, to)) {
 		throw new Error(
 			`Impossible de convertir l'unité '${serializeUnit(
@@ -198,7 +188,7 @@ export function convertUnit(
 	const [fromSimplified, factorTo] = simplifyUnitWithValue(from || noUnit)
 	const [toSimplified, factorFrom] = simplifyUnitWithValue(to || noUnit)
 	return round(
-		((value * factorTo) / factorFrom) *
+		(((value as number) * factorTo) / factorFrom) *
 			unitsConversionFactor(
 				fromSimplified.numerators,
 				toSimplified.numerators
@@ -207,7 +197,7 @@ export function convertUnit(
 				toSimplified.denominators,
 				fromSimplified.denominators
 			)
-	)
+	) as any
 }
 
 const convertibleUnitClasses = unitClasses(convertTable)

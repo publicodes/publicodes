@@ -123,9 +123,9 @@ export type NotYetDefined = undefined
 export function isNotYetDefined(value): value is NotYetDefined {
 	return value === undefined
 }
-export type NotApplicable = false
+export type NotApplicable = null
 export function isNotApplicable(value): value is NotApplicable {
-	return typeof value === 'boolean' && value === false
+	return value === null
 }
 export type Evaluation<T extends Types = Types> =
 	| T

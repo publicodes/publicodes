@@ -11,7 +11,7 @@ contribution:
     - nom: evasion fiscale
       situation:
         exilé fiscal: oui
-      valeur attendue: false
+      valeur attendue: null
     - nom: bon citoyen
       situation:
         exilé fiscal: non
