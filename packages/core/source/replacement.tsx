@@ -81,7 +81,7 @@ export function parseRendNonApplicable(
 		(replacement) =>
 			({
 				...replacement,
-				replacementNode: defaultNode(false),
+				replacementNode: defaultNode(null),
 			} as ReplacementRule)
 	)
 }

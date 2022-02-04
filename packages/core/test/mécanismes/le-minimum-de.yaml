@@ -29,7 +29,9 @@ Minimum avec variables:
         assiette: 1000
       valeur attendue: 10
 
-a: non
+a:
+  applicable si: non
+
 Minimum avec valeur non applicable:
   formule:
     le minimum de:

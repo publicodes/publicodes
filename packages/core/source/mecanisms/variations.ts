@@ -83,7 +83,8 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 					: !previousConditions &&
 					  (evaluatedCondition.nodeValue === undefined
 							? undefined
-							: evaluatedCondition.nodeValue !== false)
+							: evaluatedCondition.nodeValue !== false &&
+							  evaluatedCondition.nodeValue !== null)
 
 			evaluatedCondition.missingVariables = bonus(
 				evaluatedCondition.missingVariables

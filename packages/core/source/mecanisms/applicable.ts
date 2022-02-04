@@ -23,7 +23,7 @@ const evaluate: EvaluationFunction<'applicable si'> = function (node) {
 		...node,
 		nodeValue:
 			condition.nodeValue == undefined || condition.nodeValue === false
-				? condition.nodeValue
+				? null
 				: 'nodeValue' in valeur
 				? (valeur as EvaluatedNode).nodeValue
 				: undefined,

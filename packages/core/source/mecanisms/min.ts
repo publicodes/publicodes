@@ -17,10 +17,10 @@ export const mecanismMin = (v, context) => {
 }
 
 const min = (a, b) => {
-	if (a === false) {
+	if (a === null) {
 		return b
 	}
-	if (b === false) {
+	if (b === null) {
 		return a
 	}
 	if (a === undefined || b === undefined) {
@@ -28,6 +28,6 @@ const min = (a, b) => {
 	}
 	return Math.min(a, b)
 }
-const evaluate = evaluateArray<'minimum'>(min, false)
+const evaluate = evaluateArray<'minimum'>(min, null)
 
 registerEvaluationFunction('minimum', evaluate)

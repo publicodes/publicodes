@@ -24,7 +24,7 @@ const evaluate: EvaluationFunction<'non applicable si'> = function (node) {
 			condition.nodeValue === undefined
 				? undefined
 				: condition.nodeValue !== false
-				? false
+				? null
 				: 'nodeValue' in valeur
 				? (valeur as EvaluatedNode).nodeValue
 				: undefined,

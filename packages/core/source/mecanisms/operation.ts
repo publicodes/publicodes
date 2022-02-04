@@ -62,7 +62,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	let [node1, node2] = explanation
 	const missingVariables = mergeAllMissing([node1, node2])
 
-	if (node1.nodeValue == undefined || node2.nodeValue == undefined) {
+	if (node1.nodeValue === undefined || node2.nodeValue === undefined) {
 		return { ...node, nodeValue: undefined, explanation, missingVariables }
 	}
 	if (!['∕', '×'].includes(node.operator)) {
@@ -89,17 +89,17 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 
 	const operatorFunction = knownOperations[node.operationKind][0]
 
-	const a = node1.nodeValue as string | false
-	const b = node2.nodeValue as string | false
+	const a = node1.nodeValue as string | null
+	const b = node2.nodeValue as string | null
 
 	const nodeValue =
-		!['≠', '='].includes(node.operator) && a === false && b === false
-			? false
+		!['≠', '='].includes(node.operator) && a === null && b === null
+			? null
 			: ['<', '>', '≤', '≥', '∕', '×'].includes(node.operator) &&
-			  (a === false || b === false)
-			? false
-			: a !== false &&
-			  b !== false &&
+			  (a === null || b === null)
+			? null
+			: a !== null &&
+			  b !== null &&
 			  ['≠', '=', '<', '>', '≤', '≥'].includes(node.operator) &&
 			  [a, b].every((value) => value.match?.(/[\d]{2}\/[\d]{2}\/[\d]{4}/))
 			? operatorFunction(convertToDate(a), convertToDate(b))

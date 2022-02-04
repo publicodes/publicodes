@@ -27,7 +27,7 @@ registerEvaluationFunction(parseUnité.nom, function evaluate(node) {
 	const valeur = this.evaluate(node.explanation)
 
 	let nodeValue = valeur.nodeValue
-	if (nodeValue !== false && 'unit' in node) {
+	if (nodeValue !== null && 'unit' in node) {
 		try {
 			nodeValue = convertUnit(
 				valeur.unit,

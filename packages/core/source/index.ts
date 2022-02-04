@@ -261,7 +261,7 @@ export function UNSAFE_isNotApplicable<DottedName extends string = string>(
 				return node.explanation.some(
 					({ consequence }) =>
 						fn(consequence) ||
-						((consequence as any).nodeValue === false &&
+						((consequence as any).nodeValue === null &&
 							(consequence as any).dottedName !== dottedName)
 				)
 			}
@@ -270,7 +270,7 @@ export function UNSAFE_isNotApplicable<DottedName extends string = string>(
 			}
 			if (node.nodeKind === 'applicable si') {
 				return (
-					(node.explanation.condition as any).nodeValue === false ||
+					(node.explanation.condition as any).nodeValue === null ||
 					fn(node.explanation.valeur)
 				)
 			}
@@ -282,7 +282,7 @@ export function UNSAFE_isNotApplicable<DottedName extends string = string>(
 			}
 			if (node.nodeKind === 'rule') {
 				return (
-					(node.explanation.parent as any).nodeValue === false ||
+					(node.explanation.parent as any).nodeValue === null ||
 					fn(node.explanation.valeur)
 				)
 			}
