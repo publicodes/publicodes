@@ -15,7 +15,7 @@ describe('inversions', () => {
           unité: €
       `
 		const result = new Engine(rules)
-			.setSituation({ brut: 2300 })
+			.setSituation({ brut: '2300 €' })
 			.evaluate('net')
 
 		expect(result.nodeValue).to.be.closeTo(1771, 0.001)
