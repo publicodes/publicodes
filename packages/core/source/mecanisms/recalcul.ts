@@ -91,6 +91,12 @@ export const mecanismRecalcul = (v, context) => {
 	// Caveat: v.règle can theoretically be an expression, not necessarily
 	// a dotted name.
 	const recalculNode = parse(v.règle ?? context.dottedName, context)
+
+	if (!v.règle) {
+		;(recalculNode as ReferenceNode).thisReferenceIsNotARealDependencyHack =
+			true
+	}
+
 	return {
 		explanation: {
 			recalcul: recalculNode,

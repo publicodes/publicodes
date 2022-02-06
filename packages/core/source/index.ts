@@ -58,7 +58,7 @@ export { simplifyNodeUnit } from './nodeUnits'
 export { default as serializeEvaluation } from './serializeEvaluation'
 export { parseUnit, serializeUnit } from './units'
 export { parsePublicodes, utils }
-export { Rule, RuleNode, ASTNode, EvaluatedNode }
+export { type Rule, type RuleNode, type ASTNode, type EvaluatedNode }
 
 export type PublicodesExpression = string | Record<string, unknown> | number
 
@@ -147,7 +147,7 @@ export default class Engine<Name extends string = string> {
 		return inlineReplacements(
 			this.replacements,
 			this.options.logger
-		)(disambiguateReference(this.parsedRules)(parse(...args)))
+		)(disambiguateReference(this.parsedRules, {})(parse(...args)))
 	}
 
 	inversionFail(): boolean {

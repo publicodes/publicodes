@@ -5,6 +5,7 @@ import { InternalError, warning } from './error'
 import { defaultNode } from './evaluation'
 import parse from './parse'
 import { Context } from './parsePublicodes'
+import { ReferenceNode } from './reference'
 import { Rule, RuleNode } from './rule'
 
 export type ReplacementRule = {
@@ -58,6 +59,11 @@ export function parseReplacements(
 					Array.isArray(dottedName) ? dottedName : [dottedName]
 				)
 				.map((refs) => refs.map((ref) => parse(ref, context)))
+
+			const definitionRule = parse(context.dottedName, context)
+
+			;(definitionRule as ReferenceNode).thisReferenceIsNotARealDependencyHack =
+				true
 
 			return {
 				nodeKind: 'replacementRule',

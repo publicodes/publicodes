@@ -1,5 +1,5 @@
 import yaml from 'yaml'
-import { ParsedRules, Logger } from '.'
+import { ParsedRules, Logger, ASTNode } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
 import parse from './parse'
 import { getReplacements, inlineReplacements } from './replacement'
@@ -54,9 +54,17 @@ export default function parsePublicodes(
 	let parsedRules = context.parsedRules
 
 	// STEP 4: Disambiguate reference
+	const dependencies = {}
 	parsedRules = traverseParsedRules(
-		disambiguateReference(parsedRules),
+		disambiguateReference(parsedRules, dependencies),
 		parsedRules
+	)
+
+	// topological sort rules
+	// Throws an error if there is a cycle in the graph
+	const topologicalOrder = topologicalSort(
+		Object.keys(parsedRules),
+		dependencies
 	)
 
 	// STEP 5: Inline replacements
@@ -66,9 +74,8 @@ export default function parsePublicodes(
 		parsedRules
 	)
 
-	// TODO STEP 6: check for cycle
-
-	// TODO STEP 7: type check
+	// STEP 6: type inference
+	const ruleUnits = inferRulesUnit(parsedRules, topologicalOrder)
 
 	return parsedRules
 }
@@ -103,7 +110,10 @@ function transpileRef(object: Record<string, any> | string | Array<any>) {
 	}, {})
 }
 
-export const disambiguateReference = (parsedRules: Record<string, RuleNode>) =>
+export const disambiguateReference = (
+	parsedRules: Record<string, RuleNode>,
+	dependencies: Record<string, Array<string>>
+) =>
 	makeASTTransformer((node) => {
 		if (node.nodeKind === 'reference') {
 			const dottedName = disambiguateRuleReference(
@@ -111,6 +121,14 @@ export const disambiguateReference = (parsedRules: Record<string, RuleNode>) =>
 				node.contextDottedName,
 				node.name
 			)
+
+			if (node.thisReferenceIsNotARealDependencyHack !== true) {
+				dependencies[node.contextDottedName] = [
+					...(dependencies[node.contextDottedName] ?? []),
+					dottedName,
+				]
+			}
+
 			return {
 				...node,
 				dottedName,
@@ -119,3 +137,115 @@ export const disambiguateReference = (parsedRules: Record<string, RuleNode>) =>
 			}
 		}
 	})
+
+// Standard topological sort algorithm
+function topologicalSort<Names extends string>(
+	rulesNames: Array<Names>,
+	dependencyGraph: Record<Names, Array<Names>>
+) {
+	const result: Array<Names> = []
+	const temp: Partial<Record<Names, Boolean>> = {}
+
+	for (const ruleName of rulesNames) {
+		if (!result.includes(ruleName)) {
+			topologicalSortHelper(ruleName)
+		}
+	}
+
+	function topologicalSortHelper(ruleName) {
+		temp[ruleName] = true
+		const nodeDependencies = dependencyGraph[ruleName] ?? []
+		for (const dependency of nodeDependencies) {
+			if (temp[dependency]) {
+				// TODO: We could throw an error on a cycle but some tests are expecting
+				// cycles to compile and to detect them at a letter stage with a
+				// function taking the parsed rules as an input
+				//
+				// throw new Error( `Cycle detected in the graph. The node ${dependency}
+				//  depends on ${ruleName}`
+				// )
+				continue
+			}
+			if (!result.includes(dependency)) {
+				topologicalSortHelper(dependency)
+			}
+		}
+		temp[ruleName] = false
+		result.push(ruleName)
+	}
+
+	return result
+}
+
+// TODO: Currently only handle nullability, but the infering logic should be
+// extended to support the full unit type system.
+type InferedUnit = { isNullable: boolean }
+
+function inferRulesUnit(parsedRules, topologicalOrder) {
+	const res = {}
+	topologicalOrder.forEach((ruleName) => {
+		inferNodeUnit(parsedRules[ruleName])
+	})
+
+	function inferNodeUnit(node: ASTNode): InferedUnit {
+		switch (node.nodeKind) {
+			case 'somme':
+			case 'produit':
+			case 'barème':
+			case 'durée':
+			case 'grille':
+			case 'taux progressif':
+			case 'maximum':
+			case 'minimum':
+				return { isNullable: false }
+
+			case 'applicable si':
+			case 'non applicable si':
+				return { isNullable: true }
+
+			case 'constant':
+				return { isNullable: node.nodeValue === null }
+
+			case 'inversion':
+			case 'operation':
+			case 'par défaut':
+			case 'recalcul':
+			case 'replacementRule':
+			case 'toutes ces conditions':
+			case 'une de ces conditions':
+			case 'une possibilité':
+			case 'résoudre référence circulaire':
+			case 'synchronisation':
+				return { isNullable: false }
+
+			case 'abattement':
+				return inferNodeUnit(node.explanation.assiette)
+
+			case 'arrondi':
+			case 'nom dans la situation':
+			case 'plafond':
+			case 'plancher':
+				return inferNodeUnit(node.explanation.valeur)
+
+			case 'unité':
+				return inferNodeUnit(node.explanation)
+
+			case 'variations':
+				return {
+					isNullable: node.explanation.some(
+						(line) => inferNodeUnit(line.consequence).isNullable
+					),
+				}
+
+			case 'rule':
+				const ruleName = node.dottedName
+				res[ruleName] = inferNodeUnit(node.explanation.valeur)
+				return res[ruleName]
+
+			case 'reference':
+				return res[node.dottedName as string]
+		}
+	}
+
+	return res
+}
