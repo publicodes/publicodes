@@ -7,6 +7,7 @@ export type ReferenceNode = {
 	name: string
 	contextDottedName: string
 	dottedName?: string
+	thisReferenceIsNotARealDependencyHack?: boolean
 }
 
 export default function parseReference(

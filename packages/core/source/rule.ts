@@ -101,6 +101,13 @@ export default function parseRule(
 		valeur: parse(ruleValue, ruleContext),
 		parent: !!parent && parse(parent, context),
 	}
+
+	if (parent) {
+		;(
+			explanation.parent as ReferenceNode
+		).thisReferenceIsNotARealDependencyHack = true
+	}
+
 	context.parsedRules[dottedName] = {
 		dottedName,
 		replacements: [
