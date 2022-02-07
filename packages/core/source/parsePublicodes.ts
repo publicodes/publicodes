@@ -15,13 +15,20 @@ export type Context = {
 	logger: Logger
 }
 
+// TODO: Currently only handle nullability, but the infering logic should be
+// extended to support the full unit type system.
+export type InferedUnit = { isNullable: boolean }
+
 type RawRule = Omit<Rule, 'nom'> | string | number
 export type RawPublicodes = Record<string, RawRule>
 
-export default function parsePublicodes(
+export default function parsePublicodes<RuleNames extends string>(
 	rawRules: RawPublicodes | string,
 	partialContext: Partial<Context> = {}
-): ParsedRules<string> {
+): {
+	parsedRules: ParsedRules<RuleNames>
+	ruleUnits: Record<RuleNames, InferedUnit>
+} {
 	// STEP 1: parse Yaml
 	let rules =
 		typeof rawRules === 'string'
@@ -60,13 +67,6 @@ export default function parsePublicodes(
 		parsedRules
 	)
 
-	// topological sort rules
-	// Throws an error if there is a cycle in the graph
-	const topologicalOrder = topologicalSort(
-		Object.keys(parsedRules),
-		dependencies
-	)
-
 	// STEP 5: Inline replacements
 	const replacements = getReplacements(parsedRules)
 	parsedRules = traverseParsedRules(
@@ -74,10 +74,17 @@ export default function parsePublicodes(
 		parsedRules
 	)
 
+	// topological sort rules
+	// Throws an error if there is a cycle in the graph
+	const topologicalOrder = topologicalSort(
+		Object.keys(parsedRules),
+		dependencies
+	)
+
 	// STEP 6: type inference
 	const ruleUnits = inferRulesUnit(parsedRules, topologicalOrder)
 
-	return parsedRules
+	return { parsedRules, ruleUnits } as any
 }
 
 // We recursively traverse the YAML tree in order to transform named parameters
@@ -176,10 +183,6 @@ function topologicalSort<Names extends string>(
 
 	return result
 }
-
-// TODO: Currently only handle nullability, but the infering logic should be
-// extended to support the full unit type system.
-type InferedUnit = { isNullable: boolean }
 
 function inferRulesUnit(parsedRules, topologicalOrder) {
 	const res = {}

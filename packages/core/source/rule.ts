@@ -56,8 +56,8 @@ export type RuleNode = {
 	rawNode: Rule
 	replacements: Array<ReplacementRule>
 	explanation: {
-		parent: ASTNode | false
 		valeur: ASTNode
+		nullableParent?: ASTNode
 	}
 	suggestions: Record<string, ASTNode>
 	'identifiant court'?: string
@@ -91,21 +91,12 @@ export default function parseRule(
 
 	const ruleContext = { ...context, dottedName, ruleTitle }
 
-	const [parent] = ruleParents(dottedName)
-
 	// The following ensures that nested rules appears after the root rule when
 	// iterating over parsedRule
 	context.parsedRules[dottedName] = undefined as any
 
 	const explanation = {
 		valeur: parse(ruleValue, ruleContext),
-		parent: !!parent && parse(parent, context),
-	}
-
-	if (parent) {
-		;(
-			explanation.parent as ReferenceNode
-		).thisReferenceIsNotARealDependencyHack = true
 	}
 
 	context.parsedRules[dottedName] = {
@@ -132,20 +123,29 @@ export default function parseRule(
 }
 
 registerEvaluationFunction('rule', function evaluate(node) {
-	const explanation = { ...node.explanation }
-	let parent: EvaluatedNode | null = null
-	if (explanation.parent) {
-		if (this.cache._meta.parentRuleStack.includes(node.dottedName)) {
-			parent = { nodeValue: undefined } as EvaluatedNode
-		} else {
-			this.cache._meta.parentRuleStack.unshift(node.dottedName)
-			parent = this.evaluate(explanation.parent) as EvaluatedNode
-			this.cache._meta.parentRuleStack.shift()
-		}
-		explanation.parent = parent
+	// The disablingParent should be determined at parse time (after dottedname
+	// resolution), which has the good consequence of removing cycles from the AST.
+
+	const nullableParentName = ruleParents(node.dottedName).find(
+		(parentName) => this.ruleUnits[parentName]?.isNullable
+	)
+
+	const nullableParentEvaluation =
+		nullableParentName &&
+		!this.cache._meta.evaluationRuleStack.includes(nullableParentName)
+			? this.evaluate(nullableParentName)
+			: ({
+					nodeValue: undefined,
+					missingVariables: {},
+			  } as EvaluatedNode)
+
+	let valeurEvaluation: EvaluatedNode = {
+		...node.explanation.valeur,
+		nodeValue: null,
+		missingVariables: {},
 	}
-	let valeur: EvaluatedNode | null = null
-	if (!parent || parent.nodeValue !== false) {
+	const ruleDisabledByItsParent = nullableParentEvaluation.nodeValue === null
+	if (!ruleDisabledByItsParent) {
 		if (
 			this.cache._meta.evaluationRuleStack.filter(
 				(dottedName) => dottedName === node.dottedName
@@ -170,42 +170,34 @@ registerEvaluationFunction('rule', function evaluate(node) {
 		`
 			)
 
-			valeur = { nodeValue: undefined } as EvaluatedNode
+			valeurEvaluation.nodeValue = undefined
 		} else {
 			this.cache._meta.evaluationRuleStack.unshift(node.dottedName)
-			valeur = this.evaluate(explanation.valeur) as EvaluatedNode
+			valeurEvaluation = this.evaluate(node.explanation.valeur)
 			this.cache._meta.evaluationRuleStack.shift()
 		}
-
-		explanation.valeur = valeur
 	}
 
-	const parentMissing =
-		parent == null
-			? null
-			: parent.missingVariables === undefined
-			? []
-			: Object.keys(parent.missingVariables)
-	const selfMissing =
-		valeur == null
-			? null
-			: valeur.missingVariables === undefined
-			? []
-			: Object.keys(valeur.missingVariables)
+	const parentMissing = Object.keys(nullableParentEvaluation.missingVariables)
+	const selfMissing = Object.keys(valeurEvaluation.missingVariables)
 
 	const evaluation = {
 		...node,
-		explanation,
-		nodeValue: valeur && 'nodeValue' in valeur ? valeur.nodeValue : false,
+		explanation: {
+			nullableParent: nullableParentEvaluation,
+			valeur: valeurEvaluation,
+		},
+		nodeValue: valeurEvaluation.nodeValue,
 		missingVariables: mergeMissing(
-			valeur?.missingVariables,
-			bonus(parent?.missingVariables)
+			valeurEvaluation.missingVariables,
+			bonus(nullableParentEvaluation.missingVariables)
 		),
 		missing: {
 			parent: parentMissing,
 			self: selfMissing,
 		},
-		...(valeur && 'unit' in valeur && { unit: valeur.unit }),
+		...(valeurEvaluation &&
+			'unit' in valeurEvaluation && { unit: valeurEvaluation.unit }),
 	}
 
 	return evaluation

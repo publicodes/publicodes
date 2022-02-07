@@ -74,7 +74,7 @@ function buildDependenciesGraph(rulesDeps: RulesDependencies) {
 type RawRules = Parameters<typeof parsePublicodes>[0]
 
 export function cyclesInDependenciesGraph(rawRules: RawRules): GraphCycles {
-	const parsedRules = parsePublicodes(rawRules)
+	const { parsedRules } = parsePublicodes(rawRules)
 	const rulesDependencies = buildRulesDependencies(parsedRules)
 	const dependenciesGraph = buildDependenciesGraph(rulesDependencies)
 	const cycles = findCycles(dependenciesGraph)
@@ -131,7 +131,7 @@ export function squashCycle(
 export function cyclicDependencies(
 	rawRules: RawRules
 ): [GraphCycles, string[]] {
-	const parsedRules = parsePublicodes(rawRules)
+	const { parsedRules } = parsePublicodes(rawRules)
 	const rulesDependencies = buildRulesDependencies(parsedRules)
 	const dependenciesGraph = buildDependenciesGraph(rulesDependencies)
 	const cycles = findCycles(dependenciesGraph)

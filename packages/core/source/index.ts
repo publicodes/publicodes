@@ -2,7 +2,10 @@ import { reduceAST } from './AST'
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
 import { evaluationFunctions } from './evaluationFunctions'
 import parse from './parse'
-import parsePublicodes, { disambiguateReference } from './parsePublicodes'
+import parsePublicodes, {
+	disambiguateReference,
+	InferedUnit,
+} from './parsePublicodes'
 import {
 	getReplacements,
 	inlineReplacements,
@@ -14,7 +17,6 @@ import { formatUnit, getUnitKey } from './units'
 
 const emptyCache = (): Cache => ({
 	_meta: {
-		parentRuleStack: [],
 		evaluationRuleStack: [],
 		disableApplicabilityContextCounter: 0,
 	},
@@ -24,7 +26,6 @@ const emptyCache = (): Cache => ({
 
 type Cache = {
 	_meta: {
-		parentRuleStack: Array<string>
 		evaluationRuleStack: Array<string>
 		disableApplicabilityContextCounter: number
 		inversionFail?:
@@ -102,13 +103,19 @@ export default class Engine<Name extends string = string> {
 	// https://github.com/betagouv/publicodes/discussions/92
 	subEngines: Array<Engine<Name>> = []
 	subEngineId: number | undefined
+	ruleUnits: Record<Name, InferedUnit>
 
 	constructor(
 		rules: string | Record<string, Rule> = {},
 		options: Partial<Options> = {}
 	) {
 		this.options = { ...options, logger: options.logger ?? console }
-		this.parsedRules = parsePublicodes(rules, this.options) as ParsedRules<Name>
+		const { parsedRules, ruleUnits } = parsePublicodes<Name>(
+			rules,
+			this.options
+		)
+		this.parsedRules = parsedRules
+		this.ruleUnits = ruleUnits
 		this.replacements = getReplacements(this.parsedRules)
 	}
 
@@ -173,17 +180,9 @@ export default class Engine<Name extends string = string> {
 	evaluate(value: PublicodesExpression): EvaluatedNode
 	evaluate(value: PublicodesExpression | ASTNode): EvaluatedNode {
 		const cachedNode = this.cache.nodes.get(value)
-		// The evaluation of parent applicabilty is slightly different from
-		// regular rules since we cut some of the paths (sums) for optimization.
-		// That's why we need to have a separate cache for this evaluation.
 
 		if (cachedNode !== undefined) {
 			return cachedNode
-		} else if (this.inApplicabilityEvaluationContext) {
-			const cachedNodeApplicability = this.cache.nodesApplicability.get(value)
-			if (cachedNodeApplicability) {
-				return cachedNodeApplicability
-			}
 		}
 
 		let parsedNode: ASTNode
@@ -206,15 +205,8 @@ export default class Engine<Name extends string = string> {
 			parsedNode
 		)
 
-		// TODO: In most cases the two evaluation provide the same result, this
-		// could be optimized. The idea would be to use the “nodesApplicability”
-		// cache iff the rule uses a sum mechanism (ie, some paths are cut from
-		// the full evaluaiton).
-		if (!this.inApplicabilityEvaluationContext) {
-			this.cache.nodes.set(value, evaluatedNode)
-		} else {
-			this.cache.nodesApplicability.set(value, evaluatedNode)
-		}
+		this.cache.nodes.set(value, evaluatedNode)
+
 		return evaluatedNode
 	}
 
@@ -232,13 +224,6 @@ export default class Engine<Name extends string = string> {
 		this.subEngines.push(newEngine)
 		return newEngine
 	}
-
-	get inApplicabilityEvaluationContext(): boolean {
-		return (
-			this.cache._meta.parentRuleStack.length > 0 &&
-			this.cache._meta.disableApplicabilityContextCounter === 0
-		)
-	}
 }
 
 /**
@@ -250,44 +235,8 @@ export function UNSAFE_isNotApplicable<DottedName extends string = string>(
 	engine: Engine<DottedName>,
 	dottedName: DottedName
 ): boolean {
-	const rule = engine.getRule(dottedName)
-	return reduceAST<boolean>(
-		function (isNotApplicable, node, fn) {
-			if (isNotApplicable) return isNotApplicable
-			if (!('nodeValue' in node)) {
-				return isNotApplicable
-			}
-			if (node.nodeKind === 'variations') {
-				return node.explanation.some(
-					({ consequence }) =>
-						fn(consequence) ||
-						((consequence as any).nodeValue === null &&
-							(consequence as any).dottedName !== dottedName)
-				)
-			}
-			if (node.nodeKind === 'reference' && node.dottedName === dottedName) {
-				return fn(engine.evaluate(rule))
-			}
-			if (node.nodeKind === 'applicable si') {
-				return (
-					(node.explanation.condition as any).nodeValue === null ||
-					fn(node.explanation.valeur)
-				)
-			}
-			if (node.nodeKind === 'non applicable si') {
-				return (
-					(node.explanation.condition as any).nodeValue !== false &&
-					(node.explanation.condition as any).nodeValue !== undefined
-				)
-			}
-			if (node.nodeKind === 'rule') {
-				return (
-					(node.explanation.parent as any).nodeValue === null ||
-					fn(node.explanation.valeur)
-				)
-			}
-		},
-		false,
-		engine.evaluate(dottedName)
+	return (
+		engine.ruleUnits[dottedName].isNullable &&
+		engine.evaluate(dottedName).nodeValue === null
 	)
 }

@@ -39,9 +39,12 @@ describe('Missing variables', function () {
 				'non applicable si': 'evt . ko',
 			},
 			evt: {
-				formule: { 'une possibilité': ['ko'] },
-				titre: 'Truc',
-				question: '?',
+				'applicable si': {
+					nom: 'truc',
+					titre: 'Truc',
+					question: '?',
+					formule: { 'une possibilité': ['ko'] },
+				},
 			},
 			'evt . ko': {},
 		}
@@ -49,7 +52,7 @@ describe('Missing variables', function () {
 			new Engine(rawRules).evaluate('startHere').missingVariables
 		)
 
-		expect(result).to.deep.equal(['evt . ko', 'evt'])
+		expect(result).to.deep.equal(['evt', 'evt . truc'])
 	})
 
 	it('should not identify missing variables from static rules', function () {
@@ -351,10 +354,9 @@ transport . avion . usager:
 			'transport . avion . km',
 			'transport . avion . usager',
 		])
-		expect(result).to.have.lengthOf(2)
 	})
 
-	it.skip("Parent's other descendands in sums should not be included as missing variables, even when parent evluation is triggered by a comparison", function () {
+	it("Parent's other descendands in sums should not be included as missing variables, even when parent evluation is triggered by a comparison", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
 		const rawRules = yaml.parse(`
 transport:
@@ -400,14 +402,15 @@ transport . avion . usager:
 			'transport . voiture . gabarit',
 			'transport . voiture . km',
 		])
-		expect(result).to.have.lengthOf(2)
 	})
 	it("Parent's other descendands in sums should not be included as missing variables - 2", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
 		const rawRules = yaml.parse(`
 avion:
-  question: prenez-vous l'avion ?
-  par défaut: oui
+  applicable si:
+    nom: usager
+    question: prenez-vous l'avion ?
+    par défaut: oui
 
 avion . impact:
   formule:
@@ -425,8 +428,7 @@ avion . impact . au sol: 5
 			new Engine(rawRules).evaluate('avion . impact . au sol').missingVariables
 		)
 
-		expect(result).deep.to.equal(['avion'])
-		expect(result).to.have.lengthOf(1)
+		expect(result).deep.to.equal(['avion', 'avion . usager'])
 	})
 
 	it("Parent's other descendands in sums in applicability should be included as missing variables", function () {

@@ -84,7 +84,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 		nodeKind: 'rule'
 	}
 	const { description, question } = rule.rawNode
-	const { parent, valeur } = rule.explanation
+	const { nullableParent, valeur } = rule.explanation
 	console.debug(`Rule ${rule.dottedName} value: ${rule.nodeValue}`)
 	console.debug(
 		`Rule ${rule.dottedName} missingVariables: ${JSON.stringify(
@@ -138,16 +138,18 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 					</p>
 				</>
 			}
-			{parent && 'nodeValue' in parent && parent.nodeValue === false && (
-				<>
-					<h3>Parent non applicable</h3>
-					<p>
-						Cette règle est non applicable car <Explanation node={parent} />
-						est non applicable.
-					</p>
-				</>
-			)}
-
+			{nullableParent &&
+				'nodeValue' in nullableParent &&
+				nullableParent.nodeValue === null && (
+					<>
+						<h3>Parent non applicable</h3>
+						<p>
+							Cette règle est non applicable car{' '}
+							<Explanation node={nullableParent} />
+							est non applicable.
+						</p>
+					</>
+				)}
 			<h2>Comment cette donnée est-elle calculée ?</h2>
 			<Explanation node={valeur} />
 			<RuleSource key={dottedName} dottedName={dottedName} engine={engine} />
