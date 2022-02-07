@@ -18,17 +18,4 @@ export const mecanismSum = (v, context) => {
 	} as SommeNode
 }
 
-registerEvaluationFunction('somme', function (node) {
-	if (this.inApplicabilityEvaluationContext) {
-		return {
-			// With a clearer distinction between `getApplicability` and
-			// `getValue` we could avoid faking a `nodeValue: true` and instead
-			// simply return `isApplicable: true, nodeValue: undefined`
-			nodeValue: true,
-			nodeKind: 'somme',
-			missingVariables: {},
-			explanation: [],
-		}
-	}
-	return evaluate.call(this, node)
-})
+registerEvaluationFunction('somme', evaluate)
