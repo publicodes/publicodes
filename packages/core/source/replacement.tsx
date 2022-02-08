@@ -60,11 +60,6 @@ export function parseReplacements(
 				)
 				.map((refs) => refs.map((ref) => parse(ref, context)))
 
-			const definitionRule = parse(context.dottedName, context)
-
-			;(definitionRule as ReferenceNode).thisReferenceIsNotARealDependencyHack =
-				true
-
 			return {
 				nodeKind: 'replacementRule',
 				rawNode: replacement,
@@ -124,7 +119,8 @@ export function inlineReplacements(
 				...node,
 				explanation: {
 					...node.explanation,
-					recalcul: transform(node.explanation.recalcul),
+					recalcul:
+						node.explanation.recalcul && transform(node.explanation.recalcul),
 					amendedSituation: node.explanation.amendedSituation.map(
 						([name, value]) => [name, transform(value)]
 					),

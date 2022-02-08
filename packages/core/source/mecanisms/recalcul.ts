@@ -11,6 +11,7 @@ import { serializeUnit } from '../units'
 export type RecalculNode = {
 	explanation: {
 		recalcul: ASTNode
+		contextDottedName: string
 		amendedSituation: Array<[ReferenceNode, ASTNode]>
 		parsedSituation?: Engine['parsedSituation']
 		subEngineId: number
@@ -64,14 +65,19 @@ const evaluateRecalcul: EvaluationFunction<'recalcul'> = function (node) {
 		  })
 		: this
 
-	engine.cache._meta.currentRecalcul = node.explanation.recalcul
-	const evaluatedNode = engine.evaluate(node.explanation.recalcul)
+	const nodeToEvaluate =
+		node.explanation.recalcul ??
+		this.getRule(node.explanation.contextDottedName)
+
+	engine.cache._meta.currentRecalcul = nodeToEvaluate
+	const evaluatedNode = engine.evaluate(nodeToEvaluate)
 	delete engine.cache._meta.currentRecalcul
 
 	return {
 		...node,
 		nodeValue: evaluatedNode.nodeValue,
 		explanation: {
+			...node.explanation,
 			recalcul: evaluatedNode,
 			amendedSituation,
 			parsedSituation: engine.parsedSituation,
@@ -90,16 +96,12 @@ export const mecanismRecalcul = (v, context) => {
 
 	// Caveat: v.règle can theoretically be an expression, not necessarily
 	// a dotted name.
-	const recalculNode = parse(v.règle ?? context.dottedName, context)
-
-	if (!v.règle) {
-		;(recalculNode as ReferenceNode).thisReferenceIsNotARealDependencyHack =
-			true
-	}
+	const recalculNode = v.règle && parse(v.règle, context)
 
 	return {
 		explanation: {
 			recalcul: recalculNode,
+			contextDottedName: context.dottedName,
 			amendedSituation,
 		},
 		nodeKind: 'recalcul',

@@ -7,7 +7,15 @@ export type ReferenceNode = {
 	name: string
 	contextDottedName: string
 	dottedName?: string
-	thisReferenceIsNotARealDependencyHack?: boolean
+
+	/**
+	 * Some mechanisms use circular references with special runtime handling to
+	 * avoid infinite loops. We could use a separate node kind in the AST to
+	 * materialize that it's a reference that doesn't create a real dependency in
+	 * the graph, but we still want to benefit from the normal name resolution of
+	 * normal references.
+	 */
+	circularReference: boolean
 }
 
 export default function parseReference(
@@ -18,6 +26,7 @@ export default function parseReference(
 		nodeKind: 'reference',
 		name: v,
 		contextDottedName: context.dottedName,
+		circularReference: context.circularReferences === true,
 	}
 }
 

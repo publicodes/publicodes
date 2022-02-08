@@ -165,8 +165,7 @@ export const mecanismInversion = (v, context: Context) => {
 		explanation: {
 			ruleToInverse: context.dottedName,
 			inversionCandidates: v.avec.map((node) => ({
-				...parse(node, context),
-				thisReferenceIsNotARealDependencyHack: true,
+				...parse(node, { ...context, circularReferences: true }),
 			})),
 		},
 		...('unité' in v && {

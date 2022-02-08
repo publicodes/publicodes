@@ -13,6 +13,7 @@ export type Context = {
 	ruleTitle?: string
 	getUnitKey?: getUnitKey
 	logger: Logger
+	circularReferences?: boolean
 }
 
 // TODO: Currently only handle nullability, but the infering logic should be
@@ -28,6 +29,7 @@ export default function parsePublicodes<RuleNames extends string>(
 ): {
 	parsedRules: ParsedRules<RuleNames>
 	ruleUnits: Record<RuleNames, InferedUnit>
+	rulesDependencies: Record<RuleNames, Array<RuleNames>>
 } {
 	// STEP 1: parse Yaml
 	let rules =
@@ -44,6 +46,7 @@ export default function parsePublicodes<RuleNames extends string>(
 		parsedRules: partialContext.parsedRules ?? {},
 		logger: partialContext.logger ?? console,
 		getUnitKey: partialContext.getUnitKey ?? ((x) => x),
+		circularReferences: false,
 	}
 	Object.entries(rules).forEach(([dottedName, rule]) => {
 		if (typeof rule === 'string' || typeof rule === 'number') {
@@ -61,9 +64,9 @@ export default function parsePublicodes<RuleNames extends string>(
 	let parsedRules = context.parsedRules
 
 	// STEP 4: Disambiguate reference
-	const dependencies = {}
+	const rulesDependencies = {}
 	parsedRules = traverseParsedRules(
-		disambiguateReference(parsedRules, dependencies),
+		disambiguateReference(parsedRules, rulesDependencies),
 		parsedRules
 	)
 
@@ -78,13 +81,13 @@ export default function parsePublicodes<RuleNames extends string>(
 	// Throws an error if there is a cycle in the graph
 	const topologicalOrder = topologicalSort(
 		Object.keys(parsedRules),
-		dependencies
+		rulesDependencies
 	)
 
 	// STEP 6: type inference
 	const ruleUnits = inferRulesUnit(parsedRules, topologicalOrder)
 
-	return { parsedRules, ruleUnits } as any
+	return { parsedRules, ruleUnits, rulesDependencies } as any
 }
 
 // We recursively traverse the YAML tree in order to transform named parameters
@@ -129,7 +132,7 @@ export const disambiguateReference = (
 				node.name
 			)
 
-			if (node.thisReferenceIsNotARealDependencyHack !== true) {
+			if (node.circularReference !== true) {
 				dependencies[node.contextDottedName] = [
 					...(dependencies[node.contextDottedName] ?? []),
 					dottedName,
@@ -211,7 +214,6 @@ function inferRulesUnit(parsedRules, topologicalOrder) {
 
 			case 'inversion':
 			case 'operation':
-			case 'par défaut':
 			case 'recalcul':
 			case 'replacementRule':
 			case 'toutes ces conditions':
@@ -219,6 +221,7 @@ function inferRulesUnit(parsedRules, topologicalOrder) {
 			case 'une possibilité':
 			case 'résoudre référence circulaire':
 			case 'synchronisation':
+			case 'texte':
 				return { isNullable: false }
 
 			case 'abattement':
@@ -235,9 +238,21 @@ function inferRulesUnit(parsedRules, topologicalOrder) {
 
 			case 'variations':
 				return {
-					isNullable: node.explanation.some(
-						(line) => inferNodeUnit(line.consequence).isNullable
-					),
+					isNullable: node.explanation.some((line) => {
+						// TODO: hack for mon-entreprise rules, because topologicalSort
+						// seems imperfect
+						if (inferNodeUnit(line.consequence) === undefined) {
+							return false
+						}
+						return inferNodeUnit(line.consequence).isNullable
+					}),
+				}
+
+			case 'par défaut':
+				return {
+					isNullable:
+						inferNodeUnit(node.explanation.parDéfaut).isNullable ||
+						inferNodeUnit(node.explanation.valeur).isNullable,
 				}
 
 			case 'rule':
