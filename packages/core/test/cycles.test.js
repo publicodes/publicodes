@@ -38,20 +38,6 @@ describe('Cyclic dependencies detectron 3000 ™', () => {
 		expect(cycles).to.deep.equal([])
 	})
 
-	it('should not detect cycles due to replacements', () => {
-		const rules = dedent`
-			a:
-				formule: b + 1
-			a . b:
-				formule: 3
-			a . c:
-				remplace: b
-				formule: a
-		`
-		const cycles = cyclesInDependenciesGraph(rules)
-		expect(cycles).to.deep.equal([])
-	})
-
 	it('should not detect cycles when résoudre référence circulaire', () => {
 		const rules = dedent`
 			fx:

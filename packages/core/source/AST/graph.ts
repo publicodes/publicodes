@@ -1,69 +1,11 @@
-import { ASTNode } from './types'
 import parsePublicodes from '../parsePublicodes'
-import { RuleNode } from '../rule'
-import { getChildrenNodes, iterAST } from './index'
 import { findCycles, Graph } from './findCycles'
 
-type RulesDependencies = [string, string[]][]
 type GraphCycles = string[][]
 
-function buildRulesDependencies(
-	parsedRules: Record<string, RuleNode>
-): RulesDependencies {
-	const uniq = <T>(arr: Array<T>): Array<T> => [...new Set(arr)]
-	return Object.entries(parsedRules).map(([name, node]) => [
-		name,
-		uniq(getDependencies(node)),
-	])
-}
-
-function getReferenceName(node: ASTNode): string | undefined {
-	switch (node.nodeKind) {
-		case 'reference':
-			return node.dottedName as string
-	}
-}
-/**
- * Recursively selects the children nodes that have the ability to include a reference
- * to a rule.
- */
-function getReferencingDescendants(node: ASTNode): ASTNode[] {
-	return iterAST((node) => {
-		switch (node.nodeKind) {
-			case 'replacementRule':
-			case 'inversion':
-			case 'une possibilité':
-			case 'reference':
-			case 'résoudre référence circulaire':
-				// "résoudre référence circulaire" is a chained mechanism. When returning `[]` we prevent
-				// iteration inside of the rule's `valeur`, meaning the rule returns no descendants at all.
-				return []
-			case 'recalcul':
-				return node.explanation.amendedSituation.map(([, astNode]) => astNode)
-			case 'rule':
-				return [node.explanation.valeur]
-			case 'variations':
-				if (node.visualisationKind === 'replacement') {
-					return node.explanation
-						.filter(({ condition }) => condition.isDefault)
-						.map(({ consequence }) => consequence)
-						.filter((consequence) => consequence.nodeKind === 'reference')
-				}
-		}
-		return getChildrenNodes(node)
-	}, node)
-}
-function getDependencies(node: ASTNode): string[] {
-	const descendantNodes = Array.from(getReferencingDescendants(node))
-	const descendantsReferences = descendantNodes
-		.map(getReferenceName)
-		.filter((refName): refName is string => refName !== undefined)
-	return descendantsReferences
-}
-
-function buildDependenciesGraph(rulesDeps: RulesDependencies) {
+function buildDependenciesGraph(rulesDeps: Record<string, Array<string>>) {
 	const g = new Graph()
-	rulesDeps.forEach(([ruleDottedName, dependencies]) => {
+	Object.entries(rulesDeps).forEach(([ruleDottedName, dependencies]) => {
 		dependencies.forEach((depDottedName) => {
 			g.setEdge(ruleDottedName, depDottedName)
 		})
@@ -74,8 +16,7 @@ function buildDependenciesGraph(rulesDeps: RulesDependencies) {
 type RawRules = Parameters<typeof parsePublicodes>[0]
 
 export function cyclesInDependenciesGraph(rawRules: RawRules): GraphCycles {
-	const { parsedRules } = parsePublicodes(rawRules)
-	const rulesDependencies = buildRulesDependencies(parsedRules)
+	const { rulesDependencies } = parsePublicodes(rawRules)
 	const dependenciesGraph = buildDependenciesGraph(rulesDependencies)
 	const cycles = findCycles(dependenciesGraph)
 
@@ -131,17 +72,14 @@ export function squashCycle(
 export function cyclicDependencies(
 	rawRules: RawRules
 ): [GraphCycles, string[]] {
-	const { parsedRules } = parsePublicodes(rawRules)
-	const rulesDependencies = buildRulesDependencies(parsedRules)
+	const { rulesDependencies } = parsePublicodes(rawRules)
 	const dependenciesGraph = buildDependenciesGraph(rulesDependencies)
 	const cycles = findCycles(dependenciesGraph)
 
 	const reversedCycles = cycles.map((c) => c.reverse())
-	const rulesDependenciesObject = Object.fromEntries(
-		rulesDependencies
-	) as Record<string, string[]>
+
 	const smallCycles = reversedCycles.map((cycle) =>
-		squashCycle(rulesDependenciesObject, cycle)
+		squashCycle(rulesDependencies, cycle)
 	)
 
 	const printableStronglyConnectedComponents = reversedCycles.map((c, i) =>

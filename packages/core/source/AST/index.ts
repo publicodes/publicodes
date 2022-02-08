@@ -341,7 +341,7 @@ const traverseRecalculNode: TraverseFunction<'recalcul'> = (fn, node) => ({
 			fn(name),
 			fn(value),
 		]) as any, //TODO
-		recalcul: fn(node.explanation.recalcul),
+		recalcul: node.explanation.recalcul && fn(node.explanation.recalcul),
 	},
 })
 

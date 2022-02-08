@@ -1,4 +1,4 @@
-import { Evaluation, isNotYetDefined, Unit } from './AST/types'
+import { Evaluation, isNotYetDefined, isNotApplicable, Unit } from './AST/types'
 import { simplifyNodeUnit } from './nodeUnits'
 import { formatUnit, serializeUnit } from './units'
 
@@ -123,7 +123,7 @@ export function formatValue(
 	{ language = 'fr', displayedUnit, formatUnit, precision = 2 }: Options = {}
 ) {
 	let nodeValue =
-		typeof value === 'number' || typeof value === 'undefined'
+		typeof value === 'number' || typeof value === 'undefined' || value === null
 			? value
 			: value.nodeValue
 
@@ -132,6 +132,9 @@ export function formatValue(
 	}
 	if (isNotYetDefined(nodeValue)) {
 		return 'Pas encore défini'
+	}
+	if (isNotApplicable(nodeValue)) {
+		return 'Non applicable'
 	}
 	if (typeof nodeValue === 'string') {
 		return nodeValue.replace('\\n', '\n')

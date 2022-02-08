@@ -15,7 +15,10 @@ import mecanismColors from './colors'
 
 export function ConstantNode({ nodeValue, type, fullPrecision, unit }) {
 	if (nodeValue === undefined) {
-		return undefined
+		return null
+	}
+	if (nodeValue === null) {
+		return <span className="value">{formatValue({ nodeValue })}</span>
 	} else if (type === 'objet') {
 		return (
 			<code>

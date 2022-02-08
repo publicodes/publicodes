@@ -123,13 +123,9 @@ export default function parseRule(
 }
 
 registerEvaluationFunction('rule', function evaluate(node) {
-	// The disablingParent should be determined at parse time (after dottedname
-	// resolution), which has the good consequence of removing cycles from the AST.
-
 	const nullableParentName = ruleParents(node.dottedName).find(
 		(parentName) => this.ruleUnits[parentName]?.isNullable
 	)
-
 	const nullableParentEvaluation =
 		nullableParentName &&
 		!this.cache._meta.evaluationRuleStack.includes(nullableParentName)
@@ -159,18 +155,18 @@ registerEvaluationFunction('rule', function evaluate(node) {
 				`
 		Un cycle a été détecté dans lors de l'évaluation de cette règle.
 		Par défaut cette règle sera évaluée à 'null'.
-
 		Pour indiquer au moteur de résoudre la référence circulaire en trouvant le point fixe
 		de la fonction, il vous suffit d'ajouter l'attribut suivant niveau de la règle :
-
 		${node.dottedName}:
 		"résoudre la référence circulaire: oui"
 		...
-
 		`
 			)
 
-			valeurEvaluation.nodeValue = undefined
+			valeurEvaluation = {
+				nodeValue: null,
+				missingVariables: {},
+			} as EvaluatedNode
 		} else {
 			this.cache._meta.evaluationRuleStack.unshift(node.dottedName)
 			valeurEvaluation = this.evaluate(node.explanation.valeur)

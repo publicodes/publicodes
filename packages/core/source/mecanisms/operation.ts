@@ -79,11 +79,8 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	const b = node2.nodeValue as string | null
 
 	const nodeValue =
-		!['≠', '='].includes(node.operator) && a === null && b === null
-			? null
-			: ['<', '>', '≤', '≥', '∕', '×'].includes(node.operator) &&
-			  (a === null || b === null)
-			? null
+		a === undefined || b === undefined
+			? undefined
 			: a !== null &&
 			  b !== null &&
 			  ['≠', '=', '<', '>', '≤', '≥'].includes(node.operator) &&

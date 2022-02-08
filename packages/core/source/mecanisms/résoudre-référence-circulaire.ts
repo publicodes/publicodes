@@ -95,10 +95,7 @@ export default function parseRésoudreRéférenceCirculaire(v, context: Context)
 	return {
 		explanation: {
 			ruleToSolve: context.dottedName,
-			valeur: {
-				...parse(v.valeur, context),
-				thisReferenceIsNotARealDependencyHack: true,
-			},
+			valeur: parse(v.valeur, { ...context, circularReferences: true }),
 		},
 		nodeKind: 'résoudre référence circulaire',
 	} as RésoudreRéférenceCirculaireNode
