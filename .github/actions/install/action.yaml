@@ -8,6 +8,6 @@ runs:
         key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}-v2
     - uses: actions/setup-node@v1
       with:
-        node-version: 14
+        node-version: 16
     - run: yarn install --frozen-lockfile
       shell: bash

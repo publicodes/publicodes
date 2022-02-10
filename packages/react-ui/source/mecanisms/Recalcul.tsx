@@ -1,5 +1,5 @@
 import { EvaluatedNode } from 'publicodes'
-import type { RecalculNode } from 'publicodes/dist/types/mecanisms/recalcul'
+import type { RecalculNode } from 'publicodes/dist/mecanisms/recalcul'
 import { useContext } from 'react'
 import { EngineContext } from '../contexts'
 import Explanation from '../Explanation'
