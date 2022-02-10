@@ -20,7 +20,6 @@
 		"strictBindCallApply": true,
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
-		"strictPropertyInitialization": true,
-		"types": ["webpack-env"]
+		"strictPropertyInitialization": true
 	}
 }
