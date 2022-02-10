@@ -51,3 +51,24 @@ interpolation avec expression:
   texte: 5 + 6 = {{ 5 + 6 }}
   exemples:
     - valeur attendue: 5 + 6 = 11
+
+cas limite:
+cas limite . nom de règle dans le texte:
+  texte: texte simple
+  exemples:
+    - valeur attendue: texte simple
+
+cas limite . simple accolade:
+  texte: Un cas sans interpolation { }
+  exemples:
+    - valeur attendue: Un cas sans interpolation { }
+
+cas limite . sans espace:
+  texte: '{{5 + 6}}'
+  exemples:
+    - valeur attendue: '11'
+
+cas limite . accolade non fermée:
+  texte: '{{ test'
+  exemples:
+    - valeur attendue: '{{ test'
