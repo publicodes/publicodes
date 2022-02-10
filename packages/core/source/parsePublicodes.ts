@@ -38,7 +38,6 @@ export default function parsePublicodes(
 		logger: partialContext.logger ?? console,
 		getUnitKey: partialContext.getUnitKey ?? ((x) => x),
 	}
-
 	Object.entries(rules).forEach(([dottedName, rule]) => {
 		if (typeof rule === 'string' || typeof rule === 'number') {
 			rule = {

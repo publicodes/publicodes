@@ -28,6 +28,11 @@ parenthèses:
   exemples:
     - valeur attendue: 29
 
+parenthèses avec espace:
+  formule: 14.5 * ( 6 - 4 )
+  exemples:
+    - valeur attendue: 29
+
 salaire de base:
   unité: $
 

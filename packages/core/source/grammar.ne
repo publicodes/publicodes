@@ -69,7 +69,8 @@ Negation ->
     "-" %space Parentheses {% unaryOperation('calculation') %}
 
 Parentheses ->
-    "(" NumericValue ")"  {% ([,e]) => e %}
+  "(" %space NumericValue %space ")"  {% ([,,e]) => e %}
+  | "(" NumericValue ")"  {% ([,e]) => e %}
   |  NumericTerminal               {% id %}
 
 Date ->
@@ -80,7 +81,7 @@ Comparison ->
     Comparable %space %comparison %space Comparable {% binaryOperation('comparison')%}
   | Date %space %comparison %space Date {% binaryOperation('comparison')%}
 
-Comparable -> (  AdditionSubstraction | NonNumericTerminal) {% ([[e]]) => e %}
+Comparable -> (AdditionSubstraction | NonNumericTerminal) {% ([[e]]) => e %}
 
 NonNumericTerminal ->
 	  boolean  {% id %}

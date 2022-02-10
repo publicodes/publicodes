@@ -1,6 +1,6 @@
 import nearley from 'nearley'
 import { ASTNode } from './AST/types'
-import { EngineError, syntaxError } from './error'
+import { EngineError, InternalError, syntaxError } from './error'
 import grammar from './grammar'
 import abattement from './mecanisms/abattement'
 import applicable from './mecanisms/applicable'
@@ -74,13 +74,30 @@ function parseExpression(
 	/* Strings correspond to infix expressions.
 	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
 	 * This function makes them prefixed operations. */
+	const singleLineExpression = (rawNode + '')
+		.replaceAll(/\s*\n\s*/g, ' ')
+		.trim()
+
 	try {
-		const [parseResult] = new Parser(compiledGrammar).feed(rawNode + '').results
+		const [parseResult] = new Parser(compiledGrammar).feed(
+			singleLineExpression
+		).results
+		if (parseResult == null) {
+			throw new InternalError({
+				expression: singleLineExpression,
+				parseResult: `${JSON.stringify(parseResult)}`,
+				notice:
+					"L'erreur se situe très probablement dans le fichier `nearley.ne`",
+			})
+		}
 		return parseResult
 	} catch (e) {
+		if (e instanceof InternalError) {
+			throw e
+		}
 		syntaxError(
 			context.dottedName,
-			`\`${rawNode}\` n'est pas une expression valide`,
+			`\`${singleLineExpression}\` n'est pas une expression valide`,
 			e
 		)
 	}
