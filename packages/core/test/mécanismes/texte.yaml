@@ -72,3 +72,13 @@ cas limite . accolade non fermée:
   texte: '{{ test'
   exemples:
     - valeur attendue: '{{ test'
+
+cas limite . avec une expression publicodes sur plusieurs lignes:
+  texte: |
+    Voici le résultat de l'opération demandée : {{
+       (5 + 9)
+          * 5
+         / 7
+    }}
+  exemples:
+    - valeur attendue: "Voici le résultat de l'opération demandée : 10"
