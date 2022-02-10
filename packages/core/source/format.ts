@@ -161,7 +161,7 @@ export function formatValue(
 			formatUnit,
 			nodeValue,
 			unit: displayedUnit ?? unit,
-		})
+		}).trim()
 	}
 	return null
 }

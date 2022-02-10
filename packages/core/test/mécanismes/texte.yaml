@@ -52,6 +52,12 @@ interpolation avec expression:
   exemples:
     - valeur attendue: 5 + 6 = 11
 
+multiligne yaml sans retour à la ligne:
+  texte: |-
+    5 + 4 = {{5 + 4}}
+  exemples:
+    - valeur attendue: 5 + 4 = 9
+
 cas limite:
 cas limite . nom de règle dans le texte:
   texte: texte simple
@@ -64,9 +70,9 @@ cas limite . simple accolade:
     - valeur attendue: Un cas sans interpolation { }
 
 cas limite . sans espace:
-  texte: '{{5 + 6}}'
+  texte: '{{(5 + 9) * 5 / 7}}'
   exemples:
-    - valeur attendue: '11'
+    - valeur attendue: '10'
 
 cas limite . accolade non fermée:
   texte: '{{ test'
@@ -74,11 +80,11 @@ cas limite . accolade non fermée:
     - valeur attendue: '{{ test'
 
 cas limite . avec une expression publicodes sur plusieurs lignes:
-  texte: |
+  texte: |-
     Voici le résultat de l'opération demandée : {{
        (5 + 9)
           * 5
-         / 7
+          / 7
     }}
   exemples:
     - valeur attendue: "Voici le résultat de l'opération demandée : 10"
