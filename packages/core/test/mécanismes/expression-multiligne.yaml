@@ -1,0 +1,50 @@
+somme sur plusieurs lignes:
+  valeur: |
+    10
+    + 11
+    + 12
+    + 13
+  exemples:
+    - valeur attendue: 46
+
+expression avec parenthèses sur plusieurs lignes:
+  valeur: |
+    (
+      4 * (154 + 12.5)
+               /
+           (54 - 6)
+    )
+  exemples:
+    - valeur attendue: 13.875
+
+très très long nom de variable que l'on voudrait pouvoir appeler sur plusieurs lignes:
+  valeur:
+    nom: même si cela peut-être troublant
+    valeur: oui
+
+nom de variables sur plusieurs lignes:
+  valeur: |
+    très très long nom de variable que
+    l'on voudrait pouvoir appeler sur plusieurs
+    lignes
+           . même si cela peut-être troublant
+  exemples:
+    valeur attendue: true
+
+chaine de caractère sur plusieurs lignes:
+  valeur: |
+    'voici une
+     chaîne de charactère 
+     sur plusieurs lignes'
+
+  exemples:
+    valeur attendue: 'voici une chaîne de charactère sur plusieurs lignes'
+
+chaine de caractère sur plusieurs lignes cas avec espaces:
+  valeur: |
+    '
+      attention aux espaces
+    '
+
+  exemples:
+    valeur attendue: ' attention aux espaces '

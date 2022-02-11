@@ -1,4 +1,4 @@
-import { InternalError } from '../error'
+import { InternalError, neverHappens } from '../error'
 import { TrancheNodes } from '../mecanisms/trancheUtils'
 import { ReplacementRule } from '../replacement'
 import { RuleNode } from '../rule'
@@ -176,7 +176,10 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseVariationNode(fn, node)
 		case 'replacementRule':
 			return traverseReplacementNode(fn, node)
+		case 'texte':
+			return traverseTextNode(fn, node)
 		default:
+			neverHappens(node)
 			throw new InternalError(node)
 	}
 }
@@ -210,6 +213,7 @@ const traverseLeafNode: TraverseFunction<'reference' | 'constant'> = (
 	_,
 	node
 ) => node
+
 const traverseApplicableNode: TraverseFunction<
 	'applicable si' | 'non applicable si'
 > = (fn, node) => ({
@@ -321,6 +325,13 @@ const traverseProductNode: TraverseFunction<'produit'> = (fn, node) => ({
 		facteur: fn(node.explanation.facteur),
 		plafond: fn(node.explanation.plafond),
 	},
+})
+
+const traverseTextNode: TraverseFunction<'texte'> = (fn, node) => ({
+	...node,
+	explanation: node.explanation.map((element) =>
+		typeof element === 'string' ? element : fn(element)
+	),
 })
 
 const traverseRecalculNode: TraverseFunction<'recalcul'> = (fn, node) => ({

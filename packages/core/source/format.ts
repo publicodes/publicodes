@@ -106,8 +106,8 @@ export function capitalise0(name?: string) {
 }
 
 const booleanTranslations = {
-	fr: { true: 'Oui', false: 'Non' },
-	en: { true: 'Yes', false: 'No' },
+	fr: { true: 'oui', false: 'non' },
+	en: { true: 'yes', false: 'no' },
 }
 
 type Options = {
@@ -134,7 +134,7 @@ export function formatValue(
 		return 'Pas encore défini'
 	}
 	if (typeof nodeValue === 'string') {
-		return capitalise0(nodeValue.replace('\\n', '\n'))
+		return nodeValue.replace('\\n', '\n')
 	}
 	if (typeof nodeValue === 'object') return (nodeValue as any).nom
 	if (typeof nodeValue === 'boolean')
@@ -161,7 +161,7 @@ export function formatValue(
 			formatUnit,
 			nodeValue,
 			unit: displayedUnit ?? unit,
-		})
+		}).trim()
 	}
 	return null
 }

@@ -13,6 +13,7 @@ import { NonApplicableSiNode } from '../mecanisms/nonApplicable'
 import { PossibilityNode } from '../mecanisms/one-possibility'
 import { OperationNode } from '../mecanisms/operation'
 import { ParDéfautNode } from '../mecanisms/parDéfaut'
+import { TexteNode } from '../mecanisms/texte'
 import { PlafondNode } from '../mecanisms/plafond'
 import { PlancherNode } from '../mecanisms/plancher'
 import { ProductNode } from '../mecanisms/product'
@@ -65,6 +66,7 @@ export type ASTNode = (
 	| VariationNode
 	| ConstantNode
 	| ReplacementRule
+	| TexteNode
 ) & {
 	isDefault?: boolean
 	visualisationKind?: string

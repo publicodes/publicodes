@@ -1,6 +1,6 @@
 import nearley from 'nearley'
 import { ASTNode } from './AST/types'
-import { EngineError, syntaxError } from './error'
+import { EngineError, InternalError, syntaxError } from './error'
 import grammar from './grammar'
 import abattement from './mecanisms/abattement'
 import applicable from './mecanisms/applicable'
@@ -13,6 +13,7 @@ import durée from './mecanisms/durée'
 import grille from './mecanisms/grille'
 import { mecanismInversion } from './mecanisms/inversion'
 import { mecanismMax } from './mecanisms/max'
+import texte from './mecanisms/texte'
 import { mecanismMin } from './mecanisms/min'
 import nonApplicable from './mecanisms/nonApplicable'
 import { mecanismOnePossibility } from './mecanisms/one-possibility'
@@ -73,13 +74,30 @@ function parseExpression(
 	/* Strings correspond to infix expressions.
 	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
 	 * This function makes them prefixed operations. */
+	const singleLineExpression = (rawNode + '')
+		.replaceAll(/\s*\n\s*/g, ' ')
+		.trim()
+
 	try {
-		const [parseResult] = new Parser(compiledGrammar).feed(rawNode + '').results
+		const [parseResult] = new Parser(compiledGrammar).feed(
+			singleLineExpression
+		).results
+		if (parseResult == null) {
+			throw new InternalError({
+				expression: singleLineExpression,
+				parseResult: `${JSON.stringify(parseResult)}`,
+				notice:
+					"L'erreur se situe très probablement dans le fichier `nearley.ne`",
+			})
+		}
 		return parseResult
 	} catch (e) {
+		if (e instanceof InternalError) {
+			throw e
+		}
 		syntaxError(
 			context.dottedName,
-			`\`${rawNode}\` n'est pas une expression valide`,
+			`\`${singleLineExpression}\` n'est pas une expression valide`,
 			e
 		)
 	}
@@ -182,24 +200,25 @@ function parseChainedMecanisms(rawNode, context: Context): ASTNode {
 const parseFunctions = {
 	...operations,
 	...chainableMecanisms.reduce((acc, fn) => ({ [fn.nom]: fn, ...acc }), {}),
-	'une possibilité': mecanismOnePossibility,
 	'inversion numérique': mecanismInversion,
-	recalcul: mecanismRecalcul,
-	variable: parseReference,
-	'une de ces conditions': mecanismOneOf,
-	'toutes ces conditions': mecanismAllOf,
-	somme: mecanismSum,
-	multiplication: mecanismProduct,
-	produit: mecanismProduct,
-	barème,
-	grille,
-	'taux progressif': tauxProgressif,
-	durée,
 	'le maximum de': mecanismMax,
 	'le minimum de': mecanismMin,
-	variations,
+	'taux progressif': tauxProgressif,
+	'toutes ces conditions': mecanismAllOf,
+	'une de ces conditions': mecanismOneOf,
+	'une possibilité': mecanismOnePossibility,
+	barème,
+	durée,
+	grille,
+	multiplication: mecanismProduct,
+	produit: mecanismProduct,
+	recalcul: mecanismRecalcul,
+	somme: mecanismSum,
 	synchronisation: mecanismSynchronisation,
+	[texte.nom]: texte,
 	valeur: parse,
+	variable: parseReference,
+	variations,
 	objet: (v) => ({
 		type: 'objet',
 		nodeValue: v,

@@ -567,6 +567,24 @@ des communes de France](https://geo.api.gouv.fr/decoupage-administratif/communes
 Attention : ce mécanisme est encore en cours de développement, et sa syntaxe
 n'est pas stable. Se référer aux exemples existants.
 
+## texte
+
+Permet de mettre en forme un texte avec des expressions évaluée dynamiquement.
+Ce principe est connu en informatique sous le nom d'interpolation de chaine de
+caractères.
+
+### Exemple
+
+```yaml
+aide vélo:
+  texte: |
+    La région subventionne l’achat d’un vélo à hauteur de {{ prise en charge }}
+    et jusqu’à un plafond de {{ plafond }}. Les éventuelles aides locales déjà
+    perçues sont déduites de ce montant.
+aide vélo . prise en charge: 50%
+aide vélo . plafond: 1500 €
+```
+
 ## inversion numérique
 
 > **Mécanisme chainable** ([plus d'infos](/docs/principes-de-base#mécanismes-chaînés))

@@ -29,6 +29,7 @@ import TauxProgressif from './mecanisms/TauxProgressif'
 import ToutesCesConditions from './mecanisms/ToutesCesConditions'
 import UneDeCesConditions from './mecanisms/UneDeCesConditions'
 import UnePossibilité from './mecanisms/UnePossibilité'
+import Texte from './mecanisms/Texte'
 import Unité from './mecanisms/Unité'
 import Variations from './mecanisms/Variations'
 
@@ -49,6 +50,7 @@ const UIComponents = {
 	'par défaut': ParDéfaut,
 	plafond: Plafond,
 	plancher: Plancher,
+	texte: Texte,
 	produit: Product,
 	reference: Leaf,
 	rule: Rule,
