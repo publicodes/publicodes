@@ -78,9 +78,11 @@ function Overlay({
 			ref={divRef}
 			style={{
 				backgroundColor: 'white',
+				zIndex: 3,
+				boxShadow: '0px 1px 2px rgba(0,0,0,0.25)',
 				position: 'absolute',
 				padding: '1rem',
-				border: '1px solid grey',
+				border: '1px solid rgba(0,0,0,0.25)',
 				borderRadius: '0.3rem',
 			}}
 		>

@@ -240,8 +240,8 @@ const StyledMecanismName = styled.a<{ name: string; inline?: boolean }>`
 	display: inline-block;
 	font-weight: inherit;
 	font-family: inherit;
-	padding: 0.4rem 0.6rem;
-	color: white;
+	padding: 0.4rem 0.6rem !important;
+	color: white !important;
 	transition: hover 0.2s;
 	:hover {
 		color: white;
@@ -250,12 +250,14 @@ const StyledMecanismName = styled.a<{ name: string; inline?: boolean }>`
 		props.inline
 			? css`
 					border-radius: 0.3rem;
+					margin-bottom: 0.5rem;
 			  `
 			: css`
 					top: -1rem;
 					position: relative;
 					margin-left: -1rem;
-					border-bottom-right-radius: 0.3rem;
+					border-radius: 0 !important;
+					border-bottom-right-radius: 0.3rem !important;
 					::first-letter {
 						text-transform: capitalize;
 					}

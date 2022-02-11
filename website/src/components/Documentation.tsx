@@ -81,11 +81,12 @@ export default function Documentation({ onClickShare, rules }: ResultsProps) {
 							setCurrentTarget(e.currentTarget.value ?? '')
 						}}
 						value={currentTarget}
-						css={`
-							font-size: inherit;
-							color: inherit;
-							font-family: inherit;
-						`}
+						style={{
+							fontSize: 'inherit',
+							color: 'inherit',
+							fontFamily: 'inherit',
+							maxWidth: '300px',
+						}}
 					>
 						{targets.map((target) => (
 							<option key={target} value={target}>
