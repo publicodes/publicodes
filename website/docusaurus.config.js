@@ -19,7 +19,7 @@ module.exports = {
 			items: [
 				{
 					type: 'doc',
-					docId: 'se-lancer',
+					docId: 'principes-de-base',
 					position: 'left',
 					label: 'Documentation',
 				},
@@ -45,7 +45,6 @@ module.exports = {
 			// `themes/github` works well with different colors for keys and values
 			// but it doesn't exist in dark mode variant in the default list.
 			theme: require('prism-react-renderer/themes/palenight'),
-			additionalLanguages: ['yaml']
 		},
 		footer: {
 			links: [
@@ -69,15 +68,15 @@ module.exports = {
 					sidebarPath: require.resolve('./sidebars.js'),
 					editUrl:
 						'https://github.com/betagouv/publicodes/edit/master/website/',
-				},
-				blog: {
-					showReadingTime: true,
-					// Please change this to your repo.
-					editUrl:
-						'https://github.com/facebook/docusaurus/edit/master/website/blog/',
+					remarkPlugins: [
+						[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }],
+					],
 				},
 				theme: {
 					customCss: require.resolve('./src/css/custom.css'),
+				},
+				pages: {
+					remarkPlugins: [require('@docusaurus/remark-plugin-npm2yarn')],
 				},
 			},
 		],

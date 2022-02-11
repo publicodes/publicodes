@@ -147,6 +147,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 					</p>
 				</>
 			)}
+
 			<h2>Comment cette donnée est-elle calculée ?</h2>
 			<Explanation node={valeur} />
 			<RuleSource key={dottedName} dottedName={dottedName} engine={engine} />
@@ -218,7 +219,6 @@ function MissingVars({
 					Données manquantes
 				</h3>
 				<a
-					className="ui__ simple small button"
 					onClick={() => {
 						setOpened(!opened)
 					}}
@@ -286,7 +286,6 @@ function ReverseMissing({
 					Autres règles qui auraient besoin de cette valeur
 				</h3>
 				<a
-					className="ui__ simple small button"
 					onClick={() => {
 						setOpened(!opened)
 					}}

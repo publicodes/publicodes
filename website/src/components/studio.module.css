@@ -3,9 +3,11 @@
 	display: flex;
 	height: 100%;
 }
-
+.studio > * {
+	flex: 1;
+}
 .studio > :first-child {
-	width: 55% !important;
+	min-width: 55% !important;
 }
 
 @media (max-width: 960px) {

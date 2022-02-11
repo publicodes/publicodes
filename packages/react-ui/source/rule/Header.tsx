@@ -17,13 +17,7 @@ export default function RuleHeader({ dottedName }) {
 	return (
 		<header>
 			<Meta title={displayTitle} description={description || question} />
-			<div
-				style={{
-					position: 'relative',
-					bottom: '-2.5rem',
-					marginBottom: '-1rem',
-				}}
-			>
+			<div>
 				{utils
 					.ruleParents(dottedName)
 					.reverse()

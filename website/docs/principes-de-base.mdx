@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 title: Principes de base
 ---
 
@@ -64,8 +64,12 @@ Cette incohérence d'unité témoigne d'une erreur de logique. Ici, une manière
 prix total: nombre de repas * (prix d'un repas + frais de réservation)
 ```
 
-> **Attention :** Il ne faut pas insérer d'espace autour de la barre oblique dans
-> les unités, l'unité `€ / mois` doit être notée `€/mois`.
+:::caution
+
+Il ne faut pas insérer d'espace autour de la barre oblique dans
+les unités, l'unité `€ / mois` doit être notée `€/mois`.
+
+:::
 
 Publicodes convertit automatiquement les unités si besoin.
 
@@ -74,7 +78,11 @@ salaire: 1500 €/mois
 prime faible salaire applicable: salaire < 20 k€/an
 ```
 
-> NB : On peut forcer la conversion des unités via le [mécanisme `unité`](/mécanismes#unité).
+:::info
+
+On peut forcer la conversion des unités via le [mécanisme `unité`](/mécanismes#unité).
+
+:::
 
 **Types de base disponibles pour la conversion :**
 
@@ -123,7 +131,7 @@ remboursement repas:
   arrondi: oui
 ```
 
-> **[Pour en savoir plus sur les mécanismes](./mécanismes)**
+> **[Voir la liste des mécanismes existants](./mécanismes)**
 
 ## Pages d'explications
 
@@ -317,8 +325,6 @@ temps original:
 temps modifié:
   formule: temps de préparation + temps de cuisson # résultat : 30 min
 ```
-
-> [En savoir plus sur les remplacements](/manuel#remplacement)
 
 ## Définition de règle imbriquée
 

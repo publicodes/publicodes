@@ -1,8 +1,7 @@
 import { EvaluatedNode } from 'publicodes/source/AST/types'
 import { VariationNode } from 'publicodes/source/mecanisms/variations'
-import { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Explanation from '../Explanation'
-import Overlay from '../Overlay'
 import { RuleLinkWithContext } from '../RuleLink'
 import Variations from './Variations'
 
@@ -13,18 +12,22 @@ export default function Replacement(node: VariationNode & EvaluatedNode) {
 	const replacedNode = node.explanation.slice(-1)[0].consequence as {
 		dottedName: string
 	}
-
 	const [displayReplacements, changeDisplayReplacement] = useState(false)
+
 	return (
 		<span>
 			<Explanation node={applicableReplacement ?? replacedNode} />
-			&nbsp;
-			<button
-				onClick={() => changeDisplayReplacement(true)}
-				className="ui__ simple small button"
-			>
-				🔄
-			</button>
+			{applicableReplacement && (
+				<>
+					&nbsp;
+					<button
+						onClick={() => changeDisplayReplacement(!displayReplacements)}
+					>
+						🔄
+					</button>{' '}
+					&nbsp;
+				</>
+			)}
 			{displayReplacements && (
 				<Overlay onClose={() => changeDisplayReplacement(false)}>
 					<h3>Remplacement existant</h3>
@@ -44,5 +47,44 @@ export default function Replacement(node: VariationNode & EvaluatedNode) {
 				</Overlay>
 			)}
 		</span>
+	)
+}
+
+function Overlay({
+	children,
+	onClose,
+}: {
+	children: React.ReactNode
+	onClose: () => void
+}) {
+	const divRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		const hideOnClickOutside = (click) => {
+			if (!divRef.current) {
+				return
+			}
+			if (divRef.current.contains(click.target)) {
+				return
+			}
+			console.log('azd')
+			onClose()
+		}
+		window.addEventListener('click', hideOnClickOutside)
+		return () => window.removeEventListener('click', hideOnClickOutside)
+	}, [])
+	return (
+		<div
+			ref={divRef}
+			style={{
+				backgroundColor: 'white',
+				position: 'absolute',
+				padding: '1rem',
+				border: '1px solid grey',
+				borderRadius: '0.3rem',
+			}}
+		>
+			{children}
+		</div>
 	)
 }

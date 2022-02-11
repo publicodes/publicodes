@@ -1,6 +1,6 @@
 ---
-sidebar_position: 1
-title: Se lancer
+sidebar_position: 2
+title: Tutoriel
 ---
 
 import Tabs from '@theme/Tabs'
@@ -8,38 +8,42 @@ import TabItem from '@theme/TabItem'
 
 ## Installation
 
-Publicodes est distribué sous la forme d'une librairie
-[Node.js](https://nodejs.org/fr/) permettant de compiler un jeu de règles
+Publicodes est distribué sous la forme d'une biblitothèque
+JavaScript permettant de compiler un jeu de règles
 publicodes et de l'évaluer dans une situation donnée.
 
-Le paquet est disponible sur npm :
+Le paquet est disponible sur npm.
 
-```sh
-$ npm install publicodes
+```bash npm2yarn
+npm install @docusaurus/remark-plugin-npm2yarn
 ```
 
-:::note Importer sans bundler
+:::info Importer
 
 Voici comment importer publicodes en fonction de l'environnement.
 
 <Tabs
-    defaultValue="nodejs-modern"
+    defaultValue="esmodule"
     values={[
-    	{ label: 'NodeJS >= 15.0.0', value: 'nodejs-modern' },
-    	{ label: 'NodeJS < 15.0.0', value: 'nodejs-old' },
+    	{ label: 'esmodule', value: 'esmodule' },
+    	{ label: 'commonJS', value: 'commonJS' },
     	{ label: 'Deno', value: 'esmodule-unpkg' },
     	{ label: 'Navigateur', value: 'script-unpkg' },
     ]}
 >
 
-<TabItem value="nodejs-modern">
+<TabItem value="esmodule">
+
+Si vous utilisez webpack ou une version de node >= `15.0.0`
 
 ```js
 import Engine from 'publicodes'
 ```
 
 </TabItem>
-<TabItem value="nodejs-old">
+<TabItem value="commonJS">
+
+Si vous utilisez une version de node < `15.0.0`
 
 ```js
 const Engine = require('publicodes').default
@@ -205,13 +209,15 @@ le composant dédié, et passer l'`engine` à afficher dans les props.
 
 Il faut commencer par installer la librairie `publicodes-react` :
 
-```sh
-$ npm install publicodes-react
+```bash npm2yarn
+npm install publicodes-react
 ```
+
+Puis configurer le router en ajoutant les pages de documentations :
 
 ```jsx
 import { BrowserRouter as Router, Link } from 'react-router-dom'
-import { Documentation } from 'publicodes-react'
+import { RulePage } from 'publicodes-react'
 
 function MonApp() {
 	return (
@@ -222,7 +228,6 @@ function MonApp() {
 					<RulePage
 						documentationPath="/documentation"
 						rulePath={match.params.name}
-						language="fr"
 						renderers={{ Link }}
 					/>
 				)}

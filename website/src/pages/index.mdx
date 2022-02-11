@@ -1,10 +1,20 @@
+---
+title: Langage Publicodes
+description: 'Langage et plateforme pour des calculs auto-documentés'
+hide_table_of_contents: true
+---
+
+import HomepageHeader from '../components/HomepageHeader'
+import styles from './index.module.css'
+
+<HomepageHeader />
+<main className={styles.main}>
+
 Publicodes est un **langage déclaratif** pour **modéliser des domaines métiers complexes** en les décomposant en règles élémentaires simples.
 
 Il est utilisé par **plusieurs administrations** pour implémenter des règles de calcul dans des **domaines très variés** (fiche de paie, empreinte carbone, préavis de retraite).
 
 En plus de calculer des résultats à partir d'une situation saisie, publicodes **génère automatiquement une documentation explorable** proposant une **explication du calcul**, qui s'intègre facilement dans une application web. Publicodes est donc particulièrement adapté dans une démarche de **transparence des algotithmes publics**.
-
-## Exemple
 
 ```yaml
 salaire net: salaire brut - cotisations salariales
@@ -36,3 +46,5 @@ salaire brut:
   un vélo dans votre ville.
 - **[futur.eco](https://futur.eco/)** calcule les bilans carbone d'un grand
   nombre d'activités, plats, transports ou biens.
+
+</main>

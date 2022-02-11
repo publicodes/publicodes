@@ -34,6 +34,12 @@ function getDependancies(engine: Engine, dottedName: string): Array<string> {
 }
 type Props = { dottedName: string; engine: Engine }
 export default function RuleSource({ engine, dottedName }: Props) {
+	if (
+		window.location.host === 'publi.codes' &&
+		window.location.pathname === '/studio'
+	) {
+		return null
+	}
 	const dependancies = [
 		...getDependancies(engine, dottedName),
 		...getParents(dottedName),
@@ -75,10 +81,10 @@ export default function RuleSource({ engine, dottedName }: Props) {
 
 	const baseURL =
 		location.hostname === 'localhost' ? '/publicodes' : 'https://publi.codes'
+
 	return (
-		<div style={{ textAlign: 'right' }}>
+		<p style={{ textAlign: 'right' }}>
 			<a
-				className="ui__ simple small button"
 				target="_blank"
 				href={`${baseURL}/studio/${encodeRuleName(
 					dottedName
@@ -86,7 +92,7 @@ export default function RuleSource({ engine, dottedName }: Props) {
 			>
 				✍️ Voir la règle dans le bac à sable Publicodes
 			</a>
-		</div>
+		</p>
 	)
 }
 // TODO: This formating function should be in the core code. We need to think
