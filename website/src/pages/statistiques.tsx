@@ -1,5 +1,6 @@
 import { useColorMode } from '@docusaurus/theme-common'
 import Layout from '@theme/Layout'
+import React from 'react'
 
 export default function Statistiques() {
 	return (
