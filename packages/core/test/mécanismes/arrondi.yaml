@@ -60,6 +60,7 @@ Arrondi:
       valeur attendue: 1201
 
 nombre de décimales:
+  unité: décimales
 
 Arrondi avec precision:
   formule:
