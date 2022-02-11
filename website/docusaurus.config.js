@@ -24,11 +24,6 @@ module.exports = {
 					label: 'Documentation',
 				},
 				{
-					to: 'communaute',
-					position: 'left',
-					label: 'Communauté',
-				},
-				{
 					to: 'studio',
 					position: 'left',
 					label: 'Bac à sable',
@@ -50,6 +45,7 @@ module.exports = {
 			// `themes/github` works well with different colors for keys and values
 			// but it doesn't exist in dark mode variant in the default list.
 			theme: require('prism-react-renderer/themes/palenight'),
+			additionalLanguages: ['yaml']
 		},
 		footer: {
 			links: [

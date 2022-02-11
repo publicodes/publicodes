@@ -18,34 +18,6 @@ Le paquet est disponible sur npm :
 $ npm install publicodes
 ```
 
-## Premiers pas
-
-La bibliothèque exporte une classe par défaut `Engine` qui permet d'instancier le moteur avec un
-jeu de règles publicodes.
-
-```js
-import Engine from 'publicodes'
-
-// On définit une liste de règles publicodes
-const rules = `
-prix:
-prix . carottes: 2€/kg
-prix . champignons: 5€/kg
-prix . avocat: 2€/avocat
-
-dépenses primeur:
-  formule:
-    somme:
-      - prix . carottes * 1.5 kg
-      - prix . champignons * 500g
-      - prix . avocat * 3 avocat
-`
-
-// On initialise un moteur en lui donnant le publicodes.
-// Ce publicodes va être parsé
-const engine = new Engine(rules)
-```
-
 :::note Importer sans bundler
 
 Voici comment importer publicodes en fonction de l'environnement.
@@ -94,6 +66,34 @@ import Engine from 'https://unpkg.com/publicodes@next/esm/index.global.js'
 </Tabs>
 
 :::
+
+## Premiers pas
+
+La bibliothèque exporte une classe par défaut `Engine` qui permet d'instancier le moteur avec un
+jeu de règles publicodes.
+
+```js
+import Engine from 'publicodes'
+
+// On définit une liste de règles publicodes
+const rules = `
+prix:
+prix . carottes: 2€/kg
+prix . champignons: 5€/kg
+prix . avocat: 2€/avocat
+
+dépenses primeur:
+  formule:
+    somme:
+      - prix . carottes * 1.5 kg
+      - prix . champignons * 500g
+      - prix . avocat * 3 avocat
+`
+
+// On initialise un moteur en lui donnant le publicodes.
+// Ce publicodes va être parsé
+const engine = new Engine(rules)
+```
 
 La variable `engine` permet en ensuite de calculer la valeur d'une règle avec la
 méthode `evaluate` :

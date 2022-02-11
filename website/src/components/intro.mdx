@@ -1,19 +1,38 @@
-Un langage déclaratif pour modéliser des domaines métiers complexes en les décomposant en règles élémentaires simples (comme la [législation socio-fiscale](https://github.com/betagouv/mon-entreprise/tree/master/publicodes),
-[un bilan carbone](https://github.com/laem/futureco-data/blob/master/co2.yaml),
-un estimateur de rendement locatif, etc.).
+Publicodes est un **langage déclaratif** pour **modéliser des domaines métiers complexes** en les décomposant en règles élémentaires simples.
 
-En plus de calculer des résultats à partir d'une situation saisie, publicodes génère automatiquement une documentation complète sur le Web, et des simulateurs interactifs où l'utilisateur peut répondre question après question pour affiner son résultat.
+Il est utilisé par **plusieurs administrations** pour implémenter des règles de calcul dans des **domaines très variés** (fiche de paie, empreinte carbone, préavis de retraite).
 
-### Aperçu
+En plus de calculer des résultats à partir d'une situation saisie, publicodes **génère automatiquement une documentation explorable** proposant une **explication du calcul**, qui s'intègre facilement dans une application web. Publicodes est donc particulièrement adapté dans une démarche de **transparence des algotithmes publics**.
+
+## Exemple
 
 ```yaml
-prix d'un repas: 10 €/repas
+salaire net: salaire brut - cotisations salariales
 
-nombre de repas: 5 repas
+cotisations salariales:
+  produit:
+    assiette: salaire brut
+    taux: 21.7%
 
-prix: nombre de repas * prix d'un repas
-
-prix . HT: prix / (1 + TVA)
-
-prix . TVA: 20%
+salaire brut:
+  par défaut: 2300 €/mois
 ```
+
+[**👉 Lancer le calcul dans le bac à sable**](http://localhost:3000/studio?code=%0Asalaire+net%3A+salaire+brut+-+cotisations+salariales%0A%0Acotisations+salariales%3A%0A++produit%3A%0A++++assiette%3A+salaire+brut%0A++++taux%3A+21.7%25%0A%0Asalaire+brut%3A%0A++par+d%C3%A9faut%3A+2300+%E2%82%AC%2Fmois)
+
+## Projets phares
+
+- **[Mon-entreprise](https://mon-entreprise.urssaf.fr/simulateurs)** utilise
+  publicodes pour spécifier l'ensemble des calculs relatifs à la législation
+  socio-fiscale en France. Le site permet entre autres de simuler une fiche de
+  paie complète, de calculer les cotisations sociales pour un indépendant ou
+  encore connaître le montant du chômage partiel.
+- **[Nos Gestes Climat](https://ecolab.ademe.fr/apps/climat)** propose un
+  calculateur d'empreinte climat personnel de référence complètement ouvert.
+- **[Code du Travail Numérique](https://code.travail.gouv.fr/outils/preavis-retraite)**
+  développe un simulateur de préavis de retraite intégrant de nombreuses
+  conventions collectives.
+- **[Mes Aides Vélos](https://mesaidesvelo.fr)** trouve les aides pour acheter
+  un vélo dans votre ville.
+- **[futur.eco](https://futur.eco/)** calcule les bilans carbone d'un grand
+  nombre d'activités, plats, transports ou biens.
