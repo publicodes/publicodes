@@ -74,7 +74,20 @@ const StyledRow = styled.div`
 	}
 
 	&.notApplicable {
-		opacity: 0.6;
+		position: relative;
+		::before {
+			content: ' ';
+			position: absolute;
+			display: block;
+			background-color: white;
+			pointer-events: none;
+			opacity: 0.4;
+			top: 0;
+			z-index: 2;
+			bottom: 0;
+			right: 0;
+			left: 0;
+		}
 	}
 
 	.element .result,

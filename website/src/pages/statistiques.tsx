@@ -1,6 +1,6 @@
-import React from 'react'
+import { useColorMode } from '@docusaurus/theme-common'
 import Layout from '@theme/Layout'
-import useThemeContext from '@theme/hooks/useThemeContext'
+import React from 'react'
 
 export default function Statistiques() {
 	return (
@@ -15,7 +15,7 @@ export default function Statistiques() {
 }
 
 function IFrame() {
-	const { isDarkTheme } = useThemeContext()
+	const { isDarkTheme } = useColorMode()
 
 	return (
 		<>

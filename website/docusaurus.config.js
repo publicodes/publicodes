@@ -19,14 +19,9 @@ module.exports = {
 			items: [
 				{
 					type: 'doc',
-					docId: 'se-lancer',
+					docId: 'principes-de-base',
 					position: 'left',
 					label: 'Documentation',
-				},
-				{
-					to: 'communaute',
-					position: 'left',
-					label: 'Communauté',
 				},
 				{
 					to: 'studio',
@@ -73,15 +68,15 @@ module.exports = {
 					sidebarPath: require.resolve('./sidebars.js'),
 					editUrl:
 						'https://github.com/betagouv/publicodes/edit/master/website/',
-				},
-				blog: {
-					showReadingTime: true,
-					// Please change this to your repo.
-					editUrl:
-						'https://github.com/facebook/docusaurus/edit/master/website/blog/',
+					remarkPlugins: [
+						[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }],
+					],
 				},
 				theme: {
 					customCss: require.resolve('./src/css/custom.css'),
+				},
+				pages: {
+					remarkPlugins: [require('@docusaurus/remark-plugin-npm2yarn')],
 				},
 			},
 		],

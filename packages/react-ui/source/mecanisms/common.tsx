@@ -7,11 +7,9 @@ import {
 } from 'publicodes/source/AST/types'
 import { ReferenceNode } from 'publicodes/source/reference'
 import React, { createContext, useContext, useState } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { EngineContext, RenderersContext } from '../contexts'
-import mecanismsDoc from '../data/mecanisms.json'
 import Explanation from '../Explanation'
-import Overlay from '../Overlay'
 import { RuleLinkWithContext } from '../RuleLink'
 import mecanismColors from './colors'
 
@@ -48,26 +46,26 @@ type NodeValuePointerProps = {
 export const NodeValuePointer = ({ data, unit }: NodeValuePointerProps) => {
 	const engine = useContext(EngineContext)
 	return (
-		<span
-			style={{
-				background: 'white',
-				borderBottom: '0 !important',
-				fontSize: '0.875rem',
-				lineHeight: '1.25rem',
-				margin: '0 0.2rem',
-				padding: '0.1rem 0.2rem',
-				textDecoration: 'none !important',
-				boxShadow: '0px 1px 2px 1px #d9d9d9, 0 0 0 1px #d9d9d9',
-				border: '1px solid #F8F9FA',
-				borderRadius: '0.2rem',
-			}}
-		>
+		<StyledNodeValuePointer>
 			{formatValue(simplifyNodeUnit({ nodeValue: data, unit }), {
 				formatUnit: engine?.getOptions()?.formatUnit,
 			})}
-		</span>
+		</StyledNodeValuePointer>
 	)
 }
+
+const StyledNodeValuePointer = styled.span`
+	background: white;
+	border-bottom: 0 !important;
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	margin: 0 0.2rem;
+	padding: 0.1rem 0.2rem;
+	text-decoration: none !important;
+	box-shadow: 0px 1px 2px 1px #d9d9d9, 0 0 0 1px #d9d9d9;
+	border: 1px solid #f8f9fa;
+	border-radius: 0.2rem;
+`
 
 // Un élément du graphe de calcul qui a une valeur interprétée (à afficher)
 type NodeProps = {
@@ -92,21 +90,20 @@ export function Mecanism({
 				{children}
 
 				{value != null && (
-					<div
-						style={{
-							textAlign: 'right',
-							marginTop: '0.4rem',
-							fontWeight: 'bold',
-						}}
-					>
+					<StyledMecanismValue>
 						<small> =&nbsp;</small>
 						<NodeValuePointer data={value} unit={unit} />
-					</div>
+					</StyledMecanismValue>
 				)}
 			</>
 		</StyledMecanism>
 	)
 }
+const StyledMecanismValue = styled.div`
+	text-align: right;
+	margin-top: 0.4rem;
+	font-weight: bold;
+`
 
 export const InfixMecanism = ({
 	value,
@@ -174,22 +171,16 @@ const MecanismName = ({
 	inline?: boolean
 	children: React.ReactNode
 }) => {
-	const [showExplanation, setShowExplanation] = useState(false)
-
 	return (
 		<>
 			<StyledMecanismName
 				name={name}
 				inline={inline}
-				onClick={() => setShowExplanation(true)}
+				target="_blank"
+				href={`https://publi.codes/mécanismes#${name}`}
 			>
 				{children}
 			</StyledMecanismName>
-			{showExplanation && (
-				<Overlay onClose={() => setShowExplanation(false)}>
-					<RuleExplanation name={name} {...mecanismsDoc[name]} />
-				</Overlay>
-			)}
 		</>
 	)
 }
@@ -243,31 +234,34 @@ const StyledMecanism = styled.div<{ name: string }>`
 	}
 `
 
-const StyledMecanismName = styled.button<{ name: string; inline?: boolean }>`
+const StyledMecanismName = styled.a<{ name: string; inline?: boolean }>`
 	background-color: ${({ name }) => mecanismColors(name)};
 	font-size: inherit;
+	display: inline-block;
 	font-weight: inherit;
 	font-family: inherit;
-	padding: 0.4rem 0.6rem;
-	color: white;
+	padding: 0.4rem 0.6rem !important;
+	color: white !important;
 	transition: hover 0.2s;
+	:hover {
+		color: white;
+	}
 	${(props) =>
 		props.inline
-			? `
-		display: inline-block;
-		border-radius: 0.3rem;
-		`
-			: `
-		margin-bottom: 0.8rem;
-		display: block;
-
-		margin-top: -1rem;
-		margin-left: -1rem;
-		border-bottom-right-radius: 0.3rem;
-		::first-letter {
-			text-transform: capitalize;
-		}
-	`}
+			? css`
+					border-radius: 0.3rem;
+					margin-bottom: 0.5rem;
+			  `
+			: css`
+					top: -1rem;
+					position: relative;
+					margin-left: -1rem;
+					border-radius: 0 !important;
+					border-bottom-right-radius: 0.3rem !important;
+					::first-letter {
+						text-transform: capitalize;
+					}
+			  `}
 	:hover {
 		opacity: 0.8;
 	}
@@ -294,10 +288,7 @@ export function Leaf(
 	}
 	const [folded, setFolded] = useState(true)
 	const foldButton = useContext(UnfoldIsEnabledContext) ? (
-		<UnfoldButton
-			onClick={() => setFolded(!folded)}
-			className="ui__ notice small static simple button"
-		>
+		<UnfoldButton onClick={() => setFolded(!folded)}>
 			{folded ? 'déplier' : 'replier'}
 		</UnfoldButton>
 	) : null
