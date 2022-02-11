@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.0.0-beta.31
+
+**publicodes-react**
+
+-   La description des mécanisme est disponible via un lien plutôt qu'une modale dans la page
+-   Amélioration des styles par défaut pour les mécanismes
+-   Suppressions des dépendances à focus-trap-react
+-   Ajout de la visualisation pour le mécanisme texte
+-   Répare le style de l'overlay qui s'affiche pour les remplacements #126
+
+**publicodes**
+
+-   Ajoute un nouveau mécanisme `texte` pour l'interpolation de chaine de caractère #152
+-   Le formattage des chaine de caractère via `formatValue` ne transforme plus la première lettre en capitale
+-   Ajoute la possibilité d'avoir des espaces après une parenthèse dans une expression publicodes
+-   Ajoute la possibilité de définir une expression publicodes sur plusieurs lignes
+
 ## 1.0.0-beta.30
 
 **publicodes-react**
