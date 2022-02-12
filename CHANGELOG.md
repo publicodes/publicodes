@@ -4,7 +4,7 @@
 
 **publicodes-react**
 
--   La description des mécanisme est disponible via un lien plutôt qu'une modale dans la page
+-   La description des mécanismes est disponible via un lien plutôt qu'une modale dans la page
 -   Amélioration des styles par défaut pour les mécanismes
 -   Suppressions des dépendances à focus-trap-react
 -   Ajout de la visualisation pour le mécanisme texte
