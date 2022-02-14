@@ -90,7 +90,7 @@ describe('inversions', () => {
       `
 		const result = new Engine(rules).evaluate('brut')
 
-		expect(result.nodeValue).to.be.null
+		expect(result.nodeValue).to.be.undefined
 		expect(Object.keys(result.missingVariables)).to.include('brut')
 	})
 
@@ -137,7 +137,7 @@ describe('inversions', () => {
 		const result = new Engine(rules)
 			.setSituation({ net: '2000 €' })
 			.evaluate('brut')
-		expect(result.nodeValue).to.be.null
+		expect(result.nodeValue).to.be.undefined
 		expect(Object.keys(result.missingVariables)).to.include('cadre')
 	})
 

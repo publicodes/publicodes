@@ -47,8 +47,9 @@ export function evaluatePlafondUntilActiveTranche(
 				: { nodeValue: 0 }
 
 			let plafondValue: Evaluation<number> =
-				plafond.nodeValue === null || multiplicateur.nodeValue === null
-					? null
+				plafond.nodeValue === undefined ||
+				multiplicateur.nodeValue === undefined
+					? undefined
 					: plafond.nodeValue * multiplicateur.nodeValue
 
 			try {
@@ -72,12 +73,12 @@ export function evaluatePlafondUntilActiveTranche(
 			}
 			const plancherValue = tranches[i - 1] ? tranches[i - 1].plafondValue : 0
 			const isAfterActive =
-				plancherValue === null || assiette.nodeValue === null
-					? null
+				plancherValue === undefined || assiette.nodeValue === undefined
+					? undefined
 					: plancherValue > assiette.nodeValue
 
 			const calculationValues = [plafond, assiette, multiplicateur, plancher]
-			if (calculationValues.some((node) => node.nodeValue === null)) {
+			if (calculationValues.some((node) => node.nodeValue === undefined)) {
 				return [
 					[
 						...tranches,
@@ -86,8 +87,8 @@ export function evaluatePlafondUntilActiveTranche(
 							plafond,
 							plafondValue,
 							plancherValue,
-							nodeValue: null,
-							isActive: null,
+							nodeValue: undefined,
+							isActive: undefined,
 							isAfterActive,
 							missingVariables: mergeAllMissing(calculationValues),
 						},

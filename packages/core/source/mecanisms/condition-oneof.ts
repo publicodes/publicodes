@@ -24,13 +24,13 @@ const evaluate: EvaluationFunction<'une de ces conditions'> = function (node) {
 					explanation: [...acc.explanation, node],
 				}
 			}
-			if (acc.nodeValue === null || acc.nodeValue === false) {
+			if (acc.nodeValue === undefined || acc.nodeValue === false) {
 				const evaluatedNode = this.evaluate(node)
 				return {
 					nodeValue: evaluatedNode.nodeValue
 						? true
-						: evaluatedNode.nodeValue === null
-						? null
+						: evaluatedNode.nodeValue === undefined
+						? undefined
 						: acc.nodeValue,
 					missingVariables: mergeMissing(
 						acc.missingVariables,

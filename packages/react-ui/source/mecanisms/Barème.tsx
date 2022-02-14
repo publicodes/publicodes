@@ -14,7 +14,7 @@ export default function Barème({ nodeValue, explanation, unit }) {
 						multiplicateur={explanation.multiplicateur}
 					/>
 					{/* nous avons remarqué que la notion de taux moyen pour un barème à 2 tranches est moins pertinent pour les règles de calcul des indépendants. Règle empirique à faire évoluer ! */}
-					{nodeValue !== null && explanation.tranches.length > 2 && (
+					{nodeValue !== undefined && explanation.tranches.length > 2 && (
 						<>
 							<b>Taux moyen : </b>
 							<NodeValuePointer
@@ -59,7 +59,7 @@ export const TrancheTable = ({ tranches, multiplicateur }) => {
 				<tr>
 					<th>Plafonds des tranches</th>
 					{tranches[0].taux && <th>Taux</th>}
-					{(tranches[0].montant || activeTranche?.nodeValue != null) && (
+					{(tranches[0].montant || activeTranche?.nodeValue != undefined) && (
 						<th>Montant</th>
 					)}
 				</tr>
@@ -97,7 +97,7 @@ const Tranche = ({ tranche, multiplicateur }) => {
 					<Explanation node={tranche.taux} />
 				</td>
 			)}
-			{(tranche.nodeValue != null || tranche.montant) && (
+			{(tranche.nodeValue != undefined || tranche.montant) && (
 				<td key="value">
 					{tranche.montant ? (
 						<Explanation node={tranche.montant} />

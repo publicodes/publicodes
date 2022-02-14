@@ -47,12 +47,12 @@ function evaluateBarème(tranches, assiette, evaluate) {
 				taux.nodeValue,
 				tranche.plafondValue,
 				tranche.plancherValue,
-			].some((value) => value === null)
+			].some((value) => value === undefined)
 		) {
 			return {
 				...tranche,
 				taux,
-				nodeValue: null,
+				nodeValue: undefined,
 				missingVariables,
 			}
 		}
@@ -82,7 +82,8 @@ const evaluate: EvaluationFunction<'barème'> = function (node) {
 		evaluate
 	)
 	const nodeValue = tranches.reduce(
-		(value, { nodeValue }) => (nodeValue == null ? null : value + nodeValue),
+		(value, { nodeValue }) =>
+			nodeValue == undefined ? undefined : value + nodeValue,
 		0
 	)
 

@@ -49,7 +49,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		return {
 			...node,
 			missingVariables,
-			nodeValue: null,
+			nodeValue: undefined,
 		}
 	}
 	const evaluatedInversionGoal = this.evaluate(inversionGoal)
@@ -77,7 +77,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 
 	const goal = convertNodeToUnit(unit, evaluatedInversionGoal)
 		.nodeValue as number
-	let nodeValue: number | null | undefined = null
+	let nodeValue: number | undefined | undefined = undefined
 
 	// We do some blind attempts here to avoid using the default minimum and
 	// maximum of +/- 10^8 that are required by the `uniroot` function. For the
@@ -85,7 +85,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	// For the second attempt we do a proportionality coefficient with the result
 	// from the first try and the goal value. The two attempts are then used in
 	// the following way:
-	// - if both results are `null` we assume that the inversion is impossible
+	// - if both results are `undefined` we assume that the inversion is impossible
 	//   because of missing variables
 	// - otherwise, we calculate the missing variables of the node as the union of
 	//   the missings variables of our two attempts
@@ -95,7 +95,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	const y1Node = evaluateWithValue(x1)
 	const y1 = y1Node.nodeValue as number
 	const coeff = y1 > goal ? 0.9 : 1.2
-	const x2 = y1 !== null ? (x1 * goal * coeff) / y1 : 2000
+	const x2 = y1 !== undefined ? (x1 * goal * coeff) / y1 : 2000
 	const y2Node = evaluateWithValue(x2)
 	const y2 = y2Node.nodeValue as number
 
@@ -104,7 +104,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		y2Node.missingVariables
 	)
 
-	if (y1 !== null || y2 !== null) {
+	if (y1 !== undefined || y2 !== undefined) {
 		// The `uniroot` function parameter. It will be called with its `min` and
 		// `max` arguments, so we can use our cached nodes if the function is called
 		// with the already computed x1 or x2.
@@ -116,22 +116,22 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		const defaultMin = -1000000
 		const defaultMax = 100000000
 		const nearestBelowGoal =
-			y2 !== null && y2 < goal && (y2 > y1 || y1 > goal)
+			y2 !== undefined && y2 < goal && (y2 > y1 || y1 > goal)
 				? x2
-				: y1 !== null && y1 < goal && (y1 > y2 || y2 > goal)
+				: y1 !== undefined && y1 < goal && (y1 > y2 || y2 > goal)
 				? x1
 				: defaultMin
 		const nearestAboveGoal =
-			y2 !== null && y2 > goal && (y2 < y1 || y1 < goal)
+			y2 !== undefined && y2 > goal && (y2 < y1 || y1 < goal)
 				? x2
-				: y1 !== null && y1 > goal && (y1 < y2 || y2 < goal)
+				: y1 !== undefined && y1 > goal && (y1 < y2 || y2 < goal)
 				? x1
 				: defaultMax
 
 		nodeValue = uniroot(test, nearestBelowGoal, nearestAboveGoal, 0.1, 10, 1)
 	}
 	if (nodeValue === undefined) {
-		nodeValue = null
+		nodeValue = undefined
 		originalCache._meta.inversionFail = true
 	}
 

@@ -50,8 +50,8 @@ const evaluate: EvaluationFunction<'arrondi'> = function (node) {
 				? roundWithPrecision(valeur.nodeValue, arrondi.nodeValue)
 				: arrondi.nodeValue === true
 				? roundWithPrecision(valeur.nodeValue, 0)
-				: arrondi.nodeValue === null
-				? null
+				: arrondi.nodeValue === undefined
+				? undefined
 				: valeur.nodeValue,
 		explanation: { valeur, arrondi },
 		missingVariables: mergeAllMissing([valeur, arrondi]),

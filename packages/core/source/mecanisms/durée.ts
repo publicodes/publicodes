@@ -23,8 +23,8 @@ const evaluate: EvaluationFunction<'durée'> = function (node) {
 	const from = this.evaluate(node.explanation.depuis)
 	const to = this.evaluate(node.explanation["jusqu'à"])
 	let nodeValue
-	if ([from, to].some(({ nodeValue }) => nodeValue === null)) {
-		nodeValue = null
+	if ([from, to].some(({ nodeValue }) => nodeValue === undefined)) {
+		nodeValue = undefined
 	} else {
 		const [fromDate, toDate] = [from.nodeValue, to.nodeValue].map(
 			convertToDate as any

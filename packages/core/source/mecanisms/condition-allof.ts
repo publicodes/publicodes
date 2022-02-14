@@ -11,7 +11,7 @@ export type TouteCesConditionsNode = {
 
 const evaluate: EvaluationFunction<'toutes ces conditions'> = function (node) {
 	const [nodeValue, explanation] = node.explanation.reduce<
-		[boolean | null, Array<ASTNode>]
+		[boolean | undefined, Array<ASTNode>]
 	>(
 		([nodeValue, explanation], node) => {
 			if (nodeValue === false) {
@@ -19,8 +19,8 @@ const evaluate: EvaluationFunction<'toutes ces conditions'> = function (node) {
 			}
 			const evaluatedNode = this.evaluate(node)
 			return [
-				nodeValue === null || evaluatedNode.nodeValue === null
-					? null
+				nodeValue === undefined || evaluatedNode.nodeValue === undefined
+					? undefined
 					: !!evaluatedNode.nodeValue,
 				[...explanation, evaluatedNode],
 			]

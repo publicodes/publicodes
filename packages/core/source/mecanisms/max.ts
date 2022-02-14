@@ -24,8 +24,8 @@ const max = (a, b) => {
 	if (b === false) {
 		return a
 	}
-	if (a === null || b === null) {
-		return null
+	if (a === undefined || b === undefined) {
+		return undefined
 	}
 	return Math.max(a, b)
 }

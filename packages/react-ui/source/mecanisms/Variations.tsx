@@ -11,7 +11,9 @@ export default function Variations({
 	explanation,
 	unit,
 }: VariationNode & EvaluatedNode) {
-	const [expandedVariation, toggleVariation] = useState<null | number>(null)
+	const [expandedVariation, toggleVariation] = useState<undefined | number>(
+		undefined
+	)
 	return (
 		<StyledComponent>
 			<Mecanism
@@ -32,7 +34,9 @@ export default function Variations({
 								style={{
 									transition: 'all 0.2s',
 									opacity:
-										expandedVariation === i || satisfied || nodeValue == null
+										expandedVariation === i ||
+										satisfied ||
+										nodeValue == undefined
 											? 1
 											: 0.8,
 								}}
@@ -50,7 +54,7 @@ export default function Variations({
 										) : (
 											<button
 												className="ui__ link-button"
-												onClick={() => toggleVariation(null)}
+												onClick={() => toggleVariation(undefined)}
 											>
 												replier 🔽
 											</button>

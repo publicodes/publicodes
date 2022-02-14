@@ -25,6 +25,6 @@ export const mecanismOnePossibility = (v, context: Context) => {
 }
 registerEvaluationFunction<'une possibilité'>('une possibilité', (node) => ({
 	...node,
-	nodeValue: null,
+	nodeValue: undefined,
 	missingVariables: { [node.context]: 1 },
 }))

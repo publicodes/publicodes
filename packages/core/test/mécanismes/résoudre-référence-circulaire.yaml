@@ -35,15 +35,15 @@ cycle avec inversion et situation vide:
     - nom: CA
       situation:
         cycle avec inversion et situation vide: CA
-      valeur attendue: null
+      valeur attendue: undefined
     # - nom: net
     #   situation:
     #     cycle avec inversion et situation vide: net
-    #   valeur attendue: null
+    #   valeur attendue: undefined
     # - nom: net après impôt
     #   situation:
     #     cycle avec inversion et situation vide: net après impôt
-    #   valeur attendue: null
+    #   valeur attendue: undefined
 
 cycle avec la règle à inverser fixée dans la situation:
   valeur: net

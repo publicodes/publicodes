@@ -19,7 +19,7 @@ remboursement dépot de garantie:
     - nom: Est fausse -> en attente de l'autre
       situation:
         dégradation majeure: non
-      valeur attendue: null
+      valeur attendue: undefined
       variables manquantes:
         - dégradation mineure
     - nom: Toutes fausses -> valeur de la formule

@@ -31,10 +31,10 @@ const evaluateRecalcul: EvaluationFunction<'recalcul'> = function (node) {
 			warning(
 				this.options.logger,
 				this.cache._meta.evaluationRuleStack[0],
-				`Un recalcul imbriqué a été tenté à l'intérieur du recalcul ${this.cache._meta.currentRecalcul}. La valeur null (non défini) est retournée.`
+				`Un recalcul imbriqué a été tenté à l'intérieur du recalcul ${this.cache._meta.currentRecalcul}. La valeur undefined (non défini) est retournée.`
 			)
 		}
-		return defaultNode(null) as any as RecalculNode & EvaluatedNode
+		return defaultNode(undefined) as any as RecalculNode & EvaluatedNode
 	}
 
 	const amendedSituation = node.explanation.amendedSituation

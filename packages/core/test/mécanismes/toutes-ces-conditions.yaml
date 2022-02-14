@@ -14,7 +14,7 @@ remboursement dépot de garantie:
     - nom: A
       situation:
         dégradation mineure: oui
-      valeur attendue: null
+      valeur attendue: undefined
       variables manquantes:
         - dégradation majeure
     - nom: B

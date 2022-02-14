@@ -22,11 +22,11 @@ const evaluate: EvaluationFunction<'applicable si'> = function (node) {
 	return {
 		...node,
 		nodeValue:
-			condition.nodeValue == null || condition.nodeValue === false
+			condition.nodeValue == undefined || condition.nodeValue === false
 				? condition.nodeValue
 				: 'nodeValue' in valeur
 				? (valeur as EvaluatedNode).nodeValue
-				: null,
+				: undefined,
 		explanation: { valeur, condition },
 		missingVariables: mergeMissing(
 			'missingVariables' in valeur ? valeur.missingVariables : {},

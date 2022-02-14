@@ -32,15 +32,15 @@ const evaluateAbattement: EvaluationFunction<'abattement'> = function (node) {
 		}
 	}
 
-	const assietteValue = assiette.nodeValue as number | null
-	const abattementValue = abattement.nodeValue as number | null
+	const assietteValue = assiette.nodeValue as number | undefined
+	const abattementValue = abattement.nodeValue as number | undefined
 	const nodeValue = abattementValue
-		? assietteValue == null
-			? null
-			: abattementValue == null
+		? assietteValue == undefined
+			? undefined
+			: abattementValue == undefined
 			? assietteValue == 0
 				? 0
-				: null
+				: undefined
 			: serializeUnit(abattement.unit) === '%'
 			? Math.max(0, assietteValue - (abattementValue / 100) * assietteValue)
 			: Math.max(0, assietteValue - abattementValue)

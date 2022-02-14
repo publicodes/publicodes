@@ -129,7 +129,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 	let parent: EvaluatedNode | null = null
 	if (explanation.parent) {
 		if (this.cache._meta.parentRuleStack.includes(node.dottedName)) {
-			parent = { nodeValue: null } as EvaluatedNode
+			parent = { nodeValue: undefined } as EvaluatedNode
 		} else {
 			this.cache._meta.parentRuleStack.unshift(node.dottedName)
 			parent = this.evaluate(explanation.parent) as EvaluatedNode
@@ -163,7 +163,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 		`
 			)
 
-			valeur = { nodeValue: null } as EvaluatedNode
+			valeur = { nodeValue: undefined } as EvaluatedNode
 		} else {
 			this.cache._meta.evaluationRuleStack.unshift(node.dottedName)
 			valeur = this.evaluate(explanation.valeur) as EvaluatedNode

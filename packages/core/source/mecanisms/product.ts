@@ -56,8 +56,8 @@ const evaluateProduit: EvaluationFunction<'produit'> = function (node) {
 		? false
 		: [taux, assiette, facteur].some((n) => n.nodeValue === 0)
 		? 0
-		: [taux, assiette, facteur].some((n) => n.nodeValue === null)
-		? null
+		: [taux, assiette, facteur].some((n) => n.nodeValue === undefined)
+		? undefined
 		: mult(
 				assiette.nodeValue,
 				taux.nodeValue,

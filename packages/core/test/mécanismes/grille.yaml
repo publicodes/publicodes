@@ -54,7 +54,7 @@ Grille avec valeur manquante:
         assiette: 1000
       variables manquantes:
         - plafond
-      valeur attendue: null
+      valeur attendue: undefined
     - nom: 'assiette non concernée par variable manquante'
       situation:
         assiette: 3000
@@ -62,4 +62,4 @@ Grille avec valeur manquante:
     - nom: 'assiette au delà du plafond'
       situation:
         assiette: 5000
-      valeur attendue: false
+      valeur attendue: undefined

@@ -15,11 +15,11 @@ const evaluate: EvaluationFunction<'synchronisation'> = function (node: any) {
 	const data = this.evaluate(node.explanation.data)
 	const valuePath = node.explanation.chemin.split(' . ')
 	const path = (obj) => valuePath.reduce((res, prop) => res?.[prop], obj)
-	const nodeValue = path(data.nodeValue) ?? null
+	const nodeValue = path(data.nodeValue) ?? undefined
 
 	const missingVariables = {
 		...data.missingVariables,
-		...(data.nodeValue === null ? { [data.dottedName]: 1 } : {}),
+		...(data.nodeValue === undefined ? { [data.dottedName]: 1 } : {}),
 	}
 
 	const explanation = { ...node.explanation, data }

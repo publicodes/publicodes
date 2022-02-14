@@ -34,7 +34,7 @@ variations renvoyant une valeur:
       valeur attendue: 2100
     - nom: Information manquante
       situation:
-      valeur attendue: null
+      valeur attendue: undefined
       variables manquantes:
         - statut cadre
 
@@ -52,7 +52,7 @@ variations avec cas défaut:
       valeur attendue: 2100
     - nom: Information manquante
       situation:
-      valeur attendue: null
+      valeur attendue: undefined
       variables manquantes:
         - statut cadre
 
@@ -70,7 +70,7 @@ variations avec cas défaut calculé:
     - nom: Cas défaut à calculer
       situation:
         statut cadre: non
-      valeur attendue: null
+      valeur attendue: undefined
       variables manquantes:
         - base
     - nom: Cas défaut ignoré si variation résolue
@@ -104,7 +104,7 @@ plusieurs variations et un cas défaut:
     - nom: 2ème cas, non résolu
       situation:
         effectif: 40
-      valeur attendue: null
+      valeur attendue: undefined
       variables manquantes:
         - effectif plafond
     - nom: Cas par défaut
