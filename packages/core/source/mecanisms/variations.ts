@@ -60,7 +60,7 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 			EvaluatedNode['nodeValue'],
 			VariationNode['explanation'],
 			Unit | undefined,
-			boolean | null
+			boolean | undefined
 		]
 	>(
 		(
@@ -78,11 +78,11 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 			}
 			const evaluatedCondition = this.evaluate(condition)
 			const currentCondition =
-				previousConditions === null
+				previousConditions === undefined
 					? previousConditions
 					: !previousConditions &&
-					  (evaluatedCondition.nodeValue === null
-							? null
+					  (evaluatedCondition.nodeValue === undefined
+							? undefined
 							: evaluatedCondition.nodeValue !== false)
 
 			evaluatedCondition.missingVariables = bonus(

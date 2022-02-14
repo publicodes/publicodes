@@ -1,16 +1,16 @@
 import { EvaluationFunction } from '..'
+import { ASTNode } from '../AST/types'
 import { defaultNode, mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
-import parse from '../parse'
-
 import { convertNodeToUnit } from '../nodeUnits'
+import parse from '../parse'
 import { parseUnit } from '../units'
 import {
 	evaluatePlafondUntilActiveTranche,
 	parseTranches,
 	TrancheNodes,
 } from './trancheUtils'
-import { ASTNode } from '../AST/types'
+
 export type TauxProgressifNode = {
 	explanation: {
 		tranches: TrancheNodes
@@ -76,7 +76,7 @@ const evaluate: EvaluationFunction<'taux progressif'> = function (node) {
 	) {
 		return {
 			...evaluatedNode,
-			nodeValue: null,
+			nodeValue: undefined,
 			missingVariables: mergeAllMissing(tranches),
 		}
 	}
@@ -101,13 +101,13 @@ const evaluate: EvaluationFunction<'taux progressif'> = function (node) {
 	const previousTaux = previousTranche
 		? previousTranche.taux
 		: activeTranche.taux
-	const calculationValues = [previousTaux, activeTranche.taux, activeTranche]
-	if (calculationValues.some((n) => n.nodeValue === null)) {
-		activeTranche.nodeValue = null
+	const calculationValues = [previousTaux, activeTranche.taux]
+	if (calculationValues.some((n) => n.nodeValue === undefined)) {
+		activeTranche.nodeValue = undefined
 		activeTranche.missingVariables = mergeAllMissing(calculationValues)
 		return {
 			...evaluatedNode,
-			nodeValue: null,
+			nodeValue: undefined,
 			missingVariables: activeTranche.missingVariables,
 		}
 	}

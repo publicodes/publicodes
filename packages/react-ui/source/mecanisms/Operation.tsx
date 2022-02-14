@@ -12,7 +12,7 @@ export default function Operation({ nodeValue, explanation, operator, unit }) {
 		<StyledOperation className="operation">
 			{!isUnaryOperation && <Explanation node={explanation[0]} />} {operator}{' '}
 			<Explanation node={explanation[1]} />
-			{nodeValue != null && (
+			{nodeValue != undefined && (
 				<span className="result">
 					<small> =&nbsp;</small>
 					<NodeValuePointer data={nodeValue} unit={unit} />

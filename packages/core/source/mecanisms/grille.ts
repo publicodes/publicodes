@@ -63,13 +63,15 @@ const evaluate: EvaluationFunction<'grille'> = function (node) {
 	} else if (tranches[tranches.length - 1].isAfterActive === false) {
 		activeTranches = [{ nodeValue: false }]
 	} else {
-		activeTranches = tranches.filter((tranche) => tranche.isActive === null)
+		activeTranches = tranches.filter(
+			(tranche) => tranche.isActive === undefined
+		)
 	}
 
 	const nodeValue = !activeTranches[0]
 		? false
-		: activeTranches[0].isActive === null
-		? null
+		: activeTranches[0].isActive === undefined
+		? undefined
 		: activeTranches[0].nodeValue
 
 	return {

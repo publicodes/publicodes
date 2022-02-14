@@ -19,7 +19,9 @@ export const DefaultTextRenderer: React.ComponentType<{ children: string }> = ({
 }) => <>{children}</>
 
 export const BasepathContext = createContext<string>('/documentation')
-export const EngineContext = createContext<Engine<string> | null>(null)
+export const EngineContext = createContext<Engine<string> | undefined>(
+	undefined
+)
 export const RenderersContext = createContext<
 	Partial<Omit<SupportedRenderers, 'Text'>> &
 		Required<Pick<SupportedRenderers, 'Text'>>

@@ -38,7 +38,7 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 			return this.evaluate(node.explanation.valeur)
 		}
 
-		let nodeValue: number | null | undefined = null
+		let nodeValue: number | undefined | undefined = undefined
 
 		const x0 = 0
 		let valeur = evaluateWithValue(x0)
@@ -47,7 +47,7 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 		const unit = valeur.unit
 		const missingVariables = valeur.missingVariables
 		let i = 0
-		if (y0 !== null) {
+		if (y0 !== undefined) {
 			// The `uniroot` function parameter. It will be called with its `min` and
 			// `max` arguments, so we can use our cached nodes if the function is called
 			// with the already computed x1 or x2.
@@ -70,10 +70,10 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 		this.cache = originalCache
 
 		if (nodeValue === undefined) {
-			nodeValue = null
+			nodeValue = undefined
 			this.cache._meta.inversionFail = true
 		}
-		if (nodeValue !== null) {
+		if (nodeValue !== undefined) {
 			valeur = evaluateWithValue(nodeValue, unit)
 		}
 		delete this.parsedSituation[node.explanation.ruleToSolve]

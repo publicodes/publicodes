@@ -20,7 +20,7 @@ const evaluate: EvaluationFunction<'par défaut'> = function (node) {
 	} = { ...node.explanation }
 	let valeur = this.evaluate(explanation.valeur)
 	explanation.valeur = valeur
-	if (valeur.nodeValue === null) {
+	if (valeur.nodeValue === undefined) {
 		valeur = this.evaluate(explanation.parDéfaut)
 		explanation.parDéfaut = valeur
 	}

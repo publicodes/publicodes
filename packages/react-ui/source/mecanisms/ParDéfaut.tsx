@@ -5,7 +5,7 @@ export default function ParDéfautMecanism({ explanation }) {
 	return (
 		<InfixMecanism
 			value={explanation.valeur}
-			dimValue={explanation.valeur.nodeValue === null}
+			dimValue={explanation.valeur.nodeValue === undefined}
 		>
 			<p>
 				<strong>Par défaut : </strong>

@@ -58,7 +58,7 @@ export { simplifyNodeUnit } from './nodeUnits'
 export { default as serializeEvaluation } from './serializeEvaluation'
 export { parseUnit, serializeUnit } from './units'
 export { parsePublicodes, utils }
-export { type Rule, type RuleNode, type ASTNode, type EvaluatedNode }
+export { Rule, RuleNode, ASTNode, EvaluatedNode }
 
 export type PublicodesExpression = string | Record<string, unknown> | number
 
@@ -277,7 +277,7 @@ export function UNSAFE_isNotApplicable<DottedName extends string = string>(
 			if (node.nodeKind === 'non applicable si') {
 				return (
 					(node.explanation.condition as any).nodeValue !== false &&
-					(node.explanation.condition as any).nodeValue !== null
+					(node.explanation.condition as any).nodeValue !== undefined
 				)
 			}
 			if (node.nodeKind === 'rule') {

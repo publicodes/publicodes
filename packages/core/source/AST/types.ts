@@ -119,9 +119,9 @@ type EvaluationDecoration<T extends Types> = {
 }
 export type Types = number | boolean | string | Record<string, unknown>
 // TODO: type NotYetDefined & NotApplicable properly (see #14) then refactor any code depending on these:
-export type NotYetDefined = null
+export type NotYetDefined = undefined
 export function isNotYetDefined(value): value is NotYetDefined {
-	return value === null
+	return value === undefined
 }
 export type NotApplicable = false
 export function isNotApplicable(value): value is NotApplicable {

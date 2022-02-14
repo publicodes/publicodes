@@ -157,7 +157,7 @@ describe('Missing variables', function () {
 		)
 
 		expect(result).to.be.empty
-		null
+		undefined
 	})
 
 	it('should not report missing variables when "une possibilité" was answered', function () {
@@ -358,7 +358,7 @@ transport . avion . usager:
 		// See https://github.com/betagouv/publicodes/issues/33
 		const rawRules = yaml.parse(`
 transport:
-  somme: 
+  somme:
     - voiture
     - avion
 
@@ -369,12 +369,12 @@ transport . voiture . gabarit:
   question: Quel gabarit ?
   par défaut: 2
 transport . voiture . empreinte:
-  formule: 
-    variations: 
+  formule:
+    variations:
       - si: gabarit > 3
         alors: 800
       - sinon: 500
-transport . voiture . km: 
+transport . voiture . km:
   question: COMBIENKM
   par défaut: 1000
 
@@ -382,7 +382,7 @@ transport . avion:
   applicable si: usager
   formule: empreinte * km
 
-transport . avion . km: 
+transport . avion . km:
   question: COMBIENKM
   par défaut: 10000
 

@@ -20,10 +20,10 @@ poids total:
     - nom: un nul dans la somme
       situation:
         sucre: 200
-      valeur attendue: null
+      valeur attendue: undefined
     - nom: une somme de nuls
       situation: # pas de situation
-      valeur attendue: null
+      valeur attendue: undefined
     - nom: un entier + un flotant
       situation:
         farine: 2.1

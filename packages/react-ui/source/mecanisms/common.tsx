@@ -14,12 +14,12 @@ import { RuleLinkWithContext } from '../RuleLink'
 import mecanismColors from './colors'
 
 export function ConstantNode({ nodeValue, type, fullPrecision, unit }) {
-	if (nodeValue === null) {
-		return null
+	if (nodeValue === undefined) {
+		return undefined
 	} else if (type === 'objet') {
 		return (
 			<code>
-				<pre>{JSON.stringify(nodeValue, null, 2)}</pre>
+				<pre>{JSON.stringify(nodeValue, undefined, 2)}</pre>
 			</code>
 		)
 	} else if (fullPrecision) {
@@ -89,7 +89,7 @@ export function Mecanism({
 			<>
 				{children}
 
-				{value != null && (
+				{value !== undefined && (
 					<StyledMecanismValue>
 						<small> =&nbsp;</small>
 						<NodeValuePointer data={value} unit={unit} />
@@ -292,7 +292,7 @@ export function Leaf(
 		<UnfoldButton onClick={() => setFolded(!folded)}>
 			{folded ? 'déplier' : 'replier'}
 		</UnfoldButton>
-	) : null
+	) : undefined
 	if (
 		node.dottedName === node.contextDottedName + ' . ' + node.name &&
 		!node.name.includes(' . ') &&
@@ -321,7 +321,7 @@ export function Leaf(
 				</RuleLinkWithContext>
 				{foldButton}
 
-				{nodeValue !== null && unit && (
+				{nodeValue !== undefined && unit && (
 					<NodeValuePointer data={nodeValue} unit={unit} />
 				)}
 			</span>{' '}

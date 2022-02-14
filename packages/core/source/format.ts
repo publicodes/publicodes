@@ -36,7 +36,7 @@ export const formatCurrency = (
 	nodeValue: number | undefined,
 	language: string
 ) => {
-	return nodeValue == null
+	return nodeValue == undefined
 		? ''
 		: (formatNumber({ unit: '€', language, nodeValue }) ?? '').replace(
 				/^(-)?€/,
@@ -45,7 +45,7 @@ export const formatCurrency = (
 }
 
 export const formatPercentage = (nodeValue: number | undefined) =>
-	nodeValue == null
+	nodeValue == undefined
 		? ''
 		: formatNumber({ unit: '%', nodeValue, maximumFractionDigits: 2 })
 
@@ -163,7 +163,7 @@ export function formatValue(
 			unit: displayedUnit ?? unit,
 		}).trim()
 	}
-	return null
+	return undefined
 }
 
 export function serializeValue(

@@ -15,19 +15,19 @@ export type NonApplicableSiNode = {
 const evaluate: EvaluationFunction<'non applicable si'> = function (node) {
 	const condition = this.evaluate(node.explanation.condition)
 	let valeur = node.explanation.valeur
-	if (condition.nodeValue === false || condition.nodeValue === null) {
+	if (condition.nodeValue === false || condition.nodeValue === undefined) {
 		valeur = this.evaluate(valeur)
 	}
 	return {
 		...node,
 		nodeValue:
-			condition.nodeValue === null
-				? null
+			condition.nodeValue === undefined
+				? undefined
 				: condition.nodeValue !== false
 				? false
 				: 'nodeValue' in valeur
 				? (valeur as EvaluatedNode).nodeValue
-				: null,
+				: undefined,
 		explanation: { valeur, condition },
 		missingVariables: mergeMissing(
 			'missingVariables' in valeur ? valeur.missingVariables : {},

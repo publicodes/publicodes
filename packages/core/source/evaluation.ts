@@ -67,8 +67,8 @@ export const evaluateArray: <NodeName extends NodeKind>(
 			node.name
 		)
 		const values = evaluatedNodes.map(({ nodeValue }) => nodeValue)
-		const nodeValue = values.some((value) => value === null)
-			? null
+		const nodeValue = values.some((value) => value === undefined)
+			? undefined
 			: values.reduce(reducer, start)
 
 		return {
@@ -91,14 +91,14 @@ export const defaultNode = (nodeValue: Evaluation) =>
 export const parseObject = (objectShape, value, context) => {
 	return Object.fromEntries(
 		Object.entries(objectShape).map(([key, defaultValue]) => {
-			if (value[key] == null && !defaultValue) {
+			if (value[key] == undefined && !defaultValue) {
 				throw new Error(
 					`Il manque une clé '${key}' dans ${JSON.stringify(value)} `
 				)
 			}
 
 			const parsedValue =
-				value[key] != null ? parse(value[key], context) : defaultValue
+				value[key] != undefined ? parse(value[key], context) : defaultValue
 			return [key, parsedValue]
 		})
 	)

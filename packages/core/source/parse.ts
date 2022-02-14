@@ -37,7 +37,7 @@ import parseRule from './rule'
 const { Grammar, Parser } = nearley
 
 export default function parse(rawNode, context: Context): ASTNode {
-	if (rawNode == null) {
+	if (rawNode == undefined) {
 		syntaxError(
 			context.dottedName,
 			`
@@ -129,7 +129,7 @@ Cela vient probablement d'une erreur dans l'indentation
 		)
 	}
 	if (keys.length === 0) {
-		return { nodeKind: 'constant', nodeValue: null }
+		return { nodeKind: 'constant', nodeValue: undefined }
 	}
 
 	const mecanismName = Object.keys(rawNode)[0]

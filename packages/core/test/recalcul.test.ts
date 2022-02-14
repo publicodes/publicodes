@@ -30,8 +30,8 @@ d:
 		sandbox.restore()
 	})
 	describe('evaluation of rule on top of the recalcul chain', () => {
-		it('evaluates to null', () => {
-			expect(new Engine(rulesYaml).evaluate('d').nodeValue).to.be.null
+		it('evaluates to undefined', () => {
+			expect(new Engine(rulesYaml).evaluate('d').nodeValue).to.be.undefined
 		})
 
 		it('throws a warning', () => {
@@ -45,7 +45,7 @@ d:
 
 	describe('evaluation of middle recalcul rule', () => {
 		it('evaluates to something', () => {
-			expect(new Engine(rulesYaml).evaluate('c').nodeValue).to.be.not.null
+			expect(new Engine(rulesYaml).evaluate('c').nodeValue).to.be.not.undefined
 		})
 
 		it('does not throw any warning', () => {
