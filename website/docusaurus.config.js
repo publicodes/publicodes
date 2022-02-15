@@ -9,6 +9,7 @@ module.exports = {
 	favicon: 'img/favicon-32x32.png',
 	organizationName: 'betagouv',
 	projectName: 'publicodes',
+	themes: ['@docusaurus/theme-live-codeblock'],
 	themeConfig: {
 		navbar: {
 			title: 'Publicodes',
