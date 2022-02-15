@@ -6,4 +6,5 @@ export default defineConfig({
 	globalName: 'publicodes',
 	sourcemap: true,
 	clean: true,
+	dts: true,
 })

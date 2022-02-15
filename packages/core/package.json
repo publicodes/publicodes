@@ -7,8 +7,11 @@
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
 	"exports": {
-		"require": "./dist/index.cjs",
-		"import": "./dist/index.js"
+		".": {
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
 	},
 	"repository": {
 		"type": "git",
@@ -46,8 +49,7 @@
 		"build:grammar": "nearleyc ./source/grammar.ne -o ./source/grammar.js",
 		"prepare": "yarn run build:grammar",
 		"clean": "rimraf dist node_modules",
-		"build": "yarn run tsup --dts",
-		"build:watch": "yarn run tsup --watch",
+		"build": "yarn run tsup",
 		"test": "yarn mocha \"./test/**/*.test.{js,ts}\""
 	},
 	"engines": {
