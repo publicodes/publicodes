@@ -94,9 +94,9 @@ export default function Documentation({ onClickShare, rules }: ResultsProps) {
 							</option>
 						))}
 					</select>
-					</small>{' '}
+				</small>{' '}
 				{onClickShare && (
-				<button onClick={onClickShare}>🔗 Copier le lien</button>
+					<button onClick={onClickShare}>🔗 Copier le lien</button>
 				)}
 			</p>
 			<ErrorBoundary>
