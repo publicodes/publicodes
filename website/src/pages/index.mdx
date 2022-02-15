@@ -4,7 +4,6 @@ description: 'Langage et plateforme pour des calculs auto-documentés'
 hide_table_of_contents: true
 ---
 
-import PublicodeExample from '@site/src/components/PublicodeExample.tsx'
 import HomepageHeader from '../components/HomepageHeader'
 import styles from './index.module.css'
 
@@ -17,18 +16,17 @@ Il est utilisé par **plusieurs administrations** pour implémenter des règles 
 
 En plus de calculer des résultats à partir d'une situation saisie, publicodes **génère automatiquement une documentation explorable** proposant une **explication du calcul**, qui s'intègre facilement dans une application web. Publicodes est donc particulièrement adapté dans une démarche de **transparence des algotithmes publics**.
 
-<PublicodeExample
-	_WARNING_="mdx does not support blank lines in template literals, use \n if you need it."
-	rules={`
-salaire net: salaire brut - cotisations salariales\n
+```yaml
+salaire net: salaire brut - cotisations salariales
+
 cotisations salariales:
   produit:
     assiette: salaire brut
-    taux: 21.7%\n
+    taux: 21.7%
+
 salaire brut:
   par défaut: 2300 €/mois
-`}
-/>
+```
 
 [**👉 Lancer le calcul dans le bac à sable**](http://localhost:3000/studio?code=%0Asalaire+net%3A+salaire+brut+-+cotisations+salariales%0A%0Acotisations+salariales%3A%0A++produit%3A%0A++++assiette%3A+salaire+brut%0A++++taux%3A+21.7%25%0A%0Asalaire+brut%3A%0A++par+d%C3%A9faut%3A+2300+%E2%82%AC%2Fmois)
 
