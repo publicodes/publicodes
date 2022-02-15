@@ -71,13 +71,17 @@ module.exports = {
 						'https://github.com/betagouv/publicodes/edit/master/website/',
 					remarkPlugins: [
 						[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }],
+						require('./src/plugins/match-publicodes.cjs'),
 					],
 				},
 				theme: {
 					customCss: require.resolve('./src/css/custom.css'),
 				},
 				pages: {
-					remarkPlugins: [require('@docusaurus/remark-plugin-npm2yarn')],
+					remarkPlugins: [
+						require('@docusaurus/remark-plugin-npm2yarn'),
+						require('./src/plugins/match-publicodes.cjs'),
+					],
 				},
 			},
 		],
