@@ -5,6 +5,7 @@ import { usePrismTheme } from '@docusaurus/theme-common'
 import styles from '@docusaurus/theme-live-codeblock/src/theme/Playground/styles.module.css'
 import CodeBlock from '@theme/CodeBlock'
 import Documentation from './Documentation'
+import ErrorBoundary from './ErrorBoundary'
 
 function Playground({ children, language, onChange, ...props }): JSX.Element {
 	const prismTheme = usePrismTheme()
@@ -21,7 +22,9 @@ function Playground({ children, language, onChange, ...props }): JSX.Element {
 				className={styles.playgroundEditor}
 				onChange={onChange}
 			/>
-			<Documentation rules={children} />
+			<ErrorBoundary key={children}>
+				<Documentation rules={children} />
+			</ErrorBoundary>
 		</div>
 	)
 }
