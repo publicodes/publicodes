@@ -15,7 +15,6 @@
 	"scripts": {
 		"clean": "rimraf dist node_modules data",
 		"build": "tsup source/index.tsx --format cjs,esm --dts --inject ./react-shim.js --sourcemap",
-		"build:watch": "tsup source/index.tsx --format cjs,esm --watch --inject ./react-shim.js --sourcemap  ",
 		"test": "echo \"Error: no test specified\""
 	},
 	"files": [
