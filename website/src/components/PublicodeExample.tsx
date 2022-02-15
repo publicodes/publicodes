@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Editor } from 'react-live'
-import clsx from 'clsx'
 import { usePrismTheme } from '@docusaurus/theme-common'
 import styles from '@docusaurus/theme-live-codeblock/src/theme/Playground/styles.module.css'
+import type {} from '@docusaurus/theme-classic' // required for @theme/CodeBlock types
 import CodeBlock from '@theme/CodeBlock'
 import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
+import publicodeStyles from './publicodeExample.module.css'
 
 function Playground({ children, language, onChange, ...props }): JSX.Element {
 	const prismTheme = usePrismTheme()
 
 	return (
 		<div className={styles.playgroundContainer}>
-			<div className={clsx(styles.playgroundHeader)}>Live Editor</div>
+			<div className={styles.playgroundHeader}>Live Editor</div>
 			<Editor
 				{...props}
 				code={children}
@@ -40,8 +41,14 @@ export default function PublicodeExample({ rules }: PublicodeExampleProps) {
 	// Use jsx lang instead of yaml for better highlight
 	const language = 'jsx'
 
+	useEffect(() => {
+		if (!edit) {
+			setCode(rules.trim())
+		}
+	}, [edit, rules])
+
 	return (
-		<div style={{ position: 'relative', backgroundColor: '#f1f2f3' }}>
+		<div className={publicodeStyles.container}>
 			{!edit ? (
 				<CodeBlock language={language}>{code}</CodeBlock>
 			) : (
@@ -50,13 +57,9 @@ export default function PublicodeExample({ rules }: PublicodeExampleProps) {
 				</Playground>
 			)}
 			<button
+				className={publicodeStyles.button}
 				onClick={() => setEdit((e) => !e)}
-				style={{
-					position: 'absolute',
-					...(edit ? { top: 0 } : { bottom: 0 }),
-					right: 0,
-					margin: '0.8rem',
-				}}
+				style={edit ? { top: 0 } : { bottom: 0 }}
 			>
 				{!edit ? 'Live edit' : 'Close'}
 			</button>
