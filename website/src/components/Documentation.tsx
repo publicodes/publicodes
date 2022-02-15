@@ -9,6 +9,7 @@ import ErrorBoundary, { nl2br } from './ErrorBoundary'
 type ResultsProps = {
 	rules: string
 	onClickShare?: React.MouseEventHandler
+	defaultTarget?: string
 }
 
 class Logger {
@@ -38,7 +39,11 @@ class Logger {
 	}
 }
 
-export default function Documentation({ onClickShare, rules }: ResultsProps) {
+export default function Documentation({
+	onClickShare,
+	rules,
+	defaultTarget = '',
+}: ResultsProps) {
 	const logger = useMemo(() => new Logger(), [rules])
 	const engine = useMemo(() => new Engine(rules, { logger }), [rules, logger])
 	const targets = useMemo(() => Object.keys(engine.getParsedRules()), [engine])
@@ -51,8 +56,9 @@ export default function Documentation({ onClickShare, rules }: ResultsProps) {
 	const searchParams = new URLSearchParams(search ?? '')
 	const history = useHistory()
 	const [currentTarget, setCurrentTarget] = useState(
-		searchParams.get('rule') || ''
+		searchParams.get('rule') || defaultTarget
 	)
+
 	useEffect(() => {
 		if (!targets.includes(currentTarget)) {
 			setCurrentTarget(last(targets) ?? '')

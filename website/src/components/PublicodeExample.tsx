@@ -8,7 +8,13 @@ import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
 import publicodeStyles from './publicodeExample.module.css'
 
-function Playground({ children, language, onChange, ...props }): JSX.Element {
+function Playground({
+	language,
+	defaultTarget,
+	onChange,
+	children,
+	...props
+}): JSX.Element {
 	const prismTheme = usePrismTheme()
 
 	return (
@@ -24,7 +30,7 @@ function Playground({ children, language, onChange, ...props }): JSX.Element {
 				onChange={onChange}
 			/>
 			<ErrorBoundary key={children}>
-				<Documentation rules={children} />
+				<Documentation rules={children} defaultTarget={defaultTarget} />
 			</ErrorBoundary>
 		</div>
 	)
@@ -32,14 +38,20 @@ function Playground({ children, language, onChange, ...props }): JSX.Element {
 
 interface PublicodeExampleProps {
 	rules: string
+	meta?: string
 }
 
-export default function PublicodeExample({ rules }: PublicodeExampleProps) {
+export default function PublicodeExample({
+	rules,
+	meta,
+}: PublicodeExampleProps) {
+	console.log(meta)
+
 	const [code, setCode] = useState(rules.trim())
 	const [edit, setEdit] = useState(false)
 
-	// Use jsx lang instead of yaml for better highlight
-	const language = 'jsx'
+	// Use json lang instead of yaml for better highlight
+	const language = 'json'
 
 	useEffect(() => {
 		if (!edit) {
@@ -52,7 +64,11 @@ export default function PublicodeExample({ rules }: PublicodeExampleProps) {
 			{!edit ? (
 				<CodeBlock language={language}>{code}</CodeBlock>
 			) : (
-				<Playground language={language} onChange={(text) => setCode(text)}>
+				<Playground
+					language={language}
+					defaultTarget={meta}
+					onChange={(text) => setCode(text)}
+				>
 					{code}
 				</Playground>
 			)}
