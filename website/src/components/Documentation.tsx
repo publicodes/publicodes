@@ -8,7 +8,7 @@ import ErrorBoundary, { nl2br } from './ErrorBoundary'
 
 type ResultsProps = {
 	rules: string
-	onClickShare: React.MouseEventHandler
+	onClickShare?: React.MouseEventHandler
 }
 
 class Logger {
@@ -94,8 +94,10 @@ export default function Documentation({ onClickShare, rules }: ResultsProps) {
 							</option>
 						))}
 					</select>
-				</small>{' '}
+					</small>{' '}
+				{onClickShare && (
 				<button onClick={onClickShare}>🔗 Copier le lien</button>
+				)}
 			</p>
 			<ErrorBoundary>
 				<RulePage
