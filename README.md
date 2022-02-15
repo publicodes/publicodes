@@ -10,7 +10,7 @@ public. Il permet de réaliser des calculs généraux tout en fournissant une
 explication permettant de comprendre et de documenter ces calculs.
 
 Publicodes est adapté pour modéliser des domaines métiers complexes pouvant être
-décomposés en règles élémentaires simples (comme la [législation socio-fiscale](https://github.com/betagouv/mon-entreprise/tree/master/publicodes),
+décomposés en règles élémentaires simples (comme la [législation socio-fiscale](https://github.com/betagouv/mon-entreprise/tree/master/modele-social/règles),
 [un bilan carbone](https://github.com/laem/futureco-data/blob/master/co2.yaml),
 un estimateur de rendement locatif, etc.).
 
@@ -25,7 +25,7 @@ npm install publicodes
 
 ## Documentation
 
--   [Se lancer](https://publi.codes/docs/se-lancer)
+-   [Se lancer](https://publi.codes/docs/tutoriel)
 -   [Principes de base](https://publi.codes/docs/principes-de-base)
 -   [Bac à sable](https://publi.codes/studio)
 
@@ -38,4 +38,4 @@ npm install publicodes
     le montant du chômage partiel.
 -   **[futur.eco](https://futur.eco/)** utilise publicodes pour calculer les bilans
     carbone d'un grand nombre d'activités, plats, transports ou biens.
--   **[Nos Gestes Climat](https://ecolab.ademe.fr/apps/climat)** utilise publicodes pour proposer un calculateur d'empreinte climat personnel de référence complètement ouvert
+-   **[Nos Gestes Climat](https://nosgestesclimat.fr)** utilise publicodes pour proposer un calculateur d'empreinte climat personnel de référence complètement ouvert
