@@ -25,11 +25,11 @@ class Logger {
 	toJSX() {
 		return this.messages.map((m) => (
 			<div
-				css={`
-					background: lightyellow;
-					padding: 20px;
-					border-radius: 5px;
-				`}
+				style={{
+					background: 'lightyellow',
+					padding: 20,
+					borderRadius: 5,
+				}}
 				key={m}
 			>
 				{nl2br(m)}

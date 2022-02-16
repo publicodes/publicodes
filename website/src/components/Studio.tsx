@@ -1,13 +1,9 @@
-import Engine from 'publicodes'
-import { RulePage, getDocumentationSiteMap } from 'publicodes-react'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import MonacoEditor from 'react-monaco-editor'
-import { invertObj, last } from 'ramda'
-import { useHistory, useLocation, Link } from 'react-router-dom'
-import Head from '@docusaurus/Head'
-import styles from './studio.module.css'
+import { useHistory, useLocation } from 'react-router-dom'
+import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
-import Documentation, { Results } from './Documentation'
+import styles from './studio.module.css'
 
 const EXAMPLE_CODE = `
 # Bienvenue dans le bac à sable du langage publicode !
