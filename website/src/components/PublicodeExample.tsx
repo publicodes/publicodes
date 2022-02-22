@@ -11,6 +11,7 @@ import publicodeStyles from './publicodeExample.module.css'
 function Playground({
 	language,
 	defaultTarget,
+	onTargetChange,
 	onChange,
 	children,
 	...props
@@ -30,7 +31,11 @@ function Playground({
 				onChange={onChange}
 			/>
 			<ErrorBoundary key={children}>
-				<Documentation rules={children} defaultTarget={defaultTarget} />
+				<Documentation
+					rules={children}
+					defaultTarget={defaultTarget}
+					onTargetChange={onTargetChange}
+				/>
 			</ErrorBoundary>
 		</div>
 	)
@@ -49,6 +54,7 @@ export default function PublicodeExample({
 
 	const [code, setCode] = useState(rules.trim())
 	const [edit, setEdit] = useState(false)
+	const [target, setTarget] = useState(meta)
 
 	// Use json lang instead of yaml for better highlight
 	const language = 'json'
@@ -66,7 +72,8 @@ export default function PublicodeExample({
 			) : (
 				<Playground
 					language={language}
-					defaultTarget={meta}
+					defaultTarget={target}
+					onTargetChange={setTarget}
 					onChange={(text) => setCode(text)}
 				>
 					{code}

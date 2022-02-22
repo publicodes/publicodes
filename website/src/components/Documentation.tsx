@@ -2,7 +2,7 @@ import Head from '@docusaurus/Head'
 import Engine from 'publicodes'
 import { getDocumentationSiteMap, RulePage } from 'publicodes-react'
 import { invertObj, last } from 'ramda'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import ErrorBoundary, { nl2br } from './ErrorBoundary'
 
@@ -10,6 +10,7 @@ type ResultsProps = {
 	rules: string
 	onClickShare?: React.MouseEventHandler
 	defaultTarget?: string
+	onTargetChange?: (target: string) => void
 }
 
 class Logger {
@@ -43,6 +44,7 @@ export default function Documentation({
 	onClickShare,
 	rules,
 	defaultTarget = '',
+	onTargetChange,
 }: ResultsProps) {
 	const logger = useMemo(() => new Logger(), [rules])
 	const engine = useMemo(() => new Engine(rules, { logger }), [rules, logger])
@@ -55,8 +57,15 @@ export default function Documentation({
 	const { search, pathname } = useLocation()
 	const searchParams = new URLSearchParams(search ?? '')
 	const history = useHistory()
-	const [currentTarget, setCurrentTarget] = useState(
+	const [currentTarget, setTarget] = useState(
 		searchParams.get('rule') || defaultTarget
+	)
+	const setCurrentTarget = useCallback(
+		(target) => {
+			onTargetChange?.(target)
+			setTarget(target)
+		},
+		[onTargetChange]
 	)
 
 	useEffect(() => {
