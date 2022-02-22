@@ -9,14 +9,14 @@ La syntaxe de Publicodes est basée sur le langage
 Un fichier Publicodes contient une liste de _règles_ identifiées par leur _nom_ et
 possédant une _valeur_ :
 
-```yaml
+```publicodes
 prix d'un repas: 10 €
 ```
 
 Une formule de calcul peut faire _référence_ à d'autres règles.
 Dans l'exemple suivant la règle `prix total` aura pour valeur 50 (= 5 \* 10)
 
-```yaml
+```publicodes
 prix d'un repas: 10 €
 prix total: 5 * prix d'un repas
 ```
@@ -29,7 +29,7 @@ définition des règles n'a pas d'importance.
 Pour fiabiliser les calculs et faciliter leur compréhension, on peut préciser
 l'unité des valeurs littérales :
 
-```yaml
+```publicodes
 prix d'un repas: 10 €/repas
 nombre de repas: 5 repas
 
@@ -44,7 +44,7 @@ total est inférée automatiquement comme étant en `€`. (`€/repas` \* `repa
 Ce système d'unité permet de typer les formules de calcul et de rejeter
 automatiquement des formules incohérentes :
 
-```yaml
+```publicodes
 prix d'un repas: 10 €/repas
 nombre de repas: 5 repas
 frais de réservation: 1 €/repas
@@ -60,7 +60,7 @@ des `€/repas`.
 
 Cette incohérence d'unité témoigne d'une erreur de logique. Ici, une manière de corriger l'erreur peut être de factoriser la variable "nombre de repas" dans la formule du "prix total".
 
-```yaml
+```publicodes
 prix total: nombre de repas * (prix d'un repas + frais de réservation)
 ```
 
@@ -73,7 +73,7 @@ les unités, l'unité `€ / mois` doit être notée `€/mois`.
 
 Publicodes convertit automatiquement les unités si besoin.
 
-```yaml
+```publicodes
 salaire: 1500 €/mois
 prime faible salaire applicable: salaire < 20 k€/an
 ```
@@ -95,13 +95,13 @@ Il existe une autre manière d'écrire des formules de calcul : les mécanismes.
 
 Par exemple, la formule suivante :
 
-```yaml
+```publicodes
 prix total: 5 repas * prix d'un repas
 ```
 
 peut également s'écrire en utilisant le mécanisme [`produit`](/docs/mécanismes#produit) :
 
-```yaml
+```publicodes
 prix total:
   produit:
     assiette: prix d'un repas
@@ -110,7 +110,7 @@ prix total:
 
 Un des avantages de cette écriture est que la syntaxe hiérarchique de Yaml permet d'imbriquer les mécanismes :
 
-```yaml
+```publicodes
 prix TTC:
   somme:
     - prix d'un repas
@@ -123,7 +123,7 @@ prix TTC:
 
 Certains mécanismes peuvent apparaître au même niveau d'indentation. Dans ce cas, le moteur appliquera les transformations dans un ordre préétabli.
 
-```yaml
+```publicodes
 remboursement repas:
   valeur: nombre de repas * remboursement forfaitaire
   plafond: 500 €/an
@@ -152,7 +152,7 @@ Plusieurs propriétés sont reprises dans ces pages d'explications :
 - les **références** externes (documentation utile) affichées en
   bas de page et qui sont constituées d'une liste de liens avec une description.
 
-```yaml
+```publicodes
 ticket resto:
   titre: Prise en charge des titres-restaurants
   formule: 4 €/repas
@@ -170,7 +170,7 @@ ticket resto:
 
 Publicodes supporte des opérateurs booléens basiques.
 
-```yaml
+```publicodes
 âge: 17 ans
 mineur émancipé: non
 nationalité française: oui
@@ -189,7 +189,7 @@ Il est possible de faire des branchements conditionnels via le mécanisme [`vari
 
 On peut définir des conditions d'applicabilité pour des valeurs :
 
-```yaml
+```publicodes
 date de début: 12/02/2020
 
 ancienneté en fin d'année:
@@ -208,7 +208,7 @@ comme valant zéro, voir la page spécifique aux mécanismes).
 
 La syntaxe suivante est également valable :
 
-```yaml
+```publicodes
 assimilé salarié:
   valeur: oui
   rend non applicable: convention collective
@@ -219,7 +219,7 @@ assimilé salarié:
 Les espaces de noms sont utiles pour organiser un grand nombre de règles. On
 utilise le `.` pour exprimer la hiérarchie des noms.
 
-```yaml
+```publicodes
 prime de vacances:
   formule: taux * 1000 €
 
@@ -236,7 +236,7 @@ La règle `prime de vacances` est elle-même définie dans l'espace de nom racin
 On pourrait avoir une autre variable `taux` dans un espace de nom
 différent, sans que cela entre en conflit :
 
-```yaml
+```publicodes
 # Ceci n'entre pas dans le calcul de `prime de vacances` définie plus haut
 autre prime . taux:
   formule: 19%
@@ -248,7 +248,7 @@ règle `prime de vacances . taux` via le nom raccourci `taux`.
 Pour faire référence à une règle hors de son espace de nom, on peut écrire le
 nom complet de cette règle:
 
-```yaml
+```publicodes
 prime de vacances v2:
   formule: autre prime . taux * 1000 €
 ```
@@ -257,7 +257,7 @@ Dans le cas d'espaces de noms imbriqués (à plus qu'un étage), le nom inscrit
 dans une règle donnée est recherché de plus en plus haut dans la hiérarchie des
 espaces de nom jusqu'à la racine.
 
-```yaml
+```publicodes
 contrat salarié . rémunération . primes . prime de vacances:
   formule: taux générique * 1000 €
 
@@ -275,7 +275,7 @@ Il est possible de désactiver l'ensemble des règles définies dans un espace d
 
 Toutes les règles possèdent une dépendance implicite à leur parent. Si ce dernier est égal à `non` alors leur valeur est également `non`.
 
-```yaml
+```publicodes
 CDD: non
 CDD . indemnité de précarité: 10% * 1500€/mois * 6 mois
 
@@ -295,7 +295,7 @@ règles.
 Publicodes dispose d'un mécanisme de remplacement qui permet d'amender n'importe
 quelle règle existante sans avoir besoin de la modifier :
 
-```yaml
+```publicodes
 frais de repas: 5 €/repas
 
 convention hôtels cafés restaurants: oui
@@ -308,7 +308,7 @@ montant repas mensuels: 20 repas * frais de repas
 
 On peut également choisir de remplacer dans un contexte donné :
 
-```yaml
+```publicodes
 temps de préparation: 20 min
 temps de cuisson: 20 min
 
@@ -337,7 +337,7 @@ Une première manière de faire consiste à extraire le paramètre en question d
 une règle indépendante, le rendant ainsi accessible et modifiable depuis
 l'extérieur :
 
-```yaml
+```publicodes
 prime:
   formule:
     multiplication:
@@ -363,7 +363,7 @@ Pour ce cas d'usage il est possible de définir une _règle imbriquée_.
 On garde la définition de la prime inchangée et on annote la valeur à laquelle
 on veut accéder depuis l'extérieur avec le mot clé `nom` :
 
-```yaml
+```publicodes
 prime:
   formule:
     multiplication:
@@ -383,7 +383,7 @@ Lors de l'évaluation, les variables dont les valeurs ne sont pas renseignées s
 
 Il est possible de donner une valeur par défaut. Les variables manquantes seront quand même remontées, et le moteur utilisera la valeur par défaut pour le calcul.
 
-```yaml
+```publicodes
 durée:
   par défaut: 2 mois
 
