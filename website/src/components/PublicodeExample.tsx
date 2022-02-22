@@ -27,7 +27,7 @@ function Playground({
 				theme={prismTheme}
 				language={language}
 				disabled={false}
-				className={styles.playgroundEditor}
+				className={styles.playgroundEditor + ' ' + publicodeStyles.editor}
 				onChange={onChange}
 			/>
 			<ErrorBoundary key={children}>
@@ -50,8 +50,6 @@ export default function PublicodeExample({
 	rules,
 	meta,
 }: PublicodeExampleProps) {
-	console.log(meta)
-
 	const [code, setCode] = useState(rules.trim())
 	const [edit, setEdit] = useState(false)
 	const [target, setTarget] = useState(meta)
