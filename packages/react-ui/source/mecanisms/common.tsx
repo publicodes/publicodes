@@ -239,6 +239,7 @@ const StyledMecanismName = styled.a<{ name: string; inline?: boolean }>`
 	font-size: inherit;
 	display: inline-block;
 	font-weight: inherit;
+	width: fit-content;
 	font-family: inherit;
 	padding: 0.4rem 0.6rem !important;
 	color: white !important;

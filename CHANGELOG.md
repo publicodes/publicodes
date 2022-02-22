@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.32 (next)
+
+**publicodes-react**
+
+-   Améliore le style des mécanismes imbriqués dans une somme
+
 ## 1.0.0-beta.31
 
 **publicodes-react**
