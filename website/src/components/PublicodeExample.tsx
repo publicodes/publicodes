@@ -20,7 +20,7 @@ function Playground({
 
 	return (
 		<div className={styles.playgroundContainer}>
-			<div className={styles.playgroundHeader}>Live Editor</div>
+			<div className={styles.playgroundHeader}>Editeur live</div>
 			<Editor
 				{...props}
 				code={children}
@@ -82,7 +82,7 @@ export default function PublicodeExample({
 				onClick={() => setEdit((e) => !e)}
 				style={edit ? { top: 0 } : { bottom: 0 }}
 			>
-				{!edit ? 'Live edit' : 'Close'}
+				{!edit ? '⚡ Tester' : 'Fermer'}
 			</button>
 		</div>
 	)
