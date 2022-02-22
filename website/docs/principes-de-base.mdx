@@ -61,6 +61,10 @@ des `€/repas`.
 Cette incohérence d'unité témoigne d'une erreur de logique. Ici, une manière de corriger l'erreur peut être de factoriser la variable "nombre de repas" dans la formule du "prix total".
 
 ```publicodes
+prix d'un repas: 10 €/repas
+nombre de repas: 5 repas
+frais de réservation: 1 €/repas
+
 prix total: nombre de repas * (prix d'un repas + frais de réservation)
 ```
 
@@ -96,7 +100,7 @@ Il existe une autre manière d'écrire des formules de calcul : les mécanismes.
 Par exemple, la formule suivante :
 
 ```publicodes
-prix total: 5 repas * prix d'un repas
+prix total: 5 repas * 9 €/repas
 ```
 
 peut également s'écrire en utilisant le mécanisme [`produit`](/docs/mécanismes#produit) :
@@ -104,19 +108,24 @@ peut également s'écrire en utilisant le mécanisme [`produit`](/docs/mécanism
 ```publicodes
 prix total:
   produit:
-    assiette: prix d'un repas
+    assiette: 9 €/repas
     facteur: 5 repas
 ```
 
 Un des avantages de cette écriture est que la syntaxe hiérarchique de Yaml permet d'imbriquer les mécanismes :
 
 ```publicodes
-prix TTC:
+table: 12 personnes
+addition:
   somme:
-    - prix d'un repas
-    - produit:
-        assiette: prix d'un repas
-        taux: TVA
+    - 7 cafés * 1.5 €/cafés
+    - produit: # Menu unique dégressif pour les groupes
+        assiette: table
+        facteur:
+          variations:
+          - si: table > 10 personnes
+            alors: 12 €/personnes
+          - sinon: 15 €/personnes
 ```
 
 ### Mécanismes chaînés
@@ -124,10 +133,11 @@ prix TTC:
 Certains mécanismes peuvent apparaître au même niveau d'indentation. Dans ce cas, le moteur appliquera les transformations dans un ordre préétabli.
 
 ```publicodes
+nombre de repas: 12 repas
 remboursement repas:
-  valeur: nombre de repas * remboursement forfaitaire
-  plafond: 500 €/an
-  unité: €/an
+  valeur: nombre de repas * 4.21 €/repas
+  plafond: 500€
+  abattement: 25€
   arrondi: oui
 ```
 
@@ -156,14 +166,11 @@ Plusieurs propriétés sont reprises dans ces pages d'explications :
 ticket resto:
   titre: Prise en charge des titres-restaurants
   formule: 4 €/repas
-  description: |
-    L'employeur peut remettre des titres restaurants sous plusieurs formats:
-    - ticket *papier*
-    - carte à *puce*
-    - appli *mobile*
-  références:
-    Fiche service public: https://www.service-public.fr/professionnels-entreprises/vosdroits/F21059
-    Fiche Urssaf: https://www.urssaf.fr/portail/home/taux-et-baremes/frais-professionnels/les-titres-restaurant.html
+  description: |-
+    L'employeur peut remettre des titres restaurants sous plusieurs formats: ticket papier, carte à puce
+    ou appli mobile
+  note: |-
+    La valeur a été revalorisée en 2022 pour faire face à l'inflation.
 ```
 
 ## Conditions booléennes
@@ -172,15 +179,19 @@ Publicodes supporte des opérateurs booléens basiques.
 
 ```publicodes
 âge: 17 ans
-mineur émancipé: non
 nationalité française: oui
+citoyen européen:
+domicilié en France:
 
-droit de vote:
+droit de vote municipale:
   toutes ces conditions:
-    - nationalité française
+    - âge >= 18 ans
     - une de ces conditions:
-        - âge >= 18 ans
-        - mineur émancipé
+        - nationalité française
+        - toutes ces conditions:
+          - citoyen européen
+          - domicilié en France
+
 ```
 
 Il est possible de faire des branchements conditionnels via le mécanisme [`variations`](/docs/mécanismes#variations)
@@ -209,10 +220,24 @@ comme valant zéro, voir la page spécifique aux mécanismes).
 La syntaxe suivante est également valable :
 
 ```publicodes
-assimilé salarié:
+nouveau salarié:
   valeur: oui
-  rend non applicable: convention collective
+  rend non applicable: prime de vacances
+
+prime de vacances: 200€
+
+primes:
+  somme:
+    - prime de vacances
+    - 150€
 ```
+
+:::info Note
+
+La syntaxe `rend non applicable` fonctionne de la même manière que le remplacement : elle rend non applicable toutes les références à la règle choisie.
+
+**[En savoir plus sur le remplacement](/docs/principes-de-base#remplacement)**
+:::
 
 ## Espaces de noms
 
@@ -220,11 +245,8 @@ Les espaces de noms sont utiles pour organiser un grand nombre de règles. On
 utilise le `.` pour exprimer la hiérarchie des noms.
 
 ```publicodes
-prime de vacances:
-  formule: taux * 1000 €
-
-prime de vacances . taux:
-  formule: 6%
+prime de vacances: taux * 1000 €
+prime de vacances . taux: 6%
 ```
 
 Ici, `prime de vacances` est à la fois une règle et un espace de noms. La variable
@@ -237,20 +259,24 @@ On pourrait avoir une autre variable `taux` dans un espace de nom
 différent, sans que cela entre en conflit :
 
 ```publicodes
+prime de vacances: taux * 1000 €
+prime de vacances . taux: 6%
+
 # Ceci n'entre pas dans le calcul de `prime de vacances` définie plus haut
-autre prime . taux:
-  formule: 19%
+autre prime:
+autre prime . taux: 19%
 ```
 
-On dit que la formule de la règle `prime de vacances` fait référence à la
+On dit que la règle `prime de vacances` fait référence à la
 règle `prime de vacances . taux` via le nom raccourci `taux`.
 
 Pour faire référence à une règle hors de son espace de nom, on peut écrire le
 nom complet de cette règle:
 
 ```publicodes
-prime de vacances v2:
-  formule: autre prime . taux * 1000 €
+autre prime:
+autre prime . taux: 19%
+prime de vacances v2: autre prime . taux * 1000 €
 ```
 
 Dans le cas d'espaces de noms imbriqués (à plus qu'un étage), le nom inscrit
@@ -258,11 +284,15 @@ dans une règle donnée est recherché de plus en plus haut dans la hiérarchie 
 espaces de nom jusqu'à la racine.
 
 ```publicodes
+contrat salarié:
+contrat salarié . rémunération:
+contrat salarié . rémunération . primes:
+
 contrat salarié . rémunération . primes . prime de vacances:
-  formule: taux générique * 1000 €
+  valeur: taux générique * 1000 €
 
 contrat salarié . rémunération . taux générique:
-  formule: 10%
+  valeur: 10%
 ```
 
 Ici `contrat salarié . rémunération . primes . prime de vacances` va faire
@@ -299,7 +329,7 @@ quelle règle existante sans avoir besoin de la modifier :
 frais de repas: 5 €/repas
 
 convention hôtels cafés restaurants: oui
-convention hôtels cafés restaurants . frais de repas:
+convention hôtels cafés restaurants . frais de repas restaurateur:
   remplace: frais de repas
   valeur: 6 €/repas
 
@@ -337,19 +367,17 @@ Une première manière de faire consiste à extraire le paramètre en question d
 une règle indépendante, le rendant ainsi accessible et modifiable depuis
 l'extérieur :
 
-```publicodes
+```publicodes prime
 prime:
-  formule:
-    multiplication:
-      assiette: 1000€
-      taux: taux
+  multiplication:
+    assiette: 1000€
+    taux: taux
 
-prime . taux:
-  formule: 5%
+prime . taux: 5%
 
 super-prime:
   remplace: prime . taux
-  formule: 10%
+  valeur: 10%
 ```
 
 Ce code fonctionne mais il nous oblige a créer une règle `prime . taux` qui
@@ -363,18 +391,17 @@ Pour ce cas d'usage il est possible de définir une _règle imbriquée_.
 On garde la définition de la prime inchangée et on annote la valeur à laquelle
 on veut accéder depuis l'extérieur avec le mot clé `nom` :
 
-```publicodes
+```publicodes prime
 prime:
-  formule:
-    multiplication:
-      assiette: 1000€
-      taux:
-        nom: taux
-        valeur: 5%
+  multiplication:
+    assiette: 1000€
+    taux:
+      nom: taux
+      valeur: 5%
 
 super-prime:
   remplace: prime . taux
-  formule: 10%
+  valeur: 10%
 ```
 
 ## Évaluation
