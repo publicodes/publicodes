@@ -15,7 +15,7 @@ Permet de désactiver une règle ou une valeur.
 
 ### Exemple
 
-```yaml
+```publicodes
 ancienneté: 4 mois
 prime de vacances:
   applicable si: ancienneté >= 1 an
@@ -32,7 +32,7 @@ Permet de désactiver une règle ou une valeur.
 
 ### Exemple
 
-```yaml
+```publicodes
 ancienneté: 4 mois
 prime de vacances:
   non applicable si: ancienneté < 1 an
@@ -47,10 +47,10 @@ Renvoie `oui` si l'une des règles listées est _applicable_.
 
 ### Exemple
 
-```yaml
+```publicodes
 âge: 17 ans
 mineur émancipé: oui
-peut voter:
+est majeur:
   une de ces conditions:
     - âge >= 18 ans
     - mineur émancipé
@@ -64,7 +64,7 @@ Renvoie `oui` si toutes toutes les règles listées sont _applicables_.
 
 ### Exemple
 
-```yaml
+```publicodes
 âge: 17 ans
 citoyenneté française: oui
 peut voter:
@@ -87,7 +87,7 @@ deuxième au taux nul et allant de `plafond` à l'infini.
 
 ### Utilisation
 
-```yaml
+```json
 produit:
   assiette: <valeur à multiplier>
   taux: <taux à appliquer>
@@ -97,7 +97,7 @@ produit:
 
 ### Exemple
 
-```yaml
+```publicodes
 cotisation:
   produit:
     assiette: 2000 €/mois
@@ -106,7 +106,7 @@ cotisation:
 
 #### assiette plafonnée
 
-```yaml
+```publicodes
 plafond sécurité sociale: 3000 €/mois
 assiette cotisation: 15000 €/mois
 chômage:
@@ -132,7 +132,7 @@ tel que `produit` ou `barème`.
 
 ### Utilisation
 
-```yaml
+```json
 - si: <condition à vérifier>
   alors: <consequence évaluée si la condition est vrai>
 - ...
@@ -141,7 +141,7 @@ tel que `produit` ou `barème`.
 
 ### Exemple
 
-```yaml
+```publicodes
 taux réduit: oui
 
 taux allocation familiales:
@@ -153,18 +153,18 @@ taux allocation familiales:
 
 #### Dans un autre mécanisme
 
-```yaml
+```publicodes
 assiette cotisation: 2300 €/mois
 taux réduit: oui
 allocation familiales:
-	produit:
-		assiette: assiette cotisation
-		variations:
-		- si: taux réduit
-			alors:
-			taux: 3.45%
-		- sinon:
-			taux: 5.25%
+  produit:
+    assiette: assiette cotisation
+    variations:
+    - si: taux réduit
+      alors:
+        taux: 3.45%
+    - sinon:
+        taux: 5.25%
 ```
 
 ## somme
@@ -177,23 +177,27 @@ On peut retrancher des valeurs grâce à l'opérateur unaire `-`
 
 ### Exemple
 
-```yaml
-      exemple:
-        somme:
-          - 15.89 €
-          - 12% * 14 €
-          - (-20 €)
-    terme non applicable: >-
-      a: 50 €
-      b:
-        applicable si: non
-        valeur: 20 €
+```publicodes
+exemple:
+  somme:
+    - 15.89 €
+    - 12% * 14 €
+    - (-20 €)
+```
 
-      somme:
-        somme:
-          - a
-          - b
-          - 40 €
+#### Terme non applicable
+
+```publicodes
+a: 50 €
+b:
+  applicable si: non
+  valeur: 20 €
+
+somme:
+  somme:
+    - a
+    - b
+    - 40 €
 ```
 
 ## le maximum de
@@ -206,7 +210,7 @@ mécanisme `encadrement`.
 
 ### Exemple
 
-```yaml
+```publicodes
 max:
   le maximum de:
     - 50
@@ -222,7 +226,7 @@ Pour plafonner une valeur, préférer l'utilisation du mécanisme `encadrement`.
 
 ### Exemple
 
-```yaml
+```publicodes
 min:
   le minimum de:
     - 50
@@ -237,14 +241,18 @@ Arrondit à l'entier le plus proche, ou à une précision donnée.
 
 ### Exemple
 
-```yaml
-      arrondi:
-        arrondi: oui
-        valeur: 12.45
-    nombre de décimales: >-
-      arrondi:
-        arrondi: 2 décimales
-        valeur: 2/3
+```publicodes
+arrondi:
+  arrondi: oui
+  valeur: 12.45
+```
+
+#### Nombre de décimales
+
+```publicodes
+arrondi:
+  arrondi: 2 décimales
+  valeur: 2 / 3
 ```
 
 ## recalcul
@@ -255,13 +263,13 @@ SMIC, même si le salaire est plus élevé dans la situation actuelle.
 
 :::caution Attention
 
-Les recalculs imbriqués ne sont pas encore fonctionnels. On parle de recalcul imbriqués lorsqu'une variable `a` recalcul une règle `b` qui elle même recalcul la règle `a`.
+Les **recalculs imbriqués** ne sont pas encore fonctionnels. On parle de recalcul imbriqués lorsqu'une variable `a` recalcul une règle `b` qui elle même recalcul la règle `a`.
 
 :::
 
 ### Exemple
 
-```yaml
+```publicodes
 brut: 2000€
 
 cotisations:
@@ -291,7 +299,7 @@ sécurité sociale.
 
 #### Sans multiplicateur
 
-```yaml
+```publicodes
 revenu imposable: 54126 €
 impôt sur le revenu:
   barème:
@@ -310,16 +318,18 @@ impôt sur le revenu:
 
 #### Avec multiplicateur
 
-```yaml
-	retraite de base:
-	barème:
-		assiette: assiette retraite
-		multiplicateur: plafond sécurité sociale temps plein
-		tranches:
-		- taux: 17.75%
-			plafond: 1
-		- taux: 0.6%
-	arrondi: oui
+```publicodes
+assiette retraite: 54004 €
+plafond sécurité sociale: 41136 €
+cotisation retraite:
+  barème:
+    assiette: assiette retraite
+    multiplicateur: plafond sécurité sociale
+    tranches:
+      - taux: 17.75%
+        plafond: 1
+      - taux: 0.6%
+  arrondi: oui
 ```
 
 ## grille
@@ -332,13 +342,13 @@ Il est composé de tranches qui se suivent. Il suffit de trouver la tranche qui 
 
 ### Exemple
 
-```yaml
+```publicodes
 SMIC horaire: 10 €/heure
-revenu moyen: 1200€/an
+revenu cotisé: 1900€/an
 trimestres validés:
+  unité: trimestres validés/an
   grille:
-    unité: trimestres validés/an
-    assiette: revenu moyen
+    assiette: revenu cotisé
     multiplicateur: SMIC horaire
     tranches:
       - montant: 0
@@ -369,7 +379,7 @@ taux situé à la moitié de la tranche correspondante.
 
 ### Exemple
 
-```yaml
+```publicodes
 chiffre d'affaires: 30000 €/an
 plafond: 3000 €/mois
 taux réduction de cotisation:
@@ -405,43 +415,45 @@ imbriquées pour chacun des termes de la somme.
 
 ### Exemple
 
-```yaml
+```publicodes composante
+assiette de base: 2000 €
 composante:
   produit:
     assiette: assiette de base
     composantes:
       - taux: 2%
       - taux: 4%
-        plafond: plafond sécurité sociale
+        plafond: 500 €
 ```
 
 #### Calcul de cotisation avec part salariale et patronale
 
-```yaml
+```publicodes
+assiette de base: 10000 €
 cotisation 1:
-produit:
-	assiette: assiette de base
-	composantes:
-	- attributs:
-		nom: employeur
-		taux: 5%
-	- attributs:
-		nom: salarié
-		taux: 1%
+  produit:
+    assiette: assiette de base
+    composantes:
+    - attributs:
+        nom: employeur
+      taux: 5%
+    - attributs:
+        nom: salarié
+      taux: 1%
 
 cotisations salariales :
-somme:
-	- cotisation 1 . salarié
-	# ...
+  somme:
+    - cotisation 1 . salarié
+    # ...
 ```
 
 #### Prix HT et TVA
 
-```yaml
-prix:
+```publicodes prix TTC
+prix TTC:
   produit:
-    assiette: 50€
-      composantes:
+    assiette: 150€
+    composantes:
       - attributs:
           nom: HT
       - attributs:
@@ -466,7 +478,7 @@ Il est possible d'utiliser le mécanisme `abattement` de deux manières :
 
 #### Abattement simple
 
-```yaml
+```publicodes
 revenu imposable:
   valeur: 10000€
   abattement: 2000€
@@ -474,7 +486,7 @@ revenu imposable:
 
 #### Abattement supérieur à la valeur
 
-```yaml
+```publicodes
 revenu imposable:
   valeur: 1000€
   abattement: 2000€
@@ -482,7 +494,7 @@ revenu imposable:
 
 #### Abattement relatif
 
-```yaml
+```publicodes
 revenu imposable:
   valeur: 2000€
   abattement: 10%
@@ -494,7 +506,7 @@ revenu imposable:
 
 ### Exemple
 
-```yaml
+```publicodes
 revenus: -500€
 assiette des cotisations:
   valeur: revenus
@@ -507,18 +519,17 @@ assiette des cotisations:
 
 ### Exemple
 
-```yaml
-salaire: 1300€/mois
+```publicodes
 déduction fiscale:
-  valeur: salaire * 10%
-  plafond: 5000 €/an
+  valeur: 1300 €/mois
+  plafond: 200 €/mois
 ```
 
 ## durée
 
 ### Exemple
 
-```yaml
+```publicodes
 date d'embauche: 14/04/2008
 ancienneté en fin d'année:
   unité: an
@@ -537,7 +548,7 @@ Affiche un avertissement si la conversion n'est pas possible à cause d'unités 
 
 ### Exemple
 
-```yaml
+```publicodes
 salaire:
   valeur: 35 k€/an
   unité: €/mois
@@ -551,7 +562,8 @@ Permet de donner une valeur par défaut pour le calcul, sans influer sur les var
 
 ### Exemple
 
-```yaml
+```publicodes
+prix HT: 50 €
 prix TTC:
   assiette: prix HT * (100% + TVA)
 TVA:
@@ -575,14 +587,21 @@ caractères.
 
 ### Exemple
 
-```yaml
+```publicodes aide vélo
 aide vélo:
-  texte: |
-    La région subventionne l’achat d’un vélo à hauteur de {{ prise en charge }}
-    et jusqu’à un plafond de {{ plafond }}. Les éventuelles aides locales déjà
-    perçues sont déduites de ce montant.
+  texte: >
+    La région subventionne l’achat d’un vélo à hauteur de
+    {{ prise en charge }} et jusqu’à un plafond de {{ plafond }}.
+    Les éventuelles aides locales déjà perçues sont déduites de
+    ce montant.
+
+    Par exemple, pour un vélo de {{ 250 € }}, la région vous
+    versera {{
+      250 € * 50%
+    }}.
+
 aide vélo . prise en charge: 50%
-aide vélo . plafond: 1500 €
+aide vélo . plafond: 500 €
 ```
 
 ## inversion numérique
@@ -635,7 +654,7 @@ par exemple.
 
 ### Exemple
 
-```yaml
+```publicodes
 x:
   valeur: 4 * x - 5
   résoudre la référence circulaire: oui
@@ -643,7 +662,7 @@ x:
 
 #### Calcul du revenu professionnel
 
-```yaml
+```publicodes
 chiffre d'affaires: 10000 €/an
 
 cotisations: 25% * revenu professionnel

@@ -10,7 +10,11 @@
 .button {
 	position: absolute;
 	right: 0;
-	margin: 0.8rem;
+	cursor: pointer;
+	margin: calc(var(--ifm-pre-padding) / 2);
+	padding: 0.4rem 0.5rem;
+	border-radius: var(--ifm-global-radius);
+	border: none;
 }
 
 .editor {
