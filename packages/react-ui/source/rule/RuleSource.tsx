@@ -34,10 +34,7 @@ function getDependancies(engine: Engine, dottedName: string): Array<string> {
 }
 type Props = { dottedName: string; engine: Engine }
 export default function RuleSource({ engine, dottedName }: Props) {
-	if (
-		window.location.host === 'publi.codes' &&
-		window.location.pathname === '/studio'
-	) {
+	if (window.location.host === 'publi.codes') {
 		return null
 	}
 	const dependancies = [

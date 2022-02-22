@@ -36,6 +36,7 @@ function Playground({
 					defaultTarget={defaultTarget}
 					onTargetChange={onTargetChange}
 				/>
+				<div style={{ paddingBottom: '1rem' }} />
 			</ErrorBoundary>
 		</div>
 	)
