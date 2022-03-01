@@ -1,0 +1,22 @@
+# Introduction
+
+_`publicode` : algorithme de calcul destiné à être publié._
+
+Le framework du même nom permet alors de :
+
+- écrire les calculs en français dans une syntaxe simple et modulaire
+- poser les bonnes questions à l'utilisateur sur une page Web dans le but de faire le calcul, qui peut être numérique ou logique (arbre de décision) : simuler un salaire, une taxe, le bon tarif d'un abonnement d'électricité, etc.
+- publier le calcul sur un site Web, pour le rendre accessible à tous.
+- faire du thé : blanc, vert, parfumé au jasmin etc.
+
+Mais pourquoi ? Aujourd'hui, beaucoup de modèles de calcul structurant notre société se cachent :
+
+- dans des feuilles excel de type `calculateur_2.6.xlsx` non documentées que l'on s'envoie par mail entre collaborateurs.
+- ou dans du code python, javascript, php sur un serveur, qui ne sont lisibles et modifiables seulement par un développeur qui s'investit plusieurs semaines.
+- dans des outils en lignes (SAAS) privés comme Typeform et ses fonctionnalités payantes "logic jump" et "calc"
+
+En général, ce code caché s'accompagne alors d'une documentation texte complètement déconnectée, incomplète et imprécise, car les mises à jour de l'un peut-être faites sans mise à jour de l'autre. Ici, le **code doit lui-même générer la documentation du calcul**, lisible par tout un chacun sur le Web dans le contexte personnalisé de sa situation (les données du modèle qu'il a lui-même saisi).
+
+De la même façon, la logique derrière les questions posées à l'utilisateur n'est pas une duplication du code métier : une instruction de ce type, `si moins de 18 ans, alors demander le nom des parents`, **ne sera écrite qu'une seule fois**, plutôt qu'une fois côté serveur et une autre fois dans l'interface client.
+
+Le framework est particulièrement adapté aux administrations, qui produisent beaucoup de lois, et donc beaucoup de calculs, tout en ayant l'obligation légale de les ouvrir et de les expliquer.
