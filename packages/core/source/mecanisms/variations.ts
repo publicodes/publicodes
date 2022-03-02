@@ -127,7 +127,7 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 				previousConditions || currentCondition,
 			]
 		},
-		[false, [], undefined, false]
+		[null, [], undefined, false]
 	)
 
 	const missingVariables = mergeAllMissing(

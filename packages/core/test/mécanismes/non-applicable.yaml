@@ -1,0 +1,10 @@
+condition dans la situation:
+condition non applicable ou non definie:
+  non applicable si: condition dans la situation
+  valeur: 5
+  exemples:
+    - valeur attendue: undefined
+    - situation:
+        condition dans la situation:
+          applicable si: non
+      valeur attendue: 5

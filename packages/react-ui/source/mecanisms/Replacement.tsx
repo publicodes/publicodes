@@ -67,7 +67,6 @@ function Overlay({
 			if (divRef.current.contains(click.target)) {
 				return
 			}
-			console.log('azd')
 			onClose()
 		}
 		window.addEventListener('click', hideOnClickOutside)

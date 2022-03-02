@@ -42,6 +42,23 @@ arrondi de pourcentage:
     - valeur attendue: 51
       unité attendue: '%'
 
+ref non définie:
+
+arrondi valeur non définie:
+  formule:
+    valeur: ref non définie
+    arrondi: oui
+  exemples:
+    - valeur attendue: undefined
+
+arrondi valeur non applicable:
+  formule:
+    valeur:
+      applicable si: non
+    arrondi: oui
+  exemples:
+    - valeur attendue: null
+
 cotisation retraite:
 
 Arrondi:

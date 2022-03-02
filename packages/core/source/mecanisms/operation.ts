@@ -75,16 +75,27 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 
 	const operatorFunction = knownOperations[node.operationKind][0]
 
-	const a = node1.nodeValue as string | null
-	const b = node2.nodeValue as string | null
+	const a = node1.nodeValue as string | boolean | null
+	const b = node2.nodeValue as string | boolean | null
 
 	const nodeValue =
 		a === undefined || b === undefined
 			? undefined
-			: a !== null &&
-			  b !== null &&
-			  ['≠', '=', '<', '>', '≤', '≥'].includes(node.operator) &&
-			  [a, b].every((value) => value.match?.(/[\d]{2}\/[\d]{2}\/[\d]{4}/))
+			: a === null ||
+			  b === null ||
+			  typeof a === 'boolean' ||
+			  typeof b === 'boolean'
+			? node.operator === '='
+				? (a === null ? false : a) === (b === null ? false : b)
+				: node.operator === '≠'
+				? (a === null ? false : a) !== (b === null ? false : b)
+				: ['*', '/', '+', '-'].includes(node.operator)
+				? operatorFunction(a === null ? 0 : a, b === null ? 0 : b)
+				: false
+			: ['≠', '=', '<', '>', '≤', '≥'].includes(node.operator) &&
+			  [a, b].every((value) =>
+					(value as string).match?.(/[\d]{2}\/[\d]{2}\/[\d]{4}/)
+			  )
 			? operatorFunction(convertToDate(a), convertToDate(b))
 			: operatorFunction(a, b)
 

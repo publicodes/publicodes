@@ -57,6 +57,7 @@ export type RuleNode = {
 	replacements: Array<ReplacementRule>
 	explanation: {
 		valeur: ASTNode
+		parents: Array<ASTNode>
 		nullableParent?: ASTNode
 	}
 	suggestions: Record<string, ASTNode>
@@ -70,6 +71,10 @@ export default function parseRule(
 	const dottedName = [context.dottedName, rawRule.nom]
 		.filter(Boolean)
 		.join(' . ')
+
+	if (context.parsedRules[dottedName]) {
+		return context.parsedRules[dottedName] as any
+	}
 
 	const name = nameLeaf(dottedName)
 	const ruleTitle = capitalise0(
@@ -97,6 +102,20 @@ export default function parseRule(
 
 	const explanation = {
 		valeur: parse(ruleValue, ruleContext),
+		// We include a list of references to the parents to implement the branch
+		// desactivation feature. When evaluating a rule we only need to know the
+		// first nullable parent, but this is something that we can't determine at
+		// this stage :
+		// - we need to run remplacements (which works on references in the ASTs
+		//   which is why we insert these “virtual” references)
+		// - we need to infer unit of the rules
+		//
+		// An alternative implementation would be possible that would colocate the
+		// code related to branch desactivation (ie find the first nullable parent
+		// statically after rules parsing)
+		parents: ruleParents(dottedName).map((parent) =>
+			parse(parent, { ...context, circularReferences: true })
+		),
 	}
 
 	context.parsedRules[dottedName] = {
@@ -123,24 +142,36 @@ export default function parseRule(
 }
 
 registerEvaluationFunction('rule', function evaluate(node) {
-	const nullableParentName = ruleParents(node.dottedName).find(
-		(parentName) => this.ruleUnits[parentName]?.isNullable
+	const firstNullableParent = node.explanation.parents.find(
+		(ref) => this.ruleUnits.get(ref)?.isNullable
 	)
-	const nullableParentEvaluation =
-		nullableParentName &&
-		!this.cache._meta.evaluationRuleStack.includes(nullableParentName)
-			? this.evaluate(nullableParentName)
-			: ({
-					nodeValue: undefined,
-					missingVariables: {},
-			  } as EvaluatedNode)
+
+	let nullableParentEvaluation = {
+		nodeValue: undefined,
+		missingVariables: {},
+	} as EvaluatedNode
+
+	if (
+		firstNullableParent &&
+		// TODO: remove this condition and the associated "parentRuleStack", cycles
+		// should be detected and avoided at parse time.
+		!this.cache._meta.parentRuleStack.includes(node.dottedName)
+	) {
+		this.cache._meta.parentRuleStack.unshift(node.dottedName)
+		nullableParentEvaluation = this.evaluate(firstNullableParent)
+		this.cache._meta.parentRuleStack.shift()
+	}
+
+	const ruleDisabledByItsParent =
+		nullableParentEvaluation.nodeValue === null ||
+		nullableParentEvaluation.nodeValue === false
 
 	let valeurEvaluation: EvaluatedNode = {
 		...node.explanation.valeur,
 		nodeValue: null,
 		missingVariables: {},
 	}
-	const ruleDisabledByItsParent = nullableParentEvaluation.nodeValue === null
+
 	if (!ruleDisabledByItsParent) {
 		if (
 			this.cache._meta.evaluationRuleStack.filter(
@@ -164,7 +195,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 			)
 
 			valeurEvaluation = {
-				nodeValue: null,
+				nodeValue: undefined,
 				missingVariables: {},
 			} as EvaluatedNode
 		} else {
@@ -181,6 +212,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 		...node,
 		explanation: {
 			nullableParent: nullableParentEvaluation,
+			parents: node.explanation.parents,
 			valeur: valeurEvaluation,
 		},
 		nodeValue: valeurEvaluation.nodeValue,

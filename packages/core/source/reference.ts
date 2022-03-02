@@ -12,8 +12,8 @@ export type ReferenceNode = {
 	 * Some mechanisms use circular references with special runtime handling to
 	 * avoid infinite loops. We could use a separate node kind in the AST to
 	 * materialize that it's a reference that doesn't create a real dependency in
-	 * the graph, but we still want to benefit from the normal name resolution of
-	 * normal references.
+	 * the graph, but we still want to benefit from the normal name resolution and
+	 * replacements of general references.
 	 */
 	circularReference: boolean
 }

@@ -22,7 +22,16 @@ plancher nouvelle ecriture:
   exemples:
     - valeur attendue: 2000
 
-plafonnement inactif:
+plafonnement non applicable:
+  formule:
+    valeur: 1000 €
+    plafond:
+      applicable si: non
+
+  exemples:
+    - valeur attendue: 1000
+
+plafonnement non:
   formule:
     valeur: 1000 €
     plafond: non

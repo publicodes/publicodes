@@ -14,11 +14,11 @@ export default SommeNode
 
 // We want to put non applicable rules a the bottom of list #1055
 function sortByApplicability(a: EvaluatedNode, b: EvaluatedNode): 1 | 0 | -1 {
-	const isApplicable = (x) => x.nodeValue === false
+	const isApplicable = (x) => x.nodeValue !== null
 	if (isApplicable(a) === isApplicable(b)) {
 		return 0
 	}
-	return isApplicable(a) ? 1 : -1
+	return isApplicable(a) ? -1 : 1
 }
 
 const Table = ({ explanation }) => (
@@ -38,7 +38,7 @@ const StyledContainer = styled.div`
 /* La colonne peut au clic afficher une nouvelle colonne qui sera une autre somme imbriquée */
 function Row({ node }: { node: EvaluatedNode }) {
 	return (
-		<StyledRow className={node.nodeValue === false ? 'notApplicable' : ''}>
+		<StyledRow className={node.nodeValue === null ? 'notApplicable' : ''}>
 			<div className="element">
 				<UnfoldIsEnabledContext.Provider value={true}>
 					<Explanation node={node} />
