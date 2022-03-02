@@ -39,12 +39,10 @@ describe('Missing variables', function () {
 				'non applicable si': 'evt . ko',
 			},
 			evt: {
-				'applicable si': {
-					nom: 'truc',
-					titre: 'Truc',
-					question: '?',
-					formule: { 'une possibilité': ['ko'] },
-				},
+				formule: { 'une possibilité': ['ko'] },
+				titre: 'Truc',
+				question: '?',
+				'par défaut': 'oui',
 			},
 			'evt . ko': {},
 		}
@@ -52,7 +50,7 @@ describe('Missing variables', function () {
 			new Engine(rawRules).evaluate('startHere').missingVariables
 		)
 
-		expect(result).to.deep.equal(['evt', 'evt . truc'])
+		expect(result).to.deep.equal(['evt . ko', 'evt'])
 	})
 
 	it('should not identify missing variables from static rules', function () {
@@ -407,10 +405,8 @@ transport . avion . usager:
 		// See https://github.com/betagouv/publicodes/issues/33
 		const rawRules = yaml.parse(`
 avion:
-  applicable si:
-    nom: usager
-    question: prenez-vous l'avion ?
-    par défaut: oui
+  question: prenez-vous l'avion ?
+  par défaut: oui
 
 avion . impact:
   formule:
@@ -428,7 +424,7 @@ avion . impact . au sol: 5
 			new Engine(rawRules).evaluate('avion . impact . au sol').missingVariables
 		)
 
-		expect(result).deep.to.equal(['avion', 'avion . usager'])
+		expect(result).deep.to.equal(['avion'])
 	})
 
 	it("Parent's other descendands in sums in applicability should be included as missing variables", function () {

@@ -1,0 +1,62 @@
+espace booléen:
+  valeur: non
+
+espace booléen . enfant:
+  valeur: 1 gnou
+  exemples:
+    - valeur attendue: null
+
+espace booléen . enfant . petit-enfant:
+  valeur: 1 gnougnou
+  exemples:
+    - valeur attendue: null
+
+espace booléen . enfant booléen:
+  valeur: oui
+
+espace booléen . enfant booléen . petit-enfant:
+  valeur: 1 gnougnou
+  exemples:
+    - valeur attendue: null
+
+espace non applicable:
+  applicable si: non
+
+espace non applicable . enfant:
+  valeur: 1 gnou
+  exemples:
+    - valeur attendue: null
+
+espace non applicable . enfant . petit-enfant:
+  valeur: 1 gnougnou
+  exemples:
+    - valeur attendue: null
+
+espace rendu non applicable:
+
+espace rendu non applicable . enfant:
+  valeur: 1 gnou
+  exemples:
+    - valeur attendue: null
+
+espace rendu non applicable . enfant . petit-enfant:
+  valeur: 1 gnougnou
+  exemples:
+    - valeur attendue: null
+
+x:
+  valeur: oui
+  rend non applicable: espace rendu non applicable
+
+revenu: 10000 €
+cotisation:
+cotisation . taux réduit:
+  valeur: revenu < seuil
+  exemples:
+    - valeur attendue: true
+cotisation . taux réduit . seuil: 20000 €
+cotisation . réduction très bas revenu:
+  applicable si: revenu < 1000 €
+  remplace:
+    règle: taux réduit
+    par: oui

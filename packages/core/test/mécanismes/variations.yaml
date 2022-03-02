@@ -38,6 +38,14 @@ variations renvoyant une valeur:
       variables manquantes:
         - statut cadre
 
+variations sans valeur retournée:
+  formule:
+    variations:
+      - si: non
+        alors: 1
+  exemples:
+    - valeur attendue: null
+
 variations avec cas défaut:
   formule:
     variations:

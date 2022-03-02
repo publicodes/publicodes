@@ -38,7 +38,9 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 			return this.evaluate(node.explanation.valeur)
 		}
 
-		let nodeValue: number | undefined | undefined = undefined
+		const inversionFailed = Symbol('inversion failed')
+
+		let nodeValue: number | undefined | typeof inversionFailed = inversionFailed
 
 		const x0 = 0
 		let valeur = evaluateWithValue(x0)
@@ -69,7 +71,7 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 
 		this.cache = originalCache
 
-		if (nodeValue === undefined) {
+		if (nodeValue === inversionFailed) {
 			nodeValue = undefined
 			this.cache._meta.inversionFail = true
 		}

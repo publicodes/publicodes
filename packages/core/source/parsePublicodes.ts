@@ -28,7 +28,7 @@ export default function parsePublicodes<RuleNames extends string>(
 	partialContext: Partial<Context> = {}
 ): {
 	parsedRules: ParsedRules<RuleNames>
-	ruleUnits: Record<RuleNames, InferedUnit>
+	ruleUnits: WeakMap<ASTNode, InferedUnit>
 	rulesDependencies: Record<RuleNames, Array<RuleNames>>
 } {
 	// STEP 1: parse Yaml
@@ -77,15 +77,8 @@ export default function parsePublicodes<RuleNames extends string>(
 		parsedRules
 	)
 
-	// topological sort rules
-	// Throws an error if there is a cycle in the graph
-	const topologicalOrder = topologicalSort(
-		Object.keys(parsedRules),
-		rulesDependencies
-	)
-
 	// STEP 6: type inference
-	const ruleUnits = inferRulesUnit(parsedRules, topologicalOrder)
+	const ruleUnits = inferRulesUnit(parsedRules, rulesDependencies)
 
 	return { parsedRules, ruleUnits, rulesDependencies } as any
 }
@@ -99,7 +92,6 @@ function transpileRef(object: Record<string, any> | string | Array<any>) {
 	if (!object || typeof object !== 'object') {
 		return object
 	}
-	object
 	return Object.entries(object).reduce((obj, [key, value]) => {
 		const match = /\[ref( (.+))?\]$/.exec(key)
 
@@ -187,11 +179,39 @@ function topologicalSort<Names extends string>(
 	return result
 }
 
-function inferRulesUnit(parsedRules, topologicalOrder) {
-	const res = {}
+function inferRulesUnit(parsedRules, rulesDependencies) {
+	// topological sort rules
+	// Throws an error if there is a cycle in the graph
+	const topologicalOrder = topologicalSort(
+		Object.keys(parsedRules),
+		rulesDependencies
+	)
+
+	const cache = new WeakMap<ASTNode, InferedUnit>()
 	topologicalOrder.forEach((ruleName) => {
-		inferNodeUnit(parsedRules[ruleName])
+		inferNodeUnitAndCache(parsedRules[ruleName])
 	})
+	topologicalOrder.forEach((ruleName) => {
+		if (parsedRules[ruleName].nodeKind === 'rule') {
+			parsedRules[ruleName].explanation.parents
+				// .filter(
+				// 	(parent) =>
+				// 		rulesDependencies[parent.dottedName]?.includes(ruleName) !== true
+				// )
+				.forEach((parent) => {
+					inferNodeUnitAndCache(parent)
+				})
+		}
+	})
+
+	function inferNodeUnitAndCache(node: ASTNode): InferedUnit {
+		if (cache.has(node)) {
+			return cache.get(node)!
+		}
+		const unit = inferNodeUnit(node)
+		cache.set(node, unit)
+		return unit
+	}
 
 	function inferNodeUnit(node: ASTNode): InferedUnit {
 		switch (node.nodeKind) {
@@ -209,15 +229,26 @@ function inferRulesUnit(parsedRules, topologicalOrder) {
 			case 'non applicable si':
 				return { isNullable: true }
 
-			case 'constant':
-				return { isNullable: node.nodeValue === null }
-
-			case 'inversion':
-			case 'operation':
-			case 'recalcul':
-			case 'replacementRule':
 			case 'toutes ces conditions':
 			case 'une de ces conditions':
+				return { isNullable: true }
+
+			case 'constant':
+				return {
+					isNullable:
+						node.nodeValue === null || typeof node.nodeValue === 'boolean',
+				}
+
+			case 'operation':
+				return {
+					isNullable: ['<', '<=', '>', '>=', '=', '!='].includes(
+						node.operationKind
+					),
+				}
+
+			case 'inversion':
+			case 'recalcul':
+			case 'replacementRule':
 			case 'une possibilité':
 			case 'résoudre référence circulaire':
 			case 'synchronisation':
@@ -225,45 +256,41 @@ function inferRulesUnit(parsedRules, topologicalOrder) {
 				return { isNullable: false }
 
 			case 'abattement':
-				return inferNodeUnit(node.explanation.assiette)
+				return inferNodeUnitAndCache(node.explanation.assiette)
 
 			case 'arrondi':
 			case 'nom dans la situation':
 			case 'plafond':
 			case 'plancher':
-				return inferNodeUnit(node.explanation.valeur)
+			case 'rule':
+				return inferNodeUnitAndCache(node.explanation.valeur)
 
 			case 'unité':
-				return inferNodeUnit(node.explanation)
+				return inferNodeUnitAndCache(node.explanation)
 
 			case 'variations':
 				return {
 					isNullable: node.explanation.some((line) => {
 						// TODO: hack for mon-entreprise rules, because topologicalSort
 						// seems imperfect
-						if (inferNodeUnit(line.consequence) === undefined) {
+						if (inferNodeUnitAndCache(line.consequence) === undefined) {
 							return false
 						}
-						return inferNodeUnit(line.consequence).isNullable
+						return inferNodeUnitAndCache(line.consequence).isNullable
 					}),
 				}
 
 			case 'par défaut':
 				return {
 					isNullable:
-						inferNodeUnit(node.explanation.parDéfaut).isNullable ||
-						inferNodeUnit(node.explanation.valeur).isNullable,
+						inferNodeUnitAndCache(node.explanation.parDéfaut).isNullable ||
+						inferNodeUnitAndCache(node.explanation.valeur).isNullable,
 				}
 
-			case 'rule':
-				const ruleName = node.dottedName
-				res[ruleName] = inferNodeUnit(node.explanation.valeur)
-				return res[ruleName]
-
 			case 'reference':
-				return res[node.dottedName as string]
+				return cache.get(parsedRules[node.dottedName as string])!
 		}
 	}
 
-	return res
+	return cache
 }

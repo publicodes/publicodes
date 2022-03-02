@@ -51,7 +51,9 @@ const evaluateProduit: EvaluationFunction<'produit'> = function (node) {
 		}
 	}
 	const mult = (base, rate, facteur, plafond) =>
-		Math.min(base, plafond === false ? Infinity : plafond) * rate * facteur
+		Math.min(base, plafond === null || plafond === false ? Infinity : plafond) *
+		rate *
+		facteur
 	let nodeValue: number | undefined = [taux, assiette, facteur].some(
 		(n) => n.nodeValue === undefined
 	)

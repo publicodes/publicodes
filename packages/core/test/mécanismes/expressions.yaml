@@ -1,3 +1,6 @@
+règle non applicable:
+  applicable si: non
+
 entier:
   formule: 5
   exemples:
@@ -12,6 +15,11 @@ addition de nombres:
   formule: 28 + 1.1
   exemples:
     - valeur attendue: 29.1
+
+addition non applicable:
+  formule: 5 + règle non applicable
+  exemples:
+    - valeur attendue: 5
 
 addition de plusieurs nombres:
   formule: 27 + 1.1 + 0.9
@@ -299,6 +307,11 @@ expression dans situation 2:
         salaire: 48k€/an
       unité attendue: €/mois
       valeur attendue: 400
+
+expression avec élement non applicable:
+  formule: règle non applicable = non
+  exemples:
+    - valeur attendue: true
 
 chaine de charactère:
   formule: "'loup y es-tu ? 🐺'"

@@ -85,12 +85,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 	}
 	const { description, question } = rule.rawNode
 	const { nullableParent, valeur } = rule.explanation
-	console.debug(`Rule ${rule.dottedName} value: ${rule.nodeValue}`)
-	console.debug(
-		`Rule ${rule.dottedName} missingVariables: ${JSON.stringify(
-			rule.missingVariables
-		)}`
-	)
+
 	return (
 		<div id="documentationRuleRoot">
 			{useSubEngine && (

@@ -18,7 +18,7 @@ import { formatUnit, getUnitKey } from './units'
 const emptyCache = (): Cache => ({
 	_meta: {
 		evaluationRuleStack: [],
-		disableApplicabilityContextCounter: 0,
+		parentRuleStack: [],
 	},
 	nodes: new Map(),
 	nodesApplicability: new Map(),
@@ -27,7 +27,7 @@ const emptyCache = (): Cache => ({
 type Cache = {
 	_meta: {
 		evaluationRuleStack: Array<string>
-		disableApplicabilityContextCounter: number
+		parentRuleStack: Array<string>
 		inversionFail?:
 			| {
 					given: string
@@ -103,7 +103,7 @@ export default class Engine<Name extends string = string> {
 	// https://github.com/betagouv/publicodes/discussions/92
 	subEngines: Array<Engine<Name>> = []
 	subEngineId: number | undefined
-	ruleUnits: Record<Name, InferedUnit>
+	ruleUnits: WeakMap<ASTNode, InferedUnit>
 
 	constructor(
 		rules: string | Record<string, Rule> = {},
@@ -219,6 +219,7 @@ export default class Engine<Name extends string = string> {
 		newEngine.parsedRules = this.parsedRules
 		newEngine.replacements = this.replacements
 		newEngine.parsedSituation = this.parsedSituation
+		newEngine.ruleUnits = this.ruleUnits
 		newEngine.cache = this.cache
 		newEngine.subEngineId = this.subEngines.length
 		this.subEngines.push(newEngine)
@@ -236,7 +237,7 @@ export function UNSAFE_isNotApplicable<DottedName extends string = string>(
 	dottedName: DottedName
 ): boolean {
 	return (
-		engine.ruleUnits[dottedName].isNullable &&
-		engine.evaluate(dottedName).nodeValue === null
+		engine.ruleUnits.get(engine.parsedRules[dottedName] as any)?.isNullable ===
+			true && engine.evaluate(dottedName).nodeValue === null
 	)
 }
