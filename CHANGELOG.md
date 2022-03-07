@@ -1,6 +1,12 @@
 # Changelog
 
-## 1.0.0-beta.32 (next)
+## 1.0.0-beta.32
+
+**core**
+
+-   Nouvelles valeurs littérales pour les règles non applicables (`null`) et non définies (`undefined`)
+    cf. https://github.com/betagouv/publicodes/discussions/158#discussioncomment-2132390
+-   Nouvelle implémentation de la désactivation de branche pour éviter la remontée de « variables manquantes » inattendues
 
 **publicodes-react**
 
