@@ -18,7 +18,7 @@ export type Context = {
 
 // TODO: Currently only handle nullability, but the infering logic should be
 // extended to support the full unit type system.
-export type InferedUnit = { isNullable: boolean }
+export type InferedType = { isNullable: boolean }
 
 type RawRule = Omit<Rule, 'nom'> | string | number
 export type RawPublicodes = Record<string, RawRule>
@@ -28,7 +28,7 @@ export default function parsePublicodes<RuleNames extends string>(
 	partialContext: Partial<Context> = {}
 ): {
 	parsedRules: ParsedRules<RuleNames>
-	ruleUnits: WeakMap<ASTNode, InferedUnit>
+	ruleUnits: WeakMap<ASTNode, InferedType>
 	rulesDependencies: Record<RuleNames, Array<RuleNames>>
 } {
 	// STEP 1: parse Yaml
@@ -46,6 +46,17 @@ export default function parsePublicodes<RuleNames extends string>(
 		parsedRules: partialContext.parsedRules ?? {},
 		logger: partialContext.logger ?? console,
 		getUnitKey: partialContext.getUnitKey ?? ((x) => x),
+
+		// Some mechanisms works with circular references and avoid infinite loops
+		// at runtime by having special handling for theses references, for instance
+		// "résourde la référence circulaire" or branch desactivation implemented
+		// with parent references at the rule level. When these mechanisms call
+		// `parse` they expect a reference but the parse API will return a AST node
+		// and can't guarantee that it will be a reference (this is not ideal, we
+		// will probably want to rework this part).
+		//
+		// To automate tree traversal we mark these references as circular using the
+		// parse context.
 		circularReferences: false,
 	}
 	Object.entries(rules).forEach(([dottedName, rule]) => {
@@ -66,7 +77,7 @@ export default function parsePublicodes<RuleNames extends string>(
 	// STEP 4: Disambiguate reference
 	const rulesDependencies = {}
 	parsedRules = traverseParsedRules(
-		disambiguateReference(parsedRules, rulesDependencies),
+		disambiguateReferenceAndCollectDependencies(parsedRules, rulesDependencies),
 		parsedRules
 	)
 
@@ -112,7 +123,7 @@ function transpileRef(object: Record<string, any> | string | Array<any>) {
 	}, {})
 }
 
-export const disambiguateReference = (
+export const disambiguateReferenceAndCollectDependencies = (
 	parsedRules: Record<string, RuleNode>,
 	dependencies: Record<string, Array<string>>
 ) =>
@@ -124,7 +135,7 @@ export const disambiguateReference = (
 				node.name
 			)
 
-			if (node.circularReference !== true) {
+			if (!(node.circularReference ?? false)) {
 				dependencies[node.contextDottedName] = [
 					...(dependencies[node.contextDottedName] ?? []),
 					dottedName,
@@ -187,33 +198,28 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 		rulesDependencies
 	)
 
-	const cache = new WeakMap<ASTNode, InferedUnit>()
+	const cache = new WeakMap<ASTNode, InferedType>()
 	topologicalOrder.forEach((ruleName) => {
 		inferNodeUnitAndCache(parsedRules[ruleName])
 	})
 	topologicalOrder.forEach((ruleName) => {
 		if (parsedRules[ruleName].nodeKind === 'rule') {
-			parsedRules[ruleName].explanation.parents
-				// .filter(
-				// 	(parent) =>
-				// 		rulesDependencies[parent.dottedName]?.includes(ruleName) !== true
-				// )
-				.forEach((parent) => {
-					inferNodeUnitAndCache(parent)
-				})
+			parsedRules[ruleName].explanation.parents.forEach((parent) => {
+				inferNodeUnitAndCache(parent)
+			})
 		}
 	})
 
-	function inferNodeUnitAndCache(node: ASTNode): InferedUnit {
+	function inferNodeUnitAndCache(node: ASTNode): InferedType {
 		if (cache.has(node)) {
 			return cache.get(node)!
 		}
-		const unit = inferNodeUnit(node)
+		const unit = inferNodeType(node)
 		cache.set(node, unit)
 		return unit
 	}
 
-	function inferNodeUnit(node: ASTNode): InferedUnit {
+	function inferNodeType(node: ASTNode): InferedType {
 		switch (node.nodeKind) {
 			case 'somme':
 			case 'produit':

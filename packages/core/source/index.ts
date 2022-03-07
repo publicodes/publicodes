@@ -1,10 +1,9 @@
-import { reduceAST } from './AST'
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
 import { evaluationFunctions } from './evaluationFunctions'
 import parse from './parse'
 import parsePublicodes, {
-	disambiguateReference,
-	InferedUnit,
+	disambiguateReferenceAndCollectDependencies,
+	InferedType,
 } from './parsePublicodes'
 import {
 	getReplacements,
@@ -45,14 +44,14 @@ export type EvaluationOptions = Partial<{
 	unit: string
 }>
 
-export { reduceAST, makeASTTransformer as transformAST } from './AST/index'
+export { makeASTTransformer as transformAST, reduceAST } from './AST/index'
 export {
-	type Evaluation,
-	type Unit,
-	type NotYetDefined,
-	type NotApplicable,
-	isNotYetDefined,
 	isNotApplicable,
+	isNotYetDefined,
+	type Evaluation,
+	type NotApplicable,
+	type NotYetDefined,
+	type Unit,
 } from './AST/types'
 export { capitalise0, formatValue } from './format'
 export { simplifyNodeUnit } from './nodeUnits'
@@ -103,7 +102,7 @@ export default class Engine<Name extends string = string> {
 	// https://github.com/betagouv/publicodes/discussions/92
 	subEngines: Array<Engine<Name>> = []
 	subEngineId: number | undefined
-	ruleUnits: WeakMap<ASTNode, InferedUnit>
+	ruleUnits: WeakMap<ASTNode, InferedType>
 
 	constructor(
 		rules: string | Record<string, Rule> = {},
@@ -154,7 +153,12 @@ export default class Engine<Name extends string = string> {
 		return inlineReplacements(
 			this.replacements,
 			this.options.logger
-		)(disambiguateReference(this.parsedRules, {})(parse(...args)))
+		)(
+			disambiguateReferenceAndCollectDependencies(
+				this.parsedRules,
+				{}
+			)(parse(...args))
+		)
 	}
 
 	inversionFail(): boolean {

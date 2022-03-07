@@ -10,6 +10,8 @@ espace booléen . enfant . petit-enfant:
   valeur: 1 gnougnou
   exemples:
     - valeur attendue: null
+  références:
+    Les inconnus: https://youtu.be/inzc1Fh9st4?t=44
 
 espace booléen . enfant booléen:
   valeur: oui

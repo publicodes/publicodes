@@ -72,10 +72,6 @@ export default function parseRule(
 		.filter(Boolean)
 		.join(' . ')
 
-	if (context.parsedRules[dottedName]) {
-		return context.parsedRules[dottedName] as any
-	}
-
 	const name = nameLeaf(dottedName)
 	const ruleTitle = capitalise0(
 		rawRule['titre'] ??
