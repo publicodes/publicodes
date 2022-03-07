@@ -295,7 +295,7 @@ export function Leaf(
 		<UnfoldButton onClick={() => setFolded(!folded)}>
 			{folded ? 'déplier' : 'replier'}
 		</UnfoldButton>
-	) : undefined
+	) : null
 	if (
 		node.dottedName === node.contextDottedName + ' . ' + node.name &&
 		!node.name.includes(' . ') &&

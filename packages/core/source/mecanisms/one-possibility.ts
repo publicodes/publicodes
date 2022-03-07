@@ -18,7 +18,9 @@ export const mecanismOnePossibility = (v, context: Context) => {
 	}
 	return {
 		...v,
-		explanation: v.possibilités.map((p) => parse(p, context)),
+		explanation: v.possibilités.map((p) =>
+			parse(p, { ...context, circularReferences: true })
+		),
 		nodeKind: 'une possibilité',
 		context: context.dottedName,
 	} as PossibilityNode

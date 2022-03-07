@@ -25,7 +25,7 @@ export default function Composantes({ nodeValue, explanation, unit }) {
 								margin: '0.4em 0 0.2em',
 							}}
 						>
-							{i === explanation.length - 1 ? undefined : '+'}
+							{i === explanation.length - 1 ? null : '+'}
 						</div>
 					</li>,
 				])}

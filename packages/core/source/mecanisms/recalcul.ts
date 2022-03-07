@@ -96,7 +96,8 @@ export const mecanismRecalcul = (v, context) => {
 
 	// Caveat: v.règle can theoretically be an expression, not necessarily
 	// a dotted name.
-	const recalculNode = v.règle && parse(v.règle, context)
+	const recalculNode =
+		v.règle && parse(v.règle, { ...context, circularReferences: true })
 
 	return {
 		explanation: {

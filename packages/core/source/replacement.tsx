@@ -39,16 +39,26 @@ export function parseReplacements(
 	if (!replacements) {
 		return []
 	}
+	// Circular references are a hacky escape hatch for cycle detection.
+	// Replacement and "rend non applicable" nodes are defined in refeverse which
+	// as the consequence of creating cycles if we follow reference naively.
+	const markReferenceAsCircularContext = {
+		...context,
+		circularReferences: true,
+	}
 	return (Array.isArray(replacements) ? replacements : [replacements]).map(
 		(replacement) => {
 			if (typeof replacement === 'string') {
 				replacement = { règle: replacement }
 			}
 
-			const replacedReference = parse(replacement.règle, context)
+			const replacedReference = parse(
+				replacement.règle,
+				markReferenceAsCircularContext
+			)
 			const replacementNode = parse(
 				replacement.par ?? context.dottedName,
-				context
+				markReferenceAsCircularContext
 			)
 
 			const [whiteListedNames, blackListedNames] = [
@@ -58,12 +68,17 @@ export function parseReplacements(
 				.map((dottedName) =>
 					Array.isArray(dottedName) ? dottedName : [dottedName]
 				)
-				.map((refs) => refs.map((ref) => parse(ref, context)))
+				.map((refs) =>
+					refs.map((ref) => parse(ref, markReferenceAsCircularContext))
+				)
 
 			return {
 				nodeKind: 'replacementRule',
 				rawNode: replacement,
-				definitionRule: parse(context.dottedName, context),
+				definitionRule: parse(
+					context.dottedName,
+					markReferenceAsCircularContext
+				),
 				replacedReference,
 				replacementNode,
 				whiteListedNames,
