@@ -19,11 +19,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/install
-      - run: yarn workspaces run build
-        env:
-          NODE_ENV: production
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_PUBLISH_SECRET }}
           dry-run: ${{ github.ref != 'refs/heads/master' }}
           package: ./packages/${{ matrix.package }}/package.json
+        env:
+          NODE_ENV: production

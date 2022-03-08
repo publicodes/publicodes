@@ -7,16 +7,16 @@
 		"website"
 	],
 	"scripts": {
-		"test": "yarn workspaces run test",
-		"test:type": "yarn workspace publicodes build && yarn workspace publicodes-react run build && yarn workspaces run tsc",
-		"lint:prettier": "yarn run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml}\"",
-		"lint:prettier:fix": "yarn lint:prettier --write",
-		"prepare": "yarn workspace publicodes run prepare",
-		"start": "concurrently --kill-others  \"yarn workspace publicodes run build --watch\" \"yarn workspace publicodes-react run build --watch\" \"yarn workspace website run start\""
+		"test": "yarn workspaces foreach run test",
+		"prepack": "yarn workspaces foreach -tpi run prepack",
+		"test:type": "run prepack && yarn workspaces foreach -pi run test:type",
+		"lint:prettier": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml}\"",
+		"lint:prettier:fix": "run lint:prettier --write",
+		"start": "yarn workspaces foreach -pi run start",
+		"clean": "yarn workspaces foreach run clean"
 	},
-	"dependencies": {},
 	"devDependencies": {
-		"concurrently": "^7.0.0",
 		"prettier": "^2.5.1"
-	}
+	},
+	"packageManager": "yarn@3.2.0"
 }
