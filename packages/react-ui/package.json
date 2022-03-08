@@ -15,7 +15,9 @@
 	"scripts": {
 		"clean": "rimraf dist node_modules data",
 		"build": "tsup source/index.tsx --format cjs,esm --dts --inject ./react-shim.js --sourcemap",
-		"test": "echo \"Error: no test specified\""
+		"prepack": "run build",
+		"start": "run build --watch",
+		"test:type": "run tsc"
 	},
 	"files": [
 		"dist"
@@ -30,7 +32,8 @@
 	"devDependencies": {
 		"@types/react": "^17.0.0",
 		"@types/styled-components": "^5.1.10",
-		"tsup": "^5.11.11",
+		"rimraf": "^3.0.2",
+		"tsup": "^5.11.13",
 		"typescript": "^4.5.5"
 	}
 }

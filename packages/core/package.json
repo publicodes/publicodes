@@ -24,7 +24,6 @@
 	"files": [
 		"dist/"
 	],
-	"private": false,
 	"devDependencies": {
 		"@types/chai": "^4.3.0",
 		"@types/mocha": "^9.1.0",
@@ -47,10 +46,12 @@
 	},
 	"scripts": {
 		"build:grammar": "nearleyc ./source/grammar.ne -o ./source/grammar.js",
-		"prepare": "yarn run build:grammar",
-		"clean": "rimraf dist node_modules",
-		"build": "yarn run tsup",
-		"test": "yarn mocha \"./test/**/*.test.{js,ts}\""
+		"build": "tsup",
+		"start": "run build:grammar && run build --watch",
+		"prepack": "run build:grammar && run build",
+		"test:type": "run build:grammar && run tsc",
+		"test": "run build:grammar && mocha \"./test/**/*.test.{js,ts}\"",
+		"clean": "rimraf dist node_modules source/grammar.js"
 	},
 	"engines": {
 		"node": ">=12.16.1"
