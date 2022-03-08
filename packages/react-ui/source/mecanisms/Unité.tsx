@@ -2,9 +2,9 @@ import Explanation from '../Explanation'
 import { InfixMecanism } from './common'
 import { formatValue, serializeUnit } from 'publicodes'
 
-export default function MecanismUnité({ explanation, unit }) {
+export default function MecanismUnité({ nodeValue, explanation, unit }) {
 	if (explanation.nodeKind === 'constant') {
-		return formatValue({ nodeValue: explanation.nodeValue, unit: unit })
+		return formatValue({ nodeValue, unit })
 	} else if (explanation.nodeKind === 'reference') {
 		return (
 			<>

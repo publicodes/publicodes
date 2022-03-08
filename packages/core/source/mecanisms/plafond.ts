@@ -19,7 +19,7 @@ const evaluate: EvaluationFunction<'plafond'> = function (node) {
 
 	let nodeValue = valeur.nodeValue
 	let plafond = node.explanation.plafond
-	if (nodeValue !== false) {
+	if (nodeValue !== null) {
 		const evaluatedPlafond = this.evaluate(plafond)
 		if (valeur.unit) {
 			try {

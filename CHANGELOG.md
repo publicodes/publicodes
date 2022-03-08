@@ -1,5 +1,11 @@
 # Changelog
 
+## next
+
+**publicodes-react**
+
+-   Corrige un bug d'affichage dans la documentation lié aux conversions d'unités
+
 ## 1.0.0-beta.32
 
 **core**
