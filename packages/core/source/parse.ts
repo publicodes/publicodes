@@ -74,9 +74,7 @@ function parseExpression(
 	/* Strings correspond to infix expressions.
 	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
 	 * This function makes them prefixed operations. */
-	const singleLineExpression = (rawNode + '')
-		.replaceAll(/\s*\n\s*/g, ' ')
-		.trim()
+	const singleLineExpression = (rawNode + '').replace(/\s*\n\s*/g, ' ').trim()
 
 	try {
 		const [parseResult] = new Parser(compiledGrammar).feed(
