@@ -79,6 +79,29 @@ Un objet javascript de type `EvaluatedNode` contenant la valeur calculée.
 - `nodeValue`: la valeur calculée (type `string`, `number`, `boolean`, ou `null`)
 - `unit`: si `nodeValue` est un nombre, contient l'unité associée
 
+### _method_ `engine.evaluateApplicability(expression)`
+
+Cette méthode permet déterminer l'applicabilité d'une expression. Elle est utile
+pour l'affichage de formulaires où l'on veut afficher certaines sections de
+manière conditionnelle.
+
+Cette méthode réalise seulement les calculs utiles pour déterminer
+l'applicabilité de l'expression, et non ceux utiles pour le calcul de sa valeur
+comme avec `engine.evaluate`. Les `missingVariables` retournées seront
+uniquement celles utiles pour déterminer l'applicabilité.
+
+**Arguments**
+
+- `expression`: la valeur à évaluer. Cela peut-être n'importe quelle expression publicodes
+  bien formée (expression arithmétique, mécanisme, réference vers une règle).
+
+**Retourne**
+
+Un objet javascript de type
+
+- `isApplicable: boolean` applicabilité de l'expression en entrée
+- `missingVariables` les règles utilisés pour déterminer l'applicabilité de l'expression
+
 ## _function_ `formatValue(evaluatedNode, [options])`
 
 Formate la valeur evaluée.

@@ -84,7 +84,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 		nodeKind: 'rule'
 	}
 	const { description, question } = rule.rawNode
-	const { nullableParent, valeur } = rule.explanation
+	const { valeur, nullableParent } = rule.explanation
 
 	return (
 		<div id="documentationRuleRoot">
@@ -134,8 +134,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 				</>
 			}
 			{nullableParent &&
-				'nodeValue' in nullableParent &&
-				nullableParent.nodeValue === null && (
+				!engine.evaluateApplicability(nullableParent).isApplicable && (
 					<>
 						<h3>Parent non applicable</h3>
 						<p>

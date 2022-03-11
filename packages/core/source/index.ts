@@ -1,4 +1,5 @@
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
+import { evaluateApplicability } from './evaluateApplicability'
 import { evaluationFunctions } from './evaluationFunctions'
 import parse from './parse'
 import parsePublicodes, {
@@ -20,7 +21,7 @@ const emptyCache = (): Cache => ({
 		parentRuleStack: [],
 	},
 	nodes: new Map(),
-	nodesApplicability: new Map(),
+	traversedNames: new WeakMap(),
 })
 
 type Cache = {
@@ -37,7 +38,7 @@ type Cache = {
 		filter?: string
 	}
 	nodes: Map<PublicodesExpression | ASTNode, EvaluatedNode>
-	nodesApplicability: Map<PublicodesExpression | ASTNode, EvaluatedNode>
+	traversedNames: WeakMap<ASTNode, Array<string>>
 }
 
 export type EvaluationOptions = Partial<{
@@ -215,6 +216,23 @@ export default class Engine<Name extends string = string> {
 		return evaluatedNode
 	}
 
+	evaluateApplicability(
+		value: PublicodesExpression | ASTNode
+	): ReturnType<typeof evaluateApplicability> {
+		let node
+		if (!value || typeof value !== 'object' || !('nodeKind' in value)) {
+			node = this.parse(value, {
+				dottedName: 'evaluation',
+				parsedRules: {},
+				...this.options,
+			})
+		} else {
+			node = value as ASTNode
+		}
+
+		return evaluateApplicability.call(this, node)
+	}
+
 	/**
 	 * Shallow Engine instance copy. Keeps references to the original Engine instance attributes.
 	 */
@@ -236,13 +254,14 @@ export default class Engine<Name extends string = string> {
  	This function allows to mimic the former 'isApplicable' property on evaluatedRules
 
 	It will be deprecated when applicability will be encoded as a Literal type
+
+	@deprecated
 */
 export function UNSAFE_isNotApplicable<DottedName extends string = string>(
 	engine: Engine<DottedName>,
 	dottedName: DottedName
 ): boolean {
-	return (
-		engine.ruleUnits.get(engine.parsedRules[dottedName] as any)?.isNullable ===
-			true && engine.evaluate(dottedName).nodeValue === null
-	)
+	console.warn('UNSAFE_isNotApplicable is deprecated')
+	console.warn('Use engine.evaluateApplicability(node).isApplicable instead')
+	return !engine.evaluateApplicability(dottedName).isApplicable
 }

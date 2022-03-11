@@ -1,5 +1,8 @@
 restaurant: oui
-restaurant . prix du repas: 10 €/repas
+restaurant . prix du repas:
+  valeur: 10 €/repas
+  exemples:
+    - type: number
 restaurant . client gourmand: oui
 restaurant . client enfant:
   rend non applicable:

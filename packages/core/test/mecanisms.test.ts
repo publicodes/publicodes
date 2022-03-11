@@ -29,6 +29,7 @@ testSuites.forEach(([suiteName, suite]) => {
 							nom: testName,
 							situation,
 							'valeur attendue': valeur,
+							type: type,
 							'variables manquantes': expectedMissing,
 						},
 						i
@@ -56,6 +57,11 @@ testSuites.forEach(([suiteName, suite]) => {
 									expect(Object.keys(result.missingVariables)).to.eql(
 										expectedMissing
 									)
+								}
+								if (type) {
+									expect(
+										engine.ruleUnits.get(engine.getRule(name)).type
+									).to.be.equal(type)
 								}
 								if (unit) {
 									expect(result.unit).not.to.be.equal(undefined)

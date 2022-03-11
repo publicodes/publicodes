@@ -18,7 +18,10 @@ export type Context = {
 
 // TODO: Currently only handle nullability, but the infering logic should be
 // extended to support the full unit type system.
-export type InferedType = { isNullable: boolean }
+export type InferedType = {
+	isNullable: boolean
+	type: 'string' | 'number' | 'boolean' | 'objet'
+}
 
 type RawRule = Omit<Rule, 'nom'> | string | number
 export type RawPublicodes = Record<string, RawRule>
@@ -229,20 +232,24 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 			case 'taux progressif':
 			case 'maximum':
 			case 'minimum':
-				return { isNullable: false }
+				return { isNullable: false, type: 'number' }
 
 			case 'applicable si':
 			case 'non applicable si':
-				return { isNullable: true }
+				return {
+					isNullable: true,
+					type: inferNodeType(node.explanation.valeur).type,
+				}
 
 			case 'toutes ces conditions':
 			case 'une de ces conditions':
-				return { isNullable: true }
+				return { isNullable: true, type: 'boolean' }
 
 			case 'constant':
 				return {
 					isNullable:
 						node.nodeValue === null || typeof node.nodeValue === 'boolean',
+					type: node.type,
 				}
 
 			case 'operation':
@@ -250,6 +257,9 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 					isNullable: ['<', '<=', '>', '>=', '=', '!='].includes(
 						node.operationKind
 					),
+					type: ['<', '<=', '>', '>=', '=', '!='].includes(node.operationKind)
+						? 'boolean'
+						: 'number',
 				}
 
 			case 'inversion':
@@ -258,8 +268,13 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 			case 'une possibilité':
 			case 'résoudre référence circulaire':
 			case 'synchronisation':
+				// TODO: Synchronisation can also be used for texts. This doens't have
+				// any runtime consequence currently because the only type we only
+				// really care about is boolean for branch disabling.
+				return { isNullable: false, type: 'number' }
+
 			case 'texte':
-				return { isNullable: false }
+				return { isNullable: false, type: 'string' }
 
 			case 'abattement':
 				return inferNodeUnitAndCache(node.explanation.assiette)
@@ -275,6 +290,12 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 				return inferNodeUnitAndCache(node.explanation)
 
 			case 'variations':
+				// With "rend non applicable" we have a "consequence: null" line in our
+				// variation which can't be used to determine its type. So we need to
+				// find the first consequence with a non-null value.
+				const firstNonNullConsequence = node.explanation.find(
+					({ consequence }) => (consequence as any).nodeValue !== null
+				)?.consequence
 				return {
 					isNullable: node.explanation.some((line) => {
 						// TODO: hack for mon-entreprise rules, because topologicalSort
@@ -284,6 +305,10 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 						}
 						return inferNodeUnitAndCache(line.consequence).isNullable
 					}),
+					type:
+						(firstNonNullConsequence &&
+							inferNodeUnitAndCache(firstNonNullConsequence)?.type) ??
+						'number',
 				}
 
 			case 'par défaut':
@@ -291,6 +316,7 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 					isNullable:
 						inferNodeUnitAndCache(node.explanation.parDéfaut).isNullable ||
 						inferNodeUnitAndCache(node.explanation.valeur).isNullable,
+					type: inferNodeUnitAndCache(node.explanation.parDéfaut).type,
 				}
 
 			case 'reference':
