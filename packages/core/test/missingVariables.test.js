@@ -109,6 +109,31 @@ describe('Missing variables', function () {
 		expect(result).to.be.empty
 	})
 
+	it('should ignore missing variables from the parent', () => {
+		const rawRules = `
+		a:
+			somme:
+			- nom: b
+			- nom: c`
+		const missingVariables = Object.keys(
+			new Engine(rawRules).evaluate('a . b').missingVariables
+		)
+		expect(missingVariables).to.deep.equal(['a . b'])
+	})
+
+	it('should ignore missing variables from the nullable parent', () => {
+		const rawRules = `
+		a:
+			applicable si: oui
+			somme:
+				- nom: b
+				- nom: c`
+		const missingVariables = Object.keys(
+			new Engine(rawRules).evaluate('a . b').missingVariables
+		)
+		expect(missingVariables).to.deep.equal(['a . b'])
+	})
+
 	it('should not report missing variables when "one of these" short-circuits', function () {
 		const rawRules = {
 			sum: 'oui',
@@ -158,7 +183,6 @@ describe('Missing variables', function () {
 		)
 
 		expect(result).to.be.empty
-		undefined
 	})
 
 	it('should not report missing variables when "une possibilité" was answered', function () {

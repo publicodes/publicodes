@@ -5,6 +5,8 @@
 **core**
 
 -   Ajoute un paramètre `inversionMaxIterations` dans les options à l'instanciation du moteur pour changer le nombre d'itération de l'inversion avant qu'elle ne soit considérée comme "échouée" (par défaut 10).
+-   Ajoute une méthode `evaluateApplicability` qui effectue une évaluation partielle d'un nœud pour déterminer son applicabilité. Seules les variables traversées pour déterminer l'applicabilité apparaîssent dans les « variables manquantes »
+-   Corrige un bug fatal avec NodeJS v14 ou moins
 
 **publicodes-react**
 

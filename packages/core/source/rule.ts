@@ -1,5 +1,7 @@
-import { ASTNode, EvaluatedNode } from './AST/types'
+import Engine from '.'
+import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
 import { warning } from './error'
+import { evaluateDisablingParent } from './evaluateApplicability'
 import { bonus, mergeMissing } from './evaluation'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { capitalise0 } from './format'
@@ -138,29 +140,8 @@ export default function parseRule(
 }
 
 registerEvaluationFunction('rule', function evaluate(node) {
-	const firstNullableParent = node.explanation.parents.find(
-		(ref) => this.ruleUnits.get(ref)?.isNullable
-	)
-
-	let nullableParentEvaluation = {
-		nodeValue: undefined,
-		missingVariables: {},
-	} as EvaluatedNode
-
-	if (
-		firstNullableParent &&
-		// TODO: remove this condition and the associated "parentRuleStack", cycles
-		// should be detected and avoided at parse time.
-		!this.cache._meta.parentRuleStack.includes(node.dottedName)
-	) {
-		this.cache._meta.parentRuleStack.unshift(node.dottedName)
-		nullableParentEvaluation = this.evaluate(firstNullableParent)
-		this.cache._meta.parentRuleStack.shift()
-	}
-
-	const ruleDisabledByItsParent =
-		nullableParentEvaluation.nodeValue === null ||
-		nullableParentEvaluation.nodeValue === false
+	const { ruleDisabledByItsParent, parentMissingVariables, nullableParent } =
+		evaluateDisablingParent(this, node)
 
 	let valeurEvaluation: EvaluatedNode = {
 		...node.explanation.valeur,
@@ -201,24 +182,21 @@ registerEvaluationFunction('rule', function evaluate(node) {
 		}
 	}
 
-	const parentMissing = Object.keys(nullableParentEvaluation.missingVariables)
-	const selfMissing = Object.keys(valeurEvaluation.missingVariables)
-
 	const evaluation = {
 		...node,
 		explanation: {
-			nullableParent: nullableParentEvaluation,
 			parents: node.explanation.parents,
 			valeur: valeurEvaluation,
+			nullableParent,
 		},
 		nodeValue: valeurEvaluation.nodeValue,
 		missingVariables: mergeMissing(
 			valeurEvaluation.missingVariables,
-			bonus(nullableParentEvaluation.missingVariables)
+			bonus(parentMissingVariables)
 		),
 		missing: {
-			parent: parentMissing,
-			self: selfMissing,
+			parent: Object.keys(parentMissingVariables),
+			self: Object.keys(valeurEvaluation.missingVariables),
 		},
 		...(valeurEvaluation &&
 			'unit' in valeurEvaluation && { unit: valeurEvaluation.unit }),

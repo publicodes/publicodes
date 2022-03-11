@@ -5,7 +5,6 @@ import { InternalError, warning } from './error'
 import { defaultNode } from './evaluation'
 import parse from './parse'
 import { Context } from './parsePublicodes'
-import { ReferenceNode } from './reference'
 import { Rule, RuleNode } from './rule'
 
 export type ReplacementRule = {
