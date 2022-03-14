@@ -72,6 +72,7 @@ type Options = {
 	logger: Logger
 	getUnitKey?: getUnitKey
 	formatUnit?: formatUnit
+	inversionMaxIterations?: number
 }
 
 export type EvaluationFunction<Kind extends NodeKind = NodeKind> = (

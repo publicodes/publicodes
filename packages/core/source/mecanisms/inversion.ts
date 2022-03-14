@@ -103,6 +103,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		y1Node.missingVariables,
 		y2Node.missingVariables
 	)
+	const maxIterations = this.options.inversionMaxIterations ?? 10
 
 	if (y1 !== undefined || y2 !== undefined) {
 		// The `uniroot` function parameter. It will be called with its `min` and
@@ -128,7 +129,14 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 				? x1
 				: defaultMax
 
-		nodeValue = uniroot(test, nearestBelowGoal, nearestAboveGoal, 0.1, 10, 1)
+		nodeValue = uniroot(
+			test,
+			nearestBelowGoal,
+			nearestAboveGoal,
+			0.1,
+			maxIterations,
+			1
+		)
 	}
 	if (nodeValue === undefined) {
 		nodeValue = undefined
