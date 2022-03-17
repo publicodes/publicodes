@@ -1,6 +1,10 @@
 # Changelog
 
-## next
+## 1.0.0-beta.33
+
+**core**
+
+-   Ajoute un paramètre `inversionMaxIterations` dans les options à l'instanciation du moteur pour changer le nombre d'itération de l'inversion avant qu'elle ne soit considérée comme "échouée" (par défaut 10).
 
 **publicodes-react**
 
