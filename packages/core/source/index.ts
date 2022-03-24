@@ -19,15 +19,16 @@ const emptyCache = (): Cache => ({
 	_meta: {
 		evaluationRuleStack: [],
 		parentRuleStack: [],
+		traversedVariablesStack: [],
 	},
 	nodes: new Map(),
-	traversedNames: new WeakMap(),
 })
 
 type Cache = {
 	_meta: {
 		evaluationRuleStack: Array<string>
 		parentRuleStack: Array<string>
+		traversedVariablesStack: Array<Set<string>>
 		inversionFail?:
 			| {
 					given: string
@@ -35,10 +36,8 @@ type Cache = {
 			  }
 			| true
 		currentRecalcul?: ASTNode
-		filter?: string
 	}
 	nodes: Map<PublicodesExpression | ASTNode, EvaluatedNode>
-	traversedNames: WeakMap<ASTNode, Array<string>>
 }
 
 export type EvaluationOptions = Partial<{
@@ -188,6 +187,9 @@ export default class Engine<Name extends string = string> {
 		const cachedNode = this.cache.nodes.get(value)
 
 		if (cachedNode !== undefined) {
+			cachedNode.traversedVariables?.forEach((name) =>
+				this.cache._meta.traversedVariablesStack[0].add(name)
+			)
 			return cachedNode
 		}
 
@@ -206,12 +208,36 @@ export default class Engine<Name extends string = string> {
 			throw Error(`Unknown "nodeKind": ${parsedNode.nodeKind}`)
 		}
 
+		const isTraversedVariablesBoundary =
+			this.cache._meta.traversedVariablesStack.length === 0 ||
+			parsedNode.nodeKind === 'rule'
+
+		if (isTraversedVariablesBoundary) {
+			this.cache._meta.traversedVariablesStack.unshift(new Set())
+		}
+
+		if (parsedNode.nodeKind === 'reference' && parsedNode.dottedName) {
+			this.cache._meta.traversedVariablesStack[0].add(parsedNode.dottedName)
+		}
+
 		const evaluatedNode = evaluationFunctions[parsedNode.nodeKind].call(
 			this,
 			parsedNode
 		)
 
-		this.cache.nodes.set(value, evaluatedNode)
+		if (isTraversedVariablesBoundary) {
+			evaluatedNode.traversedVariables = Array.from(
+				this.cache._meta.traversedVariablesStack.shift() ?? []
+			)
+
+			if (this.cache._meta.traversedVariablesStack.length > 0) {
+				evaluatedNode.traversedVariables.forEach((name) => {
+					this.cache._meta.traversedVariablesStack[0].add(name)
+				})
+			}
+		}
+
+		this.cache.nodes.set(parsedNode, evaluatedNode)
 
 		return evaluatedNode
 	}
