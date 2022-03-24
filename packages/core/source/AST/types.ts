@@ -118,6 +118,7 @@ type EvaluationDecoration<T extends Types> = {
 		parent: string[] | null
 	}
 	unit?: Unit
+	traversedVariables?: Set<string>
 }
 export type Types = number | boolean | string | Record<string, unknown>
 // TODO: type NotYetDefined & NotApplicable properly (see #14) then refactor any code depending on these:
