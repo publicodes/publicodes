@@ -12,7 +12,7 @@ export function evaluateApplicability(
 	isApplicable: boolean
 	missingVariables: MissingVariables
 } {
-	if (!this.ruleUnits.get(node)?.isNullable) {
+	if (this.ruleUnits.get(node)?.isNullable === false) {
 		return { isApplicable: true, missingVariables: {} }
 	}
 	switch (node.nodeKind) {
@@ -51,6 +51,9 @@ export function evaluateApplicability(
 					missingVariables: negCondition.missingVariables,
 				}
 			}
+			return this.evaluateApplicability(node.explanation.valeur)
+
+		case 'nom dans la situation':
 			return this.evaluateApplicability(node.explanation.valeur)
 	}
 	return {

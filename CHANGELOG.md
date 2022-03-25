@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.34
+
+**core**
+
+-   Corrige la méthode `evaluateApplicability` appelée depuis l'extérieur
+
 ## 1.0.0-beta.33
 
 **core**
