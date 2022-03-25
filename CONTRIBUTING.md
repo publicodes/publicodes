@@ -19,3 +19,5 @@ Voici la marche à suivre pour publier une nouvelle version :
 1. Renseigner les modifications dans `CHANGELOG.md`
 2. Remplacer les références à la précédente version par la nouvelle version dans les fichiers `package.json`
 3. Laisser faire le CI, le paquet sera déployé effectivement une fois le commit mergé sur `master`
+
+Pour vérifier que le script de publication fonctionne, il est possible d'éxecuter `npm publish --dry-run` en local.
