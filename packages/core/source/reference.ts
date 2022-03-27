@@ -38,7 +38,6 @@ registerEvaluationFunction('reference', function evaluateReference(node) {
 	const explanation = this.evaluate(this.parsedRules[node.dottedName])
 	return {
 		...node,
-		missingVariables: explanation.missingVariables,
 		nodeValue: explanation.nodeValue,
 		...('unit' in explanation && { unit: explanation.unit }),
 	}

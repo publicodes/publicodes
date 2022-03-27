@@ -133,30 +133,26 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 					</p>
 				</>
 			}
-			{nullableParent &&
-				!engine.evaluateApplicability(nullableParent).isApplicable && (
-					<>
-						<h3>Parent non applicable</h3>
-						<p>
-							Cette règle est non applicable car{' '}
-							<Explanation node={nullableParent} />
-							est non applicable.
-						</p>
-					</>
-				)}
+			{nullableParent && !engine.isApplicable(nullableParent) && (
+				<>
+					<h3>Parent non applicable</h3>
+					<p>
+						Cette règle est non applicable car{' '}
+						<Explanation node={nullableParent} />
+						est non applicable.
+					</p>
+				</>
+			)}
 			<h2>Comment cette donnée est-elle calculée ?</h2>
 			<Explanation node={valeur} />
 			<RuleSource key={dottedName} dottedName={dottedName} engine={engine} />
 
-			{rule.missing &&
-				((rule.missing.self && rule.missing.self.length > 0) ||
-					(rule.missing.parent && rule.missing.parent.length > 0)) && (
-					<MissingVars
-						dottedName={dottedName}
-						selfMissing={rule.missing.self}
-						parentMissing={rule.missing.parent}
-					/>
-				)}
+			{rule.missingVariables && (
+				<MissingVars
+					dottedName={dottedName}
+					selfMissing={rule.missingVariables}
+				/>
+			)}
 
 			{isNotYetDefined(rule.nodeValue) && (
 				<ReverseMissing dottedName={dottedName} engine={engine} />
@@ -197,11 +193,9 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 function MissingVars({
 	dottedName,
 	selfMissing,
-	parentMissing,
 }: {
 	dottedName: string
 	selfMissing: string[] | null
-	parentMissing: string[] | null
 }) {
 	const [opened, setOpened] = useState(false)
 	useEffect(() => {
@@ -232,18 +226,6 @@ function MissingVars({
 						<>
 							<ul>
 								{selfMissing.map((dottedName) => (
-									<li key={dottedName}>
-										<RuleLinkWithContext dottedName={dottedName} />
-									</li>
-								))}
-							</ul>
-						</>
-					)}
-					{parentMissing && parentMissing.length > 0 && (
-						<>
-							<h4>… dont celles provenant du parent</h4>
-							<ul>
-								{parentMissing.map((dottedName) => (
 									<li key={dottedName}>
 										<RuleLinkWithContext dottedName={dottedName} />
 									</li>

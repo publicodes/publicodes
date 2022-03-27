@@ -48,6 +48,5 @@ registerEvaluationFunction(parseUnité.nom, function evaluate(node) {
 		...node,
 		nodeValue,
 		explanation: valeur,
-		missingVariables: valeur.missingVariables,
 	}
 })

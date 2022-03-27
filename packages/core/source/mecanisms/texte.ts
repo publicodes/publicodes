@@ -1,7 +1,6 @@
-import parse from '../parse'
+import { ASTNode, formatValue } from '..'
 import { registerEvaluationFunction } from '../evaluationFunctions'
-import { ASTNode, formatValue, parsePublicodes } from '..'
-import { mergeAllMissing } from '../evaluation'
+import parse from '../parse'
 
 const NAME = 'texte' as const
 
@@ -31,16 +30,10 @@ registerEvaluationFunction(NAME, function evaluate(node) {
 	const explanation = node.explanation.map((element) =>
 		typeof element === 'string' ? element : this.evaluate(element)
 	)
-	const missingVariables = mergeAllMissing(
-		node.explanation.filter(
-			(element) => typeof element !== 'string'
-		) as Array<ASTNode>
-	)
 
 	return {
 		...node,
 		explanation,
-		missingVariables,
 		nodeValue: explanation
 			.map((element) =>
 				typeof element === 'string' ? element : formatValue(element)

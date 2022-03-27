@@ -64,36 +64,6 @@ describe('inversions', () => {
 		expect(result.nodeValue).to.be.closeTo(0, 0.0001)
 	})
 
-	it('should ask the input of one of the possible inversions', () => {
-		const rules = dedent`
-        net:
-          formule:
-            produit:
-              assiette: assiette
-              variations:
-                - si: cadre
-                  alors:
-                    taux: 80%
-                - sinon:
-                    taux: 70%
-
-        brut:
-          formule:
-            inversion numérique:
-              unité: €
-              avec:
-                - net
-        cadre:
-        assiette:
-          formule: 67€ + brut
-
-      `
-		const result = new Engine(rules).evaluate('brut')
-
-		expect(result.nodeValue).to.be.undefined
-		expect(Object.keys(result.missingVariables)).to.include('brut')
-	})
-
 	it('should handle inversions with missing variables', () => {
 		const rules = dedent`
         net:
@@ -138,7 +108,7 @@ describe('inversions', () => {
 			.setSituation({ net: '2000 €' })
 			.evaluate('brut')
 		expect(result.nodeValue).to.be.undefined
-		expect(Object.keys(result.missingVariables)).to.include('cadre')
+		expect(result.missingVariables).to.include('cadre')
 	})
 
 	it("shouldn't report a missing salary if another salary was input", () => {
@@ -177,7 +147,7 @@ describe('inversions', () => {
 			.setSituation({ net: '2000 €', cadre: 'oui' })
 			.evaluate('total')
 		expect(result.nodeValue).to.be.closeTo(3750, 1)
-		expect(Object.keys(result.missingVariables)).to.be.empty
+		expect(result.missingVariables).to.be.empty
 	})
 
 	it('complex inversion with composantes', () => {
@@ -214,7 +184,8 @@ describe('inversions', () => {
 		const result = new Engine(rules)
 			.setSituation({ net: '2000 €' })
 			.evaluate('total')
+		console.log(result.missingVariables)
 		expect(result.nodeValue).to.be.closeTo(3750, 1)
-		expect(Object.keys(result.missingVariables)).to.be.empty
+		expect(result.missingVariables).to.be.empty
 	})
 })

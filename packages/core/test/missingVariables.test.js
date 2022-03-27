@@ -11,9 +11,7 @@ describe('Missing variables', function () {
 			},
 			ko: {},
 		}
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('startHere').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate('startHere').missingVariables
 
 		expect(result).to.deep.equal(['ko'])
 	})
@@ -25,9 +23,7 @@ describe('Missing variables', function () {
 			},
 			ko: {},
 		}
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('startHere').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate('startHere').missingVariables
 
 		expect(result).to.deep.equal(['ko'])
 	})
@@ -46,9 +42,7 @@ describe('Missing variables', function () {
 			},
 			'evt . ko': {},
 		}
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('startHere').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate('startHere').missingVariables
 
 		expect(result).to.deep.equal(['evt . ko', 'evt'])
 	})
@@ -67,9 +61,7 @@ describe('Missing variables', function () {
 			},
 			'evt . welldefined . ko': {},
 		}
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('startHere').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate('startHere').missingVariables
 
 		expect(result).to.deep.equal(['evt . welldefined . ko'])
 	})
@@ -85,9 +77,9 @@ describe('Missing variables', function () {
 			'sum . evt . nope': {},
 			'sum . evt . nyet': {},
 		}
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('sum . startHere').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate(
+			'sum . startHere'
+		).missingVariables
 
 		expect(result).to.include('sum . evt . nyet')
 		expect(result).to.include('sum . evt . nope')
@@ -102,9 +94,9 @@ describe('Missing variables', function () {
 			},
 			'sum . trois': {},
 		}
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('sum . startHere').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate(
+			'sum . startHere'
+		).missingVariables
 
 		expect(result).to.be.empty
 	})
@@ -115,9 +107,10 @@ describe('Missing variables', function () {
 			somme:
 			- nom: b
 			- nom: c`
-		const missingVariables = Object.keys(
-			new Engine(rawRules).evaluate('a . b').missingVariables
-		)
+		const missingVariables = new Engine(rawRules).evaluate(
+			'a . b'
+		).missingVariables
+
 		expect(missingVariables).to.deep.equal(['a . b'])
 	})
 
@@ -128,9 +121,10 @@ describe('Missing variables', function () {
 			somme:
 				- nom: b
 				- nom: c`
-		const missingVariables = Object.keys(
-			new Engine(rawRules).evaluate('a . b').missingVariables
-		)
+		const missingVariables = new Engine(rawRules).evaluate(
+			'a . b'
+		).missingVariables
+
 		expect(missingVariables).to.deep.equal(['a . b'])
 	})
 
@@ -145,9 +139,9 @@ describe('Missing variables', function () {
 			},
 			'sum . trois': {},
 		}
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('sum . startHere').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate(
+			'sum . startHere'
+		).missingVariables
 
 		expect(result).to.be.empty
 	})
@@ -161,9 +155,9 @@ describe('Missing variables', function () {
 				formule: { 'une possibilité': ['ko'] },
 			},
 		}
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('top . startHere').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate(
+			'top . startHere'
+		).missingVariables
 
 		expect(result).to.include('top . trois')
 	})
@@ -178,9 +172,9 @@ describe('Missing variables', function () {
 				'non applicable si': 'oui',
 			},
 		}
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('top . startHere').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate(
+			'top . startHere'
+		).missingVariables
 
 		expect(result).to.be.empty
 	})
@@ -194,11 +188,9 @@ describe('Missing variables', function () {
 				formule: { 'une possibilité': ['ko'] },
 			},
 		}
-		const result = Object.keys(
-			new Engine(rawRules)
-				.setSituation({ 'top . trois': "'ko'" })
-				.evaluate('top . startHere').missingVariables
-		)
+		const result = new Engine(rawRules)
+			.setSituation({ 'top . trois': "'ko'" })
+			.evaluate('top . startHere').missingVariables
 
 		expect(result).to.be.empty
 	})
@@ -216,9 +208,7 @@ b:
       - sinon: 0
 c:
   question: Alors ?`)
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('somme').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate('somme').missingVariables
 
 		expect(result).to.have.lengthOf(0)
 	})
@@ -263,9 +253,7 @@ trois: {}
 quatre: {}
 
       `)
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('startHere').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate('startHere').missingVariables
 
 		expect(result).to.include('dix')
 		expect(result).to.include('deux')
@@ -288,10 +276,7 @@ describe('nextSteps', function () {
 				question: '?',
 			},
 		}
-
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('top . sum').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate('top . sum').missingVariables
 
 		expect(result).to.have.lengthOf(1)
 		expect(result[0]).to.equal('top . sum . evt')
@@ -308,9 +293,7 @@ describe('nextSteps', function () {
 			},
 		}
 
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('top . sum').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate('top . sum').missingVariables
 
 		expect(result).to.have.lengthOf(1)
 		expect(result[0]).to.equal('top . sum . evt')
@@ -331,14 +314,12 @@ describe('nextSteps', function () {
 			},
 			'top . sum . evt . ko': {},
 		}
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('top . sum').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate('top . sum').missingVariables
 
 		expect(result).to.eql(['top . sum . evt'])
 	})
 
-	it("Parent's other descendands in sums should not be included as missing variables", function () {
+	it("Parent's other descendants in sums should not be included as missing variables", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
 		const rawRules = yaml.parse(`
 transport:
@@ -368,17 +349,17 @@ transport . avion . usager:
   question: Prenez-vous l'avion ?
   par défaut: oui
 `)
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('transport . avion').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate(
+			'transport . avion'
+		).missingVariables
 
 		expect(result).deep.to.equal([
-			'transport . avion . km',
 			'transport . avion . usager',
+			'transport . avion . km',
 		])
 	})
 
-	it("Parent's other descendands in sums should not be included as missing variables, even when parent evluation is triggered by a comparison", function () {
+	it("Parent's other descendants in sums should not be included as missing variables, even when parent evluation is triggered by a comparison", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
 		const rawRules = yaml.parse(`
 transport:
@@ -416,16 +397,16 @@ transport . avion . usager:
   question: Prenez-vous l'avion ?
   par défaut: oui
 `)
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('transport . voiture').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate(
+			'transport . voiture'
+		).missingVariables
 
 		expect(result).deep.to.equal([
 			'transport . voiture . gabarit',
 			'transport . voiture . km',
 		])
 	})
-	it("Parent's other descendands in sums should not be included as missing variables - 2", function () {
+	it("Parent's other descendants in sums should not be included as missing variables - 2", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
 		const rawRules = yaml.parse(`
 avion:
@@ -444,14 +425,14 @@ avion . impact . en vol:
 
 avion . impact . au sol: 5
 `)
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('avion . impact . au sol').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate(
+			'avion . impact . au sol'
+		).missingVariables
 
 		expect(result).deep.to.equal(['avion'])
 	})
 
-	it("Parent's other descendands in sums in applicability should be included as missing variables", function () {
+	it("Parent's other descendants in sums in applicability should be included as missing variables", function () {
 		// See https://github.com/betagouv/publicodes/issues/33
 		const rawRules = yaml.parse(`
 a:
@@ -470,9 +451,7 @@ e:
 
 a . b: 20 + 9
 `)
-		const result = Object.keys(
-			new Engine(rawRules).evaluate('a . b').missingVariables
-		)
+		const result = new Engine(rawRules).evaluate('a . b').missingVariables
 
 		expect(result).deep.to.equal(['e'])
 		expect(result).to.have.lengthOf(1)

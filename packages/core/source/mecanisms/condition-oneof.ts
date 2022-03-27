@@ -1,9 +1,8 @@
 import { EvaluationFunction } from '..'
 import { ASTNode, EvaluatedNode, Evaluation } from '../AST/types'
-import { mergeMissing } from '../evaluation'
+import { InternalError } from '../error'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
-import { InternalError } from '../error'
 
 export type UneDeCesConditionsNode = {
 	explanation: Array<ASTNode>
@@ -14,7 +13,6 @@ const evaluate: EvaluationFunction<'une de ces conditions'> = function (node) {
 	type Calculations = {
 		explanation: Array<ASTNode | EvaluatedNode>
 		nodeValue: Evaluation<boolean>
-		missingVariables: Record<string, number>
 	}
 	const calculations = node.explanation.reduce<Calculations>(
 		(acc, node) => {
@@ -32,10 +30,6 @@ const evaluate: EvaluationFunction<'une de ces conditions'> = function (node) {
 						: evaluatedNode.nodeValue === undefined
 						? undefined
 						: acc.nodeValue,
-					missingVariables: mergeMissing(
-						acc.missingVariables,
-						evaluatedNode.missingVariables
-					),
 					explanation: [...acc.explanation, evaluatedNode],
 				}
 			}
@@ -43,7 +37,6 @@ const evaluate: EvaluationFunction<'une de ces conditions'> = function (node) {
 		},
 		{
 			nodeValue: false,
-			missingVariables: {},
 			explanation: [],
 		}
 	)

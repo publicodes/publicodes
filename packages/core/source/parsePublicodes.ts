@@ -300,10 +300,16 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 					isNullable: node.explanation.some((line) => {
 						// TODO: hack for mon-entreprise rules, because topologicalSort
 						// seems imperfect
-						if (inferNodeUnitAndCache(line.consequence) === undefined) {
+						if (
+							line.consequence === undefined ||
+							inferNodeUnitAndCache(line.consequence) === undefined
+						) {
 							return false
 						}
-						return inferNodeUnitAndCache(line.consequence).isNullable
+						return (
+							line.consequence &&
+							inferNodeUnitAndCache(line.consequence).isNullable
+						)
 					}),
 					type:
 						(firstNonNullConsequence &&
@@ -325,4 +331,30 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 	}
 
 	return cache
+}
+
+// To calculate the “missing variables” of an expression we need to determine
+// the static subset of the rules that are expected in the situation. Theses
+// rules are :
+// - the rules without formulas
+// - the rules with a default formula
+// - the rules with a “fake formula” of "une possibilité"
+//
+// TODO: Simplify this logic. It isn't well thought but is mostly a product of
+// historical evolutions.
+export function getVariablesExpectedInSituation<N extends string>(
+	parsedRules: ParsedRules<N>
+): Array<N> {
+	return Object.entries<RuleNode>(parsedRules)
+		.filter(([, { rawNode }]) => {
+			return (
+				'une possibilité' in rawNode ||
+				'par défaut' in rawNode ||
+				(!('formule' in rawNode) && !('valeur' in rawNode)) ||
+				(typeof rawNode.formule === 'object' &&
+					'une possibilité' in rawNode.formule) ||
+				Object.keys(rawNode).find((k) => k !== 'nom') === undefined
+			)
+		})
+		.map(([dottedName]) => dottedName as N)
 }

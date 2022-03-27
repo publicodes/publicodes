@@ -1,37 +1,8 @@
 import Engine, { EvaluationFunction } from '.'
-import {
-	ASTNode,
-	ConstantNode,
-	EvaluatedNode,
-	Evaluation,
-	NodeKind,
-} from './AST/types'
+import { ConstantNode, Evaluation, NodeKind } from './AST/types'
 import { warning } from './error'
 import { convertNodeToUnit } from './nodeUnits'
 import parse from './parse'
-
-export const collectNodeMissing = (
-	node: EvaluatedNode | ASTNode
-): Record<string, number> =>
-	'missingVariables' in node ? node.missingVariables : {}
-
-export const bonus = (missings: Record<string, number> = {}) =>
-	Object.fromEntries(
-		Object.entries(missings).map(([key, value]) => [key, value + 0.0001])
-	)
-export const mergeMissing = (
-	left: Record<string, number> | undefined = {},
-	right: Record<string, number> | undefined = {}
-): Record<string, number> =>
-	Object.fromEntries(
-		[...Object.keys(left), ...Object.keys(right)].map((key) => [
-			key,
-			(left[key] ?? 0) + (right[key] ?? 0),
-		])
-	)
-
-export const mergeAllMissing = (missings: Array<EvaluatedNode | ASTNode>) =>
-	missings.map(collectNodeMissing).reduce(mergeMissing, {})
 
 function convertNodesToSameUnit(this: Engine, nodes, mecanismName) {
 	const firstNodeWithUnit = nodes.find((node) => !!node.unit)
@@ -73,7 +44,6 @@ export const evaluateArray: <NodeName extends NodeKind>(
 
 		return {
 			...node,
-			missingVariables: mergeAllMissing(evaluatedNodes),
 			explanation: evaluatedNodes,
 			...(evaluatedNodes[0] && { unit: evaluatedNodes[0].unit }),
 			nodeValue,

@@ -11,6 +11,6 @@ describe('Applicability evaluation', function () {
 			x: 'non',
 		})
 
-		expect(engine.evaluateApplicability('example').isApplicable).to.be.false
+		expect(engine.isApplicable('example')).to.be.false
 	})
 })

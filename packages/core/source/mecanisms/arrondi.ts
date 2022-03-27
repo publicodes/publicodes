@@ -1,10 +1,9 @@
 import { EvaluationFunction, simplifyNodeUnit } from '..'
-import { mergeAllMissing } from '../evaluation'
+import { ASTNode, EvaluatedNode } from '../AST/types'
+import { evaluationError } from '../error'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
-import { ASTNode, EvaluatedNode } from '../AST/types'
 import { serializeUnit } from '../units'
-import { evaluationError } from '../error'
 
 export type ArrondiNode = {
 	explanation: {
@@ -54,7 +53,6 @@ const evaluate: EvaluationFunction<'arrondi'> = function (node) {
 				? undefined
 				: valeur.nodeValue,
 		explanation: { valeur, arrondi },
-		missingVariables: mergeAllMissing([valeur, arrondi]),
 		unit: valeur.unit,
 	}
 }
