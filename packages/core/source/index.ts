@@ -115,7 +115,9 @@ export default class Engine<Name extends string = string> {
 	// https://github.com/betagouv/publicodes/discussions/92
 	subEngines: Array<Engine<Name>> = []
 	subEngineId: number | undefined
+
 	ruleUnits: WeakMap<ASTNode, InferedType>
+	rulesDependencies: ReturnType<typeof parsePublicodes>['rulesDependencies']
 	variablesExpectedInSituation: Array<Name>
 
 	constructor(
@@ -123,12 +125,13 @@ export default class Engine<Name extends string = string> {
 		options: Partial<Options> = {}
 	) {
 		this.options = { ...options, logger: options.logger ?? console }
-		const { parsedRules, ruleUnits } = parsePublicodes<Name>(
+		const { parsedRules, ruleUnits, rulesDependencies } = parsePublicodes<Name>(
 			rules,
 			this.options
 		)
 		this.parsedRules = parsedRules
 		this.ruleUnits = ruleUnits
+		this.rulesDependencies = rulesDependencies
 		this.replacements = getReplacements(this.parsedRules)
 		this.variablesExpectedInSituation = getVariablesExpectedInSituation(
 			this.parsedRules

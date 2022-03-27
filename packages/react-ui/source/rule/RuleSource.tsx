@@ -1,45 +1,15 @@
+import Engine, { formatValue, utils } from 'publicodes'
 import yaml from 'yaml'
-import Engine, { formatValue, reduceAST, utils } from 'publicodes'
 const { encodeRuleName } = utils
 
-const getParents = (dottedName: string) =>
-	dottedName
-		.split(' . ')
-		.map((_name, i, parts) => parts.slice(0, i + 1).join(' . '))
-
-function getDependancies(engine: Engine, dottedName: string): Array<string> {
-	const rule = engine.evaluate(engine.getRule(dottedName))
-
-	return reduceAST<Array<string>>(
-		(acc, node, fn) => {
-			if (node.nodeKind === 'reference') {
-				if (
-					node.dottedName === rule.dottedName + ' . ' + node.name &&
-					engine.getRule(node.dottedName).virtualRule
-				) {
-					return [...acc, ...getDependancies(engine, node.dottedName)]
-				} else {
-					return [...acc, ...getParents(node.dottedName as string)]
-				}
-			}
-			if (node.nodeKind === 'variations' && typeof node.rawNode === 'string') {
-				// We don't take replacement into account
-				const originNode = node.explanation.slice(-1)[0].consequence
-				return [...acc, ...fn(originNode)]
-			}
-		},
-		[],
-		rule.explanation.valeur
-	)
-}
 type Props = { dottedName: string; engine: Engine }
 export default function RuleSource({ engine, dottedName }: Props) {
 	if (window.location.host === 'publi.codes') {
 		return null
 	}
 	const dependancies = [
-		...getDependancies(engine, dottedName),
-		...getParents(dottedName),
+		...engine.rulesDependencies[dottedName],
+		...utils.ruleParents(dottedName),
 	]
 	const rule = engine.evaluate(engine.getRule(dottedName))
 
