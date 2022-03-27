@@ -1,9 +1,10 @@
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
-import { evaluateApplicability } from './evaluateApplicability'
+import { isApplicable } from './evaluateApplicability'
 import { evaluationFunctions } from './evaluationFunctions'
 import parse from './parse'
 import parsePublicodes, {
 	disambiguateReferenceAndCollectDependencies,
+	getVariablesExpectedInSituation,
 	InferedType,
 } from './parsePublicodes'
 import {
@@ -28,6 +29,17 @@ type Cache = {
 	_meta: {
 		evaluationRuleStack: Array<string>
 		parentRuleStack: Array<string>
+		/**
+		 * Every time we encounter a reference to a rule in an expression we add it
+		 * to the current Set of traversed variables. Because we evaluate the
+		 * expression graph “top to bottom” (ie. we start by the high-level goal and
+		 * recursively evaluate its dependencies), we need to handle rule
+		 * “boundaries”, so that when we “enter” in the evaluation of a dependency,
+		 * we start with a clear empty set of traversed variables. Then, when we go
+		 * back to the referencer rule, we need to add all to merge the two sets :
+		 * rules already traversed in the current expression and the one from the
+		 * reference.
+		 */
 		traversedVariablesStack: Array<Set<string>>
 		inversionFail?:
 			| {
@@ -104,6 +116,7 @@ export default class Engine<Name extends string = string> {
 	subEngines: Array<Engine<Name>> = []
 	subEngineId: number | undefined
 	ruleUnits: WeakMap<ASTNode, InferedType>
+	variablesExpectedInSituation: Array<Name>
 
 	constructor(
 		rules: string | Record<string, Rule> = {},
@@ -117,6 +130,9 @@ export default class Engine<Name extends string = string> {
 		this.parsedRules = parsedRules
 		this.ruleUnits = ruleUnits
 		this.replacements = getReplacements(this.parsedRules)
+		this.variablesExpectedInSituation = getVariablesExpectedInSituation(
+			this.parsedRules
+		)
 	}
 
 	setOptions(options: Partial<Options>) {
@@ -188,7 +204,7 @@ export default class Engine<Name extends string = string> {
 
 		if (cachedNode !== undefined) {
 			cachedNode.traversedVariables?.forEach((name) =>
-				this.cache._meta.traversedVariablesStack[0].add(name)
+				this.cache._meta.traversedVariablesStack[0]?.add(name)
 			)
 			return cachedNode
 		}
@@ -213,6 +229,10 @@ export default class Engine<Name extends string = string> {
 			parsedNode.nodeKind === 'rule'
 
 		if (isTraversedVariablesBoundary) {
+			// Note: we use `unshift` instead of the more usual `push` to reverse the
+			// order of the elements in the stack. This simplify access to the “top
+			// element” with [0], instead of [length - 1]. We could also use the new
+			// method `.at(-1)` but it isn't supported below Node v16.
 			this.cache._meta.traversedVariablesStack.unshift(new Set())
 		}
 
@@ -229,6 +249,7 @@ export default class Engine<Name extends string = string> {
 			evaluatedNode.traversedVariables = Array.from(
 				this.cache._meta.traversedVariablesStack.shift() ?? []
 			)
+			evaluatedNode.missingVariables = this.missingVariables(evaluatedNode)
 
 			if (this.cache._meta.traversedVariablesStack.length > 0) {
 				evaluatedNode.traversedVariables.forEach((name) => {
@@ -242,9 +263,9 @@ export default class Engine<Name extends string = string> {
 		return evaluatedNode
 	}
 
-	evaluateApplicability(
+	isApplicable(
 		value: PublicodesExpression | ASTNode
-	): ReturnType<typeof evaluateApplicability> {
+	): ReturnType<typeof isApplicable> {
 		let node
 		if (!value || typeof value !== 'object' || !('nodeKind' in value)) {
 			node = this.parse(value, {
@@ -256,7 +277,16 @@ export default class Engine<Name extends string = string> {
 			node = value as ASTNode
 		}
 
-		return evaluateApplicability.call(this, node)
+		return isApplicable.call(this, node)
+	}
+
+	missingVariables(evaluatedNode: any) {
+		return evaluatedNode.traversedVariables.filter(
+			(name: Name) =>
+				this.variablesExpectedInSituation.includes(name) &&
+				!Object.keys(this.parsedSituation).includes(name) &&
+				this.isApplicable(this.parsedRules[name])
+		)
 	}
 
 	/**
@@ -288,6 +318,6 @@ export function UNSAFE_isNotApplicable<DottedName extends string = string>(
 	dottedName: DottedName
 ): boolean {
 	console.warn('UNSAFE_isNotApplicable is deprecated')
-	console.warn('Use engine.evaluateApplicability(node).isApplicable instead')
-	return !engine.evaluateApplicability(dottedName).isApplicable
+	console.warn('Use engine.isApplicable(node) instead')
+	return !engine.isApplicable(dottedName)
 }

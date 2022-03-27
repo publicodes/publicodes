@@ -17,13 +17,8 @@ const evaluate: EvaluationFunction<'synchronisation'> = function (node: any) {
 	const path = (obj) => valuePath.reduce((res, prop) => res?.[prop], obj)
 	const nodeValue = path(data.nodeValue) ?? undefined
 
-	const missingVariables = {
-		...data.missingVariables,
-		...(data.nodeValue === undefined ? { [data.dottedName]: 1 } : {}),
-	}
-
 	const explanation = { ...node.explanation, data }
-	return { ...node, nodeValue, explanation, missingVariables }
+	return { ...node, nodeValue, explanation }
 }
 
 export const mecanismSynchronisation = (v, context) => {

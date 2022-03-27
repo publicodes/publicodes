@@ -4,7 +4,9 @@
 
 **core**
 
--   Corrige la méthode `evaluateApplicability` appelée depuis l'extérieur
+-   ⚠ Changement cassant : Les variables manquantes sont désormais retournées sous la forme d'une liste et non plus d'un objet JavaScript
+-   Introduction des variables traversées : les listes des règles qui ont été explorées lors de l'évaluation d’une expression
+-   Ajoute une méthode `isApplicable` qui retourne un booléen correspondant à l'applicabilité d’une expression (remplace l'éphémère méthode `evaluateApplicability` introduite dans la version précédente)
 
 ## 1.0.0-beta.33
 

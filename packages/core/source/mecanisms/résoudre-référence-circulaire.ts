@@ -47,7 +47,6 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 
 		const y0 = valeur.nodeValue as number
 		const unit = valeur.unit
-		const missingVariables = valeur.missingVariables
 		let i = 0
 		if (y0 !== undefined) {
 			// The `uniroot` function parameter. It will be called with its `min` and
@@ -89,7 +88,6 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 				valeur,
 				inversionNumberOfIterations,
 			},
-			missingVariables,
 		}
 	}
 

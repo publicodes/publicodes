@@ -1,8 +1,6 @@
-import Engine from '.'
-import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
+import { ASTNode, EvaluatedNode } from './AST/types'
 import { warning } from './error'
 import { evaluateDisablingParent } from './evaluateApplicability'
-import { bonus, mergeMissing } from './evaluation'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { capitalise0 } from './format'
 import parse, { mecanismKeys } from './parse'
@@ -140,13 +138,14 @@ export default function parseRule(
 }
 
 registerEvaluationFunction('rule', function evaluate(node) {
-	const { ruleDisabledByItsParent, parentMissingVariables, nullableParent } =
-		evaluateDisablingParent(this, node)
+	const { ruleDisabledByItsParent, nullableParent } = evaluateDisablingParent(
+		this,
+		node
+	)
 
 	let valeurEvaluation: EvaluatedNode = {
 		...node.explanation.valeur,
 		nodeValue: null,
-		missingVariables: {},
 	}
 
 	if (!ruleDisabledByItsParent) {
@@ -173,7 +172,6 @@ registerEvaluationFunction('rule', function evaluate(node) {
 
 			valeurEvaluation = {
 				nodeValue: undefined,
-				missingVariables: {},
 			} as EvaluatedNode
 		} else {
 			this.cache._meta.evaluationRuleStack.unshift(node.dottedName)
@@ -190,14 +188,6 @@ registerEvaluationFunction('rule', function evaluate(node) {
 			nullableParent,
 		},
 		nodeValue: valeurEvaluation.nodeValue,
-		missingVariables: mergeMissing(
-			valeurEvaluation.missingVariables,
-			bonus(parentMissingVariables)
-		),
-		missing: {
-			parent: Object.keys(parentMissingVariables),
-			self: Object.keys(valeurEvaluation.missingVariables),
-		},
 		...(valeurEvaluation &&
 			'unit' in valeurEvaluation && { unit: valeurEvaluation.unit }),
 	}

@@ -388,6 +388,6 @@ const traverseVariationNode: TraverseFunction<'variations'> = (fn, node) => ({
 	...node,
 	explanation: node.explanation.map(({ condition, consequence }) => ({
 		condition: fn(condition),
-		consequence: fn(consequence),
+		consequence: consequence && fn(consequence),
 	})),
 })

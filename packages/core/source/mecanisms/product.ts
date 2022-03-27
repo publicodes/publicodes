@@ -1,7 +1,7 @@
 import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
 import { warning } from '../error'
-import { defaultNode, mergeAllMissing, parseObject } from '../evaluation'
+import { defaultNode, parseObject } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { convertNodeToUnit, simplifyNodeUnit } from '../nodeUnits'
 import { areUnitConvertible, convertUnit, inferUnit } from '../units'
@@ -79,7 +79,6 @@ const evaluateProduit: EvaluationFunction<'produit'> = function (node) {
 
 	return simplifyNodeUnit({
 		...node,
-		missingVariables: mergeAllMissing([assiette, taux, facteur, plafond]),
 		nodeValue,
 		unit,
 		explanation: {

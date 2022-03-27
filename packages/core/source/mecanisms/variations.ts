@@ -1,7 +1,7 @@
 import { EvaluationFunction } from '..'
 import { ASTNode, EvaluatedNode, Unit } from '../AST/types'
 import { warning } from '../error'
-import { bonus, defaultNode, mergeAllMissing } from '../evaluation'
+import { defaultNode } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
@@ -9,7 +9,7 @@ import parse from '../parse'
 export type VariationNode = {
 	explanation: Array<{
 		condition: ASTNode
-		consequence: ASTNode
+		consequence?: ASTNode
 		satisfied?: boolean
 	}>
 	nodeKind: 'variations'
@@ -86,10 +86,6 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 							: evaluatedCondition.nodeValue !== false &&
 							  evaluatedCondition.nodeValue !== null)
 
-			evaluatedCondition.missingVariables = bonus(
-				evaluatedCondition.missingVariables
-			)
-
 			if (currentCondition === false) {
 				return [
 					evaluation,
@@ -98,23 +94,29 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 					previousConditions,
 				]
 			}
-			let evaluatedConsequence = this.evaluate(consequence)
-			if (unit) {
-				try {
-					evaluatedConsequence = convertNodeToUnit(unit, evaluatedConsequence)
-				} catch (e) {
-					warning(
-						this.options.logger,
-						this.cache._meta.evaluationRuleStack[0],
-						`L'unité de la branche n° ${
-							i + 1
-						} du mécanisme 'variations' n'est pas compatible avec celle d'une branche précédente`,
-						e
-					)
+			let evaluatedConsequence: EvaluatedNode | undefined = undefined
+			if (evaluatedCondition.nodeValue !== false) {
+				evaluatedConsequence = this.evaluate(consequence!)
+				if (unit) {
+					try {
+						evaluatedConsequence = convertNodeToUnit(
+							unit,
+							evaluatedConsequence!
+						)
+					} catch (e) {
+						warning(
+							this.options.logger,
+							this.cache._meta.evaluationRuleStack[0],
+							`L'unité de la branche n° ${
+								i + 1
+							} du mécanisme 'variations' n'est pas compatible avec celle d'une branche précédente`,
+							e
+						)
+					}
 				}
 			}
 			return [
-				currentCondition && evaluatedConsequence.nodeValue,
+				currentCondition && evaluatedConsequence?.nodeValue,
 				[
 					...explanations,
 					{
@@ -123,22 +125,11 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 						consequence: evaluatedConsequence,
 					},
 				],
-				unit || evaluatedConsequence.unit,
+				unit || evaluatedConsequence?.unit,
 				previousConditions || currentCondition,
 			]
 		},
 		[null, [], undefined, false]
-	)
-
-	const missingVariables = mergeAllMissing(
-		explanation.reduce<ASTNode[]>(
-			(values, { condition, satisfied, consequence }) => [
-				...values,
-				condition,
-				...(satisfied ? [consequence] : []),
-			],
-			[]
-		)
 	)
 
 	return {
@@ -146,7 +137,6 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 		nodeValue,
 		...(unit !== undefined && { unit }),
 		explanation,
-		missingVariables,
 	}
 }
 

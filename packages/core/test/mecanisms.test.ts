@@ -54,9 +54,7 @@ testSuites.forEach(([suiteName, suite]) => {
 									)
 								}
 								if (expectedMissing) {
-									expect(Object.keys(result.missingVariables)).to.eql(
-										expectedMissing
-									)
+									expect(result.missingVariables).to.eql(expectedMissing)
 								}
 								if (type) {
 									expect(

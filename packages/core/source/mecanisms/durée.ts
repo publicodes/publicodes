@@ -1,7 +1,7 @@
 import { EvaluationFunction } from '..'
 import { ASTNode, Unit } from '../AST/types'
 import { convertToDate, convertToString } from '../date'
-import { defaultNode, mergeAllMissing, parseObject } from '../evaluation'
+import { defaultNode, parseObject } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { parseUnit } from '../units'
 
@@ -36,10 +36,8 @@ const evaluate: EvaluationFunction<'durée'> = function (node) {
 			)
 		)
 	}
-	const missingVariables = mergeAllMissing([from, to])
 	return {
 		...node,
-		missingVariables,
 		nodeValue,
 		explanation: {
 			depuis: from,

@@ -9,9 +9,11 @@ export const decompose = (k, v, context): ASTNode => {
 				const { attributs, ...otherKeys } = composante
 				return {
 					...attributs,
-					[k]: {
-						...factoredKeys,
-						...otherKeys,
+					valeur: {
+						[k]: {
+							...factoredKeys,
+							...otherKeys,
+						},
 					},
 				}
 			}),
