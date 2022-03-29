@@ -1,8 +1,8 @@
 import { expect } from 'chai'
-import Engine from '../source/index'
+import Publicodes from '../source/index'
 
 describe('Traversed variables - Basics', () => {
-	const engine = new Engine({
+	const engine = new Publicodes({
 		a: 1,
 		b: '1 + a',
 		c: '1 + a + a',
@@ -14,6 +14,9 @@ describe('Traversed variables - Basics', () => {
 		g: 1,
 	})
 
+	it('should be empty if there are no external references', () => {
+		expect(engine.evaluate('5 + 5').traversedVariables).to.deep.equal([])
+	})
 	it('should countain single rule if it has no dependency', () => {
 		expect(engine.evaluate('a').traversedVariables).to.deep.equal(['a'])
 	})
@@ -31,5 +34,45 @@ describe('Traversed variables - Basics', () => {
 	it('should not be polluted by previous term in an operation', () => {
 		engine.evaluate('branches')
 		expect(engine.evaluate('f').traversedVariables).to.deep.equal(['f', 'g'])
+	})
+})
+
+describe('Traversed variables - Inversions', () => {
+	it('should ignore variables traversed only during the inversion search', () => {
+		const engine = new Publicodes({
+			brut: {
+				'inversion numérique': {
+					avec: ['net'],
+				},
+			},
+			net: '0.6 * brut - forfait',
+			forfait: {
+				variations: [
+					{
+						si: 'brut > 2001',
+						alors: 'ne doit pas être traversée si brut vaut 2000',
+					},
+					{
+						si: 'brut < 1999',
+						alors: 'ne doit pas être traversée si brut vaut 2000',
+					},
+					{ sinon: 200 },
+				],
+			},
+			'ne doit pas être traversée si brut vaut 2000': 200,
+		})
+
+		engine.setSituation({ net: 1234 })
+		expect(engine.evaluate('brut').traversedVariables).to.include(
+			'ne doit pas être traversée si brut vaut 2000'
+		)
+
+		engine.setSituation({ net: 1000 })
+		expect(engine.evaluate('brut').nodeValue).to.equal(2000)
+		expect(engine.evaluate('brut').traversedVariables).to.deep.equal([
+			'brut',
+			'net',
+			'forfait',
+		])
 	})
 })
