@@ -4,6 +4,7 @@
 import Engine, { ASTNode } from './index'
 import { type RuleNode } from './rule'
 
+// TODO: This could be implemented as a mechanism.
 export function isApplicable(this: Engine, node: ASTNode): boolean {
 	if (this.ruleUnits.get(node)?.isNullable === false) {
 		return true

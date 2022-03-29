@@ -350,10 +350,17 @@ export function getVariablesExpectedInSituation<N extends string>(
 			return (
 				'une possibilité' in rawNode ||
 				'par défaut' in rawNode ||
-				(!('formule' in rawNode) && !('valeur' in rawNode)) ||
+				[
+					'formule',
+					'valeur',
+					'somme',
+					'produit',
+					'barème',
+					'grille',
+					'variations',
+				].every((mecanismName) => !(mecanismName in rawNode)) ||
 				(typeof rawNode.formule === 'object' &&
-					'une possibilité' in rawNode.formule) ||
-				Object.keys(rawNode).find((k) => k !== 'nom') === undefined
+					'une possibilité' in rawNode.formule)
 			)
 		})
 		.map(([dottedName]) => dottedName as N)

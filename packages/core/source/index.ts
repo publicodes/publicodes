@@ -311,9 +311,6 @@ export default class Engine<Name extends string = string> {
 
 /**
  	This function allows to mimic the former 'isApplicable' property on evaluatedRules
-
-	It will be deprecated when applicability will be encoded as a Literal type
-
 	@deprecated
 */
 export function UNSAFE_isNotApplicable<DottedName extends string = string>(

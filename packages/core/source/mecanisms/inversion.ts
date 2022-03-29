@@ -50,7 +50,13 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	const evaluateWithValue = (n: number) => {
 		inversionNumberOfIterations++
 		this.resetCache()
-		this.cache._meta = { ...originalCache._meta }
+		this.cache._meta = {
+			evaluationRuleStack: [...originalCache._meta.evaluationRuleStack],
+			parentRuleStack: [...originalCache._meta.parentRuleStack],
+			traversedVariablesStack: [
+				...originalCache._meta.traversedVariablesStack.map((s) => new Set(s)),
+			],
+		}
 		this.parsedSituation[node.explanation.ruleToInverse] = {
 			unit: unit,
 			nodeKind: 'unité',
@@ -132,7 +138,6 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	// console.table([{ x: x1, y: y1 }, { x: x2, y: y2 }])
 	// console.log('iteration inversion:', inversionNumberOfIterations)
 
-	this.cache = originalCache
 	this.parsedSituation = originalSituation
 
 	return {
