@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 title: API
 ---
 
@@ -75,7 +75,10 @@ Un objet javascript de type `EvaluatedNode` contenant la valeur calculée.
 > Utilisez la fonction `formatNode(evaluationResult)` autant que possible pour
 > afficher la valeur retournée.
 
-- `missingVariables`: contient les règles dont la valeur est manquante dans la situation
+- `traversedVariables`: la liste des règles traversées lors de l'évaluation de
+  l'expression courante
+- `missingVariables`: contient les règles dont la valeur est manquante dans la
+  situation
 - `nodeValue`: la valeur calculée (type `string`, `number`, `boolean`, ou `null`)
 - `unit`: si `nodeValue` est un nombre, contient l'unité associée
 
