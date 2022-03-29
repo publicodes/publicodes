@@ -1,0 +1,116 @@
+---
+sidebar_position: 1
+title: Créer un formulaire
+---
+
+Publicodes permet de générer un formulaire interactif tout autant qu’un simulateur affichant une liste de questions. Vous pouvez implémenter l’interface utilisateur la plus adaptée à votre application à partir des informations calculées par le moteur.
+
+## Questions et méta-données
+
+Les questions sont définies via la création d'une règle publicodes :
+
+```yaml
+age:
+  question: Quel âge avez-vous ?
+  type: nombre
+
+# La règle "age" contient la réponse à la question correspondante
+personne majeure: age >= 18
+
+prénom:
+	question: Quel est votre prénom ?
+	type: texte
+```
+
+On peut filtrer les règles publicodes pour obtenir uniquement la liste des questions :
+
+```js
+const engine = new Publicodes(rules)
+const questions = engine.parsedRules.filter(
+	(rule) => rule.question !== undefined
+)
+```
+
+Vu qu'il s'agit de règles publicodes standard, on peut utiliser l'applicabilité pour déterminer la liste des questions à afficher :
+
+```yaml
+commande:
+commande . bière:
+	applicable si: personne majeure
+	question: Souhaitez-vous une bière ?
+	par défaut: non
+```
+
+```js
+const questionsToDisplay = questions.filter((question) =>
+	engine.isApplicable(question)
+)
+```
+
+:::caution Composants UI pour afficher un formulaire
+
+Nous ne proposons pas de bibliothèque de composants graphiques directement interfacés avec Publicodes. En effet sur les différents utilisateurs actuels, le besoin de personnalisation de l'interface est fort, et il n'est pas évident de déterminer quels éléments partager.
+
+Vous devez donc interfacer votre UI avec le moteur Publicodes :
+
+- Pour lire la valeur courante : `engine.evaluate('age')`
+- Pour modifier la valeur suite à une saisie de l'utilisateur : `engine.setSituation({ age: 17 })`
+
+À l’avenir, il est possible que nous exportions des fonctions utilitaires pour simplifier ce travail d’interfaçage.
+:::
+
+<!-- TODO : parler du typage des règles ou référencer un guide tiers -->
+
+## Variables traversées
+
+L'utilisation de l'applicabilité permet déjà d'afficher ou de cacher des questions en fonction des réponses précédentes. Mais pour certains formulaires par nature très dynamiques, on veut en plus pouvoir ordonner automatiquement les questions.
+
+Là encore, l'implémentation concrète dépendra de chaque application. Mais généralement il faudra prendre en compte les dépendences entre les questions. Ainsi dans l'exemple ci-dessus, on veut d'abord déterminer si la personne est majeure avant de lui demander s'il elle veut commander une bière. Il faut donc poser la question de l'âge en premier.
+
+Pour exploiter cette notion de dépendance des questions, on peut utiliser les **variables traversées**. Les variables traversées sont une méta-donnée retournée lors de l'évaluation d'une expression publicodes qui permet de connaître l'ensemble des règles qui interviennent dans son calcul.
+
+```yaml
+commande . vin:
+	applicable si:
+		toutes ces conditions:
+			- personne majeure
+			- bière = non
+	question: Voulez-vous une bouteille de rouge ?
+	par défaut: non
+```
+
+On peut évaluer la règle `commande . vin` pour déterminer sa valeur actuelle ainsi que les variables utilisées dans le calcul :
+
+```js
+const commandeVin = engine.evaluate('commande . vin')
+console.log(commandeVin.nodeValue) // false - la valeur par défaut
+console.log(commandeVin.traversedVariables) // [ 'personne majeure', 'bière' ]
+```
+
+Les variables traversées sont retournées dans leur ordre d’apparition. Ainsi par exemple les règles référencées dans le mécanisme [applicable si](/docs/mécanismes#applicable-si) apparaîtront avant celles utilisées dans le calcul de la valeur de la règle en elle-même, en effet publicodes évalue d'abord la condition avant d'évaluer le cas échéant la conséquence.
+
+À noter que les variables traversées dépendent de la situation courante.
+
+```yaml
+# Les variables traversées lors de l'évaluation de `chauffage` dépendent
+# de la valeur courante de `chauffage . type
+chauffage:
+	variations:
+	- si: type = 'buche'
+		alors: type . buche . consommation * facteur . buche
+	- sinon: type . granulés . consommation * facteur . granulés
+
+chauffage . type:
+	par défaut: "'buche'"
+```
+
+<!-- TODO : parler des dépendances statiques engine.ruleDependencies[dottedName] ou référencer un guide tiers sur l’arbre des dépendances -->
+
+:::note Variables manquantes
+
+Publicodes calcule également une liste de « variables manquantes ». Il s'agit d'un sous-ensemble des variables traversées filter uniquement sur les règles qui n'ont pas de formule (ou uniquement une formule par défaut).
+
+Avant l'introduction des variables traversées il s'agissait de la seule meta-donnée calculée permettant de déterminer l'ordre des règles.
+
+Il semble maintenant préférable de se baser sur les variables traversées, et de les filtrer sur le sous-ensemble de règles pertinent pour l'application : par exemple la liste des questions.
+:::
