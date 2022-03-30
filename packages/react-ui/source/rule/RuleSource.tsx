@@ -7,8 +7,9 @@ export default function RuleSource({ engine, dottedName }: Props) {
 	if (window.location.host === 'publi.codes') {
 		return null
 	}
+
 	const dependancies = [
-		...engine.rulesDependencies[dottedName],
+		...(engine.rulesDependencies[dottedName] ?? []),
 		...utils.ruleParents(dottedName),
 	]
 	const rule = engine.evaluate(engine.getRule(dottedName))

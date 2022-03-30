@@ -52,7 +52,6 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		this.resetCache()
 		this.cache._meta = {
 			evaluationRuleStack: [...originalCache._meta.evaluationRuleStack],
-			parentRuleStack: [...originalCache._meta.parentRuleStack],
 			traversedVariablesStack: [
 				...originalCache._meta.traversedVariablesStack.map((s) => new Set(s)),
 			],

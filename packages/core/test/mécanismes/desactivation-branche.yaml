@@ -62,3 +62,24 @@ cotisation . réduction très bas revenu:
   remplace:
     règle: taux réduit
     par: oui
+
+catholicisme: oui
+
+dieu le père:
+  applicable si: catholicisme
+  valeur:
+    nom: jésus le fils
+    valeur: oui
+  exemples:
+    - valeur attendue: true
+    - situation:
+        catholicisme: non
+      valeur attendue: null
+    - situation:
+        dieu le père . jésus le fils: non
+      valeur attendue: false
+
+référence externe à jésus:
+  valeur: dieu le père . jésus le fils
+  exemples:
+    - valeur attendue: true

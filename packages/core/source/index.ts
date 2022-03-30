@@ -19,7 +19,6 @@ import { formatUnit, getUnitKey } from './units'
 const emptyCache = (): Cache => ({
 	_meta: {
 		evaluationRuleStack: [],
-		parentRuleStack: [],
 		traversedVariablesStack: [],
 	},
 	nodes: new Map(),
@@ -28,7 +27,6 @@ const emptyCache = (): Cache => ({
 type Cache = {
 	_meta: {
 		evaluationRuleStack: Array<string>
-		parentRuleStack: Array<string>
 		/**
 		 * Every time we encounter a reference to a rule in an expression we add it
 		 * to the current Set of traversed variables. Because we evaluate the
