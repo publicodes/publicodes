@@ -1,3 +1,4 @@
+// TODO: migrate to the 100% yaml test syntax in mecanisms/inversion.yaml
 import { expect } from 'chai'
 import dedent from 'dedent-js'
 import Engine from '../source/index'
@@ -109,6 +110,25 @@ describe('inversions', () => {
 			.evaluate('brut')
 		expect(result.nodeValue).to.be.undefined
 		expect(result.missingVariables).to.include('cadre')
+	})
+
+	it('should reset cache after a failed inversion', () => {
+		const rules = dedent`
+			net:
+				variations:
+					- si: assiette < 100
+						alors: 100
+					- sinon: 200
+			assiette: brut
+			brut:
+				inversion numérique:
+					avec:
+						- net
+		`
+
+		const engine = new Engine(rules)
+		engine.setSituation({ net: 150 }).evaluate('brut')
+		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
 	})
 
 	it("shouldn't report a missing salary if another salary was input", () => {
