@@ -204,7 +204,6 @@ describe('inversions', () => {
 		const result = new Engine(rules)
 			.setSituation({ net: '2000 €' })
 			.evaluate('total')
-		console.log(result.missingVariables)
 		expect(result.nodeValue).to.be.closeTo(3750, 1)
 		expect(result.missingVariables).to.be.empty
 	})

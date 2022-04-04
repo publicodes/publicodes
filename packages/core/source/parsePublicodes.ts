@@ -348,9 +348,7 @@ export function getVariablesExpectedInSituation<N extends string>(
 	return Object.entries<RuleNode>(parsedRules)
 		.filter(([, { rawNode }]) => {
 			return (
-				'une possibilité' in rawNode ||
-				'par défaut' in rawNode ||
-				[
+				([
 					'formule',
 					'valeur',
 					'somme',
@@ -358,7 +356,10 @@ export function getVariablesExpectedInSituation<N extends string>(
 					'barème',
 					'grille',
 					'variations',
-				].every((mecanismName) => !(mecanismName in rawNode)) ||
+					'une de ces conditions',
+					'toutes ces conditions',
+				].every((mecanismName) => !(mecanismName in rawNode)) &&
+					rawNode.type !== 'texte') ||
 				(typeof rawNode.formule === 'object' &&
 					'une possibilité' in rawNode.formule)
 			)
