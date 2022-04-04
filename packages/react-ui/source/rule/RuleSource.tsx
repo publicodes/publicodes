@@ -8,7 +8,7 @@ export default function RuleSource({ engine, dottedName }: Props) {
 		return null
 	}
 	const dependancies = [
-		...engine.rulesDependencies[dottedName],
+		...(engine.rulesDependencies[dottedName] ?? []),
 		...utils.ruleParents(dottedName),
 	]
 	const rule = engine.evaluate(engine.getRule(dottedName))
