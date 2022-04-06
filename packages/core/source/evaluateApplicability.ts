@@ -105,6 +105,18 @@ export function evaluateDisablingParent(
 		return { ruleDisabledByItsParent: false }
 	}
 
+	// TODO: This is not ideal because if there are some replacements, the
+	// "nullableParent" will be a "variations" node without a dottedName. We
+	// should add a unit test for this case
+	if (
+		'dottedName' in nullableParent &&
+		engine.rulesDependencies[nullableParent.dottedName!]?.includes(
+			node.dottedName
+		)
+	) {
+		return { ruleDisabledByItsParent: false }
+	}
+
 	const parentIsApplicable = isApplicable.call(engine, nullableParent, {
 		booleanNodeValueAsApplicability:
 			engine.ruleUnits.get(nullableParent)?.type === 'boolean',

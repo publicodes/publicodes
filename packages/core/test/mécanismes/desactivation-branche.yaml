@@ -83,6 +83,9 @@ référence externe à jésus:
   valeur: dieu le père . jésus le fils
   exemples:
     - valeur attendue: true
+    - situation:
+        catholicisme: non
+      valeur attendue: true
 
 règle référence des enfants pour l'applicabilité:
   applicable si: montant < plafond
