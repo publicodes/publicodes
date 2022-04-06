@@ -83,3 +83,28 @@ référence externe à jésus:
   valeur: dieu le père . jésus le fils
   exemples:
     - valeur attendue: true
+
+règle référence des enfants pour l'applicabilité:
+  applicable si: montant < plafond
+  valeur:
+    nom: montant
+    valeur: 1000 €
+  exemples:
+    - valeur attendue: null
+    - situation:
+        règle référence des enfants pour l'applicabilité . montant: 2 €
+      valeur attendue: 2
+
+règle référence des enfants pour l'applicabilité . plafond: 50 €
+
+titres-restaurant:
+  applicable si:
+    nom: éligible
+    question: Le salarié reçoit-il des titres-restaurant ?
+    par défaut: non
+  valeur: 100 €
+  exemples:
+    - valeur attendue: null
+    - situation:
+        titres-restaurant . éligible: oui
+      valeur attendue: 100

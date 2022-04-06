@@ -56,18 +56,6 @@ export function isApplicable(
 
 			this.cache._meta.traversedVariablesStack[0]?.add(node.dottedName)
 
-			// To avoid applicability cycles where the applicability of the parent
-			// depends of its child and vice versa, we specify that a child rule is
-			// always assumed to be applicable. Note: it is still possible for a child
-			// to disable its namespace for instance with `applicable si: child > 5`.
-			const isAReferenceToAChildRule =
-				this.cache._meta.evaluationRuleStack.some((context) =>
-					node.dottedName!.startsWith(context)
-				)
-
-			if (isAReferenceToAChildRule) {
-				return true
-			}
 			return recurse(this.parsedRules[node.dottedName])
 
 		case 'applicable si':
@@ -97,6 +85,18 @@ export function evaluateDisablingParent(
 	ruleDisabledByItsParent: boolean
 	nullableParent?: ASTNode
 } {
+	// To avoid applicability cycles or ambiguity where the applicability of a
+	// parent depend on a child, and the applicability depend on its parent, we
+	// disable branch desactivation if a child is referenced in a parent
+	// applicability. TODO: Documentation
+	const isReferencedByAParent = engine.cache._meta.evaluationRuleStack.some(
+		(x) => node.dottedName.startsWith(x)
+	)
+
+	if (isReferencedByAParent) {
+		return { ruleDisabledByItsParent: false }
+	}
+
 	const nullableParent = node.explanation.parents.find(
 		(ref) => engine.ruleUnits.get(ref)?.isNullable
 	)
