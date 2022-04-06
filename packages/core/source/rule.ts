@@ -149,35 +149,9 @@ registerEvaluationFunction('rule', function evaluate(node) {
 	}
 
 	if (!ruleDisabledByItsParent) {
-		if (
-			this.cache._meta.evaluationRuleStack.filter(
-				(dottedName) => dottedName === node.dottedName
-			).length > 15
-			// I don't know why this magic number, but below, cycle are
-			// detected "too early", which leads to blank value in brut-net simulator
-		) {
-			warning(
-				this.options.logger,
-				node.dottedName,
-				`
-		Un cycle a été détecté dans lors de l'évaluation de cette règle.
-		Par défaut cette règle sera évaluée à 'null'.
-		Pour indiquer au moteur de résoudre la référence circulaire en trouvant le point fixe
-		de la fonction, il vous suffit d'ajouter l'attribut suivant niveau de la règle :
-		${node.dottedName}:
-		"résoudre la référence circulaire: oui"
-		...
-		`
-			)
-
-			valeurEvaluation = {
-				nodeValue: undefined,
-			} as EvaluatedNode
-		} else {
-			this.cache._meta.evaluationRuleStack.unshift(node.dottedName)
-			valeurEvaluation = this.evaluate(node.explanation.valeur)
-			this.cache._meta.evaluationRuleStack.shift()
-		}
+		this.cache._meta.evaluationRuleStack.unshift(node.dottedName)
+		valeurEvaluation = this.evaluate(node.explanation.valeur)
+		this.cache._meta.evaluationRuleStack.shift()
 	}
 
 	const evaluation = {
