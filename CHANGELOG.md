@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.35
+
+**core**
+
+-   Corrige un bug avec le cache des inversions
+
 ## 1.0.0-beta.34
 
 **core**

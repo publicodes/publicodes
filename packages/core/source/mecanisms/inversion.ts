@@ -130,14 +130,13 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		)
 	}
 
-	// Reset cache after a failed inversion
 	if (nodeValue === undefined) {
-		const inversionCache = this.cache
-		this.cache = originalCache
-		this.cache._meta = inversionCache._meta
 		this.cache._meta.inversionFail = true
-		this.parsedSituation = originalSituation
 	}
+
+	// Reset cache
+	this.cache = { ...originalCache, _meta: this.cache._meta }
+	this.parsedSituation = originalSituation
 
 	// // Uncomment to display the two attempts and their result
 	// console.table([{ x: x1, y: y1 }, { x: x2, y: y2 }])
