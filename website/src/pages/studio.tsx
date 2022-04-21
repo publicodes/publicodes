@@ -2,6 +2,7 @@ import Layout from '@theme/Layout'
 import BrowserOnly from '@docusaurus/BrowserOnly'
 import React, { lazy, Suspense } from 'react'
 import styles from './studio.module.css'
+
 const LazyStudio = lazy(() => import('../components/Studio'))
 
 export default function () {
