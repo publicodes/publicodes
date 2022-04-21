@@ -95,6 +95,8 @@ module.exports = {
 		},
 	],
 	plugins: [
+		require.resolve('./src/plugins/studio-route.cjs'),
+
 		// Hacky Webpack config magic in order to display the Publicodes
 		// documentation in the studio. Indeed the documentation component depends
 		// on a old version of `react-markdown` which is expect some "browserify"

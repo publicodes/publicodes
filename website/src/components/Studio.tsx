@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import MonacoEditor from 'react-monaco-editor'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
 import styles from './studio.module.css'
+import { utils } from 'publicodes'
+
+const { decodeRuleName } = utils
 
 const EXAMPLE_CODE = `
 # Bienvenue dans le bac à sable du langage publicode !
@@ -46,6 +49,9 @@ export default function Studio() {
 		window?.navigator.clipboard.writeText(window.location.href)
 	}, [window.location.href])
 
+	const { target } = useParams<{ target?: string }>()
+	const defaultTarget = target&&decodeRuleName(target)
+
 	return (
 		<>
 			<div className={styles.studio}>
@@ -65,6 +71,7 @@ export default function Studio() {
 						<Documentation
 							rules={debouncedEditorValue}
 							onClickShare={handleShare}
+							defaultTarget={defaultTarget}
 						/>
 					</ErrorBoundary>
 				</section>
