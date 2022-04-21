@@ -50,7 +50,7 @@ export default function Studio() {
 	}, [window.location.href])
 
 	const { target } = useParams<{ target?: string }>()
-	const defaultTarget = target&&decodeRuleName(target)
+	const defaultTarget = target && decodeRuleName(target)
 
 	return (
 		<>
