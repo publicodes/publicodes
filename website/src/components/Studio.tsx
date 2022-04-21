@@ -72,6 +72,7 @@ export default function Studio() {
 							rules={debouncedEditorValue}
 							onClickShare={handleShare}
 							defaultTarget={defaultTarget}
+							baseUrl="/studio"
 						/>
 					</ErrorBoundary>
 				</section>

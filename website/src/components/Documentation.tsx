@@ -1,5 +1,5 @@
 import Head from '@docusaurus/Head'
-import Engine from 'publicodes'
+import Engine, { utils } from 'publicodes'
 import { getDocumentationSiteMap, RulePage } from 'publicodes-react'
 import { invertObj, last } from 'ramda'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
@@ -11,6 +11,7 @@ type ResultsProps = {
 	onClickShare?: React.MouseEventHandler
 	defaultTarget?: string
 	onTargetChange?: (target: string) => void
+	baseUrl: string
 }
 
 class Logger {
@@ -45,6 +46,7 @@ export default function Documentation({
 	rules,
 	defaultTarget = '',
 	onTargetChange,
+	baseUrl,
 }: ResultsProps) {
 	const logger = useMemo(() => new Logger(), [rules])
 	const engine = useMemo(() => new Engine(rules, { logger }), [rules, logger])
@@ -77,13 +79,19 @@ export default function Documentation({
 	useEffect(() => {
 		if (searchParams.get('rule') !== currentTarget) {
 			searchParams.set('rule', currentTarget)
-			// TODO : remettre la synchronisation avec l'URL
-			// history.replace({
-			// 	pathname,
-			// 	search: '?' + searchParams.toString(),
-			// })
 		}
 	}, [searchParams, currentTarget])
+
+	useEffect(() => {
+		const newPathname = baseUrl + '/' + utils.encodeRuleName(currentTarget)
+
+		if (pathname !== newPathname) {
+			history.replace({
+				...history.location,
+				pathname: newPathname,
+			})
+		}
+	}, [baseUrl, currentTarget, pathname, history])
 
 	return (
 		<div style={{ padding: '0 1rem' }}>
