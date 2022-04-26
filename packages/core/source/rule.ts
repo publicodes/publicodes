@@ -25,9 +25,6 @@ export type Rule = {
 	icônes?: string
 	titre?: string
 	sévérité?: string
-	cotisation?: {
-		branche: string
-	}
 	type?: string
 	note?: string
 	remplace?: RendNonApplicable | Array<RendNonApplicable>
@@ -35,6 +32,7 @@ export type Rule = {
 	suggestions?: Record<string, string | number | Record<string, unknown>>
 	références?: { [source: string]: string }
 	API?: string
+	avec?: Record<string, Rule>
 	'identifiant court'?: string
 }
 
@@ -114,6 +112,18 @@ export default function parseRule(
 		),
 	}
 
+	Object.entries(rawRule.avec ?? {}).forEach(([name, rule]) =>
+		parse(
+			rule == undefined
+				? {
+						nom: name,
+				  }
+				: typeof rule === 'object'
+				? { ...rule, nom: name }
+				: { valeur: rule, nom: name },
+			ruleContext
+		)
+	)
 	context.parsedRules[dottedName] = {
 		dottedName,
 		replacements: [

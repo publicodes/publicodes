@@ -1,0 +1,62 @@
+prix final:
+  valeur: prix de base * (100% - réduction)
+  unité: €
+  avec:
+    prix de base: 137 €
+    réduction: 20%
+  exemples:
+    - valeur attendue: 109.6
+
+CSG non déductible:
+  produit:
+    assiette: 1000 €
+    composantes:
+      - taux: taux
+      - attributs:
+          nom: revenus de remplacement
+        assiette: 200 €
+        taux: taux
+  avec:
+    taux: 10%
+  exemples:
+    - valeur attendue: 120
+
+début d'activité:
+  titre: Période de début d’activité
+  question: À quelle période avez-vous débuté votre activité ?
+  une possibilité:
+    choix obligatoire: oui
+    possibilités:
+      - avant 2021
+      - janvier 2021
+      - février 2021
+      - mars 2021
+      - avril 2021
+      - mai 2021
+      - juin 2021
+      - juillet 2021
+  par défaut: "'avant 2021'"
+  avec:
+    avant 2021:
+    janvier 2021:
+    février 2021:
+    mars 2021:
+    avril 2021:
+    mai 2021:
+    juin 2021:
+    juillet 2021:
+
+  exemples:
+    - valeur attendue: 'avant 2021'
+
+avec dans avec:
+  valeur: 2 * yumyum
+  avec:
+    yumyum:
+      somme:
+        - yum
+        - yum
+      avec:
+        yum: 5
+  exemples:
+    - valeur attendue: 20

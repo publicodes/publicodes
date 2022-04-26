@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.36
+
+**core**
+
+-   Ajoute la possibilité de définir des règles imbriquées en utilisant le mot clé `avec` #163
+
 ## 1.0.0-beta.35
 
 **core**

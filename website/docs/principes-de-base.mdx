@@ -358,6 +358,8 @@ temps modifié:
 
 ## Définition de règle imbriquée
 
+### A l'intérieur des mécanismes : `nom`
+
 Si le mécanisme de remplacement permet de faire des substitutions de règles
 complètes, il est parfois utile de ne modifier qu'un seul paramètre d'une règle
 existante, par exemple modifier le facteur d'une multiplication tout en
@@ -381,9 +383,9 @@ super-prime:
 ```
 
 Ce code fonctionne mais il nous oblige a créer une règle `prime . taux` qui
-n'est pas pertinente en tant qu'entité autonome (avec sa propre page de
-documentation, etc.), uniquement pour pouvoir la modifier avec un `remplace`. On
-a aussi introduit une indirection dans la définition de la prime en remplaçant
+n'est pas pertinente en tant qu'entité autonome, uniquement pour pouvoir la modifier avec un `remplace`.
+
+On a aussi introduit une indirection dans la définition de la prime en remplaçant
 une ligne explicite `taux: 5%` par une référence vers une règle tierce
 `taux: taux`, qui est loin d'être aussi claire.
 
@@ -403,6 +405,56 @@ super-prime:
   remplace: prime . taux
   valeur: 10%
 ```
+
+### Directement sur une règle : `avec`
+
+```publicodes prix-final
+prix final:
+   valeur: 157 € * (100% - 20%)
+```
+
+Dans cet exemple, si l'on veut extraire le prix et la promotion dans des variables séparées, on est obligé de les définir à côté de la règle `prix final` :
+
+```publicodes prix-final
+prix final:
+   valeur: prix de base * (100% - promotion)
+prix final . prix de base: 157€
+prix final . promotion: 20%
+```
+
+Pour alléger cette écriture, on peut utiliser la notation `avec` qui permet de définir des règles imbriquées directement depuis une règle parente :
+
+```publicodes
+prix final:
+   valeur: prix de base * (100% - réduction)
+   avec:
+     prix de base: 157 €
+     réduction: 20%
+```
+
+:::info
+
+On peut tout à fait combiner les deux écritures `nom` et `avec` :
+
+```publicodes cotisation
+cotisation:
+  produit:
+    assiette: assiette
+    taux: 2.8%
+  plafond:
+    nom: plafond
+    le minimum de:
+      - 50 % * PFSS
+      - plafond forfaitaire
+    avec:
+      plafond forfaitaire: 2000 €
+
+PFSS: 3400 €
+assiette: 2000 €
+
+```
+
+:::
 
 ## Évaluation
 

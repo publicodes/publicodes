@@ -11628,7 +11628,7 @@ __metadata:
     tsup: ^5.11.13
     typescript: ^4.5.5
   peerDependencies:
-    publicodes: 1.0.0-beta.35
+    publicodes: 1.0.0-beta.36
     react: ^17.0.2
   languageName: unknown
   linkType: soft
