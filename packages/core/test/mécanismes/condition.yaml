@@ -1,0 +1,41 @@
+condition vrai:
+  condition:
+    si: oui
+    alors: 10
+    sinon: 15
+  exemples:
+    valeur attendue: 10
+
+condition fausse:
+  condition:
+    si: non
+    alors: 10
+    sinon: 15
+  exemples:
+    valeur attendue: 15
+
+condition non applicable:
+  condition:
+    si:
+      applicable si: non
+    alors: 10
+    sinon: 15
+  exemples:
+    valeur attendue: null
+
+x:
+condition non définie:
+  condition:
+    si: x
+    alors: 10
+    sinon: 15
+  exemples:
+    valeur attendue: undefined
+
+conséquence non définie:
+  condition:
+    si: oui
+    alors: x
+    sinon: 15
+  exemples:
+    valeur attendue: undefined

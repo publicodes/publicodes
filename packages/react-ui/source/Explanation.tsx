@@ -6,6 +6,7 @@ import Arrondi from './mecanisms/Arrondi'
 import Barème from './mecanisms/Barème'
 import { ConstantNode, Leaf } from './mecanisms/common'
 import Composantes from './mecanisms/Composantes'
+import Condition from './mecanisms/Condition'
 import Durée from './mecanisms/Durée'
 import Grille from './mecanisms/Grille'
 import InversionNumérique from './mecanisms/InversionNumérique'
@@ -26,10 +27,10 @@ import Situation from './mecanisms/Situation'
 import Somme from './mecanisms/Somme'
 import Synchronisation from './mecanisms/Synchronisation'
 import TauxProgressif from './mecanisms/TauxProgressif'
+import Texte from './mecanisms/Texte'
 import ToutesCesConditions from './mecanisms/ToutesCesConditions'
 import UneDeCesConditions from './mecanisms/UneDeCesConditions'
 import UnePossibilité from './mecanisms/UnePossibilité'
-import Texte from './mecanisms/Texte'
 import Unité from './mecanisms/Unité'
 import Variations from './mecanisms/Variations'
 
@@ -54,6 +55,7 @@ const UIComponents = {
 	produit: Product,
 	reference: Leaf,
 	rule: Rule,
+	condition: Condition,
 	'nom dans la situation': Situation,
 	somme: Somme,
 	synchronisation: Synchronisation,

@@ -4,8 +4,8 @@ import { ReplacementRule } from '../replacement'
 import { RuleNode } from '../rule'
 import {
 	ASTNode,
-	ASTVisitor,
 	ASTTransformer,
+	ASTVisitor,
 	NodeKind,
 	TraverseFunction,
 } from './types'
@@ -178,6 +178,8 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseReplacementNode(fn, node)
 		case 'texte':
 			return traverseTextNode(fn, node)
+		case 'condition':
+			return traverseConditionNode(fn, node)
 		default:
 			neverHappens(node)
 			throw new InternalError(node)
@@ -390,4 +392,13 @@ const traverseVariationNode: TraverseFunction<'variations'> = (fn, node) => ({
 		condition: fn(condition),
 		consequence: consequence && fn(consequence),
 	})),
+})
+
+const traverseConditionNode: TraverseFunction<'condition'> = (fn, node) => ({
+	...node,
+	explanation: {
+		si: fn(node.explanation.si),
+		alors: fn(node.explanation.alors),
+		sinon: fn(node.explanation.sinon),
+	},
 })
