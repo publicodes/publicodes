@@ -2,25 +2,19 @@
 The advantage of putting them here is to get prettier's JS formatting, since Nealrey doesn't support it https://github.com/kach/nearley/issues/310 */
 import { normalizeDateString } from './date.ts'
 
-export let binaryOperation =
-	(operationType) =>
+export const binaryOperation =
 	([A, , operator, , B]) => ({
-		[operator]: {
-			operationType,
-			explanation: [A, B],
-		},
+		[operator]: [A, B],
 	})
 
-export let unaryOperation =
-	(operationType) =>
+export const unaryOperation =
 	([operator, , A]) => ({
-		[operator]: {
-			operationType,
-			explanation: [number([{ value: '0' }]), A],
-		},
+		[operator]:
+			[number([{ value: '0' }]), A]
+		,
 	})
 
-export let variable = ([firstFragment, nextFragment], _, reject) => {
+export const variable = ([firstFragment, nextFragment], _, reject) => {
 	const fragments = [firstFragment, ...nextFragment].map(({ value }) => value)
 	if (!nextFragment.length && ['oui', 'non'].includes(firstFragment)) {
 		return reject
@@ -34,19 +28,19 @@ export const JSONObject = ([{ value }]) => {
 	console.log(value)
 	// TODO
 }
-export let number = ([{ value }]) => ({
+export const number = ([{ value }]) => ({
 	constant: {
 		type: 'number',
 		nodeValue: parseFloat(value),
 	},
 })
 
-export let numberWithUnit = (value) => ({
+export const numberWithUnit = (value) => ({
 	...number(value),
 	unité: value[2].value,
 })
 
-export let date = ([{ value }]) => {
+export const date = ([{ value }]) => {
 	return {
 		constant: {
 			type: 'date',
@@ -55,14 +49,14 @@ export let date = ([{ value }]) => {
 	}
 }
 
-export let boolean = (nodeValue) => () => ({
+export const boolean = (nodeValue) => () => ({
 	constant: {
 		type: 'boolean',
 		nodeValue,
 	},
 })
 
-export let string = ([{ value }]) => ({
+export const string = ([{ value }]) => ({
 	constant: {
 		type: 'string',
 		nodeValue: value.slice(1, -1),

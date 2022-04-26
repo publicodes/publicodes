@@ -66,7 +66,7 @@ NumericTerminal ->
   | number {% id %}
 
 Negation ->
-    "-" %space Parentheses {% unaryOperation('calculation') %}
+    "-" %space Parentheses {% unaryOperation %}
 
 Parentheses ->
   "(" %space NumericValue %space ")"  {% ([,,e]) => e %}
@@ -78,8 +78,8 @@ Date ->
   | %date {% date %}
 
 Comparison ->
-    Comparable %space %comparison %space Comparable {% binaryOperation('comparison')%}
-  | Date %space %comparison %space Date {% binaryOperation('comparison')%}
+    Comparable %space %comparison %space Comparable {% binaryOperation %}
+  | Date %space %comparison %space Date {% binaryOperation %}
 
 Comparable -> (AdditionSubstraction | NonNumericTerminal) {% ([[e]]) => e %}
 
@@ -96,11 +96,11 @@ UnitNumerator -> %words ("." %words):? {% flattenJoin %}
 Unit -> UnitNumerator:? UnitDenominator:* {% flattenJoin %}
 
 AdditionSubstraction ->
-    AdditionSubstraction %space %additionSubstraction %space MultiplicationDivision  {%  binaryOperation('calculation') %}
+    AdditionSubstraction %space %additionSubstraction %space MultiplicationDivision  {%  binaryOperation  %}
   | MultiplicationDivision  {% id %}
 
 MultiplicationDivision ->
-    MultiplicationDivision %space %multiplicationDivision %space Parentheses  {% binaryOperation('calculation') %}
+    MultiplicationDivision %space %multiplicationDivision %space Parentheses  {% binaryOperation  %}
   | Parentheses   {% id %}
 
 
