@@ -28,7 +28,7 @@ export type OperationNode = {
 }
 
 const parseOperation = (k, symbol) => (v, context) => {
-	const explanation = v.explanation.map((node) => parse(node, context))
+	const explanation = v.map((node) => parse(node, context))
 
 	return {
 		...v,

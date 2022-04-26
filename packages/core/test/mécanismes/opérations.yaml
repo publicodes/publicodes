@@ -1,0 +1,43 @@
+# Test des opérations binaire sous forme de mécanisme :
+
+addition:
+  +:
+    - 10
+    - 4
+  exemples:
+    valeur attendue: 14
+
+soustraction:
+  -:
+    - 10
+    - 4
+  exemples:
+    valeur attendue: 6
+
+multiplication:
+  '*':
+    - 10
+    - 4
+  exemples:
+    valeur attendue: 40
+
+division:
+  /:
+    - 12
+    - 4
+  exemples:
+    valeur attendue: 3
+
+comparaison:
+  '>=':
+    - 12
+    - 4
+  exemples:
+    valeur attendue: true
+
+égalité:
+  =:
+    - 4
+    - 5
+  exemples:
+    valeur attendue: false
