@@ -1,5 +1,5 @@
 import yaml from 'yaml'
-import { ParsedRules, Logger, ASTNode } from '.'
+import { ASTNode, Logger, ParsedRules } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
 import parse from './parse'
 import { getReplacements, inlineReplacements } from './replacement'
@@ -288,7 +288,14 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 
 			case 'unité':
 				return inferNodeUnitAndCache(node.explanation)
-
+			case 'condition':
+				return {
+					isNullable:
+						inferNodeUnitAndCache(node.explanation.si).isNullable ||
+						inferNodeUnitAndCache(node.explanation.alors).isNullable ||
+						inferNodeUnitAndCache(node.explanation.sinon).isNullable,
+					type: inferNodeUnitAndCache(node.explanation.alors).type,
+				}
 			case 'variations':
 				// With "rend non applicable" we have a "consequence: null" line in our
 				// variation which can't be used to determine its type. So we need to

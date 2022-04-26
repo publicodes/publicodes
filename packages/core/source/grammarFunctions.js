@@ -2,17 +2,13 @@
 The advantage of putting them here is to get prettier's JS formatting, since Nealrey doesn't support it https://github.com/kach/nearley/issues/310 */
 import { normalizeDateString } from './date.ts'
 
-export const binaryOperation =
-	([A, , operator, , B]) => ({
-		[operator]: [A, B],
-	})
+export const binaryOperation = ([A, , operator, , B]) => ({
+	[operator]: [A, B],
+})
 
-export const unaryOperation =
-	([operator, , A]) => ({
-		[operator]:
-			[number([{ value: '0' }]), A]
-		,
-	})
+export const unaryOperation = ([operator, , A]) => ({
+	[operator]: [number([{ value: '0' }]), A],
+})
 
 export const variable = ([firstFragment, nextFragment], _, reject) => {
 	const fragments = [firstFragment, ...nextFragment].map(({ value }) => value)

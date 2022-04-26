@@ -7,6 +7,7 @@ import applicable from './mecanisms/applicable'
 import arrondi from './mecanisms/arrondi'
 import barème from './mecanisms/barème'
 import { decompose } from './mecanisms/composantes'
+import condition from './mecanisms/condition'
 import { mecanismAllOf } from './mecanisms/condition-allof'
 import { mecanismOneOf } from './mecanisms/condition-oneof'
 import durée from './mecanisms/durée'
@@ -205,6 +206,7 @@ const parseFunctions = {
 	'toutes ces conditions': mecanismAllOf,
 	'une de ces conditions': mecanismOneOf,
 	'une possibilité': mecanismOnePossibility,
+	condition,
 	barème,
 	durée,
 	grille,

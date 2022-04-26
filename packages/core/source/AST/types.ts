@@ -2,6 +2,7 @@ import { AbattementNode } from '../mecanisms/abattement'
 import { ApplicableSiNode } from '../mecanisms/applicable'
 import { ArrondiNode } from '../mecanisms/arrondi'
 import { BarèmeNode } from '../mecanisms/barème'
+import { ConditionNode } from '../mecanisms/condition'
 import { TouteCesConditionsNode } from '../mecanisms/condition-allof'
 import { UneDeCesConditionsNode } from '../mecanisms/condition-oneof'
 import { DuréeNode } from '../mecanisms/durée'
@@ -13,7 +14,6 @@ import { NonApplicableSiNode } from '../mecanisms/nonApplicable'
 import { PossibilityNode } from '../mecanisms/one-possibility'
 import { OperationNode } from '../mecanisms/operation'
 import { ParDéfautNode } from '../mecanisms/parDéfaut'
-import { TexteNode } from '../mecanisms/texte'
 import { PlafondNode } from '../mecanisms/plafond'
 import { PlancherNode } from '../mecanisms/plancher'
 import { ProductNode } from '../mecanisms/product'
@@ -23,6 +23,7 @@ import { SituationNode } from '../mecanisms/situation'
 import { SommeNode } from '../mecanisms/sum'
 import { SynchronisationNode } from '../mecanisms/synchronisation'
 import { TauxProgressifNode } from '../mecanisms/tauxProgressif'
+import { TexteNode } from '../mecanisms/texte'
 import { UnitéNode } from '../mecanisms/unité'
 import { VariationNode } from '../mecanisms/variations'
 import { ReferenceNode } from '../reference'
@@ -64,6 +65,7 @@ export type ASTNode = (
 	| TauxProgressifNode
 	| UnitéNode
 	| VariationNode
+	| ConditionNode
 	| ConstantNode
 	| ReplacementRule
 	| TexteNode
