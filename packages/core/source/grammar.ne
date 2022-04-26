@@ -34,7 +34,7 @@ const lexer = moo.compile({
   periodWord: new RegExp(periodWord),
   words: new RegExp(words),
   number: new RegExp(numberRegExp),
-  string: /'.*'/,
+  string: [/'.*'/, /".*"/],
   JSONObject: /{.*}/,
   additionSubstraction: /[\+-]/,
   multiplicationDivision: ['*','/'],
