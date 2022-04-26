@@ -133,8 +133,6 @@ export default function Documentation({
 					documentationPath={''}
 					renderers={{
 						Link: ({ to, children }) => {
-							// console.log(to, pathToRules);
-
 							return (
 								<Link
 									to={to}
