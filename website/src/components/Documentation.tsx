@@ -11,7 +11,7 @@ type ResultsProps = {
 	onClickShare?: React.MouseEventHandler
 	defaultTarget?: string
 	onTargetChange?: (target: string) => void
-	baseUrl: string
+	baseUrl?: string
 }
 
 class Logger {
@@ -83,6 +83,9 @@ export default function Documentation({
 	}, [searchParams, currentTarget])
 
 	useEffect(() => {
+		if (baseUrl == null) {
+			return
+		}
 		const newPathname = baseUrl + '/' + utils.encodeRuleName(currentTarget)
 
 		if (pathname !== newPathname) {
