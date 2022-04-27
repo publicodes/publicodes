@@ -2,6 +2,7 @@
 	"name": "publicodes-monorepo",
 	"private": true,
 	"workspaces": [
+		"packages/api",
 		"packages/core",
 		"packages/react-ui",
 		"website"
