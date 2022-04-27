@@ -1,0 +1,19 @@
+{
+  "name": "publicodes-api",
+  "version": "1.0.0-beta.0",
+  "description": "Publicodes API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/betagouv/publicodes.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/betagouv/publicodes/issues"
+  },
+  "homepage": "https://github.com/betagouv/publicodes#readme"
+}
