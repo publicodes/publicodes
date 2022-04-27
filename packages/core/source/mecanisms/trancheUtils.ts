@@ -109,7 +109,7 @@ export function evaluatePlafondUntilActiveTranche(
 				(plafondValue as number) <= plancherValue
 			) {
 				evaluationError(
-					this.context.logger,
+					// this.options.logger,
 					this.cache._meta.evaluationRuleStack[0],
 					`Le plafond de la tranche n°${
 						i + 1
