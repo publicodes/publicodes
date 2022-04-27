@@ -1,19 +1,98 @@
 import { Logger } from '.'
 
-export class EngineError extends Error {}
+export class EngineError extends Error {
+	constructor(message: string) {
+		super(message)
+		this.name = 'EngineError'
+	}
+}
+
+export class SyntaxError extends EngineError {
+	rule: string
+
+	constructor(rule: string, message: string) {
+		super(message)
+		this.name = 'SyntaxError'
+		this.rule = rule
+	}
+}
+
+export class EvaluationError extends EngineError {
+	rule: string
+
+	constructor(rule: string, message: string) {
+		super(message)
+		this.name = 'EvaluationError'
+		this.rule = rule
+	}
+}
+
+export class InternalError extends EngineError {
+	payload: unknown
+
+	constructor(payload: unknown) {
+		super(
+			`
+Erreur interne du moteur.
+
+Cette erreur est le signe d'un bug dans publicodes. Pour nous aider à le résoudre, vous pouvez copier ce texte dans un nouveau ticket : https://github.com/betagouv/mon-entreprise/issues/new.
+
+payload:
+${JSON.stringify(payload, null, 2)}
+`
+		)
+		this.name = 'InternalError'
+		this.payload = payload
+	}
+}
+
+const messageError = (
+	type: string,
+	rule: string,
+	message: string,
+	originalError?: Error
+) => `\n[ ${type} ]
+➡️  Dans la règle "${rule}"
+✖️  ${message}
+${originalError ? originalError.message : ''}
+`
+
+/**
+ * Throw a SyntaxError
+ * @param rule
+ * @param message
+ * @param originalError
+ */
 export function syntaxError(
-	dottedName: string,
+	rule: string,
 	message: string,
 	originalError?: Error
 ) {
-	throw new EngineError(
-		`\n[ Erreur syntaxique ]
-➡️  Dans la règle "${dottedName}"
-✖️  ${message}
-    ${originalError ? originalError.message : ''}
-`
+	throw new SyntaxError(
+		rule,
+		messageError('Erreur syntaxique', rule, message, originalError)
 	)
 }
+
+/**
+ * Throw an EvaluationError
+ * @param rule
+ * @param message
+ * @param originalError
+ */
+export function evaluationError(
+	rule: string,
+	message: string,
+	originalError?: Error
+) {
+	throw new EvaluationError(
+		rule,
+		messageError("Erreur d'évaluation", rule, message, originalError)
+	)
+}
+
+export function neverHappens(_: never) {} // why this ?
+
 export function warning(
 	logger: Logger,
 	rule: string,
@@ -27,35 +106,4 @@ export function warning(
 ${originalError ? `ℹ️  ${originalError.message}` : ''}
 `
 	)
-}
-
-export function evaluationError(
-	logger: Logger,
-	rule: string,
-	message: string,
-	originalError?: Error
-) {
-	logger.error(
-		`\n[ Erreur d'évaluation ]
-➡️  Dans la règle "${rule}"
-✖️  ${message}
-    ${originalError ? originalError.message : ''}
-`
-	)
-}
-
-export function neverHappens(_: never) {}
-export class InternalError extends EngineError {
-	constructor(payload) {
-		super(
-			`
-Erreur interne du moteur.
-
-Cette erreur est le signe d'un bug dans publicodes. Pour nous aider à le résoudre, vous pouvez copier ce texte dans un nouveau ticket : https://github.com/betagouv/mon-entreprise/issues/new.
-
-payload:
-${JSON.stringify(payload, null, 2)}
-`
-		)
-	}
 }

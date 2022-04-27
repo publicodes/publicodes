@@ -32,7 +32,7 @@ const evaluate: EvaluationFunction<'arrondi'> = function (node) {
 			!serializeUnit((arrondi as EvaluatedNode).unit)?.match(/décimales?/)
 		) {
 			evaluationError(
-				this.context.logger,
+				// this.context.logger,
 				this.cache._meta.evaluationRuleStack[0],
 				`L'unité ${serializeUnit(
 					(arrondi as EvaluatedNode).unit
