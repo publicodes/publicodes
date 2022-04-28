@@ -166,12 +166,12 @@ export function inlineReplacements<
 	newRuleNamesWithPreviousReplacements.forEach((name) => {
 		parsedRules[name] = inlinePreviousReplacement(
 			parsedRules[name]
-		) as RuleNode & { dottedName: Names }
+		) as RuleNode<Names>
 	})
 	ruleNamesWithNewReplacements.forEach((name) => {
-		parsedRules[name] = inlineNewReplacement(parsedRules[name]) as RuleNode & {
-			dottedName: Names
-		}
+		parsedRules[name] = inlineNewReplacement(
+			parsedRules[name]
+		) as RuleNode<Names>
 	})
 
 	return [parsedRules, replacements]
