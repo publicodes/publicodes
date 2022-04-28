@@ -50,8 +50,8 @@ type Remplace =
 	| string
 type RendNonApplicable = Exclude<Remplace, { par: any }>
 
-export type RuleNode = {
-	dottedName: string
+export type RuleNode<Name extends string = string> = {
+	dottedName: Name
 	title: string
 	nodeKind: 'rule'
 	virtualRule: boolean

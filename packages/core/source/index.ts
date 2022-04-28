@@ -83,10 +83,7 @@ export type EvaluationFunction<Kind extends NodeKind = NodeKind> = (
 	node: ASTNode & { nodeKind: Kind }
 ) => ASTNode & { nodeKind: Kind } & EvaluatedNode
 
-export type ParsedRules<Name extends string> = Record<
-	Name,
-	RuleNode & { dottedName: Name }
->
+export type ParsedRules<Name extends string> = Record<Name, RuleNode<Name>>
 
 export default class Engine<Name extends string = string> {
 	baseContext: Context<Name>
