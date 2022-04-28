@@ -322,11 +322,11 @@ chaine de charactère:
   exemples:
     - valeur attendue: loup y es-tu ? 🐺
     - situation:
-        chaine de charactère: "'je suis là !'"
-      valeur attendue: je suis là !
+        chaine de charactère: '"Promenons-nous dans les bois"'
+      valeur attendue: Promenons-nous dans les bois
     - situation:
-        chaine de charactère: "'je t'y vois'"
-      valeur attendue: je t'y vois
+        chaine de charactère: "'Pendant que le loup n'y est pas'"
+      valeur attendue: Pendant que le loup n'y est pas
 
 a: oui
 b: 5
