@@ -1,5 +1,5 @@
 import { ParsedRules } from '..'
-import { InternalError, neverHappens } from '../error'
+import { UnreachableCaseError } from '../error'
 import { TrancheNodes } from '../mecanisms/trancheUtils'
 import { ReplacementRule } from '../replacement'
 import { RuleNode } from '../rule'
@@ -173,8 +173,7 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseConditionNode(fn, node)
 
 		default:
-			neverHappens(node)
-			throw new InternalError(node)
+			throw new UnreachableCaseError(node)
 	}
 }
 
