@@ -27,10 +27,10 @@ export class EvaluationError extends EngineError {
 	}
 }
 
-export class InternalError extends EngineError {
-	payload: unknown
+export class InternalError<T> extends EngineError {
+	payload: T
 
-	constructor(payload: unknown) {
+	constructor(payload: T) {
 		super(
 			`
 Erreur interne du moteur.
@@ -43,6 +43,16 @@ ${JSON.stringify(payload, null, 2)}
 		)
 		this.name = 'InternalError'
 		this.payload = payload
+	}
+}
+
+/**
+ * Use this error in default case of a switch to check exhaustivity statically
+ * inspired by https://github.com/ts-essentials/ts-essentials#exhaustive-switch-cases
+ */
+export class UnreachableCaseError extends InternalError<never> {
+	constructor(value: never) {
+		super(value)
 	}
 }
 
@@ -90,8 +100,6 @@ export function evaluationError(
 		messageError("Erreur d'évaluation", rule, message, originalError)
 	)
 }
-
-export function neverHappens(_: never) {} // why this ?
 
 export function warning(
 	logger: Logger,
