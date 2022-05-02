@@ -1,0 +1,85 @@
+// Vitest Snapshot v1
+
+exports[`evaluate > Should list rules 1`] = `
+{
+  "rules": {
+    "dottedName": "rules",
+    "explanation": {
+      "parents": [],
+      "valeur": {
+        "explanation": {
+          "situationKey": "rules",
+          "valeur": {
+            "fullPrecision": true,
+            "nodeKind": "constant",
+            "nodeValue": 42,
+            "rawNode": {
+              "valeur": "42",
+            },
+            "type": "number",
+          },
+        },
+        "nodeKind": "nom dans la situation",
+        "rawNode": {
+          "nom dans la situation": "rules",
+          "valeur": "42",
+        },
+      },
+    },
+    "nodeKind": "rule",
+    "rawNode": {
+      "formule": "42",
+      "nom": "rules",
+    },
+    "replacements": [],
+    "suggestions": {},
+    "title": "Rules",
+    "virtualRule": false,
+  },
+}
+`;
+
+exports[`evaluate > Should return an error 1`] = `
+{
+  "error": {
+    "message": "La règle 'bad rules' n'existe pas",
+  },
+}
+`;
+
+exports[`evaluate > Should return rules data 1`] = `
+{
+  "dottedName": "rules",
+  "explanation": {
+    "parents": [],
+    "valeur": {
+      "explanation": {
+        "situationKey": "rules",
+        "valeur": {
+          "fullPrecision": true,
+          "nodeKind": "constant",
+          "nodeValue": 42,
+          "rawNode": {
+            "valeur": "42",
+          },
+          "type": "number",
+        },
+      },
+      "nodeKind": "nom dans la situation",
+      "rawNode": {
+        "nom dans la situation": "rules",
+        "valeur": "42",
+      },
+    },
+  },
+  "nodeKind": "rule",
+  "rawNode": {
+    "formule": "42",
+    "nom": "rules",
+  },
+  "replacements": [],
+  "suggestions": {},
+  "title": "Rules",
+  "virtualRule": false,
+}
+`;

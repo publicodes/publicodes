@@ -3,7 +3,7 @@
 		/* Basic Options */
 		"incremental": true,
 		"target": "ES2022",
-		"module": "commonjs",
+		"module": "CommonJS",
 		"outDir": "dist",
 
 		/* Strict Type-Checking Options */

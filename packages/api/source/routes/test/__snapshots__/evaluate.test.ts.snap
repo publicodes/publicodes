@@ -1,0 +1,618 @@
+// Vitest Snapshot v1
+
+exports[`evaluate > Simple test with real Engine 1`] = `
+{
+  "evaluate": [
+    {
+      "missingVariables": [],
+      "nodeValue": 42,
+      "traversedVariables": [],
+      "unit": undefined,
+    },
+    {
+      "missingVariables": [],
+      "nodeValue": 42,
+      "traversedVariables": [],
+      "unit": undefined,
+    },
+  ],
+  "situationError": null,
+}
+`;
+
+exports[`evaluate > Test error in expression and situation at same time 1`] = `
+{
+  "evaluate": [
+    {
+      "error": {
+        "message": "
+[ Erreur syntaxique ]
+➡️  Dans la règle \\"evaluation\\"
+✖️  \`1+1\` n'est pas une expression valide
+    Syntax error at line 1 col 2:
+
+  1+
+   ^
+Unexpected additionSubstraction token: \\"+\\". Instead, I was expecting to see one of the following:
+
+A space token based on:
+    number$ebnf$1$subexpression$1 →  ● %space
+    number$ebnf$1 →  ● number$ebnf$1$subexpression$1
+    number → %number ● number$ebnf$1 Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A words token based on:
+    UnitNumerator →  ● %words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    Comparison → Comparable ● %space %comparison %space Comparable
+    main →  ● Comparison
+A space token based on:
+    UnitDenominator$ebnf$1$subexpression$1 →  ● %space
+    UnitDenominator$ebnf$1 →  ● UnitDenominator$ebnf$1$subexpression$1
+    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" %words
+    Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
+    Unit → Unit$ebnf$1 ● Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A \\"/\\" based on:
+    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" %words
+    Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
+    Unit → Unit$ebnf$1 ● Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    Comparison → Comparable ● %space %comparison %space Comparable
+    main →  ● Comparison
+
+",
+      },
+    },
+  ],
+  "situationError": {
+    "message": "
+[ Erreur syntaxique ]
+➡️  Dans la règle \\"situation [test]\\"
+✖️  \`\\"42\\"\` n'est pas une expression valide
+    invalid syntax at line 1 col 1:
+
+  \\"42\\"
+  ^
+Unexpected input (lexer error). Instead, I was expecting to see one of the following:
+
+A date token based on:
+    Date →  ● %date
+    main →  ● Date
+A JSONObject token based on:
+    JSONObject →  ● %JSONObject
+    main →  ● JSONObject
+A \\"-\\" based on:
+    Negation →  ● \\"-\\" %space Parentheses
+    NumericValue →  ● Negation
+    main →  ● NumericValue
+A words token based on:
+    Variable →  ● %words Variable$ebnf$1
+    Date →  ● Variable
+    main →  ● Date
+A \\"oui\\" based on:
+    boolean →  ● \\"oui\\"
+    NonNumericTerminal →  ● boolean
+    main →  ● NonNumericTerminal
+A \\"non\\" based on:
+    boolean →  ● \\"non\\"
+    NonNumericTerminal →  ● boolean
+    main →  ● NonNumericTerminal
+A string token based on:
+    string →  ● %string
+    NonNumericTerminal →  ● string
+    main →  ● NonNumericTerminal
+A \\"(\\" based on:
+    Parentheses →  ● \\"(\\" %space NumericValue %space \\")\\"
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A \\"(\\" based on:
+    Parentheses →  ● \\"(\\" NumericValue \\")\\"
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A number token based on:
+    number →  ● %number
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A infinity token based on:
+    number →  ● %infinity
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A number token based on:
+    number →  ● %number number$ebnf$1 Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+
+",
+  },
+}
+`;
+
+exports[`evaluate > Test input/output 1`] = `
+{
+  "evaluate": [
+    {
+      "missingVariables": 42,
+      "nodeValue": 42,
+      "traversedVariables": 42,
+      "unit": 42,
+    },
+  ],
+  "situationError": null,
+}
+`;
+
+exports[`evaluate > Test invalid syntax in situation 1`] = `
+{
+  "evaluate": [
+    {
+      "missingVariables": [],
+      "nodeValue": 2,
+      "traversedVariables": [],
+      "unit": undefined,
+    },
+  ],
+  "situationError": {
+    "message": "
+[ Erreur syntaxique ]
+➡️  Dans la règle \\"situation [test]\\"
+✖️  \`\\"42\\"\` n'est pas une expression valide
+    invalid syntax at line 1 col 1:
+
+  \\"42\\"
+  ^
+Unexpected input (lexer error). Instead, I was expecting to see one of the following:
+
+A date token based on:
+    Date →  ● %date
+    main →  ● Date
+A JSONObject token based on:
+    JSONObject →  ● %JSONObject
+    main →  ● JSONObject
+A \\"-\\" based on:
+    Negation →  ● \\"-\\" %space Parentheses
+    NumericValue →  ● Negation
+    main →  ● NumericValue
+A words token based on:
+    Variable →  ● %words Variable$ebnf$1
+    Date →  ● Variable
+    main →  ● Date
+A \\"oui\\" based on:
+    boolean →  ● \\"oui\\"
+    NonNumericTerminal →  ● boolean
+    main →  ● NonNumericTerminal
+A \\"non\\" based on:
+    boolean →  ● \\"non\\"
+    NonNumericTerminal →  ● boolean
+    main →  ● NonNumericTerminal
+A string token based on:
+    string →  ● %string
+    NonNumericTerminal →  ● string
+    main →  ● NonNumericTerminal
+A \\"(\\" based on:
+    Parentheses →  ● \\"(\\" %space NumericValue %space \\")\\"
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A \\"(\\" based on:
+    Parentheses →  ● \\"(\\" NumericValue \\")\\"
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A number token based on:
+    number →  ● %number
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A infinity token based on:
+    number →  ● %infinity
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A number token based on:
+    number →  ● %number number$ebnf$1 Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+
+",
+  },
+}
+`;
+
+exports[`evaluate > Test no expressions 1`] = `
+{
+  "evaluate": [],
+  "situationError": null,
+}
+`;
+
+exports[`evaluate > Test syntax error in expression 1`] = `
+{
+  "evaluate": [
+    {
+      "error": {
+        "message": "
+[ Erreur syntaxique ]
+➡️  Dans la règle \\"evaluation\\"
+✖️  \`1+1\` n'est pas une expression valide
+    Syntax error at line 1 col 2:
+
+  1+
+   ^
+Unexpected additionSubstraction token: \\"+\\". Instead, I was expecting to see one of the following:
+
+A space token based on:
+    number$ebnf$1$subexpression$1 →  ● %space
+    number$ebnf$1 →  ● number$ebnf$1$subexpression$1
+    number → %number ● number$ebnf$1 Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A words token based on:
+    UnitNumerator →  ● %words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    Comparison → Comparable ● %space %comparison %space Comparable
+    main →  ● Comparison
+A space token based on:
+    UnitDenominator$ebnf$1$subexpression$1 →  ● %space
+    UnitDenominator$ebnf$1 →  ● UnitDenominator$ebnf$1$subexpression$1
+    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" %words
+    Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
+    Unit → Unit$ebnf$1 ● Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A \\"/\\" based on:
+    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" %words
+    Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
+    Unit → Unit$ebnf$1 ● Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    Comparison → Comparable ● %space %comparison %space Comparable
+    main →  ● Comparison
+
+",
+      },
+    },
+  ],
+  "situationError": null,
+}
+`;
+
+exports[`evaluate > Test two syntax error in expression 1`] = `
+{
+  "evaluate": [
+    {
+      "error": {
+        "message": "
+[ Erreur syntaxique ]
+➡️  Dans la règle \\"evaluation\\"
+✖️  \`1+1\` n'est pas une expression valide
+    Syntax error at line 1 col 2:
+
+  1+
+   ^
+Unexpected additionSubstraction token: \\"+\\". Instead, I was expecting to see one of the following:
+
+A space token based on:
+    number$ebnf$1$subexpression$1 →  ● %space
+    number$ebnf$1 →  ● number$ebnf$1$subexpression$1
+    number → %number ● number$ebnf$1 Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A words token based on:
+    UnitNumerator →  ● %words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    Comparison → Comparable ● %space %comparison %space Comparable
+    main →  ● Comparison
+A space token based on:
+    UnitDenominator$ebnf$1$subexpression$1 →  ● %space
+    UnitDenominator$ebnf$1 →  ● UnitDenominator$ebnf$1$subexpression$1
+    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" %words
+    Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
+    Unit → Unit$ebnf$1 ● Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A \\"/\\" based on:
+    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" %words
+    Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
+    Unit → Unit$ebnf$1 ● Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    Comparison → Comparable ● %space %comparison %space Comparable
+    main →  ● Comparison
+
+",
+      },
+    },
+    {
+      "error": {
+        "message": "
+[ Erreur syntaxique ]
+➡️  Dans la règle \\"evaluation\\"
+✖️  \`\\"42\\"\` n'est pas une expression valide
+    invalid syntax at line 1 col 1:
+
+  \\"42\\"
+  ^
+Unexpected input (lexer error). Instead, I was expecting to see one of the following:
+
+A date token based on:
+    Date →  ● %date
+    main →  ● Date
+A JSONObject token based on:
+    JSONObject →  ● %JSONObject
+    main →  ● JSONObject
+A \\"-\\" based on:
+    Negation →  ● \\"-\\" %space Parentheses
+    NumericValue →  ● Negation
+    main →  ● NumericValue
+A words token based on:
+    Variable →  ● %words Variable$ebnf$1
+    Date →  ● Variable
+    main →  ● Date
+A \\"oui\\" based on:
+    boolean →  ● \\"oui\\"
+    NonNumericTerminal →  ● boolean
+    main →  ● NonNumericTerminal
+A \\"non\\" based on:
+    boolean →  ● \\"non\\"
+    NonNumericTerminal →  ● boolean
+    main →  ● NonNumericTerminal
+A string token based on:
+    string →  ● %string
+    NonNumericTerminal →  ● string
+    main →  ● NonNumericTerminal
+A \\"(\\" based on:
+    Parentheses →  ● \\"(\\" %space NumericValue %space \\")\\"
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A \\"(\\" based on:
+    Parentheses →  ● \\"(\\" NumericValue \\")\\"
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A number token based on:
+    number →  ● %number
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A infinity token based on:
+    number →  ● %infinity
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A number token based on:
+    number →  ● %number number$ebnf$1 Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+
+",
+      },
+    },
+    {
+      "missingVariables": [],
+      "nodeValue": 42,
+      "traversedVariables": [],
+      "unit": undefined,
+    },
+  ],
+  "situationError": null,
+}
+`;
+
+exports[`evaluate > Test with real Engine 1`] = `
+{
+  "evaluate": [
+    {
+      "missingVariables": [],
+      "nodeValue": 11.5,
+      "traversedVariables": [
+        "dépenses primeur",
+        "prix . carottes",
+        "prix . champignons",
+        "prix . avocat",
+      ],
+      "unit": {
+        "denominators": [],
+        "numerators": [
+          "€",
+        ],
+      },
+    },
+    {
+      "missingVariables": [
+        "prix",
+      ],
+      "nodeValue": undefined,
+      "traversedVariables": [
+        "prix",
+      ],
+      "unit": undefined,
+    },
+    {
+      "missingVariables": [],
+      "nodeValue": 42,
+      "traversedVariables": [
+        "prix . avocat",
+      ],
+      "unit": {
+        "denominators": [
+          "avocat",
+        ],
+        "numerators": [
+          "€",
+        ],
+      },
+    },
+  ],
+  "situationError": null,
+}
+`;

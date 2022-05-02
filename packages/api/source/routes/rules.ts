@@ -1,4 +1,5 @@
 import { NewEngine } from '@/types'
+import { catchError } from '@/utils'
 
 export function rules(newEngine: NewEngine) {
 	const engine = newEngine({})
@@ -9,5 +10,7 @@ export function rules(newEngine: NewEngine) {
 export function rulesId(newEngine: NewEngine, id: string) {
 	const engine = newEngine({})
 
-	return engine.getRule(id)
+	const [error, result] = catchError(() => engine.getRule(id))
+
+	return !error ? result : { error: { message: error.message } }
 }
