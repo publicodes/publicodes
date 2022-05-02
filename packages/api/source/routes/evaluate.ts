@@ -11,7 +11,7 @@ export function evaluate(
 	{ situation }: APIParameters = {}
 ) {
 	const engine = newEngine(expressions, situation)
-	const situationResult = catchError(() => engine.setSituation(situation))
+	const [error] = catchError(() => engine.setSituation(situation))
 
 	const keysKept = [
 		'nodeValue' as const,
@@ -22,12 +22,16 @@ export function evaluate(
 
 	const evaluateResult = (
 		Array.isArray(expressions) ? expressions : [expressions]
-	).map((expression) =>
-		catchError(() => PickInObject(engine.evaluate(expression), keysKept))
-	)
+	).map((expression) => {
+		const [error, result] = catchError(() =>
+			PickInObject(engine.evaluate(expression), keysKept)
+		)
+
+		return !error ? result : { error: { message: error.message } }
+	})
 
 	return {
-		situation: situationResult,
 		evaluate: evaluateResult,
+		situationError: error && { message: error.message },
 	}
 }

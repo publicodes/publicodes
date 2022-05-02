@@ -1,10 +1,10 @@
-export const catchError = <T>(fn: () => T): T | { error: string } => {
+export const catchError = <T>(fn: () => T): [null, T] | [Error] => {
 	try {
-		return fn()
+		return [null, fn()]
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error(error, error.name, error.message)
-			return { error: error.message }
+			return [error]
 		}
 		throw error
 	}
