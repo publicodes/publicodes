@@ -2,7 +2,7 @@ import Engine, {
 	formatValue,
 	isNotYetDefined,
 	serializeUnit,
-	simplifyNodeUnit,
+
 	utils,
 	EvaluatedNode,
 } from 'publicodes'
@@ -123,7 +123,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 							lineHeight: '2rem',
 						}}
 					>
-						Valeur : {formatValue(simplifyNodeUnit(rule), { language })}
+						Valeur : {formatValue(rule, { language })}
 						{isNotYetDefined(rule.nodeValue) && rule.unit && (
 							<>
 								<br />

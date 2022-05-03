@@ -22,6 +22,8 @@ export const decompose = (k, v, context): ASTNode => {
 	)
 	return {
 		...explanation,
-		visualisationKind: 'composantes',
+		sourcemapInfo: {
+			mecanismName: 'composantes',
+		},
 	}
 }

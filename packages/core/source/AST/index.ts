@@ -135,6 +135,8 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseApplicableNode(fn, node)
 		case 'arrondi':
 			return traverseArrondiNode(fn, node)
+		case 'simplifier unité':
+			return traverseUnaryOperationNode(fn, node)
 		case 'barème':
 		case 'taux progressif':
 		case 'grille':
@@ -156,8 +158,6 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseOperationNode(fn, node)
 		case 'par défaut':
 			return traverseParDéfautNode(fn, node)
-		case 'produit':
-			return traverseProductNode(fn, node)
 		case 'recalcul':
 			return traverseRecalculNode(fn, node)
 		case 'abattement':
@@ -220,6 +220,14 @@ const traverseApplicableNode: TraverseFunction<
 		condition: fn(node.explanation.condition),
 		valeur: fn(node.explanation.valeur),
 	},
+})
+
+const traverseUnaryOperationNode: TraverseFunction<'simplifier unité'> = (
+	fn,
+	node
+) => ({
+	...node,
+	explanation: fn(node.explanation),
 })
 
 function traverseTranche(fn: (n: ASTNode) => ASTNode, tranches: TrancheNodes) {
@@ -296,16 +304,6 @@ const traverseRésoudreRéférenceCirculaireNode: TraverseFunction<
 	explanation: {
 		...node.explanation,
 		valeur: fn(node.explanation.valeur),
-	},
-})
-
-const traverseProductNode: TraverseFunction<'produit'> = (fn, node) => ({
-	...node,
-	explanation: {
-		assiette: fn(node.explanation.assiette),
-		taux: fn(node.explanation.taux),
-		facteur: fn(node.explanation.facteur),
-		plafond: fn(node.explanation.plafond),
 	},
 })
 

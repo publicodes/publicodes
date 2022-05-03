@@ -19,9 +19,10 @@ import nonApplicable from './mecanisms/nonApplicable'
 import { mecanismOnePossibility } from './mecanisms/one-possibility'
 import operations from './mecanisms/operation'
 import parDéfaut from './mecanisms/parDéfaut'
+import simplifierUnité from './mecanisms/simplifier-unité'
 import plafond from './mecanisms/plafond'
 import plancher from './mecanisms/plancher'
-import { mecanismProduct } from './mecanisms/product'
+import produit from './mecanisms/product'
 import { mecanismRecalcul } from './mecanisms/recalcul'
 import résoudreRéférenceCirculaire from './mecanisms/résoudre-référence-circulaire'
 import situation from './mecanisms/situation'
@@ -172,6 +173,7 @@ const chainableMecanisms = [
 	nonApplicable,
 	arrondi,
 	unité,
+	simplifierUnité,
 	plancher,
 	plafond,
 	parDéfaut,
@@ -210,8 +212,8 @@ const parseFunctions = {
 	barème,
 	durée,
 	grille,
-	multiplication: mecanismProduct,
-	produit: mecanismProduct,
+	multiplication: produit,
+	produit,
 	recalcul: mecanismRecalcul,
 	somme: mecanismSum,
 	synchronisation: mecanismSynchronisation,

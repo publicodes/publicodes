@@ -16,7 +16,7 @@ export function createParseInlinedMecanism(
 ) {
 	let parsedBody
 	let parsedDefaultArgs
-	function parseInlineMecanisme(providedArgs, context) {
+	function parseInlineMecanism(providedArgs, context) {
 		parsedBody ??= parse(body, createEmptyContext())
 		parsedDefaultArgs ??= Object.fromEntries(
 			Object.entries(args)
@@ -34,7 +34,7 @@ export function createParseInlinedMecanism(
 			])
 		)
 
-		return makeASTTransformer((node) => {
+		const parsedInlineMecanism = makeASTTransformer((node) => {
 			if (node.nodeKind !== 'reference' || !(node.name in args)) {
 				return
 			}
@@ -50,9 +50,13 @@ export function createParseInlinedMecanism(
 				`Il manque la clé '${argName} dans le mécanisme ${name}`
 			)
 		})(parsedBody)
+		parsedInlineMecanism.sourcemapInfo = {
+			mecanismName: name,
+		}
+		return parsedInlineMecanism
 	}
-	parseInlineMecanisme.nom = name
-	return Object.assign(parseInlineMecanisme, 'name', {
+	parseInlineMecanism.nom = name
+	return Object.assign(parseInlineMecanism, 'name', {
 		value: `parse${name}Inline`,
 	})
 }

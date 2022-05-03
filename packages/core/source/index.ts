@@ -66,7 +66,6 @@ export {
 	type Unit,
 } from './AST/types'
 export { capitalise0, formatValue } from './format'
-export { simplifyNodeUnit } from './nodeUnits'
 export { default as serializeEvaluation } from './serializeEvaluation'
 export { parseUnit, serializeUnit } from './units'
 export { parsePublicodes, utils }

@@ -17,7 +17,7 @@ Multiplication simple:
         mon assiette: 333.33
       valeur attendue: 9.999
 
-Multiplication à taux flottant:
+Multiplication à taux flottant sans unité:
   formule:
     produit:
       assiette: 300
@@ -73,7 +73,7 @@ Multiplication complète:
       taux: 0.5%
       plafond: mon plafond
 
-  unité attendue: €.patates
+  unité attendue: patates.€
   exemples:
     - nom:
       situation:

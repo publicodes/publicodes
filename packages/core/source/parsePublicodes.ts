@@ -225,7 +225,6 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 	function inferNodeType(node: ASTNode): InferedType {
 		switch (node.nodeKind) {
 			case 'somme':
-			case 'produit':
 			case 'barème':
 			case 'durée':
 			case 'grille':
@@ -281,11 +280,10 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 
 			case 'arrondi':
 			case 'nom dans la situation':
-			case 'plafond':
-			case 'plancher':
 			case 'rule':
 				return inferNodeUnitAndCache(node.explanation.valeur)
 
+			case 'simplifier unité':
 			case 'unité':
 				return inferNodeUnitAndCache(node.explanation)
 			case 'condition':
