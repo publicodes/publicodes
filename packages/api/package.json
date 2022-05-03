@@ -5,7 +5,7 @@
 	"main": "source/index.ts",
 	"scripts": {
 		"test": "yarn vitest",
-		"start": "nodemon -r tsconfig-paths/register"
+		"start": "nodemon -r tsconfig-paths/register ./source/example.ts"
 	},
 	"repository": {
 		"type": "git",
