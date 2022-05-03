@@ -39,7 +39,19 @@ describe('evaluate', () => {
 
 		expect(
 			evaluate(mockedNewEngine, 'expressions', { situation: { test: 'test' } })
-		).toMatchSnapshot()
+		).toMatchInlineSnapshot(`
+			{
+			  "evaluate": [
+			    {
+			      "missingVariables": 42,
+			      "nodeValue": 42,
+			      "traversedVariables": 42,
+			      "unit": 42,
+			    },
+			  ],
+			  "situationError": null,
+			}
+		`)
 
 		expect(spySitu).toHaveBeenCalledWith({ test: 'test' })
 		expect(spyEval).toHaveBeenCalledWith('expressions')
@@ -52,7 +64,26 @@ describe('evaluate', () => {
 	})
 
 	it('Simple test with real Engine', () => {
-		expect(evaluate(newEngine, ['21 + 21', '6 * 7'], {})).toMatchSnapshot()
+		expect(evaluate(newEngine, ['21 + 21', '6 * 7'], {}))
+			.toMatchInlineSnapshot(`
+			{
+			  "evaluate": [
+			    {
+			      "missingVariables": [],
+			      "nodeValue": 42,
+			      "traversedVariables": [],
+			      "unit": undefined,
+			    },
+			    {
+			      "missingVariables": [],
+			      "nodeValue": 42,
+			      "traversedVariables": [],
+			      "unit": undefined,
+			    },
+			  ],
+			  "situationError": null,
+			}
+		`)
 	})
 
 	it('Test with real Engine', () => {
@@ -62,7 +93,54 @@ describe('evaluate', () => {
 				['dépenses primeur', 'prix', 'prix . avocat * 21'],
 				{}
 			)
-		).toMatchSnapshot()
+		).toMatchInlineSnapshot(`
+			{
+			  "evaluate": [
+			    {
+			      "missingVariables": [],
+			      "nodeValue": 11.5,
+			      "traversedVariables": [
+			        "dépenses primeur",
+			        "prix . carottes",
+			        "prix . champignons",
+			        "prix . avocat",
+			      ],
+			      "unit": {
+			        "denominators": [],
+			        "numerators": [
+			          "€",
+			        ],
+			      },
+			    },
+			    {
+			      "missingVariables": [
+			        "prix",
+			      ],
+			      "nodeValue": undefined,
+			      "traversedVariables": [
+			        "prix",
+			      ],
+			      "unit": undefined,
+			    },
+			    {
+			      "missingVariables": [],
+			      "nodeValue": 42,
+			      "traversedVariables": [
+			        "prix . avocat",
+			      ],
+			      "unit": {
+			        "denominators": [
+			          "avocat",
+			        ],
+			        "numerators": [
+			          "€",
+			        ],
+			      },
+			    },
+			  ],
+			  "situationError": null,
+			}
+		`)
 	})
 
 	it('Test invalid syntax in situation', () => {
@@ -88,6 +166,11 @@ describe('evaluate', () => {
 	})
 
 	it('Test no expressions', () => {
-		expect(evaluate(newEngine, [])).toMatchSnapshot()
+		expect(evaluate(newEngine, [])).toMatchInlineSnapshot(`
+			{
+			  "evaluate": [],
+			  "situationError": null,
+			}
+		`)
 	})
 })

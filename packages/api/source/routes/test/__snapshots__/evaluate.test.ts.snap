@@ -1,25 +1,5 @@
 // Vitest Snapshot v1
 
-exports[`evaluate > Simple test with real Engine 1`] = `
-{
-  "evaluate": [
-    {
-      "missingVariables": [],
-      "nodeValue": 42,
-      "traversedVariables": [],
-      "unit": undefined,
-    },
-    {
-      "missingVariables": [],
-      "nodeValue": 42,
-      "traversedVariables": [],
-      "unit": undefined,
-    },
-  ],
-  "situationError": null,
-}
-`;
-
 exports[`evaluate > Test error in expression and situation at same time 1`] = `
 {
   "evaluate": [
@@ -188,20 +168,6 @@ A number token based on:
 }
 `;
 
-exports[`evaluate > Test input/output 1`] = `
-{
-  "evaluate": [
-    {
-      "missingVariables": 42,
-      "nodeValue": 42,
-      "traversedVariables": 42,
-      "unit": 42,
-    },
-  ],
-  "situationError": null,
-}
-`;
-
 exports[`evaluate > Test invalid syntax in situation 1`] = `
 {
   "evaluate": [
@@ -288,13 +254,6 @@ A number token based on:
 
 ",
   },
-}
-`;
-
-exports[`evaluate > Test no expressions 1`] = `
-{
-  "evaluate": [],
-  "situationError": null,
 }
 `;
 
@@ -562,55 +521,6 @@ A number token based on:
       "nodeValue": 42,
       "traversedVariables": [],
       "unit": undefined,
-    },
-  ],
-  "situationError": null,
-}
-`;
-
-exports[`evaluate > Test with real Engine 1`] = `
-{
-  "evaluate": [
-    {
-      "missingVariables": [],
-      "nodeValue": 11.5,
-      "traversedVariables": [
-        "dépenses primeur",
-        "prix . carottes",
-        "prix . champignons",
-        "prix . avocat",
-      ],
-      "unit": {
-        "denominators": [],
-        "numerators": [
-          "€",
-        ],
-      },
-    },
-    {
-      "missingVariables": [
-        "prix",
-      ],
-      "nodeValue": undefined,
-      "traversedVariables": [
-        "prix",
-      ],
-      "unit": undefined,
-    },
-    {
-      "missingVariables": [],
-      "nodeValue": 42,
-      "traversedVariables": [
-        "prix . avocat",
-      ],
-      "unit": {
-        "denominators": [
-          "avocat",
-        ],
-        "numerators": [
-          "€",
-        ],
-      },
     },
   ],
   "situationError": null,
