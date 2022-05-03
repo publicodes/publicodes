@@ -233,13 +233,6 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 			case 'minimum':
 				return { isNullable: false, type: 'number' }
 
-			case 'applicable si':
-			case 'non applicable si':
-				return {
-					isNullable: true,
-					type: inferNodeType(node.explanation.valeur).type,
-				}
-
 			case 'toutes ces conditions':
 			case 'une de ces conditions':
 				return { isNullable: true, type: 'boolean' }
