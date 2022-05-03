@@ -22,7 +22,7 @@
 		"@koa/router": "^10.1.1",
 		"koa": "^2.13.4",
 		"koa-body": "^5.0.0",
-		"publicodes": "workspace:^"
+		"publicodes": "1.0.0-beta.35"
 	},
 	"devDependencies": {
 		"@types/koa": "^2.13.4",
