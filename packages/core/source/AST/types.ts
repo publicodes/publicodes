@@ -14,8 +14,6 @@ import { NonApplicableSiNode } from '../mecanisms/nonApplicable'
 import { PossibilityNode } from '../mecanisms/one-possibility'
 import { OperationNode } from '../mecanisms/operation'
 import { ParDéfautNode } from '../mecanisms/parDéfaut'
-import { PlafondNode } from '../mecanisms/plafond'
-import { PlancherNode } from '../mecanisms/plancher'
 import { ProductNode } from '../mecanisms/product'
 import { RecalculNode } from '../mecanisms/recalcul'
 import { RésoudreRéférenceCirculaireNode } from '../mecanisms/résoudre-référence-circulaire'
@@ -54,8 +52,6 @@ export type ASTNode = (
 	| OperationNode
 	| ParDéfautNode
 	| PossibilityNode
-	| PlafondNode
-	| PlancherNode
 	| ProductNode
 	| RecalculNode
 	| RésoudreRéférenceCirculaireNode

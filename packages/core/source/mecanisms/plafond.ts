@@ -1,67 +1,16 @@
-import { EvaluationFunction } from '..'
-import { ASTNode } from '../AST/types'
-import { warning } from '../error'
-import { registerEvaluationFunction } from '../evaluationFunctions'
-import { convertNodeToUnit } from '../nodeUnits'
-import parse from '../parse'
+import { createParseInlinedMecanism } from './utils'
 
-export type PlafondNode = {
-	explanation: {
-		plafond: ASTNode
-		valeur: ASTNode
+export default createParseInlinedMecanism(
+	'plafond',
+	{
+		plafond: {},
+		valeur: {},
+	},
+	{
+		condition: {
+			si: { 'toutes ces conditions': ['plafond != non', 'valeur > plafond'] },
+			alors: 'plafond',
+			sinon: 'valeur',
+		},
 	}
-	nodeKind: 'plafond'
-}
-
-const evaluate: EvaluationFunction<'plafond'> = function (node) {
-	const valeur = this.evaluate(node.explanation.valeur)
-
-	let nodeValue = valeur.nodeValue
-	let plafond = node.explanation.plafond
-	if (nodeValue !== null) {
-		const evaluatedPlafond = this.evaluate(plafond)
-		if (valeur.unit) {
-			try {
-				plafond = convertNodeToUnit(valeur.unit, evaluatedPlafond)
-			} catch (e) {
-				warning(
-					this.options.logger,
-					this.cache._meta.evaluationRuleStack[0],
-					"L'unité du plafond n'est pas compatible avec celle de la valeur à encadrer",
-					e
-				)
-			}
-		}
-	}
-
-	if (
-		typeof nodeValue === 'number' &&
-		'nodeValue' in plafond &&
-		typeof plafond.nodeValue === 'number' &&
-		nodeValue > plafond.nodeValue
-	) {
-		nodeValue = plafond.nodeValue
-		;(plafond as any).isActive = true
-	}
-	return {
-		...node,
-		nodeValue,
-		...('unit' in valeur && { unit: valeur.unit }),
-		explanation: { valeur, plafond },
-	}
-}
-
-export default function parsePlafond(v, context) {
-	const explanation = {
-		valeur: parse(v.valeur, context),
-		plafond: parse(v.plafond, context),
-	}
-	return {
-		explanation,
-		nodeKind: 'plafond',
-	} as PlafondNode
-}
-
-parsePlafond.nom = 'plafond'
-
-registerEvaluationFunction('plafond', evaluate)
+)

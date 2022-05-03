@@ -156,10 +156,6 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseOperationNode(fn, node)
 		case 'par défaut':
 			return traverseParDéfautNode(fn, node)
-		case 'plancher':
-			return traversePlancherNode(fn, node)
-		case 'plafond':
-			return traversePlafondNode(fn, node)
 		case 'produit':
 			return traverseProductNode(fn, node)
 		case 'recalcul':
@@ -293,14 +289,6 @@ const traverseArrondiNode: TraverseFunction<'arrondi'> = (fn, node) => ({
 	},
 })
 
-const traversePlancherNode: TraverseFunction<'plancher'> = (fn, node) => ({
-	...node,
-	explanation: {
-		valeur: fn(node.explanation.valeur),
-		plancher: fn(node.explanation.plancher),
-	},
-})
-
 const traverseRésoudreRéférenceCirculaireNode: TraverseFunction<
 	'résoudre référence circulaire'
 > = (fn, node) => ({
@@ -308,14 +296,6 @@ const traverseRésoudreRéférenceCirculaireNode: TraverseFunction<
 	explanation: {
 		...node.explanation,
 		valeur: fn(node.explanation.valeur),
-	},
-})
-
-const traversePlafondNode: TraverseFunction<'plafond'> = (fn, node) => ({
-	...node,
-	explanation: {
-		valeur: fn(node.explanation.valeur),
-		plafond: fn(node.explanation.plafond),
 	},
 })
 
