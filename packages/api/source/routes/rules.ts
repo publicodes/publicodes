@@ -1,10 +1,25 @@
 import { NewEngine } from '@/types'
-import { catchError } from '@/utils'
+import { catchError, PickInObject } from '@/utils'
 
 export function rules(newEngine: NewEngine) {
 	const engine = newEngine({})
 
-	return engine.getParsedRules()
+	const rules = engine.getParsedRules()
+
+	const filteredRules = Object.fromEntries(
+		Object.entries(rules).map(([key, val]) => [
+			key,
+			PickInObject(val, [
+				'nodeKind',
+				'rawNode',
+				'replacements',
+				'suggestions',
+				'title',
+			]),
+		])
+	)
+
+	return filteredRules
 }
 
 export function rulesId(newEngine: NewEngine, id: string) {
@@ -12,5 +27,7 @@ export function rulesId(newEngine: NewEngine, id: string) {
 
 	const [error, result] = catchError(() => engine.getRule(id))
 
-	return !error ? result : { error: { message: error.message } }
+	return !error
+		? PickInObject(result, ['title', 'suggestions', 'rawNode', 'nodeKind'])
+		: { error: { message: error.message } }
 }
