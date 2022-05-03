@@ -5,7 +5,7 @@ import { warning } from '../error'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
-import { inferUnit, serializeUnit } from '../units'
+import { inferUnit, parseUnit, serializeUnit, simplifyUnit } from '../units'
 
 const knownOperations = {
 	'*': [(a, b) => a * b, '×'],
@@ -97,15 +97,35 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 			? operatorFunction(convertToDate(a), convertToDate(b))
 			: operatorFunction(a, b)
 
+	if (
+		node.operationKind === '*' ||
+		node.operationKind === '/' ||
+		node.operationKind === '-' ||
+		node.operationKind === '+'
+	) {
+		let unit = inferUnit(node.operationKind, [node1.unit, node2.unit])
+		const evaluatedNode = {
+			...node,
+			explanation,
+			nodeValue,
+			unit,
+		}
+		if (node.operationKind === '*' && unit?.numerators.includes('%')) {
+			return {
+				...evaluatedNode,
+				nodeValue: nodeValue / 100,
+				unit: inferUnit(node.operationKind, [
+					unit,
+					{ numerators: [], denominators: ['%'] },
+				]),
+			}
+		}
+		return evaluatedNode
+	}
+
 	return {
 		...node,
 		explanation,
-		...((node.operationKind === '*' ||
-			node.operationKind === '/' ||
-			node.operationKind === '-' ||
-			node.operationKind === '+') && {
-			unit: inferUnit(node.operationKind, [node1.unit, node2.unit]),
-		}),
 		nodeValue,
 	}
 }

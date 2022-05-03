@@ -196,7 +196,6 @@ pourcentage:
 
 multiplication et pourcentage:
   formule: 38.1% * salaire de base
-  unité: $
   exemples:
     - situation:
         salaire de base: 1000

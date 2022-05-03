@@ -1,0 +1,48 @@
+simple:
+  valeur: 10kg / 20kg
+  simplifier l'unité: oui
+  exemples:
+    - unité attendue: ''
+      valeur attendue: 0.5
+
+avec pourcentages:
+  valeur: 120% * 10kg/mois
+  simplifier l'unité: oui
+  exemples:
+    - unité attendue: 'kg/mois'
+      valeur attendue: 12
+
+avec unité temporelles:
+  valeur: 12000 €/an * 3 mois
+  simplifier l'unité: oui
+  exemples:
+    - unité attendue: '€'
+      valeur attendue: 3000
+
+avec unité temporelles et pourcentage:
+  valeur: ((100€/mois * 1 trimestre) + (500 €/mois * 4 mois)) * 2 %/an
+  simplifier l'unité: oui
+  exemples:
+    - unité attendue: '€/an'
+      valeur attendue: 46
+
+sans unité:
+  valeur: 5
+  simplifier l'unité: oui
+  exemples:
+    - unité attendue: ''
+      valeur attendue: 5
+
+avec pourcentages au carré:
+  valeur: 50% * 5%
+  simplifier l'unité: oui
+  exemples:
+    - unité attendue: '%'
+      valeur attendue: 2.5
+
+avec pourcentage simple:
+  valeur: 4%
+  simplifier l'unité: oui
+  exemples:
+    - unité attendue: '%'
+      valeur attendue: 4

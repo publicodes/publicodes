@@ -14,9 +14,9 @@ import { NonApplicableSiNode } from '../mecanisms/nonApplicable'
 import { PossibilityNode } from '../mecanisms/one-possibility'
 import { OperationNode } from '../mecanisms/operation'
 import { ParDéfautNode } from '../mecanisms/parDéfaut'
-import { ProductNode } from '../mecanisms/product'
 import { RecalculNode } from '../mecanisms/recalcul'
 import { RésoudreRéférenceCirculaireNode } from '../mecanisms/résoudre-référence-circulaire'
+import { SimplifierUnitéNode } from '../mecanisms/simplifier-unité'
 import { SituationNode } from '../mecanisms/situation'
 import { SommeNode } from '../mecanisms/sum'
 import { SynchronisationNode } from '../mecanisms/synchronisation'
@@ -52,8 +52,8 @@ export type ASTNode = (
 	| OperationNode
 	| ParDéfautNode
 	| PossibilityNode
-	| ProductNode
 	| RecalculNode
+	| SimplifierUnitéNode
 	| RésoudreRéférenceCirculaireNode
 	| SituationNode
 	| SommeNode
@@ -67,7 +67,9 @@ export type ASTNode = (
 	| TexteNode
 ) & {
 	isDefault?: boolean
-	visualisationKind?: string
+	sourcemapInfo?: {
+		mecanismName: string
+	}
 	rawNode?: string | Record<string, unknown>
 } & (
 		| EvaluationDecoration<Types>
