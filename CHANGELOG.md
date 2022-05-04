@@ -1,5 +1,11 @@
 # Changelog
 
+## Next
+
+**core**
+
+-   Restaure la précédente implémentation des variables manquantes (pre beta.33)
+
 ## 1.0.0-beta.36
 
 **core**

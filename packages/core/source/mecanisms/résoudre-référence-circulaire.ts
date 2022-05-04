@@ -88,6 +88,7 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 				valeur,
 				inversionNumberOfIterations,
 			},
+			missingVariables: valeur.missingVariables,
 		}
 	}
 

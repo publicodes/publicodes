@@ -45,9 +45,10 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		EvaluatedNode
 	]
 	let [node1, node2] = explanation
+	const missingVariables = mergeAllMissing([node1, node2])
 
 	if (node1.nodeValue === undefined || node2.nodeValue === undefined) {
-		return { ...node, nodeValue: undefined, explanation }
+		return { ...node, nodeValue: undefined, explanation, missingVariables }
 	}
 	if (!['∕', '×'].includes(node.operator)) {
 		try {
@@ -106,6 +107,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 			node.operationKind === '+') && {
 			unit: inferUnit(node.operationKind, [node1.unit, node2.unit]),
 		}),
+		missingVariables,
 		nodeValue,
 	}
 }

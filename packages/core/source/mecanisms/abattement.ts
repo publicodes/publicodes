@@ -1,6 +1,7 @@
 import { EvaluationFunction, serializeUnit } from '..'
 import { ASTNode } from '../AST/types'
 import { warning } from '../error'
+import { mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
@@ -49,6 +50,7 @@ const evaluateAbattement: EvaluationFunction<'abattement'> = function (node) {
 		...node,
 		nodeValue,
 		unit: assiette.unit,
+		missingVariables: mergeAllMissing([assiette, abattement]),
 		explanation: {
 			assiette,
 			abattement,

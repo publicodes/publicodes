@@ -332,37 +332,3 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 
 	return cache
 }
-
-// To calculate the “missing variables” of an expression we need to determine
-// the static subset of the rules that are expected in the situation. Theses
-// rules are :
-// - the rules without formulas
-// - the rules with a default formula
-// - the rules with a “fake formula” of "une possibilité"
-//
-// TODO: Simplify this logic. It isn't well thought but is mostly a product of
-// historical evolutions.
-export function getVariablesExpectedInSituation<N extends string>(
-	parsedRules: ParsedRules<N>
-): Array<N> {
-	return Object.entries<RuleNode>(parsedRules)
-		.filter(([, { rawNode }]) => {
-			return (
-				([
-					'formule',
-					'valeur',
-					'somme',
-					'produit',
-					'barème',
-					'grille',
-					'variations',
-					'une de ces conditions',
-					'toutes ces conditions',
-				].every((mecanismName) => !(mecanismName in rawNode)) &&
-					rawNode.type !== 'texte') ||
-				(typeof rawNode.formule === 'object' &&
-					'une possibilité' in rawNode.formule)
-			)
-		})
-		.map(([dottedName]) => dottedName as N)
-}

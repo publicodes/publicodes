@@ -1,6 +1,7 @@
 import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
 import { warning } from '../error'
+import { mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
@@ -46,6 +47,7 @@ const evaluate: EvaluationFunction<'plancher'> = function (node) {
 		nodeValue,
 		...('unit' in valeur && { unit: valeur.unit }),
 		explanation: { valeur, plancher },
+		missingVariables: mergeAllMissing([valeur, plancher]),
 	}
 }
 

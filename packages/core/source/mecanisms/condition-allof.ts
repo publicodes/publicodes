@@ -1,5 +1,6 @@
 import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
+import { mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
 
@@ -31,6 +32,7 @@ const evaluate: EvaluationFunction<'toutes ces conditions'> = function (node) {
 		...node,
 		nodeValue,
 		explanation,
+		missingVariables: mergeAllMissing(explanation),
 	}
 }
 

@@ -1,5 +1,6 @@
 import { EvaluationFunction } from '..'
 import { ASTNode, EvaluatedNode } from '../AST/types'
+import { bonus, mergeMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
 
@@ -27,6 +28,12 @@ const evaluate: EvaluationFunction<'par défaut'> = function (node) {
 		...node,
 		nodeValue: valeur.nodeValue,
 		explanation,
+		missingVariables: mergeMissing(
+			bonus((explanation.valeur as EvaluatedNode).missingVariables),
+			'missingVariables' in explanation.parDéfaut
+				? explanation.parDéfaut.missingVariables
+				: {}
+		),
 		...('unit' in valeur && { unit: valeur.unit }),
 	}
 }

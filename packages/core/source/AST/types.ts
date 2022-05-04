@@ -107,6 +107,8 @@ export type Unit = {
 	denominators: Array<BaseUnit>
 }
 
+export type MissingVariables = Record<string, number>
+
 // Idée : une évaluation est un n-uple : (value, unit, missingVariable, isApplicable)
 type EvaluationDecoration<T extends Types> = {
 	nodeValue: Evaluation<T>
@@ -116,7 +118,7 @@ type EvaluationDecoration<T extends Types> = {
 	}
 	unit?: Unit
 	traversedVariables?: Array<string>
-	missingVariables?: Array<string>
+	missingVariables: MissingVariables
 }
 export type Types = number | boolean | string | Record<string, unknown>
 // TODO: type NotYetDefined & NotApplicable properly (see #14) then refactor any code depending on these:
