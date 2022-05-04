@@ -1,5 +1,3 @@
-import { AbattementNode } from '../mecanisms/abattement'
-import { ApplicableSiNode } from '../mecanisms/applicable'
 import { ArrondiNode } from '../mecanisms/arrondi'
 import { BarèmeNode } from '../mecanisms/barème'
 import { ConditionNode } from '../mecanisms/condition'
@@ -10,7 +8,6 @@ import { GrilleNode } from '../mecanisms/grille'
 import { InversionNode } from '../mecanisms/inversion'
 import { MaxNode } from '../mecanisms/max'
 import { MinNode } from '../mecanisms/min'
-import { NonApplicableSiNode } from '../mecanisms/nonApplicable'
 import { PossibilityNode } from '../mecanisms/one-possibility'
 import { OperationNode } from '../mecanisms/operation'
 import { ParDéfautNode } from '../mecanisms/parDéfaut'
@@ -37,8 +34,6 @@ export type ConstantNode = {
 export type ASTNode = (
 	| RuleNode
 	| ReferenceNode
-	| AbattementNode
-	| ApplicableSiNode
 	| ArrondiNode
 	| BarèmeNode
 	| TouteCesConditionsNode
@@ -48,7 +43,6 @@ export type ASTNode = (
 	| MaxNode
 	| InversionNode
 	| MinNode
-	| NonApplicableSiNode
 	| OperationNode
 	| ParDéfautNode
 	| PossibilityNode

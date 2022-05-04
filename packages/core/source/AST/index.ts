@@ -130,9 +130,6 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 		case 'reference':
 		case 'constant':
 			return traverseLeafNode(fn, node)
-		case 'applicable si':
-		case 'non applicable si':
-			return traverseApplicableNode(fn, node)
 		case 'arrondi':
 			return traverseArrondiNode(fn, node)
 		case 'simplifier unité':
@@ -160,8 +157,6 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseParDéfautNode(fn, node)
 		case 'recalcul':
 			return traverseRecalculNode(fn, node)
-		case 'abattement':
-			return traverseAbattementNode(fn, node)
 		case 'nom dans la situation':
 			return traverseSituationNode(fn, node)
 		case 'synchronisation':
@@ -211,16 +206,6 @@ const traverseLeafNode: TraverseFunction<'reference' | 'constant'> = (
 	_,
 	node
 ) => node
-
-const traverseApplicableNode: TraverseFunction<
-	'applicable si' | 'non applicable si'
-> = (fn, node) => ({
-	...node,
-	explanation: {
-		condition: fn(node.explanation.condition),
-		valeur: fn(node.explanation.valeur),
-	},
-})
 
 const traverseUnaryOperationNode: TraverseFunction<'simplifier unité'> = (
 	fn,
@@ -323,14 +308,6 @@ const traverseRecalculNode: TraverseFunction<'recalcul'> = (fn, node) => ({
 			fn(value),
 		]) as any, //TODO
 		recalcul: node.explanation.recalcul && fn(node.explanation.recalcul),
-	},
-})
-
-const traverseAbattementNode: TraverseFunction<'abattement'> = (fn, node) => ({
-	...node,
-	explanation: {
-		assiette: fn(node.explanation.assiette),
-		abattement: fn(node.explanation.abattement),
 	},
 })
 
