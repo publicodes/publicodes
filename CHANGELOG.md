@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0-beta.48
+
+**core**
+
+-   Ajout de trois type d'erreurs (`SyntaxError`, `EvaluationError`, `InternalError`) enfant d'`EngineError`
+-   Ajout d'un attribut `rule` au erreurs `SyntaxError` et `EvaluationError`
+-   **⚠ Changement cassant :** La fonction `evaluationError` throw une erreur de type `EvaluationError` au lieu d'un log
+-   Remplace la fonction `neverHappens` par une erreur `UnreachableCaseError`
+
 ## 1.0.0-beta.47
 
 **core**
