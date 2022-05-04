@@ -41,3 +41,51 @@ comparaison:
     - 5
   exemples:
     valeur attendue: false
+
+addition d'un pourcentage:
+  +:
+    - 10
+    - 4%
+  exemples:
+    valeur attendue: 10.4
+    unité attendue: ''
+
+addition de deux pourcentage:
+  +:
+    - 15%
+    - 4%
+  exemples:
+    valeur attendue: 19
+    unité attendue: '%'
+
+addition d'un pourcentage avec unité:
+  +:
+    - 100 €/an
+    - 4%
+  exemples:
+    valeur attendue: 104
+    unité attendue: '€/an'
+
+addition de deux pourcentage avec unité:
+  +:
+    - 15%/an
+    - 4%/an
+  exemples:
+    valeur attendue: 19
+    unité attendue: '%/an'
+
+addition d'un pourcentage avec unité et d'un pourcentage:
+  +:
+    - 10 %/an
+    - 4%
+  exemples:
+    valeur attendue: 10.4
+    unité attendue: '%/an'
+
+soustraction d'un pourcentage:
+  -:
+    - 100 €
+    - 60%
+  exemples:
+    valeur attendue: 40
+    unité attendue: '€'

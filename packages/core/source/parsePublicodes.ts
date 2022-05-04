@@ -285,7 +285,9 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 						inferNodeUnitAndCache(node.explanation.si).isNullable ||
 						inferNodeUnitAndCache(node.explanation.alors).isNullable ||
 						inferNodeUnitAndCache(node.explanation.sinon).isNullable,
-					type: inferNodeUnitAndCache(node.explanation.alors).type,
+					type:
+						inferNodeUnitAndCache(node.explanation.alors)?.type ??
+						inferNodeUnitAndCache(node.explanation.sinon).type,
 				}
 			case 'variations':
 				// With "rend non applicable" we have a "consequence: null" line in our

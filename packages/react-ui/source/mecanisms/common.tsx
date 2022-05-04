@@ -1,4 +1,4 @@
-import { capitalise0, formatValue, simplifyNodeUnit } from 'publicodes'
+import { capitalise0, formatValue } from 'publicodes'
 import {
 	EvaluatedNode,
 	Evaluation,
@@ -50,7 +50,7 @@ export const NodeValuePointer = ({ data, unit }: NodeValuePointerProps) => {
 	const engine = useContext(EngineContext)
 	return (
 		<StyledNodeValuePointer>
-			{formatValue(simplifyNodeUnit({ nodeValue: data, unit }), {
+			{formatValue({ nodeValue: data, unit }, {
 				formatUnit: engine?.getOptions()?.formatUnit,
 			})}
 		</StyledNodeValuePointer>

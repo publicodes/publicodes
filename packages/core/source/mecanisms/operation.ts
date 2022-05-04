@@ -49,7 +49,16 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	if (node1.nodeValue === undefined || node2.nodeValue === undefined) {
 		return { ...node, nodeValue: undefined, explanation }
 	}
-	if (!['∕', '×'].includes(node.operator)) {
+
+	const isAdditionOrSubstractionWithPercentage =
+		['+', '-'].includes(node.operationKind) &&
+		serializeUnit(node2.unit) === '%' &&
+		serializeUnit(node1.unit) !== '%'
+
+	if (
+		!['∕', '×'].includes(node.operator) &&
+		!isAdditionOrSubstractionWithPercentage
+	) {
 		try {
 			if (node1.unit && 'unit' in node2) {
 				node2 = convertNodeToUnit(node1.unit, node2)
@@ -103,24 +112,38 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		node.operationKind === '-' ||
 		node.operationKind === '+'
 	) {
-		let unit = inferUnit(node.operationKind, [node1.unit, node2.unit])
 		const evaluatedNode = {
 			...node,
 			explanation,
 			nodeValue,
-			unit,
 		}
-		if (node.operationKind === '*' && unit?.numerators.includes('%')) {
+		if (node.operationKind === '*') {
+			let unit = inferUnit('*', [node1.unit, node2.unit])
+
+			if (!unit?.numerators.includes('%')) {
+				return { ...evaluatedNode, unit }
+			}
 			return {
 				...evaluatedNode,
 				nodeValue: nodeValue / 100,
-				unit: inferUnit(node.operationKind, [
-					unit,
-					{ numerators: [], denominators: ['%'] },
-				]),
+				unit: inferUnit('*', [unit, { numerators: [], denominators: ['%'] }]),
 			}
 		}
-		return evaluatedNode
+		// Addition or substraction of scalar with a percentage is a multiplication
+		if (isAdditionOrSubstractionWithPercentage) {
+			let unit = inferUnit('*', [node1.unit, node2.unit])
+			return {
+				...evaluatedNode,
+				nodeValue:
+					node1.nodeValue *
+					(1 + (node2.nodeValue / 100) * (node.operationKind === '-' ? -1 : 1)),
+				unit: inferUnit('*', [unit, { numerators: [], denominators: ['%'] }]),
+			}
+		}
+		return {
+			...evaluatedNode,
+			unit: inferUnit(node.operationKind, [node1.unit, node2.unit]),
+		}
 	}
 
 	return {
