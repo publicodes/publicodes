@@ -26,3 +26,10 @@ montant abattu en pourcentage:
     - situation:
         montant: 80000
       valeur attendue: 68000
+
+abattement non applicable:
+  valeur: 10
+  abattement:
+    non applicable si: oui
+  exemples:
+    valeur attendue: 10
