@@ -1,0 +1,125 @@
+openapi: 3.0.0
+
+info:
+  title: Publicode API
+  version: v1
+  description: Description
+
+components:
+  schemas:
+    InputValidationError:
+      type: array
+      items:
+        type: object
+        properties:
+          keyword:
+            type: string
+          dataPath:
+            type: string
+          schemaPath:
+            type: string
+          message:
+            type: string
+          params:
+            type: object
+
+paths:
+  /evaluate:
+    summary: Summary
+    description: Description
+    post:
+      summary: Summary 0
+      tags:
+        - evaluate
+      description: Description 0
+      operationId: /evaluate
+      requestBody:
+        description: Optional description in **Markdown**
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - expressions
+              properties:
+                expressions:
+                  description: Une expression ou un tableau d'expressions
+                  oneOf:
+                    - type: array
+                      items:
+                        type: string
+                        description: expression
+                      minItems: 1
+                    - type: string
+                      description: expression
+                # situation: TODO
+      responses:
+        '200':
+          description: json
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  evaluate:
+                    type: string
+        '400':
+          description: InputValidationError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InputValidationError'
+  /rules:
+    get:
+      tags:
+        - rules
+      operationId: /rules
+      summary: Get every rules
+      description: Get every rules
+      responses:
+        '200':
+          description: json
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  evaluate:
+                    type: string
+        '400':
+          description: InputValidationError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InputValidationError'
+  /rules/{rule}:
+    get:
+      tags:
+        - rules
+      operationId: /rules/{rule}
+      summary: Get a rule
+      description: Get a rule
+      parameters:
+        - name: rule
+          in: path
+          required: true
+          description: Rule to get
+          schema:
+            type: string
+      responses:
+        '200':
+          description: json
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  evaluate:
+                    type: string
+        '400':
+          description: InputValidationError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InputValidationError'
