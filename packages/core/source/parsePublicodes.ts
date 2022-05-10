@@ -253,6 +253,9 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 						? 'boolean'
 						: 'number',
 				}
+			case 'est non applicable':
+			case 'est non défini':
+				return { isNullable: false, type: 'boolean' }
 
 			case 'inversion':
 			case 'recalcul':
@@ -267,9 +270,6 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 
 			case 'texte':
 				return { isNullable: false, type: 'string' }
-
-			case 'abattement':
-				return inferNodeUnitAndCache(node.explanation.assiette)
 
 			case 'arrondi':
 			case 'nom dans la situation':
@@ -289,6 +289,7 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 						inferNodeUnitAndCache(node.explanation.alors)?.type ??
 						inferNodeUnitAndCache(node.explanation.sinon).type,
 				}
+
 			case 'variations':
 				// With "rend non applicable" we have a "consequence: null" line in our
 				// variation which can't be used to determine its type. So we need to
@@ -351,6 +352,7 @@ export function getVariablesExpectedInSituation<N extends string>(
 				([
 					'formule',
 					'valeur',
+					'est non défini',
 					'somme',
 					'produit',
 					'barème',

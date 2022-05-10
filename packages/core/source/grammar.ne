@@ -8,39 +8,33 @@
 
 @{%
 import {
-  string, date, variable, binaryOperation, unaryOperation, boolean, number, numberWithUnit, JSONObject
+  string, date, variable, binaryOperation, unaryOperation, boolean, number, numberWithUnit, JSONObject, nonDéfini, nonApplicable
 } from './grammarFunctions.js';
 import moo from "moo";
 
+
 const dateRegexp = `(?:(?:0?[1-9]|[12][0-9]|3[01])\\/)?(?:0?[1-9]|1[012])\\/\\d{4}`
 const letter = '[a-zA-Z\u00C0-\u017F€$%]';
-const letterOrNumber = '[a-zA-Z\u00C0-\u017F0-9\'°]';
+const letterOrNumber = '[a-zA-Z\u00C0-\u017F0-9\',°]';
 const word = `${letter}(?:[-']?${letterOrNumber}+)*`;
-const wordOrNumber = `(?:${word}|${letterOrNumber}+)`
-const words = `${word}(?:[,\\s]?${wordOrNumber}+)*`
-const periodWord = `\\| ${word}(?:[\\s]${word})*`
 
 const numberRegExp = '-?(?:[1-9][0-9]+|[0-9])(?:\\.[0-9]+)?';
 const lexer = moo.compile({
-
   '(': '(',
   ')': ')',
   '[': '[',
   ']': ']',
   comparison: ['>','<','>=','<=','=','!='],
-  infinity: 'Infinity',
-  colon: " : ",
   date: new RegExp(dateRegexp),
-  periodWord: new RegExp(periodWord),
-  words: new RegExp(words),
+	boolean: ['oui','non'],
+	infinity: 'Infinity',
   number: new RegExp(numberRegExp),
+  word:  new RegExp(word),
   string: [/'.*'/, /".*"/],
   JSONObject: /{.*}/,
   additionSubstraction: /[\+-]/,
   multiplicationDivision: ['*','/'],
   dot: ' . ',
-  '.': '.',
-  letterOrNumber: new RegExp(letterOrNumber),
   space: { match: /[\s]+/, lineBreaks: true },
 });
 
@@ -62,7 +56,7 @@ NumericValue ->
   | Negation {% id %}
 
 NumericTerminal ->
-	 	Variable {% id %}
+    Variable {% id %}
   | number {% id %}
 
 Negation ->
@@ -84,14 +78,27 @@ Comparison ->
 Comparable -> (AdditionSubstraction | NonNumericTerminal) {% ([[e]]) => e %}
 
 NonNumericTerminal ->
-	  boolean  {% id %}
-	| string   {% id %}
+    %boolean  {% boolean %}
+  | %string   {% string %}
 
-Variable -> %words (%dot %words {% ([,words]) => words %}):* {% variable %}
+Variable -> Words (%dot Words {% join %}):* {% x => variable(flattenJoin(x)) %}
+
+Words ->
+	  WordOrKeyword (%space:? WordOrNumber {% join %}):+ {% flattenJoin %}
+	| %word {% id %}
+
+WordOrKeyword ->
+	  %word {% id %}
+	| %boolean {% id %}
+
+WordOrNumber ->
+	  WordOrKeyword {% id %}
+	| %number {% id %}
+
 
 UnitDenominator ->
-  (%space):? "/" %words {% join %}
-UnitNumerator -> %words ("." %words):? {% flattenJoin %}
+  (%space):? "/" Words {% join %}
+UnitNumerator -> Words ("." Words):? {% flattenJoin %}
 
 Unit -> UnitNumerator:? UnitDenominator:* {% flattenJoin %}
 
@@ -104,15 +111,12 @@ MultiplicationDivision ->
   | Parentheses   {% id %}
 
 
-boolean ->
-    "oui" {% boolean(true) %}
-  | "non" {% boolean(false) %}
+
 
 number ->
     %number {% number %}
   | %infinity {% number %}
   | %number (%space):? Unit {% numberWithUnit %}
 
-string -> %string {% string %}
 
 JSONObject -> %JSONObject {% JSONObject %}

@@ -133,6 +133,8 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 		case 'arrondi':
 			return traverseArrondiNode(fn, node)
 		case 'simplifier unité':
+		case 'est non applicable':
+		case 'est non défini':
 			return traverseUnaryOperationNode(fn, node)
 		case 'barème':
 		case 'taux progressif':
@@ -207,10 +209,9 @@ const traverseLeafNode: TraverseFunction<'reference' | 'constant'> = (
 	node
 ) => node
 
-const traverseUnaryOperationNode: TraverseFunction<'simplifier unité'> = (
-	fn,
-	node
-) => ({
+const traverseUnaryOperationNode: TraverseFunction<
+	'simplifier unité' | 'est non applicable' | 'est non défini'
+> = (fn, node) => ({
 	...node,
 	explanation: fn(node.explanation),
 })

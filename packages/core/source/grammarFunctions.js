@@ -3,20 +3,16 @@ The advantage of putting them here is to get prettier's JS formatting, since Nea
 import { normalizeDateString } from './date.ts'
 
 export const binaryOperation = ([A, , operator, , B]) => ({
-	[operator]: [A, B],
+	[operator.value.toLowerCase()]: [A, B],
 })
 
 export const unaryOperation = ([operator, , A]) => ({
 	[operator]: [number([{ value: '0' }]), A],
 })
 
-export const variable = ([firstFragment, nextFragment], _, reject) => {
-	const fragments = [firstFragment, ...nextFragment].map(({ value }) => value)
-	if (!nextFragment.length && ['oui', 'non'].includes(firstFragment)) {
-		return reject
-	}
+export const variable = ({ value: variable }) => {
 	return {
-		variable: fragments.join(' . '),
+		variable,
 	}
 }
 
@@ -45,10 +41,10 @@ export const date = ([{ value }]) => {
 	}
 }
 
-export const boolean = (nodeValue) => () => ({
+export const boolean = ([{ value }]) => ({
 	constant: {
 		type: 'boolean',
-		nodeValue,
+		nodeValue: value === 'oui',
 	},
 })
 
@@ -56,5 +52,20 @@ export const string = ([{ value }]) => ({
 	constant: {
 		type: 'string',
 		nodeValue: value.slice(1, -1),
+	},
+})
+
+
+export const nonDéfini = () => ({
+	constant: {
+		type: undefined,
+		nodeValue: undefined,
+	},
+})
+
+export const nonApplicable = () => ({
+	constant: {
+		type: undefined,
+		nodeValue: null,
 	},
 })
