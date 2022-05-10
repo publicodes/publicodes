@@ -1,5 +1,6 @@
 import Router from '@koa/router'
 import koaBody from 'koa-body'
+import koaMount from 'koa-mount'
 import koaStatic from 'koa-static'
 import OAPIValidator from 'openapi-validator-middleware'
 import { absolutePath } from 'swagger-ui-dist'
@@ -25,7 +26,7 @@ export default function publicodesAPI(newEngine: NewEngine) {
 	const router = new Router()
 
 	const OAPIValidatorMiddleware = OAPIValidator.getNewMiddleware(
-		'./source/openapi.yaml',
+		'./public/openapi.yaml',
 		{ framework: 'koa' }
 	)
 
@@ -72,7 +73,11 @@ export default function publicodesAPI(newEngine: NewEngine) {
 			ctx.body = routes.rulesId(newEngine, rule)
 		})
 
-	router.all('/doc/(.*)', koaStatic(absolutePath()))
+	router.all(
+		'/doc/(.*)',
+		koaMount('/doc', koaStatic('./public')),
+		koaMount('/doc', koaStatic(absolutePath()))
+	)
 
 	return router.routes()
 }
