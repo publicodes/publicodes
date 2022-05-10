@@ -5,6 +5,7 @@
 		"target": "ES2022",
 		"module": "CommonJS",
 		"outDir": "dist",
+		"declaration": true,
 
 		/* Strict Type-Checking Options */
 		"strict": true,
@@ -17,25 +18,19 @@
 		"alwaysStrict": true,
 
 		/* Additional Checks */
-		// "noUnusedLocals": true,
-		// "noUnusedParameters": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
 
 		/* Module Resolution Options */
 		"moduleResolution": "node",
-		"baseUrl": ".",
+		"baseUrl": "source",
 		"esModuleInterop": true,
 
-		/* Experimental Options */
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
-
 		/* Advanced Options */
-		"forceConsistentCasingInFileNames": true,
-
-		"paths": {
-			"@/*": ["source/*"]
-		}
-	}
+		"forceConsistentCasingInFileNames": true
+	},
+	"include": ["source"],
+	"exclude": ["**/node_modules", "**/dist", "**/*.test.*"]
 }

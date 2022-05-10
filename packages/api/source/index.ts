@@ -1,1 +1,2 @@
-export { default as koaMiddleware } from './koa-middleware'
+export { koaMiddleware } from './middleware';
+ 

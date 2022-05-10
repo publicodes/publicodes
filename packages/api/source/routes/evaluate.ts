@@ -1,14 +1,14 @@
-import { Situation, NewEngine, Expressions } from '@/types'
-import { catchError, PickInObject } from '@/utils'
+import { Expressions, NewEngine, Situation } from '../types'
+import { catchError, PickInObject } from '../utils'
 
-export interface APIParameters {
+export interface EvaluateBody {
+	expressions: Expressions
 	situation?: Situation
 }
 
 export function evaluate(
 	newEngine: NewEngine,
-	expressions: Expressions,
-	{ situation }: APIParameters = {}
+	{ expressions, situation }: EvaluateBody
 ) {
 	const engine = newEngine(expressions, situation)
 	const [error] = catchError(() => engine.setSituation(situation))

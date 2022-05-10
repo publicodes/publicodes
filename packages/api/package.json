@@ -2,14 +2,19 @@
 	"name": "publicodes-api",
 	"version": "1.0.0-beta.0",
 	"description": "Publicodes API",
-	"main": "source/index.ts",
+	"main": "dist/index.js",
 	"scripts": {
-		"test": "yarn vitest",
-		"start": "nodemon -r tsconfig-paths/register ./source/example.ts"
+		"test": "yarn validate && yarn vitest",
+		"validate": "npx @apidevtools/swagger-cli validate source/openapi.yaml ",
+		"start": "yarn build:watch --preserveWatchOutput & nodemon -r tsconfig-paths/register ./example.ts",
+		"build": "tsc",
+		"build:watch": "yarn build -w",
+		"clean": "rm -r dist"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/betagouv/publicodes.git"
+		"url": "git+https://github.com/betagouv/publicodes.git",
+		"directory": "packages/api"
 	},
 	"author": "",
 	"license": "MIT",
@@ -22,6 +27,7 @@
 		"@koa/router": "^10.1.1",
 		"koa": "^2.13.4",
 		"koa-body": "^5.0.0",
+		"openapi-validator-middleware": "^3.2.6",
 		"publicodes": "1.0.0-beta.35"
 	},
 	"devDependencies": {
@@ -32,8 +38,7 @@
 		"chai-http": "^4.3.0",
 		"nodemon": "^2.0.15",
 		"ts-node": "^10.7.0",
-		"tsconfig-paths": "^3.14.1",
 		"typescript": "next",
-		"vitest": "^0.10.0"
+		"vitest": "^0.12.3"
 	}
 }
