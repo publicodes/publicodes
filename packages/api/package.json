@@ -5,7 +5,8 @@
 	"main": "dist/index.js",
 	"scripts": {
 		"test": "yarn validate && yarn vitest",
-		"validate": "npx @apidevtools/swagger-cli validate source/openapi.yaml ",
+		"validate": "npx @apidevtools/swagger-cli validate public/openapi.yaml",
+		"bundle": "npx @apidevtools/swagger-cli bundle public/openapi.yaml > public/openapi.json",
 		"start": "yarn build:watch --preserveWatchOutput & nodemon ./example.ts",
 		"build": "tsc",
 		"build:watch": "yarn build -w",
