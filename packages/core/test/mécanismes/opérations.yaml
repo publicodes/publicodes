@@ -1,91 +1,434 @@
 # Test des opérations binaire sous forme de mécanisme :
-
+a:
+b:
 addition:
   +:
-    - 10
-    - 4
+    - a
+    - b
   exemples:
-    valeur attendue: 14
+    - nom: standard
+      situation:
+        a: 10
+        b: 4
+      valeur attendue: 14
+    - nom: partiellement non défini
+      situation:
+        b: 4
+      valeur attendue: undefined
+    - nom: complètement non défini
+      valeur attendue: undefined
+    - nom: a non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: 4
+      valeur attendue: 4
+    - nom: b non applicable
+      situation:
+        a: 10
+        b: { non applicable si: oui }
+      valeur attendue: 10
+    - nom: tous non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: { non applicable si: oui }
+      valeur attendue: 0
+    - nom: avec un pourcentage
+      situation:
+        a: 10
+        b: 4%
+      valeur attendue: 10.4
+    - nom: entre deux pourcentage
+      situation:
+        a: 10%
+        b: 4%
+      valeur attendue: 14
+      unité attendue: '%'
+    - nom: avec un pourcentage avec unité
+      situation:
+        a: 100 €/an
+        b: 4%
+      valeur attendue: 104
+      unité attendue: '€/an'
+    - nom: deux pourcentage avec unité
+      situation:
+        a: 15%/an
+        b: 4%/an
+      valeur attendue: 19
+      unité attendue: '€/an'
+    - nom: addition d'un pourcentage avec unité et d'un pourcentage
+      situation:
+        a: 10 %/an
+        b: 4%
+      valeur: 10.4 %/an
 
 soustraction:
   -:
-    - 10
-    - 4
+    - a
+    - b
   exemples:
-    valeur attendue: 6
+    - nom: standard
+      situation:
+        a: 10
+        b: 4
+      valeur attendue: 6
+    - nom: partiellement non défini
+      situation:
+        b: 4
+      valeur attendue: undefined
+    - nom: complètement non défini
+      valeur attendue: undefined
+    - nom: a non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: 4
+      valeur attendue: null
+    - nom: b non applicable
+      situation:
+        a: 10
+        b: { non applicable si: oui }
+      valeur attendue: 10
+    - nom: tous non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: { non applicable si: oui }
+      valeur attendue: null
+    - nom: avec un pourcentage
+      situation:
+        a: 10
+        b: 4%
+      valeur attendue: 9.6
+    - nom: entre deux pourcentage
+      situation:
+        a: 10%
+        b: 4%
+      valeur attendue: 6
+      unité attendue: '%'
+    - nom: avec un pourcentage avec unité
+      situation:
+        a: 100 €/an
+        b: 4%
+      valeur attendue: 96
+      unité attendue: '€/an'
+    - nom: deux pourcentage avec unité
+      situation:
+        a: 15%/an
+        b: 4%/an
+      valeur attendue: 11
+      unité attendue: '€/an'
+    - nom: soustraction d'un pourcentage avec unité et d'un pourcentage
+      situation:
+        a: 10 %/an
+        b: 4%
+      valeur: 9.6 %/an
 
 multiplication:
   '*':
-    - 10
-    - 4
+    - a
+    - b
   exemples:
-    valeur attendue: 40
+    - nom: standard
+      situation:
+        a: 10
+        b: 4
+      valeur attendue: 40
+    - nom: partiellement non défini
+      situation:
+        b: 4
+      valeur attendue: undefined
+    - nom: partiellement non défini 2
+      situation:
+        b: 0
+      valeur attendue: 0
+    - nom: complètement non défini
+      valeur attendue: undefined
+    - nom: a non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: 10
+      valeur attendue: null
+    - nom: b non applicable
+      situation:
+        a: 10
+        b: { non applicable si: oui }
+      valeur attendue: null
+    - nom: tous non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: { non applicable si: oui }
+      valeur attendue: null
+    - nom: avec un pourcentage
+      situation:
+        a: 10
+        b: 4%
+      valeur attendue: 0.4
+    - nom: entre deux pourcentage
+      situation:
+        a: 10%
+        b: 4%
+      valeur attendue: 0.4
+      unité attendue: '%'
+    - nom: avec un pourcentage avec unité
+      situation:
+        a: 100 €/an
+        b: 4%
+      valeur attendue: 4
+      unité attendue: '€/an'
+    - nom: deux nombre avec unité
+      situation:
+        a: 50 €/an
+        b: 4 an
+      valeur attendue: 200
+      unité attendue: '€'
 
 division:
-  /:
-    - 12
-    - 4
+  '/':
+    - a
+    - b
   exemples:
-    valeur attendue: 3
+    - nom: standard
+      situation:
+        a: 12
+        b: 4
+      valeur attendue: 3
+    - nom: partiellement non défini
+      situation:
+        b: 4
+      valeur attendue: undefined
+    - nom: complètement non défini
+      valeur attendue: undefined
+    - nom: a non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: 10
+      valeur attendue: null
+    - nom: b non applicable
+      situation:
+        a: 12
+        b: { non applicable si: oui }
+      valeur attendue: null
+    - nom: tous non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: { non applicable si: oui }
+      valeur attendue: null
+    - nom: avec un pourcentage
+      situation:
+        a: 12
+        b: 4%
+      valeur attendue: 3
+      unité attendue: '%'
+    - nom: entre deux pourcentage
+      situation:
+        a: 12%
+        b: 4%
+      valeur attendue: 3
+      unité attendue: ''
 
-comparaison:
+    - nom: deux nombre avec unité
+      situation:
+        a: 50 €/an
+        b: 10 €/an
+      valeur attendue: 5
+      unité attendue: ''
+
+    - nom: division par zéro
+      situation:
+        a: 50 €/an
+        b: 0
+      valeur attendue: null
+
+comparison:
   '>=':
-    - 12
-    - 4
+    - a
+    - b
   exemples:
-    valeur attendue: true
+    - nom: standard
+      situation:
+        a: 12
+        b: 4
+      valeur attendue: true
+    - nom: partiellement non défini
+      situation:
+        b: 4
+      valeur attendue: undefined
+    - nom: complètement non défini
+      valeur attendue: undefined
+    - nom: a non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: 10
+      valeur attendue: null
+    - nom: b non applicable
+      situation:
+        a: 12
+        b: { non applicable si: oui }
+      valeur attendue: null
+    - nom: tous non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: { non applicable si: oui }
+      valeur attendue: null
+
+comparaison 2:
+  '<=':
+    - a
+    - b
+  exemples:
+    - nom: standard
+      situation:
+        a: 12
+        b: 4
+      valeur attendue: false
+    - nom: partiellement non défini
+      situation:
+        b: 4
+      valeur attendue: undefined
+    - nom: complètement non défini
+      valeur attendue: undefined
+    - nom: a non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: 10
+      valeur attendue: null
+    - nom: b non applicable
+      situation:
+        a: 12
+        b: { non applicable si: oui }
+      valeur attendue: null
+    - nom: tous non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: { non applicable si: oui }
+      valeur attendue: null
 
 égalité:
-  =:
-    - 4
-    - 5
+  '=':
+    - a
+    - b
   exemples:
-    valeur attendue: false
+    - nom: égal
+      situation:
+        a: 12
+        b: 12
+      valeur attendue: true
+    - nom: non égal
+      situation:
+        a: 12
+        b: 4
+      valeur attendue: false
+    - nom: partiellement non défini
+      situation:
+        b: 4
+      valeur attendue: undefined
+    - nom: complètement non défini
+      valeur attendue: undefined
+    - nom: a non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: 10
+      valeur attendue: false
+    - nom: b non applicable
+      situation:
+        a: 12
+        b: { non applicable si: oui }
+      valeur attendue: false
+    - nom: tous non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: { non applicable si: oui }
+      valeur attendue: true
+    - nom: non applicable et faux
+      situation:
+        a: { non applicable si: oui }
+        b: non
+      valeur attendue: true
+    - nom: booléen
+      situation:
+        a: oui
+        b: oui
+      valeur attendue: true
+    - nom: booléen faux
+      situation:
+        a: oui
+        b: non
+      valeur attendue: false
 
-addition d'un pourcentage:
-  +:
-    - 10
-    - 4%
+et:
+  et:
+    - a
+    - b
   exemples:
-    valeur attendue: 10.4
-    unité attendue: ''
+    - situation:
+        a: oui
+        b: non
+      valeur attendue: false
+    - nom: partiellement non défini
+      situation:
+        b: oui
+      valeur attendue: undefined
+    - nom: complètement non défini
+      valeur attendue: undefined
+    - nom: a non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: oui
+      valeur attendue: false
+    - nom: b non applicable
+      situation:
+        a: oui
+        b: { non applicable si: oui }
+      valeur attendue: false
+    - nom: tous non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: { non applicable si: oui }
+      valeur attendue: false
+    - situation:
+        a: oui
+        b: oui
+      valeur attendue: true
+    - situation:
+        a: non
+        b: non
+      valeur attendue: false
+      unité attendue: ''
 
-addition de deux pourcentage:
-  +:
-    - 15%
-    - 4%
+ou:
+  ou:
+    - a
+    - b
   exemples:
-    valeur attendue: 19
-    unité attendue: '%'
-
-addition d'un pourcentage avec unité:
-  +:
-    - 100 €/an
-    - 4%
-  exemples:
-    valeur attendue: 104
-    unité attendue: '€/an'
-
-addition de deux pourcentage avec unité:
-  +:
-    - 15%/an
-    - 4%/an
-  exemples:
-    valeur attendue: 19
-    unité attendue: '%/an'
-
-addition d'un pourcentage avec unité et d'un pourcentage:
-  +:
-    - 10 %/an
-    - 4%
-  exemples:
-    valeur attendue: 10.4
-    unité attendue: '%/an'
-
-soustraction d'un pourcentage:
-  -:
-    - 100 €
-    - 60%
-  exemples:
-    valeur attendue: 40
-    unité attendue: '€'
+    - situation:
+        a: oui
+        b: non
+      valeur attendue: true
+    - nom: partiellement non défini
+      situation:
+        b: oui
+      valeur attendue: true
+    - nom: complètement non défini
+      valeur attendue: undefined
+    - nom: a non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: oui
+      valeur attendue: true
+    - nom: b non applicable
+      situation:
+        a: oui
+        b: { non applicable si: oui }
+      valeur attendue: true
+    - nom: tous non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: { non applicable si: oui }
+      valeur attendue: false
+    - situation:
+        a: oui
+        b: oui
+      valeur attendue: true
+    - situation:
+        a: non
+        b: non
+      valeur attendue: false
+      unité attendue: ''

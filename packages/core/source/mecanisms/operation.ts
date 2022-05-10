@@ -1,23 +1,25 @@
 import { EvaluationFunction } from '..'
-import { ASTNode, EvaluatedNode } from '../AST/types'
+import { ASTNode } from '../AST/types'
 import { convertToDate } from '../date'
 import { warning } from '../error'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
-import { inferUnit, parseUnit, serializeUnit, simplifyUnit } from '../units'
+import { inferUnit, serializeUnit } from '../units'
 
 const knownOperations = {
 	'*': [(a, b) => a * b, '×'],
-	'/': [(a, b) => a / b, '∕'],
+	'/': [(a, b) => (b === 0 ? null : a / b), '∕'],
 	'+': [(a, b) => a + b],
 	'-': [(a, b) => a - b, '−'],
 	'<': [(a, b) => a < b],
 	'<=': [(a, b) => a <= b, '≤'],
 	'>': [(a, b) => a > b],
 	'>=': [(a, b) => a >= b, '≥'],
-	'=': [(a, b) => a === b],
-	'!=': [(a, b) => a !== b, '≠'],
+	'=': [(a, b) => (a ?? false) === (b ?? false)],
+	'!=': [(a, b) => (a ?? false) !== (b ?? false), '≠'],
+	et: [(a, b) => (a ?? false) && (b ?? false)],
+	ou: [(a, b) => (a ?? false) || (b ?? false)],
 } as const
 
 export type OperationNode = {
@@ -40,14 +42,44 @@ const parseOperation = (k, symbol) => (v, context) => {
 }
 
 const evaluate: EvaluationFunction<'operation'> = function (node) {
-	const explanation = node.explanation.map((node) => this.evaluate(node)) as [
-		EvaluatedNode,
-		EvaluatedNode
-	]
-	let [node1, node2] = explanation
+	let node1 = this.evaluate(node.explanation[0])
+	let evaluatedNode = {
+		...node,
+	}
+
+	// LAZY EVALUATION
+	if (
+		(node1.nodeValue === null &&
+			['<=', '>=', '/', '*', '-', 'et'].includes(node.operationKind)) ||
+		(node1.nodeValue === 0 && ['/', '*'].includes(node.operationKind)) ||
+		(node1.nodeValue === false && node.operationKind === 'et') ||
+		(node1.nodeValue === true && node.operationKind === 'ou')
+	) {
+		return {
+			...evaluatedNode,
+			nodeValue: node.operationKind === 'et' ? false : node1.nodeValue,
+		}
+	}
+
+	let node2 = this.evaluate(node.explanation[1])
+	evaluatedNode.explanation = [node1, node2]
+
+	// LAZY EVALUATION 2
+	if (
+		(node2.nodeValue === null &&
+			['<=', '>=', '/', '*', 'et'].includes(node.operationKind)) ||
+		(node2.nodeValue === 0 && ['*'].includes(node.operationKind)) ||
+		(node2.nodeValue === false && node.operationKind === 'et') ||
+		(node2.nodeValue === true && node.operationKind === 'ou')
+	) {
+		return {
+			...evaluatedNode,
+			nodeValue: node.operationKind === 'et' ? false : node2.nodeValue,
+		}
+	}
 
 	if (node1.nodeValue === undefined || node2.nodeValue === undefined) {
-		return { ...node, nodeValue: undefined, explanation }
+		evaluatedNode = { ...evaluatedNode, nodeValue: undefined }
 	}
 
 	const isAdditionOrSubstractionWithPercentage =
@@ -56,6 +88,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		serializeUnit(node1.unit) !== '%'
 
 	if (
+		!('nodeValue' in evaluatedNode) &&
 		!['∕', '×'].includes(node.operator) &&
 		!isAdditionOrSubstractionWithPercentage
 	) {
@@ -85,23 +118,16 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	const a = node1.nodeValue as string | boolean | null
 	const b = node2.nodeValue as string | boolean | null
 
-	const nodeValue =
-		a === undefined || b === undefined
-			? undefined
-			: a === null ||
-			  b === null ||
-			  typeof a === 'boolean' ||
-			  typeof b === 'boolean'
-			? node.operator === '='
-				? (a === null ? false : a) === (b === null ? false : b)
-				: node.operator === '≠'
-				? (a === null ? false : a) !== (b === null ? false : b)
-				: ['*', '/', '+', '-'].includes(node.operator)
-				? operatorFunction(a === null ? 0 : a, b === null ? 0 : b)
-				: false
-			: ['≠', '=', '<', '>', '≤', '≥'].includes(node.operator) &&
-			  [a, b].every((value) =>
-					(value as string).match?.(/[\d]{2}\/[\d]{2}\/[\d]{4}/)
+	evaluatedNode.nodeValue =
+		'nodeValue' in evaluatedNode
+			? evaluatedNode.nodeValue
+			: ['<', '>', '<=', '>=', '*', '/'].includes(node.operationKind) &&
+			  node2.nodeValue === null
+			? null
+			: [a, b].every(
+					(value) =>
+						typeof value === 'string' &&
+						value.match?.(/[\d]{2}\/[\d]{2}\/[\d]{4}/)
 			  )
 			? operatorFunction(convertToDate(a), convertToDate(b))
 			: operatorFunction(a, b)
@@ -112,11 +138,6 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		node.operationKind === '-' ||
 		node.operationKind === '+'
 	) {
-		const evaluatedNode = {
-			...node,
-			explanation,
-			nodeValue,
-		}
 		if (node.operationKind === '*') {
 			let unit = inferUnit('*', [node1.unit, node2.unit])
 
@@ -125,7 +146,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 			}
 			return {
 				...evaluatedNode,
-				nodeValue: nodeValue / 100,
+				nodeValue: evaluatedNode.nodeValue / 100,
 				unit: inferUnit('*', [unit, { numerators: [], denominators: ['%'] }]),
 			}
 		}
@@ -146,11 +167,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		}
 	}
 
-	return {
-		...node,
-		explanation,
-		nodeValue,
-	}
+	return evaluatedNode
 }
 
 registerEvaluationFunction('operation', evaluate)
