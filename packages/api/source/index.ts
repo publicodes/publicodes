@@ -1,2 +1,1 @@
-export { koaMiddleware } from './middleware';
- 
+export { koaMiddleware } from './middleware'
