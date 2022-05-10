@@ -11,6 +11,12 @@ import condition from './mecanisms/condition'
 import { mecanismAllOf } from './mecanisms/condition-allof'
 import { mecanismOneOf } from './mecanisms/condition-oneof'
 import durée from './mecanisms/durée'
+import {
+	parseEstApplicable,
+	parseEstDéfini,
+	parseEstNonApplicable,
+	parseEstNonDéfini,
+} from './mecanisms/est'
 import grille from './mecanisms/grille'
 import { mecanismInversion } from './mecanisms/inversion'
 import { mecanismMax } from './mecanisms/max'
@@ -19,12 +25,12 @@ import nonApplicable from './mecanisms/nonApplicable'
 import { mecanismOnePossibility } from './mecanisms/one-possibility'
 import operations from './mecanisms/operation'
 import parDéfaut from './mecanisms/parDéfaut'
-import simplifierUnité from './mecanisms/simplifier-unité'
 import plafond from './mecanisms/plafond'
 import plancher from './mecanisms/plancher'
 import produit from './mecanisms/product'
 import { mecanismRecalcul } from './mecanisms/recalcul'
 import résoudreRéférenceCirculaire from './mecanisms/résoudre-référence-circulaire'
+import simplifierUnité from './mecanisms/simplifier-unité'
 import situation from './mecanisms/situation'
 import { mecanismSum } from './mecanisms/sum'
 import { mecanismSynchronisation } from './mecanisms/synchronisation'
@@ -77,11 +83,11 @@ function parseExpression(
 	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
 	 * This function makes them prefixed operations. */
 	const singleLineExpression = (rawNode + '').replace(/\s*\n\s*/g, ' ').trim()
-
 	try {
 		const [parseResult] = new Parser(compiledGrammar).feed(
 			singleLineExpression
 		).results
+
 		if (parseResult == null) {
 			throw new InternalError({
 				expression: singleLineExpression,
@@ -139,8 +145,8 @@ Cela vient probablement d'une erreur dans l'indentation
 	if (!parseFn) {
 		syntaxError(
 			context.dottedName,
-			`
-Le mécanisme ${mecanismName} est inconnu.
+			`Le mécanisme "${mecanismName}" est inconnu.
+			
 Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`
 		)
 	}
@@ -206,6 +212,10 @@ const parseFunctions = {
 	'le minimum de': mecanismMin,
 	'taux progressif': tauxProgressif,
 	'toutes ces conditions': mecanismAllOf,
+	'est non défini': parseEstNonDéfini,
+	'est non applicable': parseEstNonApplicable,
+	'est applicable': parseEstApplicable,
+	'est défini': parseEstDéfini,
 	'une de ces conditions': mecanismOneOf,
 	'une possibilité': mecanismOnePossibility,
 	condition,

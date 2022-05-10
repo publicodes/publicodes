@@ -27,6 +27,13 @@ export function createParseInlinedMecanism(
 				])
 		)
 
+		// Case of unary mecanism
+		if (Object.keys(args).length === 1 && 'valeur' in args) {
+			providedArgs = {
+				valeur: providedArgs,
+			}
+		}
+
 		const parsedProvidedArgs = Object.fromEntries(
 			Object.entries(providedArgs).map(([name, value]) => [
 				name,

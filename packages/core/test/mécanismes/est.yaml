@@ -1,0 +1,68 @@
+a:
+
+est non défini:
+  est non défini: a
+  exemples:
+    - nom: non défini
+      valeur attendue: true
+      variables manquantes: [a]
+    - nom: défini
+      situation: { a: 1 }
+      valeur attendue: false
+      variables manquantes: []
+    - nom: non applicable
+      situation:
+        a:
+          constant:
+            nodeValue: null
+            type: undefined
+      valeur attendue: false
+      variables manquantes: []
+
+est défini:
+  est défini: a
+  exemples:
+    - nom: non défini
+      valeur attendue: false
+    - nom: défini
+      situation: { a: 1 }
+      valeur attendue: true
+    - nom: non applicable
+      situation:
+        a:
+          constant:
+            nodeValue: null
+            type: undefined
+      valeur attendue: true
+
+est applicable:
+  est applicable: a
+  exemples:
+    - nom: non défini
+      valeur attendue: undefined
+    - nom: applicable
+      situation: { a: non }
+      valeur attendue: true
+    - nom: non applicable
+      situation:
+        a:
+          constant:
+            nodeValue: null
+            type: undefined
+      valeur attendue: false
+
+est non applicable:
+  est non applicable: a
+  exemples:
+    - nom: non défini
+      valeur attendue: undefined
+    - nom: applicable
+      situation: { a: non }
+      valeur attendue: false
+    - nom: non applicable
+      situation:
+        a:
+          constant:
+            nodeValue: null
+            type: undefined
+      valeur attendue: true

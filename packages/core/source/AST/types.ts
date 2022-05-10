@@ -4,6 +4,7 @@ import { ConditionNode } from '../mecanisms/condition'
 import { TouteCesConditionsNode } from '../mecanisms/condition-allof'
 import { UneDeCesConditionsNode } from '../mecanisms/condition-oneof'
 import { DuréeNode } from '../mecanisms/durée'
+import { EstNonApplicableNode, EstNonDéfiniNode } from '../mecanisms/est'
 import { GrilleNode } from '../mecanisms/grille'
 import { InversionNode } from '../mecanisms/inversion'
 import { MaxNode } from '../mecanisms/max'
@@ -40,6 +41,8 @@ export type ASTNode = (
 	| UneDeCesConditionsNode
 	| DuréeNode
 	| GrilleNode
+	| EstNonApplicableNode
+	| EstNonDéfiniNode
 	| MaxNode
 	| InversionNode
 	| MinNode
