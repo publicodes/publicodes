@@ -72,7 +72,7 @@ describe('e2e koa middleware', () => {
 				.then((res) => JSON.parse(res.text))
 		).resolves.toMatchSnapshot()
 	})
-	
+
 	it('Test evaluate endpoint with empty expression', async () => {
 		await expect(
 			chai
