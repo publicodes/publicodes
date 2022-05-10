@@ -1,6 +1,8 @@
 import Router from '@koa/router'
 import koaBody from 'koa-body'
+import koaStatic from 'koa-static'
 import OAPIValidator from 'openapi-validator-middleware'
+import { absolutePath } from 'swagger-ui-dist'
 import * as routes from '../routes'
 import { Expressions, NewEngine, Situation } from '../types'
 
@@ -69,6 +71,8 @@ export default function publicodesAPI(newEngine: NewEngine) {
 			ctx.type = 'application/json'
 			ctx.body = routes.rulesId(newEngine, rule)
 		})
+
+	router.all('/doc/(.*)', koaStatic(absolutePath()))
 
 	return router.routes()
 }

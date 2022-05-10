@@ -3520,6 +3520,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/koa-send@npm:*":
+  version: 4.1.3
+  resolution: "@types/koa-send@npm:4.1.3"
+  dependencies:
+    "@types/koa": "*"
+  checksum: f20f6a0dcccd0d090348c7cce3635220cc82420b9579fa521dc6deae23c242aa8adb760a5a3fc84d7590a7f393b41b71b18312f9519c1c4a0b16ee24aae2e104
+  languageName: node
+  linkType: hard
+
+"@types/koa-static@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@types/koa-static@npm:4.0.2"
+  dependencies:
+    "@types/koa": "*"
+    "@types/koa-send": "*"
+  checksum: a9c557a37b25a677f3aae084b2afd267fa78a728cd69aec20821d8acca3ef4bda172d1fd16a23711266d97e77962d037ffd25ee76b24608413032226321f461f
+  languageName: node
+  linkType: hard
+
 "@types/koa@npm:*, @types/koa@npm:^2.13.4":
   version: 2.13.4
   resolution: "@types/koa@npm:2.13.4"
@@ -3787,6 +3806,13 @@ __metadata:
     "@types/cookiejar": "*"
     "@types/node": "*"
   checksum: 87ca335703f203c5f558977f4a7cd29fef792698007952631575518085f1604791b7a85ceb4f03b395a20ce82f4e8c87d78b1a142b3721f5043195329a4bfc00
+  languageName: node
+  linkType: hard
+
+"@types/swagger-ui-dist@npm:^3.30.1":
+  version: 3.30.1
+  resolution: "@types/swagger-ui-dist@npm:3.30.1"
+  checksum: f98451f50d549cea8df93ce89f33efd298e905d0479825911d7b7d5d10b390ae74a5aad39020783263f3de065c643165c0975db131a9676fd5585387a52b805f
   languageName: node
   linkType: hard
 
@@ -9678,6 +9704,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"koa-send@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "koa-send@npm:5.0.1"
+  dependencies:
+    debug: ^4.1.1
+    http-errors: ^1.7.3
+    resolve-path: ^1.4.0
+  checksum: a9fbaadbe0f50efd157a733df4a1cc2b3b79b0cdf12e67c718641e6038d1792c0bebe40913e6d4ceb707d970301155be3859b98d1ef08b0fd1766f7326b82853
+  languageName: node
+  linkType: hard
+
+"koa-static@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "koa-static@npm:5.0.0"
+  dependencies:
+    debug: ^3.1.0
+    koa-send: ^5.0.0
+  checksum: 8d9b9c4d2b3b13e8818e804245d784099c4b353b55ddd7dbeeb90f27a2e9f5b6f86bd16a4909e337cb89db4d332d9002e6c0f5056caf75749cab62f93c1f0cc5
+  languageName: node
+  linkType: hard
+
 "koa@npm:^2.13.4":
   version: 2.13.4
   resolution: "koa@npm:2.13.4"
@@ -11578,7 +11625,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-is-absolute@npm:^1.0.0":
+"path-is-absolute@npm:1.0.1, path-is-absolute@npm:^1.0.0":
   version: 1.0.1
   resolution: "path-is-absolute@npm:1.0.1"
   checksum: 060840f92cf8effa293bcc1bea81281bd7d363731d214cbe5c227df207c34cd727430f70c6037b5159c8a870b9157cba65e775446b0ab06fd5ecc7e54615a3b8
@@ -12664,15 +12711,19 @@ __metadata:
     "@koa/cors": ^3.3.0
     "@koa/router": ^10.1.1
     "@types/koa": ^2.13.4
+    "@types/koa-static": ^4.0.2
     "@types/koa__cors": ^3.3.0
     "@types/koa__router": ^8.0.11
     "@types/node": ^17.0.29
+    "@types/swagger-ui-dist": ^3.30.1
     chai-http: ^4.3.0
     koa: ^2.13.4
     koa-body: ^5.0.0
+    koa-static: ^5.0.0
     nodemon: ^2.0.15
     openapi-validator-middleware: ^3.2.6
     publicodes: 1.0.0-beta.35
+    swagger-ui-dist: ^4.11.0
     ts-node: ^10.7.0
     typescript: next
     vitest: ^0.12.3
@@ -13593,6 +13644,16 @@ __metadata:
   version: 5.0.0
   resolution: "resolve-from@npm:5.0.0"
   checksum: 4ceeb9113e1b1372d0cd969f3468fa042daa1dd9527b1b6bb88acb6ab55d8b9cd65dbf18819f9f9ddf0db804990901dcdaade80a215e7b2c23daae38e64f5bdf
+  languageName: node
+  linkType: hard
+
+"resolve-path@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "resolve-path@npm:1.4.0"
+  dependencies:
+    http-errors: ~1.6.2
+    path-is-absolute: 1.0.1
+  checksum: 1a39f569ee54dd5f8ee8576ef8671c9724bea65d9f9982fbb5352af9fb4e500e1e459c1bfb1ae3ebfd8d43a709c3a01dfa4f46cf5b831e45e2caed4f1a208300
   languageName: node
   linkType: hard
 
@@ -14713,6 +14774,13 @@ __metadata:
   version: 2.0.0-bab6bed
   resolution: "swagger-schema-official@npm:2.0.0-bab6bed"
   checksum: 63e7a1073c9a6a31cd560e72b0c56faab3ffb444f193b8abc59428d02f65d72136123e33b5ad35bb42e063d08a7199a9a3dbeb95be7cb5671b4c833d5f7c879d
+  languageName: node
+  linkType: hard
+
+"swagger-ui-dist@npm:^4.11.0":
+  version: 4.11.0
+  resolution: "swagger-ui-dist@npm:4.11.0"
+  checksum: 2b9f327112e1e901d9b1968bb9de3dde4e9139e1980251d02f42b47e826d7c1fa995f147f86cfeade68e1e55cf3935d0c4e6cd8e221d86a1641bf0369416982a
   languageName: node
   linkType: hard
 
