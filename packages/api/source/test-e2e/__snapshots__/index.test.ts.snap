@@ -92,3 +92,67 @@ A space token based on:
   "situationError": null,
 }
 `;
+
+exports[`e2e koa middleware > Test evaluate endpoint with empty expression 1`] = `
+[
+  {
+    "dataPath": ".expressions",
+    "keyword": "minItems",
+    "message": "should NOT have fewer than 1 items",
+    "params": {
+      "limit": 1,
+    },
+    "schemaPath": "#/properties/expressions/oneOf/0/minItems",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be string",
+    "params": {
+      "type": "string",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "oneOf",
+    "message": "should match exactly one schema in oneOf",
+    "params": {
+      "passingSchemas": null,
+    },
+    "schemaPath": "#/properties/expressions/oneOf",
+  },
+]
+`;
+
+exports[`e2e koa middleware > Test evaluate endpoint with null expression 1`] = `
+[
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be array",
+    "params": {
+      "type": "array",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/0/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be string",
+    "params": {
+      "type": "string",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "oneOf",
+    "message": "should match exactly one schema in oneOf",
+    "params": {
+      "passingSchemas": null,
+    },
+    "schemaPath": "#/properties/expressions/oneOf",
+  },
+]
+`;

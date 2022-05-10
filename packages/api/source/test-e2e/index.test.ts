@@ -1,9 +1,9 @@
-import publicodesAPI from '@/koa-middleware'
 import Router from '@koa/router'
 import chaiHttp from 'chai-http'
 import Koa from 'koa'
 import Engine from 'publicodes'
 import { beforeAll, chai, describe, expect, it } from 'vitest'
+import publicodesAPI from '../middleware/koa'
 
 interface State extends Koa.DefaultState {}
 
@@ -24,7 +24,7 @@ const server = app.listen(3004)
 chai.use(chaiHttp)
 
 beforeAll(async () => {
-	await new Promise((res, rej) => {
+	await new Promise((res, _rej) => {
 		server.once('listening', () => res(null))
 	})
 })
@@ -59,6 +59,26 @@ describe('e2e koa middleware', () => {
 				.request(server)
 				.post('/evaluate')
 				.send({ expressions: '1+1' })
+				.then((res) => JSON.parse(res.text))
+		).resolves.toMatchSnapshot()
+	})
+
+	it('Test evaluate endpoint with null expression', async () => {
+		await expect(
+			chai
+				.request(server)
+				.post('/evaluate')
+				.send({ expressions: null })
+				.then((res) => JSON.parse(res.text))
+		).resolves.toMatchSnapshot()
+	})
+	
+	it('Test evaluate endpoint with empty expression', async () => {
+		await expect(
+			chai
+				.request(server)
+				.post('/evaluate')
+				.send({ expressions: [] })
 				.then((res) => JSON.parse(res.text))
 		).resolves.toMatchSnapshot()
 	})
