@@ -1,6 +1,5 @@
 import Router from '@koa/router'
 import koaBody from 'koa-body'
-import koaMount from 'koa-mount'
 import koaStatic from 'koa-static'
 import OAPIValidator from 'openapi-validator-middleware'
 import { absolutePath } from 'swagger-ui-dist'
@@ -75,8 +74,26 @@ export default function publicodesAPI(newEngine: NewEngine) {
 
 	router.all(
 		'/doc/(.*)',
-		koaMount('/doc', koaStatic('./public')),
-		koaMount('/doc', koaStatic(absolutePath()))
+		async (ctx, next) => {
+			const rewriteURL =
+				(typeof ctx.url === 'string' && ctx.url.replace(/.*\/doc\//, '/')) ||
+				null
+
+			const backup = ctx.request.url
+			if (rewriteURL) {
+				ctx.request.url = rewriteURL
+			}
+
+			const ret = await next()
+
+			if (rewriteURL) {
+				ctx.request.url = backup
+			}
+
+			return ret
+		},
+		koaStatic('./public'),
+		koaStatic(absolutePath())
 	)
 
 	return router.routes()
