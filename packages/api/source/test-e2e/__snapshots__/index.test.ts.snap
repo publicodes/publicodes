@@ -1,6 +1,6 @@
 // Vitest Snapshot v1
 
-exports[`e2e koa middleware > Test evaluate endpoint with bad expression 1`] = `
+exports[`e2e koa middleware > Test evaluate endpoint with bad expression 2`] = `
 {
   "evaluate": [
     {
@@ -93,7 +93,7 @@ A space token based on:
 }
 `;
 
-exports[`e2e koa middleware > Test evaluate endpoint with empty expression 1`] = `
+exports[`e2e koa middleware > Test evaluate endpoint with empty expression 2`] = `
 [
   {
     "dataPath": ".expressions",
@@ -125,7 +125,7 @@ exports[`e2e koa middleware > Test evaluate endpoint with empty expression 1`] =
 ]
 `;
 
-exports[`e2e koa middleware > Test evaluate endpoint with null expression 1`] = `
+exports[`e2e koa middleware > Test evaluate endpoint with null expression 2`] = `
 [
   {
     "dataPath": ".expressions",

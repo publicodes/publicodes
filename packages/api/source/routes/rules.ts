@@ -10,11 +10,11 @@ export function rules(newEngine: NewEngine) {
 		Object.entries(rules).map(([key, val]) => [
 			key,
 			PickInObject(val, [
+				'title',
 				'nodeKind',
 				'rawNode',
 				'replacements',
 				'suggestions',
-				'title',
 			]),
 		])
 	)
@@ -30,6 +30,12 @@ export function rulesId(newEngine: NewEngine, id: RulesId) {
 	const [error, result] = catchError(() => engine.getRule(id))
 
 	return !error
-		? PickInObject(result, ['title', 'suggestions', 'rawNode', 'nodeKind'])
+		? PickInObject(result, [
+				'title',
+				'nodeKind',
+				'rawNode',
+				'replacements',
+				'suggestions',
+		  ])
 		: { error: { message: error.message } }
 }
