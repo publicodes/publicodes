@@ -1,5 +1,6 @@
 import { PublicodesExpression } from '..'
 import { makeASTTransformer } from '../AST'
+import { ASTNode } from '../AST/types'
 import { syntaxError } from '../error'
 import parse from '../parse'
 
@@ -11,7 +12,10 @@ const createEmptyContext = () => ({
 
 export function createParseInlinedMecanism(
 	name: string,
-	args: Record<string, { 'par défaut'?: PublicodesExpression }>,
+	args: Record<
+		string,
+		{ 'par défaut'?: PublicodesExpression; type?: 'tableau' }
+	>,
 	body: PublicodesExpression
 ) {
 	let parsedBody
@@ -64,6 +68,45 @@ export function createParseInlinedMecanism(
 	}
 	parseInlineMecanism.nom = name
 	return Object.assign(parseInlineMecanism, 'name', {
-		value: `parse${name}Inline`,
+		value: `parse${toCamelCase(name)}Inline`,
 	})
+}
+
+export function createParseInlinedMecanismWithArray(
+	name: string,
+	args: Record<string, { type?: 'tableau' }>,
+	body: (args: Record<string, ASTNode | Array<ASTNode>>) => PublicodesExpression
+) {
+	function parseInlineMecanism(providedArgs, context) {
+		// Case of unary mecanism
+		if (Object.keys(args).length === 1 && 'valeur' in args) {
+			providedArgs = {
+				valeur: providedArgs,
+			}
+		}
+
+		const parsedProvidedArgs = Object.fromEntries(
+			Object.entries(providedArgs).map(([name, value]) => [
+				name,
+				Array.isArray(value)
+					? value.map((v) => parse(v, context))
+					: parse(value, context),
+			])
+		)
+		const parsedInlineMecanism = parse(body(parsedProvidedArgs), context)
+		parsedInlineMecanism.sourcemapInfo = {
+			mecanismName: name,
+		}
+		return parsedInlineMecanism
+	}
+	parseInlineMecanism.nom = name
+	return Object.assign(parseInlineMecanism, 'name', {
+		value: `parse${toCamelCase(name)}Inline`,
+	})
+}
+
+function toCamelCase(str: string) {
+	return str
+		.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr) => ltr.toUpperCase())
+		.replace(/\s+/g, '')
 }

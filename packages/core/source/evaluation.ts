@@ -1,5 +1,5 @@
-import Engine, { EvaluationFunction } from '.'
-import { ConstantNode, Evaluation, NodeKind } from './AST/types'
+import Engine from '.'
+import { ConstantNode, Evaluation } from './AST/types'
 import { warning } from './error'
 import { convertNodeToUnit } from './nodeUnits'
 import parse from './parse'
@@ -25,30 +25,6 @@ function convertNodesToSameUnit(this: Engine, nodes, mecanismName) {
 		}
 	})
 }
-
-export const evaluateArray: <NodeName extends NodeKind>(
-	reducer,
-	start
-) => EvaluationFunction<NodeName> = (reducer, start) =>
-	function (node: any) {
-		const evaluate = this.evaluate.bind(this)
-		const evaluatedNodes = convertNodesToSameUnit.call(
-			this,
-			node.explanation.map(evaluate),
-			node.name
-		)
-		const values = evaluatedNodes.map(({ nodeValue }) => nodeValue)
-		const nodeValue = values.some((value) => value === undefined)
-			? undefined
-			: values.reduce(reducer, start)
-
-		return {
-			...node,
-			explanation: evaluatedNodes,
-			...(evaluatedNodes[0] && { unit: evaluatedNodes[0].unit }),
-			nodeValue,
-		}
-	}
 
 export const defaultNode = (nodeValue: Evaluation) =>
 	({

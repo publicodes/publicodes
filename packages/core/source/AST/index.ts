@@ -140,12 +140,7 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 		case 'taux progressif':
 		case 'grille':
 			return traverseNodeWithTranches(fn, node)
-		case 'somme':
-		case 'une de ces conditions':
 		case 'une possibilité':
-		case 'toutes ces conditions':
-		case 'minimum':
-		case 'maximum':
 			return traverseArrayNode(fn, node)
 		case 'durée':
 			return traverseDuréeNode(fn, node)
@@ -155,8 +150,7 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseInversionNode(fn, node)
 		case 'operation':
 			return traverseOperationNode(fn, node)
-		case 'par défaut':
-			return traverseParDéfautNode(fn, node)
+
 		case 'recalcul':
 			return traverseRecalculNode(fn, node)
 		case 'nom dans la situation':
@@ -235,14 +229,7 @@ const traverseNodeWithTranches: TraverseFunction<
 	},
 })
 
-const traverseArrayNode: TraverseFunction<
-	| 'maximum'
-	| 'minimum'
-	| 'somme'
-	| 'toutes ces conditions'
-	| 'une de ces conditions'
-	| 'une possibilité'
-> = (fn, node) => ({
+const traverseArrayNode: TraverseFunction<'une possibilité'> = (fn, node) => ({
 	...node,
 	explanation: node.explanation.map(fn),
 })
@@ -264,14 +251,6 @@ const traverseInversionNode: TraverseFunction<'inversion'> = (fn, node) => ({
 	explanation: {
 		...node.explanation,
 		inversionCandidates: node.explanation.inversionCandidates.map(fn) as any, // TODO
-	},
-})
-
-const traverseParDéfautNode: TraverseFunction<'par défaut'> = (fn, node) => ({
-	...node,
-	explanation: {
-		valeur: fn(node.explanation.valeur),
-		parDéfaut: fn(node.explanation.parDéfaut),
 	},
 })
 
