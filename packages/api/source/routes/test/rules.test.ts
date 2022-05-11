@@ -30,6 +30,7 @@ describe('evaluate', () => {
 			    "formule": "42",
 			    "nom": "rules",
 			  },
+			  "replacements": [],
 			  "suggestions": {},
 			  "title": "Rules",
 			}
