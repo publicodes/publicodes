@@ -14,7 +14,7 @@ const router = new Router<State, Context>()
 app.use(cors())
 
 // Create middleware with your Engine
-const apiRoutes = publicodesAPI(() => new Engine('coucou: 0'))
+const apiRoutes = publicodesAPI(() => new Engine(`coucou: 0`))
 
 // Basic routes usage (/evaluate, /rules, etc.)
 router.use(apiRoutes)

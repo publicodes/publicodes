@@ -1,12 +1,13 @@
 ## Publicodes API
 
-Ce package vous permet de créer une API REST, qui suit les spécifications OpenAPI 3.0, à partir de vos règles de code public.
+Ce package vous permet de créer une API REST, qui suit les spécifications OpenAPI 3.0, à partir de vos règles Publicodes.
 
 Il consiste en un middleware [Koa](https://github.com/koajs/koa) qui ajoute des routes à votre router :
 
--   `POST` `/evaluate` Évalue une ou plusieurs expressions avec une situation donnée
--   `GET` `/rules` Retourne la liste de toutes vos règles
--   `GET` `/rules/{rule}` Retourne une règle spécifique
+- `POST` `/evaluate` Évalue une ou plusieurs expressions avec une situation donnée
+- `GET` `/rules` Retourne la liste de toutes vos règles
+- `GET` `/rules/{rule}` Retourne une règle spécifique
+- `GET` `/doc/*` Documentation de l'api via swagger-ui
 
 ## Installation
 

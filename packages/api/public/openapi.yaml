@@ -2,11 +2,70 @@ openapi: 3.0.0
 
 info:
   title: Publicode API
-  version: v1
-  description: Description
+  version: 1.0.0-beta.0
+  description: Cet API expose vos règles Publicodes.
 
 components:
   schemas:
+    Expressions:
+      description: Une expression ou un tableau d'expressions Publicodes
+      oneOf:
+        - type: array
+          items:
+            type: string
+          minItems: 1
+        - type: string
+
+    Situation:
+      description: La situation avec laquelle l'expression ou les expressions seront évaluées
+      type: object
+      additionalProperties:
+        type: string
+
+    EvaluateBody:
+      type: object
+      required:
+        - expressions
+      properties:
+        expressions:
+          $ref: '#/components/schemas/Expressions'
+        situation:
+          $ref: '#/components/schemas/Situation'
+
+    EvaluateResponse:
+      description: Schéma retourné par l'endpoint evaluate
+      type: object
+      properties:
+        evaluate:
+          type: array
+          items:
+            anyOf:
+              - type: object
+                properties:
+                  nodeValue:
+                    type: number
+                  traversedVariables:
+                    type: array
+                    items:
+                      type: string
+                  missingVariables:
+                    type: array
+                    items:
+                      type: string
+              - type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+        situationError:
+          type: object
+          nullable: true
+          properties:
+            message:
+              type: string
+
     InputValidationError:
       type: array
       items:
@@ -22,50 +81,59 @@ components:
             type: string
           params:
             type: object
+            additionalProperties:
+              type: string
+
+    Rule:
+      type: object
+      properties:
+        title:
+          type: string
+        nodeKind:
+          type: string
+        rawNode:
+          type: object
+          properties:
+            nom:
+              type: string
+            question:
+              type: string
+          additionalProperties:
+            type: object
+        replacements:
+          type: array
+          items:
+            type: object
+        suggestions:
+          type: object
+
+    Rules:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Rule'
 
 paths:
   /evaluate:
-    summary: Summary
-    description: Description
     post:
-      summary: Summary 0
       tags:
-        - evaluate
-      description: Description 0
+        - publicodes-api
       operationId: /evaluate
+      summary: Evalue une expression avec un situation donnée
       requestBody:
-        description: Optional description in **Markdown**
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - expressions
-              properties:
-                expressions:
-                  description: Une expression ou un tableau d'expressions
-                  oneOf:
-                    - type: array
-                      items:
-                        type: string
-                        description: expression
-                      minItems: 1
-                    - type: string
-                      description: expression
-                # situation: TODO
+              $ref: '#/components/schemas/EvaluateBody'
       responses:
         '200':
-          description: json
+          description: La requête a réussi
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  evaluate:
-                    type: string
+                $ref: '#/components/schemas/EvaluateResponse'
         '400':
-          description: InputValidationError
+          description: Erreur de validation d'entrée
           content:
             application/json:
               schema:
@@ -73,22 +141,18 @@ paths:
   /rules:
     get:
       tags:
-        - rules
+        - publicodes-api
       operationId: /rules
-      summary: Get every rules
-      description: Get every rules
+      summary: Retourne toutes les règles
       responses:
         '200':
-          description: json
+          description: La requête a réussi
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  evaluate:
-                    type: string
+                $ref: '#/components/schemas/Rules'
         '400':
-          description: InputValidationError
+          description: Erreur de validation d'entrée
           content:
             application/json:
               schema:
@@ -96,10 +160,9 @@ paths:
   /rules/{rule}:
     get:
       tags:
-        - rules
+        - publicodes-api
       operationId: /rules/{rule}
-      summary: Get a rule
-      description: Get a rule
+      summary: Retourne la règle demandée
       parameters:
         - name: rule
           in: path
@@ -109,16 +172,22 @@ paths:
             type: string
       responses:
         '200':
-          description: json
+          description: La requête a réussi
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  evaluate:
-                    type: string
+                oneOf:
+                  - $ref: '#/components/schemas/Rule'
+                  - type: object
+                    properties:
+                      error:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+
         '400':
-          description: InputValidationError
+          description: Erreur de validation d'entrée
           content:
             application/json:
               schema:
