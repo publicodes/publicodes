@@ -8,7 +8,7 @@
 
 @{%
 import {
-  string, date, variable, binaryOperation, unaryOperation, boolean, number, numberWithUnit, JSONObject, nonDéfini, nonApplicable
+  string, date, variable, binaryOperation, unaryOperation, boolean, number, numberWithUnit, JSONObject
 } from './grammarFunctions.js';
 import moo from "moo";
 

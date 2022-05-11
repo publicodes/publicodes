@@ -55,17 +55,3 @@ export const string = ([{ value }]) => ({
 	},
 })
 
-
-export const nonDéfini = () => ({
-	constant: {
-		type: undefined,
-		nodeValue: undefined,
-	},
-})
-
-export const nonApplicable = () => ({
-	constant: {
-		type: undefined,
-		nodeValue: null,
-	},
-})

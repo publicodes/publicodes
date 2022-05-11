@@ -8,8 +8,6 @@ import arrondi from './mecanisms/arrondi'
 import barème from './mecanisms/barème'
 import { decompose } from './mecanisms/composantes'
 import condition from './mecanisms/condition'
-import { mecanismAllOf } from './mecanisms/condition-allof'
-import { mecanismOneOf } from './mecanisms/condition-oneof'
 import durée from './mecanisms/durée'
 import {
 	parseEstApplicable,
@@ -19,9 +17,8 @@ import {
 } from './mecanisms/est'
 import grille from './mecanisms/grille'
 import { mecanismInversion } from './mecanisms/inversion'
-import { mecanismMax } from './mecanisms/max'
-import { mecanismMin } from './mecanisms/min'
-import nonApplicable from './mecanisms/nonApplicable'
+import { parseMaximumDe, parseMinimumDe } from './mecanisms/max-min'
+import nonApplicable from './mecanisms/non-applicable'
 import { mecanismOnePossibility } from './mecanisms/one-possibility'
 import operations from './mecanisms/operation'
 import parDéfaut from './mecanisms/parDéfaut'
@@ -32,10 +29,12 @@ import { mecanismRecalcul } from './mecanisms/recalcul'
 import résoudreRéférenceCirculaire from './mecanisms/résoudre-référence-circulaire'
 import simplifierUnité from './mecanisms/simplifier-unité'
 import situation from './mecanisms/situation'
-import { mecanismSum } from './mecanisms/sum'
+import somme from './mecanisms/somme'
 import { mecanismSynchronisation } from './mecanisms/synchronisation'
 import tauxProgressif from './mecanisms/tauxProgressif'
 import texte from './mecanisms/texte'
+import toutesCesConditions from './mecanisms/toutes-ces-conditions'
+import uneDeCesConditions from './mecanisms/une-de-ces-conditions'
 import unité from './mecanisms/unité'
 import variations, { devariate } from './mecanisms/variations'
 import { Context } from './parsePublicodes'
@@ -63,6 +62,9 @@ Utilisez leur contrepartie française : 'oui' / 'non'`
 	}
 	const node =
 		typeof rawNode === 'object' ? rawNode : parseExpression(rawNode, context)
+	if ('nodeKind' in node) {
+		return node
+	}
 	if ('nom' in node) {
 		return parseRule(node, context)
 	}
@@ -208,15 +210,15 @@ const parseFunctions = {
 	...operations,
 	...chainableMecanisms.reduce((acc, fn) => ({ [fn.nom]: fn, ...acc }), {}),
 	'inversion numérique': mecanismInversion,
-	'le maximum de': mecanismMax,
-	'le minimum de': mecanismMin,
+	'le maximum de': parseMaximumDe,
+	'le minimum de': parseMinimumDe,
 	'taux progressif': tauxProgressif,
-	'toutes ces conditions': mecanismAllOf,
+	'toutes ces conditions': toutesCesConditions,
 	'est non défini': parseEstNonDéfini,
 	'est non applicable': parseEstNonApplicable,
 	'est applicable': parseEstApplicable,
 	'est défini': parseEstDéfini,
-	'une de ces conditions': mecanismOneOf,
+	'une de ces conditions': uneDeCesConditions,
 	'une possibilité': mecanismOnePossibility,
 	condition,
 	barème,
@@ -225,7 +227,7 @@ const parseFunctions = {
 	multiplication: produit,
 	produit,
 	recalcul: mecanismRecalcul,
-	somme: mecanismSum,
+	somme,
 	synchronisation: mecanismSynchronisation,
 	[texte.nom]: texte,
 	valeur: parse,
