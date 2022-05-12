@@ -27,6 +27,7 @@
 		"moduleResolution": "node",
 		"baseUrl": "source",
 		"esModuleInterop": true,
+		"resolveJsonModule": true,
 
 		/* Advanced Options */
 		"forceConsistentCasingInFileNames": true

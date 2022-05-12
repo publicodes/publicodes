@@ -4,10 +4,9 @@ Ce package vous permet de créer une API REST, qui suit les spécifications Open
 
 Il consiste en un middleware [Koa](https://github.com/koajs/koa) qui ajoute des routes à votre router :
 
-- `POST` `/evaluate` Évalue une ou plusieurs expressions avec une situation donnée
-- `GET` `/rules` Retourne la liste de toutes vos règles
-- `GET` `/rules/{rule}` Retourne une règle spécifique
-- `GET` `/doc/*` Documentation de l'api via swagger-ui
+-   `POST` `/evaluate` Évalue une ou plusieurs expressions avec une situation donnée
+-   `GET` `/rules` Retourne la liste de toutes vos règles
+-   `GET` `/rules/{rule}` Retourne une règle spécifique
 
 ## Installation
 
@@ -46,7 +45,7 @@ Un fichier d'exemple complet se trouve dans les sources si besoin : [example.ts]
 
 ## Documentation
 
-- ...
+-   ...
 
 ## Projets phares
 
