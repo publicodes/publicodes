@@ -50,9 +50,12 @@ export const NodeValuePointer = ({ data, unit }: NodeValuePointerProps) => {
 	const engine = useContext(EngineContext)
 	return (
 		<StyledNodeValuePointer>
-			{formatValue({ nodeValue: data, unit }, {
-				formatUnit: engine?.getOptions()?.formatUnit,
-			})}
+			{formatValue(
+				{ nodeValue: data, unit },
+				{
+					formatUnit: engine?.getOptions()?.formatUnit,
+				}
+			)}
 		</StyledNodeValuePointer>
 	)
 }

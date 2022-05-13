@@ -35,7 +35,7 @@ const evaluateRecalcul: EvaluationFunction<'recalcul'> = function (node) {
 				`Un recalcul imbriqué a été tenté à l'intérieur du recalcul ${this.cache._meta.currentRecalcul}. La valeur undefined (non défini) est retournée.`
 			)
 		}
-		return defaultNode(undefined) as any as RecalculNode & EvaluatedNode
+		return defaultNode(null) as any as RecalculNode & EvaluatedNode
 	}
 
 	const amendedSituation = node.explanation.amendedSituation
@@ -68,7 +68,6 @@ const evaluateRecalcul: EvaluationFunction<'recalcul'> = function (node) {
 	const nodeToEvaluate =
 		node.explanation.recalcul ??
 		this.getRule(node.explanation.contextDottedName)
-
 	engine.cache._meta.currentRecalcul = nodeToEvaluate
 	const evaluatedNode = engine.evaluate(nodeToEvaluate)
 	delete engine.cache._meta.currentRecalcul

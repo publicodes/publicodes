@@ -40,7 +40,7 @@ describe('Missing variables', function () {
 				question: '?',
 			},
 			'evt . ko': {
-				valeur: "evt = 'ko'"
+				valeur: "evt = 'ko'",
 			},
 		}
 		const result = new Engine(rawRules).evaluate('startHere').missingVariables

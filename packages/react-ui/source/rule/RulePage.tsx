@@ -2,7 +2,6 @@ import Engine, {
 	formatValue,
 	isNotYetDefined,
 	serializeUnit,
-
 	utils,
 	EvaluatedNode,
 } from 'publicodes'
