@@ -1,8 +1,8 @@
 import chai, { expect } from 'chai'
 import 'mocha'
 import sinon from 'sinon'
-import Engine from '../source'
 import sinonChai from 'sinon-chai'
+import Engine from '../source'
 
 chai.use(sinonChai)
 
@@ -31,7 +31,7 @@ d:
 	})
 	describe('evaluation of rule on top of the recalcul chain', () => {
 		it('evaluates to undefined', () => {
-			expect(new Engine(rulesYaml).evaluate('d').nodeValue).to.be.undefined
+			expect(new Engine(rulesYaml).evaluate('d').nodeValue).to.be.null
 		})
 
 		it('throws a warning', () => {

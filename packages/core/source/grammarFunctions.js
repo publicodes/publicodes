@@ -54,4 +54,3 @@ export const string = ([{ value }]) => ({
 		nodeValue: value.slice(1, -1),
 	},
 })
-
