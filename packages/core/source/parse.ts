@@ -12,9 +12,9 @@ import durée from './mecanisms/durée'
 import {
 	parseEstApplicable,
 	parseEstDéfini,
-	parseEstNonApplicable,
 	parseEstNonDéfini,
 } from './mecanisms/est'
+import { parseEstNonApplicable } from './mecanisms/est-non-applicable'
 import grille from './mecanisms/grille'
 import { mecanismInversion } from './mecanisms/inversion'
 import { parseMaximumDe, parseMinimumDe } from './mecanisms/max-min'
@@ -236,6 +236,7 @@ const parseFunctions = {
 	objet: (v) => ({
 		type: 'objet',
 		nodeValue: v,
+		missingVariables: {},
 		nodeKind: 'constant',
 	}),
 	constant: (v) => ({
@@ -244,6 +245,8 @@ const parseFunctions = {
 		// with their full precision. This is especially useful for percentages like
 		// APEC 0,036 %.
 		fullPrecision: true,
+		isNullable: v.nodeValue == null,
+		missingVariables: {},
 		nodeValue: v.nodeValue,
 		nodeKind: 'constant',
 	}),

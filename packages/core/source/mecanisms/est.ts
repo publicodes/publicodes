@@ -4,24 +4,10 @@ import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
 import { createParseInlinedMecanism } from './utils'
 
-export type EstNonApplicableNode = {
-	explanation: ASTNode
-	nodeKind: 'est non applicable'
-}
-
 export type EstNonDéfiniNode = {
 	explanation: ASTNode
 	nodeKind: 'est non défini'
 }
-
-export function parseEstNonApplicable(v, context) {
-	const explanation = parse(v, context)
-	return {
-		explanation,
-		nodeKind: 'est non applicable',
-	} as EstNonApplicableNode
-}
-parseEstNonApplicable.nom = 'est non applicable'
 
 export function parseEstNonDéfini(v, context) {
 	const explanation = parse(v, context)
@@ -54,30 +40,18 @@ const parseEstApplicable = createParseInlinedMecanism(
 
 export { parseEstDéfini, parseEstApplicable }
 
-const evaluate: EvaluationFunction<'est non applicable' | 'est non défini'> =
-	function (node) {
-		const valeur = this.evaluate(node.explanation)
-		let nodeValue: boolean | undefined | null = false
-		if (valeur.nodeValue === undefined && node.nodeKind === 'est non défini') {
-			console.log('zoobs')
-			nodeValue = true
-		}
-		if (node.nodeKind === 'est non applicable') {
-			if (valeur.nodeValue === undefined) {
-				nodeValue = undefined
-			}
-			if (valeur.nodeValue === null) {
-				nodeValue = true
-			}
-		}
-
-		return {
-			...node,
-			nodeValue,
-			missingVariables: valeur.missingVariables,
-			explanation: valeur,
-		}
+const evaluate: EvaluationFunction<'est non défini'> = function (node) {
+	const valeur = this.evaluate(node.explanation)
+	let nodeValue: boolean | undefined | null = false
+	if (valeur.nodeValue === undefined) {
+		nodeValue = true
 	}
 
-registerEvaluationFunction('est non applicable', evaluate)
+	return {
+		...node,
+		nodeValue,
+		missingVariables: valeur.missingVariables,
+		explanation: valeur,
+	}
+}
 registerEvaluationFunction('est non défini', evaluate)

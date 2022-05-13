@@ -1,6 +1,12 @@
-import { ASTNode, EvaluatedNode } from './AST/types'
+import Engine from '.'
+import {
+	ASTNode,
+	EvaluatedNode,
+	Evaluation,
+	MissingVariables,
+} from './AST/types'
 import { warning } from './error'
-import { evaluateDisablingParent } from './evaluateApplicability'
+import { mergeMissing } from './evaluation'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { capitalise0 } from './format'
 import parse, { mecanismKeys } from './parse'
@@ -26,6 +32,7 @@ export type Rule = {
 	titre?: string
 	sévérité?: string
 	type?: string
+	'possiblement non applicable'?: 'oui'
 	note?: string
 	remplace?: RendNonApplicable | Array<RendNonApplicable>
 	'rend non applicable'?: Remplace | Array<string>
@@ -85,7 +92,21 @@ export default function parseRule(
 			Object.entries(rawRule).filter(([key]) => mecanismKeys.includes(key))
 		),
 		...('formule' in rawRule && { valeur: rawRule.formule }),
-		'nom dans la situation': dottedName,
+		'dans la situation': {
+			clé: dottedName,
+			'possiblement non applicable': rawRule['possiblement non applicable'],
+			'type par défaut':
+				// TODO : this could be infered by a good type inference algorithm. And it should be documented.
+				(!('type' in rawRule) && rawRule.question && !rawRule.unité) ||
+				rawRule.type === 'booléen'
+					? 'boolean'
+					: ['paragraphe', 'texte'].includes(rawRule.type) ||
+					  rawRule['une possibilité'] ||
+					  rawRule.formule?.['une possibilité'] ||
+					  rawRule.valeur?.['une possibilité']
+					? 'string'
+					: 'number',
+		},
 	}
 
 	const ruleContext = { ...context, dottedName, ruleTitle }
@@ -148,10 +169,8 @@ export default function parseRule(
 }
 
 registerEvaluationFunction('rule', function evaluate(node) {
-	const { ruleDisabledByItsParent, nullableParent } = evaluateDisablingParent(
-		this,
-		node
-	)
+	const { ruleDisabledByItsParent, nullableParent, parentMissingVariables } =
+		evaluateDisablingParent(this, node)
 
 	let valeurEvaluation: EvaluatedNode = {
 		...node.explanation.valeur,
@@ -191,16 +210,95 @@ registerEvaluationFunction('rule', function evaluate(node) {
 	}
 
 	const evaluation = {
+		...valeurEvaluation,
+		missingVariables: mergeMissing(
+			valeurEvaluation.missingVariables,
+			parentMissingVariables
+		),
 		...node,
 		explanation: {
 			parents: node.explanation.parents,
 			valeur: valeurEvaluation,
 			nullableParent,
 		},
-		nodeValue: valeurEvaluation.nodeValue,
-		...(valeurEvaluation &&
-			'unit' in valeurEvaluation && { unit: valeurEvaluation.unit }),
 	}
 
 	return evaluation
 })
+
+export function evaluateDisablingParent(
+	engine: Engine,
+	node: RuleNode
+): {
+	ruleDisabledByItsParent: boolean
+	parentMissingVariables: MissingVariables
+	nullableParent?: ASTNode
+} {
+	const nullableParent = node.explanation.parents.find(
+		(ref) =>
+			engine.ruleUnits.get(ref)?.isNullable ||
+			engine.ruleUnits.get(ref)?.type === 'boolean'
+	)
+
+	if (!nullableParent) {
+		return { ruleDisabledByItsParent: false, parentMissingVariables: {} }
+	}
+
+	if (
+		// TODO: remove this condition and the associated "parentRuleStack", cycles
+		// should be detected and avoided at parse time.
+		!engine.cache._meta.parentRuleStack.includes(node.dottedName)
+	) {
+		engine.cache._meta.parentRuleStack.unshift(node.dottedName)
+		let parentIsNotApplicable = {
+			nodeValue: false as Evaluation,
+			missingVariables: {},
+		}
+		if (engine.ruleUnits.get(nullableParent)?.isNullable) {
+			parentIsNotApplicable = engine.evaluate({
+				nodeKind: 'est non applicable',
+				explanation: nullableParent,
+			})
+		}
+		if (
+			parentIsNotApplicable.nodeValue !== true &&
+			engine.ruleUnits.get(nullableParent)?.type === 'boolean'
+		) {
+			parentIsNotApplicable = engine.evaluate({
+				nodeKind: 'operation',
+				operationKind: '=',
+				explanation: [
+					nullableParent,
+					{ constant: { nodeValue: false, type: 'boolean' } },
+				],
+			})
+		}
+
+		engine.cache._meta.parentRuleStack.shift()
+		if (parentIsNotApplicable.nodeValue === true) {
+			return {
+				ruleDisabledByItsParent: true,
+				parentMissingVariables: parentIsNotApplicable.missingVariables ?? {},
+				nullableParent,
+			}
+		}
+	}
+
+	let parentMissingVariables: MissingVariables = {}
+
+	if (engine.ruleUnits.get(nullableParent)?.type === 'boolean') {
+		const parentEvaluation = engine.evaluate(nullableParent)
+		parentMissingVariables = parentEvaluation.missingVariables ?? {}
+		return {
+			ruleDisabledByItsParent: parentEvaluation.nodeValue === false,
+			parentMissingVariables,
+			nullableParent,
+		}
+	}
+
+	return {
+		ruleDisabledByItsParent: false,
+		parentMissingVariables,
+		nullableParent,
+	}
+}

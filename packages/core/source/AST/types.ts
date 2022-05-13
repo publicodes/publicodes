@@ -2,7 +2,8 @@ import { ArrondiNode } from '../mecanisms/arrondi'
 import { BarèmeNode } from '../mecanisms/barème'
 import { ConditionNode } from '../mecanisms/condition'
 import { DuréeNode } from '../mecanisms/durée'
-import { EstNonApplicableNode, EstNonDéfiniNode } from '../mecanisms/est'
+import { EstNonDéfiniNode } from '../mecanisms/est'
+import { EstNonApplicableNode } from '../mecanisms/est-non-applicable'
 import { GrilleNode } from '../mecanisms/grille'
 import { InversionNode } from '../mecanisms/inversion'
 import { PossibilityNode } from '../mecanisms/one-possibility'
@@ -92,7 +93,7 @@ export type Unit = {
 	denominators: Array<BaseUnit>
 }
 
-// Idée : une évaluation est un n-uple : (value, unit, missingVariable, isApplicable)
+// Idée : une évaluation est un n-uple : (value, unit, missingVariables, isApplicable)
 type EvaluationDecoration<T extends Types> = {
 	nodeValue: Evaluation<T>
 	missing?: {
@@ -101,7 +102,7 @@ type EvaluationDecoration<T extends Types> = {
 	}
 	unit?: Unit
 	traversedVariables?: Array<string>
-	missingVariables?: MissingVariables
+	missingVariables: MissingVariables
 }
 export type Types = number | boolean | string | Record<string, unknown>
 // TODO: type NotYetDefined & NotApplicable properly (see #14) then refactor any code depending on these:

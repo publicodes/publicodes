@@ -4,8 +4,8 @@ import dedent from 'dedent-js'
 import Engine from '../source/index'
 
 describe('inversions', () => {
-	it('should handle non inverted example', () => {
-		const rules = dedent`
+  it('should handle non inverted example', () => {
+    const rules = dedent`
         net:
           formule:
             produit:
@@ -15,15 +15,15 @@ describe('inversions', () => {
         brut:
           unité: €
       `
-		const result = new Engine(rules)
-			.setSituation({ brut: '2300 €' })
-			.evaluate('net')
+    const result = new Engine(rules)
+      .setSituation({ brut: '2300 €' })
+      .evaluate('net')
 
-		expect(result.nodeValue).to.be.closeTo(1771, 0.001)
-	})
+    expect(result.nodeValue).to.be.closeTo(1771, 0.001)
+  })
 
-	it('should handle simple inversion', () => {
-		const rules = dedent`
+  it('should handle simple inversion', () => {
+    const rules = dedent`
         net:
           formule:
             produit:
@@ -37,15 +37,15 @@ describe('inversions', () => {
               avec:
                 - net
       `
-		const result = new Engine(rules)
-			.setSituation({ net: '2000 €' })
-			.evaluate('brut')
+    const result = new Engine(rules)
+      .setSituation({ net: '2000 €' })
+      .evaluate('brut')
 
-		expect(result.nodeValue).to.be.closeTo(2000 / (77 / 100), 0.0001 * 2000)
-	})
+    expect(result.nodeValue).to.be.closeTo(2000 / (77 / 100), 0.0001 * 2000)
+  })
 
-	it('should handle inversion with value at 0', () => {
-		const rules = dedent`
+  it('should handle inversion with value at 0', () => {
+    const rules = dedent`
         net:
           formule:
             produit:
@@ -59,14 +59,14 @@ describe('inversions', () => {
               avec:
                 - net
       `
-		const result = new Engine(rules)
-			.setSituation({ net: '0 €' })
-			.evaluate('brut')
-		expect(result.nodeValue).to.be.closeTo(0, 0.0001)
-	})
+    const result = new Engine(rules)
+      .setSituation({ net: '0 €' })
+      .evaluate('brut')
+    expect(result.nodeValue).to.be.closeTo(0, 0.0001)
+  })
 
-	it('should handle inversions with missing variables', () => {
-		const rules = dedent`
+  it('should handle inversions with missing variables', () => {
+    const rules = dedent`
         net:
           formule:
             produit:
@@ -105,15 +105,15 @@ describe('inversions', () => {
                 - sinon:
                     taux: 70%
       `
-		const result = new Engine(rules)
-			.setSituation({ net: '2000 €' })
-			.evaluate('brut')
-		expect(result.nodeValue).to.be.undefined
-		expect(result.missingVariables).to.include('cadre')
-	})
+    const result = new Engine(rules)
+      .setSituation({ net: '2000 €' })
+      .evaluate('brut')
+    expect(result.nodeValue).to.be.undefined
+    expect(Object.keys(result.missingVariables)).to.include('cadre')
+  })
 
-	it('should reset cache after a failed inversion', () => {
-		const rules = dedent`
+  it('should reset cache after a failed inversion', () => {
+    const rules = dedent`
 			net:
 				variations:
 					- si: assiette < 100
@@ -126,13 +126,13 @@ describe('inversions', () => {
 						- net
 		`
 
-		const engine = new Engine(rules)
-		engine.setSituation({ net: 150 }).evaluate('brut')
-		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
-	})
+    const engine = new Engine(rules)
+    engine.setSituation({ net: 150 }).evaluate('brut')
+    expect(engine.evaluate('assiette').nodeValue).to.be.undefined
+  })
 
-	it("shouldn't report a missing salary if another salary was input", () => {
-		const rules = dedent`
+  it("shouldn't report a missing salary if another salary was input", () => {
+    const rules = dedent`
         net:
           formule:
             produit:
@@ -163,15 +163,15 @@ describe('inversions', () => {
           formule: 67 + brut
 
       `
-		const result = new Engine(rules)
-			.setSituation({ net: '2000 €', cadre: 'oui' })
-			.evaluate('total')
-		expect(result.nodeValue).to.be.closeTo(3750, 1)
-		expect(result.missingVariables).to.be.empty
-	})
+    const result = new Engine(rules)
+      .setSituation({ net: '2000 €', cadre: 'oui' })
+      .evaluate('total')
+    expect(result.nodeValue).to.be.closeTo(3750, 1)
+    expect(result.missingVariables).to.be.empty
+  })
 
-	it('complex inversion with composantes', () => {
-		const rules = dedent`
+  it('complex inversion with composantes', () => {
+    const rules = dedent`
       net:
         formule:
           produit:
@@ -201,10 +201,10 @@ describe('inversions', () => {
               - net
               - total
     `
-		const result = new Engine(rules)
-			.setSituation({ net: '2000 €' })
-			.evaluate('total')
-		expect(result.nodeValue).to.be.closeTo(3750, 1)
-		expect(result.missingVariables).to.be.empty
-	})
+    const result = new Engine(rules)
+      .setSituation({ net: '2000 €' })
+      .evaluate('total')
+    expect(result.nodeValue).to.be.closeTo(3750, 1)
+    expect(result.missingVariables).to.be.empty
+  })
 })

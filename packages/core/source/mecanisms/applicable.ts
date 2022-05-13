@@ -13,6 +13,7 @@ export default createParseInlinedMecanism(
 			sinon: {
 				constant: {
 					type: undefined,
+					isNullable: true,
 					nodeValue: null,
 				},
 			},

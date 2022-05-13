@@ -12,10 +12,7 @@ const createEmptyContext = () => ({
 
 export function createParseInlinedMecanism(
 	name: string,
-	args: Record<
-		string,
-		{ 'par défaut'?: PublicodesExpression; type?: 'tableau' }
-	>,
+	args: Record<string, { 'par défaut'?: PublicodesExpression; type?: 'liste' }>,
 	body: PublicodesExpression
 ) {
 	let parsedBody
@@ -74,7 +71,7 @@ export function createParseInlinedMecanism(
 
 export function createParseInlinedMecanismWithArray(
 	name: string,
-	args: Record<string, { type?: 'tableau' }>,
+	args: Record<string, { type?: 'liste' }>,
 	body: (args: Record<string, ASTNode | Array<ASTNode>>) => PublicodesExpression
 ) {
 	function parseInlineMecanism(providedArgs, context) {

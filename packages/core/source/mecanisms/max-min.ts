@@ -3,7 +3,7 @@ import { createParseInlinedMecanismWithArray } from './utils'
 export const parseMaximumDe = createParseInlinedMecanismWithArray(
 	'le maximum de',
 	{
-		valeur: { type: 'tableau' },
+		valeur: { type: 'liste' },
 	},
 	({ valeur }) =>
 		valeur.reduce(
@@ -23,7 +23,7 @@ export const parseMaximumDe = createParseInlinedMecanismWithArray(
 export const parseMinimumDe = createParseInlinedMecanismWithArray(
 	'le maximum de',
 	{
-		valeur: { type: 'tableau' },
+		valeur: { type: 'liste' },
 	},
 	({ valeur }) =>
 		valeur.reduce(

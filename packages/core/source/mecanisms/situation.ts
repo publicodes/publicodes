@@ -1,4 +1,4 @@
-import { ASTNode, EvaluatedNode, isNotYetDefined } from '../AST/types'
+import { ASTNode, EvaluatedNode } from '../AST/types'
 import { mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
@@ -7,13 +7,20 @@ export type SituationNode = {
 	explanation: {
 		situationKey: string
 		valeur: ASTNode
+		isNullable: true | undefined
+		defaultType: 'string' | 'boolean' | 'number'
 		situationValeur?: ASTNode
 	}
-	nodeKind: 'nom dans la situation'
+	nodeKind: 'dans la situation'
 }
 export default function parseSituation(v, context) {
 	const explanation = {
-		situationKey: v[parseSituation.nom],
+		situationKey: v[parseSituation.nom].clé,
+		isNullable:
+			v[parseSituation.nom]['possiblement non applicable'] === 'oui'
+				? true
+				: undefined,
+		defaultType: v[parseSituation.nom]['type par défaut'],
 		valeur: parse(v.valeur, context),
 	}
 	return {
@@ -22,7 +29,7 @@ export default function parseSituation(v, context) {
 	} as SituationNode
 }
 
-parseSituation.nom = 'nom dans la situation' as const
+parseSituation.nom = 'dans la situation' as const
 
 registerEvaluationFunction(parseSituation.nom, function evaluate(node) {
 	const explanation = { ...node.explanation }
@@ -53,7 +60,7 @@ registerEvaluationFunction(parseSituation.nom, function evaluate(node) {
 		explanation,
 		missingVariables:
 			Object.keys(missingVariables).length === 0 &&
-			isNotYetDefined(valeur.nodeValue)
+			valeur.nodeValue === undefined
 				? { [situationKey]: 1 }
 				: missingVariables,
 	}

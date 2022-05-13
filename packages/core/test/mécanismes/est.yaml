@@ -1,4 +1,12 @@
 a:
+  possiblement non applicable: oui
+
+b:
+
+non applicable:
+  constant:
+    nodeValue: null
+    type: undefined
 
 est non défini:
   est non défini: a
@@ -12,10 +20,7 @@ est non défini:
       variables manquantes: []
     - nom: non applicable
       situation:
-        a:
-          constant:
-            nodeValue: null
-            type: undefined
+        a: non applicable
       valeur attendue: false
       variables manquantes: []
 
@@ -24,45 +29,76 @@ est défini:
   exemples:
     - nom: non défini
       valeur attendue: false
+      variables manquantes: [a]
     - nom: défini
       situation: { a: 1 }
       valeur attendue: true
+      variables manquantes: []
     - nom: non applicable
       situation:
-        a:
-          constant:
-            nodeValue: null
-            type: undefined
+        a: non applicable
       valeur attendue: true
-
-est applicable:
-  est applicable: a
-  exemples:
-    - nom: non défini
-      valeur attendue: undefined
-    - nom: applicable
-      situation: { a: non }
-      valeur attendue: true
-    - nom: non applicable
-      situation:
-        a:
-          constant:
-            nodeValue: null
-            type: undefined
-      valeur attendue: false
 
 est non applicable:
+  est non applicable: b
+  exemples:
+    - nom: non défini
+      valeur attendue: false
+      variables manquantes: []
+    - nom: applicable
+      situation: { b: non }
+      valeur attendue: false
+      variables manquantes: []
+
+est non applicable avec possiblement non applicable:
   est non applicable: a
   exemples:
     - nom: non défini
       valeur attendue: undefined
+      variables manquantes: [a]
     - nom: applicable
       situation: { a: non }
       valeur attendue: false
+      variables manquantes: []
     - nom: non applicable
       situation:
-        a:
-          constant:
-            nodeValue: null
-            type: undefined
+        a: non applicable
       valeur attendue: true
+      variables manquantes: []
+
+est applicable:
+  est applicable: b
+  exemples:
+    - nom: non défini
+      valeur attendue: true
+      variables manquantes: []
+    - nom: applicable
+      situation: { b: non }
+      valeur attendue: true
+      variables manquantes: []
+
+est applicable avec possiblement non applicable:
+  est applicable: a
+  exemples:
+    - nom: non défini
+      valeur attendue: undefined
+      variables manquantes: [a]
+    - nom: applicable
+      situation: { a: non }
+      valeur attendue: true
+      variables manquantes: []
+    - nom: non applicable
+      situation:
+        a: non applicable
+      valeur attendue: false
+      variables manquantes: []
+
+x: non
+non applicable si:
+  applicable si: x
+  valeur: 2€
+test non applicabilité:
+  est non applicable: non applicable si
+  exemples:
+    valeur attendue: true
+    variables manquantes: []
