@@ -34,11 +34,10 @@ registerEvaluationFunction('reference', function evaluateReference(node) {
 	if (!node.dottedName) {
 		throw new InternalError(node)
 	}
-
 	const explanation = this.evaluate(this.parsedRules[node.dottedName])
+
 	return {
+		...explanation,
 		...node,
-		nodeValue: explanation.nodeValue,
-		...('unit' in explanation && { unit: explanation.unit }),
 	}
 })

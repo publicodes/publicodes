@@ -6,11 +6,11 @@
 */
 
 import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import Engine from '../source/index'
+import { Rule } from '../source/rule'
 import { parseUnit } from '../source/units'
 import testSuites from './mécanismes/index'
-import { it, describe } from 'mocha'
-import { Rule } from '../source/rule'
 
 testSuites.forEach(([suiteName, suite]) => {
 	const engine = new Engine(suite)
@@ -54,7 +54,9 @@ testSuites.forEach(([suiteName, suite]) => {
 									)
 								}
 								if (expectedMissing) {
-									expect(result.missingVariables).to.eql(expectedMissing)
+									expect(Object.keys(result.missingVariables)).to.eql(
+										expectedMissing
+									)
 								}
 								if (type) {
 									expect(

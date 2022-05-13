@@ -1,5 +1,5 @@
 import yaml from 'yaml'
-import { ParsedRules, Logger, ASTNode } from '.'
+import { ASTNode, Logger, ParsedRules } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
 import parse from './parse'
 import { getReplacements, inlineReplacements } from './replacement'
@@ -224,40 +224,34 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 
 	function inferNodeType(node: ASTNode): InferedType {
 		switch (node.nodeKind) {
-			case 'somme':
-			case 'produit':
 			case 'barème':
 			case 'durée':
 			case 'grille':
 			case 'taux progressif':
-			case 'maximum':
-			case 'minimum':
 				return { isNullable: false, type: 'number' }
-
-			case 'applicable si':
-			case 'non applicable si':
-				return {
-					isNullable: true,
-					type: inferNodeType(node.explanation.valeur).type,
-				}
-
-			case 'toutes ces conditions':
-			case 'une de ces conditions':
-				return { isNullable: true, type: 'boolean' }
+			case 'est non défini':
+			case 'est non applicable':
+				return { isNullable: false, type: 'boolean' }
 
 			case 'constant':
 				return {
-					isNullable:
-						node.nodeValue === null || typeof node.nodeValue === 'boolean',
+					isNullable: node.nodeValue === null,
 					type: node.type,
 				}
 
 			case 'operation':
 				return {
-					isNullable: ['<', '<=', '>', '>=', '=', '!='].includes(
+					isNullable: ['<', '<=', '>', '>=', '/', '*'].includes(
 						node.operationKind
-					),
-					type: ['<', '<=', '>', '>=', '=', '!='].includes(node.operationKind)
+					)
+						? inferNodeUnitAndCache(node.explanation[0]).isNullable ||
+						  inferNodeUnitAndCache(node.explanation[1]).isNullable
+						: node.operationKind === '-'
+						? inferNodeUnitAndCache(node.explanation[0]).isNullable
+						: false,
+					type: ['<', '<=', '>', '>=', '=', '!=', 'et', 'ou'].includes(
+						node.operationKind
+					)
 						? 'boolean'
 						: 'number',
 				}
@@ -276,18 +270,32 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 			case 'texte':
 				return { isNullable: false, type: 'string' }
 
-			case 'abattement':
-				return inferNodeUnitAndCache(node.explanation.assiette)
-
-			case 'arrondi':
-			case 'nom dans la situation':
-			case 'plafond':
-			case 'plancher':
 			case 'rule':
+			case 'arrondi':
 				return inferNodeUnitAndCache(node.explanation.valeur)
-
+			case 'dans la situation':
+				return {
+					isNullable:
+						node.explanation.isNullable ??
+						inferNodeUnitAndCache(node.explanation.valeur).isNullable,
+					type:
+						inferNodeUnitAndCache(node.explanation.valeur).type ??
+						node.explanation.defaultType,
+				}
 			case 'unité':
+			case 'simplifier unité':
 				return inferNodeUnitAndCache(node.explanation)
+			case 'condition':
+				return {
+					isNullable: [
+						node.explanation.si,
+						node.explanation.alors,
+						node.explanation.sinon,
+					].some((n) => inferNodeUnitAndCache(n).isNullable),
+					type:
+						inferNodeUnitAndCache(node.explanation.alors).type ??
+						inferNodeUnitAndCache(node.explanation.sinon).type,
+				}
 
 			case 'variations':
 				// With "rend non applicable" we have a "consequence: null" line in our
@@ -315,14 +323,6 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 						(firstNonNullConsequence &&
 							inferNodeUnitAndCache(firstNonNullConsequence)?.type) ??
 						'number',
-				}
-
-			case 'par défaut':
-				return {
-					isNullable:
-						inferNodeUnitAndCache(node.explanation.parDéfaut).isNullable ||
-						inferNodeUnitAndCache(node.explanation.valeur).isNullable,
-					type: inferNodeUnitAndCache(node.explanation.parDéfaut).type,
 				}
 
 			case 'reference':

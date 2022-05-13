@@ -153,7 +153,7 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 
 		case 'recalcul':
 			return traverseRecalculNode(fn, node)
-		case 'nom dans la situation':
+		case 'dans la situation':
 			return traverseSituationNode(fn, node)
 		case 'synchronisation':
 			return traverseSynchronisationNode(fn, node)
@@ -291,7 +291,7 @@ const traverseRecalculNode: TraverseFunction<'recalcul'> = (fn, node) => ({
 	},
 })
 
-const traverseSituationNode: TraverseFunction<'nom dans la situation'> = (
+const traverseSituationNode: TraverseFunction<'dans la situation'> = (
 	fn,
 	node
 ) => ({

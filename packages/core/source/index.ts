@@ -1,5 +1,4 @@
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
-import { isApplicable } from './evaluateApplicability'
 import { evaluationFunctions } from './evaluationFunctions'
 import parse from './parse'
 import parsePublicodes, {
@@ -256,25 +255,7 @@ export default class Engine<Name extends string = string> {
 		}
 
 		this.cache.nodes.set(parsedNode, evaluatedNode)
-
 		return evaluatedNode
-	}
-
-	isApplicable(
-		value: PublicodesExpression | ASTNode
-	): ReturnType<typeof isApplicable> {
-		let node
-		if (!value || typeof value !== 'object' || !('nodeKind' in value)) {
-			node = this.parse(value, {
-				dottedName: 'evaluation',
-				parsedRules: {},
-				...this.options,
-			})
-		} else {
-			node = value as ASTNode
-		}
-
-		return isApplicable.call(this, node)
 	}
 
 	/**
@@ -301,8 +282,10 @@ export default class Engine<Name extends string = string> {
 export function UNSAFE_isNotApplicable<DottedName extends string = string>(
 	engine: Engine<DottedName>,
 	dottedName: DottedName
-): boolean {
-	console.warn('UNSAFE_isNotApplicable is deprecated')
-	console.warn('Use engine.isApplicable(node) instead')
-	return !engine.isApplicable(dottedName)
+): boolean | undefined {
+	console.warn('UNSAFE_isNotApplicable est déprécié')
+	console.warn('Utilisez le mécanisme "est non applicable" à la place.')
+	return engine.evaluate({ 'est non applicable': dottedName }).nodeValue as
+		| boolean
+		| undefined
 }

@@ -1,4 +1,4 @@
-import { ASTNode, Unit } from '../AST/types'
+import { ASTNode } from '../AST/types'
 import { evaluationError } from '../error'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
@@ -23,8 +23,8 @@ registerEvaluationFunction('simplifier unité', function evaluate(node) {
 	const valeur = this.evaluate(node.explanation)
 	const nodeValue = valeur.nodeValue
 	const defaultReturn = {
+		...valeur,
 		...node,
-		nodeValue,
 		explanation: valeur,
 	}
 	if (nodeValue == null) {

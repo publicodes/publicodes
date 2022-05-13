@@ -21,10 +21,12 @@ export const mecanismOnePossibility = (v, context: Context) => {
 		explanation: v.possibilités.map((p) =>
 			parse(p, { ...context, circularReferences: true })
 		),
+		context: context.dottedName,
 		nodeKind: 'une possibilité',
 	} as PossibilityNode
 }
 registerEvaluationFunction<'une possibilité'>('une possibilité', (node) => ({
 	...node,
+	missingVariables: { [node.context]: 1 },
 	nodeValue: undefined,
 }))

@@ -56,7 +56,7 @@ const UIComponents = {
 	reference: Leaf,
 	rule: Rule,
 	condition: Condition,
-	'nom dans la situation': Situation,
+	'dans la situation': Situation,
 	somme: Somme,
 	synchronisation: Synchronisation,
 	recalcul: Recalcul,

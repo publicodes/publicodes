@@ -2,6 +2,7 @@ import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
 import { convertToDate } from '../date'
 import { warning } from '../error'
+import { mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
@@ -58,6 +59,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		return {
 			...evaluatedNode,
 			nodeValue: node.operationKind === 'et' ? false : node1.nodeValue,
+			missingVariables: node1.missingVariables,
 		}
 	}
 
@@ -75,11 +77,17 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		return {
 			...evaluatedNode,
 			nodeValue: node.operationKind === 'et' ? false : node2.nodeValue,
+			missingVariables: node2.missingVariables,
 		}
 	}
 
+	evaluatedNode.missingVariables = mergeAllMissing([node1, node2])
+
 	if (node1.nodeValue === undefined || node2.nodeValue === undefined) {
-		evaluatedNode = { ...evaluatedNode, nodeValue: undefined }
+		evaluatedNode = {
+			...evaluatedNode,
+			nodeValue: undefined,
+		}
 	}
 
 	const isAdditionOrSubstractionWithPercentage =
