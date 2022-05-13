@@ -1,5 +1,6 @@
 import { EvaluationFunction } from '..'
 import { ConstantNode, Unit } from '../AST/types'
+import { mergeMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
@@ -39,6 +40,15 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		return {
 			...node,
 			nodeValue: undefined,
+			missingVariables: {
+				...Object.fromEntries(
+					node.explanation.inversionCandidates.map((candidate) => [
+						candidate.dottedName,
+						1,
+					])
+				),
+				[node.explanation.ruleToInverse]: 1,
+			},
 		}
 	}
 	const evaluatedInversionGoal = this.evaluate(inversionGoal)
@@ -151,6 +161,10 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 			inversionGoal,
 			inversionNumberOfIterations,
 		},
+		missingVariables: mergeMissing(
+			y1Node.missingVariables,
+			y2Node.missingVariables
+		),
 	}
 }
 

@@ -1,6 +1,6 @@
 import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
-import { defaultNode } from '../evaluation'
+import { defaultNode, mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
 import { convertUnit, parseUnit } from '../units'
@@ -39,6 +39,7 @@ function evaluateBarème(tranches, assiette, evaluate) {
 			return { ...tranche, nodeValue: 0 }
 		}
 		const taux = evaluate(tranche.taux)
+		const missingVariables = mergeAllMissing([taux, tranche])
 
 		if (
 			[
@@ -52,6 +53,7 @@ function evaluateBarème(tranches, assiette, evaluate) {
 				...tranche,
 				taux,
 				nodeValue: undefined,
+				missingVariables,
 			}
 		}
 		return {
@@ -62,6 +64,7 @@ function evaluateBarème(tranches, assiette, evaluate) {
 				(Math.min(assiette.nodeValue, tranche.plafondValue) -
 					tranche.plancherValue) *
 				convertUnit(taux.unit, parseUnit(''), taux.nodeValue as number),
+			missingVariables,
 		}
 	})
 }
@@ -87,6 +90,7 @@ const evaluate: EvaluationFunction<'barème'> = function (node) {
 	return {
 		...node,
 		nodeValue,
+		missingVariables: mergeAllMissing([assiette, multiplicateur, ...tranches]),
 		explanation: {
 			assiette,
 			multiplicateur,

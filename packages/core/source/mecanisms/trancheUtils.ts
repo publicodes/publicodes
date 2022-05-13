@@ -1,6 +1,7 @@
 import Engine from '..'
 import { ASTNode, Evaluation } from '../AST/types'
 import { evaluationError, warning } from '../error'
+import { mergeAllMissing } from '../evaluation'
 import parse from '../parse'
 import { convertUnit, inferUnit } from '../units'
 
@@ -89,6 +90,7 @@ export function evaluatePlafondUntilActiveTranche(
 							nodeValue: undefined,
 							isActive: undefined,
 							isAfterActive,
+							missingVariables: mergeAllMissing(calculationValues),
 						},
 					],
 					false,

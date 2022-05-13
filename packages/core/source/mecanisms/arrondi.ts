@@ -1,6 +1,7 @@
-import { EvaluationFunction } from '..'
+import { EvaluationFunction, simplifyNodeUnit } from '..'
 import { ASTNode, EvaluatedNode } from '../AST/types'
 import { evaluationError } from '../error'
+import { mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
 import { serializeUnit } from '../units'
@@ -18,7 +19,9 @@ function roundWithPrecision(n: number, fractionDigits: number) {
 }
 
 const evaluate: EvaluationFunction<'arrondi'> = function (node) {
-	const valeur = this.evaluate(node.explanation.valeur)
+	// We need to simplify the node unit to correctly round values containing
+	// percentages units, see #1358
+	const valeur = simplifyNodeUnit(this.evaluate(node.explanation.valeur))
 	const nodeValue = valeur.nodeValue
 	let arrondi = node.explanation.arrondi
 	if (nodeValue !== false) {
@@ -51,6 +54,7 @@ const evaluate: EvaluationFunction<'arrondi'> = function (node) {
 				? undefined
 				: valeur.nodeValue,
 		explanation: { valeur, arrondi },
+		missingVariables: mergeAllMissing([valeur, arrondi]),
 		unit: valeur.unit,
 	}
 }

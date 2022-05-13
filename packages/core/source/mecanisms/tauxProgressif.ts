@@ -1,6 +1,6 @@
 import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
-import { defaultNode } from '../evaluation'
+import { defaultNode, mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
@@ -59,12 +59,14 @@ const evaluate: EvaluationFunction<'taux progressif'> = function (node) {
 		(lastTranche.isActive && lastTranche.plafond.nodeValue === Infinity)
 	) {
 		const taux = convertNodeToUnit(parseUnit('%'), evaluate(lastTranche.taux))
-		const { nodeValue } = taux
+		const { nodeValue, missingVariables } = taux
 		lastTranche.taux = taux
 		lastTranche.nodeValue = nodeValue
+		lastTranche.missingVariables = missingVariables
 		return {
 			...evaluatedNode,
 			nodeValue,
+			missingVariables,
 		}
 	}
 
@@ -75,6 +77,7 @@ const evaluate: EvaluationFunction<'taux progressif'> = function (node) {
 		return {
 			...evaluatedNode,
 			nodeValue: undefined,
+			missingVariables: mergeAllMissing(tranches),
 		}
 	}
 
@@ -104,6 +107,7 @@ const evaluate: EvaluationFunction<'taux progressif'> = function (node) {
 		return {
 			...evaluatedNode,
 			nodeValue: undefined,
+			missingVariables: mergeAllMissing(calculationValues),
 		}
 	}
 
@@ -117,6 +121,7 @@ const evaluate: EvaluationFunction<'taux progressif'> = function (node) {
 	return {
 		...evaluatedNode,
 		nodeValue,
+		missingVariables: {},
 	}
 }
 

@@ -1,5 +1,5 @@
 import yaml from 'yaml'
-import { ASTNode, Logger, ParsedRules } from '.'
+import { ParsedRules, Logger, ASTNode } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
 import parse from './parse'
 import { getReplacements, inlineReplacements } from './replacement'
@@ -225,6 +225,7 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 	function inferNodeType(node: ASTNode): InferedType {
 		switch (node.nodeKind) {
 			case 'somme':
+			case 'produit':
 			case 'barème':
 			case 'durée':
 			case 'grille':
@@ -232,6 +233,13 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 			case 'maximum':
 			case 'minimum':
 				return { isNullable: false, type: 'number' }
+
+			case 'applicable si':
+			case 'non applicable si':
+				return {
+					isNullable: true,
+					type: inferNodeType(node.explanation.valeur).type,
+				}
 
 			case 'toutes ces conditions':
 			case 'une de ces conditions':
@@ -253,9 +261,6 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 						? 'boolean'
 						: 'number',
 				}
-			case 'est non applicable':
-			case 'est non défini':
-				return { isNullable: false, type: 'boolean' }
 
 			case 'inversion':
 			case 'recalcul':
@@ -271,24 +276,18 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 			case 'texte':
 				return { isNullable: false, type: 'string' }
 
+			case 'abattement':
+				return inferNodeUnitAndCache(node.explanation.assiette)
+
 			case 'arrondi':
 			case 'nom dans la situation':
+			case 'plafond':
+			case 'plancher':
 			case 'rule':
 				return inferNodeUnitAndCache(node.explanation.valeur)
 
-			case 'simplifier unité':
 			case 'unité':
 				return inferNodeUnitAndCache(node.explanation)
-			case 'condition':
-				return {
-					isNullable:
-						inferNodeUnitAndCache(node.explanation.si).isNullable ||
-						inferNodeUnitAndCache(node.explanation.alors).isNullable ||
-						inferNodeUnitAndCache(node.explanation.sinon).isNullable,
-					type:
-						inferNodeUnitAndCache(node.explanation.alors)?.type ??
-						inferNodeUnitAndCache(node.explanation.sinon).type,
-				}
 
 			case 'variations':
 				// With "rend non applicable" we have a "consequence: null" line in our
@@ -332,39 +331,4 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 	}
 
 	return cache
-}
-
-// To calculate the “missing variables” of an expression we need to determine
-// the static subset of the rules that are expected in the situation. Theses
-// rules are :
-// - the rules without formulas
-// - the rules with a default formula
-// - the rules with a “fake formula” of "une possibilité"
-//
-// TODO: Simplify this logic. It isn't well thought but is mostly a product of
-// historical evolutions.
-export function getVariablesExpectedInSituation<N extends string>(
-	parsedRules: ParsedRules<N>
-): Array<N> {
-	return Object.entries<RuleNode>(parsedRules)
-		.filter(([, { rawNode }]) => {
-			return (
-				([
-					'formule',
-					'valeur',
-					'est non défini',
-					'somme',
-					'produit',
-					'barème',
-					'grille',
-					'variations',
-					'une de ces conditions',
-					'toutes ces conditions',
-				].every((mecanismName) => !(mecanismName in rawNode)) &&
-					rawNode.type !== 'texte') ||
-				(typeof rawNode.formule === 'object' &&
-					'une possibilité' in rawNode.formule)
-			)
-		})
-		.map(([dottedName]) => dottedName as N)
 }

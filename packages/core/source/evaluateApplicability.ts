@@ -1,23 +1,38 @@
 // TODO: Split this logic in each separate mechanism. We need a better mechanism
 // API to register parse / evaluate / evaluate applicability (optionnal) / unit
 // inference
+import { MissingVariables } from './AST/types'
+import { bonus, mergeMissing } from './evaluation'
 import Engine, { ASTNode } from './index'
 import { type RuleNode } from './rule'
 
 // TODO: This could be implemented as a mechanism.
-export function isApplicable(this: Engine, node: ASTNode): boolean {
+export function isApplicable(
+	this: Engine,
+	node: ASTNode
+): { nodeValue: boolean; missingVariables: MissingVariables } {
 	if (this.ruleUnits.get(node)?.isNullable === false) {
-		return true
+		return { nodeValue: true, missingVariables: {} }
 	} else if (this.cache.nodes.has(node)) {
-		return this.cache.nodes.get(node)?.nodeValue !== null
+		return {
+			nodeValue: this.cache.nodes.get(node)?.nodeValue !== null,
+			missingVariables: this.cache.nodes.get(node)?.missingVariables ?? {},
+		}
 	}
 	switch (node.nodeKind) {
 		case 'rule':
-			const { ruleDisabledByItsParent } = evaluateDisablingParent(this, node)
+			const { ruleDisabledByItsParent, parentMissingVariables } =
+				evaluateDisablingParent(this, node)
 			if (ruleDisabledByItsParent) {
-				return false
+				return { nodeValue: false, missingVariables: parentMissingVariables }
 			}
-			return this.isApplicable(node.explanation.valeur)
+			return {
+				nodeValue: this.isApplicable(node.explanation.valeur).nodeValue,
+				missingVariables: mergeMissing(
+					bonus(parentMissingVariables),
+					this.isApplicable(node.explanation.valeur).missingVariables
+				),
+			}
 
 		case 'reference':
 			if (!node.dottedName) {
@@ -28,21 +43,42 @@ export function isApplicable(this: Engine, node: ASTNode): boolean {
 		case 'applicable si':
 			const condition = this.evaluate(node.explanation.condition)
 			if (condition.nodeValue === false || condition.nodeValue === null) {
-				return false
+				return {
+					nodeValue: false,
+					missingVariables: condition.missingVariables,
+				}
 			}
-			return this.isApplicable(node.explanation.valeur)
+			return {
+				nodeValue: this.isApplicable(node.explanation.valeur).nodeValue,
+				missingVariables: mergeMissing(
+					bonus(condition.missingVariables),
+					this.isApplicable(node.explanation.valeur).missingVariables
+				),
+			}
 
 		case 'non applicable si':
 			const negCondition = this.evaluate(node.explanation.condition)
 			if (negCondition.nodeValue !== false && negCondition.nodeValue !== null) {
-				return false
+				return {
+					nodeValue: false,
+					missingVariables: negCondition.missingVariables,
+				}
 			}
-			return this.isApplicable(node.explanation.valeur)
+			return {
+				nodeValue: this.isApplicable(node.explanation.valeur).nodeValue,
+				missingVariables: mergeMissing(
+					bonus(negCondition.missingVariables),
+					this.isApplicable(node.explanation.valeur).missingVariables
+				),
+			}
 
 		case 'nom dans la situation':
 			return this.isApplicable(node.explanation.valeur)
 	}
-	return this.evaluate(node).nodeValue !== null
+	return {
+		nodeValue: this.evaluate(node).nodeValue !== null,
+		missingVariables: this.evaluate(node).missingVariables,
+	}
 }
 
 export function evaluateDisablingParent(
@@ -50,6 +86,7 @@ export function evaluateDisablingParent(
 	node: RuleNode
 ): {
 	ruleDisabledByItsParent: boolean
+	parentMissingVariables: MissingVariables
 	nullableParent?: ASTNode
 } {
 	const nullableParent = node.explanation.parents.find(
@@ -57,7 +94,7 @@ export function evaluateDisablingParent(
 	)
 
 	if (!nullableParent) {
-		return { ruleDisabledByItsParent: false }
+		return { ruleDisabledByItsParent: false, parentMissingVariables: {} }
 	}
 
 	if (
@@ -66,26 +103,33 @@ export function evaluateDisablingParent(
 		!engine.cache._meta.parentRuleStack.includes(node.dottedName)
 	) {
 		engine.cache._meta.parentRuleStack.unshift(node.dottedName)
-		const parentIsApplicable = engine.isApplicable(nullableParent)
+		const { nodeValue: parentIsApplicable, missingVariables } =
+			engine.isApplicable(nullableParent)
 		engine.cache._meta.parentRuleStack.shift()
 		if (!parentIsApplicable) {
 			return {
 				ruleDisabledByItsParent: true,
+				parentMissingVariables: missingVariables,
 				nullableParent,
 			}
 		}
 	}
 
+	let parentMissingVariables = {}
+
 	if (engine.ruleUnits.get(nullableParent)?.type === 'boolean') {
 		const parentEvaluation = engine.evaluate(nullableParent)
+		parentMissingVariables = parentEvaluation.missingVariables
 		return {
 			ruleDisabledByItsParent: parentEvaluation.nodeValue === false,
+			parentMissingVariables,
 			nullableParent,
 		}
 	}
 
 	return {
 		ruleDisabledByItsParent: false,
+		parentMissingVariables,
 		nullableParent,
 	}
 }
