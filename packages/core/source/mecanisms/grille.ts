@@ -1,6 +1,6 @@
 import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
-import { defaultNode } from '../evaluation'
+import { defaultNode, mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
 import {
@@ -52,6 +52,7 @@ const evaluate: EvaluationFunction<'grille'> = function (node) {
 				montant,
 				nodeValue: montant.nodeValue,
 				unit: montant.unit,
+				missingVariables: mergeAllMissing([montant, tranche]),
 			}
 		})
 
@@ -76,6 +77,11 @@ const evaluate: EvaluationFunction<'grille'> = function (node) {
 	return {
 		...node,
 		nodeValue,
+		missingVariables: mergeAllMissing([
+			assiette,
+			multiplicateur,
+			...activeTranches,
+		]),
 		explanation: {
 			...node.explanation,
 			assiette,

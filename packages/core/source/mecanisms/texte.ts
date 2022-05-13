@@ -1,4 +1,5 @@
 import { ASTNode, formatValue } from '..'
+import { mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
 
@@ -34,6 +35,11 @@ registerEvaluationFunction(NAME, function evaluate(node) {
 	return {
 		...node,
 		explanation,
+		missingVariables: mergeAllMissing(
+			node.explanation.filter(
+				(element) => typeof element !== 'string'
+			) as Array<ASTNode>
+		),
 		nodeValue: explanation
 			.map((element) =>
 				typeof element === 'string' ? element : formatValue(element)

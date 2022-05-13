@@ -4,7 +4,6 @@ import { evaluationFunctions } from './evaluationFunctions'
 import parse from './parse'
 import parsePublicodes, {
 	disambiguateReferenceAndCollectDependencies,
-	getVariablesExpectedInSituation,
 	InferedType,
 } from './parsePublicodes'
 import {
@@ -66,6 +65,7 @@ export {
 	type Unit,
 } from './AST/types'
 export { capitalise0, formatValue } from './format'
+export { simplifyNodeUnit } from './nodeUnits'
 export { default as serializeEvaluation } from './serializeEvaluation'
 export { parseUnit, serializeUnit } from './units'
 export { parsePublicodes, utils }
@@ -117,7 +117,6 @@ export default class Engine<Name extends string = string> {
 
 	ruleUnits: WeakMap<ASTNode, InferedType>
 	rulesDependencies: ReturnType<typeof parsePublicodes>['rulesDependencies']
-	variablesExpectedInSituation: Array<Name>
 
 	constructor(
 		rules: string | Record<string, Rule> = {},
@@ -132,9 +131,6 @@ export default class Engine<Name extends string = string> {
 		this.ruleUnits = ruleUnits
 		this.rulesDependencies = rulesDependencies
 		this.replacements = getReplacements(this.parsedRules)
-		this.variablesExpectedInSituation = getVariablesExpectedInSituation(
-			this.parsedRules
-		)
 	}
 
 	setOptions(options: Partial<Options>) {
@@ -251,7 +247,6 @@ export default class Engine<Name extends string = string> {
 			evaluatedNode.traversedVariables = Array.from(
 				this.cache._meta.traversedVariablesStack.shift() ?? []
 			)
-			evaluatedNode.missingVariables = this.missingVariables(evaluatedNode)
 
 			if (this.cache._meta.traversedVariablesStack.length > 0) {
 				evaluatedNode.traversedVariables.forEach((name) => {
@@ -280,15 +275,6 @@ export default class Engine<Name extends string = string> {
 		}
 
 		return isApplicable.call(this, node)
-	}
-
-	missingVariables(evaluatedNode: any) {
-		return evaluatedNode.traversedVariables.filter(
-			(name: Name) =>
-				this.variablesExpectedInSituation.includes(name) &&
-				!Object.keys(this.parsedSituation).includes(name) &&
-				this.isApplicable(this.parsedRules[name])
-		)
 	}
 
 	/**
