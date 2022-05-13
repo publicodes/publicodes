@@ -35,6 +35,7 @@ const lexer = moo.compile({
   additionSubstraction: /[\+-]/,
   multiplicationDivision: ['*','/'],
   dot: ' . ',
+  ".": '.',
   space: { match: /[\s]+/, lineBreaks: true },
 });
 
