@@ -19,8 +19,8 @@ export type Context = {
 // TODO: Currently only handle nullability, but the infering logic should be
 // extended to support the full unit type system.
 export type InferedType = {
-	isNullable: boolean
-	type: 'string' | 'number' | 'boolean' | 'objet'
+	isNullable: boolean | undefined
+	type: 'string' | 'number' | 'boolean' | 'objet' | undefined
 }
 
 type RawRule = Omit<Rule, 'nom'> | string | number
@@ -326,7 +326,13 @@ function inferRulesUnit(parsedRules, rulesDependencies) {
 				}
 
 			case 'reference':
-				return cache.get(parsedRules[node.dottedName as string])!
+				// Yes, sometimes there are cycle even in topological order...
+				return (
+					cache.get(parsedRules[node.dottedName as string]) ?? {
+						isNullable: undefined,
+						type: undefined,
+					}
+				)
 		}
 	}
 
