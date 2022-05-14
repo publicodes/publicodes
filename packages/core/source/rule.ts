@@ -64,6 +64,7 @@ export type RuleNode = {
 		valeur: ASTNode
 		parents: Array<ASTNode>
 		nullableParent?: ASTNode
+		ruleDisabledByItsParent: boolean
 	}
 	suggestions: Record<string, ASTNode>
 	'identifiant court'?: string
@@ -220,6 +221,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 			parents: node.explanation.parents,
 			valeur: valeurEvaluation,
 			nullableParent,
+			ruleDisabledByItsParent,
 		},
 	}
 

@@ -5,12 +5,10 @@ import {
 	Types,
 	Unit,
 } from 'publicodes/source/AST/types'
-import { ReferenceNode } from 'publicodes/source/reference'
-import React, { createContext, useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import styled, { css } from 'styled-components'
 import { EngineContext, RenderersContext } from '../contexts'
 import Explanation from '../Explanation'
-import { RuleLinkWithContext } from '../RuleLink'
 import mecanismColors from './colors'
 
 export function ConstantNode({ nodeValue, type, fullPrecision, unit }) {
@@ -66,6 +64,7 @@ const StyledNodeValuePointer = styled.span`
 	font-size: 0.875rem;
 	line-height: 1.25rem;
 	margin: 0 0.2rem;
+	flex-shrink: 0;
 	padding: 0.1rem 0.2rem;
 	text-decoration: none !important;
 	box-shadow: 0px 1px 2px 1px #d9d9d9, 0 0 0 1px #d9d9d9;
@@ -92,7 +91,7 @@ export function Mecanism({
 	return (
 		<StyledMecanism name={name}>
 			{displayName && <MecanismName name={name}>{name}</MecanismName>}
-			<>
+			<div>
 				{children}
 
 				{value !== undefined && (
@@ -101,13 +100,13 @@ export function Mecanism({
 						<NodeValuePointer data={value} unit={unit} />
 					</StyledMecanismValue>
 				)}
-			</>
+			</div>
 		</StyledMecanism>
 	)
 }
 const StyledMecanismValue = styled.div`
 	text-align: right;
-	margin-top: 0.4rem;
+	margin-top: 0.25rem;
 	font-weight: bold;
 `
 
@@ -123,7 +122,7 @@ export const InfixMecanism = ({
 	dimValue?: boolean
 }) => {
 	return (
-		<StyledInfixMecanism className="infix-mecanism">
+		<div>
 			{prefixed && children}
 			<div
 				className="value"
@@ -135,7 +134,7 @@ export const InfixMecanism = ({
 				<Explanation node={value} />
 			</div>
 			{!prefixed && children}
-		</StyledInfixMecanism>
+		</div>
 	)
 }
 const DimOverlay = styled.div`
@@ -148,16 +147,6 @@ const DimOverlay = styled.div`
 	opacity: 0.5;
 	pointer-events: none;
 	z-index: 1;
-`
-
-const StyledInfixMecanism = styled.div`
-	.value > .infix-mecanism {
-		border: none;
-		padding: 0;
-	}
-	.value > :not(.infix-mecanism):not(${DimOverlay}) {
-		margin-bottom: 1rem;
-	}
 `
 
 export const InlineMecanismName = ({ name }: { name: string }) => {
@@ -229,7 +218,8 @@ const StyledMecanism = styled.div<{ name: string }>`
 	border: 1px solid;
 	max-width: 100%;
 	border-radius: 3px;
-	padding: 1rem;
+	padding: 0.5rem 1rem;
+	margin-bottom: 0.5rem;
 	position: relative;
 	flex: 1;
 	flex-direction: column;
@@ -241,7 +231,7 @@ const StyledMecanism = styled.div<{ name: string }>`
 `
 
 const StyledMecanismName = styled.a<{ name: string; inline?: boolean }>`
-	background-color: ${({ name }) => mecanismColors(name)};
+	background-color: ${({ name }) => mecanismColors(name)} !important;
 	font-size: inherit;
 	display: inline-block;
 	font-weight: inherit;
@@ -260,7 +250,7 @@ const StyledMecanismName = styled.a<{ name: string; inline?: boolean }>`
 					margin-bottom: 0.5rem;
 			  `
 			: css`
-					top: -1rem;
+					top: -0.5rem;
 					position: relative;
 					margin-left: -1rem;
 					border-radius: 0 !important;
@@ -279,74 +269,4 @@ export const CapitalizeFirstLetter = styled.div`
 	:first-letter {
 		text-transform: capitalize;
 	}
-`
-
-// Un élément du graphe de calcul qui a une valeur interprétée (à afficher)
-export function Leaf(
-	node: ReferenceNode & {
-		dottedName: string
-	} & EvaluatedNode
-) {
-	const engine = useContext(EngineContext)
-	const { dottedName, nodeValue, unit } = node
-	const rule = engine?.getRule(node.dottedName)
-	if (!rule) {
-		throw new Error('Unknown node')
-	}
-	const [folded, setFolded] = useState(true)
-	const foldButton = useContext(UnfoldIsEnabledContext) ? (
-		<UnfoldButton onClick={() => setFolded(!folded)}>
-			{folded ? 'déplier' : 'replier'}
-		</UnfoldButton>
-	) : null
-	if (
-		node.dottedName === node.contextDottedName + ' . ' + node.name &&
-		!node.name.includes(' . ') &&
-		rule.virtualRule
-	) {
-		return <Explanation node={engine?.evaluate(rule)} />
-	}
-	return (
-		<div
-			style={{
-				display: 'inline',
-				whiteSpace: 'nowrap',
-				maxWidth: '100%',
-				textOverflow: 'ellipsis',
-			}}
-		>
-			<span>
-				<RuleLinkWithContext dottedName={dottedName}>
-					<span className="name">
-						{rule.rawNode.acronyme ? (
-							<abbr title={rule.title}>{rule.rawNode.acronyme}</abbr>
-						) : (
-							rule.title
-						)}
-					</span>
-				</RuleLinkWithContext>
-				{foldButton}
-
-				{nodeValue !== undefined && unit && (
-					<NodeValuePointer data={nodeValue} unit={unit} />
-				)}
-			</span>{' '}
-			{!folded && (
-				<div>
-					<UnfoldIsEnabledContext.Provider value={false}>
-						<Explanation node={engine?.evaluate(rule)} />
-					</UnfoldIsEnabledContext.Provider>
-				</div>
-			)}
-		</div>
-	)
-}
-
-export const UnfoldIsEnabledContext = createContext<boolean>(false)
-
-const UnfoldButton = styled.button`
-	text-transform: none !important;
-	flex: 1 !important;
-	margin-left: 0.4rem !important;
-	text-align: left !important;
 `

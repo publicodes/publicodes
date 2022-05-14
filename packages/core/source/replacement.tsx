@@ -213,7 +213,9 @@ function replace(
 
 	cache[applicableReplacementsCacheKey] ??= {
 		nodeKind: 'variations',
-		visualisationKind: 'replacement',
+		sourceMap: {
+			mecanismName: 'replacement',
+		},
 		rawNode: node.rawNode,
 		explanation: [
 			...applicableReplacements.map((replacement) => ({

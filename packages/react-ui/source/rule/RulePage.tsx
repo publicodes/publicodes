@@ -1,9 +1,9 @@
 import Engine, {
+	EvaluatedNode,
 	formatValue,
 	isNotYetDefined,
 	serializeUnit,
 	utils,
-	EvaluatedNode,
 } from 'publicodes'
 import { useContext, useEffect, useState } from 'react'
 import {
@@ -83,7 +83,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 		nodeKind: 'rule'
 	}
 	const { description, question } = rule.rawNode
-	const { valeur, nullableParent } = rule.explanation
+	const { valeur, nullableParent, ruleDisabledByItsParent } = rule.explanation
 
 	return (
 		<div id="documentationRuleRoot">
@@ -132,7 +132,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 					</p>
 				</>
 			}
-			{nullableParent && !engine.isApplicable(nullableParent) && (
+			{ruleDisabledByItsParent && (
 				<>
 					<h3>Parent non applicable</h3>
 					<p>

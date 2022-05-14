@@ -7,7 +7,10 @@ import Variations from './Variations'
 
 export default function Replacement(node: VariationNode & EvaluatedNode) {
 	const applicableReplacement = node.explanation.find(
-		(ex) => ex.satisfied
+		({ condition }) =>
+			'nodeValue' in condition &&
+			condition.nodeValue !== false &&
+			condition.nodeValue !== null
 	)?.consequence
 	const replacedNode = node.explanation.slice(-1)[0].consequence as {
 		dottedName: string
@@ -15,9 +18,8 @@ export default function Replacement(node: VariationNode & EvaluatedNode) {
 	const [displayReplacements, changeDisplayReplacement] = useState(false)
 
 	return (
-		<span>
-			<Explanation node={applicableReplacement ?? replacedNode} />
-			{applicableReplacement && (
+		<span style={{ display: 'inline-flex' }}>
+			{applicableReplacement && replacedNode !== applicableReplacement && (
 				<>
 					&nbsp;
 					<button
@@ -28,6 +30,9 @@ export default function Replacement(node: VariationNode & EvaluatedNode) {
 					&nbsp;
 				</>
 			)}
+			<span style={{ flex: 1, display: 'inline-flex' }}>
+				<Explanation node={applicableReplacement ?? replacedNode} />
+			</span>
 			{displayReplacements && (
 				<Overlay onClose={() => changeDisplayReplacement(false)}>
 					<h3>Remplacement existant</h3>

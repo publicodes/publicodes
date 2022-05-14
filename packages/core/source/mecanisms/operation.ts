@@ -97,7 +97,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 
 	if (
 		!('nodeValue' in evaluatedNode) &&
-		!['∕', '×'].includes(node.operator) &&
+		!['/', '*'].includes(node.operationKind) &&
 		!isAdditionOrSubstractionWithPercentage
 	) {
 		try {
@@ -110,7 +110,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 			warning(
 				this.options.logger,
 				`Dans l'expression '${
-					node.operator
+					node.operationKind
 				}', la partie gauche (unité: ${serializeUnit(
 					node1.unit
 				)}) n'est pas compatible avec la partie droite (unité: ${serializeUnit(
@@ -141,34 +141,34 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 			: operatorFunction(a, b)
 
 	if (
+		node.operationKind === '*' &&
+		inferUnit('*', [node1.unit, node2.unit])?.numerators.includes('%')
+	) {
+		let unit = inferUnit('*', [node1.unit, node2.unit])
+		return {
+			...evaluatedNode,
+			nodeValue: evaluatedNode.nodeValue / 100,
+			unit: inferUnit('*', [unit, { numerators: [], denominators: ['%'] }]),
+		}
+	}
+	// Addition or substraction of scalar with a percentage is a multiplication
+	if (isAdditionOrSubstractionWithPercentage) {
+		let unit = inferUnit('*', [node1.unit, node2.unit])
+		return {
+			...evaluatedNode,
+			nodeValue:
+				node1.nodeValue *
+				(1 + (node2.nodeValue / 100) * (node.operationKind === '-' ? -1 : 1)),
+			unit: inferUnit('*', [unit, { numerators: [], denominators: ['%'] }]),
+		}
+	}
+
+	if (
 		node.operationKind === '*' ||
 		node.operationKind === '/' ||
 		node.operationKind === '-' ||
 		node.operationKind === '+'
 	) {
-		if (node.operationKind === '*') {
-			let unit = inferUnit('*', [node1.unit, node2.unit])
-
-			if (!unit?.numerators.includes('%')) {
-				return { ...evaluatedNode, unit }
-			}
-			return {
-				...evaluatedNode,
-				nodeValue: evaluatedNode.nodeValue / 100,
-				unit: inferUnit('*', [unit, { numerators: [], denominators: ['%'] }]),
-			}
-		}
-		// Addition or substraction of scalar with a percentage is a multiplication
-		if (isAdditionOrSubstractionWithPercentage) {
-			let unit = inferUnit('*', [node1.unit, node2.unit])
-			return {
-				...evaluatedNode,
-				nodeValue:
-					node1.nodeValue *
-					(1 + (node2.nodeValue / 100) * (node.operationKind === '-' ? -1 : 1)),
-				unit: inferUnit('*', [unit, { numerators: [], denominators: ['%'] }]),
-			}
-		}
 		return {
 			...evaluatedNode,
 			unit: inferUnit(node.operationKind, [node1.unit, node2.unit]),

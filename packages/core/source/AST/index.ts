@@ -26,7 +26,8 @@ import {
 	transformed version of the node.
 	*/
 export function makeASTTransformer(
-	fn: (node: ASTNode, transform: ASTTransformer) => ASTNode | undefined | false
+	fn: (node: ASTNode, transform: ASTTransformer) => ASTNode | undefined | false,
+	stopOnUpdate = true
 ): ASTTransformer {
 	function transform(node: ASTNode): ASTNode {
 		const updatedNode = fn(node, transform)
@@ -36,7 +37,7 @@ export function makeASTTransformer(
 		if (updatedNode === undefined) {
 			return traverseASTNode(transform, node)
 		}
-		return updatedNode
+		return stopOnUpdate ? updatedNode : traverseASTNode(transform, updatedNode)
 	}
 	return transform
 }
@@ -124,6 +125,7 @@ export function traverseParsedRules(
  * Apply a transform function on children. Not recursive.
  */
 export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
+	node = traverseSourceMap(fn, node)
 	switch (node.nodeKind) {
 		case 'rule':
 			return traverseRuleNode(fn, node)
@@ -170,6 +172,25 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 		default:
 			neverHappens(node)
 			throw new InternalError(node)
+	}
+}
+
+const traverseSourceMap: TraverseFunction<NodeKind> = (fn, node) => {
+	if (!('sourceMap' in node) || !node.sourceMap || !node.sourceMap.args) {
+		return node
+	}
+	const sourceMap = node.sourceMap
+	return {
+		...node,
+		sourceMap: {
+			...sourceMap,
+			args: Object.fromEntries(
+				Object.entries(sourceMap.args).map(([key, value]) => [
+					key,
+					Array.isArray(value) ? value.map((v) => fn(v)) : fn(value),
+				])
+			),
+		},
 	}
 }
 

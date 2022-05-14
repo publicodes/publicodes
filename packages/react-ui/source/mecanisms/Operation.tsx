@@ -1,6 +1,6 @@
+import styled from 'styled-components'
 import Explanation from '../Explanation'
 import { NodeValuePointer } from './common'
-import styled from 'styled-components'
 
 export default function Operation({ nodeValue, explanation, operator, unit }) {
 	const isUnaryOperation =
@@ -10,7 +10,13 @@ export default function Operation({ nodeValue, explanation, operator, unit }) {
 
 	return (
 		<StyledOperation className="operation">
-			{!isUnaryOperation && <Explanation node={explanation[0]} />} {operator}{' '}
+			{!isUnaryOperation && (
+				<>
+					<Explanation node={explanation[0]} />
+					&nbsp;
+				</>
+			)}
+			{operator}&nbsp;
 			<Explanation node={explanation[1]} />
 			{nodeValue != undefined && (
 				<span className="result">
@@ -23,6 +29,9 @@ export default function Operation({ nodeValue, explanation, operator, unit }) {
 }
 
 const StyledOperation = styled.span`
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.125rem;
 	::before {
 		content: '(';
 	}

@@ -35,7 +35,7 @@ registerEvaluationFunction('reference', function evaluateReference(node) {
 		throw new InternalError(node)
 	}
 	const explanation = this.evaluate(this.parsedRules[node.dottedName])
-
+	delete explanation.sourceMap
 	return {
 		...explanation,
 		...node,
