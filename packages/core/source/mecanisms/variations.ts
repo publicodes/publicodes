@@ -86,7 +86,7 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 							: evaluatedCondition.nodeValue !== false &&
 							  evaluatedCondition.nodeValue !== null)
 
-			if (currentCondition === false) {
+			if (currentCondition === false || currentCondition === null) {
 				return [
 					evaluation,
 					[...explanations, { condition: evaluatedCondition, consequence }],
@@ -95,7 +95,10 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 				]
 			}
 			let evaluatedConsequence: EvaluatedNode | undefined = undefined
-			if (evaluatedCondition.nodeValue !== false) {
+			if (
+				evaluatedCondition.nodeValue !== false &&
+				evaluatedCondition.nodeValue !== null
+			) {
 				evaluatedConsequence = this.evaluate(consequence!)
 				if (unit) {
 					try {
@@ -121,7 +124,6 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 					...explanations,
 					{
 						condition: evaluatedCondition,
-						satisfied: evaluatedCondition.nodeValue !== false,
 						consequence: evaluatedConsequence,
 					},
 				],
@@ -139,8 +141,16 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 		explanation,
 		missingVariables: mergeAllMissing(
 			explanation.reduce<ASTNode[]>(
-				(values, { condition, satisfied, consequence }) =>
-					[...values, condition, ...(satisfied ? [consequence] : [])] as any,
+				(values, { condition, consequence }) =>
+					[
+						...values,
+						condition,
+						...('nodeValue' in condition &&
+						condition.nodeValue !== false &&
+						condition.nodeValue !== null
+							? [consequence]
+							: []),
+					] as any,
 				[]
 			)
 		),

@@ -1,7 +1,7 @@
 import { createParseInlinedMecanismWithArray } from './utils'
 
 export default createParseInlinedMecanismWithArray(
-	'toutes ces conditions',
+	'une de ces conditions',
 	{
 		valeur: { type: 'liste' },
 	},

@@ -1,8 +1,7 @@
 import styled from 'styled-components'
 import Explanation from '../Explanation'
-import { Mecanism } from './common'
 
-export default function Abattement({ nodeValue, unit, explanation }) {
+export default function Texte({ nodeValue, unit, explanation }) {
 	return (
 		<p>
 			{explanation.map((element) =>

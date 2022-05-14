@@ -3,51 +3,50 @@ import styled from 'styled-components'
 import Explanation from '../Explanation'
 import { Mecanism } from './common'
 
-export default function Product(node: EvaluatedNode & { nodeKind: 'produit' }) {
+export default function Product(node: EvaluatedNode) {
+	const args = node.sourceMap?.args ?? {}
 	return (
 		<Mecanism name="produit" value={node.nodeValue} unit={node.unit}>
 			<div
 				style={{
 					display: 'flex',
 					alignItems: 'baseline',
+					justifyContent: 'flex-start',
 					flexWrap: 'wrap',
 				}}
 			>
 				<div style={{ textAlign: 'right' }}>
-					<Explanation node={node.explanation.assiette} />
-					{!node.explanation.plafond.isDefault && (
+					<Explanation node={args.assiette} />
+					{args.plafond && (
 						<PlafondSmall>
 							<span>Plafonnée à :&nbsp;</span>
-							<Explanation node={node.explanation.plafond} />
+							<Explanation node={args.plafond} />
 						</PlafondSmall>
 					)}
 				</div>
-				{!node.explanation.facteur.isDefault && (
+				{args.facteur && (
 					<div
 						style={{
 							display: 'flex',
-							flexWrap: 'wrap',
-							alignItems: 'center',
-							justifyContent: 'center',
+							alignItems: 'baseline',
 						}}
 					>
-						<div style={{ margin: '0 0.6rem' }}> × </div>
+						<div style={{ fontSize: '110%', margin: '0 0.6rem' }}> × </div>
 						<div>
-							<Explanation node={node.explanation.facteur} />
+							<Explanation node={args.facteur} />
 						</div>
 					</div>
 				)}
-				{!node.explanation.taux.isDefault && (
+				{args.taux && (
 					<div
 						style={{
 							display: 'flex',
-							flexWrap: 'wrap',
-							alignItems: 'center',
-							justifyContent: 'center',
+							alignItems: 'baseline',
+							justifyContent: 'flex-end',
 						}}
 					>
-						<div style={{ margin: '0 0.6rem' }}> × </div>
-						<Explanation node={node.explanation.taux} />
+						<div style={{ fontSize: '110%', margin: '0 0.6rem' }}> × </div>
+						<Explanation node={args.taux} />
 					</div>
 				)}
 			</div>
@@ -57,7 +56,8 @@ export default function Product(node: EvaluatedNode & { nodeKind: 'produit' }) {
 
 const PlafondSmall = styled.small`
 	display: flex;
+	border-left: 2px solid lightgray;
+	padding-left: 0.5rem;
 	align-items: baseline;
-	justify-content: flex-end;
 	flex-wrap: wrap;
 `

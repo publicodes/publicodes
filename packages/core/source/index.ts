@@ -54,7 +54,11 @@ export type EvaluationOptions = Partial<{
 	unit: string
 }>
 
-export { makeASTTransformer as transformAST, reduceAST } from './AST/index'
+export {
+	makeASTTransformer as transformAST,
+	reduceAST,
+	traverseASTNode,
+} from './AST/index'
 export {
 	isNotApplicable,
 	isNotYetDefined,

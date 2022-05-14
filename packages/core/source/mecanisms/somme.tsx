@@ -5,5 +5,12 @@ export default createParseInlinedMecanismWithArray(
 	{
 		valeur: { type: 'liste' },
 	},
-	({ valeur }) => valeur.reduce((acc, value) => ({ '+': [acc, value] }), '0')
+	({ valeur }) =>
+		[...valeur].reverse().reduce((acc, value) => ({ '+': [value, acc] }), {
+			constant: {
+				nodeValue: null,
+				isNullable: true,
+				type: undefined,
+			},
+		})
 )

@@ -2,7 +2,12 @@ import Explanation from '../Explanation'
 import writtenNumbers from '../writtenNumbers'
 import { CapitalizeFirstLetter, InlineMecanismName, Mecanism } from './common'
 
-export default function Composantes({ nodeValue, explanation, unit }) {
+export default function Composantes({
+	nodeValue,
+	explanation,
+	unit,
+	sourceMap,
+}) {
 	return (
 		<Mecanism
 			name="composantes"
@@ -15,7 +20,7 @@ export default function Composantes({ nodeValue, explanation, unit }) {
 				<InlineMecanismName name="composantes" /> :
 			</CapitalizeFirstLetter>
 			<ol>
-				{explanation.map((c, i) => [
+				{sourceMap.args.valeur.map((c, i) => [
 					<li key={i}>
 						<Explanation node={c} />
 						<div

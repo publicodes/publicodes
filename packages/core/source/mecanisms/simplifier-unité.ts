@@ -1,5 +1,4 @@
 import { ASTNode } from '../AST/types'
-import { evaluationError } from '../error'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
 import { convertUnit, simplifyUnit } from '../units'
@@ -30,14 +29,7 @@ registerEvaluationFunction('simplifier unité', function evaluate(node) {
 	if (nodeValue == null) {
 		return defaultReturn
 	}
-	if (!('unit' in valeur) || typeof nodeValue !== 'number') {
-		evaluationError(
-			this.options.logger,
-			this.cache._meta.evaluationRuleStack[0],
-			"Le mécanisme `simplifier l'unité` fonctionne uniquement sur les nombres avec unités"
-		)
-		return defaultReturn
-	}
+
 	if (!valeur.unit) {
 		return {
 			...defaultReturn,

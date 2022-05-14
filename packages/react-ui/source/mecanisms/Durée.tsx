@@ -1,23 +1,10 @@
-import Explanation from '../Explanation'
-import { Mecanism } from './common'
+import DefaultInlineMecanism from './DefaultInlineMecanism'
 
-export default function MecanismDurée({ nodeValue, explanation, unit }) {
+export default function MecanismDurée(node) {
 	return (
-		<Mecanism name="durée" value={nodeValue} unit={unit}>
-			<>
-				<p>
-					<strong className="key">Depuis : </strong>
-					<span className="value">
-						<Explanation node={explanation.depuis} />
-					</span>
-				</p>
-				<p>
-					<strong className="key">Jusqu'à : </strong>
-					<span className="value">
-						<Explanation node={explanation["jusqu'à"]} />
-					</span>
-				</p>
-			</>
-		</Mecanism>
+		<DefaultInlineMecanism
+			{...node}
+			sourceMap={{ mecanismName: node.nodeKind, args: node.explanation }}
+		/>
 	)
 }

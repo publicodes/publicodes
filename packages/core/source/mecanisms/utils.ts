@@ -58,8 +58,9 @@ export function createParseInlinedMecanism(
 				`Il manque la clé '${argName} dans le mécanisme ${name}`
 			)
 		})(parsedBody)
-		parsedInlineMecanism.sourcemapInfo = {
+		parsedInlineMecanism.sourceMap = {
 			mecanismName: name,
+			args: parsedProvidedArgs,
 		}
 		return parsedInlineMecanism
 	}
@@ -91,8 +92,9 @@ export function createParseInlinedMecanismWithArray(
 			])
 		)
 		const parsedInlineMecanism = parse(body(parsedProvidedArgs), context)
-		parsedInlineMecanism.sourcemapInfo = {
+		parsedInlineMecanism.sourceMap = {
 			mecanismName: name,
+			args: parsedProvidedArgs,
 		}
 		return parsedInlineMecanism
 	}

@@ -53,8 +53,9 @@ export type ASTNode = (
 	| TexteNode
 ) & {
 	isDefault?: boolean
-	sourcemapInfo?: {
+	sourceMap?: {
 		mecanismName: string
+		args: Record<string, ASTNode | Array<ASTNode>>
 	}
 	rawNode?: string | Record<string, unknown>
 } & (

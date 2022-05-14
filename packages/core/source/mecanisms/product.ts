@@ -8,7 +8,11 @@ export default createParseInlinedMecanism(
 		facteur: { 'par défaut': 1 },
 		plafond: {
 			'par défaut': {
-				'applicable si': 'non',
+				constant: {
+					isNullable: true,
+					nodeValue: null,
+					type: undefined,
+				},
 			},
 		},
 	},
