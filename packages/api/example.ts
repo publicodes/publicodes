@@ -25,7 +25,7 @@ router.use('/v1', apiRoutes)
 app.use(router.routes())
 app.use(router.allowedMethods())
 
-const port = 3003
+const port = 3002
 
 app.listen(port, function () {
 	console.log('listening on port:', port)

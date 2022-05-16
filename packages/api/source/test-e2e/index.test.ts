@@ -19,7 +19,7 @@ router.use(apiRoutes)
 app.use(router.routes())
 app.use(router.allowedMethods())
 
-const server = app.listen(3004)
+const server = app.listen(3003)
 
 chai.use(chaiHttp)
 
