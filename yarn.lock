@@ -12716,6 +12716,7 @@ __metadata:
     ts-node: ^10.7.0
     typescript: next
     vitest: ^0.12.3
+    wait-on: ^6.0.1
   peerDependencies:
     publicodes: 1.0.0-beta.35
   languageName: unknown

@@ -2,15 +2,18 @@
 	"name": "publicodes-api",
 	"version": "1.0.0-beta.0",
 	"description": "Publicodes API",
-	"main": "dist/index.js",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"scripts": {
 		"test": "yarn validate && yarn vitest",
 		"validate": "yarn swagger-cli validate ./source/openapi.yaml",
-		"start": "yarn build:watch & nodemon ./example.ts",
+		"start": "yarn build:watch & wait-on ./dist && NODE_OPTIONS=--experimental-json-modules NODE_PATH=./ nodemon ./example.ts ",
 		"build": "yarn build:openapi ; yarn build:ts",
-		"build:watch": "yarn build:openapi && yarn build:openapi:watch & yarn build:ts:watch --preserveWatchOutput",
-		"build:ts": "tsc",
+		"build:watch": "yarn build:openapi:watch & yarn wait:openapi && yarn build:ts:watch --preserveWatchOutput",
+		"build:ts": "NODE_OPTIONS=--experimental-json-modules tsc",
 		"build:ts:watch": "tsc -w",
+		"wait:openapi": "wait-on ./source/openapi.json",
 		"build:openapi": "yarn run swagger-cli bundle ./source/openapi.yaml > ./source/openapi.json",
 		"build:openapi:watch": "nodemon -w ./source/openapi.yaml -x \"yarn build:openapi\"",
 		"clean": "rm -rf dist ./source/openapi.json"
@@ -47,6 +50,7 @@
 		"publicodes": "1.0.0-beta.35",
 		"ts-node": "^10.7.0",
 		"typescript": "next",
-		"vitest": "^0.12.3"
+		"vitest": "^0.12.3",
+		"wait-on": "^6.0.1"
 	}
 }
