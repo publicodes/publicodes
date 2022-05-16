@@ -1,5 +1,5 @@
-import { NewEngine } from '../types'
-import { catchError, PickInObject } from '../utils'
+import { NewEngine } from '../types.js'
+import { catchError, PickInObject } from '../utils.js'
 
 export function rules(newEngine: NewEngine) {
 	const engine = newEngine({})

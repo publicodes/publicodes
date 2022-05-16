@@ -1,5 +1,5 @@
-import { Expressions, NewEngine, Situation } from '../types'
-import { catchError, PickInObject } from '../utils'
+import { Expressions, NewEngine, Situation } from '../types.js'
+import { catchError, PickInObject } from '../utils.js'
 
 export interface EvaluateBody {
 	expressions: Expressions
