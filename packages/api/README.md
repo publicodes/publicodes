@@ -7,6 +7,7 @@ Il consiste en un middleware [Koa](https://github.com/koajs/koa) qui ajoute des 
 -   `POST` `/evaluate` Évalue une ou plusieurs expressions avec une situation donnée
 -   `GET` `/rules` Retourne la liste de toutes vos règles
 -   `GET` `/rules/{rule}` Retourne une règle spécifique
+-   `GET` `/openapi.json` Renvoie le schéma OpenAPI, il peut être personnalisé avec l'option `customOpenapi` du middleware
 
 ## Installation
 

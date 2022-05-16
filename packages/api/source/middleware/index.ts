@@ -1,1 +1,1 @@
-export { default as koaMiddleware } from './koa'
+export { default as koaMiddleware } from './koa.js'
