@@ -93,10 +93,10 @@ A space token based on:
     "message": "
 [ Erreur syntaxique ]
 ➡️  Dans la règle \\"situation [test]\\"
-✖️  \`\\"42\\"\` n'est pas une expression valide
+✖️  \`\\"42\` n'est pas une expression valide
     invalid syntax at line 1 col 1:
 
-  \\"42\\"
+  \\"42
   ^
 Unexpected input (lexer error). Instead, I was expecting to see one of the following:
 
@@ -182,10 +182,10 @@ exports[`evaluate > Test invalid syntax in situation 1`] = `
     "message": "
 [ Erreur syntaxique ]
 ➡️  Dans la règle \\"situation [test]\\"
-✖️  \`\\"42\\"\` n'est pas une expression valide
+✖️  \`\\"42\` n'est pas une expression valide
     invalid syntax at line 1 col 1:
 
-  \\"42\\"
+  \\"42
   ^
 Unexpected input (lexer error). Instead, I was expecting to see one of the following:
 
@@ -443,10 +443,10 @@ A space token based on:
         "message": "
 [ Erreur syntaxique ]
 ➡️  Dans la règle \\"evaluation\\"
-✖️  \`\\"42\\"\` n'est pas une expression valide
+✖️  \`\\"42\` n'est pas une expression valide
     invalid syntax at line 1 col 1:
 
-  \\"42\\"
+  \\"42
   ^
 Unexpected input (lexer error). Instead, I was expecting to see one of the following:
 

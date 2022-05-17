@@ -148,7 +148,7 @@ describe('evaluate', () => {
 		expect(
 			evaluate(newEngine, {
 				expressions: ['1 + 1'],
-				situation: { test: '"42"' },
+				situation: { test: '"42' },
 			})
 		).toMatchSnapshot()
 	})
@@ -160,14 +160,14 @@ describe('evaluate', () => {
 	it('Test two syntax error in expression', () => {
 		expect(
 			evaluate(newEngine, {
-				expressions: ['1+1', '"42"', '42'],
+				expressions: ['1+1', '"42', '42'],
 			})
 		).toMatchSnapshot()
 	})
 
 	it('Test error in expression and situation at same time', () => {
 		expect(
-			evaluate(newEngine, { expressions: '1+1', situation: { test: '"42"' } })
+			evaluate(newEngine, { expressions: '1+1', situation: { test: '"42' } })
 		).toMatchSnapshot()
 	})
 
