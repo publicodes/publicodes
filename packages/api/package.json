@@ -3,8 +3,8 @@
 	"version": "1.0.0-beta.36",
 	"description": "Publicodes API",
 	"type": "module",
-	"main": "dist/index.cjs",
-	"module": "dist/index.js",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
@@ -28,7 +28,7 @@
 		"wait:openapi": "wait-on ./source/openapi.json",
 		"build:openapi": "swagger-cli bundle ./source/openapi.yaml > ./source/openapi.json",
 		"build:openapi:watch": "nodemon -d 500ms -w ./source/openapi.yaml -x \"yarn build:openapi\"",
-		"clean": "rm -rf dist ./source/openapi.json"
+		"clean": "rm -rf ./dist ./source/openapi.json"
 	},
 	"repository": {
 		"type": "git",
@@ -41,7 +41,7 @@
 	},
 	"homepage": "https://github.com/betagouv/publicodes#readme",
 	"engines": {
-		"node": ">=14"
+		"node": ">=16"
 	},
 	"dependencies": {
 		"@koa/cors": "^3.3.0",
@@ -51,7 +51,7 @@
 		"openapi-validator-middleware": "^3.2.6"
 	},
 	"peerDependencies": {
-		"publicodes": "1.0.0-beta.35"
+		"publicodes": "^1.0.0-beta.35"
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-cli": "^4.0.4",
@@ -61,10 +61,10 @@
 		"@types/node": "^17.0.29",
 		"chai-http": "^4.3.0",
 		"nodemon": "^2.0.15",
-		"publicodes": "1.0.0-beta.35",
+		"publicodes": "^1.0.0-beta.35",
 		"ts-node": "^10.7.0",
 		"tsup": "^5.12.8",
-		"typescript": "next",
+		"typescript": "4.7.1-rc",
 		"vitest": "^0.12.3",
 		"wait-on": "^6.0.1"
 	}
