@@ -2,10 +2,9 @@ import Router from '@koa/router'
 import { Context, Next } from 'koa'
 import koaBody from 'koa-body'
 import OAPIValidator from 'openapi-validator-middleware'
-import { openapi, openapiPath } from '../index.js'
+import { openapiPath } from '../index.js'
 import * as routes from '../route/index.js'
 import { Expressions, NewEngine, Situation } from '../types.js'
-import { mergeDeep } from '../utils.js'
 
 const InputValidationError = OAPIValidator.InputValidationError
 
@@ -27,17 +26,7 @@ interface EvaluateBody {
 	situation?: Situation
 }
 
-interface Options {
-	/**
-	 * Allows overriding the json returned by the /openapi.json endpoint.
-	 */
-	customOpenapi?: Record<string, unknown>
-}
-
-export default function publicodesAPI(
-	newEngine: NewEngine,
-	{ customOpenapi }: Options = {}
-) {
+export default function publicodesAPI(newEngine: NewEngine) {
 	const router = new Router()
 
 	// The validator uses the original openapi.json, not the custom one
@@ -62,10 +51,6 @@ export default function publicodesAPI(
 
 			return await next()
 		}
-
-	const mergedOpenapi = customOpenapi
-		? mergeDeep(openapi, customOpenapi)
-		: openapi
 
 	router
 		.use(async (ctx: Context, next: Next) => {
@@ -113,10 +98,6 @@ export default function publicodesAPI(
 				ctx.body = routes.rulesId(newEngine, rule)
 			}
 		)
-		.get('/openapi.json', (ctx: Context) => {
-			ctx.type = 'application/json'
-			ctx.body = mergedOpenapi
-		})
 
 	const routesMiddleware = router.routes()
 
