@@ -12930,14 +12930,14 @@ __metadata:
     koa-body: ^5.0.0
     nodemon: ^2.0.15
     openapi-validator-middleware: ^3.2.6
-    publicodes: 1.0.0-beta.35
+    publicodes: ^1.0.0-beta.35
     ts-node: ^10.7.0
     tsup: ^5.12.8
-    typescript: next
+    typescript: 4.7.1-rc
     vitest: ^0.12.3
     wait-on: ^6.0.1
   peerDependencies:
-    publicodes: 1.0.0-beta.35
+    publicodes: ^1.0.0-beta.35
   languageName: unknown
   linkType: soft
 
@@ -12989,19 +12989,6 @@ __metadata:
     "@types/mocha": ^9.0.0
   languageName: unknown
   linkType: soft
-
-"publicodes@npm:1.0.0-beta.35":
-  version: 1.0.0-beta.35
-  resolution: "publicodes@npm:1.0.0-beta.35"
-  dependencies:
-    moo: ^0.5.1
-    nearley: ^2.19.2
-    yaml: ^1.9.2
-  peerDependencies:
-    "@types/mocha": ^9.0.0
-  checksum: 0d575559278fd31438c052e3be5676d10af09683b80398f99ab33a8a33f7a80577c6f70df57fdc20d7344e140dc8cf91767dbf59a64e121998ecbe404b599889
-  languageName: node
-  linkType: hard
 
 "pump@npm:^3.0.0":
   version: 3.0.0
@@ -15455,6 +15442,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:4.7.1-rc":
+  version: 4.7.1-rc
+  resolution: "typescript@npm:4.7.1-rc"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: c340f341cb974310b20c49ff52419cd0041e9591d0e25c127d1f8796300b72cf89484448128dfac13f49346b8b56ce257f4e75165b9f941b43d11936849de15c
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^4.5.5":
   version: 4.5.5
   resolution: "typescript@npm:4.5.5"
@@ -15465,13 +15462,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:next":
-  version: 4.7.0-dev.20220502
-  resolution: "typescript@npm:4.7.0-dev.20220502"
+"typescript@patch:typescript@4.7.1-rc#~builtin<compat/typescript>":
+  version: 4.7.1-rc
+  resolution: "typescript@patch:typescript@npm%3A4.7.1-rc#~builtin<compat/typescript>::version=4.7.1-rc&hash=bda367"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 96aacca3e9a82725826c61b8d40b169a7aecf4f04166c551552fa1524239fce620dd1c271182bd32ddd14a4332f510a1335b054cda815400402f4a5ec1ad133f
+  checksum: 76f6f2e270199a2d239204c9f3d866f9817c83da1d870f15a6657437d2ec5f5411f987508effd02a38f438b443c2967c10d06514150911a8bcba4bc53c8630ca
   languageName: node
   linkType: hard
 
@@ -15482,16 +15479,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 858c61fa63f7274ca4aaaffeced854d550bf416cff6e558c4884041b3311fb662f476f167cf5c9f8680c607239797e26a2ee0bcc6467fbc05bfcb218e1c6c671
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@next#~builtin<compat/typescript>":
-  version: 4.7.0-dev.20220502
-  resolution: "typescript@patch:typescript@npm%3A4.7.0-dev.20220502#~builtin<compat/typescript>::version=4.7.0-dev.20220502&hash=bda367"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: cf3029e179c9b07750e2ce143666992e9d6beed322cae2b346ba5041e33912d2bab59db360f7a4d01d8b582915e345f9376c8ba8004e789008f4b11a7377ec9b
   languageName: node
   linkType: hard
 

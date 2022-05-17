@@ -3,7 +3,7 @@
 		/* Basic Options */
 		// "incremental": true, // disabled for tsup, see https://github.com/egoist/tsup/issues/615 for implementation status
 		"target": "ES2022",
-		"module": "ES2022",
+		"module": "Node16",
 		"outDir": "dist",
 		"declaration": true,
 
@@ -24,7 +24,7 @@
 		"noFallthroughCasesInSwitch": true,
 
 		/* Module Resolution Options */
-		"moduleResolution": "NodeNext",
+		"moduleResolution": "Node16",
 		"esModuleInterop": true,
 		"resolveJsonModule": true,
 
