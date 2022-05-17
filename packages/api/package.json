@@ -3,19 +3,29 @@
 	"version": "1.0.0-beta.0",
 	"description": "Publicodes API",
 	"type": "module",
-	"main": "./dist/index.js",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
 	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
 	"scripts": {
 		"test": "yarn validate && yarn vitest",
 		"validate": "yarn swagger-cli validate ./source/openapi.yaml",
-		"start": "yarn build:watch & wait-on ./dist && NODE_OPTIONS=--experimental-json-modules NODE_PATH=./ nodemon ./example.ts ",
-		"build": "yarn build:openapi ; yarn build:ts",
-		"build:watch": "yarn build:openapi:watch & yarn wait:openapi && yarn build:ts:watch --preserveWatchOutput",
-		"build:ts": "NODE_OPTIONS=--experimental-json-modules tsc",
-		"build:ts:watch": "tsc -w",
+		"start": "yarn clean && yarn build:watch & wait-on ./dist/openapi.json && yarn start:example",
+		"start:example": "NODE_OPTIONS=--experimental-json-modules NODE_PATH=./ nodemon -d 500ms ./example.ts",
+		"build": "yarn build:openapi ; yarn build:tsup",
+		"build:watch": "yarn build:openapi:watch & yarn wait:openapi && yarn build:tsup:watch",
+		"build:tsup": "NODE_OPTIONS=--experimental-json-modules tsup-node",
+		"build:tsup:watch": "yarn build:tsup --watch",
+		"copy:openapi": "cp ./source/openapi.json ./dist",
 		"wait:openapi": "wait-on ./source/openapi.json",
 		"build:openapi": "yarn run swagger-cli bundle ./source/openapi.yaml > ./source/openapi.json",
-		"build:openapi:watch": "nodemon -w ./source/openapi.yaml -x \"yarn build:openapi\"",
+		"build:openapi:watch": "nodemon -d 500ms -w ./source/openapi.yaml -x \"yarn build:openapi\"",
 		"clean": "rm -rf dist ./source/openapi.json"
 	},
 	"repository": {
@@ -23,12 +33,14 @@
 		"url": "git+https://github.com/betagouv/publicodes.git",
 		"directory": "packages/api"
 	},
-	"author": "",
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/betagouv/publicodes/issues"
 	},
 	"homepage": "https://github.com/betagouv/publicodes#readme",
+	"engines": {
+		"node": ">=14"
+	},
 	"dependencies": {
 		"@koa/cors": "^3.3.0",
 		"@koa/router": "^10.1.1",
@@ -49,6 +61,7 @@
 		"nodemon": "^2.0.15",
 		"publicodes": "1.0.0-beta.35",
 		"ts-node": "^10.7.0",
+		"tsup": "^5.12.8",
 		"typescript": "next",
 		"vitest": "^0.12.3",
 		"wait-on": "^6.0.1"
