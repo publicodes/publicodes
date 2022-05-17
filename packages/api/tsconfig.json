@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		/* Basic Options */
-		"incremental": true,
+		// "incremental": true, // disabled for tsup, see https://github.com/egoist/tsup/issues/615 for implementation status
 		"target": "ES2022",
 		"module": "ES2022",
 		"outDir": "dist",
@@ -24,7 +24,7 @@
 		"noFallthroughCasesInSwitch": true,
 
 		/* Module Resolution Options */
-		"moduleResolution": "Node",
+		"moduleResolution": "NodeNext",
 		"esModuleInterop": true,
 		"resolveJsonModule": true,
 
