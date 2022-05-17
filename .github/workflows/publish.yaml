@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        package: ['core', 'react-ui']
+        package: ['core', 'react-ui', 'api']
       # no parallel
       # serial:
       #   - package: ['core', 'react-ui']
