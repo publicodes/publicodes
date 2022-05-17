@@ -20,7 +20,7 @@
 	"scripts": {
 		"clean": "rimraf dist node_modules data",
 		"build": "tsup source/index.tsx --format cjs,esm --dts --inject ./react-shim.js --sourcemap",
-		"prepack": "yarn workspace publicodes run build && yarn run build",
+		"prepack": "run build",
 		"start": "run build --watch",
 		"test:type": "run tsc"
 	},

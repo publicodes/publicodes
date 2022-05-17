@@ -48,7 +48,7 @@
 		"build:grammar": "nearleyc ./source/grammar.ne -o ./source/grammar.js",
 		"build": "run build:grammar && tsup",
 		"start": "run build --watch",
-		"prepack": "yarn run build",
+		"prepack": "run build",
 		"test:type": "run build:grammar && run tsc",
 		"test": "run build:grammar && mocha \"./test/**/*.test.{js,ts}\"",
 		"clean": "rimraf dist node_modules source/grammar.js"

@@ -8,7 +8,7 @@
 		"website"
 	],
 	"scripts": {
-		"test": "yarn workspaces foreach run test",
+		"test": "run prepack && yarn workspaces foreach run test",
 		"prepack": "yarn workspaces foreach --topological-dev -pi run prepack",
 		"test:type": "run prepack && yarn workspaces foreach -pi run test:type",
 		"lint:prettier": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml}\"",
