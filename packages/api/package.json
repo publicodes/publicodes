@@ -19,7 +19,7 @@
 		"validate": "swagger-cli validate ./source/openapi.yaml",
 		"start": "run clean && run build:watch & wait-on ./dist/openapi.json && run start:example",
 		"start:example": "NODE_OPTIONS=--experimental-json-modules NODE_PATH=./ nodemon -d 500ms ./example.ts",
-		"prepack": "run build",
+		"prepack": "yarn run build",
 		"build": "run build:openapi && run build:tsup",
 		"build:watch": "run build:openapi:watch & run wait:openapi && run build:tsup:watch",
 		"build:tsup": "NODE_OPTIONS=--experimental-json-modules tsup-node",
