@@ -24,5 +24,6 @@ jobs:
           token: ${{ secrets.NPM_PUBLISH_SECRET }}
           dry-run: ${{ github.ref != 'refs/heads/master' }}
           package: ./packages/${{ matrix.package }}/package.json
+          access: public
         env:
           NODE_ENV: production

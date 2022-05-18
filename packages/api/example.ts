@@ -2,7 +2,7 @@ import cors from '@koa/cors'
 import Router from '@koa/router'
 import Koa from 'koa'
 import Engine from 'publicodes'
-import { koaMiddleware as publicodesAPI } from 'publicodes-api'
+import { koaMiddleware as publicodesAPI } from '@publicodes/api'
 
 interface State extends Koa.DefaultState {}
 
