@@ -7,14 +7,13 @@ Il consiste en un middleware [Koa](https://github.com/koajs/koa) qui ajoute des 
 -   `POST` `/evaluate` Évalue une ou plusieurs expressions avec une situation donnée
 -   `GET` `/rules` Retourne la liste de toutes vos règles
 -   `GET` `/rules/{rule}` Retourne une règle spécifique
--   `GET` `/openapi.json` Renvoie le schéma OpenAPI, il peut être personnalisé avec l'option `customOpenapi` du middleware
 
 ## Installation
 
-```sh
-npm install publicodes-api
+```bash
+npm install @publicodes/api
 # or
-yarn add publicodes-api
+yarn add @publicodes/api
 ```
 
 ## Utilisation
@@ -23,7 +22,7 @@ yarn add publicodes-api
 import Router from '@koa/router'
 import Koa from 'koa'
 import Engine from 'publicodes'
-import { koaMiddleware as publicodesAPI } from 'publicodes-api'
+import { koaMiddleware as publicodesAPI } from '@publicodes/api'
 
 const app = new Koa()
 const router = new Router()
