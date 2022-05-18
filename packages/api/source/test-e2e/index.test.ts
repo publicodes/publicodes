@@ -12,7 +12,13 @@ interface Context extends Koa.DefaultContext {}
 const app = new Koa<State, Context>()
 const router = new Router<State, Context>()
 
-const apiRoutes = publicodesAPI(() => new Engine('coucou: 0'))
+const apiRoutes = publicodesAPI(
+	() =>
+		new Engine(`
+coucou: 0
+coucou . j'ai des caractères spéciaux: "'ok'"
+`)
+)
 
 router.use(apiRoutes)
 
@@ -40,7 +46,6 @@ describe('e2e koa middleware', () => {
 				.request(server)
 				.post('/evaluate')
 				.send({ expressions: '1 + 1' })
-
 				.then(async (res) => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
@@ -68,7 +73,6 @@ describe('e2e koa middleware', () => {
 				.request(server)
 				.post('/evaluate')
 				.send({ expressions: '1+1' })
-
 				.then(async (res) => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
@@ -83,7 +87,6 @@ describe('e2e koa middleware', () => {
 				.request(server)
 				.post('/evaluate')
 				.send({ expressions: null })
-
 				.then(async (res) => {
 					expect(res.status).toMatchInlineSnapshot('400')
 
@@ -98,7 +101,6 @@ describe('e2e koa middleware', () => {
 				.request(server)
 				.post('/evaluate')
 				.send({ expressions: [] })
-
 				.then(async (res) => {
 					expect(res.status).toMatchInlineSnapshot('400')
 
@@ -116,7 +118,6 @@ describe('e2e koa middleware', () => {
 					expressions: ['coucou = 2 * 21'],
 					situation: 'coucou: 42',
 				})
-
 				.then(async (res) => {
 					expect(res.status).toMatchInlineSnapshot('400')
 
@@ -172,7 +173,6 @@ describe('e2e koa middleware', () => {
 			chai
 				.request(server)
 				.get('/rules')
-
 				.then(async (res) => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
@@ -190,6 +190,16 @@ describe('e2e koa middleware', () => {
 			    "suggestions": {},
 			    "title": "Coucou",
 			  },
+			  "coucou . j'ai des caractères spéciaux": {
+			    "nodeKind": "rule",
+			    "rawNode": {
+			      "formule": "'ok'",
+			      "nom": "coucou . j'ai des caractères spéciaux",
+			    },
+			    "replacements": [],
+			    "suggestions": {},
+			    "title": "J'ai des caractères spéciaux",
+			  },
 			}
 		`)
 	})
@@ -199,7 +209,6 @@ describe('e2e koa middleware', () => {
 			chai
 				.request(server)
 				.get('/rules/coucou')
-
 				.then(async (res) => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
@@ -219,12 +228,35 @@ describe('e2e koa middleware', () => {
 		`)
 	})
 
+	it('Test rules/:id endpoint with special characters', async () => {
+		await expect(
+			chai
+				.request(server)
+				.get("/rules/coucou . j'ai des caractères spéciaux")
+				.then(async (res) => {
+					expect(res.status).toMatchInlineSnapshot('200')
+
+					return JSON.parse(res.text)
+				})
+		).resolves.toMatchInlineSnapshot(`
+			{
+			  "nodeKind": "rule",
+			  "rawNode": {
+			    "formule": "'ok'",
+			    "nom": "coucou . j'ai des caractères spéciaux",
+			  },
+			  "replacements": [],
+			  "suggestions": {},
+			  "title": "J'ai des caractères spéciaux",
+			}
+		`)
+	})
+
 	it('Test bad rules/:id endpoint', async () => {
 		await expect(
 			chai
 				.request(server)
 				.get('/rules/bad rule')
-
 				.then(async (res) => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
