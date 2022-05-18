@@ -10,12 +10,16 @@ const InputValidationError = OAPIValidator.InputValidationError
 
 type koaValidate = (ctx: Record<string, any>, next: Function) => Promise<void> // koa
 
+/**
+ * This middleware detects if koa-body has already been applied by the user because
+ * koa-body throws an InternalServerError if we apply it multiple times.
+ */
 const applyKoaBodyIfNotPresent: Router.Middleware<{}, {}> = (
 	ctx: Context,
 	next: Next
 ) => {
 	if (typeof ctx.request.body === 'undefined') {
-		return koaBody({})(ctx, next)
+		return koaBody()(ctx, next)
 	} else {
 		return next()
 	}
