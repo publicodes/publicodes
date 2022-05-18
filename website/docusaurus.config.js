@@ -30,6 +30,11 @@ module.exports = {
 					label: 'Bac à sable',
 				},
 				{
+					to: 'api-rest',
+					position: 'left',
+					label: 'API REST',
+				},
+				{
 					href: 'https://gitter.im/publicodes/community',
 					label: 'Chat',
 					position: 'right',

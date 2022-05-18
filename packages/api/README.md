@@ -45,8 +45,9 @@ Un fichier d'exemple complet se trouve dans les sources si besoin : [example.ts]
 
 ## Documentation
 
--   ...
+-   [Publicodes API](https://publi.codes/api-rest)
+-   [Publicodes](https://publi.codes/)
 
 ## Projets phares
 
--   **[l'api mon-entreprise.fr](https://mon-entreprise.urssaf.fr/api)** ...
+-   **L'API [mon-entreprise.fr](https://mon-entreprise.urssaf.fr/api)** ...
