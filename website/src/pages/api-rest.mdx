@@ -1,0 +1,62 @@
+---
+title: API REST
+description: 'Outil pour créer votre API REST Publicodes.'
+hide_table_of_contents: true
+---
+
+## API REST Publicodes
+
+Publicodes étant un module javascript, il peut être difficile de l'intégrer dans des projets écrits dans d'autres
+langages (PHP, Python, etc.) ou même dans certaines applications comme des tableurs (excel, gsheet, etc.).
+
+Pour répondre à ce besoin nous avons développé un module pour vous permettre
+de créer rapidement une API REST avec vos règles.<br/>
+Il se compose d'un middleware [Koajs](https://github.com/koajs/koa)
+qui expose des points d'entrée analogues à l'interpréteur Publicodes :
+
+- `POST` `/evaluate` Évalue une ou plusieurs expressions avec une situation donnée
+  - Les paramètres sont envoyés au format JSON :
+  - `expressions` de type `string` ou `string[]`, ex: `["dépenses primeur"]`
+  - `situation` un objet de `clé : valeur`, ex: `{ "prix . carottes" : "1€/kg" }`
+- `GET` `/rules` Retourne la liste de toutes vos règles
+- `GET` `/rules/{rule}` Retourne une règle spécifique
+  - ex: `/rules/prix%20.%20carottes`
+
+## Installation
+
+```bash
+npm install @publicodes/api
+# or
+yarn add @publicodes/api
+```
+
+## Utilisation
+
+```ts
+import Router from '@koa/router'
+import Koa from 'koa'
+import Engine from 'publicodes'
+import { koaMiddleware as publicodesAPI } from '@publicodes/api'
+
+const app = new Koa()
+const router = new Router()
+
+// Create middleware with your Engine
+const apiRoutes = publicodesAPI(() => new Engine('coucou: 0'))
+
+// Basic routes usage (/evaluate, /rules, etc.)
+router.use(apiRoutes)
+
+// Or use with specific route prefix (/v1/evaluate, /v1/rules, etc.)
+router.use('/v1', apiRoutes)
+
+app.use(router.routes()).listen(3000)
+
+// ...
+```
+
+Un fichier d'exemple complet se trouve dans les sources si besoin : [example.ts](https://github.com/betagouv/publicodes/blob/master/packages/api/example.ts).
+
+## Projets phares
+
+- **L'API [mon-entreprise.fr](https://mon-entreprise.urssaf.fr/api)** ...
