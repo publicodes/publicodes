@@ -3,7 +3,7 @@ sidebar_position: 1
 title: Créer un formulaire
 ---
 
-Publicodes permet de générer un formulaire interactif tout autant qu’un simulateur affichant une liste de questions. Vous pouvez implémenter l’interface utilisateur la plus adaptée à votre application à partir des informations calculées par le moteur.
+Publicodes permet de générer un formulaire intéractif tout autant qu’un simulateur affichant une liste de questions. Vous pouvez implémenter l’interface utilisateur la plus adaptée à votre application à partir des informations calculées par le moteur.
 
 ## Questions et méta-données
 
@@ -27,7 +27,7 @@ On peut filtrer les règles publicodes pour obtenir uniquement la liste des ques
 ```js
 const engine = new Publicodes(rules)
 const questions = engine.parsedRules.filter(
-	(rule) => rule.question !== undefined
+	(rule) => rule.rawNode.question !== undefined
 )
 ```
 
@@ -43,7 +43,7 @@ commande . bière:
 
 ```js
 const questionsToDisplay = questions.filter((question) =>
-	engine.isApplicable(question)
+	engine.evaluate({ 'est applicable': question })
 )
 ```
 

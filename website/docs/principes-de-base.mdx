@@ -92,6 +92,21 @@ On peut forcer la conversion des unités via le [mécanisme `unité`](/docs/méc
 
 - `jour` / `mois` / `an`
 - `€` / `k€`
+- `g` / `kg` / `mg`
+
+### Pourcentage `%`
+
+Il est possible de spécifier un pourcentage comme unité. L'addition d'un nombre avec un pourcentage revient à ajouter le pourcentage à ce nombre. De même pour la soustraction.
+
+```publicodes
+prix TTC: 10€ + 20%
+```
+
+Le résultat de l'addition de deux pourcentages est bien la somme des deux nombres :
+
+```publicodes
+réduction: 2.4% + 5.0%
+```
 
 ## Mécanismes
 
@@ -213,11 +228,25 @@ prime de vacances:
   valeur: 200€
 ```
 
-Ici, si l'ancienneté est inférieure à un an, alors la prime de vacances ne sera pas
-_applicable_. Les variables _non applicables_ sont égales à `non`. Elles sont ignorées au niveau des mécanismes numériques (par exemple le mécanisme `somme` comptera une prime non applicable
-comme valant zéro, voir la page spécifique aux mécanismes).
+Ici, si l'ancienneté est inférieure à un an, alors la prime de vacances sera
+_non applicable_.
 
-La syntaxe suivante est également valable :
+Les variables _non applicable_ sont prise en compte différement au niveau des mécanismes numériques.
+Par exemple le mécanisme `somme` comptera une prime non applicable comme valant zéro. Un plafond _non applicable_ n'aura pas d'incidence sur la valeur retournée (même chose pour un abattement ou un plancher par exemple).
+
+:::caution La valeur `non` est applicable
+
+Publicodes différencie désormais la valeur booléenne `non` d'une valeur _non applicable_. Cela permet par exemple de cacher les questions non applicable [dans un formulaire](/docs/guides/créer-formulaire) tout en affichant les questions dont la réponse est `non`.
+
+:::
+
+### Tester l'applicabilité
+
+On peut tester si une variable est applicable ou non applicable avec les mécanismes `est applicable` et `est non applicable`.
+
+### Rend non applicable
+
+Il est également possible de rendre une règle non applicable depuis une autre règle :
 
 ```publicodes
 nouveau salarié:
@@ -350,11 +379,17 @@ robot de cuisine:
   valeur: oui
 
 temps original:
-  formule: temps de préparation + temps de cuisson # résultat : 40 min
+  formule: temps de préparation + temps de cuisson
 
 temps modifié:
-  formule: temps de préparation + temps de cuisson # résultat : 30 min
+  formule: temps de préparation + temps de cuisson
 ```
+
+:::info Note
+
+Les remplacement sont implémentés sous forme d'une substitution de variable. Quand une règle en remplace une autre, c'est toutes les références à la règle remplacée qui vont être changées par la valeur de remplacement.
+
+:::
 
 ## Définition de règle imbriquée
 
@@ -456,9 +491,17 @@ assiette: 2000 €
 
 :::
 
-## Évaluation
+## Règles non définie
 
-Lors de l'évaluation, les variables dont les valeurs ne sont pas renseignées sont remontées afin que ces dernières puissent être complétées par l'utilisateur (dans le cas d'un simulateur par exemple).
+Il est possible de laisser certaines règles vide pour être saisie par l'utilisateur par exemple.
+Lors de l'évaluation, les variables dont les valeurs ne sont pas renseignées sont remontées.
+
+```publicodes
+salaire brut:
+  unité: €/mois
+
+salaire net: salaire brut - 20 %
+```
 
 Il est possible de donner une valeur par défaut. Les variables manquantes seront quand même remontées, et le moteur utilisera la valeur par défaut pour le calcul.
 

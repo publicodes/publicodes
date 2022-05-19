@@ -1,6 +1,7 @@
 # Test des opérations binaire sous forme de mécanisme :
 a:
 b:
+
 addition:
   +:
     - a
@@ -15,8 +16,10 @@ addition:
       situation:
         b: 4
       valeur attendue: undefined
+      variables manquantes: [a]
     - nom: complètement non défini
       valeur attendue: undefined
+      variables manquantes: [a, b]
     - nom: a non applicable
       situation:
         a: { non applicable si: oui }
@@ -60,6 +63,11 @@ addition:
         a: 10 %/an
         b: 4%
       valeur: 10.4 %/an
+    - nom: addition d'un nombre non défini et d'un pourcentage
+      situation:
+        b: 4%
+      valeur attendue: undefined
+      variables manquantes: [a]
 
 soustraction:
   -:
