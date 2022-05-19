@@ -28,7 +28,11 @@ const isNotApplicable = (node: ASTNode) => {
 const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 	function (node) {
 		const valeur = node.explanation
-		if (this.ruleUnits.get(valeur)?.isNullable === false) {
+		console.log(valeur.nodeKind, valeur.dottedName, this.ruleUnits.get(valeur))
+		if (
+			this.ruleUnits.get(valeur)?.isNullable === false &&
+			valeur.nodeKind !== 'rule'
+		) {
 			return { ...node, nodeValue: false, missingVariables: {} }
 		}
 

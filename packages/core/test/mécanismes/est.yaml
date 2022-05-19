@@ -102,3 +102,20 @@ test non applicabilité:
   exemples:
     valeur attendue: true
     variables manquantes: []
+
+c: non
+c . a: non
+
+est non applicable avec désactivation du parent:
+  est non applicable: c . a
+  exemples:
+    - valeur attendue: true
+    - situation: { c: oui }
+      valeur attendue: false
+
+est applicable avec désactivation du parent:
+  est applicable: c . a
+  exemples:
+    - valeur attendue: false
+    - situation: { c: oui }
+      valeur attendue: true
