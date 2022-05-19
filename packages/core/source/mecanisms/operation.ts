@@ -145,9 +145,10 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		inferUnit('*', [node1.unit, node2.unit])?.numerators.includes('%')
 	) {
 		let unit = inferUnit('*', [node1.unit, node2.unit])
+		const nodeValue = evaluatedNode.nodeValue
 		return {
 			...evaluatedNode,
-			nodeValue: evaluatedNode.nodeValue / 100,
+			nodeValue: typeof nodeValue === 'number' ? nodeValue / 100 : nodeValue,
 			unit: inferUnit('*', [unit, { numerators: [], denominators: ['%'] }]),
 		}
 	}
@@ -157,8 +158,12 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		return {
 			...evaluatedNode,
 			nodeValue:
-				node1.nodeValue *
-				(1 + (node2.nodeValue / 100) * (node.operationKind === '-' ? -1 : 1)),
+				typeof node1.nodeValue === 'number' &&
+				typeof node2.nodeValue === 'number'
+					? node1.nodeValue *
+					  (1 +
+							(node2.nodeValue / 100) * (node.operationKind === '-' ? -1 : 1))
+					: evaluatedNode.nodeValue,
 			unit: inferUnit('*', [unit, { numerators: [], denominators: ['%'] }]),
 		}
 	}
