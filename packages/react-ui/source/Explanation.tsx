@@ -8,6 +8,8 @@ import Composantes from './mecanisms/Composantes'
 import Condition from './mecanisms/Condition'
 import DefaultInlineMecanism from './mecanisms/DefaultInlineMecanism'
 import Durée from './mecanisms/Durée'
+import EstNonApplicable from './mecanisms/EstNonApplicable'
+import EstNonDéfini from './mecanisms/EstNonDéfini'
 import Grille from './mecanisms/Grille'
 import InversionNumérique from './mecanisms/InversionNumérique'
 import Operation from './mecanisms/Operation'
@@ -38,6 +40,8 @@ const UIComponents = {
 	operation: Operation,
 	texte: Texte,
 	reference: Reference,
+	'est non applicable': EstNonApplicable,
+	'est non défini': EstNonDéfini,
 	rule: Rule,
 	condition: Condition,
 	'dans la situation': Situation,

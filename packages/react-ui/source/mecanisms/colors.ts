@@ -1,6 +1,10 @@
 const colors = {
 	'applicable si': '#7B1FA2',
 	'non applicable si': '#7B1FA2',
+	'est applicable': '#00796B',
+	'est non applicable': '#00796B',
+	'est défini': '#00796B',
+	'est non défini': '#00796B',
 	somme: '#18457B',
 	plafond: '#EF6C00',
 	plancher: '#EF6C00',

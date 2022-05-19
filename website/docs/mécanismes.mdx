@@ -39,6 +39,72 @@ prime de vacances:
   valeur: 200€
 ```
 
+## est non défini
+
+Renvoit `oui` si la valeur est non définie.
+
+### Exemple
+
+```publicodes
+age:
+age inconnu:
+  est non défini: age
+```
+
+## est défini
+
+Renvoit `oui` si la valeur est non définie.
+
+### Exemple
+
+```publicodes
+age: 15 ans
+age connu:
+  est défini: age
+```
+
+## est non applicable
+
+Renvoit `oui` si la valeur est non applicable.
+
+:::info Note
+
+La valeur booléenne `non` est applicable. Ce mécanisme est donc différent que la comparaison `valeur = non`.
+[En savoir plus sur l'applicabilité](/docs/principes-de-base#applicabilité)
+
+:::
+
+### Exemple
+
+```publicodes
+exonérations: oui
+exonérations . lodeom: non
+
+lodeom non applicable:
+  est non applicable: exonérations . lodeom
+```
+
+## est applicable
+
+Renvoit `oui` si la valeur est applicable.
+
+:::info Note
+
+La valeur booléenne `non` est applicable. Ce mécanisme est donc différent que la comparaison `valeur != non`.
+[En savoir plus sur l'applicabilité](/docs/principes-de-base#applicabilité)
+
+:::
+
+### Exemple
+
+```publicodes
+exonérations: oui
+exonérations . lodeom: non
+
+lodeom applicable:
+  est applicable: exonérations . lodeom
+```
+
 ## une de ces conditions
 
 Renvoie `oui` si l'une des règles listées est _applicable_.
