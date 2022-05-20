@@ -106,19 +106,12 @@ type EvaluationDecoration<T extends Types> = {
 	missingVariables: MissingVariables
 }
 export type Types = number | boolean | string | Record<string, unknown>
-// TODO: type NotYetDefined & NotApplicable properly (see #14) then refactor any code depending on these:
-export type NotYetDefined = undefined
-export function isNotYetDefined(value): value is NotYetDefined {
-	return value === undefined
-}
-export type NotApplicable = null
-export function isNotApplicable(value): value is NotApplicable {
-	return value === null
-}
+
 export type Evaluation<T extends Types = Types> =
 	| T
-	| NotApplicable
-	| NotYetDefined
+	| null // Non applicable
+	| undefined // Non défini
+
 export type EvaluatedNode<T extends Types = Types> = ASTNode &
 	EvaluationDecoration<T>
 

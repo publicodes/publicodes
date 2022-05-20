@@ -1,5 +1,5 @@
 import { EvaluationFunction } from '..'
-import { ASTNode } from '../AST/types'
+import { ASTNode, EvaluatedNode } from '../AST/types'
 import { convertToDate } from '../date'
 import { warning } from '../error'
 import { mergeAllMissing } from '../evaluation'
@@ -44,9 +44,11 @@ const parseOperation = (k, symbol) => (v, context) => {
 
 const evaluate: EvaluationFunction<'operation'> = function (node) {
 	let node1 = this.evaluate(node.explanation[0])
-	let evaluatedNode = {
+
+	let evaluatedNode: EvaluatedNode & OperationNode = {
 		...node,
-	}
+		missingVariables: {},
+	} as EvaluatedNode & OperationNode
 
 	// LAZY EVALUATION
 	if (
@@ -137,7 +139,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 						typeof value === 'string' &&
 						value.match?.(/[\d]{2}\/[\d]{2}\/[\d]{4}/)
 			  )
-			? operatorFunction(convertToDate(a), convertToDate(b))
+			? operatorFunction(convertToDate(a as string), convertToDate(b as string))
 			: operatorFunction(a, b)
 
 	if (

@@ -1,3 +1,4 @@
+import { PublicodesExpression } from '..'
 import { createParseInlinedMecanismWithArray } from './utils'
 
 export default createParseInlinedMecanismWithArray(
@@ -6,11 +7,13 @@ export default createParseInlinedMecanismWithArray(
 		valeur: { type: 'liste' },
 	},
 	({ valeur }) =>
-		[...valeur].reverse().reduce((acc, value) => ({ '+': [value, acc] }), {
-			constant: {
-				nodeValue: null,
-				isNullable: true,
-				type: undefined,
-			},
-		})
+		[...(valeur as Array<PublicodesExpression>)]
+			.reverse()
+			.reduce((acc, value) => ({ '+': [value, acc] }), {
+				constant: {
+					nodeValue: null,
+					isNullable: true,
+					type: undefined,
+				},
+			})
 )

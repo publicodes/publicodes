@@ -332,7 +332,7 @@ espaces de noms plus haut, et va donc valoir `100 €`.
 
 Il est possible de désactiver l'ensemble des règles définies dans un espace de nom.
 
-Toutes les règles possèdent une dépendance implicite à leur parent. Si ce dernier est égal à `non` alors leur valeur est également `non`.
+Toutes les règles possèdent une dépendance implicite à leur parent. Si ce dernier vaut à _non_ ou est _non applicable_ alors toutes les règles enfants seront _non applicables_
 
 ```publicodes
 CDD: non
@@ -341,7 +341,15 @@ CDD . indemnité de précarité: 10% * 1500€/mois * 6 mois
 indemnités:
   somme:
     - 100 €
-    - CDD . indemnité de précarité # non
+    - CDD . indemnité de précarité
+```
+
+```publicodes
+région: '"Centre"'
+
+aides occitanie:
+  applicable si: région = 'Occitanie'
+aides occitanie . subvention vélo : 500 €
 ```
 
 ## Remplacement
@@ -391,7 +399,7 @@ Les remplacement sont implémentés sous forme d'une substitution de variable. Q
 
 :::
 
-## Définition de règle imbriquée
+## Règle imbriquées
 
 ### A l'intérieur des mécanismes : `nom`
 
@@ -441,7 +449,7 @@ super-prime:
   valeur: 10%
 ```
 
-### Directement sur une règle : `avec`
+### Directement sur la règle : `avec`
 
 ```publicodes prix-final
 prix final:

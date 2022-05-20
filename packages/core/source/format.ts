@@ -1,4 +1,4 @@
-import { Evaluation, isNotYetDefined, isNotApplicable, Unit } from './AST/types'
+import { Evaluation, Unit } from './AST/types'
 import { simplifyNodeUnit } from './nodeUnits'
 import { formatUnit, serializeUnit } from './units'
 
@@ -130,10 +130,10 @@ export function formatValue(
 	if (typeof nodeValue === 'number' && Number.isNaN(nodeValue)) {
 		return 'Erreur dans le calcul du nombre'
 	}
-	if (isNotYetDefined(nodeValue)) {
+	if (nodeValue === undefined) {
 		return 'Pas encore défini'
 	}
-	if (isNotApplicable(nodeValue)) {
+	if (nodeValue === null) {
 		return 'Non applicable'
 	}
 	if (typeof nodeValue === 'string') {

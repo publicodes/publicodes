@@ -201,6 +201,10 @@ const traverseRuleNode: TraverseFunction<'rule'> = (fn, node) => ({
 		Object.entries(node.suggestions).map(([key, value]) => [key, fn(value)])
 	),
 	explanation: {
+		ruleDisabledByItsParent: node.explanation.ruleDisabledByItsParent,
+		nullableParent: node.explanation.nullableParent
+			? fn(node.explanation.nullableParent)
+			: undefined,
 		parents: node.explanation.parents.map(fn),
 		valeur: fn(node.explanation.valeur),
 	},
