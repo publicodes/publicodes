@@ -200,6 +200,10 @@ function MissingVars({
 		setOpened(false)
 	}, [dottedName])
 
+	if (!selfMissing || selfMissing.length === 0) {
+		return null
+	}
+
 	return (
 		<>
 			<span>
@@ -211,26 +215,23 @@ function MissingVars({
 						setOpened(!opened)
 					}}
 				>
-					{opened ? 'cacher' : 'voir'}
+					{opened ? 'cacher' : 'voir la liste'}
 				</a>
 			</span>
-			<p className="ui__ notice">
-				Les règles suivantes sont nécessaires pour le calcul mais n'ont pas été
-				saisies dans la situation. Leur valeur par défaut est utilisée.
-			</p>
 			{opened && (
 				<>
-					{selfMissing && selfMissing.length > 0 && (
-						<>
-							<ul>
-								{selfMissing.map((dottedName) => (
-									<li key={dottedName}>
-										<RuleLinkWithContext dottedName={dottedName} />
-									</li>
-								))}
-							</ul>
-						</>
-					)}
+					<p className="ui__ notice">
+						Les règles suivantes sont nécessaires pour le calcul mais n'ont pas
+						été saisies dans la situation. Leur valeur par défaut est utilisée.
+					</p>
+
+					<ul>
+						{selfMissing.map((dottedName) => (
+							<li key={dottedName}>
+								<RuleLinkWithContext dottedName={dottedName} />
+							</li>
+						))}
+					</ul>
 				</>
 			)}
 		</>
@@ -259,25 +260,25 @@ function ReverseMissing({
 		<section>
 			<span>
 				<h3 style={{ display: 'inline-block', marginRight: '1rem' }}>
-					Autres règles qui auraient besoin de cette valeur
+					Règles qui ont besoin de cette valeur
 				</h3>
 				<a
 					onClick={() => {
 						setOpened(!opened)
 					}}
 				>
-					{opened ? 'cacher' : 'voir'}
+					{opened ? 'cacher' : 'voir la liste'}
 				</a>
 			</span>
-			<p className="ui__ notice">
-				Les règles suivantes ont besoin de la règle courante pour être
-				calculées. Or, la règle courante n'étant pas encore définie, c'est sa
-				valeur par défaut qui est utilisée pour déterminer la valeur de ces
-				règles.
-			</p>
 
 			{opened && (
 				<>
+					<p className="ui__ notice">
+						Les règles suivantes ont besoin de la règle courante pour être
+						calculées. Or, la règle courante n'étant pas encore définie, c'est
+						sa valeur par défaut qui est utilisée pour déterminer la valeur de
+						ces règles.
+					</p>
 					<ul>
 						{(() => {
 							const ruleNamesWithMissing = getRuleNamesWithMissing()

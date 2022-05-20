@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.0.0-beta.38
+
+**core**
+
+-   Rétabli les `missingVariables` calculées à l'intérieur des mécanismes (précédement supprimée dans beta.34)
+-   Ajoute des nouveaux mécanismes : `et`, `ou`, `est non applicable`, `est applicable`, `est non défini`, `est défini`, `simplifier l'unité`, `condition`
+-   Change le comportement de l'addition d'un nombre avec unité et d'un pourcentage : on ajoute le pourcentage du nombre au nombre lui même (`10€ + 20% = 10.2 €`)
+-   Réecrit les mécanismes `somme`, `produit`, `applicable si`, `non applicable si`, `toutes ces conditions`, `une de ces conditions`, `le maximum de`, `le minimum de`, `abattement` comme composition d'autres mécanismes #23
+-   Les opérandes des opérations `et`, `ou`, `*`, `/` sont évaluée de manière paresseuse.
+-   Précise le comportement des opérations de base (\*, +, -, /, >=, <=, <, >, =, et, ou) en cas d'opérande non défini ou non applicable (via des tests)
+
+**publicodes-react**
+
+-   Améliore la visualisation des mécanismes qui opère sur des listes (somme, toutes ces conditions, etc...)
+-   Améliorations diverses de l'affichage de l'explication des calculs
+-   Reformule l'explication des règles désactivées par l'espace de nom
+
 ## 1.0.0-beta.37
 
 **api**
