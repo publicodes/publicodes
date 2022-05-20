@@ -62,7 +62,7 @@ function ListOrScalarExplanation({ node }: { node: ASTNode | Array<ASTNode> }) {
 
 // We want to put non applicable rules a the bottom of list #1055
 const isDimmedValue = (x: ASTNode) => {
-	const nodeValue = useContext(EngineContext).evaluate(x).nodeValue
+	const nodeValue = useContext(EngineContext)?.evaluate(x).nodeValue
 	return nodeValue === null || nodeValue === 0
 }
 function sortByApplicability(a: EvaluatedNode, b: EvaluatedNode): 1 | 0 | -1 {

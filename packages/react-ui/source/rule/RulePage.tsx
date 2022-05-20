@@ -1,7 +1,6 @@
 import Engine, {
 	EvaluatedNode,
 	formatValue,
-	isNotYetDefined,
 	serializeUnit,
 	utils,
 } from 'publicodes'
@@ -123,7 +122,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 						}}
 					>
 						Valeur : {formatValue(rule, { language })}
-						{isNotYetDefined(rule.nodeValue) && rule.unit && (
+						{rule.nodeValue === undefined && rule.unit && (
 							<>
 								<br />
 								Unité : {serializeUnit(rule.unit)}
@@ -149,11 +148,11 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 			{rule.missingVariables && (
 				<MissingVars
 					dottedName={dottedName}
-					selfMissing={rule.missingVariables}
+					selfMissing={Object.keys(rule.missingVariables)}
 				/>
 			)}
 
-			{isNotYetDefined(rule.nodeValue) && (
+			{rule.nodeValue === undefined && (
 				<ReverseMissing dottedName={dottedName} engine={engine} />
 			)}
 

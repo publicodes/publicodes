@@ -21,6 +21,7 @@ import { nameLeaf, ruleParents } from './ruleUtils'
 
 export type Rule = {
 	formule?: Record<string, unknown> | string
+	valeur?: Record<string, unknown> | string
 	question?: string
 	description?: string
 	unité?: string
@@ -101,7 +102,7 @@ export default function parseRule(
 				(!('type' in rawRule) && rawRule.question && !rawRule.unité) ||
 				rawRule.type === 'booléen'
 					? 'boolean'
-					: ['paragraphe', 'texte'].includes(rawRule.type) ||
+					: ['paragraphe', 'texte'].includes(rawRule.type ?? '') ||
 					  rawRule['une possibilité'] ||
 					  rawRule.formule?.['une possibilité'] ||
 					  rawRule.valeur?.['une possibilité']
@@ -176,6 +177,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 	let valeurEvaluation: EvaluatedNode = {
 		...node.explanation.valeur,
 		nodeValue: null,
+		missingVariables: {},
 	}
 
 	if (!ruleDisabledByItsParent) {

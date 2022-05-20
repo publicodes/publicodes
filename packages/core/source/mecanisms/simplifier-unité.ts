@@ -40,7 +40,10 @@ registerEvaluationFunction('simplifier unité', function evaluate(node) {
 
 	return {
 		...defaultReturn,
-		nodeValue: convertUnit(valeur.unit, unit, nodeValue),
+		nodeValue:
+			typeof nodeValue === 'number'
+				? convertUnit(valeur.unit, unit, nodeValue)
+				: nodeValue,
 		unit,
 	}
 })
