@@ -133,15 +133,15 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 			}
 			{ruleDisabledByItsParent && (
 				<>
-					<h3>Parent non applicable</h3>
-					<p>
-						Cette règle est non applicable car{' '}
+					<blockquote>
+						Cette règle est <strong>non applicable</strong> car elle appartient
+						à l'espace de nom :
 						<Explanation node={nullableParent} />
-						est non applicable.
-					</p>
+					</blockquote>
 				</>
 			)}
 			<h2>Comment cette donnée est-elle calculée ?</h2>
+
 			<Explanation node={valeur} />
 			<RuleSource key={dottedName} dottedName={dottedName} engine={engine} />
 
