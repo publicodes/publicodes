@@ -18,4 +18,4 @@ famille nombreuse:
       situation:
         enfants: non
       variables manquantes: []
-      valeur attendue: false
+      valeur attendue: null
