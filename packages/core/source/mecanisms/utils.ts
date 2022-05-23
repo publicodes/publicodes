@@ -70,6 +70,21 @@ export function createParseInlinedMecanism(
 	})
 }
 
+/**
+ Note : Les transformations de mécanisme opérant sur les listes sont plus couteuses que celles opérant sur des scalaires.
+ 
+ Cela vient du fait qu'il n'y a pas la possibilité de définir ces transformations dans publicodes : il manque le type liste et les opérations de bases associées (reduce, map).
+ 
+ On doit donc déplier l'opération statiquement, au parsing, ce qui prend plus de temps, au parsing et à l'évaluation. somme: [1,2,3] est transformé en (1 + 2) + 3).
+ 
+ De manière général, les baisse en performances de cette PR sont attenduee : il s'agit d'une contrepartie logique de l'utilisation de mécanisme de base publicodes. Ce qu'on gagne en solidité de l'évaluation & en amélioration du typage, on le perd en performance. C'est logique puisque l'evaluation de ces mécanisme n'est plus du JS natif mais passe par une structure intermédiaire.
+ 
+ Pour améliorer les perfs, il y a plusieurs pistes :
+ 
+	- optimiser d'avantage les opérations de bases
+	- ajouter les listes et les opérations sur les listes dans publicodes
+	- ajouter une implémentation "native" de certains mécanismes utilisés (on gagne quand même à les décomposer en mécanismes de base pour la partie spécification et typage). 
+ */
 export function createParseInlinedMecanismWithArray(
 	name: string,
 	args: Record<string, { type?: 'liste' }>,
