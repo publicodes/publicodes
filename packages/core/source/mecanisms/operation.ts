@@ -53,7 +53,9 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	// LAZY EVALUATION
 	if (
 		(node1.nodeValue === null &&
-			['<=', '>=', '/', '*', '-', 'et'].includes(node.operationKind)) ||
+			['<', '>', '<=', '>=', '/', '*', '-', 'et'].includes(
+				node.operationKind
+			)) ||
 		(node1.nodeValue === 0 && ['/', '*'].includes(node.operationKind)) ||
 		(node1.nodeValue === false && node.operationKind === 'et') ||
 		(node1.nodeValue === true && node.operationKind === 'ou')
@@ -71,7 +73,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	// LAZY EVALUATION 2
 	if (
 		(node2.nodeValue === null &&
-			['<=', '>=', '/', '*', 'et'].includes(node.operationKind)) ||
+			['<', '>', '<=', '>=', '/', '*', 'et'].includes(node.operationKind)) ||
 		(node2.nodeValue === 0 && ['*'].includes(node.operationKind)) ||
 		(node2.nodeValue === false && node.operationKind === 'et') ||
 		(node2.nodeValue === true && node.operationKind === 'ou')

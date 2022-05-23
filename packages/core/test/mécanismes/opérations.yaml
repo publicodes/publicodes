@@ -245,7 +245,7 @@ division:
         b: 0
       valeur attendue: null
 
-comparison:
+comparaison plus grand ou egal:
   '>=':
     - a
     - b
@@ -277,11 +277,77 @@ comparison:
         b: { non applicable si: oui }
       valeur attendue: null
 
-comparaison 2:
+comparaison plus grand:
+  '>':
+    - a
+    - b
+  exemples:
+    - nom: standard
+      situation:
+        a: 12
+        b: 4
+      valeur attendue: true
+    - nom: partiellement non défini
+      situation:
+        b: 4
+      valeur attendue: undefined
+    - nom: complètement non défini
+      valeur attendue: undefined
+    - nom: a non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: 10
+      valeur attendue: null
+    - nom: b non applicable
+      situation:
+        a: 12
+        b: { non applicable si: oui }
+      valeur attendue: null
+    - nom: tous non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: { non applicable si: oui }
+      valeur attendue: null
+
+comparaison plus petit ou égal:
   '<=':
     - a
     - b
   exemples:
+    - nom: standard
+    - nom: standard
+      situation:
+        a: 12
+        b: 4
+      valeur attendue: false
+    - nom: partiellement non défini
+      situation:
+        b: 4
+      valeur attendue: undefined
+    - nom: complètement non défini
+      valeur attendue: undefined
+    - nom: a non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: 10
+      valeur attendue: null
+    - nom: b non applicable
+      situation:
+        a: 12
+        b: { non applicable si: oui }
+      valeur attendue: null
+    - nom: tous non applicable
+      situation:
+        a: { non applicable si: oui }
+        b: { non applicable si: oui }
+      valeur attendue: null
+
+comparaison plus petit:
+  '<':
+    - a
+    - b
+  exemples:
+    - nom: standard
     - nom: standard
       situation:
         a: 12
