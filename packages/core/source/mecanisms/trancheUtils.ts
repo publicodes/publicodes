@@ -9,23 +9,29 @@ type TrancheNode = { taux: ASTNode } | { montant: ASTNode }
 export type TrancheNodes = Array<TrancheNode & { plafond?: ASTNode }>
 
 export const parseTranches = (tranches, context): TrancheNodes => {
-	return tranches
-		.map((t, i) => {
-			if (!t.plafond && i > tranches.length) {
-				throw new SyntaxError(
-					`La tranche n°${i} du barème n'a pas de plafond précisé. Seule la dernière tranche peut ne pas être plafonnée`
-				)
-			}
-			return { ...t, plafond: t.plafond ?? Infinity }
-		})
-		.map((node) => ({
+	return tranches.map((node, i) => {
+		if (!node.plafond && i > tranches.length) {
+			throw new SyntaxError(
+				`La tranche n°${i} du barème n'a pas de plafond précisé. Seule la dernière tranche peut ne pas être plafonnée`
+			)
+		}
+		return {
 			...node,
 			...(node.taux !== undefined ? { taux: parse(node.taux, context) } : {}),
 			...(node.montant !== undefined
 				? { montant: parse(node.montant, context) }
 				: {}),
-			plafond: parse(node.plafond, context),
-		}))
+			plafond:
+				'plafond' in node
+					? parse(node.plafond, context)
+					: {
+							nodeValue: Infinity,
+							nodeKind: 'constant',
+							type: 'number',
+							isNullable: false,
+					  },
+		}
+	})
 }
 
 export function evaluatePlafondUntilActiveTranche(

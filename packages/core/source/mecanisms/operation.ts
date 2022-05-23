@@ -154,7 +154,10 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 			unit: inferUnit('*', [unit, { numerators: [], denominators: ['%'] }]),
 		}
 	}
+
 	// Addition or substraction of scalar with a percentage is a multiplication
+	// TODO : this logic should be handle statically by changing sum with percentage into product.
+	// It can be done when we'll have a sound type/unit inference
 	if (isAdditionOrSubstractionWithPercentage) {
 		let unit = inferUnit('*', [node1.unit, node2.unit])
 		return {

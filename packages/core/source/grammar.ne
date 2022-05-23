@@ -27,7 +27,6 @@ const lexer = moo.compile({
   comparison: ['>','<','>=','<=','=','!='],
   date: new RegExp(dateRegexp),
 	boolean: ['oui','non'],
-	infinity: 'Infinity',
   number: new RegExp(numberRegExp),
   word:  new RegExp(word),
   string: [/'.*'/, /".*"/],
@@ -116,7 +115,6 @@ MultiplicationDivision ->
 
 number ->
     %number {% number %}
-  | %infinity {% number %}
   | %number (%space):? Unit {% numberWithUnit %}
 
 
