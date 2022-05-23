@@ -12,7 +12,9 @@ async function initEngine(setEngine) {
 
 export default function Publicodes() {
 	const [engine, setEngine] = useState(null)
-	useEffect(() => initEngine(setEngine), [setEngine])
+	useEffect(() => {
+		initEngine(setEngine)
+	}, [setEngine])
 
 	if (!engine) {
 		return 'Chargement des règles de calculs en cours...'
