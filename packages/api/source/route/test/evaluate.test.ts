@@ -69,24 +69,24 @@ describe('evaluate', () => {
 	it('Simple test with real Engine', () => {
 		expect(evaluate(newEngine, { expressions: ['21 + 21', '6 * 7'] }))
 			.toMatchInlineSnapshot(`
-			{
-			  "evaluate": [
-			    {
-			      "missingVariables": [],
-			      "nodeValue": 42,
-			      "traversedVariables": [],
-			      "unit": undefined,
-			    },
-			    {
-			      "missingVariables": [],
-			      "nodeValue": 42,
-			      "traversedVariables": [],
-			      "unit": undefined,
-			    },
-			  ],
-			  "situationError": null,
-			}
-		`)
+				{
+				  "evaluate": [
+				    {
+				      "missingVariables": {},
+				      "nodeValue": 42,
+				      "traversedVariables": [],
+				      "unit": undefined,
+				    },
+				    {
+				      "missingVariables": {},
+				      "nodeValue": 42,
+				      "traversedVariables": [],
+				      "unit": undefined,
+				    },
+				  ],
+				  "situationError": null,
+				}
+			`)
 	})
 
 	it('Test with real Engine', () => {
@@ -98,7 +98,7 @@ describe('evaluate', () => {
 			{
 			  "evaluate": [
 			    {
-			      "missingVariables": [],
+			      "missingVariables": {},
 			      "nodeValue": 11.5,
 			      "traversedVariables": [
 			        "dépenses primeur",
@@ -114,9 +114,9 @@ describe('evaluate', () => {
 			      },
 			    },
 			    {
-			      "missingVariables": [
-			        "prix",
-			      ],
+			      "missingVariables": {
+			        "prix": 1,
+			      },
 			      "nodeValue": undefined,
 			      "traversedVariables": [
 			        "prix",
@@ -124,7 +124,7 @@ describe('evaluate', () => {
 			      "unit": undefined,
 			    },
 			    {
-			      "missingVariables": [],
+			      "missingVariables": {},
 			      "nodeValue": 42,
 			      "traversedVariables": [
 			        "prix . avocat",

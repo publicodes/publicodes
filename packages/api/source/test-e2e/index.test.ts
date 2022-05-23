@@ -56,7 +56,7 @@ describe('e2e koa middleware', () => {
 			{
 			  "evaluate": [
 			    {
-			      "missingVariables": [],
+			      "missingVariables": {},
 			      "nodeValue": 2,
 			      "traversedVariables": [],
 			    },
@@ -156,7 +156,7 @@ describe('e2e koa middleware', () => {
 			{
 			  "evaluate": [
 			    {
-			      "missingVariables": [],
+			      "missingVariables": {},
 			      "nodeValue": true,
 			      "traversedVariables": [
 			        "coucou",

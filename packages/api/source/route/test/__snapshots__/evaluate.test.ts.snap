@@ -30,8 +30,39 @@ A space token based on:
     AdditionSubstraction →  ● MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
-A words token based on:
-    UnitNumerator →  ● %words UnitNumerator$ebnf$1
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A word token based on:
+    Words →  ● %word
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A word token based on:
+    WordOrKeyword →  ● %word
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A boolean token based on:
+    WordOrKeyword →  ● %boolean
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
     Unit$ebnf$1 →  ● UnitNumerator
     Unit →  ● Unit$ebnf$1 Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -42,16 +73,12 @@ A words token based on:
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
 A space token based on:
-    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A space token based on:
     Comparison → Comparable ● %space %comparison %space Comparable
     main →  ● Comparison
 A space token based on:
     UnitDenominator$ebnf$1$subexpression$1 →  ● %space
     UnitDenominator$ebnf$1 →  ● UnitDenominator$ebnf$1$subexpression$1
-    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" %words
+    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" Words
     Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
     Unit → Unit$ebnf$1 ● Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -62,7 +89,7 @@ A space token based on:
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
 A \\"/\\" based on:
-    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" %words
+    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" Words
     Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
     Unit → Unit$ebnf$1 ● Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -103,6 +130,12 @@ Unexpected input (lexer error). Instead, I was expecting to see one of the follo
 A date token based on:
     Date →  ● %date
     main →  ● Date
+A boolean token based on:
+    NonNumericTerminal →  ● %boolean
+    main →  ● NonNumericTerminal
+A string token based on:
+    NonNumericTerminal →  ● %string
+    main →  ● NonNumericTerminal
 A JSONObject token based on:
     JSONObject →  ● %JSONObject
     main →  ● JSONObject
@@ -110,22 +143,11 @@ A \\"-\\" based on:
     Negation →  ● \\"-\\" %space Parentheses
     NumericValue →  ● Negation
     main →  ● NumericValue
-A words token based on:
-    Variable →  ● %words Variable$ebnf$1
+A word token based on:
+    Words →  ● %word
+    Variable →  ● Words Variable$ebnf$1
     Date →  ● Variable
     main →  ● Date
-A \\"oui\\" based on:
-    boolean →  ● \\"oui\\"
-    NonNumericTerminal →  ● boolean
-    main →  ● NonNumericTerminal
-A \\"non\\" based on:
-    boolean →  ● \\"non\\"
-    NonNumericTerminal →  ● boolean
-    main →  ● NonNumericTerminal
-A string token based on:
-    string →  ● %string
-    NonNumericTerminal →  ● string
-    main →  ● NonNumericTerminal
 A \\"(\\" based on:
     Parentheses →  ● \\"(\\" %space NumericValue %space \\")\\"
     MultiplicationDivision →  ● Parentheses
@@ -138,16 +160,20 @@ A \\"(\\" based on:
     AdditionSubstraction →  ● MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
+A word token based on:
+    WordOrKeyword →  ● %word
+    Words →  ● WordOrKeyword Words$ebnf$1
+    Variable →  ● Words Variable$ebnf$1
+    Date →  ● Variable
+    main →  ● Date
+A boolean token based on:
+    WordOrKeyword →  ● %boolean
+    Words →  ● WordOrKeyword Words$ebnf$1
+    Variable →  ● Words Variable$ebnf$1
+    Date →  ● Variable
+    main →  ● Date
 A number token based on:
     number →  ● %number
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A infinity token based on:
-    number →  ● %infinity
     NumericTerminal →  ● number
     Parentheses →  ● NumericTerminal
     MultiplicationDivision →  ● Parentheses
@@ -172,7 +198,7 @@ exports[`evaluate > Test invalid syntax in situation 1`] = `
 {
   "evaluate": [
     {
-      "missingVariables": [],
+      "missingVariables": {},
       "nodeValue": 2,
       "traversedVariables": [],
       "unit": undefined,
@@ -192,6 +218,12 @@ Unexpected input (lexer error). Instead, I was expecting to see one of the follo
 A date token based on:
     Date →  ● %date
     main →  ● Date
+A boolean token based on:
+    NonNumericTerminal →  ● %boolean
+    main →  ● NonNumericTerminal
+A string token based on:
+    NonNumericTerminal →  ● %string
+    main →  ● NonNumericTerminal
 A JSONObject token based on:
     JSONObject →  ● %JSONObject
     main →  ● JSONObject
@@ -199,22 +231,11 @@ A \\"-\\" based on:
     Negation →  ● \\"-\\" %space Parentheses
     NumericValue →  ● Negation
     main →  ● NumericValue
-A words token based on:
-    Variable →  ● %words Variable$ebnf$1
+A word token based on:
+    Words →  ● %word
+    Variable →  ● Words Variable$ebnf$1
     Date →  ● Variable
     main →  ● Date
-A \\"oui\\" based on:
-    boolean →  ● \\"oui\\"
-    NonNumericTerminal →  ● boolean
-    main →  ● NonNumericTerminal
-A \\"non\\" based on:
-    boolean →  ● \\"non\\"
-    NonNumericTerminal →  ● boolean
-    main →  ● NonNumericTerminal
-A string token based on:
-    string →  ● %string
-    NonNumericTerminal →  ● string
-    main →  ● NonNumericTerminal
 A \\"(\\" based on:
     Parentheses →  ● \\"(\\" %space NumericValue %space \\")\\"
     MultiplicationDivision →  ● Parentheses
@@ -227,16 +248,20 @@ A \\"(\\" based on:
     AdditionSubstraction →  ● MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
+A word token based on:
+    WordOrKeyword →  ● %word
+    Words →  ● WordOrKeyword Words$ebnf$1
+    Variable →  ● Words Variable$ebnf$1
+    Date →  ● Variable
+    main →  ● Date
+A boolean token based on:
+    WordOrKeyword →  ● %boolean
+    Words →  ● WordOrKeyword Words$ebnf$1
+    Variable →  ● Words Variable$ebnf$1
+    Date →  ● Variable
+    main →  ● Date
 A number token based on:
     number →  ● %number
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A infinity token based on:
-    number →  ● %infinity
     NumericTerminal →  ● number
     Parentheses →  ● NumericTerminal
     MultiplicationDivision →  ● Parentheses
@@ -287,8 +312,39 @@ A space token based on:
     AdditionSubstraction →  ● MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
-A words token based on:
-    UnitNumerator →  ● %words UnitNumerator$ebnf$1
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A word token based on:
+    Words →  ● %word
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A word token based on:
+    WordOrKeyword →  ● %word
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A boolean token based on:
+    WordOrKeyword →  ● %boolean
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
     Unit$ebnf$1 →  ● UnitNumerator
     Unit →  ● Unit$ebnf$1 Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -299,16 +355,12 @@ A words token based on:
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
 A space token based on:
-    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A space token based on:
     Comparison → Comparable ● %space %comparison %space Comparable
     main →  ● Comparison
 A space token based on:
     UnitDenominator$ebnf$1$subexpression$1 →  ● %space
     UnitDenominator$ebnf$1 →  ● UnitDenominator$ebnf$1$subexpression$1
-    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" %words
+    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" Words
     Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
     Unit → Unit$ebnf$1 ● Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -319,7 +371,7 @@ A space token based on:
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
 A \\"/\\" based on:
-    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" %words
+    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" Words
     Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
     Unit → Unit$ebnf$1 ● Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -380,8 +432,39 @@ A space token based on:
     AdditionSubstraction →  ● MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
-A words token based on:
-    UnitNumerator →  ● %words UnitNumerator$ebnf$1
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A word token based on:
+    Words →  ● %word
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A word token based on:
+    WordOrKeyword →  ● %word
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A boolean token based on:
+    WordOrKeyword →  ● %boolean
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
     Unit$ebnf$1 →  ● UnitNumerator
     Unit →  ● Unit$ebnf$1 Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -392,16 +475,12 @@ A words token based on:
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
 A space token based on:
-    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A space token based on:
     Comparison → Comparable ● %space %comparison %space Comparable
     main →  ● Comparison
 A space token based on:
     UnitDenominator$ebnf$1$subexpression$1 →  ● %space
     UnitDenominator$ebnf$1 →  ● UnitDenominator$ebnf$1$subexpression$1
-    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" %words
+    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" Words
     Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
     Unit → Unit$ebnf$1 ● Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -412,7 +491,7 @@ A space token based on:
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
 A \\"/\\" based on:
-    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" %words
+    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" Words
     Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
     Unit → Unit$ebnf$1 ● Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -453,6 +532,12 @@ Unexpected input (lexer error). Instead, I was expecting to see one of the follo
 A date token based on:
     Date →  ● %date
     main →  ● Date
+A boolean token based on:
+    NonNumericTerminal →  ● %boolean
+    main →  ● NonNumericTerminal
+A string token based on:
+    NonNumericTerminal →  ● %string
+    main →  ● NonNumericTerminal
 A JSONObject token based on:
     JSONObject →  ● %JSONObject
     main →  ● JSONObject
@@ -460,22 +545,11 @@ A \\"-\\" based on:
     Negation →  ● \\"-\\" %space Parentheses
     NumericValue →  ● Negation
     main →  ● NumericValue
-A words token based on:
-    Variable →  ● %words Variable$ebnf$1
+A word token based on:
+    Words →  ● %word
+    Variable →  ● Words Variable$ebnf$1
     Date →  ● Variable
     main →  ● Date
-A \\"oui\\" based on:
-    boolean →  ● \\"oui\\"
-    NonNumericTerminal →  ● boolean
-    main →  ● NonNumericTerminal
-A \\"non\\" based on:
-    boolean →  ● \\"non\\"
-    NonNumericTerminal →  ● boolean
-    main →  ● NonNumericTerminal
-A string token based on:
-    string →  ● %string
-    NonNumericTerminal →  ● string
-    main →  ● NonNumericTerminal
 A \\"(\\" based on:
     Parentheses →  ● \\"(\\" %space NumericValue %space \\")\\"
     MultiplicationDivision →  ● Parentheses
@@ -488,16 +562,20 @@ A \\"(\\" based on:
     AdditionSubstraction →  ● MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
+A word token based on:
+    WordOrKeyword →  ● %word
+    Words →  ● WordOrKeyword Words$ebnf$1
+    Variable →  ● Words Variable$ebnf$1
+    Date →  ● Variable
+    main →  ● Date
+A boolean token based on:
+    WordOrKeyword →  ● %boolean
+    Words →  ● WordOrKeyword Words$ebnf$1
+    Variable →  ● Words Variable$ebnf$1
+    Date →  ● Variable
+    main →  ● Date
 A number token based on:
     number →  ● %number
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A infinity token based on:
-    number →  ● %infinity
     NumericTerminal →  ● number
     Parentheses →  ● NumericTerminal
     MultiplicationDivision →  ● Parentheses
@@ -517,7 +595,7 @@ A number token based on:
       },
     },
     {
-      "missingVariables": [],
+      "missingVariables": {},
       "nodeValue": 42,
       "traversedVariables": [],
       "unit": undefined,
