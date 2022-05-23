@@ -3,8 +3,8 @@ import React, { createContext } from 'react'
 import References from './rule/References'
 
 export type SupportedRenderers = {
-	Link: React.ComponentType<{ to: string }>
-	Head?: React.ComponentType
+	Link: React.ComponentType<{ children: React.ReactNode; to: string }>
+	Head?: React.ComponentType<{ children: React.ReactNode }>
 
 	/**
 	 * Used to render a rule description or title. Useful to parse markdown, links

@@ -3772,14 +3772,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^17.0.0":
-  version: 17.0.11
-  resolution: "@types/react@npm:17.0.11"
+"@types/react@npm:*, @types/react@npm:^18.0.9":
+  version: 18.0.9
+  resolution: "@types/react@npm:18.0.9"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 89e80ee8e08988abca0266e5e131f57b2e18f326bebfa0ed0a06b0bca29621a5a8202d617254a053f659b9c18090c52cae0aa475a6c6036b8858030f1d448e47
+  checksum: 162364dad716d9017ee34aabf2ea37499709ebbdef70392ae1b39225985971e1a46f121efb9c5c7da92144ee1d96d4525df806a7c1c03a5db7fd31dd034ddc7a
   languageName: node
   linkType: hard
 
@@ -13045,11 +13045,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"publicodes-react@^1.0.0-beta.35, publicodes-react@workspace:packages/react-ui":
+"publicodes-react@^1.0.0-beta.41, publicodes-react@workspace:packages/react-ui":
   version: 0.0.0-use.local
   resolution: "publicodes-react@workspace:packages/react-ui"
   dependencies:
-    "@types/react": ^17.0.0
+    "@types/react": ^18.0.9
     "@types/styled-components": ^5.1.25
     rimraf: ^3.0.2
     styled-components: ^5.1.0
@@ -13057,11 +13057,11 @@ __metadata:
     typescript: ^4.5.5
   peerDependencies:
     publicodes: 1.0.0-beta.40
-    react: ^17.0.2
+    react: ^17 || ^18
   languageName: unknown
   linkType: soft
 
-"publicodes@^1.0.0-beta.35, publicodes@^1.0.0-beta.40, publicodes@workspace:packages/core":
+"publicodes@^1.0.0-beta.40, publicodes@^1.0.0-beta.41, publicodes@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "publicodes@workspace:packages/core"
   dependencies:
@@ -16539,8 +16539,8 @@ __metadata:
     node-libs-browser: ^2.2.1
     path-browserify: ^1.0.1
     process: ^0.11.10
-    publicodes: ^1.0.0-beta.35
-    publicodes-react: ^1.0.0-beta.35
+    publicodes: ^1.0.0-beta.41
+    publicodes-react: ^1.0.0-beta.41
     ramda: ^0.27.1
     react: ^17.0.1
     react-dom: ^17.0.1
