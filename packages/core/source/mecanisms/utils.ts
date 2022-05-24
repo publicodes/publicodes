@@ -124,3 +124,11 @@ function toCamelCase(str: string) {
 		.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr) => ltr.toUpperCase())
 		.replace(/\s+/g, '')
 }
+
+export const notApplicableNode = {
+	nodeKind: 'constant',
+	nodeValue: null,
+	missingVariables: {},
+	type: undefined,
+	isNullable: true,
+}

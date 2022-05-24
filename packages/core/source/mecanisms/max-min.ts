@@ -1,5 +1,5 @@
 import { PublicodesExpression } from '..'
-import { createParseInlinedMecanismWithArray } from './utils'
+import { createParseInlinedMecanismWithArray, notApplicableNode } from './utils'
 
 export const parseMaximumDe = createParseInlinedMecanismWithArray(
 	'le maximum de',
@@ -9,15 +9,18 @@ export const parseMaximumDe = createParseInlinedMecanismWithArray(
 	({ valeur }) =>
 		(valeur as Array<PublicodesExpression>).reduce(
 			(acc, value) => ({
-				valeur: acc,
-				plancher: value,
-			}),
-			{
-				constant: {
-					nodeValue: -Infinity,
-					type: 'number',
+				condition: {
+					si: {
+						'est non applicable': value,
+					},
+					alors: acc,
+					sinon: {
+						valeur: value,
+						plancher: acc,
+					},
 				},
-			}
+			}),
+			notApplicableNode
 		)
 )
 
@@ -29,14 +32,17 @@ export const parseMinimumDe = createParseInlinedMecanismWithArray(
 	({ valeur }) =>
 		(valeur as Array<PublicodesExpression>).reduce(
 			(acc, value) => ({
-				valeur: acc,
-				plafond: value,
-			}),
-			{
-				constant: {
-					nodeValue: Infinity,
-					type: 'number',
+				condition: {
+					si: {
+						'est non applicable': value,
+					},
+					alors: acc,
+					sinon: {
+						valeur: value,
+						plafond: acc,
+					},
 				},
-			}
+			}),
+			notApplicableNode
 		)
 )
