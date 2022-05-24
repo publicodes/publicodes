@@ -32,3 +32,10 @@ Maximum avec valeur non applicable:
             - a
             - 10
       valeur attendue: 10
+    - situation:
+        test:
+          le maximum de:
+            - applicable si: non
+            - a
+            - non applicable si: oui
+      valeur attendue: null

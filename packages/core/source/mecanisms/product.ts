@@ -1,4 +1,4 @@
-import { createParseInlinedMecanism } from './utils'
+import { createParseInlinedMecanism, notApplicableNode } from './utils'
 
 export default createParseInlinedMecanism(
 	'produit',
@@ -7,13 +7,7 @@ export default createParseInlinedMecanism(
 		taux: { 'par défaut': '100%' },
 		facteur: { 'par défaut': 1 },
 		plafond: {
-			'par défaut': {
-				constant: {
-					isNullable: true,
-					nodeValue: null,
-					type: undefined,
-				},
-			},
+			'par défaut': notApplicableNode,
 		},
 	},
 	{

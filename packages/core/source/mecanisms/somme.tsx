@@ -1,5 +1,5 @@
 import { PublicodesExpression } from '..'
-import { createParseInlinedMecanismWithArray } from './utils'
+import { createParseInlinedMecanismWithArray, notApplicableNode } from './utils'
 
 export default createParseInlinedMecanismWithArray(
 	'somme',
@@ -9,11 +9,5 @@ export default createParseInlinedMecanismWithArray(
 	({ valeur }) =>
 		[...(valeur as Array<PublicodesExpression>)]
 			.reverse()
-			.reduce((acc, value) => ({ '+': [value, acc] }), {
-				constant: {
-					nodeValue: null,
-					isNullable: true,
-					type: undefined,
-				},
-			})
+			.reduce((acc, value) => ({ '+': [value, acc] }), notApplicableNode)
 )

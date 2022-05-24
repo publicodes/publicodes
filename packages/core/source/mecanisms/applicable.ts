@@ -1,4 +1,4 @@
-import { createParseInlinedMecanism } from './utils'
+import { createParseInlinedMecanism, notApplicableNode } from './utils'
 
 export default createParseInlinedMecanism(
 	'applicable si',
@@ -10,13 +10,7 @@ export default createParseInlinedMecanism(
 		condition: {
 			si: 'applicable si != non',
 			alors: 'valeur',
-			sinon: {
-				constant: {
-					type: undefined,
-					isNullable: true,
-					nodeValue: null,
-				},
-			},
+			sinon: notApplicableNode,
 		},
 	}
 )
