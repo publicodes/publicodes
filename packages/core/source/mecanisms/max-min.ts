@@ -9,8 +9,8 @@ export const parseMaximumDe = createParseInlinedMecanismWithArray(
 	({ valeur }) =>
 		(valeur as Array<PublicodesExpression>).reduce(
 			(acc, value) => ({
-				valeur: value,
-				plancher: acc,
+				valeur: acc,
+				plancher: value,
 			}),
 			{
 				constant: {
@@ -29,8 +29,8 @@ export const parseMinimumDe = createParseInlinedMecanismWithArray(
 	({ valeur }) =>
 		(valeur as Array<PublicodesExpression>).reduce(
 			(acc, value) => ({
-				valeur: value,
-				plafond: acc,
+				valeur: acc,
+				plafond: value,
 			}),
 			{
 				constant: {

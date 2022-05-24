@@ -15,12 +15,20 @@ a:
   applicable si: non
   formule: 20
 
+test:
+
 Maximum avec valeur non applicable:
-  formule:
-    le maximum de:
-      - a
-      - 10
+  valeur: test
   exemples:
-    - valeur attendue: 10
-# TODO
-# Pouvoir faire référence à une variable, ou mettre une valeur. Aujourd'hui il est seulement possible de lister des mécanismes numériques
+    - situation:
+        test:
+          le maximum de:
+            - 10
+            - a
+      valeur attendue: 10
+    - situation:
+        test:
+          le maximum de:
+            - a
+            - 10
+      valeur attendue: 10

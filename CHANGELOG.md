@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.39
+
+**core**
+
+-   Répare un bug dans les mécanismes 'le maximum de' et 'le minimum de' en cas de valeur non applicable
+
 ## 1.0.0-beta.38
 
 **core**
