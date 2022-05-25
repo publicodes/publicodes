@@ -1,6 +1,6 @@
-import { Expressions, NewEngine, Situation } from '../../types'
 import Engine from 'publicodes'
 import { describe, expect, it, vi } from 'vitest'
+import { Expressions, Situation } from '../../types'
 import { evaluate } from '../evaluate'
 
 const obj = {
@@ -11,10 +11,10 @@ const obj = {
 		traversedVariables: 42,
 		missingVariables: 42,
 	}),
+	shallowCopy: () => obj,
 }
 
-const mockedNewEngine = ((_expressions: Expressions, _situation?: Situation) =>
-	obj) as unknown as NewEngine
+const mockedEngine = obj as unknown as Engine
 
 const rules = `
 prix:
@@ -30,7 +30,7 @@ dépenses primeur:
       - prix . avocat * 3 avocat
 `
 
-const newEngine = () => new Engine(rules)
+const engine = new Engine(rules)
 
 describe('evaluate', () => {
 	it('Test input/output', () => {
@@ -38,7 +38,7 @@ describe('evaluate', () => {
 		const spyEval = vi.spyOn(obj, 'evaluate')
 
 		expect(
-			evaluate(mockedNewEngine, {
+			evaluate(mockedEngine, {
 				expressions: 'expressions',
 				situation: { test: 'test' },
 			})
@@ -61,13 +61,13 @@ describe('evaluate', () => {
 	})
 
 	it('One expression in array should return same result as a single same expression', () => {
-		expect(
-			evaluate(mockedNewEngine, { expressions: ['coucou'] })
-		).toMatchObject(evaluate(mockedNewEngine, { expressions: 'coucou' }))
+		expect(evaluate(mockedEngine, { expressions: ['coucou'] })).toMatchObject(
+			evaluate(mockedEngine, { expressions: 'coucou' })
+		)
 	})
 
 	it('Simple test with real Engine', () => {
-		expect(evaluate(newEngine, { expressions: ['21 + 21', '6 * 7'] }))
+		expect(evaluate(engine, { expressions: ['21 + 21', '6 * 7'] }))
 			.toMatchInlineSnapshot(`
 				{
 				  "evaluate": [
@@ -91,7 +91,7 @@ describe('evaluate', () => {
 
 	it('Test with real Engine', () => {
 		expect(
-			evaluate(newEngine, {
+			evaluate(engine, {
 				expressions: ['dépenses primeur', 'prix', 'prix . avocat * 21'],
 			})
 		).toMatchInlineSnapshot(`
@@ -146,7 +146,7 @@ describe('evaluate', () => {
 
 	it('Test invalid syntax in situation', () => {
 		expect(
-			evaluate(newEngine, {
+			evaluate(engine, {
 				expressions: ['1 + 1'],
 				situation: { test: '"42' },
 			})
@@ -154,12 +154,12 @@ describe('evaluate', () => {
 	})
 
 	it('Test syntax error in expression', () => {
-		expect(evaluate(newEngine, { expressions: '1+1' })).toMatchSnapshot()
+		expect(evaluate(engine, { expressions: '1+1' })).toMatchSnapshot()
 	})
 
 	it('Test two syntax error in expression', () => {
 		expect(
-			evaluate(newEngine, {
+			evaluate(engine, {
 				expressions: ['1+1', '"42', '42'],
 			})
 		).toMatchSnapshot()
@@ -167,12 +167,12 @@ describe('evaluate', () => {
 
 	it('Test error in expression and situation at same time', () => {
 		expect(
-			evaluate(newEngine, { expressions: '1+1', situation: { test: '"42' } })
+			evaluate(engine, { expressions: '1+1', situation: { test: '"42' } })
 		).toMatchSnapshot()
 	})
 
 	it('Test no expressions', () => {
-		expect(evaluate(newEngine, { expressions: [] })).toMatchInlineSnapshot(`
+		expect(evaluate(engine, { expressions: [] })).toMatchInlineSnapshot(`
 			{
 			  "evaluate": [],
 			  "situationError": null,

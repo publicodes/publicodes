@@ -13,8 +13,7 @@ const app = new Koa<State, Context>()
 const router = new Router<State, Context>()
 
 const apiRoutes = publicodesAPI(
-	() =>
-		new Engine(`
+	new Engine(`
 coucou: 0
 coucou . j'ai des caractères spéciaux: "'ok'"
 `)

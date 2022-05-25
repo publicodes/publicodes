@@ -14,7 +14,8 @@ const router = new Router<State, Context>()
 app.use(cors())
 
 // Create middleware with your Engine
-const apiRoutes = publicodesAPI(new Engine(`
+const apiRoutes = publicodesAPI(
+	new Engine(`
 prix:
 prix . carottes: 2€/kg
 prix . champignons: 5€/kg
@@ -26,7 +27,8 @@ dépenses primeur:
       - prix . carottes * 1.5 kg
       - prix . champignons * 500g
       - prix . avocat * 3 avocat
-`))
+`)
+)
 
 // Basic routes usage (/evaluate, /rules, etc.)
 router.use(apiRoutes)

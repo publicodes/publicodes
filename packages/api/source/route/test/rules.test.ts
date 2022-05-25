@@ -2,11 +2,11 @@ import Engine from 'publicodes'
 import { describe, expect, it } from 'vitest'
 import { rules, rulesId } from '../rules'
 
-const newEngine = () => new Engine('rules: 42')
+const engine = new Engine('rules: 42')
 
 describe('evaluate', () => {
 	it('Should list rules', () => {
-		expect(rules(newEngine)).toMatchInlineSnapshot(`
+		expect(rules(engine)).toMatchInlineSnapshot(`
 			{
 			  "rules": {
 			    "nodeKind": "rule",
@@ -23,7 +23,7 @@ describe('evaluate', () => {
 	})
 
 	it('Should return rules data', () => {
-		expect(rulesId(newEngine, 'rules')).toMatchInlineSnapshot(`
+		expect(rulesId(engine, 'rules')).toMatchInlineSnapshot(`
 			{
 			  "nodeKind": "rule",
 			  "rawNode": {
@@ -38,7 +38,7 @@ describe('evaluate', () => {
 	})
 
 	it('Should return an error', () => {
-		expect(rulesId(newEngine, 'bad rules')).toMatchInlineSnapshot(`
+		expect(rulesId(engine, 'bad rules')).toMatchInlineSnapshot(`
 			{
 			  "error": {
 			    "message": "La règle 'bad rules' n'existe pas",

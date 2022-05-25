@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0-beta.41
+
+**api**
+
+-   Remplace le paramètre du middleware par un Engine (remplace `publicodesAPI(() => new Engine(rule))` par `publicodesAPI(new Engine(rule))`)
+-   Les expressions acceptent des objets ou des tableaux d'objets
+
 ## 1.0.0-beta.40
 
 **core**
