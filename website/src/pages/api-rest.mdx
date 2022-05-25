@@ -16,7 +16,7 @@ qui expose des points d'entrée analogues à l'interpréteur Publicodes :
 
 - `POST` `/evaluate` Évalue une ou plusieurs expressions avec une situation donnée
   - Les paramètres sont envoyés au format JSON :
-  - `expressions` de type `string` ou `string[]`, ex: `["dépenses primeur"]`
+  - `expressions` de type `string`, `object`, `string[]` ou `object[]`, ex: `["dépenses primeur"]`
   - `situation` un objet de `clé : valeur`, ex: `{ "prix . carottes" : "1€/kg" }`
 - `GET` `/rules` Retourne la liste de toutes vos règles
 - `GET` `/rules/{rule}` Retourne une règle spécifique

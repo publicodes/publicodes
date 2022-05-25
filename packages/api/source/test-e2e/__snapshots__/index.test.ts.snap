@@ -142,6 +142,15 @@ exports[`e2e koa middleware > Test evaluate endpoint with empty expression 2`] =
   },
   {
     "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be object",
+    "params": {
+      "type": "object",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/2/type",
+  },
+  {
+    "dataPath": ".expressions",
     "keyword": "oneOf",
     "message": "should match exactly one schema in oneOf",
     "params": {
@@ -171,6 +180,15 @@ exports[`e2e koa middleware > Test evaluate endpoint with null expression 2`] = 
       "type": "string",
     },
     "schemaPath": "#/properties/expressions/oneOf/1/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be object",
+    "params": {
+      "type": "object",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/2/type",
   },
   {
     "dataPath": ".expressions",
