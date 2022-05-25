@@ -1,4 +1,4 @@
-import { Expressions, NewEngine, Situation } from '../types.js'
+import { Expressions, Engine, Situation } from '../types.js'
 import { catchError, PickInObject } from '../utils.js'
 
 export interface EvaluateBody {
@@ -7,10 +7,10 @@ export interface EvaluateBody {
 }
 
 export function evaluate(
-	newEngine: NewEngine,
+	originalEngine: Engine,
 	{ expressions, situation }: EvaluateBody
 ) {
-	const engine = newEngine(expressions, situation)
+	const engine = originalEngine.shallowCopy()
 	const [error] = catchError(() => engine.setSituation(situation))
 
 	const keysKept = [

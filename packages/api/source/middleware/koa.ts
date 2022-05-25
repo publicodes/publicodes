@@ -5,7 +5,7 @@ import koaBody from 'koa-body'
 import OAPIValidator from 'openapi-validator-middleware'
 import { openapiPath } from '../index.js'
 import * as routes from '../route/index.js'
-import { Expressions, NewEngine, Situation } from '../types.js'
+import { Engine, Expressions, Situation } from '../types.js'
 
 const InputValidationError = OAPIValidator.InputValidationError
 
@@ -39,7 +39,7 @@ interface Context extends ParameterizedContext {
 	req: CustomIncomingMessage
 }
 
-export default function publicodesAPI(newEngine: NewEngine) {
+export default function publicodesAPI(engine: Engine) {
 	const router = new Router()
 
 	// The validator uses the original openapi.json, not the custom one
@@ -94,7 +94,7 @@ export default function publicodesAPI(newEngine: NewEngine) {
 				const { situation, expressions } = ctx.request.body as EvaluateBody
 
 				if (expressions) {
-					const evaluateResult = routes.evaluate(newEngine, {
+					const evaluateResult = routes.evaluate(engine, {
 						expressions,
 						situation,
 					})
@@ -106,7 +106,7 @@ export default function publicodesAPI(newEngine: NewEngine) {
 		)
 		.get('/rules', validateInput('/rules'), (ctx: Context) => {
 			ctx.type = 'application/json'
-			ctx.body = routes.rules(newEngine)
+			ctx.body = routes.rules(engine)
 		})
 		.get(
 			'/rules/:rule',
@@ -115,7 +115,7 @@ export default function publicodesAPI(newEngine: NewEngine) {
 				const { rule } = ctx.params
 
 				ctx.type = 'application/json'
-				ctx.body = routes.rulesId(newEngine, rule)
+				ctx.body = routes.rulesId(engine, rule)
 			}
 		)
 
