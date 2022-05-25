@@ -12,9 +12,12 @@ components:
       oneOf:
         - type: array
           items:
-            type: string
+            oneOf:
+              - type: string
+              - type: object
           minItems: 1
         - type: string
+        - type: object
 
     Situation:
       description: La situation avec laquelle l'expression ou les expressions seront évaluées

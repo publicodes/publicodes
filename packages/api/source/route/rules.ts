@@ -1,9 +1,7 @@
-import { NewEngine } from '../types.js'
+import { Engine } from '../types.js'
 import { catchError, PickInObject } from '../utils.js'
 
-export function rules(newEngine: NewEngine) {
-	const engine = newEngine({})
-
+export function rules(engine: Engine) {
 	const rules = engine.getParsedRules()
 
 	const filteredRules = Object.fromEntries(
@@ -24,9 +22,7 @@ export function rules(newEngine: NewEngine) {
 
 type RulesId = string
 
-export function rulesId(newEngine: NewEngine, id: RulesId) {
-	const engine = newEngine({})
-
+export function rulesId(engine: Engine, id: RulesId) {
 	const [error, result] = catchError(() => engine.getRule(id))
 
 	return !error
