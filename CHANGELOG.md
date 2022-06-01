@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0-beta.42
+
+**api**
+
+-   Refacto des schema expressions et situation
+-   Ajout de documentation
+
 ## 1.0.0-beta.41
 
 **api**
