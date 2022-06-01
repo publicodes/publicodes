@@ -14,6 +14,7 @@
 		"lint:prettier": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml}\"",
 		"lint:prettier:fix": "run lint:prettier --write",
 		"start": "yarn workspaces foreach -pi run start",
+		"build": "yarn workspaces foreach --topological-dev -pi --exclude website run build",
 		"clean": "yarn workspaces foreach run clean"
 	},
 	"devDependencies": {
