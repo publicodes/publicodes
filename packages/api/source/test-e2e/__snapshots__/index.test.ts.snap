@@ -134,11 +134,20 @@ exports[`e2e koa middleware > Test evaluate endpoint with empty expression 2`] =
   {
     "dataPath": ".expressions",
     "keyword": "type",
+    "message": "should be number",
+    "params": {
+      "type": "number",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/0/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
     "message": "should be string",
     "params": {
       "type": "string",
     },
-    "schemaPath": "#/properties/expressions/oneOf/1/type",
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/1/type",
   },
   {
     "dataPath": ".expressions",
@@ -147,7 +156,16 @@ exports[`e2e koa middleware > Test evaluate endpoint with empty expression 2`] =
     "params": {
       "type": "object",
     },
-    "schemaPath": "#/properties/expressions/oneOf/2/type",
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/2/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "oneOf",
+    "message": "should match exactly one schema in oneOf",
+    "params": {
+      "passingSchemas": null,
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf",
   },
   {
     "dataPath": ".expressions",
@@ -175,11 +193,20 @@ exports[`e2e koa middleware > Test evaluate endpoint with null expression 2`] = 
   {
     "dataPath": ".expressions",
     "keyword": "type",
+    "message": "should be number",
+    "params": {
+      "type": "number",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/0/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
     "message": "should be string",
     "params": {
       "type": "string",
     },
-    "schemaPath": "#/properties/expressions/oneOf/1/type",
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/1/type",
   },
   {
     "dataPath": ".expressions",
@@ -188,7 +215,16 @@ exports[`e2e koa middleware > Test evaluate endpoint with null expression 2`] = 
     "params": {
       "type": "object",
     },
-    "schemaPath": "#/properties/expressions/oneOf/2/type",
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/2/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "oneOf",
+    "message": "should match exactly one schema in oneOf",
+    "params": {
+      "passingSchemas": null,
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf",
   },
   {
     "dataPath": ".expressions",
