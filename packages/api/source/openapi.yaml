@@ -11,19 +11,28 @@ components:
       description: Une expression ou un tableau d'expressions Publicodes
       oneOf:
         - type: array
-          items:
-            oneOf:
-              - type: string
-              - type: object
           minItems: 1
-        - type: string
-        - type: object
+          items:
+            $ref: '#/components/schemas/PublicodesExpression'
+        - $ref: '#/components/schemas/PublicodesExpression'
 
     Situation:
       description: La situation avec laquelle l'expression ou les expressions seront évaluées
       type: object
       additionalProperties:
-        type: string
+        $ref: '#/components/schemas/PublicodesExpression'
+
+    PublicodesExpression:
+      description: Une expression Publicodes
+      oneOf:
+        - type: number
+        - type: string
+        - type: object
+          minProperties: 1
+          additionalProperties:
+            # We use a free-form object cause circular $ref is not support by openapi-validator-middleware,
+            # see issue : https://github.com/PayU/openapi-validator-middleware/issues/151#issuecomment-877793999
+            {} # $ref: '#/components/schemas/PublicodesExpression'
 
     EvaluateBody:
       type: object
@@ -120,7 +129,7 @@ paths:
     post:
       tags:
         - publicodes-api
-      operationId: /evaluate
+      operationId: evaluate
       summary: Evalue une expression avec un situation donnée
       requestBody:
         required: true
@@ -145,7 +154,7 @@ paths:
     get:
       tags:
         - publicodes-api
-      operationId: /rules
+      operationId: rules
       summary: Retourne toutes les règles
       responses:
         '200':
@@ -164,7 +173,7 @@ paths:
     get:
       tags:
         - publicodes-api
-      operationId: /rules/{rule}
+      operationId: rules-rule
       summary: Retourne la règle demandée
       parameters:
         - name: rule
