@@ -1,6 +1,6 @@
 {
 	"name": "publicodes-react",
-	"version": "1.0.0-beta.41",
+	"version": "1.0.0-beta.42",
 	"description": "UI to explore publicodes computations",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
