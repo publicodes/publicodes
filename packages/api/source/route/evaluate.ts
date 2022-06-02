@@ -11,7 +11,11 @@ export function evaluate(
 	{ expressions, situation }: EvaluateBody
 ) {
 	const engine = originalEngine.shallowCopy()
-	const [error] = catchError(() => engine.setSituation(situation))
+	const [situationError] = catchError(() => engine.setSituation(situation))
+
+	if (situationError) {
+		return { situationError: { message: situationError.message } }
+	}
 
 	const keysKept = [
 		'nodeValue' as const,
@@ -30,8 +34,5 @@ export function evaluate(
 		return !error ? result : { error: { message: error.message } }
 	})
 
-	return {
-		evaluate: evaluateResult,
-		situationError: error && { message: error.message },
-	}
+	return { evaluate: evaluateResult }
 }
