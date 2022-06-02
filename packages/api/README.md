@@ -50,4 +50,4 @@ Un fichier d'exemple complet se trouve dans les sources si besoin : [example.ts]
 
 ## Projets phares
 
--   **L'API [mon-entreprise.fr](https://mon-entreprise.urssaf.fr/api)** ...
+-   **L'[API mon-entreprise](https://mon-entreprise.urssaf.fr/développeur/api)**
