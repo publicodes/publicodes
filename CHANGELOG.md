@@ -4,6 +4,7 @@
 
 **api**
 
+-   Refacto de /evaluate : Renvoie `situationError` directement s'il y a une erreur de situation (sans faire d'évaluation) et sinon renvoie `evaluate`.
 -   Refacto des schema expressions et situation
 -   Ajout de documentation
 
