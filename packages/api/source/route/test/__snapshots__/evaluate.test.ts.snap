@@ -2,120 +2,6 @@
 
 exports[`evaluate > Test error in expression and situation at same time 1`] = `
 {
-  "evaluate": [
-    {
-      "error": {
-        "message": "
-[ Erreur syntaxique ]
-➡️  Dans la règle \\"evaluation\\"
-✖️  \`1+1\` n'est pas une expression valide
-    Syntax error at line 1 col 2:
-
-  1+
-   ^
-Unexpected additionSubstraction token: \\"+\\". Instead, I was expecting to see one of the following:
-
-A space token based on:
-    number$ebnf$1$subexpression$1 →  ● %space
-    number$ebnf$1 →  ● number$ebnf$1$subexpression$1
-    number → %number ● number$ebnf$1 Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A space token based on:
-    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A space token based on:
-    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A word token based on:
-    Words →  ● %word
-    UnitNumerator →  ● Words UnitNumerator$ebnf$1
-    Unit$ebnf$1 →  ● UnitNumerator
-    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
-    number → %number number$ebnf$1 ● Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A word token based on:
-    WordOrKeyword →  ● %word
-    Words →  ● WordOrKeyword Words$ebnf$1
-    UnitNumerator →  ● Words UnitNumerator$ebnf$1
-    Unit$ebnf$1 →  ● UnitNumerator
-    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
-    number → %number number$ebnf$1 ● Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A boolean token based on:
-    WordOrKeyword →  ● %boolean
-    Words →  ● WordOrKeyword Words$ebnf$1
-    UnitNumerator →  ● Words UnitNumerator$ebnf$1
-    Unit$ebnf$1 →  ● UnitNumerator
-    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
-    number → %number number$ebnf$1 ● Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A space token based on:
-    Comparison → Comparable ● %space %comparison %space Comparable
-    main →  ● Comparison
-A space token based on:
-    UnitDenominator$ebnf$1$subexpression$1 →  ● %space
-    UnitDenominator$ebnf$1 →  ● UnitDenominator$ebnf$1$subexpression$1
-    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" Words
-    Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
-    Unit → Unit$ebnf$1 ● Unit$ebnf$2
-    number → %number number$ebnf$1 ● Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A \\"/\\" based on:
-    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" Words
-    Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
-    Unit → Unit$ebnf$1 ● Unit$ebnf$2
-    number → %number number$ebnf$1 ● Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A space token based on:
-    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A space token based on:
-    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A space token based on:
-    Comparison → Comparable ● %space %comparison %space Comparable
-    main →  ● Comparison
-
-",
-      },
-    },
-  ],
   "situationError": {
     "message": "
 [ Erreur syntaxique ]
@@ -196,14 +82,6 @@ A number token based on:
 
 exports[`evaluate > Test invalid syntax in situation 1`] = `
 {
-  "evaluate": [
-    {
-      "missingVariables": {},
-      "nodeValue": 2,
-      "traversedVariables": [],
-      "unit": undefined,
-    },
-  ],
   "situationError": {
     "message": "
 [ Erreur syntaxique ]
@@ -398,7 +276,6 @@ A space token based on:
       },
     },
   ],
-  "situationError": null,
 }
 `;
 
@@ -601,6 +478,5 @@ A number token based on:
       "unit": undefined,
     },
   ],
-  "situationError": null,
 }
 `;

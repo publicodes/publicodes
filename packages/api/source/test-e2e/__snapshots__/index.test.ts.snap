@@ -116,7 +116,6 @@ A space token based on:
       },
     },
   ],
-  "situationError": null,
 }
 `;
 
