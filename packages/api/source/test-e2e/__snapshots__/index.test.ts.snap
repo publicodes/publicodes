@@ -7,7 +7,7 @@ exports[`e2e koa middleware > Test evaluate endpoint with bad expression 2`] = `
       "error": {
         "message": "
 [ Erreur syntaxique ]
-➡️  Dans la règle \\"evaluation\\"
+➡️  Dans la règle \\"$EVALUATION\\"
 ✖️  \`1+1\` n'est pas une expression valide
     Syntax error at line 1 col 2:
 

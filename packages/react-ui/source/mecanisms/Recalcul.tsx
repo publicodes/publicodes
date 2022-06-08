@@ -1,5 +1,5 @@
 import { EvaluatedNode } from 'publicodes'
-import type { RecalculNode } from 'publicodes/dist/mecanisms/recalcul'
+import { RecalculNode } from 'publicodes/source/mecanisms/recalcul'
 import { useContext } from 'react'
 import { EngineContext } from '../contexts'
 import Explanation from '../Explanation'
@@ -21,10 +21,11 @@ export default function Recalcul({
 	return (
 		<Mecanism name="recalcul" value={nodeValue} unit={unit}>
 			<>
-				{explanation.recalcul && (
+				{explanation.recalculNode && (
 					<EngineContext.Provider value={recalculEngine}>
-						Recalcul de la valeur de <Explanation node={explanation.recalcul} />{' '}
-						avec la situation suivante :
+						Recalcul de la valeur de{' '}
+						<Explanation node={explanation.recalculNode} /> avec la situation
+						suivante :
 					</EngineContext.Provider>
 				)}
 				<ul>

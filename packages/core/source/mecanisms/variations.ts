@@ -1,15 +1,15 @@
 import { EvaluationFunction } from '..'
 import { ASTNode, EvaluatedNode, Unit } from '../AST/types'
 import { warning } from '../error'
-import { defaultNode, mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
+import { defaultNode, mergeAllMissing } from '../evaluationUtils'
 import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
 
 export type VariationNode = {
 	explanation: Array<{
 		condition: ASTNode
-		consequence?: ASTNode
+		consequence: ASTNode
 		satisfied?: boolean
 	}>
 	nodeKind: 'variations'
@@ -76,7 +76,7 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 					previousConditions,
 				]
 			}
-			const evaluatedCondition = this.evaluate(condition)
+			const evaluatedCondition = this.evaluateNode(condition)
 			const currentCondition =
 				previousConditions === undefined
 					? previousConditions
@@ -99,7 +99,7 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 				evaluatedCondition.nodeValue !== false &&
 				evaluatedCondition.nodeValue !== null
 			) {
-				evaluatedConsequence = this.evaluate(consequence!)
+				evaluatedConsequence = this.evaluateNode(consequence!)
 				if (unit) {
 					try {
 						evaluatedConsequence = convertNodeToUnit(
@@ -108,7 +108,7 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 						)
 					} catch (e) {
 						warning(
-							this.options.logger,
+							this.context.logger,
 							this.cache._meta.evaluationRuleStack[0],
 							`L'unité de la branche n° ${
 								i + 1
@@ -124,7 +124,7 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 					...explanations,
 					{
 						condition: evaluatedCondition,
-						consequence: evaluatedConsequence,
+						consequence: evaluatedConsequence ?? consequence,
 					},
 				],
 				unit || evaluatedConsequence?.unit,

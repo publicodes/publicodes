@@ -1,9 +1,9 @@
 import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
-import { bonus, mergeMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
+import { mergeMissing } from '../evaluationUtils'
 import parse from '../parse'
-import { evaluateDisablingParent } from '../rule'
+import { evaluateDisablingParent, updateRuleMissingVariables } from '../rule'
 
 export type EstNonApplicableNode = {
 	explanation: ASTNode
@@ -13,14 +13,14 @@ export function parseEstNonApplicable(v, context) {
 	const explanation = parse(v, context)
 	return {
 		explanation,
-		nodeKind: 'est non applicable',
+		nodeKind: 'est non applicable' as const,
 	} as EstNonApplicableNode
 }
 parseEstNonApplicable.nom = 'est non applicable'
 
 const isNotApplicable = (node: ASTNode) => {
 	return {
-		nodeKind: 'est non applicable',
+		nodeKind: 'est non applicable' as const,
 		explanation: node,
 	}
 }
@@ -29,7 +29,7 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 	function (node) {
 		const valeur = node.explanation
 		if (
-			this.ruleUnits.get(valeur)?.isNullable === false &&
+			this.context.nodesTypes.get(valeur)?.isNullable === false &&
 			valeur.nodeKind !== 'rule'
 		) {
 			return { ...node, nodeValue: false, missingVariables: {} }
@@ -57,15 +57,15 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 						missingVariables: parentMissingVariables,
 					}
 				}
-				const isNotApplicableEvaluation = this.evaluate(
+				const isNotApplicableEvaluation = this.evaluateNode(
 					isNotApplicable(valeur.explanation.valeur)
 				)
 				return {
 					...node,
 					nodeValue: isNotApplicableEvaluation.nodeValue,
 					missingVariables: mergeMissing(
-						bonus(parentMissingVariables),
-						isNotApplicableEvaluation.missingVariables
+						parentMissingVariables,
+						updateRuleMissingVariables(this, valeur, isNotApplicableEvaluation)
 					),
 				}
 
@@ -75,15 +75,15 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 				}
 
 				return {
-					...this.evaluate(
-						isNotApplicable(this.parsedRules[valeur.dottedName])
+					...this.evaluateNode(
+						isNotApplicable(this.context.parsedRules[valeur.dottedName])
 					),
 					...node,
 				}
 
 			case 'condition':
 				return {
-					...this.evaluate({
+					...this.evaluateNode({
 						...valeur,
 						explanation: {
 							si: valeur.explanation.si,
@@ -94,7 +94,7 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 					...node,
 				}
 		}
-		const evaluatedValeur = this.evaluate(valeur)
+		const evaluatedValeur = this.evaluateNode(valeur)
 
 		return {
 			...node,

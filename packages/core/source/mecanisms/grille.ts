@@ -1,7 +1,7 @@
 import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
-import { defaultNode, mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
+import { defaultNode, mergeAllMissing } from '../evaluationUtils'
 import parse from '../parse'
 import {
 	evaluatePlafondUntilActiveTranche,
@@ -33,9 +33,9 @@ export default function parseGrille(v, context): GrilleNode {
 }
 
 const evaluate: EvaluationFunction<'grille'> = function (node) {
-	const evaluate = this.evaluate.bind(this)
-	const assiette = this.evaluate(node.explanation.assiette)
-	const multiplicateur = this.evaluate(node.explanation.multiplicateur)
+	const evaluate = this.evaluateNode.bind(this)
+	const assiette = this.evaluateNode(node.explanation.assiette)
+	const multiplicateur = this.evaluateNode(node.explanation.multiplicateur)
 	const tranches = evaluatePlafondUntilActiveTranche
 		.call(this, {
 			parsedTranches: node.explanation.tranches,

@@ -1,5 +1,5 @@
 import { EvaluatedNode } from 'publicodes'
-import type { VariationNode } from 'publicodes/dist/mecanisms/variations'
+import type { VariationNode } from 'publicodes/source/mecanisms/variations'
 import { useState } from 'react'
 import styled from 'styled-components'
 import Explanation from '../Explanation'

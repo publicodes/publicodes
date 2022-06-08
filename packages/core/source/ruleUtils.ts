@@ -1,5 +1,10 @@
+import { ParsedRules } from '.'
+import { ASTNode } from './AST/types'
 import { syntaxError } from './error'
+import { ReferencesMaps } from './parsePublicodes'
+import { ReferenceNode } from './reference'
 import { RuleNode } from './rule'
+import { addToMapSet } from './utils'
 
 export { cyclicDependencies } from './AST/graph'
 
@@ -25,7 +30,51 @@ export function ruleParents(dottedName: string): Array<string> {
 		.reverse()
 }
 
-export function disambiguateRuleReference<R extends Record<string, RuleNode>>(
+function findCommonAncestor(dottedName1: string, dottedName2: string) {
+	const splitDottedName1 = dottedName1.split(' . ')
+	const splitDottedName2 = dottedName2.split(' . ')
+	const index = splitDottedName1.findIndex(
+		(value, i) => splitDottedName2[i] !== value
+	)
+	if (index === -1) {
+		return dottedName1
+	}
+	return splitDottedName1.slice(0, index).join(' . ')
+}
+
+/**
+ * Check wether a rule is accessible from a namespace.
+ *
+ * Takes into account that some namespace can be `private`, i.e. that they can only be
+ * accessed by immediate parent, children or siblings.
+ *
+ * @param rules The parsed rules
+ * @param contextName The context of the call
+ * @param name The namespace checked for accessibility
+ */
+export function isAccessible(
+	rules: Record<string, RuleNode>,
+	contextName: string,
+	name: string
+) {
+	if (!(name in rules)) {
+		throw new Error("La règle n'existe pas")
+	}
+
+	const commonAncestor = findCommonAncestor(contextName, name)
+	const parents = [name, ...ruleParents(name), '']
+	const rulesToCheckForPrivacy = parents.slice(
+		0,
+		Math.max(parents.indexOf(commonAncestor) - 1, 0)
+	)
+
+	return rulesToCheckForPrivacy.every(
+		(dottedName) =>
+			!(dottedName in rules) || rules[dottedName].private === false
+	)
+}
+
+export function disambiguateReference<R extends Record<string, RuleNode>>(
 	rules: R,
 	contextName = '',
 	partialName: string
@@ -35,16 +84,28 @@ export function disambiguateRuleReference<R extends Record<string, RuleNode>>(
 		// Rules can reference themselves, but it should be the last thing to check
 		.sort((a, b) => (a === contextName ? 1 : b === contextName ? -1 : 0))
 
-	const dottedName = possibleDottedName.find((name) => name in rules)
-	if (!dottedName) {
+	const existingDottedName = possibleDottedName.filter((name) => name in rules)
+	const accessibleDottedName = existingDottedName.find((name) =>
+		isAccessible(rules, contextName, name)
+	)
+
+	if (!existingDottedName.length) {
 		syntaxError(
 			contextName,
-			`La référence '${partialName}' est introuvable.
-	Vérifiez que l'orthographe et l'espace de nom sont corrects`
+			`La référence "${partialName}" est introuvable.
+Vérifiez que l'orthographe et l'espace de nom sont corrects`
 		)
 		throw new Error()
 	}
-	return dottedName
+	if (!accessibleDottedName) {
+		syntaxError(
+			contextName,
+			`La règle "${existingDottedName[0]}" n'est pas accessible depuis "${contextName}".
+Cela vient du fait qu'elle est privée ou qu'un de ses parent est privé`
+		)
+		throw new Error()
+	}
+	return accessibleDottedName
 }
 
 export function ruleWithDedicatedDocumentationPage(rule) {
@@ -55,4 +116,43 @@ export function ruleWithDedicatedDocumentationPage(rule) {
 		rule.type !== 'paragraphe' &&
 		rule.type !== 'notification'
 	)
+}
+
+export function updateReferencesMapsFromReferenceNode(
+	node: ASTNode,
+	referencesMaps: ReferencesMaps<string>,
+	ruleDottedName?: string
+) {
+	if (node.nodeKind === 'reference') {
+		addToMapSet(
+			referencesMaps.referencesIn,
+			ruleDottedName ?? node.contextDottedName,
+			node.dottedName
+		)
+		addToMapSet(
+			referencesMaps.rulesThatUse,
+			node.dottedName,
+			ruleDottedName ?? node.contextDottedName
+		)
+	}
+}
+export function disambiguateReferenceNode(
+	node: ASTNode,
+	parsedRules: ParsedRules<string>
+): ReferenceNode | undefined {
+	if (node.nodeKind !== 'reference') {
+		return
+	}
+	if (node.dottedName) {
+		return node
+	}
+
+	node.dottedName = disambiguateReference(
+		parsedRules,
+		node.contextDottedName,
+		node.name
+	)
+	node.title = parsedRules[node.dottedName].title
+	node.acronym = parsedRules[node.dottedName].rawNode.acronyme
+	return node
 }

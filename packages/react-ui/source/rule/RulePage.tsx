@@ -78,7 +78,9 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 	if (!(dottedName in engine.getParsedRules())) {
 		return <p>Cette règle est introuvable dans la base</p>
 	}
-	const rule = engine.evaluate(engine.getRule(dottedName)) as EvaluatedNode & {
+	const rule = engine.evaluateNode(
+		engine.getRule(dottedName)
+	) as EvaluatedNode & {
 		nodeKind: 'rule'
 	}
 	const { description, question } = rule.rawNode
@@ -252,7 +254,7 @@ function ReverseMissing({
 
 	const getRuleNamesWithMissing = () =>
 		Object.keys(engine.getParsedRules()).filter((ruleName) => {
-			const evaluation = engine.evaluate(engine.getRule(ruleName))
+			const evaluation = engine.evaluateNode(engine.getRule(ruleName))
 			return evaluation.missing?.self?.includes(dottedName)
 		})
 

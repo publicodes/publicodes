@@ -15,11 +15,10 @@
 	},
 	"scripts": {
 		"test": "run validate && run build:openapi && vitest",
-		"test:type": "run tsc --noEmit",
+		"test:type": "run build:openapi && run tsc --noEmit",
 		"validate": "swagger-cli validate ./source/openapi.yaml",
 		"start": "run clean && run build:watch & wait-on ./dist/openapi.json && run start:example",
 		"start:example": "NODE_PATH=./ nodemon -d 500ms ./example.ts",
-		"prepack": "yarn workspace publicodes run prepack && yarn run build",
 		"build": "run build:openapi && run build:tsup",
 		"build:watch": "run build:openapi:watch & run wait:openapi && run build:tsup:watch",
 		"build:tsup": "tsup-node --shims",

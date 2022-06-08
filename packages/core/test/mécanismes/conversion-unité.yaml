@@ -48,10 +48,10 @@ Conversion en pourcentage:
 
 Conversion dans un mécanisme:
   unité: €/an
-  formule:
-    le minimum de:
-      - 100 €/mois
-      - 1120 €/an
+
+  le minimum de:
+    - 100 €/mois
+    - 1120 €/an
   exemples:
     - valeur attendue: 1120
 

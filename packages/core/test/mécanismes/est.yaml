@@ -54,7 +54,7 @@ est non applicable avec possiblement non applicable:
   est non applicable: a
   exemples:
     - nom: non défini
-      valeur attendue: undefined
+      valeur attendue: false
       variables manquantes: [a]
     - nom: applicable
       situation: { a: non }
@@ -81,7 +81,7 @@ est applicable avec possiblement non applicable:
   est applicable: a
   exemples:
     - nom: non défini
-      valeur attendue: undefined
+      valeur attendue: true
       variables manquantes: [a]
     - nom: applicable
       situation: { a: non }

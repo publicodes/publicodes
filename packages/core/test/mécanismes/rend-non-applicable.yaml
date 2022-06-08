@@ -16,3 +16,25 @@ contribution:
       situation:
         exilé fiscal: non
       valeur attendue: 1000
+
+vélo occasion:
+  par défaut: oui
+  rend non applicable:
+    règle: aides
+    sauf dans:
+      - aides . montant total
+      - aides . bamako
+
+aides:
+aides . paris: 100€
+aides . bamako: 200€
+aides . new york: 100k€
+
+aides . montant total:
+  somme:
+    - paris
+    - new york
+    - bamako
+  exemples:
+    - nom: désactive l'espace de nom sauf pour certaines règles
+      valeur attendue: 200

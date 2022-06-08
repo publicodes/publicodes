@@ -113,7 +113,7 @@ describe('evaluate', () => {
 			    },
 			    {
 			      "missingVariables": {
-			        "prix": 1,
+			        "prix": NaN,
 			      },
 			      "nodeValue": undefined,
 			      "traversedVariables": [

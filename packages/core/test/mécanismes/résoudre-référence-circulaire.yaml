@@ -1,4 +1,5 @@
 fx:
+z:
 x:
   résoudre la référence circulaire: oui
   valeur: fx
@@ -12,6 +13,11 @@ x:
         fx: 0.2 * x * x - 400 * x + 500
       valeur attendue: 2003.743
       # CF https://www.wolframalpha.com/input/?i=x%3D0.2x%C2%B2-400x%2B500
+    - nom: cycle avec valeur manquante
+      situation:
+        fx: 0.2 * x + z
+      valeur attendue: undefined
+      variables manquantes: [z]
 
 CA:
   unité: €
@@ -19,6 +25,7 @@ CA:
   formule:
     inversion numérique:
       avec:
+        - net après impôt
         - net
 
 net:
@@ -36,6 +43,7 @@ cycle avec inversion et situation vide:
       situation:
         cycle avec inversion et situation vide: CA
       valeur attendue: undefined
+    # TODO
     # - nom: net
     #   situation:
     #     cycle avec inversion et situation vide: net
@@ -58,10 +66,9 @@ cycle avec la règle du cycle fixée dans la situation:
     - situation:
         net: 1000
       valeur attendue: 1500
-# TODO : à corriger
-# cycle avec une règle reliée fixée dans la situation:
-#   valeur: net
-#   exemples:
-#     - situation:
-#         net après impôt: 8000
-#       valeur attendue: 10000
+cycle avec la règle à inverser séparée:
+  valeur: CA
+  exemples:
+    - situation:
+        net après impôt: 800
+      valeur attendue: 1500

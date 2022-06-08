@@ -20,5 +20,6 @@ const colors = {
 	'taux progressif': '#795548',
 	barème: '#9B296F',
 	grille: '#AD1457',
+	avec: '#2653ce',
 }
 export default (name) => colors[name] || 'palevioletred'

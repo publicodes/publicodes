@@ -1,4 +1,5 @@
 enfants:
+  possiblement non applicable: oui
 
 nombre enfants:
   applicable si: enfants

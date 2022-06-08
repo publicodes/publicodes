@@ -1,7 +1,7 @@
 import Engine from '..'
 import { ASTNode, Evaluation } from '../AST/types'
 import { evaluationError, warning } from '../error'
-import { mergeAllMissing } from '../evaluation'
+import { mergeAllMissing } from '../evaluationUtils'
 import parse from '../parse'
 import { convertUnit, inferUnit } from '../units'
 
@@ -47,7 +47,7 @@ export function evaluatePlafondUntilActiveTranche(
 				]
 			}
 
-			const plafond = this.evaluate(parsedTranche.plafond)
+			const plafond = this.evaluateNode(parsedTranche.plafond)
 			const plancher = tranches[i - 1]
 				? tranches[i - 1].plafond
 				: { nodeValue: 0 }
@@ -69,7 +69,7 @@ export function evaluatePlafondUntilActiveTranche(
 						  )
 			} catch (e) {
 				warning(
-					this.options.logger,
+					this.context.logger,
 					this.cache._meta.evaluationRuleStack[0],
 					`L'unité du plafond de la tranche n°${
 						i + 1
@@ -109,7 +109,7 @@ export function evaluatePlafondUntilActiveTranche(
 				(plafondValue as number) <= plancherValue
 			) {
 				evaluationError(
-					this.options.logger,
+					this.context.logger,
 					this.cache._meta.evaluationRuleStack[0],
 					`Le plafond de la tranche n°${
 						i + 1

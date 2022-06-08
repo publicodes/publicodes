@@ -62,28 +62,12 @@ impôt sur le revenu à payer:
 	it('should let the user define a rule base on a completely different subject', function () {
 		let engine = new Engine(co2Rules)
 		engine.setSituation({
-			'nombre de douches': 30,
+			'douche . nombre': 30,
 			'chauffage . type': "'gaz'",
-			'durée de la douche': 10,
+			'douche . durée de la douche': 10,
 		})
 		let value = engine.evaluate('douche . impact')
-		expect(value.nodeValue).to.be.within(20, 21)
-	})
-
-	it('should let the user reference rules in the situation', function () {
-		let rules = `
-referenced in situation:
-  formule: 200
-overwrited in situation:
-  formule: 100
-result:
-  formule: overwrited in situation + 22
-`
-		let engine = new Engine(rules)
-		engine.setSituation({
-			'overwrited in situation': 'referenced in situation',
-		})
-		expect(engine.evaluate('result').nodeValue).to.equal(222)
+		expect(value.nodeValue).to.be.within(40, 41)
 	})
 })
 

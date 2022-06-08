@@ -13,9 +13,11 @@ import { parseUnit } from '../source/units'
 import testSuites from './mécanismes/index'
 
 testSuites.forEach(([suiteName, suite]) => {
-	const engine = new Engine(suite)
-
+	// if (suiteName !== 'résoudre-référence-circulaire') {
+	// 	return
+	// }
 	describe(`Mécanisme ${suiteName}`, () => {
+		const engine = new Engine(suite)
 		Object.entries(engine.getParsedRules())
 			.filter(([, rule]) => !!rule.rawNode.exemples)
 			.forEach(([name, test]) => {
@@ -60,7 +62,7 @@ testSuites.forEach(([suiteName, suite]) => {
 								}
 								if (type) {
 									expect(
-										engine.ruleUnits.get(engine.getRule(name)).type
+										engine.context.nodesTypes.get(engine.getRule(name))!.type
 									).to.be.equal(type)
 								}
 								if (unit) {

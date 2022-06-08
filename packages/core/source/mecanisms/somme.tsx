@@ -1,5 +1,8 @@
 import { PublicodesExpression } from '..'
-import { createParseInlinedMecanismWithArray, notApplicableNode } from './utils'
+import {
+	createParseInlinedMecanismWithArray,
+	notApplicableNode,
+} from './inlineMecanism'
 
 export default createParseInlinedMecanismWithArray(
 	'somme',

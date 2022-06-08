@@ -11,8 +11,8 @@ describe('evaluate', () => {
 			  "rules": {
 			    "nodeKind": "rule",
 			    "rawNode": {
-			      "formule": "42",
 			      "nom": "rules",
+			      "valeur": "42",
 			    },
 			    "replacements": [],
 			    "suggestions": {},
@@ -27,8 +27,8 @@ describe('evaluate', () => {
 			{
 			  "nodeKind": "rule",
 			  "rawNode": {
-			    "formule": "42",
 			    "nom": "rules",
+			    "valeur": "42",
 			  },
 			  "replacements": [],
 			  "suggestions": {},

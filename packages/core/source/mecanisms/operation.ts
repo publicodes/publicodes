@@ -2,8 +2,8 @@ import { EvaluationFunction } from '..'
 import { ASTNode, EvaluatedNode } from '../AST/types'
 import { convertToDate } from '../date'
 import { warning } from '../error'
-import { mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
+import { mergeAllMissing } from '../evaluationUtils'
 import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
 import { inferUnit, serializeUnit } from '../units'
@@ -43,7 +43,7 @@ const parseOperation = (k, symbol) => (v, context) => {
 }
 
 const evaluate: EvaluationFunction<'operation'> = function (node) {
-	let node1 = this.evaluate(node.explanation[0])
+	let node1 = this.evaluateNode(node.explanation[0])
 
 	let evaluatedNode: EvaluatedNode & OperationNode = {
 		...node,
@@ -67,7 +67,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		}
 	}
 
-	let node2 = this.evaluate(node.explanation[1])
+	let node2 = this.evaluateNode(node.explanation[1])
 	evaluatedNode.explanation = [node1, node2]
 
 	// LAZY EVALUATION 2
@@ -112,7 +112,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 			}
 		} catch (e) {
 			warning(
-				this.options.logger,
+				this.context.logger,
 				`Dans l'expression '${
 					node.operationKind
 				}', la partie gauche (unité: ${serializeUnit(
@@ -139,7 +139,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 			: [a, b].every(
 					(value) =>
 						typeof value === 'string' &&
-						value.match?.(/[\d]{2}\/[\d]{2}\/[\d]{4}/)
+						value.match?.(/^[\d]{2}\/[\d]{2}\/[\d]{4}$/)
 			  )
 			? operatorFunction(convertToDate(a as string), convertToDate(b as string))
 			: operatorFunction(a, b)

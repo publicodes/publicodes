@@ -1,4 +1,4 @@
-import { createParseInlinedMecanism } from './utils'
+import { createParseInlinedMecanism } from './inlineMecanism'
 
 export default createParseInlinedMecanism(
 	'plafond',
@@ -8,7 +8,7 @@ export default createParseInlinedMecanism(
 	},
 	{
 		condition: {
-			si: { 'toutes ces conditions': ['plafond != non', 'valeur > plafond'] },
+			si: { et: ['plafond != non', 'valeur > plafond'] },
 			alors: 'plafond',
 			sinon: 'valeur',
 		},

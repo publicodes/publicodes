@@ -1,5 +1,5 @@
 import { PublicodesExpression } from '..'
-import { createParseInlinedMecanismWithArray } from './utils'
+import { createParseInlinedMecanismWithArray } from './inlineMecanism'
 
 export default createParseInlinedMecanismWithArray(
 	'toutes ces conditions',

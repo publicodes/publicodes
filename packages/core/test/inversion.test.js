@@ -4,22 +4,18 @@ import dedent from 'dedent-js'
 import Engine from '../source/index'
 
 describe('inversions', () => {
-	it('should handle non inverted example', () => {
+	it('should handle basic inversion', () => {
 		const rules = dedent`
-        net:
-          formule:
-            produit:
-              assiette: brut
-              taux: 77%
+        a: b + 10
 
-        brut:
-          unité: €
+        b:
+          inversion numérique:
+            avec:
+              - a
       `
-		const result = new Engine(rules)
-			.setSituation({ brut: '2300 €' })
-			.evaluate('net')
+		const result = new Engine(rules).setSituation({ a: 30 }).evaluate('b')
 
-		expect(result.nodeValue).to.be.closeTo(1771, 0.001)
+		expect(result.nodeValue).to.be.closeTo(30 - 10, 0.0001 * 2000)
 	})
 
 	it('should handle simple inversion', () => {

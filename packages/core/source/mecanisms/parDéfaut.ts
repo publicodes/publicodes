@@ -1,4 +1,4 @@
-import { createParseInlinedMecanism } from './utils'
+import { createParseInlinedMecanism } from './inlineMecanism'
 
 export default createParseInlinedMecanism(
 	'par défaut',

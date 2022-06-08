@@ -1,11 +1,14 @@
-import { Logger } from '.'
-import { makeASTTransformer } from './AST'
+import { Logger, ParsedRules } from '.'
+import { makeASTTransformer, makeASTVisitor } from './AST'
 import { ASTNode } from './AST/types'
 import { InternalError, warning } from './error'
-import { defaultNode } from './evaluation'
+import { defaultNode } from './evaluationUtils'
+import { notApplicableNode } from './mecanisms/inlineMecanism'
 import parse from './parse'
-import { Context } from './parsePublicodes'
+import { Context, ReferencesMaps, RulesReplacements } from './parsePublicodes'
 import { Rule, RuleNode } from './rule'
+import { updateReferencesMapsFromReferenceNode } from './ruleUtils'
+import { mergeWithArray } from './utils'
 
 export type ReplacementRule = {
 	nodeKind: 'replacementRule'
@@ -38,26 +41,17 @@ export function parseReplacements(
 	if (!replacements) {
 		return []
 	}
-	// Circular references are a hacky escape hatch for cycle detection.
-	// Replacement and "rend non applicable" nodes are defined in refeverse which
-	// as the consequence of creating cycles if we follow reference naively.
-	const markReferenceAsCircularContext = {
-		...context,
-		circularReferences: true,
-	}
+
 	return (Array.isArray(replacements) ? replacements : [replacements]).map(
 		(replacement) => {
 			if (typeof replacement === 'string') {
 				replacement = { règle: replacement }
 			}
 
-			const replacedReference = parse(
-				replacement.règle,
-				markReferenceAsCircularContext
-			)
+			const replacedReference = parse(replacement.règle, context)
 			const replacementNode = parse(
 				replacement.par ?? context.dottedName,
-				markReferenceAsCircularContext
+				context
 			)
 
 			const [whiteListedNames, blackListedNames] = [
@@ -67,17 +61,12 @@ export function parseReplacements(
 				.map((dottedName) =>
 					Array.isArray(dottedName) ? dottedName : [dottedName]
 				)
-				.map((refs) =>
-					refs.map((ref) => parse(ref, markReferenceAsCircularContext))
-				)
+				.map((refs) => refs.map((ref) => parse(ref, context)))
 
 			return {
 				nodeKind: 'replacementRule',
 				rawNode: replacement,
-				definitionRule: parse(
-					context.dottedName,
-					markReferenceAsCircularContext
-				),
+				definitionRule: parse(context.dottedName, context),
 				replacedReference,
 				replacementNode,
 				whiteListedNames,
@@ -96,14 +85,14 @@ export function parseRendNonApplicable(
 		(replacement) =>
 			({
 				...replacement,
-				replacementNode: defaultNode(null),
+				replacementNode: notApplicableNode,
 			} as ReplacementRule)
 	)
 }
 
 export function getReplacements(
 	parsedRules: Record<string, RuleNode>
-): Record<string, Array<ReplacementRule>> {
+): RulesReplacements<string> {
 	return Object.values(parsedRules)
 		.flatMap((rule) => rule.replacements)
 		.reduce((acc, r: ReplacementRule) => {
@@ -115,8 +104,82 @@ export function getReplacements(
 		}, {})
 }
 
-export function inlineReplacements(
-	replacements: Record<string, Array<ReplacementRule>>,
+export function inlineReplacements<
+	NewNames extends string,
+	PreviousNames extends string
+>({
+	newRules,
+	previousReplacements,
+	parsedRules,
+	referencesMaps,
+	logger,
+}: {
+	newRules: ParsedRules<NewNames>
+	previousReplacements: RulesReplacements<PreviousNames>
+	parsedRules: ParsedRules<PreviousNames | NewNames>
+	referencesMaps: ReferencesMaps<NewNames | PreviousNames>
+	logger: Logger
+}): [
+	ParsedRules<NewNames | PreviousNames>,
+	RulesReplacements<NewNames | PreviousNames>
+] {
+	type Names = NewNames | PreviousNames
+	const newReplacements = getReplacements(newRules) as RulesReplacements<Names>
+
+	const ruleNamesWithNewReplacements = (
+		Object.keys(newReplacements) as Array<NewNames | Names>
+	).reduce((acc, replacedReference) => {
+		return new Set([
+			...(referencesMaps.rulesThatUse.get(replacedReference) ?? []),
+			...acc,
+		])
+	}, new Set([]) as Set<Names>)
+
+	const newRuleNamesWithPreviousReplacements: Set<NewNames> = new Set(
+		(Object.keys(newRules) as Array<NewNames>).filter((ruleName) =>
+			[...(referencesMaps.referencesIn.get(ruleName) ?? new Set())].some(
+				(reference) =>
+					(previousReplacements[reference as PreviousNames] ?? []).length
+			)
+		)
+	)
+
+	const replacements = mergeWithArray(previousReplacements, newReplacements)
+	if (
+		!newRuleNamesWithPreviousReplacements.size &&
+		!ruleNamesWithNewReplacements.size
+	) {
+		return [parsedRules, replacements]
+	}
+
+	const inlinePreviousReplacement = makeReplacementInliner(
+		previousReplacements,
+		referencesMaps,
+		logger
+	)
+	const inlineNewReplacement = makeReplacementInliner(
+		newReplacements,
+		referencesMaps,
+		logger
+	)
+
+	newRuleNamesWithPreviousReplacements.forEach((name) => {
+		parsedRules[name] = inlinePreviousReplacement(
+			parsedRules[name]
+		) as RuleNode & { dottedName: Names }
+	})
+	ruleNamesWithNewReplacements.forEach((name) => {
+		parsedRules[name] = inlineNewReplacement(parsedRules[name]) as RuleNode & {
+			dottedName: Names
+		}
+	})
+
+	return [parsedRules, replacements]
+}
+
+export function makeReplacementInliner(
+	replacements: RulesReplacements<string>,
+	referencesMaps: ReferencesMaps<string>,
 	logger: Logger
 ): (n: ASTNode) => ASTNode {
 	return makeASTTransformer((node, transform) => {
@@ -133,8 +196,7 @@ export function inlineReplacements(
 				...node,
 				explanation: {
 					...node.explanation,
-					recalcul:
-						node.explanation.recalcul && transform(node.explanation.recalcul),
+					recalculNode: transform(node.explanation.recalculNode),
 					amendedSituation: node.explanation.amendedSituation.map(
 						([name, value]) => [name, transform(value)]
 					),
@@ -145,7 +207,21 @@ export function inlineReplacements(
 			if (!node.dottedName) {
 				throw new InternalError(node)
 			}
-			return replace(node, replacements[node.dottedName] ?? [], logger)
+			const replacedReferenceNode = replace(
+				node,
+				replacements[node.dottedName] ?? [],
+				logger
+			)
+			// Collect inlined replacement
+			makeASTVisitor((n) => {
+				updateReferencesMapsFromReferenceNode(
+					n,
+					referencesMaps,
+					node.contextDottedName
+				)
+				return 'continue'
+			})(replacedReferenceNode)
+			return replacedReferenceNode
 		}
 	})
 }

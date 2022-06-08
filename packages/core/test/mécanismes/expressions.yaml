@@ -6,7 +6,6 @@ entier:
   exemples:
     - valeur attendue: 5
       type: number
-
 nombre décimal:
   formule: 5.4
   exemples:

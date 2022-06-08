@@ -60,3 +60,53 @@ avec dans avec:
         yum: 5
   exemples:
     - valeur attendue: 20
+
+avec en dehors d'une règle:
+  valeur:
+    le maximum de:
+      - a
+      - b
+    avec:
+      a: 10
+      b: 8
+  exemples:
+    - valeur attendue: 10
+
+avec plusieurs valeur:
+  somme:
+    - le maximum de:
+        - a
+        - b
+      avec:
+        a: 10
+        b: 8
+    - valeur: c * d
+      avec:
+        c: 2
+        d: 5
+  exemples:
+    - valeur attendue: 20
+
+avec à plusieurs niveaux:
+  -:
+    - a
+    - valeur: b
+      avec:
+        b: 2
+  avec:
+    a: 5
+  exemples:
+    - valeur attendue: 3
+
+avec références:
+  valeur: b
+  avec:
+    b:
+      valeur: 5
+      références:
+        Fiche Urssaf: https://www.urssaf.fr/portail/home/independant/mes-cotisations/les-etapes-de-calcul/le-mode-de-calcul/les-cotisations-provisionnelles/debut-dactivite.html
+
+  références:
+    Fiche Urssaf: https://www.urssaf.fr/portail/home/independant/mes-cotisations/les-etapes-de-calcul/le-mode-de-calcul/lajustement-et-la-regularisation.html
+  exemples:
+    - valeur attendue: 5

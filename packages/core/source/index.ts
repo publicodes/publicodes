@@ -1,18 +1,13 @@
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
 import { evaluationFunctions } from './evaluationFunctions'
-import parse from './parse'
 import parsePublicodes, {
-	disambiguateReferenceAndCollectDependencies,
-	InferedType,
+	Context,
+	copyContext,
+	createContext,
+	RawPublicodes,
 } from './parsePublicodes'
-import {
-	getReplacements,
-	inlineReplacements,
-	type ReplacementRule,
-} from './replacement'
 import { type Rule, type RuleNode } from './rule'
 import * as utils from './ruleUtils'
-import { formatUnit, getUnitKey } from './units'
 
 const emptyCache = (): Cache => ({
 	_meta: {
@@ -75,12 +70,7 @@ export type Logger = {
 	error(message: string): void
 }
 
-type Options = {
-	logger: Logger
-	getUnitKey?: getUnitKey
-	formatUnit?: formatUnit
-	inversionMaxIterations?: number
-}
+type Options = Partial<Pick<Context, 'logger' | 'getUnitKey'>>
 
 export type EvaluationFunction<Kind extends NodeKind = NodeKind> = (
 	this: Engine,
@@ -93,11 +83,11 @@ export type ParsedRules<Name extends string> = Record<
 >
 
 export default class Engine<Name extends string = string> {
-	parsedRules: ParsedRules<Name>
-	parsedSituation: Record<string, ASTNode> = {}
-	replacements: Record<string, Array<ReplacementRule>> = {}
+	baseContext: Context<Name>
+	context: Context<string>
+	publicParsedRules: ParsedRules<Name>
+
 	cache: Cache = emptyCache()
-	options: Options
 
 	// The subEngines attribute is used to get an outside reference to the
 	// recalcul intermediate calculations. The recalcul mechanism uses
@@ -111,26 +101,24 @@ export default class Engine<Name extends string = string> {
 	subEngines: Array<Engine<Name>> = []
 	subEngineId: number | undefined
 
-	ruleUnits: WeakMap<ASTNode, InferedType>
-	rulesDependencies: ReturnType<typeof parsePublicodes>['rulesDependencies']
+	constructor(rules: RawPublicodes<Name> | string = {}, options: Options = {}) {
+		const initialContext = {
+			dottedName: '' as const,
+			...options,
+		}
+		this.baseContext = createContext({
+			...initialContext,
+			...parsePublicodes<never, Name>(rules, initialContext),
+		})
+		this.context = this.baseContext
 
-	constructor(
-		rules: string | Record<string, Rule> = {},
-		options: Partial<Options> = {}
-	) {
-		this.options = { ...options, logger: options.logger ?? console }
-		const { parsedRules, ruleUnits, rulesDependencies } = parsePublicodes<Name>(
-			rules,
-			this.options
-		)
-		this.parsedRules = parsedRules
-		this.ruleUnits = ruleUnits
-		this.rulesDependencies = rulesDependencies
-		this.replacements = getReplacements(this.parsedRules)
-	}
-
-	setOptions(options: Partial<Options>) {
-		this.options = { ...this.options, ...options }
+		this.publicParsedRules = Object.fromEntries(
+			Object.entries(this.baseContext.parsedRules).filter(
+				([name, rule]) =>
+					!(rule as RuleNode).private &&
+					utils.isAccessible(this.baseContext.parsedRules, '', name)
+			)
+		) as ParsedRules<Name>
 	}
 
 	resetCache() {
@@ -138,38 +126,50 @@ export default class Engine<Name extends string = string> {
 	}
 
 	setSituation(
-		situation: Partial<Record<Name, PublicodesExpression | ASTNode>> = {}
+		situation: Partial<Record<Name, PublicodesExpression | ASTNode>> = {},
+		options: { keepPreviousSituation?: boolean } = {}
 	) {
 		this.resetCache()
-		this.parsedSituation = Object.fromEntries(
-			Object.entries(situation).map(([key, value]) => {
-				if (value && typeof value === 'object' && 'nodeKind' in value) {
-					return [key, value as ASTNode]
-				}
-				const parsedValue =
-					value && typeof value === 'object' && 'nodeKind' in value
-						? (value as ASTNode)
-						: this.parse(value, {
-								dottedName: `situation [${key}]`,
-								parsedRules: {},
-								...this.options,
-						  })
-				return [key, parsedValue]
-			})
-		)
-		return this
-	}
 
-	private parse(...args: Parameters<typeof parse>) {
-		return inlineReplacements(
-			this.replacements,
-			this.options.logger
-		)(
-			disambiguateReferenceAndCollectDependencies(
-				this.parsedRules,
-				{}
-			)(parse(...args))
+		const keepPreviousSituation = options.keepPreviousSituation ?? false
+
+		Object.keys(situation).forEach((name) => {
+			if (!(name in this.baseContext.parsedRules)) {
+				throw new Error(
+					`Erreur lors de la mise à jour de la situation : ${name} n'existe pas dans la base de règle.`
+				)
+			}
+			if (this.baseContext.parsedRules[name].private) {
+				throw new Error(
+					`Erreur lors de la mise à jour de la situation : ${name} est une règle privée (il n'est pas possible de modifier une règle privée).`
+				)
+			}
+		})
+
+		// The situation is implemented as a special sub namespace `$SITUATION`,
+		// present on each non-private rules
+		const situationToParse = Object.fromEntries(
+			Object.entries(situation).map(([nom, value]) => [
+				`[privé] ${nom} . $SITUATION`,
+				value && typeof value === 'object' && 'nodeKind' in value
+					? { valeur: value }
+					: value,
+			])
 		)
+
+		const savedBaseContext = copyContext(this.baseContext)
+
+		// const previousParsedRules = this.context.
+		this.context = {
+			...this.baseContext,
+			...parsePublicodes(
+				situationToParse as RawPublicodes<Name>,
+				keepPreviousSituation ? this.context : this.baseContext
+			),
+		}
+		this.baseContext = savedBaseContext
+
+		return this
 	}
 
 	inversionFail(): boolean {
@@ -177,41 +177,52 @@ export default class Engine<Name extends string = string> {
 	}
 
 	getRule(dottedName: Name): ParsedRules<Name>[Name] {
-		if (!(dottedName in this.parsedRules)) {
+		if (!(dottedName in this.baseContext.parsedRules)) {
 			throw new Error(`La règle '${dottedName}' n'existe pas`)
 		}
-		return this.parsedRules[dottedName]
+
+		if (!(dottedName in this.publicParsedRules)) {
+			throw new Error(`La règle ${dottedName} est une règle privée.`)
+		}
+		return this.publicParsedRules[dottedName]
 	}
 
 	getParsedRules(): ParsedRules<Name> {
-		return this.parsedRules
+		return this.publicParsedRules
 	}
 
-	getOptions(): Options {
-		return this.options
-	}
-
-	evaluate<N extends ASTNode = ASTNode>(value: N): N & EvaluatedNode
-	evaluate(value: PublicodesExpression): EvaluatedNode
-	evaluate(value: PublicodesExpression | ASTNode): EvaluatedNode {
+	evaluate(value: PublicodesExpression): EvaluatedNode {
 		const cachedNode = this.cache.nodes.get(value)
+		if (cachedNode) {
+			return cachedNode
+		}
+		this.context = {
+			...this.context,
+			...parsePublicodes(
+				{
+					'[privé] $EVALUATION':
+						value && typeof value === 'object' && 'nodeKind' in value
+							? { valeur: value }
+							: value,
+				},
+				this.context
+			),
+		}
+		this.cache._meta = emptyCache()._meta
+		const evaluation = this.evaluateNode(
+			this.context.parsedRules['$EVALUATION'].explanation.valeur
+		)
+		this.cache.nodes.set(value, evaluation)
+		return evaluation
+	}
 
+	evaluateNode<T extends ASTNode>(parsedNode: T): EvaluatedNode & T {
+		const cachedNode = this.cache.nodes.get(parsedNode)
 		if (cachedNode !== undefined) {
 			cachedNode.traversedVariables?.forEach((name) =>
 				this.cache._meta.traversedVariablesStack[0]?.add(name)
 			)
 			return cachedNode
-		}
-
-		let parsedNode: ASTNode
-		if (!value || typeof value !== 'object' || !('nodeKind' in value)) {
-			parsedNode = this.parse(value, {
-				dottedName: 'evaluation',
-				parsedRules: {},
-				...this.options,
-			})
-		} else {
-			parsedNode = value as ASTNode
 		}
 
 		if (!evaluationFunctions[parsedNode.nodeKind]) {
@@ -230,7 +241,11 @@ export default class Engine<Name extends string = string> {
 			this.cache._meta.traversedVariablesStack.unshift(new Set())
 		}
 
-		if (parsedNode.nodeKind === 'reference' && parsedNode.dottedName) {
+		if (
+			parsedNode.nodeKind === 'reference' &&
+			parsedNode.dottedName &&
+			parsedNode.dottedName in this.publicParsedRules
+		) {
 			this.cache._meta.traversedVariablesStack[0].add(parsedNode.dottedName)
 		}
 
@@ -260,14 +275,13 @@ export default class Engine<Name extends string = string> {
 	 */
 	shallowCopy(): Engine<Name> {
 		const newEngine = new Engine<Name>()
-		newEngine.options = this.options
-		newEngine.parsedRules = this.parsedRules
-		newEngine.replacements = this.replacements
-		newEngine.parsedSituation = this.parsedSituation
-		newEngine.ruleUnits = this.ruleUnits
-		newEngine.cache = this.cache
-		newEngine.subEngineId = this.subEngines.length
-		this.subEngines.push(newEngine)
+		newEngine.baseContext = copyContext(this.baseContext)
+		newEngine.context = copyContext(this.context)
+		newEngine.publicParsedRules = this.publicParsedRules
+		newEngine.cache = {
+			...emptyCache(),
+			nodes: new Map(this.cache.nodes),
+		}
 		return newEngine
 	}
 }

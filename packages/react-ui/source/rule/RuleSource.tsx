@@ -8,10 +8,9 @@ export default function RuleSource({ engine, dottedName }: Props) {
 		return null
 	}
 	const dependancies = [
-		...(engine.rulesDependencies[dottedName] ?? []),
-		...utils.ruleParents(dottedName),
+		...(engine.context.referencesMaps.referencesIn.get(dottedName) ?? []),
 	]
-	const rule = engine.evaluate(engine.getRule(dottedName))
+	const rule = engine.evaluateNode(engine.getRule(dottedName))
 
 	// When we import a rule in the Publicodes Studio, we need to provide a
 	// simplified definition of its dependencies to avoid undefined references.
@@ -20,7 +19,9 @@ export default function RuleSource({ engine, dottedName }: Props) {
 			.filter((name) => name !== dottedName)
 			.map((dottedName) => [
 				dottedName,
-				formatValueForStudio(engine.evaluate(engine.getRule(dottedName))),
+				formatValueForStudio(
+					engine.evaluateNode(engine.context.parsedRules[dottedName])
+				),
 			])
 	)
 

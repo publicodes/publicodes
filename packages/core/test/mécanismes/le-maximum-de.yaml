@@ -15,27 +15,35 @@ a:
   applicable si: non
   formule: 20
 
+a . a: 10
+
 test:
 
 Maximum avec valeur non applicable:
   valeur: test
   exemples:
+    # - situation:
+    #     test:
+    #       le maximum de:
+    #         - 10
+    #         - a
+    #   valeur attendue: 10
+    # - situation:
+    #     test:
+    #       le maximum de:
+    #         - a
+    #         - 10
+    #   valeur attendue: 10
+    # - situation:
+    #     test:
+    #       le maximum de:
+    #         - applicable si: non
+    #         - a
+    #         - non applicable si: oui
+    #   valeur attendue: null
     - situation:
         test:
           le maximum de:
             - 10
-            - a
+            - a . a
       valeur attendue: 10
-    - situation:
-        test:
-          le maximum de:
-            - a
-            - 10
-      valeur attendue: 10
-    - situation:
-        test:
-          le maximum de:
-            - applicable si: non
-            - a
-            - non applicable si: oui
-      valeur attendue: null

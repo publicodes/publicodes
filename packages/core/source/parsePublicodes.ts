@@ -1,71 +1,94 @@
 import yaml from 'yaml'
-import { ASTNode, Logger, ParsedRules } from '.'
+import { Logger, ParsedRules } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
+import inferNodeType, { NodesTypes } from './inferNodeType'
 import parse from './parse'
-import { getReplacements, inlineReplacements } from './replacement'
-import { Rule, RuleNode } from './rule'
-import { disambiguateRuleReference } from './ruleUtils'
+import { inlineReplacements, ReplacementRule } from './replacement'
+import { Rule } from './rule'
+import {
+	disambiguateReferenceNode,
+	updateReferencesMapsFromReferenceNode,
+} from './ruleUtils'
 import { getUnitKey } from './units'
 
-export type Context = {
-	dottedName: string
-	parsedRules: Record<string, RuleNode>
-	ruleTitle?: string
+export type Context<RuleNames extends string = string> = {
+	dottedName: RuleNames | ''
+	parsedRules: ParsedRules<RuleNames>
+	nodesTypes: NodesTypes
+	referencesMaps: ReferencesMaps<RuleNames>
+	rulesReplacements: RulesReplacements<RuleNames>
 	getUnitKey?: getUnitKey
 	logger: Logger
-	circularReferences?: boolean
+	inversionMaxIterations?: number
 }
 
-// TODO: Currently only handle nullability, but the infering logic should be
-// extended to support the full unit type system.
-export type InferedType = {
-	isNullable: boolean | undefined
-	type: 'string' | 'number' | 'boolean' | 'objet' | undefined
+export type RulesReplacements<RuleNames extends string> = Partial<
+	Record<RuleNames, ReplacementRule[]>
+>
+
+export type ReferencesMaps<Names extends string> = {
+	referencesIn: Map<Names, Set<Names>>
+	rulesThatUse: Map<Names, Set<Names>>
 }
 
 type RawRule = Omit<Rule, 'nom'> | string | number
-export type RawPublicodes = Record<string, RawRule>
+export type RawPublicodes<RuleNames extends string> = Partial<
+	Record<RuleNames, RawRule>
+>
 
-export default function parsePublicodes<RuleNames extends string>(
-	rawRules: RawPublicodes | string,
-	partialContext: Partial<Context> = {}
-): {
-	parsedRules: ParsedRules<RuleNames>
-	ruleUnits: WeakMap<ASTNode, InferedType>
-	rulesDependencies: Record<RuleNames, Array<RuleNames>>
-} {
+export function createContext<RuleNames extends string>(
+	partialContext: Partial<Context<RuleNames>>
+): Context<RuleNames> {
+	return {
+		dottedName: '',
+		logger: console,
+		getUnitKey: (x) => x,
+		parsedRules: {} as ParsedRules<RuleNames>,
+		referencesMaps: { referencesIn: new Map(), rulesThatUse: new Map() },
+		nodesTypes: new WeakMap(),
+		rulesReplacements: {},
+
+		...partialContext,
+	}
+}
+
+export function copyContext<C extends Context>(context: C): C {
+	return {
+		...context,
+		parsedRules: { ...context.parsedRules },
+		referencesMaps: {
+			referencesIn: new Map(context.referencesMaps.referencesIn),
+			rulesThatUse: new Map(context.referencesMaps.rulesThatUse),
+		},
+	}
+}
+export default function parsePublicodes<
+	ContextNames extends string,
+	NewRulesNames extends string
+>(
+	rawRules: RawPublicodes<NewRulesNames> | string,
+	partialContext: Partial<Context<ContextNames>> = createContext({})
+): Pick<
+	Context<ContextNames | NewRulesNames>,
+	'parsedRules' | 'nodesTypes' | 'referencesMaps' | 'rulesReplacements'
+> {
 	// STEP 1: parse Yaml
 	let rules =
 		typeof rawRules === 'string'
-			? (yaml.parse(('' + rawRules).replace(/\t/g, '  ')) as RawPublicodes)
+			? (yaml.parse(
+					('' + rawRules).replace(/\t/g, '  ')
+			  ) as RawPublicodes<NewRulesNames>)
 			: { ...rawRules }
 
-	// STEP 2: transpile [ref] writing
-	rules = transpileRef(rules)
+	// STEP 2: Rules parsing
+	const context = createContext(partialContext)
+	let previousParsedRules = context.parsedRules
+	context.parsedRules = {} as ParsedRules<ContextNames>
 
-	// STEP 3: Rules parsing
-	const context: Context = {
-		dottedName: partialContext.dottedName ?? '',
-		parsedRules: partialContext.parsedRules ?? {},
-		logger: partialContext.logger ?? console,
-		getUnitKey: partialContext.getUnitKey ?? ((x) => x),
-
-		// Some mechanisms works with circular references and avoid infinite loops
-		// at runtime by having special handling for theses references, for instance
-		// "résourde la référence circulaire" or branch desactivation implemented
-		// with parent references at the rule level. When these mechanisms call
-		// `parse` they expect a reference but the parse API will return a AST node
-		// and can't guarantee that it will be a reference (this is not ideal, we
-		// will probably want to rework this part).
-		//
-		// To automate tree traversal we mark these references as circular using the
-		// parse context.
-		circularReferences: false,
-	}
 	Object.entries(rules).forEach(([dottedName, rule]) => {
 		if (typeof rule === 'string' || typeof rule === 'number') {
 			rule = {
-				formule: `${rule}`,
+				valeur: `${rule}`,
 			}
 		}
 		if (typeof rule !== 'object') {
@@ -75,266 +98,79 @@ export default function parsePublicodes<RuleNames extends string>(
 		}
 		parse({ nom: dottedName, ...rule }, context)
 	})
-	let parsedRules = context.parsedRules
 
-	// STEP 4: Disambiguate reference
-	const rulesDependencies = {}
-	parsedRules = traverseParsedRules(
-		disambiguateReferenceAndCollectDependencies(parsedRules, rulesDependencies),
-		parsedRules
+	let parsedRules = Object.assign(
+		previousParsedRules,
+		context.parsedRules
+	) as ParsedRules<NewRulesNames | ContextNames>
+
+	// STEP 3: Disambiguate reference
+	let [newRules, referencesMaps] = disambiguateReferencesAndCollectDependencies(
+		parsedRules,
+		context.parsedRules,
+		context.referencesMaps
 	)
 
-	// STEP 5: Inline replacements
-	const replacements = getReplacements(parsedRules)
-	parsedRules = traverseParsedRules(
-		inlineReplacements(replacements, context.logger),
-		parsedRules
+	// STEP 4: Inline replacements
+	let rulesReplacements
+	;[parsedRules, rulesReplacements] = inlineReplacements<
+		NewRulesNames,
+		ContextNames
+	>({
+		parsedRules,
+		newRules: newRules as any,
+		referencesMaps,
+		previousReplacements: context.rulesReplacements,
+		logger: context.logger,
+	})
+
+	// STEP 5: type inference
+	const nodesTypes = inferNodeType(
+		Object.keys(newRules),
+		parsedRules,
+		context.nodesTypes
 	)
 
-	// STEP 6: type inference
-	const ruleUnits = inferRulesUnit(parsedRules, rulesDependencies)
-
-	return { parsedRules, ruleUnits, rulesDependencies } as any
+	return {
+		parsedRules,
+		nodesTypes,
+		referencesMaps,
+		rulesReplacements,
+	}
 }
 
-// We recursively traverse the YAML tree in order to transform named parameters
-// into rules.
-function transpileRef(object: Record<string, any> | string | Array<any>) {
-	if (Array.isArray(object)) {
-		return object.map(transpileRef)
-	}
-	if (!object || typeof object !== 'object') {
-		return object
-	}
-	return Object.entries(object).reduce((obj, [key, value]) => {
-		const match = /\[ref( (.+))?\]$/.exec(key)
-
-		if (!match) {
-			return { ...obj, [key]: transpileRef(value) }
-		}
-
-		const argumentType = key.replace(match[0], '').trim()
-		const argumentName = match[2]?.trim() || argumentType
-
-		return {
-			...obj,
-			[argumentType]: {
-				nom: argumentName,
-				valeur: transpileRef(value),
-			},
-		}
-	}, {})
-}
-
-export const disambiguateReferenceAndCollectDependencies = (
-	parsedRules: Record<string, RuleNode>,
-	dependencies: Record<string, Array<string>>
-) =>
-	makeASTTransformer((node) => {
-		if (node.nodeKind === 'reference') {
-			const dottedName = disambiguateRuleReference(
-				parsedRules,
-				node.contextDottedName,
-				node.name
-			)
-
-			if (!(node.circularReference ?? false)) {
-				dependencies[node.contextDottedName] = [
-					...(dependencies[node.contextDottedName] ?? []),
-					dottedName,
-				]
-			}
-
-			return {
-				...node,
-				dottedName,
-				title: parsedRules[dottedName].title,
-				acronym: parsedRules[dottedName].rawNode.acronyme,
-			}
-		}
-	})
-
-// Standard topological sort algorithm
-function topologicalSort<Names extends string>(
-	rulesNames: Array<Names>,
-	dependencyGraph: Record<Names, Array<Names>>
-) {
-	const result: Array<Names> = []
-	const temp: Partial<Record<Names, Boolean>> = {}
-
-	for (const ruleName of rulesNames) {
-		if (!result.includes(ruleName)) {
-			topologicalSortHelper(ruleName)
-		}
-	}
-
-	function topologicalSortHelper(ruleName) {
-		temp[ruleName] = true
-		const nodeDependencies = dependencyGraph[ruleName] ?? []
-		for (const dependency of nodeDependencies) {
-			if (temp[dependency]) {
-				// TODO: We could throw an error on a cycle but some tests are expecting
-				// cycles to compile and to detect them at a letter stage with a
-				// function taking the parsed rules as an input
-				//
-				// throw new Error( `Cycle detected in the graph. The node ${dependency}
-				//  depends on ${ruleName}`
-				// )
-				continue
-			}
-			if (!result.includes(dependency)) {
-				topologicalSortHelper(dependency)
-			}
-		}
-		temp[ruleName] = false
-		result.push(ruleName)
-	}
-
-	return result
-}
-
-function inferRulesUnit(parsedRules, rulesDependencies) {
-	// topological sort rules
-	// Throws an error if there is a cycle in the graph
-	const topologicalOrder = topologicalSort(
-		Object.keys(parsedRules),
-		rulesDependencies
+function disambiguateReferencesAndCollectDependencies<
+	NewNames extends string,
+	PreviousNames extends string
+>(
+	parsedRules: ParsedRules<PreviousNames>,
+	newRules: ParsedRules<NewNames>,
+	referencesMaps: ReferencesMaps<PreviousNames>
+): [
+	parsedRules: ParsedRules<NewNames>,
+	referencesMap: ReferencesMaps<PreviousNames | NewNames>
+] {
+	const disambiguateReference = makeASTTransformer((node) =>
+		disambiguateReferenceNode(node, parsedRules)
 	)
-
-	const cache = new WeakMap<ASTNode, InferedType>()
-	topologicalOrder.forEach((ruleName) => {
-		inferNodeUnitAndCache(parsedRules[ruleName])
-	})
-	topologicalOrder.forEach((ruleName) => {
-		if (parsedRules[ruleName].nodeKind === 'rule') {
-			parsedRules[ruleName].explanation.parents.forEach((parent) => {
-				inferNodeUnitAndCache(parent)
-			})
+	const disambiguateReferencesAndCollectDependencies = makeASTTransformer(
+		(node) => {
+			const n = disambiguateReferenceNode(node, parsedRules)
+			if (n) {
+				updateReferencesMapsFromReferenceNode(n, referencesMaps)
+			}
+			return n
 		}
-	})
-
-	function inferNodeUnitAndCache(node: ASTNode): InferedType {
-		if (cache.has(node)) {
-			return cache.get(node)!
+	)
+	const disambiguatedRules = traverseParsedRules((node) => {
+		if (node.nodeKind === 'replacementRule') {
+			// The dependencies of replacements will be collected later, during the inlining
+			return disambiguateReference(node)
 		}
-		const unit = inferNodeType(node)
-		cache.set(node, unit)
-		return unit
-	}
-
-	function inferNodeType(node: ASTNode): InferedType {
-		switch (node.nodeKind) {
-			case 'barème':
-			case 'durée':
-			case 'grille':
-			case 'taux progressif':
-				return { isNullable: false, type: 'number' }
-			case 'est non défini':
-			case 'est non applicable':
-				return { isNullable: false, type: 'boolean' }
-
-			case 'constant':
-				return {
-					isNullable: node.nodeValue === null,
-					type: node.type,
-				}
-
-			case 'operation':
-				return {
-					isNullable: ['<', '<=', '>', '>=', '/', '*'].includes(
-						node.operationKind
-					)
-						? inferNodeUnitAndCache(node.explanation[0]).isNullable ||
-						  inferNodeUnitAndCache(node.explanation[1]).isNullable
-						: node.operationKind === '-'
-						? inferNodeUnitAndCache(node.explanation[0]).isNullable
-						: false,
-					type: ['<', '<=', '>', '>=', '=', '!=', 'et', 'ou'].includes(
-						node.operationKind
-					)
-						? 'boolean'
-						: 'number',
-				}
-
-			case 'inversion':
-			case 'recalcul':
-			case 'replacementRule':
-			case 'une possibilité':
-			case 'résoudre référence circulaire':
-			case 'synchronisation':
-				// TODO: Synchronisation can also be used for texts. This doens't have
-				// any runtime consequence currently because the only type we only
-				// really care about is boolean for branch disabling.
-				return { isNullable: false, type: 'number' }
-
-			case 'texte':
-				return { isNullable: false, type: 'string' }
-
-			case 'rule':
-			case 'arrondi':
-				return inferNodeUnitAndCache(node.explanation.valeur)
-			case 'dans la situation':
-				return {
-					isNullable:
-						node.explanation.isNullable ??
-						inferNodeUnitAndCache(node.explanation.valeur).isNullable,
-					type:
-						inferNodeUnitAndCache(node.explanation.valeur).type ??
-						node.explanation.defaultType,
-				}
-			case 'unité':
-			case 'simplifier unité':
-				return inferNodeUnitAndCache(node.explanation)
-			case 'condition':
-				return {
-					isNullable: [
-						node.explanation.si,
-						node.explanation.alors,
-						node.explanation.sinon,
-					].some((n) => inferNodeUnitAndCache(n).isNullable),
-					type:
-						inferNodeUnitAndCache(node.explanation.alors).type ??
-						inferNodeUnitAndCache(node.explanation.sinon).type,
-				}
-
-			case 'variations':
-				// With "rend non applicable" we have a "consequence: null" line in our
-				// variation which can't be used to determine its type. So we need to
-				// find the first consequence with a non-null value.
-				const firstNonNullConsequence = node.explanation.find(
-					({ consequence }) => (consequence as any).nodeValue !== null
-				)?.consequence
-				return {
-					isNullable: node.explanation.some((line) => {
-						// TODO: hack for mon-entreprise rules, because topologicalSort
-						// seems imperfect
-						if (
-							line.consequence === undefined ||
-							inferNodeUnitAndCache(line.consequence) === undefined
-						) {
-							return false
-						}
-						return (
-							line.consequence &&
-							inferNodeUnitAndCache(line.consequence).isNullable
-						)
-					}),
-					type:
-						(firstNonNullConsequence &&
-							inferNodeUnitAndCache(firstNonNullConsequence)?.type) ??
-						'number',
-				}
-
-			case 'reference':
-				// Yes, sometimes there are cycle even in topological order...
-				return (
-					cache.get(parsedRules[node.dottedName as string]) ?? {
-						isNullable: undefined,
-						type: undefined,
-					}
-				)
-		}
-	}
-
-	return cache
+		return disambiguateReferencesAndCollectDependencies(node)
+	}, newRules)
+	return [
+		disambiguatedRules,
+		referencesMaps as ReferencesMaps<NewNames | PreviousNames>,
+	]
 }

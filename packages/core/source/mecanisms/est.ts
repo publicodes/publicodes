@@ -2,7 +2,7 @@ import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
-import { createParseInlinedMecanism } from './utils'
+import { createParseInlinedMecanism } from './inlineMecanism'
 
 export type EstNonDéfiniNode = {
 	explanation: ASTNode
@@ -41,7 +41,7 @@ const parseEstApplicable = createParseInlinedMecanism(
 export { parseEstDéfini, parseEstApplicable }
 
 const evaluate: EvaluationFunction<'est non défini'> = function (node) {
-	const valeur = this.evaluate(node.explanation)
+	const valeur = this.evaluateNode(node.explanation)
 	let nodeValue: boolean | undefined | null = false
 	if (valeur.nodeValue === undefined) {
 		nodeValue = true

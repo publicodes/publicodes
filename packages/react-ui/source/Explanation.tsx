@@ -2,6 +2,7 @@ import { transformAST } from 'publicodes'
 import { useContext } from 'react'
 import { EngineContext } from './contexts'
 import Arrondi from './mecanisms/Arrondi'
+import Avec from './mecanisms/Avec'
 import Barème from './mecanisms/Barème'
 import { ConstantNode } from './mecanisms/common'
 import Composantes from './mecanisms/Composantes'
@@ -32,6 +33,7 @@ const UIComponents = {
 	constant: ConstantNode,
 	arrondi: Arrondi,
 	barème: Barème,
+	avec: Avec,
 	composantes: Composantes,
 	durée: Durée,
 	produit: Product,
@@ -67,7 +69,7 @@ export default function Explanation({ node }) {
 			return false
 		}
 
-		return engine.evaluate(node)
+		return engine.evaluateNode(node)
 	}, false)
 	const displayedNode = evaluateEverything(node)
 	const Component =

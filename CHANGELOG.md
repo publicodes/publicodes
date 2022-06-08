@@ -95,7 +95,7 @@
 -   ⚠ Changement cassant : Nouvelles valeurs littérales pour les règles non applicables (`null`) et non définies (`undefined`)
     cf. https://github.com/betagouv/publicodes/discussions/158#discussioncomment-2132390
 -   Nouvelle implémentation de la désactivation de branche pour éviter la remontée de « variables manquantes » inattendues
--   ⚠ Changement cassant : La fonction `parsePublicodes` retourne maintenant un objet `{ parsedRules, ruleUnits, rulesDependencies }` et non plus les seules règles parsées
+-   ⚠ Changement cassant : La fonction `parsePublicodes` retourne maintenant un objet `{ parsedRules, rulesUnit, rulesDependencies }` et non plus les seules règles parsées
 
 **publicodes-react**
 

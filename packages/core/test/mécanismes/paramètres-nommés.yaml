@@ -1,8 +1,12 @@
 cotisation:
   formule:
     multiplication:
-      assiette [ref]: 1000 €
-      taux [ref taux employeur]: 4%
+      assiette:
+        nom: assiette
+        valeur: 1000 €
+      taux:
+        nom: taux employeur
+        valeur: 4%
 
 test:
 
@@ -19,9 +23,12 @@ paramètre nommés:
 cotisation 2:
   formule:
     multiplication:
-      assiette [ref]:
+      assiette:
+        nom: assiette
         valeur: 1000€
-        plafond [ref]: 100€
+        plafond:
+          nom: plafond
+          valeur: 100€
       taux: 5%
 
 paramètre nommés imbriqués:
@@ -31,7 +38,9 @@ paramètre nommés imbriqués:
 
 paramètre nommé utilisé dans la règle:
   formule:
-    valeur [ref assiette]: 500€
+    valeur:
+      nom: assiette
+      valeur: 500€
     abattement:
       valeur: assiette * 10%
       plancher: 100€
