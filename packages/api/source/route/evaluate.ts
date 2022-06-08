@@ -11,6 +11,7 @@ export function evaluate(
 	{ expressions, situation }: EvaluateBody
 ) {
 	const engine = originalEngine.shallowCopy()
+	originalEngine.subEngines = [] // This line avoid memory leak cause by multiple call to shallowCopy(), issue https://github.com/betagouv/publicodes/issues/239
 	const [situationError] = catchError(() => engine.setSituation(situation))
 
 	if (situationError) {

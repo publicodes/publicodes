@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.43
+
+**api**
+
+-   fix temporaire d'une fuite de mémoire dans l'api causée par `shallowCopy()`, issue https://github.com/betagouv/publicodes/issues/239
+
 ## 1.0.0-beta.42
 
 **api**
