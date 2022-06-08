@@ -54,9 +54,9 @@ describe('Missing variables', function () {
 				formule: 2,
 				'non applicable si': 'evt . welldefined . ko',
 			},
-			evt: 'oui',
+			evt: {},
 			'evt . welldefined': {
-				formule: 1 + 1,
+				formule: '1 + 1',
 				titre: 'Truc',
 				question: '?',
 			},

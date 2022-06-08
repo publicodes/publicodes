@@ -3,79 +3,7 @@
 exports[`evaluate > Test error in expression and situation at same time 1`] = `
 {
   "situationError": {
-    "message": "
-[ Erreur syntaxique ]
-➡️  Dans la règle \\"situation [test]\\"
-✖️  \`\\"42\` n'est pas une expression valide
-    invalid syntax at line 1 col 1:
-
-  \\"42
-  ^
-Unexpected input (lexer error). Instead, I was expecting to see one of the following:
-
-A date token based on:
-    Date →  ● %date
-    main →  ● Date
-A boolean token based on:
-    NonNumericTerminal →  ● %boolean
-    main →  ● NonNumericTerminal
-A string token based on:
-    NonNumericTerminal →  ● %string
-    main →  ● NonNumericTerminal
-A JSONObject token based on:
-    JSONObject →  ● %JSONObject
-    main →  ● JSONObject
-A \\"-\\" based on:
-    Negation →  ● \\"-\\" %space Parentheses
-    NumericValue →  ● Negation
-    main →  ● NumericValue
-A word token based on:
-    Words →  ● %word
-    Variable →  ● Words Variable$ebnf$1
-    Date →  ● Variable
-    main →  ● Date
-A \\"(\\" based on:
-    Parentheses →  ● \\"(\\" %space NumericValue %space \\")\\"
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A \\"(\\" based on:
-    Parentheses →  ● \\"(\\" NumericValue \\")\\"
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A word token based on:
-    WordOrKeyword →  ● %word
-    Words →  ● WordOrKeyword Words$ebnf$1
-    Variable →  ● Words Variable$ebnf$1
-    Date →  ● Variable
-    main →  ● Date
-A boolean token based on:
-    WordOrKeyword →  ● %boolean
-    Words →  ● WordOrKeyword Words$ebnf$1
-    Variable →  ● Words Variable$ebnf$1
-    Date →  ● Variable
-    main →  ● Date
-A number token based on:
-    number →  ● %number
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A number token based on:
-    number →  ● %number number$ebnf$1 Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-
-",
+    "message": "Erreur lors de la mise à jour de la situation : test n'existe pas dans la base de règle.",
   },
 }
 `;
@@ -83,79 +11,7 @@ A number token based on:
 exports[`evaluate > Test invalid syntax in situation 1`] = `
 {
   "situationError": {
-    "message": "
-[ Erreur syntaxique ]
-➡️  Dans la règle \\"situation [test]\\"
-✖️  \`\\"42\` n'est pas une expression valide
-    invalid syntax at line 1 col 1:
-
-  \\"42
-  ^
-Unexpected input (lexer error). Instead, I was expecting to see one of the following:
-
-A date token based on:
-    Date →  ● %date
-    main →  ● Date
-A boolean token based on:
-    NonNumericTerminal →  ● %boolean
-    main →  ● NonNumericTerminal
-A string token based on:
-    NonNumericTerminal →  ● %string
-    main →  ● NonNumericTerminal
-A JSONObject token based on:
-    JSONObject →  ● %JSONObject
-    main →  ● JSONObject
-A \\"-\\" based on:
-    Negation →  ● \\"-\\" %space Parentheses
-    NumericValue →  ● Negation
-    main →  ● NumericValue
-A word token based on:
-    Words →  ● %word
-    Variable →  ● Words Variable$ebnf$1
-    Date →  ● Variable
-    main →  ● Date
-A \\"(\\" based on:
-    Parentheses →  ● \\"(\\" %space NumericValue %space \\")\\"
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A \\"(\\" based on:
-    Parentheses →  ● \\"(\\" NumericValue \\")\\"
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A word token based on:
-    WordOrKeyword →  ● %word
-    Words →  ● WordOrKeyword Words$ebnf$1
-    Variable →  ● Words Variable$ebnf$1
-    Date →  ● Variable
-    main →  ● Date
-A boolean token based on:
-    WordOrKeyword →  ● %boolean
-    Words →  ● WordOrKeyword Words$ebnf$1
-    Variable →  ● Words Variable$ebnf$1
-    Date →  ● Variable
-    main →  ● Date
-A number token based on:
-    number →  ● %number
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A number token based on:
-    number →  ● %number number$ebnf$1 Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-
-",
+    "message": "Erreur lors de la mise à jour de la situation : test n'existe pas dans la base de règle.",
   },
 }
 `;
@@ -167,7 +23,7 @@ exports[`evaluate > Test syntax error in expression 1`] = `
       "error": {
         "message": "
 [ Erreur syntaxique ]
-➡️  Dans la règle \\"evaluation\\"
+➡️  Dans la règle \\"$EVALUATION\\"
 ✖️  \`1+1\` n'est pas une expression valide
     Syntax error at line 1 col 2:
 
@@ -286,7 +142,7 @@ exports[`evaluate > Test two syntax error in expression 1`] = `
       "error": {
         "message": "
 [ Erreur syntaxique ]
-➡️  Dans la règle \\"evaluation\\"
+➡️  Dans la règle \\"$EVALUATION\\"
 ✖️  \`1+1\` n'est pas une expression valide
     Syntax error at line 1 col 2:
 
@@ -398,7 +254,7 @@ A space token based on:
       "error": {
         "message": "
 [ Erreur syntaxique ]
-➡️  Dans la règle \\"evaluation\\"
+➡️  Dans la règle \\"$EVALUATION\\"
 ✖️  \`\\"42\` n'est pas une expression valide
     invalid syntax at line 1 col 1:
 

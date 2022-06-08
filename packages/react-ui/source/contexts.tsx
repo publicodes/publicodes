@@ -3,7 +3,11 @@ import React, { createContext } from 'react'
 import References from './rule/References'
 
 export type SupportedRenderers = {
-	Link: React.ComponentType<{ children: React.ReactNode; to: string }>
+	Link: React.ComponentType<{
+		children: React.ReactNode
+		to: string
+		title?: string
+	}>
 	Head?: React.ComponentType<{ children: React.ReactNode }>
 
 	/**

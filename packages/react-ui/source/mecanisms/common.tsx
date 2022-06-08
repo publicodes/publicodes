@@ -7,7 +7,7 @@ import {
 } from 'publicodes/source/AST/types'
 import React, { useContext } from 'react'
 import styled, { css } from 'styled-components'
-import { EngineContext, RenderersContext } from '../contexts'
+import { RenderersContext } from '../contexts'
 import Explanation from '../Explanation'
 import mecanismColors from './colors'
 
@@ -45,15 +45,9 @@ type NodeValuePointerProps = {
 }
 
 export const NodeValuePointer = ({ data, unit }: NodeValuePointerProps) => {
-	const engine = useContext(EngineContext)
 	return (
 		<StyledNodeValuePointer>
-			{formatValue(
-				{ nodeValue: data, unit },
-				{
-					formatUnit: engine?.getOptions()?.formatUnit,
-				}
-			)}
+			{formatValue({ nodeValue: data, unit })}
 		</StyledNodeValuePointer>
 	)
 }

@@ -3,9 +3,9 @@ import { findCycles, Graph } from './findCycles'
 
 type GraphCycles = string[][]
 
-function buildDependenciesGraph(rulesDeps: Record<string, Array<string>>) {
+function buildDependenciesGraph(rulesDeps: Map<string, Set<string>>) {
 	const g = new Graph()
-	Object.entries(rulesDeps).forEach(([ruleDottedName, dependencies]) => {
+	;[...rulesDeps.entries()].forEach(([ruleDottedName, dependencies]) => {
 		dependencies.forEach((depDottedName) => {
 			g.setEdge(ruleDottedName, depDottedName)
 		})
@@ -16,8 +16,8 @@ function buildDependenciesGraph(rulesDeps: Record<string, Array<string>>) {
 type RawRules = Parameters<typeof parsePublicodes>[0]
 
 export function cyclesInDependenciesGraph(rawRules: RawRules): GraphCycles {
-	const { rulesDependencies } = parsePublicodes(rawRules)
-	const dependenciesGraph = buildDependenciesGraph(rulesDependencies)
+	const { referencesMaps } = parsePublicodes(rawRules)
+	const dependenciesGraph = buildDependenciesGraph(referencesMaps.referencesIn)
 	const cycles = findCycles(dependenciesGraph)
 
 	return cycles.map((c) => c.reverse())
@@ -27,7 +27,7 @@ export function cyclesInDependenciesGraph(rawRules: RawRules): GraphCycles {
  * Make the cycle as small as possible.
  */
 export function squashCycle(
-	rulesDependenciesObject: Record<string, string[]>,
+	rulesDependenciesObject: Map<string, Set<string>>,
 	cycle: string[]
 ): string[] {
 	function* loopFrom(i: number) {
@@ -44,7 +44,7 @@ export function squashCycle(
 			if (previousVertex === undefined) {
 				smallCycle.push(vertex)
 				previousVertex = vertex
-			} else if (rulesDependenciesObject[previousVertex].includes(vertex)) {
+			} else if (rulesDependenciesObject.get(previousVertex)?.has(vertex)) {
 				if (smallCycle.includes(vertex)) {
 					smallCycle.splice(0, smallCycle.lastIndexOf(vertex))
 					break
@@ -72,14 +72,14 @@ export function squashCycle(
 export function cyclicDependencies(
 	rawRules: RawRules
 ): [GraphCycles, string[]] {
-	const { rulesDependencies } = parsePublicodes(rawRules)
-	const dependenciesGraph = buildDependenciesGraph(rulesDependencies)
+	const { referencesMaps } = parsePublicodes(rawRules)
+	const dependenciesGraph = buildDependenciesGraph(referencesMaps.referencesIn)
 	const cycles = findCycles(dependenciesGraph)
 
 	const reversedCycles = cycles.map((c) => c.reverse())
 
 	const smallCycles = reversedCycles.map((cycle) =>
-		squashCycle(rulesDependencies, cycle)
+		squashCycle(referencesMaps.referencesIn, cycle)
 	)
 
 	const printableStronglyConnectedComponents = reversedCycles.map((c, i) =>

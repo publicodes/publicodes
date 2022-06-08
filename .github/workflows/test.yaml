@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/install
-      - run: yarn lint:prettier
+      - run: yarn lint
 
   test:
     name: Unit tests

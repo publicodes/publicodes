@@ -1,3 +1,4 @@
+import { ParsedRules } from '..'
 import { InternalError, neverHappens } from '../error'
 import { TrancheNodes } from '../mecanisms/trancheUtils'
 import { ReplacementRule } from '../replacement'
@@ -112,13 +113,15 @@ export function getChildrenNodes(node: ASTNode): ASTNode[] {
 	return nodes
 }
 
-export function traverseParsedRules(
+export function traverseParsedRules<Names extends string>(
 	fn: ASTTransformer,
-	parsedRules: Record<string, RuleNode>
-): Record<string, RuleNode> {
+	parsedRules: ParsedRules<Names>
+): ParsedRules<Names> {
 	return Object.fromEntries(
-		Object.entries(parsedRules).map(([name, rule]) => [name, fn(rule)])
-	) as Record<string, RuleNode>
+		(Object.entries(parsedRules) as Array<[Names, RuleNode]>).map(
+			([name, rule]) => [name, fn(rule)]
+		)
+	) as ParsedRules<Names>
 }
 
 /**
@@ -155,8 +158,6 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 
 		case 'recalcul':
 			return traverseRecalculNode(fn, node)
-		case 'dans la situation':
-			return traverseSituationNode(fn, node)
 		case 'synchronisation':
 			return traverseSynchronisationNode(fn, node)
 		case 'unité':
@@ -169,6 +170,7 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseTextNode(fn, node)
 		case 'condition':
 			return traverseConditionNode(fn, node)
+
 		default:
 			neverHappens(node)
 			throw new InternalError(node)
@@ -312,21 +314,8 @@ const traverseRecalculNode: TraverseFunction<'recalcul'> = (fn, node) => ({
 			fn(name),
 			fn(value),
 		]) as any, //TODO
-		recalcul: node.explanation.recalcul && fn(node.explanation.recalcul),
-	},
-})
-
-const traverseSituationNode: TraverseFunction<'dans la situation'> = (
-	fn,
-	node
-) => ({
-	...node,
-	explanation: {
-		...node.explanation,
-		...(node.explanation.situationValeur && {
-			situationValeur: fn(node.explanation.situationValeur),
-		}),
-		valeur: fn(node.explanation.valeur),
+		recalcul:
+			node.explanation.recalculNode && fn(node.explanation.recalculNode),
 	},
 })
 

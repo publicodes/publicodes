@@ -1,14 +1,11 @@
 import { EvaluationFunction } from '..'
-import { ConstantNode, Unit } from '../AST/types'
-import { mergeMissing } from '../evaluation'
+import { EvaluatedNode, Unit } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
-import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
 import { Context } from '../parsePublicodes'
 import { ReferenceNode } from '../reference'
 import uniroot from '../uniroot'
-import { parseUnit } from '../units'
-import { UnitéNode } from './unité'
+import { undefinedNumberNode } from './inlineMecanism'
 
 export type InversionNode = {
 	explanation: {
@@ -31,9 +28,40 @@ export type InversionNode = {
 export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	node
 ) {
+	const inversionEngine = this.shallowCopy()
+	if (
+		this.cache._meta.evaluationRuleStack
+			.slice(1)
+			.includes(node.explanation.ruleToInverse)
+	) {
+		return {
+			...undefinedNumberNode,
+			...node,
+		}
+	}
+	inversionEngine.cache._meta.parentRuleStack = [
+		...this.cache._meta.parentRuleStack,
+	]
+	inversionEngine.cache._meta.evaluationRuleStack = [
+		...this.cache._meta.evaluationRuleStack,
+	]
 	const inversionGoal = node.explanation.inversionCandidates.find(
-		(candidate) =>
-			this.parsedSituation[candidate.dottedName as string] != undefined
+		(candidate) => {
+			if (
+				this.cache._meta.evaluationRuleStack.includes(candidate.dottedName!)
+			) {
+				return false
+			}
+			const evaluation = inversionEngine.evaluateNode(
+				inversionEngine.context.parsedRules[
+					`${candidate.dottedName} . $SITUATION`
+				]
+			)
+			return (
+				typeof evaluation.nodeValue === 'number' &&
+				!(candidate.dottedName! in evaluation.missingVariables)
+			)
+		}
 	)
 
 	if (inversionGoal === undefined) {
@@ -51,37 +79,36 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 			},
 		}
 	}
-	const evaluatedInversionGoal = this.evaluate(inversionGoal)
-	const unit = 'unit' in node ? node.unit : evaluatedInversionGoal.unit
-	const originalCache = this.cache
-	const originalSituation = { ...this.parsedSituation }
-	let inversionNumberOfIterations = 0
-	delete this.parsedSituation[inversionGoal.dottedName as string]
-	const evaluateWithValue = (n: number) => {
-		inversionNumberOfIterations++
-		this.resetCache()
-		this.cache._meta = {
-			evaluationRuleStack: [...originalCache._meta.evaluationRuleStack],
-			parentRuleStack: [...originalCache._meta.parentRuleStack],
-			traversedVariablesStack: [
-				...originalCache._meta.traversedVariablesStack.map((s) => new Set(s)),
-			],
-		}
-		this.parsedSituation[node.explanation.ruleToInverse] = {
-			unit: unit,
-			nodeKind: 'unité',
-			explanation: {
-				nodeKind: 'constant',
-				nodeValue: n,
-				type: 'number',
-			} as ConstantNode,
-		} as UnitéNode
+	const evaluatedInversionGoal = inversionEngine.evaluateNode(inversionGoal)
+	let numberOfIteration = 0
 
-		return convertNodeToUnit(unit, this.evaluate(inversionGoal))
+	inversionEngine.setSituation(
+		{
+			[inversionGoal.dottedName!]: undefinedNumberNode,
+		},
+		{ keepPreviousSituation: true }
+	)
+
+	let lastEvaluation: EvaluatedNode
+	const evaluateWithValue = (n: number) => {
+		numberOfIteration++
+		inversionEngine.setSituation(
+			{
+				[node.explanation.ruleToInverse]: {
+					nodeValue: n,
+					nodeKind: 'constant',
+					type: 'number',
+					unit: evaluatedInversionGoal.unit,
+				},
+			},
+			{ keepPreviousSituation: true }
+		)
+
+		lastEvaluation = inversionEngine.evaluateNode(inversionGoal)
+		return lastEvaluation
 	}
 
-	const goal = convertNodeToUnit(unit, evaluatedInversionGoal)
-		.nodeValue as number
+	const goal = evaluatedInversionGoal.nodeValue as number
 	let nodeValue: number | undefined | undefined = undefined
 
 	// We do some blind attempts here to avoid using the default minimum and
@@ -104,7 +131,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	const y2Node = evaluateWithValue(x2)
 	const y2 = y2Node.nodeValue as number
 
-	const maxIterations = this.options.inversionMaxIterations ?? 10
+	const maxIterations = this.context.inversionMaxIterations ?? 10
 
 	if (y1 !== undefined || y2 !== undefined) {
 		// The `uniroot` function parameter. It will be called with its `min` and
@@ -144,27 +171,26 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		this.cache._meta.inversionFail = true
 	}
 
-	// Reset cache
-	this.cache = { ...originalCache, _meta: this.cache._meta }
-	this.parsedSituation = originalSituation
+	// Uncomment to display the two attempts and their result
+	// console.table([
+	// 	{ x: x1, y: y1 },
+	// 	{ x: x2, y: y2 },
+	// ])
+	// console.log('iteration inversion:', numberOfIteration)
 
-	// // Uncomment to display the two attempts and their result
-	// console.table([{ x: x1, y: y1 }, { x: x2, y: y2 }])
-	// console.log('iteration inversion:', inversionNumberOfIterations)
-
+	;(lastEvaluation!.traversedVariables ?? []).forEach((v) =>
+		this.cache._meta.traversedVariablesStack[0].add(v)
+	)
 	return {
 		...node,
-		unit,
 		nodeValue,
+		unit: evaluatedInversionGoal.unit,
 		explanation: {
 			...node.explanation,
 			inversionGoal,
-			inversionNumberOfIterations,
+			numberOfIteration,
 		},
-		missingVariables: mergeMissing(
-			y1Node.missingVariables,
-			y2Node.missingVariables
-		),
+		missingVariables: lastEvaluation!.missingVariables,
 	}
 }
 
@@ -178,12 +204,9 @@ export const mecanismInversion = (v, context: Context) => {
 		explanation: {
 			ruleToInverse: context.dottedName,
 			inversionCandidates: v.avec.map((node) => ({
-				...parse(node, { ...context, circularReferences: true }),
+				...parse(node, context),
 			})),
 		},
-		...('unité' in v && {
-			unit: parseUnit(v.unité, context.getUnitKey),
-		}),
 		nodeKind: 'inversion',
 	} as InversionNode
 }

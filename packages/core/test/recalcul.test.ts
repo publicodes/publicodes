@@ -30,16 +30,13 @@ d:
 		sandbox.restore()
 	})
 	describe('evaluation of rule on top of the recalcul chain', () => {
-		it('evaluates to undefined', () => {
-			expect(new Engine(rulesYaml).evaluate('d').nodeValue).to.be.null
+		it('evaluates to something', () => {
+			expect(new Engine(rulesYaml).evaluate('d').nodeValue).to.eq(20)
 		})
 
-		it('throws a warning', () => {
+		it('does not throw any warning', () => {
 			new Engine(rulesYaml).evaluate('d')
-			expect(console.warn).to.have.been.calledOnce
-			expect((console.warn as any).getCall(0).args[0]).to.include(
-				'recalcul imbriqué'
-			)
+			expect(console.warn).to.have.not.been.called
 		})
 	})
 

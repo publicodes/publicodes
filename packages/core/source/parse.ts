@@ -5,6 +5,7 @@ import grammar from './grammar'
 import abattement from './mecanisms/abattement'
 import applicable from './mecanisms/applicable'
 import arrondi from './mecanisms/arrondi'
+import avec from './mecanisms/avec'
 import barème from './mecanisms/barème'
 import { decompose } from './mecanisms/composantes'
 import condition from './mecanisms/condition'
@@ -148,7 +149,7 @@ Cela vient probablement d'une erreur dans l'indentation
 		syntaxError(
 			context.dottedName,
 			`Le mécanisme "${mecanismName}" est inconnu.
-			
+
 Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`
 		)
 	}
@@ -177,6 +178,7 @@ ${e.message}`
 
 // Chainable mecanisme in their composition order (first one is applyied first)
 const chainableMecanisms = [
+	avec,
 	applicable,
 	nonApplicable,
 	arrondi,
@@ -195,6 +197,7 @@ function parseChainedMecanisms(rawNode, context: Context): ASTNode {
 		return parseMecanism(rawNode, context)
 	}
 	const { [parseFn.nom]: param, ...valeur } = rawNode
+
 	return parseMecanism(
 		{
 			[parseFn.nom]: {

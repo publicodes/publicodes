@@ -11,7 +11,6 @@ import { OperationNode } from '../mecanisms/operation'
 import { RecalculNode } from '../mecanisms/recalcul'
 import { RésoudreRéférenceCirculaireNode } from '../mecanisms/résoudre-référence-circulaire'
 import { SimplifierUnitéNode } from '../mecanisms/simplifier-unité'
-import { SituationNode } from '../mecanisms/situation'
 import { SynchronisationNode } from '../mecanisms/synchronisation'
 import { TauxProgressifNode } from '../mecanisms/tauxProgressif'
 import { TexteNode } from '../mecanisms/texte'
@@ -22,9 +21,10 @@ import { ReplacementRule } from '../replacement'
 import { RuleNode } from '../rule'
 
 export type ConstantNode = {
-	type: 'boolean' | 'objet' | 'number' | 'string'
+	type: 'boolean' | 'objet' | 'number' | 'string' | undefined
 	nodeValue: Evaluation
 	nodeKind: 'constant'
+	isNullable?: boolean
 	isDefault?: boolean
 }
 export type ASTNode = (
@@ -42,7 +42,6 @@ export type ASTNode = (
 	| RecalculNode
 	| SimplifierUnitéNode
 	| RésoudreRéférenceCirculaireNode
-	| SituationNode
 	| SynchronisationNode
 	| TauxProgressifNode
 	| UnitéNode

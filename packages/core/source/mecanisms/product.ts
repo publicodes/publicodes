@@ -1,4 +1,4 @@
-import { createParseInlinedMecanism, notApplicableNode } from './utils'
+import { createParseInlinedMecanism, notApplicableNode } from './inlineMecanism'
 
 export default createParseInlinedMecanism(
 	'produit',

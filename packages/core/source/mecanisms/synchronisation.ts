@@ -12,7 +12,7 @@ export type SynchronisationNode = {
 }
 
 const evaluate: EvaluationFunction<'synchronisation'> = function (node: any) {
-	const data = this.evaluate(node.explanation.data)
+	const data = this.evaluateNode(node.explanation.data)
 	const valuePath = node.explanation.chemin.split(' . ')
 	const path = (obj) => valuePath.reduce((res, prop) => res?.[prop], obj)
 	const nodeValue = path(data.nodeValue) ?? undefined

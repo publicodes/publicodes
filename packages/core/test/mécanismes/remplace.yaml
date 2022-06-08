@@ -1,8 +1,7 @@
 restaurant: oui
 restaurant . prix du repas:
   valeur: 10 €/repas
-  exemples:
-    - type: number
+
 restaurant . client gourmand: oui
 restaurant . client enfant:
   rend non applicable:
@@ -94,6 +93,7 @@ exemple3:
 
 exemple4:
   par défaut: non
+
 exemple4 . cotisations retraite:
   remplace: cotisations . retraite
   formule:

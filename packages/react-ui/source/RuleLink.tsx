@@ -54,6 +54,7 @@ export function RuleLink<Name extends string>({
 	return (
 		<Link
 			{...props}
+			title={rule.dottedName}
 			to={
 				newPath + (currentEngineId ? `?currentEngineId=${currentEngineId}` : '')
 			}

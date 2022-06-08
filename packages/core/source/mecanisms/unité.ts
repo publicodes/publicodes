@@ -24,7 +24,7 @@ export default function parseUnité(v, context): UnitéNode {
 parseUnité.nom = 'unité' as const
 
 registerEvaluationFunction(parseUnité.nom, function evaluate(node) {
-	const valeur = this.evaluate(node.explanation)
+	const valeur = this.evaluateNode(node.explanation)
 
 	let nodeValue = valeur.nodeValue
 	if (nodeValue !== null && 'unit' in node) {
@@ -36,7 +36,7 @@ registerEvaluationFunction(parseUnité.nom, function evaluate(node) {
 			)
 		} catch (e) {
 			warning(
-				this.options.logger,
+				this.context.logger,
 				this.cache._meta.evaluationRuleStack[0],
 				"Erreur lors de la conversion d'unité explicite",
 				e

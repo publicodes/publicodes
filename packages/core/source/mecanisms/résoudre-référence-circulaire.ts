@@ -1,10 +1,10 @@
 import { EvaluationFunction } from '..'
-import { ASTNode, ConstantNode, Unit } from '../AST/types'
+import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
 import { Context } from '../parsePublicodes'
 import uniroot from '../uniroot'
-import { UnitéNode } from './unité'
+import { undefinedNumberNode } from './inlineMecanism'
 
 export type RésoudreRéférenceCirculaireNode = {
 	explanation: {
@@ -16,35 +16,48 @@ export type RésoudreRéférenceCirculaireNode = {
 
 export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoudre référence circulaire'> =
 	function (node) {
-		const originalCache = this.cache
-		let inversionNumberOfIterations = 0
+		if (
+			this.cache._meta.evaluationRuleStack
+				.slice(1)
+				.includes(node.explanation.ruleToSolve)
+		) {
+			return {
+				...undefinedNumberNode,
+				...node,
+			}
+		}
 
-		const evaluateWithValue = (
-			n: number,
-			unit: Unit = { numerators: [], denominators: [] }
-		) => {
-			inversionNumberOfIterations++
-			this.resetCache()
+		let numberOfIterations = 0
+		const calculationEngine = this.shallowCopy()
+		calculationEngine.cache._meta.parentRuleStack = [
+			...this.cache._meta.parentRuleStack,
+		]
+		calculationEngine.cache._meta.evaluationRuleStack = [
+			...this.cache._meta.evaluationRuleStack,
+		]
+		const maxIterations = this.context.inversionMaxIterations ?? 25
 
-			this.parsedSituation[node.explanation.ruleToSolve] = {
-				unit: unit,
-				nodeKind: 'unité',
-				explanation: {
-					nodeKind: 'constant',
-					nodeValue: n,
-					type: 'number',
-				} as ConstantNode,
-			} as UnitéNode
-			return this.evaluate(node.explanation.valeur)
+		const evaluateWithValue = (n: number) => {
+			numberOfIterations++
+			calculationEngine.setSituation(
+				{
+					[node.explanation.ruleToSolve]: {
+						...undefinedNumberNode,
+						nodeValue: n,
+					},
+				},
+				{ keepPreviousSituation: true }
+			)
+
+			return calculationEngine.evaluateNode(node.explanation.valeur)
 		}
 
 		const inversionFailed = Symbol('inversion failed')
 
 		let nodeValue: number | undefined | typeof inversionFailed = inversionFailed
 
-		const x0 = 0
+		const x0 = 1
 		let valeur = evaluateWithValue(x0)
-
 		const y0 = valeur.nodeValue as number
 		const unit = valeur.unit
 		let i = 0
@@ -56,7 +69,7 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 				if (x === x0) {
 					return y0 - x0
 				}
-				valeur = evaluateWithValue(x, unit)
+				valeur = evaluateWithValue(x)
 				const y = valeur.nodeValue
 				i++
 				return (y as number) - x
@@ -65,20 +78,16 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 			const defaultMin = -1_000_000
 			const defaultMax = 100_000_000
 
-			nodeValue = uniroot(test, defaultMin, defaultMax, 0.5, 30, 2)
+			nodeValue = uniroot(test, defaultMin, defaultMax, 0.5, maxIterations, 2)
 		}
-
-		this.cache = originalCache
 
 		if (nodeValue === inversionFailed) {
 			nodeValue = undefined
 			this.cache._meta.inversionFail = true
 		}
 		if (nodeValue !== undefined) {
-			valeur = evaluateWithValue(nodeValue, unit)
+			valeur = evaluateWithValue(nodeValue)
 		}
-		delete this.parsedSituation[node.explanation.ruleToSolve]
-
 		return {
 			...node,
 			unit,
@@ -86,7 +95,7 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 			explanation: {
 				...node.explanation,
 				valeur,
-				inversionNumberOfIterations,
+				numberOfIterations,
 			},
 			missingVariables: valeur.missingVariables,
 		}
@@ -96,7 +105,7 @@ export default function parseRésoudreRéférenceCirculaire(v, context: Context)
 	return {
 		explanation: {
 			ruleToSolve: context.dottedName,
-			valeur: parse(v.valeur, { ...context, circularReferences: true }),
+			valeur: parse(v.valeur, context),
 		},
 		nodeKind: 'résoudre référence circulaire',
 	} as RésoudreRéférenceCirculaireNode

@@ -1,8 +1,8 @@
 import { EvaluationFunction } from '..'
 import { ASTNode, Unit } from '../AST/types'
 import { convertToDate, convertToString } from '../date'
-import { defaultNode, mergeAllMissing, parseObject } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
+import { defaultNode, mergeAllMissing, parseObject } from '../evaluationUtils'
 import { parseUnit } from '../units'
 
 export type DuréeNode = {
@@ -20,8 +20,8 @@ const objectShape = {
 	"jusqu'à": defaultNode(todayString),
 }
 const evaluate: EvaluationFunction<'durée'> = function (node) {
-	const from = this.evaluate(node.explanation.depuis)
-	const to = this.evaluate(node.explanation["jusqu'à"])
+	const from = this.evaluateNode(node.explanation.depuis)
+	const to = this.evaluateNode(node.explanation["jusqu'à"])
 	let nodeValue
 	if ([from, to].some(({ nodeValue }) => nodeValue === undefined)) {
 		nodeValue = undefined

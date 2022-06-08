@@ -1,5 +1,8 @@
 import { PublicodesExpression } from '..'
-import { createParseInlinedMecanismWithArray, notApplicableNode } from './utils'
+import {
+	createParseInlinedMecanismWithArray,
+	notApplicableNode,
+} from './inlineMecanism'
 
 export const parseMaximumDe = createParseInlinedMecanismWithArray(
 	'le maximum de',
@@ -11,13 +14,25 @@ export const parseMaximumDe = createParseInlinedMecanismWithArray(
 			(acc, value) => ({
 				condition: {
 					si: {
-						'est non applicable': value,
+						'est non applicable': '$INTERNAL valeur',
 					},
-					alors: acc,
+					alors: '$INTERNAL acc',
 					sinon: {
-						valeur: value,
-						plancher: acc,
+						condition: {
+							si: {
+								ou: [
+									{ 'est non applicable': '$INTERNAL acc' },
+									{ '>': ['$INTERNAL valeur', '$INTERNAL acc'] },
+								],
+							},
+							alors: '$INTERNAL valeur',
+							sinon: '$INTERNAL acc',
+						},
 					},
+				},
+				avec: {
+					'[privé] $INTERNAL valeur': value,
+					'[privé] $INTERNAL acc': acc,
 				},
 			}),
 			notApplicableNode
@@ -25,7 +40,7 @@ export const parseMaximumDe = createParseInlinedMecanismWithArray(
 )
 
 export const parseMinimumDe = createParseInlinedMecanismWithArray(
-	'le maximum de',
+	'le minimum de',
 	{
 		valeur: { type: 'liste' },
 	},
@@ -34,13 +49,25 @@ export const parseMinimumDe = createParseInlinedMecanismWithArray(
 			(acc, value) => ({
 				condition: {
 					si: {
-						'est non applicable': value,
+						'est non applicable': '$INTERNAL valeur',
 					},
-					alors: acc,
+					alors: '$INTERNAL acc',
 					sinon: {
-						valeur: value,
-						plafond: acc,
+						condition: {
+							si: {
+								ou: [
+									{ 'est non applicable': '$INTERNAL acc' },
+									{ '<': ['$INTERNAL valeur', '$INTERNAL acc'] },
+								],
+							},
+							alors: '$INTERNAL valeur',
+							sinon: '$INTERNAL acc',
+						},
 					},
+				},
+				avec: {
+					'[privé] $INTERNAL valeur': value,
+					'[privé] $INTERNAL acc': acc,
 				},
 			}),
 			notApplicableNode

@@ -2,18 +2,20 @@ import { expect } from 'chai'
 import Publicodes from '../source/index'
 
 describe('Traversed variables - Basics', () => {
-	const engine = new Publicodes({
-		a: 1,
-		b: '1 + a',
-		c: '1 + a + a',
-		d: 'e',
-		e: 1,
+	let engine
+	before(() => {
+		engine = new Publicodes({
+			a: 1,
+			b: '1 + a',
+			c: '1 + a + a',
+			d: 'e',
+			e: 1,
 
-		branches: 'b + f',
-		f: 'g',
-		g: 1,
+			branches: 'b + f',
+			f: 'g',
+			g: 1,
+		})
 	})
-
 	it('should be empty if there are no external references', () => {
 		expect(engine.evaluate('5 + 5').traversedVariables).to.deep.equal([])
 	})

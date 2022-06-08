@@ -1,10 +1,10 @@
+import { utils } from 'publicodes'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import MonacoEditor from 'react-monaco-editor'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
 import styles from './studio.module.css'
-import { utils } from 'publicodes'
 
 const { decodeRuleName } = utils
 
@@ -14,16 +14,16 @@ const EXAMPLE_CODE = `
 # => https://publi.codes/documentation/principes-de-base
 
 prix:
-prix . carottes: 2€/kg
-prix . champignons: 5€/kg
-prix . avocat: 2€/avocat
+  avec:
+    carottes: 2€/kg
+    champignons: 5€/kg
+    avocat: 2€/avocat
 
 dépenses primeur:
-  formule:
-    somme:
-      - prix . carottes * 1.5 kg
-      - prix . champignons * 500g
-      - prix . avocat * 3 avocat
+  somme:
+    - prix . carottes * 1.5 kg
+    - prix . champignons * 500g
+    - prix . avocat * 3 avocat
 `
 
 export default function Studio() {

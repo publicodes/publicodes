@@ -1,13 +1,8 @@
 import Engine from '.'
-import {
-	ASTNode,
-	EvaluatedNode,
-	Evaluation,
-	MissingVariables,
-} from './AST/types'
+import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
 import { warning } from './error'
-import { mergeMissing } from './evaluation'
 import { registerEvaluationFunction } from './evaluationFunctions'
+import { defaultNode, mergeMissing } from './evaluationUtils'
 import { capitalise0 } from './format'
 import parse, { mecanismKeys } from './parse'
 import { Context } from './parsePublicodes'
@@ -17,7 +12,7 @@ import {
 	parseReplacements,
 	ReplacementRule,
 } from './replacement'
-import { nameLeaf, ruleParents } from './ruleUtils'
+import { isAccessible, nameLeaf, ruleParents } from './ruleUtils'
 
 export type Rule = {
 	formule?: Record<string, unknown> | string
@@ -34,13 +29,13 @@ export type Rule = {
 	sévérité?: string
 	type?: string
 	'possiblement non applicable'?: 'oui'
+	privé?: 'oui'
 	note?: string
 	remplace?: RendNonApplicable | Array<RendNonApplicable>
 	'rend non applicable'?: Remplace | Array<string>
 	suggestions?: Record<string, string | number | Record<string, unknown>>
 	références?: { [source: string]: string }
 	API?: string
-	avec?: Record<string, Rule>
 	'identifiant court'?: string
 }
 
@@ -59,6 +54,7 @@ export type RuleNode = {
 	title: string
 	nodeKind: 'rule'
 	virtualRule: boolean
+	private: boolean
 	rawNode: Rule
 	replacements: Array<ReplacementRule>
 	explanation: {
@@ -74,44 +70,41 @@ export type RuleNode = {
 export default function parseRule(
 	rawRule: Rule,
 	context: Context
-): ReferenceNode {
-	const dottedName = [context.dottedName, rawRule.nom]
-		.filter(Boolean)
-		.join(' . ')
+): ReferenceNode | RuleNode {
+	const privateRule = !!(
+		rawRule.privé === 'oui' || rawRule.nom.startsWith('[privé] ')
+	)
+	const nom = rawRule.nom.replace(/^\[privé\] /, '')
+	const dottedName = [context.dottedName, nom].filter(Boolean).join(' . ')
 
 	const name = nameLeaf(dottedName)
-	const ruleTitle = capitalise0(
-		rawRule['titre'] ??
-			(context.ruleTitle ? `${context.ruleTitle} (${name})` : name)
-	)
+	const title = capitalise0(rawRule['titre'] ?? name)
 
 	if (context.parsedRules[dottedName]) {
 		throw new Error(`La référence '${dottedName}' a déjà été définie`)
 	}
 
-	const ruleValue = {
+	const ruleValue: Record<string, unknown> = {
 		...Object.fromEntries(
 			Object.entries(rawRule).filter(([key]) => mecanismKeys.includes(key))
 		),
 		...('formule' in rawRule && { valeur: rawRule.formule }),
-		'dans la situation': {
-			clé: dottedName,
-			'possiblement non applicable': rawRule['possiblement non applicable'],
-			'type par défaut':
-				// TODO : this could be infered by a good type inference algorithm. And it should be documented.
-				(!('type' in rawRule) && rawRule.question && !rawRule.unité) ||
-				rawRule.type === 'booléen'
-					? 'boolean'
-					: ['paragraphe', 'texte'].includes(rawRule.type ?? '') ||
-					  rawRule['une possibilité'] ||
-					  rawRule.formule?.['une possibilité'] ||
-					  rawRule.valeur?.['une possibilité']
-					? 'string'
-					: 'number',
-		},
 	}
 
-	const ruleContext = { ...context, dottedName, ruleTitle }
+	if (!privateRule && !dottedName.endsWith('$SITUATION')) {
+		ruleValue['dans la situation'] = `${dottedName} . $SITUATION`
+		ruleValue['avec'] = {
+			...((ruleValue.avec as object) ?? {}),
+			'[privé] $SITUATION': {
+				isNullable: rawRule['possiblement non applicable'] === 'oui',
+				nodeValue: undefined,
+				type: undefined,
+				nodeKind: 'constant',
+				missingVariables: {},
+			},
+		}
+	}
+	const ruleContext = { ...context, dottedName }
 
 	// The following ensures that nested rules appears after the root rule when
 	// iterating over parsedRule
@@ -131,29 +124,18 @@ export default function parseRule(
 		// code related to branch desactivation (ie find the first nullable parent
 		// statically after rules parsing)
 		parents: ruleParents(dottedName).map((parent) =>
-			parse(parent, { ...context, circularReferences: true })
+			parse(parent, ruleContext)
 		),
 	}
 
-	Object.entries(rawRule.avec ?? {}).forEach(([name, rule]) =>
-		parse(
-			rule == undefined
-				? {
-						nom: name,
-				  }
-				: typeof rule === 'object'
-				? { ...rule, nom: name }
-				: { valeur: rule, nom: name },
-			ruleContext
-		)
-	)
 	context.parsedRules[dottedName] = {
 		dottedName,
 		replacements: [
 			...parseRendNonApplicable(rawRule['rend non applicable'], ruleContext),
 			...parseReplacements(rawRule.remplace, ruleContext),
 		],
-		title: ruleTitle,
+		title: title,
+		private: privateRule,
 		suggestions: Object.fromEntries(
 			Object.entries(rawRule.suggestions ?? {}).map(([name, node]) => [
 				name,
@@ -167,7 +149,9 @@ export default function parseRule(
 	} as RuleNode
 
 	// We return the parsedReference
-	return parse(rawRule.nom, context) as ReferenceNode
+	return !!context.dottedName
+		? (parse(nom, context) as ReferenceNode)
+		: context.parsedRules[dottedName]
 }
 
 registerEvaluationFunction('rule', function evaluate(node) {
@@ -179,20 +163,17 @@ registerEvaluationFunction('rule', function evaluate(node) {
 		nodeValue: null,
 		missingVariables: {},
 	}
-
 	if (!ruleDisabledByItsParent) {
 		if (
 			this.cache._meta.evaluationRuleStack.filter(
 				(dottedName) => dottedName === node.dottedName
-			).length > 15
-			// I don't know why this magic number, but below, cycle are
-			// detected "too early", which leads to blank value in brut-net simulator
+			).length > 1
 		) {
 			warning(
-				this.options.logger,
+				this.context.logger,
 				node.dottedName,
 				`
-		Un cycle a été détecté dans lors de l'évaluation de cette règle.
+						Un cycle a été détecté dans lors de l'évaluation de cette règle.
 		Par défaut cette règle sera évaluée à 'null'.
 		Pour indiquer au moteur de résoudre la référence circulaire en trouvant le point fixe
 		de la fonction, il vous suffit d'ajouter l'attribut suivant niveau de la règle :
@@ -207,11 +188,12 @@ registerEvaluationFunction('rule', function evaluate(node) {
 			} as EvaluatedNode
 		} else {
 			this.cache._meta.evaluationRuleStack.unshift(node.dottedName)
-			valeurEvaluation = this.evaluate(node.explanation.valeur)
+			valeurEvaluation = this.evaluateNode(node.explanation.valeur)
 			this.cache._meta.evaluationRuleStack.shift()
 		}
 	}
-
+	valeurEvaluation.missingVariables ??= {}
+	updateRuleMissingVariables(this, node, valeurEvaluation)
 	const evaluation = {
 		...valeurEvaluation,
 		missingVariables: mergeMissing(
@@ -230,6 +212,45 @@ registerEvaluationFunction('rule', function evaluate(node) {
 	return evaluation
 })
 
+/* 
+	We implement the terminal case for missing variables manually here as
+	the logic is not straigtforward enough to be implemented by the mecanisms only
+*/
+export function updateRuleMissingVariables(
+	engine: Engine,
+	node: RuleNode,
+	valeurEvaluation: EvaluatedNode
+) {
+	if (
+		node.private === false &&
+		isAccessible(engine.context.parsedRules, '', node.dottedName)
+	) {
+		const notInSituation =
+			engine.context.parsedRules[`${node.dottedName} . $SITUATION`] ===
+			engine.baseContext.parsedRules[`${node.dottedName} . $SITUATION`]
+		if (
+			node.rawNode['par défaut'] &&
+			valeurEvaluation.nodeValue !== null &&
+			notInSituation
+		) {
+			valeurEvaluation.missingVariables[node.dottedName] += 1
+		}
+		if (
+			!Object.keys(valeurEvaluation.missingVariables).length &&
+			valeurEvaluation.nodeValue === undefined
+		) {
+			valeurEvaluation.missingVariables[node.dottedName] += 1
+		}
+		if (
+			node.rawNode['possiblement non applicable'] === 'oui' &&
+			notInSituation
+		) {
+			valeurEvaluation.missingVariables[node.dottedName] += 1
+		}
+	}
+	return valeurEvaluation.missingVariables
+}
+
 export function evaluateDisablingParent(
 	engine: Engine,
 	node: RuleNode
@@ -238,10 +259,17 @@ export function evaluateDisablingParent(
 	parentMissingVariables: MissingVariables
 	nullableParent?: ASTNode
 } {
+	if (node.private) {
+		// We do not need to check if a private rule is disabled by its parent :
+		// they are accessible only from its sibling or parent
+		// (which would already be disabled)
+		return { ruleDisabledByItsParent: false, parentMissingVariables: {} }
+	}
+
+	const nodesTypes = engine.context.nodesTypes
 	const nullableParent = node.explanation.parents.find(
 		(ref) =>
-			engine.ruleUnits.get(ref)?.isNullable ||
-			engine.ruleUnits.get(ref)?.type === 'boolean'
+			nodesTypes.get(ref)?.isNullable || nodesTypes.get(ref)?.type === 'boolean'
 	)
 
 	if (!nullableParent) {
@@ -254,27 +282,22 @@ export function evaluateDisablingParent(
 		!engine.cache._meta.parentRuleStack.includes(node.dottedName)
 	) {
 		engine.cache._meta.parentRuleStack.unshift(node.dottedName)
-		let parentIsNotApplicable = {
-			nodeValue: false as Evaluation,
-			missingVariables: {},
-		}
-		if (engine.ruleUnits.get(nullableParent)?.isNullable) {
-			parentIsNotApplicable = engine.evaluate({
+		let parentIsNotApplicable = defaultNode(false) as EvaluatedNode
+		if (nodesTypes.get(nullableParent)?.isNullable) {
+			parentIsNotApplicable = engine.evaluateNode({
 				nodeKind: 'est non applicable',
 				explanation: nullableParent,
 			})
 		}
 		if (
 			parentIsNotApplicable.nodeValue !== true &&
-			engine.ruleUnits.get(nullableParent)?.type === 'boolean'
+			nodesTypes.get(nullableParent)?.type === 'boolean'
 		) {
-			parentIsNotApplicable = engine.evaluate({
+			parentIsNotApplicable = engine.evaluateNode({
 				nodeKind: 'operation',
+				operator: '=',
 				operationKind: '=',
-				explanation: [
-					nullableParent,
-					{ constant: { nodeValue: false, type: 'boolean' } },
-				],
+				explanation: [nullableParent, defaultNode(false)],
 			})
 		}
 
@@ -290,8 +313,8 @@ export function evaluateDisablingParent(
 
 	let parentMissingVariables: MissingVariables = {}
 
-	if (engine.ruleUnits.get(nullableParent)?.type === 'boolean') {
-		const parentEvaluation = engine.evaluate(nullableParent)
+	if (nodesTypes.get(nullableParent)?.type === 'boolean') {
+		const parentEvaluation = engine.evaluateNode(nullableParent)
 		parentMissingVariables = parentEvaluation.missingVariables ?? {}
 		return {
 			ruleDisabledByItsParent: parentEvaluation.nodeValue === false,

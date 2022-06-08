@@ -19,7 +19,7 @@ export default function parseSimplifierUnité(v, context): SimplifierUnitéNode 
 parseSimplifierUnité.nom = "simplifier l'unité" as const
 
 registerEvaluationFunction('simplifier unité', function evaluate(node) {
-	const valeur = this.evaluate(node.explanation)
+	const valeur = this.evaluateNode(node.explanation)
 	const nodeValue = valeur.nodeValue
 	const defaultReturn = {
 		...valeur,

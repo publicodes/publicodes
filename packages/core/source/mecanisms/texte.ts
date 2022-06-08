@@ -1,6 +1,6 @@
 import { ASTNode, formatValue } from '..'
-import { mergeAllMissing } from '../evaluation'
 import { registerEvaluationFunction } from '../evaluationFunctions'
+import { mergeAllMissing } from '../evaluationUtils'
 import parse from '../parse'
 
 const NAME = 'texte' as const
@@ -29,7 +29,7 @@ parseTexte.nom = NAME
 
 registerEvaluationFunction(NAME, function evaluate(node) {
 	const explanation = node.explanation.map((element) =>
-		typeof element === 'string' ? element : this.evaluate(element)
+		typeof element === 'string' ? element : this.evaluateNode(element)
 	)
 
 	return {

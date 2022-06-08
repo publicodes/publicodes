@@ -1,75 +1,50 @@
-import Engine, { EvaluationFunction } from '..'
-import { ASTNode, EvaluatedNode } from '../AST/types'
-import { warning } from '../error'
-import { defaultNode } from '../evaluation'
+import { EvaluationFunction } from '..'
+import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
 import { ReferenceNode } from '../reference'
-import { disambiguateRuleReference } from '../ruleUtils'
 import { serializeUnit } from '../units'
+import { notApplicableNode } from './inlineMecanism'
 
 export type RecalculNode = {
 	explanation: {
-		recalcul: ASTNode
-		contextDottedName: string
+		recalculNode: ASTNode
 		amendedSituation: Array<[ReferenceNode, ASTNode]>
-		parsedSituation?: Engine['parsedSituation']
 		subEngineId: number
 	}
 	nodeKind: 'recalcul'
 }
 
 const evaluateRecalcul: EvaluationFunction<'recalcul'> = function (node) {
-	// Caveat: for now, any nested recalcul is not applied. Ideally, we should
-	// only prevent nested recalculs when a cycle appears, or even do this
-	// statically. The only case which seems legit for now is when a rule is
-	// recalcul-ing itself.
-	if (this.cache._meta.currentRecalcul) {
-		if (
-			node.explanation.recalcul &&
-			this.cache._meta.currentRecalcul !== node.explanation.recalcul
-		) {
-			warning(
-				this.options.logger,
-				this.cache._meta.evaluationRuleStack[0],
-				`Un recalcul imbriqué a été tenté à l'intérieur du recalcul ${this.cache._meta.currentRecalcul}. La valeur undefined (non défini) est retournée.`
-			)
-		}
-		return defaultNode(null) as any as RecalculNode & EvaluatedNode
+	if (this.cache._meta.currentRecalcul === node.explanation.recalculNode) {
+		return { ...notApplicableNode, ...node }
 	}
+	const amendedSituation = Object.fromEntries(
+		node.explanation.amendedSituation
+			.filter(([originRule, replacement]) => {
+				const originRuleEvaluation = this.evaluateNode(originRule)
+				const replacementEvaluation = this.evaluateNode(replacement)
 
-	const amendedSituation = node.explanation.amendedSituation
-		.map(([originRule, replacement]) => [
-			this.evaluate(originRule),
-			this.evaluate(replacement),
-		])
-		.filter(
-			([originRule, replacement]) =>
-				originRule.nodeValue !== replacement.nodeValue ||
-				serializeUnit(originRule.unit) !== serializeUnit(replacement.unit)
-		) as Array<[ReferenceNode & EvaluatedNode, EvaluatedNode]>
+				return (
+					originRuleEvaluation.nodeValue !== replacementEvaluation.nodeValue ||
+					serializeUnit(originRuleEvaluation.unit) !==
+						serializeUnit(replacementEvaluation.unit)
+				)
+			})
+			.map(([originRule, replacement]) => [originRule.dottedName, replacement])
+	)
 
-	const engine = amendedSituation.length
-		? this.shallowCopy().setSituation({
-				...this.parsedSituation,
-				...Object.fromEntries(
-					amendedSituation.map(([reference, replacement]) => [
-						disambiguateRuleReference(
-							this.parsedRules,
-							reference.contextDottedName,
-							reference.name
-						),
-						replacement,
-					]) as any
-				),
-		  })
-		: this
+	let engine = this
+	if (Object.keys(amendedSituation).length) {
+		engine = this.shallowCopy().setSituation(amendedSituation, {
+			keepPreviousSituation: true,
+		})
+		engine.subEngineId = this.subEngines.length
+		this.subEngines.push(engine)
+	}
+	engine.cache._meta.currentRecalcul = node.explanation.recalculNode
+	const evaluatedNode = engine.evaluateNode(node.explanation.recalculNode)
 
-	const nodeToEvaluate =
-		node.explanation.recalcul ??
-		this.getRule(node.explanation.contextDottedName)
-	engine.cache._meta.currentRecalcul = nodeToEvaluate
-	const evaluatedNode = engine.evaluate(nodeToEvaluate)
 	delete engine.cache._meta.currentRecalcul
 
 	return {
@@ -78,8 +53,6 @@ const evaluateRecalcul: EvaluationFunction<'recalcul'> = function (node) {
 		explanation: {
 			...node.explanation,
 			recalcul: evaluatedNode,
-			amendedSituation,
-			parsedSituation: engine.parsedSituation,
 			subEngineId: engine.subEngineId as number,
 		},
 		missingVariables: evaluatedNode.missingVariables,
@@ -93,15 +66,11 @@ export const mecanismRecalcul = (v, context) => {
 		parse(v.avec[dottedName], context),
 	])
 
-	// Caveat: v.règle can theoretically be an expression, not necessarily
-	// a dotted name.
-	const recalculNode =
-		v.règle && parse(v.règle, { ...context, circularReferences: true })
+	const recalculNode = parse(v.règle ?? context.dottedName, context)
 
 	return {
 		explanation: {
-			recalcul: recalculNode,
-			contextDottedName: context.dottedName,
+			recalculNode,
 			amendedSituation,
 		},
 		nodeKind: 'recalcul',

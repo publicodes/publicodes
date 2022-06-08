@@ -1,4 +1,4 @@
-import { createParseInlinedMecanism } from './utils'
+import { createParseInlinedMecanism } from './inlineMecanism'
 
 export default createParseInlinedMecanism(
 	'plancher',
@@ -8,7 +8,7 @@ export default createParseInlinedMecanism(
 	},
 	{
 		condition: {
-			si: { 'toutes ces conditions': ['plancher != non', 'valeur < plancher'] },
+			si: { et: ['plancher != non', 'valeur < plancher'] },
 			alors: 'plancher',
 			sinon: 'valeur',
 		},

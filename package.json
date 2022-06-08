@@ -11,10 +11,10 @@
 		"test": "run prepack && yarn workspaces foreach run test",
 		"prepack": "yarn workspaces foreach --topological-dev -pi run prepack",
 		"test:type": "run prepack && yarn workspaces foreach -pi run test:type",
-		"lint:prettier": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml}\"",
-		"lint:prettier:fix": "run lint:prettier --write",
+		"lint": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml}\"",
+		"lint:fix": "run lint --write",
 		"build": "yarn workspaces foreach --topological-dev -pi --exclude website run build",
-		"start": "yarn workspaces foreach -pi run start",
+		"start": "yarn workspaces foreach --exclude \"@publicodes/api\" -pi run start",
 		"clean": "yarn workspaces foreach run clean"
 	},
 	"devDependencies": {
