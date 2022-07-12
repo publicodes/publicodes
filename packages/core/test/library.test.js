@@ -1,16 +1,20 @@
 import { expect } from 'chai'
 import Engine from '../source/index'
+import yaml from 'yaml'
+import dedent from 'dedent-js'
+
+const parseYaml = (yamlString) => yaml.parse(yamlString)
 
 describe('library', function () {
 	it('should let the user define its own rule', function () {
-		let rules = `
+		let rules = parseYaml(`
 yo:
   formule: 200
 ya:
   formule:  yo + 1
 yi:
   formule:  yo + 2
-`
+`)
 		let engine = new Engine(rules)
 
 		expect(engine.evaluate('ya').nodeValue).to.equal(201)
@@ -18,15 +22,15 @@ yi:
 	})
 
 	it('should let the user define a simplified revenue tax system', function () {
-		let rules = `
+		let rules = parseYaml(`
 revenu imposable:
   question: Quel est votre revenu imposable ?
   unité: €
 
 revenu abattu:
   formule:
-		valeur: revenu imposable
-		abattement: 10%
+    valeur: revenu imposable
+    abattement: 10%
 
 impôt sur le revenu:
   formule:
@@ -45,11 +49,11 @@ impôt sur le revenu:
 
 impôt sur le revenu à payer:
   formule:
-		valeur: impôt sur le revenu
-		abattement:
-			valeur: 1177 - (75% * impôt sur le revenu)
-			plancher: 0
-`
+    valeur: impôt sur le revenu
+    abattement:
+      valeur: 1177 - (75% * impôt sur le revenu)
+      plancher: 0
+`)
 
 		let engine = new Engine(rules)
 		engine.setSituation({
@@ -71,23 +75,23 @@ impôt sur le revenu à payer:
 	})
 
 	it('should let the user reference rules in the situation', function () {
-		let rules = `
+		let rules = parseYaml(`
 referenced in situation:
   formule: 200
-overwrited in situation:
+overwritten in situation:
   formule: 100
 result:
-  formule: overwrited in situation + 22
-`
+  formule: overwritten in situation + 22
+`)
 		let engine = new Engine(rules)
 		engine.setSituation({
-			'overwrited in situation': 'referenced in situation',
+			'overwritten in situation': 'referenced in situation',
 		})
 		expect(engine.evaluate('result').nodeValue).to.equal(222)
 	})
 })
 
-const co2Rules = `
+const co2Rules = yaml.parse(`
 douche:
   icônes: 🚿
 
@@ -196,4 +200,4 @@ douche . durée de la douche:
     expresse: 5
     moyenne: 10
     lente: 20
-`
+`)
