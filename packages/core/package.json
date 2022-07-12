@@ -38,12 +38,12 @@
 		"sinon-chai": "^3.7.0",
 		"ts-node": "^10.7.0",
 		"tsup": "^6.0.1",
-		"typescript": "^4.5.5"
+		"typescript": "^4.5.5",
+		"yaml": "^1.9.2"
 	},
 	"dependencies": {
 		"moo": "^0.5.1",
-		"nearley": "^2.19.2",
-		"yaml": "^1.9.2"
+		"nearley": "^2.19.2"
 	},
 	"scripts": {
 		"build:grammar": "nearleyc ./source/grammar.ne -o ./source/grammar.js",

@@ -1,4 +1,3 @@
-import yaml from 'yaml'
 import { ASTNode, Logger, ParsedRules } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
 import parse from './parse'
@@ -27,7 +26,7 @@ type RawRule = Omit<Rule, 'nom'> | string | number
 export type RawPublicodes = Record<string, RawRule>
 
 export default function parsePublicodes<RuleNames extends string>(
-	rawRules: RawPublicodes | string,
+	rawRules: RawPublicodes,
 	partialContext: Partial<Context> = {}
 ): {
 	parsedRules: ParsedRules<RuleNames>
@@ -35,10 +34,7 @@ export default function parsePublicodes<RuleNames extends string>(
 	rulesDependencies: Record<RuleNames, Array<RuleNames>>
 } {
 	// STEP 1: parse Yaml
-	let rules =
-		typeof rawRules === 'string'
-			? (yaml.parse(('' + rawRules).replace(/\t/g, '  ')) as RawPublicodes)
-			: { ...rawRules }
+	let rules = { ...rawRules }
 
 	// STEP 2: transpile [ref] writing
 	rules = transpileRef(rules)

@@ -115,7 +115,7 @@ export default class Engine<Name extends string = string> {
 	rulesDependencies: ReturnType<typeof parsePublicodes>['rulesDependencies']
 
 	constructor(
-		rules: string | Record<string, Rule> = {},
+		rules: Record<string, Rule> = {},
 		options: Partial<Options> = {}
 	) {
 		this.options = { ...options, logger: options.logger ?? console }
