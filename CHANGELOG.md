@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.0.0-beta.44
+
+**core**
+
+-   Ajoute la possibilité de définir des **règles privée**
+-   La situation est maintenant encodée sous forme de règle publicodes
+-   Améliore les performances des mécanismes "le maximum de" et "le minimum de"
+-   **⚠ Changement cassant** Simplifie l'API de l'Engine en supprimant les fonctions `setOptions`, `getOptions`
+-   Ajoute une fonction `evaluateNode` pour évaluer les noeud déjà parsés. Dans l'idéal cette fonction ne devrait pas être exposée aux utilisateurs
+-   Supprime le tri par ordre topologique avant l'inference de type : il suffit de parcourir le graphe en mode "profondeur d'abord" pour avoir le même résultat (améliore les performances)
+-   Ajoute un mécanisme `avec` pour pouvoir définir des règles imbriquées à n'importe quel endroit (comme pour `nom`)
+-   Ajoute une option `keepPreviousSituation: boolean` à la méthode `setSituation` pour effectuer une mise à jour non destructive de la situation
+-   Le mécanisme `résoudre la référence circulaire` prend maintenant en compte l'option `inversionMaxIterations`
+-   **⚠ Changement cassant** Supprime l'écriture `[ref]` pour ajouter des variables nommées. L'implémentation de cette dernière obligeait à parcourir l'arbre en entier ce qui prenait 300ms sur mon-entreprise.
+-   Optimise `inlineReplacement` : seule les règles contenant une référence remplacée sont parcourues.
+-   Supprime la notion de circularDependancies
+-   Supprime le nombre magique "12" pour la détection de cycle au runtime
+-   Supprime le rennomage automatique des règles imbriquées
+
 ## 1.0.0-beta.43
 
 **api**
