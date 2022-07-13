@@ -27,6 +27,7 @@ Un moteur d'évaluation qui expose les fonctions suivantes :
 - `setSituation`
 - `evaluate`
 - `getRule`
+- `getParsedRules`
 
 ### _method_ `engine.setSituation(situation)`
 
@@ -38,8 +39,7 @@ C'est le point d'entrée principal pour adapter les calculs de règles général
 une situation particulière. La situation est gardée en mémoire, et chaque appel
 à `setSituation` remplace la situation précédente. Le moteur
 contient donc un _état interne_. Cela permet d'obtenir de meilleures performances,
-avec une gestion plus fine du cache de calcul. En revanche, il faut prêter une
-grande attention à la bonne gestion de cet état interne.
+avec une gestion plus fine du cache de calcul.
 
 **Arguments**
 
@@ -48,8 +48,12 @@ grande attention à la bonne gestion de cet état interne.
   Elle sera évaluée par le moteur. Cela permet de spécifier des nombres avec unité,
   des expressions, des références vers d'autres règles ou même d'utiliser des mécanismes.
 
-**Retourne**
+- `options` : Paramètres optionnels sous forme d'objet
+  - `keepPreviousSituation` : par défaut, l'appel à `setSituation` écrase la situation
+    précedemment renseignée. Pour faire une mise à jour en gardant l'état en cours, il
+    suffit de mettre ce paramètre à `true`.
 
+**Retourne**
 L'objet engine (`this`) sur lequel la fonction a été appelée, afin de pouvoir
 utiliser une écriture chaînée (`engine.setSituation(situation).evaluate()`).
 
@@ -68,12 +72,6 @@ dans un cache. Par conséquent, les appels suivants seront plus rapides.
 **Retourne**
 
 Un objet javascript de type `EvaluatedNode` contenant la valeur calculée.
-
-> **Attention !** Il est déconseillé d'utiliser directement les valeurs présentes
-> dans l'objet retourné, étant donné que leur forme va très probablement changer
-> au cours des prochaines versions du moteur.
-> Utilisez la fonction `formatNode(evaluationResult)` autant que possible pour
-> afficher la valeur retournée.
 
 - `traversedVariables`: la liste des règles traversées lors de l'évaluation de
   l'expression courante
