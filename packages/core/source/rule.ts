@@ -4,6 +4,7 @@ import { warning } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing } from './evaluationUtils'
 import { capitalise0 } from './format'
+import { undefinedNode } from './mecanisms/inlineMecanism'
 import parse, { mecanismKeys } from './parse'
 import { Context } from './parsePublicodes'
 import { ReferenceNode } from './reference'
@@ -92,16 +93,22 @@ export default function parseRule(
 	}
 
 	if (!privateRule && !dottedName.endsWith('$SITUATION')) {
+		// We create a $SITUATION child rule
 		ruleValue['dans la situation'] = `${dottedName} . $SITUATION`
 		ruleValue['avec'] = {
 			...((ruleValue.avec as object) ?? {}),
 			'[privé] $SITUATION': {
+				...undefinedNode,
 				isNullable: rawRule['possiblement non applicable'] === 'oui',
-				nodeValue: undefined,
-				type: undefined,
-				nodeKind: 'constant',
-				missingVariables: {},
 			},
+		}
+
+		// If the `par défaut` value is used, then the rule should be listed as a missingVariables
+		if (ruleValue['par défaut']) {
+			ruleValue['par défaut'] = {
+				valeur: ruleValue['par défaut'],
+				'variable manquante': dottedName,
+			}
 		}
 	}
 	const ruleContext = { ...context, dottedName }
@@ -214,9 +221,9 @@ registerEvaluationFunction('rule', function evaluate(node) {
 
 /* 
 	We implement the terminal case for missing variables manually here as
-	the logic is not straigtforward enough to be implemented by the mecanisms only
+	a rule is missing if it is undefined and has no other missing dependencies
 */
-export function updateRuleMissingVariables(
+function updateRuleMissingVariables(
 	engine: Engine,
 	node: RuleNode,
 	valeurEvaluation: EvaluatedNode
@@ -225,25 +232,9 @@ export function updateRuleMissingVariables(
 		node.private === false &&
 		isAccessible(engine.context.parsedRules, '', node.dottedName)
 	) {
-		const notInSituation =
-			engine.context.parsedRules[`${node.dottedName} . $SITUATION`] ===
-			engine.baseContext.parsedRules[`${node.dottedName} . $SITUATION`]
 		if (
-			node.rawNode['par défaut'] &&
-			valeurEvaluation.nodeValue !== null &&
-			notInSituation
-		) {
-			valeurEvaluation.missingVariables[node.dottedName] += 1
-		}
-		if (
-			!Object.keys(valeurEvaluation.missingVariables).length &&
-			valeurEvaluation.nodeValue === undefined
-		) {
-			valeurEvaluation.missingVariables[node.dottedName] += 1
-		}
-		if (
-			node.rawNode['possiblement non applicable'] === 'oui' &&
-			notInSituation
+			valeurEvaluation.nodeValue === undefined &&
+			!Object.keys(valeurEvaluation.missingVariables).length
 		) {
 			valeurEvaluation.missingVariables[node.dottedName] += 1
 		}

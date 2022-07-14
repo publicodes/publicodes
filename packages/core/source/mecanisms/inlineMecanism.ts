@@ -128,10 +128,15 @@ export const notApplicableNode = {
 	isNullable: true,
 } as ConstantNode & EvaluatedNode
 
-export const undefinedNumberNode = {
+export const undefinedNode = {
 	nodeKind: 'constant',
 	nodeValue: undefined,
 	missingVariables: {},
-	type: 'number',
+	type: undefined,
 	isNullable: false,
+} as ConstantNode & EvaluatedNode
+
+export const undefinedNumberNode = {
+	...undefinedNode,
+	type: 'number',
 } as ConstantNode & EvaluatedNode

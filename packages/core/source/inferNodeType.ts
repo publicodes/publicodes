@@ -86,6 +86,7 @@ export default function inferNodesTypes(
 				return inferNodeUnitAndCache(node.explanation.valeur)
 			case 'unité':
 			case 'simplifier unité':
+			case 'variable manquante':
 				return inferNodeUnitAndCache(node.explanation)
 			case 'condition':
 				return {
