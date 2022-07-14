@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/api",
-	"version": "1.0.0-beta.44",
+	"version": "1.0.0-beta.45",
 	"description": "Publicodes API",
 	"type": "module",
 	"main": "./dist/index.cjs",
@@ -19,6 +19,7 @@
 		"validate": "swagger-cli validate ./source/openapi.yaml",
 		"start": "run clean && run build:watch & wait-on ./dist/openapi.json && run start:example",
 		"start:example": "NODE_PATH=./ nodemon -d 500ms ./example.ts",
+		"prepack": "run build",
 		"build": "run build:openapi && run build:tsup",
 		"build:watch": "run build:openapi:watch & run wait:openapi && run build:tsup:watch",
 		"build:tsup": "tsup-node --shims",

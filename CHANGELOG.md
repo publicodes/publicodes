@@ -1,6 +1,10 @@
 # Changelog
 
-## 1.0.0-beta.44
+## 1.0.0-beta.46
+
+-   Répare la publication automatique de la bibliothèque `@publicodes/api`
+
+## 1.0.0-beta.45
 
 **core**
 
