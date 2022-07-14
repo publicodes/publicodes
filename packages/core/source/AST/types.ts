@@ -15,6 +15,7 @@ import { SynchronisationNode } from '../mecanisms/synchronisation'
 import { TauxProgressifNode } from '../mecanisms/tauxProgressif'
 import { TexteNode } from '../mecanisms/texte'
 import { UnitéNode } from '../mecanisms/unité'
+import { VariableManquanteNode } from '../mecanisms/variablesManquantes'
 import { VariationNode } from '../mecanisms/variations'
 import { ReferenceNode } from '../reference'
 import { ReplacementRule } from '../replacement'
@@ -49,6 +50,7 @@ export type ASTNode = (
 	| ConditionNode
 	| ConstantNode
 	| ReplacementRule
+	| VariableManquanteNode
 	| TexteNode
 ) & {
 	isDefault?: boolean

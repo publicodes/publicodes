@@ -37,6 +37,7 @@ import texte from './mecanisms/texte'
 import toutesCesConditions from './mecanisms/toutes-ces-conditions'
 import uneDeCesConditions from './mecanisms/une-de-ces-conditions'
 import unité from './mecanisms/unité'
+import variableManquante from './mecanisms/variablesManquantes'
 import variations, { devariate } from './mecanisms/variations'
 import { Context } from './parsePublicodes'
 import parseReference from './reference'
@@ -178,6 +179,7 @@ ${e.message}`
 
 // Chainable mecanisme in their composition order (first one is applyied first)
 const chainableMecanisms = [
+	variableManquante,
 	avec,
 	applicable,
 	nonApplicable,

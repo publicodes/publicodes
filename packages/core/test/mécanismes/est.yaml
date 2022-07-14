@@ -65,7 +65,6 @@ est non applicable avec possiblement non applicable:
         a: non applicable
       valeur attendue: true
       variables manquantes: []
-
 est applicable:
   est applicable: b
   exemples:
