@@ -114,6 +114,7 @@ module.exports = {
 				name: 'config-webpack',
 				configureWebpack() {
 					return {
+						devtool: 'source-map',
 						resolve: {
 							fallback: {
 								path: require.resolve('path-browserify'),
