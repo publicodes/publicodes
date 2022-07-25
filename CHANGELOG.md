@@ -2,9 +2,16 @@
 
 ## 1.0.0-beta.46
 
--   Répare la publication automatique de la bibliothèque `@publicodes/api`
+**publicodes-react**
+
+-   Répare la visualisation du mécanisme `par défaut`
+-   Synchronise la version de publicodes du site documentaire et master
 
 ## 1.0.0-beta.45
+
+-   Répare la publication automatique de la bibliothèque `@publicodes/api`
+
+## 1.0.0-beta.44
 
 **core**
 
