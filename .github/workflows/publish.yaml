@@ -19,11 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/install
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_PUBLISH_SECRET }}
-          dry-run: ${{ github.ref != 'refs/heads/master' }}
-          package: ./packages/${{ matrix.package }}/package.json
-          access: public
+      - run: yarn workspace packages/${{matrix.package}} npm publish ${{github.ref != 'refs/heads/master' && '--dry-run'}} --access public
         env:
           NODE_ENV: production
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_SECRET }}
