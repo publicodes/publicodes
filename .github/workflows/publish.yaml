@@ -10,16 +10,12 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        package: ['core', 'react-ui', 'api']
-      # no parallel
-      # serial:
-      #   - package: ['core', 'react-ui']
-      #   - package: ['core', 'react-ui']
+        package: ['publicodes', 'publicodes-react', '@publicodes/api']
 
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/install
-      - run: yarn workspace packages/${{matrix.package}} npm publish ${{github.ref != 'refs/heads/master' && '--dry-run'}} --access public
+      - run: yarn workspace ${{matrix.package}} npm publish ${{github.ref != 'refs/heads/master' && '--dry-run'}} --access public
         env:
           NODE_ENV: production
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_SECRET }}
