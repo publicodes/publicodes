@@ -129,10 +129,10 @@ export function inlineReplacements<
 	const ruleNamesWithNewReplacements = (
 		Object.keys(newReplacements) as Array<NewNames | Names>
 	).reduce((acc, replacedReference) => {
-		return new Set([
-			...(referencesMaps.rulesThatUse.get(replacedReference) ?? []),
-			...acc,
-		])
+		;(referencesMaps.rulesThatUse.get(replacedReference) ?? []).forEach(
+			(value) => acc.add(value)
+		)
+		return acc
 	}, new Set([]) as Set<Names>)
 
 	const newRuleNamesWithPreviousReplacements: Set<NewNames> = new Set(
