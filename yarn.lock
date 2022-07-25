@@ -2880,14 +2880,14 @@ __metadata:
     koa-body: ^5.0.0
     nodemon: ^2.0.16
     openapi-validator-middleware: ^3.2.6
-    publicodes: ^1.0.0-beta.40
+    publicodes: ^1.0.0-beta.45
     ts-node: ^10.8.0
     tsup: ^6.0.1
     typescript: ^4.7.2
     vitest: ^0.12.9
     wait-on: ^6.0.1
   peerDependencies:
-    publicodes: ^1.0.0-beta.40
+    publicodes: ^1.0.0-beta.45
   languageName: unknown
   linkType: soft
 
@@ -12870,7 +12870,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"publicodes@^1.0.0-beta.40, publicodes@^1.0.0-beta.41, publicodes@workspace:packages/core":
+"publicodes@^1.0.0-beta.41, publicodes@^1.0.0-beta.45, publicodes@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "publicodes@workspace:packages/core"
   dependencies:
