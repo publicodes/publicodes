@@ -55,6 +55,7 @@ const UIComponents = {
 	'une possibilité': UnePossibilité,
 	'résoudre référence circulaire': RésoudreRéférenceCirculaire,
 	unité: Unité,
+	'variable manquante': (node) => <Explanation node={node.explanation} />,
 	variations: Variations,
 } as const
 
