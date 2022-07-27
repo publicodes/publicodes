@@ -29,3 +29,21 @@ poids total:
         farine: 2.1
         sucre: 200
       valeur attendue: 202.1
+
+Somme de pourcentage avec non applicable:
+  somme:
+    - non applicable si: oui
+      valeur: 5 %
+    - 1%
+  exemples:
+    - valeur attendue: 1
+      unité attendue: '%'
+
+Somme avec une unité non applicable:
+  somme:
+    - non applicable si: oui
+      valeur: 5 doudou
+    - 1
+  exemples:
+    - valeur attendue: 1
+      unité attendue: doudou

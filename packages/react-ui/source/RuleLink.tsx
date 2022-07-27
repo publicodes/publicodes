@@ -31,7 +31,7 @@ export function RuleLink<Name extends string>({
 	if (!Link) {
 		throw new Error('You must provide a <Link /> component.')
 	}
-	const rule = engine.getRule(dottedName)
+	const rule = engine.context.parsedRules[dottedName]
 	const newPath = documentationPath + '/' + encodeRuleName(dottedName)
 
 	// There is a problem with this line of code : we loose the information

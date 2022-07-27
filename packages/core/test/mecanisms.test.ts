@@ -14,7 +14,7 @@ import testSuites from './mécanismes/index'
 import { parse } from 'yaml'
 
 testSuites.forEach(([suiteName, suite]) => {
-	// if (suiteName !== 'résoudre-référence-circulaire') {
+	// if (suiteName !== 'somme') {
 	// 	return
 	// }
 	describe(`Mécanisme ${suiteName}`, () => {
@@ -22,9 +22,10 @@ testSuites.forEach(([suiteName, suite]) => {
 		Object.entries(engine.getParsedRules())
 			.filter(([, rule]) => !!rule.rawNode.exemples)
 			.forEach(([name, test]) => {
-				const { exemples, 'unité attendue': unit } = test.rawNode as Rule & {
-					'unité attendue': string
-				}
+				const { exemples, 'unité attendue': defaultUnit } =
+					test.rawNode as Rule & {
+						'unité attendue': string
+					}
 				const exemplesArray = Array.isArray(exemples) ? exemples : [exemples]
 				exemplesArray.forEach(
 					(
@@ -32,6 +33,7 @@ testSuites.forEach(([suiteName, suite]) => {
 							nom: testName,
 							situation,
 							'valeur attendue': valeur,
+							'unité attendue': unit = defaultUnit,
 							type: type,
 							'variables manquantes': expectedMissing,
 						},

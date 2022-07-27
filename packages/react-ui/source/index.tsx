@@ -4,7 +4,7 @@ export { default as RulePage } from './rule/RulePage'
 export { RuleLink } from './RuleLink'
 
 export function getDocumentationSiteMap({ engine, documentationPath }) {
-	const parsedRules = engine.getParsedRules()
+	const parsedRules = engine.context.parsedRules
 	return Object.fromEntries(
 		Object.keys(parsedRules).map((dottedName) => [
 			documentationPath + '/' + utils.encodeRuleName(dottedName),

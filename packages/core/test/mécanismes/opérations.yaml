@@ -57,7 +57,7 @@ addition:
         a: 15%/an
         b: 4%/an
       valeur attendue: 19
-      unité attendue: '€/an'
+      unité attendue: '%/an'
     - nom: addition d'un pourcentage avec unité et d'un pourcentage
       situation:
         a: 10 %/an
@@ -122,7 +122,7 @@ soustraction:
         a: 15%/an
         b: 4%/an
       valeur attendue: 11
-      unité attendue: '€/an'
+      unité attendue: '%/an'
     - nom: soustraction d'un pourcentage avec unité et d'un pourcentage
       situation:
         a: 10 %/an
@@ -223,8 +223,8 @@ division:
       situation:
         a: 12
         b: 4%
-      valeur attendue: 3
-      unité attendue: '%'
+      valeur attendue: 3 #TODO : should it be 300 instead ?
+      unité attendue: ''
     - nom: entre deux pourcentage
       situation:
         a: 12%

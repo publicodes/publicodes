@@ -1,6 +1,6 @@
 import { EvaluatedNode } from 'publicodes/source/AST/types'
 import { ReferenceNode } from 'publicodes/source/reference'
-import React, { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 import styled from 'styled-components'
 import { EngineContext } from '../contexts'
 import Explanation from '../Explanation'
@@ -15,7 +15,7 @@ export default function Reference(
 ) {
 	const engine = useContext(EngineContext)
 	const { dottedName, nodeValue, unit } = node
-	const rule = engine?.getRule(node.dottedName)
+	const rule = engine?.context.parsedRules[node.dottedName]
 	if (!rule) {
 		throw new Error('Unknown node')
 	}

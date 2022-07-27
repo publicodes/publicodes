@@ -62,7 +62,7 @@
 		"chai-http": "^4.3.0",
 		"nodemon": "^2.0.16",
 		"publicodes": "^1.0.0-beta.47",
-		"ts-node": "^10.8.0",
+		"ts-node": "^10.9.1",
 		"tsup": "^6.0.1",
 		"typescript": "^4.7.2",
 		"vitest": "^0.12.9",
