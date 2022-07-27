@@ -130,9 +130,14 @@ export default function parseRule(
 		// An alternative implementation would be possible that would colocate the
 		// code related to branch desactivation (ie find the first nullable parent
 		// statically after rules parsing)
-		parents: ruleParents(dottedName).map((parent) =>
-			parse(parent, ruleContext)
-		),
+		parents: ruleParents(dottedName)
+			.map((parent) => parse(parent, ruleContext))
+			.map(
+				// This step ensure we skip the disambiguation step.
+				// This prevents to inadequatly disambiguate a parent as a children of rule (for instance if we have `a . b` and `a . b . a` rules).
+				// It's necessary while https://github.com/betagouv/publicodes/issues/253 is not implemented
+				(n) => ({ ...n, dottedName: (n as ReferenceNode).name })
+			),
 	}
 
 	context.parsedRules[dottedName] = {

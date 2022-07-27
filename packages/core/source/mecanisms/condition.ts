@@ -55,6 +55,7 @@ const evaluate: EvaluationFunction<'condition'> = function (node) {
 			bonus(condition.missingVariables),
 			evaluation.missingVariables
 		),
+		unit: evaluation.unit ?? (alors as any).unit,
 		...node,
 		explanation: { si: condition, alors, sinon },
 	}

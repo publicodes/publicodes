@@ -75,14 +75,15 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 		? baseEngine.subEngines[subEngineId as number]
 		: baseEngine
 
-	if (!(dottedName in engine.getParsedRules())) {
+	if (!(dottedName in engine.context.parsedRules)) {
 		return <p>Cette règle est introuvable dans la base</p>
 	}
 	const rule = engine.evaluateNode(
-		engine.getRule(dottedName)
+		engine.context.parsedRules[dottedName]
 	) as EvaluatedNode & {
 		nodeKind: 'rule'
 	}
+	console.log(rule)
 	const { description, question } = rule.rawNode
 	const { valeur, nullableParent, ruleDisabledByItsParent } = rule.explanation
 
@@ -145,7 +146,9 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 			<h2>Comment cette donnée est-elle calculée ?</h2>
 
 			<Explanation node={valeur} />
-			<RuleSource key={dottedName} dottedName={dottedName} engine={engine} />
+			{dottedName in engine.getParsedRules() && (
+				<RuleSource key={dottedName} dottedName={dottedName} engine={engine} />
+			)}
 
 			{rule.missingVariables && (
 				<MissingVars

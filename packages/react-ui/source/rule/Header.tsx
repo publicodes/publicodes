@@ -1,5 +1,5 @@
 import { utils } from 'publicodes'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { EngineContext } from '../contexts'
 import { RuleLinkWithContext } from '../RuleLink'
 import Meta from './Meta'
@@ -12,7 +12,7 @@ export default function RuleHeader({ dottedName }) {
 	const {
 		title,
 		rawNode: { description, question, icônes },
-	} = engine.getRule(dottedName)
+	} = engine.context.parsedRules[dottedName]
 	const displayTitle = icônes ? title + ' ' + icônes : title
 	return (
 		<header>
