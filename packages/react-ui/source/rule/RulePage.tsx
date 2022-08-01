@@ -5,6 +5,7 @@ import Engine, {
 	utils,
 } from 'publicodes'
 import { useContext, useEffect, useState } from 'react'
+import styled from 'styled-components'
 import {
 	BasepathContext,
 	DefaultTextRenderer,
@@ -15,6 +16,7 @@ import {
 import Explanation from '../Explanation'
 import { RuleLinkWithContext } from '../RuleLink'
 import RuleHeader from './Header'
+import { breakpointsWidth, RulesNav } from './RulesNav'
 import RuleSource from './RuleSource'
 
 type RulePageProps = {
@@ -88,110 +90,135 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 	const { valeur, nullableParent, ruleDisabledByItsParent } = rule.explanation
 
 	return (
-		<div id="documentationRuleRoot">
-			{useSubEngine && (
-				<div
-					style={{
-						display: 'flex',
-						alignItems: 'baseline',
-						flexWrap: 'wrap',
-						margin: '1rem 0',
-						paddingTop: '0.4rem',
-						paddingBottom: '0.4rem',
-					}}
-				>
-					<div>
-						Vous explorez la documentation avec le contexte{' '}
-						<strong className="ui__ label">mécanisme recalcul</strong>
-					</div>
-					<div style={{ flex: 1 }} />
-					<div>
-						<RuleLinkWithContext dottedName={dottedName} useSubEngine={false}>
-							Retourner à la version de base
-						</RuleLinkWithContext>
-					</div>
-				</div>
-			)}
-			<RuleHeader dottedName={dottedName} />
-			<section>
-				<Text>{description || question || ''}</Text>
-			</section>
-			{
-				<>
-					<p
+		<Container id="documentationRuleRoot">
+			<RulesNav dottedName={dottedName} />
+
+			<Article>
+				{useSubEngine && (
+					<div
 						style={{
-							fontSize: '1.25rem',
-							lineHeight: '2rem',
+							display: 'flex',
+							alignItems: 'baseline',
+							flexWrap: 'wrap',
+							margin: '1rem 0',
+							paddingTop: '0.4rem',
+							paddingBottom: '0.4rem',
 						}}
 					>
-						Valeur : {formatValue(rule, { language })}
-						{rule.nodeValue === undefined && rule.unit && (
-							<>
-								<br />
-								Unité : {serializeUnit(rule.unit)}
-							</>
-						)}
-					</p>
-				</>
-			}
-			{ruleDisabledByItsParent && (
-				<>
-					<blockquote>
-						Cette règle est <strong>non applicable</strong> car elle appartient
-						à l'espace de nom : <Explanation node={nullableParent} />
-					</blockquote>
-				</>
-			)}
-			<h2>Comment cette donnée est-elle calculée ?</h2>
-
-			<Explanation node={valeur} />
-			{dottedName in engine.getParsedRules() && (
-				<RuleSource key={dottedName} dottedName={dottedName} engine={engine} />
-			)}
-
-			{rule.missingVariables && (
-				<MissingVars
-					dottedName={dottedName}
-					selfMissing={Object.keys(rule.missingVariables)}
-				/>
-			)}
-
-			{rule.nodeValue === undefined && (
-				<ReverseMissing dottedName={dottedName} engine={engine} />
-			)}
-
-			{!!rule.replacements.length && (
-				<>
-					<h3>Effets </h3>
-					<ul>
-						{rule.replacements.map((replacement) => (
-							<li key={replacement.replacedReference.dottedName}>
-								<Explanation node={replacement} />
-							</li>
-						))}
-					</ul>
-				</>
-			)}
-
-			<NamespaceChildrenRules dottedName={dottedName} engine={engine} />
-
-			{rule.rawNode.note && (
-				<>
-					<h3>Note</h3>
-					<div className="ui__ notice">
-						<Text>{rule.rawNode.note}</Text>
+						<div>
+							Vous explorez la documentation avec le contexte{' '}
+							<strong className="ui__ label">mécanisme recalcul</strong>
+						</div>
+						<div style={{ flex: 1 }} />
+						<div>
+							<RuleLinkWithContext dottedName={dottedName} useSubEngine={false}>
+								Retourner à la version de base
+							</RuleLinkWithContext>
+						</div>
 					</div>
-				</>
-			)}
-			{rule.rawNode.références && References && (
-				<>
-					<h3>Références</h3>
-					<References references={rule.rawNode.références} />
-				</>
-			)}
-		</div>
+				)}
+				<RuleHeader dottedName={dottedName} />
+				<section>
+					<Text>{description || question || ''}</Text>
+				</section>
+				{
+					<>
+						<p
+							style={{
+								fontSize: '1.25rem',
+								lineHeight: '2rem',
+							}}
+						>
+							Valeur : {formatValue(rule, { language })}
+							{rule.nodeValue === undefined && rule.unit && (
+								<>
+									<br />
+									Unité : {serializeUnit(rule.unit)}
+								</>
+							)}
+						</p>
+					</>
+				}
+				{ruleDisabledByItsParent && (
+					<>
+						<blockquote>
+							Cette règle est <strong>non applicable</strong> car elle
+							appartient à l'espace de nom :{' '}
+							<Explanation node={nullableParent} />
+						</blockquote>
+					</>
+				)}
+				<h2>Comment cette donnée est-elle calculée ?</h2>
+
+				<Explanation node={valeur} />
+				{dottedName in engine.getParsedRules() && (
+					<RuleSource
+						key={dottedName}
+						dottedName={dottedName}
+						engine={engine}
+					/>
+				)}
+
+				{rule.missingVariables && (
+					<MissingVars
+						dottedName={dottedName}
+						selfMissing={Object.keys(rule.missingVariables)}
+					/>
+				)}
+
+				{rule.nodeValue === undefined && (
+					<ReverseMissing dottedName={dottedName} engine={engine} />
+				)}
+
+				{!!rule.replacements.length && (
+					<>
+						<h3>Effets </h3>
+						<ul>
+							{rule.replacements.map((replacement) => (
+								<li key={replacement.replacedReference.dottedName}>
+									<Explanation node={replacement} />
+								</li>
+							))}
+						</ul>
+					</>
+				)}
+
+				<NamespaceChildrenRules dottedName={dottedName} engine={engine} />
+
+				{rule.rawNode.note && (
+					<>
+						<h3>Note</h3>
+						<div className="ui__ notice">
+							<Text>{rule.rawNode.note}</Text>
+						</div>
+					</>
+				)}
+				{rule.rawNode.références && References && (
+					<>
+						<h3>Références</h3>
+						<References references={rule.rawNode.références} />
+					</>
+				)}
+			</Article>
+		</Container>
 	)
 }
+
+const Container = styled.div`
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: row;
+	gap: 2rem;
+
+	@media (max-width: ${breakpointsWidth.md}) {
+		flex-direction: column;
+	}
+`
+
+const Article = styled.article`
+	flex-basis: 70%;
+`
+
 function MissingVars({
 	dottedName,
 	selfMissing,
