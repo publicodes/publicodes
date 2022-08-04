@@ -10,23 +10,29 @@ export { cyclicDependencies } from './AST/graph'
 
 const splitName = (str: string) => str.split(' . ')
 const joinName = (strs: Array<string>) => strs.join(' . ')
+
 export const nameLeaf = (name: string) => splitName(name).slice(-1)?.[0]
+
 export const encodeRuleName = (name: string): string =>
 	name
 		?.replace(/\s\.\s/g, '/')
 		.replace(/-/g, '\u2011') // replace with a insecable tiret to differenciate from space
 		.replace(/\s/g, '-')
+
 export const decodeRuleName = (name: string): string =>
 	name
 		.replace(/\//g, ' . ')
 		.replace(/-/g, ' ')
 		.replace(/\u2011/g, '-')
+
+export function ruleParent(dottedName: string): string {
+	return joinName(splitName(dottedName).slice(0, -1))
+}
+
 export function ruleParents(dottedName: string): Array<string> {
-	const fragments = splitName(dottedName) // dottedName ex. [CDD . événements . rupture]
-	return Array(fragments.length - 1)
-		.fill(0)
-		.map((f, i) => fragments.slice(0, i + 1))
-		.map(joinName)
+	return splitName(dottedName)
+		.slice(0, -1)
+		.map((_, i, arr) => joinName(arr.slice(0, i + 1)))
 		.reverse()
 }
 
