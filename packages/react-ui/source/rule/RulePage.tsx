@@ -4,7 +4,7 @@ import Engine, {
 	serializeUnit,
 	utils,
 } from 'publicodes'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import {
 	BasepathContext,
@@ -38,12 +38,23 @@ export default function RulePage({
 		'currentEngineId'
 	)
 
+	const prevRenderers = useRef(renderers)
+	const [renderersValue, setRenderers] = useState({
+		Text: DefaultTextRenderer,
+		...renderers,
+	})
+	useEffect(() => {
+		if (prevRenderers.current !== renderers) {
+			prevRenderers.current = renderers
+
+			setRenderers({ Text: DefaultTextRenderer, ...renderers })
+		}
+	}, [renderers])
+
 	return (
 		<EngineContext.Provider value={engine}>
 			<BasepathContext.Provider value={documentationPath}>
-				<RenderersContext.Provider
-					value={{ Text: DefaultTextRenderer, ...renderers }}
-				>
+				<RenderersContext.Provider value={renderersValue}>
 					<Rule
 						dottedName={utils.decodeRuleName(rulePath)}
 						subEngineId={
@@ -210,7 +221,7 @@ const Container = styled.div`
 	flex-direction: row;
 	gap: 2rem;
 
-	@media (max-width: ${breakpointsWidth.md}) {
+	@media (max-width: ${breakpointsWidth.lg}) {
 		flex-direction: column;
 	}
 `

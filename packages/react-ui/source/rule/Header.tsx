@@ -18,6 +18,9 @@ export default function RuleHeader({ dottedName }) {
 		<header>
 			<Meta title={displayTitle} description={description || question} />
 			<div>
+				<span id="rules-nav-open-nav-button">
+					{/* Portal for OpenNavButton in RulesNav */}
+				</span>
 				{utils
 					.ruleParents(dottedName)
 					.reverse()

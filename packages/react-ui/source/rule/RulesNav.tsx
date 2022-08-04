@@ -1,7 +1,16 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { utils } from 'publicodes'
+import {
+	memo,
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from 'react'
+import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import { EngineContext } from '../contexts'
-import { ArrowUp, ArrowDown } from '../icons'
+import { ArrowDown, ArrowUp } from '../icons'
 import { RuleLinkWithContext } from '../RuleLink'
 
 interface Props {
@@ -16,15 +25,106 @@ export const RulesNav = ({ dottedName }: Props) => {
 		throw new Error('Engine expected')
 	}
 
+	const initLevel = (dn: string) =>
+		Object.fromEntries([
+			[dn, true],
+			...utils.ruleParents(dn).map((parent) => [parent, true]),
+		] as [string, boolean][])
+
+	const [level, setLevel] = useState(initLevel(dottedName))
+
+	useEffect(() => {
+		setLevel((prev) => ({ ...prev, ...initLevel(dottedName) }))
+		setNavOpen(false)
+	}, [dottedName])
+
+	const maxLevelOpen = Object.entries(level).reduce(
+		(max, [dot, open]) => (open ? Math.max(max, dot.split(' . ').length) : max),
+		0
+	)
+
 	const parsedRules = baseEngine.getParsedRules()
-	const [level, setLevel] = useState(
-		Object.fromEntries(
-			dottedName
-				.split(' . ')
-				.map((x, i, arr) =>
-					i < arr.length - 1 ? [arr.slice(0, i + 1).join(' . '), true] : []
-				)
+
+	const toggleDropdown = useCallback((ruleDottedName: string) => {
+		setLevel((prevLevel) =>
+			!prevLevel[ruleDottedName]
+				? {
+						...prevLevel,
+						[ruleDottedName]: !prevLevel[ruleDottedName],
+				  }
+				: Object.fromEntries(
+						Object.entries(prevLevel).map(([dot, val]) =>
+							dot.startsWith(ruleDottedName) ? [dot, false] : [dot, val]
+						)
+				  )
 		)
+	}, [])
+
+	return (
+		<>
+			<Background
+				$open={navOpen}
+				onClick={() => {
+					setNavOpen((open) => !open)
+				}}
+			/>
+
+			{/* Portal in Header */}
+			{document.getElementById('rules-nav-open-nav-button') &&
+				ReactDOM.createPortal(
+					<OpenNavButton onClick={() => setNavOpen(true)}>
+						Toutes les règles
+					</OpenNavButton>,
+					document.getElementById('rules-nav-open-nav-button')
+				)}
+
+			<Nav $open={navOpen}>
+				<ul style={{ width: maxLevelOpen * 16 + 350 }}>
+					{Object.entries(parsedRules)
+						.sort(([a], [b]) => a.localeCompare(b))
+						.map(([ruleDottedName, rest]) => {
+							const parentDottedName = utils.ruleParent(ruleDottedName)
+
+							if (
+								ruleDottedName.split(' . ').length > 1 &&
+								!level[parentDottedName]
+							) {
+								return null
+							}
+
+							const open = ruleDottedName in level && level[ruleDottedName]
+
+							return (
+								<MemoNavLi
+									key={ruleDottedName}
+									ruleDottedName={ruleDottedName}
+									open={open}
+									active={dottedName === ruleDottedName}
+									onClickDropdown={toggleDropdown}
+								/>
+							)
+						})}
+				</ul>
+			</Nav>
+		</>
+	)
+}
+
+const NavLi = ({ ruleDottedName, open, active, onClickDropdown }) => {
+	const baseEngine = useContext(EngineContext)
+
+	if (!baseEngine) {
+		throw new Error('Engine expected')
+	}
+
+	const parsedRules = baseEngine.getParsedRules()
+	const childrenCount = Object.keys(parsedRules).reduce(
+		(acc, ruleDot) =>
+			ruleDot.startsWith(ruleDottedName + ' . ') &&
+			ruleDot.split(' . ').length === ruleDottedName.split(' . ').length + 1
+				? acc + 1
+				: acc,
+		0
 	)
 
 	const activeLi = useRef<HTMLLIElement>(null)
@@ -37,99 +137,27 @@ export const RulesNav = ({ dottedName }: Props) => {
 	}, [])
 
 	return (
-		<>
-			<Background
-				$open={navOpen}
-				onClick={() => {
-					console.log('click nav')
-
-					setNavOpen((open) => !open)
-				}}
-			/>
-
-			<OpenNavButton onClick={() => setNavOpen(true)}>
-				Voir l'arborescence des règles
-			</OpenNavButton>
-
-			<Nav $open={navOpen}>
-				<ul>
-					{Object.entries(parsedRules)
-						.sort(([a], [b]) => a.localeCompare(b))
-						.map(([ruleDottedName, rest]) => {
-							const parentDottedName = ruleDottedName
-								.split(' . ')
-								.slice(0, -1)
-								.join(' . ')
-
-							if (
-								rest.explanation.parents.length > 0 &&
-								!level[parentDottedName]
-							) {
-								return null
-							}
-
-							return (
-								<li
-									key={ruleDottedName}
-									style={{
-										marginLeft: (ruleDottedName.split(' . ').length - 1) * 16,
-									}}
-									className={
-										(Object.keys(parsedRules).reduce((acc, dot) => {
-											return dot.startsWith(ruleDottedName + ' . ') &&
-												ruleDottedName.split(' . ').length + 1 ===
-													dot.split(' . ').length
-												? acc + 1
-												: acc
-										}, 0) > 0
-											? 'dropdown'
-											: '') +
-										' ' +
-										(dottedName === ruleDottedName ? 'active' : '')
-									}
-									ref={dottedName === ruleDottedName ? activeLi : undefined}
-								>
-									{Object.keys(parsedRules).reduce((acc, dot) => {
-										return dot.startsWith(ruleDottedName + ' . ') &&
-											ruleDottedName.split(' . ').length + 1 ===
-												dot.split(' . ').length
-											? acc + 1
-											: acc
-									}, 0) > 0 && (
-										<DropdownButton
-											onClick={() => {
-												setLevel((obj) =>
-													!obj[ruleDottedName]
-														? {
-																...obj,
-																[ruleDottedName]: !obj[ruleDottedName],
-														  }
-														: Object.fromEntries(
-																Object.entries(obj).map(([dot, val]) =>
-																	dot.startsWith(ruleDottedName)
-																		? [dot, false]
-																		: [dot, val]
-																)
-														  )
-												)
-											}}
-										>
-											{ruleDottedName in level && level[ruleDottedName] ? (
-												<StyledArrowUp />
-											) : (
-												<StyledArrowDown />
-											)}
-										</DropdownButton>
-									)}
-									<RuleLinkWithContext dottedName={ruleDottedName} />
-								</li>
-							)
-						})}
-				</ul>
-			</Nav>
-		</>
+		<li
+			key={ruleDottedName}
+			ref={active ? activeLi : undefined}
+			style={{
+				marginLeft: (ruleDottedName.split(' . ').length - 1) * 16,
+			}}
+			className={
+				(childrenCount > 0 ? 'dropdown ' : '') + (active ? 'active ' : '')
+			}
+		>
+			{childrenCount > 0 && (
+				<DropdownButton onClick={() => onClickDropdown(ruleDottedName)}>
+					{open ? <StyledArrowUp /> : <StyledArrowDown />}
+				</DropdownButton>
+			)}
+			<RuleLinkWithContext dottedName={ruleDottedName} displayIcon />
+		</li>
 	)
 }
+
+const MemoNavLi = memo(NavLi)
 
 export const breakpointsWidth = {
 	sm: '576px',
@@ -145,18 +173,30 @@ const Background = styled.div<{ $open: boolean }>`
 	left: 0;
 	bottom: 0;
 	right: 0;
-	z-index: 1;
+	z-index: 10;
 	transition: visibility, opacity, ease-in-out 0.25s;
 	visibility: ${({ $open }) => ($open ? 'visible' : 'hidden')};
 	opacity: ${({ $open }) => ($open ? '1' : '0')};
 
-	@media (min-width: ${breakpointsWidth.md}) {
+	@media (min-width: ${breakpointsWidth.lg}) {
 		display: none;
 	}
 `
 
 const OpenNavButton = styled.button`
-	@media (min-width: ${breakpointsWidth.md}) {
+	margin: 0.25rem 0;
+	margin-right: 0.5rem;
+	background: none;
+	border: 1px solid rgb(29, 66, 140);
+	border-radius: 3px;
+	color: rgb(29, 66, 140);
+	padding: 0.5rem;
+	display: inline-block;
+
+	&:hover {
+		background-color: rgb(219, 231, 255);
+	}
+	@media (min-width: ${breakpointsWidth.lg}) {
 		display: none;
 	}
 `
@@ -164,20 +204,19 @@ const OpenNavButton = styled.button`
 const Nav = styled.nav<{ $open: boolean }>`
 	flex-basis: 30%;
 	overflow: scroll;
-	white-space: nowrap;
 	max-height: 80vh;
 	position: sticky;
 	top: 0;
 
-	@media (max-width: ${breakpointsWidth.md}) {
+	@media (max-width: ${breakpointsWidth.lg}) {
 		position: fixed;
 		top: 0;
 		left: 0;
 		bottom: 0;
-		right: 20%;
-		z-index: 1;
+		z-index: 20;
 		max-height: initial;
 		background: white;
+		max-width: 75vw;
 
 		transition: all ease-in-out 0.25s;
 		${({ $open }) => ($open ? '' : 'left: -100%; right: 100%;')}
@@ -190,11 +229,6 @@ const Nav = styled.nav<{ $open: boolean }>`
 		flex-wrap: nowrap;
 		align-items: flex-start;
 
-		@media (max-width: ${breakpointsWidth.md}) {
-			margin: 0;
-			padding: 0.5rem;
-		}
-
 		li {
 			margin-bottom: 3px;
 			padding: 3px 0.5rem 3px 3px;
@@ -202,6 +236,7 @@ const Nav = styled.nav<{ $open: boolean }>`
 			align-items: center;
 			flex-direction: row;
 			flex-wrap: nowrap;
+			max-width: 350px;
 
 			&.active {
 				background-color: #e6e6e6;
@@ -212,8 +247,8 @@ const Nav = styled.nav<{ $open: boolean }>`
 				content: ' ';
 				display: inline-block;
 				background-color: #b3b3b3;
-				width: 0.5rem;
-				height: 0.5rem;
+				min-width: 0.5rem;
+				min-height: 0.5rem;
 				border-radius: 0.5rem;
 				margin-left: 0.5rem;
 				margin-right: 1.25rem;
@@ -229,10 +264,15 @@ const DropdownButton = styled.button`
 	border: 1px solid #b3b3b3;
 	border-radius: 2rem;
 	width: 1.5rem;
+	min-width: 1.5rem;
+	max-width: 1.5rem;
 	height: 1.5rem;
+	min-height: 1.5rem;
+	max-height: 1.5rem;
 	color: #999;
-	padding: 0px;
+	padding: 0;
 	display: inline-block;
+	line-height: 0;
 `
 
 const StyledArrowUp = styled(ArrowUp)`
