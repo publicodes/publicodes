@@ -11,13 +11,14 @@ import Engine from '../source/index'
 import { Rule } from '../source/rule'
 import { parseUnit } from '../source/units'
 import testSuites from './mécanismes/index'
+import { parse } from 'yaml'
 
 testSuites.forEach(([suiteName, suite]) => {
 	// if (suiteName !== 'résoudre-référence-circulaire') {
 	// 	return
 	// }
 	describe(`Mécanisme ${suiteName}`, () => {
-		const engine = new Engine(suite)
+		const engine = new Engine(parse(suite))
 		Object.entries(engine.getParsedRules())
 			.filter(([, rule]) => !!rule.rawNode.exemples)
 			.forEach(([name, test]) => {

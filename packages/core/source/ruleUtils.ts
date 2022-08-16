@@ -9,7 +9,11 @@ import { addToMapSet } from './utils'
 import dedent from 'dedent-js'
 import yaml from 'yaml'
 
-export const parseYaml = (yamlString: string) => yaml.parse(dedent(yamlString))
+export const parseYaml = (yamlString: string) => {
+	const yo = yaml.parse(dedent(yamlString))
+	console.log(yo)
+	return yo
+}
 
 export { cyclicDependencies } from './AST/graph'
 
