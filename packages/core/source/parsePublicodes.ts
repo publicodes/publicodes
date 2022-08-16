@@ -1,4 +1,3 @@
-import yaml from 'yaml'
 import { Logger, ParsedRules } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
 import inferNodeType, { NodesTypes } from './inferNodeType'
@@ -66,19 +65,14 @@ export default function parsePublicodes<
 	ContextNames extends string,
 	NewRulesNames extends string
 >(
-	rawRules: RawPublicodes<NewRulesNames> | string,
+	rawRules: RawPublicodes<NewRulesNames>,
 	partialContext: Partial<Context<ContextNames>> = createContext({})
 ): Pick<
 	Context<ContextNames | NewRulesNames>,
 	'parsedRules' | 'nodesTypes' | 'referencesMaps' | 'rulesReplacements'
 > {
-	// STEP 1: parse Yaml
-	let rules =
-		typeof rawRules === 'string'
-			? (yaml.parse(
-					('' + rawRules).replace(/\t/g, '  ')
-			  ) as RawPublicodes<NewRulesNames>)
-			: { ...rawRules }
+	// STEP 1 : get the rules as objects
+	let rules = { ...rawRules }
 
 	// STEP 2: Rules parsing
 	const context = createContext(partialContext)

@@ -101,7 +101,7 @@ export default class Engine<Name extends string = string> {
 	subEngines: Array<Engine<Name>> = []
 	subEngineId: number | undefined
 
-	constructor(rules: RawPublicodes<Name> | string = {}, options: Options = {}) {
+	constructor(rules: RawPublicodes<Name> = {}, options: Options = {}) {
 		const initialContext = {
 			dottedName: '' as const,
 			...options,
