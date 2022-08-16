@@ -1,10 +1,7 @@
 // TODO: migrate to the 100% yaml test syntax in mecanisms/inversion.yaml
 import { expect } from 'chai'
-import dedent from 'dedent-js'
 import Engine from '../source/index'
-import yaml from 'yaml'
-
-const parseYaml = (yamlString) => yaml.parse(dedent(yamlString))
+import { parseYaml } from '../source/ruleUtils'
 
 describe('inversions', () => {
 	it('should handle basic inversion', () => {

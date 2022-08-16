@@ -6,6 +6,11 @@ import { ReferenceNode } from './reference'
 import { RuleNode } from './rule'
 import { addToMapSet } from './utils'
 
+import dedent from 'dedent-js'
+import yaml from 'yaml'
+
+export const parseYaml = (yamlString: string) => yaml.parse(dedent(yamlString))
+
 export { cyclicDependencies } from './AST/graph'
 
 const splitName = (str: string) => str.split(' . ')
