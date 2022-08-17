@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import yaml from 'yaml'
 import Engine from '../source/index'
-import { parseYaml } from '../source/ruleUtils'
+import { parseYaml } from './utils.ts'
 
 describe('Missing variables', function () {
 	it('should identify missing variables in applicability', function () {
@@ -105,10 +105,10 @@ describe('Missing variables', function () {
 
 	it('should ignore missing variables from the parent', () => {
 		const rawRules = parseYaml`
-		a:
-			somme:
-			- nom: b
-			- nom: c`
+		  a:
+		    somme:
+		      - nom: b
+		      - nom: c`
 		const missingVariables = new Engine(rawRules).evaluate(
 			'a . b'
 		).missingVariables

@@ -3,12 +3,13 @@ import 'mocha'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import Engine from '../source'
-import { parseYaml } from '../source/ruleUtils'
+import { parseYaml } from './utils'
+import { parse } from 'yaml'
 
 chai.use(sinonChai)
 
 describe('When two different recalculs are nested', () => {
-	const rulesYaml = `
+	const rulesYaml = parse(`
 a: 1
 b: a * 2
 c:
@@ -21,7 +22,7 @@ d:
     règle: c
     avec:
       a: 100
-`
+`)
 	const sandbox = sinon.createSandbox()
 
 	beforeEach(() => {
@@ -55,15 +56,15 @@ d:
 
 describe('When rule recalculing itself', () => {
 	const rulesYaml = parseYaml`
-a: 100 €
-r:
-  produit:
-    assiette: a
-    taux: 50%
-  plafond:
-    recalcul:
-      avec:
-        a: 1000 €
+		a: 100 €
+		r:
+		  produit:
+		    assiette: a
+		    taux: 50%
+		  plafond:
+		    recalcul:
+		      avec:
+		        a: 1000 €
 `
 	const sandbox = sinon.createSandbox()
 

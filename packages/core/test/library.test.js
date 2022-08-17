@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import Engine from '../source/index'
-import { parseYaml } from '../source/ruleUtils'
+import { parseYaml } from './utils.ts'
 import { parse } from 'yaml'
 
 import { fileURLToPath } from 'url'
@@ -9,16 +9,19 @@ const __dirname = path.dirname(__filename)
 import fs from 'fs'
 import path from 'path'
 
+const co2Yaml = fs.readFileSync(path.resolve(__dirname, './co2.yaml'), 'utf8')
+
 describe('library', function () {
 	it('should let the user define its own rule', function () {
-		let rules = parseYaml`
+		let rules = parse(`
 yo:
   formule: 200
 ya:
   formule:  yo + 1
 yi:
   formule:  yo + 2
-`
+`)
+
 		let engine = new Engine(rules)
 
 		expect(engine.evaluate('ya').nodeValue).to.equal(201)
@@ -26,15 +29,15 @@ yi:
 	})
 
 	it('should let the user define a simplified revenue tax system', function () {
-		let rules = parseYaml`
+		let rules = parse(`
 revenu imposable:
   question: Quel est votre revenu imposable ?
   unité: €
 
 revenu abattu:
   formule:
-		valeur: revenu imposable
-		abattement: 10%
+    valeur: revenu imposable
+    abattement: 10%
 
 impôt sur le revenu:
   formule:
@@ -53,11 +56,11 @@ impôt sur le revenu:
 
 impôt sur le revenu à payer:
   formule:
-		valeur: impôt sur le revenu
-		abattement:
-			valeur: 1177 - (75% * impôt sur le revenu)
-			plancher: 0
-`
+    valeur: impôt sur le revenu
+    abattement:
+      valeur: 1177 - (75% * impôt sur le revenu)
+      plancher: 0
+`)
 
 		let engine = new Engine(rules)
 		engine.setSituation({
@@ -68,10 +71,7 @@ impôt sur le revenu à payer:
 	})
 
 	it('should let the user define a rule base on a completely different subject', function () {
-		const co2Rules = parse(
-			fs.readFileSync(path.resolve(__dirname, './co2.yaml'))
-		)
-		let engine = new Engine(parse(co2Rules))
+		let engine = new Engine(parse(co2Yaml))
 		engine.setSituation({
 			'douche . nombre': 30,
 			'chauffage . type': "'gaz'",

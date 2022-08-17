@@ -4,6 +4,7 @@ import Koa from 'koa'
 import Engine from 'publicodes'
 import { afterAll, beforeAll, chai, describe, expect, it } from 'vitest'
 import publicodesAPI from '../middleware/koa'
+import { parse } from 'yaml'
 
 interface State extends Koa.DefaultState {}
 
@@ -13,10 +14,12 @@ const app = new Koa<State, Context>()
 const router = new Router<State, Context>()
 
 const apiRoutes = publicodesAPI(
-	new Engine(`
+	new Engine(
+		parse(`
 coucou: 0
 coucou . j'ai des caractères spéciaux: "'ok'"
 `)
+	)
 )
 
 router.use(apiRoutes)

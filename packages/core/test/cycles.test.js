@@ -1,11 +1,12 @@
 import { expect } from 'chai'
 import dedent from 'dedent-js'
 import { cyclesInDependenciesGraph } from '../source/AST/graph'
+import { parseYaml } from './utils'
 
 // Cycles due to parents dependencies are not handled currently.
 describe.skip('Cyclic dependencies detectron 3000 ™', () => {
 	it('should detect the trivial formule cycle', () => {
-		const rules = dedent`
+		const rules = parseYaml`
 			a:
 				formule: a + 1
 		`
@@ -14,7 +15,7 @@ describe.skip('Cyclic dependencies detectron 3000 ™', () => {
 	})
 
 	it('should detect nested and parallel formule cycles', () => {
-		const rules = dedent`
+		const rules = parseYaml`
 			a:
 				formule: b + 1
 			b:
@@ -29,7 +30,7 @@ describe.skip('Cyclic dependencies detectron 3000 ™', () => {
 	})
 
 	it('should not detect formule cycles due to parent dependency', () => {
-		const rules = dedent`
+		const rules = parseYaml`
 			a:
 				formule: b + 1
 			a . b:
@@ -40,7 +41,7 @@ describe.skip('Cyclic dependencies detectron 3000 ™', () => {
 	})
 
 	it('should not detect cycles when résoudre référence circulaire', () => {
-		const rules = dedent`
+		const rules = parseYaml`
 			fx:
 				200 - x
 			x:
