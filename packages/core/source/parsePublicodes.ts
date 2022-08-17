@@ -71,7 +71,12 @@ export default function parsePublicodes<
 	Context<ContextNames | NewRulesNames>,
 	'parsedRules' | 'nodesTypes' | 'referencesMaps' | 'rulesReplacements'
 > {
-	// STEP 1 : get the rules as objects
+	// STEP 1 : get the rules as an object
+
+	if (typeof rawRules === 'string')
+		throw Error(
+			'Publicodes does not parse yaml rule sets itself anymore. Please provide a parsed js object. E.g. the `eemeli/yaml` package.'
+		)
 	let rules = { ...rawRules }
 
 	// STEP 2: Rules parsing
