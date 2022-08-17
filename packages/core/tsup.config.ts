@@ -7,7 +7,4 @@ export default defineConfig({
 	sourcemap: true,
 	clean: true,
 	dts: true,
-	loader: {
-		'.yaml': 'text',
-	},
 })

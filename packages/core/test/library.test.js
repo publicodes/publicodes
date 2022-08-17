@@ -1,8 +1,13 @@
 import { expect } from 'chai'
 import Engine from '../source/index'
 import { parseYaml } from '../source/ruleUtils'
-import co2Rules from './co2.yaml'
 import { parse } from 'yaml'
+
+import { fileURLToPath } from 'url'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+import fs from 'fs'
+import path from 'path'
 
 describe('library', function () {
 	it('should let the user define its own rule', function () {
@@ -63,6 +68,9 @@ impôt sur le revenu à payer:
 	})
 
 	it('should let the user define a rule base on a completely different subject', function () {
+		const co2Rules = parse(
+			fs.readFileSync(path.resolve(__dirname, './co2.yaml'))
+		)
 		let engine = new Engine(parse(co2Rules))
 		engine.setSituation({
 			'douche . nombre': 30,
