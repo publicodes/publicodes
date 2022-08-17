@@ -1,46 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Editor } from 'react-live'
-import { usePrismTheme } from '@docusaurus/theme-common'
-import styles from '@docusaurus/theme-live-codeblock/src/theme/Playground/styles.module.css'
 import type {} from '@docusaurus/theme-classic' // required for @theme/CodeBlock types
 import CodeBlock from '@theme/CodeBlock'
-import Documentation from './Documentation'
-import ErrorBoundary from './ErrorBoundary'
+import React, { lazy, Suspense, useEffect, useState } from 'react'
 import publicodeStyles from './publicodeExample.module.css'
-
-function Playground({
-	language,
-	defaultTarget,
-	onTargetChange,
-	onChange,
-	children,
-	...props
-}): JSX.Element {
-	const prismTheme = usePrismTheme()
-
-	return (
-		<div className={styles.playgroundContainer}>
-			<div className={styles.playgroundHeader}>Editeur live</div>
-			<Editor
-				{...props}
-				code={children}
-				theme={prismTheme}
-				language={language}
-				disabled={false}
-				className={styles.playgroundEditor + ' ' + publicodeStyles.editor}
-				onChange={onChange}
-			/>
-			<ErrorBoundary key={children}>
-				<Documentation
-					rules={children}
-					defaultTarget={defaultTarget}
-					onTargetChange={onTargetChange}
-				/>
-				<div style={{ paddingBottom: '1rem' }} />
-			</ErrorBoundary>
-		</div>
-	)
-}
+const Playground = lazy(() => import('./Playground'))
 
 interface PublicodeExampleProps {
 	rules: string
@@ -69,14 +31,16 @@ export default function PublicodeExample({
 			{!edit ? (
 				<CodeBlock language={language}>{code}</CodeBlock>
 			) : (
-				<Playground
-					language={language}
-					defaultTarget={target}
-					onTargetChange={setTarget}
-					onChange={(text) => setCode(text)}
-				>
-					{code}
-				</Playground>
+				<Suspense fallback={<div>Chargement en cours</div>}>
+					<Playground
+						language={language}
+						defaultTarget={target}
+						onTargetChange={setTarget}
+						onChange={(text) => setCode(text)}
+					>
+						{code}
+					</Playground>
+				</Suspense>
 			)}
 			<button
 				className={publicodeStyles.button}
