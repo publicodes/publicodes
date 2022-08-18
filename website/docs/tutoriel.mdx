@@ -106,7 +106,7 @@ const engine = new Engine(parsedRules)
 Pourquoi ne pas accepter du YAML en entrée de publicodes, alors que cette syntaxe est effectivement plus agréable que du JSON ? 
 
 Parce que l'étape de parsing du YAML nécessite d'embarquer une lourde bibliothèque. 
-Libre ainsi à chaque projet de faire cette étape au moment et à l'endroit le plus adapté, côté serveur 
+Libre ainsi à chaque projet de faire cette étape au moment et à l'endroit le plus adapté, côté serveur ou lors du build de l’application
 
 > Il est donc également tout à fait possible d'initialiser `Engine` avec un objet JSON, il suffit de le parser avec la fonction native `JSON.parse(monJSON)`.
 > Le JSON étant le langage dominant des APIs (on n'échange jamais de YAML par API), c'est un moyen en pratique courant de le faire.
