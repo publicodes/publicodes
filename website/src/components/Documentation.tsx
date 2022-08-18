@@ -6,6 +6,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import ErrorBoundary, { nl2br } from './ErrorBoundary'
 
+// this is a heavy library, this component shoudl be lazy loaded
+import { parse } from 'yaml'
+
 type ResultsProps = {
 	rules: string
 	onClickShare?: React.MouseEventHandler
@@ -49,7 +52,10 @@ export default function Documentation({
 	baseUrl,
 }: ResultsProps) {
 	const logger = useMemo(() => new Logger(), [rules])
-	const engine = useMemo(() => new Engine(rules, { logger }), [rules, logger])
+	const engine = useMemo(
+		() => new Engine(parse(rules), { logger }),
+		[rules, logger]
+	)
 	const targets = useMemo(() => Object.keys(engine.getParsedRules()), [engine])
 	const pathToRules = useMemo(
 		() => getDocumentationSiteMap({ engine, documentationPath: '' }),

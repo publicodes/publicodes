@@ -1,6 +1,6 @@
 {
 	"name": "publicodes",
-	"version": "1.0.0-beta.46",
+	"version": "1.0.0-beta.47",
 	"description": "A declarative language for encoding public algorithm",
 	"types": "dist/index.d.ts",
 	"type": "module",
@@ -42,8 +42,7 @@
 	},
 	"dependencies": {
 		"moo": "^0.5.1",
-		"nearley": "^2.19.2",
-		"yaml": "^1.9.2"
+		"nearley": "^2.19.2"
 	},
 	"scripts": {
 		"build:grammar": "nearleyc ./source/grammar.ne -o ./source/grammar.js",

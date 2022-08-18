@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.47
+
+**core**
+
+-   **⚠ Changement cassant** Enlève la possibilité d'initialiser l'`Engine` avec un string YAML. Le client doit se charger du parsing lui-même.
+
 ## 1.0.0-beta.46
 
 **publicodes-react**

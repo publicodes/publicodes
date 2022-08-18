@@ -4014,14 +4014,14 @@ __metadata:
     koa-body: ^5.0.0
     nodemon: ^2.0.16
     openapi-validator-middleware: ^3.2.6
-    publicodes: ^1.0.0-beta.46
+    publicodes: ^1.0.0-beta.47
     ts-node: ^10.8.0
     tsup: ^6.0.1
     typescript: ^4.7.2
     vitest: ^0.12.9
     wait-on: ^6.0.1
   peerDependencies:
-    publicodes: ^1.0.0-beta.46
+    publicodes: ^1.0.0-beta.47
   languageName: unknown
   linkType: soft
 
@@ -13562,6 +13562,7 @@ __metadata:
   resolution: "publicodes-monorepo@workspace:."
   dependencies:
     prettier: ^2.5.1
+    yaml: ^2.1.1
   languageName: unknown
   linkType: soft
 
@@ -13581,7 +13582,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"publicodes@^1.0.0-beta.46, publicodes@workspace:^, publicodes@workspace:packages/core":
+"publicodes@^1.0.0-beta.47, publicodes@workspace:^, publicodes@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "publicodes@workspace:packages/core"
   dependencies:
@@ -13601,7 +13602,6 @@ __metadata:
     ts-node: ^10.7.0
     tsup: ^6.0.1
     typescript: ^4.5.5
-    yaml: ^1.9.2
   peerDependencies:
     "@types/mocha": ^9.0.0
   languageName: unknown
@@ -17333,10 +17333,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^1.10.0, yaml@npm:^1.10.2, yaml@npm:^1.7.2, yaml@npm:^1.9.2":
+"yaml@npm:^1.10.0, yaml@npm:^1.10.2, yaml@npm:^1.7.2":
   version: 1.10.2
   resolution: "yaml@npm:1.10.2"
   checksum: ce4ada136e8a78a0b08dc10b4b900936912d15de59905b2bf415b4d33c63df1d555d23acb2a41b23cf9fb5da41c256441afca3d6509de7247daa062fd2c5ea5f
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "yaml@npm:2.1.1"
+  checksum: f48bb209918aa57cfaf78ef6448d1a1f8187f45c746f933268b7023dc59e5456004611879126c9bb5ea55b0a2b1c2b392dfde436931ece0c703a3d754562bb96
   languageName: node
   linkType: hard
 

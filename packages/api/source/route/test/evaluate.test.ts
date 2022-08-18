@@ -2,6 +2,7 @@ import Engine from 'publicodes'
 import { describe, expect, it, vi } from 'vitest'
 import { Expressions, Situation } from '../../types'
 import { evaluate } from '../evaluate'
+import { parse } from 'yaml'
 
 const obj = {
 	setSituation: (_situation?: Situation) => 42,
@@ -30,7 +31,7 @@ dépenses primeur:
       - prix . avocat * 3 avocat
 `
 
-const engine = new Engine(rules)
+const engine = new Engine(parse(rules))
 
 describe('evaluate', () => {
 	it('Test input/output', () => {

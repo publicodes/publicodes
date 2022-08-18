@@ -2,7 +2,7 @@ import Engine from 'publicodes'
 import { describe, expect, it } from 'vitest'
 import { rules, rulesId } from '../rules'
 
-const engine = new Engine('rules: 42')
+const engine = new Engine({ rules: 42 })
 
 describe('evaluate', () => {
 	it('Should list rules', () => {

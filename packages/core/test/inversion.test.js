@@ -1,11 +1,11 @@
 // TODO: migrate to the 100% yaml test syntax in mecanisms/inversion.yaml
 import { expect } from 'chai'
-import dedent from 'dedent-js'
 import Engine from '../source/index'
+import { parseYaml } from './utils'
 
 describe('inversions', () => {
 	it('should handle basic inversion', () => {
-		const rules = dedent`
+		const rules = parseYaml`
         a: b + 10
 
         b:
@@ -19,7 +19,7 @@ describe('inversions', () => {
 	})
 
 	it('should handle simple inversion', () => {
-		const rules = dedent`
+		const rules = parseYaml`
         net:
           formule:
             produit:
@@ -41,7 +41,7 @@ describe('inversions', () => {
 	})
 
 	it('should handle inversion with value at 0', () => {
-		const rules = dedent`
+		const rules = parseYaml`
         net:
           formule:
             produit:
@@ -62,7 +62,7 @@ describe('inversions', () => {
 	})
 
 	it('should handle inversions with missing variables', () => {
-		const rules = dedent`
+		const rules = parseYaml`
         net:
           formule:
             produit:
@@ -109,26 +109,25 @@ describe('inversions', () => {
 	})
 
 	it('should reset cache after a failed inversion', () => {
-		const rules = dedent`
+		const rules = parseYaml`
 			net:
-				variations:
-					- si: assiette < 100
-						alors: 100
-					- sinon: 200
+		      variations:
+		        - si: assiette < 100
+		          alors: 100
+		        - sinon: 200
 			assiette: brut
 			brut:
-				inversion numérique:
-					avec:
-						- net
+			  inversion numérique:
+			    avec:
+			      - net
 		`
-
 		const engine = new Engine(rules)
 		engine.setSituation({ net: 150 }).evaluate('brut')
 		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
 	})
 
 	it("shouldn't report a missing salary if another salary was input", () => {
-		const rules = dedent`
+		const rules = parseYaml`
         net:
           formule:
             produit:
@@ -167,7 +166,7 @@ describe('inversions', () => {
 	})
 
 	it('complex inversion with composantes', () => {
-		const rules = dedent`
+		const rules = parseYaml`
       net:
         formule:
           produit:

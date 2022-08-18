@@ -1,37 +1,39 @@
 import { expect } from 'chai'
 import Engine from '../source/index'
+import { engineFromYaml, parseYaml } from './utils'
 
 describe('setSituation', () => {
 	it('should allow to evaluate without situation', () => {
-		expect(new Engine('a: ').evaluate('a').nodeValue).to.eq(undefined)
+		expect(engineFromYaml('a: ').evaluate('a').nodeValue).to.eq(undefined)
 	})
 	it('should allow to evaluate with situation set', () => {
 		expect(
-			new Engine('a: ').setSituation({ a: 5 }).evaluate('a').nodeValue
+			engineFromYaml('a: ').setSituation({ a: 5 }).evaluate('a').nodeValue
 		).to.eq(5)
 	})
 	it('should overwrite initial value with situation', () => {
 		expect(
-			new Engine('a: 10').setSituation({ a: 5 }).evaluate('a').nodeValue
+			engineFromYaml('a: 10').setSituation({ a: 5 }).evaluate('a').nodeValue
 		).to.eq(5)
 	})
 	it('should not allow to set situation for private rule', () => {
-		expect(() => new Engine('[privé] a: 10').setSituation({ a: 5 })).to.throw
+		expect(() => engineFromYaml('[privé] a: 10').setSituation({ a: 5 })).to
+			.throw
 	})
 	it('should report missing variables depth first', () => {
 		expect(
-			new Engine('a:\nb: a').evaluate('b').missingVariables
+			engineFromYaml('a:\nb: a').evaluate('b').missingVariables
 		).to.have.all.keys('a')
 	})
 
 	it('should not show private missing variables', () => {
 		expect(
-			new Engine('"[privé] a":\nb: a').evaluate('b').missingVariables
+			engineFromYaml('"[privé] a":\nb: a').evaluate('b').missingVariables
 		).to.have.all.keys('b')
 	})
 
 	it('should let the user reference rules in the situation', function () {
-		let rules = `
+		let rules = parseYaml`
 	referenced in situation:
 	  formule: 200
 	overwrited in situation:
@@ -47,7 +49,7 @@ describe('setSituation', () => {
 	})
 
 	it('should allow to create rules in the situation', function () {
-		let engine = new Engine('a:')
+		let engine = engineFromYaml('a:')
 		engine.setSituation({
 			a: {
 				valeur: 'b',
@@ -60,7 +62,7 @@ describe('setSituation', () => {
 	})
 
 	it('should allow to replace rules in the situation', function () {
-		let engine = new Engine('a: 5\nb:')
+		let engine = engineFromYaml('a: 5\nb:')
 		engine.setSituation({
 			b: {
 				valeur: 10,
@@ -71,7 +73,7 @@ describe('setSituation', () => {
 	})
 
 	it('should allow to keep previous situation', () => {
-		let engine = new Engine('a:\nb:\nc:')
+		let engine = engineFromYaml('a:\nb:\nc:')
 			.setSituation({ a: 5, c: 3 })
 			.setSituation({ b: 10, c: 'a' }, { keepPreviousSituation: true })
 		expect(engine.evaluate('a').nodeValue).to.equal(5)

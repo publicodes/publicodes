@@ -17,9 +17,10 @@ Crée un moteur d'évaluation avec les règles publicodes données en argument.
 
 **Arguments**
 
-- `rules` : les règles publicodes utilisées. Ces dernières peuvent être sous la
-  forme d'une chaîne de caractère `yaml` publicodes (ou d'un objet javascript
-  correspondant). Elle peuvent aussi être sous la forme de règles publicodes déjà parsées.
+- `rules` : les règles publicodes utilisées. Ces dernières doivent être sous la
+  forme d'un objet javascript respectant la syntaxe publicodes. Elle peuvent aussi être sous la forme de règles publicodes déjà parsées.
+
+> publicodes n'accepte plus en entrée une chaîne de caractères YAML, car le parser YAML alourdissait beaucoup la biblitothèque
 
 **Retourne**
 Un moteur d'évaluation qui expose les fonctions suivantes :
