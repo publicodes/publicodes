@@ -138,8 +138,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 				<>
 					<blockquote>
 						Cette règle est <strong>non applicable</strong> car elle appartient
-						à l'espace de nom :
-						<Explanation node={nullableParent} />
+						à l'espace de nom : <Explanation node={nullableParent} />
 					</blockquote>
 				</>
 			)}

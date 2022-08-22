@@ -459,4 +459,54 @@ a . b: 20 + 9
 		expect(Object.keys(result)).deep.to.equal(['e'])
 		expect(Object.keys(result)).to.have.lengthOf(1)
 	})
+
+	it('Should report missing variable from une possibilité', function () {
+		const rawRules = yaml.parse(`
+contrat:
+  une possibilité:
+    possibilités: 
+      - stage
+      - CDI
+      - CDD
+  avec:
+    stage:
+      valeur: contrat = 'stage'
+      rend non applicable: temps partiel
+    CDI:
+      valeur: contrat = 'CDI'
+    CDD:
+      valeur: contrat = 'CDD'
+
+contrat . temps partiel:
+  par défaut: oui
+	
+`)
+		const result = new Engine(rawRules).evaluate(
+			'contrat . temps partiel'
+		).missingVariables
+
+		expect(result).to.have.keys('contrat', 'contrat . temps partiel')
+		expect(result['contrat']).to.be.greaterThan(
+			result['contrat . temps partiel']
+		)
+	})
+
+	it('Should report missing variable from parent applicability first', function () {
+		const rawRules = yaml.parse(`
+
+a:
+  
+b: 
+  valeur: oui # TODO : this test doesn't pass when we remove this...
+  applicable si: a
+
+b . c: 
+b . d: c + c + c + c
+	
+`)
+		const result = new Engine(rawRules).evaluate('b . d').missingVariables
+
+		expect(result).to.have.keys('a', 'b . c')
+		expect(result['a']).to.be.greaterThan(result['b . c'])
+	})
 })

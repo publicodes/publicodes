@@ -80,4 +80,14 @@ describe('setSituation', () => {
 		expect(engine.evaluate('b').nodeValue).to.equal(10)
 		expect(engine.evaluate('c').nodeValue).to.equal(5)
 	})
+
+	it('should allow to make a rule applicable in the situation', () => {
+		const engine = engineFromYaml(`
+a:
+  par défaut: non
+a . b: 5
+		`).setSituation({ a: 'oui' })
+		expect(engine.evaluate('a').nodeValue).to.equal(true)
+		expect(engine.evaluate('a . b').nodeValue).to.equal(5)
+	})
 })

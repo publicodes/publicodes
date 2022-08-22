@@ -49,13 +49,14 @@ const evaluate: EvaluationFunction<'condition'> = function (node) {
 			'La condition doit être de type booléen'
 		)
 	}
+	const unit = evaluation.unit ?? (alors as any).unit
 	return {
 		...evaluation,
 		missingVariables: mergeMissing(
 			bonus(condition.missingVariables),
 			evaluation.missingVariables
 		),
-		unit: evaluation.unit ?? (alors as any).unit,
+		...(unit != undefined ? { unit } : {}),
 		...node,
 		explanation: { si: condition, alors, sinon },
 	}
