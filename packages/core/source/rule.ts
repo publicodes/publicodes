@@ -232,19 +232,22 @@ function updateRuleMissingVariables(
 	engine: Engine,
 	node: RuleNode,
 	valeurEvaluation: EvaluatedNode
-) {
+): void {
 	if (
-		node.private === false &&
-		isAccessible(engine.context.parsedRules, '', node.dottedName)
+		node.private === true ||
+		!isAccessible(engine.context.parsedRules, '', node.dottedName)
 	) {
-		if (
-			valeurEvaluation.nodeValue === undefined &&
-			!Object.keys(valeurEvaluation.missingVariables).length
-		) {
-			valeurEvaluation.missingVariables[node.dottedName] += 1
-		}
+		return
 	}
-	return valeurEvaluation.missingVariables
+
+	if (
+		valeurEvaluation.nodeValue === undefined &&
+		!Object.keys(valeurEvaluation.missingVariables).length
+	) {
+		valeurEvaluation.missingVariables[node.dottedName] = 1
+	}
+
+	return
 }
 
 export function evaluateDisablingParent(

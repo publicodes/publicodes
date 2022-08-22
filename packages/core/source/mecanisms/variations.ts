@@ -2,7 +2,7 @@ import { EvaluationFunction } from '..'
 import { ASTNode, EvaluatedNode, Unit } from '../AST/types'
 import { warning } from '../error'
 import { registerEvaluationFunction } from '../evaluationFunctions'
-import { defaultNode, mergeAllMissing } from '../evaluationUtils'
+import { bonus, defaultNode, mergeMissing } from '../evaluationUtils'
 import { convertNodeToUnit } from '../nodeUnits'
 import parse from '../parse'
 
@@ -139,20 +139,20 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 		nodeValue,
 		...(unit !== undefined && { unit }),
 		explanation,
-		missingVariables: mergeAllMissing(
-			explanation.reduce<ASTNode[]>(
-				(values, { condition, consequence }) =>
-					[
-						...values,
-						condition,
-						...('nodeValue' in condition &&
-						condition.nodeValue !== false &&
-						condition.nodeValue !== null
-							? [consequence]
-							: []),
-					] as any,
-				[]
-			)
+		missingVariables: explanation.reduce(
+			(values, { condition, consequence }) =>
+				mergeMissing(
+					values,
+					mergeMissing(
+						bonus((condition as EvaluatedNode).missingVariables),
+						'nodeValue' in condition &&
+							condition.nodeValue !== false &&
+							condition.nodeValue !== null
+							? (consequence as EvaluatedNode).missingVariables
+							: {}
+					)
+				),
+			{}
 		),
 	}
 }
