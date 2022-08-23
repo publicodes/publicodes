@@ -5,9 +5,8 @@
 }
 .studio > * {
 	flex: 1;
-}
-.studio > :first-child {
-	min-width: 55% !important;
+	border: rgb(0 0 0 / 25%) 1px solid;
+	overflow: auto;
 }
 
 @media (max-width: 960px) {

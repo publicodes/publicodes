@@ -173,8 +173,9 @@ const Background = styled.div<{ $open: boolean }>`
 	left: 0;
 	bottom: 0;
 	right: 0;
-	z-index: 10;
-	transition: visibility, opacity, ease-in-out 0.25s;
+	z-index: 200;
+	transition: ease-in-out 0.25s;
+	transition-property: visibility, opacity;
 	visibility: ${({ $open }) => ($open ? 'visible' : 'hidden')};
 	opacity: ${({ $open }) => ($open ? '1' : '0')};
 
@@ -213,7 +214,7 @@ const Nav = styled.nav<{ $open: boolean }>`
 		top: 0;
 		left: 0;
 		bottom: 0;
-		z-index: 20;
+		z-index: 200;
 		max-height: initial;
 		background: white;
 		max-width: 75vw;
@@ -228,6 +229,7 @@ const Nav = styled.nav<{ $open: boolean }>`
 		flex-direction: column;
 		flex-wrap: nowrap;
 		align-items: flex-start;
+		padding: 0;
 
 		li {
 			margin-bottom: 3px;
