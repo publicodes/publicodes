@@ -105,32 +105,7 @@ export default function Documentation({
 	return (
 		<div style={{ padding: '0 1rem' }}>
 			{logger.toJSX()}
-			<p>
-				<small>
-					Aller à{' '}
-					<select
-						onChange={(e) => {
-							setCurrentTarget(e.currentTarget.value ?? '')
-						}}
-						value={currentTarget}
-						style={{
-							fontSize: 'inherit',
-							color: 'inherit',
-							fontFamily: 'inherit',
-							maxWidth: '300px',
-						}}
-					>
-						{targets.map((target) => (
-							<option key={target} value={target}>
-								{target}
-							</option>
-						))}
-					</select>
-				</small>{' '}
-				{onClickShare && (
-					<button onClick={onClickShare}>🔗 Copier le lien</button>
-				)}
-			</p>
+
 			<ErrorBoundary>
 				<RulePage
 					language={'fr'}
@@ -156,6 +131,15 @@ export default function Documentation({
 					}}
 				/>
 			</ErrorBoundary>
+
+			{onClickShare && (
+				<button
+					style={{ margin: '1rem auto', display: 'block' }}
+					onClick={onClickShare}
+				>
+					🔗 Copier le lien de la page
+				</button>
+			)}
 		</div>
 	)
 }

@@ -47,8 +47,7 @@ export default function RuleSource({ engine, dottedName }: Props) {
 
 	// For clarity add a break line before the main rule
 
-	const baseURL =
-		location.hostname === 'localhost' ? '/publicodes' : 'https://publi.codes'
+	const baseURL = location.hostname === 'localhost' ? '' : 'https://publi.codes'
 
 	return (
 		<p style={{ textAlign: 'right' }}>

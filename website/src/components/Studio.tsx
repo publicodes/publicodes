@@ -53,31 +53,33 @@ export default function Studio() {
 	const defaultTarget = target && decodeRuleName(target)
 
 	return (
-		<>
-			<div className={styles.studio}>
+		<div className={styles.studio}>
+			<div>
 				<MonacoEditor
 					language="yaml"
-					height="90vh"
+					height="75vh"
 					defaultValue={editorValue}
 					onChange={(newValue) => setEditorValue(newValue ?? '')}
 					options={{
 						minimap: { enabled: false },
+						automaticLayout: true,
 					}}
 				/>
-				<section>
-					<ErrorBoundary key={debouncedEditorValue}>
-						{/* TODO: prévoir de changer la signature de EngineProvider */}
-
-						<Documentation
-							rules={debouncedEditorValue}
-							onClickShare={handleShare}
-							defaultTarget={defaultTarget}
-							baseUrl="/studio"
-						/>
-					</ErrorBoundary>
-				</section>
 			</div>
-		</>
+
+			<section>
+				<ErrorBoundary key={debouncedEditorValue}>
+					{/* TODO: prévoir de changer la signature de EngineProvider */}
+
+					<Documentation
+						rules={debouncedEditorValue}
+						onClickShare={handleShare}
+						defaultTarget={defaultTarget}
+						baseUrl="/studio"
+					/>
+				</ErrorBoundary>
+			</section>
+		</div>
 	)
 }
 
