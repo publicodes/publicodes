@@ -1,15 +1,8 @@
 import { utils } from 'publicodes'
-import {
-	memo,
-	useCallback,
-	useContext,
-	useEffect,
-	useRef,
-	useState,
-} from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
-import { EngineContext } from '../contexts'
+import { useEngine } from '../hooks'
 import { ArrowDown, ArrowUp } from '../icons'
 import { RuleLinkWithContext } from '../RuleLink'
 
@@ -18,12 +11,8 @@ interface Props {
 }
 
 export const RulesNav = ({ dottedName }: Props) => {
-	const baseEngine = useContext(EngineContext)
+	const baseEngine = useEngine()
 	const [navOpen, setNavOpen] = useState(false)
-
-	if (!baseEngine) {
-		throw new Error('Engine expected')
-	}
 
 	const initLevel = (dn: string) =>
 		Object.fromEntries([
@@ -111,11 +100,7 @@ export const RulesNav = ({ dottedName }: Props) => {
 }
 
 const NavLi = ({ ruleDottedName, open, active, onClickDropdown }) => {
-	const baseEngine = useContext(EngineContext)
-
-	if (!baseEngine) {
-		throw new Error('Engine expected')
-	}
+	const baseEngine = useEngine()
 
 	const parsedRules = baseEngine.getParsedRules()
 	const childrenCount = Object.keys(parsedRules).reduce(
