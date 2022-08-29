@@ -17,7 +17,7 @@ export default function Reference(
 	const { dottedName, nodeValue, unit } = node
 	const rule = engine?.context.parsedRules[node.dottedName]
 	if (!rule) {
-		throw new Error('Unknown node')
+		throw new Error(`Unknown rule: ${dottedName}`)
 	}
 	const [folded, setFolded] = useState(true)
 	const isFoldEnabled = useContext(UnfoldIsEnabledContext)
