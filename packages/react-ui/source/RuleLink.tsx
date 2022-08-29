@@ -1,6 +1,7 @@
 import Engine, { utils } from 'publicodes'
 import React, { useContext } from 'react'
-import { BasepathContext, EngineContext, RenderersContext } from './contexts'
+import { BasepathContext, RenderersContext } from './contexts'
+import { useEngine } from './hooks'
 
 const { encodeRuleName } = utils
 
@@ -70,10 +71,7 @@ export function RuleLinkWithContext(
 		useSubEngine?: boolean
 	}
 ) {
-	const engine = useContext(EngineContext)
-	if (!engine) {
-		throw new Error('an engine should be provided in context')
-	}
+	const engine = useEngine()
 	const documentationPath = useContext(BasepathContext)
 	const currentEngineIdFromUrl = new URLSearchParams(
 		window.location.search

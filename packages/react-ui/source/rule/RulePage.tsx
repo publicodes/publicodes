@@ -14,6 +14,7 @@ import {
 	SupportedRenderers,
 } from '../contexts'
 import Explanation from '../Explanation'
+import { useEngine } from '../hooks'
 import { RuleLinkWithContext } from '../RuleLink'
 import RuleHeader from './Header'
 import { breakpointsWidth, RulesNav } from './RulesNav'
@@ -75,11 +76,8 @@ type RuleProps = {
 }
 
 export function Rule({ dottedName, language, subEngineId }: RuleProps) {
-	const baseEngine = useContext(EngineContext)
+	const baseEngine = useEngine()
 	const { References, Text } = useContext(RenderersContext)
-	if (!baseEngine) {
-		throw new Error('Engine expected')
-	}
 
 	const useSubEngine =
 		subEngineId && baseEngine.subEngines.length >= subEngineId

@@ -1,8 +1,8 @@
 import { EvaluatedNode } from 'publicodes'
 import { RecalculNode } from 'publicodes/source/mecanisms/recalcul'
-import { useContext } from 'react'
 import { EngineContext } from '../contexts'
 import Explanation from '../Explanation'
+import { useEngine } from '../hooks'
 import { RuleLinkWithContext } from '../RuleLink'
 import { Mecanism } from './common'
 
@@ -11,10 +11,7 @@ export default function Recalcul({
 	explanation,
 	unit,
 }: RecalculNode & EvaluatedNode) {
-	const engine = useContext(EngineContext)
-	if (!engine) {
-		throw new Error()
-	}
+	const engine = useEngine()
 	const recalculEngine = explanation.subEngineId
 		? engine.subEngines[explanation.subEngineId]
 		: engine

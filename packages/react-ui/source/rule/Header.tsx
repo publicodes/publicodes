@@ -1,14 +1,10 @@
 import { utils } from 'publicodes'
-import { useContext } from 'react'
-import { EngineContext } from '../contexts'
+import { useEngine } from '../hooks'
 import { RuleLinkWithContext } from '../RuleLink'
 import Meta from './Meta'
 
 export default function RuleHeader({ dottedName }) {
-	const engine = useContext(EngineContext)
-	if (!engine) {
-		throw new Error('an engine should be provided in context')
-	}
+	const engine = useEngine()
 	const {
 		title,
 		rawNode: { description, question, icônes },

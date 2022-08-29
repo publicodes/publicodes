@@ -1,6 +1,5 @@
 import { transformAST } from 'publicodes'
-import { useContext } from 'react'
-import { EngineContext } from './contexts'
+import { useEngine } from './hooks'
 import Arrondi from './mecanisms/Arrondi'
 import Avec from './mecanisms/Avec'
 import Barème from './mecanisms/Barème'
@@ -61,10 +60,7 @@ const UIComponents = {
 
 export default function Explanation({ node }) {
 	const visualisationKind = node.sourceMap?.mecanismName ?? node.nodeKind
-	const engine = useContext(EngineContext)
-	if (!engine) {
-		throw new Error('We need an engine instance in the React context')
-	}
+	const engine = useEngine()
 	const evaluateEverything = transformAST((node) => {
 		if ('nodeValue' in node || 'replacementRule' === node.nodeKind) {
 			return false
