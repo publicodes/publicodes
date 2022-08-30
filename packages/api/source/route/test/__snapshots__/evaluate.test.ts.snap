@@ -3,7 +3,10 @@
 exports[`evaluate > Test error in expression and situation at same time 1`] = `
 {
   "situationError": {
-    "message": "Erreur lors de la mise à jour de la situation : test n'existe pas dans la base de règle.",
+    "message": "
+[ Erreur d'évaluation ]
+➡️  Dans la règle \\"test\\"
+✖️  Erreur lors de la mise à jour de la situation : test n'existe pas dans la base de règle.",
   },
 }
 `;
@@ -11,7 +14,10 @@ exports[`evaluate > Test error in expression and situation at same time 1`] = `
 exports[`evaluate > Test invalid syntax in situation 1`] = `
 {
   "situationError": {
-    "message": "Erreur lors de la mise à jour de la situation : test n'existe pas dans la base de règle.",
+    "message": "
+[ Erreur d'évaluation ]
+➡️  Dans la règle \\"test\\"
+✖️  Erreur lors de la mise à jour de la situation : test n'existe pas dans la base de règle.",
   },
 }
 `;
@@ -127,7 +133,6 @@ A space token based on:
 A space token based on:
     Comparison → Comparable ● %space %comparison %space Comparable
     main →  ● Comparison
-
 ",
       },
     },
@@ -246,7 +251,6 @@ A space token based on:
 A space token based on:
     Comparison → Comparable ● %space %comparison %space Comparable
     main →  ● Comparison
-
 ",
       },
     },
@@ -323,7 +327,6 @@ A number token based on:
     AdditionSubstraction →  ● MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
-
 ",
       },
     },

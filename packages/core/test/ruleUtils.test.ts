@@ -39,7 +39,9 @@ function createDummyRule(
 
 describe('isAccessible', () => {
 	it("should throws if rule to check doesn't exists", () => {
-		expect(() => isAccessible({}, '', 'a')).to.throw("La règle n'existe pas")
+		expect(() => isAccessible({}, '', 'a')).to.throw(
+			'\n[ Erreur d\'évaluation ]\n➡️  Dans la règle "a"\n✖️  La règle "a" n\'existe pas'
+		)
 	})
 
 	it('should return true if no rules are private', () => {

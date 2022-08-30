@@ -265,7 +265,10 @@ describe('e2e koa middleware', () => {
 		).resolves.toMatchInlineSnapshot(`
 			{
 			  "error": {
-			    "message": "La règle 'bad rule' n'existe pas",
+			    "message": "
+			[ Erreur d'évaluation ]
+			➡️  Dans la règle \\"bad rule\\"
+			✖️  La règle 'bad rule' n'existe pas",
 			  },
 			}
 		`)

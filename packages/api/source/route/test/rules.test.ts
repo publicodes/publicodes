@@ -41,7 +41,10 @@ describe('evaluate', () => {
 		expect(rulesId(engine, 'bad rules')).toMatchInlineSnapshot(`
 			{
 			  "error": {
-			    "message": "La règle 'bad rules' n'existe pas",
+			    "message": "
+			[ Erreur d'évaluation ]
+			➡️  Dans la règle \\"bad rules\\"
+			✖️  La règle 'bad rules' n'existe pas",
 			  },
 			}
 		`)
