@@ -48,10 +48,7 @@ export function createParseInlinedMecanism(
 			if (argName in parsedDefaultArgs) {
 				return parsedDefaultArgs[argName]
 			}
-			syntaxError(
-				context,
-				`Il manque la clé '${argName} dans le mécanisme ${name}`
-			)
+			syntaxError(`Il manque la clé '${argName} dans le mécanisme ${name}`, {})
 		})(parsedBody)
 		parsedInlineMecanism.sourceMap = {
 			mecanismName: name,

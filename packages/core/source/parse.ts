@@ -48,18 +48,18 @@ const { Grammar, Parser } = nearley
 export default function parse(rawNode, context: Context): ASTNode {
 	if (rawNode == undefined) {
 		syntaxError(
-			context.dottedName,
 			`
 Une des valeurs de la formule est vide.
-Vérifiez que tous les champs à droite des deux points sont remplis`
+Vérifiez que tous les champs à droite des deux points sont remplis`,
+			{ rule: context.dottedName }
 		)
 	}
 	if (typeof rawNode === 'boolean') {
 		syntaxError(
-			context.dottedName,
 			`
 Les valeurs booléennes true / false ne sont acceptées.
-Utilisez leur contrepartie française : 'oui' / 'non'`
+Utilisez leur contrepartie française : 'oui' / 'non'`,
+			{ rule: context.dottedName }
 		)
 	}
 	const node =
@@ -106,8 +106,8 @@ function parseExpression(
 			throw e
 		}
 		syntaxError(
-			context.dottedName,
 			`\`${singleLineExpression}\` n'est pas une expression valide`,
+			{ rule: context.dottedName },
 			e
 		)
 	}
@@ -116,26 +116,26 @@ function parseExpression(
 function parseMecanism(rawNode, context: Context) {
 	if (Array.isArray(rawNode)) {
 		syntaxError(
-			context.dottedName,
 			`
 Il manque le nom du mécanisme pour le tableau : [${rawNode
 				.map((x) => `'${x}'`)
 				.join(', ')}]
 Les mécanisme possibles sont : 'somme', 'le maximum de', 'le minimum de', 'toutes ces conditions', 'une de ces conditions'.
-		`
+		`,
+			{ rule: context.dottedName }
 		)
 	}
 
 	const keys = Object.keys(rawNode)
 	if (keys.length > 1) {
 		syntaxError(
-			context.dottedName,
 			`
 Les mécanismes suivants se situent au même niveau : ${keys
 				.map((x) => `'${x}'`)
 				.join(', ')}
 Cela vient probablement d'une erreur dans l'indentation
-	`
+	`,
+			{ rule: context.dottedName }
 		)
 	}
 	if (keys.length === 0) {
@@ -148,10 +148,10 @@ Cela vient probablement d'une erreur dans l'indentation
 
 	if (!parseFn) {
 		syntaxError(
-			context.dottedName,
 			`Le mécanisme "${mecanismName}" est inconnu.
 
-Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`
+Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`,
+			{ rule: context.dottedName }
 		)
 	}
 	try {
@@ -168,11 +168,11 @@ Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`
 			throw e
 		}
 		syntaxError(
-			context.dottedName,
 			mecanismName
 				? `➡️ Dans le mécanisme ${mecanismName}
 ${e.message}`
-				: e.message
+				: e.message,
+			{ rule: context.dottedName }
 		)
 	}
 }

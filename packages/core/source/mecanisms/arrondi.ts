@@ -32,11 +32,10 @@ const evaluate: EvaluationFunction<'arrondi'> = function (node) {
 			!serializeUnit((arrondi as EvaluatedNode).unit)?.match(/décimales?/)
 		) {
 			evaluationError(
-				// this.context.logger,
-				this.cache._meta.evaluationRuleStack[0],
 				`L'unité ${serializeUnit(
 					(arrondi as EvaluatedNode).unit
-				)} de l'arrondi est inconnu. Vous devez utiliser l'unité “décimales”`
+				)} de l'arrondi est inconnu. Vous devez utiliser l'unité “décimales”`,
+				{ rule: this.cache._meta.evaluationRuleStack[0] }
 			)
 		}
 	}

@@ -1,3 +1,5 @@
+import { syntaxError } from './error'
+
 export function normalizeDateString(dateString: string): string {
 	let [day, month, year] = dateString.split('/')
 	if (!year) {
@@ -14,7 +16,7 @@ export function normalizeDate(
 ): string {
 	const date = new Date(+year, +month - 1, +day)
 	if (!+date || date.getDate() !== +day) {
-		throw new SyntaxError(`La date ${day}/${month}/${year} n'est pas valide`)
+		syntaxError(`La date ${day}/${month}/${year} n'est pas valide`, {})
 	}
 	return `${pad(day)}/${pad(month)}/${pad(year)}`
 }

@@ -7,10 +7,12 @@ export class EngineError extends Error {
 	}
 }
 
-export class SyntaxError extends EngineError {
-	rule: string
+type ErrorInformation = Partial<{ rule: string }>
 
-	constructor(rule: string, message: string) {
+export class SyntaxError extends EngineError {
+	rule?: string
+
+	constructor(message: string, { rule }: ErrorInformation) {
 		super(message)
 		this.name = 'SyntaxError'
 		this.rule = rule
@@ -18,9 +20,9 @@ export class SyntaxError extends EngineError {
 }
 
 export class EvaluationError extends EngineError {
-	rule: string
+	rule?: string
 
-	constructor(rule: string, message: string) {
+	constructor(message: string, { rule }: ErrorInformation) {
 		super(message)
 		this.name = 'EvaluationError'
 		this.rule = rule
@@ -56,62 +58,64 @@ export class UnreachableCaseError extends InternalError<never> {
 	}
 }
 
-const messageError = (
+const buildMessage = (
 	type: string,
-	rule: string,
 	message: string,
+	{ rule }: ErrorInformation,
 	originalError?: Error
-) => `\n[ ${type} ]
-➡️  Dans la règle "${rule}"
-✖️  ${message}
-${originalError ? originalError.message : ''}
-`
+) => {
+	const isError = /erreur/i.test(type)
 
+	return (
+		`\n[ ${type} ]` +
+		(rule?.length ? `\n➡️  Dans la règle "${rule}"` : '') +
+		`\n${isError ? '✖️' : '⚠️'}  ${message}` +
+		(originalError
+			? '\n' + (isError ? '    ' : 'ℹ️  ') + originalError.message
+			: '')
+	)
+}
 /**
  * Throw a SyntaxError
- * @param rule
  * @param message
+ * @param information
  * @param originalError
  */
 export function syntaxError(
-	rule: string,
 	message: string,
+	information: ErrorInformation,
 	originalError?: Error
-) {
+): never {
 	throw new SyntaxError(
-		rule,
-		messageError('Erreur syntaxique', rule, message, originalError)
+		buildMessage('Erreur syntaxique', message, information, originalError),
+		information
 	)
 }
 
 /**
  * Throw an EvaluationError
- * @param rule
  * @param message
+ * @param information
  * @param originalError
  */
 export function evaluationError(
-	rule: string,
 	message: string,
+	information: ErrorInformation,
 	originalError?: Error
-) {
+): never {
 	throw new EvaluationError(
-		rule,
-		messageError("Erreur d'évaluation", rule, message, originalError)
+		buildMessage("Erreur d'évaluation", message, information, originalError),
+		information
 	)
 }
 
 export function warning(
 	logger: Logger,
-	rule: string,
 	message: string,
+	information: ErrorInformation,
 	originalError?: Error
 ) {
 	logger.warn(
-		`\n[ Avertissement ]
-➡️  Dans la règle "${rule}"
-⚠️  ${message}
-${originalError ? `ℹ️  ${originalError.message}` : ''}
-`
+		buildMessage('Avertissement', message, information, originalError)
 	)
 }

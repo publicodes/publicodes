@@ -270,7 +270,6 @@ function replace(
 		if (displayVerboseWarning) {
 			warning(
 				logger,
-				node.contextDottedName,
 				`
 				Il existe plusieurs remplacements pour la référence '${node.dottedName}'.
 				Lors de l'execution, ils seront résolus dans l'odre suivant :
@@ -278,7 +277,8 @@ function replace(
 					(replacement) =>
 						`\n\t- Celui définit dans la règle '${replacement.definitionRule.dottedName}'`
 				)}
-					`
+					`,
+				{ rule: node.contextDottedName }
 			)
 		}
 	}

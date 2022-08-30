@@ -1,6 +1,6 @@
 import Engine from '.'
 import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
-import { warning } from './error'
+import { evaluationError, warning } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing } from './evaluationUtils'
 import { capitalise0 } from './format'
@@ -82,7 +82,9 @@ export default function parseRule(
 	const title = capitalise0(rawRule['titre'] ?? name)
 
 	if (context.parsedRules[dottedName]) {
-		throw new Error(`La référence '${dottedName}' a déjà été définie`)
+		evaluationError(`La référence '${dottedName}' a déjà été définie`, {
+			rule: dottedName,
+		})
 	}
 
 	const ruleValue: Record<string, unknown> = {
@@ -183,7 +185,6 @@ registerEvaluationFunction('rule', function evaluate(node) {
 		) {
 			warning(
 				this.context.logger,
-				node.dottedName,
 				`
 						Un cycle a été détecté dans lors de l'évaluation de cette règle.
 		Par défaut cette règle sera évaluée à 'null'.
@@ -192,7 +193,8 @@ registerEvaluationFunction('rule', function evaluate(node) {
 		${node.dottedName}:
 		"résoudre la référence circulaire: oui"
 		...
-		`
+		`,
+				{ rule: node.dottedName }
 			)
 
 			valeurEvaluation = {

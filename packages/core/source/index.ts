@@ -1,4 +1,5 @@
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
+import { evaluationError } from './error'
 import { evaluationFunctions } from './evaluationFunctions'
 import parsePublicodes, {
 	Context,
@@ -138,13 +139,15 @@ export default class Engine<Name extends string = string> {
 
 		Object.keys(situation).forEach((name) => {
 			if (!(name in this.baseContext.parsedRules)) {
-				throw new Error(
-					`Erreur lors de la mise à jour de la situation : ${name} n'existe pas dans la base de règle.`
+				evaluationError(
+					`Erreur lors de la mise à jour de la situation : ${name} n'existe pas dans la base de règle.`,
+					{ rule: name }
 				)
 			}
 			if (this.baseContext.parsedRules[name].private) {
-				throw new Error(
-					`Erreur lors de la mise à jour de la situation : ${name} est une règle privée (il n'est pas possible de modifier une règle privée).`
+				evaluationError(
+					`Erreur lors de la mise à jour de la situation : ${name} est une règle privée (il n'est pas possible de modifier une règle privée).`,
+					{ rule: name }
 				)
 			}
 		})
@@ -181,12 +184,17 @@ export default class Engine<Name extends string = string> {
 
 	getRule(dottedName: Name): ParsedRules<Name>[Name] {
 		if (!(dottedName in this.baseContext.parsedRules)) {
-			throw new Error(`La règle '${dottedName}' n'existe pas`)
+			evaluationError(`La règle '${dottedName}' n'existe pas`, {
+				rule: dottedName,
+			})
 		}
 
 		if (!(dottedName in this.publicParsedRules)) {
-			throw new Error(`La règle ${dottedName} est une règle privée.`)
+			evaluationError(`La règle ${dottedName} est une règle privée.`, {
+				rule: dottedName,
+			})
 		}
+
 		return this.publicParsedRules[dottedName]
 	}
 
@@ -229,7 +237,7 @@ export default class Engine<Name extends string = string> {
 		}
 
 		if (!evaluationFunctions[parsedNode.nodeKind]) {
-			throw Error(`Unknown "nodeKind": ${parsedNode.nodeKind}`)
+			evaluationError(`Unknown "nodeKind": ${parsedNode.nodeKind}`, {})
 		}
 
 		const isTraversedVariablesBoundary =

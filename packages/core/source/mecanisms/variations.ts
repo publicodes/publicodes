@@ -109,10 +109,10 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 					} catch (e) {
 						warning(
 							this.context.logger,
-							this.cache._meta.evaluationRuleStack[0],
 							`L'unité de la branche n° ${
 								i + 1
 							} du mécanisme 'variations' n'est pas compatible avec celle d'une branche précédente`,
+							{ rule: this.cache._meta.evaluationRuleStack[0] },
 							e
 						)
 					}

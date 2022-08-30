@@ -1,5 +1,6 @@
-import { Logger, ParsedRules } from '.'
+import { EngineError, Logger, ParsedRules } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
+import { syntaxError } from './error'
 import inferNodeType, { NodesTypes } from './inferNodeType'
 import parse from './parse'
 import { inlineReplacements, ReplacementRule } from './replacement'
@@ -74,7 +75,7 @@ export default function parsePublicodes<
 	// STEP 1 : get the rules as an object
 
 	if (typeof rawRules === 'string')
-		throw Error(
+		throw new EngineError(
 			'Publicodes does not parse yaml rule sets itself anymore. Please provide a parsed js object. E.g. the `eemeli/yaml` package.'
 		)
 	let rules = { ...rawRules }
@@ -91,8 +92,9 @@ export default function parsePublicodes<
 			}
 		}
 		if (typeof rule !== 'object') {
-			throw new SyntaxError(
-				`Rule ${dottedName} is incorrectly written. Please give it a proper value.`
+			syntaxError(
+				`Rule ${dottedName} is incorrectly written. Please give it a proper value.`,
+				{ rule: dottedName }
 			)
 		}
 		parse({ nom: dottedName, ...rule }, context)
