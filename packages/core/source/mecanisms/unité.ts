@@ -37,8 +37,8 @@ registerEvaluationFunction(parseUnité.nom, function evaluate(node) {
 		} catch (e) {
 			warning(
 				this.context.logger,
-				this.cache._meta.evaluationRuleStack[0],
 				"Erreur lors de la conversion d'unité explicite",
+				{ rule: this.cache._meta.evaluationRuleStack[0] },
 				e
 			)
 		}

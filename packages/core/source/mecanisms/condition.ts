@@ -20,11 +20,9 @@ const evaluate: EvaluationFunction<'condition'> = function (node) {
 	let alors = node.explanation.alors
 	let sinon = node.explanation.sinon
 	if ('unit' in condition) {
-		evaluationError(
-			this.context.logger,
-			this.cache._meta.evaluationRuleStack[0],
-			'La condition doit être de type booléen'
-		)
+		evaluationError('La condition doit être de type booléen', {
+			rule: this.cache._meta.evaluationRuleStack[0],
+		})
 	}
 	if (condition.nodeValue === true) {
 		alors = this.evaluateNode(node.explanation.alors)
@@ -43,11 +41,9 @@ const evaluate: EvaluationFunction<'condition'> = function (node) {
 			missingVariables: mergeAllMissing([sinon, alors]),
 		}
 	} else {
-		evaluationError(
-			this.context.logger,
-			this.cache._meta.evaluationRuleStack[0],
-			'La condition doit être de type booléen'
-		)
+		evaluationError('La condition doit être de type booléen', {
+			rule: this.cache._meta.evaluationRuleStack[0],
+		})
 	}
 	const unit = evaluation.unit ?? (alors as any).unit
 	return {

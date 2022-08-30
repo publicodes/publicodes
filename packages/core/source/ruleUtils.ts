@@ -1,6 +1,6 @@
 import { ParsedRules } from '.'
 import { ASTNode } from './AST/types'
-import { syntaxError } from './error'
+import { evaluationError, syntaxError } from './error'
 import { ReferencesMaps } from './parsePublicodes'
 import { ReferenceNode } from './reference'
 import { RuleNode } from './rule'
@@ -64,7 +64,7 @@ export function isAccessible(
 	name: string
 ) {
 	if (!(name in rules)) {
-		throw new Error("La règle n'existe pas")
+		evaluationError(`La règle "${name}" n'existe pas`, { rule: name })
 	}
 
 	const commonAncestor = findCommonAncestor(contextName, name)
@@ -97,20 +97,19 @@ export function disambiguateReference<R extends Record<string, RuleNode>>(
 
 	if (!existingDottedName.length) {
 		syntaxError(
-			contextName,
 			`La référence "${partialName}" est introuvable.
-Vérifiez que l'orthographe et l'espace de nom sont corrects`
+Vérifiez que l'orthographe et l'espace de nom sont corrects`,
+			{ rule: contextName }
 		)
-		throw new Error()
 	}
 	if (!accessibleDottedName) {
 		syntaxError(
-			contextName,
 			`La règle "${existingDottedName[0]}" n'est pas accessible depuis "${contextName}".
-Cela vient du fait qu'elle est privée ou qu'un de ses parent est privé`
+Cela vient du fait qu'elle est privée ou qu'un de ses parent est privé`,
+			{ rule: contextName }
 		)
-		throw new Error()
 	}
+
 	return accessibleDottedName
 }
 
