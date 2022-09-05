@@ -1,4 +1,5 @@
 import { Evaluation, Unit } from './AST/types'
+import { syntaxError } from './error'
 
 export type getUnitKey = (writtenUnit: string) => string
 export type formatUnit = (unit: string, count: number) => string
@@ -66,8 +67,10 @@ export const inferUnit = (
 	rawUnits: Array<Unit | undefined>
 ): Unit | undefined => {
 	if (operator === '/') {
-		if (rawUnits.length !== 2)
-			throw new Error('Infer units of a division with units.length !== 2)')
+		if (rawUnits.length !== 2) {
+			syntaxError('Infer units of a division with units.length !== 2)', {})
+		}
+
 		return inferUnit('*', [
 			rawUnits[0] || noUnit,
 			{

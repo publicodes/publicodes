@@ -8,7 +8,7 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import {
 	BasepathContext,
-	DefaultTextRenderer,
+	defaultRenderers,
 	EngineContext,
 	RenderersContext,
 	SupportedRenderers,
@@ -16,9 +16,9 @@ import {
 import Explanation from '../Explanation'
 import { useEngine } from '../hooks'
 import { RuleLinkWithContext } from '../RuleLink'
+import { DeveloperAccordion } from './DeveloperAccordion'
 import RuleHeader from './Header'
 import { breakpointsWidth, RulesNav } from './RulesNav'
-import RuleSource from './RuleSource'
 
 type RulePageProps = {
 	documentationPath: string
@@ -26,6 +26,9 @@ type RulePageProps = {
 	engine: Engine
 	language: 'fr' | 'en'
 	renderers: SupportedRenderers
+	situation?: Record<string, unknown>
+	apiDocumentationUrl?: string
+	apiExampleUrl?: string
 }
 
 export default function RulePage({
@@ -34,21 +37,21 @@ export default function RulePage({
 	engine,
 	renderers,
 	language,
+	apiDocumentationUrl,
+	apiExampleUrl,
+	situation,
 }: RulePageProps) {
 	const currentEngineId = new URLSearchParams(window.location.search).get(
 		'currentEngineId'
 	)
 
 	const prevRenderers = useRef(renderers)
-	const [renderersValue, setRenderers] = useState({
-		Text: DefaultTextRenderer,
-		...renderers,
-	})
+	const [renderersValue, setRenderers] = useState(defaultRenderers(renderers))
 	useEffect(() => {
 		if (prevRenderers.current !== renderers) {
 			prevRenderers.current = renderers
 
-			setRenderers({ Text: DefaultTextRenderer, ...renderers })
+			setRenderers(defaultRenderers(renderers))
 		}
 	}, [renderers])
 
@@ -62,6 +65,9 @@ export default function RulePage({
 							currentEngineId ? parseInt(currentEngineId) : undefined
 						}
 						language={language}
+						situation={situation}
+						apiDocumentationUrl={apiDocumentationUrl}
+						apiExampleUrl={apiExampleUrl}
 					/>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
@@ -73,9 +79,19 @@ type RuleProps = {
 	dottedName: string
 	subEngineId?: number
 	language: RulePageProps['language']
+	situation?: Record<string, unknown>
+	apiDocumentationUrl?: string
+	apiExampleUrl?: string
 }
 
-export function Rule({ dottedName, language, subEngineId }: RuleProps) {
+function Rule({
+	dottedName,
+	language,
+	subEngineId,
+	apiDocumentationUrl,
+	apiExampleUrl,
+	situation = {},
+}: RuleProps) {
 	const baseEngine = useEngine()
 	const { References, Text } = useContext(RenderersContext)
 
@@ -89,12 +105,11 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 	if (!(dottedName in engine.context.parsedRules)) {
 		return <p>Cette règle est introuvable dans la base</p>
 	}
+
 	const rule = engine.evaluateNode(
 		engine.context.parsedRules[dottedName]
-	) as EvaluatedNode & {
-		nodeKind: 'rule'
-	}
-	console.log(rule)
+	) as EvaluatedNode & { nodeKind: 'rule' }
+
 	const { description, question } = rule.rawNode
 	const { valeur, nullableParent, ruleDisabledByItsParent } = rule.explanation
 
@@ -116,7 +131,7 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 					>
 						<div>
 							Vous explorez la documentation avec le contexte{' '}
-							<strong className="ui__ label">mécanisme recalcul</strong>
+							<strong>mécanisme recalcul</strong>
 						</div>
 						<div style={{ flex: 1 }} />
 						<div>
@@ -130,24 +145,17 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 				<section>
 					<Text>{description || question || ''}</Text>
 				</section>
-				{
-					<>
-						<p
-							style={{
-								fontSize: '1.25rem',
-								lineHeight: '2rem',
-							}}
-						>
-							Valeur : {formatValue(rule, { language })}
-							{rule.nodeValue === undefined && rule.unit && (
-								<>
-									<br />
-									Unité : {serializeUnit(rule.unit)}
-								</>
-							)}
-						</p>
-					</>
-				}
+
+				<p style={{ fontSize: '1.25rem', lineHeight: '2rem' }}>
+					Valeur : {formatValue(rule, { language })}
+					{rule.nodeValue === undefined && rule.unit && (
+						<>
+							<br />
+							Unité : {serializeUnit(rule.unit)}
+						</>
+					)}
+				</p>
+
 				{ruleDisabledByItsParent && (
 					<>
 						<blockquote>
@@ -157,47 +165,14 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 						</blockquote>
 					</>
 				)}
+
 				<h2>Comment cette donnée est-elle calculée ?</h2>
-
 				<Explanation node={valeur} />
-				{dottedName in engine.getParsedRules() && (
-					<RuleSource
-						key={dottedName}
-						dottedName={dottedName}
-						engine={engine}
-					/>
-				)}
-
-				{rule.missingVariables && (
-					<MissingVars
-						dottedName={dottedName}
-						selfMissing={Object.keys(rule.missingVariables)}
-					/>
-				)}
-
-				{rule.nodeValue === undefined && (
-					<ReverseMissing dottedName={dottedName} engine={engine} />
-				)}
-
-				{!!rule.replacements.length && (
-					<>
-						<h3>Effets </h3>
-						<ul>
-							{rule.replacements.map((replacement) => (
-								<li key={replacement.replacedReference.dottedName}>
-									<Explanation node={replacement} />
-								</li>
-							))}
-						</ul>
-					</>
-				)}
-
-				<NamespaceChildrenRules dottedName={dottedName} engine={engine} />
 
 				{rule.rawNode.note && (
 					<>
 						<h3>Note</h3>
-						<div className="ui__ notice">
+						<div>
 							<Text>{rule.rawNode.note}</Text>
 						</div>
 					</>
@@ -208,6 +183,21 @@ export function Rule({ dottedName, language, subEngineId }: RuleProps) {
 						<References references={rule.rawNode.références} />
 					</>
 				)}
+
+				<h3>Information pour les développeurs</h3>
+				<Text>
+					Vous trouverez ci-dessous des informations techniques qui peuvent être
+					utiles aux développeurs.
+				</Text>
+
+				<DeveloperAccordion
+					engine={engine}
+					situation={situation}
+					dottedName={dottedName}
+					rule={rule}
+					apiDocumentationUrl={apiDocumentationUrl}
+					apiExampleUrl={apiExampleUrl}
+				></DeveloperAccordion>
 			</Article>
 		</Container>
 	)
@@ -226,145 +216,5 @@ const Container = styled.div`
 
 const Article = styled.article`
 	flex-basis: 70%;
+	overflow: hidden;
 `
-
-function MissingVars({
-	dottedName,
-	selfMissing,
-}: {
-	dottedName: string
-	selfMissing: string[] | null
-}) {
-	const [opened, setOpened] = useState(false)
-	useEffect(() => {
-		setOpened(false)
-	}, [dottedName])
-
-	if (!selfMissing || selfMissing.length === 0) {
-		return null
-	}
-
-	return (
-		<>
-			<span>
-				<h3 style={{ display: 'inline-block', marginRight: '1rem' }}>
-					Données manquantes
-				</h3>
-				<a
-					onClick={() => {
-						setOpened(!opened)
-					}}
-				>
-					{opened ? 'cacher' : 'voir la liste'}
-				</a>
-			</span>
-			{opened && (
-				<>
-					<p className="ui__ notice">
-						Les règles suivantes sont nécessaires pour le calcul mais n'ont pas
-						été saisies dans la situation. Leur valeur par défaut est utilisée.
-					</p>
-
-					<ul>
-						{selfMissing.map((dottedName) => (
-							<li key={dottedName}>
-								<RuleLinkWithContext dottedName={dottedName} />
-							</li>
-						))}
-					</ul>
-				</>
-			)}
-		</>
-	)
-}
-
-function ReverseMissing({
-	dottedName,
-	engine,
-}: {
-	dottedName: string
-	engine: Engine
-}) {
-	const [opened, setOpened] = useState(false)
-	useEffect(() => {
-		setOpened(false)
-	}, [dottedName])
-
-	const getRuleNamesWithMissing = () =>
-		Object.keys(engine.getParsedRules()).filter((ruleName) => {
-			const evaluation = engine.evaluateNode(engine.getRule(ruleName))
-			return evaluation.missing?.self?.includes(dottedName)
-		})
-
-	return (
-		<section>
-			<span>
-				<h3 style={{ display: 'inline-block', marginRight: '1rem' }}>
-					Règles qui ont besoin de cette valeur
-				</h3>
-				<a
-					onClick={() => {
-						setOpened(!opened)
-					}}
-				>
-					{opened ? 'cacher' : 'voir la liste'}
-				</a>
-			</span>
-
-			{opened && (
-				<>
-					<p className="ui__ notice">
-						Les règles suivantes ont besoin de la règle courante pour être
-						calculées. Or, la règle courante n'étant pas encore définie, c'est
-						sa valeur par défaut qui est utilisée pour déterminer la valeur de
-						ces règles.
-					</p>
-					<ul>
-						{(() => {
-							const ruleNamesWithMissing = getRuleNamesWithMissing()
-							return ruleNamesWithMissing.length
-								? ruleNamesWithMissing.map((dottedName) => (
-										<li key={dottedName}>
-											<RuleLinkWithContext dottedName={dottedName} />
-										</li>
-								  ))
-								: 'Aucune autre règle ne dépend de la règle courante.'
-						})()}
-					</ul>
-				</>
-			)}
-		</section>
-	)
-}
-
-function NamespaceChildrenRules({
-	dottedName,
-	engine,
-}: {
-	dottedName: string
-	engine: Engine
-}) {
-	const namespaceChildrenRules = Object.keys(engine.getParsedRules())
-		.filter(
-			(ruleDottedName) =>
-				ruleDottedName.startsWith(dottedName) &&
-				ruleDottedName.split(' . ').length ===
-					dottedName.split(' . ').length + 1
-		)
-		.filter((rule) => utils.ruleWithDedicatedDocumentationPage(rule))
-	if (!namespaceChildrenRules.length) {
-		return null
-	}
-	return (
-		<section>
-			<h2>Règles enfants </h2>
-			<ul>
-				{namespaceChildrenRules.map((dottedName) => (
-					<li key={dottedName}>
-						<RuleLinkWithContext dottedName={dottedName} />
-					</li>
-				))}
-			</ul>
-		</section>
-	)
-}
