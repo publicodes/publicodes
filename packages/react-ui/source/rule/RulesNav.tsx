@@ -3,7 +3,7 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 import { useEngine } from '../hooks'
-import { ArrowDown, ArrowUp } from '../icons'
+import { ArrowDown, ArrowUp } from '../component/icons'
 import { RuleLinkWithContext } from '../RuleLink'
 
 interface Props {
