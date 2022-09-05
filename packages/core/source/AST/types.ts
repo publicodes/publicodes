@@ -98,10 +98,6 @@ export type Unit = {
 // Idée : une évaluation est un n-uple : (value, unit, missingVariables, isApplicable)
 type EvaluationDecoration<T extends Types> = {
 	nodeValue: Evaluation<T>
-	missing?: {
-		self: string[] | null
-		parent: string[] | null
-	}
 	unit?: Unit
 	traversedVariables?: Array<string>
 	missingVariables: MissingVariables
