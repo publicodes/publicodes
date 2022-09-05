@@ -11,24 +11,41 @@ export { cyclicDependencies } from './AST/graph'
 const splitName = (str: string) => str.split(' . ')
 const joinName = (strs: Array<string>) => strs.join(' . ')
 
-export const nameLeaf = (name: string) => splitName(name).slice(-1)?.[0]
+/**
+ * Returns the last part of a dottedName (the leaf).
+ */
+export const nameLeaf = (dottedName: string) =>
+	splitName(dottedName).slice(-1)?.[0]
 
-export const encodeRuleName = (name: string): string =>
-	name
+/**
+ * Encodes a dottedName for the URL to be secure.
+ * @see {@link decodeRuleName}
+ */
+export const encodeRuleName = (dottedName: string): string =>
+	dottedName
 		?.replace(/\s\.\s/g, '/')
 		.replace(/-/g, '\u2011') // replace with a insecable tiret to differenciate from space
 		.replace(/\s/g, '-')
 
-export const decodeRuleName = (name: string): string =>
-	name
+/**
+ * Decodes an encoded dottedName.
+ * @see {@link encodeRuleName}
+ */
+export const decodeRuleName = (dottedName: string): string =>
+	dottedName
 		.replace(/\//g, ' . ')
 		.replace(/-/g, ' ')
 		.replace(/\u2011/g, '-')
 
-export function ruleParent(dottedName: string): string {
-	return joinName(splitName(dottedName).slice(0, -1))
-}
+/**
+ * Returns the parent dottedName
+ */
+export const ruleParent = (dottedName: string): string =>
+	joinName(splitName(dottedName).slice(0, -1))
 
+/**
+ * Returns an array of dottedName from near parent to far parent.
+ */
 export function ruleParents(dottedName: string): Array<string> {
 	return splitName(dottedName)
 		.slice(0, -1)
@@ -36,16 +53,33 @@ export function ruleParents(dottedName: string): Array<string> {
 		.reverse()
 }
 
+/**
+ * Returns an array of all child rules of a dottedName
+ */
+export const getChildrenRules = (
+	parsedRules: ParsedRules<string>,
+	dottedName: string
+) => {
+	const childrenRules = Object.keys(parsedRules).filter(
+		(ruleDottedName) =>
+			ruleDottedName.startsWith(dottedName) &&
+			splitName(ruleDottedName).length === splitName(dottedName).length + 1
+	)
+
+	return childrenRules
+}
+
+/**
+ * Finds the common ancestor of two dottedName
+ */
 function findCommonAncestor(dottedName1: string, dottedName2: string) {
-	const splitDottedName1 = dottedName1.split(' . ')
-	const splitDottedName2 = dottedName2.split(' . ')
+	const splitDottedName1 = splitName(dottedName1)
+	const splitDottedName2 = splitName(dottedName2)
 	const index = splitDottedName1.findIndex(
 		(value, i) => splitDottedName2[i] !== value
 	)
-	if (index === -1) {
-		return dottedName1
-	}
-	return splitDottedName1.slice(0, index).join(' . ')
+
+	return index === -1 ? dottedName1 : joinName(splitDottedName1.slice(0, index))
 }
 
 /**
