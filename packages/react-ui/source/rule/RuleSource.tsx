@@ -3,10 +3,24 @@ import yaml from 'yaml'
 const { encodeRuleName } = utils
 
 type Props = { dottedName: string; engine: Engine }
+
 export default function RuleSource({ engine, dottedName }: Props) {
+	const href = useRuleSource(engine, dottedName)
+
 	if (window.location.host === 'publi.codes') {
 		return null
 	}
+
+	return (
+		<p style={{ textAlign: 'right' }}>
+			<a target="_blank" href={href}>
+				✍️ Voir la règle dans le bac à sable Publicodes
+			</a>
+		</p>
+	)
+}
+
+export const useRuleSource = (engine: Engine, dottedName: string) => {
 	const dependancies = [
 		...(engine.context.referencesMaps.referencesIn.get(dottedName) ?? []),
 	]
@@ -16,7 +30,7 @@ export default function RuleSource({ engine, dottedName }: Props) {
 	// simplified definition of its dependencies to avoid undefined references.
 	const dependenciesValues = Object.fromEntries(
 		dependancies
-			.filter((name) => name !== dottedName)
+			.filter((name) => name !== dottedName && !name.endsWith(' . $SITUATION'))
 			.map((dottedName) => [
 				dottedName,
 				formatValueForStudio(
@@ -49,19 +63,11 @@ export default function RuleSource({ engine, dottedName }: Props) {
 
 	const baseURL = location.hostname === 'localhost' ? '' : 'https://publi.codes'
 
-	return (
-		<p style={{ textAlign: 'right' }}>
-			<a
-				target="_blank"
-				href={`${baseURL}/studio/${encodeRuleName(
-					dottedName
-				)}?code=${encodeURIComponent(source)}`}
-			>
-				✍️ Voir la règle dans le bac à sable Publicodes
-			</a>
-		</p>
-	)
+	return `${baseURL}/studio/${encodeRuleName(
+		dottedName
+	)}?code=${encodeURIComponent(source)}`
 }
+
 // TODO: This formating function should be in the core code. We need to think
 // about the different options of the formatting options and our use cases
 // (putting a value in the URL #1169, importing a value in the Studio, showing a value
