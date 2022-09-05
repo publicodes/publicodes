@@ -11,6 +11,7 @@ export function mergeWithArray<
 	M extends string | number | symbol,
 	T
 >(obj1: Record<N, Array<T>>, obj2: Record<M, Array<T>>): Record<N | M, Array<T>>
+
 export function mergeWithArray<
 	N extends string | number | symbol,
 	M extends string | number | symbol,
@@ -19,6 +20,7 @@ export function mergeWithArray<
 	obj1: Partial<Record<N, Array<T>>>,
 	obj2: Partial<Record<M, Array<T>>>
 ): Partial<Record<N | M, Array<T>>>
+
 export function mergeWithArray<K extends string | number | symbol, T>(
 	obj1: Partial<Record<K, Array<T>>>,
 	obj2: Partial<Record<K, Array<T>>>

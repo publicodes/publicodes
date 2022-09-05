@@ -72,8 +72,10 @@ export default function Explanation({ node }) {
 	const Component =
 		UIComponents[visualisationKind] ??
 		(node.sourceMap?.mecanismName ? DefaultInlineMecanism : undefined)
+
 	if (!Component) {
 		throw new Error(`Unknown visualisation: ${visualisationKind}`)
 	}
+
 	return <Component {...displayedNode} />
 }
