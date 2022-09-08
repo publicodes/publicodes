@@ -3,6 +3,7 @@ import Router from '@koa/router'
 import { koaMiddleware as publicodesAPI } from '@publicodes/api'
 import Koa from 'koa'
 import Engine from 'publicodes'
+import { parse } from 'yaml'
 
 interface State extends Koa.DefaultState {}
 
@@ -15,7 +16,8 @@ app.use(cors())
 
 // Create middleware with your Engine
 const apiRoutes = publicodesAPI(
-	new Engine(`
+	new Engine(
+		parse(`
 prix:
 prix . carottes: 2€/kg
 prix . champignons: 5€/kg
@@ -28,6 +30,7 @@ dépenses primeur:
       - prix . champignons * 500g
       - prix . avocat * 3 avocat
 `)
+	)
 )
 
 // Basic routes usage (/evaluate, /rules, etc.)
