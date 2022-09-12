@@ -8,26 +8,26 @@ export class PublicodesEngineError extends Error {
 }
 
 interface ErrorInformation {
-	rule?: string
+	dottedName?: string
 }
 
 export class PublicodesSyntaxError extends PublicodesEngineError {
-	rule?: string
+	dottedName?: string
 
-	constructor(message: string, { rule }: ErrorInformation) {
+	constructor(message: string, { dottedName }: ErrorInformation) {
 		super(message)
 		this.name = 'PublicodesSyntaxError'
-		this.rule = rule
+		this.dottedName = dottedName
 	}
 }
 
 export class PublicodesEvaluationError extends PublicodesEngineError {
-	rule?: string
+	dottedName?: string
 
-	constructor(message: string, { rule }: ErrorInformation) {
+	constructor(message: string, { dottedName }: ErrorInformation) {
 		super(message)
 		this.name = 'PublicodesEvaluationError'
-		this.rule = rule
+		this.dottedName = dottedName
 	}
 }
 
@@ -63,14 +63,14 @@ export class UnreachableCaseError extends PublicodesInternalError<never> {
 const buildMessage = (
 	type: string,
 	message: string,
-	{ rule }: ErrorInformation,
+	{ dottedName }: ErrorInformation,
 	originalError?: Error
 ) => {
 	const isError = /erreur/i.test(type)
 
 	return (
 		`\n[ ${type} ]` +
-		(rule?.length ? `\n➡️  Dans la règle "${rule}"` : '') +
+		(dottedName?.length ? `\n➡️  Dans la règle "${dottedName}"` : '') +
 		`\n${isError ? '✖️' : '⚠️'}  ${message}` +
 		(originalError
 			? '\n' + (isError ? '    ' : 'ℹ️  ') + originalError.message

@@ -98,7 +98,7 @@ export function isAccessible(
 	name: string
 ) {
 	if (!(name in rules)) {
-		evaluationError(`La règle "${name}" n'existe pas`, { rule: name })
+		evaluationError(`La règle "${name}" n'existe pas`, { dottedName: name })
 	}
 
 	const commonAncestor = findCommonAncestor(contextName, name)
@@ -133,14 +133,14 @@ export function disambiguateReference<R extends Record<string, RuleNode>>(
 		syntaxError(
 			`La référence "${partialName}" est introuvable.
 Vérifiez que l'orthographe et l'espace de nom sont corrects`,
-			{ rule: contextName }
+			{ dottedName: contextName }
 		)
 	}
 	if (!accessibleDottedName) {
 		syntaxError(
 			`La règle "${existingDottedName[0]}" n'est pas accessible depuis "${contextName}".
 Cela vient du fait qu'elle est privée ou qu'un de ses parent est privé`,
-			{ rule: contextName }
+			{ dottedName: contextName }
 		)
 	}
 
