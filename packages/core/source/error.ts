@@ -80,7 +80,7 @@ const buildMessage = (
 
 	return (
 		`\n[ ${types[name] ?? name} ]` +
-		(info && 'dottedName' in info && info.dottedName.length
+		(info && 'dottedName' in info && info.dottedName?.length
 			? `\n➡️  Dans la règle "${info.dottedName}"`
 			: '') +
 		`\n${isError ? '✖️' : '⚠️'}  ${message}` +
