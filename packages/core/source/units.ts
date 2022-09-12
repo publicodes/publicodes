@@ -69,9 +69,9 @@ export const inferUnit = (
 	if (operator === '/') {
 		if (rawUnits.length !== 2) {
 			throw new PublicodesError(
-				'SyntaxError',
+				'InternalError',
 				'Infer units of a division with units.length !== 2)',
-				{ dottedName: '' }
+				{}
 			)
 		}
 

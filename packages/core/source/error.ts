@@ -4,7 +4,9 @@ import { Logger } from '.'
  * Each error name with corresponding type in info value
  */
 export interface PublicodesErrorTypes {
-	InternalError: {}
+	InternalError: {
+		dottedName?: string
+	}
 	EngineError: {}
 	SyntaxError: {
 		dottedName: string
