@@ -99,7 +99,7 @@ export function isAccessible(
 ) {
 	if (!(name in rules)) {
 		throw new PublicodesError(
-			'EvaluationError',
+			'InternalError',
 			`La règle "${name}" n'existe pas`,
 			{ dottedName: name }
 		)
