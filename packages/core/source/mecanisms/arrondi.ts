@@ -1,6 +1,6 @@
 import { EvaluationFunction, simplifyNodeUnit } from '..'
 import { ASTNode, EvaluatedNode } from '../AST/types'
-import { evaluationError } from '../error'
+import { PublicodesError } from '../error'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { mergeAllMissing } from '../evaluationUtils'
 import parse from '../parse'
@@ -31,7 +31,8 @@ const evaluate: EvaluationFunction<'arrondi'> = function (node) {
 			typeof (arrondi as EvaluatedNode).nodeValue === 'number' &&
 			!serializeUnit((arrondi as EvaluatedNode).unit)?.match(/décimales?/)
 		) {
-			evaluationError(
+			throw new PublicodesError(
+				'EvaluationError',
 				`L'unité ${serializeUnit(
 					(arrondi as EvaluatedNode).unit
 				)} de l'arrondi est inconnu. Vous devez utiliser l'unité “décimales”`,

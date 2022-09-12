@@ -1,41 +1,99 @@
 import { Logger } from '.'
 
-export class PublicodesEngineError extends Error {
-	constructor(message: string) {
-		super(message)
-		this.name = 'PublicodesEngineError'
+/**
+ * Each error name with corresponding type in info value
+ */
+export interface PublicodesErrorTypes {
+	InternalError: {}
+	EngineError: {}
+	SyntaxError: {
+		dottedName: string
+	}
+	EvaluationError: {
+		dottedName: string
 	}
 }
 
-interface ErrorInformation {
-	dottedName?: string
-}
+/**
+ * Return true if `error` is a PublicodesError,
+ * use `name` parameter to check and narow error type
+ * @example
+ * try {
+ * 	new Engine().evaluate()
+ * } catch (error) {
+ * 	if (isPublicodesError(error, 'EngineError')) {
+ * 		console.log(error.info)
+ * 	}
+ * }
+ */
+export const isPublicodesError = <Name extends keyof PublicodesErrorTypes>(
+	error: unknown,
+	name?: Name
+): error is PublicodesError<
+	typeof name extends undefined ? keyof PublicodesErrorTypes : Name
+> =>
+	error instanceof PublicodesError &&
+	(name === undefined ? true : error.name === name)
 
-export class PublicodesSyntaxError extends PublicodesEngineError {
-	dottedName?: string
+/**
+ * Generic error for Publicodes
+ */
+export class PublicodesError<
+	Name extends keyof PublicodesErrorTypes
+> extends Error {
+	name: Name
+	info: PublicodesErrorTypes[Name]
 
-	constructor(message: string, { dottedName }: ErrorInformation) {
-		super(message)
-		this.name = 'PublicodesSyntaxError'
-		this.dottedName = dottedName
+	constructor(
+		name: Name,
+		message: string,
+		info: PublicodesErrorTypes[Name],
+		originalError?: Error
+	) {
+		const newMessage = buildMessage(
+			name === 'SyntaxError'
+				? 'Erreur syntaxique'
+				: name === 'EvaluationError'
+				? "Erreur d'évaluation"
+				: name,
+			message,
+			info,
+			originalError
+		)
+
+		super(newMessage)
+		this.name = name
+		this.info = info
 	}
 }
 
-export class PublicodesEvaluationError extends PublicodesEngineError {
-	dottedName?: string
+const buildMessage = (
+	type: string,
+	message: string,
+	info?: PublicodesErrorTypes[keyof PublicodesErrorTypes],
+	originalError?: Error
+) => {
+	const isError = /erreur/i.test(type)
 
-	constructor(message: string, { dottedName }: ErrorInformation) {
-		super(message)
-		this.name = 'PublicodesEvaluationError'
-		this.dottedName = dottedName
-	}
+	return (
+		`\n[ ${type} ]` +
+		(info && 'dottedName' in info && info.dottedName.length
+			? `\n➡️  Dans la règle "${info.dottedName}"`
+			: '') +
+		`\n${isError ? '✖️' : '⚠️'}  ${message}` +
+		(originalError
+			? '\n' + (isError ? '    ' : 'ℹ️  ') + originalError.message
+			: '')
+	)
 }
 
-export class PublicodesInternalError<T> extends PublicodesEngineError {
-	payload: T
-
-	constructor(payload: T) {
+/**
+ * @deprecated Throw an internal server error, replace this by `throw new PublicodesError('InternalError', ...)`
+ */
+export class PublicodesInternalError extends PublicodesError<'InternalError'> {
+	constructor(payload: {}) {
 		super(
+			'InternalError',
 			`
 Erreur interne du moteur.
 
@@ -43,10 +101,9 @@ Cette erreur est le signe d'un bug dans publicodes. Pour nous aider à le résou
 
 payload:
 ${JSON.stringify(payload, null, 2)}
-`
+`,
+			payload
 		)
-		this.name = 'PublicodesInternalError'
-		this.payload = payload
 	}
 }
 
@@ -54,67 +111,16 @@ ${JSON.stringify(payload, null, 2)}
  * Use this error in default case of a switch to check exhaustivity statically
  * inspired by https://github.com/ts-essentials/ts-essentials#exhaustive-switch-cases
  */
-export class UnreachableCaseError extends PublicodesInternalError<never> {
+export class UnreachableCaseError extends PublicodesInternalError {
 	constructor(value: never) {
 		super(value)
 	}
 }
 
-const buildMessage = (
-	type: string,
-	message: string,
-	{ dottedName }: ErrorInformation,
-	originalError?: Error
-) => {
-	const isError = /erreur/i.test(type)
-
-	return (
-		`\n[ ${type} ]` +
-		(dottedName?.length ? `\n➡️  Dans la règle "${dottedName}"` : '') +
-		`\n${isError ? '✖️' : '⚠️'}  ${message}` +
-		(originalError
-			? '\n' + (isError ? '    ' : 'ℹ️  ') + originalError.message
-			: '')
-	)
-}
-/**
- * Throw a PublicodesSyntaxError
- * @param message
- * @param information
- * @param originalError
- */
-export function syntaxError(
-	message: string,
-	information: ErrorInformation,
-	originalError?: Error
-): never {
-	throw new PublicodesSyntaxError(
-		buildMessage('Erreur syntaxique', message, information, originalError),
-		information
-	)
-}
-
-/**
- * Throw an PublicodesEvaluationError
- * @param message
- * @param information
- * @param originalError
- */
-export function evaluationError(
-	message: string,
-	information: ErrorInformation,
-	originalError?: Error
-): never {
-	throw new PublicodesEvaluationError(
-		buildMessage("Erreur d'évaluation", message, information, originalError),
-		information
-	)
-}
-
 export function warning(
 	logger: Logger,
 	message: string,
-	information: ErrorInformation,
+	information: { dottedName: string },
 	originalError?: Error
 ) {
 	logger.warn(

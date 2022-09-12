@@ -1,4 +1,4 @@
-import { syntaxError } from './error'
+import { PublicodesError } from './error'
 
 export function normalizeDateString(dateString: string): string {
 	let [day, month, year] = dateString.split('/')
@@ -16,7 +16,11 @@ export function normalizeDate(
 ): string {
 	const date = new Date(+year, +month - 1, +day)
 	if (!+date || date.getDate() !== +day) {
-		syntaxError(`La date ${day}/${month}/${year} n'est pas valide`, {})
+		throw new PublicodesError(
+			'SyntaxError',
+			`La date ${day}/${month}/${year} n'est pas valide`,
+			{ dottedName: '' }
+		)
 	}
 	return `${pad(day)}/${pad(month)}/${pad(year)}`
 }

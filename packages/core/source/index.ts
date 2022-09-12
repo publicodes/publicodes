@@ -1,5 +1,5 @@
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
-import { evaluationError } from './error'
+import { PublicodesError } from './error'
 import { evaluationFunctions } from './evaluationFunctions'
 import parsePublicodes, {
 	Context,
@@ -57,10 +57,9 @@ export {
 } from './AST/index'
 export { type Evaluation, type Unit } from './AST/types'
 export {
-	PublicodesEngineError,
-	PublicodesEvaluationError,
-	PublicodesInternalError,
-	PublicodesSyntaxError,
+	isPublicodesError,
+	PublicodesError,
+	type PublicodesErrorTypes,
 } from './error'
 export { capitalise0, formatValue } from './format'
 export { simplifyNodeUnit } from './nodeUnits'
@@ -139,13 +138,15 @@ export default class Engine<Name extends string = string> {
 
 		Object.keys(situation).forEach((name) => {
 			if (!(name in this.baseContext.parsedRules)) {
-				evaluationError(
+				throw new PublicodesError(
+					'EvaluationError',
 					`Erreur lors de la mise à jour de la situation : ${name} n'existe pas dans la base de règle.`,
 					{ dottedName: name }
 				)
 			}
 			if (this.baseContext.parsedRules[name].private) {
-				evaluationError(
+				throw new PublicodesError(
+					'EvaluationError',
 					`Erreur lors de la mise à jour de la situation : ${name} est une règle privée (il n'est pas possible de modifier une règle privée).`,
 					{ dottedName: name }
 				)
@@ -184,15 +185,19 @@ export default class Engine<Name extends string = string> {
 
 	getRule(dottedName: Name): ParsedRules<Name>[Name] {
 		if (!(dottedName in this.baseContext.parsedRules)) {
-			evaluationError(`La règle '${dottedName}' n'existe pas`, {
-				dottedName,
-			})
+			throw new PublicodesError(
+				'EvaluationError',
+				`La règle '${dottedName}' n'existe pas`,
+				{ dottedName }
+			)
 		}
 
 		if (!(dottedName in this.publicParsedRules)) {
-			evaluationError(`La règle ${dottedName} est une règle privée.`, {
-				dottedName,
-			})
+			throw new PublicodesError(
+				'EvaluationError',
+				`La règle ${dottedName} est une règle privée.`,
+				{ dottedName }
+			)
 		}
 
 		return this.publicParsedRules[dottedName]
@@ -237,7 +242,11 @@ export default class Engine<Name extends string = string> {
 		}
 
 		if (!evaluationFunctions[parsedNode.nodeKind]) {
-			evaluationError(`Unknown "nodeKind": ${parsedNode.nodeKind}`, {})
+			throw new PublicodesError(
+				'EvaluationError',
+				`Unknown "nodeKind": ${parsedNode.nodeKind}`,
+				{ dottedName: '' }
+			)
 		}
 
 		const isTraversedVariablesBoundary =

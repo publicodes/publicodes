@@ -1,10 +1,6 @@
 import nearley from 'nearley'
 import { ASTNode } from './AST/types'
-import {
-	PublicodesEngineError,
-	PublicodesInternalError,
-	syntaxError,
-} from './error'
+import { PublicodesError, PublicodesInternalError } from './error'
 import grammar from './grammar'
 import abattement from './mecanisms/abattement'
 import applicable from './mecanisms/applicable'
@@ -51,15 +47,17 @@ const { Grammar, Parser } = nearley
 
 export default function parse(rawNode, context: Context): ASTNode {
 	if (rawNode == undefined) {
-		syntaxError(
+		throw new PublicodesError(
+			'SyntaxError',
 			`
-Une des valeurs de la formule est vide.
-Vérifiez que tous les champs à droite des deux points sont remplis`,
+	Une des valeurs de la formule est vide.
+	Vérifiez que tous les champs à droite des deux points sont remplis`,
 			{ dottedName: context.dottedName }
 		)
 	}
 	if (typeof rawNode === 'boolean') {
-		syntaxError(
+		throw new PublicodesError(
+			'SyntaxError',
 			`
 Les valeurs booléennes true / false ne sont acceptées.
 Utilisez leur contrepartie française : 'oui' / 'non'`,
@@ -109,7 +107,8 @@ function parseExpression(
 		if (e instanceof PublicodesInternalError) {
 			throw e
 		}
-		syntaxError(
+		throw new PublicodesError(
+			'SyntaxError',
 			`\`${singleLineExpression}\` n'est pas une expression valide`,
 			{ dottedName: context.dottedName },
 			e
@@ -119,7 +118,8 @@ function parseExpression(
 
 function parseMecanism(rawNode, context: Context) {
 	if (Array.isArray(rawNode)) {
-		syntaxError(
+		throw new PublicodesError(
+			'SyntaxError',
 			`
 Il manque le nom du mécanisme pour le tableau : [${rawNode
 				.map((x) => `'${x}'`)
@@ -132,7 +132,8 @@ Les mécanisme possibles sont : 'somme', 'le maximum de', 'le minimum de', 'tout
 
 	const keys = Object.keys(rawNode)
 	if (keys.length > 1) {
-		syntaxError(
+		throw new PublicodesError(
+			'SyntaxError',
 			`
 Les mécanismes suivants se situent au même niveau : ${keys
 				.map((x) => `'${x}'`)
@@ -151,7 +152,8 @@ Cela vient probablement d'une erreur dans l'indentation
 	const parseFn = parseFunctions[mecanismName]
 
 	if (!parseFn) {
-		syntaxError(
+		throw new PublicodesError(
+			'SyntaxError',
 			`Le mécanisme "${mecanismName}" est inconnu.
 
 Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`,
@@ -168,10 +170,11 @@ Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`,
 		}
 		return parseFn(values, context)
 	} catch (e) {
-		if (e instanceof PublicodesEngineError) {
+		if (e instanceof PublicodesError) {
 			throw e
 		}
-		syntaxError(
+		throw new PublicodesError(
+			'SyntaxError',
 			mecanismName
 				? `➡️ Dans le mécanisme ${mecanismName}
 ${e.message}`

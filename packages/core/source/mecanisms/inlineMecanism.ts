@@ -1,7 +1,7 @@
 import { PublicodesExpression } from '..'
 import { makeASTTransformer } from '../AST'
 import { ASTNode, ConstantNode, EvaluatedNode } from '../AST/types'
-import { syntaxError } from '../error'
+import { PublicodesError } from '../error'
 import parse from '../parse'
 import { Context, createContext } from '../parsePublicodes'
 
@@ -48,7 +48,11 @@ export function createParseInlinedMecanism(
 			if (argName in parsedDefaultArgs) {
 				return parsedDefaultArgs[argName]
 			}
-			syntaxError(`Il manque la clé '${argName} dans le mécanisme ${name}`, {})
+			throw new PublicodesError(
+				'SyntaxError',
+				`Il manque la clé '${argName} dans le mécanisme ${name}`,
+				{ dottedName: argName }
+			)
 		})(parsedBody)
 		parsedInlineMecanism.sourceMap = {
 			mecanismName: name,
