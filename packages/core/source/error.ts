@@ -12,6 +12,12 @@ export interface PublicodesErrorTypes {
 	EvaluationError: {
 		dottedName: string
 	}
+	UnknownRule: {
+		dottedName: string
+	}
+	PrivateRule: {
+		dottedName: string
+	}
 }
 
 /**
@@ -50,33 +56,28 @@ export class PublicodesError<
 		info: PublicodesErrorTypes[Name],
 		originalError?: Error
 	) {
-		const newMessage = buildMessage(
-			name === 'SyntaxError'
-				? 'Erreur syntaxique'
-				: name === 'EvaluationError'
-				? "Erreur d'évaluation"
-				: name,
-			message,
-			info,
-			originalError
-		)
-
-		super(newMessage)
+		super(buildMessage(name, message, info, originalError))
 		this.name = name
 		this.info = info
 	}
 }
 
 const buildMessage = (
-	type: string,
+	name: string,
 	message: string,
 	info?: PublicodesErrorTypes[keyof PublicodesErrorTypes],
 	originalError?: Error
 ) => {
-	const isError = /erreur/i.test(type)
+	const isError = /erreur/i.test(name)
+	const types: Partial<Record<keyof PublicodesErrorTypes, string>> = {
+		SyntaxError: 'Erreur syntaxique',
+		EvaluationError: "Erreur d'évaluation",
+		UnknownRule: 'Règle inconnue',
+		PrivateRule: 'Règle privée',
+	}
 
 	return (
-		`\n[ ${type} ]` +
+		`\n[ ${types[name] ?? name} ]` +
 		(info && 'dottedName' in info && info.dottedName.length
 			? `\n➡️  Dans la règle "${info.dottedName}"`
 			: '') +
