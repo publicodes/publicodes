@@ -1,10 +1,11 @@
 import Router from '@koa/router'
+import chai from 'chai'
 import chaiHttp from 'chai-http'
 import Koa from 'koa'
 import Engine from 'publicodes'
-import { afterAll, beforeAll, chai, describe, expect, it } from 'vitest'
-import publicodesAPI from '../middleware/koa'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { parse } from 'yaml'
+import publicodesAPI from '../middleware/koa'
 
 interface State extends Koa.DefaultState {}
 
@@ -266,9 +267,9 @@ describe('e2e koa middleware', () => {
 			{
 			  "error": {
 			    "message": "
-			[ Erreur d'évaluation ]
+			[ Règle inconnue ]
 			➡️  Dans la règle \\"bad rule\\"
-			✖️  La règle 'bad rule' n'existe pas",
+			⚠️  La règle 'bad rule' n'existe pas",
 			  },
 			}
 		`)

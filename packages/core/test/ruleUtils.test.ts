@@ -40,7 +40,7 @@ function createDummyRule(
 describe('isAccessible', () => {
 	it("should throws if rule to check doesn't exists", () => {
 		expect(() => isAccessible({}, '', 'a')).to.throw(
-			'\n[ Erreur d\'évaluation ]\n➡️  Dans la règle "a"\n✖️  La règle "a" n\'existe pas'
+			'\n[ InternalError ]\n➡️  Dans la règle "a"\n✖️  La règle "a" n\'existe pas'
 		)
 	})
 

@@ -42,9 +42,9 @@ describe('evaluate', () => {
 			{
 			  "error": {
 			    "message": "
-			[ Erreur d'évaluation ]
+			[ Règle inconnue ]
 			➡️  Dans la règle \\"bad rules\\"
-			✖️  La règle 'bad rules' n'existe pas",
+			⚠️  La règle 'bad rules' n'existe pas",
 			  },
 			}
 		`)

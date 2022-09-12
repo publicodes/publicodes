@@ -70,13 +70,13 @@ const buildMessage = (
 	info?: PublicodesErrorTypes[keyof PublicodesErrorTypes],
 	originalError?: Error
 ) => {
-	const isError = /erreur/i.test(name)
 	const types: Partial<Record<keyof PublicodesErrorTypes, string>> = {
 		SyntaxError: 'Erreur syntaxique',
 		EvaluationError: "Erreur d'évaluation",
 		UnknownRule: 'Règle inconnue',
 		PrivateRule: 'Règle privée',
 	}
+	const isError = /error/i.test(name)
 
 	return (
 		`\n[ ${types[name] ?? name} ]` +
