@@ -278,7 +278,7 @@ function replace(
 						`\n\t- Celui définit dans la règle '${replacement.definitionRule.dottedName}'`
 				)}
 					`,
-				{ rule: node.contextDottedName }
+				{ dottedName: node.contextDottedName }
 			)
 		}
 	}

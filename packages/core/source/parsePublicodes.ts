@@ -94,7 +94,7 @@ export default function parsePublicodes<
 		if (typeof rule !== 'object') {
 			syntaxError(
 				`Rule ${dottedName} is incorrectly written. Please give it a proper value.`,
-				{ rule: dottedName }
+				{ dottedName }
 			)
 		}
 		parse({ nom: dottedName, ...rule }, context)

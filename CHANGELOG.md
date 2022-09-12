@@ -5,7 +5,7 @@
 **core**
 
 -   Ajout de trois type d'erreurs (`PublicodesSyntaxError`, `PublicodesEvaluationError`, `PublicodesInternalError`) enfant d'`PublicodesEngineError`
--   Ajout d'un attribut `rule` au erreurs `PublicodesSyntaxError` et `PublicodesEvaluationError`
+-   Ajout d'un attribut `dottedName` au erreurs `PublicodesSyntaxError` et `PublicodesEvaluationError`
 -   **⚠ Changement cassant :** La fonction `evaluationError` throw une erreur de type `PublicodesEvaluationError` au lieu d'un log
 -   Remplace la fonction `neverHappens` par une erreur `UnreachableCaseError`
 -   Ajout d'une arborescence des règles dans la documentation [#250](https://github.com/betagouv/publicodes/pull/250)

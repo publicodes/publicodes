@@ -1,6 +1,6 @@
 import Engine from '..'
 import { ASTNode, Evaluation } from '../AST/types'
-import { evaluationError, warning } from '../error'
+import { evaluationError, syntaxError, warning } from '../error'
 import { mergeAllMissing } from '../evaluationUtils'
 import parse from '../parse'
 import { convertUnit, inferUnit } from '../units'
@@ -74,7 +74,7 @@ export function evaluatePlafondUntilActiveTranche(
 					`L'unité du plafond de la tranche n°${
 						i + 1
 					}  n'est pas compatible avec celle l'assiette`,
-					{ rule: this.cache._meta.evaluationRuleStack[0] },
+					{ dottedName: this.cache._meta.evaluationRuleStack[0] },
 					e
 				)
 			}
@@ -113,7 +113,7 @@ export function evaluatePlafondUntilActiveTranche(
 					`Le plafond de la tranche n°${
 						i + 1
 					} a une valeur inférieure à celui de la tranche précédente`,
-					{ rule: this.cache._meta.evaluationRuleStack[0] }
+					{ dottedName: this.cache._meta.evaluationRuleStack[0] }
 				)
 			}
 

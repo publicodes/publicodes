@@ -21,7 +21,7 @@ const evaluate: EvaluationFunction<'condition'> = function (node) {
 	let sinon = node.explanation.sinon
 	if ('unit' in condition) {
 		evaluationError('La condition doit être de type booléen', {
-			rule: this.cache._meta.evaluationRuleStack[0],
+			dottedName: this.cache._meta.evaluationRuleStack[0],
 		})
 	}
 	if (condition.nodeValue === true) {
@@ -42,7 +42,7 @@ const evaluate: EvaluationFunction<'condition'> = function (node) {
 		}
 	} else {
 		evaluationError('La condition doit être de type booléen', {
-			rule: this.cache._meta.evaluationRuleStack[0],
+			dottedName: this.cache._meta.evaluationRuleStack[0],
 		})
 	}
 	const unit = evaluation.unit ?? (alors as any).unit

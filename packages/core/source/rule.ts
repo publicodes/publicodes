@@ -83,7 +83,7 @@ export default function parseRule(
 
 	if (context.parsedRules[dottedName]) {
 		evaluationError(`La référence '${dottedName}' a déjà été définie`, {
-			rule: dottedName,
+			dottedName,
 		})
 	}
 
@@ -194,7 +194,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 		"résoudre la référence circulaire: oui"
 		...
 		`,
-				{ rule: node.dottedName }
+				{ dottedName: node.dottedName }
 			)
 
 			valeurEvaluation = {
