@@ -1,5 +1,5 @@
 import { Evaluation, Unit } from './AST/types'
-import { syntaxError } from './error'
+import { PublicodesError } from './error'
 
 export type getUnitKey = (writtenUnit: string) => string
 export type formatUnit = (unit: string, count: number) => string
@@ -68,7 +68,11 @@ export const inferUnit = (
 ): Unit | undefined => {
 	if (operator === '/') {
 		if (rawUnits.length !== 2) {
-			syntaxError('Infer units of a division with units.length !== 2)', {})
+			throw new PublicodesError(
+				'SyntaxError',
+				'Infer units of a division with units.length !== 2)',
+				{ dottedName: '' }
+			)
 		}
 
 		return inferUnit('*', [

@@ -1,6 +1,6 @@
 import Engine from '..'
 import { ASTNode, Evaluation } from '../AST/types'
-import { evaluationError, syntaxError, warning } from '../error'
+import { PublicodesError, warning } from '../error'
 import { mergeAllMissing } from '../evaluationUtils'
 import parse from '../parse'
 import { convertUnit, inferUnit } from '../units'
@@ -11,9 +11,10 @@ export type TrancheNodes = Array<TrancheNode & { plafond?: ASTNode }>
 export const parseTranches = (tranches, context): TrancheNodes => {
 	return tranches.map((node, i) => {
 		if (!node.plafond && i > tranches.length) {
-			syntaxError(
+			throw new PublicodesError(
+				'SyntaxError',
 				`La tranche n°${i} du barème n'a pas de plafond précisé. Seule la dernière tranche peut ne pas être plafonnée`,
-				{}
+				{ dottedName: '' }
 			)
 		}
 		return {
@@ -109,7 +110,8 @@ export function evaluatePlafondUntilActiveTranche(
 				!!plancherValue &&
 				(plafondValue as number) <= plancherValue
 			) {
-				evaluationError(
+				throw new PublicodesError(
+					'EvaluationError',
 					`Le plafond de la tranche n°${
 						i + 1
 					} a une valeur inférieure à celui de la tranche précédente`,

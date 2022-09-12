@@ -1,6 +1,6 @@
 import Engine from '.'
 import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
-import { evaluationError, warning } from './error'
+import { PublicodesError, warning } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing } from './evaluationUtils'
 import { capitalise0 } from './format'
@@ -82,9 +82,11 @@ export default function parseRule(
 	const title = capitalise0(rawRule['titre'] ?? name)
 
 	if (context.parsedRules[dottedName]) {
-		evaluationError(`La référence '${dottedName}' a déjà été définie`, {
-			dottedName,
-		})
+		throw new PublicodesError(
+			'EvaluationError',
+			`La référence '${dottedName}' a déjà été définie`,
+			{ dottedName }
+		)
 	}
 
 	const ruleValue: Record<string, unknown> = {
