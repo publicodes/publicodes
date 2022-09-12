@@ -186,7 +186,7 @@ export default class Engine<Name extends string = string> {
 	getRule(dottedName: Name): ParsedRules<Name>[Name] {
 		if (!(dottedName in this.baseContext.parsedRules)) {
 			throw new PublicodesError(
-				'EvaluationError',
+				'UnknownRule',
 				`La règle '${dottedName}' n'existe pas`,
 				{ dottedName }
 			)
@@ -194,7 +194,7 @@ export default class Engine<Name extends string = string> {
 
 		if (!(dottedName in this.publicParsedRules)) {
 			throw new PublicodesError(
-				'EvaluationError',
+				'PrivateRule',
 				`La règle ${dottedName} est une règle privée.`,
 				{ dottedName }
 			)
