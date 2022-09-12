@@ -1,35 +1,37 @@
 import { Logger } from '.'
 
-export class EngineError extends Error {
+export class PublicodesEngineError extends Error {
 	constructor(message: string) {
 		super(message)
-		this.name = 'EngineError'
+		this.name = 'PublicodesEngineError'
 	}
 }
 
-type ErrorInformation = Partial<{ rule: string }>
+interface ErrorInformation {
+	rule?: string
+}
 
-export class SyntaxError extends EngineError {
+export class PublicodesSyntaxError extends PublicodesEngineError {
 	rule?: string
 
 	constructor(message: string, { rule }: ErrorInformation) {
 		super(message)
-		this.name = 'SyntaxError'
+		this.name = 'PublicodesSyntaxError'
 		this.rule = rule
 	}
 }
 
-export class EvaluationError extends EngineError {
+export class PublicodesEvaluationError extends PublicodesEngineError {
 	rule?: string
 
 	constructor(message: string, { rule }: ErrorInformation) {
 		super(message)
-		this.name = 'EvaluationError'
+		this.name = 'PublicodesEvaluationError'
 		this.rule = rule
 	}
 }
 
-export class InternalError<T> extends EngineError {
+export class PublicodesInternalError<T> extends PublicodesEngineError {
 	payload: T
 
 	constructor(payload: T) {
@@ -43,7 +45,7 @@ payload:
 ${JSON.stringify(payload, null, 2)}
 `
 		)
-		this.name = 'InternalError'
+		this.name = 'PublicodesInternalError'
 		this.payload = payload
 	}
 }
@@ -52,7 +54,7 @@ ${JSON.stringify(payload, null, 2)}
  * Use this error in default case of a switch to check exhaustivity statically
  * inspired by https://github.com/ts-essentials/ts-essentials#exhaustive-switch-cases
  */
-export class UnreachableCaseError extends InternalError<never> {
+export class UnreachableCaseError extends PublicodesInternalError<never> {
 	constructor(value: never) {
 		super(value)
 	}
@@ -76,7 +78,7 @@ const buildMessage = (
 	)
 }
 /**
- * Throw a SyntaxError
+ * Throw a PublicodesSyntaxError
  * @param message
  * @param information
  * @param originalError
@@ -86,14 +88,14 @@ export function syntaxError(
 	information: ErrorInformation,
 	originalError?: Error
 ): never {
-	throw new SyntaxError(
+	throw new PublicodesSyntaxError(
 		buildMessage('Erreur syntaxique', message, information, originalError),
 		information
 	)
 }
 
 /**
- * Throw an EvaluationError
+ * Throw an PublicodesEvaluationError
  * @param message
  * @param information
  * @param originalError
@@ -103,7 +105,7 @@ export function evaluationError(
 	information: ErrorInformation,
 	originalError?: Error
 ): never {
-	throw new EvaluationError(
+	throw new PublicodesEvaluationError(
 		buildMessage("Erreur d'évaluation", message, information, originalError),
 		information
 	)

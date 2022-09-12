@@ -11,8 +11,9 @@ export type TrancheNodes = Array<TrancheNode & { plafond?: ASTNode }>
 export const parseTranches = (tranches, context): TrancheNodes => {
 	return tranches.map((node, i) => {
 		if (!node.plafond && i > tranches.length) {
-			throw new SyntaxError(
-				`La tranche n°${i} du barème n'a pas de plafond précisé. Seule la dernière tranche peut ne pas être plafonnée`
+			syntaxError(
+				`La tranche n°${i} du barème n'a pas de plafond précisé. Seule la dernière tranche peut ne pas être plafonnée`,
+				{}
 			)
 		}
 		return {

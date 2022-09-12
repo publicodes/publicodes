@@ -1,4 +1,4 @@
-import { InternalError } from './error'
+import { PublicodesInternalError } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { Context } from './parsePublicodes'
 
@@ -16,7 +16,7 @@ export default function parseReference(
 	context: Context
 ): ReferenceNode {
 	if (!context.dottedName) {
-		throw new InternalError({
+		throw new PublicodesInternalError({
 			message:
 				"Une référence ne peut pas exister en dehors d'une règle (`context.dottedName` est vide)",
 			context,
@@ -31,7 +31,7 @@ export default function parseReference(
 
 registerEvaluationFunction('reference', function evaluateReference(node) {
 	if (!node.dottedName) {
-		throw new InternalError(node)
+		throw new PublicodesInternalError(node)
 	}
 	const explanation = this.evaluateNode(
 		this.context.parsedRules[node.dottedName]

@@ -57,10 +57,10 @@ export {
 } from './AST/index'
 export { type Evaluation, type Unit } from './AST/types'
 export {
-	EngineError,
-	EvaluationError,
-	InternalError,
-	SyntaxError,
+	PublicodesEngineError,
+	PublicodesEvaluationError,
+	PublicodesInternalError,
+	PublicodesSyntaxError,
 } from './error'
 export { capitalise0, formatValue } from './format'
 export { simplifyNodeUnit } from './nodeUnits'
