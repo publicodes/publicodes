@@ -1,6 +1,10 @@
 import nearley from 'nearley'
 import { ASTNode } from './AST/types'
-import { EngineError, InternalError, syntaxError } from './error'
+import {
+	PublicodesEngineError,
+	PublicodesInternalError,
+	syntaxError,
+} from './error'
 import grammar from './grammar'
 import abattement from './mecanisms/abattement'
 import applicable from './mecanisms/applicable'
@@ -93,7 +97,7 @@ function parseExpression(
 		).results
 
 		if (parseResult == null) {
-			throw new InternalError({
+			throw new PublicodesInternalError({
 				expression: singleLineExpression,
 				parseResult: `${JSON.stringify(parseResult)}`,
 				notice:
@@ -102,7 +106,7 @@ function parseExpression(
 		}
 		return parseResult
 	} catch (e) {
-		if (e instanceof InternalError) {
+		if (e instanceof PublicodesInternalError) {
 			throw e
 		}
 		syntaxError(
@@ -164,7 +168,7 @@ Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`,
 		}
 		return parseFn(values, context)
 	} catch (e) {
-		if (e instanceof EngineError) {
+		if (e instanceof PublicodesEngineError) {
 			throw e
 		}
 		syntaxError(

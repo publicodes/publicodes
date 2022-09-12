@@ -1,7 +1,7 @@
 import { Logger, ParsedRules } from '.'
 import { makeASTTransformer, makeASTVisitor } from './AST'
 import { ASTNode } from './AST/types'
-import { InternalError, warning } from './error'
+import { PublicodesInternalError, warning } from './error'
 import { defaultNode } from './evaluationUtils'
 import { notApplicableNode } from './mecanisms/inlineMecanism'
 import parse from './parse'
@@ -97,7 +97,7 @@ export function getReplacements(
 		.flatMap((rule) => rule.replacements)
 		.reduce((acc, r: ReplacementRule) => {
 			if (!r.replacedReference.dottedName) {
-				throw new InternalError(r)
+				throw new PublicodesInternalError(r)
 			}
 			const key = r.replacedReference.dottedName
 			return { ...acc, [key]: [...(acc[key] ?? []), r] }
@@ -205,7 +205,7 @@ export function makeReplacementInliner(
 		}
 		if (node.nodeKind === 'reference') {
 			if (!node.dottedName) {
-				throw new InternalError(node)
+				throw new PublicodesInternalError(node)
 			}
 			const replacedReferenceNode = replace(
 				node,
