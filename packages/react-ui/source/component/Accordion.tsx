@@ -3,17 +3,16 @@ import styled, { css } from 'styled-components'
 import { AccordionItem } from '../contexts'
 import { ArrowDown, ArrowUp } from './icons'
 
-const AccordionWrapper = styled.div`
+const AccordionContainer = styled.div`
 	overflow: hidden;
 	border-radius: 6px;
-	border: 1px solid #9db9f1;
+	border: 1px solid #bbb;
 `
 
 const H3 = styled.h3`
 	font-size: 16px;
 	font-weight: 700;
 	margin: 2rem 0px 1rem;
-	color: rgb(29, 66, 140);
 	font-size: 1.25rem;
 	line-height: 1.75rem;
 
@@ -28,13 +27,9 @@ const H3 = styled.h3`
 		width: 100%;
 		height: 50px;
 		border: none;
-		background: #f0f5ff;
-		background-color: rgb(240, 245, 255);
-		color: rgb(29, 66, 140);
 		padding: 1.5rem;
 		cursor: pointer;
 		font-size: 1rem;
-		font-family: Roboto, sans-serif;
 		font-weight: bold;
 
 		&:hover {
@@ -43,8 +38,8 @@ const H3 = styled.h3`
 	}
 `
 
-const Div = styled.div<{ i: number }>`
-	border: 0 solid #9db9f1;
+const AccordionWrapper = styled.div<{ i: number }>`
+	border: 0 solid #bbb;
 	${({ i }) =>
 		i > 0 &&
 		css`
@@ -72,20 +67,19 @@ export interface AccordionProps {
 }
 
 export const Accordion = ({ items }: AccordionProps) => {
-	const [open, setOpen] = useState<(undefined | boolean)[]>([])
+	const [open, setOpen] = useState<boolean[]>([])
 
 	const toggleAccordion = (i: number) => () =>
 		setOpen((arr) => {
-			const newOpen = [...arr]
-			newOpen[i] = !newOpen[i]
+			arr[i] = !arr[i]
 
-			return newOpen
+			return [...arr]
 		})
 
 	return (
-		<AccordionWrapper>
+		<AccordionContainer>
 			{items.map(({ id, title, children }, i) => (
-				<Div id={id} key={id} i={i}>
+				<AccordionWrapper id={id} key={id} i={i}>
 					<H3>
 						<button onClick={toggleAccordion(i)}>
 							<span>{title}</span>
@@ -95,8 +89,8 @@ export const Accordion = ({ items }: AccordionProps) => {
 					<div>
 						<Child open={!!open[i]}>{children}</Child>
 					</div>
-				</Div>
+				</AccordionWrapper>
 			))}
-		</AccordionWrapper>
+		</AccordionContainer>
 	)
 }

@@ -10,7 +10,8 @@ export type AccordionItem = { title: string; id: string; children: ReactNode }
 export type SupportedRenderers = {
 	Link?: ComponentType<{
 		children: ReactNode
-		to: string
+		to?: string
+		href?: string
 		title?: string
 	}>
 	Head?: ComponentType<{ children: ReactNode }>

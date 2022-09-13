@@ -28,7 +28,8 @@ type RulePageProps = {
 	renderers: SupportedRenderers
 	situation?: Record<string, unknown>
 	apiDocumentationUrl?: string
-	apiExampleUrl?: string
+	apiEvaluateUrl?: string
+	npmPackage?: string
 }
 
 export default function RulePage({
@@ -37,9 +38,10 @@ export default function RulePage({
 	engine,
 	renderers,
 	language,
-	apiDocumentationUrl,
-	apiExampleUrl,
 	situation,
+	apiDocumentationUrl,
+	apiEvaluateUrl,
+	npmPackage,
 }: RulePageProps) {
 	const currentEngineId = new URLSearchParams(window.location.search).get(
 		'currentEngineId'
@@ -67,7 +69,8 @@ export default function RulePage({
 						language={language}
 						situation={situation}
 						apiDocumentationUrl={apiDocumentationUrl}
-						apiExampleUrl={apiExampleUrl}
+						apiEvaluateUrl={apiEvaluateUrl}
+						npmPackage={npmPackage}
 					/>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
@@ -81,16 +84,18 @@ type RuleProps = {
 	language: RulePageProps['language']
 	situation?: Record<string, unknown>
 	apiDocumentationUrl?: string
-	apiExampleUrl?: string
+	apiEvaluateUrl?: string
+	npmPackage?: string
 }
 
 function Rule({
 	dottedName,
 	language,
 	subEngineId,
-	apiDocumentationUrl,
-	apiExampleUrl,
 	situation = {},
+	apiDocumentationUrl,
+	apiEvaluateUrl,
+	npmPackage,
 }: RuleProps) {
 	const baseEngine = useEngine()
 	const { References, Text } = useContext(RenderersContext)
@@ -196,7 +201,8 @@ function Rule({
 					dottedName={dottedName}
 					rule={rule}
 					apiDocumentationUrl={apiDocumentationUrl}
-					apiExampleUrl={apiExampleUrl}
+					apiEvaluateUrl={apiEvaluateUrl}
+					npmPackage={npmPackage}
 				></DeveloperAccordion>
 			</Article>
 		</Container>
