@@ -35,26 +35,28 @@ const Li = styled.li`
 `
 
 export function DeveloperAccordion({
-	engine,
 	rule,
+	engine,
 	dottedName,
 	situation = {},
 	apiDocumentationUrl,
-	apiExampleUrl,
+	apiEvaluateUrl,
+	npmPackage,
 }: {
-	engine: Engine
 	rule: EvaluatedNode & { nodeKind: 'rule' }
+	engine: Engine
 	dottedName: string
 	situation?: Record<string, unknown>
 	apiDocumentationUrl?: string
-	apiExampleUrl?: string
+	apiEvaluateUrl?: string
+	npmPackage?: string
 }) {
 	const { Accordion } = useContext(RenderersContext)
 
 	const accordionItems = [
 		{
-			title: 'Données',
-			id: 'data',
+			title: 'Règle et situation',
+			id: 'rule-situation',
 			children: (
 				<>
 					<ActualRule engine={engine} dottedName={dottedName} />
@@ -63,15 +65,50 @@ export function DeveloperAccordion({
 						engine={engine}
 						situation={situation}
 						dottedName={dottedName}
-						apiDocumentationUrl={apiDocumentationUrl}
-						apiExampleUrl={apiExampleUrl}
 					/>
 				</>
 			),
 		},
+		(apiDocumentationUrl && apiEvaluateUrl) || npmPackage
+			? {
+					title:
+						'Réutiliser ce calcul (' +
+						[
+							apiDocumentationUrl && apiEvaluateUrl ? 'API REST' : null,
+							npmPackage ? 'Paquet NPM' : null,
+						]
+							.filter((x) => x !== null)
+							.join(' / ') +
+						')',
+					id: 'usage',
+					children: (
+						<>
+							{npmPackage && (
+								<PackageUsage
+									rule={rule}
+									engine={engine}
+									situation={situation}
+									dottedName={dottedName}
+									npmPackage={npmPackage}
+								/>
+							)}
+
+							{apiDocumentationUrl && apiEvaluateUrl && (
+								<ApiUsage
+									engine={engine}
+									situation={situation}
+									dottedName={dottedName}
+									apiDocumentationUrl={apiDocumentationUrl}
+									apiEvaluateUrl={apiEvaluateUrl}
+								/>
+							)}
+						</>
+					),
+			  }
+			: null,
 		{
-			title: 'Hiérarchie des règles',
-			id: 'hierarchy',
+			title: 'Dépendances et effets de la règle',
+			id: 'dependencies-effects',
 			children: (
 				<>
 					<MissingVars selfMissing={Object.keys(rule.missingVariables)} />
@@ -86,7 +123,7 @@ export function DeveloperAccordion({
 				</>
 			),
 		},
-	]
+	].filter(<T,>(elem: T | null): elem is T => elem !== null)
 
 	return <Accordion items={accordionItems}></Accordion>
 }
@@ -113,14 +150,10 @@ function ActualSituation({
 	engine,
 	situation,
 	dottedName,
-	apiDocumentationUrl,
-	apiExampleUrl,
 }: {
 	engine: Engine<string>
 	situation: Record<string, unknown>
 	dottedName: string
-	apiDocumentationUrl?: string
-	apiExampleUrl?: string
 }) {
 	const { Code, Link } = useContext(RenderersContext)
 
@@ -136,13 +169,6 @@ function ActualSituation({
 
 	const tabs = {
 		json: JSON.stringify(evaluatedSituation, null, 2),
-		...(apiExampleUrl && {
-			curl: `curl '${apiExampleUrl}' \\
-  -H 'accept: application/json' \\
-  -H 'content-type: application/json' \\
-  --data-raw $'${data}' \\
-  --compressed`,
-		}),
 	}
 
 	return (
@@ -160,11 +186,127 @@ function ActualSituation({
 				</p>
 			)}
 			<Code tabs={tabs} />
+		</section>
+	)
+}
+
+function PackageUsage({
+	rule,
+	engine,
+	situation,
+	dottedName,
+	npmPackage,
+}: {
+	rule: EvaluatedNode & { nodeKind: 'rule' }
+	engine: Engine<string>
+	situation: Record<string, unknown>
+	dottedName: string
+	npmPackage: string
+}) {
+	const { Code, Link } = useContext(RenderersContext)
+
+	const keys = Object.keys(situation)
+	const evaluatedSituation = Object.fromEntries(
+		keys.map((dot) => [dot, serializeEvaluation(engine.evaluate(dot))])
+	)
+
+	const toCamelCase = (str: string) =>
+		str
+			.replace(/(?<!\p{L})\p{L}|\s+/gu, (m) =>
+				+m === 0 ? '' : m.toUpperCase()
+			)
+			.replace(/^./, (m) => m?.toLowerCase())
+
+	const tabs = {
+		npmPackage: `// npm i publicodes ${npmPackage}
+
+import Engine from 'publicodes'
+import rules from '${npmPackage}'
+
+const engine = new Engine(rules)
+engine.setSituation(${JSON.stringify(evaluatedSituation)})
+const ${toCamelCase(
+			rule.title || 'evaluate'
+		)} = engine.evaluate(${JSON.stringify(dottedName)})
+
+console.log(evaluate)
+`,
+	}
+
+	return (
+		<section>
+			<h4>Lancer un calcul avec Publicodes</h4>
+			<p>
+				Vous pouvez installer notre package de règles pour l'utiliser avec le{' '}
+				<Link href="https://publi.codes/">moteur Publicodes</Link> et ainsi
+				effectuer vos propres calculs. Voici un exemple avec votre situation et
+				la règle actuelle :
+			</p>
+			<Code tabs={tabs} />
+
+			<p style={{ textAlign: 'right' }}>
+				<Link href={'https://www.npmjs.com/package/' + npmPackage}>
+					📦 Retrouvez ce paquet sur NPM
+				</Link>
+			</p>
+		</section>
+	)
+}
+
+function ApiUsage({
+	engine,
+	situation,
+	dottedName,
+	apiDocumentationUrl,
+	apiEvaluateUrl,
+}: {
+	engine: Engine<string>
+	situation: Record<string, unknown>
+	dottedName: string
+	apiDocumentationUrl: string
+	apiEvaluateUrl: string
+}) {
+	const { Code, Link } = useContext(RenderersContext)
+
+	const keys = Object.keys(situation)
+	const evaluatedSituation = Object.fromEntries(
+		keys.map((dot) => [dot, serializeEvaluation(engine.evaluate(dot))])
+	)
+
+	const data = JSON.stringify({
+		expressions: [dottedName],
+		situation: evaluatedSituation,
+	})
+
+	const tabs = {
+		curl: `curl '${apiEvaluateUrl}' \\
+  -H 'accept: application/json' \\
+  -H 'content-type: application/json' \\
+  --data-raw $'${data.replace(/'/g, "'\\''")}' \\
+  --compressed`,
+		'fetch js': `const request = await fetch("${apiEvaluateUrl}", {
+  "headers": { "content-type": "application/json" },
+  "method": "POST",
+  "body": ${JSON.stringify(data)},
+})
+const { evaluate } = await request.json()
+
+console.log(evaluate)`,
+	}
+
+	return (
+		<section>
+			<h4>Utiliser notre API REST</h4>
+			<p>
+				Vous trouverez ici un exemple d'utilisation de notre API REST via curl
+				ou un fetch javascript.
+			</p>
+			<Code tabs={tabs} />
 
 			{apiDocumentationUrl && (
 				<p style={{ textAlign: 'right' }}>
 					<Link to={apiDocumentationUrl}>
-						👩‍💻 Utilisez cette situation avec notre API REST
+						👩‍💻 En savoir plus sur notre API REST
 					</Link>
 				</p>
 			)}
