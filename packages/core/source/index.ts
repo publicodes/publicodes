@@ -56,11 +56,7 @@ export {
 	traverseASTNode,
 } from './AST/index'
 export { type Evaluation, type Unit } from './AST/types'
-export {
-	isPublicodesError,
-	PublicodesError,
-	type PublicodesErrorTypes,
-} from './error'
+export { isPublicodesError, PublicodesError } from './error'
 export { capitalise0, formatValue } from './format'
 export { simplifyNodeUnit } from './nodeUnits'
 export { default as serializeEvaluation } from './serializeEvaluation'

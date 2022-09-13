@@ -3,7 +3,7 @@ import { Logger } from '.'
 /**
  * Each error name with corresponding type in info value
  */
-export interface PublicodesErrorTypes {
+interface PublicodesErrorTypes {
 	InternalError: {
 		dottedName?: string
 	}
