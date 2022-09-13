@@ -1,19 +1,23 @@
 import { capitalise0 } from 'publicodes'
 import styled from 'styled-components'
+import { DottedNameContext } from '../contexts'
 import Explanation from '../Explanation'
 
 export default function RuleMecanism({
 	rawNode,
 	explanation,
+	dottedName,
 	title,
 	virtualRule,
 }) {
 	return (
 		<Styled>
-			<small>{capitalise0(virtualRule ? rawNode.nom : title)}</small>
-			<StyledExplanation>
-				<Explanation node={explanation.valeur} />
-			</StyledExplanation>
+			<DottedNameContext.Provider value={dottedName}>
+				<small>{capitalise0(virtualRule ? rawNode.nom : title)}</small>
+				<StyledExplanation>
+					<Explanation node={explanation.valeur} />
+				</StyledExplanation>
+			</DottedNameContext.Provider>
 		</Styled>
 	)
 }

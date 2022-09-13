@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import {
 	BasepathContext,
 	defaultRenderers,
+	DottedNameContext,
 	EngineContext,
 	RenderersContext,
 	SupportedRenderers,
@@ -121,89 +122,93 @@ function Rule({
 	return (
 		<Container id="documentationRuleRoot">
 			<RulesNav dottedName={dottedName} />
-
 			<Article>
-				{useSubEngine && (
-					<div
-						style={{
-							display: 'flex',
-							alignItems: 'baseline',
-							flexWrap: 'wrap',
-							margin: '1rem 0',
-							paddingTop: '0.4rem',
-							paddingBottom: '0.4rem',
-						}}
-					>
-						<div>
-							Vous explorez la documentation avec le contexte{' '}
-							<strong>mécanisme recalcul</strong>
+				<DottedNameContext.Provider value={dottedName}>
+					{useSubEngine && (
+						<div
+							style={{
+								display: 'flex',
+								alignItems: 'baseline',
+								flexWrap: 'wrap',
+								margin: '1rem 0',
+								paddingTop: '0.4rem',
+								paddingBottom: '0.4rem',
+							}}
+						>
+							<div>
+								Vous explorez la documentation avec le contexte{' '}
+								<strong>mécanisme recalcul</strong>
+							</div>
+							<div style={{ flex: 1 }} />
+							<div>
+								<RuleLinkWithContext
+									dottedName={dottedName}
+									useSubEngine={false}
+								>
+									Retourner à la version de base
+								</RuleLinkWithContext>
+							</div>
 						</div>
-						<div style={{ flex: 1 }} />
-						<div>
-							<RuleLinkWithContext dottedName={dottedName} useSubEngine={false}>
-								Retourner à la version de base
-							</RuleLinkWithContext>
-						</div>
-					</div>
-				)}
-				<RuleHeader dottedName={dottedName} />
-				<section>
-					<Text>{description || question || ''}</Text>
-				</section>
+					)}
+					<RuleHeader dottedName={dottedName} />
+					<section>
+						<Text>{description || question || ''}</Text>
+					</section>
 
-				<p style={{ fontSize: '1.25rem', lineHeight: '2rem' }}>
-					Valeur : {formatValue(rule, { language })}
-					{rule.nodeValue === undefined && rule.unit && (
+					<p style={{ fontSize: '1.25rem', lineHeight: '2rem' }}>
+						Valeur : {formatValue(rule, { language })}
+						{rule.nodeValue === undefined && rule.unit && (
+							<>
+								<br />
+								Unité : {serializeUnit(rule.unit)}
+							</>
+						)}
+					</p>
+
+					{ruleDisabledByItsParent && (
 						<>
-							<br />
-							Unité : {serializeUnit(rule.unit)}
+							<blockquote>
+								Cette règle est <strong>non applicable</strong> car elle
+								appartient à l'espace de nom :{' '}
+								<Explanation node={nullableParent} />
+							</blockquote>
 						</>
 					)}
-				</p>
 
-				{ruleDisabledByItsParent && (
-					<>
-						<blockquote>
-							Cette règle est <strong>non applicable</strong> car elle
-							appartient à l'espace de nom :{' '}
-							<Explanation node={nullableParent} />
-						</blockquote>
-					</>
-				)}
+					<h2>Comment cette donnée est-elle calculée ?</h2>
+					<Explanation node={valeur} />
 
-				<h2>Comment cette donnée est-elle calculée ?</h2>
-				<Explanation node={valeur} />
+					{rule.rawNode.note && (
+						<>
+							<h3>Note</h3>
+							<div>
+								<Text>{rule.rawNode.note}</Text>
+							</div>
+						</>
+					)}
+					{rule.rawNode.références && References && (
+						<>
+							<h3>Références</h3>
+							<References references={rule.rawNode.références} />
+						</>
+					)}
 
-				{rule.rawNode.note && (
-					<>
-						<h3>Note</h3>
-						<div>
-							<Text>{rule.rawNode.note}</Text>
-						</div>
-					</>
-				)}
-				{rule.rawNode.références && References && (
-					<>
-						<h3>Références</h3>
-						<References references={rule.rawNode.références} />
-					</>
-				)}
+					<h3>Information pour les développeurs</h3>
+					<Text>
+						Vous trouverez ci-dessous des informations techniques qui peuvent
+						être utiles aux développeurs.
+					</Text>
 
-				<h3>Information pour les développeurs</h3>
-				<Text>
-					Vous trouverez ci-dessous des informations techniques qui peuvent être
-					utiles aux développeurs.
-				</Text>
-
-				<DeveloperAccordion
-					engine={engine}
-					situation={situation}
-					dottedName={dottedName}
-					rule={rule}
-					apiDocumentationUrl={apiDocumentationUrl}
-					apiEvaluateUrl={apiEvaluateUrl}
-					npmPackage={npmPackage}
-				></DeveloperAccordion>
+					<DeveloperAccordion
+						engine={engine}
+						situation={situation}
+						dottedName={dottedName}
+						rule={rule}
+						apiDocumentationUrl={apiDocumentationUrl}
+						apiEvaluateUrl={apiEvaluateUrl}
+						npmPackage={npmPackage}
+					></DeveloperAccordion>
+				</DottedNameContext.Provider>
 			</Article>
 		</Container>
 	)
