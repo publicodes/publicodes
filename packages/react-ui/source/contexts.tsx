@@ -65,6 +65,8 @@ export const RenderersContext = createContext<RenderersCtx>(defaultRenderers())
 
 export const BasepathContext = createContext<string>('/documentation')
 
+export const DottedNameContext = createContext<string | undefined>(undefined)
+
 export const EngineContext = createContext<Engine<string> | undefined>(
 	undefined
 )

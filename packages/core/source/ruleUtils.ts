@@ -78,7 +78,7 @@ export const getChildrenRules = (
 /**
  * Finds the common ancestor of two dottedName
  */
-function findCommonAncestor(dottedName1: string, dottedName2: string) {
+export function findCommonAncestor(dottedName1: string, dottedName2: string) {
 	const splitDottedName1 = splitName(dottedName1)
 	const splitDottedName2 = splitName(dottedName2)
 	const index = splitDottedName1.findIndex(

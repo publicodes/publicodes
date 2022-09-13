@@ -46,15 +46,8 @@ export default function Reference(
 					justifyContent: 'space-between',
 				}}
 			>
-				<RuleLinkWithContext dottedName={dottedName}>
-					<span>
-						{rule.rawNode.acronyme ? (
-							<abbr title={rule.title}>{rule.rawNode.acronyme}</abbr>
-						) : (
-							rule.title
-						)}
-					</span>
-				</RuleLinkWithContext>
+				<RuleLinkWithContext dottedName={dottedName} />
+
 				<div style={{ flex: 1, display: 'flex', alignItems: 'baseline' }}>
 					{isFoldEnabled && (
 						<>

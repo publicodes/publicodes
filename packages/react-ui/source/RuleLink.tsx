@@ -1,6 +1,10 @@
 import Engine, { utils } from 'publicodes'
 import React, { useContext } from 'react'
-import { BasepathContext, RenderersContext } from './contexts'
+import {
+	BasepathContext,
+	DottedNameContext,
+	RenderersContext,
+} from './contexts'
 import { useEngine } from './hooks'
 
 const { encodeRuleName } = utils
@@ -28,27 +32,25 @@ export function RuleLink<Name extends string>({
 	...props
 }: RuleLinkProps<Name>) {
 	const renderers = useContext(RenderersContext)
+	const dottedNameContext = utils.findCommonAncestor(
+		useContext(DottedNameContext) ?? dottedName,
+		dottedName
+	)
 	const Link = linkComponent || renderers.Link
 	if (!Link) {
 		throw new Error('You must provide a <Link /> component.')
 	}
 	const rule = engine.context.parsedRules[dottedName]
 	const newPath = documentationPath + '/' + encodeRuleName(dottedName)
+	const contextTitle = [
+		...utils
+			.ruleParents(dottedName)
+			.reverse()
+			.filter((name) => name.startsWith(`${dottedNameContext} . `))
+			.map((name) => engine.context.parsedRules[name].title.trim()),
+		rule.title.trim(),
+	].join(' › ')
 
-	// There is a problem with this line of code : we loose the information
-	// about the applicability of the formula. Besides, when we are not in the context of the
-	// rules which defines the reference, we want to print a link to the parent rule and not
-	// the value directly.
-
-	// Besides, sometimes nodes don't have formula (which makes the doc page crash)
-
-	// Furthermore, nothing prevent from using a type notification as a reference
-
-	// For all these reason, I'm advocating for a change of perspective inside this notion of ruleWithDedicatedDocumentationPage
-
-	// if (!ruleWithDedicatedDocumentationPage(rule)) {
-	// 	return <Explanation node={engine.evaluate(rule.dottedName).formule} />
-	// }
 	if (!rule) {
 		throw new Error(`Unknown rule: ${dottedName}`)
 	}
@@ -63,7 +65,7 @@ export function RuleLink<Name extends string>({
 				newPath + (currentEngineId ? `?currentEngineId=${currentEngineId}` : '')
 			}
 		>
-			{children || rule.title.trim() || rule.dottedName}{' '}
+			{children || contextTitle}{' '}
 			{displayIcon && rule.rawNode.icônes && <span>{rule.rawNode.icônes}</span>}
 		</Link>
 	)

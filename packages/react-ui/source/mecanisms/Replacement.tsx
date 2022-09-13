@@ -15,6 +15,8 @@ export default function Replacement(node: VariationNode & EvaluatedNode) {
 	const replacedNode = node.explanation.slice(-1)[0].consequence as {
 		dottedName: string
 	}
+	return <Explanation node={applicableReplacement ?? replacedNode} />
+
 	const [displayReplacements, changeDisplayReplacement] = useState(false)
 
 	return (
