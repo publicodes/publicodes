@@ -1,4 +1,4 @@
-import { EvaluationFunction } from '..'
+import { EvaluationFunction, PublicodesError } from '..'
 import { EvaluatedNode, Unit } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import parse from '../parse'
@@ -196,8 +196,10 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 
 export const mecanismInversion = (v, context: Context) => {
 	if (!v.avec) {
-		throw new Error(
-			"Une formule d'inversion doit préciser _avec_ quoi on peut inverser la variable"
+		throw new PublicodesError(
+			'SyntaxError',
+			"Une formule d'inversion doit préciser _avec_ quoi on peut inverser la variable",
+			{ dottedName: context.dottedName }
 		)
 	}
 	return {

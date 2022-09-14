@@ -1,4 +1,4 @@
-import { EvaluationFunction } from '..'
+import { EvaluationFunction, PublicodesError } from '..'
 import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { mergeMissing } from '../evaluationUtils'
@@ -84,7 +84,7 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 
 			case 'reference':
 				if (!valeur.dottedName) {
-					throw new Error('Missing dottedName')
+					throw new PublicodesError('InternalError', 'Missing dottedName', {})
 				}
 
 				return {
