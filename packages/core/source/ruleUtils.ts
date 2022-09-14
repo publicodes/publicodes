@@ -38,6 +38,12 @@ export const decodeRuleName = (dottedName: string): string =>
 		.replace(/\u2011/g, '-')
 
 /**
+ * Return dottedName from contextName
+ */
+export const contextNameToDottedName = (contextName: string) =>
+	contextName.endsWith('$SITUATION') ? ruleParent(contextName) : contextName
+
+/**
  * Returns the parent dottedName
  */
 export const ruleParent = (dottedName: string): string =>
@@ -138,7 +144,7 @@ export function disambiguateReference<R extends Record<string, RuleNode>>(
 			'SyntaxError',
 			`La référence "${partialName}" est introuvable.
 Vérifiez que l'orthographe et l'espace de nom sont corrects`,
-			{ dottedName: contextName }
+			{ dottedName: contextNameToDottedName(contextName) }
 		)
 	}
 	if (!accessibleDottedName) {
@@ -146,7 +152,7 @@ Vérifiez que l'orthographe et l'espace de nom sont corrects`,
 			'SyntaxError',
 			`La règle "${existingDottedName[0]}" n'est pas accessible depuis "${contextName}".
 Cela vient du fait qu'elle est privée ou qu'un de ses parent est privé`,
-			{ dottedName: contextName }
+			{ dottedName: contextNameToDottedName(contextName) }
 		)
 	}
 
