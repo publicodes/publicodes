@@ -47,7 +47,7 @@ export function RuleLink<Name extends string>({
 			.ruleParents(dottedName)
 			.reverse()
 			.filter((name) => name.startsWith(`${dottedNameContext} . `))
-			.map((name) => engine.context.parsedRules[name].title.trim()),
+			.map((name) => engine.context.parsedRules[name]?.title.trim()),
 		rule.title.trim(),
 	].join(' › ')
 
@@ -65,7 +65,7 @@ export function RuleLink<Name extends string>({
 				newPath + (currentEngineId ? `?currentEngineId=${currentEngineId}` : '')
 			}
 		>
-			{children || contextTitle}{' '}
+			{children || contextTitle || rule.dottedName.split(' . ').at(-1)}{' '}
 			{displayIcon && rule.rawNode.icônes && <span>{rule.rawNode.icônes}</span>}
 		</Link>
 	)

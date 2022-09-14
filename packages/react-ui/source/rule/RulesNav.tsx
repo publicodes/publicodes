@@ -2,10 +2,9 @@ import { utils } from 'publicodes'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
+import { Arrow } from '../component/icons'
 import { useEngine } from '../hooks'
-import { ArrowDown, ArrowUp } from '../component/icons'
 import { RuleLinkWithContext } from '../RuleLink'
-
 interface Props {
 	dottedName: string
 }
@@ -26,11 +25,6 @@ export const RulesNav = ({ dottedName }: Props) => {
 		setLevel((prev) => ({ ...prev, ...initLevel(dottedName) }))
 		setNavOpen(false)
 	}, [dottedName])
-
-	const maxLevelOpen = Object.entries(level).reduce(
-		(max, [dot, open]) => (open ? Math.max(max, dot.split(' . ').length) : max),
-		0
-	)
 
 	const parsedRules = baseEngine.getParsedRules()
 
@@ -68,7 +62,7 @@ export const RulesNav = ({ dottedName }: Props) => {
 				)}
 
 			<Nav $open={navOpen}>
-				<ul style={{ width: maxLevelOpen * 16 + 350 }}>
+				<ul>
 					{Object.entries(parsedRules)
 						.sort(([a], [b]) => a.localeCompare(b))
 						.map(([ruleDottedName, rest]) => {
@@ -120,24 +114,25 @@ const NavLi = ({ ruleDottedName, open, active, onClickDropdown }) => {
 			inline: 'start',
 		})
 	}, [])
-
 	return (
 		<li
 			key={ruleDottedName}
 			ref={active ? activeLi : undefined}
 			style={{
-				marginLeft: (ruleDottedName.split(' . ').length - 1) * 16,
+				paddingLeft: (ruleDottedName.split(' . ').length - 1) * 16,
 			}}
 			className={
 				(childrenCount > 0 ? 'dropdown ' : '') + (active ? 'active ' : '')
 			}
 		>
-			{childrenCount > 0 && (
-				<DropdownButton onClick={() => onClickDropdown(ruleDottedName)}>
-					{open ? <StyledArrowUp /> : <StyledArrowDown />}
-				</DropdownButton>
-			)}
-			<RuleLinkWithContext dottedName={ruleDottedName} displayIcon />
+			<span className="content">
+				{childrenCount > 0 && (
+					<DropdownButton onClick={() => onClickDropdown(ruleDottedName)}>
+						<StyledArrow $open={open} />
+					</DropdownButton>
+				)}
+				<RuleLinkWithContext dottedName={ruleDottedName} displayIcon />
+			</span>
 		</li>
 	)
 }
@@ -188,49 +183,56 @@ const OpenNavButton = styled.button`
 `
 
 const Nav = styled.nav<{ $open: boolean }>`
-	flex-basis: 30%;
-	overflow: scroll;
-	max-height: 80vh;
+	@media (min-width: ${breakpointsWidth.lg}) {
+		max-width: 50%;
+		flex-shrink: 0;
+	}
+	border-right: 1px solid #e6e6e6;
+	overflow: auto;
+	max-height: calc(100vh - 2rem);
 	position: sticky;
 	top: 0;
-
 	@media (max-width: ${breakpointsWidth.lg}) {
 		position: fixed;
 		top: 0;
 		left: 0;
+		padding-top: 1rem;
 		bottom: 0;
 		z-index: 200;
 		max-height: initial;
 		background: white;
-		max-width: 75vw;
+		width: 80vw;
+		height: 100%;
 
 		transition: all ease-in-out 0.25s;
-		${({ $open }) => ($open ? '' : 'left: -100%; right: 100%;')}
+		${({ $open }) => ($open ? '' : 'transform: translateX(-100%);')}
 	}
-
 	ul {
-		margin: 0.5rem;
-		display: inline-flex;
-		flex-direction: column;
 		flex-wrap: nowrap;
-		align-items: flex-start;
-		padding: 0;
+		margin: 0;
 
+		padding: 0;
+		list-style: none;
 		li {
 			margin-bottom: 3px;
-			padding: 3px 0.5rem 3px 3px;
-			display: flex;
-			align-items: center;
-			flex-direction: row;
-			flex-wrap: nowrap;
 			max-width: 350px;
-
-			&.active {
-				background-color: #e6e6e6;
+			.content {
 				border-radius: 3px;
+				padding: 3px 1rem;
+				display: flex;
+				width: fit-content;
+				align-items: center;
+				flex-direction: row;
+				flex-wrap: nowrap;
 			}
 
-			&:not(.dropdown):before {
+			&.active .content {
+				background-color: #e6e6e6;
+			}
+			&:not(.active) a {
+				font-weight: normal;
+			}
+			&:not(.dropdown) .content:before {
 				content: ' ';
 				display: inline-block;
 				background-color: #b3b3b3;
@@ -247,27 +249,20 @@ const Nav = styled.nav<{ $open: boolean }>`
 
 const DropdownButton = styled.button`
 	margin-right: 0.75rem;
+	flex-shrink: 0;
 	background: none;
 	border: 1px solid #b3b3b3;
 	border-radius: 2rem;
 	width: 1.5rem;
-	min-width: 1.5rem;
-	max-width: 1.5rem;
 	height: 1.5rem;
-	min-height: 1.5rem;
-	max-height: 1.5rem;
 	color: #999;
 	padding: 0;
 	display: inline-block;
-	line-height: 0;
 `
 
-const StyledArrowUp = styled(ArrowUp)`
+const StyledArrow = styled(Arrow)<{ $open: boolean }>`
 	width: 100%;
+	transition: transform 0.1s;
 	height: 100%;
-`
-
-const StyledArrowDown = styled(ArrowDown)`
-	width: 100%;
-	height: 100%;
+	transform: rotate(${({ $open }) => ($open ? '0deg' : '-90deg')});
 `

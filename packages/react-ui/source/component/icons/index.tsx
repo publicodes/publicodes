@@ -2,7 +2,7 @@ interface Props {
 	className?: string
 }
 
-export const ArrowDown = ({ className }: Props) => (
+export const Arrow = ({ className }: Props) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		height="24px"

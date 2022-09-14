@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { AccordionItem } from '../contexts'
-import { ArrowDown, ArrowUp } from './icons'
+import { Arrow } from './icons'
 
 const AccordionContainer = styled.div`
 	overflow: hidden;
@@ -56,10 +56,12 @@ const Child = styled.div<{ open: boolean }>`
 	margin: 1.5rem;
 `
 
-const Arrow = styled.div`
+const StyledArrow = styled(Arrow)<{ $isOpen: boolean }>`
 	display: inline-block;
 	width: 25px;
+	transition: transform 0.1s;
 	height: 25px;
+	transform: rotate(${({ $isOpen }) => ($isOpen ? `180deg` : `360deg`)});
 `
 
 export interface AccordionProps {
@@ -83,7 +85,7 @@ export const Accordion = ({ items }: AccordionProps) => {
 					<H3>
 						<button onClick={toggleAccordion(i)}>
 							<span>{title}</span>
-							<Arrow>{open[i] ? <ArrowUp /> : <ArrowDown />}</Arrow>
+							<StyledArrow $isOpen={open[i]} />
 						</button>
 					</H3>
 					<div>

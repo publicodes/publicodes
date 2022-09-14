@@ -361,13 +361,13 @@ function ReverseMissing({
 				<>
 					<p>
 						Les règles suivantes ont besoin de la règle courante pour être
-						calculées.
+						calculées :
 						{ruleIsNotDefined && (
 							<>
 								{' '}
-								Or, la règle courante n'étant pas encore définie, c'est sa
-								valeur par défaut qui est utilisée pour déterminer la valeur de
-								ces règles.
+								La règle courante n'étant pas encore définie, c'est sa valeur
+								par défaut qui est utilisée pour déterminer la valeur de ces
+								règles.
 							</>
 						)}
 					</p>
