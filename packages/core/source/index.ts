@@ -163,12 +163,18 @@ export default class Engine<Name extends string = string> {
 		const savedBaseContext = copyContext(this.baseContext)
 
 		// const previousParsedRules = this.context.
-		this.context = {
-			...this.baseContext,
-			...parsePublicodes(
-				situationToParse as RawPublicodes<Name>,
-				keepPreviousSituation ? this.context : this.baseContext
-			),
+		try {
+			this.context = {
+				...this.baseContext,
+				...parsePublicodes(
+					situationToParse as RawPublicodes<Name>,
+					keepPreviousSituation ? this.context : this.baseContext
+				),
+			}
+		} catch (error) {
+			this.baseContext = savedBaseContext
+
+			throw error
 		}
 		this.baseContext = savedBaseContext
 
