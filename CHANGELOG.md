@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0-beta.48
+## 1.0.0-beta.49
 
 **core**
 
@@ -11,6 +11,10 @@
 -   Remplace la fonction `neverHappens` par une erreur `UnreachableCaseError`
 -   Ajout d'une arborescence des règles dans la documentation [#250](https://github.com/betagouv/publicodes/pull/250)
 -   Répare l'inférence d'unité dans une somme avec un élément non applicable [#252](https://github.com/betagouv/publicodes/pull/252)
+
+## 1.0.0-beta.48
+
+-   **⚠ publié par erreur**
 
 ## 1.0.0-beta.47
 
