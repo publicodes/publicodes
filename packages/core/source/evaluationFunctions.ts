@@ -1,4 +1,4 @@
-import { EvaluationFunction } from '.'
+import { EvaluationFunction, PublicodesError } from '.'
 import { ASTNode } from './AST/types'
 
 export let evaluationFunctions = {
@@ -10,8 +10,10 @@ export function registerEvaluationFunction<
 >(nodeKind: NodeName, evaluationFunction: EvaluationFunction<NodeName>) {
 	evaluationFunctions ??= {}
 	if (evaluationFunctions[nodeKind]) {
-		throw Error(
-			`Multiple evaluation functions registered for the nodeKind \x1b[4m${nodeKind}`
+		throw new PublicodesError(
+			'EvaluationError',
+			`Multiple evaluation functions registered for the nodeKind \x1b[4m${nodeKind}`,
+			{ dottedName: '' }
 		)
 	}
 	evaluationFunctions[nodeKind] = evaluationFunction

@@ -1,3 +1,4 @@
+import { PublicodesError } from '.'
 import { ASTNode, ConstantNode, EvaluatedNode, Evaluation } from './AST/types'
 import parse from './parse'
 
@@ -36,8 +37,10 @@ export const parseObject = (objectShape, value, context) => {
 	return Object.fromEntries(
 		Object.entries(objectShape).map(([key, defaultValue]) => {
 			if (value[key] == undefined && !defaultValue) {
-				throw new Error(
-					`Il manque une clé '${key}' dans ${JSON.stringify(value)} `
+				throw new PublicodesError(
+					'EngineError',
+					`Il manque une clé '${key}' dans ${JSON.stringify(value)} `,
+					{}
 				)
 			}
 

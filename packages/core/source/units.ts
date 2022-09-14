@@ -180,10 +180,12 @@ export function convertUnit<ValType extends Evaluation<number>>(
 	value: ValType
 ): ValType {
 	if (!areUnitConvertible(from, to)) {
-		throw new Error(
+		throw new PublicodesError(
+			'EngineError',
 			`Impossible de convertir l'unité '${serializeUnit(
 				from
-			)}' en '${serializeUnit(to)}'`
+			)}' en '${serializeUnit(to)}'`,
+			{}
 		)
 	}
 	if (!value) {
@@ -220,7 +222,7 @@ function unitClasses(convertTable: ConvertTable) {
 			const ia = classes.findIndex((units) => units.has(a))
 			const ib = classes.findIndex((units) => units.has(b))
 			if (ia > -1 && ib > -1 && ia !== ib) {
-				throw Error(`Invalid ratio ${ratio}`)
+				throw new PublicodesError('EngineError', `Invalid ratio ${ratio}`, {})
 			} else if (ia === -1 && ib === -1) {
 				classes.push(new Set([a, b]))
 			} else if (ia > -1) {
