@@ -103,7 +103,7 @@ export default function Documentation({
 	}, [baseUrl, currentTarget, pathname, history])
 
 	return (
-		<div style={{ padding: '0 1rem' }}>
+		<div style={{ padding: '1rem' }}>
 			{logger.toJSX()}
 
 			<ErrorBoundary>

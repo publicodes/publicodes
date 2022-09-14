@@ -192,11 +192,12 @@ function Rule({
 							<References references={rule.rawNode.références} />
 						</>
 					)}
+					<br />
 
-					<h3>Information pour les développeurs</h3>
+					<h3>Informations pour les développeurs</h3>
 					<Text>
 						Vous trouverez ci-dessous des informations techniques qui peuvent
-						être utiles aux développeurs.
+						être utiles aux développeurs
 					</Text>
 
 					<DeveloperAccordion
@@ -217,15 +218,18 @@ function Rule({
 const Container = styled.div`
 	display: flex;
 	flex-wrap: nowrap;
-	flex-direction: row;
-	gap: 2rem;
-
+	align-items: flex-start;
 	@media (max-width: ${breakpointsWidth.lg}) {
 		flex-direction: column;
 	}
 `
 
 const Article = styled.article`
-	flex-basis: 70%;
-	overflow: hidden;
+	flex-basis: 1;
+	flex-shrink: 1;
+	@media (min-width: ${breakpointsWidth.lg}) {
+		padding-left: 1rem;
+		border-left: 1px solid #e6e6e6;
+		margin-left: -1px;
+	}
 `
