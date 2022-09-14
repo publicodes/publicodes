@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/api",
-	"version": "1.0.0-beta.49",
+	"version": "1.0.0-beta.50",
 	"description": "Publicodes API",
 	"type": "module",
 	"main": "./dist/index.cjs",
