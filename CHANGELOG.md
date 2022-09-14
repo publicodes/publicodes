@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0-beta.50
+
+**publicodes-react**
+
+-   Affiche les titre des règles parentes à côté du titre de la règle dans les liens. Cela permet d'ajouter du contexte et de désambiguisé les noms de règles dans les listes.
+-   Améliore le style du menu de navigation
+
 ## 1.0.0-beta.49
 
 **core**
