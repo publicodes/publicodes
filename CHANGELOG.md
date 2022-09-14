@@ -4,9 +4,10 @@
 
 **core**
 
--   Ajout de trois type d'erreurs (`PublicodesSyntaxError`, `PublicodesEvaluationError`, `PublicodesInternalError`) enfant d'`PublicodesEngineError`
--   Ajout d'un attribut `dottedName` au erreurs `PublicodesSyntaxError` et `PublicodesEvaluationError`
--   **⚠ Changement cassant :** La fonction `evaluationError` throw une erreur de type `PublicodesEvaluationError` au lieu d'un log
+-   Ajout d'informations pour les développeurs dans la documentation.
+-   **⚠ Changement cassant :** Uniformisation des erreurs throw par publicodes avec un nouveau type d'erreur : `PublicodesError`
+-   Ajout d'une fonction `isPublicodesError` qui permet de detecter une erreur publicodes et de la typer
+-   Ajout d'un attribut `dottedName` au erreurs `SyntaxError`, `EvaluationError`, `UnknownRule` et `PrivateRule`
 -   Remplace la fonction `neverHappens` par une erreur `UnreachableCaseError`
 -   Ajout d'une arborescence des règles dans la documentation [#250](https://github.com/betagouv/publicodes/pull/250)
 -   Répare l'inférence d'unité dans une somme avec un élément non applicable [#252](https://github.com/betagouv/publicodes/pull/252)
