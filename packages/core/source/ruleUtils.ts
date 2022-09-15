@@ -124,6 +124,29 @@ export function isAccessible(
 	)
 }
 
+/**
+ * Check wether a rule is tagged as experimental.
+ *
+ * Takes into account the a children of an experimental rule is also experimental
+ *
+ * @param rules The parsed rules
+ * @param name The namespace checked for experimental
+ */
+export function isExperimental(rules: Record<string, RuleNode>, name: string) {
+	if (!(name in rules)) {
+		throw new PublicodesError(
+			'InternalError',
+			`La règle "${name}" n'existe pas`,
+			{ dottedName: name }
+		)
+	}
+	const parents = [name, ...ruleParents(name)]
+	return parents.some(
+		(dottedName) =>
+			dottedName in rules && rules[dottedName].rawNode?.experimental === 'oui'
+	)
+}
+
 export function disambiguateReference<R extends Record<string, RuleNode>>(
 	rules: R,
 	contextName = '',

@@ -2,6 +2,7 @@ import Engine, {
 	EvaluatedNode,
 	RuleNode,
 	serializeEvaluation,
+	utils,
 } from 'publicodes'
 import { useContext } from 'react'
 import styled from 'styled-components'
@@ -83,6 +84,19 @@ export function DeveloperAccordion({
 					id: 'usage',
 					children: (
 						<>
+							{utils.isExperimental(
+								engine.baseContext.parsedRules,
+								dottedName
+							) && (
+								<StyledWarning>
+									<h4>⚠️ Cette règle est tagguée comme experimentale ⚠️</h4>
+									<p>
+										Cela veut dire qu'elle peut être modifiée, renommée, ou
+										supprimée sans qu'il n'y ait de changement de version
+										majeure dans l'API.
+									</p>
+								</StyledWarning>
+							)}
 							{npmPackage && (
 								<PackageUsage
 									rule={rule}
@@ -301,7 +315,6 @@ console.log(evaluate)`,
 				ou un fetch javascript.
 			</p>
 			<Code tabs={tabs} />
-
 			{apiDocumentationUrl && (
 				<p style={{ textAlign: 'right' }}>
 					<Link to={apiDocumentationUrl}>
@@ -309,6 +322,7 @@ console.log(evaluate)`,
 					</Link>
 				</p>
 			)}
+			)
 		</section>
 	)
 }
@@ -416,3 +430,5 @@ function Effect({ replacements }: { replacements: RuleNode['replacements'] }) {
 		</section>
 	)
 }
+
+const StyledWarning = styled.div``
