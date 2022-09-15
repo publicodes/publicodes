@@ -210,13 +210,6 @@ function PackageUsage({
 		keys.map((dot) => [dot, serializeEvaluation(engine.evaluate(dot))])
 	)
 
-	const toCamelCase = (str: string) =>
-		str
-			.replace(/(?<!\p{L})\p{L}|\s+/gu, (m) =>
-				+m === 0 ? '' : m.toUpperCase()
-			)
-			.replace(/^./, (m) => m?.toLowerCase())
-	const variableName = toCamelCase(rule.title || 'evaluate')
 	const tabs = {
 		npmPackage: `// npm i publicodes ${npmPackage}
 
@@ -226,9 +219,10 @@ import rules from '${npmPackage}'
 const engine = new Engine(rules)
 engine.setSituation(${JSON.stringify(evaluatedSituation, null, 2)})
 
-const ${variableName} = engine.evaluate(${JSON.stringify(dottedName)})
+// ${rule.title}
+const evaluation = engine.evaluate(${JSON.stringify(dottedName)})
 
-console.log(formatValue(${variableName}))
+console.log(formatValue(evaluation))
 `,
 	}
 
