@@ -29,6 +29,7 @@ export type Rule = {
 	titre?: string
 	sévérité?: string
 	type?: string
+	experimental?: 'oui'
 	'possiblement non applicable'?: 'oui'
 	privé?: 'oui'
 	note?: string
