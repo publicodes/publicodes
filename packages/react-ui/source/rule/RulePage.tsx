@@ -225,8 +225,8 @@ const Container = styled.div`
 `
 
 const Article = styled.article`
-	flex-basis: 1;
 	flex-shrink: 1;
+	min-width: 0;
 	@media (min-width: ${breakpointsWidth.lg}) {
 		padding-left: 1rem;
 		border-left: 1px solid #e6e6e6;
