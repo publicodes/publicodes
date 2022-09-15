@@ -65,13 +65,13 @@ components:
                         type: array
                         items:
                           type: string
-                  - type: object
-                    properties:
-                      error:
-                        type: object
-                        properties:
-                          message:
-                            type: string
+            warnings:
+              type: array
+              items:
+                type: object
+                properties:
+                  message:
+                    type: string
         - type: object
           properties:
             situationError:
@@ -79,6 +79,20 @@ components:
               properties:
                 message:
                   type: string
+        - type: object
+          properties:
+            error:
+              type: object
+              properties:
+                message:
+                  type: string
+            warnings:
+              type: array
+              items:
+                type: object
+                properties:
+                  message:
+                    type: string
 
     InputValidationError:
       type: array

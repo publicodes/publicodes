@@ -1,5 +1,6 @@
+import { makeASTVisitor } from './AST/index'
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
-import { PublicodesError } from './error'
+import { experimentalRuleWarning, PublicodesError } from './error'
 import { evaluationFunctions } from './evaluationFunctions'
 import parsePublicodes, {
 	Context,
@@ -162,7 +163,6 @@ export default class Engine<Name extends string = string> {
 
 		const savedBaseContext = copyContext(this.baseContext)
 
-		// const previousParsedRules = this.context.
 		try {
 			this.context = {
 				...this.baseContext,
@@ -178,6 +178,14 @@ export default class Engine<Name extends string = string> {
 		}
 		this.baseContext = savedBaseContext
 
+		Object.keys(situation).forEach((nom) => {
+			if (utils.isExperimental(this.context.parsedRules, nom)) {
+				experimentalRuleWarning(this.baseContext.logger, nom)
+			}
+			this.checkExperimentalRule(
+				this.context.parsedRules[`${nom} . $SITUATION`]
+			)
+		})
 		return this
 	}
 
@@ -226,7 +234,9 @@ export default class Engine<Name extends string = string> {
 				this.context
 			),
 		}
+		this.checkExperimentalRule(this.context.parsedRules['$EVALUATION'])
 		this.cache._meta = emptyCache()._meta
+
 		const evaluation = this.evaluateNode(
 			this.context.parsedRules['$EVALUATION'].explanation.valeur
 		)
@@ -306,6 +316,19 @@ export default class Engine<Name extends string = string> {
 		}
 		return newEngine
 	}
+
+	private checkExperimentalRule = makeASTVisitor((node) => {
+		if (
+			node.nodeKind === 'reference' &&
+			utils.isExperimental(this.context.parsedRules, node.dottedName as string)
+		) {
+			experimentalRuleWarning(
+				this.baseContext.logger,
+				node.dottedName as string
+			)
+		}
+		return 'continue'
+	})
 }
 
 /**

@@ -1,6 +1,6 @@
 import Engine from '.'
 import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
-import { PublicodesError, warning } from './error'
+import { PublicodesError } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing } from './evaluationUtils'
 import { capitalise0 } from './format'
@@ -186,19 +186,21 @@ registerEvaluationFunction('rule', function evaluate(node) {
 				(dottedName) => dottedName === node.dottedName
 			).length > 1
 		) {
-			warning(
-				this.context.logger,
-				`
-						Un cycle a été détecté dans lors de l'évaluation de cette règle.
-		Par défaut cette règle sera évaluée à 'null'.
-		Pour indiquer au moteur de résoudre la référence circulaire en trouvant le point fixe
-		de la fonction, il vous suffit d'ajouter l'attribut suivant niveau de la règle :
-		${node.dottedName}:
-		"résoudre la référence circulaire: oui"
-		...
-		`,
-				{ dottedName: node.dottedName }
-			)
+			//  TODO : remettre ce warning. Je ne sais pas pourquoi, mais la base de règle de mon-entreprise lève un warning sur quasiment toutes les cotisations
+			// 			warning(
+			// 				this.context.logger,
+			// 				`Un cycle a été détecté lors de l'évaluation de cette règle.
+
+			// Par défaut cette règle sera évaluée à 'null'.
+			// Pour indiquer au moteur de résoudre la référence circulaire en trouvant le point fixe
+			// de la fonction, il vous suffit d'ajouter l'attribut suivant niveau de la règle :
+
+			// 	${node.dottedName}:
+			// 		résoudre la référence circulaire: oui"
+			// 		...
+			// `,
+			// 				{ dottedName: node.dottedName }
+			// 			)
 
 			valeurEvaluation = {
 				nodeValue: undefined,
