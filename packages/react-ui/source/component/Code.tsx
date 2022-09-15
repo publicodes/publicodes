@@ -3,7 +3,6 @@ import styled from 'styled-components'
 
 const PreWrapper = styled.div`
 	position: relative;
-
 	:hover button,
 	:focus-within button {
 		opacity: 1;
@@ -68,7 +67,9 @@ export const Code = ({ tabs }: CodeProps) => {
 							</button>
 						))}
 			</Bar>
-			<Pre>{tabs[activeTab]}</Pre>
+			<Pre>
+				<code>{tabs[activeTab]}</code>
+			</Pre>
 		</PreWrapper>
 	)
 }

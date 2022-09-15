@@ -216,20 +216,19 @@ function PackageUsage({
 				+m === 0 ? '' : m.toUpperCase()
 			)
 			.replace(/^./, (m) => m?.toLowerCase())
-
+	const variableName = toCamelCase(rule.title || 'evaluate')
 	const tabs = {
 		npmPackage: `// npm i publicodes ${npmPackage}
 
-import Engine from 'publicodes'
+import Engine, { formatValue } from 'publicodes'
 import rules from '${npmPackage}'
 
 const engine = new Engine(rules)
-engine.setSituation(${JSON.stringify(evaluatedSituation)})
-const ${toCamelCase(
-			rule.title || 'evaluate'
-		)} = engine.evaluate(${JSON.stringify(dottedName)})
+engine.setSituation(${JSON.stringify(evaluatedSituation, null, 2)})
 
-console.log(evaluate)
+const ${variableName} = engine.evaluate(${JSON.stringify(dottedName)})
+
+console.log(formatValue(${variableName}))
 `,
 	}
 
