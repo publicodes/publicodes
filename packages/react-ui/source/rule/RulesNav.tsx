@@ -201,7 +201,7 @@ const Nav = styled.nav<{ $open: boolean }>`
 		z-index: 200;
 		max-height: initial;
 		background: white;
-		width: 80vw;
+		max-width: 80vw;
 		height: 100%;
 
 		transition: all ease-in-out 0.25s;
