@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.51
+
+**publicodes-react**
+
+-   Corrige un bug d'affichage dans la documentation
+
 ## 1.0.0-beta.50
 
 **publicodes-react**
