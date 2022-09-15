@@ -1,4 +1,4 @@
-import { Expressions, Engine, Situation } from '../types.js'
+import { Engine, Expressions, Situation } from '../types.js'
 import { catchError, PickInObject } from '../utils.js'
 
 export interface EvaluateBody {
@@ -12,6 +12,11 @@ export function evaluate(
 ) {
 	const engine = originalEngine.shallowCopy()
 	originalEngine.subEngines = [] // This line avoid memory leak cause by multiple call to shallowCopy(), issue https://github.com/betagouv/publicodes/issues/239
+
+	const warnings: Array<{ message: string }> = []
+	engine.baseContext.logger.warning = (warning: string) =>
+		warnings.push({ message: warning })
+
 	const [situationError] = catchError(() => engine.setSituation(situation))
 
 	if (situationError) {
@@ -32,8 +37,8 @@ export function evaluate(
 			PickInObject(engine.evaluate(expression), keysKept)
 		)
 
-		return !error ? result : { error: { message: error.message } }
+		return !error ? result : { error: { message: error.message }, warnings }
 	})
 
-	return { evaluate: evaluateResult }
+	return { evaluate: evaluateResult, warnings }
 }

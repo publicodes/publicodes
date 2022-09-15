@@ -130,3 +130,13 @@ export function warning(
 		buildMessage('Avertissement', message, information, originalError)
 	)
 }
+
+export function experimentalRuleWarning(logger: Logger, dottedName: string) {
+	logger.warn(
+		buildMessage(
+			'Avertissement',
+			"Cette règle est tagguée comme experimentale. \n\nCela veut dire qu'elle peut être modifiée, renommée, ou supprimée sans qu'il n'y ait de changement de version majeure dans l'API.\n",
+			{ dottedName }
+		)
+	)
+}
