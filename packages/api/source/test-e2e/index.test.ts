@@ -64,6 +64,7 @@ describe('e2e koa middleware', () => {
 			      "traversedVariables": [],
 			    },
 			  ],
+			  "warnings": [],
 			}
 		`
 		)
@@ -165,6 +166,7 @@ describe('e2e koa middleware', () => {
 			      ],
 			    },
 			  ],
+			  "warnings": [],
 			}
 		`)
 	})

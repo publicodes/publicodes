@@ -113,8 +113,10 @@ A space token based on:
     main →  ● Comparison
 ",
       },
+      "warnings": [],
     },
   ],
+  "warnings": [],
 }
 `;
 
