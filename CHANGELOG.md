@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.0-beta.53
+
+**publicodes-react**
+
+-   Ajoute un avertissement dans la section réutilisation si il s'agit d'une règle tagguée comme experimentale
+-   Enlève l'utilisation de Array.at qui causait un bug critique sur safari
+
+**api**
+
+-   Ajoute les warnings à la réponse retournée par evaluate
+-   Corrige le schema openapi
+
+**core**
+
+-   Enlève les messages d'avertissement liés aux cycles : ils se déclenchaient tout le temps sur la base de règle mon-entreprise, en attendant d'implémenter une vérification plus solide
+
 ## 1.0.0-beta.52
 
 **publicodes-react**
