@@ -135,8 +135,10 @@ A space token based on:
     main →  ● Comparison
 ",
       },
+      "warnings": [],
     },
   ],
+  "warnings": [],
 }
 `;
 
@@ -253,6 +255,7 @@ A space token based on:
     main →  ● Comparison
 ",
       },
+      "warnings": [],
     },
     {
       "error": {
@@ -329,6 +332,7 @@ A number token based on:
     main →  ● NumericValue
 ",
       },
+      "warnings": [],
     },
     {
       "missingVariables": {},
@@ -337,5 +341,6 @@ A number token based on:
       "unit": undefined,
     },
   ],
+  "warnings": [],
 }
 `;

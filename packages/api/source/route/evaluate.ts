@@ -14,8 +14,15 @@ export function evaluate(
 	originalEngine.subEngines = [] // This line avoid memory leak cause by multiple call to shallowCopy(), issue https://github.com/betagouv/publicodes/issues/239
 
 	const warnings: Array<{ message: string }> = []
-	engine.baseContext.logger.warning = (warning: string) =>
-		warnings.push({ message: warning })
+	if (engine.baseContext) {
+		engine.baseContext.logger = {
+			error: console.error,
+			log: console.log,
+			warn(warning: string) {
+				warnings.push({ message: warning })
+			},
+		}
+	}
 
 	const [situationError] = catchError(() => engine.setSituation(situation))
 

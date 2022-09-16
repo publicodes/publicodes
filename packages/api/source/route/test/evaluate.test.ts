@@ -53,6 +53,7 @@ describe('evaluate', () => {
 			      "unit": 42,
 			    },
 			  ],
+			  "warnings": [],
 			}
 		`)
 
@@ -84,6 +85,7 @@ describe('evaluate', () => {
 				      "unit": undefined,
 				    },
 				  ],
+				  "warnings": [],
 				}
 			`)
 	})
@@ -138,6 +140,7 @@ describe('evaluate', () => {
 			      },
 			    },
 			  ],
+			  "warnings": [],
 			}
 		`)
 	})
@@ -173,6 +176,7 @@ describe('evaluate', () => {
 		expect(evaluate(engine, { expressions: [] })).toMatchInlineSnapshot(`
 			{
 			  "evaluate": [],
+			  "warnings": [],
 			}
 		`)
 	})
