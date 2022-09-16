@@ -65,7 +65,7 @@ export function RuleLink<Name extends string>({
 				newPath + (currentEngineId ? `?currentEngineId=${currentEngineId}` : '')
 			}
 		>
-			{children || contextTitle || rule.dottedName.split(' . ').at(-1)}{' '}
+			{children || contextTitle || rule.dottedName.split(' . ').slice(-1)[0]}{' '}
 			{displayIcon && rule.rawNode.icônes && <span>{rule.rawNode.icônes}</span>}
 		</Link>
 	)
