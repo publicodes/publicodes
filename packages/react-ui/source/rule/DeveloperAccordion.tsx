@@ -316,7 +316,6 @@ console.log(evaluate)`,
 					</Link>
 				</p>
 			)}
-			)
 		</section>
 	)
 }
