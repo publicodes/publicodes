@@ -62,11 +62,7 @@ export function DeveloperAccordion({
 				<>
 					<ActualRule engine={engine} dottedName={dottedName} />
 
-					<ActualSituation
-						engine={engine}
-						situation={situation}
-						dottedName={dottedName}
-					/>
+					<ActualSituation engine={engine} situation={situation} />
 				</>
 			),
 		},
@@ -163,11 +159,9 @@ function ActualRule({
 function ActualSituation({
 	engine,
 	situation,
-	dottedName,
 }: {
 	engine: Engine<string>
 	situation: Record<string, unknown>
-	dottedName: string
 }) {
 	const { Code, Link } = useContext(RenderersContext)
 
@@ -175,11 +169,6 @@ function ActualSituation({
 	const evaluatedSituation = Object.fromEntries(
 		keys.map((dot) => [dot, serializeEvaluation(engine.evaluate(dot))])
 	)
-
-	const data = JSON.stringify({
-		expressions: [dottedName],
-		situation: evaluatedSituation,
-	}).replace(/'/g, "'\\''")
 
 	const tabs = {
 		json: JSON.stringify(evaluatedSituation, null, 2),
@@ -280,21 +269,21 @@ function ApiUsage({
 		keys.map((dot) => [dot, serializeEvaluation(engine.evaluate(dot))])
 	)
 
-	const data = JSON.stringify({
+	const data = {
 		expressions: [dottedName],
 		situation: evaluatedSituation,
-	})
+	}
 
 	const tabs = {
 		curl: `curl '${apiEvaluateUrl}' \\
   -H 'accept: application/json' \\
   -H 'content-type: application/json' \\
-  --data-raw $'${data.replace(/'/g, "'\\''")}' \\
+  --data-raw $'${JSON.stringify(data).replace(/'/g, "'\\''")}' \\
   --compressed`,
 		'fetch js': `const request = await fetch("${apiEvaluateUrl}", {
   "headers": { "content-type": "application/json" },
   "method": "POST",
-  "body": ${JSON.stringify(data)},
+  "body": JSON.stringify(${JSON.stringify(data, null, 2)}),
 })
 const { evaluate } = await request.json()
 
