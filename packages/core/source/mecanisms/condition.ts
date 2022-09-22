@@ -37,7 +37,7 @@ const evaluate: EvaluationFunction<'condition'> = function (node) {
 		evaluation = condition
 	} else if (condition.nodeValue === undefined) {
 		sinon = this.evaluateNode(node.explanation.sinon)
-		alors = this.evaluateNode(node.explanation.sinon)
+		alors = this.evaluateNode(node.explanation.alors)
 		evaluation = {
 			...condition,
 			missingVariables: mergeAllMissing([sinon, alors]),

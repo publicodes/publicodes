@@ -9,7 +9,7 @@ export const collectNodeMissing = (
 
 export const bonus = (missings: Record<string, number> = {}) =>
 	Object.fromEntries(
-		Object.entries(missings).map(([key, value]) => [key, value + 0.0001])
+		Object.entries(missings).map(([key, value]) => [key, value + 1])
 	)
 export const mergeMissing = (
 	left: Record<string, number> | undefined = {},
