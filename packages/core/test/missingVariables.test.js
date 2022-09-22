@@ -509,4 +509,20 @@ b . d: c + c + c + c
 		expect(result).to.have.keys('a', 'b . c')
 		expect(result['a']).to.be.greaterThan(result['b . c'])
 	})
+
+	it('Should report missing variable from par défaut with a lesser score', function () {
+		const rawRules = yaml.parse(`
+
+a:
+    par défaut: b
+a . b: 
+    par défaut: 5
+`)
+		const result = new Engine(rawRules).evaluate('a').missingVariables
+
+		expect(result).to.have.keys('a', 'a . b')
+		expect(result['a']).to.be.greaterThan(result['a . b'])
+	})
+
+
 })
