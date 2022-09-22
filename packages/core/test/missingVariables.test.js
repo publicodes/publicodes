@@ -523,6 +523,4 @@ a . b:
 		expect(result).to.have.keys('a', 'a . b')
 		expect(result['a']).to.be.greaterThan(result['a . b'])
 	})
-
-
 })
