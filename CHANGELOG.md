@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.55
+
+**core**
+
+-   **⚠ Changement cassant :** Supprime le mécanisme synchronisation #258
+
 ## 1.0.0-beta.54
 
 **core**

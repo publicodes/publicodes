@@ -159,8 +159,6 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 
 		case 'recalcul':
 			return traverseRecalculNode(fn, node)
-		case 'synchronisation':
-			return traverseSynchronisationNode(fn, node)
 		case 'unité':
 			return traverseUnitéNode(fn, node)
 		case 'variations':
@@ -319,17 +317,6 @@ const traverseRecalculNode: TraverseFunction<'recalcul'> = (fn, node) => ({
 		]) as any, //TODO
 		recalcul:
 			node.explanation.recalculNode && fn(node.explanation.recalculNode),
-	},
-})
-
-const traverseSynchronisationNode: TraverseFunction<'synchronisation'> = (
-	fn,
-	node
-) => ({
-	...node,
-	explanation: {
-		...node.explanation,
-		data: fn(node.explanation.data),
 	},
 })
 

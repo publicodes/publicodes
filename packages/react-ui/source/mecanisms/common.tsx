@@ -17,12 +17,6 @@ export function ConstantNode({ nodeValue, type, fullPrecision, unit }) {
 	}
 	if (nodeValue === null) {
 		return <span className="value">{formatValue({ nodeValue })}</span>
-	} else if (type === 'objet') {
-		return (
-			<code>
-				<pre>{JSON.stringify(nodeValue, undefined, 2)}</pre>
-			</code>
-		)
 	} else if (fullPrecision) {
 		return (
 			<span className={type}>

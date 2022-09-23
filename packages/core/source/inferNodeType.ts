@@ -7,7 +7,7 @@ export type NodesTypes = WeakMap<ASTNode, InferedType>
 // extended to support the full unit type system.
 export type InferedType = {
 	isNullable: boolean | undefined
-	type: 'string' | 'number' | 'boolean' | 'objet' | undefined
+	type: 'string' | 'number' | 'boolean' | undefined
 }
 
 const UNDEFINED_TYPE = {
@@ -71,10 +71,6 @@ export default function inferNodesTypes(
 			case 'recalcul':
 			case 'replacementRule':
 			case 'résoudre référence circulaire':
-			case 'synchronisation':
-				// TODO: Synchronisation can also be used for texts. This doens't have
-				// any runtime consequence currently because the only type we only
-				// really care about is boolean for branch disabling.
 				return { isNullable: false, type: 'number' }
 
 			case 'texte':
