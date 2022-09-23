@@ -21,7 +21,6 @@ import ReplacementRule from './mecanisms/ReplacementRule'
 import Rule from './mecanisms/Rule'
 import RésoudreRéférenceCirculaire from './mecanisms/RésoudreRéférenceCirculaire'
 import Situation from './mecanisms/Situation'
-import Synchronisation from './mecanisms/Synchronisation'
 import TauxProgressif from './mecanisms/TauxProgressif'
 import Texte from './mecanisms/Texte'
 import UnePossibilité from './mecanisms/UnePossibilité'
@@ -46,7 +45,6 @@ const UIComponents = {
 	rule: Rule,
 	condition: Condition,
 	'dans la situation': Situation,
-	synchronisation: Synchronisation,
 	recalcul: Recalcul,
 	replacement: Replacement,
 	replacementRule: ReplacementRule,

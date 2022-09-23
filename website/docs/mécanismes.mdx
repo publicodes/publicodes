@@ -7,7 +7,7 @@ hide_table_of_contents: false
 
 ## applicable si
 
-> **Mécanisme chainable** ([plus d'infos](/docs/principes-de-base#mécanismes-chaînés))
+> **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
 
 Renvoie `non` si la condition est égale à `non`. Renvoie la valeur sinon.
 
@@ -24,9 +24,9 @@ prime de vacances:
 
 ## non applicable si
 
-> **Mécanisme chainable** ([plus d'infos](/docs/principes-de-base#mécanismes-chaînés))
+> **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
 
-Renvoit `non` si la condition n'est pas égale à `non`
+Renvoit `non` si la condition n’est pas égale à `non`
 
 Permet de désactiver une règle ou une valeur.
 
@@ -70,7 +70,7 @@ Renvoit `oui` si la valeur est non applicable.
 :::info Note
 
 La valeur booléenne `non` est applicable. Ce mécanisme est donc différent que la comparaison `valeur = non`.
-[En savoir plus sur l'applicabilité](/docs/principes-de-base#applicabilité)
+[En savoir plus sur l’applicabilité](/docs/principes-de-base#applicabilité)
 
 :::
 
@@ -91,7 +91,7 @@ Renvoit `oui` si la valeur est applicable.
 :::info Note
 
 La valeur booléenne `non` est applicable. Ce mécanisme est donc différent que la comparaison `valeur != non`.
-[En savoir plus sur l'applicabilité](/docs/principes-de-base#applicabilité)
+[En savoir plus sur l’applicabilité](/docs/principes-de-base#applicabilité)
 
 :::
 
@@ -107,7 +107,7 @@ lodeom applicable:
 
 ## une de ces conditions
 
-Renvoie `oui` si l'une des règles listées est _applicable_.
+Renvoie `oui` si l’une des règles listées est _applicable_.
 
 Équivaut à un `ou` logique.
 
@@ -141,15 +141,15 @@ peut voter:
 
 ## produit
 
-C'est une multiplication adaptée pour exprimer au mieux les cotisations.
+C’est une multiplication adaptée pour exprimer au mieux les cotisations.
 
 Sa propriété `assiette` est multipliée par un pourcentage `taux`, ou par un
 `facteur` quand ce nom est plus approprié.
 
-La multiplication peut être plafonnée : ce plafond sépare l'assiette en
+La multiplication peut être plafonnée : ce plafond sépare l’assiette en
 deux, et la partie au-dessus du plafond est tout simplement ignorée. Dans ce
 cas, elle se comporte comme une barème en taux marginaux à deux tranches, la
-deuxième au taux nul et allant de `plafond` à l'infini.
+deuxième au taux nul et allant de `plafond` à l’infini.
 
 ### Utilisation
 
@@ -185,15 +185,15 @@ chômage:
 ## variations
 
 Contient une liste de conditions (`si`) et leurs conséquences associées
-(`alors`), ainsi qu'un cas par défaut (`sinon`).
+(`alors`), ainsi qu’un cas par défaut (`sinon`).
 
 Pour la première condition vraie dans la liste, on retient la valeur qui lui
 est associée.
 
-Si aucune condition n'est vraie, alors ce mécanisme renvoie implicitement
+Si aucune condition n’est vraie, alors ce mécanisme renvoie implicitement
 `non`.
 
-Ce mécanisme peut aussi être utilisé au sein d'un autre mécanisme avec des attributs,
+Ce mécanisme peut aussi être utilisé au sein d’un autre mécanisme avec des attributs,
 tel que `produit` ou `barème`.
 
 ### Utilisation
@@ -237,9 +237,9 @@ allocation familiales:
 
 Somme de chaque terme de la liste.
 
-Si un des termes n'est pas applicable, il vaut zéro.
+Si un des termes n’est pas applicable, il vaut zéro.
 
-On peut retrancher des valeurs grâce à l'opérateur unaire `-`
+On peut retrancher des valeurs grâce à l’opérateur unaire `-`
 
 ### Exemple
 
@@ -271,7 +271,7 @@ somme:
 Renvoie la valeur numérique de la liste de propositions fournie qui est la
 plus grande.
 
-Pour ajouter un plancher à une valeur, préférer l'utilisation du
+Pour ajouter un plancher à une valeur, préférer l’utilisation du
 mécanisme `encadrement`.
 
 ### Exemple
@@ -288,7 +288,7 @@ max:
 Renvoie la valeur numérique de la liste de propositions fournie qui est la
 plus petite.
 
-Pour plafonner une valeur, préférer l'utilisation du mécanisme `encadrement`.
+Pour plafonner une valeur, préférer l’utilisation du mécanisme `encadrement`.
 
 ### Exemple
 
@@ -301,9 +301,9 @@ min:
 
 ## arrondi
 
-> **Mécanisme chainable** ([plus d'infos](/docs/principes-de-base#mécanismes-chaînés))
+> **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
 
-Arrondit à l'entier le plus proche, ou à une précision donnée.
+Arrondit à l’entier le plus proche, ou à une précision donnée.
 
 ### Exemple
 
@@ -323,13 +323,13 @@ arrondi:
 
 ## recalcul
 
-Relance le calcul d'une règle dans une situation différente de la situation
+Relance le calcul d’une règle dans une situation différente de la situation
 courante. Permet par exemple de calculer le montant des cotisations au niveau du
 SMIC, même si le salaire est plus élevé dans la situation actuelle.
 
 :::caution Attention
 
-Les **recalculs imbriqués** ne sont pas encore fonctionnels. On parle de recalcul imbriqués lorsqu'une variable `a` recalcul une règle `b` qui elle même recalcul la règle `a`.
+Les **recalculs imbriqués** ne sont pas encore fonctionnels. On parle de recalcul imbriqués lorsqu’une variable `a` recalcul une règle `b` qui elle même recalcul la règle `a`.
 
 :::
 
@@ -352,13 +352,13 @@ cotisations pour un SMIC:
 
 ## barème
 
-par son utilisation dans le calcul de l'impôt sur le revenu.
+par son utilisation dans le calcul de l’impôt sur le revenu.
 
-L'assiette est décomposée en plusieurs tranches, qui sont multipliées par un
+L’assiette est décomposée en plusieurs tranches, qui sont multipliées par un
 taux spécifique et enfin additionnées pour donner le résultat.
 
-Les tranches sont souvent exprimées sous forme de facteurs d'une variable
-que l'on appelle `multiplicateur`, par exemple une fois le plafond de la
+Les tranches sont souvent exprimées sous forme de facteurs d’une variable
+que l’on appelle `multiplicateur`, par exemple une fois le plafond de la
 sécurité sociale.
 
 ### Exemple
@@ -400,11 +400,11 @@ cotisation retraite:
 
 ## grille
 
-C'est un barème sous la forme d'une grille de correspondance simple. C'est
-le mécanisme de calcul de l'impôt neutre, aussi appelé impôt non
+C’est un barème sous la forme d’une grille de correspondance simple. C’est
+le mécanisme de calcul de l’impôt neutre, aussi appelé impôt non
 personnalisé.
 
-Il est composé de tranches qui se suivent. Il suffit de trouver la tranche qui correspond à l'assiette, et de selectionner le montant associé à cette tranche.
+Il est composé de tranches qui se suivent. Il suffit de trouver la tranche qui correspond à l’assiette, et de selectionner le montant associé à cette tranche.
 
 ### Exemple
 
@@ -433,7 +433,7 @@ trimestres validés:
 Ce mécanisme permet de calculer un taux progressif. On spécifie pour chaque
 tranche le plafond et le taux associé. Le taux effectif renvoyé est calculé
 en lissant la différence de taux entre la borne inférieure et supérieure de
-l'assiette.
+l’assiette.
 
 Par exemple, si nous nous avons les tranches suivantes :
 
@@ -465,18 +465,18 @@ Beaucoup de cotisations sont composées de deux parties qui partagent la
 méthode de calcul mais diffèrent selons certains paramètres. Pour ne pas
 définir deux variables quasi-redondantes, on utilise ce mécanisme.
 
-Cela permet d'avoir une écriture factorisée, plus facile à lire.
+Cela permet d’avoir une écriture factorisée, plus facile à lire.
 
 Dans les calculs, `composantes` se comporte **exactement comme une somme**.
 La documentation, elle, sera adaptée pour montrer chaque composante.
 
 Il est possible par exemple pour le mécanisme `produit` de garder en
-commun l'assiette, et de déclarer des composantes pour le taux.
+commun l’assiette, et de déclarer des composantes pour le taux.
 
 Chaque composante peut également contenir un champs `attributs` de type objet
 contenant les mécanismes chainés à appliquer à la composante en question.
 
-Lorsque l'on utilise l'attribut `nom`, cela aboutit à la définition de règles
+Lorsque l’on utilise l’attribut `nom`, cela aboutit à la définition de règles
 imbriquées pour chacun des termes de la somme.
 
 ### Exemple
@@ -529,16 +529,16 @@ prix TTC:
 
 ## abattement
 
-> **Mécanisme chainable** ([plus d'infos](/docs/principes-de-base#mécanismes-chaînés))
+> **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
 
-Permet de réduire le montant d'une valeur.
+Permet de réduire le montant d’une valeur.
 
-Le résultat vaudra toujours au moins zéro, y compris quand le montant de l'abattement est plus grand que le montant abattu.
+Le résultat vaudra toujours au moins zéro, y compris quand le montant de l’abattement est plus grand que le montant abattu.
 
-Il est possible d'utiliser le mécanisme `abattement` de deux manières :
+Il est possible d’utiliser le mécanisme `abattement` de deux manières :
 
 - soit en indiquant un montant de la même unité que la valeur, qui lui sera alors soustrait
-- soit en indiquant un pourcentage qui sera utilisé pour calculer l'abattement de manière relative
+- soit en indiquant un pourcentage qui sera utilisé pour calculer l’abattement de manière relative
 
 ### Exemple
 
@@ -568,7 +568,7 @@ revenu imposable:
 
 ## plancher
 
-> **Mécanisme chainable** ([plus d'infos](/docs/principes-de-base#mécanismes-chaînés))
+> **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
 
 ### Exemple
 
@@ -581,7 +581,7 @@ assiette des cotisations:
 
 ## plafond
 
-> **Mécanisme chainable** ([plus d'infos](/docs/principes-de-base#mécanismes-chaînés))
+> **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
 
 ### Exemple
 
@@ -606,11 +606,11 @@ ancienneté en fin d'année:
 
 ## unité
 
-> **Mécanisme chainable** ([plus d'infos](/docs/principes-de-base#mécanismes-chaînés))
+> **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
 
 Permet de convertir explicitement une unité.
 
-Affiche un avertissement si la conversion n'est pas possible à cause d'unités incompatibles.
+Affiche un avertissement si la conversion n’est pas possible à cause d’unités incompatibles.
 
 ### Exemple
 
@@ -622,7 +622,7 @@ salaire:
 
 ## par défaut
 
-> **Mécanisme chainable** ([plus d'infos](/docs/principes-de-base#mécanismes-chaînés))
+> **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
 
 Permet de donner une valeur par défaut pour le calcul, sans influer sur les variables manquantes retournées.
 
@@ -636,19 +636,10 @@ TVA:
   par défaut: 20%
 ```
 
-## synchronisation
-
-Permet de récupérer certaines informations, telles que les
-codes postaux des villes, à partir d'APIs externes, telles que l'[API
-des communes de France](https://geo.api.gouv.fr/decoupage-administratif/communes).
-
-Attention : ce mécanisme est encore en cours de développement, et sa syntaxe
-n'est pas stable. Se référer aux exemples existants.
-
 ## texte
 
 Permet de mettre en forme un texte avec des expressions évaluée dynamiquement.
-Ce principe est connu en informatique sous le nom d'interpolation de chaine de
+Ce principe est connu en informatique sous le nom d’interpolation de chaine de
 caractères.
 
 ### Exemple
@@ -672,31 +663,31 @@ aide vélo . plafond: 500 €
 
 ## inversion numérique
 
-> **Mécanisme chainable** ([plus d'infos](/docs/principes-de-base#mécanismes-chaînés))
+> **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
 
 Il est souhaitable de rédiger les règles de calcul
-en publicodes de la même façon qu'elles sont décrites dans la loi ou les
+en publicodes de la même façon qu’elles sont décrites dans la loi ou les
 interprétations administratives ou juridiques existantes. En conséquence,
-certaines variables n'auront donc pas de méthode de calcul clairement
-explicitée, il s'agira donc de la déduire des autres valeurs renseignées.
+certaines variables n’auront donc pas de méthode de calcul clairement
+explicitée, il s’agira donc de la déduire des autres valeurs renseignées.
 
-De façon simplifiée, il s'agira donc, à partir d'une règle existante
+De façon simplifiée, il s’agira donc, à partir d’une règle existante
 explicitant `y = ƒ(x)` de calculer `x` à partir de `y`.
 
-L'inversion numérique permet d'estimer la valeur de la variable en question
-au plus près à partir d'un des _objectifs_, listés dans la propriété `avec`.
+L’inversion numérique permet d’estimer la valeur de la variable en question
+au plus près à partir d’un des _objectifs_, listés dans la propriété `avec`.
 Il faut alors renseigner une valeur cible pour ces objectifs.
 
-L'algorithme utilisé est la [méthode de
-Brent](https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Brent). L'idée générale
+L’algorithme utilisé est la [méthode de
+Brent](https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Brent). L’idée générale
 est de prendre une valeur au hasard pour la variable en question, et
-d'améliorer mathématiquement le choix jusqu'à ce que les valeurs cibles
+d’améliorer mathématiquement le choix jusqu’à ce que les valeurs cibles
 soient toutes suffisamment proches des objectifs.
 
-Si on demande au moteur la valeur d'une variable qui a pour formule une
-inversion, il va vérifier qu'une des variables `avec` a bien une valeur
-(calculée ou saisie), et procéder à l'inversion décrite plus haut à partir
-de celle-ci. Sinon, ces possibilités d'inversions seront listées comme
+Si on demande au moteur la valeur d’une variable qui a pour formule une
+inversion, il va vérifier qu’une des variables `avec` a bien une valeur
+(calculée ou saisie), et procéder à l’inversion décrite plus haut à partir
+de celle-ci. Sinon, ces possibilités d’inversions seront listées comme
 manquantes.
 
 ## résoudre la référence circulaire
@@ -705,17 +696,17 @@ Active le calcul itératif pour trouver la valeur de la règle qui résout
 la référence circulaire.
 
 Il est possible pour une règle de se référencer elle-même. Par défaut, le
-moteur considère qu'il s'agit d'un cycle non voulu, et renvoie 'undefined' comme valeur
+moteur considère qu’il s’agit d’un cycle non voulu, et renvoie ‘undefined’ comme valeur
 pour la règle en question, en affichant un avertissement.
 
 Mais dans certains cas, la formule est bonne et le cycle est voulu. La valeur de la
-règle attendue est donc celle qui résout l'équation obtenue via la référence cyclique.
+règle attendue est donc celle qui résout l’équation obtenue via la référence cyclique.
 
-Lorsque l'on active cette fonctionnalité, le moteur va procéder par essai-erreur jusqu'à
+Lorsque l’on active cette fonctionnalité, le moteur va procéder par essai-erreur jusqu’à
 trouver cette valeur.
 
 Note : la résolution de cycle est coûteuse en temps de calcul. Il faut donc veiller à
-ne pas la cumuler avec l'évaluation d'un autre mécanisme coûteux comme l'inversion numérique
+ne pas la cumuler avec l’évaluation d’un autre mécanisme coûteux comme l’inversion numérique
 par exemple.
 
 ### Exemple

@@ -31,7 +31,6 @@ import résoudreRéférenceCirculaire from './mecanisms/résoudre-référence-ci
 import simplifierUnité from './mecanisms/simplifier-unité'
 import situation from './mecanisms/situation'
 import somme from './mecanisms/somme'
-import { mecanismSynchronisation } from './mecanisms/synchronisation'
 import tauxProgressif from './mecanisms/tauxProgressif'
 import texte from './mecanisms/texte'
 import toutesCesConditions from './mecanisms/toutes-ces-conditions'
@@ -240,17 +239,10 @@ const parseFunctions = {
 	produit,
 	recalcul: mecanismRecalcul,
 	somme,
-	synchronisation: mecanismSynchronisation,
 	[texte.nom]: texte,
 	valeur: parse,
 	variable: parseReference,
 	variations,
-	objet: (v) => ({
-		type: 'objet',
-		nodeValue: v,
-		missingVariables: {},
-		nodeKind: 'constant',
-	}),
 	constant: (v) => ({
 		type: v.type,
 		// In the documentation we want to display constants defined in the source
