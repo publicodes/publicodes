@@ -109,7 +109,7 @@ export default function parseRule(
 		}
 
 		// If the `par défaut` value is used, then the rule should be listed as a missingVariables
-		if (ruleValue['par défaut'] || ruleValue['par défaut'] === 0) {
+		if (ruleValue['par défaut'] != null) {
 			ruleValue['par défaut'] = {
 				valeur: ruleValue['par défaut'],
 				'variable manquante': dottedName,
