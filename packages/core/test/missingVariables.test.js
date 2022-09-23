@@ -523,4 +523,17 @@ a . b:
 		expect(result).to.have.keys('a', 'a . b')
 		expect(result['a']).to.be.greaterThan(result['a . b'])
 	})
+
+	it('Should report missing variable even if default value is 0', function () {
+		const rawRules = yaml.parse(`
+
+
+a: b
+a . b:
+  par défaut: 0
+`)
+		const result = new Engine(rawRules).evaluate('a').missingVariables
+
+		expect(result).to.have.keys('a . b')
+	})
 })
