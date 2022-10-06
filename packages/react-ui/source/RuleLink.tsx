@@ -57,10 +57,13 @@ export function RuleLink<Name extends string>({
 	return (
 		<Link
 			{...props}
-			aria-label={
-				rule.title &&
-				rule.title + ', voir les détails du calcul pour : ' + rule.title
-			}
+			aria-label={`${
+				props?.['aria-label'] ? `${props['aria-label']}, ` : ''
+			}${
+				rule.title
+					? rule.title + ', voir les détails du calcul pour : ' + rule.title
+					: ''
+			}`}
 			to={
 				newPath + (currentEngineId ? `?currentEngineId=${currentEngineId}` : '')
 			}
