@@ -1,13 +1,12 @@
-import { capitalise0, formatValue } from 'publicodes'
+import { formatValue } from 'publicodes'
 import {
 	EvaluatedNode,
 	Evaluation,
 	Types,
 	Unit,
 } from 'publicodes/source/AST/types'
-import React, { useContext } from 'react'
+import React from 'react'
 import styled, { css } from 'styled-components'
-import { RenderersContext } from '../contexts'
 import Explanation from '../Explanation'
 import mecanismColors from './colors'
 
@@ -164,40 +163,6 @@ const MecanismName = ({
 			>
 				{children}
 			</StyledMecanismName>
-		</>
-	)
-}
-
-type RuleExplanationProps = {
-	exemples: { base: string }
-	description: string
-	name: string
-}
-
-export default function RuleExplanation({
-	name,
-	description,
-	exemples,
-}: RuleExplanationProps) {
-	const { Text } = useContext(RenderersContext)
-	return (
-		<>
-			{!!name && (
-				<h2 id={name}>
-					<pre>{name}</pre>
-				</h2>
-			)}
-			<Text>{description}</Text>
-			{exemples && (
-				<>
-					{Object.entries(exemples).map(([name, exemple]) => (
-						<React.Fragment key={name}>
-							<h3>{name === 'base' ? 'Exemple' : capitalise0(name)}</h3>
-							<Text>{`\`\`\`yaml\n${exemple}\n\`\`\``}</Text>
-						</React.Fragment>
-					))}
-				</>
-			)}
 		</>
 	)
 }
