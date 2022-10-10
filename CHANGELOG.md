@@ -1,4 +1,8 @@
 # Changelog
+## 1.0.0-beta.56
+
+-   Prise en compte des valeurs qui diffèrent de `null` dans le mécanisme `par défaut` #270
+-   Ajoute la possibilité de passer une prop `aria-label` à `RuleLink` #273
 
 ## 1.0.0-beta.55
 
