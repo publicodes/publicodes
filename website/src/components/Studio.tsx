@@ -68,10 +68,16 @@ export default function Studio() {
 			<div>
 				<input
 					type="string"
+					style={{ width: '16rem' }}
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 					placeholder="Le nom de votre document"
 				/>
+
+				<button onClick={() => setName(generateRoomName())}>
+					♻️ Générer un autre nom
+				</button>
+
 				{share && share.ydoc.getText('monacoCode') && yjs.username && (
 					<MonacoEditor
 						language="yaml"
