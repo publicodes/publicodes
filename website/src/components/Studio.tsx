@@ -1,6 +1,5 @@
 import { utils } from 'publicodes'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import MonacoEditor from 'react-monaco-editor'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
@@ -10,6 +9,7 @@ import * as Y from 'yjs'
 import { MonacoBinding } from 'y-monaco'
 import { generateRoomName } from './share/studioShareUtils'
 import useLocalStorageState from 'use-local-storage-state'
+import Editor from '@monaco-editor/react'
 
 const { decodeRuleName } = utils
 
@@ -39,13 +39,9 @@ export default function Studio() {
 		location.pathname.split('/').at(-1) || generateRoomName()
 	)
 	const [share, setShare] = useState()
-	const [editorValue, setEditorValue] = useLocalStorageState(
-		'studio::' + name,
-		{
-			defaultValue: EXAMPLE_CODE,
-		}
-	)
-	const debouncedEditorValue = useDebounce(editorValue, 1000)
+	const [editorValue, setEditorValue] = useState(EXAMPLE_CODE)
+
+	const debouncedEditorValue = useDebounce(editorValue, 100)
 
 	const urlFragment = encodeURIComponent(name)
 
@@ -63,8 +59,26 @@ export default function Studio() {
 
 	const { target } = useParams<{ target?: string }>()
 	const defaultTarget = target && decodeRuleName(target)
-	console.log('E', editorValue)
 	const monacoCode = share && share.ydoc.getText('monacoCode')
+
+	const handleEditorDidMount = (editor, monaco) => {
+		// here is the editor instance
+		// you can store it in `useRef` for further usage
+		const monacoBinding = new MonacoBinding(
+			monacoCode,
+			editor.getModel(),
+			new Set([editor]),
+			share.provider.awareness
+		)
+	}
+
+	useEffect(() => {
+		share &&
+			share.persistence &&
+			share.persistence.once('synced', () => {
+				monacoCode.toString() && setEditorValue(monacoCode.toString())
+			})
+	}, [yjs])
 
 	return (
 		<div className={styles.studio}>
@@ -82,23 +96,15 @@ export default function Studio() {
 				</button>
 
 				{share && (
-					<MonacoEditor
-						language="yaml"
+					<Editor
 						height="75vh"
+						defaultLanguage="yaml"
 						defaultValue={editorValue}
-						onChange={(newValue) => setEditorValue(newValue ?? '')}
-						options={{
-							minimap: { enabled: false },
-							automaticLayout: true,
-						}}
-						editorDidMount={(editor, monaco) => {
-							const monacoBinding = new MonacoBinding(
-								monacoCode,
-								/** @type {monaco.editor.ITextModel} */ editor.getModel(),
-								new Set([editor]),
-								share.provider.awareness
-							)
-						}}
+						onChange={(newValue) =>
+							console.log('setFromMonaco', newValue) ||
+							setEditorValue(newValue ?? '')
+						}
+						onMount={handleEditorDidMount}
 					/>
 				)}
 			</div>

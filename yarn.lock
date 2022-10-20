@@ -3916,6 +3916,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@monaco-editor/loader@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "@monaco-editor/loader@npm:1.3.2"
+  dependencies:
+    state-local: ^1.0.6
+  peerDependencies:
+    monaco-editor: ">= 0.21.0 < 1"
+  checksum: 7a1b65052bbaf4ef826392687bd7cfaf839509611034d2d616783b5d3fee91ed304d9086517c3b5f9099707828c57c855ff43407b3c2f5ae480faebb104d4343
+  languageName: node
+  linkType: hard
+
+"@monaco-editor/react@npm:^4.4.6":
+  version: 4.4.6
+  resolution: "@monaco-editor/react@npm:4.4.6"
+  dependencies:
+    "@monaco-editor/loader": ^1.3.2
+    prop-types: ^15.7.2
+  peerDependencies:
+    monaco-editor: ">= 0.25.0 < 1"
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: cb25b5ce153608c2a4291390456488e100c5e3ac48a913875c98182836e2a9f315d4f96e85cf6f7d4b1eadff8d08d13356e38891b472894155bcb2c4aeaf3b1c
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -11194,7 +11219,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lib0@npm:^0.2.31, lib0@npm:^0.2.42, lib0@npm:^0.2.43, lib0@npm:^0.2.49, lib0@npm:^0.2.52":
+"lib0@npm:^0.2.31, lib0@npm:^0.2.35, lib0@npm:^0.2.42, lib0@npm:^0.2.43, lib0@npm:^0.2.49, lib0@npm:^0.2.52":
   version: 0.2.52
   resolution: "lib0@npm:0.2.52"
   dependencies:
@@ -12195,10 +12220,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:^0.33.0":
-  version: 0.33.0
-  resolution: "monaco-editor@npm:0.33.0"
-  checksum: f88fd1c9be0d6845436aa92ee7f7bcc49f9e9bf452f73bb5efbbe52e50678d1c2aec4d612a943310f5e2282c1d9fcc41b792b65a5b9008e6054908e7e10311ea
+"monaco-editor@npm:^0.34.1":
+  version: 0.34.1
+  resolution: "monaco-editor@npm:0.34.1"
+  checksum: 4c6b35d7c566ec414b758cdd45dfb08d6fe46e2e8fdeed88b619a52c47592ce6df476d9490a58e5d450339c4a93f09d500adc9c017a348179277b98aa6009fa4
   languageName: node
   linkType: hard
 
@@ -13771,7 +13796,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.0.0, prop-types@npm:^15.5.8, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.0.0, prop-types@npm:^15.5.8, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -13840,10 +13865,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "publicodes-monorepo@workspace:."
   dependencies:
+    monaco-editor: ^0.34.1
     prettier: ^2.5.1
-    y-monaco: ^0.1.4
     yaml: ^2.1.1
-    yjs: ^13.5.42
   languageName: unknown
   linkType: soft
 
@@ -14282,19 +14306,6 @@ __metadata:
     "@types/react": ">=16"
     react: ">=16"
   checksum: 6f6cd6cfee64e936edb31e3aca49dd284fc5f55c018cb4430f9b3f2f1b3df343a6507c8f33714f1bb2f620a5a05650166bc1add951fd6f8623731b689afedcfd
-  languageName: node
-  linkType: hard
-
-"react-monaco-editor@npm:^0.49.0":
-  version: 0.49.0
-  resolution: "react-monaco-editor@npm:0.49.0"
-  dependencies:
-    prop-types: ^15.8.1
-  peerDependencies:
-    "@types/react": ">=17 <= 18"
-    monaco-editor: ^0.33.0
-    react: ">=17 <= 18"
-  checksum: 10dccb818554cee14c6ebea8596581002d04d82e8b7336d8ec6fb9004247b0b0cad558d258dc73142f1319050de510d5f8dd3751550c87f41cb42064c2b41592
   languageName: node
   linkType: hard
 
@@ -15603,6 +15614,13 @@ __metadata:
   version: 0.1.8
   resolution: "stable@npm:0.1.8"
   checksum: 2ff482bb100285d16dd75cd8f7c60ab652570e8952c0bfa91828a2b5f646a0ff533f14596ea4eabd48bb7f4aeea408dce8f8515812b975d958a4cc4fa6b9dfeb
+  languageName: node
+  linkType: hard
+
+"state-local@npm:^1.0.6":
+  version: 1.0.7
+  resolution: "state-local@npm:1.0.7"
+  checksum: d1afcf1429e7e6eb08685b3a94be8797db847369316d4776fd51f3962b15b984dacc7f8e401ad20968e5798c9565b4b377afedf4e4c4d60fe7495e1cbe14a251
   languageName: node
   linkType: hard
 
@@ -17380,11 +17398,11 @@ __metadata:
     "@docusaurus/preset-classic": ^2.1.0
     "@docusaurus/remark-plugin-npm2yarn": ^2.1.0
     "@docusaurus/theme-live-codeblock": ^2.1.0
+    "@monaco-editor/react": ^4.4.6
     "@svgr/webpack": ^5.5.0
     "@tsconfig/docusaurus": ^1.0.6
     clsx: ^1.1.1
     file-loader: ^6.2.0
-    monaco-editor: ^0.33.0
     node-libs-browser: ^2.2.1
     path-browserify: ^1.0.1
     process: ^0.11.10
@@ -17395,12 +17413,13 @@ __metadata:
     react-dom: ^17.0.1
     react-i18next: ^11.8.15
     react-markdown: ^7.1.1
-    react-monaco-editor: ^0.49.0
     react-router-dom: ^5.2.0
     typescript: ^4.5.5
     unist-util-visit: ^4.1.0
     url-loader: ^4.1.1
     use-local-storage-state: 17
+    y-indexeddb: ^9.0.9
+    y-monaco: ^0.1.4
     y-webrtc: ^10.2.3
     y-websocket: ^1.4.5
     yjs: ^13.5.42
@@ -17657,6 +17676,17 @@ __metadata:
   version: 4.0.2
   resolution: "xtend@npm:4.0.2"
   checksum: ac5dfa738b21f6e7f0dd6e65e1b3155036d68104e67e5d5d1bde74892e327d7e5636a076f625599dc394330a731861e87343ff184b0047fef1360a7ec0a5a36a
+  languageName: node
+  linkType: hard
+
+"y-indexeddb@npm:^9.0.9":
+  version: 9.0.9
+  resolution: "y-indexeddb@npm:9.0.9"
+  dependencies:
+    lib0: ^0.2.35
+  peerDependencies:
+    yjs: ^13.0.0
+  checksum: 77196c29f8fd0e738694a8991f9568ea1782e1e9d5354479bba42d7a007e9d4a65d7274671e035217201a9dea5e0d3169a8dad1be0943e3d55f8fdf94588fb5a
   languageName: node
   linkType: hard
 

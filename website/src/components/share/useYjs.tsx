@@ -5,6 +5,7 @@ import { WebsocketProvider } from 'y-websocket'
 import * as Y from 'yjs'
 import { generateFruitName, stringToColour } from './studioShareUtils'
 import useLocalStorageState from 'use-local-storage-state'
+import { IndexeddbPersistence } from 'y-indexeddb'
 
 localStorage.log = 'y-webrtc'
 
@@ -30,6 +31,8 @@ export default (room, connectionType: 'p2p' | 'database', share, setShare) => {
 		if (!username || (!room && !share)) return
 		if (!share) {
 			const ydoc = new Y.Doc()
+
+			const persistence = new IndexeddbPersistence(room, ydoc)
 			const provider =
 				connectionType === 'p2p'
 					? new WebrtcProvider(room, ydoc, {})
@@ -44,7 +47,7 @@ export default (room, connectionType: 'p2p' | 'database', share, setShare) => {
 				console.log('YJS log status', event.status) // logs "connected" or "disconnected"
 			})
 
-			setShare({ room, ydoc, provider })
+			setShare({ room, ydoc, provider, persistence })
 		} else {
 			const { room } = share
 
