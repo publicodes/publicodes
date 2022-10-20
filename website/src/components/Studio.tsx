@@ -9,6 +9,7 @@ import useYjs from './share/useYjs'
 import * as Y from 'yjs'
 import { MonacoBinding } from 'y-monaco'
 import { generateRoomName } from './share/studioShareUtils'
+import useLocalStorageState from 'use-local-storage-state'
 
 const { decodeRuleName } = utils
 
@@ -33,16 +34,17 @@ dépenses primeur:
 export default function Studio() {
 	const { search, pathname } = useLocation()
 	const searchParams = new URLSearchParams(search ?? '')
-	const initialValue = useMemo(() => {
-		const code = searchParams.get('code')
-		return code ? code : EXAMPLE_CODE
-	}, [search])
 	const location = useLocation()
 	const [name, setName] = useState(
 		location.pathname.split('/').at(-1) || generateRoomName()
 	)
 	const [share, setShare] = useState()
-	const [editorValue, setEditorValue] = useState(name ? '' : initialValue)
+	const [editorValue, setEditorValue] = useLocalStorageState(
+		'studio::' + name,
+		{
+			defaultValue: EXAMPLE_CODE,
+		}
+	)
 	const debouncedEditorValue = useDebounce(editorValue, 1000)
 
 	const urlFragment = encodeURIComponent(name)
@@ -61,7 +63,8 @@ export default function Studio() {
 
 	const { target } = useParams<{ target?: string }>()
 	const defaultTarget = target && decodeRuleName(target)
-	console.log(share, yjs)
+	console.log('E', editorValue)
+	const monacoCode = share && share.ydoc.getText('monacoCode')
 
 	return (
 		<div className={styles.studio}>
@@ -78,7 +81,7 @@ export default function Studio() {
 					♻️ Générer un autre nom
 				</button>
 
-				{share && share.ydoc.getText('monacoCode') && yjs.username && (
+				{share && (
 					<MonacoEditor
 						language="yaml"
 						height="75vh"
@@ -90,7 +93,7 @@ export default function Studio() {
 						}}
 						editorDidMount={(editor, monaco) => {
 							const monacoBinding = new MonacoBinding(
-								share.ydoc.getText('monacoCode'),
+								monacoCode,
 								/** @type {monaco.editor.ITextModel} */ editor.getModel(),
 								new Set([editor]),
 								share.provider.awareness
