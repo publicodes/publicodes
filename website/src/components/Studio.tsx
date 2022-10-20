@@ -5,6 +5,9 @@ import { useHistory, useLocation, useParams } from 'react-router-dom'
 import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
 import styles from './studio.module.css'
+import useYjs from './share/useYjs'
+import * as Y from 'yjs'
+import { MonacoBinding } from 'y-monaco'
 
 const { decodeRuleName } = utils
 
@@ -33,17 +36,21 @@ export default function Studio() {
 		const code = searchParams.get('code')
 		return code ? code : EXAMPLE_CODE
 	}, [search])
-	const [editorValue, setEditorValue] = useState(initialValue)
+	const location = useLocation()
+	const [name, setName] = useState(location.pathname.split('/').at(-1))
+	const [share, setShare] = useState()
+	const [editorValue, setEditorValue] = useState(name ? '' : initialValue)
 	const debouncedEditorValue = useDebounce(editorValue, 1000)
 
+	const urlFragment = encodeURIComponent(name)
+
 	const history = useHistory()
+	const yjs = useYjs(urlFragment, 'p2p', share, setShare)
+
 	useEffect(() => {
-		searchParams.set('code', debouncedEditorValue)
-		history.replace({
-			pathname,
-			search: '?' + searchParams.toString(),
-		})
-	}, [debouncedEditorValue, history])
+		if (urlFragment.length > 2) history.replace('/studio/' + urlFragment)
+		//TODO refresh on first replace, to avoid
+	}, [urlFragment])
 
 	const handleShare = useCallback(() => {
 		window?.navigator.clipboard.writeText(window.location.href)
@@ -51,20 +58,37 @@ export default function Studio() {
 
 	const { target } = useParams<{ target?: string }>()
 	const defaultTarget = target && decodeRuleName(target)
+	console.log(share, yjs)
 
 	return (
 		<div className={styles.studio}>
 			<div>
-				<MonacoEditor
-					language="yaml"
-					height="75vh"
-					defaultValue={editorValue}
-					onChange={(newValue) => setEditorValue(newValue ?? '')}
-					options={{
-						minimap: { enabled: false },
-						automaticLayout: true,
-					}}
+				<input
+					type="string"
+					value={name}
+					onChange={(e) => setName(e.target.value)}
+					placeholder="Le nom de votre document"
 				/>
+				{share && share.ydoc.getText('monacoCode') && yjs.username && (
+					<MonacoEditor
+						language="yaml"
+						height="75vh"
+						defaultValue={editorValue}
+						onChange={(newValue) => setEditorValue(newValue ?? '')}
+						options={{
+							minimap: { enabled: false },
+							automaticLayout: true,
+						}}
+						editorDidMount={(editor, monaco) => {
+							const monacoBinding = new MonacoBinding(
+								share.ydoc.getText('monacoCode'),
+								/** @type {monaco.editor.ITextModel} */ editor.getModel(),
+								new Set([editor]),
+								share.provider.awareness
+							)
+						}}
+					/>
+				)}
 			</div>
 
 			<section>

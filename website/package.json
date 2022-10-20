@@ -34,7 +34,11 @@
 		"react-monaco-editor": "^0.49.0",
 		"react-router-dom": "^5.2.0",
 		"unist-util-visit": "^4.1.0",
-		"url-loader": "^4.1.1"
+		"url-loader": "^4.1.1",
+		"use-local-storage-state": "17",
+		"y-webrtc": "^10.2.3",
+		"y-websocket": "^1.4.5",
+		"yjs": "^13.5.42"
 	},
 	"browserslist": {
 		"production": [

@@ -94,12 +94,7 @@ export default function Documentation({
 		}
 		const newPathname = baseUrl + '/' + utils.encodeRuleName(currentTarget)
 
-		if (pathname !== newPathname) {
-			history.replace({
-				...history.location,
-				pathname: newPathname,
-			})
-		}
+		//TODO
 	}, [baseUrl, currentTarget, pathname, history])
 
 	return (
