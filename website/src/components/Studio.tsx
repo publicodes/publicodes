@@ -10,6 +10,7 @@ import { MonacoBinding } from 'y-monaco'
 import { generateRoomName } from './share/studioShareUtils'
 import useLocalStorageState from 'use-local-storage-state'
 import Editor from '@monaco-editor/react'
+import { UserBlock } from './share/UserList'
 
 const { decodeRuleName } = utils
 
@@ -36,7 +37,7 @@ export default function Studio() {
 	const searchParams = new URLSearchParams(search ?? '')
 	const location = useLocation()
 	const [name, setName] = useState(
-		location.pathname.split('/').at(-1) || generateRoomName()
+		location.pathname.split('/studio/')[1] || generateRoomName()
 	)
 	const [share, setShare] = useState()
 	const [editorValue, setEditorValue] = useState(EXAMPLE_CODE)
@@ -83,17 +84,26 @@ export default function Studio() {
 	return (
 		<div className={styles.studio}>
 			<div>
-				<input
-					type="string"
-					style={{ width: '16rem' }}
-					value={name}
-					onChange={(e) => setName(e.target.value)}
-					placeholder="Le nom de votre document"
-				/>
+				<div>
+					<input
+						type="string"
+						style={{ width: '16rem' }}
+						value={name}
+						onChange={(e) => setName(e.target.value)}
+						placeholder="Le nom de votre document"
+					/>
 
-				<button onClick={() => setName(generateRoomName())}>
-					♻️ Générer un autre nom
-				</button>
+					<button onClick={() => setName(generateRoomName())}>
+						♻️ Générer un autre nom
+					</button>
+				</div>
+				<div>
+					{yjs && (
+						<UserBlock
+							{...{ users: yjs.users, username: yjs.username, room: name }}
+						/>
+					)}
+				</div>
 
 				{share && (
 					<Editor
