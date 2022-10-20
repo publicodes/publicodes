@@ -8,6 +8,7 @@ import styles from './studio.module.css'
 import useYjs from './share/useYjs'
 import * as Y from 'yjs'
 import { MonacoBinding } from 'y-monaco'
+import { generateRoomName } from './share/studioShareUtils'
 
 const { decodeRuleName } = utils
 
@@ -37,7 +38,9 @@ export default function Studio() {
 		return code ? code : EXAMPLE_CODE
 	}, [search])
 	const location = useLocation()
-	const [name, setName] = useState(location.pathname.split('/').at(-1))
+	const [name, setName] = useState(
+		location.pathname.split('/').at(-1) || generateRoomName()
+	)
 	const [share, setShare] = useState()
 	const [editorValue, setEditorValue] = useState(name ? '' : initialValue)
 	const debouncedEditorValue = useDebounce(editorValue, 1000)
