@@ -87,6 +87,8 @@ type RuleProps = {
 	apiDocumentationUrl?: string
 	apiEvaluateUrl?: string
 	npmPackage?: string
+	mobileMenuPortalId?: string
+	openNavButtonPortalId?: string
 }
 
 function Rule({
@@ -97,6 +99,8 @@ function Rule({
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 	npmPackage,
+	mobileMenuPortalId,
+	openNavButtonPortalId,
 }: RuleProps) {
 	const baseEngine = useEngine()
 	const { References, Text } = useContext(RenderersContext)
@@ -121,7 +125,11 @@ function Rule({
 
 	return (
 		<Container id="documentationRuleRoot">
-			<RulesNav dottedName={dottedName} />
+			<RulesNav
+				dottedName={dottedName}
+				mobileMenuPortalId={mobileMenuPortalId}
+				openNavButtonPortalId={openNavButtonPortalId}
+			/>
 			<Article>
 				<DottedNameContext.Provider value={dottedName}>
 					{useSubEngine && (
