@@ -124,7 +124,7 @@ function Rule({
 	const { valeur, nullableParent, ruleDisabledByItsParent } = rule.explanation
 
 	return (
-		<Container id="documentationRuleRoot">
+		<Container id="documentation-rule-root">
 			<RulesNav
 				dottedName={dottedName}
 				mobileMenuPortalId={mobileMenuPortalId}
