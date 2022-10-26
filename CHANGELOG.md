@@ -1,4 +1,15 @@
 # Changelog
+
+## 1.0.0-beta.57
+
+**publicodes-react**
+
+-   **⚠ Changement cassant :** Renomage de l'id de la doc `documentationRuleRoot` par `documentation-rule-root`
+-   Ajout de la props optionnelle `openNavButtonPortalId` qui permet de changer la place du bouton pour ouvrir le menu sur mobile
+-   Ajout de la props optionnelle `mobileMenuPortalId` qui permet de changer la place du menu mobile
+-   fix du menu de la doc qui est cassé avec des textes trop petit #277
+-   Suppression d'une fonction inutilisé `RuleExplanation`
+
 ## 1.0.0-beta.56
 
 -   Prise en compte des valeurs qui diffèrent de `null` dans le mécanisme `par défaut` #270
