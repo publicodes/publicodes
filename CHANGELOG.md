@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.58
+
+**publicodes-react**
+
+-   Ajout de `openNavButtonPortalId` et de `mobileMenuPortalId` à RulePage
+
 ## 1.0.0-beta.57
 
 **publicodes-react**
