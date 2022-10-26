@@ -31,6 +31,8 @@ type RulePageProps = {
 	apiDocumentationUrl?: string
 	apiEvaluateUrl?: string
 	npmPackage?: string
+	mobileMenuPortalId?: string
+	openNavButtonPortalId?: string
 }
 
 export default function RulePage({
@@ -43,6 +45,8 @@ export default function RulePage({
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 	npmPackage,
+	mobileMenuPortalId,
+	openNavButtonPortalId,
 }: RulePageProps) {
 	const currentEngineId = new URLSearchParams(window.location.search).get(
 		'currentEngineId'
@@ -72,6 +76,8 @@ export default function RulePage({
 						apiDocumentationUrl={apiDocumentationUrl}
 						apiEvaluateUrl={apiEvaluateUrl}
 						npmPackage={npmPackage}
+						mobileMenuPortalId={mobileMenuPortalId}
+						openNavButtonPortalId={openNavButtonPortalId}
 					/>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
