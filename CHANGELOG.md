@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.59
+
+**publicodes-react**
+
+-   Ajout dans la documentation react des règles qui sont modifié par une autre
+
 ## 1.0.0-beta.58
 
 **publicodes-react**
