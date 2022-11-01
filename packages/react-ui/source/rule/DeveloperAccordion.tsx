@@ -129,7 +129,11 @@ export function DeveloperAccordion({
 						ruleIsNotDefined={rule.nodeValue === undefined}
 					/>
 
-					<Effect replacements={rule.replacements} />
+					<Effect
+						engine={engine}
+						dottedName={dottedName}
+						replacements={rule.replacements}
+					/>
 				</>
 			),
 		},
@@ -335,6 +339,13 @@ function MissingVars({ selfMissing }: { selfMissing: string[] }) {
 	)
 }
 
+const isReplacementOfThisRule = (node: EvaluatedNode, dottedName: string) =>
+	node &&
+	'replacements' in node &&
+	node.replacements.some(
+		({ replacedReference }) => replacedReference.dottedName === dottedName
+	)
+
 function ReverseMissing({
 	engine,
 	dottedName,
@@ -346,7 +357,11 @@ function ReverseMissing({
 }) {
 	const ruleNamesWithMissing = Array.from(
 		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? []
-	).filter((ruleName) => !engine.context.parsedRules[ruleName].private)
+	).filter(
+		(ruleName) =>
+			!engine.context.parsedRules[ruleName].private &&
+			!isReplacementOfThisRule(engine.evaluate(ruleName), dottedName)
+	)
 
 	return (
 		<section>
@@ -367,15 +382,11 @@ function ReverseMissing({
 						)}
 					</p>
 					<Ul>
-						{(() => {
-							return ruleNamesWithMissing.length
-								? ruleNamesWithMissing.map((dottedName) => (
-										<Li key={dottedName}>
-											<RuleLinkWithContext dottedName={dottedName} />
-										</Li>
-								  ))
-								: 'Aucune autre règle ne dépend de la règle courante.'
-						})()}
+						{ruleNamesWithMissing.map((dottedName) => (
+							<Li key={dottedName}>
+								<RuleLinkWithContext dottedName={dottedName} />
+							</Li>
+						))}
 					</Ul>
 				</>
 			) : (
@@ -385,31 +396,70 @@ function ReverseMissing({
 	)
 }
 
-function Effect({ replacements }: { replacements: RuleNode['replacements'] }) {
+function Effect({
+	engine,
+	dottedName,
+	replacements,
+}: {
+	engine: Engine
+	dottedName: string
+	replacements: RuleNode['replacements']
+}) {
+	const effects = Array.from(
+		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? []
+	).filter(
+		(ruleName) =>
+			!engine.context.parsedRules[ruleName].private &&
+			isReplacementOfThisRule(engine.evaluate(ruleName), dottedName)
+	)
+
 	return (
-		<section>
-			<h4>Effets</h4>
-			{!!replacements.length ? (
-				<>
-					<p>
-						Une règle peut modifier d'autres règles afin de modifier leur
-						comportement.
-					</p>
-					<Ul>
-						{replacements.map((replacement) => (
-							<Li
-								style={{ marginBottom: '0.5rem' }}
-								key={replacement.replacedReference.dottedName}
-							>
-								<Explanation node={replacement} />
-							</Li>
-						))}
-					</Ul>
-				</>
-			) : (
-				<p>Cette règle ne modifie aucune autre règle.</p>
-			)}
-		</section>
+		<>
+			<section>
+				<h4>Effets sur d'autres règles</h4>
+				{!!replacements.length ? (
+					<>
+						<p>
+							Une règle peut avoir des effets sur d'autres règles afin de
+							modifier leur comportement.
+						</p>
+						<Ul>
+							{replacements.map((replacement) => (
+								<Li
+									style={{ marginBottom: '0.5rem' }}
+									key={replacement.replacedReference.dottedName}
+								>
+									<Explanation node={replacement} />
+								</Li>
+							))}
+						</Ul>
+					</>
+				) : (
+					<p>Cette règle ne modifie aucune autre règle.</p>
+				)}
+			</section>
+
+			<section>
+				<h4>Règles qui peuvent avoir un effet sur cette valeur</h4>
+				{effects.length ? (
+					<>
+						<p>
+							Les règles suivantes peuvent remplacer la valeur de la règle
+							courante :
+						</p>
+						<Ul>
+							{effects.map((dottedName) => (
+								<Li key={dottedName}>
+									<RuleLinkWithContext dottedName={dottedName} />
+								</Li>
+							))}
+						</Ul>
+					</>
+				) : (
+					<p>Aucune autre règle n'a d'effet sur cette valeur.</p>
+				)}
+			</section>
+		</>
 	)
 }
 
