@@ -28,7 +28,7 @@ export default function Operation({ nodeValue, explanation, operator, unit }) {
 	)
 }
 
-const StyledOperation = styled.span`
+const StyledOperation = styled.div`
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.125rem;
