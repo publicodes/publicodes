@@ -339,7 +339,7 @@ function MissingVars({ selfMissing }: { selfMissing: string[] }) {
 	)
 }
 
-const isReplacementOfThisRule = (node: EvaluatedNode, dottedName: string) =>
+const isReplacementOfThisRule = (node: RuleNode, dottedName: string) =>
 	node &&
 	'replacements' in node &&
 	node.replacements.some(
@@ -360,7 +360,7 @@ function ReverseMissing({
 	).filter(
 		(ruleName) =>
 			!engine.context.parsedRules[ruleName].private &&
-			!isReplacementOfThisRule(engine.evaluate(ruleName), dottedName)
+			!isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
 	)
 
 	return (
@@ -410,7 +410,7 @@ function Effect({
 	).filter(
 		(ruleName) =>
 			!engine.context.parsedRules[ruleName].private &&
-			isReplacementOfThisRule(engine.evaluate(ruleName), dottedName)
+			isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
 	)
 
 	return (
