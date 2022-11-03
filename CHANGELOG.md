@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0-beta.60
+
+**publicodes-react**
+
+-   Fix d'un crash dans la documentation quand un parent d'une règle est privée mais pas la règle en elle même
+
 ## 1.0.0-beta.59
 
 **publicodes-react**
