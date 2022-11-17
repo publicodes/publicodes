@@ -1,9 +1,4 @@
-import Engine, {
-	EvaluatedNode,
-	RuleNode,
-	serializeEvaluation,
-	utils,
-} from 'publicodes'
+import Engine, { EvaluatedNode, RuleNode, utils } from 'publicodes'
 import { useContext } from 'react'
 import styled from 'styled-components'
 import { RenderersContext } from '../contexts'
@@ -62,7 +57,7 @@ export function DeveloperAccordion({
 				<>
 					<ActualRule engine={engine} dottedName={dottedName} />
 
-					<ActualSituation engine={engine} situation={situation} />
+					<ActualSituation situation={situation} />
 				</>
 			),
 		},
@@ -96,7 +91,6 @@ export function DeveloperAccordion({
 							{npmPackage && (
 								<PackageUsage
 									rule={rule}
-									engine={engine}
 									situation={situation}
 									dottedName={dottedName}
 									npmPackage={npmPackage}
@@ -105,7 +99,6 @@ export function DeveloperAccordion({
 
 							{apiDocumentationUrl && apiEvaluateUrl && (
 								<ApiUsage
-									engine={engine}
 									situation={situation}
 									dottedName={dottedName}
 									apiDocumentationUrl={apiDocumentationUrl}
@@ -161,21 +154,16 @@ function ActualRule({
 }
 
 function ActualSituation({
-	engine,
 	situation,
 }: {
-	engine: Engine<string>
 	situation: Record<string, unknown>
 }) {
-	const { Code, Link } = useContext(RenderersContext)
+	const { Code } = useContext(RenderersContext)
 
 	const keys = Object.keys(situation)
-	const evaluatedSituation = Object.fromEntries(
-		keys.map((dot) => [dot, serializeEvaluation(engine.evaluate(dot))])
-	)
 
 	const tabs = {
-		json: JSON.stringify(evaluatedSituation, null, 2),
+		json: JSON.stringify(situation, null, 2),
 	}
 
 	return (
@@ -199,23 +187,16 @@ function ActualSituation({
 
 function PackageUsage({
 	rule,
-	engine,
 	situation,
 	dottedName,
 	npmPackage,
 }: {
 	rule: EvaluatedNode & { nodeKind: 'rule' }
-	engine: Engine<string>
 	situation: Record<string, unknown>
 	dottedName: string
 	npmPackage: string
 }) {
 	const { Code, Link } = useContext(RenderersContext)
-
-	const keys = Object.keys(situation)
-	const evaluatedSituation = Object.fromEntries(
-		keys.map((dot) => [dot, serializeEvaluation(engine.evaluate(dot))])
-	)
 
 	const tabs = {
 		npmPackage: `// npm i publicodes ${npmPackage}
@@ -224,7 +205,7 @@ import Engine, { formatValue } from 'publicodes'
 import rules from '${npmPackage}'
 
 const engine = new Engine(rules)
-engine.setSituation(${JSON.stringify(evaluatedSituation, null, 2)})
+engine.setSituation(${JSON.stringify(situation, null, 2)})
 
 // ${rule.title}
 const evaluation = engine.evaluate(${JSON.stringify(dottedName)})
@@ -254,13 +235,11 @@ console.log(formatValue(evaluation))
 }
 
 function ApiUsage({
-	engine,
 	situation,
 	dottedName,
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 }: {
-	engine: Engine<string>
 	situation: Record<string, unknown>
 	dottedName: string
 	apiDocumentationUrl: string
@@ -268,14 +247,9 @@ function ApiUsage({
 }) {
 	const { Code, Link } = useContext(RenderersContext)
 
-	const keys = Object.keys(situation)
-	const evaluatedSituation = Object.fromEntries(
-		keys.map((dot) => [dot, serializeEvaluation(engine.evaluate(dot))])
-	)
-
 	const data = {
 		expressions: [dottedName],
-		situation: evaluatedSituation,
+		situation: situation,
 	}
 
 	const tabs = {
