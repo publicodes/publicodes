@@ -1,10 +1,16 @@
 # Changelog
 
+## 1.0.0-beta.61
+
+**publicodes-react**
+
+-   Enlève `situation` des props du composant `RulePage` : la situation utilisée pour la règle courante est maintenant retrouvée uniquement avec `engine`
+
 ## 1.0.0-beta.60
 
 **publicodes-react**
 
--   Fix d'un crash dans la documentation quand un parent d'une règle est privée mais pas la règle en elle même
+-   Fix d’un crash dans la documentation quand un parent d’une règle est privée mais pas la règle en elle même
 
 ## 1.0.0-beta.59
 
@@ -22,11 +28,11 @@
 
 **publicodes-react**
 
--   **⚠ Changement cassant :** Renomage de l'id de la doc `documentationRuleRoot` par `documentation-rule-root`
+-   **⚠ Changement cassant :** Renomage de l’id de la doc `documentationRuleRoot` par `documentation-rule-root`
 -   Ajout de la props optionnelle `openNavButtonPortalId` qui permet de changer la place du bouton pour ouvrir le menu sur mobile
 -   Ajout de la props optionnelle `mobileMenuPortalId` qui permet de changer la place du menu mobile
 -   fix du menu de la doc qui est cassé avec des textes trop petit #277
--   Suppression d'une fonction inutilisé `RuleExplanation`
+-   Suppression d’une fonction inutilisé `RuleExplanation`
 
 ## 1.0.0-beta.56
 

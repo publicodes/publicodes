@@ -1,6 +1,9 @@
 import Engine, {
+	ASTNode,
 	EvaluatedNode,
 	formatValue,
+	PublicodesExpression,
+	RuleNode,
 	serializeUnit,
 	utils,
 } from 'publicodes'
@@ -27,7 +30,6 @@ type RulePageProps = {
 	engine: Engine
 	language: 'fr' | 'en'
 	renderers: SupportedRenderers
-	situation?: Record<string, unknown>
 	apiDocumentationUrl?: string
 	apiEvaluateUrl?: string
 	npmPackage?: string
@@ -41,7 +43,6 @@ export default function RulePage({
 	engine,
 	renderers,
 	language,
-	situation,
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 	npmPackage,
@@ -72,7 +73,6 @@ export default function RulePage({
 							currentEngineId ? parseInt(currentEngineId) : undefined
 						}
 						language={language}
-						situation={situation}
 						apiDocumentationUrl={apiDocumentationUrl}
 						apiEvaluateUrl={apiEvaluateUrl}
 						npmPackage={npmPackage}
@@ -89,7 +89,6 @@ type RuleProps = {
 	dottedName: string
 	subEngineId?: number
 	language: RulePageProps['language']
-	situation?: Record<string, unknown>
 	apiDocumentationUrl?: string
 	apiEvaluateUrl?: string
 	npmPackage?: string
@@ -101,7 +100,6 @@ function Rule({
 	dottedName,
 	language,
 	subEngineId,
-	situation = {},
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 	npmPackage,
@@ -128,6 +126,8 @@ function Rule({
 
 	const { description, question } = rule.rawNode
 	const { valeur, nullableParent, ruleDisabledByItsParent } = rule.explanation
+
+	const situation = buildSituationUsedInRule(engine, rule)
 
 	return (
 		<Container id="documentation-rule-root">
@@ -248,3 +248,32 @@ const Article = styled.article`
 		margin-left: -1px;
 	}
 `
+
+function buildSituationUsedInRule<Names extends string>(
+	engine: Engine<Names>,
+	rule: EvaluatedNode & RuleNode
+): Partial<Record<Names, PublicodesExpression>> {
+	const situation = [...(rule.traversedVariables as Names[]), rule.dottedName]
+		.map((name) => {
+			const valeur = engine.context.parsedRules[`${name} . $SITUATION`]?.rawNode
+				.valeur as ASTNode
+			return [name, valeur] as const
+		})
+		.filter(
+			([_, valeur]) =>
+				valeur &&
+				!(valeur.nodeKind === 'constant' && valeur.nodeValue === undefined)
+		)
+		.reduce(
+			(acc, [name, valeur]) => ({
+				[name]:
+					typeof valeur === 'object' && valeur && 'rawNode' in valeur
+						? valeur.rawNode
+						: valeur,
+				...acc,
+			}),
+			{}
+		)
+
+	return situation
+}
