@@ -2,13 +2,15 @@
 	"name": "publicodes-react",
 	"version": "1.0.0-beta.61",
 	"description": "UI to explore publicodes computations",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"license": "MIT",
+	"types": "dist/index.d.ts",
+	"type": "module",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
 	"exports": {
 		".": {
-			"require": "./dist/index.js",
-			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.js",
 			"types": "./dist/index.d.ts"
 		}
 	},
@@ -19,7 +21,7 @@
 	},
 	"scripts": {
 		"clean": "rimraf dist node_modules data",
-		"build": "tsup source/index.tsx --format cjs,esm --dts --inject ./react-shim.js --sourcemap",
+		"build": "tsup",
 		"prepack": "yarn workspace publicodes run prepack && yarn run build",
 		"start": "run build --watch",
 		"test:type": "run tsc"
