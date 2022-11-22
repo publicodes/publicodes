@@ -2,9 +2,14 @@
 
 ## 1.0.0-beta.61
 
+**core**
+-   Ajoute la conversion des unités de longueurs (mm/cm/m/km)
+
 **publicodes-react**
 
 -   Enlève `situation` des props du composant `RulePage` : la situation utilisée pour la règle courante est maintenant retrouvée uniquement avec `engine`
+-   Ajoute `showDevRules` aux props du composant `RulePage` : permet de cacher la section dev de la documentation
+
 
 ## 1.0.0-beta.60
 
