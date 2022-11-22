@@ -35,6 +35,7 @@ type RulePageProps = {
 	npmPackage?: string
 	mobileMenuPortalId?: string
 	openNavButtonPortalId?: string
+	showDevSection?: boolean
 }
 
 export default function RulePage({
@@ -48,6 +49,7 @@ export default function RulePage({
 	npmPackage,
 	mobileMenuPortalId,
 	openNavButtonPortalId,
+	showDevSection = true,
 }: RulePageProps) {
 	const currentEngineId = new URLSearchParams(window.location.search).get(
 		'currentEngineId'
@@ -78,6 +80,7 @@ export default function RulePage({
 						npmPackage={npmPackage}
 						mobileMenuPortalId={mobileMenuPortalId}
 						openNavButtonPortalId={openNavButtonPortalId}
+						showDevSection={showDevSection}
 					/>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
@@ -88,13 +91,16 @@ export default function RulePage({
 type RuleProps = {
 	dottedName: string
 	subEngineId?: number
-	language: RulePageProps['language']
-	apiDocumentationUrl?: string
-	apiEvaluateUrl?: string
-	npmPackage?: string
-	mobileMenuPortalId?: string
-	openNavButtonPortalId?: string
-}
+} & Pick<
+	RulePageProps,
+	| 'language'
+	| 'apiDocumentationUrl'
+	| 'apiEvaluateUrl'
+	| 'npmPackage'
+	| 'mobileMenuPortalId'
+	| 'openNavButtonPortalId'
+	| 'showDevSection'
+>
 
 function Rule({
 	dottedName,
@@ -105,6 +111,7 @@ function Rule({
 	npmPackage,
 	mobileMenuPortalId,
 	openNavButtonPortalId,
+	showDevSection,
 }: RuleProps) {
 	const baseEngine = useEngine()
 	const { References, Text } = useContext(RenderersContext)
@@ -208,21 +215,25 @@ function Rule({
 					)}
 					<br />
 
-					<h3>Informations pour les développeurs</h3>
-					<Text>
-						Vous trouverez ci-dessous des informations techniques qui peuvent
-						être utiles aux développeurs
-					</Text>
-
-					<DeveloperAccordion
-						engine={engine}
-						situation={situation}
-						dottedName={dottedName}
-						rule={rule}
-						apiDocumentationUrl={apiDocumentationUrl}
-						apiEvaluateUrl={apiEvaluateUrl}
-						npmPackage={npmPackage}
-					></DeveloperAccordion>
+					{showDevSection && (
+						<>
+							<h3>Informations techniques</h3>
+							<Text>
+								Si vous êtes développeur/euse vous trouverez ci-dessous des
+								informations techniques utiles pour l'intégration de cette règle
+								dans votre application.
+							</Text>
+							<DeveloperAccordion
+								engine={engine}
+								situation={situation}
+								dottedName={dottedName}
+								rule={rule}
+								apiDocumentationUrl={apiDocumentationUrl}
+								apiEvaluateUrl={apiEvaluateUrl}
+								npmPackage={npmPackage}
+							></DeveloperAccordion>
+						</>
+					)}
 				</DottedNameContext.Provider>
 			</Article>
 		</Container>

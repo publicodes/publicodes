@@ -34,6 +34,7 @@ export default function Playground({
 					rules={children}
 					defaultTarget={defaultTarget}
 					onTargetChange={onTargetChange}
+					showDevSection={false}
 				/>
 				<div style={{ paddingBottom: '1rem' }} />
 			</ErrorBoundary>
