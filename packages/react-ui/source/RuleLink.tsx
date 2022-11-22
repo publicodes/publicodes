@@ -1,9 +1,10 @@
 import Engine, { utils } from 'publicodes'
-import React, { useContext } from 'react'
+import { ComponentProps, useContext } from 'react'
 import {
 	BasepathContext,
 	DottedNameContext,
 	RenderersContext,
+	SupportedRenderers,
 } from './contexts'
 import { useEngine } from './hooks'
 
@@ -15,11 +16,12 @@ type RuleLinkProps<Name extends string> = {
 	documentationPath: string
 	displayIcon?: boolean
 	currentEngineId?: number
-	situationName?: string
-	small?: boolean
+	linkComponent?: SupportedRenderers['Link']
 	children?: React.ReactNode
-	linkComponent?: React.ComponentType<{ to: string }>
-}
+} & Omit<
+	ComponentProps<Required<SupportedRenderers>['Link']>,
+	'to' | 'children'
+>
 
 export function RuleLink<Name extends string>({
 	dottedName,
@@ -27,9 +29,9 @@ export function RuleLink<Name extends string>({
 	currentEngineId,
 	documentationPath,
 	displayIcon = false,
-	children,
 	linkComponent,
-	...props
+	children,
+	...propsRest
 }: RuleLinkProps<Name>) {
 	const renderers = useContext(RenderersContext)
 	const dottedNameContext = utils.findCommonAncestor(
@@ -54,11 +56,20 @@ export function RuleLink<Name extends string>({
 	if (!rule) {
 		throw new Error(`Unknown rule: ${dottedName}`)
 	}
+
+	const {
+		href,
+		title,
+		small,
+		'aria-label': ariaLabel,
+		situationName, // pas sur de l'utilité de cette props
+	} = propsRest
+
 	return (
 		<Link
-			{...props}
+			{...{ href, title, small, situationName }}
 			aria-label={
-				props?.['aria-label'] ??
+				ariaLabel ??
 				(rule.title &&
 					rule.title + ', voir les détails du calcul pour : ' + rule.title)
 			}

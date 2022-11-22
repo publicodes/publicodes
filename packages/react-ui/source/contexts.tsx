@@ -13,6 +13,9 @@ export type SupportedRenderers = {
 		to?: string
 		href?: string
 		title?: string
+		small?: boolean
+		'aria-label'?: string
+		situationName?: string
 	}>
 	Head?: ComponentType<{ children: ReactNode }>
 
