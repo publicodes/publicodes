@@ -142,7 +142,14 @@ const convertTable: ConvertTable = {
 	'g/kg': 10 ** 3,
 	'mg/g': 10 ** 3,
 	'mg/kg': 10 ** 6,
+	'm/km': 10 ** 3,
+	'cm/m': 10 ** 2,
+	'mm/cm': 10 ** 1,
+	'mm/m': 10 ** 3,
+	'cm/km': 10 ** 5,
+	'mm/km': 10 ** 6,
 }
+
 function singleUnitConversionFactor(
 	from: string,
 	to: string
