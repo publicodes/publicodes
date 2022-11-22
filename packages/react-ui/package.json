@@ -41,7 +41,7 @@
 		"@types/react": "^18.0.9",
 		"@types/styled-components": "^5.1.25",
 		"rimraf": "^3.0.2",
-		"tsup": "^6.0.1",
-		"typescript": "^4.5.5"
+		"tsup": "^6.5.0",
+		"typescript": "^4.9.3"
 	}
 }
