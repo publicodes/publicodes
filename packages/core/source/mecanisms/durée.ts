@@ -26,8 +26,8 @@ const evaluate: EvaluationFunction<'durée'> = function (node) {
 	if ([from, to].some(({ nodeValue }) => nodeValue === undefined)) {
 		nodeValue = undefined
 	} else {
-		const [fromDate, toDate] = [from.nodeValue, to.nodeValue].map(
-			convertToDate as any
+		const [fromDate, toDate] = ([from.nodeValue, to.nodeValue] as string[]).map(
+			convertToDate
 		)
 		nodeValue = Math.max(
 			0,
