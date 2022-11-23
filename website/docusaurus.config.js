@@ -109,8 +109,9 @@ module.exports = {
 					return {
 						devtool: 'source-map',
 						resolve: {
-							fallback: {
-								path: require.resolve('path-browserify'),
+							alias: {
+								// Fix an issue with publicodes-react and webpack : https://github.com/facebook/react/issues/20235#issuecomment-732205073
+								'react/jsx-runtime': 'react/jsx-runtime.js',
 							},
 						},
 					}
