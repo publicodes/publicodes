@@ -49,7 +49,7 @@
 		"build": "run build:grammar && tsup",
 		"build:ifNeeded": "ts-node-esm need-rebuild.ts || run build",
 		"start": "run build --watch",
-		"prepack": "yarn run build:ifNeeded",
+		"prepack": "run build:ifNeeded",
 		"test:type": "run build:grammar && run tsc",
 		"test": "run build:grammar && mocha \"./test/**/*.test.{js,ts}\"",
 		"clean": "rimraf dist node_modules source/grammar.js .deps.json"
