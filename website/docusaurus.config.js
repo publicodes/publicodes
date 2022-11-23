@@ -102,13 +102,6 @@ module.exports = {
 	plugins: [
 		require.resolve('./src/plugins/studio-route.cjs'),
 
-		// Hacky Webpack config magic in order to display the Publicodes
-		// documentation in the studio. Indeed the documentation component depends
-		// on a old version of `react-markdown` which is expect some "browserify"
-		// logic to be handled by Webpack, which is no longer the case in Webpack 5.
-		// TODO: We should upgrade `react-markdown` and remove this unbearable
-		// config -- but of course `react-markdwon` API changed in breaking ways so
-		// there is a little bit of work involved.
 		function ConfigWebpackPlugin() {
 			return {
 				name: 'config-webpack',
@@ -120,11 +113,6 @@ module.exports = {
 								path: require.resolve('path-browserify'),
 							},
 						},
-						plugins: [
-							new (require('webpack').ProvidePlugin)({
-								process: 'process/browser.js',
-							}),
-						],
 					}
 				},
 			}
