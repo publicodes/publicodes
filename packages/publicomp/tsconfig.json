@@ -1,0 +1,15 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"outDir": "build",
+		"rootDir": "src",
+        "types": ["node"],
+        "strict": true,
+        "sourceMap": true,
+	},
+	"ts-node": {
+		"transpileOnly": true,
+		"files": true
+	},
+	"exclude": ["./node_modules/", "./build/", "./jest.config.js", "./test/"]
+}
