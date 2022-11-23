@@ -40,9 +40,6 @@
 		"url": "https://github.com/betagouv/publicodes/issues"
 	},
 	"homepage": "https://github.com/betagouv/publicodes#readme",
-	"engines": {
-		"node": ">=16"
-	},
 	"dependencies": {
 		"@koa/cors": "^3.3.0",
 		"@koa/router": "^10.1.1",
@@ -58,10 +55,10 @@
 		"@types/koa": "^2.13.4",
 		"@types/koa__cors": "^3.3.0",
 		"@types/koa__router": "^8.0.11",
-		"@types/node": "^17.0.35",
+		"@types/node": "^18.11.9",
 		"chai-http": "^4.3.0",
 		"nodemon": "^2.0.16",
-		"publicodes": "^1.0.0-beta.47",
+		"publicodes": "workspace:^",
 		"ts-node": "^10.9.1",
 		"tsup": "^6.5.0",
 		"typescript": "^4.9.3",

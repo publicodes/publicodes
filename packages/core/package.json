@@ -54,9 +54,6 @@
 		"test": "run build:grammar && mocha \"./test/**/*.test.{js,ts}\"",
 		"clean": "rimraf dist node_modules source/grammar.js .deps.json"
 	},
-	"engines": {
-		"node": ">=12.16.1"
-	},
 	"peerDependencies": {
 		"@types/mocha": "^9.0.0"
 	}

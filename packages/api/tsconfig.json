@@ -30,7 +30,9 @@
 		"resolveJsonModule": true,
 
 		/* Advanced Options */
-		"forceConsistentCasingInFileNames": true
+		"forceConsistentCasingInFileNames": true,
+
+		"skipLibCheck": true
 	},
 	"ts-node": {
 		"esm": true
