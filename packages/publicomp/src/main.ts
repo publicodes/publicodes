@@ -1,3 +1,4 @@
-const { f } = require('./lib')
+const yargs = require('yargs')
+const { hideBin } = require('yargs/helpers')
 
-console.log(f('Emile'))
+yargs(hideBin(process.argv)).commandDir('commands').alias({ h: 'help' }).argv
