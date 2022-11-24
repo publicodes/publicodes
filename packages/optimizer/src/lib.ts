@@ -2,13 +2,13 @@ import glob from 'glob'
 import { readFileSync } from 'fs'
 import yaml from 'yaml'
 
-import type { ParsedRules, RawPublicodes, RuleNode } from 'publicodes'
+import type { RawPublicodes, RuleNode } from 'publicodes'
 
 export type RuleName = string
+export type ParsedRules = Record<RuleName, RuleNode<RuleName>>
+export type RawRules = RawPublicodes<RuleName>
 
-export function getRawNodes(
-	parsedRules: Record<RuleName, RuleNode<RuleName>>
-): RawPublicodes<RuleName> {
+export function getRawNodes(parsedRules: ParsedRules): RawRules {
 	return Object.fromEntries(
 		Object.values(parsedRules).reduce((acc, rule: RuleNode<RuleName>) => {
 			const { nom, ...rawNode } = rule.rawNode
@@ -18,10 +18,14 @@ export function getRawNodes(
 	)
 }
 
-export function constantFolding(
-	baseRules: ParsedRules<RuleName>
-): ParsedRules<RuleName> {
-	return baseRules
+export function constantFolding(baseRules: ParsedRules): ParsedRules {
+	return Object.fromEntries(
+		Object.entries(baseRules).filter(
+			([_, rule]) =>
+				// at least the 'nom' attribute will be specified
+				Object.keys(rule.rawNode).length > 1
+		)
+	)
 }
 
 function readYAML(path: string): object {

@@ -1,11 +1,17 @@
 import { constantFolding, getRawNodes } from '../src/lib'
 import Engine from 'publicodes'
 
-import type { ParsedRules } from 'publicodes'
-import type { RuleName } from '../src/lib'
+import type { ParsedRules, RawRules } from '../src/lib'
 
-function callWithParsedRules(f, rulesJSON) {
-	return f(new Engine(rulesJSON).getParsedRules())
+function callWithParsedRules<R>(
+	fn: (rules: ParsedRules) => R,
+	rawRules: RawRules
+): R {
+	return fn(new Engine(rawRules).getParsedRules())
+}
+
+function constantFoldingWith(rawRules: RawRules): RawRules {
+	return getRawNodes(callWithParsedRules(constantFolding, rawRules))
 }
 
 describe('getRawRules', () => {
@@ -49,18 +55,35 @@ describe('Constant folding optim', () => {
 	it('∅ -> ∅', () => {
 		expect(callWithParsedRules(constantFolding, {})).toStrictEqual({})
 	})
-	// it('Should remove empty nodes', () => {
-	// 	expect(
-	// 		constantFoldingWith({
-	// 			ruleA: null,
-	// 			ruleB: {
-	// 				formule: '10 * 10',
-	// 			},
-	// 		})
-	// 	).toStrictEqual({
-	// 		ruleB: {
-	// 			formule: '10 * 10',
-	// 		},
-	// 	})
-	// })
+	it('Should remove empty nodes', () => {
+		expect(
+			constantFoldingWith({
+				ruleA: null,
+				ruleB: {
+					formule: '10 * 10',
+				},
+			})
+		).toStrictEqual({
+			ruleB: {
+				formule: '10 * 10',
+			},
+		})
+	})
+	it('Referenced constant should be replaced - [1 dependency]', () => {
+		const rawRules = {
+			ruleA: {
+				titre: 'Rule A',
+				formule: 'B . C * 3',
+			},
+			'ruleA . B . C': {
+				valeur: '10',
+			},
+		}
+		expect(callWithParsedRules(getRawNodes, rawRules)).toStrictEqual({
+			ruleA: {
+				titre: 'Rule A',
+				formule: '10 * 3',
+			},
+		})
+	})
 })
