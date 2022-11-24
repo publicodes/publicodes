@@ -1,19 +1,17 @@
-## Publicodes API
+## `@publicodes/api`
 
-Ce package vous permet de créer une API REST, qui suit les spécifications OpenAPI 3.0, à partir de vos règles Publicodes.
+This package allows you to create a REST API, which follows OpenAPI 3.0 specifications, from your Publicodes rules.
 
-Il consiste en un middleware [Koa](https://github.com/koajs/koa) qui ajoute des routes à votre router :
+It consists of [Koa](https://github.com/koajs/koa) middleware that adds routes to your router:
 
--   `POST` `/evaluate` Évalue une ou plusieurs expressions avec une situation donnée
--   `GET` `/rules` Retourne la liste de toutes vos règles
--   `GET` `/rules/{rule}` Retourne une règle spécifique
+-   `POST` `/evaluate` Evaluate one or more expressions with a given situation
+-   `GET` `/rules` Returns the list of all your rules
+-   `GET` `/rules/{rule}` Returns a specific rule
 
 ## Installation
 
 ```bash
 npm install @publicodes/api
-# or
-yarn add @publicodes/api
 ```
 
 ## Utilisation
@@ -41,7 +39,7 @@ app.use(router.routes()).listen(3000)
 // ...
 ```
 
-Un fichier d'exemple complet se trouve dans les sources si besoin : [example.ts](https://github.com/betagouv/publicodes/blob/master/packages/api/example.ts).
+A complete example file is in the sources if needed : [example.ts](https://github.com/betagouv/publicodes/blob/master/packages/api/example.ts).
 
 ## Documentation
 
@@ -50,4 +48,4 @@ Un fichier d'exemple complet se trouve dans les sources si besoin : [example.ts]
 
 ## Projets phares
 
--   **L'[API mon-entreprise](https://mon-entreprise.urssaf.fr/développeur/api)**
+-   **[mycompanyinfrance API](https://mycompanyinfrance.urssaf.fr/developer/api)**
