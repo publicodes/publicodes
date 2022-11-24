@@ -295,7 +295,7 @@ export function areUnitConvertible(a: Unit | undefined, b: Unit | undefined) {
 		b.numerators,
 		b.denominators,
 	].map(countByUnitClass)
-	const uniq = <T>(arr: Array<T>): Array<T> => [...new Set(arr)]
+	const uniq = <T>(arr: Array<T>): Array<T> => Array.from(new Set(arr))
 	const unitClasses = [numA, denomA, numB, denomB].map(Object.keys).flat()
 	return uniq(unitClasses).every(
 		(unitClass) =>
