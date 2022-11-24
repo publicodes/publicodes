@@ -5,7 +5,7 @@
 		"packages/api",
 		"packages/core",
 		"packages/react-ui",
-		"packages/publicomp",
+		"packages/optimizer",
 		"website"
 	],
 	"scripts": {

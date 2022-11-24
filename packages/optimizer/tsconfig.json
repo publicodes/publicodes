@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"outDir": "build",
 		"rootDir": "src",
-        "types": ["node"],
+        "types": ["node", "jest"],
 		"esModuleInterop": true
 	},
 	"ts-node": {
