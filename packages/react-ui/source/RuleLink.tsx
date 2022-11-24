@@ -57,19 +57,11 @@ export function RuleLink<Name extends string>({
 		throw new Error(`Unknown rule: ${dottedName}`)
 	}
 
-	const {
-		href,
-		title,
-		small,
-		'aria-label': ariaLabel,
-		situationName, // pas sur de l'utilité de cette props
-	} = propsRest
-
 	return (
 		<Link
-			{...{ href, title, small, situationName }}
+			{...propsRest}
 			aria-label={
-				ariaLabel ??
+				propsRest['aria-label'] ??
 				(rule.title &&
 					rule.title + ', voir les détails du calcul pour : ' + rule.title)
 			}
