@@ -1,4 +1,4 @@
-import { EvaluationFunction } from '..'
+import { EvaluationFunction, PublicodesError } from '..'
 import { ASTNode, EvaluatedNode } from '../AST/types'
 import { convertToDate } from '../date'
 import { warning } from '../error'
@@ -10,7 +10,17 @@ import { inferUnit, serializeUnit } from '../units'
 
 const knownOperations = {
 	'*': [(a, b) => a * b, '×'],
-	'/': [(a, b) => (b === 0 ? null : a / b), '∕'],
+	'/': [
+		(a, b) => {
+			if (b === 0) {
+				throw new PublicodesError('EvaluationError', `Division by zero`, {
+					dottedName: '',
+				})
+			}
+			return a / b
+		},
+		'∕',
+	],
 	'+': [(a, b) => a + b],
 	'-': [(a, b) => a - b, '−'],
 	'<': [(a, b) => a < b],

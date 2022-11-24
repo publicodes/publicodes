@@ -1,4 +1,4 @@
-import { EvaluationFunction } from '..'
+import { EvaluationFunction, PublicodesError } from '..'
 import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { defaultNode, mergeAllMissing } from '../evaluationUtils'
@@ -72,6 +72,13 @@ const evaluate: EvaluationFunction<'barème'> = function (node) {
 	const evaluate = this.evaluateNode.bind(this)
 	const assiette = this.evaluateNode(node.explanation.assiette)
 	const multiplicateur = this.evaluateNode(node.explanation.multiplicateur)
+
+	if (multiplicateur.nodeValue === 0) {
+		throw new PublicodesError('EvaluationError', `Division by zero`, {
+			dottedName: '',
+		})
+	}
+
 	const tranches = evaluateBarème(
 		evaluatePlafondUntilActiveTranche.call(this, {
 			parsedTranches: node.explanation.tranches,
