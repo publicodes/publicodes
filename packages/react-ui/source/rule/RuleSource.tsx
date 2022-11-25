@@ -11,10 +11,19 @@ export default function RuleSource({ engine, dottedName }: Props) {
 		return null
 	}
 
+	const linkLabel = 'Afficher la règle dans le bac à sable Publicodes'
+
 	return (
 		<p style={{ textAlign: 'right' }}>
-			<a target="_blank" href={href}>
-				✍️ Voir la règle dans le bac à sable Publicodes
+			<a
+				target="_blank"
+				href={href}
+				aria-label={`${linkLabel}, nouvelle fenêtre`}
+			>
+				<span role="img" aria-hidden>
+					✍️
+				</span>{' '}
+				{linkLabel}
 			</a>
 		</p>
 	)

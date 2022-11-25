@@ -51,8 +51,11 @@ export default function Reference(
 				<div style={{ flex: 1, display: 'flex', alignItems: 'baseline' }}>
 					{isFoldEnabled && (
 						<>
-							<UnfoldButton onClick={() => setFolded(!folded)}>
-								{folded ? 'déplier' : 'replier'}
+							<UnfoldButton
+								onClick={() => setFolded(!folded)}
+								aria-expanded={!folded}
+							>
+								{folded ? 'Déplier' : 'Replier'}
 							</UnfoldButton>
 							<StyledGuide />
 						</>

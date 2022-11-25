@@ -23,7 +23,7 @@ export default function RuleHeader({ dottedName }) {
 					.map((parentDottedName) => (
 						<span key={parentDottedName}>
 							<RuleLinkWithContext dottedName={parentDottedName} displayIcon />
-							{' › '}
+							<span aria-hidden>{' › '}</span>
 						</span>
 					))}
 			</div>
