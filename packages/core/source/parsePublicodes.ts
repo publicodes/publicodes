@@ -20,6 +20,7 @@ export type Context<RuleNames extends string = string> = {
 	getUnitKey?: getUnitKey
 	logger: Logger
 	inversionMaxIterations?: number
+	units?: Record<string, { pluriel: string; équivalences: Array<string> }>
 }
 
 export type RulesReplacements<RuleNames extends string> = Partial<
@@ -80,28 +81,47 @@ export default function parsePublicodes<
 			'Publicodes does not parse yaml rule sets itself anymore. Please provide a parsed js object. E.g. the `eemeli/yaml` package.',
 			{}
 		)
-	let rules = { ...rawRules }
+	let rules = Object.entries({ ...rawRules })
 
 	// STEP 2: Rules parsing
 	const context = createContext(partialContext)
 	let previousParsedRules = context.parsedRules
 	context.parsedRules = {} as ParsedRules<ContextNames>
 
-	Object.entries(rules).forEach(([dottedName, rule]) => {
-		if (typeof rule === 'string' || typeof rule === 'number') {
-			rule = {
-				valeur: `${rule}`,
-			}
+	const configRules = rules.filter(([dottedName]) =>
+		dottedName.startsWith('~config')
+	)
+	configRules.forEach(([configName, rule]) => {
+		if (configName === '~config unités') {
+			context.units = rule as Context['units']
 		}
-		if (typeof rule !== 'object') {
-			throw new PublicodesError(
-				'SyntaxError',
-				`Rule ${dottedName} is incorrectly written. Please give it a proper value.`,
-				{ dottedName }
-			)
-		}
-		parse({ nom: dottedName, ...rule }, context)
 	})
+
+	context.getUnitKey = function getUnitKey(rawUnit) {
+		const matchingUnit = Object.entries(context.units ?? {}).find(
+			([, { pluriel, équivalences }]) =>
+				pluriel === rawUnit || équivalences?.includes(rawUnit)
+		)?.[0]
+		return matchingUnit ?? rawUnit
+	}
+
+	rules
+		.filter(([dottedName]) => !dottedName.startsWith('~config'))
+		.forEach(([dottedName, rule]) => {
+			if (typeof rule === 'string' || typeof rule === 'number') {
+				rule = {
+					valeur: `${rule}`,
+				}
+			}
+			if (typeof rule !== 'object') {
+				throw new PublicodesError(
+					'SyntaxError',
+					`Rule ${dottedName} is incorrectly written. Please give it a proper value.`,
+					{ dottedName }
+				)
+			}
+			parse({ nom: dottedName, ...rule }, context)
+		})
 
 	let parsedRules = Object.assign(
 		previousParsedRules,
