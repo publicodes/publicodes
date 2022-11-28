@@ -1,15 +1,33 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 title: Utiliser les unités
 ---
 
 En publicodes on n'additionne pas les choux et les carottes ! Utiliser les unités dans vos règles publicodes permet d'améliorer la qualité de la documentation génerée mais permet aussi à l'interpreteur publicodes de détecter des erreurs de logique dans l'écriture de vos règles. Pratique !
 
-## La vérification de la cohérence d'unités
+## Cohérence d'unités
 
 Imaginons deux quantités: `A = 10 €` et `B = 3 jours`. L'addition de ces deux quantités n'a aucun sens logique, pourtant la majorité des languages de programmation vous laissera executer `A + B` sans générer d'erreurs. En effet il s'agit de deux nombres qu'on peut additionner : `10 + 3 = 13` peu importe que ces nombres représentent des euros ou des jours.
 
 TODO
+
+## Pourcentage `%`
+
+Il est possible de spécifier un pourcentage comme unité. Le pourcentage est une unité qui se comporte d'une manière particulière :
+
+- L'addition d'un nombre avec un pourcentage revient à ajouter le pourcentage à ce nombre.
+- De même pour la soustraction.
+
+```publicodes
+prix TTC: 10€ + 20%
+prix avec réduction: prix TTC - 10%
+```
+
+Le résultat de l'addition de deux pourcentages est bien la somme des deux nombres :
+
+```publicodes
+réduction: 2.4% + 5.0%
+```
 
 ## Pluralisation
 
@@ -30,7 +48,11 @@ Pour résoudre ce problème publicodes permet de définir le pluriel d'une unit�
 ```publicodes
 ~config unités:
   cheval:
-  	pluriel: chevaux
+    pluriel: chevaux
+
+équipe A: 1 cheval
+équipe B: 3 chevaux
+total: équipe A + équipe B
 ```
 
 La clé `~config unités` est une clé spéciale qui permet de configurer publicodes directement depuis le fichier YAML ou les règles JSON.
@@ -40,7 +62,9 @@ Avec cette configuration publicodes formate aussi correctement les unités dans 
 ```publicodes
 ~config unités:
   cheval:
-  	pluriel: chevaux
+    pluriel: chevaux
+  cavalier:
+    pluriel: cavaliers
 
 équipe B: 3 chevaux / 3 cavaliers
 ```
@@ -53,6 +77,6 @@ TODO
 
 TODO en général il y a un problème. ajouter un facteur `* 1 mois` pour harmoniser les unités si besoin
 
-## Le mode strict
+## Mode strict
 
 TODO

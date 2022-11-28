@@ -3,6 +3,8 @@ sidebar_position: 1
 title: Principes de base
 ---
 
+import DocCard from '@theme/DocCard'
+
 La syntaxe de Publicodes est basée sur le langage
 [Yaml](https://en.wikipedia.org/wiki/YAML).
 
@@ -94,19 +96,13 @@ On peut forcer la conversion des unités via le [mécanisme `unité`](/docs/méc
 - `€` / `k€`
 - `g` / `kg` / `mg`
 
-### Pourcentage `%`
-
-Il est possible de spécifier un pourcentage comme unité. L'addition d'un nombre avec un pourcentage revient à ajouter le pourcentage à ce nombre. De même pour la soustraction.
-
-```publicodes
-prix TTC: 10€ + 20%
-```
-
-Le résultat de l'addition de deux pourcentages est bien la somme des deux nombres :
-
-```publicodes
-réduction: 2.4% + 5.0%
-```
+<DocCard
+	item={{
+		type: 'link',
+		href: '/docs/guides/unités',
+		label: 'Le guide complet sur les unités',
+	}}
+/>
 
 ## Mécanismes
 
