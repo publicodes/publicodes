@@ -1,0 +1,58 @@
+---
+sidebar_position: 1
+title: Utiliser les unités
+---
+
+En publicodes on n'additionne pas les choux et les carottes ! Utiliser les unités dans vos règles publicodes permet d'améliorer la qualité de la documentation génerée mais permet aussi à l'interpreteur publicodes de détecter des erreurs de logique dans l'écriture de vos règles. Pratique !
+
+## La vérification de la cohérence d'unités
+
+Imaginons deux quantités: `A = 10 €` et `B = 3 jours`. L'addition de ces deux quantités n'a aucun sens logique, pourtant la majorité des languages de programmation vous laissera executer `A + B` sans générer d'erreurs. En effet il s'agit de deux nombres qu'on peut additionner : `10 + 3 = 13` peu importe que ces nombres représentent des euros ou des jours.
+
+TODO
+
+## Pluralisation
+
+Regardons l'exemple ci-dessous :
+
+```publicodes
+équipe A: 1 cheval
+équipe B: 3 chevaux
+total: équipe A + équipe B
+```
+
+Publicodes va lever une erreur, car les équipes A et B sont exprimées dans des unités différentes.
+
+Une manière naïve de résoudre ce problème est d'utiliser systématiquement la même unité. Mais ici cela nous obligerait à écrire `1 chevaux` ou `3 cheval`, pas le plus agréable à lire pour un humain !
+
+Pour résoudre ce problème publicodes permet de définir le pluriel d'une unité utilisée :
+
+```publicodes
+~config unités:
+  cheval:
+  	pluriel: chevaux
+```
+
+La clé `~config unités` est une clé spéciale qui permet de configurer publicodes directement depuis le fichier YAML ou les règles JSON.
+
+Avec cette configuration publicodes formate aussi correctement les unités dans la documentation générée :
+
+```publicodes
+~config unités:
+  cheval:
+  	pluriel: chevaux
+
+équipe B: 3 chevaux / 3 cavaliers
+```
+
+## Unités équivalentes
+
+TODO
+
+## Résoudre des problèmes d'unités
+
+TODO en général il y a un problème. ajouter un facteur `* 1 mois` pour harmoniser les unités si besoin
+
+## Le mode strict
+
+TODO

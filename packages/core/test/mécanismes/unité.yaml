@@ -1,3 +1,9 @@
+~config unités:
+  employé:
+    pluriel: employés
+    équivalences:
+      - salariés
+
 cotisation retraite:
 
 valeur sans unité:
@@ -24,3 +30,14 @@ unité chainée:
   exemples:
     - unité attendue: €/an
       valeur attendue: 60
+
+pluralisation des unités:
+  valeur: 10 €/employé * 5 employés
+  exemples:
+    - unité attendue: €
+      valeur attendue: 50
+
+unités équivalentes:
+  valeur: 5 salariés + 2 employés
+  exemples:
+    - unité attendue: employé
