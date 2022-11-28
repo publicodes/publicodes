@@ -1,4 +1,4 @@
-import { EvaluationFunction } from '..'
+import { EvaluationFunction, PublicodesError } from '..'
 import { ASTNode, EvaluatedNode } from '../AST/types'
 import { convertToDate } from '../date'
 import { warning } from '../error'
@@ -10,7 +10,7 @@ import { inferUnit, serializeUnit } from '../units'
 
 const knownOperations = {
 	'*': [(a, b) => a * b, '×'],
-	'/': [(a, b) => (b === 0 ? null : a / b), '∕'],
+	'/': [(a, b) => a / b, '∕'],
 	'+': [(a, b) => a + b],
 	'-': [(a, b) => a - b, '−'],
 	'<': [(a, b) => a < b],
@@ -69,6 +69,12 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 
 	let node2 = this.evaluateNode(node.explanation[1])
 	evaluatedNode.explanation = [node1, node2]
+
+	if (node.operationKind === '/' && node2.nodeValue === 0) {
+		throw new PublicodesError('EvaluationError', `Division by zero`, {
+			dottedName: this.cache._meta.evaluationRuleStack[0],
+		})
+	}
 
 	// LAZY EVALUATION 2
 	if (

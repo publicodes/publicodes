@@ -243,7 +243,7 @@ division:
       situation:
         a: 50 €/an
         b: 0
-      valeur attendue: null
+      exception: Division by zero
 
 comparaison plus grand ou egal:
   '>=':

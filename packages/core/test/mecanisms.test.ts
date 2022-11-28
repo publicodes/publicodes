@@ -34,6 +34,7 @@ testSuites.forEach(([suiteName, suite]) => {
 							situation,
 							'valeur attendue': valeur,
 							'unité attendue': unit = defaultUnit,
+							exception: exception,
 							type: type,
 							'variables manquantes': expectedMissing,
 						},
@@ -47,10 +48,14 @@ testSuites.forEach(([suiteName, suite]) => {
 									? ` (${i + 1})`
 									: ''),
 							() => {
-								const result = engine
-									.setSituation(situation ?? {})
-									.evaluate(name)
+								const runExample = () =>
+									engine.setSituation(situation ?? {}).evaluate(name)
 
+								if (exception) {
+									expect(runExample).to.throw(new RegExp(exception, 'i'))
+									return
+								}
+								const result = runExample()
 								if (typeof valeur === 'number') {
 									expect(result.nodeValue).to.be.closeTo(valeur, 0.001)
 								} else if (valeur !== undefined) {
