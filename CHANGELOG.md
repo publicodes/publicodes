@@ -5,6 +5,7 @@
 **core**
 
 -   **⚠ Changement cassant :** exception en cas de division par 0 dans un mécanisme.
+-   **⚠ Changement cassant :** plus de publication du paquet au format obsolète "iife"
 
 ## 1.0.0-beta.61
 
