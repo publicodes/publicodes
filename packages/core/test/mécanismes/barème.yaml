@@ -36,7 +36,7 @@ Barème en taux marginaux:
       situation:
         assiette: 300000
         base: 0
-      exception: Division by zero
+      exception: multiplicateur ne peut pas être nul
 
 Barème à composantes:
   formule:

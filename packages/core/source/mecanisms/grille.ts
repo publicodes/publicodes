@@ -38,9 +38,13 @@ const evaluate: EvaluationFunction<'grille'> = function (node) {
 	const multiplicateur = this.evaluateNode(node.explanation.multiplicateur)
 
 	if (multiplicateur.nodeValue === 0) {
-		throw new PublicodesError('EvaluationError', `Division by zero`, {
-			dottedName: '',
-		})
+		throw new PublicodesError(
+			'EvaluationError',
+			`Le multiplicateur ne peut pas être nul`,
+			{
+				dottedName: this.cache._meta.evaluationRuleStack[0],
+			}
+		)
 	}
 
 	const tranches = evaluatePlafondUntilActiveTranche
