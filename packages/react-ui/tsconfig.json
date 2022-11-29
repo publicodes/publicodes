@@ -3,6 +3,8 @@
 	"compilerOptions": {
 		"lib": ["es2021", "dom"],
 		"noEmit": true,
+		"jsx": "react-jsx",
+		"jsxImportSource": "react"
 	},
 	"include": ["source/index.tsx", "source/types"]
 }
