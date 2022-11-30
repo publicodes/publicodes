@@ -333,6 +333,7 @@ function ReverseMissing({
 		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? []
 	).filter(
 		(ruleName) =>
+			ruleName !== '$EVALUATION' &&
 			!engine.context.parsedRules[ruleName].private &&
 			!isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
 	)
@@ -383,6 +384,7 @@ function Effect({
 		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? []
 	).filter(
 		(ruleName) =>
+			ruleName !== '$EVALUATION' &&
 			!engine.context.parsedRules[ruleName].private &&
 			isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
 	)
