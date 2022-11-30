@@ -1,9 +1,8 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-	entry: ['source/index.tsx'],
+	entry: ['source/index.ts'],
 	format: ['cjs', 'esm'],
-	globalName: 'publicodesReact',
 	sourcemap: true,
 	clean: true,
 	dts: true,
