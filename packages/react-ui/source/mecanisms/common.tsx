@@ -101,12 +101,10 @@ export const InfixMecanism = ({
 	value,
 	prefixed,
 	children,
-	dimValue,
 }: {
 	value: EvaluatedNode
 	children: React.ReactNode
 	prefixed?: boolean
-	dimValue?: boolean
 }) => {
 	return (
 		<div>
@@ -117,24 +115,12 @@ export const InfixMecanism = ({
 					position: 'relative',
 				}}
 			>
-				{dimValue && <DimOverlay />}
 				<Explanation node={value} />
 			</div>
 			{!prefixed && children}
 		</div>
 	)
 }
-const DimOverlay = styled.div`
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	background-color: white;
-	left: 0;
-	opacity: 0.5;
-	pointer-events: none;
-	z-index: 1;
-`
 
 export const InlineMecanismName = ({ name }: { name: string }) => {
 	return (
