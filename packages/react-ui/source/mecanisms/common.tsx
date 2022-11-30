@@ -76,7 +76,7 @@ export function Mecanism({
 	displayName = true,
 }: NodeProps) {
 	return (
-		<StyledMecanism name={name}>
+		<StyledMecanism mecanismName={name}>
 			{displayName && <MecanismName name={name}>{name}</MecanismName>}
 			<div>
 				{children}
@@ -167,7 +167,7 @@ const MecanismName = ({
 	)
 }
 
-const StyledMecanism = styled.div<{ name: string }>`
+const StyledMecanism = styled.div<{ mecanismName: string }>`
 	border: 1px solid;
 	max-width: 100%;
 	border-radius: 3px;
@@ -177,7 +177,7 @@ const StyledMecanism = styled.div<{ name: string }>`
 	flex: 1;
 	flex-direction: column;
 	text-align: left;
-	border-color: ${({ name }) => mecanismColors(name)};
+	border-color: ${({ mecanismName }) => mecanismColors(mecanismName)};
 	.properties > li {
 		margin: 1rem 0;
 	}
