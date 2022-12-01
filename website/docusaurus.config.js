@@ -35,11 +35,6 @@ module.exports = {
 					label: 'API REST',
 				},
 				{
-					href: 'https://gitter.im/publicodes/community',
-					label: 'Chat',
-					position: 'right',
-				},
-				{
 					href: 'https://github.com/betagouv/publicodes',
 					label: 'GitHub',
 					position: 'right',
