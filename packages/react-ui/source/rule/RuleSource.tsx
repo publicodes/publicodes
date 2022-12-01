@@ -21,12 +21,11 @@ export default function RuleSource({ engine, dottedName }: Props) {
 }
 
 export const useRuleSource = (engine: Engine, dottedName: string) => {
-	const dependencies = [
-		// Array.from is a workaround for https://github.com/facebook/docusaurus/issues/7606#issuecomment-1330452598
-		...Array.from(
-			engine.context.referencesMaps.referencesIn.get(dottedName) ?? []
-		),
-	]
+	// Array.from is a workaround for https://github.com/facebook/docusaurus/issues/7606#issuecomment-1330452598
+	const dependencies = Array.from(
+		engine.context.referencesMaps.referencesIn.get(dottedName) ?? []
+	)
+
 	const rule = engine.evaluateNode(engine.getRule(dottedName))
 
 	// When we import a rule in the Publicodes Studio, we need to provide a
