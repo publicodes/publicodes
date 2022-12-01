@@ -36,7 +36,7 @@ module.exports = {
 				},
 				{
 					href: 'https://pad.incubateur.net/s/qTHaJc9VH#',
-					label: 'Meetup Publicodes à Paris',
+					label: '📅 Meetup Publicodes à Paris ',
 					position: 'right',
 				},
 				{
