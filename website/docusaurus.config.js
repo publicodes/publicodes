@@ -35,6 +35,11 @@ module.exports = {
 					label: 'API REST',
 				},
 				{
+					href: 'https://pad.incubateur.net/s/qTHaJc9VH#',
+					label: 'Meetup Publicodes à Paris',
+					position: 'right',
+				},
+				{
 					href: 'https://github.com/betagouv/publicodes',
 					label: 'GitHub',
 					position: 'right',
