@@ -35,8 +35,8 @@ module.exports = {
 					label: 'API REST',
 				},
 				{
-					href: 'https://gitter.im/publicodes/community',
-					label: 'Chat',
+					href: 'https://pad.incubateur.net/s/qTHaJc9VH#',
+					label: '📅 Meetup Publicodes à Paris ',
 					position: 'right',
 				},
 				{
