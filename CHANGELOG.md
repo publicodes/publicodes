@@ -2,9 +2,30 @@
 
 ## 1.0.0-beta.62
 
+**monorepo**
+
+-   **⚠ Changement cassant :** Update Node requirement to lts (v18)
+-   Update yarn to v3.3
+-   Update typescript, tsup
+-   Use workspace version of publicodes, publicodes-react
+-   Add missing READMEs (#297)
+
 **core**
 
 -   **⚠ Changement cassant :** exception en cas de division par 0 dans un mécanisme.
+
+**publicodes-react**
+
+-   Refacto publicodes-react to esm
+-   Refacto in RuleLink
+-   Temporary fix bad babel transformation on [...new Set()]]
+-   Fix publicodes-react missing sourcemap
+
+**website**
+
+-   Clean docusaurus old unused packages
+-   Update docusaurus to 2.2
+-   fix(Studio): fix doc link (#311)
 
 ## 1.0.0-beta.61
 
