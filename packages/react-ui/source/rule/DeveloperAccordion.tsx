@@ -185,6 +185,9 @@ function ActualSituation({
 	)
 }
 
+const LINK_NPM_LABEL = 'Retrouvez ce paquet sur NPM'
+const LINK_PUBLICODES_LABEL = 'moteur Publicodes'
+
 function PackageUsage({
 	rule,
 	situation,
@@ -220,27 +223,29 @@ console.log(formatValue(evaluation))
 			<p>
 				Vous pouvez installer notre package de règles pour l'utiliser avec le{' '}
 				<Link
-					aria-label="moteur Publicodes, accéder au site publi.codes, nouvelle fenêtre"
+					aria-label={`${LINK_PUBLICODES_LABEL}, accéder au site publi.codes, nouvelle fenêtre`}
 					href="https://publi.codes/"
 				>
-					moteur Publicodes
+					{LINK_PUBLICODES_LABEL}
 				</Link>{' '}
 				et ainsi effectuer vos propres calculs. Voici un exemple avec votre
-				situation et la règle actuelle :
+				situation et la règle actuelle :
 			</p>
 			<Code tabs={tabs} />
 
 			<p style={{ textAlign: 'right' }}>
 				<Link
 					href={'https://www.npmjs.com/package/' + npmPackage}
-					aria-label="Retrouvez ce paquet sur NPM, accéder à la page npm du package Publicodes, nouvelle fenêtre"
+					aria-label={`${LINK_NPM_LABEL}, accéder à la page npm du package Publicodes, nouvelle fenêtre`}
 				>
-					<span aria-hidden>📦</span> Retrouvez ce paquet sur NPM
+					<span aria-hidden>📦</span> {LINK_NPM_LABEL}
 				</Link>
 			</p>
 		</section>
 	)
 }
+
+const LINK_API_LABEL = 'En savoir plus sur notre API REST'
 
 function ApiUsage({
 	situation,
@@ -288,9 +293,9 @@ console.log(evaluate)`,
 				<p style={{ textAlign: 'right' }}>
 					<Link
 						to={apiDocumentationUrl}
-						aria-label="En savoir plus sur notre API REST, accéder à la documentation, nouvelle fenêtre"
+						aria-label={`${LINK_API_LABEL}, accéder à la documentation, nouvelle fenêtre`}
 					>
-						<span aria-hidden>👩‍💻</span> En savoir plus sur notre API REST
+						<span aria-hidden>👩‍💻</span> {LINK_API_LABEL}
 					</Link>
 				</p>
 			)}
