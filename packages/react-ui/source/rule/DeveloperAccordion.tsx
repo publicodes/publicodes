@@ -219,21 +219,23 @@ console.log(formatValue(evaluation))
 			<h5>Lancer un calcul avec Publicodes</h5>
 			<p>
 				Vous pouvez installer notre package de règles pour l'utiliser avec le{' '}
-				<Link href="https://publi.codes/">moteur Publicodes</Link> et ainsi
-				effectuer vos propres calculs. Voici un exemple avec votre situation et
-				la règle actuelle :
+				<Link
+					aria-label="moteur Publicodes, accéder au site publi.codes, nouvelle fenêtre"
+					href="https://publi.codes/"
+				>
+					moteur Publicodes
+				</Link>{' '}
+				et ainsi effectuer vos propres calculs. Voici un exemple avec votre
+				situation et la règle actuelle :
 			</p>
 			<Code tabs={tabs} />
 
 			<p style={{ textAlign: 'right' }}>
 				<Link
 					href={'https://www.npmjs.com/package/' + npmPackage}
-					aria-label="Retrouvez ce paquet sur NPM, accéder à la page informative du package Publicodes, nouvelle fenêtre"
+					aria-label="Retrouvez ce paquet sur NPM, accéder à la page npm du package Publicodes, nouvelle fenêtre"
 				>
-					<span role="img" aria-hidden>
-						📦
-					</span>{' '}
-					Retrouvez ce paquet sur NPM
+					<span aria-hidden>📦</span> Retrouvez ce paquet sur NPM
 				</Link>
 			</p>
 		</section>
@@ -288,10 +290,7 @@ console.log(evaluate)`,
 						to={apiDocumentationUrl}
 						aria-label="En savoir plus sur notre API REST, accéder à la documentation, nouvelle fenêtre"
 					>
-						<span role="img" aria-hidden>
-							👩‍💻
-						</span>{' '}
-						En savoir plus sur notre API REST
+						<span aria-hidden>👩‍💻</span> En savoir plus sur notre API REST
 					</Link>
 				</p>
 			)}

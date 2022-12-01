@@ -20,10 +20,7 @@ export default function RuleSource({ engine, dottedName }: Props) {
 				href={href}
 				aria-label={`${linkLabel}, nouvelle fenêtre`}
 			>
-				<span role="img" aria-hidden>
-					✍️
-				</span>{' '}
-				{linkLabel}
+				<span aria-hidden>✍️</span> {linkLabel}
 			</a>
 		</p>
 	)

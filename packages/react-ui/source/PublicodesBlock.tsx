@@ -17,10 +17,7 @@ export default function PublicodesBlock({ source }: { source: string }) {
 				target="_blank"
 				aria-label="Lancer le calcul, ouvrir dans le studio Publicodes, nouvelle fenêtre"
 			>
-				<span role="img" aria-hidden>
-					⚡
-				</span>{' '}
-				Lancer le calcul
+				<span aria-hidden>⚡</span> Lancer le calcul
 			</LaunchButton>
 		</div>
 	)
