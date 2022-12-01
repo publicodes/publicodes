@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 
 export default function PublicodesBlock({ source }: { source: string }) {
@@ -15,8 +16,12 @@ export default function PublicodesBlock({ source }: { source: string }) {
 			<LaunchButton
 				href={`${baseURL}/studio?code=${encodeURIComponent(source)}`}
 				target="_blank"
+				aria-label="Lancer le calcul, ouvrir dans le studio Publicodes, nouvelle fenêtre"
 			>
-				⚡ Lancer le calcul
+				<span role="img" aria-hidden>
+					⚡
+				</span>{' '}
+				Lancer le calcul
 			</LaunchButton>
 		</div>
 	)

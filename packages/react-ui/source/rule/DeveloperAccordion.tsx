@@ -226,8 +226,14 @@ console.log(formatValue(evaluation))
 			<Code tabs={tabs} />
 
 			<p style={{ textAlign: 'right' }}>
-				<Link href={'https://www.npmjs.com/package/' + npmPackage}>
-					📦 Retrouvez ce paquet sur NPM
+				<Link
+					href={'https://www.npmjs.com/package/' + npmPackage}
+					aria-label="Retrouvez ce paquet sur NPM, accéder à la page informative du package Publicodes, nouvelle fenêtre"
+				>
+					<span role="img" aria-hidden>
+						📦
+					</span>{' '}
+					Retrouvez ce paquet sur NPM
 				</Link>
 			</p>
 		</section>
@@ -278,8 +284,14 @@ console.log(evaluate)`,
 			<Code tabs={tabs} />
 			{apiDocumentationUrl && (
 				<p style={{ textAlign: 'right' }}>
-					<Link to={apiDocumentationUrl}>
-						👩‍💻 En savoir plus sur notre API REST
+					<Link
+						to={apiDocumentationUrl}
+						aria-label="En savoir plus sur notre API REST, accéder à la documentation, nouvelle fenêtre"
+					>
+						<span role="img" aria-hidden>
+							👩‍💻
+						</span>{' '}
+						En savoir plus sur notre API REST
 					</Link>
 				</p>
 			)}
