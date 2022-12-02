@@ -1,8 +1,10 @@
 import glob from 'glob'
-import { readFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 import yaml from 'yaml'
 
-import type { RawPublicodes, RuleNode } from 'publicodes'
+import Engine, { reduceAST } from 'publicodes'
+
+import type { RawPublicodes, RuleNode, ASTNode } from 'publicodes'
 
 export type RuleName = string
 export type ParsedRules = Record<RuleName, RuleNode<RuleName>>
@@ -18,14 +20,64 @@ export function getRawNodes(parsedRules: ParsedRules): RawRules {
 	)
 }
 
-export function constantFolding(baseRules: ParsedRules): ParsedRules {
-	return Object.fromEntries(
-		Object.entries(baseRules).filter(
-			([_, rule]) =>
-				// at least the 'nom' attribute will be specified
-				Object.keys(rule.rawNode).length > 1
-		)
+// To be fold, a rule needs to be a constant:
+// - no question
+// - no dependency
+const isFoldable = (rule: RuleNode) => {
+	const rawNode = rule.rawNode
+	return !(rawNode.question || rawNode['par défaut'])
+}
+
+const isInParsedRules = (parsedRules: ParsedRules, rule: RuleName) => {
+	return Object.keys(parsedRules).includes(rule)
+}
+
+const isEmptyRule = (rule: RuleNode) => {
+	// There is always a 'nom' attribute.
+	return Object.keys(rule.rawNode).length <= 1
+}
+
+export function constantFolding(engine): ParsedRules {
+	const parsedRules = engine.getParsedRules()
+	const preFilteredRules = Object.entries(parsedRules).filter(([_, rule]) =>
+		isFoldable(rule)
 	)
+	preFilteredRules.forEach(([ruleName, rule]) => {
+		if (!isInParsedRules(parsedRules, ruleName)) {
+			// The [ruleName] rule has already been removed from the [parsedRules]
+			return
+		}
+		if (isEmptyRule(rule)) {
+			delete parsedRules[ruleName]
+			return
+		}
+
+		const { nodeValue, missingVariables, traversedVariables } =
+			engine.evaluateNode(rule)
+
+		// The computation could be done a compile time.
+		if (Object.keys(missingVariables).length === 0) {
+			parsedRules[ruleName].rawNode.valeur = nodeValue
+			parsedRules[ruleName].rawNode['est compressée'] = true
+			delete parsedRules[ruleName].rawNode.formule
+
+			// Update ref counting
+			traversedVariables.forEach((ruleDottedName: RuleName) => {
+				parsedRules[ruleDottedName].explanation.parents = parsedRules[
+					ruleDottedName
+				].explanation.parents.filter(
+					({ dottedName }) =>
+						isInParsedRules(parsedRules, dottedName) && dottedName !== ruleName
+				)
+
+				if (parsedRules[ruleDottedName].explanation.parents.length === 0) {
+					delete parsedRules[ruleDottedName]
+				}
+			})
+		}
+	})
+
+	return parsedRules
 }
 
 function readYAML(path: string): object {

@@ -1,25 +1,31 @@
 import { constantFolding, getRawNodes } from '../src/lib'
 import Engine from 'publicodes'
 
-import type { ParsedRules, RawRules } from '../src/lib'
+import type { ParsedRules, RawRules, RuleName } from '../src/lib'
+
+function callWithEngine<R>(fn: (engine) => R, rawRules: RawRules): R {
+	const engine = new Engine(rawRules)
+	return fn(engine)
+}
 
 function callWithParsedRules<R>(
 	fn: (rules: ParsedRules) => R,
 	rawRules: RawRules
 ): R {
-	return fn(new Engine(rawRules).getParsedRules())
+	const engine = new Engine(rawRules)
+	return fn(engine.getParsedRules())
 }
 
-function constantFoldingWith(rawRules: RawRules): RawRules {
-	return getRawNodes(callWithParsedRules(constantFolding, rawRules))
+function getRawNodesWith(rawRules: RawRules): RawRules {
+	return callWithParsedRules(getRawNodes, rawRules)
 }
 
 describe('getRawRules', () => {
 	it('∅ -> ∅', () => {
-		expect(callWithParsedRules(getRawNodes, {})).toStrictEqual({})
+		expect(getRawNodesWith({})).toStrictEqual({})
 	})
 	it('Single null rule', () => {
-		expect(callWithParsedRules(getRawNodes, { test1: null })).toStrictEqual({
+		expect(getRawNodesWith({ test1: null })).toStrictEqual({
 			test1: {},
 		})
 	})
@@ -30,10 +36,10 @@ describe('getRawRules', () => {
 				formule: '10 * 3',
 			},
 		}
-		expect(callWithParsedRules(getRawNodes, rawRules)).toStrictEqual(rawRules)
+		expect(getRawNodesWith(rawRules)).toStrictEqual(rawRules)
 	})
 	it('Number constant', () => {
-		expect(callWithParsedRules(getRawNodes, { test3: 10 })).toStrictEqual({
+		expect(getRawNodesWith({ test3: 10 })).toStrictEqual({
 			test3: { valeur: '10' },
 		}) // will be reparsed by the website client, so not a problem?
 	})
@@ -47,13 +53,18 @@ describe('getRawRules', () => {
 				valeur: '10',
 			},
 		}
-		expect(callWithParsedRules(getRawNodes, rawRules)).toStrictEqual(rawRules)
+		expect(getRawNodesWith(rawRules)).toStrictEqual(rawRules)
 	})
 })
 
+function constantFoldingWith(rawRules: RawRules): RawRules {
+	const res = callWithEngine(constantFolding, rawRules)
+	return getRawNodes(res)
+}
+
 describe('Constant folding optim', () => {
 	it('∅ -> ∅', () => {
-		expect(callWithParsedRules(constantFolding, {})).toStrictEqual({})
+		expect(constantFoldingWith({})).toStrictEqual({})
 	})
 	it('Should remove empty nodes', () => {
 		expect(
@@ -65,7 +76,8 @@ describe('Constant folding optim', () => {
 			})
 		).toStrictEqual({
 			ruleB: {
-				formule: '10 * 10',
+				valeur: 100,
+				'est compressée': true,
 			},
 		})
 	})
@@ -79,10 +91,11 @@ describe('Constant folding optim', () => {
 				valeur: '10',
 			},
 		}
-		expect(callWithParsedRules(getRawNodes, rawRules)).toStrictEqual({
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
 			ruleA: {
 				titre: 'Rule A',
-				formule: '10 * 3',
+				valeur: 30,
+				'est compressée': true,
 			},
 		})
 	})
