@@ -23,59 +23,102 @@ export function getRawNodes(parsedRules: ParsedRules): RawRules {
 // To be fold, a rule needs to be a constant:
 // - no question
 // - no dependency
-const isFoldable = (rule: RuleNode) => {
+function isFoldable(rule: RuleNode): boolean {
 	const rawNode = rule.rawNode
 	return !(rawNode.question || rawNode['par défaut'])
 }
 
-const isInParsedRules = (parsedRules: ParsedRules, rule: RuleName) => {
+function isInParsedRules(parsedRules: ParsedRules, rule: RuleName): boolean {
 	return Object.keys(parsedRules).includes(rule)
 }
 
-const isEmptyRule = (rule: RuleNode) => {
+function isEmptyRule(rule: RuleNode): boolean {
 	// There is always a 'nom' attribute.
 	return Object.keys(rule.rawNode).length <= 1
 }
 
-export function constantFolding(engine): ParsedRules {
-	const parsedRules = engine.getParsedRules()
-	const preFilteredRules = Object.entries(parsedRules).filter(([_, rule]) =>
-		isFoldable(rule)
+function lexicalSubstitutionOfRefValue(
+	parent: RuleNode,
+	constant: RuleNode
+): RuleNode {
+	const refName = reduceAST(
+		(_, node: ASTNode) => {
+			if (
+				node.nodeKind === 'reference' &&
+				node.dottedName === constant.dottedName
+			) {
+				return node.name
+			}
+		},
+		undefined,
+		parent
 	)
-	preFilteredRules.forEach(([ruleName, rule]) => {
-		if (!isInParsedRules(parsedRules, ruleName)) {
-			// The [ruleName] rule has already been removed from the [parsedRules]
-			return
-		}
-		if (isEmptyRule(rule)) {
-			delete parsedRules[ruleName]
-			return
-		}
+	parent.rawNode.formule = parent.rawNode.formule.replaceAll(
+		refName,
+		constant.rawNode.valeur
+	)
+	return parent
+}
 
-		const { nodeValue, missingVariables, traversedVariables } =
-			engine.evaluateNode(rule)
+export function constantFolding(engine): ParsedRules {
+	const parsedRules: ParsedRules = engine.getParsedRules()
 
-		// The computation could be done a compile time.
-		if (Object.keys(missingVariables).length === 0) {
-			parsedRules[ruleName].rawNode.valeur = nodeValue
-			parsedRules[ruleName].rawNode['est compressée'] = true
-			delete parsedRules[ruleName].rawNode.formule
+	Object.entries(parsedRules)
+		.filter(([_, rule]) => isFoldable(rule))
+		.forEach(([ruleName, rule]) => {
+			if (!isInParsedRules(parsedRules, ruleName)) {
+				// The [ruleName] rule has already been removed from the [parsedRules]
+				return
+			}
+			if (isEmptyRule(rule)) {
+				delete parsedRules[ruleName]
+				return
+			}
 
-			// Update ref counting
-			traversedVariables.forEach((ruleDottedName: RuleName) => {
-				parsedRules[ruleDottedName].explanation.parents = parsedRules[
-					ruleDottedName
-				].explanation.parents.filter(
-					({ dottedName }) =>
-						isInParsedRules(parsedRules, dottedName) && dottedName !== ruleName
-				)
+			// Constant leaf -> search and replace the constant in all its parents.
+			if (rule.rawNode.valeur) {
+				rule.explanation.parents
+					.filter(({ dottedName }) => isInParsedRules(parsedRules, dottedName))
+					.forEach(({ dottedName }) => {
+						parsedRules[dottedName] = lexicalSubstitutionOfRefValue(
+							parsedRules[dottedName],
+							rule
+						)
+						parsedRules[dottedName].rawNode['est compressée'] = true
+					})
 
-				if (parsedRules[ruleDottedName].explanation.parents.length === 0) {
-					delete parsedRules[ruleDottedName]
+				return delete parsedRules[ruleName]
+			}
+
+			// Potential leaf -> try to evaluate the formula at compile time.
+			if (rule.rawNode.formule) {
+				const { nodeValue, missingVariables, traversedVariables } =
+					engine.evaluateNode(rule)
+
+				// The computation could be done a compile time.
+				if (Object.keys(missingVariables).length === 0) {
+					console.log(`eval '${ruleName}:`, engine.evaluateNode(rule))
+					parsedRules[ruleName].rawNode.valeur = nodeValue
+					parsedRules[ruleName].rawNode['est compressée'] = true
+					delete parsedRules[ruleName].rawNode.formule
+
+					// Update ref counting
+					traversedVariables.forEach((ruleDottedName: RuleName) => {
+						parsedRules[ruleDottedName].explanation.parents = parsedRules[
+							ruleDottedName
+						].explanation.parents.filter(
+							({ dottedName }) =>
+								isInParsedRules(parsedRules, dottedName) &&
+								dottedName !== ruleName
+						)
+
+						if (parsedRules[ruleDottedName].explanation.parents.length === 0) {
+							delete parsedRules[ruleDottedName]
+						}
+					})
 				}
-			})
-		}
-	})
+			}
+		})
 
 	return parsedRules
 }

@@ -20,42 +20,56 @@ function getRawNodesWith(rawRules: RawRules): RawRules {
 	return callWithParsedRules(getRawNodes, rawRules)
 }
 
-describe('getRawRules', () => {
-	it('∅ -> ∅', () => {
-		expect(getRawNodesWith({})).toStrictEqual({})
-	})
-	it('Single null rule', () => {
-		expect(getRawNodesWith({ test1: null })).toStrictEqual({
-			test1: {},
-		})
-	})
-	it('Simple single rule', () => {
-		const rawRules = {
-			test2: {
-				titre: 'Test 2',
-				formule: '10 * 3',
-			},
-		}
-		expect(getRawNodesWith(rawRules)).toStrictEqual(rawRules)
-	})
-	it('Number constant', () => {
-		expect(getRawNodesWith({ test3: 10 })).toStrictEqual({
-			test3: { valeur: '10' },
-		}) // will be reparsed by the website client, so not a problem?
-	})
-	it('Referenced rules', () => {
-		const rawRules = {
-			ruleA: {
-				titre: 'Rule A',
-				formule: 'B . C * 3',
-			},
-			'ruleA . B . C': {
-				valeur: '10',
-			},
-		}
-		expect(getRawNodesWith(rawRules)).toStrictEqual(rawRules)
-	})
-})
+// describe('getRawRules', () => {
+// 	it('∅ -> ∅', () => {
+// 		expect(getRawNodesWith({})).toStrictEqual({})
+// 	})
+// 	it('Single null rule', () => {
+// 		expect(getRawNodesWith({ test1: null })).toStrictEqual({
+// 			test1: {},
+// 		})
+// 	})
+// 	it('Simple single rule', () => {
+// 		const rawRules = {
+// 			test2: {
+// 				titre: 'Test 2',
+// 				formule: '10 * 3',
+// 			},
+// 		}
+// 		expect(getRawNodesWith(rawRules)).toStrictEqual(rawRules)
+// 	})
+// 	it('Number constant', () => {
+// 		expect(getRawNodesWith({ test3: 10 })).toStrictEqual({
+// 			test3: { valeur: '10' },
+// 		}) // will be reparsed by the website client, so not a problem?
+// 	})
+// 	it('Referenced rules', () => {
+// 		const rawRules = {
+// 			ruleA: {
+// 				titre: 'Rule A',
+// 				formule: 'B . C * 3',
+// 			},
+// 			'ruleA . B . C': {
+// 				valeur: '10',
+// 			},
+// 		}
+// 		expect(getRawNodesWith(rawRules)).toStrictEqual(rawRules)
+// 	})
+// })
+//
+// function lexicalSubstitutionOfRefValueWith(rawRules: RawRules): RawRules {
+// 	const [parent, constant] = Object.entries(
+// 		callWithParsedRules((a) => a, rawRules)
+// 	)
+//
+// 	return getRawNodes(lexicalSubstitutionOfRefValue(parent, constant))
+// }
+//
+// // describe('lexicalSubstitutionOfRefValue', () => {
+// // 	it('∅ -> ∅', () => {
+// // 		expect(lexicalSubstitutionOfRefValueWith({})).toStrictEqual({})
+// // 	})
+// // })
 
 function constantFoldingWith(rawRules: RawRules): RawRules {
 	const res = callWithEngine(constantFolding, rawRules)
@@ -96,6 +110,82 @@ describe('Constant folding optim', () => {
 				titre: 'Rule A',
 				valeur: 30,
 				'est compressée': true,
+			},
+		})
+	})
+	it('Referenced constant should be replaced - [2 dependency]', () => {
+		const rawRules = {
+			ruleA: {
+				titre: 'Rule A',
+				formule: 'B . C * D',
+			},
+			'ruleA . B . C': {
+				valeur: '10',
+			},
+			'ruleA . D': {
+				valeur: '3',
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
+			ruleA: {
+				titre: 'Rule A',
+				valeur: 30,
+				'est compressée': true,
+			},
+		})
+	})
+	it('Partially compressible rule', () => {
+		const rawRules = {
+			ruleA: {
+				titre: 'Rule A',
+				formule: 'B . C * D',
+			},
+			'ruleA . D': {
+				question: "What's the value of D",
+			},
+			'ruleA . B . C': {
+				valeur: '10',
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
+			ruleA: {
+				titre: 'Rule A',
+				formule: '10 * D',
+				'est compressée': true,
+			},
+			'ruleA . D': {
+				question: "What's the value of D",
+			},
+		})
+	})
+	it('Partially compressible rule with constant with mutliple dependencies', () => {
+		const rawRules = {
+			ruleA: {
+				titre: 'Rule A',
+				formule: 'B . C * D',
+			},
+			ruleB: {
+				formule: 'ruleA . B . C',
+			},
+			'ruleA . D': {
+				question: "What's the value of D",
+			},
+			'ruleA . B . C': {
+				valeur: '10',
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
+			ruleA: {
+				titre: 'Rule A',
+				formule: '10 * D',
+				'est compressée': true,
+			},
+			ruleB: {
+				valeur: 10,
+				'est compressée': true,
+			},
+			'ruleA . D': {
+				question: "What's the value of D",
 			},
 		})
 	})
