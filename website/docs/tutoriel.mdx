@@ -60,9 +60,12 @@ import Engine from 'https://unpkg.com/publicodes@next/esm/index.global.js'
 <TabItem value="script-unpkg">
 
 ```html
-<script src="https://unpkg.com/publicodes@next/dist/index.global.js"></script>
-<script>
-	const Engine = window.publicodes.default
+<script
+	type="module"
+	src="https://unpkg.com/publicodes@next/dist/index.js"
+></script>
+<script type="module">
+	import Engine from 'publicodes'
 </script>
 ```
 
@@ -78,7 +81,7 @@ jeu de règles publicodes.
 
 ```js
 import Engine from 'publicodes'
-import {parse} from 'yaml'
+import { parse } from 'yaml'
 
 // On définit une liste de règles publicodes
 const rules = `
@@ -94,7 +97,7 @@ dépenses primeur:
       - prix . champignons * 500g
       - prix . avocat * 3 avocat
 `
-// publicodes ne prend plus en entrée du YAML, vous devez parser vous-même votre code source 
+// publicodes ne prend plus en entrée du YAML, vous devez parser vous-même votre code source
 const parsedRules = parse(rules)
 
 // On initialise un moteur en lui donnant le publicodes sous forme d'objet javascript.
@@ -102,15 +105,13 @@ const parsedRules = parse(rules)
 const engine = new Engine(parsedRules)
 ```
 
+Pourquoi ne pas accepter du YAML en entrée de publicodes, alors que cette syntaxe est effectivement plus agréable que du JSON ?
 
-Pourquoi ne pas accepter du YAML en entrée de publicodes, alors que cette syntaxe est effectivement plus agréable que du JSON ? 
-
-Parce que l'étape de parsing du YAML nécessite d'embarquer une lourde bibliothèque. 
+Parce que l'étape de parsing du YAML nécessite d'embarquer une lourde bibliothèque.
 Libre ainsi à chaque projet de faire cette étape au moment et à l'endroit le plus adapté, côté serveur ou lors du build de l’application
 
 > Il est donc également tout à fait possible d'initialiser `Engine` avec un objet JSON, il suffit de le parser avec la fonction native `JSON.parse(monJSON)`.
 > Le JSON étant le langage dominant des APIs (on n'échange jamais de YAML par API), c'est un moyen en pratique courant de le faire.
-
 
 La variable `engine` permet en ensuite de calculer la valeur d'une règle avec la
 méthode `evaluate` :
@@ -189,8 +190,8 @@ apparaîtra dans la propriété `missingVariables` :
 
 ```js
 const missingYEngine = new Engine({
-		x: 'y + 5',
-		y: null
+	x: 'y + 5',
+	y: null,
 })
 
 console.log(missingYEngine.evaluate('x').missingVariables)
