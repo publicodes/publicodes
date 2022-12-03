@@ -1,10 +1,13 @@
 name: Install
+inputs:
+  node-version:
+    default: 18.x
 runs:
   using: composite
   steps:
     - uses: actions/setup-node@v2
       with:
-        node-version: 18
+        node-version: ${{ inputs.node-version }}
         cache: yarn
     - run: yarn install --immutable
       shell: bash
