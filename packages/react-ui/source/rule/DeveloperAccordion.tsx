@@ -146,7 +146,7 @@ function ActualRule({
 
 	return (
 		<section>
-			<h4>Règle actuelle</h4>
+			<h5>Règle actuelle</h5>
 			<Code tabs={{ dottedName }} />
 			<RuleSource dottedName={dottedName} engine={engine} />
 		</section>
@@ -168,7 +168,7 @@ function ActualSituation({
 
 	return (
 		<section>
-			<h4>Situation actuelle</h4>
+			<h5>Situation actuelle</h5>
 			{keys.length ? (
 				<p>
 					Voici les données que vous avez saisies dans notre simulateur sous
@@ -184,6 +184,9 @@ function ActualSituation({
 		</section>
 	)
 }
+
+const LINK_NPM_LABEL = 'Retrouvez ce paquet sur NPM'
+const LINK_PUBLICODES_LABEL = 'moteur Publicodes'
 
 function PackageUsage({
 	rule,
@@ -216,23 +219,33 @@ console.log(formatValue(evaluation))
 
 	return (
 		<section>
-			<h4>Lancer un calcul avec Publicodes</h4>
+			<h5>Lancer un calcul avec Publicodes</h5>
 			<p>
 				Vous pouvez installer notre package de règles pour l'utiliser avec le{' '}
-				<Link href="https://publi.codes/">moteur Publicodes</Link> et ainsi
-				effectuer vos propres calculs. Voici un exemple avec votre situation et
-				la règle actuelle :
+				<Link
+					aria-label={`${LINK_PUBLICODES_LABEL}, accéder au site publi.codes, nouvelle fenêtre`}
+					href="https://publi.codes/"
+				>
+					{LINK_PUBLICODES_LABEL}
+				</Link>{' '}
+				et ainsi effectuer vos propres calculs. Voici un exemple avec votre
+				situation et la règle actuelle :
 			</p>
 			<Code tabs={tabs} />
 
 			<p style={{ textAlign: 'right' }}>
-				<Link href={'https://www.npmjs.com/package/' + npmPackage}>
-					📦 Retrouvez ce paquet sur NPM
+				<Link
+					href={'https://www.npmjs.com/package/' + npmPackage}
+					aria-label={`${LINK_NPM_LABEL}, accéder à la page npm du package Publicodes, nouvelle fenêtre`}
+				>
+					<span aria-hidden>📦</span> {LINK_NPM_LABEL}
 				</Link>
 			</p>
 		</section>
 	)
 }
+
+const LINK_API_LABEL = 'En savoir plus sur notre API REST'
 
 function ApiUsage({
 	situation,
@@ -270,7 +283,7 @@ console.log(evaluate)`,
 
 	return (
 		<section>
-			<h4>Utiliser notre API REST</h4>
+			<h5>Utiliser notre API REST</h5>
 			<p>
 				Vous trouverez ici un exemple d'utilisation de notre API REST via curl
 				ou un fetch javascript.
@@ -278,8 +291,11 @@ console.log(evaluate)`,
 			<Code tabs={tabs} />
 			{apiDocumentationUrl && (
 				<p style={{ textAlign: 'right' }}>
-					<Link to={apiDocumentationUrl}>
-						👩‍💻 En savoir plus sur notre API REST
+					<Link
+						to={apiDocumentationUrl}
+						aria-label={`${LINK_API_LABEL}, accéder à la documentation, nouvelle fenêtre`}
+					>
+						<span aria-hidden>👩‍💻</span> {LINK_API_LABEL}
 					</Link>
 				</p>
 			)}
@@ -290,7 +306,7 @@ console.log(evaluate)`,
 function MissingVars({ selfMissing }: { selfMissing: string[] }) {
 	return (
 		<section>
-			<h4>Données manquantes</h4>
+			<h5>Données manquantes</h5>
 			{!!selfMissing?.length ? (
 				<>
 					<p>
@@ -340,7 +356,7 @@ function ReverseMissing({
 
 	return (
 		<section>
-			<h4>Règles qui ont besoin de cette valeur</h4>
+			<h5>Règles qui ont besoin de cette valeur</h5>
 
 			{ruleNamesWithMissing.length ? (
 				<>
@@ -392,7 +408,7 @@ function Effect({
 	return (
 		<>
 			<section>
-				<h4>Effets sur d'autres règles</h4>
+				<h5>Effets sur d'autres règles</h5>
 				{!!replacements.length ? (
 					<>
 						<p>
@@ -416,7 +432,7 @@ function Effect({
 			</section>
 
 			<section>
-				<h4>Règles qui peuvent avoir un effet sur cette valeur</h4>
+				<h5>Règles qui peuvent avoir un effet sur cette valeur</h5>
 				{effects.length ? (
 					<>
 						<p>

@@ -76,7 +76,7 @@ export function Mecanism({
 	displayName = true,
 }: NodeProps) {
 	return (
-		<StyledMecanism name={name}>
+		<StyledMecanism mecanismName={name}>
 			{displayName && <MecanismName name={name}>{name}</MecanismName>}
 			<div>
 				{children}
@@ -101,12 +101,10 @@ export const InfixMecanism = ({
 	value,
 	prefixed,
 	children,
-	dimValue,
 }: {
 	value: EvaluatedNode
 	children: React.ReactNode
 	prefixed?: boolean
-	dimValue?: boolean
 }) => {
 	return (
 		<div>
@@ -117,24 +115,12 @@ export const InfixMecanism = ({
 					position: 'relative',
 				}}
 			>
-				{dimValue && <DimOverlay />}
 				<Explanation node={value} />
 			</div>
 			{!prefixed && children}
 		</div>
 	)
 }
-const DimOverlay = styled.div`
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	background-color: white;
-	left: 0;
-	opacity: 0.5;
-	pointer-events: none;
-	z-index: 1;
-`
 
 export const InlineMecanismName = ({ name }: { name: string }) => {
 	return (
@@ -167,7 +153,7 @@ const MecanismName = ({
 	)
 }
 
-const StyledMecanism = styled.div<{ name: string }>`
+const StyledMecanism = styled.div<{ mecanismName: string }>`
 	border: 1px solid;
 	max-width: 100%;
 	border-radius: 3px;
@@ -177,7 +163,7 @@ const StyledMecanism = styled.div<{ name: string }>`
 	flex: 1;
 	flex-direction: column;
 	text-align: left;
-	border-color: ${({ name }) => mecanismColors(name)};
+	border-color: ${({ mecanismName }) => mecanismColors(mecanismName)};
 	.properties > li {
 		margin: 1rem 0;
 	}

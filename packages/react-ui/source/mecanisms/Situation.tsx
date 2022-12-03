@@ -8,7 +8,7 @@ export default function MecanismSituation({ sourceMap }) {
 	const engine = useContext(EngineContext)
 	const situationValeur = engine?.evaluate(sourceMap.args['dans la situation'])
 	return situationValeur?.nodeValue !== undefined ? (
-		<InfixMecanism prefixed value={sourceMap.args['valeur']} dimValue>
+		<InfixMecanism prefixed value={sourceMap.args['valeur']}>
 			<p>
 				<strong>Valeur renseignée dans la simulation : </strong>
 				<Explanation node={(situationValeur as RuleNode).explanation.valeur} />
