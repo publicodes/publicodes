@@ -15,6 +15,14 @@ conversion d'unité:
     - unité attendue: an
       valeur attendue: 1
 
+non applicable préserve l'unité:
+  formule:
+    applicable si: non
+    valeur: 3 mois
+  exemples:
+    - unité attendue: mois
+      valeur attendue: null
+
 unité chainée:
   formule:
     produit:
