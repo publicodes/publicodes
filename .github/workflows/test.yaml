@@ -35,10 +35,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/install
       - run: yarn build
-      - run: |
-          cd ./examples/${{ matrix.example }}
-          yarn install
-          yarn test
+      - run: yarn install
+        working-directory: ./examples/${{ matrix.example }}
+      - if: matrix.example == 'browser-url-import'
+        run: npx playwright install
+        working-directory: ./examples/${{ matrix.example }}
+      - run: yarn test
+        working-directory: ./examples/${{ matrix.example }}
 
   test-packages-versioning:
     name: Enforce consistent package versioning
