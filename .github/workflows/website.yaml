@@ -1,0 +1,28 @@
+name: Publicodes website
+on:
+  push:
+jobs:
+  integration-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install
+      - name: Install Playwright Browsers
+        run: yarn workspace website run playwright install --with-deps
+      - name: Build packages
+        run: yarn build
+      - name: Build site
+        # Note: this is done on both Netlify CI and Github CI, we might want to
+        # reuse the Github CI output and upload it to Netlify
+        run: yarn workspace website run build
+      - name: Run Playwright tests
+        run: yarn workspace website run test
+        env:
+          CI: 1
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
