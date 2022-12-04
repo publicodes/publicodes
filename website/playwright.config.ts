@@ -26,11 +26,6 @@ const config: PlaywrightTestConfig = {
 		{ name: 'firefox', use: { ...devices['Desktop Firefox'] } },
 		{ name: 'webkit', use: { ...devices['Desktop Safari'] } },
 	],
-
-	...(process.env.CI
-		? { webServer: { command: 'yarn serve --port 3001', port: 3001 } }
-		: {}),
-
 	/* Folder for test artifacts such as screenshots, videos, traces, etc. */
 	// outputDir: 'test-results/',
 }

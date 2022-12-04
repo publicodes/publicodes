@@ -15,6 +15,6 @@ test.describe('studio', () => {
 		await typeInEditor(page, 'courses: 3 carottes + 2 choux')
 		const warning =
 			"Dans l'expression '+', la partie gauche (unité: carottes) n'est pas compatible avec la partie droite (unité: choux)"
-		await expect(page.locator(`text=${warning}`)).toBeVisible()
+		await expect(page.getByText(warning)).toBeVisible()
 	})
 })

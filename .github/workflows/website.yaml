@@ -10,16 +10,17 @@ jobs:
       - uses: ./.github/actions/install
       - name: Install Playwright Browsers
         run: yarn workspace website run playwright install --with-deps
-      - name: Build packages
-        run: yarn build
-      - name: Build site
-        # Note: this is done on both Netlify CI and Github CI, we might want to
-        # reuse the Github CI output and upload it to Netlify
-        run: yarn workspace website run build
+      - name: Waiting for 200 from the Netlify Preview
+        uses: jakepartusch/wait-for-netlify-action@v1.3
+        id: netlifyOutput
+        with:
+          site_name: 'publicodes-website'
+          max_timeout: 60
       - name: Run Playwright tests
         run: yarn workspace website run test
         env:
           CI: 1
+          BASE_URL: ${{ steps.netlifyOutput.outputs.url }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:
