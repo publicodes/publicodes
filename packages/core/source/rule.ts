@@ -1,6 +1,6 @@
 import Engine from '.'
 import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
-import { PublicodesError } from './error'
+import { PublicodesError, warning } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing } from './evaluationUtils'
 import { capitalise0 } from './format'
@@ -186,21 +186,20 @@ registerEvaluationFunction('rule', function evaluate(node) {
 				(dottedName) => dottedName === node.dottedName
 			).length > 1
 		) {
-			//  TODO : remettre ce warning. Je ne sais pas pourquoi, mais la base de règle de mon-entreprise lève un warning sur quasiment toutes les cotisations
-			// 			warning(
-			// 				this.context.logger,
-			// 				`Un cycle a été détecté lors de l'évaluation de cette règle.
+			warning(
+				this.context.logger,
+				`Un cycle a été détecté lors de l'évaluation de cette règle.
 
-			// Par défaut cette règle sera évaluée à 'null'.
-			// Pour indiquer au moteur de résoudre la référence circulaire en trouvant le point fixe
-			// de la fonction, il vous suffit d'ajouter l'attribut suivant niveau de la règle :
+			Par défaut cette règle sera évaluée à 'undefined'.
+			Pour indiquer au moteur de résoudre la référence circulaire en trouvant le point fixe
+			de la fonction, il vous suffit d'ajouter l'attribut suivant niveau de la règle :
 
-			// 	${node.dottedName}:
-			// 		résoudre la référence circulaire: oui"
-			// 		...
-			// `,
-			// 				{ dottedName: node.dottedName }
-			// 			)
+				${node.dottedName}:
+					résoudre la référence circulaire: oui"
+					...
+			`,
+				{ dottedName: node.dottedName }
+			)
 
 			valeurEvaluation = {
 				nodeValue: undefined,
@@ -231,7 +230,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 	return evaluation
 })
 
-/* 
+/*
 	We implement the terminal case for missing variables manually here as
 	a rule is missing if it is undefined and has no other missing dependencies
 */
