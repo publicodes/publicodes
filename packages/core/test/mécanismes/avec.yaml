@@ -112,6 +112,7 @@ avec références:
     - valeur attendue: 5
 
 prix initial: 125 €
+
 avec utilisant une valeur courante:
   valeur: prix total
   avec:
@@ -120,3 +121,24 @@ avec utilisant une valeur courante:
     prix expedition: 7 €
   exemples:
     - valeur attendue: 107
+
+avec une référence locale qui écrase le parent:
+  valeur: prix initial + 7 €
+  avec:
+    prix initial: 50 €
+  exemples:
+    - valeur attendue: 57
+  référence: https://en.wikipedia.org/wiki/Variable_shadowing
+
+prix produit: 100 €
+frais d'expedition: prix produit * 10%
+
+avec une référence locale qui écrase indirectement le parent:
+  somme:
+    - prix produit
+    - frais d'expedition
+  avec:
+    prix produit: 50 €
+  exemples:
+    # TODO: je préférerais une exception ici
+    - valeur attendue: 60
