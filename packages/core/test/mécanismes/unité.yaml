@@ -16,9 +16,17 @@ conversion d'unité:
       valeur attendue: 1
 
 non applicable préserve l'unité:
-  formule:
-    applicable si: non
-    valeur: 3 mois
+  applicable si: non
+  valeur: 3 mois
+  exemples:
+    - unité attendue: mois
+      valeur attendue: null
+
+parent non applicable:
+  valeur: non
+
+parent non applicable . préserve l'unité:
+  valeur: 4 mois
   exemples:
     - unité attendue: mois
       valeur attendue: null
