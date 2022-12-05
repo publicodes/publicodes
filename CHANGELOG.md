@@ -1,5 +1,9 @@
 # Changelog
 
+## next
+
+**⚠ Changement cassant :** Supprime la méthode dépréciée `UNSAFE_isNotApplicable`
+
 ## 1.0.0-beta.62
 
 **monorepo**
