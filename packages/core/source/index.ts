@@ -330,18 +330,3 @@ export default class Engine<Name extends string = string> {
 		return 'continue'
 	})
 }
-
-/**
- 	This function allows to mimic the former 'isApplicable' property on evaluatedRules
-	@deprecated
-*/
-export function UNSAFE_isNotApplicable<DottedName extends string = string>(
-	engine: Engine<DottedName>,
-	dottedName: DottedName
-): boolean | undefined {
-	console.warn('UNSAFE_isNotApplicable est déprécié')
-	console.warn('Utilisez le mécanisme "est non applicable" à la place.')
-	return engine.evaluate({ 'est non applicable': dottedName }).nodeValue as
-		| boolean
-		| undefined
-}
