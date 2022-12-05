@@ -4,6 +4,7 @@ salaire net:
   formule: 0.5 * salaire brut
 SMIC brut:
   formule: 1000€
+
 SMIC net:
   formule:
     recalcul:
@@ -13,7 +14,7 @@ SMIC net:
   exemples:
     - valeur attendue: 500
 
-Recalcule règle courante:
+Recalcul règle courante:
   unité: €
   formule:
     valeur: 10% * salaire brut
@@ -23,3 +24,20 @@ Recalcule règle courante:
           salaire brut: 100€
   exemples:
     - valeur attendue: 10
+
+Recalcul utilisant la valeur d'une variable actuelle:
+  recalcul:
+    règle: salaire net
+    avec:
+      salaire brut: salaire brut + 10%
+  exemples:
+    - valeur attendue: 1100
+
+Recalcul utilisant indirectement la valeur d'une variable actuelle:
+  recalcul:
+    règle: salaire net
+    avec:
+      salaire brut: SMIC brut
+      SMIC brut: SMIC brut + 10%
+  exemples:
+    - valeur attendue: 550
