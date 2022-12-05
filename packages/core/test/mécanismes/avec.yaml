@@ -110,3 +110,13 @@ avec références:
     Fiche Urssaf: https://www.urssaf.fr/portail/home/independant/mes-cotisations/les-etapes-de-calcul/le-mode-de-calcul/lajustement-et-la-regularisation.html
   exemples:
     - valeur attendue: 5
+
+prix initial: 125 €
+avec utilisant une valeur courante:
+  valeur: prix total
+  avec:
+    prix total: prix promo + prix expedition
+    prix promo: prix initial - 20%
+    prix expedition: 7 €
+  exemples:
+    - valeur attendue: 107
