@@ -2,6 +2,7 @@ import glob from 'glob'
 import { readFileSync, writeFileSync } from 'fs'
 import yaml from 'yaml'
 
+import { foldLeft } from './utils'
 import Engine, { reduceAST } from 'publicodes'
 
 import type { RawPublicodes, RuleNode, ASTNode, Context } from 'publicodes'
@@ -19,6 +20,12 @@ type RefMap = Map<
 type RefMaps = {
 	parents: RefMap
 	childs: RefMap
+}
+
+type FoldingCtx = {
+	engine: Engine
+	parsedRules: ParsedRules
+	refs: RefMaps
 }
 
 // Removes references to:
@@ -75,10 +82,6 @@ function getReferences(
 				)
 		)
 	}
-	// console.log(
-	// 	'context.referencesMaps.rulesThatUse:',
-	// 	context.referencesMaps.rulesThatUse
-	// )
 	return {
 		parents: getFilteredReferences(context.referencesMaps.rulesThatUse),
 		childs: getFilteredReferences(context.referencesMaps.referencesIn),
@@ -139,149 +142,132 @@ function lexicalSubstitutionOfRefValue(
 // Replaces all references in [refs] (could be childs or parents) of [ruleName]
 // by its [rule.valeur].
 function searchAndReplaceConstantValueInRefs(
-	rule: RuleNode,
-	parsedRules: ParsedRules,
-	refs: RuleName[]
-) {
+	ctx: FoldingCtx,
+	ruleName: RuleName,
+	rule: RuleNode
+): FoldingCtx {
+	const refs = ctx.refs.parents.get(ruleName)
+
 	if (refs) {
 		refs
-			.map((dottedName) => parsedRules[dottedName])
+			.map((dottedName) => ctx.parsedRules[dottedName])
 			.filter((r) => r)
 			.forEach(({ dottedName }) => {
-				parsedRules[dottedName] = lexicalSubstitutionOfRefValue(
-					parsedRules[dottedName],
+				ctx.parsedRules[dottedName] = lexicalSubstitutionOfRefValue(
+					ctx.parsedRules[dottedName],
 					rule
 				)
-				parsedRules[dottedName].rawNode['est compressée'] = true
+				ctx.parsedRules[dottedName].rawNode['est compressée'] = true
 			})
 	}
+
+	return ctx
+}
+
+function isAlreadyFolded(rule: RuleNode) {
+	return rule.rawNode['est compressée']
 }
 
 function searchAndReplaceConstantValueInChildRefs(
+	ctx: FoldingCtx,
 	rule: RuleNode,
-	parsedRules: ParsedRules,
 	refs: RuleName[]
-) {
+): FoldingCtx {
 	if (refs) {
 		refs
-			.map((dottedName) => parsedRules[dottedName])
+			.map((dottedName) => ctx.parsedRules[dottedName])
 			.filter((r) => r)
 			.forEach(({ dottedName }) => {
-				console.log('parsedRules:', parsedRules[dottedName])
+				let childNode = ctx.parsedRules[dottedName]
 
-				// TODO: the child rules must have been compressed before substitution
+				if (!isAlreadyFolded(childNode)) {
+					ctx = tryToFoldRule(ctx, dottedName, childNode)
+				}
 
-				parsedRules[dottedName] = lexicalSubstitutionOfRefValue(
+				ctx.parsedRules[dottedName] = lexicalSubstitutionOfRefValue(
 					rule,
-					parsedRules[dottedName]
+					childNode
 				)
-				parsedRules[dottedName].rawNode['est compressée'] = true
+				ctx.parsedRules[dottedName].rawNode['est compressée'] = true
 			})
 	}
+	return ctx
 }
 
-export function constantFolding(engine): ParsedRules {
-	const context: Context<RuleName> = engine.context
-	const parsedRules: ParsedRules = engine.getParsedRules()
-	const refs: RefMaps = getReferences(context, parsedRules)
+function tryToFoldRule(
+	ctx: FoldingCtx,
+	ruleName: RuleName,
+	rule: RuleNode
+): FoldingCtx {
+	if (isAlreadyFolded(rule) || !isInParsedRules(ctx.parsedRules, ruleName)) {
+		// Already managed rule
+		return ctx
+	}
+	if (isEmptyRule(rule)) {
+		delete ctx.parsedRules[ruleName]
+		return ctx
+	}
 
-	// console.log('refs:', refs)
+	// Constant leaf -> search and replace the constant in all its parents.
+	if (rule.rawNode.valeur) {
+		ctx = searchAndReplaceConstantValueInRefs(ctx, ruleName, rule)
+		delete ctx.parsedRules[ruleName]
+		return ctx
+	}
+
+	// Potential leaf -> try to evaluate the formula at compile time.
+	if (rule.rawNode.formule) {
+		const { nodeValue, missingVariables, traversedVariables } =
+			ctx.engine.evaluateNode(rule)
+
+		// The computation could be done a compile time.
+		if (Object.keys(missingVariables).length === 0) {
+			ctx.parsedRules[ruleName].rawNode.valeur = nodeValue
+			ctx.parsedRules[ruleName].rawNode['est compressée'] = true
+			delete ctx.parsedRules[ruleName].rawNode.formule
+
+			// Update ref counting
+			traversedVariables.forEach((childRuleDottedName: RuleName) => {
+				ctx.refs.parents.set(
+					childRuleDottedName,
+					ctx.refs.parents
+						.get(childRuleDottedName)
+						.filter(
+							(dottedName) =>
+								isInParsedRules(ctx.parsedRules, dottedName) &&
+								dottedName !== ruleName
+						)
+				)
+				if (ctx.refs.parents.get(childRuleDottedName).length === 0) {
+					delete ctx.parsedRules[childRuleDottedName]
+					ctx.refs.parents.delete(childRuleDottedName)
+				}
+			})
+		}
+		// Try to replace internal ref
+		else {
+			const childs = ctx.refs.childs.get(ruleName)
+
+			if (childs.length > 0) {
+				searchAndReplaceConstantValueInChildRefs(ctx, rule, childs)
+				// TODO: Update ref counting
+			}
+		}
+	}
+	return ctx
+}
+
+export function constantFolding(engine: Engine): ParsedRules {
+	const engineCtx: Context<RuleName> = engine.context
+	const parsedRules: ParsedRules = engine.getParsedRules()
+	const refs: RefMaps = getReferences(engineCtx, parsedRules)
+	let ctx: FoldingCtx = { engine, parsedRules, refs }
 
 	Object.entries(parsedRules)
 		.filter(([_, rule]) => isFoldable(rule))
-
-		// TODO: need to sort rules in order to go bottom up.
-		// Topological sorting: https://en.wikipedia.org/wiki/Topological_sorting ?
-		.forEach(([ruleName, rule]) => {
-			if (!isInParsedRules(parsedRules, ruleName)) {
-				// The [ruleName] rule has already been removed from the [parsedRules]
-				return
-			}
-			if (isEmptyRule(rule)) {
-				delete parsedRules[ruleName]
-				return
-			}
-
-			// Constant leaf -> search and replace the constant in all its parents.
-			if (rule.rawNode.valeur) {
-				searchAndReplaceConstantValueInRefs(
-					rule,
-					parsedRules,
-					refs.parents.get(ruleName)
-				)
-				console.log('2 delete:', ruleName)
-				return delete parsedRules[ruleName]
-			}
-
-			// Potential leaf -> try to evaluate the formula at compile time.
-			if (rule.rawNode.formule) {
-				const { nodeValue, missingVariables, traversedVariables } =
-					engine.evaluateNode(rule)
-
-				// The computation could be done a compile time.
-				if (Object.keys(missingVariables).length === 0) {
-					parsedRules[ruleName].rawNode.valeur = nodeValue
-					parsedRules[ruleName].rawNode['est compressée'] = true
-					delete parsedRules[ruleName].rawNode.formule
-
-					// Update ref counting
-					traversedVariables.forEach((childRuleDottedName: RuleName) => {
-						console.log(
-							'parents of',
-							childRuleDottedName,
-							':',
-							refs.parents.get(childRuleDottedName)
-						)
-						refs.parents.set(
-							childRuleDottedName,
-							refs.parents
-								.get(childRuleDottedName)
-								.filter(
-									(dottedName) =>
-										isInParsedRules(parsedRules, dottedName) &&
-										dottedName !== ruleName
-								)
-						)
-						if (refs.parents.get(childRuleDottedName).length === 0) {
-							console.log('3 delete:', childRuleDottedName)
-							delete parsedRules[childRuleDottedName]
-							refs.parents.delete(childRuleDottedName)
-						}
-					})
-				}
-				// Try to replace internal ref
-				else {
-					const childs = refs.childs.get(ruleName)
-
-					if (childs.length > 0) {
-						console.log('ruleName', ruleName)
-						searchAndReplaceConstantValueInChildRefs(rule, parsedRules, childs)
-						console.log('afterrepalce:', parsedRules[ruleName])
-						// TODO: Update ref counting
-					}
-				}
-			}
+		.forEach(([ruleName, ruleNode]) => {
+			ctx = tryToFoldRule(ctx, ruleName, ruleNode)
 		})
 
-	return parsedRules
-}
-
-function readYAML(path: string): object {
-	return yaml.parse(readFileSync(path, 'utf-8'))
-}
-
-export function getJSONRules(sourcePath: string, ignore?: string[]): object {
-	const files = glob.sync(sourcePath, { ignore })
-	const baseRules = files.reduce((acc: object, filename: string) => {
-		try {
-			const rules = readYAML(filename)
-			return { ...acc, ...rules }
-		} catch (err) {
-			process.stderr.write(
-				`An error occured while reading the file '${filename}':\n\n${err.message}`
-			)
-		}
-	}, {})
-
-	return baseRules
+	return ctx.parsedRules
 }

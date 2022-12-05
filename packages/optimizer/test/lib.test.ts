@@ -194,36 +194,36 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	// it('A is a constant within two degrees plus B is a partially foldable rule', () => {
-	// 	const rawRules = {
-	// 		A: {
-	// 			formule: 'B',
-	// 		},
-	// 		B: {
-	// 			formule: 'A . B * D',
-	// 		},
-	// 		'B . D': {
-	// 			question: "What's the value of B . D?",
-	// 		},
-	// 		'A . B': {
-	// 			formule: 'C * 10',
-	// 		},
-	// 		'A . B . C': {
-	// 			valeur: 7,
-	// 		},
-	// 	}
-	// 	expect(constantFoldingWith(rawRules)).toStrictEqual({
-	// 		A: {
-	// 			valeur: 70,
-	// 			'est compressée': true,
-	// 		},
-	// 		B: {
-	// 			formule: '70 * D',
-	// 			'est compressée': true,
-	// 		},
-	// 		'B . D': {
-	// 			question: "What's the value of B . D?",
-	// 		},
-	// 	})
-	// })
+	it('A is a constant within two degrees plus B is a partially foldable rule', () => {
+		const rawRules = {
+			A: {
+				formule: 'B',
+			},
+			B: {
+				formule: 'A . B * D',
+			},
+			'B . D': {
+				question: "What's the value of B . D?",
+			},
+			'A . B': {
+				formule: 'C * 10',
+			},
+			'A . B . C': {
+				valeur: 7,
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
+			A: {
+				valeur: 70,
+				'est compressée': true,
+			},
+			B: {
+				formule: '70 * D',
+				'est compressée': true,
+			},
+			'B . D': {
+				question: "What's the value of B . D?",
+			},
+		})
+	})
 })
