@@ -1,14 +1,7 @@
-import glob from 'glob'
-import { readFileSync, writeFileSync } from 'fs'
-import yaml from 'yaml'
-
 import Engine, { reduceAST } from 'publicodes'
 
 import type { RawPublicodes, RuleNode, ASTNode, Context } from 'publicodes'
-
-export type RuleName = string
-export type ParsedRules = Record<RuleName, RuleNode<RuleName>>
-export type RawRules = RawPublicodes<RuleName>
+import type { RuleName, ParsedRules } from './commons'
 
 type RefMap = Map<
 	RuleName,
@@ -35,15 +28,6 @@ function removeParentReferences(
 	[dottedName, set]: [RuleName, Set<RuleName>]
 ): [RuleName, RuleName[]] {
 	const splittedDottedName = dottedName.split(' . ')
-	//
-	// splittedDottedName
-	// 	.slice(1, splittedDottedName.length)
-	// 	.reduce((accName, name) => {
-	// 		const newAccName = accName + ' . ' + name
-	// 		set.delete(accName)
-	// 		return newAccName
-	// 	}, splittedDottedName[0])
-
 	const isChild = (dottedNameChild: RuleName) => {
 		return (
 			splittedDottedName[0] === dottedNameChild.split(' . ')[0] &&
@@ -85,16 +69,6 @@ function getReferences(
 		parents: getFilteredReferences(context.referencesMaps.rulesThatUse),
 		childs: getFilteredReferences(context.referencesMaps.referencesIn),
 	}
-}
-
-export function getRawNodes(parsedRules: ParsedRules): RawRules {
-	return Object.fromEntries(
-		Object.values(parsedRules).reduce((acc, rule: RuleNode<RuleName>) => {
-			const { nom, ...rawNode } = rule.rawNode
-			acc.push([nom, rawNode])
-			return acc
-		}, [])
-	)
 }
 
 // To be fold, a rule needs to be a constant:
@@ -243,27 +217,27 @@ function tryToFoldRule(
 
 			// Update ref counting
 			traversedVariables.forEach((childRuleDottedName: RuleName) => {
-				ctx.refs.parents.set(
-					childRuleDottedName,
-					ctx.refs.parents
-						.get(childRuleDottedName)
-						.filter(
+				let child = ctx.refs.parents.get(childRuleDottedName)
+				if (child) {
+					ctx.refs.parents.set(
+						childRuleDottedName,
+						child.filter(
 							(dottedName) =>
 								isInParsedRules(ctx.parsedRules, dottedName) &&
 								dottedName !== ruleName
 						)
-				)
-				if (ctx.refs.parents.get(childRuleDottedName).length === 0) {
-					delete ctx.parsedRules[childRuleDottedName]
-					ctx.refs.parents.delete(childRuleDottedName)
+					)
+					if (ctx.refs.parents.get(childRuleDottedName)?.length === 0) {
+						delete ctx.parsedRules[childRuleDottedName]
+						ctx.refs.parents.delete(childRuleDottedName)
+					}
 				}
 			})
 		}
 		// Try to replace internal refs if possible
 		else {
 			const childs = ctx.refs.childs.get(ruleName)
-
-			if (childs.length > 0) {
+			if (childs && childs.length > 0) {
 				searchAndReplaceConstantValueInChildRefs(ctx, rule, childs)
 				// TODO: Update ref counting
 			}
@@ -272,7 +246,7 @@ function tryToFoldRule(
 	return ctx
 }
 
-export function constantFolding(engine: Engine): ParsedRules {
+export default function constantFolding(engine: Engine): ParsedRules {
 	const engineCtx: Context<RuleName> = engine.context
 	const parsedRules: ParsedRules = engine.getParsedRules()
 	const refs: RefMaps = getReferences(engineCtx, parsedRules)

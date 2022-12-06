@@ -1,5 +1,7 @@
-import { constantFolding, getRawNodes } from '../src/lib'
-import type { RawRules } from '../src/lib'
+import { getRawNodes } from '../src/commons'
+import type { RawRules } from '../src/commons'
+
+import constantFolding from '../src/constantFolding'
 
 import { callWithEngine } from './utils.test'
 

@@ -1,11 +1,12 @@
 {
+	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"outDir": "build",
 		"rootDir": "src",
         "types": ["node", "jest"],
 		"esModuleInterop": true,
 		"lib": [
-			"ES2021.String"
+			"es2021"
 		]
 	},
 	"ts-node": {

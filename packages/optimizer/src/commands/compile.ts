@@ -5,7 +5,7 @@
 import { writeFileSync } from 'fs'
 import path from 'path'
 import type { Arguments, CommandBuilder } from 'yargs'
-import { getRawNodes } from '../lib'
+import { getRawNodes } from '../commons'
 import Engine from 'publicodes'
 
 type Options = {
@@ -43,6 +43,7 @@ export function handler(argv: Arguments<Options>) {
 	// 	ignore
 	// )
 	// const engine = new Engine(rules)
-	// getRawNodes(engine.getParsedRules)
+	//
+	// writeFileSync(jsonPath, JSON.stringify(getRawNodes(engine.getParsedRules)))
 	process.exit(0)
 }
