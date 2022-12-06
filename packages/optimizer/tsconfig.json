@@ -3,7 +3,10 @@
 		"outDir": "build",
 		"rootDir": "src",
         "types": ["node", "jest"],
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"lib": [
+			"ES2021.String"
+		]
 	},
 	"ts-node": {
 		"transpileOnly": true,

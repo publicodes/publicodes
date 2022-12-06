@@ -2,7 +2,6 @@ import glob from 'glob'
 import { readFileSync, writeFileSync } from 'fs'
 import yaml from 'yaml'
 
-import { foldLeft } from './utils'
 import Engine, { reduceAST } from 'publicodes'
 
 import type { RawPublicodes, RuleNode, ASTNode, Context } from 'publicodes'
@@ -132,16 +131,25 @@ function lexicalSubstitutionOfRefValue(
 		parent
 	)
 
-	parent.rawNode.formule = parent.rawNode.formule.replaceAll(
-		refName,
-		constant.rawNode.valeur
-	)
+	if (parent.rawNode.formule) {
+		parent.rawNode.formule = parent.rawNode.formule.replaceAll(
+			refName,
+			constant.rawNode.valeur
+		)
+	}
+	if (parent.rawNode.somme) {
+		parent.rawNode.somme = parent.rawNode.somme.map((expr: string | number) => {
+			return typeof expr === 'string'
+				? expr.replaceAll(refName, constant.rawNode.valeur)
+				: expr
+		})
+	}
 	return parent
 }
 
 // Replaces all references in [refs] (could be childs or parents) of [ruleName]
 // by its [rule.valeur].
-function searchAndReplaceConstantValueInRefs(
+function searchAndReplaceConstantValueInParentRefs(
 	ctx: FoldingCtx,
 	ruleName: RuleName,
 	rule: RuleNode
@@ -168,6 +176,10 @@ function isAlreadyFolded(rule: RuleNode) {
 	return rule.rawNode['est compressée']
 }
 
+function isAConstant(rule: RuleNode) {
+	return rule.rawNode.valeur && !(rule.rawNode.formule || rule.rawNode.somme)
+}
+
 function searchAndReplaceConstantValueInChildRefs(
 	ctx: FoldingCtx,
 	rule: RuleNode,
@@ -183,12 +195,13 @@ function searchAndReplaceConstantValueInChildRefs(
 				if (!isAlreadyFolded(childNode)) {
 					ctx = tryToFoldRule(ctx, dottedName, childNode)
 				}
-
-				ctx.parsedRules[dottedName] = lexicalSubstitutionOfRefValue(
-					rule,
-					childNode
-				)
-				ctx.parsedRules[dottedName].rawNode['est compressée'] = true
+				if (isAConstant(childNode)) {
+					ctx.parsedRules[dottedName] = lexicalSubstitutionOfRefValue(
+						rule,
+						childNode
+					)
+					ctx.parsedRules[dottedName].rawNode['est compressée'] = true
+				}
 			})
 	}
 	return ctx
@@ -210,13 +223,13 @@ function tryToFoldRule(
 
 	// Constant leaf -> search and replace the constant in all its parents.
 	if (rule.rawNode.valeur) {
-		ctx = searchAndReplaceConstantValueInRefs(ctx, ruleName, rule)
+		ctx = searchAndReplaceConstantValueInParentRefs(ctx, ruleName, rule)
 		delete ctx.parsedRules[ruleName]
 		return ctx
 	}
 
 	// Potential leaf -> try to evaluate the formula at compile time.
-	if (rule.rawNode.formule) {
+	if (rule.rawNode.formule || rule.rawNode.somme) {
 		const { nodeValue, missingVariables, traversedVariables } =
 			ctx.engine.evaluateNode(rule)
 
@@ -224,7 +237,9 @@ function tryToFoldRule(
 		if (Object.keys(missingVariables).length === 0) {
 			ctx.parsedRules[ruleName].rawNode.valeur = nodeValue
 			ctx.parsedRules[ruleName].rawNode['est compressée'] = true
-			delete ctx.parsedRules[ruleName].rawNode.formule
+
+			if (rule.rawNode.formule) delete ctx.parsedRules[ruleName].rawNode.formule
+			if (rule.rawNode.somme) delete ctx.parsedRules[ruleName].rawNode.somme
 
 			// Update ref counting
 			traversedVariables.forEach((childRuleDottedName: RuleName) => {
@@ -244,7 +259,7 @@ function tryToFoldRule(
 				}
 			})
 		}
-		// Try to replace internal ref
+		// Try to replace internal refs if possible
 		else {
 			const childs = ctx.refs.childs.get(ruleName)
 

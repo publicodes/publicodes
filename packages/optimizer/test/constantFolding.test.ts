@@ -1,61 +1,7 @@
 import { constantFolding, getRawNodes } from '../src/lib'
-import Engine from 'publicodes'
+import type { RawRules } from '../src/lib'
 
-import type { ParsedRules, RawRules, RuleName } from '../src/lib'
-
-function callWithEngine<R>(fn: (engine) => R, rawRules: RawRules): R {
-	const engine = new Engine(rawRules)
-	return fn(engine)
-}
-
-function callWithParsedRules<R>(
-	fn: (rules: ParsedRules) => R,
-	rawRules: RawRules
-): R {
-	const engine = new Engine(rawRules)
-	return fn(engine.getParsedRules())
-}
-
-function getRawNodesWith(rawRules: RawRules): RawRules {
-	return callWithParsedRules(getRawNodes, rawRules)
-}
-
-describe('getRawRules', () => {
-	it('∅ -> ∅', () => {
-		expect(getRawNodesWith({})).toStrictEqual({})
-	})
-	it('Single null rule', () => {
-		expect(getRawNodesWith({ test1: null })).toStrictEqual({
-			test1: {},
-		})
-	})
-	it('Simple single rule', () => {
-		const rawRules = {
-			test2: {
-				titre: 'Test 2',
-				formule: '10 * 3',
-			},
-		}
-		expect(getRawNodesWith(rawRules)).toStrictEqual(rawRules)
-	})
-	it('Number constant', () => {
-		expect(getRawNodesWith({ test3: 10 })).toStrictEqual({
-			test3: { valeur: '10' },
-		}) // will be reparsed by the website client, so not a problem?
-	})
-	it('Referenced rules', () => {
-		const rawRules = {
-			ruleA: {
-				titre: 'Rule A',
-				formule: 'B . C * 3',
-			},
-			'ruleA . B . C': {
-				valeur: '10',
-			},
-		}
-		expect(getRawNodesWith(rawRules)).toStrictEqual(rawRules)
-	})
-})
+import { callWithEngine } from './utils.test'
 
 function constantFoldingWith(rawRules: RawRules): RawRules {
 	const res = callWithEngine(constantFolding, rawRules)
@@ -223,6 +169,59 @@ describe('Constant folding optim', () => {
 			},
 			'B . D': {
 				question: "What's the value of B . D?",
+			},
+		})
+	})
+	it("Mechanism: 'somme' [complete folding]", () => {
+		const rawRules = {
+			ruleA: {
+				formule: 'ruleB',
+			},
+			ruleB: {
+				somme: ['A . B * 2', 10, 12 * 2],
+			},
+			'A . B': {
+				formule: 'C * 10',
+			},
+			'A . B . C': {
+				valeur: 7,
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
+			ruleA: {
+				valeur: 174,
+				'est compressée': true,
+			},
+		})
+	})
+	it("Mechanism: 'somme' [partial folding]", () => {
+		const rawRules = {
+			ruleA: {
+				formule: 'ruleB',
+			},
+			ruleB: {
+				somme: ['A . B * D', 10, 12 * 2],
+			},
+			'ruleB . D': {
+				question: "What's the value of ruleB . D?",
+			},
+			'A . B': {
+				formule: 'C * 10',
+			},
+			'A . B . C': {
+				valeur: 7,
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
+			ruleA: {
+				formule: 'ruleB',
+			},
+			ruleB: {
+				somme: ['70 * D', 10, 24],
+				'est compressée': true,
+			},
+			'ruleB . D': {
+				question: "What's the value of ruleB . D?",
 			},
 		})
 	})
