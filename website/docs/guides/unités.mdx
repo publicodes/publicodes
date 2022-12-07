@@ -3,33 +3,111 @@ sidebar_position: 2
 title: Utiliser les unités
 ---
 
-En publicodes on n'additionne pas les choux et les carottes ! Utiliser les unités dans vos règles publicodes permet d'améliorer la qualité de la documentation génerée mais permet aussi à l'interpreteur publicodes de détecter des erreurs de logique dans l'écriture de vos règles. Pratique !
+En publicodes on n'additionne pas les choux et les carottes !
+
+Vous pouvez utiliser les unités pour améliorer la qualité de la documentation génerée mais aussi pour fiabiliser les calculs et éviter des erreurs de logique dans l'écriture de vos règles. Pratique !
 
 ## Cohérence d'unités
 
-Imaginons deux quantités: `A = 10 €` et `B = 3 jours`. L'addition de ces deux quantités n'a aucun sens logique, pourtant la majorité des languages de programmation vous laissera executer `A + B` sans générer d'erreurs. En effet il s'agit de deux nombres qu'on peut additionner : `10 + 3 = 13` peu importe que ces nombres représentent des euros ou des jours.
+Imaginons deux quantités: `A = 10 €` et `B = 3 jours`. L'addition de ces deux quantités n'a aucun sens logique, pourtant la plupart des languages de programmation vous permettent de calculer `A + B` sans générer d'erreurs. En effet il s'agit de deux nombres qu'on peut additionner : `10 + 3 = 13` peu importe que ces nombres représentent des euros ou des jours.
 
-TODO
+Le même calcul en publicodes genère un avertissement :
+
+```publicodes
+étrange addition: 10€ + 3 jours
+```
+
+:::info Mode strict
+
+Dans une prochaine version de publicodes il sera possible de passer le mode strict en paramètre à l'interpréteur publicodes. Ce mode permettra de générer une erreur à la place d'un avertissement.
+
+:::
+
+Pour les multiplications et les divisions, ainsi que les mécanismes basés dessus, publicodes infère automatiquement l'unité du résultat. Par exemple :
+
+```publicodes
+distance: 10km
+temps: 3h
+vitesse: distance / temps # unité calculée automatiquement km/h
+```
+
+Ici la vitesse s'exprime en `km/h` ce que publicodes infére automatiquement à partir de la formule de calcul.
+
+:::caution Attention
+
+Il ne faut pas insérer d'espace autour de la barre oblique dans les unités, l'unité `km / h` doit être notée `km/h`.
+
+:::
+
+Publicodes convertit automatiquement les unités si besoin.
+
+```publicodes
+salaire: 1500 €/mois
+prime faible salaire applicable: salaire < 20 k€/an
+```
+
+:::info
+
+On peut forcer la conversion des unités via le [mécanisme `unité`](/docs/mécanismes#unité).
+
+:::
+
+**Types de base disponibles pour la conversion :**
+
+- `jour` / `mois` / `an`
+- `€` / `k€`
+- `g` / `kg` / `mg`
 
 ## Pourcentage `%`
 
-Il est possible de spécifier un pourcentage comme unité. Le pourcentage est une unité qui se comporte d'une manière particulière :
-
-- L'addition d'un nombre avec un pourcentage revient à ajouter le pourcentage à ce nombre.
-- De même pour la soustraction.
+Vous pouvez utiliser le symbole `%` pour définir des pourcentages :
 
 ```publicodes
-prix TTC: 10€ + 20%
-prix avec réduction: prix TTC - 10%
+total votes blancs et nuls: 4% + 2%
+
+produit de pourcentages: 50% * 8%
+
+cotisation: 1000€ * 3%
 ```
 
-Le résultat de l'addition de deux pourcentages est bien la somme des deux nombres :
+:::info Évaluation particulière
+
+L'unité pourcentage se comporte différemment des autres unités.
+
+En particulier le pourcentage n'apparaît dans le résultat d'un produit. En effet si on multiplie des '€' avec un '%' on ne s'attend pas à un résultat en `€.%` mais à un résultat en `€` puis divisé par 100.
+
+:::
+
+Une autre manière d'utiliser les pourcentages est d'additioner ou de soustraire un pourcentage d'un nombre dans une unité donnée :
 
 ```publicodes
-réduction: 2.4% + 5.0%
+prix: 1000€
+
+avec inflation: prix + 5%
+
+avec promotion: prix - 10%
 ```
 
-## Pluralisation
+Ici le pourcentage additionné est implicitement multiplié par le nombre de base. `1000€ + 5%` c'est 1000€ plus 5% _de 1000€_, soit 1000€ + 50€.
+
+En résumé :
+
+- L'addition ou la soustraction de 2 pourcentages, donne un pourcentage : `4% + 2% = 6%`
+- Le produit de 2 pourcentages donne aussi un pourcentage : `50% * 8% = 4%`
+- Le produit d'un nombre et d'un pourcentage donne un nombre : `1000€ * 3% = 30€`
+- L'addition ou la soustraction d'un nombre et d'un pourcentage donne un nombre : `1000€ + 5% = 1050€`
+
+:::info L'addition implicite dans d'autres logiciels
+
+L'addition "implicite" de pourcentage (`1000€ + 5% = 1050€`) est un comportement que l'on retrouve aussi sur les calculatrices de smartphone ou sur les tableurs.
+
+Par rapport à ces logiciels, le sytème d'unités de publicodes permet de fiabiliser ce comportement en explicitant si le calcul fait intervenir uniquement des pourcentages auquel cas on veut conserver l'unité pourcentage dans le résultat, ou bien s'il fait intervenir un nombre d'une autre unité auquel cas le résultat est exprimé sans référence à un pourcentage.
+
+Essayez de calculer `10% + 3%` sur votre calculatrice pour voir la différence !
+
+:::
+
+## Pluriels
 
 Regardons l'exemple ci-dessous :
 
@@ -55,7 +133,7 @@ Pour résoudre ce problème publicodes permet de définir le pluriel d'une unit�
 total: équipe A + équipe B
 ```
 
-La clé `~config unités` est une clé spéciale qui permet de configurer publicodes directement depuis le fichier YAML ou les règles JSON.
+La clé `~config unités` est une clé spéciale pour configurer publicodes.
 
 Avec cette configuration publicodes formate aussi correctement les unités dans la documentation générée :
 
@@ -73,10 +151,36 @@ Avec cette configuration publicodes formate aussi correctement les unités dans 
 
 TODO
 
+## Groupes de mille
+
+TODO
+
 ## Résoudre des problèmes d'unités
 
-TODO en général il y a un problème. ajouter un facteur `* 1 mois` pour harmoniser les unités si besoin
+Lorsque les unités sont incompatibles dans une somme, ou bien que le résultat d'un produit contient des unités en trop, il est toujours possible de modifier le calcul pour résoudre le problème.
+
+```publicodes
+paiement d'une heure sup: 10€
+nombre d'heures sup: 2h
+
+paiement total heures sup: nombre d'heures sup * paiement d'une heure sup
+```
+
+Ici l'unité du total n'est pas la bonne, on a des `€.h` au lieu de `€` simples. Pour résoudre le problème il faut modifier l'unité de la première variable en `€/h`.
+
+Dans certains cas assez rares, on peut vouloir conserver la première variable exprimée en `€` car elle est utilisé dans d'autres calculs, et on ne veut pas tout passer en `€/h`. Il est alors possible de corriger le problème d'unité non pas au niveau de la définition de `paiement d'une heure sup`, mais lors de son utilisation lors du calcul du total.
+
+```publicodes
+paiement d'une heure sup: 10€
+nombre d'heures sup: 2h
+
+paiement total heures sup: nombre d'heures sup * paiement d'une heure sup / 1h
+```
+
+L'ajout d'un facteur supplémentaire `/ 1h` permet de “corriger” l'unitée attendue dans le total sans modifier la valeur numérique du noeud. De même si l'unité “en trop” est au dénominateur on peut ajouter un facteur `* 1 unité` pour l'enlever.
 
 ## Mode strict
 
-TODO
+Dans une prochaine version de publicodes il sera possible de passer le mode strict en paramètre à l'interpréteur publicodes.
+
+Ce mode permettra de générer une erreur à la place d'un avertissement en cas d'incohérence d'unités et ainsi forcer les développeurs à résoudre le problème.

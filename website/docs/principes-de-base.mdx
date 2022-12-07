@@ -70,32 +70,6 @@ frais de réservation: 1 €/repas
 prix total: nombre de repas * (prix d'un repas + frais de réservation)
 ```
 
-:::caution Attention
-
-Il ne faut pas insérer d'espace autour de la barre oblique dans
-les unités, l'unité `€ / mois` doit être notée `€/mois`.
-
-:::
-
-Publicodes convertit automatiquement les unités si besoin.
-
-```publicodes
-salaire: 1500 €/mois
-prime faible salaire applicable: salaire < 20 k€/an
-```
-
-:::info
-
-On peut forcer la conversion des unités via le [mécanisme `unité`](/docs/mécanismes#unité).
-
-:::
-
-**Types de base disponibles pour la conversion :**
-
-- `jour` / `mois` / `an`
-- `€` / `k€`
-- `g` / `kg` / `mg`
-
 <DocCard
 	item={{
 		type: 'link',
