@@ -474,4 +474,24 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
+	it('should fold standalone [formule] rule', () => {
+		const rawRules = {
+			boisson: 'tasse de café * nombre',
+			'boisson . tasse de café': {
+				valeur: 20,
+			},
+			'boisson . nombre': {
+				'par défaut': 10,
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
+			boisson: {
+				formule: '20 * nombre',
+				'est compressée': true,
+			},
+			'boisson . nombre': {
+				'par défaut': 10,
+			},
+		})
+	})
 })

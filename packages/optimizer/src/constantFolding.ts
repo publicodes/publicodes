@@ -108,7 +108,7 @@ function replaceAllRefs(
 function lexicalSubstitutionOfRefValue(
 	parent: RuleNode,
 	constant: RuleNode
-): RuleNode {
+): RuleNode | undefined {
 	const refName = reduceAST(
 		(_, node: ASTNode) => {
 			if (
@@ -129,6 +129,7 @@ function lexicalSubstitutionOfRefValue(
 				refName,
 				constant.rawNode.valeur
 			)
+			return parent
 		} else if (parent.rawNode.formule.somme) {
 			// TODO: needs to be abstracted
 			parent.rawNode.formule.somme = parent.rawNode.formule.somme.map(
@@ -138,6 +139,7 @@ function lexicalSubstitutionOfRefValue(
 						: expr
 				}
 			)
+			return parent
 		}
 	}
 	if (parent.rawNode.somme) {
@@ -146,8 +148,18 @@ function lexicalSubstitutionOfRefValue(
 				? replaceAllRefs(expr, refName, constant.rawNode.valeur)
 				: expr
 		})
+		return parent
 	}
-	return parent
+	// When a rule defined as an unique string: 'var * var2', it's parsed as a [valeur] attribute not a [formule].
+	if (typeof parent.rawNode.valeur === 'string') {
+		parent.rawNode.formule = replaceAllRefs(
+			parent.rawNode.valeur,
+			refName,
+			constant.rawNode.valeur
+		)
+		delete parent.rawNode.valeur
+		return parent
+	}
 }
 
 // Replaces all references in [refs] (could be childs or parents) of [ruleName]
@@ -158,18 +170,28 @@ function searchAndReplaceConstantValueInParentRefs(
 	rule: RuleNode
 ): FoldingCtx {
 	const refs = ctx.refs.parents.get(ruleName)
+	const parentsToRemove: RuleName[] = []
 
 	if (refs) {
 		refs
 			.map((dottedName) => ctx.parsedRules[dottedName])
 			.filter((r) => r)
 			.forEach(({ dottedName }) => {
-				ctx.parsedRules[dottedName] = lexicalSubstitutionOfRefValue(
+				const newRule = lexicalSubstitutionOfRefValue(
 					ctx.parsedRules[dottedName],
 					rule
 				)
-				ctx.parsedRules[dottedName].rawNode['est compressée'] = true
+				if (newRule) {
+					ctx.parsedRules[dottedName] = newRule
+					ctx.parsedRules[dottedName].rawNode['est compressée'] = true
+					parentsToRemove.push(dottedName)
+				}
 			})
+
+		ctx.refs.parents.set(
+			ruleName,
+			refs.filter((name) => !parentsToRemove.includes(name))
+		)
 	}
 
 	return ctx
@@ -216,72 +238,24 @@ function replaceAllPossibleChildRefs(
 					ctx = tryToFoldRule(ctx, childDottedName, childNode)
 				}
 				if (isAConstant(childNode)) {
-					ctx.parsedRules[parentRuleName] = lexicalSubstitutionOfRefValue(
+					const newRule = lexicalSubstitutionOfRefValue(
 						parentRuleNode,
 						childNode
 					)
-					if (
-						hasBeenModified(
-							parentRuleNode.rawNode,
-							ctx.parsedRules[parentRuleName].rawNode
-						)
-					) {
-						ctx.parsedRules[parentRuleName].rawNode['est compressée'] = true
-						ctx = updateRefCounting(ctx, parentRuleName, [childDottedName])
+					if (newRule) {
+						ctx.parsedRules[parentRuleName] = newRule
+						if (
+							hasBeenModified(
+								parentRuleNode.rawNode,
+								ctx.parsedRules[parentRuleName].rawNode
+							)
+						) {
+							ctx.parsedRules[parentRuleName].rawNode['est compressée'] = true
+							ctx = updateRefCounting(ctx, parentRuleName, [childDottedName])
+						}
 					}
 				}
 			})
-	}
-	return ctx
-}
-
-function tryToFoldRule(
-	ctx: FoldingCtx,
-	ruleName: RuleName,
-	rule: RuleNode
-): FoldingCtx {
-	if (
-		rule &&
-		(isAlreadyFolded(rule) || !isInParsedRules(ctx.parsedRules, ruleName))
-	) {
-		// Already managed rule
-		return ctx
-	}
-	if (isEmptyRule(rule)) {
-		delete ctx.parsedRules[ruleName]
-		return ctx
-	}
-
-	// Constant leaf -> search and replace the constant in all its parents.
-	if (rule.rawNode.valeur) {
-		ctx = searchAndReplaceConstantValueInParentRefs(ctx, ruleName, rule)
-		delete ctx.parsedRules[ruleName]
-		return ctx
-	}
-
-	// Potential leaf -> try to evaluate the formula at compile time.
-	if (rule.rawNode.formule || rule.rawNode.somme) {
-		const { nodeValue, missingVariables, traversedVariables } =
-			ctx.engine.evaluateNode(rule)
-
-		// The computation could be done a compile time.
-		if (Object.keys(missingVariables).length === 0) {
-			ctx.parsedRules[ruleName].rawNode.valeur = nodeValue
-			ctx.parsedRules[ruleName].rawNode['est compressée'] = true
-
-			if (rule.rawNode.formule) delete ctx.parsedRules[ruleName].rawNode.formule
-			if (rule.rawNode.somme) delete ctx.parsedRules[ruleName].rawNode.somme
-
-			ctx = updateRefCounting(ctx, ruleName, traversedVariables)
-		}
-		// Otherwise, try to replace internal refs if possible.
-		else {
-			const childs = ctx.refs.childs.get(ruleName)
-
-			if (childs && childs.length > 0) {
-				replaceAllPossibleChildRefs(ctx, ruleName, rule, childs)
-			}
-		}
 	}
 	return ctx
 }
@@ -308,6 +282,71 @@ function updateRefCounting(
 			ctx.refs.parents.delete(childRuleDottedName)
 		}
 	})
+	return ctx
+}
+
+function tryToFoldRule(
+	ctx: FoldingCtx,
+	ruleName: RuleName,
+	rule: RuleNode
+): FoldingCtx {
+	if (
+		rule &&
+		(isAlreadyFolded(rule) || !isInParsedRules(ctx.parsedRules, ruleName))
+	) {
+		// Already managed rule
+		return ctx
+	}
+	if (isEmptyRule(rule)) {
+		delete ctx.parsedRules[ruleName]
+		return ctx
+	}
+
+	const { nodeValue, missingVariables, traversedVariables } =
+		ctx.engine.evaluateNode(rule)
+
+	// NOTE(@EmileRolley): we need to evaluate due to possible standalone rule [formule]
+	// parsed as a [valeur].
+	if (rule.rawNode.valeur && traversedVariables.length > 0) {
+		rule.rawNode.formule = rule.rawNode.valeur
+		delete rule.rawNode.valeur
+	}
+
+	// Constant leaf -> search and replace the constant in all its parents.
+	if (rule.rawNode.valeur) {
+		ctx = searchAndReplaceConstantValueInParentRefs(ctx, ruleName, rule)
+
+		// NOTE(@EmileRolley): temporary work around until all mechanisms are supported.
+		// Indeed, when replacing a leaf ref by its value in all its parents, it should always be removed.
+		const parents = ctx.refs.parents.get(ruleName)
+		if (parents && parents.length === 0) {
+			delete ctx.parsedRules[ruleName]
+		}
+
+		return ctx
+	}
+
+	// Potential leaf -> try to evaluate the formula at compile time.
+	if (rule.rawNode.formule || rule.rawNode.somme) {
+		// The computation could be done a compile time.
+		if (Object.keys(missingVariables).length === 0) {
+			ctx.parsedRules[ruleName].rawNode.valeur = nodeValue
+			ctx.parsedRules[ruleName].rawNode['est compressée'] = true
+
+			if (rule.rawNode.formule) delete ctx.parsedRules[ruleName].rawNode.formule
+			if (rule.rawNode.somme) delete ctx.parsedRules[ruleName].rawNode.somme
+
+			ctx = updateRefCounting(ctx, ruleName, traversedVariables)
+		}
+		// Otherwise, try to replace internal refs if possible.
+		else {
+			const childs = ctx.refs.childs.get(ruleName)
+
+			if (childs && childs.length > 0) {
+				replaceAllPossibleChildRefs(ctx, ruleName, rule, childs)
+			}
+		}
+	}
 	return ctx
 }
 
