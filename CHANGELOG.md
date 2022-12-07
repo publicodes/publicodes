@@ -2,7 +2,15 @@
 
 ## next
 
-**⚠ Changement cassant :** Supprime la méthode dépréciée `UNSAFE_isNotApplicable`
+## 1.0.0-beta.63
+
+**core**
+
+-   **⚠ Changement cassant :** Supprime la méthode dépréciée `UNSAFE_isNotApplicable` (#329)
+
+**publicodes-react**
+
+-   Improve accessibility (#301)
 
 ## 1.0.0-beta.62
 
