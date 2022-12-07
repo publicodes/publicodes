@@ -14,7 +14,7 @@ describe('Constant folding optim', () => {
 	it('∅ -> ∅', () => {
 		expect(constantFoldingWith({})).toStrictEqual({})
 	})
-	it('Should remove empty nodes', () => {
+	it('should remove empty nodes', () => {
 		expect(
 			constantFoldingWith({
 				ruleA: null,
@@ -29,7 +29,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it('Referenced constant should be replaced - [1 dependency]', () => {
+	it('should replace a [formule] with 1 dependency with the corresponding constant value', () => {
 		const rawRules = {
 			ruleA: {
 				titre: 'Rule A',
@@ -47,7 +47,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it('Referenced constant should be replaced - [2 dependency]', () => {
+	it('should replace a [formule] with 2 dependencies with the corresponding constant value', () => {
 		const rawRules = {
 			ruleA: {
 				titre: 'Rule A',
@@ -68,7 +68,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it('Partially compressible rule', () => {
+	it('should replace the constant reference without being able to fold entirely the rule', () => {
 		const rawRules = {
 			ruleA: {
 				titre: 'Rule A',
@@ -92,7 +92,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it('Partially compressible rule with constant with mutliple dependencies', () => {
+	it('should partially fold rule with constant with multiple parents dependencies', () => {
 		const rawRules = {
 			ruleA: {
 				titre: 'Rule A',
@@ -123,7 +123,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it('A is a constant within two degrees', () => {
+	it('should fold a constant within _two degrees_', () => {
 		const rawRules = {
 			A: {
 				formule: 'B',
@@ -142,7 +142,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it("A is a constant within two degrees with a 'applicable si' (set to false) mechanism", () => {
+	it('should fold a constant within two degrees with an [applicable si] (set to false) mechanism', () => {
 		const rawRules = {
 			A: {
 				formule: 'B',
@@ -174,7 +174,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it("A is a constant within two degrees with a 'applicable si' (set to true) mechanism", () => {
+	it('should fold a constant within two degrees with an [applicable si] (set to true) mechanism', () => {
 		const rawRules = {
 			A: {
 				formule: 'B',
@@ -206,7 +206,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it('A is a constant within two degrees plus B is a partially foldable rule', () => {
+	it('should fold constant within two degrees with B, a partially foldable rule', () => {
 		const rawRules = {
 			A: {
 				formule: 'B',
@@ -238,7 +238,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it("Mechanism: 'somme' [complete folding]", () => {
+	it('should completely fold a [somme] mechanism', () => {
 		const rawRules = {
 			ruleA: {
 				formule: 'ruleB',
@@ -260,7 +260,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it("Mechanism: 'somme' [partial folding]", () => {
+	it('should partially fold a [somme] mechanism', () => {
 		const rawRules = {
 			ruleA: {
 				formule: 'ruleB',
@@ -291,7 +291,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it("Mechanism: 'somme' inside 'formule' [partial folding]", () => {
+	it('should partially fold [formule > somme] mechanism', () => {
 		const rawRules = {
 			ruleA: {
 				formule: 'ruleB',
@@ -326,7 +326,10 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it("Mutiple 'somme' deep dependencies", () => {
+	it('should fold [formule > variations] mechanism', () => {
+		fail('TODO')
+	})
+	it('should fold a mutiple [somme] deep dependencies', () => {
 		const rawRules = {
 			omr: {
 				formule: {
@@ -391,7 +394,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it('replaceAllRefs bug #1 (Ambiguity with rule name)', () => {
+	it('should replace properly child rule references when one is a substring of the other: (Ambiguity with rule name)', () => {
 		const rawRules = {
 			biogaz: {
 				formule:

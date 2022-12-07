@@ -272,7 +272,7 @@ function tryToFoldRule(
 
 			ctx = updateRefCounting(ctx, ruleName, traversedVariables)
 		}
-		// Try to replace internal refs if possible
+		// Otherwise, try to replace internal refs if possible.
 		else {
 			const childs = ctx.refs.childs.get(ruleName)
 
