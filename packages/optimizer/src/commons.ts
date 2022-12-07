@@ -32,3 +32,11 @@ export function readRawRules(path: string, pathToIgnore: string[]): RawRules {
 		}
 	}, {})
 }
+
+function consumeMsg(_: string): void {}
+
+export const disabledLogger = {
+	log: consumeMsg,
+	warn: consumeMsg,
+	error: consumeMsg,
+}

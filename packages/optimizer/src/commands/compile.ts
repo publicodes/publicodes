@@ -5,7 +5,7 @@
 import { writeFileSync } from 'fs'
 import path from 'path'
 import type { Arguments, CommandBuilder } from 'yargs'
-import { getRawNodes, readRawRules } from '../commons'
+import { disabledLogger, getRawNodes, readRawRules } from '../commons'
 import Engine from 'publicodes'
 import constantFolding from '../constantFolding'
 
@@ -45,17 +45,13 @@ export function builder(yargs): CommandBuilder<Options, Options> {
 		})
 }
 
-function consumeMsg(_: string): void {}
-
 export function handler(argv: Arguments<Options>) {
 	const { model, json: jsonPath, ignore } = argv
 	const modelPath = path.join(path.resolve(model), '**/*.yaml')
 
 	console.log(`Parsing rules from ${modelPath}...`)
 	const rules = readRawRules(modelPath, ignore ?? [])
-	const engine = new Engine(rules, {
-		logger: { log: consumeMsg, warn: consumeMsg, error: consumeMsg },
-	})
+	const engine = new Engine(rules, { logger: disabledLogger })
 
 	console.log('Constant folding pass...')
 	const foldedRules = constantFolding(engine)
