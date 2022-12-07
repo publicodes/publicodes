@@ -94,6 +94,15 @@ function isEmptyRule(rule: RuleNode): boolean {
 	return Object.keys(rule.rawNode).length <= 1
 }
 
+function replaceAllRefs(
+	str: string,
+	refName: string,
+	constantValue: string
+): string {
+	const re = new RegExp(`\\b${refName}`, 'g')
+	return str.replaceAll(re, constantValue)
+}
+
 function lexicalSubstitutionOfRefValue(
 	parent: RuleNode,
 	constant: RuleNode
@@ -113,7 +122,8 @@ function lexicalSubstitutionOfRefValue(
 
 	if (parent.rawNode.formule) {
 		if (typeof parent.rawNode.formule === 'string') {
-			parent.rawNode.formule = parent.rawNode.formule.replaceAll(
+			parent.rawNode.formule = replaceAllRefs(
+				parent.rawNode.formule,
 				refName,
 				constant.rawNode.valeur
 			)
@@ -122,7 +132,7 @@ function lexicalSubstitutionOfRefValue(
 			parent.rawNode.formule.somme = parent.rawNode.formule.somme.map(
 				(expr: string | number) => {
 					return typeof expr === 'string'
-						? expr.replaceAll(refName, constant.rawNode.valeur)
+						? replaceAllRefs(expr, refName, constant.rawNode.valeur)
 						: expr
 				}
 			)
@@ -131,7 +141,7 @@ function lexicalSubstitutionOfRefValue(
 	if (parent.rawNode.somme) {
 		parent.rawNode.somme = parent.rawNode.somme.map((expr: string | number) => {
 			return typeof expr === 'string'
-				? expr.replaceAll(refName, constant.rawNode.valeur)
+				? replaceAllRefs(expr, refName, constant.rawNode.valeur)
 				: expr
 		})
 	}
@@ -164,7 +174,7 @@ function searchAndReplaceConstantValueInParentRefs(
 }
 
 function isAlreadyFolded(rule: RuleNode) {
-	return rule.rawNode['est compressée']
+	return rule.rawNode && rule.rawNode['est compressée']
 }
 
 function isAConstant(rule: RuleNode) {
@@ -195,6 +205,11 @@ function replaceAllPossibleChildRefs(
 			.forEach(({ dottedName: childDottedName }) => {
 				let childNode = ctx.parsedRules[childDottedName]
 
+				if (!childNode) {
+					// TODO: need to investigate
+					return
+				}
+
 				if (!isAlreadyFolded(childNode)) {
 					ctx = tryToFoldRule(ctx, childDottedName, childNode)
 				}
@@ -223,7 +238,10 @@ function tryToFoldRule(
 	ruleName: RuleName,
 	rule: RuleNode
 ): FoldingCtx {
-	if (isAlreadyFolded(rule) || !isInParsedRules(ctx.parsedRules, ruleName)) {
+	if (
+		rule &&
+		(isAlreadyFolded(rule) || !isInParsedRules(ctx.parsedRules, ruleName))
+	) {
 		// Already managed rule
 		return ctx
 	}

@@ -391,4 +391,52 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
+	it('replaceAllRefs bug #1 (Ambiguity with rule name)', () => {
+		const rawRules = {
+			biogaz: {
+				formule:
+					"biogaz . facteur d'émission * gaz . facteur d'émission + not foldable",
+			},
+			"biogaz . facteur d'émission": {
+				valeur: 20,
+			},
+			"gaz . facteur d'émission": {
+				valeur: 10,
+			},
+			'not foldable': {
+				question: 'The user needs to provide a value.',
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
+			biogaz: {
+				formule: '20 * 10 + not foldable',
+				'est compressée': true,
+			},
+			'not foldable': {
+				question: 'The user needs to provide a value.',
+			},
+		})
+	})
+	it('replaceAllRefs bug #2', () => {
+		const rawRules = {
+			boisson: {
+				formule: 'tasse de café * nombre',
+			},
+			'boisson . tasse de café': {
+				valeur: 20,
+			},
+			'boisson . nombre': {
+				'par défaut': 10,
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
+			boisson: {
+				formule: '20 * nombre',
+				'est compressée': true,
+			},
+			'boisson . nombre': {
+				'par défaut': 10,
+			},
+		})
+	})
 })
