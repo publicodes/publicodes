@@ -76,7 +76,11 @@ function getReferences(
 // - no dependency
 function isFoldable(rule: RuleNode): boolean {
 	const rawNode = rule.rawNode
-	return !(rawNode.question || rawNode['par défaut'])
+	return !(
+		rawNode.question ||
+		rawNode['par défaut'] ||
+		rawNode['est compressée']
+	)
 }
 
 function isInParsedRules(parsedRules: ParsedRules, rule: RuleName): boolean {
@@ -105,7 +109,7 @@ function lexicalSubstitutionOfRefValue(
 		parent
 	)
 
-	if (parent.rawNode.formule) {
+	if (typeof parent.rawNode.formule === 'string') {
 		parent.rawNode.formule = parent.rawNode.formule.replaceAll(
 			refName,
 			constant.rawNode.valeur
@@ -251,12 +255,19 @@ export default function constantFolding(engine: Engine): ParsedRules {
 	const parsedRules: ParsedRules = engine.getParsedRules()
 	const refs: RefMaps = getReferences(engineCtx, parsedRules)
 	let ctx: FoldingCtx = { engine, parsedRules, refs }
+	let parsedRulesEntries: [RuleName, RuleNode<RuleName>][] | undefined =
+		undefined
+	let parsedRulesEntriesPrev: [RuleName, RuleNode<RuleName>][] | undefined
 
-	Object.entries(parsedRules)
-		.filter(([_, rule]) => isFoldable(rule))
-		.forEach(([ruleName, ruleNode]) => {
-			ctx = tryToFoldRule(ctx, ruleName, ruleNode)
-		})
+	do {
+		parsedRulesEntriesPrev = Array.from(parsedRulesEntries ?? [])
+		parsedRulesEntries = Object.entries(ctx.parsedRules)
+		parsedRulesEntries
+			.filter(([_, rule]) => isFoldable(rule))
+			.forEach(([ruleName, ruleNode]) => {
+				ctx = tryToFoldRule(ctx, ruleName, ruleNode)
+			})
+	} while (parsedRulesEntriesPrev === parsedRulesEntries)
 
 	return ctx.parsedRules
 }

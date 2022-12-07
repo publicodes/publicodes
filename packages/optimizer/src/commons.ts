@@ -1,3 +1,8 @@
+import glob from 'glob'
+import { resolve } from 'path'
+import yaml from 'yaml'
+import { readFileSync } from 'fs'
+
 import type { RuleNode, RawPublicodes } from 'publicodes'
 
 export type RuleName = string
@@ -12,4 +17,18 @@ export function getRawNodes(parsedRules: ParsedRules): RawRules {
 			return acc
 		}, [])
 	)
+}
+
+export function readRawRules(path: string, pathToIgnore: string[]): RawRules {
+	const files = glob.sync(path, { ignore: pathToIgnore })
+
+	console.debug('files:', files)
+	return files.reduce((acc: RawRules, filename: string) => {
+		try {
+			const rules = yaml.parse(readFileSync(resolve(filename), 'utf-8'))
+			return { ...acc, ...rules }
+		} catch (err) {
+			// TODO: need to determine the error management.
+		}
+	}, {})
 }

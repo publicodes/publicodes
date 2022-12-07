@@ -7,7 +7,9 @@
 		"esModuleInterop": true,
 		"lib": [
 			"es2021"
-		]
+		],
+		"sourceMap":true,
+		"module": "commonjs"
 	},
 	"ts-node": {
 		"transpileOnly": true,
