@@ -291,6 +291,41 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
+	it("Mechanism: 'somme' inside 'formule' [partial folding]", () => {
+		const rawRules = {
+			ruleA: {
+				formule: 'ruleB',
+			},
+			ruleB: {
+				formule: {
+					somme: ['A . B * D', 10, 12 * 2],
+				},
+			},
+			'ruleB . D': {
+				question: "What's the value of ruleB . D?",
+			},
+			'A . B': {
+				formule: 'C * 10',
+			},
+			'A . B . C': {
+				valeur: 7,
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
+			ruleA: {
+				formule: 'ruleB',
+			},
+			ruleB: {
+				formule: {
+					somme: ['70 * D', 10, 24],
+				},
+				'est compressée': true,
+			},
+			'ruleB . D': {
+				question: "What's the value of ruleB . D?",
+			},
+		})
+	})
 	it("Mutiple 'somme' deep dependencies", () => {
 		const rawRules = {
 			omr: {

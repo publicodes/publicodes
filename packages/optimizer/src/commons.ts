@@ -22,7 +22,6 @@ export function getRawNodes(parsedRules: ParsedRules): RawRules {
 export function readRawRules(path: string, pathToIgnore: string[]): RawRules {
 	const files = glob.sync(path, { ignore: pathToIgnore })
 
-	console.debug('files:', files)
 	return files.reduce((acc: RawRules, filename: string) => {
 		try {
 			const rules = yaml.parse(readFileSync(resolve(filename), 'utf-8'))

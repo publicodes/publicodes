@@ -1,12 +1,18 @@
 import Engine, { reduceAST } from 'publicodes'
 
-import type { RawPublicodes, RuleNode, ASTNode, Context } from 'publicodes'
+import type {
+	RawPublicodes,
+	RuleNode,
+	ASTNode,
+	Context,
+	Rule,
+} from 'publicodes'
 import type { RuleName, ParsedRules } from './commons'
 
 type RefMap = Map<
 	RuleName,
 	// NOTE: It's an array but it's built from a Set, so no duplication
-	RuleName[]
+	RuleName[] | undefined
 >
 
 type RefMaps = {
@@ -27,12 +33,8 @@ function removeParentReferences(
 	parsedRules: ParsedRules,
 	[dottedName, set]: [RuleName, Set<RuleName>]
 ): [RuleName, RuleName[]] {
-	const splittedDottedName = dottedName.split(' . ')
 	const isChild = (dottedNameChild: RuleName) => {
-		return (
-			splittedDottedName[0] === dottedNameChild.split(' . ')[0] &&
-			dottedNameChild.length >= dottedName.length
-		)
+		return dottedNameChild.startsWith(dottedName)
 	}
 
 	return [
@@ -109,11 +111,22 @@ function lexicalSubstitutionOfRefValue(
 		parent
 	)
 
-	if (typeof parent.rawNode.formule === 'string') {
-		parent.rawNode.formule = parent.rawNode.formule.replaceAll(
-			refName,
-			constant.rawNode.valeur
-		)
+	if (parent.rawNode.formule) {
+		if (typeof parent.rawNode.formule === 'string') {
+			parent.rawNode.formule = parent.rawNode.formule.replaceAll(
+				refName,
+				constant.rawNode.valeur
+			)
+		} else if (parent.rawNode.formule.somme) {
+			// TODO: needs to be abstracted
+			parent.rawNode.formule.somme = parent.rawNode.formule.somme.map(
+				(expr: string | number) => {
+					return typeof expr === 'string'
+						? expr.replaceAll(refName, constant.rawNode.valeur)
+						: expr
+				}
+			)
+		}
 	}
 	if (parent.rawNode.somme) {
 		parent.rawNode.somme = parent.rawNode.somme.map((expr: string | number) => {
@@ -158,27 +171,47 @@ function isAConstant(rule: RuleNode) {
 	return rule.rawNode.valeur && !(rule.rawNode.formule || rule.rawNode.somme)
 }
 
-function searchAndReplaceConstantValueInChildRefs(
+// Subsitutes [parentRuleNode.formule] ref constant from [refs].
+//
+// NOTE: It folds child rules in [refs] if possible.
+function replaceAllPossibleChildRefs(
 	ctx: FoldingCtx,
-	rule: RuleNode,
+	parentRuleName: RuleName,
+	parentRuleNode: RuleNode,
 	refs: RuleName[]
 ): FoldingCtx {
+	const hasBeenModified = (prevRule: Rule, newRule: Rule) => {
+		if (prevRule.formule) {
+			return prevRule.formule === newRule.formule
+		}
+		if (prevRule.somme) {
+			return prevRule.somme === newRule.somme
+		}
+	}
 	if (refs) {
 		refs
 			.map((dottedName) => ctx.parsedRules[dottedName])
 			.filter((r) => r)
-			.forEach(({ dottedName }) => {
-				let childNode = ctx.parsedRules[dottedName]
+			.forEach(({ dottedName: childDottedName }) => {
+				let childNode = ctx.parsedRules[childDottedName]
 
 				if (!isAlreadyFolded(childNode)) {
-					ctx = tryToFoldRule(ctx, dottedName, childNode)
+					ctx = tryToFoldRule(ctx, childDottedName, childNode)
 				}
 				if (isAConstant(childNode)) {
-					ctx.parsedRules[dottedName] = lexicalSubstitutionOfRefValue(
-						rule,
+					ctx.parsedRules[parentRuleName] = lexicalSubstitutionOfRefValue(
+						parentRuleNode,
 						childNode
 					)
-					ctx.parsedRules[dottedName].rawNode['est compressée'] = true
+					if (
+						hasBeenModified(
+							parentRuleNode.rawNode,
+							ctx.parsedRules[parentRuleName].rawNode
+						)
+					) {
+						ctx.parsedRules[parentRuleName].rawNode['est compressée'] = true
+						ctx = updateRefCounting(ctx, parentRuleName, [childDottedName])
+					}
 				}
 			})
 	}
@@ -219,34 +252,42 @@ function tryToFoldRule(
 			if (rule.rawNode.formule) delete ctx.parsedRules[ruleName].rawNode.formule
 			if (rule.rawNode.somme) delete ctx.parsedRules[ruleName].rawNode.somme
 
-			// Update ref counting
-			traversedVariables.forEach((childRuleDottedName: RuleName) => {
-				let child = ctx.refs.parents.get(childRuleDottedName)
-				if (child) {
-					ctx.refs.parents.set(
-						childRuleDottedName,
-						child.filter(
-							(dottedName) =>
-								isInParsedRules(ctx.parsedRules, dottedName) &&
-								dottedName !== ruleName
-						)
-					)
-					if (ctx.refs.parents.get(childRuleDottedName)?.length === 0) {
-						delete ctx.parsedRules[childRuleDottedName]
-						ctx.refs.parents.delete(childRuleDottedName)
-					}
-				}
-			})
+			ctx = updateRefCounting(ctx, ruleName, traversedVariables)
 		}
 		// Try to replace internal refs if possible
 		else {
 			const childs = ctx.refs.childs.get(ruleName)
+
 			if (childs && childs.length > 0) {
-				searchAndReplaceConstantValueInChildRefs(ctx, rule, childs)
-				// TODO: Update ref counting
+				replaceAllPossibleChildRefs(ctx, ruleName, rule, childs)
 			}
 		}
 	}
+	return ctx
+}
+
+// Removes the [parentRuleName] as a parent dependency of each [childRuleNamesToUpdate].
+function updateRefCounting(
+	ctx: FoldingCtx,
+	parentRuleName: RuleName,
+	childRuleNamesToUpdate: RuleName[]
+): FoldingCtx {
+	childRuleNamesToUpdate.forEach((childRuleDottedName: RuleName) => {
+		ctx.refs.parents.set(
+			childRuleDottedName,
+			ctx.refs.parents
+				.get(childRuleDottedName)
+				?.filter(
+					(dottedName) =>
+						isInParsedRules(ctx.parsedRules, dottedName) &&
+						dottedName !== parentRuleName
+				)
+		)
+		if (ctx.refs.parents.get(childRuleDottedName)?.length === 0) {
+			delete ctx.parsedRules[childRuleDottedName]
+			ctx.refs.parents.delete(childRuleDottedName)
+		}
+	})
 	return ctx
 }
 
@@ -257,17 +298,17 @@ export default function constantFolding(engine: Engine): ParsedRules {
 	let ctx: FoldingCtx = { engine, parsedRules, refs }
 	let parsedRulesEntries: [RuleName, RuleNode<RuleName>][] | undefined =
 		undefined
-	let parsedRulesEntriesPrev: [RuleName, RuleNode<RuleName>][] | undefined
+	// let parsedRulesEntriesPrev: [RuleName, RuleNode<RuleName>][] | undefined
 
-	do {
-		parsedRulesEntriesPrev = Array.from(parsedRulesEntries ?? [])
-		parsedRulesEntries = Object.entries(ctx.parsedRules)
-		parsedRulesEntries
-			.filter(([_, rule]) => isFoldable(rule))
-			.forEach(([ruleName, ruleNode]) => {
-				ctx = tryToFoldRule(ctx, ruleName, ruleNode)
-			})
-	} while (parsedRulesEntriesPrev === parsedRulesEntries)
+	// do {
+	// parsedRulesEntriesPrev = Array.from(parsedRulesEntries ?? [])
+	parsedRulesEntries = Object.entries(ctx.parsedRules)
+	parsedRulesEntries
+		.filter(([_, rule]) => isFoldable(rule))
+		.forEach(([ruleName, ruleNode]) => {
+			ctx = tryToFoldRule(ctx, ruleName, ruleNode)
+		})
+	// } while (parsedRulesEntriesPrev === parsedRulesEntries)
 
 	return ctx.parsedRules
 }
