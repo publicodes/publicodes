@@ -92,7 +92,7 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it('Partially compressible rule with constant with mutliple dependencies', () => {
+	it('Partially compressible rule with constant with multiple dependencies', () => {
 		const rawRules = {
 			ruleA: {
 				titre: 'Rule A',
