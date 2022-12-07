@@ -6,7 +6,7 @@ import { writeFileSync } from 'fs'
 import path from 'path'
 import type { Arguments, CommandBuilder } from 'yargs'
 import { disabledLogger, getRawNodes, readRawRules } from '../commons'
-import Engine from 'publicodes'
+import Engine, { PublicodesError } from 'publicodes'
 import constantFolding from '../constantFolding'
 
 type Options = {
@@ -46,19 +46,24 @@ export function builder(yargs): CommandBuilder<Options, Options> {
 }
 
 export function handler(argv: Arguments<Options>) {
-	const { model, json: jsonPath, ignore } = argv
-	const modelPath = path.join(path.resolve(model), '**/*.yaml')
+	try {
+		const { model, json: jsonPath, ignore } = argv
+		const modelPath = path.join(path.resolve(model), '**/*.yaml')
 
-	console.log(`Parsing rules from ${modelPath}...`)
-	const rules = readRawRules(modelPath, ignore ?? [])
-	const engine = new Engine(rules, { logger: disabledLogger })
+		console.log(`Parsing rules from ${modelPath}...`)
+		const rules = readRawRules(modelPath, ignore ?? [])
+		const engine = new Engine(rules, { logger: disabledLogger })
 
-	console.log('Constant folding pass...')
-	const foldedRules = constantFolding(engine)
+		console.log('Constant folding pass...')
+		const foldedRules = constantFolding(engine)
 
-	console.log(`Writing in '${jsonPath}'...`)
-	writeFileSync(jsonPath, JSON.stringify(getRawNodes(foldedRules)))
+		console.log(`Writing in '${jsonPath}'...`)
+		writeFileSync(jsonPath, JSON.stringify(getRawNodes(foldedRules)))
 
-	console.log(`DONE.`)
-	process.exit(0)
+		console.log(`DONE.`)
+		process.exit(0)
+	} catch (error: PublicodesError) {
+		console.error(error.message)
+		process.exit(-1)
+	}
 }
