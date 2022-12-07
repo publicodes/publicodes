@@ -80,6 +80,8 @@ function isFoldable(rule: RuleNode): boolean {
 	const rawNode = rule.rawNode
 	return !(
 		rawNode.question ||
+		// NOTE(@EmileRolley): I assume that a rule can have a [par défaut] attribute without a [question] one.
+		// The behavior could be specified.
 		rawNode['par défaut'] ||
 		rawNode['est compressée']
 	)
@@ -309,24 +311,39 @@ function updateRefCounting(
 	return ctx
 }
 
-export default function constantFolding(engine: Engine): ParsedRules {
+/**
+ * Applies a constant folding optimisation pass on parsed rules of [engine].
+ *
+ * If the [targets] are specified, at the end, only folded root nodes specified
+ * in [targets] are kept.
+ * Otherwise, all root nodes are preserved.
+ */
+export default function constantFolding(
+	engine: Engine,
+	targets?: RuleName[]
+): ParsedRules {
 	const engineCtx: Context<RuleName> = engine.context
 	const parsedRules: ParsedRules = engine.getParsedRules()
 	const refs: RefMaps = getReferences(engineCtx, parsedRules)
 	let ctx: FoldingCtx = { engine, parsedRules, refs }
 	let parsedRulesEntries: [RuleName, RuleNode<RuleName>][] | undefined =
 		undefined
-	// let parsedRulesEntriesPrev: [RuleName, RuleNode<RuleName>][] | undefined
 
-	// do {
-	// parsedRulesEntriesPrev = Array.from(parsedRulesEntries ?? [])
 	parsedRulesEntries = Object.entries(ctx.parsedRules)
 	parsedRulesEntries
 		.filter(([_, rule]) => isFoldable(rule))
 		.forEach(([ruleName, ruleNode]) => {
 			ctx = tryToFoldRule(ctx, ruleName, ruleNode)
 		})
-	// } while (parsedRulesEntriesPrev === parsedRulesEntries)
+
+	if (targets) {
+		return Object.fromEntries(
+			Object.entries(ctx.parsedRules).filter(([ruleName, _]) => {
+				const parents = ctx.refs.parents.get(ruleName)
+				return targets.includes(ruleName) || (parents && parents.length > 0)
+			})
+		)
+	}
 
 	return ctx.parsedRules
 }

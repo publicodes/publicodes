@@ -1,12 +1,17 @@
-import { getRawNodes } from '../src/commons'
-import type { RawRules } from '../src/commons'
+import { getRawNodes, RuleName, RawRules } from '../src/commons'
 
 import constantFolding from '../src/constantFolding'
 
 import { callWithEngine } from './utils.test'
 
-function constantFoldingWith(rawRules: RawRules): RawRules {
-	const res = callWithEngine(constantFolding, rawRules)
+function constantFoldingWith(
+	rawRules: RawRules,
+	targets?: RuleName[]
+): RawRules {
+	const res = callWithEngine(
+		(engine) => constantFolding(engine, targets),
+		rawRules
+	)
 	return getRawNodes(res)
 }
 
@@ -116,6 +121,33 @@ describe('Constant folding optim', () => {
 			},
 			ruleB: {
 				valeur: 30,
+				'est compressée': true,
+			},
+			'ruleA . D': {
+				question: "What's the value of D?",
+			},
+		})
+	})
+	it('should partially fold rule with constant with multiple parents dependencies add keep the only targeted rule: [ruleA]', () => {
+		const rawRules = {
+			ruleA: {
+				titre: 'Rule A',
+				formule: 'B . C * D',
+			},
+			ruleB: {
+				formule: 'ruleA . B . C * 3',
+			},
+			'ruleA . D': {
+				question: "What's the value of D?",
+			},
+			'ruleA . B . C': {
+				valeur: '10',
+			},
+		}
+		expect(constantFoldingWith(rawRules, ['ruleA'])).toStrictEqual({
+			ruleA: {
+				titre: 'Rule A',
+				formule: '10 * D',
 				'est compressée': true,
 			},
 			'ruleA . D': {
@@ -326,9 +358,9 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it('should fold [formule > variations] mechanism', () => {
-		fail('TODO')
-	})
+	// it('should fold [formule > variations] mechanism', () => {
+	// 	fail('TODO')
+	// })
 	it('should fold a mutiple [somme] deep dependencies', () => {
 		const rawRules = {
 			omr: {
