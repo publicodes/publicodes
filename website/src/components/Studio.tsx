@@ -47,7 +47,7 @@ export default function Studio() {
 	const urlFragment = encodeURIComponent(name)
 
 	const history = useHistory()
-	const yjs = useYjs(urlFragment, 'p2p', share, setShare)
+	const yjs = useYjs(urlFragment, 'database', share, setShare)
 
 	useEffect(() => {
 		if (urlFragment.length > 2) history.replace('/studio/' + urlFragment)

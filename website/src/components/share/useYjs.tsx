@@ -38,7 +38,7 @@ export default (room, connectionType: 'p2p' | 'database', share, setShare) => {
 					? new WebrtcProvider(room, ydoc, {})
 					: new WebsocketProvider(
 							//TODO launch a publicodes server on scalingo
-							'wss://nosgestesclimat-serveur.osc-fr1.scalingo.io', // Not used, was a test, replace by Survey.tsx mode
+							'wss://publicodes-live-server.osc-fr1.scalingo.io',
 							room,
 							ydoc
 					  )
