@@ -15,6 +15,7 @@ type ResultsProps = {
 	defaultTarget?: string
 	onTargetChange?: (target: string) => void
 	baseUrl?: string
+	showDevSection?: boolean
 }
 
 class Logger {
@@ -50,6 +51,7 @@ export default function Documentation({
 	defaultTarget = '',
 	onTargetChange,
 	baseUrl,
+	showDevSection,
 }: ResultsProps) {
 	const logger = useMemo(() => new Logger(), [rules])
 	const engine = useMemo(
@@ -107,6 +109,7 @@ export default function Documentation({
 					rulePath={ruleToPaths[currentTarget]?.replace(/^\//, '') || ''}
 					engine={engine}
 					documentationPath={''}
+					showDevSection={showDevSection}
 					renderers={{
 						Link: ({ to, children }) => {
 							return (

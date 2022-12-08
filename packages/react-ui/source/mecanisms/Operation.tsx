@@ -9,7 +9,8 @@ export default function Operation({ nodeValue, explanation, operator, unit }) {
 		explanation[0].nodeKind === 'constant'
 
 	return (
-		<StyledOperation className="operation">
+		<StyledOperation className="operation" role="math">
+			<span>(</span>
 			{!isUnaryOperation && (
 				<>
 					<Explanation node={explanation[0]} />
@@ -24,23 +25,18 @@ export default function Operation({ nodeValue, explanation, operator, unit }) {
 					<NodeValuePointer data={nodeValue} unit={unit} />
 				</span>
 			)}
+			<span>)</span>
 		</StyledOperation>
 	)
 }
 
-const StyledOperation = styled.span`
+const StyledOperation = styled.div`
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.125rem;
-	::before {
-		content: '(';
-	}
 	> .operation ::before,
 	> .operation ::after {
 		content: '';
-	}
-	::after {
-		content: ')';
 	}
 	.result {
 		margin-left: 0.2rem;

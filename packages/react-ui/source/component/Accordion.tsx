@@ -9,7 +9,7 @@ const AccordionContainer = styled.div`
 	border: 1px solid #bbb;
 `
 
-const H3 = styled.h3`
+const H4 = styled.h4`
 	font-size: 16px;
 	font-weight: 700;
 	margin: 2rem 0px 1rem;
@@ -46,7 +46,7 @@ const AccordionWrapper = styled.div<{ i: number }>`
 			border-top-width: 1px;
 		`}
 
-	& ${H3} {
+	& ${H4} {
 		margin: 0;
 	}
 `
@@ -82,12 +82,12 @@ export const Accordion = ({ items }: AccordionProps) => {
 		<AccordionContainer>
 			{items.map(({ id, title, children }, i) => (
 				<AccordionWrapper id={id} key={id} i={i}>
-					<H3>
+					<H4>
 						<button onClick={toggleAccordion(i)}>
 							<span>{title}</span>
 							<StyledArrow $isOpen={open[i]} />
 						</button>
-					</H3>
+					</H4>
 					<div>
 						<Child open={!!open[i]}>{children}</Child>
 					</div>

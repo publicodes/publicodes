@@ -9,11 +9,11 @@
 	],
 	"scripts": {
 		"test": "run prepack && yarn workspaces foreach run test",
-		"prepack": "yarn workspaces foreach --topological-dev -pi run prepack",
+		"prepack": "yarn workspaces foreach --topological-dev -i run prepack",
 		"test:type": "run prepack && yarn workspaces foreach -pi run test:type",
 		"lint": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml}\"",
 		"lint:fix": "run lint --write",
-		"build": "yarn workspaces foreach --topological-dev -pi --exclude website run build",
+		"build": "yarn workspaces foreach --topological-dev -i --exclude website run build",
 		"start": "yarn workspaces foreach --exclude \"@publicodes/api\" -pi run start",
 		"clean": "yarn workspaces foreach run clean"
 	},
@@ -21,8 +21,11 @@
 		"prettier": "^2.5.1",
 		"yaml": "^2.1.1"
 	},
-	"packageManager": "yarn@3.2.0",
 	"dependencies": {
 		"monaco-editor": "^0.34.1"
+	},
+	"packageManager": "yarn@3.3.0",
+	"engines": {
+		"node": ">=18"
 	}
 }

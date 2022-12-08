@@ -1,6 +1,9 @@
 import Engine, {
+	ASTNode,
 	EvaluatedNode,
 	formatValue,
+	PublicodesExpression,
+	RuleNode,
 	serializeUnit,
 	utils,
 } from 'publicodes'
@@ -27,10 +30,12 @@ type RulePageProps = {
 	engine: Engine
 	language: 'fr' | 'en'
 	renderers: SupportedRenderers
-	situation?: Record<string, unknown>
 	apiDocumentationUrl?: string
 	apiEvaluateUrl?: string
 	npmPackage?: string
+	mobileMenuPortalId?: string
+	openNavButtonPortalId?: string
+	showDevSection?: boolean
 }
 
 export default function RulePage({
@@ -39,10 +44,12 @@ export default function RulePage({
 	engine,
 	renderers,
 	language,
-	situation,
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 	npmPackage,
+	mobileMenuPortalId,
+	openNavButtonPortalId,
+	showDevSection = true,
 }: RulePageProps) {
 	const currentEngineId = new URLSearchParams(window.location.search).get(
 		'currentEngineId'
@@ -68,10 +75,12 @@ export default function RulePage({
 							currentEngineId ? parseInt(currentEngineId) : undefined
 						}
 						language={language}
-						situation={situation}
 						apiDocumentationUrl={apiDocumentationUrl}
 						apiEvaluateUrl={apiEvaluateUrl}
 						npmPackage={npmPackage}
+						mobileMenuPortalId={mobileMenuPortalId}
+						openNavButtonPortalId={openNavButtonPortalId}
+						showDevSection={showDevSection}
 					/>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
@@ -82,21 +91,27 @@ export default function RulePage({
 type RuleProps = {
 	dottedName: string
 	subEngineId?: number
-	language: RulePageProps['language']
-	situation?: Record<string, unknown>
-	apiDocumentationUrl?: string
-	apiEvaluateUrl?: string
-	npmPackage?: string
-}
+} & Pick<
+	RulePageProps,
+	| 'language'
+	| 'apiDocumentationUrl'
+	| 'apiEvaluateUrl'
+	| 'npmPackage'
+	| 'mobileMenuPortalId'
+	| 'openNavButtonPortalId'
+	| 'showDevSection'
+>
 
 function Rule({
 	dottedName,
 	language,
 	subEngineId,
-	situation = {},
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 	npmPackage,
+	mobileMenuPortalId,
+	openNavButtonPortalId,
+	showDevSection,
 }: RuleProps) {
 	const baseEngine = useEngine()
 	const { References, Text } = useContext(RenderersContext)
@@ -119,9 +134,15 @@ function Rule({
 	const { description, question } = rule.rawNode
 	const { valeur, nullableParent, ruleDisabledByItsParent } = rule.explanation
 
+	const situation = buildSituationUsedInRule(engine, rule)
+
 	return (
-		<Container id="documentationRuleRoot">
-			<RulesNav dottedName={dottedName} />
+		<Container id="documentation-rule-root">
+			<RulesNav
+				dottedName={dottedName}
+				mobileMenuPortalId={mobileMenuPortalId}
+				openNavButtonPortalId={openNavButtonPortalId}
+			/>
 			<Article>
 				<DottedNameContext.Provider value={dottedName}>
 					{useSubEngine && (
@@ -194,21 +215,25 @@ function Rule({
 					)}
 					<br />
 
-					<h3>Informations pour les développeurs</h3>
-					<Text>
-						Vous trouverez ci-dessous des informations techniques qui peuvent
-						être utiles aux développeurs
-					</Text>
-
-					<DeveloperAccordion
-						engine={engine}
-						situation={situation}
-						dottedName={dottedName}
-						rule={rule}
-						apiDocumentationUrl={apiDocumentationUrl}
-						apiEvaluateUrl={apiEvaluateUrl}
-						npmPackage={npmPackage}
-					></DeveloperAccordion>
+					{showDevSection && (
+						<>
+							<h3>Informations techniques</h3>
+							<Text>
+								Si vous êtes développeur/euse vous trouverez ci-dessous des
+								informations techniques utiles pour l'intégration de cette règle
+								dans votre application.
+							</Text>
+							<DeveloperAccordion
+								engine={engine}
+								situation={situation}
+								dottedName={dottedName}
+								rule={rule}
+								apiDocumentationUrl={apiDocumentationUrl}
+								apiEvaluateUrl={apiEvaluateUrl}
+								npmPackage={npmPackage}
+							></DeveloperAccordion>
+						</>
+					)}
 				</DottedNameContext.Provider>
 			</Article>
 		</Container>
@@ -234,3 +259,32 @@ const Article = styled.article`
 		margin-left: -1px;
 	}
 `
+
+function buildSituationUsedInRule<Names extends string>(
+	engine: Engine<Names>,
+	rule: EvaluatedNode & RuleNode
+): Partial<Record<Names, PublicodesExpression>> {
+	const situation = [...(rule.traversedVariables as Names[]), rule.dottedName]
+		.map((name) => {
+			const valeur = engine.context.parsedRules[`${name} . $SITUATION`]?.rawNode
+				.valeur as ASTNode
+			return [name, valeur] as const
+		})
+		.filter(
+			([_, valeur]) =>
+				valeur &&
+				!(valeur.nodeKind === 'constant' && valeur.nodeValue === undefined)
+		)
+		.reduce(
+			(acc, [name, valeur]) => ({
+				[name]:
+					typeof valeur === 'object' && valeur && 'rawNode' in valeur
+						? valeur.rawNode
+						: valeur,
+				...acc,
+			}),
+			{}
+		)
+
+	return situation
+}

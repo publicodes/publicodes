@@ -7,9 +7,15 @@ import { useEngine } from '../hooks'
 import { RuleLinkWithContext } from '../RuleLink'
 interface Props {
 	dottedName: string
+	mobileMenuPortalId?: string
+	openNavButtonPortalId?: string
 }
 
-export const RulesNav = ({ dottedName }: Props) => {
+export const RulesNav = ({
+	dottedName,
+	mobileMenuPortalId,
+	openNavButtonPortalId,
+}: Props) => {
 	const baseEngine = useEngine()
 	const [navOpen, setNavOpen] = useState(false)
 
@@ -43,8 +49,12 @@ export const RulesNav = ({ dottedName }: Props) => {
 		)
 	}, [])
 
-	return (
-		<>
+	const openNavButtonPortalElement =
+		(openNavButtonPortalId && document.getElementById(openNavButtonPortalId)) ||
+		document.getElementById('rules-nav-open-nav-button')
+
+	const menu = (
+		<Container $open={navOpen}>
 			<Background
 				$open={navOpen}
 				onClick={() => {
@@ -53,12 +63,12 @@ export const RulesNav = ({ dottedName }: Props) => {
 			/>
 
 			{/* Portal in Header */}
-			{document.getElementById('rules-nav-open-nav-button') &&
+			{openNavButtonPortalElement &&
 				ReactDOM.createPortal(
 					<OpenNavButton onClick={() => setNavOpen(true)}>
 						Toutes les règles
 					</OpenNavButton>,
-					document.getElementById('rules-nav-open-nav-button')
+					openNavButtonPortalElement
 				)}
 
 			<Nav $open={navOpen}>
@@ -89,8 +99,20 @@ export const RulesNav = ({ dottedName }: Props) => {
 						})}
 				</ul>
 			</Nav>
-		</>
+		</Container>
 	)
+
+	const isMobileMenu = window.matchMedia(
+		`(max-width: ${breakpointsWidth.lg})`
+	).matches
+
+	const mobileMenuPortalElement = mobileMenuPortalId
+		? document.getElementById(mobileMenuPortalId)
+		: null
+
+	return isMobileMenu && mobileMenuPortalElement
+		? ReactDOM.createPortal(menu, mobileMenuPortalElement)
+		: menu
 }
 
 const NavLi = ({ ruleDottedName, open, active, onClickDropdown }) => {
@@ -127,7 +149,11 @@ const NavLi = ({ ruleDottedName, open, active, onClickDropdown }) => {
 		>
 			<span className="content">
 				{childrenCount > 0 && (
-					<DropdownButton onClick={() => onClickDropdown(ruleDottedName)}>
+					<DropdownButton
+						aria-label={open ? 'Replier le sous-menu' : 'Déplier le sous-menu'}
+						aria-expanded={open}
+						onClick={() => onClickDropdown(ruleDottedName)}
+					>
 						<StyledArrow $open={open} />
 					</DropdownButton>
 				)}
@@ -145,6 +171,18 @@ export const breakpointsWidth = {
 	lg: '992px',
 	xl: '1200px',
 }
+
+const Container = styled.div<{ $open: boolean }>`
+	z-index: 200;
+	overflow: auto;
+	position: sticky;
+	top: 0;
+
+	@media (min-width: ${breakpointsWidth.lg}) {
+		max-width: 50%;
+		flex-shrink: 0;
+	}
+`
 
 const Background = styled.div<{ $open: boolean }>`
 	background: rgb(0 0 0 / 25%);
@@ -184,7 +222,6 @@ const OpenNavButton = styled.button`
 
 const Nav = styled.nav<{ $open: boolean }>`
 	@media (min-width: ${breakpointsWidth.lg}) {
-		max-width: 50%;
 		flex-shrink: 0;
 	}
 	border-right: 1px solid #e6e6e6;
@@ -207,6 +244,7 @@ const Nav = styled.nav<{ $open: boolean }>`
 		transition: all ease-in-out 0.25s;
 		${({ $open }) => ($open ? '' : 'transform: translateX(-100%);')}
 	}
+
 	ul {
 		flex-wrap: nowrap;
 		margin: 0;

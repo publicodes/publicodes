@@ -38,7 +38,7 @@ export default function Reference(
 				maxWidth: '100%',
 			}}
 		>
-			<span
+			<div
 				style={{
 					display: 'flex',
 					alignItems: 'baseline',
@@ -51,8 +51,16 @@ export default function Reference(
 				<div style={{ flex: 1, display: 'flex', alignItems: 'baseline' }}>
 					{isFoldEnabled && (
 						<>
-							<UnfoldButton onClick={() => setFolded(!folded)}>
-								{folded ? 'déplier' : 'replier'}
+							<UnfoldButton
+								onClick={() => setFolded(!folded)}
+								aria-expanded={!folded}
+								aria-label={
+									folded
+										? 'Déplier, afficher le détail'
+										: 'Replier, afficher le détail'
+								}
+							>
+								{folded ? 'Déplier' : 'Replier'}
 							</UnfoldButton>
 							<StyledGuide />
 						</>
@@ -62,7 +70,7 @@ export default function Reference(
 						<NodeValuePointer data={nodeValue} unit={unit} />
 					)}
 				</div>
-			</span>{' '}
+			</div>{' '}
 			{!folded && (
 				<div>
 					<UnfoldIsEnabledContext.Provider value={false}>

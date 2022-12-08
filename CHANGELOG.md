@@ -1,4 +1,89 @@
 # Changelog
+
+## next
+
+## 1.0.0-beta.64
+
+**publicodes-react**
+
+- Fix remaining accessibility violations (#339)
+
+## 1.0.0-beta.63
+
+**core**
+
+-   **⚠ Changement cassant :** Supprime la méthode dépréciée `UNSAFE_isNotApplicable` (#329)
+
+**publicodes-react**
+
+-   Improve accessibility (#301)
+
+## 1.0.0-beta.62
+
+**monorepo**
+
+-   **⚠ Changement cassant :** Update Node requirement to lts (v18)
+-   Update yarn to v3.3
+-   Update typescript, tsup
+-   Use workspace version of publicodes, publicodes-react
+-   Add missing READMEs (#297)
+
+**core**
+
+-   **⚠ Changement cassant :** exception en cas de division par 0 dans un mécanisme.
+
+**publicodes-react**
+
+-   Refacto publicodes-react to esm
+-   Refacto in RuleLink
+-   Temporary fix bad babel transformation on [...new Set()]]
+-   Fix publicodes-react missing sourcemap
+
+**website**
+
+-   Clean docusaurus old unused packages
+-   Update docusaurus to 2.2
+-   fix(Studio): fix doc link (#311)
+
+## 1.0.0-beta.61
+
+**core**
+
+-   Ajoute la conversion des unités de longueurs (mm/cm/m/km)
+
+**publicodes-react**
+
+-   Enlève `situation` des props du composant `RulePage` : la situation utilisée pour la règle courante est maintenant retrouvée uniquement avec `engine`
+-   Ajoute `showDevRules` aux props du composant `RulePage` : permet de cacher la section dev de la documentation
+
+## 1.0.0-beta.60
+
+**publicodes-react**
+
+-   Fix d’un crash dans la documentation quand un parent d’une règle est privée mais pas la règle en elle même
+
+## 1.0.0-beta.59
+
+**publicodes-react**
+
+-   Ajout dans la documentation react des règles qui sont modifié par une autre
+
+## 1.0.0-beta.58
+
+**publicodes-react**
+
+-   Ajout de `openNavButtonPortalId` et de `mobileMenuPortalId` à RulePage
+
+## 1.0.0-beta.57
+
+**publicodes-react**
+
+-   **⚠ Changement cassant :** Renomage de l’id de la doc `documentationRuleRoot` par `documentation-rule-root`
+-   Ajout de la props optionnelle `openNavButtonPortalId` qui permet de changer la place du bouton pour ouvrir le menu sur mobile
+-   Ajout de la props optionnelle `mobileMenuPortalId` qui permet de changer la place du menu mobile
+-   fix du menu de la doc qui est cassé avec des textes trop petit #277
+-   Suppression d’une fonction inutilisé `RuleExplanation`
+
 ## 1.0.0-beta.56
 
 -   Prise en compte des valeurs qui diffèrent de `null` dans le mécanisme `par défaut` #270

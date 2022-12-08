@@ -1,13 +1,12 @@
-import { capitalise0, formatValue } from 'publicodes'
+import { formatValue } from 'publicodes'
 import {
 	EvaluatedNode,
 	Evaluation,
 	Types,
 	Unit,
 } from 'publicodes/source/AST/types'
-import React, { useContext } from 'react'
+import React from 'react'
 import styled, { css } from 'styled-components'
-import { RenderersContext } from '../contexts'
 import Explanation from '../Explanation'
 import mecanismColors from './colors'
 
@@ -77,7 +76,7 @@ export function Mecanism({
 	displayName = true,
 }: NodeProps) {
 	return (
-		<StyledMecanism name={name}>
+		<StyledMecanism mecanismName={name}>
 			{displayName && <MecanismName name={name}>{name}</MecanismName>}
 			<div>
 				{children}
@@ -102,12 +101,10 @@ export const InfixMecanism = ({
 	value,
 	prefixed,
 	children,
-	dimValue,
 }: {
 	value: EvaluatedNode
 	children: React.ReactNode
 	prefixed?: boolean
-	dimValue?: boolean
 }) => {
 	return (
 		<div>
@@ -118,24 +115,12 @@ export const InfixMecanism = ({
 					position: 'relative',
 				}}
 			>
-				{dimValue && <DimOverlay />}
 				<Explanation node={value} />
 			</div>
 			{!prefixed && children}
 		</div>
 	)
 }
-const DimOverlay = styled.div`
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	background-color: white;
-	left: 0;
-	opacity: 0.5;
-	pointer-events: none;
-	z-index: 1;
-`
 
 export const InlineMecanismName = ({ name }: { name: string }) => {
 	return (
@@ -168,41 +153,7 @@ const MecanismName = ({
 	)
 }
 
-type RuleExplanationProps = {
-	exemples: { base: string }
-	description: string
-	name: string
-}
-
-export default function RuleExplanation({
-	name,
-	description,
-	exemples,
-}: RuleExplanationProps) {
-	const { Text } = useContext(RenderersContext)
-	return (
-		<>
-			{!!name && (
-				<h2 id={name}>
-					<pre>{name}</pre>
-				</h2>
-			)}
-			<Text>{description}</Text>
-			{exemples && (
-				<>
-					{Object.entries(exemples).map(([name, exemple]) => (
-						<React.Fragment key={name}>
-							<h3>{name === 'base' ? 'Exemple' : capitalise0(name)}</h3>
-							<Text>{`\`\`\`yaml\n${exemple}\n\`\`\``}</Text>
-						</React.Fragment>
-					))}
-				</>
-			)}
-		</>
-	)
-}
-
-const StyledMecanism = styled.div<{ name: string }>`
+const StyledMecanism = styled.div<{ mecanismName: string }>`
 	border: 1px solid;
 	max-width: 100%;
 	border-radius: 3px;
@@ -212,7 +163,7 @@ const StyledMecanism = styled.div<{ name: string }>`
 	flex: 1;
 	flex-direction: column;
 	text-align: left;
-	border-color: ${({ name }) => mecanismColors(name)};
+	border-color: ${({ mecanismName }) => mecanismColors(mecanismName)};
 	.properties > li {
 		margin: 1rem 0;
 	}

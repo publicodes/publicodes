@@ -14,14 +14,15 @@
 		"write-heading-ids": "docusaurus write-heading-ids"
 	},
 	"dependencies": {
-		"@docusaurus/core": "^2.1.0",
-		"@docusaurus/preset-classic": "^2.1.0",
-		"@docusaurus/remark-plugin-npm2yarn": "^2.1.0",
-		"@docusaurus/theme-live-codeblock": "^2.1.0",
+		"@docusaurus/core": "^2.2.0",
+		"@docusaurus/preset-classic": "^2.2.0",
+		"@docusaurus/remark-plugin-npm2yarn": "^2.2.0",
+		"@docusaurus/theme-live-codeblock": "^2.2.0",
 		"@monaco-editor/react": "^4.4.6",
 		"@svgr/webpack": "^5.5.0",
 		"clsx": "^1.1.1",
 		"file-loader": "^6.2.0",
+		"monaco-editor": "^0.33.0",
 		"node-libs-browser": "^2.2.1",
 		"path-browserify": "^1.0.1",
 		"publicodes": "workspace:^",
@@ -54,9 +55,8 @@
 		]
 	},
 	"devDependencies": {
-		"@docusaurus/module-type-aliases": "^2.1.0",
+		"@docusaurus/module-type-aliases": "^2.2.0",
 		"@tsconfig/docusaurus": "^1.0.6",
-		"process": "^0.11.10",
-		"typescript": "^4.5.5"
+		"typescript": "^4.9.3"
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"name": "publicodes",
-	"version": "1.0.0-beta.56",
+	"version": "1.0.0-beta.64",
 	"description": "A declarative language for encoding public algorithm",
 	"types": "dist/index.d.ts",
 	"type": "module",
@@ -37,8 +37,8 @@
 		"sinon": "^12.0.1",
 		"sinon-chai": "^3.7.0",
 		"ts-node": "^10.9.1",
-		"tsup": "^6.0.1",
-		"typescript": "^4.5.5"
+		"tsup": "^6.5.0",
+		"typescript": "^4.9.3"
 	},
 	"dependencies": {
 		"moo": "^0.5.1",
@@ -49,13 +49,10 @@
 		"build": "run build:grammar && tsup",
 		"build:ifNeeded": "ts-node-esm need-rebuild.ts || run build",
 		"start": "run build --watch",
-		"prepack": "yarn run build:ifNeeded",
+		"prepack": "run build:ifNeeded",
 		"test:type": "run build:grammar && run tsc",
 		"test": "run build:grammar && mocha \"./test/**/*.test.{js,ts}\"",
 		"clean": "rimraf dist node_modules source/grammar.js .deps.json"
-	},
-	"engines": {
-		"node": ">=12.16.1"
 	},
 	"peerDependencies": {
 		"@types/mocha": "^9.0.0"

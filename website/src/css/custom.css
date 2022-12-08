@@ -48,3 +48,7 @@
 	left: -4px;
 	top: -5px;
 }
+
+#documentation-rule-root .dropdown {
+	display: flex;
+}

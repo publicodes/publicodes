@@ -1,9 +1,4 @@
-import Engine, {
-	EvaluatedNode,
-	RuleNode,
-	serializeEvaluation,
-	utils,
-} from 'publicodes'
+import Engine, { EvaluatedNode, RuleNode, utils } from 'publicodes'
 import { useContext } from 'react'
 import styled from 'styled-components'
 import { RenderersContext } from '../contexts'
@@ -62,7 +57,7 @@ export function DeveloperAccordion({
 				<>
 					<ActualRule engine={engine} dottedName={dottedName} />
 
-					<ActualSituation engine={engine} situation={situation} />
+					<ActualSituation situation={situation} />
 				</>
 			),
 		},
@@ -96,7 +91,6 @@ export function DeveloperAccordion({
 							{npmPackage && (
 								<PackageUsage
 									rule={rule}
-									engine={engine}
 									situation={situation}
 									dottedName={dottedName}
 									npmPackage={npmPackage}
@@ -105,7 +99,6 @@ export function DeveloperAccordion({
 
 							{apiDocumentationUrl && apiEvaluateUrl && (
 								<ApiUsage
-									engine={engine}
 									situation={situation}
 									dottedName={dottedName}
 									apiDocumentationUrl={apiDocumentationUrl}
@@ -129,7 +122,11 @@ export function DeveloperAccordion({
 						ruleIsNotDefined={rule.nodeValue === undefined}
 					/>
 
-					<Effect replacements={rule.replacements} />
+					<Effect
+						engine={engine}
+						dottedName={dottedName}
+						replacements={rule.replacements}
+					/>
 				</>
 			),
 		},
@@ -157,21 +154,16 @@ function ActualRule({
 }
 
 function ActualSituation({
-	engine,
 	situation,
 }: {
-	engine: Engine<string>
 	situation: Record<string, unknown>
 }) {
-	const { Code, Link } = useContext(RenderersContext)
+	const { Code } = useContext(RenderersContext)
 
 	const keys = Object.keys(situation)
-	const evaluatedSituation = Object.fromEntries(
-		keys.map((dot) => [dot, serializeEvaluation(engine.evaluate(dot))])
-	)
 
 	const tabs = {
-		json: JSON.stringify(evaluatedSituation, null, 2),
+		json: JSON.stringify(situation, null, 2),
 	}
 
 	return (
@@ -193,25 +185,21 @@ function ActualSituation({
 	)
 }
 
+const LINK_NPM_LABEL = 'Retrouvez ce paquet sur NPM'
+const LINK_PUBLICODES_LABEL = 'moteur Publicodes'
+
 function PackageUsage({
 	rule,
-	engine,
 	situation,
 	dottedName,
 	npmPackage,
 }: {
 	rule: EvaluatedNode & { nodeKind: 'rule' }
-	engine: Engine<string>
 	situation: Record<string, unknown>
 	dottedName: string
 	npmPackage: string
 }) {
 	const { Code, Link } = useContext(RenderersContext)
-
-	const keys = Object.keys(situation)
-	const evaluatedSituation = Object.fromEntries(
-		keys.map((dot) => [dot, serializeEvaluation(engine.evaluate(dot))])
-	)
 
 	const tabs = {
 		npmPackage: `// npm i publicodes ${npmPackage}
@@ -220,7 +208,7 @@ import Engine, { formatValue } from 'publicodes'
 import rules from '${npmPackage}'
 
 const engine = new Engine(rules)
-engine.setSituation(${JSON.stringify(evaluatedSituation, null, 2)})
+engine.setSituation(${JSON.stringify(situation, null, 2)})
 
 // ${rule.title}
 const evaluation = engine.evaluate(${JSON.stringify(dottedName)})
@@ -234,29 +222,37 @@ console.log(formatValue(evaluation))
 			<h4>Lancer un calcul avec Publicodes</h4>
 			<p>
 				Vous pouvez installer notre package de règles pour l'utiliser avec le{' '}
-				<Link href="https://publi.codes/">moteur Publicodes</Link> et ainsi
-				effectuer vos propres calculs. Voici un exemple avec votre situation et
-				la règle actuelle :
+				<Link
+					aria-label={`${LINK_PUBLICODES_LABEL}, accéder au site publi.codes, nouvelle fenêtre`}
+					href="https://publi.codes/"
+				>
+					{LINK_PUBLICODES_LABEL}
+				</Link>{' '}
+				et ainsi effectuer vos propres calculs. Voici un exemple avec votre
+				situation et la règle actuelle :
 			</p>
 			<Code tabs={tabs} />
 
 			<p style={{ textAlign: 'right' }}>
-				<Link href={'https://www.npmjs.com/package/' + npmPackage}>
-					📦 Retrouvez ce paquet sur NPM
+				<Link
+					href={'https://www.npmjs.com/package/' + npmPackage}
+					aria-label={`${LINK_NPM_LABEL}, accéder à la page npm du package Publicodes, nouvelle fenêtre`}
+				>
+					<span aria-hidden>📦</span> {LINK_NPM_LABEL}
 				</Link>
 			</p>
 		</section>
 	)
 }
 
+const LINK_API_LABEL = 'En savoir plus sur notre API REST'
+
 function ApiUsage({
-	engine,
 	situation,
 	dottedName,
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 }: {
-	engine: Engine<string>
 	situation: Record<string, unknown>
 	dottedName: string
 	apiDocumentationUrl: string
@@ -264,14 +260,9 @@ function ApiUsage({
 }) {
 	const { Code, Link } = useContext(RenderersContext)
 
-	const keys = Object.keys(situation)
-	const evaluatedSituation = Object.fromEntries(
-		keys.map((dot) => [dot, serializeEvaluation(engine.evaluate(dot))])
-	)
-
 	const data = {
 		expressions: [dottedName],
-		situation: evaluatedSituation,
+		situation: situation,
 	}
 
 	const tabs = {
@@ -300,8 +291,11 @@ console.log(evaluate)`,
 			<Code tabs={tabs} />
 			{apiDocumentationUrl && (
 				<p style={{ textAlign: 'right' }}>
-					<Link to={apiDocumentationUrl}>
-						👩‍💻 En savoir plus sur notre API REST
+					<Link
+						to={apiDocumentationUrl}
+						aria-label={`${LINK_API_LABEL}, accéder à la documentation, nouvelle fenêtre`}
+					>
+						<span aria-hidden>👩‍💻</span> {LINK_API_LABEL}
 					</Link>
 				</p>
 			)}
@@ -335,6 +329,13 @@ function MissingVars({ selfMissing }: { selfMissing: string[] }) {
 	)
 }
 
+const isReplacementOfThisRule = (node: RuleNode, dottedName: string) =>
+	node &&
+	'replacements' in node &&
+	node.replacements.some(
+		({ replacedReference }) => replacedReference.dottedName === dottedName
+	)
+
 function ReverseMissing({
 	engine,
 	dottedName,
@@ -346,7 +347,12 @@ function ReverseMissing({
 }) {
 	const ruleNamesWithMissing = Array.from(
 		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? []
-	).filter((ruleName) => !engine.context.parsedRules[ruleName].private)
+	).filter(
+		(ruleName) =>
+			ruleName !== '$EVALUATION' &&
+			!engine.context.parsedRules[ruleName].private &&
+			!isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
+	)
 
 	return (
 		<section>
@@ -367,15 +373,11 @@ function ReverseMissing({
 						)}
 					</p>
 					<Ul>
-						{(() => {
-							return ruleNamesWithMissing.length
-								? ruleNamesWithMissing.map((dottedName) => (
-										<Li key={dottedName}>
-											<RuleLinkWithContext dottedName={dottedName} />
-										</Li>
-								  ))
-								: 'Aucune autre règle ne dépend de la règle courante.'
-						})()}
+						{ruleNamesWithMissing.map((dottedName) => (
+							<Li key={dottedName}>
+								<RuleLinkWithContext dottedName={dottedName} />
+							</Li>
+						))}
 					</Ul>
 				</>
 			) : (
@@ -385,31 +387,71 @@ function ReverseMissing({
 	)
 }
 
-function Effect({ replacements }: { replacements: RuleNode['replacements'] }) {
+function Effect({
+	engine,
+	dottedName,
+	replacements,
+}: {
+	engine: Engine
+	dottedName: string
+	replacements: RuleNode['replacements']
+}) {
+	const effects = Array.from(
+		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? []
+	).filter(
+		(ruleName) =>
+			ruleName !== '$EVALUATION' &&
+			!engine.context.parsedRules[ruleName].private &&
+			isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
+	)
+
 	return (
-		<section>
-			<h4>Effets</h4>
-			{!!replacements.length ? (
-				<>
-					<p>
-						Une règle peut modifier d'autres règles afin de modifier leur
-						comportement.
-					</p>
-					<Ul>
-						{replacements.map((replacement) => (
-							<Li
-								style={{ marginBottom: '0.5rem' }}
-								key={replacement.replacedReference.dottedName}
-							>
-								<Explanation node={replacement} />
-							</Li>
-						))}
-					</Ul>
-				</>
-			) : (
-				<p>Cette règle ne modifie aucune autre règle.</p>
-			)}
-		</section>
+		<>
+			<section>
+				<h4>Effets sur d'autres règles</h4>
+				{!!replacements.length ? (
+					<>
+						<p>
+							Une règle peut avoir des effets sur d'autres règles afin de
+							modifier leur comportement.
+						</p>
+						<Ul>
+							{replacements.map((replacement) => (
+								<Li
+									style={{ marginBottom: '0.5rem' }}
+									key={replacement.replacedReference.dottedName}
+								>
+									<Explanation node={replacement} />
+								</Li>
+							))}
+						</Ul>
+					</>
+				) : (
+					<p>Cette règle ne modifie aucune autre règle.</p>
+				)}
+			</section>
+
+			<section>
+				<h4>Règles qui peuvent avoir un effet sur cette valeur</h4>
+				{effects.length ? (
+					<>
+						<p>
+							Les règles suivantes peuvent remplacer la valeur de la règle
+							courante :
+						</p>
+						<Ul>
+							{effects.map((dottedName) => (
+								<Li key={dottedName}>
+									<RuleLinkWithContext dottedName={dottedName} />
+								</Li>
+							))}
+						</Ul>
+					</>
+				) : (
+					<p>Aucune autre règle n'a d'effet sur cette valeur.</p>
+				)}
+			</section>
+		</>
 	)
 }
 

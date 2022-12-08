@@ -80,8 +80,17 @@ describe('convertUnit', () => {
 	it('should convert year to month in numerator', () => {
 		expect(convertUnit(parseUnit('mois'), parseUnit('an'), 12)).to.eq(1)
 	})
-	it('should month to year in numerator', () => {
+	it('should convert month to year in numerator', () => {
 		expect(convertUnit(parseUnit('mois'), parseUnit('an'), 12)).to.eq(1)
+	})
+	it('should convert cm to m in numerator', () => {
+		expect(convertUnit(parseUnit('cm'), parseUnit('m'), 100)).to.eq(1)
+	})
+	it('should convert mm to m in numerator', () => {
+		expect(convertUnit(parseUnit('mm'), parseUnit('m'), 1000)).to.eq(1)
+	})
+	it('should convert mm to cm in numerator', () => {
+		expect(convertUnit(parseUnit('mm'), parseUnit('cm'), 10)).to.eq(1)
 	})
 	it('should convert percentage to simple value', () => {
 		expect(convertUnit(parseUnit('%'), parseUnit(''), 83)).to.closeTo(
