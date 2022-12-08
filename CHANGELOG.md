@@ -2,6 +2,12 @@
 
 ## next
 
+## 1.0.0-beta.64
+
+**publicodes-react**
+
+- Fix remaining accessibility violations (#339)
+
 ## 1.0.0-beta.63
 
 **core**
