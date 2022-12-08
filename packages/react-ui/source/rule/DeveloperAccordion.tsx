@@ -146,7 +146,7 @@ function ActualRule({
 
 	return (
 		<section>
-			<h5>Règle actuelle</h5>
+			<h4>Règle actuelle</h4>
 			<Code tabs={{ dottedName }} />
 			<RuleSource dottedName={dottedName} engine={engine} />
 		</section>
@@ -168,7 +168,7 @@ function ActualSituation({
 
 	return (
 		<section>
-			<h5>Situation actuelle</h5>
+			<h4>Situation actuelle</h4>
 			{keys.length ? (
 				<p>
 					Voici les données que vous avez saisies dans notre simulateur sous
@@ -219,7 +219,7 @@ console.log(formatValue(evaluation))
 
 	return (
 		<section>
-			<h5>Lancer un calcul avec Publicodes</h5>
+			<h4>Lancer un calcul avec Publicodes</h4>
 			<p>
 				Vous pouvez installer notre package de règles pour l'utiliser avec le{' '}
 				<Link
@@ -283,7 +283,7 @@ console.log(evaluate)`,
 
 	return (
 		<section>
-			<h5>Utiliser notre API REST</h5>
+			<h4>Utiliser notre API REST</h4>
 			<p>
 				Vous trouverez ici un exemple d'utilisation de notre API REST via curl
 				ou un fetch javascript.
@@ -306,7 +306,7 @@ console.log(evaluate)`,
 function MissingVars({ selfMissing }: { selfMissing: string[] }) {
 	return (
 		<section>
-			<h5>Données manquantes</h5>
+			<h4>Données manquantes</h4>
 			{!!selfMissing?.length ? (
 				<>
 					<p>
@@ -356,7 +356,7 @@ function ReverseMissing({
 
 	return (
 		<section>
-			<h5>Règles qui ont besoin de cette valeur</h5>
+			<h4>Règles qui ont besoin de cette valeur</h4>
 
 			{ruleNamesWithMissing.length ? (
 				<>
@@ -408,7 +408,7 @@ function Effect({
 	return (
 		<>
 			<section>
-				<h5>Effets sur d'autres règles</h5>
+				<h4>Effets sur d'autres règles</h4>
 				{!!replacements.length ? (
 					<>
 						<p>
@@ -432,7 +432,7 @@ function Effect({
 			</section>
 
 			<section>
-				<h5>Règles qui peuvent avoir un effet sur cette valeur</h5>
+				<h4>Règles qui peuvent avoir un effet sur cette valeur</h4>
 				{effects.length ? (
 					<>
 						<p>

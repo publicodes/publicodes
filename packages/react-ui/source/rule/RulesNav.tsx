@@ -149,7 +149,11 @@ const NavLi = ({ ruleDottedName, open, active, onClickDropdown }) => {
 		>
 			<span className="content">
 				{childrenCount > 0 && (
-					<DropdownButton onClick={() => onClickDropdown(ruleDottedName)}>
+					<DropdownButton
+						aria-label={open ? 'Replier le sous-menu' : 'Déplier le sous-menu'}
+						aria-expanded={open}
+						onClick={() => onClickDropdown(ruleDottedName)}
+					>
 						<StyledArrow $open={open} />
 					</DropdownButton>
 				)}
