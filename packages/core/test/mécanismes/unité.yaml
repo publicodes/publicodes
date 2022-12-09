@@ -41,3 +41,19 @@ unités équivalentes:
   valeur: 5 salariés + 2 employés
   exemples:
     - unité attendue: employé
+
+unité avec espace:
+  exemples:
+    # pas d'espace autour de la barre oblique /
+    - situation:
+        unité avec espace:
+          valeur: 1
+          unité: € / mois
+      exception: L'unité "€ / mois" contient des espaces
+    # espace autorisé à l'intérieur d'une unité de base "kWh PCI"
+    - situation:
+        unité avec espace:
+          valeur: 2
+          unité: kgCO2eq/kWh PCI
+      valeur attendue: 2
+      unité attendue: kgCO2eq/kWh PCI
