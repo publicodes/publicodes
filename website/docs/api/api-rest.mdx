@@ -1,10 +1,10 @@
 ---
-title: API REST
+title: REST-API
 description: 'Outil pour créer votre API REST Publicodes.'
 hide_table_of_contents: true
 ---
 
-## API REST Publicodes
+# API REST Publicodes
 
 Publicodes étant un module javascript, il peut être difficile de l'intégrer dans des projets écrits dans d'autres
 langages (PHP, Python, etc.) ou même dans certaines applications comme des tableurs (excel, gsheet, etc.).
@@ -16,11 +16,11 @@ qui expose des points d'entrée analogues à l'interpréteur Publicodes :
 
 - `POST` `/evaluate` Évalue une ou plusieurs expressions avec une situation donnée
 
-  > Les paramètres sont envoyés au format JSON :  
-  > `expressions` une/des expressions publicodes (type : `string | number | object | (string | number | object)[]`)  
+  > Les paramètres sont envoyés au format JSON :
+  > `expressions` une/des expressions publicodes (type : `string | number | object | (string | number | object)[]`)
   > Exemple: `["dépenses primeur", {valeur : "dépenses primeur * 2"}]`
   >
-  > `situation` une situation publicodes (type : `object`)  
+  > `situation` une situation publicodes (type : `object`)
   > Exemple: `{ "prix . carottes" : "1€/kg" }`
 
 - `GET` `/rules` Retourne la liste de toutes vos règles
@@ -47,7 +47,7 @@ const app = new Koa()
 const router = new Router()
 
 // Create middleware with your Engine
-const apiRoutes = publicodesAPI(new Engine({coucou: 0}))
+const apiRoutes = publicodesAPI(new Engine({ coucou: 0 }))
 
 // Basic routes usage (/evaluate, /rules, etc.)
 router.use(apiRoutes)
