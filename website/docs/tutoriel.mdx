@@ -52,9 +52,12 @@ const Engine = require('publicodes').default
 <TabItem value="script-unpkg">
 
 ```html
-<script src="https://unpkg.com/publicodes@next/dist/index.global.js"></script>
-<script>
-	const Engine = window.publicodes.default
+<script
+	type="module"
+	src="https://unpkg.com/publicodes@next/dist/index.js"
+></script>
+<script type="module">
+	import Engine from 'publicodes'
 </script>
 ```
 

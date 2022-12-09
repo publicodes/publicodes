@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Example url import</title>
+	</head>
+	<body>
+		🥔 Total : <strong id="total"></strong>
+
+		<!-- Here we reference a bundled publicodes JS file from a local ressource but
+		you can also use one hosted on a CDN like https://unpkg.com/publicodes@^1 -->
+		<script type="module" src="/publicodes.js"></script>
+		<script type="module">
+			import Publicodes, { formatValue } from 'publicodes'
+
+			const engine = new Publicodes({
+				total: '3 potatoes + 2 potatoes',
+			})
+			const total = engine.evaluate('total')
+			document.getElementById('total').innerHTML = formatValue(total)
+		</script>
+	</body>
+</html>

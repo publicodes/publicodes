@@ -33,16 +33,14 @@
 		"dedent-js": "1.0.1",
 		"intl": "^1.2.5",
 		"mocha": "^9.2.0",
+		"moo": "^0.5.1",
+		"nearley": "^2.19.2",
 		"rimraf": "^3.0.2",
 		"sinon": "^12.0.1",
 		"sinon-chai": "^3.7.0",
 		"ts-node": "^10.9.1",
 		"tsup": "^6.5.0",
 		"typescript": "^4.9.3"
-	},
-	"dependencies": {
-		"moo": "^0.5.1",
-		"nearley": "^2.19.2"
 	},
 	"scripts": {
 		"build:grammar": "nearleyc ./source/grammar.ne -o ./source/grammar.js",

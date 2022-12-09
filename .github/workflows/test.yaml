@@ -25,16 +25,23 @@ jobs:
       - uses: ./.github/actions/install
       - run: yarn test:type
 
-  test-example-app:
+  test-example-apps:
     name: Test example app
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        example: ['browser-url-import', 'publicodes-react']
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/install
-      - run: |
-          cd ./examples/publicodes-react
-          yarn install
-          yarn test
+      - run: yarn build
+      - run: yarn install
+        working-directory: ./examples/${{ matrix.example }}
+      - if: matrix.example == 'browser-url-import'
+        run: npx playwright install
+        working-directory: ./examples/${{ matrix.example }}
+      - run: yarn test
+        working-directory: ./examples/${{ matrix.example }}
 
   test-packages-versioning:
     name: Enforce consistent package versioning

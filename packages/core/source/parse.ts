@@ -42,6 +42,11 @@ import { Context } from './parsePublicodes'
 import parseReference from './reference'
 import parseRule from './rule'
 
+// TODO: nearley is currently exported as a CommonJS module which is why we need
+// to destructure the default import instead of directly importing the symbols
+// we need. This is sub-optimal because we our bundler will not tree-shake
+// unused nearley symbols.
+// https://github.com/kach/nearley/issues/535
 const { Grammar, Parser } = nearley
 
 export default function parse(rawNode, context: Context): ASTNode {
