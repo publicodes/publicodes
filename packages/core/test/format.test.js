@@ -51,7 +51,7 @@ describe('Units handling', () => {
 				},
 				{ formatUnit }
 			)
-		).to.equal('7 jours / semaine')
+		).to.equal('7 jours/semaine')
 	})
 })
 
