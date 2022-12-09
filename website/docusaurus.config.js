@@ -30,11 +30,6 @@ module.exports = {
 					label: 'Bac à sable',
 				},
 				{
-					to: 'api-rest',
-					position: 'left',
-					label: 'API REST',
-				},
-				{
 					href: 'https://pad.incubateur.net/s/qTHaJc9VH#',
 					label: '📅 Meetup Publicodes à Paris ',
 					position: 'right',
