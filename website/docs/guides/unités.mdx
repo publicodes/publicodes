@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 title: Utiliser les unités
 ---
 
@@ -39,6 +39,8 @@ Il ne faut pas insérer d'espace autour de la barre oblique dans les unités, l'
 
 :::
 
+## Conversion d'unités
+
 Publicodes convertit automatiquement les unités si besoin.
 
 ```publicodes
@@ -46,17 +48,37 @@ salaire: 1500 €/mois
 prime faible salaire applicable: salaire < 20 k€/an
 ```
 
-:::info
-
-On peut forcer la conversion des unités via le [mécanisme `unité`](/docs/mécanismes#unité).
-
-:::
-
 **Types de base disponibles pour la conversion :**
 
 - `jour` / `mois` / `an`
 - `€` / `k€`
 - `g` / `kg` / `mg`
+
+:::caution Ajouter des conversions automatiques
+
+Il n'est pour l'instant pas possible d'ajouter des conversions. Cela sera possible dans une prochaine version de publicodes. [voir le ticket correspondant](https://github.com/betagouv/publicodes/issues/340)
+
+:::
+
+On peut forcer la conversion des unités via le [mécanisme `unité`](/docs/mécanismes#unité) :
+
+```publicodes
+SMIC: 1500 €/mois
+
+salaire exemple:
+	valeur: 2 * SMIC
+	unité: €/an
+	note: Ici le salaire est présenté sous forme annuelle. La conversion est automatique.
+```
+
+Ce mécanisme `unité` peut aussi être utilisé lors de l'évaluation d'une règle avec l'API Javascript <!-- TODO ajouter lien interne --> :
+
+```javascript
+const salaireExemple = engine.evaluate({
+	valeur: '2 * SMIC',
+	unité: '€/an',
+})
+```
 
 ## Pourcentage `%`
 
@@ -149,11 +171,11 @@ Avec cette configuration publicodes formate aussi correctement les unités dans 
 
 ## Unités équivalentes
 
-TODO
+[TODO](https://github.com/betagouv/publicodes/issues/340)
 
 ## Groupes de mille
 
-TODO
+[TODO](https://github.com/betagouv/publicodes/issues/340)
 
 ## Résoudre des problèmes d'unités
 

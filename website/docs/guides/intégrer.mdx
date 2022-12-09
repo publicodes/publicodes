@@ -1,6 +1,7 @@
 ---
-sidebar_position: 2
-title: Tutoriel
+sidebar_position: 1
+title: Intégration
+description: Intégrer Publicodes dans une application JavaScript
 ---
 
 import Tabs from '@theme/Tabs'
@@ -153,26 +154,6 @@ La fonction `evaluate` permet d'évaluer des expressions Publicodes complètes :
 const depensesParJour = engine.evaluate('dépenses primeur / 7 jours')
 console.log(`J'ai dépensé ${formatValue(depensesParJour)}.`)
 ```
-
-### Conversion d'unité
-
-Publicodes permet de réaliser des conversions d'unités. Pour celà il faut
-indiquer l'unité désirée via le mécanisme [`unité`](https://publi.codes/documentation/mécanismes#unité) :
-
-```js
-// on va au marché une fois par semaine en moyenne, combien dépense-t-on par mois ?
-const depensesParMois = engine.evaluate({
-	valeur: 'dépenses primeur / 7 jours',
-	unité: '€/mois',
-})
-console.log(`J'ai dépensé ${formatValue(depensesParMois)}.`)
-```
-
-:::info
-
-[➡ en savoir plus sur les unités](./principes-de-base.mdx)
-
-:::
 
 ### Variables manquantes
 
