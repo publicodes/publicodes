@@ -2,8 +2,7 @@ import { defineConfig } from 'tsup'
 
 export default defineConfig({
 	entry: ['source/index.ts'],
-	format: ['cjs', 'esm', 'iife'],
-	globalName: 'publicodes',
+	format: ['cjs', 'esm'],
 	sourcemap: true,
 	clean: true,
 	dts: true,
