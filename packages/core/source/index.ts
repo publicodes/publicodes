@@ -73,7 +73,7 @@ export type Logger = {
 	error(message: string): void
 }
 
-type Options = Partial<Pick<Context, 'logger' | 'getUnitKey'>>
+type Options = Partial<Pick<Context, 'logger'>>
 
 export type EvaluationFunction<Kind extends NodeKind = NodeKind> = (
 	this: Engine,

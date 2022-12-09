@@ -9,7 +9,7 @@ import {
 	disambiguateReferenceNode,
 	updateReferencesMapsFromReferenceNode,
 } from './ruleUtils'
-import { getUnitKey } from './units'
+import { type UnitsConfig } from './units'
 
 export type Context<RuleNames extends string = string> = {
 	dottedName: RuleNames | ''
@@ -17,10 +17,9 @@ export type Context<RuleNames extends string = string> = {
 	nodesTypes: NodesTypes
 	referencesMaps: ReferencesMaps<RuleNames>
 	rulesReplacements: RulesReplacements<RuleNames>
-	getUnitKey?: getUnitKey
 	logger: Logger
 	inversionMaxIterations?: number
-	units?: Record<string, { pluriel: string; équivalences: Array<string> }>
+	units: UnitsConfig
 }
 
 export type RulesReplacements<RuleNames extends string> = Partial<
@@ -43,11 +42,14 @@ export function createContext<RuleNames extends string>(
 	return {
 		dottedName: '',
 		logger: console,
-		getUnitKey: (x) => x,
 		parsedRules: {} as ParsedRules<RuleNames>,
 		referencesMaps: { referencesIn: new Map(), rulesThatUse: new Map() },
 		nodesTypes: new WeakMap(),
 		rulesReplacements: {},
+		units: {
+			plurals: {},
+			pluralsReversed: {},
+		},
 
 		...partialContext,
 	}
@@ -88,22 +90,37 @@ export default function parsePublicodes<
 	let previousParsedRules = context.parsedRules
 	context.parsedRules = {} as ParsedRules<ContextNames>
 
-	const configRules = rules.filter(([dottedName]) =>
-		dottedName.startsWith('~config')
-	)
+	const configPrefix = '~config'
+	const configRules = rules
+		.filter(([dottedName]) => dottedName.startsWith(configPrefix))
+		.map(([dottedName, rule]) => [
+			dottedName.slice(configPrefix.length).trim(),
+			rule,
+		])
+
 	configRules.forEach(([configName, rule]) => {
-		if (configName === '~config unités') {
-			context.units = rule as Context['units']
+		if (configName === 'pluriel unités') {
+			if (
+				typeof rule !== 'object' ||
+				rule === null ||
+				Object.entries(rule).some(
+					([unit, plural]) =>
+						typeof unit !== 'string' || typeof plural !== 'string'
+				)
+			) {
+				throw new PublicodesError(
+					'SyntaxError',
+					`Invalid config for plural units`,
+					{ dottedName: configPrefix + ' ' + configName }
+				)
+			}
+
+			context.units.plurals = rule as Context['units']['plurals']
+			context.units.pluralsReversed = Object.fromEntries(
+				Object.entries(rule).map(([a, b]) => [b, a])
+			) as Context['units']['pluralsReversed']
 		}
 	})
-
-	context.getUnitKey = function getUnitKey(rawUnit) {
-		const matchingUnit = Object.entries(context.units ?? {}).find(
-			([, { pluriel, équivalences }]) =>
-				pluriel === rawUnit || équivalences?.includes(rawUnit)
-		)?.[0]
-		return matchingUnit ?? rawUnit
-	}
 
 	rules
 		.filter(([dottedName]) => !dottedName.startsWith('~config'))

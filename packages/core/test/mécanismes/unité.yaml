@@ -1,8 +1,5 @@
-~config unités:
-  employé:
-    pluriel: employés
-    équivalences:
-      - salariés
+~config pluriel unités:
+  employé: employés
 
 cotisation retraite:
 
@@ -36,11 +33,6 @@ pluralisation des unités:
   exemples:
     - unité attendue: €
       valeur attendue: 50
-
-unités équivalentes:
-  valeur: 5 salariés + 2 employés
-  exemples:
-    - unité attendue: employé
 
 unité avec espace:
   exemples:

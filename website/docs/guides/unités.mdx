@@ -146,9 +146,8 @@ Une manière naïve de résoudre ce problème est d'utiliser systématiquement l
 Pour résoudre ce problème publicodes permet de définir le pluriel d'une unité utilisée :
 
 ```publicodes
-~config unités:
-  cheval:
-    pluriel: chevaux
+~config pluriel unités:
+	cheval: chevaux
 
 équipe A: 1 cheval
 équipe B: 3 chevaux
@@ -160,11 +159,9 @@ La clé `~config unités` est une clé spéciale pour configurer publicodes.
 Avec cette configuration publicodes formate aussi correctement les unités dans la documentation générée :
 
 ```publicodes
-~config unités:
-  cheval:
-    pluriel: chevaux
-  cavalier:
-    pluriel: cavaliers
+~config pluriel unités:
+	cheval: chevaux
+	cavalier: cavaliers
 
 équipe B: 3 chevaux / 3 cavaliers
 ```

@@ -1,13 +1,16 @@
 import { Evaluation, Unit } from './AST/types'
 import { PublicodesError } from './error'
 
-export type getUnitKey = (writtenUnit: string) => string
+export type UnitsConfig = {
+	plurals: Record<string, string>
+	pluralsReversed: Record<string, string>
+}
+
 export type formatUnit = (unit: string, count: number) => string
 
-export const parseUnit = (
-	string: string,
-	getUnitKey: getUnitKey = (x) => x
-): Unit => {
+export const parseUnit = (string: string, unitsConfig: UnitsConfig): Unit => {
+	const getUnitKey = (x: string) => unitsConfig?.pluralsReversed?.[x] || x
+
 	const [a, ...b] = string.split('/').map((u) => u.trim()),
 		result = {
 			numerators: a
