@@ -197,7 +197,9 @@ function Rule({
 					)}
 
 					<h2>Comment cette donnée est-elle calculée ?</h2>
-					<Explanation node={valeur} />
+					<div id="documentation-rule-explanation">
+						<Explanation node={valeur} />
+					</div>
 
 					{rule.rawNode.note && (
 						<>
