@@ -95,14 +95,15 @@ function getReferences(
 // - no question
 // - no dependency
 function isFoldable(rule: RuleNode): boolean {
-	const rawNode = rule.rawNode
+	const rawNode = rule?.rawNode
 	return !(
 		'question' in rawNode ||
 		// NOTE(@EmileRolley): I assume that a rule can have a [par défaut] attribute without a [question] one.
 		// The behavior could be specified.
 		'par défaut' in rawNode ||
 		'est compressée' in rawNode ||
-		'applicable si' in rawNode
+		'applicable si' in rawNode ||
+		'non applicable si' in rawNode
 	)
 }
 
@@ -125,7 +126,7 @@ function replaceAllRefs(
 	refName: string,
 	constantValue: any
 ): string {
-	const re = new RegExp(`\\b${refName}`, 'g')
+	const re = new RegExp(`${refName}`, 'g')
 	return str.replaceAll(re, constantValue)
 }
 
@@ -201,16 +202,15 @@ function searchAndReplaceConstantValueInParentRefs(
 	if (refs) {
 		refs
 			.map((dottedName) => ctx.parsedRules[dottedName])
-			.filter((r) => r)
+			.filter((r) => isFoldable(r))
 			.forEach(({ dottedName: parentDottedName }) => {
 				const newRule = lexicalSubstitutionOfRefValue(
 					ctx.parsedRules[parentDottedName],
 					rule
 				)
 				if (newRule) {
-					ctx.parsedRules[dottedName] = newRule
-					ctx.parsedRules[dottedName].rawNode['est compressée'] = true
-					parentsToRemove.push(dottedName)
+					ctx.parsedRules[parentDottedName] = newRule
+					parentsToRemove.push(parentDottedName)
 				}
 			})
 
@@ -240,18 +240,10 @@ function replaceAllPossibleChildRefs(
 	parentRuleNode: RuleNode,
 	refs: RuleName[]
 ): FoldingCtx {
-	const hasBeenModified = (prevRule: Rule, newRule: Rule) => {
-		if (prevRule.formule) {
-			return prevRule.formule === newRule.formule
-		}
-		if (prevRule.somme) {
-			return prevRule.somme === newRule.somme
-		}
-	}
 	if (refs) {
 		refs
 			.map((dottedName) => ctx.parsedRules[dottedName])
-			.filter((r) => r)
+			.filter((r) => isFoldable(r))
 			.forEach(({ dottedName: childDottedName }) => {
 				let childNode = ctx.parsedRules[childDottedName]
 
@@ -270,15 +262,8 @@ function replaceAllPossibleChildRefs(
 					)
 					if (newRule) {
 						ctx.parsedRules[parentRuleName] = newRule
-						if (
-							hasBeenModified(
-								parentRuleNode.rawNode,
-								ctx.parsedRules[parentRuleName].rawNode
-							)
-						) {
-							ctx.parsedRules[parentRuleName].rawNode['est compressée'] = true
-							ctx = updateRefCounting(ctx, parentRuleName, [childDottedName])
-						}
+						ctx.parsedRules[parentRuleName].rawNode['est compressée'] = true
+						ctx = updateRefCounting(ctx, parentRuleName, [childDottedName])
 					}
 				}
 			})
@@ -323,7 +308,8 @@ function tryToFoldRule(
 		// Already managed rule
 		return ctx
 	}
-	if (isEmptyRule(rule)) {
+	if (isEmptyRule(rule) && ctx.refs.parents.get(ruleName)?.length === 0) {
+		// Empty rule with no parent
 		delete ctx.parsedRules[ruleName]
 		return ctx
 	}

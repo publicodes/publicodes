@@ -174,70 +174,6 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-	it('should fold a constant within two degrees with an [applicable si] (set to false) mechanism', () => {
-		const rawRules = {
-			A: {
-				formule: 'B',
-			},
-			'A . B': {
-				'applicable si': 'présent',
-				formule: 'C * 10',
-			},
-			'A . B . présent': {
-				question: 'Is present?',
-				'par défaut': 'non',
-			},
-			'A . B . C': {
-				valeur: 7,
-			},
-		}
-		expect(constantFoldingWith(rawRules)).toStrictEqual({
-			A: {
-				formule: 'B',
-			},
-			'A . B': {
-				'applicable si': 'présent',
-				formule: '7 * 10',
-				'est compressée': true,
-			},
-			'A . B . présent': {
-				question: 'Is present?',
-				'par défaut': 'non',
-			},
-		})
-	})
-	it('should fold a constant within two degrees with an [applicable si] (set to true) mechanism', () => {
-		const rawRules = {
-			A: {
-				formule: 'B',
-			},
-			'A . B': {
-				'applicable si': 'présent',
-				formule: 'C * 10',
-			},
-			'A . B . présent': {
-				question: 'Is present?',
-				'par défaut': 'oui',
-			},
-			'A . B . C': {
-				valeur: 7,
-			},
-		}
-		expect(constantFoldingWith(rawRules)).toStrictEqual({
-			A: {
-				formule: 'B',
-			},
-			'A . B': {
-				'applicable si': 'présent',
-				formule: '7 * 10',
-				'est compressée': true,
-			},
-			'A . B . présent': {
-				question: 'Is present?',
-				'par défaut': 'oui',
-			},
-		})
-	})
 	it('should fold constant within two degrees with B, a partially foldable rule', () => {
 		const rawRules = {
 			A: {
@@ -496,6 +432,72 @@ describe('Constant folding optim', () => {
 	})
 
 	// TODO: not supported yet
+	//
+	//
+	// it('should fold a constant within two degrees with an [applicable si] (set to false) mechanism', () => {
+	// 	const rawRules = {
+	// 		A: {
+	// 			formule: 'B',
+	// 		},
+	// 		'A . B': {
+	// 			'applicable si': 'présent',
+	// 			formule: 'C * 10',
+	// 		},
+	// 		'A . B . présent': {
+	// 			question: 'Is present?',
+	// 			'par défaut': 'non',
+	// 		},
+	// 		'A . B . C': {
+	// 			valeur: 7,
+	// 		},
+	// 	}
+	// 	expect(constantFoldingWith(rawRules)).toStrictEqual({
+	// 		A: {
+	// 			formule: 'B',
+	// 		},
+	// 		'A . B': {
+	// 			'applicable si': 'présent',
+	// 			formule: '7 * 10',
+	// 			'est compressée': true,
+	// 		},
+	// 		'A . B . présent': {
+	// 			question: 'Is present?',
+	// 			'par défaut': 'non',
+	// 		},
+	// 	})
+	// })
+	// it('should fold a constant within two degrees with an [applicable si] (set to true) mechanism', () => {
+	// 	const rawRules = {
+	// 		A: {
+	// 			formule: 'B',
+	// 		},
+	// 		'A . B': {
+	// 			'applicable si': 'présent',
+	// 			formule: 'C * 10',
+	// 		},
+	// 		'A . B . présent': {
+	// 			question: 'Is present?',
+	// 			'par défaut': 'oui',
+	// 		},
+	// 		'A . B . C': {
+	// 			valeur: 7,
+	// 		},
+	// 	}
+	// 	expect(constantFoldingWith(rawRules)).toStrictEqual({
+	// 		A: {
+	// 			formule: 'B',
+	// 		},
+	// 		'A . B': {
+	// 			'applicable si': 'présent',
+	// 			formule: '7 * 10',
+	// 			'est compressée': true,
+	// 		},
+	// 		'A . B . présent': {
+	// 			question: 'Is present?',
+	// 			'par défaut': 'oui',
+	// 		},
+	// 	})
+	// })
 	//
 	// it('should not delete leaf used in [applicable si > toutes ces conditions (evaluated to ⊤)]', () => {
 	// 	const rawRules = {
