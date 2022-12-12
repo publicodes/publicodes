@@ -26,35 +26,16 @@ type FoldingCtx = {
 	refs: RefMaps
 }
 
-// Removes references to:
-// - $SITUATION rules
-// - parent namespaces
-function removeParentReferences(
-	parsedRules: ParsedRules,
-	[dottedName, set]: [RuleName, Set<RuleName>]
-): [RuleName, RuleName[]] {
-	const isChild = (dottedNameChild: RuleName) => {
-		return dottedNameChild.startsWith(dottedName)
-	}
-
-	return [
-		dottedName,
-		Array.from(set).filter((dottedName: string) => {
-			return (
-				parsedRules[dottedName] &&
-				!dottedName.endsWith('$SITUATION') &&
-				!isChild(dottedName)
-			)
-		}),
-	]
-}
-
 function getReferences(
 	context: Context<RuleName>,
 	parsedRules: ParsedRules
 ): RefMaps {
-	const getFilteredReferences = (
-		referencesMap: Map<RuleName, Set<RuleName>>
+	const getFilteredReferencesBy = (
+		referencesMap: Map<RuleName, Set<RuleName>>,
+		predicate: (
+			dottedName: RuleName,
+			dottedNameToCompareWith: RuleName
+		) => boolean
 	) => {
 		return new Map(
 			Array.from(referencesMap)
@@ -62,14 +43,51 @@ function getReferences(
 					([dottedName, _]) =>
 						parsedRules[dottedName] && !dottedName.endsWith('$SITUATION')
 				)
-				.map((r: [RuleName, Set<RuleName>]) =>
-					removeParentReferences(parsedRules, r)
-				)
+				.map(([dottedName, set]: [RuleName, Set<RuleName>]) => [
+					dottedName,
+					Array.from(set).filter((dottedNameToCompareWith: string) => {
+						return (
+							parsedRules[dottedNameToCompareWith] &&
+							!dottedNameToCompareWith.endsWith('$SITUATION') &&
+							predicate(dottedName, dottedNameToCompareWith)
+						)
+					}),
+				])
+		)
+	}
+	const isParent = (
+		dottedName: RuleName,
+		// Potential parent of [dottedName]
+		dottedNameToCompareWith: RuleName
+	) => {
+		return (
+			dottedName.startsWith(dottedNameToCompareWith) &&
+			dottedNameToCompareWith.split(' . ').length <
+				dottedName.split(' . ').length
+		)
+	}
+	const isChild = (
+		dottedName: RuleName,
+		// Potential child of [dottedName]
+		dottedNameToCompareWith: RuleName
+	) => {
+		return (
+			dottedNameToCompareWith.startsWith(dottedName) &&
+			dottedNameToCompareWith.split(' . ').length >
+				dottedName.split(' . ').length
 		)
 	}
 	return {
-		parents: getFilteredReferences(context.referencesMaps.rulesThatUse),
-		childs: getFilteredReferences(context.referencesMaps.referencesIn),
+		parents: getFilteredReferencesBy(
+			context.referencesMaps.rulesThatUse,
+			(dottedName, dottedNameToCompareWith) =>
+				!isChild(dottedName, dottedNameToCompareWith)
+		),
+		childs: getFilteredReferencesBy(
+			context.referencesMaps.referencesIn,
+			(dottedName, dottedNameToCompareWith) =>
+				!isParent(dottedName, dottedNameToCompareWith)
+		),
 	}
 }
 

@@ -494,4 +494,87 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
+
+	// TODO: not supported yet
+	//
+	// it('should not delete leaf used in [applicable si > toutes ces conditions (evaluated to ⊤)]', () => {
+	// 	const rawRules = {
+	// 		root: {
+	// 			'applicable si': {
+	// 				'toutes ces conditions': ['unfoldable < foldable'],
+	// 			},
+	// 			formule: 'foldable * pas foldable',
+	// 		},
+	// 		'root . foldable': {
+	// 			valeur: 20,
+	// 		},
+	// 		'root . unfoldable': {
+	// 			'par défaut': 10,
+	// 		},
+	// 	}
+	// 	expect(constantFoldingWith(rawRules)).toStrictEqual({
+	// 		root: {
+	// 			'applicable si': {
+	// 				// TODO: should be replaced by 'unfoldable < 20'
+	// 				'toutes ces conditions': ['unfoldable < foldable'],
+	// 			},
+	// 			formule: '20 * unfoldable',
+	// 			'est compressée': true,
+	// 		},
+	// 		'root . unfoldable': {
+	// 			'par défaut': 10,
+	// 		},
+	// 	})
+	// })
+	// it('should not delete leaf used in [applicable si > toutes ces conditions (evaluated to ⊥)] ', () => {
+	// 	const rawRules = {
+	// 		root: {
+	// 			'applicable si': {
+	// 				'toutes ces conditions': ['unfoldable > foldable'],
+	// 			},
+	// 			formule: 'foldable * unfoldable',
+	// 		},
+	// 		'root . foldable': {
+	// 			valeur: 20,
+	// 		},
+	// 		'root . unfoldable': {
+	// 			'par défaut': 10,
+	// 		},
+	// 	}
+	// 	expect(constantFoldingWith(rawRules)).toStrictEqual({
+	// 		root: {
+	// 			'applicable si': {
+	// 				'toutes ces conditions': ['unfoldable > 20'],
+	// 			},
+	// 			formule: '20 * unfoldable',
+	// 			'est compressée': true,
+	// 		},
+	// 		'root . unfoldable': {
+	// 			'par défaut': 10,
+	// 		},
+	// 	})
+	// })
+	// TODO:
+	// it('replaceAllRefs bug #3', () => {
+	// 	const rawRules = {
+	// 		boisson: {
+	// 			formule: 'tasse de café * de café',
+	// 		},
+	// 		'boisson . café': {
+	// 			valeur: 20,
+	// 		},
+	// 		'boisson . tasse de café': {
+	// 			'par défaut': 10,
+	// 		},
+	// 	}
+	// 	expect(constantFoldingWith(rawRules)).toStrictEqual({
+	// 		boisson: {
+	// 			formule: '20 * nombre',
+	// 			'est compressée': true,
+	// 		},
+	// 		'boisson . nombre': {
+	// 			'par défaut': 10,
+	// 		},
+	// 	})
+	// })
 })
