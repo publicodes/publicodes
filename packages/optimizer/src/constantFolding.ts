@@ -97,11 +97,12 @@ function getReferences(
 function isFoldable(rule: RuleNode): boolean {
 	const rawNode = rule.rawNode
 	return !(
-		rawNode.question ||
+		'question' in rawNode ||
 		// NOTE(@EmileRolley): I assume that a rule can have a [par défaut] attribute without a [question] one.
 		// The behavior could be specified.
-		rawNode['par défaut'] ||
-		rawNode['est compressée']
+		'par défaut' in rawNode ||
+		'est compressée' in rawNode ||
+		'applicable si' in rawNode
 	)
 }
 
@@ -114,10 +115,15 @@ function isEmptyRule(rule: RuleNode): boolean {
 	return Object.keys(rule.rawNode).length <= 1
 }
 
+// Replaces boolean values by their string representation in French.
+function formatToPulicodesValue(value: any) {
+	return typeof value === 'boolean' ? (value ? 'oui' : 'non') : value
+}
+
 function replaceAllRefs(
 	str: string,
 	refName: string,
-	constantValue: string
+	constantValue: any
 ): string {
 	const re = new RegExp(`\\b${refName}`, 'g')
 	return str.replaceAll(re, constantValue)
@@ -140,12 +146,14 @@ function lexicalSubstitutionOfRefValue(
 		parent
 	)
 
+	const constValue = formatToPulicodesValue(constant.rawNode.valeur)
+
 	if (parent.rawNode.formule) {
 		if (typeof parent.rawNode.formule === 'string') {
 			parent.rawNode.formule = replaceAllRefs(
 				parent.rawNode.formule,
 				refName,
-				constant.rawNode.valeur
+				constValue
 			)
 			return parent
 		} else if (parent.rawNode.formule.somme) {
@@ -153,7 +161,7 @@ function lexicalSubstitutionOfRefValue(
 			parent.rawNode.formule.somme = parent.rawNode.formule.somme.map(
 				(expr: string | number) => {
 					return typeof expr === 'string'
-						? replaceAllRefs(expr, refName, constant.rawNode.valeur)
+						? replaceAllRefs(expr, refName, constValue)
 						: expr
 				}
 			)
@@ -163,7 +171,7 @@ function lexicalSubstitutionOfRefValue(
 	if (parent.rawNode.somme) {
 		parent.rawNode.somme = parent.rawNode.somme.map((expr: string | number) => {
 			return typeof expr === 'string'
-				? replaceAllRefs(expr, refName, constant.rawNode.valeur)
+				? replaceAllRefs(expr, refName, constValue)
 				: expr
 		})
 		return parent
@@ -173,7 +181,7 @@ function lexicalSubstitutionOfRefValue(
 		parent.rawNode.formule = replaceAllRefs(
 			parent.rawNode.valeur,
 			refName,
-			constant.rawNode.valeur
+			constValue
 		)
 		delete parent.rawNode.valeur
 		return parent
@@ -194,9 +202,9 @@ function searchAndReplaceConstantValueInParentRefs(
 		refs
 			.map((dottedName) => ctx.parsedRules[dottedName])
 			.filter((r) => r)
-			.forEach(({ dottedName }) => {
+			.forEach(({ dottedName: parentDottedName }) => {
 				const newRule = lexicalSubstitutionOfRefValue(
-					ctx.parsedRules[dottedName],
+					ctx.parsedRules[parentDottedName],
 					rule
 				)
 				if (newRule) {
@@ -216,7 +224,7 @@ function searchAndReplaceConstantValueInParentRefs(
 }
 
 function isAlreadyFolded(rule: RuleNode) {
-	return rule.rawNode && rule.rawNode['est compressée']
+	return rule.rawNode && 'est compressée' in rule.rawNode
 }
 
 function isAConstant(rule: RuleNode) {
@@ -344,11 +352,14 @@ function tryToFoldRule(
 		return ctx
 	}
 
+	const missingVariablesNames = Object.keys(missingVariables)
+
 	// Potential leaf -> try to evaluate the formula at compile time.
 	if (rule.rawNode.formule || rule.rawNode.somme) {
 		// The computation could be done a compile time.
-		if (Object.keys(missingVariables).length === 0) {
-			ctx.parsedRules[ruleName].rawNode.valeur = nodeValue
+		if (missingVariablesNames.length === 0) {
+			ctx.parsedRules[ruleName].rawNode.valeur =
+				formatToPulicodesValue(nodeValue)
 			ctx.parsedRules[ruleName].rawNode['est compressée'] = true
 
 			if (rule.rawNode.formule) delete ctx.parsedRules[ruleName].rawNode.formule
