@@ -2,11 +2,29 @@
 
 ## next
 
+## 1.0.0-beta.65
+
+**publicodes-react**
+
+-   Add id and classname in documentation (#343)
+-   Fix remaining accessibility violations (#339)
+
+**website**
+
+-   Nouvelle page de doc exposant les principe de conception de modèles ouverts (#338)
+-   documentation: api section (#341)
+
+**core**
+
+-   CI: test multiple node versions (#323)
+-   Fix direct import from browser (#322)
+-   Remove iife format (#306)
+
 ## 1.0.0-beta.64
 
 **publicodes-react**
 
-- Fix remaining accessibility violations (#339)
+-   Fix remaining accessibility violations (#339)
 
 ## 1.0.0-beta.63
 
