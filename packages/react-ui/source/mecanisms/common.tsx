@@ -39,7 +39,7 @@ type NodeValuePointerProps = {
 
 export const NodeValuePointer = ({ data, unit }: NodeValuePointerProps) => {
 	return (
-		<StyledNodeValuePointer>
+		<StyledNodeValuePointer className="node-value-pointer">
 			{formatValue({ nodeValue: data, unit })}
 		</StyledNodeValuePointer>
 	)
