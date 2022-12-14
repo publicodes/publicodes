@@ -1,0 +1,410 @@
+---
+sidebar_position: 4
+title: Coder un barème, publicodes vs OpenFisca
+---
+
+# Coder un barème, publicodes vs OpenFisca
+
+> Cet article permet de se rendre compte dans la pratique ce qu'implique d'ajouter une fonction de calcul réutilisable, le barème en taux marginal, dans publicodes et comparativement dans un moteur de calcul numérique, OpenFisca. L'article date de 2019, les deux plateformes ont évolué depuis, mais la différence de principe reste pertinente.
+
+
+Comment coder la règle AGIRC, ancienne cotisation de retraite complémentaire pour les cadres (avant 2019) ?
+
+C'est un barème en taux marginaux, comme l'impôt sur le revenu  :
+
+
+|              |               |
+|--------------|---------------|
+| Tranche      | Taux marginal |
+| Entre 0 et 1 |           0 % |
+| Entre 1 et 8 |       12.75 % |
+| Plus de 8    |           0 % |
+
+
+
+### Dans OpenFisca, version naïve (mais exclue, car non vectorielle)
+
+```python
+class agirc_employeur(Variable):
+    column = FloatCol
+    entity = Individu
+    label = u"Cotisation AGIRC tranche B (employeur)"
+    definition_period = MONTH
+
+    def function(self, simulation, period):
+        plafond_sécurité_sociale = simulation.calculate('plafond_sécurité_sociale')
+        statut_cadre = simulation.calculate('statut_cadre')
+        salaire = simulation.calculate('salaire')
+
+        if (!statut_cadre)
+            return 0
+
+        if (salaire < plafond_sécurité_sociale)
+            return 0
+
+        if (salaire < 8 * plafond_sécurité_sociale)
+
+            return (salaire - 1 * plafond_sécurité_sociale) * (12.75 / 100)
+
+        if (salaire > 8 * plafond_sécurité_sociale)
+            return (8-1) * plafond_sécurité_sociale * (12.75 / 100)
+
+
+```
+
+
+### Dans OpenFisca, version naïve **vectorielle** : il faut utiliser _numpy_. 
+
+
+```python
+
+class agirc_employeur(Variable):
+    column = FloatCol
+    entity = Individu
+    label = u"Cotisation AGIRC tranche B (employeur)"
+    definition_period = MONTH
+
+    def function(self, simulation, period):
+        plafond_sécurité_sociale = simulation.calculate('plafond_sécurité_sociale')
+        statut_cadre = simulation.calculate('statut_cadre')
+        salaire = simulation.calculate('salaire')
+
+        # le bloc suivant est vectoriel, utilise la librairie Numpy
+        valeur =
+
+            (salaire < plafond_sécurité_sociale) * 0
+
+        +   (salaire < 8 * plafond_sécurité_sociale) *
+                (salaire - 1 * plafond_sécurité_sociale) * (12.75 / 100)
+
+        +   (salaire > 8 * plafond_sécurité_sociale) *
+                (8-1) * plafond_sécurité_sociale * (12.75 / 100)
+
+
+        return valeur * statut_cadre
+
+
+```
+
+# évidemment il est souhaitable d'externaliser le mécanisme barème
+
+```python
+
+
+class agirc_employeur(Variable):
+    column = FloatCol
+    entity = Individu
+    label = u"Cotisation AGIRC tranche B (employeur)"
+    definition_period = MONTH
+
+    def function(self, simulation, period):
+        cotisation = apply_bareme(
+            simulation, period,
+            cotisation_type = "employeur",
+            bareme_name = "agirc",
+            variable_name = self.__class__.__name__
+            )
+
+        return cotisation * statut_cadre
+
+
+
+```
+
+Le barème est alors décrit en partie dans les fichiers de paramètres. On remarquera que ces fichiers de paramètres se rapprochent quelque peu de l'expression d'un code, mais déclaratif. 
+
+```xml
+
+
+        <BAREME code="agirc" description="Retraite complémentaire AGIRC (Tranche B et C)" option="contrib">
+                  <TRANCHE code="tranche0">
+                    <SEUIL>
+                      <VALUE deb="1993-01-01" valeur="0" />
+                    </SEUIL>
+                    <TAUX>
+                      <VALUE deb="1993-01-01" valeur="0" />
+                    </TAUX>
+                  </TRANCHE>
+                  <TRANCHE code="tranche1">
+                    <SEUIL>
+                      <VALUE deb="1993-01-01" valeur="1" />
+                    </SEUIL>
+                    <TAUX>
+                      <VALUE deb="2015-01-01" valeur=".1275" />
+                    </TAUX>
+                  </TRANCHE>
+                  <TRANCHE code="tranche2">
+                    <SEUIL>
+                      <VALUE deb="1993-01-01" valeur="4" />
+                    </SEUIL>
+                    <TAUX>
+                      <VALUE deb="2015-01-01" valeur=".1275" />
+                    </TAUX>
+                  </TRANCHE>
+                  <TRANCHE code="tranche3">
+                    <SEUIL>
+                      <VALUE deb="1993-01-01" valeur="8" />
+                    </SEUIL>
+                    <TAUX>
+                      <VALUE deb="1993-01-01" valeur="0" />
+                    </TAUX>
+                  </TRANCHE>
+        </BAREME>
+
+```
+
+Et voilà une partie de l'implémentation du barème dans OpenFisca-core. C'est du calcul vectoriel, pas trivial !
+
+```python
+
+
+class MarginalRateTaxScale(AbstractRateTaxScale):
+
+    def calc(self, base, factor = 1, round_base_decimals = None):
+        base1 = np.tile(base, (len(self.thresholds), 1)).T
+        if isinstance(factor, (float, int)):
+            factor = np.ones(len(base)) * factor
+        # np.finfo(np.float).eps is used to avoid np.nan = 0 * np.inf creation
+        thresholds1 = np.outer(factor + np.finfo(np.float).eps, np.array(self.thresholds + [np.inf]))
+        if round_base_decimals is not None:
+            thresholds1 = np.round(thresholds1, round_base_decimals)
+        a = max_(min_(base1, thresholds1[:, 1:]) - thresholds1[:, :-1], 0)
+        if round_base_decimals is None:
+            return np.dot(self.rates, a.T)
+        else:
+            r = np.tile(self.rates, (len(base), 1))
+            b = np.round(a, round_base_decimals)
+        return np.round(r * b, round_base_decimals).sum(axis = 1)
+
+```
+
+
+Problème : notre barème en fait, c'est :
+
+
+
+|   |   |              |               |               |   |   |
+|:-:|---|--------------|---------------|---------------|---|---|
+|   |   | Tranche      | Taux marginal |               |   |   |
+|   |   |              | Effectif < 20 | Effectif > 20 |   |   |
+|   |   | Entre 0 et 1 |           0 % |           0 % |   |   |
+|   |   | Entre 1 et 8 |       12.75 % |       15,00 % |   |   |
+
+
+On ajoute la possibilité d'exprimer une variation (en fonction de l'effectif) dans l'instance XML du barème. Ceci a été codé dans une PR sur OpenFisca-core https://github.com/openfisca/openfisca-core/pull/387, qui avait aussi pour but de passer les paramètres du XML au YAML. 
+
+Le _taux_ du barème, auparavant dépendant uniquement de la tranche, va maintenant potentiellement varier pour chaque individu de la simulation ! Cela a de grosses implications sur le code du barème (pour le garder _numpy-efficient_) : 
+
+
+
+```python
+
+
+
+def calc(self, base, factor=None, thresholds=None, rates=None, round_base_decimals=None):
+        # If it takes you some time to understand this method, don't worry
+        n = len(self.thresholds)
+        N = len(base)
+
+        factor = 1 if factor is None else factor
+        # factor can be a vector or a scalar. In the latter case,
+        # convert it to a vector
+        if isinstance(factor, (float, int)):
+            factor = np.ones(N) * factor
+        # Thresholds, as well as rates can be either :
+        # 1- a list of n brackets -- we'll replicate it and work on that second form :
+        # 2- a list of n brackets for each of the N entities in the simulation (personalized scales by entity)
+
+        # Add the last, implicit column to the thresholds, infinity !
+        if thresholds is None:
+            thresholds = np.outer(factor, np.array(self.thresholds + [np.inf]))
+        else:
+            n = len(thresholds)
+            inf_matrix = np.ones((N, n + 1)) * np.inf
+            inf_matrix[:, :-1] = np.transpose(thresholds * factor)
+            thresholds = inf_matrix
+        if rates is None:
+            rates = np.tile(self.rates, (N, 1)).transpose()
+
+        # TODO handle round_base_decimals
+
+        base1 = np.tile(base, (n, 1)).T
+
+        if round_base_decimals is not None:
+            thresholds = np.round(thresholds, round_base_decimals)
+        # Spread the base over each scale bracket
+        a = max_(min_(base1, thresholds[:, 1:]) - thresholds[:, :-1], 0)
+        # Apply rates
+        if round_base_decimals is not None:
+            a = np.round(a, round_base_decimals)
+        a_rated = a.T * np.array(rates)
+        if round_base_decimals is None:
+            return a_rated.sum(axis=0)
+        else:
+            return np.round(a_rated, round_base_decimals).sum(axis=0)
+
+```
+
+On peut voir là le poids de la contrainte numpy : pour éviter qu'un contributeur, qui écrit les formules de la loi, doive lui même coder en _numpy_, les contributeurs _core_ doivent faire du calcul matriciel pour implémenter les mécanismes (ou _helpers_). 
+
+
+
+
+### Dans publicodes
+
+Le barème est aussi spécifié dans un fichier de données, mais en YAML. 
+
+```yaml
+
+
+
+- espace: contrat salarié
+  nom: cotisation AGIRC
+
+  non applicable si: ≠ statut cadre
+  formule:
+    barème:
+      assiette: salaire de base
+      multiplicateur des tranches: plafond sécurité sociale
+
+      composantes:
+
+
+        - attributs:
+            dû par: employeur
+          tranches:
+            - en-dessous de: 1
+              taux: 0%
+            - de: 1
+              à: 8
+              taux: 12.75%
+            - au-dessus de: 8
+              taux: 0%
+
+
+
+
+
+
+
+        - attributs:
+            dû par: salarié
+          tranches:
+            - en-dessous de: 1
+              taux: 0%
+            - de: 1
+              à: 8
+              taux:
+                variations:
+                - si: effectif entreprise < 20
+                    valeur: 8%
+                - si: effectif entreprise > 20
+                    valeur: 18%
+
+            - au-dessus de: 8
+              taux: 0%
+```
+
+Ici, le contributeur qui code la loi ne peut rien faire sans mécanisme, il n'a pas le loisir d'utiliser un langage complet (python dans OpenFisca).
+
+Ceci impose la construction d'une bibliothèque de mécanismes standards, et spécialisés par domaine de la loi (ex. barème, spécifique aux impôts sur le revenu et aux cotisations sociales). 
+
+Le code suivant expose l'implémentation du mécanisme barème. C'est une version brute, mais comme on le voit, elle ne demande pas au codeur de faire du calcul matriciel, simplement d'utiliser quelques méthodes fonctionnelles (la librairie Ramda, similaire à underscore ou lodash est utilisée dans le projet). 
+
+Évidemment, on perd le gain de performance de numpy. Mais on la retrouvera, s'il le faut, sans modifier le code, en distribuant le calcul sur plusieurs ordinateurs. 
+
+Et bien sûr, le code qui suit n'est lui non plus pas trivial : ce projet impose deux contraintes au développeur de mécanismes : 
+
+- il faut produire une représentation HTML (en JSX) pour pouvoir expliquer le calcul dans le navigateur
+- gérer les variables inconnues : une multiplication des deux valeurs `67.34` et `null` doit renvoyer `null` : la multiplication devient `en attente de réponses` si l'une de ses composantes l'est (sauf si cette composante est court-circuitée : dans cette expression, `var1 = varA=false && varB=null`, la valeur de `var1` est connue et vaut `false` : varB est inconnue mais a été court-circuitée
+
+C'est donc une affaire de compromis entre performance de calcul grace au vectoriel, et lisibilité de l'algorithme, chacun de ces objectifs venant avec ses contraintes.
+
+
+```js
+
+if (k === 'barème') {
+  // Sous entendu : barème en taux marginaux.
+  // A étendre (avec une propriété type ?) quand les règles en contiendront d'autres.
+ 
+
+  if (v['multiplicateur des tranches'] == null)
+    throw "un barème nécessite pour l'instant une propriété 'multiplicateur des tranches'"
+
+  let
+    assiette = reTreat(v['assiette']),
+    multiplicateur = reTreat(v['multiplicateur des tranches']),
+
+    
+    tranches = v['tranches'].map(t =>
+      R.has('en-dessous de')(t) ? {de: 0, 'à': t['en-dessous de'], taux: t.taux}
+      : R.has('au-dessus de')(t) ? {de: t['au-dessus de'], 'à': Infinity, taux: t.taux}
+        : t
+    ),
+
+    nulled = val(assiette) == null || val(multiplicateur) == null,
+
+    nodeValue =
+      nulled ?
+        null
+      : tranches.reduce((memo, {de: min, 'à': max, taux}) =>
+        ( val(assiette) < ( min * val(multiplicateur) ) )
+          ? memo + 0
+          :	memo
+            + ( Math.min(val(assiette), max * val(multiplicateur)) - (min * val(multiplicateur)) )
+            * transformPercentage(taux)
+      , 0)
+
+  return {
+    nodeValue,
+    category: 'mecanism',
+    name: 'barème',
+    barème: 'en taux marginaux',
+    type: 'numeric',
+    explanation: {
+      assiette,
+      multiplicateur,
+      tranches
+    },
+    jsx: <Node
+      classes="mecanism barème"
+      name="barème"
+      value={nodeValue}
+      child={
+        <ul className="properties">
+          <li key="assiette">
+            <span className="key">assiette: </span>
+            <span className="value">{assiette.jsx}</span>
+          </li>
+          <li key="multiplicateur">
+            <span className="key">multiplicateur des tranches: </span>
+            <span className="value">{multiplicateur.jsx}</span>
+          </li>
+          <table className="tranches">
+            <thead>
+              <tr>
+                <th>Tranches de lassiette</th>
+                <th>Taux</th>
+              </tr>
+              {v['tranches'].map(({'en-dessous de': maxOnly, 'au-dessus de': minOnly, de: min, 'à': max, taux}) =>
+                <tr key={min || minOnly}>
+                  <td>
+                    {	maxOnly ? 'En dessous de ' + maxOnly
+                      : minOnly ? 'Au dessus de ' + minOnly
+                        : `De ${min} à ${max}` }
+                  </td>
+                  <td> {taux} </td>
+                </tr>
+              )}
+            </thead>
+          </table>
+        </ul>
+      }
+    />
+  }
+}
+
+```
+
+Pour aller plus loin : [réfléxions au sujet de la contrainte vectorielle](https://news.ycombinator.com/item?id=14479166)
+
