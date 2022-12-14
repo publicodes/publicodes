@@ -1,0 +1,90 @@
+---
+sidebar_position: 3.5
+title: Pourquoi écrire le code source en .yaml ?
+---
+
+
+Exemple: l'implémentation d'un version simplifiée de la taxe sur les salaires. 
+
+```yaml
+nom: barème annuel
+formule:
+  barème:
+    assiette: assiette annuelle
+    tranches:
+      - en-dessous de: 7721
+        taux: 4.25%
+      - de: 7721
+        à: 15417
+        taux: 8.5%
+      - de:  15417
+        à: 152279
+        taux: 13.6%
+      - au-dessus de: 152279
+        taux: 0%
+
+
+nom: montant annuel
+formule:
+  allègement:
+    assiette: barème annuel
+    franchise: 1200
+    décote:
+      plafond: 2040
+      taux: 75%
+    abattement: 20507
+
+```
+
+En YAML, on est libre d'écrire ce qu'on veut, quitte à demander une évolution de la syntaxe, dans la limite suivante : on écrit des objets ou des listes. 
+Ça oblige à utiliser des fonctions pour tout calcul : impossible d'écrire un code ad-hoc. Il faut écrire, nommer, spécifier, implémenter et documenter une fonction, que l'on appelle des mécanismes. 
+
+L'avantage, c'est que c'est relativement lisible, à la fois pour le développeur et pour un ordinateur. Il est donc facile de produire à partir de cette source des visualisation qui expliquent les calculs. 
+
+Ci-dessous, un équivalent en Javascript. On voit de suite apparaître les éléments de syntaxe du langage lui-même, que l'on ne peut contourner : import, from, function, `{`, `(` etc. 
+
+
+
+```js
+import { calcBarème, calcAllègement } from 'Engine/mecanisms'
+
+export default function taxeSalaires(assiette) {
+	let taxe = calcBarème(assiette, [
+		{
+			to: 7721,
+			rate: 0.0425
+		},
+		{
+			from: 7721,
+			to: 15417,
+			rate: 0.085
+		},
+		{
+			from: 15417,
+			to: 152279,
+			rate: 0.136
+		},
+		{
+			from: 152279,
+			rate: 0
+		}
+	])
+
+	let taxeAllegée = calcAllègement(
+		taxe,
+		1200,
+		{ plafond: 2040, taux: 0.75 },
+		20507
+	)
+
+	return taxeAllegée
+}
+
+```
+
+L'avantage de cette version, c'est qu'on peut coder ce qu'on veut plus rapidement. 
+Il est fort probable que la liberté de ne pas définir des fonctions et d'utiliser du code ad-hoc soit fréquemment exploitée par les développeurs. L'écriture est plus rapide... mais la relecture peut devenir très pénible. Le code n'est plus une représentation de la loi, mais simplement une implémentation dans le seul but de faire des calculs. Il alors aussi très difficile de le lire avec un programme pour en faire autre chose.
+
+Évidemment, on pourrait améliorer cette implémentation. Par exemple, le paramètre "franchise" qui vaut 1200 n'est plus nommé. On pourrait facilement passer un objet entier à `calclAllègement` qui permettrait de nommer ces paramètres. 
+
+

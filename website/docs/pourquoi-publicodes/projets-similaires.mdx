@@ -9,6 +9,28 @@ Le problème ciblé par publicodes est évidemment vaste. Il est donc important 
 
 Alors pourquoi ce projet alors que X existe ?
 
+## X = n'importe quel langage de programmation complet 
+
+Toutes les applications de publicodes auraient assurément pu être codées directement en Javascript, en Python, en Clojure... Ces langages permettent de tout faire, mais nous constatons que n'importe quel projet incluant un modèle de calcul qui dure avec un besoin d'itérer dans l'année et de proposer une interface utilisateur, est amené à coder ses propres fichiers de configuration (pour faciliter la tâche mentale du développeur, fiabiliser les tests, publier les données, intégrer des experts métiers non-dev...), qui deviennent alors souvent des DSL (langages personnalisés dédiées au domaine en question). 
+
+Le projet passe souvent par d'autres phases incontournables, comme la gestion des conversions temporelles ou unités de calcul, etc.
+
+On pourra lire à ce propos la page [Pourquoi YAML](/docs/pourquoi-publicodes/pourquoi-yaml).
+
+> Ecobalyse est un bon exemple de projet calculatoire [ayant développé son projet moteur de calcul](https://github.com/MTES-MCT/ecobalyse/blob/master/src/Data/Food/Process.elm), en Elm. Quite à partir sur un langage de programmation complet, il est en effet intéressant d'en choisir un fortement typé.
+
+
+## X = Un tableur LibreOffice, Excel ou Google Spreadsheet
+
+Une façon de voir publicodes, c'est qu'il s'agit d'un langage permettant de versionner des tableurs calculatoires dans lesquels les variables ont été nommées. 
+
+Bien sûr, les tableurs gardent leur avantage incontournable : une vue 2D d'un calcul qui permet notammenr de manipuler facilement des tableaux, l'absence de nommage des variables, la facilité de travail dans un logiciel, etc.
+
+Si les tableurs sont un super moyen de commencer à travailler sur un projet calculatoire, **ses avantages sont précisément ses limites**. Impossibilité de s'y retrouver dans les variables non nommées, onglets présentés de façon linéaires, référence à d'autres tableurs introuvables, versionnage dans le nom de fichier et collaboration très difficile, etc.
+
+On notera en particulier que collaborer sur un projet publicodes, comme sur n'importe quel projet de code source texte, permet d'utiliser [la puissance bien démontrée](docs/pourquoi-publicodes/standard-modeles-ouverts) des forges en lignes telles que Github ou Gitlab. 
+
+
 ## X = Moteurs de calcul numérique, comme OpenFisca
 ---------------------
 
