@@ -37,7 +37,9 @@ formule:
 ```
 
 En YAML, on est libre d'écrire ce qu'on veut, quitte à demander une évolution de la syntaxe, dans la limite suivante : on écrit des objets ou des listes. 
-Ça oblige à utiliser des fonctions pour tout calcul : impossible d'écrire un code ad-hoc. Il faut écrire, nommer, spécifier, implémenter et documenter une fonction, que l'on appelle des mécanismes. 
+Ça oblige à utiliser des fonctions pour tout calcul : impossible d'écrire un code ad-hoc qui manipule des variables. 
+
+Il faut écrire, nommer, spécifier, implémenter et documenter une fonction, que l'on appelle des mécanismes. 
 
 L'avantage, c'est que c'est relativement lisible, à la fois pour le développeur et pour un ordinateur. Il est donc facile de produire à partir de cette source des visualisation qui expliquent les calculs. 
 
@@ -83,7 +85,9 @@ export default function taxeSalaires(assiette) {
 ```
 
 L'avantage de cette version, c'est qu'on peut coder ce qu'on veut plus rapidement. 
-Il est fort probable que la liberté de ne pas définir des fonctions et d'utiliser du code ad-hoc soit fréquemment exploitée par les développeurs. L'écriture est plus rapide... mais la relecture peut devenir très pénible. Le code n'est plus une représentation de la loi, mais simplement une implémentation dans le seul but de faire des calculs. Il alors aussi très difficile de le lire avec un programme pour en faire autre chose.
+Il est fort probable que la liberté de ne pas définir des fonctions et d'utiliser du code ad-hoc soit fréquemment exploitée par les développeurs. L'écriture est plus rapide... mais la relecture peut devenir très pénible. 
+
+Le code n'est plus une représentation de la loi, mais simplement une implémentation dans le seul but de faire des calculs. Il alors aussi très difficile de le lire avec un programme pour en faire autre chose.
 
 Évidemment, on pourrait améliorer cette implémentation. Par exemple, le paramètre "franchise" qui vaut 1200 n'est plus nommé. On pourrait facilement passer un objet entier à `calclAllègement` qui permettrait de nommer ces paramètres. 
 
