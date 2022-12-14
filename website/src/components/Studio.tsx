@@ -27,11 +27,13 @@ dépenses primeur:
 `
 
 export default function Studio() {
-	const { pathname, hash } = useLocation()
+	const { search, pathname, hash } = useLocation()
+	const searchParams = new URLSearchParams(search ?? '')
 	const initialValue = useMemo(() => {
-		const code = hash && unescape(decodeURIComponent(hash))
-		return code ? code : encodeURIComponent(EXAMPLE_CODE)
-	}, [hash])
+		const code = searchParams.get('code')
+		const hashCode = hash && unescape(decodeURIComponent(hash))
+		return code || hashCode || EXAMPLE_CODE
+	}, [hash, search])
 	const [editorValue, setEditorValue] = useState(initialValue)
 	const debouncedEditorValue = useDebounce(editorValue, 1000)
 
