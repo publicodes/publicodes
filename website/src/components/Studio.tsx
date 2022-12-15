@@ -1,17 +1,28 @@
 import { utils } from 'publicodes'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import MonacoEditor from 'react-monaco-editor'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
 import styles from './studio.module.css'
+import useYjs from './share/useYjs'
+import * as Y from 'yjs'
+import { MonacoBinding } from 'y-monaco'
+import { generateRoomName } from './share/studioShareUtils'
+import useLocalStorageState from 'use-local-storage-state'
+import Editor from '@monaco-editor/react'
+import { UserBlock } from './share/UserList'
 
 const { decodeRuleName } = utils
 
 const EXAMPLE_CODE = `
-# Bienvenue dans le bac à sable du langage publicode !
+# Bienvenue dans le bac à sable publicodes !
+# ⚠️ Le bac à sable est utile pour expérimenter, mais : 
+# - fiabilité: assurez-vous rapidement que votre code soit stocké de façon sécurisé ailleurs, par exemple sur un dépôt Github
+# - sécurité: ne l'utilisez pas pour du code secret
+#
 # Pour en savoir plus sur le langage :
 # => https://publi.codes/docs/principes-de-base
+#
 
 prix:
   avec:
@@ -27,23 +38,28 @@ dépenses primeur:
 `
 
 export default function Studio() {
+	const [layout, setLayout] = useState('split')
 	const { search, pathname } = useLocation()
 	const searchParams = new URLSearchParams(search ?? '')
-	const initialValue = useMemo(() => {
-		const code = searchParams.get('code')
-		return code ? code : EXAMPLE_CODE
-	}, [search])
-	const [editorValue, setEditorValue] = useState(initialValue)
-	const debouncedEditorValue = useDebounce(editorValue, 1000)
+	const location = useLocation()
+	const [name, setName] = useState(
+		location.pathname.split('/studio/')[1] || generateRoomName()
+	)
+	const [share, setShare] = useState()
+	const [editorValue, setEditorValue] = useState(EXAMPLE_CODE)
+
+	const debouncedEditorValue = useDebounce(editorValue, 100)
+
+	const urlFragment = encodeURIComponent(name)
 
 	const history = useHistory()
+
+	const yjs = useYjs(urlFragment, 'database', share, setShare)
+
 	useEffect(() => {
-		searchParams.set('code', debouncedEditorValue)
-		history.replace({
-			pathname,
-			search: '?' + searchParams.toString(),
-		})
-	}, [debouncedEditorValue, history])
+		if (urlFragment.length > 2) history.replace('/studio/' + urlFragment)
+		//TODO refresh on first replace, to avoid
+	}, [urlFragment])
 
 	const handleShare = useCallback(() => {
 		window?.navigator.clipboard.writeText(window.location.href)
@@ -51,34 +67,119 @@ export default function Studio() {
 
 	const { target } = useParams<{ target?: string }>()
 	const defaultTarget = target && decodeRuleName(target)
+	const monacoCode = share && share.ydoc.getText('monacoCode')
 
+	const handleEditorDidMount = (editor, monaco) => {
+		// here is the editor instance
+		// you can store it in `useRef` for further usage
+		const monacoBinding = new MonacoBinding(
+			monacoCode,
+			editor.getModel(),
+			new Set([editor]),
+			share.provider.awareness
+		)
+	}
+
+	// This is for local persistence. TODO is it really needed ?
+	useEffect(() => {
+		share &&
+			share.persistence &&
+			share.persistence.once('synced', () => {
+				console.log('initial content from the local browser database loaded')
+			})
+	}, [yjs])
+
+	useEffect(() => {
+		share &&
+			share.provider &&
+			share.provider.once('synced', () => {
+				console.log('initial content from the online database loaded')
+				console.log('Plog', monacoCode.toString())
+				if (monacoCode.toString() === '') monacoCode.insert(0, EXAMPLE_CODE)
+			})
+	}, [yjs, monacoCode])
+
+	useEffect(() => {
+		console.log('SALU', monacoCode?.toString())
+	}, [monacoCode])
+
+	const layoutModes = { code: 'Code', split: 'Partagé', view: 'Documentation' }
 	return (
 		<div className={styles.studio}>
+			<ul id="layoutButtons">
+				{Object.entries(layoutModes).map(([key, value]) => (
+					<li onClick={() => setLayout(key)}>
+						<button className="button button--sm button--secondary">
+							{value}
+						</button>
+					</li>
+				))}
+			</ul>
 			<div>
-				<MonacoEditor
-					language="yaml"
-					height="75vh"
-					defaultValue={editorValue}
-					onChange={(newValue) => setEditorValue(newValue ?? '')}
-					options={{
-						minimap: { enabled: false },
-						automaticLayout: true,
-					}}
-				/>
+				<section
+					style={
+						{
+							split: { width: '50%' },
+							view: { display: 'none' },
+							code: { width: '100%' },
+						}[layout]
+					}
+				>
+					<div>
+						<input
+							type="string"
+							style={{ width: '16rem' }}
+							value={name}
+							onChange={(e) => setName(e.target.value)}
+							placeholder="Le nom de votre document"
+						/>
+
+						<button onClick={() => setName(generateRoomName())}>
+							♻️ Générer un autre nom
+						</button>
+					</div>
+					<div>
+						{yjs && (
+							<UserBlock
+								{...{ users: yjs.users, username: yjs.username, room: name }}
+							/>
+						)}
+					</div>
+
+					{share && (
+						<Editor
+							height="75vh"
+							defaultLanguage="yaml"
+							defaultValue={editorValue}
+							onChange={(newValue) =>
+								console.log('setFromMonaco', newValue) ||
+								setEditorValue(newValue ?? '')
+							}
+							onMount={handleEditorDidMount}
+						/>
+					)}
+				</section>
+				<section
+					style={
+						{
+							split: { width: '50%' },
+							code: { display: 'none' },
+							view: { width: '100%' },
+						}[layout]
+					}
+				>
+					<ErrorBoundary key={debouncedEditorValue}>
+						{/* TODO: prévoir de changer la signature de EngineProvider */}
+
+						<Documentation
+							rules={debouncedEditorValue}
+							onClickShare={handleShare}
+							defaultTarget={defaultTarget}
+							baseUrl="/studio"
+						/>
+					</ErrorBoundary>
+				</section>
 			</div>
-
-			<section>
-				<ErrorBoundary key={debouncedEditorValue}>
-					{/* TODO: prévoir de changer la signature de EngineProvider */}
-
-					<Documentation
-						rules={debouncedEditorValue}
-						onClickShare={handleShare}
-						defaultTarget={defaultTarget}
-						baseUrl="/studio"
-					/>
-				</ErrorBoundary>
-			</section>
 		</div>
 	)
 }
