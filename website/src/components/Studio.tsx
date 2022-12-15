@@ -15,9 +15,12 @@ import { UserBlock } from './share/UserList'
 const { decodeRuleName } = utils
 
 const EXAMPLE_CODE = `
-# Bienvenue dans le bac à sable du langage publicode !
+# Bienvenue dans le bac à sable publicodes !
+# ⚠️L Le bac à sable est utile pour expérimenter, mais assurez-vous que votre code soit stocké de façon sécurisé ailleurs, par exemple sur un dépôt Github
+#
 # Pour en savoir plus sur le langage :
 # => https://publi.codes/docs/principes-de-base
+#
 
 prix:
   avec:
