@@ -38,6 +38,7 @@ dépenses primeur:
 `
 
 export default function Studio() {
+	const [layout, setLayout] = useState('split')
 	const { search, pathname } = useLocation()
 	const searchParams = new URLSearchParams(search ?? '')
 	const location = useLocation()
@@ -102,56 +103,83 @@ export default function Studio() {
 		console.log('SALU', monacoCode?.toString())
 	}, [monacoCode])
 
+	const layoutModes = { code: 'Code', split: 'Partagé', view: 'Documentation' }
 	return (
 		<div className={styles.studio}>
+			<ul id="layoutButtons">
+				{Object.entries(layoutModes).map(([key, value]) => (
+					<li onClick={() => setLayout(key)}>
+						<button className="button button--sm button--secondary">
+							{value}
+						</button>
+					</li>
+				))}
+			</ul>
 			<div>
-				<div>
-					<input
-						type="string"
-						style={{ width: '16rem' }}
-						value={name}
-						onChange={(e) => setName(e.target.value)}
-						placeholder="Le nom de votre document"
-					/>
+				<section
+					style={
+						{
+							split: { width: '50%' },
+							view: { display: 'none' },
+							code: { width: '100%' },
+						}[layout]
+					}
+				>
+					<div>
+						<input
+							type="string"
+							style={{ width: '16rem' }}
+							value={name}
+							onChange={(e) => setName(e.target.value)}
+							placeholder="Le nom de votre document"
+						/>
 
-					<button onClick={() => setName(generateRoomName())}>
-						♻️ Générer un autre nom
-					</button>
-				</div>
-				<div>
-					{yjs && (
-						<UserBlock
-							{...{ users: yjs.users, username: yjs.username, room: name }}
+						<button onClick={() => setName(generateRoomName())}>
+							♻️ Générer un autre nom
+						</button>
+					</div>
+					<div>
+						{yjs && (
+							<UserBlock
+								{...{ users: yjs.users, username: yjs.username, room: name }}
+							/>
+						)}
+					</div>
+
+					{share && (
+						<Editor
+							height="75vh"
+							defaultLanguage="yaml"
+							defaultValue={editorValue}
+							onChange={(newValue) =>
+								console.log('setFromMonaco', newValue) ||
+								setEditorValue(newValue ?? '')
+							}
+							onMount={handleEditorDidMount}
 						/>
 					)}
-				</div>
+				</section>
+				<section
+					style={
+						{
+							split: { width: '50%' },
+							code: { display: 'none' },
+							view: { width: '100%' },
+						}[layout]
+					}
+				>
+					<ErrorBoundary key={debouncedEditorValue}>
+						{/* TODO: prévoir de changer la signature de EngineProvider */}
 
-				{share && (
-					<Editor
-						height="75vh"
-						defaultLanguage="yaml"
-						defaultValue={editorValue}
-						onChange={(newValue) =>
-							console.log('setFromMonaco', newValue) ||
-							setEditorValue(newValue ?? '')
-						}
-						onMount={handleEditorDidMount}
-					/>
-				)}
+						<Documentation
+							rules={debouncedEditorValue}
+							onClickShare={handleShare}
+							defaultTarget={defaultTarget}
+							baseUrl="/studio"
+						/>
+					</ErrorBoundary>
+				</section>
 			</div>
-
-			<section>
-				<ErrorBoundary key={debouncedEditorValue}>
-					{/* TODO: prévoir de changer la signature de EngineProvider */}
-
-					<Documentation
-						rules={debouncedEditorValue}
-						onClickShare={handleShare}
-						defaultTarget={defaultTarget}
-						baseUrl="/studio"
-					/>
-				</ErrorBoundary>
-			</section>
 		</div>
 	)
 }
