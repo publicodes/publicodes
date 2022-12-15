@@ -2,28 +2,21 @@
 import React from 'react'
 
 export const UserList = ({ users, username }) => (
-	<ul
-		css={`
-			display: flex;
-			list-style-type: none;
-			flex-wrap: wrap;
-			li {
-				margin: 0.6rem;
-			}
-		`}
-	>
+	<ul style={{ listStyleType: 'none' }}>
 		{users.map((u) => (
-			<li
-				key={u.name}
-				css={`
-					background: ${u.color};
-					color: black;
-					padding: 0.1rem 0.4rem;
-					border-radius: 0.6rem;
-				`}
-			>
-				{u.name}
-				{u.name === username && ' (toi)'}
+			<li key={u.name}>
+				<div class="avatar">
+					<div
+						class="avatar__photo avatar__photo--sm"
+						style={{ background: u.color }}
+					/>
+					<div class="avatar__intro">
+						<div class="avatar__name">
+							{u.name}
+							{u.name === username && ' (toi)'}
+						</div>
+					</div>
+				</div>
 			</li>
 		))}
 	</ul>
@@ -33,11 +26,9 @@ export const UserBlock = ({ extremes, users, username, room }) => {
 	const uniqueUsers = getUniqueUsers(users)
 	return (
 		<div>
-			<h2 css="display: inline-block ;margin-right: 1rem">
-				👤 Qui est connecté ?
-			</h2>
-			<span role="status" css="color: #397540; font-weight: bold">
-				🟢{uniqueUsers.length} participant{plural(uniqueUsers)}
+			<span>Qui est connecté ?</span>{' '}
+			<span role="status">
+				👥 {uniqueUsers.length} participant{plural(uniqueUsers)}
 			</span>
 			<UserList users={uniqueUsers} username={username} />
 		</div>
