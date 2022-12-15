@@ -12,7 +12,6 @@ localStorage.log = 'y-webrtc'
 export default (room, connectionType: 'p2p' | 'database', share, setShare) => {
 	const [data, setData] = useState([])
 	const [users, setUsers] = useState([])
-	console.log('ujsyjs')
 
 	const [username, setUsername] = useLocalStorageState('shareUserId', {
 		defaultValue: null,
@@ -27,7 +26,6 @@ export default (room, connectionType: 'p2p' | 'database', share, setShare) => {
 	}, [username])
 
 	useEffect(() => {
-		console.log('username', username)
 		if (!username || (!room && !share)) return
 		if (!share) {
 			const ydoc = new Y.Doc()

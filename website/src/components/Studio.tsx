@@ -16,7 +16,7 @@ const { decodeRuleName } = utils
 
 const EXAMPLE_CODE = `
 # Bienvenue dans le bac à sable publicodes !
-# ⚠️L Le bac à sable est utile pour expérimenter, mais assurez-vous que votre code soit stocké de façon sécurisé ailleurs, par exemple sur un dépôt Github
+# ⚠️ Le bac à sable est utile pour expérimenter, mais assurez-vous que votre code soit stocké de façon sécurisé ailleurs, par exemple sur un dépôt Github
 #
 # Pour en savoir plus sur le langage :
 # => https://publi.codes/docs/principes-de-base
@@ -50,6 +50,7 @@ export default function Studio() {
 	const urlFragment = encodeURIComponent(name)
 
 	const history = useHistory()
+
 	const yjs = useYjs(urlFragment, 'database', share, setShare)
 
 	useEffect(() => {
@@ -76,13 +77,28 @@ export default function Studio() {
 		)
 	}
 
+	// This is for local persistence. TODO is it really needed ?
 	useEffect(() => {
 		share &&
 			share.persistence &&
 			share.persistence.once('synced', () => {
-				monacoCode.toString() && setEditorValue(monacoCode.toString())
+				console.log('initial content from the local browser database loaded')
 			})
 	}, [yjs])
+
+	useEffect(() => {
+		share &&
+			share.provider &&
+			share.provider.once('synced', () => {
+				console.log('initial content from the online database loaded')
+				console.log('Plog', monacoCode.toString())
+				if (monacoCode.toString() === '') monacoCode.insert(0, EXAMPLE_CODE)
+			})
+	}, [yjs, monacoCode])
+
+	useEffect(() => {
+		console.log('SALU', monacoCode?.toString())
+	}, [monacoCode])
 
 	return (
 		<div className={styles.studio}>
