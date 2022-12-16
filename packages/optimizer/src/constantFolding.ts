@@ -126,7 +126,7 @@ function replaceAllRefs(
 	refName: string,
 	constantValue: any
 ): string {
-	const re = new RegExp(`${refName}`, 'g')
+	const re = new RegExp(`\\b${refName}`, 'g')
 	return str.replaceAll(re, constantValue)
 }
 
@@ -308,6 +308,7 @@ function tryToFoldRule(
 		// Already managed rule
 		return ctx
 	}
+
 	if (isEmptyRule(rule) && ctx.refs.parents.get(ruleName)?.length === 0) {
 		// Empty rule with no parent
 		delete ctx.parsedRules[ruleName]
@@ -351,7 +352,15 @@ function tryToFoldRule(
 			if (rule.rawNode.formule) delete ctx.parsedRules[ruleName].rawNode.formule
 			if (rule.rawNode.somme) delete ctx.parsedRules[ruleName].rawNode.somme
 
-			ctx = updateRefCounting(ctx, ruleName, traversedVariables)
+			const childs = ctx.refs.childs.get(ruleName) ?? []
+			ctx = updateRefCounting(
+				ctx,
+				ruleName,
+				// NOTE(@EmileRolley): for some reason, the [traversedVariables] are not always
+				// depencies of the rule. Consequently, we need to keep only the ones that are
+				// in the [childs] list in order to avoid removing rules that are not dependencies.
+				traversedVariables.filter((v: RuleName) => childs.includes(v))
+			)
 		}
 		// Otherwise, try to replace internal refs if possible.
 		else {
