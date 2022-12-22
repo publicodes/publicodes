@@ -1,11 +1,13 @@
 import Engine, { reduceAST } from 'publicodes'
 
 import type {
+	EvaluatedNode,
 	RawPublicodes,
 	RuleNode,
 	ASTNode,
 	Context,
 	Rule,
+	Unit,
 } from 'publicodes'
 import type { RuleName, ParsedRules } from './commons'
 
@@ -24,70 +26,53 @@ type FoldingCtx = {
 	engine: Engine
 	parsedRules: ParsedRules
 	refs: RefMaps
+	evaluatedRules: Map<RuleName, EvaluatedNode>
 }
 
-function getReferences(
-	context: Context<RuleName>,
-	parsedRules: ParsedRules
-): RefMaps {
-	const getFilteredReferencesBy = (
-		referencesMap: Map<RuleName, Set<RuleName>>,
-		predicate: (
-			dottedName: RuleName,
-			dottedNameToCompareWith: RuleName
-		) => boolean
-	) => {
-		return new Map(
-			Array.from(referencesMap)
-				.filter(
-					([dottedName, _]) =>
-						parsedRules[dottedName] && !dottedName.endsWith('$SITUATION')
-				)
-				.map(([dottedName, set]: [RuleName, Set<RuleName>]) => [
-					dottedName,
-					Array.from(set).filter((dottedNameToCompareWith: string) => {
-						return (
-							parsedRules[dottedNameToCompareWith] &&
-							!dottedNameToCompareWith.endsWith('$SITUATION') &&
-							predicate(dottedName, dottedNameToCompareWith)
-						)
-					}),
-				])
-		)
+function addMapEntry(map: RefMap, key: RuleName, values: RuleName[]) {
+	let vals = map.get(key)
+	if (vals) {
+		vals = vals.concat(values)
 	}
-	const isParent = (
-		dottedName: RuleName,
-		// Potential parent of [dottedName]
-		dottedNameToCompareWith: RuleName
-	) => {
-		return (
-			dottedName.startsWith(dottedNameToCompareWith) &&
-			dottedNameToCompareWith.split(' . ').length <
-				dottedName.split(' . ').length
+	map.set(key, vals || values)
+}
+
+function initFoldingCtx(engine: Engine, parsedRules: ParsedRules): FoldingCtx {
+	const refs: RefMaps = { parents: new Map(), childs: new Map() }
+	const evaluatedRules: Map<RuleName, EvaluatedNode> = new Map()
+
+	Object.entries(parsedRules).forEach(([ruleName, ruleNode]) => {
+		const evaluatedRule = engine.evaluate(ruleName)
+		evaluatedRules.set(ruleName, evaluatedRule)
+		const traversedVariables: RuleName[] = Array.from(
+			reduceAST(
+				(acc: Set<RuleName>, node: ASTNode) => {
+					if (
+						node.nodeKind === 'reference' &&
+						!node.dottedName.endsWith('$SITUATION') &&
+						node.dottedName !== ruleName
+					) {
+						acc.add(node.dottedName)
+					}
+				},
+				new Set(),
+				ruleNode.explanation.valeur
+			)
 		)
-	}
-	const isChild = (
-		dottedName: RuleName,
-		// Potential child of [dottedName]
-		dottedNameToCompareWith: RuleName
-	) => {
-		return (
-			dottedNameToCompareWith.startsWith(dottedName) &&
-			dottedNameToCompareWith.split(' . ').length >
-				dottedName.split(' . ').length
-		)
-	}
+
+		if (traversedVariables.length > 0) {
+			addMapEntry(refs.childs, ruleName, traversedVariables)
+			traversedVariables.forEach((traversedVar) => {
+				addMapEntry(refs.parents, traversedVar, [ruleName])
+			})
+		}
+	})
+
 	return {
-		parents: getFilteredReferencesBy(
-			context.referencesMaps.rulesThatUse,
-			(dottedName, dottedNameToCompareWith) =>
-				!isChild(dottedName, dottedNameToCompareWith)
-		),
-		childs: getFilteredReferencesBy(
-			context.referencesMaps.referencesIn,
-			(dottedName, dottedNameToCompareWith) =>
-				!isParent(dottedName, dottedNameToCompareWith)
-		),
+		engine,
+		parsedRules,
+		refs,
+		evaluatedRules,
 	}
 }
 
@@ -95,7 +80,10 @@ function getReferences(
 // - no question
 // - no dependency
 function isFoldable(rule: RuleNode): boolean {
-	const rawNode = rule?.rawNode
+	if (!rule /* || evaluatedRules.has(rule.dottedName) */) {
+		return false
+	}
+	const rawNode = rule.rawNode
 	return !(
 		'question' in rawNode ||
 		// NOTE(@EmileRolley): I assume that a rule can have a [par défaut] attribute without a [question] one.
@@ -116,9 +104,20 @@ function isEmptyRule(rule: RuleNode): boolean {
 	return Object.keys(rule.rawNode).length <= 1
 }
 
+function formatPublicodesUnit(unit?: Unit): string {
+	if (unit && unit.numerators.length === 1 && unit.numerators[0] === '%') {
+		return '%'
+	}
+	return ''
+}
+
 // Replaces boolean values by their string representation in French.
-function formatToPulicodesValue(value: any) {
-	return typeof value === 'boolean' ? (value ? 'oui' : 'non') : value
+function formatToPulicodesValue(value: any, unit?: Unit) {
+	if (typeof value === 'boolean') {
+		return value ? 'oui' : 'non'
+	}
+
+	return value + formatPublicodesUnit(unit)
 }
 
 function replaceAllRefs(
@@ -202,7 +201,7 @@ function searchAndReplaceConstantValueInParentRefs(
 	if (refs) {
 		refs
 			.map((dottedName) => ctx.parsedRules[dottedName])
-			.filter((r) => isFoldable(r))
+			.filter(isFoldable)
 			.forEach(({ dottedName: parentDottedName }) => {
 				const newRule = lexicalSubstitutionOfRefValue(
 					ctx.parsedRules[parentDottedName],
@@ -210,6 +209,7 @@ function searchAndReplaceConstantValueInParentRefs(
 				)
 				if (newRule) {
 					ctx.parsedRules[parentDottedName] = newRule
+					ctx.parsedRules[parentDottedName].rawNode['est compressée'] = true
 					parentsToRemove.push(parentDottedName)
 				}
 			})
@@ -243,7 +243,7 @@ function replaceAllPossibleChildRefs(
 	if (refs) {
 		refs
 			.map((dottedName) => ctx.parsedRules[dottedName])
-			.filter((r) => isFoldable(r))
+			.filter(isFoldable)
 			.forEach(({ dottedName: childDottedName }) => {
 				let childNode = ctx.parsedRules[childDottedName]
 
@@ -271,6 +271,28 @@ function replaceAllPossibleChildRefs(
 	return ctx
 }
 
+function removeRuleFromRefs(ref: RefMap, ruleName: RuleName) {
+	Array.from(ref.keys()).forEach((rule: RuleName) => {
+		const refs = ref.get(rule)
+		if (refs) {
+			ref.set(
+				rule,
+				refs.filter((r) => r !== ruleName)
+			)
+		}
+	})
+}
+
+function deleteRule(ctx: FoldingCtx, dottedName: RuleName): FoldingCtx {
+	removeRuleFromRefs(ctx.refs.parents, dottedName)
+	removeRuleFromRefs(ctx.refs.childs, dottedName)
+	delete ctx.parsedRules[dottedName]
+	delete ctx.evaluatedRules[dottedName]
+	ctx.refs.parents.delete(dottedName)
+	ctx.refs.childs.delete(dottedName)
+	return ctx
+}
+
 // Removes the [parentRuleName] as a parent dependency of each [childRuleNamesToUpdate].
 function updateRefCounting(
 	ctx: FoldingCtx,
@@ -289,8 +311,7 @@ function updateRefCounting(
 				)
 		)
 		if (ctx.refs.parents.get(childRuleDottedName)?.length === 0) {
-			delete ctx.parsedRules[childRuleDottedName]
-			ctx.refs.parents.delete(childRuleDottedName)
+			ctx = deleteRule(ctx, childRuleDottedName)
 		}
 	})
 	return ctx
@@ -309,14 +330,15 @@ function tryToFoldRule(
 		return ctx
 	}
 
-	if (isEmptyRule(rule) && ctx.refs.parents.get(ruleName)?.length === 0) {
+	const ruleParents = ctx.refs.parents.get(ruleName)
+	if (isEmptyRule(rule) && (!ruleParents || ruleParents?.length === 0)) {
 		// Empty rule with no parent
-		delete ctx.parsedRules[ruleName]
+		deleteRule(ctx, ruleName)
 		return ctx
 	}
 
-	const { nodeValue, missingVariables, traversedVariables } =
-		ctx.engine.evaluateNode(rule)
+	const { nodeValue, missingVariables, traversedVariables, unit } =
+		ctx.evaluatedRules.get(rule) ?? ctx.engine.evaluateNode(rule)
 
 	// NOTE(@EmileRolley): we need to evaluate due to possible standalone rule [formule]
 	// parsed as a [valeur].
@@ -331,9 +353,8 @@ function tryToFoldRule(
 
 		// NOTE(@EmileRolley): temporary work around until all mechanisms are supported.
 		// Indeed, when replacing a leaf ref by its value in all its parents, it should always be removed.
-		const parents = ctx.refs.parents.get(ruleName)
-		if (parents && parents.length === 0) {
-			delete ctx.parsedRules[ruleName]
+		if (ruleParents && ruleParents.length === 0) {
+			deleteRule(ctx, ruleName)
 		}
 
 		return ctx
@@ -345,8 +366,10 @@ function tryToFoldRule(
 	if (rule.rawNode.formule || rule.rawNode.somme) {
 		// The computation could be done a compile time.
 		if (missingVariablesNames.length === 0) {
-			ctx.parsedRules[ruleName].rawNode.valeur =
-				formatToPulicodesValue(nodeValue)
+			ctx.parsedRules[ruleName].rawNode.valeur = formatToPulicodesValue(
+				nodeValue,
+				unit
+			)
 			ctx.parsedRules[ruleName].rawNode['est compressée'] = true
 
 			if (rule.rawNode.formule) delete ctx.parsedRules[ruleName].rawNode.formule
@@ -385,10 +408,8 @@ export default function constantFolding(
 	engine: Engine,
 	targets?: RuleName[]
 ): ParsedRules {
-	const engineCtx: Context<RuleName> = engine.context
 	const parsedRules: ParsedRules = engine.getParsedRules()
-	const refs: RefMaps = getReferences(engineCtx, parsedRules)
-	let ctx: FoldingCtx = { engine, parsedRules, refs }
+	let ctx: FoldingCtx = initFoldingCtx(engine, parsedRules)
 	let parsedRulesEntries: [RuleName, RuleNode<RuleName>][] | undefined =
 		undefined
 

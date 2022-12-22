@@ -29,7 +29,7 @@ describe('Constant folding optim', () => {
 			})
 		).toStrictEqual({
 			ruleB: {
-				valeur: 100,
+				valeur: '100',
 				'est compressée': true,
 			},
 		})
@@ -47,7 +47,7 @@ describe('Constant folding optim', () => {
 		expect(constantFoldingWith(rawRules)).toStrictEqual({
 			ruleA: {
 				titre: 'Rule A',
-				valeur: 30,
+				valeur: '30',
 				'est compressée': true,
 			},
 		})
@@ -68,7 +68,7 @@ describe('Constant folding optim', () => {
 		expect(constantFoldingWith(rawRules)).toStrictEqual({
 			ruleA: {
 				titre: 'Rule A',
-				valeur: 30,
+				valeur: '30',
 				'est compressée': true,
 			},
 		})
@@ -120,7 +120,8 @@ describe('Constant folding optim', () => {
 				'est compressée': true,
 			},
 			ruleB: {
-				valeur: 30,
+				// TODO: could be '30' instead of '10 * 3'
+				formule: '10 * 3',
 				'est compressée': true,
 			},
 			'ruleA . D': {
@@ -167,9 +168,9 @@ describe('Constant folding optim', () => {
 				valeur: 7,
 			},
 		}
-		expect(constantFoldingWith(rawRules)).toStrictEqual({
+		expect(constantFoldingWith(rawRules, ['A'])).toStrictEqual({
 			A: {
-				valeur: 70,
+				valeur: '70',
 				'est compressée': true,
 			},
 		})
@@ -194,7 +195,7 @@ describe('Constant folding optim', () => {
 		}
 		expect(constantFoldingWith(rawRules)).toStrictEqual({
 			A: {
-				valeur: 70,
+				valeur: '70',
 				'est compressée': true,
 			},
 			B: {
@@ -221,9 +222,9 @@ describe('Constant folding optim', () => {
 				valeur: 7,
 			},
 		}
-		expect(constantFoldingWith(rawRules)).toStrictEqual({
+		expect(constantFoldingWith(rawRules, ['ruleA'])).toStrictEqual({
 			ruleA: {
-				valeur: 174,
+				valeur: '174',
 				'est compressée': true,
 			},
 		})
@@ -355,9 +356,9 @@ describe('Constant folding optim', () => {
 				formule: 0.95,
 			},
 		}
-		expect(constantFoldingWith(rawRules)).toStrictEqual({
+		expect(constantFoldingWith(rawRules, ['omr'])).toStrictEqual({
 			omr: {
-				valeur: 0.69068,
+				valeur: '0.69068',
 				'est compressée': true,
 			},
 		})
@@ -430,7 +431,28 @@ describe('Constant folding optim', () => {
 			},
 		})
 	})
-
+	it('should keeps % when folding', () => {
+		const rawRules = {
+			boisson: 'pct * nombre',
+			'boisson . pct': {
+				formule: '2%',
+			},
+			'boisson . nombre': {
+				'par défaut': 10,
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toStrictEqual({
+			boisson: {
+				formule: '2% * nombre',
+				'est compressée': true,
+			},
+			'boisson . nombre': {
+				'par défaut': 10,
+			},
+		})
+	})
+	//
+	//
 	// TODO: not supported yet
 	//
 	//
@@ -560,7 +582,7 @@ describe('Constant folding optim', () => {
 	// it('replaceAllRefs bug #3', () => {
 	// 	const rawRules = {
 	// 		boisson: {
-	// 			formule: 'tasse de café * de café',
+	// 			formule: 'tasse de café * café',
 	// 		},
 	// 		'boisson . café': {
 	// 			valeur: 20,
@@ -571,7 +593,7 @@ describe('Constant folding optim', () => {
 	// 	}
 	// 	expect(constantFoldingWith(rawRules)).toStrictEqual({
 	// 		boisson: {
-	// 			formule: '20 * nombre',
+	// 			formule: 'tasse de café * 20',
 	// 			'est compressée': true,
 	// 		},
 	// 		'boisson . nombre': {
