@@ -21,7 +21,7 @@ function IFrame() {
 		<>
 			<iframe
 				plausible-embed=""
-				src={`https://plausible.io/share/publi.codes?auth=EA2slHSJ5y9FMHp5RC9ip&embed=true&theme=${
+				src={`/embeded-plausible/share/publi.codes?auth=EA2slHSJ5y9FMHp5RC9ip&embed=true&theme=${
 					isDarkTheme ? 'dark' : 'light'
 				}&background=transparent`}
 				scrolling="no"
@@ -29,7 +29,7 @@ function IFrame() {
 				frameBorder="0"
 				style={{ width: '1px', height: '1600px', minWidth: '100%' }}
 			></iframe>
-			<script async src="https://plausible.io/js/embed.host.js"></script>
+			<script async src="/embeded-plausible/js/embed.host.js"></script>
 		</>
 	)
 }

@@ -14,3 +14,10 @@
   from = "/documentation/:page"
   to = "/docs/:page"
   status = 301
+
+
+# Proxy to workaround ads blockers blocking the stats embed
+[[redirects]]
+  from = "/embeded-plausible/*"
+  to = "https://plausible.io/:splat"
+  status = 200
