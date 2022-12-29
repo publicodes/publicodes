@@ -15,7 +15,6 @@
   to = "/docs/:page"
   status = 301
 
-
 # Proxy to workaround ads blockers blocking the stats embed
 [[redirects]]
   from = "/embeded-plausible/*"
