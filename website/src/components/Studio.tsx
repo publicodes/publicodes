@@ -27,21 +27,21 @@ dépenses primeur:
 `
 
 export default function Studio() {
-	const { search, pathname } = useLocation()
+	const { search, pathname, hash } = useLocation()
 	const searchParams = new URLSearchParams(search ?? '')
 	const initialValue = useMemo(() => {
 		const code = searchParams.get('code')
-		return code ? code : EXAMPLE_CODE
-	}, [search])
+		const hashCode = hash && unescape(decodeURIComponent(hash))
+		return code || hashCode || EXAMPLE_CODE
+	}, [hash, search])
 	const [editorValue, setEditorValue] = useState(initialValue)
 	const debouncedEditorValue = useDebounce(editorValue, 1000)
 
 	const history = useHistory()
 	useEffect(() => {
-		searchParams.set('code', debouncedEditorValue)
 		history.replace({
 			pathname,
-			search: '?' + searchParams.toString(),
+			hash: encodeURIComponent(debouncedEditorValue),
 		})
 	}, [debouncedEditorValue, history])
 
