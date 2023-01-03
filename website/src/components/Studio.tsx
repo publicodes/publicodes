@@ -31,7 +31,7 @@ export default function Studio() {
 	const searchParams = new URLSearchParams(search ?? '')
 	const initialValue = useMemo(() => {
 		const code = searchParams.get('code')
-		const hashCode = hash && unescape(decodeURIComponent(hash))
+		const hashCode = hash && unescape(decodeURIComponent(hash.substring(1)))
 		return code || hashCode || EXAMPLE_CODE
 	}, [hash, search])
 	const [editorValue, setEditorValue] = useState(initialValue)
