@@ -31,7 +31,10 @@ const evaluateRecalcul: EvaluationFunction<'recalcul'> = function (node) {
 						serializeUnit(replacementEvaluation.unit)
 				)
 			})
-			.map(([originRule, replacement]) => [originRule.dottedName, replacement])
+			.map(
+				([originRule, replacement]) =>
+					[originRule.dottedName, replacement] as [string, ASTNode]
+			)
 	)
 
 	let engine = this
@@ -40,6 +43,12 @@ const evaluateRecalcul: EvaluationFunction<'recalcul'> = function (node) {
 			keepPreviousSituation: true,
 		})
 		engine.subEngineId = this.subEngines.length
+
+		// The value of the replaced ruled are computed **without the replacement active**
+		Object.values(amendedSituation).forEach((value) =>
+			engine.cache.nodes.set(value, this.evaluate(value))
+		)
+
 		this.subEngines.push(engine)
 	}
 	engine.cache._meta.currentRecalcul = node.explanation.recalculNode
