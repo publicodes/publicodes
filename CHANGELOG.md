@@ -2,6 +2,13 @@
 
 ## next
 
+## 1.0.0-beta.66
+**publicodes-react**
+- Fix the display of explanations in the context of a recalul mecanism (the computed values where those of the base engine before)
+
+**core**
+- Recalcul mecanism now use the initial context to compute the values of overrides, instead of using the new one.
+
 ## 1.0.0-beta.65
 
 **publicodes-react**
@@ -49,13 +56,13 @@
 **core**
 
 -   **⚠ Changement cassant :** exception en cas de division par 0 dans un mécanisme.
--   **⚠ Changement cassant :** plus de publication du paquet au format obsolète "iife"
+-   **⚠ Changement cassant :** plus de publication du paquet au format obsolète “iife”
 
 **publicodes-react**
 
 -   Refacto publicodes-react to esm
 -   Refacto in RuleLink
--   Temporary fix bad babel transformation on [...new Set()]]
+-   Temporary fix bad babel transformation on […new Set()]]
 -   Fix publicodes-react missing sourcemap
 
 **website**
