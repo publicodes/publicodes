@@ -4,10 +4,7 @@ import constantFolding from '../src/constantFolding'
 
 import { callWithEngine } from './utils.test'
 
-function constantFoldingWith(
-	rawRules: RawRules,
-	targets?: RuleName[]
-): RawRules {
+function constantFoldingWith(rawRules: any, targets?: RuleName[]): RawRules {
 	const res = callWithEngine(
 		(engine) => constantFolding(engine, targets),
 		rawRules
@@ -120,8 +117,7 @@ describe('Constant folding optim', () => {
 				'est compressée': true,
 			},
 			ruleB: {
-				// TODO: could be '30' instead of '10 * 3'
-				formule: '10 * 3',
+				valeur: '30',
 				'est compressée': true,
 			},
 			'ruleA . D': {
@@ -226,37 +222,6 @@ describe('Constant folding optim', () => {
 			ruleA: {
 				valeur: '174',
 				'est compressée': true,
-			},
-		})
-	})
-	it('should partially fold a [somme] mechanism', () => {
-		const rawRules = {
-			ruleA: {
-				formule: 'ruleB',
-			},
-			ruleB: {
-				somme: ['A . B * D', 10, 12 * 2],
-			},
-			'ruleB . D': {
-				question: "What's the value of ruleB . D?",
-			},
-			'A . B': {
-				formule: 'C * 10',
-			},
-			'A . B . C': {
-				valeur: 7,
-			},
-		}
-		expect(constantFoldingWith(rawRules)).toStrictEqual({
-			ruleA: {
-				formule: 'ruleB',
-			},
-			ruleB: {
-				somme: ['70 * D', 10, 24],
-				'est compressée': true,
-			},
-			'ruleB . D': {
-				question: "What's the value of ruleB . D?",
 			},
 		})
 	})

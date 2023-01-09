@@ -1,14 +1,6 @@
 import Engine, { reduceAST } from 'publicodes'
 
-import type {
-	EvaluatedNode,
-	RawPublicodes,
-	RuleNode,
-	ASTNode,
-	Context,
-	Rule,
-	Unit,
-} from 'publicodes'
+import type { EvaluatedNode, RuleNode, ASTNode, Unit } from 'publicodes'
 import type { RuleName, ParsedRules } from './commons'
 
 type RefMap = Map<
@@ -49,15 +41,16 @@ function initFoldingCtx(engine: Engine, parsedRules: ParsedRules): FoldingCtx {
 				(acc: Set<RuleName>, node: ASTNode) => {
 					if (
 						node.nodeKind === 'reference' &&
+						node.dottedName &&
 						!node.dottedName.endsWith('$SITUATION') &&
 						node.dottedName !== ruleName
 					) {
-						acc.add(node.dottedName)
+						return acc.add(node.dottedName)
 					}
 				},
 				new Set(),
 				ruleNode.explanation.valeur
-			)
+			) ?? new Set()
 		)
 
 		if (traversedVariables.length > 0) {
@@ -133,7 +126,7 @@ function lexicalSubstitutionOfRefValue(
 	parent: RuleNode,
 	constant: RuleNode
 ): RuleNode | undefined {
-	const refName = reduceAST(
+	const refName = reduceAST<string>(
 		(_, node: ASTNode) => {
 			if (
 				node.nodeKind === 'reference' &&
@@ -142,7 +135,7 @@ function lexicalSubstitutionOfRefValue(
 				return node.name
 			}
 		},
-		undefined,
+		'',
 		parent
 	)
 
@@ -158,23 +151,15 @@ function lexicalSubstitutionOfRefValue(
 			return parent
 		} else if (parent.rawNode.formule.somme) {
 			// TODO: needs to be abstracted
-			parent.rawNode.formule.somme = parent.rawNode.formule.somme.map(
-				(expr: string | number) => {
-					return typeof expr === 'string'
-						? replaceAllRefs(expr, refName, constValue)
-						: expr
-				}
-			)
+			parent.rawNode.formule.somme = (
+				parent.rawNode.formule.somme as (string | number)[]
+			).map((expr: string | number) => {
+				return typeof expr === 'string'
+					? replaceAllRefs(expr, refName, constValue)
+					: expr
+			})
 			return parent
 		}
-	}
-	if (parent.rawNode.somme) {
-		parent.rawNode.somme = parent.rawNode.somme.map((expr: string | number) => {
-			return typeof expr === 'string'
-				? replaceAllRefs(expr, refName, constValue)
-				: expr
-		})
-		return parent
 	}
 	// When a rule defined as an unique string: 'var * var2', it's parsed as a [valeur] attribute not a [formule].
 	if (typeof parent.rawNode.valeur === 'string') {
@@ -228,7 +213,7 @@ function isAlreadyFolded(rule: RuleNode) {
 }
 
 function isAConstant(rule: RuleNode) {
-	return rule.rawNode.valeur && !(rule.rawNode.formule || rule.rawNode.somme)
+	return rule.rawNode.valeur && !rule.rawNode.formule
 }
 
 // Subsitutes [parentRuleNode.formule] ref constant from [refs].
@@ -338,11 +323,15 @@ function tryToFoldRule(
 	}
 
 	const { nodeValue, missingVariables, traversedVariables, unit } =
-		ctx.evaluatedRules.get(rule) ?? ctx.engine.evaluateNode(rule)
+		ctx.evaluatedRules.get(ruleName) ?? ctx.engine.evaluateNode(rule)
 
 	// NOTE(@EmileRolley): we need to evaluate due to possible standalone rule [formule]
 	// parsed as a [valeur].
-	if (rule.rawNode.valeur && traversedVariables.length > 0) {
+	if (
+		rule.rawNode.valeur &&
+		traversedVariables &&
+		traversedVariables.length > 0
+	) {
 		rule.rawNode.formule = rule.rawNode.valeur
 		delete rule.rawNode.valeur
 	}
@@ -363,7 +352,7 @@ function tryToFoldRule(
 	const missingVariablesNames = Object.keys(missingVariables)
 
 	// Potential leaf -> try to evaluate the formula at compile time.
-	if (rule.rawNode.formule || rule.rawNode.somme) {
+	if (rule.rawNode.formule) {
 		// The computation could be done a compile time.
 		if (missingVariablesNames.length === 0) {
 			ctx.parsedRules[ruleName].rawNode.valeur = formatToPulicodesValue(
@@ -373,7 +362,6 @@ function tryToFoldRule(
 			ctx.parsedRules[ruleName].rawNode['est compressée'] = true
 
 			if (rule.rawNode.formule) delete ctx.parsedRules[ruleName].rawNode.formule
-			if (rule.rawNode.somme) delete ctx.parsedRules[ruleName].rawNode.somme
 
 			const childs = ctx.refs.childs.get(ruleName) ?? []
 			ctx = updateRefCounting(
@@ -382,7 +370,7 @@ function tryToFoldRule(
 				// NOTE(@EmileRolley): for some reason, the [traversedVariables] are not always
 				// depencies of the rule. Consequently, we need to keep only the ones that are
 				// in the [childs] list in order to avoid removing rules that are not dependencies.
-				traversedVariables.filter((v: RuleName) => childs.includes(v))
+				traversedVariables?.filter((v: RuleName) => childs.includes(v)) ?? []
 			)
 		}
 		// Otherwise, try to replace internal refs if possible.
