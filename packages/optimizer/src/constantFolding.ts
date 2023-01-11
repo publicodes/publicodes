@@ -398,15 +398,12 @@ export default function constantFolding(
 ): ParsedRules {
 	const parsedRules: ParsedRules = engine.getParsedRules()
 	let ctx: FoldingCtx = initFoldingCtx(engine, parsedRules)
-	let parsedRulesEntries: [RuleName, RuleNode<RuleName>][] | undefined =
-		undefined
 
-	parsedRulesEntries = Object.entries(ctx.parsedRules)
-	parsedRulesEntries
-		.filter(([_, rule]) => isFoldable(rule))
-		.forEach(([ruleName, ruleNode]) => {
+	Object.entries(ctx.parsedRules).forEach(([ruleName, ruleNode]) => {
+		if (isFoldable(ruleNode)) {
 			ctx = tryToFoldRule(ctx, ruleName, ruleNode)
-		})
+		}
+	})
 
 	if (targets) {
 		return Object.fromEntries(
