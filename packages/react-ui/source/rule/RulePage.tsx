@@ -36,6 +36,14 @@ type RulePageProps = {
 	mobileMenuPortalId?: string
 	openNavButtonPortalId?: string
 	showDevSection?: boolean
+	contributionLink?: {
+		repository: string
+		// e.g. repository: 'datagir/nosgestesclimat',
+		directory: string
+		// e.g. directory: 'data',
+		title?: string
+		text?: string
+	}
 }
 
 export default function RulePage({
@@ -50,6 +58,7 @@ export default function RulePage({
 	mobileMenuPortalId,
 	openNavButtonPortalId,
 	showDevSection = true,
+	contributionLink,
 }: RulePageProps) {
 	const currentEngineId = new URLSearchParams(window.location.search).get(
 		'currentEngineId'
@@ -81,6 +90,7 @@ export default function RulePage({
 						mobileMenuPortalId={mobileMenuPortalId}
 						openNavButtonPortalId={openNavButtonPortalId}
 						showDevSection={showDevSection}
+						contributionLink={contributionLink}
 					/>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
@@ -100,6 +110,7 @@ type RuleProps = {
 	| 'mobileMenuPortalId'
 	| 'openNavButtonPortalId'
 	| 'showDevSection'
+	| 'contributionLink'
 >
 
 function Rule({
@@ -112,6 +123,7 @@ function Rule({
 	mobileMenuPortalId,
 	openNavButtonPortalId,
 	showDevSection,
+	contributionLink,
 }: RuleProps) {
 	const baseEngine = useEngine()
 	const { References, Text } = useContext(RenderersContext)
@@ -214,6 +226,22 @@ function Rule({
 								<h3>Références</h3>
 								<References references={rule.rawNode.références} />
 							</>
+						)}
+
+						{contributionLink && ( // Feature only implemented for github for now, don't hesitate to implement Gitlab and others
+							<div>
+								<h3>
+									{contributionLink.title ||
+										`Une erreur, une idée d'amélioration ?`}
+								</h3>
+								<a
+									href={`https://github.com/search?q=${encodeURIComponent(
+										`repo:${contributionLink.repository} "${dottedName}:"`
+									)} path:${contributionLink.directory}&type=code`}
+								>
+									{contributionLink.text || `✏️  Contribuer à cette page`}
+								</a>
+							</div>
 						)}
 						<br />
 
