@@ -126,7 +126,7 @@ function Rule({
 	contributionLink,
 }: RuleProps) {
 	const baseEngine = useEngine()
-	const { References, Text } = useContext(RenderersContext)
+	const { References, Text, VisualisationBlock } = useContext(RenderersContext)
 
 	const useSubEngine =
 		subEngineId && baseEngine.subEngines.length >= subEngineId
@@ -167,6 +167,7 @@ function Rule({
 						<section>
 							<Text>{description || ''}</Text>
 						</section>
+						{VisualisationBlock && <VisualisationBlock />}
 
 						<p style={{ fontSize: '1.25rem', lineHeight: '2rem' }}>
 							Valeur : {formatValue(rule, { language })}

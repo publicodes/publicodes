@@ -24,6 +24,7 @@ export type SupportedRenderers = {
 	 */
 	Text?: ComponentType<{ children: string }>
 	References?: typeof References
+	VisualisationBlock?: React.ComponentType
 	/**
 	 * Accordion used for developer documentation.
 	 */
@@ -54,6 +55,7 @@ export const defaultRenderers = (renderers: SupportedRenderers = {}) => {
 		Code,
 		Accordion,
 		Link: DefaultLinkRenderer,
+		VisualisationBlock: undefined,
 	}
 
 	return Object.fromEntries(
