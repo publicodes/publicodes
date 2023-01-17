@@ -226,15 +226,10 @@ function Rule({
 								</div>
 							</>
 						)}
-						{rule.rawNode.références && References && (
-							<>
-								<h3>Références</h3>
-								<References
-									references={rule.rawNode.références}
-									rawNode={rule.rawNode}
-								/>
-							</>
-						)}
+						<References
+							references={rule.rawNode.références}
+							rawNode={rule.rawNode}
+						/>
 
 						{contributionLink && ( // Feature only implemented for github for now, don't hesitate to implement Gitlab and others
 							<div>
