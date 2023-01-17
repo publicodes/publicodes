@@ -229,7 +229,10 @@ function Rule({
 						{rule.rawNode.références && References && (
 							<>
 								<h3>Références</h3>
-								<References references={rule.rawNode.références} />
+								<References
+									references={rule.rawNode.références}
+									rawNode={rule.rawNode}
+								/>
 							</>
 						)}
 
