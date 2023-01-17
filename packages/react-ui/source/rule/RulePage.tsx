@@ -159,8 +159,13 @@ function Rule({
 				<Article>
 					<DottedNameContext.Provider value={dottedName}>
 						<RuleHeader dottedName={dottedName} />
+						{question && (
+							<section id="documentation-rule-question">
+								<Text>{question}</Text>
+							</section>
+						)}
 						<section>
-							<Text>{description || question || ''}</Text>
+							<Text>{description || ''}</Text>
 						</section>
 
 						<p style={{ fontSize: '1.25rem', lineHeight: '2rem' }}>
