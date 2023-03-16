@@ -14,9 +14,6 @@ import testSuites from './mécanismes/index'
 import { parse } from 'yaml'
 
 testSuites.forEach(([suiteName, suite]) => {
-	// if (suiteName !== 'somme') {
-	// 	return
-	// }
 	describe(`Mécanisme ${suiteName}`, () => {
 		const engine = new Engine(parse(suite))
 		Object.entries(engine.getParsedRules())

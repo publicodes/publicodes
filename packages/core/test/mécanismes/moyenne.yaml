@@ -1,0 +1,65 @@
+noteA:
+
+noteB:
+
+noteC:
+
+poids total:
+  titre: Moyenne
+  formule:
+    moyenne:
+      - noteA
+      - noteB
+      - noteC
+
+  exemples:
+    - nom: moyenne simple
+      situation:
+        noteA: 10
+        noteB: 10
+        noteC: 10
+      valeur attendue: 10
+    - nom: un nul dans la moyenne
+      situation:
+        noteA: 10
+        noteB: 10
+      valeur attendue: undefined
+    - nom: une moyenne de nuls
+      situation: # pas de situation
+      valeur attendue: undefined
+    - nom: entier + flotant
+      situation:
+        noteA: 2.1
+        noteB: 200
+        noteC: 20
+      valeur attendue: 74.0333 
+    - nom: moyenne complexe
+      situation:
+        noteB: 2000
+        noteC: 10
+        noteA:
+          formule:
+            somme:
+              - noteB
+              - noteC
+      valeur attendue: 1340.0
+
+Moyenne de pourcentage avec non applicable si non:
+  moyenne:
+    - non applicable si: non
+      valeur: 5 %
+    - 1%
+  exemples:
+    - valeur attendue: 3
+      # TODO: manage units
+      # unité attendue: '%'
+
+Moyenne de pourcentage avec non applicable si oui:
+  moyenne:
+    - non applicable si: oui
+      valeur: 5 %
+    - 1%
+  exemples:
+    - valeur attendue: 1
+      # TODO: manage units
+      # unité attendue: '%'
