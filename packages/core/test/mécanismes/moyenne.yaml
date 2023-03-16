@@ -63,3 +63,23 @@ Moyenne de pourcentage avec non applicable si oui:
     - valeur attendue: 1
       # TODO: manage units
       # unité attendue: '%'
+
+Moyenne de pourcentage avec applicable si non:
+  moyenne:
+    - applicable si: non
+      valeur: 5 %
+    - 1%
+  exemples:
+    - valeur attendue: 1
+      # TODO: manage units
+      # unité attendue: '%'
+
+Moyenne de pourcentage avec applicable si oui:
+  moyenne:
+    - applicable si: oui
+      valeur: 5 %
+    - 1%
+  exemples:
+    - valeur attendue: 3
+      # TODO: manage units
+      # unité attendue: '%'
