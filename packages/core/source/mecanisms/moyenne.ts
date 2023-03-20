@@ -14,11 +14,12 @@ export default createParseInlinedMecanismWithArray(
 		if (valeurs.length === 0) {
 			return notApplicableNode
 		}
-		const denominator = valeurs.reverse().reduce((acc, v) => {
-			const one = changeTheValueToOne(v as ASTNode)
-			// console.log('one:', (one as any).explanation.alors)
-			return { '+': [one, acc] }
-		}, notApplicableNode)
+		const denominator = valeurs
+			.reverse()
+			.reduce(
+				(acc, v) => ({ '+': [changeTheValueToOne(v as ASTNode), acc] }),
+				notApplicableNode
+			)
 		const numerator = valeurs
 			.reverse()
 			.reduce((acc, value) => ({ '+': [value, acc] }), notApplicableNode)
@@ -30,11 +31,14 @@ export default createParseInlinedMecanismWithArray(
 function changeTheValueToOne(value: ASTNode): PublicodesExpression {
 	switch (value.nodeKind) {
 		case 'reference':
-			return { ...value, nodeValue: 1 }
 		case 'constant':
 			return { ...value, nodeValue: 1, type: 'number' }
 		case 'unité':
-			return { ...value, explanation: changeTheValueToOne(value.explanation) }
+			return {
+				...value,
+				explanation: changeTheValueToOne(value.explanation),
+				unit: { numerators: [], denominators: [] },
+			}
 		case 'condition': {
 			return {
 				...value,

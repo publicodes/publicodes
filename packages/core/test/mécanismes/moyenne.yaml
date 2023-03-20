@@ -51,8 +51,7 @@ Moyenne de pourcentage avec non applicable si non:
     - 1%
   exemples:
     - valeur attendue: 3
-      # TODO: manage units
-      # unité attendue: '%'
+      unité attendue: '%'
 
 Moyenne de pourcentage avec non applicable si oui:
   moyenne:
@@ -61,8 +60,7 @@ Moyenne de pourcentage avec non applicable si oui:
     - 1%
   exemples:
     - valeur attendue: 1
-      # TODO: manage units
-      # unité attendue: '%'
+      unité attendue: '%'
 
 Moyenne de pourcentage avec applicable si non:
   moyenne:
@@ -71,8 +69,7 @@ Moyenne de pourcentage avec applicable si non:
     - 1%
   exemples:
     - valeur attendue: 1
-      # TODO: manage units
-      # unité attendue: '%'
+      unité attendue: '%'
 
 Moyenne de pourcentage avec applicable si oui:
   moyenne:
@@ -81,5 +78,4 @@ Moyenne de pourcentage avec applicable si oui:
     - 1%
   exemples:
     - valeur attendue: 3
-      # TODO: manage units
-      # unité attendue: '%'
+      unité attendue: '%'
