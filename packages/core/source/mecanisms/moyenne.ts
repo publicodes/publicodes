@@ -32,7 +32,13 @@ function changeTheValueToOne(value: ASTNode): PublicodesExpression {
 	switch (value.nodeKind) {
 		case 'reference':
 		case 'constant':
-			return { ...value, nodeValue: 1, type: 'number' }
+			return value.rawNode == null
+				? value
+				: {
+						nodeKind: 'constant',
+						nodeValue: 1,
+						type: 'number',
+				  }
 		case 'unité':
 			return {
 				...value,
@@ -45,10 +51,19 @@ function changeTheValueToOne(value: ASTNode): PublicodesExpression {
 				explanation: {
 					...value.explanation,
 					alors: changeTheValueToOne(value.explanation.alors),
+					sinon: changeTheValueToOne(value.explanation.sinon),
 				},
 			}
 		}
-
+		case 'variations': {
+			return {
+				...value,
+				explanation: value.explanation.map((v) => ({
+					...v,
+					consequence: changeTheValueToOne(v.consequence),
+				})),
+			}
+		}
 		default:
 			return value
 	}

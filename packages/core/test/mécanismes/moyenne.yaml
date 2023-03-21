@@ -4,7 +4,10 @@ noteB:
 
 noteC:
 
-poids total:
+condition:
+  titre: règle permettant de paramétré les conditions des tests suivant
+
+note:
   titre: Moyenne
   formule:
     moyenne:
@@ -44,38 +47,60 @@ poids total:
               - noteC
       valeur attendue: 1340.0
 
-Moyenne de pourcentage avec non applicable si non:
-  moyenne:
-    - non applicable si: non
-      valeur: 5 %
-    - 1%
-  exemples:
-    - valeur attendue: 3
-      unité attendue: '%'
+applicabilité conditionel:
+  formule: 
+    moyenne:
+      - applicable si: condition 
+        valeur: 100
+      - noteA
+      - noteB
+      - noteC
 
-Moyenne de pourcentage avec non applicable si oui:
-  moyenne:
-    - non applicable si: oui
-      valeur: 5 %
-    - 1%
   exemples:
-    - valeur attendue: 1
-      unité attendue: '%'
+    - nom: "condition: noteA > noteB (oui)"
+      situation:
+        noteA: 200
+        noteB: 2
+        noteC: 10
+        condition: noteA > noteB
+      valeur attendue: 78
+    - nom: "condition: noteA < noteB (non)"
+      situation:
+        noteA: 200
+        noteB: 2
+        noteC: 10
+        condition: noteA < noteB
+      valeur attendue: 70.6666
+    - nom: "condition: noteB est défini (oui)"
+      situation:
+        noteA: 200
+        noteB: 2
+        noteC: 10
+        condition:
+          est défini: noteA
+      valeur attendue: 78 
 
-Moyenne de pourcentage avec applicable si non:
-  moyenne:
-    - applicable si: non
-      valeur: 5 %
-    - 1%
-  exemples:
-    - valeur attendue: 1
-      unité attendue: '%'
+variations:
+  formule:
+    moyenne:
+      - variations:
+        - si: condition
+          alors: 200
+        - sinon: 300
+      - 100
+      - 100
 
-Moyenne de pourcentage avec applicable si oui:
-  moyenne:
-    - applicable si: oui
-      valeur: 5 %
-    - 1%
   exemples:
-    - valeur attendue: 3
-      unité attendue: '%'
+    - nom: "condition: noteA > noteB (oui)"
+      situation:
+        noteA: 2
+        noteB: 1
+        condition: noteA > noteB
+      valeur attendue: 133.3333
+    - nom: "condition: noteA < noteB (non)"
+      situation:
+        noteA: 2
+        noteB: 1
+        condition: noteA < noteB
+      valeur attendue: 166.6666 
+
