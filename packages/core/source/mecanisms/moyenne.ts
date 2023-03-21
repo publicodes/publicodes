@@ -3,6 +3,7 @@ import {
 	createParseInlinedMecanismWithArray,
 	notApplicableNode,
 } from './inlineMecanism'
+import { reduceToSumNodes, reduceToSumNodesAndApply } from './somme'
 
 export default createParseInlinedMecanismWithArray(
 	'moyenne',
@@ -14,21 +15,19 @@ export default createParseInlinedMecanismWithArray(
 		if (valeurs.length === 0) {
 			return notApplicableNode
 		}
-		const denominator = valeurs
-			.reverse()
-			.reduce(
-				(acc, v) => ({ '+': [changeTheValueToOne(v as ASTNode), acc] }),
-				notApplicableNode
-			)
-		const numerator = valeurs
-			.reverse()
-			.reduce((acc, value) => ({ '+': [value, acc] }), notApplicableNode)
 
-		return { '/': [numerator, denominator] }
+		return {
+			'/': [
+				reduceToSumNodes(valeurs),
+				reduceToSumNodesAndApply(valeurs, (exp) =>
+					changeTheNodeToOne(exp as ASTNode)
+				),
+			],
+		}
 	}
 )
 
-function changeTheValueToOne(value: ASTNode): PublicodesExpression {
+function changeTheNodeToOne(value: ASTNode): PublicodesExpression {
 	switch (value.nodeKind) {
 		case 'reference':
 		case 'constant':
@@ -42,7 +41,7 @@ function changeTheValueToOne(value: ASTNode): PublicodesExpression {
 		case 'unité':
 			return {
 				...value,
-				explanation: changeTheValueToOne(value.explanation),
+				explanation: changeTheNodeToOne(value.explanation),
 				unit: { numerators: [], denominators: [] },
 			}
 		case 'condition': {
@@ -50,8 +49,8 @@ function changeTheValueToOne(value: ASTNode): PublicodesExpression {
 				...value,
 				explanation: {
 					...value.explanation,
-					alors: changeTheValueToOne(value.explanation.alors),
-					sinon: changeTheValueToOne(value.explanation.sinon),
+					alors: changeTheNodeToOne(value.explanation.alors),
+					sinon: changeTheNodeToOne(value.explanation.sinon),
 				},
 			}
 		}
@@ -60,7 +59,7 @@ function changeTheValueToOne(value: ASTNode): PublicodesExpression {
 				...value,
 				explanation: value.explanation.map((v) => ({
 					...v,
-					consequence: changeTheValueToOne(v.consequence),
+					consequence: changeTheNodeToOne(v.consequence),
 				})),
 			}
 		}

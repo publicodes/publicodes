@@ -36,7 +36,7 @@ note:
         noteB: 200
         noteC: 20
       valeur attendue: 74.0333 
-    - nom: moyenne complexe
+    - nom: somme
       situation:
         noteB: 2000
         noteC: 10
