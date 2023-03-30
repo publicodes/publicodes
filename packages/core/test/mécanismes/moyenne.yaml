@@ -22,7 +22,7 @@ note:
         noteB: 10
         noteC: 10
       valeur attendue: 10
-    - nom: un nul dans la moyenne
+    - nom: une valeur non définie dans la moyenne
       situation:
         noteA: 10
         noteB: 10

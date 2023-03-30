@@ -12,14 +12,12 @@ export default createParseInlinedMecanismWithArray(
 	},
 	({ valeur }) => {
 		const valeurs = [...(valeur as Array<PublicodesExpression>)]
-		if (valeurs.length === 0) {
-			return notApplicableNode
-		}
 
 		return {
 			'/': [
 				reduceToSumNodes(valeurs),
 				reduceToSumNodes(
+					// To only count the applicable nodes
 					valeurs.map((val) => changeTheNodeToOne(val as ASTNode))
 				),
 			],
