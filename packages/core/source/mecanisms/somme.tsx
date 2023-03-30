@@ -4,22 +4,15 @@ import {
 	notApplicableNode,
 } from './inlineMecanism'
 
-export function reduceToSumNodesAndApply(
-	valeurs: Array<PublicodesExpression>,
-	fn: (x: PublicodesExpression) => PublicodesExpression
+export function reduceToSumNodes(
+	valeurs: Array<PublicodesExpression>
 ): ASTNode {
 	return valeurs
 		.reverse()
 		.reduce(
-			(acc, value) => ({ '+': [fn(value), acc] }),
+			(acc, value) => ({ '+': [value, acc] }),
 			notApplicableNode
 		) as ASTNode
-}
-
-export function reduceToSumNodes(
-	valeurs: Array<PublicodesExpression>
-): ASTNode {
-	return reduceToSumNodesAndApply(valeurs, (v: PublicodesExpression) => v)
 }
 
 export default createParseInlinedMecanismWithArray(

@@ -3,7 +3,7 @@ import {
 	createParseInlinedMecanismWithArray,
 	notApplicableNode,
 } from './inlineMecanism'
-import { reduceToSumNodes, reduceToSumNodesAndApply } from './somme'
+import { reduceToSumNodes } from './somme'
 
 export default createParseInlinedMecanismWithArray(
 	'moyenne',
@@ -19,15 +19,15 @@ export default createParseInlinedMecanismWithArray(
 		return {
 			'/': [
 				reduceToSumNodes(valeurs),
-				reduceToSumNodesAndApply(valeurs, (exp) =>
-					changeTheNodeToOne(exp as ASTNode)
+				reduceToSumNodes(
+					valeurs.map((val) => changeTheNodeToOne(val as ASTNode))
 				),
 			],
 		}
 	}
 )
 
-function changeTheNodeToOne(value: ASTNode): PublicodesExpression {
+function changeTheNodeToOne(value: ASTNode): ASTNode {
 	switch (value.nodeKind) {
 		case 'reference':
 		case 'constant':
