@@ -1,4 +1,4 @@
-import { ASTNode, PublicodesExpression } from '..'
+import { PublicodesExpression } from '..'
 import {
 	createParseInlinedMecanismWithArray,
 	notApplicableNode,
@@ -6,13 +6,10 @@ import {
 
 export function reduceToSumNodes(
 	valeurs: Array<PublicodesExpression>
-): ASTNode {
+): PublicodesExpression {
 	return valeurs
 		.reverse()
-		.reduce(
-			(acc, value) => ({ '+': [value, acc] }),
-			notApplicableNode
-		) as ASTNode
+		.reduce((acc, value) => ({ '+': [value, acc] }), notApplicableNode)
 }
 
 export default createParseInlinedMecanismWithArray(
