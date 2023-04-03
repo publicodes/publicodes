@@ -2,6 +2,12 @@
 
 ## next
 
+## 1.0.0-beta.67
+
+**core**
+
+- New `moyenne` mechanism (#358)
+
 ## 1.0.0-beta.66
 **publicodes-react**
 - Fix the display of explanations in the context of a recalul mecanism (the computed values where those of the base engine before)
