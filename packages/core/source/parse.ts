@@ -19,6 +19,7 @@ import { parseEstNonApplicable } from './mecanisms/est-non-applicable'
 import grille from './mecanisms/grille'
 import { mecanismInversion } from './mecanisms/inversion'
 import { parseMaximumDe, parseMinimumDe } from './mecanisms/max-min'
+import moyenne from './mecanisms/moyenne'
 import nonApplicable from './mecanisms/non-applicable'
 import { mecanismOnePossibility } from './mecanisms/one-possibility'
 import operations from './mecanisms/operation'
@@ -244,6 +245,7 @@ const parseFunctions = {
 	produit,
 	recalcul: mecanismRecalcul,
 	somme,
+	moyenne,
 	[texte.nom]: texte,
 	valeur: parse,
 	variable: parseReference,

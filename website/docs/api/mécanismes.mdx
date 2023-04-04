@@ -266,6 +266,37 @@ somme:
     - 40 €
 ```
 
+## moyenne
+
+Moyenne de chaque terme de la liste.
+
+Un terme non applicable n'est pas comptabilisé dans la moyenne.
+
+### Exemple
+
+```publicodes
+exemple:
+  moyenne:
+    - 15.89 €
+    - 15% * 14 €
+    - (-20 €)
+```
+
+#### Terme non applicable
+
+```publicodes
+a: 50 €
+b:
+  applicable si: non
+  valeur: 20 €
+
+moyenne:
+  moyenne:
+    - a
+    - b
+    - 40 €
+```
+
 ## le maximum de
 
 Renvoie la valeur numérique de la liste de propositions fournie qui est la

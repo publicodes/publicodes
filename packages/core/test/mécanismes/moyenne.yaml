@@ -1,0 +1,106 @@
+noteA:
+
+noteB:
+
+noteC:
+
+condition:
+  titre: règle permettant de paramétré les conditions des tests suivant
+
+note:
+  titre: Moyenne
+  formule:
+    moyenne:
+      - noteA
+      - noteB
+      - noteC
+
+  exemples:
+    - nom: moyenne simple
+      situation:
+        noteA: 10
+        noteB: 10
+        noteC: 10
+      valeur attendue: 10
+    - nom: une valeur non définie dans la moyenne
+      situation:
+        noteA: 10
+        noteB: 10
+      valeur attendue: undefined
+    - nom: une moyenne de nuls
+      situation: # pas de situation
+      valeur attendue: undefined
+    - nom: entier + flotant
+      situation:
+        noteA: 2.1
+        noteB: 200
+        noteC: 20
+      valeur attendue: 74.0333 
+    - nom: somme
+      situation:
+        noteB: 2000
+        noteC: 10
+        noteA:
+          formule:
+            somme:
+              - noteB
+              - noteC
+      valeur attendue: 1340.0
+
+applicabilité conditionel:
+  formule: 
+    moyenne:
+      - applicable si: condition 
+        valeur: 100
+      - noteA
+      - noteB
+      - noteC
+
+  exemples:
+    - nom: "condition: noteA > noteB (oui)"
+      situation:
+        noteA: 200
+        noteB: 2
+        noteC: 10
+        condition: noteA > noteB
+      valeur attendue: 78
+    - nom: "condition: noteA < noteB (non)"
+      situation:
+        noteA: 200
+        noteB: 2
+        noteC: 10
+        condition: noteA < noteB
+      valeur attendue: 70.6666
+    - nom: "condition: noteB est défini (oui)"
+      situation:
+        noteA: 200
+        noteB: 2
+        noteC: 10
+        condition:
+          est défini: noteA
+      valeur attendue: 78 
+
+variations:
+  formule:
+    moyenne:
+      - variations:
+        - si: condition
+          alors: 200
+        - sinon: 300
+      - 100
+      - 100
+
+  exemples:
+    - nom: "condition: noteA > noteB (oui)"
+      situation:
+        noteA: 2
+        noteB: 1
+        condition: noteA > noteB
+      valeur attendue: 133.3333
+    - nom: "condition: noteA < noteB (non)"
+      situation:
+        noteA: 2
+        noteB: 1
+        condition: noteA < noteB
+      valeur attendue: 166.6666 
+
