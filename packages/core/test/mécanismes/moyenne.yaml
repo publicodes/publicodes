@@ -35,7 +35,7 @@ note:
         noteA: 2.1
         noteB: 200
         noteC: 20
-      valeur attendue: 74.0333 
+      valeur attendue: 74.0333
     - nom: somme
       situation:
         noteB: 2000
@@ -48,59 +48,58 @@ note:
       valeur attendue: 1340.0
 
 applicabilité conditionel:
-  formule: 
+  formule:
     moyenne:
-      - applicable si: condition 
+      - applicable si: condition
         valeur: 100
       - noteA
       - noteB
       - noteC
 
   exemples:
-    - nom: "condition: noteA > noteB (oui)"
+    - nom: 'condition: noteA > noteB (oui)'
       situation:
         noteA: 200
         noteB: 2
         noteC: 10
         condition: noteA > noteB
       valeur attendue: 78
-    - nom: "condition: noteA < noteB (non)"
+    - nom: 'condition: noteA < noteB (non)'
       situation:
         noteA: 200
         noteB: 2
         noteC: 10
         condition: noteA < noteB
       valeur attendue: 70.6666
-    - nom: "condition: noteB est défini (oui)"
+    - nom: 'condition: noteB est défini (oui)'
       situation:
         noteA: 200
         noteB: 2
         noteC: 10
         condition:
           est défini: noteA
-      valeur attendue: 78 
+      valeur attendue: 78
 
 variations:
   formule:
     moyenne:
       - variations:
-        - si: condition
-          alors: 200
-        - sinon: 300
+          - si: condition
+            alors: 200
+          - sinon: 300
       - 100
       - 100
 
   exemples:
-    - nom: "condition: noteA > noteB (oui)"
+    - nom: 'condition: noteA > noteB (oui)'
       situation:
         noteA: 2
         noteB: 1
         condition: noteA > noteB
       valeur attendue: 133.3333
-    - nom: "condition: noteA < noteB (non)"
+    - nom: 'condition: noteA < noteB (non)'
       situation:
         noteA: 2
         noteB: 1
         condition: noteA < noteB
-      valeur attendue: 166.6666 
-
+      valeur attendue: 166.6666
