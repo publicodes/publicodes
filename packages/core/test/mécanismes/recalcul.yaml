@@ -23,3 +23,7 @@ Recalcule règle courante:
           salaire brut: 100€
   exemples:
     - valeur attendue: 10
+
+x: a + b
+a: 6
+b: 6

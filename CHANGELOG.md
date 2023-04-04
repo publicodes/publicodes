@@ -2,6 +2,12 @@
 
 ## next
 
+## 1.0.0-beta.68
+
+**publicodes-react**
+- Pass down the prop `dottedName` to the `Reference` component for allowing users to implement better custom logic (#87, #90)
+
+
 ## 1.0.0-beta.67
 
 **core**

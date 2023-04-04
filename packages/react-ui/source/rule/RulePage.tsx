@@ -136,6 +136,10 @@ function Rule({
 
 	const situation = buildSituationUsedInRule(engine, rule)
 
+	const references = References?.({
+		references: rule.rawNode.références,
+		dottedName: rule.dottedName,
+	})
 	return (
 		<EngineContext.Provider value={engine}>
 			<Container id="documentation-rule-root">
@@ -209,10 +213,11 @@ function Rule({
 								</div>
 							</>
 						)}
-						{rule.rawNode.références && References && (
+
+						{references && (
 							<>
 								<h3>Références</h3>
-								<References references={rule.rawNode.références} />
+								{references}
 							</>
 						)}
 						<br />
