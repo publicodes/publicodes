@@ -32,19 +32,14 @@ export const useRuleSource = (engine: Engine, dottedName: string) => {
 		engine.context.referencesMaps.referencesIn.get(dottedName) ?? []
 	)
 
-	const rule = engine.evaluateNode(engine.getRule(dottedName))
+	const node = engine.evaluateNode(engine.context.parsedRules[dottedName])
 
 	// When we import a rule in the Publicodes Studio, we need to provide a
 	// simplified definition of its dependencies to avoid undefined references.
 	const dependenciesValues = Object.fromEntries(
 		dependencies
 			.filter((name) => name !== dottedName && !name.endsWith(' . $SITUATION'))
-			.map((dottedName) => [
-				dottedName,
-				formatValueForStudio(
-					engine.evaluateNode(engine.context.parsedRules[dottedName])
-				),
-			])
+			.map((dottedName) => [dottedName, formatValueForStudio(node)])
 	)
 
 	const source =
@@ -60,7 +55,7 @@ export const useRuleSource = (engine: Engine, dottedName: string) => {
 		yaml
 			.stringify({
 				[dottedName]: Object.fromEntries(
-					Object.entries(rule.rawNode).filter(([key]) => key !== 'nom')
+					Object.entries(node.rawNode).filter(([key]) => key !== 'nom')
 				),
 			})
 			.replace(`${dottedName}:`, `\n${dottedName}:`) +
