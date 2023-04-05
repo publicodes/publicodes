@@ -350,6 +350,7 @@ function ReverseMissing({
 	).filter(
 		(ruleName) =>
 			ruleName !== '$EVALUATION' &&
+			ruleName in engine.context.parsedRules &&
 			!engine.context.parsedRules[ruleName].private &&
 			!isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
 	)
@@ -401,6 +402,7 @@ function Effect({
 	).filter(
 		(ruleName) =>
 			ruleName !== '$EVALUATION' &&
+			ruleName in engine.context.parsedRules &&
 			!engine.context.parsedRules[ruleName].private &&
 			isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
 	)

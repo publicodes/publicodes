@@ -2,24 +2,33 @@
 
 ## next
 
+## 1.0.0-beta.69
+
+**publicodes-react**
+
+-   Fix crash on documentation page with private rule
+
 ## 1.0.0-beta.68
 
 **publicodes-react**
-- Pass down the prop `dottedName` to the `Reference` component for allowing users to implement better custom logic (#87, #90)
 
+-   Pass down the prop `dottedName` to the `Reference` component for allowing users to implement better custom logic (#87, #90)
 
 ## 1.0.0-beta.67
 
 **core**
 
-- New `moyenne` mechanism (#358)
+-   New `moyenne` mechanism (#358)
 
 ## 1.0.0-beta.66
+
 **publicodes-react**
-- Fix the display of explanations in the context of a recalul mecanism (the computed values where those of the base engine before)
+
+-   Fix the display of explanations in the context of a recalul mecanism (the computed values where those of the base engine before)
 
 **core**
-- Recalcul mecanism now use the initial context to compute the values of overrides, instead of using the new one.
+
+-   Recalcul mecanism now use the initial context to compute the values of overrides, instead of using the new one.
 
 ## 1.0.0-beta.65
 

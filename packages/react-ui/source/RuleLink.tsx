@@ -50,7 +50,7 @@ export function RuleLink<Name extends string>({
 			.reverse()
 			.filter((name) => name.startsWith(`${dottedNameContext} . `))
 			.map((name) => engine.context.parsedRules[name]?.title.trim()),
-		rule.title.trim(),
+		rule.title?.trim(),
 	].join(' › ')
 
 	if (!rule) {
