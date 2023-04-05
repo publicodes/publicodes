@@ -1,6 +1,6 @@
 {
 	"name": "publicodes-react",
-	"version": "1.0.0-beta.68",
+	"version": "1.0.0-beta.69",
 	"description": "UI to explore publicodes computations",
 	"license": "MIT",
 	"types": "dist/index.d.ts",
