@@ -36,6 +36,7 @@ npm install publicodes
     en France. Le site permet entre autre de simuler une fiche de paie complète,
     de calculer les cotisations sociales pour un indépendant ou encore connaître
     le montant du chômage partiel.
+-   **[Nos Gestes Climat](https://nosgestesclimat.fr)** utilise publicodes pour proposer un calculateur d'empreinte climat personnel de référence complètement ouvert
+-   **[Code du travail numérique](https://code.travail.gouv.fr)** utilise publicodes pour des simulateur d'indemnité de licenciement et de durée de préavis de retraite.
 -   **[futur.eco](https://futur.eco/)** utilise publicodes pour calculer les bilans
     carbone d'un grand nombre d'activités, plats, transports ou biens.
--   **[Nos Gestes Climat](https://nosgestesclimat.fr)** utilise publicodes pour proposer un calculateur d'empreinte climat personnel de référence complètement ouvert
