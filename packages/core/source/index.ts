@@ -63,6 +63,7 @@ export { simplifyNodeUnit } from './nodeUnits'
 export { default as serializeEvaluation } from './serializeEvaluation'
 export { parseUnit, serializeUnit } from './units'
 export { parsePublicodes, utils }
+export { parseExpression } from './parse'
 export { type Rule, type RuleNode, type ASTNode, type EvaluatedNode }
 
 export type PublicodesExpression = string | Record<string, unknown> | number

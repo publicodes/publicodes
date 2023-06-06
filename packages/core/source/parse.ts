@@ -86,7 +86,7 @@ Utilisez leur contrepartie française : 'oui' / 'non'`,
 
 const compiledGrammar = Grammar.fromCompiled(grammar)
 
-function parseExpression(
+export function parseExpression(
 	rawNode,
 	context: Context
 ): Record<string, unknown> | undefined {
