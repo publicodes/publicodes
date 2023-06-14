@@ -3,7 +3,6 @@ import { useEngine } from './hooks'
 import Arrondi from './mecanisms/Arrondi'
 import Avec from './mecanisms/Avec'
 import Barème from './mecanisms/Barème'
-import { ConstantNode } from './mecanisms/common'
 import Composantes from './mecanisms/Composantes'
 import Condition from './mecanisms/Condition'
 import DefaultInlineMecanism from './mecanisms/DefaultInlineMecanism'
@@ -26,6 +25,7 @@ import Texte from './mecanisms/Texte'
 import UnePossibilité from './mecanisms/UnePossibilité'
 import Unité from './mecanisms/Unité'
 import Variations from './mecanisms/Variations'
+import { ConstantNode } from './mecanisms/common'
 
 const UIComponents = {
 	constant: ConstantNode,
