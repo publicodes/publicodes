@@ -31,8 +31,9 @@ registerEvaluationFunction(parseVariableManquante.nom, function evaluate(node) {
 	)
 
 	return {
-		...valeur,
 		...node,
+		nodeValue: valeur.nodeValue,
+		unit: valeur.unit,
 		explanation: valeur,
 		missingVariables: mergeMissing(valeur.missingVariables, {
 			[node.missingVariable]: maxMissingScore + 1,
