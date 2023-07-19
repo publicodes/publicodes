@@ -91,10 +91,13 @@ const compiledGrammar = Grammar.fromCompiled(grammar)
 /**
  * Parse a publicodes expression into an JSON object representing the AST.
  *
+ * The parsing is done with the [nearley](https://nearley.js.org/) parser based
+ * on the [grammar](https://github.com/betagouv/publicodes/blob/290c079d1f22baed77a96bdd834ef6cb44fa8da9/packages/core/source/grammar.ne)
+ *
  * @param rawNode The expression to parse
  * @param dottedName The dottedName of the rule being parsed
  *
- * @returns The parsed expression
+ * @returns The parsing result as a JSON object
  *
  * @throws A `SyntaxError` if the expression is invalid
  * @throws A `PublicodesInternalError` if the parser is unable to parse the expression
@@ -108,7 +111,7 @@ const compiledGrammar = Grammar.fromCompiled(grammar)
 export function parseExpression(
 	rawNode: string,
 	dottedName: string
-): Record<string, unknown> | undefined {
+): Record<string, unknown> {
 	/* Strings correspond to infix expressions.
 	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
 	 * This function makes them prefixed operations. */
