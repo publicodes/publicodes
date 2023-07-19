@@ -70,7 +70,9 @@ Utilisez leur contrepartie française : 'oui' / 'non'`,
 		)
 	}
 	const node =
-		typeof rawNode === 'object' ? rawNode : parseExpression(rawNode, context)
+		typeof rawNode === 'object'
+			? rawNode
+			: parseExpression(rawNode, context.dottedName)
 	if ('nodeKind' in node) {
 		return node
 	}
@@ -86,9 +88,26 @@ Utilisez leur contrepartie française : 'oui' / 'non'`,
 
 const compiledGrammar = Grammar.fromCompiled(grammar)
 
-function parseExpression(
-	rawNode,
-	context: Context
+/**
+ * Parse a publicodes expression into an JSON object representing the AST.
+ *
+ * @param rawNode The expression to parse
+ * @param dottedName The dottedName of the rule being parsed
+ *
+ * @returns The parsed expression
+ *
+ * @throws A `SyntaxError` if the expression is invalid
+ * @throws A `PublicodesInternalError` if the parser is unable to parse the expression
+ *
+ * @example
+ * ```ts
+ * parseExpression('20.3 * nombre', 'foo . bar')
+ * // returns { "*": [ { constant: { type: "number", nodeValue: 20.3 } }, { variable:"nombre" } ] }
+ * ```
+ */
+export function parseExpression(
+	rawNode: string,
+	dottedName: string
 ): Record<string, unknown> | undefined {
 	/* Strings correspond to infix expressions.
 	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
@@ -115,7 +134,7 @@ function parseExpression(
 		throw new PublicodesError(
 			'SyntaxError',
 			`\`${singleLineExpression}\` n'est pas une expression valide`,
-			{ dottedName: context.dottedName },
+			{ dottedName },
 			e
 		)
 	}
