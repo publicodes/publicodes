@@ -1,7 +1,5 @@
-import nearley from 'nearley'
 import { ASTNode } from './AST/types'
 import { PublicodesError, PublicodesInternalError } from './error'
-import grammar from './grammar'
 import abattement from './mecanisms/abattement'
 import applicable from './mecanisms/applicable'
 import arrondi from './mecanisms/arrondi'
@@ -39,16 +37,10 @@ import uneDeCesConditions from './mecanisms/une-de-ces-conditions'
 import unité from './mecanisms/unité'
 import variableManquante from './mecanisms/variablesManquantes'
 import variations, { devariate } from './mecanisms/variations'
+import { parseExpression } from './parseExpression'
 import { Context } from './parsePublicodes'
 import parseReference from './reference'
 import parseRule from './rule'
-
-// TODO: nearley is currently exported as a CommonJS module which is why we need
-// to destructure the default import instead of directly importing the symbols
-// we need. This is sub-optimal because we our bundler will not tree-shake
-// unused nearley symbols.
-// https://github.com/kach/nearley/issues/535
-const { Grammar, Parser } = nearley
 
 export default function parse(rawNode, context: Context): ASTNode {
 	if (rawNode == undefined) {
@@ -70,7 +62,9 @@ Utilisez leur contrepartie française : 'oui' / 'non'`,
 		)
 	}
 	const node =
-		typeof rawNode === 'object' ? rawNode : parseExpression(rawNode, context)
+		typeof rawNode === 'object'
+			? rawNode
+			: parseExpression(rawNode, context.dottedName)
 	if ('nodeKind' in node) {
 		return node
 	}
@@ -81,43 +75,6 @@ Utilisez leur contrepartie française : 'oui' / 'non'`,
 	return {
 		...parseChainedMecanisms(node, context),
 		rawNode,
-	}
-}
-
-const compiledGrammar = Grammar.fromCompiled(grammar)
-
-function parseExpression(
-	rawNode,
-	context: Context
-): Record<string, unknown> | undefined {
-	/* Strings correspond to infix expressions.
-	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
-	 * This function makes them prefixed operations. */
-	const singleLineExpression = (rawNode + '').replace(/\s*\n\s*/g, ' ').trim()
-	try {
-		const [parseResult] = new Parser(compiledGrammar).feed(
-			singleLineExpression
-		).results
-
-		if (parseResult == null) {
-			throw new PublicodesInternalError({
-				expression: singleLineExpression,
-				parseResult: `${JSON.stringify(parseResult)}`,
-				notice:
-					"L'erreur se situe très probablement dans le fichier `nearley.ne`",
-			})
-		}
-		return parseResult
-	} catch (e) {
-		if (e instanceof PublicodesInternalError) {
-			throw e
-		}
-		throw new PublicodesError(
-			'SyntaxError',
-			`\`${singleLineExpression}\` n'est pas une expression valide`,
-			{ dottedName: context.dottedName },
-			e
-		)
 	}
 }
 
@@ -205,6 +162,7 @@ const chainableMecanisms = [
 	résoudreRéférenceCirculaire,
 	abattement,
 ]
+
 function parseChainedMecanisms(rawNode, context: Context): ASTNode {
 	const parseFn = chainableMecanisms.find((fn) => fn.nom in rawNode)
 	if (!parseFn) {
