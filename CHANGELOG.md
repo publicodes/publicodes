@@ -1,11 +1,18 @@
 # Changelog
 
 ## next
+
+## 1.0.0-beta.71
+
+**core**
+
+-   Expose the `parseExpression` function (#370)
+
 ## 1.0.0-beta.70
 
 **publicodes-react**
 
--  Fix crash on documentation when a ‘variable manquante’ mecanism is used with a replacement
+-   Fix crash on documentation when a ‘variable manquante’ mecanism is used with a replacement
 
 ## 1.0.0-beta.69
 
