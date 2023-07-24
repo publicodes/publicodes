@@ -62,7 +62,7 @@ export { capitalise0, formatValue } from './format'
 export { simplifyNodeUnit } from './nodeUnits'
 export { default as serializeEvaluation } from './serializeEvaluation'
 export { parseUnit, serializeUnit } from './units'
-export { parseExpression, type ExprAST } from './parse'
+export { parseExpression, type ExprAST } from './parseExpression'
 export { parsePublicodes, utils }
 
 export { type Rule, type RuleNode, type ASTNode, type EvaluatedNode }

@@ -1,7 +1,5 @@
-import nearley from 'nearley'
 import { ASTNode } from './AST/types'
 import { PublicodesError, PublicodesInternalError } from './error'
-import grammar from './grammar'
 import abattement from './mecanisms/abattement'
 import applicable from './mecanisms/applicable'
 import arrondi from './mecanisms/arrondi'
@@ -39,16 +37,10 @@ import uneDeCesConditions from './mecanisms/une-de-ces-conditions'
 import unité from './mecanisms/unité'
 import variableManquante from './mecanisms/variablesManquantes'
 import variations, { devariate } from './mecanisms/variations'
+import { parseExpression } from './parseExpression'
 import { Context } from './parsePublicodes'
 import parseReference from './reference'
 import parseRule from './rule'
-
-// TODO: nearley is currently exported as a CommonJS module which is why we need
-// to destructure the default import instead of directly importing the symbols
-// we need. This is sub-optimal because we our bundler will not tree-shake
-// unused nearley symbols.
-// https://github.com/kach/nearley/issues/535
-const { Grammar, Parser } = nearley
 
 export default function parse(rawNode, context: Context): ASTNode {
 	if (rawNode == undefined) {
@@ -83,83 +75,6 @@ Utilisez leur contrepartie française : 'oui' / 'non'`,
 	return {
 		...parseChainedMecanisms(node, context),
 		rawNode,
-	}
-}
-
-const compiledGrammar = Grammar.fromCompiled(grammar)
-
-type BinaryOp =
-	| { '+': [ExprAST, ExprAST] }
-	| { '-': [ExprAST, ExprAST] }
-	| { '*': [ExprAST, ExprAST] }
-	| { '/': [ExprAST, ExprAST] }
-	| { '>': [ExprAST, ExprAST] }
-	| { '<': [ExprAST, ExprAST] }
-	| { '>=': [ExprAST, ExprAST] }
-	| { '<=': [ExprAST, ExprAST] }
-	| { '=': [ExprAST, ExprAST] }
-	| { '!=': [ExprAST, ExprAST] }
-
-type UnaryOp = { '-': [{ value: 0 }, ExprAST] }
-
-/** AST of a publicodes expression. */
-export type ExprAST =
-	| BinaryOp
-	| UnaryOp
-	| { variable: string }
-	| { constant: { type: 'number'; nodeValue: number }; unité?: string }
-	| { constant: { type: 'boolean'; nodeValue: boolean } }
-	| { constant: { type: 'string' | 'date'; nodeValue: string } }
-
-/**
- * Parse a publicodes expression into an JSON object representing the AST.
- *
- * The parsing is done with the [nearley](https://nearley.js.org/) parser based
- * on the [grammar](https://github.com/betagouv/publicodes/blob/290c079d1f22baed77a96bdd834ef6cb44fa8da9/packages/core/source/grammar.ne)
- *
- * @param rawNode The expression to parse
- * @param dottedName The dottedName of the rule being parsed
- *
- * @returns The parsing result as a JSON object
- *
- * @throws A `SyntaxError` if the expression is invalid
- * @throws A `PublicodesInternalError` if the parser is unable to parse the expression
- *
- * @example
- * ```ts
- * parseExpression('20.3 * nombre', 'foo . bar')
- * // returns { "*": [ { constant: { type: "number", nodeValue: 20.3 } }, { variable:"nombre" } ] }
- * ```
- */
-export function parseExpression(rawNode: string, dottedName: string): ExprAST {
-	/* Strings correspond to infix expressions.
-	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
-	 * This function makes them prefixed operations. */
-	const singleLineExpression = (rawNode + '').replace(/\s*\n\s*/g, ' ').trim()
-	try {
-		const [parseResult] = new Parser(compiledGrammar).feed(
-			singleLineExpression
-		).results
-
-		if (parseResult == null) {
-			throw new PublicodesInternalError({
-				expression: singleLineExpression,
-				parseResult: `${JSON.stringify(parseResult)}`,
-				notice:
-					"L'erreur se situe très probablement dans le fichier `nearley.ne`",
-			})
-		}
-		return parseResult
-	} catch (e) {
-		if (e instanceof PublicodesInternalError) {
-			throw e
-		}
-		throw new PublicodesError(
-			'SyntaxError',
-			`\`${singleLineExpression}\` n'est pas une expression valide`,
-			{ dottedName },
-			e
-		)
 	}
 }
 
@@ -247,6 +162,7 @@ const chainableMecanisms = [
 	résoudreRéférenceCirculaire,
 	abattement,
 ]
+
 function parseChainedMecanisms(rawNode, context: Context): ASTNode {
 	const parseFn = chainableMecanisms.find((fn) => fn.nom in rawNode)
 	if (!parseFn) {
