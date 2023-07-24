@@ -68,9 +68,9 @@ export function parseExpression(rawNode: string, dottedName: string): ExprAST {
 			throw new PublicodesError(
 				'InternalError',
 				`
-Internal problem with the Nearley parser used to parse the expression.
+Un problème est survenu lors du parsing de l'expression \`${singleLineExpression}\` :
 
-For the expression "${singleLineExpression}", the parser returned no result.
+	le parseur Nearley n'a pas réussi à parser l'expression.
 `,
 				{ dottedName }
 			)
@@ -82,7 +82,7 @@ For the expression "${singleLineExpression}", the parser returned no result.
 		}
 		throw new PublicodesError(
 			'SyntaxError',
-			`\`${singleLineExpression}\` is not a valid expression`,
+			`\`${singleLineExpression}\` n'est pas une expression valide`,
 			{ dottedName },
 			e
 		)
