@@ -88,6 +88,29 @@ Utilisez leur contrepartie française : 'oui' / 'non'`,
 
 const compiledGrammar = Grammar.fromCompiled(grammar)
 
+type BinaryOp =
+	| { '+': [ExprAST, ExprAST] }
+	| { '-': [ExprAST, ExprAST] }
+	| { '*': [ExprAST, ExprAST] }
+	| { '/': [ExprAST, ExprAST] }
+	| { '>': [ExprAST, ExprAST] }
+	| { '<': [ExprAST, ExprAST] }
+	| { '>=': [ExprAST, ExprAST] }
+	| { '<=': [ExprAST, ExprAST] }
+	| { '=': [ExprAST, ExprAST] }
+	| { '!=': [ExprAST, ExprAST] }
+
+type UnaryOp = { '-': [{ value: 0 }, ExprAST] }
+
+/** AST of a publicodes expression. */
+export type ExprAST =
+	| BinaryOp
+	| UnaryOp
+	| { variable: string }
+	| { constant: { type: 'number'; nodeValue: number }; unité?: string }
+	| { constant: { type: 'boolean'; nodeValue: boolean } }
+	| { constant: { type: 'string' | 'date'; nodeValue: string } }
+
 /**
  * Parse a publicodes expression into an JSON object representing the AST.
  *
@@ -108,10 +131,7 @@ const compiledGrammar = Grammar.fromCompiled(grammar)
  * // returns { "*": [ { constant: { type: "number", nodeValue: 20.3 } }, { variable:"nombre" } ] }
  * ```
  */
-export function parseExpression(
-	rawNode: string,
-	dottedName: string
-): Record<string, unknown> {
+export function parseExpression(rawNode: string, dottedName: string): ExprAST {
 	/* Strings correspond to infix expressions.
 	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
 	 * This function makes them prefixed operations. */
