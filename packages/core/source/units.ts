@@ -8,14 +8,16 @@ export const parseUnit = (
 	string: string,
 	getUnitKey: getUnitKey = (x) => x
 ): Unit => {
-	const [a, ...b] = string.split('/').map((u) => u.trim()),
-		result = {
-			numerators: a
-				.split('.')
-				.filter(Boolean)
-				.map((unit) => getUnitKey(unit)),
-			denominators: b.map((unit) => getUnitKey(unit)),
-		}
+	const [a, b] = string.split('/').map((u) => u.trim())
+	const splitUnit = (string) =>
+		string
+			.split('.')
+			.filter(Boolean)
+			.map((unit) => getUnitKey(unit))
+	const result = {
+		numerators: splitUnit(a),
+		denominators: b !== undefined ? splitUnit(b) : [],
+	}
 	return result
 }
 
