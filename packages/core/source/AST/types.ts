@@ -80,7 +80,7 @@ export type TraverseFunction<Kind extends NodeKind> = (
 	node: ASTNode & { nodeKind: Kind }
 ) => ASTNode & { nodeKind: Kind }
 
-type BaseUnit = string
+export type BaseUnit = string
 
 // TODO: I believe it would be more effecient (for unit conversion and for
 // inference), and more general to represent units using a map of base unit to

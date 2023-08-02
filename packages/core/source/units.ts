@@ -1,4 +1,4 @@
-import { Evaluation, Unit } from './AST/types'
+import { BaseUnit, Evaluation, Unit } from './AST/types'
 import { PublicodesError } from './error'
 
 export type getUnitKey = (writtenUnit: string) => string
@@ -120,8 +120,12 @@ export const removeOnce =
 const simplify = (
 	unit: Unit,
 	eqFn: (a: string, b: string) => boolean = equals
-): Unit =>
-	[...unit.numerators, ...unit.denominators].reduce(
+): Unit => {
+	const unitWithCombinedPower = combineUnitPower(unit)
+	return [
+		...unitWithCombinedPower.numerators,
+		...unitWithCombinedPower.denominators,
+	].reduce(
 		({ numerators, denominators }, next) =>
 			numerators.find((u) => eqFn(next, u)) &&
 			denominators.find((u) => eqFn(next, u))
@@ -130,8 +134,9 @@ const simplify = (
 						denominators: removeOnce(next, eqFn)(denominators),
 				  }
 				: { numerators, denominators },
-		unit
+		unitWithCombinedPower
 	)
+}
 
 const convertTable: ConvertTable = {
 	'mois/an': 12,
@@ -257,6 +262,7 @@ function areSameClass(a: string, b: string) {
 function round(value: number) {
 	return +value.toFixed(16)
 }
+
 export function simplifyUnit(unit: Unit): Unit {
 	const { numerators, denominators } = simplify(unit, areSameClass)
 	if (numerators.length && numerators.every((symb) => symb === '%')) {
@@ -264,6 +270,7 @@ export function simplifyUnit(unit: Unit): Unit {
 	}
 	return removePercentages({ numerators, denominators })
 }
+
 function simplifyUnitWithValue(unit: Unit, value = 1): [Unit, number] {
 	const factor = unitsConversionFactor(unit.numerators, unit.denominators)
 	return [
@@ -277,11 +284,41 @@ const removePercentages = (unit: Unit): Unit => ({
 	denominators: unit.denominators.filter((e) => e !== '%'),
 })
 
+const combineUnitPower = (unit: Unit): Unit => {
+	// [m2, m] -> [m3]
+	// [m, m, m] -> [m3]
+	// [m, m, kg, kg] -> [m2, kg2]
+	// [m2, kg] -> [m2, kg]
+	const splitLetterAndNumberRegex = /(\d+)(?!.*[A-Za-z])/g
+	const combinePower = (baseUnit: Array<BaseUnit>): Array<BaseUnit> => {
+		if (baseUnit.length > 1) {
+			let countUnits: Record<string, number> = {}
+			baseUnit.forEach((e) => {
+				const powerMatch = e.match(splitLetterAndNumberRegex)
+				if (powerMatch != null) {
+					const power = powerMatch[0]
+					const primaryUnit = e.split(power)[0]
+					countUnits[primaryUnit] = (countUnits[primaryUnit] || 0) + +power
+				} else {
+					countUnits[e] = (countUnits[e] || 0) + 1
+				}
+			})
+			return Object.entries(countUnits).map(([primaryUnit, power]) =>
+				power > 1 ? `${primaryUnit}${power}` : primaryUnit
+			)
+		} else {
+			return baseUnit
+		}
+	}
+	unit.numerators = combinePower(unit.numerators)
+	unit.denominators = combinePower(unit.denominators)
+	return unit
+}
+
 export function areUnitConvertible(a: Unit | undefined, b: Unit | undefined) {
 	if (a == null || b == null) {
 		return true
 	}
-
 	const countByUnitClass = (units: Array<string>) =>
 		units.reduce((counters, unit) => {
 			const classIndex = convertibleUnitClasses.findIndex((unitClass) =>
