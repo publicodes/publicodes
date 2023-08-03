@@ -232,12 +232,36 @@ function unitsConversionFactor(from: string[], to: string[]): number {
 	return factor
 }
 
+// TO DO :
+// - Deal with other equivalent units : l: 'dm3',
+// - Convert unit instead of ignore warning
+type EquivalentTable = { readonly [index: string]: string }
+const equivalentTable: EquivalentTable = {
+	'kW.h': 'kWh',
+	'mn / h': 'noeud',
+}
+
+const areEquivalentSerializedUnit = (
+	fromSerialized: string | undefined,
+	toSerialized: string | undefined
+): Boolean => {
+	if (!fromSerialized || !toSerialized) return false
+	const findEquivalent = Object.entries(equivalentTable).find(
+		(equivalents) =>
+			equivalents.includes(fromSerialized) && equivalents.includes(toSerialized)
+	)
+	return findEquivalent ? true : false
+}
+
 export function convertUnit<ValType extends Evaluation<number>>(
 	from: Unit | undefined,
 	to: Unit | undefined,
 	value: ValType
 ): ValType {
-	if (!areUnitConvertible(from, to)) {
+	if (
+		!areUnitConvertible(from, to) &&
+		!areEquivalentSerializedUnit(serializeUnit(from), serializeUnit(to))
+	) {
 		throw new PublicodesError(
 			'EngineError',
 			`Impossible de convertir l'unité '${serializeUnit(
