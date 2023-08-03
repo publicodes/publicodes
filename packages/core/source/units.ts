@@ -73,7 +73,7 @@ const printUnits = (
 	formatUnit: formatUnit = (x) => x
 ): string => {
 	const cleanUnit = combinePower(
-		units.sort().map((unit) => formatUnit(unit, count))
+		units.map((unit) => formatUnit(unit, count))
 	).join('.')
 	return cleanUnit
 }
