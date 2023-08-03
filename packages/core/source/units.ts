@@ -10,10 +10,12 @@ export const parseUnit = (
 ): Unit => {
 	const [a, b] = string.split('/').map((u) => u.trim())
 	const splitUnit = (string) =>
-		string
-			.split('.')
-			.filter(Boolean)
-			.map((unit) => getUnitKey(unit))
+		decomposePower(
+			string
+				.split('.')
+				.filter(Boolean)
+				.map((unit) => getUnitKey(unit))
+		)
 	const result = {
 		numerators: splitUnit(a),
 		denominators: b !== undefined ? splitUnit(b) : [],
@@ -21,15 +23,60 @@ export const parseUnit = (
 	return result
 }
 
+const getLastNumberFromString = /(\d+)(?!.*[A-Za-z])/g
+const decomposePower = (baseUnit: Array<BaseUnit>): Array<BaseUnit> => {
+	// [m2] -> m
+	// [m2, m] -> [m, m, m]
+	// [m, m, m] -> [m, m, m]
+	// [m, m, kg, kg] -> [m, m, kg, kg]
+	// [m2, kg] -> [m, m, kg]
+	let countUnits: Record<string, number> = {}
+	baseUnit.forEach((e) => {
+		const powerMatch = e.match(getLastNumberFromString)
+		if (powerMatch != null) {
+			const power = powerMatch[0]
+			const primaryUnit = e.split(power)[0]
+			countUnits[primaryUnit] = (countUnits[primaryUnit] || 0) + +power
+		} else {
+			countUnits[e] = (countUnits[e] || 0) + 1
+		}
+	})
+	return Object.entries(countUnits)
+		.map(([primaryUnit, power]) => Array(power).fill(primaryUnit))
+		.flat()
+}
+
+const combinePower = (baseUnit: Array<BaseUnit>): Array<BaseUnit> => {
+	// [m2, m] -> [m3]
+	// [m, m, m] -> [m3]
+	// [m, m, kg, kg] -> [m2, kg2]
+	// [m, m, kg] -> [m2, kg]
+	let countUnits: Record<string, number> = {}
+	baseUnit.forEach((e) => {
+		const powerMatch = e.match(getLastNumberFromString)
+		if (powerMatch != null) {
+			const power = powerMatch[0]
+			const primaryUnit = e.split(power)[0]
+			countUnits[primaryUnit] = (countUnits[primaryUnit] || 0) + +power
+		} else {
+			countUnits[e] = (countUnits[e] || 0) + 1
+		}
+	})
+	return Object.entries(countUnits).map(([primaryUnit, power]) =>
+		power > 1 ? `${primaryUnit}${power}` : primaryUnit
+	)
+}
+
 const printUnits = (
-	units: Array<string>,
+	units: Array<BaseUnit>,
 	count: number,
 	formatUnit: formatUnit = (x) => x
-): string =>
-	units
-		.sort()
-		.map((unit) => formatUnit(unit, count))
-		.join('.')
+): string => {
+	const cleanUnit = combinePower(
+		units.sort().map((unit) => formatUnit(unit, count))
+	).join('.')
+	return cleanUnit
+}
 
 const plural = 2
 export const serializeUnit = (
@@ -40,8 +87,8 @@ export const serializeUnit = (
 	if (rawUnit === null || typeof rawUnit !== 'object') {
 		return typeof rawUnit === 'string' ? formatUnit(rawUnit, count) : rawUnit
 	}
-	const unit = simplify(rawUnit),
-		{ numerators = [], denominators = [] } = unit
+	const unit = simplify(rawUnit)
+	const { numerators = [], denominators = [] } = unit
 
 	const n = numerators.length > 0
 	const d = denominators.length > 0
@@ -121,11 +168,7 @@ const simplify = (
 	unit: Unit,
 	eqFn: (a: string, b: string) => boolean = equals
 ): Unit => {
-	const unitWithCombinedPower = combineUnitPower(unit)
-	return [
-		...unitWithCombinedPower.numerators,
-		...unitWithCombinedPower.denominators,
-	].reduce(
+	const simplifiedUnit = [...unit.numerators, ...unit.denominators].reduce(
 		({ numerators, denominators }, next) =>
 			numerators.find((u) => eqFn(next, u)) &&
 			denominators.find((u) => eqFn(next, u))
@@ -134,8 +177,9 @@ const simplify = (
 						denominators: removeOnce(next, eqFn)(denominators),
 				  }
 				: { numerators, denominators },
-		unitWithCombinedPower
+		unit
 	)
+	return simplifiedUnit
 }
 
 const convertTable: ConvertTable = {
@@ -284,42 +328,11 @@ const removePercentages = (unit: Unit): Unit => ({
 	denominators: unit.denominators.filter((e) => e !== '%'),
 })
 
-const combineUnitPower = (unit: Unit): Unit => {
-	// [m2, m] -> [m3]
-	// [m, m, m] -> [m3]
-	// [m, m, kg, kg] -> [m2, kg2]
-	// [m2, kg] -> [m2, kg]
-	const splitLetterAndNumberRegex = /(\d+)(?!.*[A-Za-z])/g
-	const combinePower = (baseUnit: Array<BaseUnit>): Array<BaseUnit> => {
-		if (baseUnit.length > 1) {
-			let countUnits: Record<string, number> = {}
-			baseUnit.forEach((e) => {
-				const powerMatch = e.match(splitLetterAndNumberRegex)
-				if (powerMatch != null) {
-					const power = powerMatch[0]
-					const primaryUnit = e.split(power)[0]
-					countUnits[primaryUnit] = (countUnits[primaryUnit] || 0) + +power
-				} else {
-					countUnits[e] = (countUnits[e] || 0) + 1
-				}
-			})
-			return Object.entries(countUnits).map(([primaryUnit, power]) =>
-				power > 1 ? `${primaryUnit}${power}` : primaryUnit
-			)
-		} else {
-			return baseUnit
-		}
-	}
-	unit.numerators = combinePower(unit.numerators)
-	unit.denominators = combinePower(unit.denominators)
-	return unit
-}
-
 export function areUnitConvertible(a: Unit | undefined, b: Unit | undefined) {
 	if (a == null || b == null) {
 		return true
 	}
-	const countByUnitClass = (units: Array<string>) =>
+	const countByUnitClass = (units: Array<BaseUnit>) =>
 		units.reduce((counters, unit) => {
 			const classIndex = convertibleUnitClasses.findIndex((unitClass) =>
 				unitClass.has(unit)
