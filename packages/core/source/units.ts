@@ -8,8 +8,9 @@ export const parseUnit = (
 	string: string,
 	getUnitKey: getUnitKey = (x) => x
 ): Unit => {
-	const [a, b] = string.split('/').map((u) => u.trim())
-	const splitUnit = (string) =>
+	const [a, ...b] = string.split('/').map((u) => u.trim())
+	// denominator could be 'x/y' or 'x.y' or 'x.y/z'
+	const splitUnit = (string: string): string[] =>
 		decomposePower(
 			string
 				.split('.')
@@ -18,7 +19,10 @@ export const parseUnit = (
 		)
 	const result = {
 		numerators: splitUnit(a),
-		denominators: b !== undefined ? splitUnit(b) : [],
+		denominators: b.reduce(
+			(arr, u) => [...arr, ...splitUnit(u)],
+			[] as string[]
+		),
 	}
 	return result
 }
