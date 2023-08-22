@@ -5,6 +5,8 @@
 		"packages/api",
 		"packages/core",
 		"packages/react-ui",
+		"packages/worker",
+		"packages/worker-react",
 		"website"
 	],
 	"scripts": {
@@ -18,7 +20,7 @@
 		"clean": "yarn workspaces foreach run clean"
 	},
 	"devDependencies": {
-		"prettier": "^2.5.1",
+		"prettier": "^2.8.8",
 		"yaml": "^2.1.1"
 	},
 	"packageManager": "yarn@3.3.0",
