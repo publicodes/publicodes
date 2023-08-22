@@ -5,7 +5,7 @@ jobs:
   lint:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install
       - run: yarn lint
 
@@ -16,7 +16,7 @@ jobs:
       matrix:
         node-version: [16.x, 18.x]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install
         with:
           node-version: ${{ matrix.node-version }}
@@ -26,7 +26,7 @@ jobs:
     name: Type checking
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install
       - run: yarn test:type
 
@@ -37,7 +37,7 @@ jobs:
       matrix:
         example: ['browser-url-import', 'create-react-app']
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install
       - run: yarn build
       - run: yarn install
@@ -52,8 +52,8 @@ jobs:
     name: Enforce consistent package versioning
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 18
       - run: npx zx ./.github/scripts/enforce-versions.mjs
