@@ -1,19 +1,13 @@
-// import { DottedName } from 'modele-social'
-import {
+import React, {
 	createContext,
 	useContext,
-	useEffect,
 	useMemo,
 	useRef,
 	useState,
-	useTransition,
 } from 'react'
 
-// import { useSetupSafeSituation } from '@/components/utils/EngineContext'
 import { usePromise } from './hooks/usePromise'
 
-// import { Actions } from './socialWorkerEngine.worker'
-import EngineType from 'publicodes'
 import {
 	AZE,
 	ActionType,
@@ -21,6 +15,12 @@ import {
 	WorkerEngineActions,
 	WorkerEngineClient,
 } from '@publicodes/worker'
+import EngineType from 'publicodes'
+
+const useTransition =
+	React.version.split('.')[0] >= '18'
+		? React.useTransition
+		: () => [false, (cb: () => void) => cb()] as const
 
 /**
  * This interface is the default config, user can augment UserConfig if needed.
