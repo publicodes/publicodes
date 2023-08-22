@@ -132,16 +132,11 @@ export function DeveloperAccordion({
 					<MissingVars selfMissing={Object.keys(rule.missingVariables)} />
 
 					<ReverseMissing
-						engine={engine}
 						dottedName={dottedName}
 						ruleIsNotDefined={rule.nodeValue === undefined}
 					/>
 
-					<Effect
-						engine={engine}
-						dottedName={dottedName}
-						replacements={rule.replacements}
-					/>
+					<Effect dottedName={dottedName} replacements={rule.replacements} />
 				</>
 			),
 		},

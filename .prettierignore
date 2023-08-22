@@ -1,5 +1,6 @@
 # Ignore grammar.js built during `yarn prepare`
 packages/core/source/grammar.js
+.yarnrc.yml
 
 # Ignore dist files
 packages/api/dist
@@ -7,3 +8,4 @@ packages/core/dist
 packages/react-ui/dist
 website/build
 website/.docusaurus
+dist

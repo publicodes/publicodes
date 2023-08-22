@@ -257,9 +257,9 @@ export const useAsyncShallowCopy = (
 // 	 return useContext(EngineContext).inversionFail()
 // }
 
-export const isWorkerEngine = (
-	engine: EngineType | WorkerEngine
-): engine is WorkerEngine =>
+export const isWorkerEngine = <E extends EngineType, W extends WorkerEngine>(
+	engine: E | W
+): engine is W =>
 	'worker' in engine &&
 	'postMessage' in engine &&
 	'isWorkerReady' in engine &&

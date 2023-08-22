@@ -51,7 +51,7 @@ const tuple = <T extends unknown[]>(args: [...T]): T => args
 export const useLazyPromise = <
 	T,
 	Params extends unknown[],
-	Default = undefined,
+	Default = undefined
 >(
 	promise: (...params: Params) => Promise<T>,
 	deps: DependencyList,
