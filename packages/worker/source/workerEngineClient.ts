@@ -1,3 +1,4 @@
+import Engine from 'publicodes'
 import type { ActionType, GetAction, WorkerEngineActions } from './workerEngine'
 
 // if (typeof Worker === 'undefined') {
@@ -386,3 +387,12 @@ const workerEngineConstruct = <AdditionalActions extends ActionType>(
 
 	return context
 }
+
+export const isWorkerEngine = <E extends Engine, W extends WorkerEngineClient>(
+	engine: E | W
+): engine is W =>
+	'worker' in engine &&
+	'postMessage' in engine &&
+	'isWorkerReady' in engine &&
+	engine.worker instanceof Worker &&
+	typeof engine.postMessage === 'function'

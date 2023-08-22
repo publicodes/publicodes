@@ -9,5 +9,6 @@ export {
 } from './workerEngine'
 export {
 	createWorkerEngineClient,
+	isWorkerEngine,
 	WorkerEngineClient,
 } from './workerEngineClient'

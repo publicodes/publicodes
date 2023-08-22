@@ -257,15 +257,6 @@ export const useAsyncShallowCopy = (
 // 	 return useContext(EngineContext).inversionFail()
 // }
 
-export const isWorkerEngine = <E extends EngineType, W extends WorkerEngine>(
-	engine: E | W
-): engine is W =>
-	'worker' in engine &&
-	'postMessage' in engine &&
-	'isWorkerReady' in engine &&
-	engine.worker instanceof Worker &&
-	typeof engine.postMessage === 'function'
-
 export const reactActions = {
 	test: (engine: EngineType) => {
 		console.log('ACTION OK')

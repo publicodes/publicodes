@@ -1,5 +1,5 @@
-import { GetAction, Test, addBase } from '@publicodes/worker'
-import { WorkerEngine, isWorkerEngine } from '@publicodes/worker-react'
+import { GetAction, Test, addBase, isWorkerEngine } from '@publicodes/worker'
+import { WorkerEngine } from '@publicodes/worker-react'
 import Engine from 'publicodes'
 import { getExplanationData } from './Explanation'
 import { getRuleLinkData } from './RuleLink'

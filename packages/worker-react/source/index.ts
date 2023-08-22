@@ -1,5 +1,4 @@
 export {
-	isWorkerEngine,
 	WorkerEngineProvider,
 	useWorkerEngine,
 	useAsyncGetRule,
