@@ -2942,6 +2942,34 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@publicodes/worker-react@workspace:^, @publicodes/worker-react@workspace:packages/worker-react":
+  version: 0.0.0-use.local
+  resolution: "@publicodes/worker-react@workspace:packages/worker-react"
+  dependencies:
+    "@publicodes/worker": "workspace:^"
+    "@types/react": ^18.2.20
+    rimraf: ^3.0.2
+    tsup: ^7.2.0
+    typescript: ^5.1.6
+  peerDependencies:
+    publicodes: ^1.0.0-beta.40
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
+  languageName: unknown
+  linkType: soft
+
+"@publicodes/worker@workspace:^, @publicodes/worker@workspace:packages/worker":
+  version: 0.0.0-use.local
+  resolution: "@publicodes/worker@workspace:packages/worker"
+  dependencies:
+    rimraf: ^3.0.2
+    tsup: ^7.2.0
+    typescript: ^5.1.6
+  peerDependencies:
+    publicodes: ^1.0.0-beta.40
+  languageName: unknown
+  linkType: soft
+
 "@rushstack/node-core-library@npm:3.53.3":
   version: 3.53.3
   resolution: "@rushstack/node-core-library@npm:3.53.3"
@@ -11609,6 +11637,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "publicodes-react@workspace:packages/react-ui"
   dependencies:
+    "@publicodes/worker-react": "workspace:^"
     "@types/react": ^18.2.20
     "@types/styled-components": ^5.1.26
     rimraf: ^3.0.2
@@ -13967,7 +13996,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.2.2":
+"typescript@npm:^5.1.6, typescript@npm:^5.2.2":
   version: 5.2.2
   resolution: "typescript@npm:5.2.2"
   bin:
@@ -13977,7 +14006,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
+"typescript@patch:typescript@^5.1.6#~builtin<compat/typescript>, typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
   version: 5.2.2
   resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=d73830"
   bin:

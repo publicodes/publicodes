@@ -1,14 +1,38 @@
-import { utils } from 'publicodes'
-import { useEngine } from '../hooks'
+import Engine, { utils } from 'publicodes'
 import { RuleLinkWithContext } from '../RuleLink'
+import { useEngine, useSubEngineId } from '../hooks/useEngine'
 import Meta from './Meta'
+import { executeAction, getSubEngineOrEngine } from '../actions'
+import { usePromise } from '@publicodes/worker-react'
+
+export const getRuleHeaderData = (
+	baseEngine: Engine,
+	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
+) => {
+	const engine = getSubEngineOrEngine(baseEngine, subEngineId)
+
+	return engine.context.parsedRules[dottedName]
+}
 
 export default function RuleHeader({ dottedName }) {
 	const engine = useEngine()
-	const {
-		title,
-		rawNode: { description, question, icônes },
-	} = engine.context.parsedRules[dottedName]
+	const subEngineId = useSubEngineId()
+
+	const res = usePromise(
+		() =>
+			executeAction(engine, 'getRuleHeaderData', {
+				dottedName,
+				subEngineId,
+			}),
+		[engine, subEngineId, dottedName]
+	)
+
+	if (res === undefined) {
+		return null
+	}
+
+	const { title, rawNode } = res
+	const { description, question, icônes } = rawNode
 	const displayTitle = icônes ? title + ' ' + icônes : title
 	return (
 		<header>

@@ -1,11 +1,21 @@
+import { WorkerEngine, usePromise } from '@publicodes/worker-react'
 import Engine, { formatValue, utils } from 'publicodes'
 import yaml from 'yaml'
+import { executeAction, getSubEngineOrEngine } from '../actions'
+import { useEngine, useSubEngineId } from '../hooks/useEngine'
+
 const { encodeRuleName } = utils
 
-type Props = { dottedName: string; engine: Engine }
+type Props = { dottedName: string }
 
-export default function RuleSource({ engine, dottedName }: Props) {
-	const href = useRuleSource(engine, dottedName)
+export default function RuleSource({ dottedName }: Props) {
+	const engine = useEngine()
+	const subEngineId = useSubEngineId()
+
+	const href = usePromise(
+		() => executeAction(engine, 'getRuleSource', { dottedName, subEngineId }),
+		[engine, dottedName, subEngineId]
+	)
 
 	if (typeof window !== 'undefined' && window.location.host === 'publi.codes') {
 		return null
@@ -26,7 +36,12 @@ export default function RuleSource({ engine, dottedName }: Props) {
 	)
 }
 
-export const useRuleSource = (engine: Engine, dottedName: string) => {
+export const getRuleSource = (
+	baseEngine: Engine,
+	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
+) => {
+	const engine = getSubEngineOrEngine(baseEngine, subEngineId)
+
 	// Array.from is a workaround for https://github.com/facebook/docusaurus/issues/7606#issuecomment-1330452598
 	const dependencies = Array.from(
 		engine.context.referencesMaps.referencesIn.get(dottedName) ?? []

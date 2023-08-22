@@ -1,9 +1,16 @@
-import { utils } from 'publicodes'
-export { default as Explanation } from './Explanation'
-export { default as RulePage } from './rule/RulePage'
-export { RuleLink } from './RuleLink'
+import { WorkerEngine, usePromise } from '@publicodes/worker-react'
+import Engine, { utils } from 'publicodes'
+import { executeAction } from './actions'
 
-export function getDocumentationSiteMap({ engine, documentationPath }) {
+export { default as Explanation } from './Explanation'
+export { RuleLink } from './RuleLink'
+export { publicodesReactActions } from './actions'
+export { default as RulePage } from './rule/RulePage'
+
+export function getDocumentationSiteMap(
+	engine: Engine,
+	{ documentationPath }: { documentationPath: string }
+) {
 	const parsedRules = engine.context.parsedRules
 	return Object.fromEntries(
 		Object.keys(parsedRules).map((dottedName) => [
@@ -12,3 +19,13 @@ export function getDocumentationSiteMap({ engine, documentationPath }) {
 		])
 	)
 }
+
+export const useDocumentationSiteMap = (
+	engine: Engine | WorkerEngine,
+	documentationPath: string
+) =>
+	usePromise(
+		() =>
+			executeAction(engine, 'getDocumentationSiteMap', { documentationPath }),
+		[engine, documentationPath]
+	)

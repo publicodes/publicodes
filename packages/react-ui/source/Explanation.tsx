@@ -1,5 +1,7 @@
-import { transformAST } from 'publicodes'
-import { useEngine } from './hooks'
+import { usePromise } from '@publicodes/worker-react'
+import Engine, { ASTNode, transformAST } from 'publicodes'
+import { executeAction, getSubEngineOrEngine } from './actions'
+import { useEngine, useSubEngineId } from './hooks/useEngine'
 import Arrondi from './mecanisms/Arrondi'
 import Avec from './mecanisms/Avec'
 import Barème from './mecanisms/Barème'
@@ -59,6 +61,40 @@ const UIComponents = {
 export default function Explanation({ node }) {
 	const visualisationKind = node.sourceMap?.mecanismName ?? node.nodeKind
 	const engine = useEngine()
+	const subEngineId = useSubEngineId()
+
+	const { displayedNode, Component } =
+		usePromise(async () => {
+			const displayedNode = await executeAction(engine, 'getExplanationData', {
+				node,
+				subEngineId,
+			})
+			const Component =
+				UIComponents[visualisationKind] ??
+				(node.sourceMap?.mecanismName ? DefaultInlineMecanism : undefined)
+
+			return { displayedNode, Component }
+		}, [engine, node, subEngineId, visualisationKind]) ?? {}
+
+	if (displayedNode === undefined) {
+		return <>loading....</>
+	}
+
+	console.log('Explanation', visualisationKind, node, displayedNode)
+
+	if (!Component) {
+		throw new Error(`Unknown visualisation: ${visualisationKind}`)
+	}
+
+	return <Component {...displayedNode} />
+}
+
+export const getExplanationData = (
+	baseEngine: Engine,
+	{ node, subEngineId }: { node: ASTNode; subEngineId?: number }
+) => {
+	const engine = getSubEngineOrEngine(baseEngine, subEngineId)
+
 	const evaluateEverything = transformAST((node) => {
 		if ('nodeValue' in node || 'replacementRule' === node.nodeKind) {
 			return false
@@ -67,13 +103,6 @@ export default function Explanation({ node }) {
 		return engine.evaluateNode(node)
 	}, false)
 	const displayedNode = evaluateEverything(node)
-	const Component =
-		UIComponents[visualisationKind] ??
-		(node.sourceMap?.mecanismName ? DefaultInlineMecanism : undefined)
 
-	if (!Component) {
-		throw new Error(`Unknown visualisation: ${visualisationKind}`)
-	}
-
-	return <Component {...displayedNode} />
+	return displayedNode
 }

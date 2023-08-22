@@ -1,9 +1,8 @@
 import { EvaluatedNode } from 'publicodes'
 import { RecalculNode } from 'publicodes/source/mecanisms/recalcul'
-import { EngineContext } from '../contexts'
 import Explanation from '../Explanation'
-import { useEngine } from '../hooks'
 import { RuleLinkWithContext } from '../RuleLink'
+import { EngineContextProvider, useEngine } from '../hooks/useEngine'
 import { Mecanism } from './common'
 
 export default function Recalcul({
@@ -12,18 +11,18 @@ export default function Recalcul({
 	unit,
 }: RecalculNode & EvaluatedNode) {
 	const engine = useEngine()
-	const recalculEngine = explanation.subEngineId
-		? engine.subEngines[explanation.subEngineId]
-		: engine
+
 	return (
 		<Mecanism name="recalcul" value={nodeValue} unit={unit}>
 			<>
 				{explanation.recalculNode && (
-					<EngineContext.Provider value={recalculEngine}>
+					<EngineContextProvider
+						value={{ engine, subEngineId: explanation.subEngineId }}
+					>
 						Recalcul de la valeur de{' '}
 						<Explanation node={explanation.recalculNode} /> avec la situation
 						suivante :
-					</EngineContext.Provider>
+					</EngineContextProvider>
 				)}
 				<ul>
 					{explanation.amendedSituation.map(([origin, replacement]) => (

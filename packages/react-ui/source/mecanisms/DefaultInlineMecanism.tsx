@@ -1,8 +1,10 @@
+import { usePromise } from '@publicodes/worker-react'
+import Engine, { Evaluation } from 'publicodes'
 import { ASTNode, EvaluatedNode } from 'publicodes/source'
-import { useContext } from 'react'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
-import { EngineContext } from '../contexts'
+import { executeAction, getSubEngineOrEngine } from '../actions'
+import { useEngine, useSubEngineId } from '../hooks/useEngine'
 import { UnfoldIsEnabledContext } from './Reference'
 import { Mecanism } from './common'
 
@@ -53,7 +55,7 @@ export default function DefaultInlineMecanism({
 	)
 }
 
-function ListOrScalarExplanation({ node }: { node: ASTNode | Array<ASTNode> }) {
+function ListOrScalarExplanation({ node }: { node: ASTNode | ASTNode[] }) {
 	if (Array.isArray(node)) {
 		return <Table explanation={node} />
 	}
@@ -61,24 +63,48 @@ function ListOrScalarExplanation({ node }: { node: ASTNode | Array<ASTNode> }) {
 }
 
 // We want to put non applicable rules a the bottom of list #1055
-const isDimmedValue = (x: ASTNode) => {
-	const nodeValue = useContext(EngineContext)?.evaluate(x).nodeValue
-	return nodeValue === null || nodeValue === 0
-}
-function sortByApplicability(a: EvaluatedNode, b: EvaluatedNode): 1 | 0 | -1 {
-	if (isDimmedValue(a) === isDimmedValue(b)) {
-		return 0
-	}
-	return isDimmedValue(a) ? 1 : -1
+const isDimmedValue = (nodeValue: Evaluation) =>
+	nodeValue === null || nodeValue === 0
+
+export const getSortByApplicability = (
+	baseEngine: Engine,
+	{ explanation, subEngineId }: { explanation: ASTNode[]; subEngineId?: number }
+) => {
+	const engine = getSubEngineOrEngine(baseEngine, subEngineId)
+
+	return explanation.sort((a, b) => {
+		const A = isDimmedValue(engine.evaluate(a).nodeValue)
+		const B = isDimmedValue(engine.evaluate(b).nodeValue)
+
+		if (A === B) {
+			return 0
+		}
+		return A ? 1 : -1
+	})
 }
 
-const Table = ({ explanation }) => (
-	<StyledContainer>
-		{explanation.sort(sortByApplicability).map((node: EvaluatedNode, i) => (
-			<Row key={i} node={node} />
-		))}
-	</StyledContainer>
-)
+const Table = ({ explanation }: { explanation: ASTNode[] }) => {
+	const engine = useEngine()
+	const subEngineId = useSubEngineId()
+
+	const sortedExplanation = usePromise(
+		() =>
+			executeAction(engine, 'getSortByApplicability', {
+				explanation,
+				subEngineId,
+			}),
+		[engine, subEngineId, explanation],
+		[]
+	)
+
+	return (
+		<StyledContainer>
+			{sortedExplanation.map((node: ASTNode, i) => (
+				<Row key={i} node={node as EvaluatedNode} />
+			))}
+		</StyledContainer>
+	)
+}
 
 const StyledContainer = styled.ul`
 	margin: 0;
@@ -86,12 +112,29 @@ const StyledContainer = styled.ul`
 	list-style: circle !important;
 `
 
+export const getIsDimmedValue = (
+	baseEngine: Engine,
+	{ node, subEngineId }: { node: ASTNode; subEngineId?: number }
+) => {
+	const engine = getSubEngineOrEngine(baseEngine, subEngineId)
+
+	return isDimmedValue(engine.evaluate(node).nodeValue)
+}
+
 /* La colonne peut au clic afficher une nouvelle colonne qui sera une autre somme imbriquée */
 function Row({ node }: { node: EvaluatedNode }) {
+	const engine = useEngine()
+	const subEngineId = useSubEngineId()
+
+	const isDimmedValue = usePromise(
+		() => executeAction(engine, 'getIsDimmedValue', { node, subEngineId }),
+		[engine, subEngineId, node]
+	)
+
 	return (
 		<StyledRow
 			style={{ padding: '0.25rem 0' }}
-			className={isDimmedValue(node) ? 'notApplicable' : ''}
+			className={isDimmedValue ? 'notApplicable' : ''}
 		>
 			<UnfoldIsEnabledContext.Provider value={true}>
 				<Explanation node={node} />

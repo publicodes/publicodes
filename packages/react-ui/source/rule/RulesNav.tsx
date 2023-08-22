@@ -1,10 +1,17 @@
-import { utils } from 'publicodes'
+import { usePromise } from '@publicodes/worker-react'
+import Engine, { utils } from 'publicodes'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { styled } from 'styled-components'
 import { RuleLinkWithContext } from '../RuleLink'
+import { executeAction } from '../actions'
 import { Arrow } from '../component/icons'
-import { useEngine } from '../hooks'
+import { useEngine } from '../hooks/useEngine'
+
+export const getParsedRulesData = (engine: Engine) => {
+	return engine.getParsedRules()
+}
+
 interface Props {
 	dottedName: string
 	mobileMenuPortalId?: string
@@ -16,8 +23,14 @@ export const RulesNav = ({
 	mobileMenuPortalId,
 	openNavButtonPortalId,
 }: Props) => {
-	const baseEngine = useEngine()
+	const engine = useEngine()
 	const [navOpen, setNavOpen] = useState(false)
+
+	const parsedRules = usePromise(
+		() => executeAction(engine, 'getParsedRulesData'),
+		[engine],
+		{}
+	)
 
 	const initLevel = (dn: string) =>
 		Object.fromEntries([
@@ -31,8 +44,6 @@ export const RulesNav = ({
 		setLevel((prev) => ({ ...prev, ...initLevel(dottedName) }))
 		setNavOpen(false)
 	}, [dottedName])
-
-	const parsedRules = baseEngine.getParsedRules()
 
 	const toggleDropdown = useCallback((ruleDottedName: string) => {
 		setLevel((prevLevel) =>
@@ -116,9 +127,14 @@ export const RulesNav = ({
 }
 
 const NavLi = ({ ruleDottedName, open, active, onClickDropdown }) => {
-	const baseEngine = useEngine()
+	const engine = useEngine()
 
-	const parsedRules = baseEngine.getParsedRules()
+	const parsedRules = usePromise(
+		() => executeAction(engine, 'getParsedRulesData'),
+		[engine],
+		{}
+	)
+
 	const childrenCount = Object.keys(parsedRules).reduce(
 		(acc, ruleDot) =>
 			ruleDot.startsWith(ruleDottedName + ' . ') &&

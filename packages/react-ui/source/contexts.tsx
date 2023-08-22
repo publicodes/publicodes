@@ -1,4 +1,3 @@
-import Engine from 'publicodes'
 import { ComponentProps, ComponentType, createContext, ReactNode } from 'react'
 import { Accordion, AccordionProps, Code, CodeProps } from './component'
 import References from './rule/References'
@@ -68,7 +67,3 @@ export const RenderersContext = createContext<RenderersCtx>(defaultRenderers())
 export const BasepathContext = createContext<string>('/documentation')
 
 export const DottedNameContext = createContext<string | undefined>(undefined)
-
-export const EngineContext = createContext<Engine<string> | undefined>(
-	undefined
-)

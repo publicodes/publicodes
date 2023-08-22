@@ -1,18 +1,20 @@
+import { WorkerEngine, usePromise } from '@publicodes/worker-react'
 import Engine, { utils } from 'publicodes'
 import { ComponentProps, useContext } from 'react'
+import { executeAction } from './actions'
 import {
 	BasepathContext,
 	DottedNameContext,
 	RenderersContext,
 	SupportedRenderers,
 } from './contexts'
-import { useEngine } from './hooks'
+import { useEngine, useSubEngineId } from './hooks/useEngine'
 
 const { encodeRuleName } = utils
 
 type RuleLinkProps<Name extends string> = {
 	dottedName: Name
-	engine: Engine<Name>
+	engine: Engine<Name> | WorkerEngine
 	documentationPath: string
 	displayIcon?: boolean
 	currentEngineId?: number
@@ -22,6 +24,26 @@ type RuleLinkProps<Name extends string> = {
 	ComponentProps<Required<SupportedRenderers>['Link']>,
 	'to' | 'children'
 >
+
+export const getRuleLinkData = (
+	engine: Engine,
+	{
+		dottedName,
+		dottedNameContext,
+	}: { dottedName: string; dottedNameContext: string }
+) => {
+	const rule = engine.context.parsedRules[dottedName]
+	const contextTitle = [
+		...utils
+			.ruleParents(dottedName)
+			.reverse()
+			.filter((name) => name.startsWith(`${dottedNameContext} . `))
+			.map((name) => engine.context.parsedRules[name]?.title.trim()),
+		rule.title?.trim(),
+	].join(' › ')
+
+	return { rule, contextTitle }
+}
 
 export function RuleLink<Name extends string>({
 	dottedName,
@@ -42,17 +64,21 @@ export function RuleLink<Name extends string>({
 	if (!Link) {
 		throw new Error('You must provide a <Link /> component.')
 	}
-	const rule = engine.context.parsedRules[dottedName]
 	const newPath = documentationPath + '/' + encodeRuleName(dottedName)
-	const contextTitle = [
-		...utils
-			.ruleParents(dottedName)
-			.reverse()
-			.filter((name) => name.startsWith(`${dottedNameContext} . `))
-			.map((name) => engine.context.parsedRules[name]?.title.trim()),
-		rule.title?.trim(),
-	].join(' › ')
 
+	const data = usePromise(
+		() =>
+			executeAction(engine, 'getRuleLinkData', {
+				dottedName,
+				dottedNameContext,
+			}),
+		[engine, dottedName, dottedNameContext]
+	)
+	if (data === undefined) {
+		return <>loading...</>
+	}
+
+	const { rule, contextTitle } = data
 	if (!rule) {
 		throw new Error(`Unknown rule: ${dottedName}`)
 	}
@@ -81,15 +107,17 @@ export function RuleLinkWithContext(
 	}
 ) {
 	const engine = useEngine()
+	const subEngineId = useSubEngineId()
 	const documentationPath = useContext(BasepathContext)
 	const currentEngineIdFromUrl =
 		typeof window !== 'undefined' &&
 		new URLSearchParams(window.location.search).get('currentEngineId')
 	const currentEngineId =
 		props.useSubEngine !== false
-			? engine.subEngineId ||
+			? subEngineId ||
 			  (currentEngineIdFromUrl ? Number(currentEngineIdFromUrl) : undefined)
 			: undefined
+
 	return (
 		<RuleLink
 			engine={engine}

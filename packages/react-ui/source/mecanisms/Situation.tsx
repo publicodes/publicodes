@@ -1,12 +1,41 @@
-import { RuleNode } from 'publicodes/source'
-import { useContext } from 'react'
-import { EngineContext } from '../contexts'
+import { usePromise } from '@publicodes/worker-react'
+import Engine, { RuleNode } from 'publicodes'
 import Explanation from '../Explanation'
+import { executeAction, getSubEngineOrEngine } from '../actions'
+import { useEngine, useSubEngineId } from '../hooks/useEngine'
 import { InfixMecanism } from './common'
 
+export const evaluateWithSubEngine = (
+	baseEngine: Engine,
+	{
+		evaluate,
+		subEngineId,
+	}: { evaluate: Parameters<Engine['evaluate']>[0]; subEngineId?: number }
+) => {
+	const engine = getSubEngineOrEngine(baseEngine, subEngineId)
+
+	return engine.evaluate(evaluate)
+}
+
 export default function MecanismSituation({ sourceMap }) {
-	const engine = useContext(EngineContext)
-	const situationValeur = engine?.evaluate(sourceMap.args['dans la situation'])
+	const engine = useEngine()
+	const subEngineId = useSubEngineId()
+
+	const evaluate = sourceMap?.args['dans la situation']
+
+	const situationValeur = usePromise(
+		() =>
+			executeAction(engine, 'evaluateWithSubEngine', {
+				evaluate,
+				subEngineId,
+			}),
+		[engine, evaluate, subEngineId]
+	)
+
+	if (sourceMap === undefined) {
+		return null
+	}
+
 	return situationValeur?.nodeValue !== undefined ? (
 		<InfixMecanism prefixed value={sourceMap.args['valeur']}>
 			<p>

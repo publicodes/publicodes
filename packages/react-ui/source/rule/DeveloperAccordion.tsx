@@ -1,9 +1,12 @@
+import { usePromise } from '@publicodes/worker-react'
 import Engine, { EvaluatedNode, RuleNode, utils } from 'publicodes'
 import { useContext } from 'react'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { RuleLinkWithContext } from '../RuleLink'
+import { executeAction, getSubEngineOrEngine } from '../actions'
 import { RenderersContext } from '../contexts'
+import { useEngine, useSubEngineId } from '../hooks/useEngine'
 import RuleSource from './RuleSource'
 
 const Ul = styled.ul`
@@ -30,9 +33,17 @@ const Li = styled.li`
 	}
 `
 
+export const getIsExperimental = (
+	engine: Engine,
+	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
+) =>
+	utils.isExperimental(
+		getSubEngineOrEngine(engine, subEngineId).baseContext.parsedRules,
+		dottedName
+	)
+
 export function DeveloperAccordion({
 	rule,
-	engine,
 	dottedName,
 	situation = {},
 	apiDocumentationUrl,
@@ -40,14 +51,21 @@ export function DeveloperAccordion({
 	npmPackage,
 }: {
 	rule: EvaluatedNode & { nodeKind: 'rule' }
-	engine: Engine
 	dottedName: string
 	situation?: Record<string, unknown>
 	apiDocumentationUrl?: string
 	apiEvaluateUrl?: string
 	npmPackage?: string
 }) {
+	const engine = useEngine()
+	const subEngineId = useSubEngineId()
 	const { Accordion } = useContext(RenderersContext)
+
+	const isExperimental = usePromise(
+		() =>
+			executeAction(engine, 'getIsExperimental', { dottedName, subEngineId }),
+		[engine, dottedName, subEngineId]
+	)
 
 	const accordionItems = [
 		{
@@ -55,7 +73,7 @@ export function DeveloperAccordion({
 			id: 'rule-situation',
 			children: (
 				<>
-					<ActualRule engine={engine} dottedName={dottedName} />
+					<ActualRule dottedName={dottedName} />
 
 					<ActualSituation situation={situation} />
 				</>
@@ -75,10 +93,7 @@ export function DeveloperAccordion({
 					id: 'usage',
 					children: (
 						<>
-							{utils.isExperimental(
-								engine.baseContext.parsedRules,
-								dottedName
-							) && (
+							{isExperimental && (
 								<StyledWarning>
 									<h4>⚠️ Cette règle est tagguée comme experimentale ⚠️</h4>
 									<p>
@@ -135,20 +150,14 @@ export function DeveloperAccordion({
 	return <Accordion items={accordionItems}></Accordion>
 }
 
-function ActualRule({
-	engine,
-	dottedName,
-}: {
-	engine: Engine<string>
-	dottedName: string
-}) {
+function ActualRule({ dottedName }: { dottedName: string }) {
 	const { Code } = useContext(RenderersContext)
 
 	return (
 		<section>
 			<h4>Règle actuelle</h4>
 			<Code tabs={{ dottedName }} />
-			<RuleSource dottedName={dottedName} engine={engine} />
+			<RuleSource dottedName={dottedName} />
 		</section>
 	)
 }
@@ -336,16 +345,13 @@ const isReplacementOfThisRule = (node: RuleNode, dottedName: string) =>
 		({ replacedReference }) => replacedReference.dottedName === dottedName
 	)
 
-function ReverseMissing({
-	engine,
-	dottedName,
-	ruleIsNotDefined = false,
-}: {
-	engine: Engine
-	dottedName: string
-	ruleIsNotDefined?: boolean
-}) {
-	const ruleNamesWithMissing = Array.from(
+export const getRuleNamesWithMissing = (
+	baseEngine: Engine,
+	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
+) => {
+	const engine = getSubEngineOrEngine(baseEngine, subEngineId)
+
+	return Array.from(
 		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? []
 	).filter(
 		(ruleName) =>
@@ -353,6 +359,25 @@ function ReverseMissing({
 			ruleName in engine.context.parsedRules &&
 			!engine.context.parsedRules[ruleName].private &&
 			!isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
+	)
+}
+function ReverseMissing({
+	dottedName,
+	ruleIsNotDefined = false,
+}: {
+	dottedName: string
+	ruleIsNotDefined?: boolean
+}) {
+	const engine = useEngine()
+	const subEngineId = useSubEngineId()
+	const ruleNamesWithMissing = usePromise(
+		() =>
+			executeAction(engine, 'getRuleNamesWithMissing', {
+				dottedName,
+				subEngineId,
+			}),
+		[engine, dottedName, subEngineId],
+		[]
 	)
 
 	return (
@@ -388,16 +413,13 @@ function ReverseMissing({
 	)
 }
 
-function Effect({
-	engine,
-	dottedName,
-	replacements,
-}: {
-	engine: Engine
-	dottedName: string
-	replacements: RuleNode['replacements']
-}) {
-	const effects = Array.from(
+export const getEffects = (
+	baseEngine: Engine,
+	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
+) => {
+	const engine = getSubEngineOrEngine(baseEngine, subEngineId)
+
+	return Array.from(
 		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? []
 	).filter(
 		(ruleName) =>
@@ -405,6 +427,22 @@ function Effect({
 			ruleName in engine.context.parsedRules &&
 			!engine.context.parsedRules[ruleName].private &&
 			isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
+	)
+}
+
+function Effect({
+	dottedName,
+	replacements,
+}: {
+	dottedName: string
+	replacements: RuleNode['replacements']
+}) {
+	const engine = useEngine()
+	const subEngineId = useSubEngineId()
+	const effects = usePromise(
+		() => executeAction(engine, 'getEffects', { dottedName, subEngineId }),
+		[engine, dottedName, subEngineId],
+		[]
 	)
 
 	return (

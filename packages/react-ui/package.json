@@ -30,6 +30,7 @@
 		"dist"
 	],
 	"dependencies": {
+		"@publicodes/worker-react": "workspace:^",
 		"styled-components": "^6.0.7"
 	},
 	"peerDependencies": {
