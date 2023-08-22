@@ -1,0 +1,40 @@
+{
+	"name": "@publicodes/worker",
+	"version": "1.0.0-beta.71",
+	"description": "Run publicodes in a worker",
+	"license": "MIT",
+	"types": "dist/index.d.ts",
+	"type": "module",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"exports": {
+		".": {
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/betagouv/publicodes.git",
+		"directory": "packages/worker"
+	},
+	"scripts": {
+		"clean": "rimraf dist node_modules data",
+		"build": "tsup",
+		"prepack": "yarn workspace publicodes run prepack && yarn run build",
+		"start": "run build --watch",
+		"test:type": "run tsc"
+	},
+	"files": [
+		"dist"
+	],
+	"peerDependencies": {
+		"publicodes": "^1.0.0-beta.40"
+	},
+	"devDependencies": {
+		"rimraf": "^3.0.2",
+		"tsup": "^7.2.0",
+		"typescript": "^5.1.6"
+	}
+}
