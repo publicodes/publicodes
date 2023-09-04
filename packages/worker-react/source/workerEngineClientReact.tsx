@@ -4,54 +4,18 @@ import React, {
 	useMemo,
 	useRef,
 	useState,
+	useTransition,
 } from 'react'
 
 import { usePromise } from './hooks/usePromise'
 
-import {
-	AZE,
-	ActionType,
-	Test,
-	WorkerEngineActions,
-	WorkerEngineClient,
-} from '@publicodes/worker'
-import EngineType from 'publicodes'
-
-const useTransition =
-	React.version.split('.')[0] >= '18'
-		? React.useTransition
-		: () => [false, (cb: () => void) => cb()] as const
-
-/**
- * This interface is the default config, user can augment UserConfig if needed.
- */
-export interface DefaultConfig {
-	additionalActions: ActionType
-	engine: EngineType
-}
-
-/**
- * This interface can be augmented by users to set global types of this package.
- */
-export interface UserConfig extends DefaultConfig {}
-
-type MergeBy<T, K> = Omit<T, keyof K> & K
-export type Config = MergeBy<DefaultConfig, UserConfig>
-
-// export type ConfigAdditionalActions = Config['additionalActions']
+import { ActionType, Config, WorkerEngineClient } from '@publicodes/worker'
 
 export interface WorkerEngine<
 	Cfg extends Config = Config,
-	AdditionalActions extends ActionType = Cfg['additionalActions'],
-	Engine extends EngineType = Cfg['engine']
-> extends WorkerEngineClient<
-		AdditionalActions,
-		WorkerEngineActions<unknown[], Engine>
-	> {
+	AdditionalActions extends ActionType = Cfg['additionalActions']
+> extends WorkerEngineClient<AdditionalActions> {
 	situationVersion: number
-
-	'~type'?: AdditionalActions
-	'~config'?: Config
 }
 
 const WorkerEngineContext = createContext<WorkerEngine<Config>>(
@@ -60,13 +24,9 @@ const WorkerEngineContext = createContext<WorkerEngine<Config>>(
 
 /**
  */
-export const useWorkerEngine = <
-	Cfg extends Config
-	// AdditionalActions extends ActionType = Cfg['additionalActions']
->() => {
+export const useWorkerEngine = <Cfg extends Config>() => {
 	const context = useContext(WorkerEngineContext)
 
-	//  && !import.meta.env.SSR
 	if (!context) {
 		throw new Error(
 			'You are trying to use the worker engine outside of its provider'
@@ -80,32 +40,17 @@ export const useWorkerEngine = <
  */
 const useSynchronizedWorkerEngine = <
 	Cfg extends Config,
-	AdditionalActions extends ActionType = Cfg['additionalActions'],
-	Engine extends EngineType = Cfg['engine']
+	AdditionalActions extends ActionType = Cfg['additionalActions']
 >(
-	workerClient: WorkerEngineClient<
-		AdditionalActions,
-		WorkerEngineActions<unknown[], Engine>
-	>
+	workerClient: WorkerEngineClient<AdditionalActions>
 ): WorkerEngine<Cfg> => {
-	const [transition, startTransition] = useTransition()
-
 	const [situationVersion, setSituationVersion] = useState(0)
 	const [workerEngine, setWorkerEngine] = useState<
-		WorkerEngineClient<
-			AdditionalActions,
-			WorkerEngineActions<unknown[], Engine>
-		>
+		WorkerEngineClient<AdditionalActions>
 	>(() => {
-		console.log('********', workerClient.onSituationChange, workerClient)
-
 		workerClient.onSituationChange = function () {
-			console.log('onSituationChange', workerClient.engineId)
-
-			startTransition(() => {
-				setSituationVersion((situationVersion) => {
-					return situationVersion + 1
-				})
+			setSituationVersion((situationVersion) => {
+				return situationVersion + 1
 			})
 		}
 
@@ -113,7 +58,7 @@ const useSynchronizedWorkerEngine = <
 	})
 
 	const memo = useMemo(() => {
-		return { ...workerEngine, situationVersion }
+		return { ...workerEngine, situationVersion } as WorkerEngine<Cfg>
 	}, [situationVersion, workerEngine])
 
 	return memo
@@ -132,8 +77,6 @@ export const WorkerEngineProvider = <
 	children: React.ReactNode
 }) => {
 	const workerEngine = useSynchronizedWorkerEngine(workerClient)
-
-	// useSetupSafeSituation(workerEngine)
 
 	if (workerEngine === undefined) {
 		return children
@@ -225,7 +168,7 @@ export const useAsyncShallowCopy = (
 				setTimeout(() => {
 					console.log('deleteShallowCopy', last.engineId)
 					last.asyncDeleteShallowCopy()
-				}, 10000)
+				}, 10_000)
 			)
 		}
 
@@ -252,17 +195,3 @@ export const useAsyncShallowCopy = (
 
 	return memo
 }
-
-// export function useInversionFail() {
-// 	 return useContext(EngineContext).inversionFail()
-// }
-
-export const reactActions = {
-	test: (engine: EngineType) => {
-		console.log('ACTION OK')
-
-		return engine.evaluate('21 + 21')
-	},
-} satisfies AZE
-
-export type ReactActions = Test<typeof reactActions>

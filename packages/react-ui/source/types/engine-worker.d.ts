@@ -1,7 +1,7 @@
-import { Actions } from '../actions'
+import { PublicodesReactActions } from '../actions'
 
-declare module '@publicodes/worker-react' {
+declare module '@publicodes/worker' {
 	interface UserConfig {
-		additionalActions: Actions
+		additionalActions: PublicodesReactActions
 	}
 }
