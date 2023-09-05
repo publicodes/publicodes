@@ -164,8 +164,6 @@ export const usePromise = <T, Default = undefined>(
 	const context = useContext(SuspensePromiseCtx)
 	const cache = useThrowToSuspense(promise)
 
-	console.log('### context', context?.cache.current.length)
-
 	const [state, lazyPromise] = useLazyPromise(
 		promise,
 		deps,

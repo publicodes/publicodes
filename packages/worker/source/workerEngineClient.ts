@@ -179,8 +179,7 @@ const postMessage = async <
 			reject: (err: unknown) => {
 				clearTimeout(warning)
 
-				console.error(err)
-				console.error(stack)
+				console.error(err, stack)
 
 				return reject(err)
 			},
