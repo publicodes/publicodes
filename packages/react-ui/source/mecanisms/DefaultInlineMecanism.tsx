@@ -1,5 +1,6 @@
+import { ActionData } from '@publicodes/worker'
 import { usePromise } from '@publicodes/worker-react'
-import Engine, { Evaluation } from 'publicodes'
+import { Evaluation } from 'publicodes'
 import { ASTNode, EvaluatedNode } from 'publicodes/source'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
@@ -67,7 +68,7 @@ const isDimmedValue = (nodeValue: Evaluation) =>
 	nodeValue === null || nodeValue === 0
 
 export const getSortByApplicability = (
-	baseEngine: Engine,
+	{ engine: baseEngine }: ActionData,
 	{ explanation, subEngineId }: { explanation: ASTNode[]; subEngineId?: number }
 ) => {
 	const engine = getSubEngineOrEngine(baseEngine, subEngineId)
@@ -113,7 +114,7 @@ const StyledContainer = styled.ul`
 `
 
 export const getIsDimmedValue = (
-	baseEngine: Engine,
+	{ engine: baseEngine }: ActionData,
 	{ node, subEngineId }: { node: ASTNode; subEngineId?: number }
 ) => {
 	const engine = getSubEngineOrEngine(baseEngine, subEngineId)

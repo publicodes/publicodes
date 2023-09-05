@@ -1,5 +1,6 @@
-import { WorkerEngine, usePromise } from '@publicodes/worker-react'
-import Engine, { formatValue, utils } from 'publicodes'
+import { ActionData } from '@publicodes/worker'
+import { usePromise } from '@publicodes/worker-react'
+import { formatValue, utils } from 'publicodes'
 import yaml from 'yaml'
 import { executeAction, getSubEngineOrEngine } from '../actions'
 import { useEngine, useSubEngineId } from '../hooks/useEngine'
@@ -37,7 +38,7 @@ export default function RuleSource({ dottedName }: Props) {
 }
 
 export const getRuleSource = (
-	baseEngine: Engine,
+	{ engine: baseEngine }: ActionData,
 	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
 ) => {
 	const engine = getSubEngineOrEngine(baseEngine, subEngineId)

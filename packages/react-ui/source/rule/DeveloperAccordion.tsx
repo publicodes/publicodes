@@ -1,5 +1,6 @@
+import { ActionData } from '@publicodes/worker'
 import { usePromise } from '@publicodes/worker-react'
-import Engine, { EvaluatedNode, RuleNode, utils } from 'publicodes'
+import { EvaluatedNode, RuleNode, utils } from 'publicodes'
 import { useContext } from 'react'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
@@ -34,7 +35,7 @@ const Li = styled.li`
 `
 
 export const getIsExperimental = (
-	engine: Engine,
+	{ engine }: ActionData,
 	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
 ) =>
 	utils.isExperimental(
@@ -341,7 +342,7 @@ const isReplacementOfThisRule = (node: RuleNode, dottedName: string) =>
 	)
 
 export const getRuleNamesWithMissing = (
-	baseEngine: Engine,
+	{ engine: baseEngine }: ActionData,
 	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
 ) => {
 	const engine = getSubEngineOrEngine(baseEngine, subEngineId)
@@ -409,7 +410,7 @@ function ReverseMissing({
 }
 
 export const getEffects = (
-	baseEngine: Engine,
+	{ engine: baseEngine }: ActionData,
 	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
 ) => {
 	const engine = getSubEngineOrEngine(baseEngine, subEngineId)

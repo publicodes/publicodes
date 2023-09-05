@@ -1,14 +1,15 @@
+import { ActionData } from '@publicodes/worker'
 import { WorkerEngine, usePromise } from '@publicodes/worker-react'
 import Engine, { utils } from 'publicodes'
 import { executeAction } from './actions'
 
 export { default as Explanation } from './Explanation'
 export { RuleLink } from './RuleLink'
-export { publicodesReactActions } from './actions'
+export { PublicodesReactActions, publicodesReactActions } from './actions'
 export { default as RulePage } from './rule/RulePage'
 
 export function getDocumentationSiteMap(
-	engine: Engine,
+	{ engine }: ActionData,
 	{ documentationPath }: { documentationPath: string }
 ) {
 	const parsedRules = engine.context.parsedRules

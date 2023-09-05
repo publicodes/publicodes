@@ -1,5 +1,5 @@
+import { ActionData } from '@publicodes/worker'
 import { usePromise } from '@publicodes/worker-react'
-import Engine from 'publicodes'
 import { EvaluatedNode } from 'publicodes/source/AST/types'
 import { ReferenceNode } from 'publicodes/source/reference'
 import { createContext, useContext, useState } from 'react'
@@ -11,7 +11,7 @@ import { useEngine, useSubEngineId } from '../hooks/useEngine'
 import { NodeValuePointer } from './common'
 
 export const getReferenceData = (
-	baseEngine: Engine,
+	{ engine: baseEngine }: ActionData,
 	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
 ) => {
 	const engine = getSubEngineOrEngine(baseEngine, subEngineId)

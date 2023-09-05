@@ -1,3 +1,4 @@
+import { ActionData } from '@publicodes/worker'
 import { usePromise } from '@publicodes/worker-react'
 import Engine, { RuleNode } from 'publicodes'
 import Explanation from '../Explanation'
@@ -6,7 +7,7 @@ import { useEngine, useSubEngineId } from '../hooks/useEngine'
 import { InfixMecanism } from './common'
 
 export const evaluateWithSubEngine = (
-	baseEngine: Engine,
+	{ engine: baseEngine }: ActionData,
 	{
 		evaluate,
 		subEngineId,

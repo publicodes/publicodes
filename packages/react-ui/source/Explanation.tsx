@@ -1,5 +1,6 @@
+import { ActionData } from '@publicodes/worker'
 import { usePromise } from '@publicodes/worker-react'
-import Engine, { ASTNode, transformAST } from 'publicodes'
+import { ASTNode, transformAST } from 'publicodes'
 import { executeAction, getSubEngineOrEngine } from './actions'
 import { useEngine, useSubEngineId } from './hooks/useEngine'
 import Arrondi from './mecanisms/Arrondi'
@@ -80,8 +81,6 @@ export default function Explanation({ node }) {
 		return <>loading....</>
 	}
 
-	console.log('Explanation', visualisationKind, node, displayedNode)
-
 	if (!Component) {
 		throw new Error(`Unknown visualisation: ${visualisationKind}`)
 	}
@@ -90,7 +89,7 @@ export default function Explanation({ node }) {
 }
 
 export const getExplanationData = (
-	baseEngine: Engine,
+	{ engine: baseEngine }: ActionData,
 	{ node, subEngineId }: { node: ASTNode; subEngineId?: number }
 ) => {
 	const engine = getSubEngineOrEngine(baseEngine, subEngineId)

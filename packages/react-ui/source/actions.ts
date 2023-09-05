@@ -1,4 +1,10 @@
-import { GetAction, Test, addBase, isWorkerEngine } from '@publicodes/worker'
+import {
+	ActionData,
+	GenerateActions,
+	GetAction,
+	addBase,
+	isWorkerEngine,
+} from '@publicodes/worker'
 import { WorkerEngine } from '@publicodes/worker-react'
 import Engine from 'publicodes'
 import { getExplanationData } from './Explanation'
@@ -18,7 +24,7 @@ import {
 import { getRuleHeaderData } from './rule/Header'
 import { getRuleData } from './rule/RulePage'
 import { getRuleSource } from './rule/RuleSource'
-import { getParsedRulesData } from './rule/RulesNav'
+import { getParsedRulesKeysData } from './rule/RulesNav'
 
 const ACTION_BASE = 'publicodes-react'
 
@@ -27,7 +33,9 @@ const ACTION_BASE = 'publicodes-react'
  */
 export const publicodesReactActions = () => addBase(ACTION_BASE, actions())
 
-export type Actions = Test<ReturnType<typeof publicodesReactActions>>
+export type PublicodesReactActions = GenerateActions<
+	ReturnType<typeof publicodesReactActions>
+>
 
 const actions = () => ({
 	getRuleData,
@@ -38,15 +46,16 @@ const actions = () => ({
 	getSortByApplicability,
 	getReferenceData,
 	getRuleHeaderData,
-	getParsedRulesData,
+	getParsedRulesKeysData,
 	evaluateWithSubEngine,
 	getIsExperimental,
 	getRuleNamesWithMissing,
 	getEffects,
 	getRuleSource,
 })
+type LocalActionsDictionary = ReturnType<typeof actions>
 
-export type LocalActions = Test<ReturnType<typeof actions>>
+export type LocalActions = GenerateActions<LocalActionsDictionary>
 
 /**
  * ...
@@ -58,11 +67,11 @@ export const executeAction = async <ActionName extends LocalActions['action']>(
 ) =>
 	(isWorkerEngine(engine)
 		? engine.postMessage(
-				(ACTION_BASE + '.' + action) as Actions['action'],
+				(ACTION_BASE + '.' + action) as PublicodesReactActions['action'],
 				...params
 		  )
 		: actions()[action](
-				engine,
+				{ engine, engineId: -1, id: -1 } as ActionData,
 				// @ts-ignore Typescript does not support rest parameters of union of tuple
 				...params
 		  )) as Promise<GetAction<LocalActions, ActionName>['result']>

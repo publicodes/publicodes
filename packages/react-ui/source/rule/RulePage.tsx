@@ -1,4 +1,9 @@
-import { WorkerEngine, usePromise } from '@publicodes/worker-react'
+import { ActionData } from '@publicodes/worker'
+import {
+	SuspensePromise,
+	WorkerEngine,
+	usePromise,
+} from '@publicodes/worker-react'
 import Engine, {
 	ASTNode,
 	EvaluatedNode,
@@ -31,6 +36,7 @@ import RuleHeader from './Header'
 import { RulesNav, breakpointsWidth } from './RulesNav'
 
 type RulePageProps = {
+	isSSR: boolean
 	documentationPath: string
 	rulePath: string
 	engine: Engine | WorkerEngine
@@ -49,6 +55,7 @@ type AsyncRulePageProps = Omit<RulePageProps, 'engine'> & {
 }
 
 export default function RulePage({
+	isSSR,
 	documentationPath,
 	rulePath,
 	engine,
@@ -82,6 +89,7 @@ export default function RulePage({
 			<BasepathContext.Provider value={documentationPath}>
 				<RenderersContext.Provider value={defaultRenderers(renderers)}>
 					<Rule
+						isSSR={isSSR}
 						dottedName={utils.decodeRuleName(rulePath)}
 						language={language}
 						apiDocumentationUrl={apiDocumentationUrl}
@@ -98,6 +106,7 @@ export default function RulePage({
 }
 
 type RuleProps = {
+	isSSR: boolean
 	dottedName: string
 } & Pick<
 	RulePageProps,
@@ -140,7 +149,7 @@ function buildSituationUsedInRule<Names extends string>(
 }
 
 export const getRuleData = (
-	baseEngine: Engine,
+	{ engine: baseEngine }: ActionData,
 	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
 ) => {
 	const useSubEngine =
@@ -163,6 +172,7 @@ export const getRuleData = (
 }
 
 function Rule({
+	isSSR,
 	dottedName,
 	language,
 	apiDocumentationUrl,
@@ -199,104 +209,109 @@ function Rule({
 
 	return (
 		<Container id="documentation-rule-root">
-			<RulesNav
-				dottedName={dottedName}
-				mobileMenuPortalId={mobileMenuPortalId}
-				openNavButtonPortalId={openNavButtonPortalId}
-			/>
+			<SuspensePromise isSSR={isSSR}>
+				<RulesNav
+					dottedName={dottedName}
+					mobileMenuPortalId={mobileMenuPortalId}
+					openNavButtonPortalId={openNavButtonPortalId}
+				/>
+			</SuspensePromise>
 			<Article>
-				<DottedNameContext.Provider value={dottedName}>
-					<RuleHeader dottedName={dottedName} />
-					<section>
-						<Text>{description || question || ''}</Text>
-					</section>
+				<SuspensePromise isSSR={isSSR} fallback={<>loading...</>}>
+					<DottedNameContext.Provider value={dottedName}>
+						<RuleHeader dottedName={dottedName} />
+						<section>
+							<Text>{description || question || ''}</Text>
+						</section>
 
-					<p style={{ fontSize: '1.25rem', lineHeight: '2rem' }}>
-						Valeur : {formatValue(rule, { language })}
-						{rule.nodeValue === undefined && rule.unit && (
+						<p style={{ fontSize: '1.25rem', lineHeight: '2rem' }}>
+							Valeur : {formatValue(rule, { language })}
+							{rule.nodeValue === undefined && rule.unit && (
+								<>
+									<br />
+									Unité : {serializeUnit(rule.unit)}
+								</>
+							)}
+						</p>
+
+						{ruleDisabledByItsParent && (
 							<>
-								<br />
-								Unité : {serializeUnit(rule.unit)}
+								<blockquote>
+									Cette règle est <strong>non applicable</strong> car elle
+									appartient à l'espace de nom :{' '}
+									<Explanation node={nullableParent} />
+								</blockquote>
 							</>
 						)}
-					</p>
-
-					{ruleDisabledByItsParent && (
-						<>
-							<blockquote>
-								Cette règle est <strong>non applicable</strong> car elle
-								appartient à l'espace de nom :{' '}
-								<Explanation node={nullableParent} />
-							</blockquote>
-						</>
-					)}
-					{useSubEngine && (
-						<div
-							style={{
-								display: 'flex',
-								alignItems: 'baseline',
-								flexWrap: 'wrap',
-								margin: '1rem 0',
-								paddingTop: '0.4rem',
-								paddingBottom: '0.4rem',
-							}}
-						>
-							<div>
-								Les valeurs affichées sont calculées avec la situation
-								spécifique du <strong>mécanisme recalcul</strong>
+						{useSubEngine && (
+							<div
+								style={{
+									display: 'flex',
+									alignItems: 'baseline',
+									flexWrap: 'wrap',
+									margin: '1rem 0',
+									paddingTop: '0.4rem',
+									paddingBottom: '0.4rem',
+								}}
+							>
+								<div>
+									Les valeurs affichées sont calculées avec la situation
+									spécifique du <strong>mécanisme recalcul</strong>
+								</div>
+								<div style={{ flex: 1 }} />
+								<div>
+									<RuleLinkWithContext
+										dottedName={dottedName}
+										useSubEngine={false}
+									>
+										Retourner à la version de base
+									</RuleLinkWithContext>
+								</div>
 							</div>
-							<div style={{ flex: 1 }} />
-							<div>
-								<RuleLinkWithContext
-									dottedName={dottedName}
-									useSubEngine={false}
-								>
-									Retourner à la version de base
-								</RuleLinkWithContext>
-							</div>
+						)}
+						<h2>Comment cette donnée est-elle calculée ?</h2>
+						<div id="documentation-rule-explanation">
+							<Explanation node={valeur} />
 						</div>
-					)}
-					<h2>Comment cette donnée est-elle calculée ?</h2>
-					<div id="documentation-rule-explanation">
-						<Explanation node={valeur} />
-					</div>
 
-					{rule.rawNode.note && (
-						<>
-							<h3>Note</h3>
-							<div>
-								<Text>{rule.rawNode.note}</Text>
-							</div>
-						</>
-					)}
+						{rule.rawNode.note && (
+							<>
+								<h3>Note</h3>
+								<div>
+									<Text>{rule.rawNode.note}</Text>
+								</div>
+							</>
+						)}
 
-					{references && (
-						<>
-							<h3>Références</h3>
-							{references}
-						</>
-					)}
-					<br />
+						{references && (
+							<>
+								<h3>Références</h3>
+								{references}
+							</>
+						)}
+						<br />
 
-					{showDevSection && (
-						<>
-							<h3>Informations techniques</h3>
-							<Text>
-								Si vous êtes développeur/euse vous trouverez ci-dessous des
-								informations techniques utiles pour l'intégration de cette règle
-								dans votre application.
-							</Text>
-							<DeveloperAccordion
-								situation={situation}
-								dottedName={dottedName}
-								rule={rule}
-								apiDocumentationUrl={apiDocumentationUrl}
-								apiEvaluateUrl={apiEvaluateUrl}
-								npmPackage={npmPackage}
-							></DeveloperAccordion>
-						</>
-					)}
-				</DottedNameContext.Provider>
+						{showDevSection && (
+							<>
+								<h3>Informations techniques</h3>
+								<Text>
+									Si vous êtes développeur/euse vous trouverez ci-dessous des
+									informations techniques utiles pour l'intégration de cette
+									règle dans votre application.
+								</Text>
+
+								<DeveloperAccordion
+									situation={situation}
+									dottedName={dottedName}
+									rule={rule}
+									apiDocumentationUrl={apiDocumentationUrl}
+									apiEvaluateUrl={apiEvaluateUrl}
+									npmPackage={npmPackage}
+								></DeveloperAccordion>
+							</>
+						)}
+					</DottedNameContext.Provider>
+				</SuspensePromise>
 			</Article>
 		</Container>
 	)

@@ -1,12 +1,13 @@
-import Engine, { utils } from 'publicodes'
+import { ActionData } from '@publicodes/worker'
+import { usePromise } from '@publicodes/worker-react'
+import { utils } from 'publicodes'
 import { RuleLinkWithContext } from '../RuleLink'
+import { executeAction, getSubEngineOrEngine } from '../actions'
 import { useEngine, useSubEngineId } from '../hooks/useEngine'
 import Meta from './Meta'
-import { executeAction, getSubEngineOrEngine } from '../actions'
-import { usePromise } from '@publicodes/worker-react'
 
 export const getRuleHeaderData = (
-	baseEngine: Engine,
+	{ engine: baseEngine }: ActionData,
 	{ dottedName, subEngineId }: { dottedName: string; subEngineId?: number }
 ) => {
 	const engine = getSubEngineOrEngine(baseEngine, subEngineId)

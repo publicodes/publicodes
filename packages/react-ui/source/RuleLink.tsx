@@ -1,6 +1,7 @@
 import { WorkerEngine, usePromise } from '@publicodes/worker-react'
 import Engine, { utils } from 'publicodes'
 import { ComponentProps, useContext } from 'react'
+import { ActionData } from '@publicodes/worker'
 import { executeAction } from './actions'
 import {
 	BasepathContext,
@@ -26,7 +27,7 @@ type RuleLinkProps<Name extends string> = {
 >
 
 export const getRuleLinkData = (
-	engine: Engine,
+	{ engine }: ActionData,
 	{
 		dottedName,
 		dottedNameContext,

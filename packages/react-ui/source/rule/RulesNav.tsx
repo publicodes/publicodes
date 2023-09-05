@@ -1,5 +1,6 @@
+import { ActionData } from '@publicodes/worker'
 import { usePromise } from '@publicodes/worker-react'
-import Engine, { utils } from 'publicodes'
+import { utils } from 'publicodes'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { styled } from 'styled-components'
@@ -8,9 +9,8 @@ import { executeAction } from '../actions'
 import { Arrow } from '../component/icons'
 import { useEngine } from '../hooks/useEngine'
 
-export const getParsedRulesData = (engine: Engine) => {
-	return engine.getParsedRules()
-}
+export const getParsedRulesKeysData = ({ engine }: ActionData) =>
+	Object.keys(engine.getParsedRules())
 
 interface Props {
 	dottedName: string
@@ -26,10 +26,10 @@ export const RulesNav = ({
 	const engine = useEngine()
 	const [navOpen, setNavOpen] = useState(false)
 
-	const parsedRules = usePromise(
-		() => executeAction(engine, 'getParsedRulesData'),
+	const parsedRulesKeys = usePromise(
+		() => executeAction(engine, 'getParsedRulesKeysData'),
 		[engine],
-		{}
+		[]
 	)
 
 	const initLevel = (dn: string) =>
@@ -61,11 +61,14 @@ export const RulesNav = ({
 	}, [])
 
 	const openNavButtonPortalElement =
-		(openNavButtonPortalId && document.getElementById(openNavButtonPortalId)) ||
-		document.getElementById('rules-nav-open-nav-button')
+		typeof document !== 'undefined' &&
+		((openNavButtonPortalId &&
+			document.getElementById(openNavButtonPortalId)) ||
+			document.getElementById('rules-nav-open-nav-button'))
 
 	const menu = (
 		<Container $open={navOpen}>
+			{/* <Suspense fallback={<>loading...</>}> */}
 			<Background
 				$open={navOpen}
 				onClick={() => {
@@ -84,9 +87,9 @@ export const RulesNav = ({
 
 			<Nav $open={navOpen}>
 				<ul>
-					{Object.entries(parsedRules)
-						.sort(([a], [b]) => a.localeCompare(b))
-						.map(([ruleDottedName, rest]) => {
+					{parsedRulesKeys
+						.sort((a, b) => a.localeCompare(b))
+						.map((ruleDottedName) => {
 							const parentDottedName = utils.ruleParent(ruleDottedName)
 
 							if (
@@ -101,6 +104,7 @@ export const RulesNav = ({
 							return (
 								<MemoNavLi
 									key={ruleDottedName}
+									parsedRulesKeys={parsedRulesKeys}
 									ruleDottedName={ruleDottedName}
 									open={open}
 									active={dottedName === ruleDottedName}
@@ -110,32 +114,32 @@ export const RulesNav = ({
 						})}
 				</ul>
 			</Nav>
+			{/* </Suspense> */}
 		</Container>
 	)
 
-	const isMobileMenu = window.matchMedia(
-		`(max-width: ${breakpointsWidth.lg})`
-	).matches
+	const isMobileMenu =
+		typeof window?.matchMedia !== 'undefined' &&
+		window.matchMedia(`(max-width: ${breakpointsWidth.lg})`).matches
 
-	const mobileMenuPortalElement = mobileMenuPortalId
-		? document.getElementById(mobileMenuPortalId)
-		: null
+	const mobileMenuPortalElement =
+		mobileMenuPortalId && typeof document !== 'undefined'
+			? document.getElementById(mobileMenuPortalId)
+			: null
 
 	return isMobileMenu && mobileMenuPortalElement
 		? ReactDOM.createPortal(menu, mobileMenuPortalElement)
 		: menu
 }
 
-const NavLi = ({ ruleDottedName, open, active, onClickDropdown }) => {
-	const engine = useEngine()
-
-	const parsedRules = usePromise(
-		() => executeAction(engine, 'getParsedRulesData'),
-		[engine],
-		{}
-	)
-
-	const childrenCount = Object.keys(parsedRules).reduce(
+const NavLi = ({
+	parsedRulesKeys,
+	ruleDottedName,
+	open,
+	active,
+	onClickDropdown,
+}) => {
+	const childrenCount = parsedRulesKeys.reduce(
 		(acc, ruleDot) =>
 			ruleDot.startsWith(ruleDottedName + ' . ') &&
 			ruleDot.split(' . ').length === ruleDottedName.split(' . ').length + 1
