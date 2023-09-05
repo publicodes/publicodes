@@ -22,7 +22,7 @@
 	"scripts": {
 		"clean": "rimraf dist node_modules data",
 		"build": "tsup",
-		"prepack": "yarn workspace publicodes run prepack && yarn run build",
+		"prepack": "yarn workspace publicodes-monorepo prepack",
 		"start": "run build --watch",
 		"test:type": "run tsc"
 	},
