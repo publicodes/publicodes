@@ -6,7 +6,7 @@ import {
 	Unit,
 } from 'publicodes/source/AST/types'
 import React from 'react'
-import styled, { css } from 'styled-components'
+import { css, styled } from 'styled-components'
 import Explanation from '../Explanation'
 import mecanismColors from './colors'
 

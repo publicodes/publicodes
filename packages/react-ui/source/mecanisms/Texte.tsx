@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 
 export default function Texte({ nodeValue, unit, explanation }) {

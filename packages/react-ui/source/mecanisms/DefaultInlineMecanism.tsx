@@ -1,10 +1,10 @@
 import { ASTNode, EvaluatedNode } from 'publicodes/source'
 import { useContext } from 'react'
-import styled from 'styled-components'
-import { EngineContext } from '../contexts'
+import { styled } from 'styled-components'
 import Explanation from '../Explanation'
-import { Mecanism } from './common'
+import { EngineContext } from '../contexts'
 import { UnfoldIsEnabledContext } from './Reference'
+import { Mecanism } from './common'
 
 export default function DefaultInlineMecanism({
 	sourceMap,

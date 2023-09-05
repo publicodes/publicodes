@@ -1,10 +1,10 @@
 import { EvaluatedNode } from 'publicodes/source/AST/types'
 import { ReferenceNode } from 'publicodes/source/reference'
 import { createContext, useContext, useState } from 'react'
-import styled from 'styled-components'
-import { EngineContext } from '../contexts'
+import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { RuleLinkWithContext } from '../RuleLink'
+import { EngineContext } from '../contexts'
 import { NodeValuePointer } from './common'
 
 // Un élément du graphe de calcul qui a une valeur interprétée (à afficher)

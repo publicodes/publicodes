@@ -8,7 +8,7 @@ import Engine, {
 	utils,
 } from 'publicodes'
 import { useContext, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import {
 	BasepathContext,
 	defaultRenderers,
