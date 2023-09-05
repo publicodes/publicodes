@@ -4,7 +4,6 @@ import React, {
 	useMemo,
 	useRef,
 	useState,
-	useTransition,
 } from 'react'
 
 import { usePromise } from './hooks/usePromise'
@@ -49,9 +48,7 @@ const useSynchronizedWorkerEngine = <
 		WorkerEngineClient<AdditionalActions>
 	>(() => {
 		workerClient.onSituationChange = function () {
-			setSituationVersion((situationVersion) => {
-				return situationVersion + 1
-			})
+			setSituationVersion((x) => x + 1)
 		}
 
 		return workerClient
@@ -157,8 +154,6 @@ export const useAsyncParsedRules = <DefaultValue extends unknown = undefined>({
 export const useAsyncShallowCopy = (
 	workerEngine: WorkerEngine
 ): WorkerEngine | undefined => {
-	const [transition, startTransition] = useTransition()
-
 	const [situationVersion, setSituationVersion] = useState(0)
 
 	const lastPromise = useRef<Promise<WorkerEngineClient> | null>(null)
@@ -175,9 +170,7 @@ export const useAsyncShallowCopy = (
 		lastPromise.current = workerEngine.asyncShallowCopy(() => {
 			console.log('onSituationChange in shallow copy', copy.engineId)
 
-			startTransition(() => {
-				setSituationVersion((x) => x + 1)
-			})
+			setSituationVersion((x) => x + 1)
 		})
 
 		const copy = await lastPromise.current
