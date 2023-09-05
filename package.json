@@ -23,6 +23,10 @@
 		"prettier": "^2.8.8",
 		"yaml": "^2.1.1"
 	},
+	"resolutions": {
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	},
 	"packageManager": "yarn@3.6.3",
 	"engines": {
 		"node": ">=18"
