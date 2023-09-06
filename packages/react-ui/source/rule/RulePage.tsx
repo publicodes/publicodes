@@ -7,8 +7,8 @@ import Engine, {
 	serializeUnit,
 	utils,
 } from 'publicodes'
-import { useContext, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { useContext } from 'react'
+import { styled } from 'styled-components'
 import {
 	BasepathContext,
 	defaultRenderers,
@@ -51,24 +51,24 @@ export default function RulePage({
 	openNavButtonPortalId,
 	showDevSection = true,
 }: RulePageProps) {
-	const currentEngineId = new URLSearchParams(window.location.search).get(
-		'currentEngineId'
-	)
+	const currentEngineId =
+		typeof window !== 'undefined' &&
+		new URLSearchParams(window.location.search).get('currentEngineId')
 
-	const prevRenderers = useRef(renderers)
-	const [renderersValue, setRenderers] = useState(defaultRenderers(renderers))
-	useEffect(() => {
-		if (prevRenderers.current !== renderers) {
-			prevRenderers.current = renderers
+	// const prevRenderers = useRef(renderers)
+	// const [renderersValue, setRenderers] = useState(defaultRenderers(renderers))
+	// useEffect(() => {
+	// 	if (prevRenderers.current !== renderers) {
+	// 		prevRenderers.current = renderers
 
-			setRenderers(defaultRenderers(renderers))
-		}
-	}, [renderers])
+	// 		setRenderers(defaultRenderers(renderers))
+	// 	}
+	// }, [renderers])
 
 	return (
 		<EngineContext.Provider value={engine}>
 			<BasepathContext.Provider value={documentationPath}>
-				<RenderersContext.Provider value={renderersValue}>
+				<RenderersContext.Provider value={defaultRenderers(renderers)}>
 					<Rule
 						dottedName={utils.decodeRuleName(rulePath)}
 						subEngineId={

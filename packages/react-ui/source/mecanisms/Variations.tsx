@@ -1,7 +1,7 @@
 import { EvaluatedNode } from 'publicodes'
 import type { VariationNode } from 'publicodes/source/mecanisms/variations'
 import { useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import writtenNumbers from '../writtenNumbers'
 import { CapitalizeFirstLetter, InlineMecanismName, Mecanism } from './common'

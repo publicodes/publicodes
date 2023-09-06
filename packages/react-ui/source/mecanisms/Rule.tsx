@@ -1,7 +1,7 @@
 import { capitalise0 } from 'publicodes'
-import styled from 'styled-components'
-import { DottedNameContext } from '../contexts'
+import { styled } from 'styled-components'
 import Explanation from '../Explanation'
+import { DottedNameContext } from '../contexts'
 
 export default function RuleMecanism({
 	rawNode,

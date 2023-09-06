@@ -1,9 +1,9 @@
 import Engine, { EvaluatedNode, RuleNode, utils } from 'publicodes'
 import { useContext } from 'react'
-import styled from 'styled-components'
-import { RenderersContext } from '../contexts'
+import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { RuleLinkWithContext } from '../RuleLink'
+import { RenderersContext } from '../contexts'
 import RuleSource from './RuleSource'
 
 const Ul = styled.ul`

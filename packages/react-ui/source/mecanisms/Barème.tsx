@@ -1,5 +1,5 @@
 import { parseUnit } from 'publicodes'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { Mecanism, NodeValuePointer } from './common'
 

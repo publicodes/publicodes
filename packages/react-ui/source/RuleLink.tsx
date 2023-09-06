@@ -82,9 +82,9 @@ export function RuleLinkWithContext(
 ) {
 	const engine = useEngine()
 	const documentationPath = useContext(BasepathContext)
-	const currentEngineIdFromUrl = new URLSearchParams(
-		window.location.search
-	).get('currentEngineId')
+	const currentEngineIdFromUrl =
+		typeof window !== 'undefined' &&
+		new URLSearchParams(window.location.search).get('currentEngineId')
 	const currentEngineId =
 		props.useSubEngine !== false
 			? engine.subEngineId ||

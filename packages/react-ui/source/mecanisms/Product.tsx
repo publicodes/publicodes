@@ -1,5 +1,5 @@
 import { EvaluatedNode } from 'publicodes/source/AST/types'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { Mecanism } from './common'
 

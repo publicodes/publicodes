@@ -1,10 +1,10 @@
 import { utils } from 'publicodes'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
+import { RuleLinkWithContext } from '../RuleLink'
 import { Arrow } from '../component/icons'
 import { useEngine } from '../hooks'
-import { RuleLinkWithContext } from '../RuleLink'
 interface Props {
 	dottedName: string
 	mobileMenuPortalId?: string

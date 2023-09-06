@@ -1,6 +1,10 @@
 # Changelog
 
 ## next
+## 1.0.0-beta.72
+**publicodes-react**
+
+- Corrige un bug dans la compilation esm de react-ui
 
 ## 1.0.0-beta.71
 

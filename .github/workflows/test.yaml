@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        example: ['browser-url-import', 'publicodes-react']
+        example: ['browser-url-import', 'create-react-app']
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/install

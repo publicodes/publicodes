@@ -7,7 +7,7 @@ type Props = { dottedName: string; engine: Engine }
 export default function RuleSource({ engine, dottedName }: Props) {
 	const href = useRuleSource(engine, dottedName)
 
-	if (window.location.host === 'publi.codes') {
+	if (typeof window !== 'undefined' && window.location.host === 'publi.codes') {
 		return null
 	}
 
