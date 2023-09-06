@@ -11,8 +11,8 @@ exports[`e2e koa middleware > Test evaluate endpoint with bad expression 2`] = `
 ✖️  \`1+1\` n'est pas une expression valide
     Syntax error at line 1 col 2:
 
-  1+
-   ^
+1  1+1
+    ^
 Unexpected additionSubstraction token: \\"+\\". Instead, I was expecting to see one of the following:
 
 A space token based on:

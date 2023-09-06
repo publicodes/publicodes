@@ -33,8 +33,8 @@ exports[`evaluate > Test syntax error in expression 1`] = `
 ✖️  \`1+1\` n'est pas une expression valide
     Syntax error at line 1 col 2:
 
-  1+
-   ^
+1  1+1
+    ^
 Unexpected additionSubstraction token: \\"+\\". Instead, I was expecting to see one of the following:
 
 A space token based on:
@@ -153,8 +153,8 @@ exports[`evaluate > Test two syntax error in expression 1`] = `
 ✖️  \`1+1\` n'est pas une expression valide
     Syntax error at line 1 col 2:
 
-  1+
-   ^
+1  1+1
+    ^
 Unexpected additionSubstraction token: \\"+\\". Instead, I was expecting to see one of the following:
 
 A space token based on:
@@ -265,8 +265,8 @@ A space token based on:
 ✖️  \`\\"42\` n'est pas une expression valide
     invalid syntax at line 1 col 1:
 
-  \\"42
-  ^
+1  \\"42
+   ^
 Unexpected input (lexer error). Instead, I was expecting to see one of the following:
 
 A date token based on:
