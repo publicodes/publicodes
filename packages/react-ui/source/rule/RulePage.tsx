@@ -55,15 +55,15 @@ export default function RulePage({
 		typeof window !== 'undefined' &&
 		new URLSearchParams(window.location.search).get('currentEngineId')
 
-	// const prevRenderers = useRef(renderers)
-	// const [renderersValue, setRenderers] = useState(defaultRenderers(renderers))
-	// useEffect(() => {
-	// 	if (prevRenderers.current !== renderers) {
-	// 		prevRenderers.current = renderers
+	const prevRenderers = useRef(renderers)
+	const [renderersValue, setRenderers] = useState(defaultRenderers(renderers))
+	useEffect(() => {
+		if (prevRenderers.current !== renderers) {
+			prevRenderers.current = renderers
 
-	// 		setRenderers(defaultRenderers(renderers))
-	// 	}
-	// }, [renderers])
+			setRenderers(defaultRenderers(renderers))
+		}
+	}, [renderers])
 
 	return (
 		<EngineContext.Provider value={engine}>
