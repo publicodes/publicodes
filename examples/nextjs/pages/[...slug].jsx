@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { RulePage } from 'publicodes-react'
 import engine from '../engine'
-// import engine from '../engine';
 
 export default function Documentation() {
 	const router = useRouter()

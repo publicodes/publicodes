@@ -40,6 +40,8 @@ En général, on voudra afficher la documentation pour l’ensemble des pages et
 pour une page en particulier. Il faut donc associer le composant `<RulePage />`
 avec le routeur utilisé.
 
+### react-router
+
 Par exemple pour `react-router` :
 
 ```jsx
@@ -63,27 +65,37 @@ export function Documentation() {
 }
 ```
 
+### NextJS
+
 Autre exemple pour intégrer la documentation dans une application Next.js :
 
 ```jsx
-// pages/documentation/[...slug].jsx
-import Head from 'next/head';
+import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { RulePage } from 'publicodes-react'
+import engine from '../engine'
 
-export default Documentation() {
-  const { slug } = useRouter().query;
-  return <RulePage
-    documentationPath="/documentation"
-    rulePath={slug.join('/')}
-    language="fr"
-    renderers={{
-      Head,
-      Link: ({to, children}) => <Link href={to}><a>{children}</a></Link>
-    }}
-  />
+export default function Documentation() {
+	const router = useRouter()
+	return (
+		<RulePage
+			documentationPath="/documentation"
+			engine={engine}
+			rulePath={router.query.slug?.join('/')}
+			language="fr"
+			renderers={{
+				Head,
+				Link: ({ to, children }) => <Link href={to}>{children}</Link>,
+			}}
+		/>
+	)
 }
 ```
+
+Vous pouvez retrouver l’exemple de l’intégration de la documentation dans une application NextJS sur [Github](https://github.com/betagouv/publicodes/tree/master/examples/nextjs)
+
+### Svelte
 
 Vous pouvez même afficher cette documentation dans une application qui n’est pas développée en React, en “montant” React seulement pour la partie documentation. Par exemple dans une application Svelte :
 
