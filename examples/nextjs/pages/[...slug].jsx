@@ -9,11 +9,8 @@ export default function Documentation() {
 	const router = useRouter()
 	if (!router.query.slug) return null
 	return (
-		<>
-			<h1>YOP {router.query.slug?.join('/')}</h1>
-
 			<RulePage
-				documentationPath="/documentation"
+				documentationPath="/"
 				engine={engine}
 				rulePath={router.query.slug?.join('/')}
 				language="fr"
@@ -21,11 +18,11 @@ export default function Documentation() {
 					Head,
 					Link: ({ to, children }) => (
 						<Link href={to}>
-							<a>{children}</a>
+							{children}
 						</Link>
 					),
 				}}
 			/>
-		</>
+
 	)
 }
