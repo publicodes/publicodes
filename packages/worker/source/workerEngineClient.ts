@@ -269,6 +269,119 @@ export interface WorkerEngineClient<
 	'~config'?: Config
 }
 
+type Action<T extends WorkerEngineActions['action']> = GetAction<
+	WorkerEngineActions,
+	T
+>
+class WorkerEngineClientImpl<
+	Actions extends ActionType = Config['additionalActions']
+> implements WorkerEngineClient
+{
+	engineId
+	worker
+	isWorkerReady
+	onSituationChange
+	postMessage
+	private globalCtx: GlobalCtx<Actions>
+	private parsedRules: ReturnType<EngineType['getParsedRules']> | undefined
+
+	constructor(
+		globalCtx: GlobalCtx<Actions>,
+		options: {
+			engineId: number
+			onSituationChange?: (engineId: number) => void
+		}
+	) {
+		this.engineId = options.engineId
+		this.worker = globalCtx.worker
+		this.isWorkerReady = globalCtx.isDefaultEngineReadyPromise
+		this.onSituationChange = options.onSituationChange
+		this.postMessage = wrappedPostMessage(globalCtx, options.engineId)
+		this.globalCtx = globalCtx
+		return this
+	}
+
+	terminate() {
+		this.worker.terminate()
+		this.globalCtx.promises.forEach((promise) =>
+			promise.reject?.('worker terminated')
+		)
+		this.globalCtx.promises = []
+	}
+
+	/**
+	 * Set the situation in the worker with a specific engineId.
+	 */
+	async asyncSetSituation(
+		...params: Action<'setSituation'>['params']
+	): Promise<Action<'setSituation'>['result']> {
+		const ret = await this.postMessage('setSituation', ...params)
+
+		this.onSituationChange?.(this.engineId)
+
+		return ret
+	}
+
+	/**
+	 * Evaluate a publicodes expression in the worker with a specific engineId.
+	 */
+	async asyncEvaluate(
+		...params: Action<'evaluate'>['params']
+	): Promise<Action<'evaluate'>['result']> {
+		const promise = await this.postMessage('evaluate', ...params)
+
+		// console.trace('{asyncEvaluate}')
+
+		return promise
+	}
+
+	/**
+	 * Get a publicodes rule that is in the worker with a specific EngineId.
+	 */
+	async asyncGetRule(
+		...params: Action<'getRule'>['params']
+	): Promise<Action<'getRule'>['result']> {
+		return this.postMessage('getRule', ...params)
+	}
+
+	/**
+	 * Get all the parsed rules in the worker with a specific engineId.
+	 */
+	async asyncGetParsedRules(): Promise<Action<'getParsedRules'>['result']> {
+		if (!this.parsedRules) {
+			this.parsedRules = await this.postMessage('getParsedRules')
+		}
+		return this.parsedRules
+	}
+
+	/**
+	 * Shallow copy an engine in the worker with a specific engineId.
+	 */
+	async asyncShallowCopy(
+		onSituationChange: () => void = () => {}
+	): Promise<WorkerEngineClient<Actions>> {
+		const engineId = await this.postMessage('shallowCopy')
+
+		const ret = workerEngineConstruct(this.globalCtx, {
+			onSituationChange,
+			engineId,
+		})
+
+		return ret
+	}
+
+	/**
+	 * Delete a shallow copy of an engine in the worker.
+	 */
+	async asyncDeleteShallowCopy(): Promise<
+		Action<'deleteShallowCopy'>['result']
+	> {
+		console.log('{client deleteShallowCopy}', context)
+
+		return this.postMessage('deleteShallowCopy')
+	}
+}
+
 /**
  * ...
  */
@@ -279,97 +392,10 @@ const workerEngineConstruct = <AdditionalActions extends ActionType>(
 		engineId: number
 	}
 ) => {
-	type Action<T extends WorkerEngineActions['action']> = GetAction<
-		WorkerEngineActions,
-		T
-	>
+	console.log('bnihihiu')
+	const workerEngine = new WorkerEngineClientImpl(globalCtx, options)
 
-	const context: WorkerEngineClient<AdditionalActions> = {
-		engineId: options.engineId,
-		worker: globalCtx.worker,
-		isWorkerReady: globalCtx.isDefaultEngineReadyPromise,
-		onSituationChange: options.onSituationChange,
-		postMessage: wrappedPostMessage(globalCtx, options.engineId),
-
-		terminate: () => {
-			context.worker.terminate()
-			globalCtx.promises.forEach((promise) =>
-				promise.reject?.('worker terminated')
-			)
-			globalCtx.promises = []
-		},
-
-		/**
-		 * Set the situation in the worker with a specific engineId.
-		 */
-		asyncSetSituation: async (
-			...params: Action<'setSituation'>['params']
-		): Promise<Action<'setSituation'>['result']> => {
-			const ret = await context.postMessage('setSituation', ...params)
-
-			context.onSituationChange?.(context.engineId)
-
-			return ret
-		},
-
-		/**
-		 * Evaluate a publicodes expression in the worker with a specific engineId.
-		 */
-		asyncEvaluate: async (
-			...params: Action<'evaluate'>['params']
-		): Promise<Action<'evaluate'>['result']> => {
-			const promise = await context.postMessage('evaluate', ...params)
-
-			// console.trace('{asyncEvaluate}')
-
-			return promise
-		},
-
-		/**
-		 * Get a publicodes rule that is in the worker with a specific EngineId.
-		 */
-		asyncGetRule: async (...params): Promise<Action<'getRule'>['result']> => {
-			return context.postMessage('getRule', ...params)
-		},
-
-		/**
-		 * Get all the parsed rules in the worker with a specific engineId.
-		 */
-		asyncGetParsedRules: async (): Promise<
-			Action<'getParsedRules'>['result']
-		> => {
-			return context.postMessage('getParsedRules')
-		},
-
-		/**
-		 * Shallow copy an engine in the worker with a specific engineId.
-		 */
-		asyncShallowCopy: async (
-			onSituationChange: () => void = () => {}
-		): Promise<WorkerEngineClient<AdditionalActions>> => {
-			const engineId = await context.postMessage('shallowCopy')
-
-			const ret = workerEngineConstruct(globalCtx, {
-				onSituationChange,
-				engineId,
-			})
-
-			return ret
-		},
-
-		/**
-		 * Delete a shallow copy of an engine in the worker.
-		 */
-		asyncDeleteShallowCopy: async (): Promise<
-			Action<'deleteShallowCopy'>['result']
-		> => {
-			console.log('{client deleteShallowCopy}', context)
-
-			return context.postMessage('deleteShallowCopy')
-		},
-	}
-
-	return context
+	return workerEngine
 }
 
 /**

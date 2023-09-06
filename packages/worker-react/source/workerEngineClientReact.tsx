@@ -10,16 +10,12 @@ import { usePromise } from './hooks/usePromise'
 
 import { ActionType, Config, WorkerEngineClient } from '@publicodes/worker'
 
-export interface WorkerEngine<
-	Cfg extends Config = Config,
-	AdditionalActions extends ActionType = Cfg['additionalActions']
-> extends WorkerEngineClient<AdditionalActions> {
-	situationVersion: number
-}
+export type WorkerEngine = WorkerEngineClient
 
-const WorkerEngineContext = createContext<WorkerEngine<Config>>(
-	undefined as unknown as WorkerEngine<Config>
-)
+const WorkerEngineContext = createContext<[WorkerEngine, number]>([
+	undefined as unknown as WorkerEngine,
+	0,
+])
 
 /**
  */
@@ -32,7 +28,7 @@ export const useWorkerEngine = <Cfg extends Config>() => {
 		)
 	}
 
-	return context as WorkerEngine<Cfg>
+	return context[0] as WorkerEngine
 }
 
 /**
@@ -42,7 +38,7 @@ const useSynchronizedWorkerEngine = <
 	AdditionalActions extends ActionType = Cfg['additionalActions']
 >(
 	workerClient: WorkerEngineClient<AdditionalActions>
-): WorkerEngine<Cfg> => {
+): [WorkerEngine, number] => {
 	const [situationVersion, setSituationVersion] = useState(0)
 	const [workerEngine, setWorkerEngine] = useState<
 		WorkerEngineClient<AdditionalActions>
@@ -55,7 +51,7 @@ const useSynchronizedWorkerEngine = <
 	})
 
 	const memo = useMemo(() => {
-		return { ...workerEngine, situationVersion } as WorkerEngine<Cfg>
+		return [workerEngine, situationVersion] as [WorkerEngine, number]
 	}, [situationVersion, workerEngine])
 
 	return memo
@@ -75,7 +71,7 @@ export const WorkerEngineProvider = <
 }) => {
 	const workerEngine = useSynchronizedWorkerEngine(workerClient)
 
-	if (workerEngine === undefined) {
+	if (workerEngine[0] === undefined) {
 		return children
 	}
 
