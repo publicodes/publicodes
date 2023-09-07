@@ -37,6 +37,11 @@ export const SuspensePromiseCtx = createContext<{
 
 interface SuspensePromiseProps {
 	isSSR: boolean
+	/**
+	 * Activate Suspense in the browser too.
+	 * By default, Suspense is only active in SSR mode.
+	 */
+	activateInBrowser?: boolean
 	children: React.ReactNode
 	fallback?: React.ReactNode
 }
@@ -46,6 +51,7 @@ interface SuspensePromiseProps {
  */
 export const SuspensePromise = ({
 	isSSR,
+	activateInBrowser,
 	children,
 	fallback,
 }: SuspensePromiseProps) => {
@@ -56,7 +62,7 @@ export const SuspensePromise = ({
 
 	return (
 		<SuspensePromiseCtx.Provider
-			value={isSSR ? { cache, index, done, isSSR } : null}
+			value={isSSR || activateInBrowser ? { cache, index, done, isSSR } : null}
 		>
 			<Suspense fallback={fallback}>
 				{children}
@@ -178,8 +184,10 @@ export const usePromise = <T, Default = undefined>(
 			cache
 		)
 		if (context.isSSR) {
+			// in ssr mode, functions are only executed once each, so we reset the cache after each success
 			context.cache.current = []
 		} else {
+			// in browser mode, we keep each cache
 			context.index.current += 1
 		}
 	}

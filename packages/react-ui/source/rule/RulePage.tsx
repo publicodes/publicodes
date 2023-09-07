@@ -217,7 +217,7 @@ function Rule({
 				/>
 			</SuspensePromise>
 			<Article>
-				<SuspensePromise isSSR={isSSR} fallback={<>loading...</>}>
+				<SuspensePromise isSSR={isSSR}>
 					<DottedNameContext.Provider value={dottedName}>
 						<RuleHeader dottedName={dottedName} />
 						<section>
