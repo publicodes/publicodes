@@ -2950,7 +2950,7 @@ __metadata:
     "@types/react": ^18.2.20
     rimraf: ^3.0.2
     tsup: ^7.2.0
-    typescript: ^5.1.6
+    typescript: ^5.2.2
   peerDependencies:
     publicodes: ^1.0.0-beta.40
     react: ^17 || ^18
@@ -2964,7 +2964,7 @@ __metadata:
   dependencies:
     rimraf: ^3.0.2
     tsup: ^7.2.0
-    typescript: ^5.1.6
+    typescript: ^5.2.2
   peerDependencies:
     publicodes: ^1.0.0-beta.40
   languageName: unknown
@@ -3616,16 +3616,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:*":
-  version: 3.3.1
-  resolution: "@types/hoist-non-react-statics@npm:3.3.1"
-  dependencies:
-    "@types/react": "*"
-    hoist-non-react-statics: ^3.3.0
-  checksum: 2c0778570d9a01d05afabc781b32163f28409bb98f7245c38d5eaf082416fdb73034003f5825eb5e21313044e8d2d9e1f3fe2831e345d3d1b1d20bcd12270719
-  languageName: node
-  linkType: hard
-
 "@types/html-minifier-terser@npm:^6.0.0":
   version: 6.1.0
   resolution: "@types/html-minifier-terser@npm:6.1.0"
@@ -3984,17 +3974,6 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: b9bbb2b5c5ead2fb884bb019f61a014e37410bddd295de28184e1b2e71ee6b04120c5ba7b9954617f0bdf962c13d06249ce65004490889c747c80d3f628ea842
-  languageName: node
-  linkType: hard
-
-"@types/styled-components@npm:^5.1.26":
-  version: 5.1.26
-  resolution: "@types/styled-components@npm:5.1.26"
-  dependencies:
-    "@types/hoist-non-react-statics": "*"
-    "@types/react": "*"
-    csstype: ^3.0.2
-  checksum: 84f53b3101739b20d1731554fb7735bc2f3f5d050a8b392e9845403c8c8bbd729737d033978649f9195a97b557875b010d46e35a4538564a2d0dbcce661dbf76
   languageName: node
   linkType: hard
 
@@ -8210,7 +8189,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:^3.1.0, hoist-non-react-statics@npm:^3.3.0":
+"hoist-non-react-statics@npm:^3.1.0":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
   dependencies:
@@ -11628,15 +11607,14 @@ __metadata:
   dependencies:
     "@publicodes/worker-react": "workspace:^"
     "@types/react": ^18.2.20
-    "@types/styled-components": ^5.1.26
     rimraf: ^3.0.2
     styled-components: ^6.0.7
     tsup: ^7.2.0
     typescript: ^5.2.2
   peerDependencies:
-    publicodes: ^1.0.0-beta.71
-    react: ^17 || ^18
-    react-dom: ^17 || ^18
+    publicodes: ^1.0.0-beta.72
+    react: ^18
+    react-dom: ^18
   languageName: unknown
   linkType: soft
 
@@ -13982,7 +13960,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.1.6, typescript@npm:^5.2.2":
+"typescript@npm:^5.2.2":
   version: 5.2.2
   resolution: "typescript@npm:5.2.2"
   bin:
@@ -13992,7 +13970,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.1.6#~builtin<compat/typescript>, typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
+"typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
   version: 5.2.2
   resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"
   bin:
@@ -14854,8 +14832,8 @@ __metadata:
     publicodes: "workspace:^"
     publicodes-react: "workspace:^"
     ramda: ^0.27.1
-    react: ^17
-    react-dom: ^17
+    react: ^18.2.0
+    react-dom: ^18.2.0
     react-i18next: ^11.8.15
     react-monaco-editor: ^0.49.0
     react-router-dom: ^5.2.0
