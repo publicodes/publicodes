@@ -180,7 +180,10 @@ export const createWorkerEngine = <
 					ctx.triggerDefaultEngineReady?.(engineId)
 					console.log('[engine ready]', ctx.engines[engineId])
 
-					return sendMessage({ id, result: engineId })
+					return sendMessage({
+						id,
+						result: { engineId, parsedRules: engine.getParsedRules() },
+					})
 				}
 				throw new Error("Initilisation already done, can't init twice")
 			}
@@ -193,7 +196,7 @@ export const createWorkerEngine = <
 				return
 			}
 
-			const WAITING_TIME_TO_START = 50
+			const WAITING_TIME_TO_START = 25
 
 			timeout = setTimeout(() => {
 				const aborts: number[] = []
@@ -340,6 +343,7 @@ const internalActions = <
 	) => {
 		engine.setSituation(...(params as Parameters<typeof engine.setSituation>))
 	},
+
 	evaluate: (
 		{ engine, id }: ActionData<Cfg>,
 		...params: Parameters<Engine['evaluate']>
@@ -351,6 +355,7 @@ const internalActions = <
 
 		return result
 	},
+
 	getRule: (
 		{ engine }: ActionData<Cfg>,
 		...params: Parameters<Engine['getRule']>
@@ -361,17 +366,20 @@ const internalActions = <
 
 		return result
 	},
+
 	getParsedRules: ({ engine }: ActionData<Cfg>) => {
 		const result = engine.getParsedRules()
 
 		return result
 	},
+
 	shallowCopy: ({ engine }: ActionData<Cfg>) => {
 		ctx.engines.push(engine.shallowCopy())
 		console.log('[shallowCopy]:', ctx.engines)
 
 		return ctx.engines.length - 1
 	},
+
 	deleteShallowCopy: ({ engineId }: ActionData<Cfg>) => {
 		if (engineId === 0) {
 			throw new Error('Cannot delete the default engine')
@@ -394,7 +402,10 @@ type WorkerEngineActionsDictionary = ReturnType<typeof internalActions<Context>>
 type InitAction<InitParams extends unknown[] = unknown[]> = ActionType<
 	'init',
 	InitParams,
-	number
+	{
+		engineId: number
+		parsedRules: ReturnType<EngineType['getParsedRules']>
+	}
 >
 
 /**

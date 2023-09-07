@@ -61,6 +61,8 @@ const useSynchronizedWorkerEngine = <
 	return memo
 }
 
+console.time('isWorkerReady')
+
 /**
  */
 export const WorkerEngineProvider = <
@@ -74,9 +76,19 @@ export const WorkerEngineProvider = <
 	children: React.ReactNode
 }) => {
 	const workerEngine = useSynchronizedWorkerEngine(workerClient)
+	const isWorkerReady = usePromise(
+		async () => {
+			await workerEngine.isWorkerReady
+			console.timeEnd('isWorkerReady')
 
-	if (workerEngine === undefined) {
-		return children
+			return true
+		},
+		[],
+		false
+	)
+
+	if (!isWorkerReady) {
+		return null
 	}
 
 	return (
@@ -103,48 +115,6 @@ export const useAsyncSetSituation = (
 	return usePromise(
 		() => workerEngine.asyncSetSituation(situation, options),
 		[workerEngine, situation, options]
-	)
-}
-
-interface Options<DefaultValue> {
-	workerEngine?: WorkerEngine
-	defaultValue?: DefaultValue
-}
-
-/**
- * This hook is used to get a rule in the worker engine.
- */
-export const useAsyncGetRule = <
-	Name extends string = string,
-	DefaultValue extends unknown = undefined
->(
-	dottedName: Name,
-	{ defaultValue, workerEngine: workerEngineOption }: Options<DefaultValue> = {}
-) => {
-	const defaultWorkerEngine = useWorkerEngine()
-	const workerEngine = workerEngineOption ?? defaultWorkerEngine
-
-	return usePromise(
-		async () => workerEngine.asyncGetRule(dottedName),
-		[dottedName, workerEngine],
-		defaultValue
-	)
-}
-
-/**
- * This hook is used to get parsed rules in the worker engine.
- */
-export const useAsyncParsedRules = <DefaultValue extends unknown = undefined>({
-	workerEngine: workerEngineOption,
-	defaultValue,
-}: Options<DefaultValue> = {}) => {
-	const defaultWorkerEngine = useWorkerEngine()
-	const workerEngine = workerEngineOption ?? defaultWorkerEngine
-
-	return usePromise(
-		async () => workerEngine.asyncGetParsedRules(),
-		[workerEngine],
-		defaultValue
 	)
 }
 

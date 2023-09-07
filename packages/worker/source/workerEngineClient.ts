@@ -42,7 +42,8 @@ interface GlobalCtx<AdditionalActions extends ActionType = ActionType> {
 	)[]
 	lastCleanup: null | NodeJS.Timeout
 	worker: Worker
-	isDefaultEngineReadyPromise: Promise<number>
+	isDefaultEngineReadyPromise: Promise<void>
+	parsedRules: Record<string, unknown>
 }
 
 /**
@@ -57,12 +58,16 @@ export const createWorkerEngineClient = <AdditionalActions extends ActionType>(
 ) => {
 	console.log('{createWorker}')
 
+	let isDefaultEngineReadyPromise: (value: void) => void
 	const globalCtx: GlobalCtx<AdditionalActions> = {
 		promises: [],
 		lastCleanup: null,
 		worker,
 		// will be set later in the function
-		isDefaultEngineReadyPromise: null as unknown as Promise<number>,
+		isDefaultEngineReadyPromise: new Promise<void>((res) => {
+			isDefaultEngineReadyPromise = res
+		}),
+		parsedRules: null as unknown as Record<string, unknown>,
 	}
 
 	worker.onmessageerror = function (e) {
@@ -120,7 +125,10 @@ export const createWorkerEngineClient = <AdditionalActions extends ActionType>(
 		engineId: 0,
 	})
 
-	workerEngine.postMessage('init', ...initParams)
+	workerEngine.postMessage('init', ...initParams).then(({ parsedRules }) => {
+		void isDefaultEngineReadyPromise()
+		globalCtx.parsedRules = parsedRules
+	})
 
 	return workerEngine
 }
@@ -228,6 +236,16 @@ type ActionFunc<
 	Action extends Actions['action']
 > = (
 	...params: GetAction<Actions, Action>['params']
+) => GetAction<Actions, Action>['result']
+
+/**
+ * ...
+ */
+type AsyncActionFunc<
+	Actions extends ActionType,
+	Action extends Actions['action']
+> = (
+	...params: GetAction<Actions, Action>['params']
 ) => Promise<GetAction<Actions, Action>['result']>
 
 /**
@@ -238,7 +256,7 @@ export interface WorkerEngineClient<
 > {
 	engineId: number
 	worker: Worker
-	isWorkerReady: Promise<number>
+	isWorkerReady: Promise<void>
 	onSituationChange?: (engineId: number) => void
 	postMessage: <
 		ActionNames extends
@@ -252,14 +270,17 @@ export interface WorkerEngineClient<
 		...params: Action['params']
 	) => Promise<Action['result']>
 	terminate: () => void
-	asyncSetSituation: ActionFunc<WorkerEngineActions, 'setSituation'>
-	asyncEvaluate: ActionFunc<WorkerEngineActions, 'evaluate'>
-	asyncGetRule: ActionFunc<WorkerEngineActions, 'getRule'>
-	asyncGetParsedRules: ActionFunc<WorkerEngineActions, 'getParsedRules'>
+	asyncSetSituation: AsyncActionFunc<WorkerEngineActions, 'setSituation'>
+	asyncEvaluate: AsyncActionFunc<WorkerEngineActions, 'evaluate'>
+	getRule: ActionFunc<WorkerEngineActions, 'getRule'>
+	getParsedRules: ActionFunc<WorkerEngineActions, 'getParsedRules'>
 	asyncShallowCopy: (
 		onSituationChange?: () => void
 	) => Promise<WorkerEngineClient<AdditionalActions>>
-	asyncDeleteShallowCopy: ActionFunc<WorkerEngineActions, 'deleteShallowCopy'>
+	asyncDeleteShallowCopy: AsyncActionFunc<
+		WorkerEngineActions,
+		'deleteShallowCopy'
+	>
 
 	/**
 	 * Debug configuration type
@@ -328,17 +349,21 @@ const workerEngineConstruct = <AdditionalActions extends ActionType>(
 		/**
 		 * Get a publicodes rule that is in the worker with a specific EngineId.
 		 */
-		asyncGetRule: async (...params): Promise<Action<'getRule'>['result']> => {
-			return context.postMessage('getRule', ...params)
+		getRule: (...params): Action<'getRule'>['result'] => {
+			const [dottedName] = params
+
+			if (!(dottedName in globalCtx.parsedRules)) {
+				throw new Error(`La règle '${dottedName}' n'existe pas`)
+			}
+
+			return globalCtx.parsedRules[dottedName] as Action<'getRule'>['result']
 		},
 
 		/**
 		 * Get all the parsed rules in the worker with a specific engineId.
 		 */
-		asyncGetParsedRules: async (): Promise<
-			Action<'getParsedRules'>['result']
-		> => {
-			return context.postMessage('getParsedRules')
+		getParsedRules: (): Action<'getParsedRules'>['result'] => {
+			return globalCtx.parsedRules as Action<'getParsedRules'>['result']
 		},
 
 		/**
