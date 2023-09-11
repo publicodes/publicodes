@@ -1,5 +1,5 @@
 import { ASTNode, EvaluatedNode } from 'publicodes/source'
-import { useContext } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { EngineContext } from '../contexts'
@@ -61,38 +61,75 @@ function ListOrScalarExplanation({ node }: { node: ASTNode | Array<ASTNode> }) {
 }
 
 // We want to put non applicable rules a the bottom of list #1055
-const isDimmedValue = (x: ASTNode) => {
+const isZeroOrNotApplicable = (x: ASTNode) => {
 	const nodeValue = useContext(EngineContext)?.evaluate(x).nodeValue
 	return nodeValue === null || nodeValue === 0
 }
-function sortByApplicability(a: EvaluatedNode, b: EvaluatedNode): 1 | 0 | -1 {
-	if (isDimmedValue(a) === isDimmedValue(b)) {
-		return 0
-	}
-	return isDimmedValue(a) ? 1 : -1
+
+function Table({ explanation }) {
+	const [applicableExplanation, notApplicableExplanation] = explanation.reduce(
+		(acc, x) => {
+			acc[isZeroOrNotApplicable(x) ? 1 : 0].push(x)
+			return acc
+		},
+		[[], []]
+	)
+	const [showNotApplicable, setShowNotApplicable] = useState(
+		applicableExplanation.length === 0
+	)
+	const id = useMemo(
+		() => 'notApplicableExplanation' + Math.random().toString(36).substring(7),
+		[]
+	)
+	return (
+		<>
+			<StyledContainer>
+				{applicableExplanation.map((node: EvaluatedNode, i) => (
+					<Row key={i} node={node} />
+				))}
+			</StyledContainer>
+			{notApplicableExplanation.length > 0 &&
+				applicableExplanation.length !== 0 && (
+					<StyledButtonContainer
+						css={`
+							text-align: center;
+						`}
+					>
+						<button
+							aria-expanded={showNotApplicable}
+							aria-controls={id}
+							onClick={() => setShowNotApplicable(!showNotApplicable)}
+						>
+							{showNotApplicable
+								? 'Cacher les valeurs non applicables'
+								: `Afficher les valeurs non applicables`}
+						</button>
+					</StyledButtonContainer>
+				)}
+			{showNotApplicable && (
+				<StyledContainer id={id}>
+					{notApplicableExplanation.map((node: EvaluatedNode, i) => (
+						<Row key={i} node={node} />
+					))}
+				</StyledContainer>
+			)}
+		</>
+	)
 }
-
-const Table = ({ explanation }) => (
-	<StyledContainer>
-		{explanation.sort(sortByApplicability).map((node: EvaluatedNode, i) => (
-			<Row key={i} node={node} />
-		))}
-	</StyledContainer>
-)
-
+const StyledButtonContainer = styled.div`
+	margin: 0.5rem 0;
+	margin-left: 1.5rem;
+`
 const StyledContainer = styled.ul`
 	margin: 0;
 	margin-left: 0.5rem;
-	list-style: circle !important;
+	list-style: disc !important;
 `
 
 /* La colonne peut au clic afficher une nouvelle colonne qui sera une autre somme imbriquée */
 function Row({ node }: { node: EvaluatedNode }) {
 	return (
-		<StyledRow
-			style={{ padding: '0.25rem 0' }}
-			className={isDimmedValue(node) ? 'notApplicable' : ''}
-		>
+		<StyledRow style={{ padding: '0.25rem 0' }}>
 			<UnfoldIsEnabledContext.Provider value={true}>
 				<Explanation node={node} />
 			</UnfoldIsEnabledContext.Provider>
@@ -103,22 +140,5 @@ function Row({ node }: { node: EvaluatedNode }) {
 const StyledRow = styled.li`
 	> * {
 		width: 100%;
-	}
-
-	&.notApplicable {
-		position: relative;
-		::before {
-			content: ' ';
-			position: absolute;
-			display: block;
-			background-color: white;
-			pointer-events: none;
-			opacity: 0.4;
-			top: 0;
-			z-index: 2;
-			bottom: 0;
-			right: 0;
-			left: 0;
-		}
 	}
 `
