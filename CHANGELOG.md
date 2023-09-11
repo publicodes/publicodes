@@ -1,10 +1,17 @@
 # Changelog
 
 ## next
+## 1.0.0-beta.73
+**publicodes-react**
+
+- Corrige un bug de style suite à la mise à jour de styled component v6
+- Cache les élements non applicable par défaut dans les mécanismes de type liste, et ajoute un bouton « Afficher les valeurs non applicables ».
+
 ## 1.0.0-beta.72
 **publicodes-react**
 
 - Corrige un bug dans la compilation esm de react-ui
+- BREAKING : passe à styled component v6
 
 ## 1.0.0-beta.71
 
