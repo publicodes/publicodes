@@ -78,7 +78,7 @@ export default function Explanation({ node }) {
 		}, [engine, node, subEngineId, visualisationKind]) ?? {}
 
 	if (displayedNode === undefined) {
-		return <>loading....</>
+		return <>Explanation loading....</>
 	}
 
 	if (!Component) {

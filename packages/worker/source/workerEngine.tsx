@@ -157,7 +157,7 @@ export const createWorkerEngine = <
 		...internalActions(ctx),
 	}
 
-	let timeout: NodeJS.Timeout | null = null
+	let timeout: ReturnType<typeof setTimeout> | null = null
 	const onMessage = async (e: MessageEvent) => {
 		const sendMessage = postMessage
 		console.log('[onmessage]', e.data)
@@ -178,7 +178,7 @@ export const createWorkerEngine = <
 					ctx.engines.push(engine)
 
 					ctx.triggerDefaultEngineReady?.(engineId)
-					console.log('[engine ready]', ctx.engines[engineId])
+					console.log('[engine ready]')
 
 					return sendMessage({
 						id,
@@ -196,7 +196,7 @@ export const createWorkerEngine = <
 				return
 			}
 
-			const WAITING_TIME_TO_START = 25
+			const WAITING_TIME_TO_START = 50
 
 			timeout = setTimeout(() => {
 				const aborts: number[] = []
@@ -228,17 +228,16 @@ export const createWorkerEngine = <
 						aborts
 					)
 
-					sendMessage({
-						batch: filteredQueue.map((data) => {
-							console.log(data)
-
-							try {
-								return executeAction(ctx, data)
-							} catch (error) {
-								return { id: data.id, error }
-							}
-						}),
+					const batch = filteredQueue.map((data, i) => {
+						try {
+							return executeAction(ctx, data)
+						} catch (error) {
+							return { id: data.id, error }
+						}
 					})
+
+					sendMessage({ batch })
+
 					console.log('[done]')
 				}
 
@@ -281,10 +280,14 @@ const executeAction = <AddActionsDictionary extends GenericActionsDictionary>(
 
 	const execAction = ctx.actions[data.action] ?? unknowAction
 
+	console.log('[action start]', data.action)
+
 	const result = execAction(
 		{ id, engine, engineId },
 		...(data.params as FilterFirst<Parameters<typeof execAction>>)
 	)
+
+	console.log('[action done]', data.action)
 
 	return { id, result }
 }

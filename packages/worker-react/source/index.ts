@@ -1,4 +1,4 @@
-export { SuspensePromise, useLazyPromise, usePromise } from './hooks/usePromise'
+export { PromiseSSR, useLazyPromise, usePromise } from './hooks/usePromise'
 export {
 	WorkerEngineProvider,
 	useAsyncSetSituation,

@@ -40,7 +40,7 @@ interface GlobalCtx<AdditionalActions extends ActionType = ActionType> {
 		| WorkerEnginePromise<WorkerEngineActions>
 		| WorkerEnginePromise<AdditionalActions>
 	)[]
-	lastCleanup: null | NodeJS.Timeout
+	lastCleanup: ReturnType<typeof setTimeout> | null
 	worker: Worker
 	isDefaultEngineReadyPromise: Promise<void>
 	parsedRules: Record<string, unknown>

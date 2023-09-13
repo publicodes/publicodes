@@ -1,9 +1,5 @@
 import { ActionData } from '@publicodes/worker'
-import {
-	SuspensePromise,
-	WorkerEngine,
-	usePromise,
-} from '@publicodes/worker-react'
+import { PromiseSSR, WorkerEngine, usePromise } from '@publicodes/worker-react'
 import Engine, {
 	ASTNode,
 	EvaluatedNode,
@@ -14,7 +10,7 @@ import Engine, {
 	utils,
 } from 'publicodes'
 
-import { useContext, useEffect, useRef, useState } from 'react'
+import { Suspense, useContext, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { RuleLinkWithContext } from '../RuleLink'
@@ -88,17 +84,19 @@ export default function RulePage({
 		<EngineContextProvider value={{ engine, subEngineId }}>
 			<BasepathContext.Provider value={documentationPath}>
 				<RenderersContext.Provider value={defaultRenderers(renderers)}>
-					<Rule
-						isSSR={isSSR}
-						dottedName={utils.decodeRuleName(rulePath)}
-						language={language}
-						apiDocumentationUrl={apiDocumentationUrl}
-						apiEvaluateUrl={apiEvaluateUrl}
-						npmPackage={npmPackage}
-						mobileMenuPortalId={mobileMenuPortalId}
-						openNavButtonPortalId={openNavButtonPortalId}
-						showDevSection={showDevSection}
-					/>
+					<PromiseSSR>
+						<Rule
+							isSSR={isSSR}
+							dottedName={utils.decodeRuleName(rulePath)}
+							language={language}
+							apiDocumentationUrl={apiDocumentationUrl}
+							apiEvaluateUrl={apiEvaluateUrl}
+							npmPackage={npmPackage}
+							mobileMenuPortalId={mobileMenuPortalId}
+							openNavButtonPortalId={openNavButtonPortalId}
+							showDevSection={showDevSection}
+						/>
+					</PromiseSSR>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
 		</EngineContextProvider>
@@ -192,7 +190,7 @@ function Rule({
 	)
 
 	if (res === undefined) {
-		return <>loading...</>
+		return <>Rule 0 loading...</>
 	}
 	if (res === null) {
 		return <p>Cette règle est introuvable dans la base</p>
@@ -209,15 +207,15 @@ function Rule({
 
 	return (
 		<Container id="documentation-rule-root">
-			<SuspensePromise isSSR={isSSR}>
+			<Suspense fallback={'Rule 1 loading...'}>
 				<RulesNav
 					dottedName={dottedName}
 					mobileMenuPortalId={mobileMenuPortalId}
 					openNavButtonPortalId={openNavButtonPortalId}
 				/>
-			</SuspensePromise>
+			</Suspense>
 			<Article>
-				<SuspensePromise isSSR={isSSR}>
+				<Suspense fallback={'Rule 2 loading...'}>
 					<DottedNameContext.Provider value={dottedName}>
 						<RuleHeader dottedName={dottedName} />
 						<section>
@@ -311,7 +309,7 @@ function Rule({
 							</>
 						)}
 					</DottedNameContext.Provider>
-				</SuspensePromise>
+				</Suspense>
 			</Article>
 		</Container>
 	)

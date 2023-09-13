@@ -1,5 +1,6 @@
 import React, {
 	createContext,
+	use,
 	useContext,
 	useMemo,
 	useRef,
@@ -76,20 +77,9 @@ export const WorkerEngineProvider = <
 	children: React.ReactNode
 }) => {
 	const workerEngine = useSynchronizedWorkerEngine(workerClient)
-	const isWorkerReady = usePromise(
-		async () => {
-			await workerEngine.isWorkerReady
-			console.timeEnd('isWorkerReady')
 
-			return true
-		},
-		[],
-		false
-	)
-
-	if (!isWorkerReady) {
-		return null
-	}
+	// Wait for the worker to be ready before rendering the app
+	use(workerEngine.isWorkerReady)
 
 	return (
 		<WorkerEngineContext.Provider value={workerEngine}>

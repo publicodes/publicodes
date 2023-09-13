@@ -76,7 +76,7 @@ export function RuleLink<Name extends string>({
 		[engine, dottedName, dottedNameContext]
 	)
 	if (data === undefined) {
-		return <>loading...</>
+		return <>RuleLink loading...</>
 	}
 
 	const { rule, contextTitle } = data

@@ -1,7 +1,7 @@
 import { ActionData } from '@publicodes/worker'
 import { usePromise } from '@publicodes/worker-react'
 import { utils } from 'publicodes'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, memo, useCallback, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { styled } from 'styled-components'
 import { RuleLinkWithContext } from '../RuleLink'
@@ -68,7 +68,6 @@ export const RulesNav = ({
 
 	const menu = (
 		<Container $open={navOpen}>
-			{/* <Suspense fallback={<>loading...</>}> */}
 			<Background
 				$open={navOpen}
 				onClick={() => {
@@ -103,7 +102,6 @@ export const RulesNav = ({
 
 							return (
 								<MemoNavLi
-									key={ruleDottedName}
 									parsedRulesKeys={parsedRulesKeys}
 									ruleDottedName={ruleDottedName}
 									open={open}
@@ -114,7 +112,6 @@ export const RulesNav = ({
 						})}
 				</ul>
 			</Nav>
-			{/* </Suspense> */}
 		</Container>
 	)
 
@@ -177,7 +174,10 @@ const NavLi = ({
 						<StyledArrow $open={open} />
 					</DropdownButton>
 				)}
-				<RuleLinkWithContext dottedName={ruleDottedName} displayIcon />
+
+				<Suspense fallback={<>NavLi loading...</>}>
+					<RuleLinkWithContext dottedName={ruleDottedName} displayIcon />
+				</Suspense>
 			</span>
 		</li>
 	)
