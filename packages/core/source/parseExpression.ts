@@ -11,6 +11,9 @@ const { Grammar, Parser } = nearley
 
 const compiledGrammar = Grammar.fromCompiled(grammar)
 
+const parser = new Parser(compiledGrammar)
+const initialState = parser.save()
+
 type BinaryOp =
 	| { '+': [ExprAST, ExprAST] }
 	| { '-': [ExprAST, ExprAST] }
@@ -59,10 +62,10 @@ export function parseExpression(rawNode: string, dottedName: string): ExprAST {
 	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
 	 * This function makes them prefixed operations. */
 	const singleLineExpression = (rawNode + '').replace(/\s*\n\s*/g, ' ').trim()
+
 	try {
-		const [parseResult] = new Parser(compiledGrammar).feed(
-			singleLineExpression
-		).results
+		parser.restore(initialState)
+		const [parseResult] = parser.feed(singleLineExpression).results
 
 		if (parseResult == null) {
 			throw new PublicodesError(

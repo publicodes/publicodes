@@ -14,14 +14,15 @@ export function createParseInlinedMecanism(
 	let parsedDefaultArgs
 	function parseInlineMecanism(providedArgs, context) {
 		parsedBody ??= parse(body, createContext({ dottedName: 'INLINE_MECANISM' }))
-		parsedDefaultArgs ??= Object.fromEntries(
-			Object.entries(args)
-				.filter(([, value]) => 'par défaut' in value)
-				.map(([name, value]) => [
-					name,
-					parse(value['par défaut'], createContext({})),
-				])
-		)
+		parsedDefaultArgs ??= {}
+		for (const name in args) {
+			if ('par défaut' in args[name]) {
+				parsedDefaultArgs[name] = parse(
+					args[name]['par défaut'],
+					createContext({})
+				)
+			}
+		}
 
 		// Case of unary mecanism
 		if (Object.keys(args).length === 1 && 'valeur' in args) {
@@ -30,12 +31,10 @@ export function createParseInlinedMecanism(
 			}
 		}
 
-		const parsedProvidedArgs = Object.fromEntries(
-			Object.entries(providedArgs).map(([name, value]) => [
-				name,
-				parse(value, context),
-			])
-		)
+		const parsedProvidedArgs = {}
+		for (const name in providedArgs) {
+			parsedProvidedArgs[name] = parse(providedArgs[name], context)
+		}
 
 		const parsedInlineMecanism = makeASTTransformer((node) => {
 			if (node.nodeKind !== 'reference' || !(node.name in args)) {
@@ -54,13 +53,17 @@ export function createParseInlinedMecanism(
 				{ dottedName: argName }
 			)
 		})(parsedBody)
+
 		parsedInlineMecanism.sourceMap = {
 			mecanismName: name,
 			args: parsedProvidedArgs,
 		}
+
 		return parsedInlineMecanism
 	}
+
 	parseInlineMecanism.nom = name
+
 	return Object.assign(parseInlineMecanism, 'name', {
 		value: `parse${toCamelCase(name)}Inline`,
 	})
@@ -94,14 +97,14 @@ export function createParseInlinedMecanismWithArray(
 			}
 		}
 
-		const parsedProvidedArgs = Object.fromEntries(
-			Object.entries(providedArgs).map(([name, value]) => [
-				name,
-				Array.isArray(value)
-					? value.map((v) => parse(v, context))
-					: parse(value, context),
-			])
-		)
+		const parsedProvidedArgs = {}
+		for (const name in providedArgs) {
+			const value = providedArgs[name]
+			parsedProvidedArgs[name] = Array.isArray(value)
+				? value.map((v) => parse(v, context))
+				: parse(value, context)
+		}
+
 		const parsedInlineMecanism = parse(body(parsedProvidedArgs), context)
 		parsedInlineMecanism.sourceMap = {
 			mecanismName: name,
@@ -109,7 +112,9 @@ export function createParseInlinedMecanismWithArray(
 		}
 		return parsedInlineMecanism
 	}
+
 	parseInlineMecanism.nom = name
+
 	return Object.assign(parseInlineMecanism, 'name', {
 		value: `parse${toCamelCase(name)}Inline`,
 	})

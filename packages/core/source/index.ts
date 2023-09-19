@@ -114,13 +114,16 @@ export default class Engine<Name extends string = string> {
 		})
 		this.context = this.baseContext
 
-		this.publicParsedRules = Object.fromEntries(
-			Object.entries(this.baseContext.parsedRules).filter(
-				([name, rule]) =>
-					!(rule as RuleNode).private &&
-					utils.isAccessible(this.baseContext.parsedRules, '', name)
-			)
-		) as ParsedRules<Name>
+		this.publicParsedRules = {} as ParsedRules<Name>
+		for (const name in this.baseContext.parsedRules) {
+			const rule = this.baseContext.parsedRules[name]
+			if (
+				!(rule as RuleNode).private &&
+				utils.isAccessible(this.baseContext.parsedRules, '', name)
+			) {
+				this.publicParsedRules[name] = rule as RuleNode<Name>
+			}
+		}
 	}
 
 	resetCache() {
