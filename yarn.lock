@@ -10358,6 +10358,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mitata@npm:^0.1.6":
+  version: 0.1.6
+  resolution: "mitata@npm:0.1.6"
+  checksum: fe64e22ae17bfb748a0d71b2ecf1f64da09c633520c819ac409018a49843adfd9817612a152651e5f1fa080f227fc382e0cdbb92a11e2f69f3cc9f843ba7d603
+  languageName: node
+  linkType: hard
+
 "mkdirp@npm:^1.0.3":
   version: 1.0.4
   resolution: "mkdirp@npm:1.0.4"
@@ -10410,6 +10417,15 @@ __metadata:
     _mocha: bin/_mocha
     mocha: bin/mocha
   checksum: 4d5ca4ce33fc66627e63acdf09a634e2358c9a00f61de7788b1091b6aad430da04f97f9ecb82d56dc034b623cb833b65576136fd010d77679c03fcea5bc1e12d
+  languageName: node
+  linkType: hard
+
+"modele-social@npm:^1.7.2":
+  version: 1.7.2
+  resolution: "modele-social@npm:1.7.2"
+  peerDependencies:
+    publicodes: ^1.0.0-beta.55
+  checksum: 07261ac57047a3b9fb4921713618be257dcc2e04da569001bd343667d2497092a9fe82107fa35709dd43e250bdfbb182304a28d25b195fafc495130c6af82fd9
   languageName: node
   linkType: hard
 
@@ -11854,7 +11870,9 @@ __metadata:
     chai: ^4.2.0
     dedent-js: 1.0.1
     intl: ^1.2.5
+    mitata: ^0.1.6
     mocha: ^9.2.0
+    modele-social: ^1.7.2
     moo: ^0.5.1
     nearley: ^2.19.2
     rimraf: ^3.0.2
@@ -11862,7 +11880,7 @@ __metadata:
     sinon-chai: ^3.7.0
     ts-node: ^10.9.1
     tsup: ^6.5.0
-    typescript: ^4.9.3
+    typescript: ^5.2.2
   peerDependencies:
     "@types/mocha": ^9.0.0
   languageName: unknown
@@ -14198,6 +14216,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^5.2.2":
+  version: 5.2.2
+  resolution: "typescript@npm:5.2.2"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 7912821dac4d962d315c36800fe387cdc0a6298dba7ec171b350b4a6e988b51d7b8f051317786db1094bd7431d526b648aba7da8236607febb26cf5b871d2d3c
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@^4.9.3#~builtin<compat/typescript>":
   version: 4.9.5
   resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=d73830"
@@ -14205,6 +14233,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 2eee5c37cad4390385db5db5a8e81470e42e8f1401b0358d7390095d6f681b410f2c4a0c496c6ff9ebd775423c7785cdace7bcdad76c7bee283df3d9718c0f20
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
+  version: 5.2.2
+  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=d73830"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 07106822b4305de3f22835cbba949a2b35451cad50888759b6818421290ff95d522b38ef7919e70fb381c5fe9c1c643d7dea22c8b31652a717ddbd57b7f4d554
   languageName: node
   linkType: hard
 
