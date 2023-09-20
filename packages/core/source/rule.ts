@@ -90,11 +90,14 @@ export default function parseRule(
 		)
 	}
 
-	const ruleValue: Record<string, unknown> = {
-		...Object.fromEntries(
-			Object.entries(rawRule).filter(([key]) => mecanismKeys.includes(key))
-		),
-		...('formule' in rawRule && { valeur: rawRule.formule }),
+	const ruleValue: Record<string, unknown> = {}
+	for (const key in rawRule) {
+		if (mecanismKeys.includes(key)) {
+			ruleValue[key] = rawRule[key]
+		}
+	}
+	if ('formule' in rawRule) {
+		ruleValue.valeur = rawRule.formule
 	}
 
 	if (!privateRule && !dottedName.endsWith('$SITUATION')) {
@@ -141,8 +144,18 @@ export default function parseRule(
 				// This step ensure we skip the disambiguation step.
 				// This prevents to inadequatly disambiguate a parent as a children of rule (for instance if we have `a . b` and `a . b . a` rules).
 				// It's necessary while https://github.com/betagouv/publicodes/issues/253 is not implemented
-				(n) => ({ ...n, dottedName: (n as ReferenceNode).name })
+				(n: ASTNode & { dottedName?: string }) => {
+					n.dottedName = (n as ReferenceNode).name
+					return n
+				}
 			),
+	}
+
+	const suggestions = {} as Record<string, ASTNode>
+	if (rawRule.suggestions) {
+		for (const name in rawRule.suggestions) {
+			suggestions[name] = parse(rawRule.suggestions[name], ruleContext)
+		}
 	}
 
 	context.parsedRules[dottedName] = {
@@ -153,12 +166,7 @@ export default function parseRule(
 		],
 		title: title,
 		private: privateRule,
-		suggestions: Object.fromEntries(
-			Object.entries(rawRule.suggestions ?? {}).map(([name, node]) => [
-				name,
-				parse(node, ruleContext),
-			])
-		),
+		suggestions,
 		nodeKind: 'rule',
 		explanation,
 		rawNode: rawRule,

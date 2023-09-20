@@ -109,7 +109,7 @@ Cela vient probablement d'une erreur dans l'indentation
 		return { nodeKind: 'constant', nodeValue: undefined }
 	}
 
-	const mecanismName = Object.keys(rawNode)[0]
+	const mecanismName = keys[0]
 	const values = rawNode[mecanismName]
 	const parseFn = parseFunctions[mecanismName]
 

@@ -93,15 +93,19 @@ export function parseRendNonApplicable(
 export function getReplacements(
 	parsedRules: Record<string, RuleNode>
 ): RulesReplacements<string> {
-	return Object.values(parsedRules)
-		.flatMap((rule) => rule.replacements)
-		.reduce((acc, r: ReplacementRule) => {
-			if (!r.replacedReference.dottedName) {
-				throw new PublicodesInternalError(r)
+	const ret = {}
+	for (const dottedName in parsedRules) {
+		const rule = parsedRules[dottedName]
+		for (const replacement of rule.replacements) {
+			if (!replacement.replacedReference.dottedName) {
+				throw new PublicodesInternalError(replacement)
 			}
-			const key = r.replacedReference.dottedName
-			return { ...acc, [key]: [...(acc[key] ?? []), r] }
-		}, {})
+			const key = replacement.replacedReference.dottedName
+			ret[key] = [...(ret[key] ?? []), replacement]
+		}
+	}
+
+	return ret
 }
 
 export function inlineReplacements<
@@ -126,14 +130,16 @@ export function inlineReplacements<
 	type Names = NewNames | PreviousNames
 	const newReplacements = getReplacements(newRules) as RulesReplacements<Names>
 
-	const ruleNamesWithNewReplacements = (
-		Object.keys(newReplacements) as Array<NewNames | Names>
-	).reduce((acc, replacedReference) => {
-		;(referencesMaps.rulesThatUse.get(replacedReference) ?? []).forEach(
-			(value) => acc.add(value)
-		)
-		return acc
-	}, new Set([]) as Set<Names>)
+	const ruleNamesWithNewReplacements = new Set([]) as Set<Names>
+	for (const replacedReference in newReplacements) {
+		const rulesThatUse =
+			referencesMaps.rulesThatUse.get(replacedReference as NewNames | Names) ??
+			[]
+
+		for (const value of rulesThatUse) {
+			ruleNamesWithNewReplacements.add(value)
+		}
+	}
 
 	const newRuleNamesWithPreviousReplacements: Set<NewNames> = new Set(
 		(Object.keys(newRules) as Array<NewNames>).filter((ruleName) =>

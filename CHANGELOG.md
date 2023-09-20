@@ -1,6 +1,11 @@
 # Changelog
 
 ## next
+## 1.0.0-beta.74
+
+**core**
+- 30% d'amélioration des perfs de parsing grâce à des micros optimisations
+
 ## 1.0.0-beta.73
 **publicodes-react**
 

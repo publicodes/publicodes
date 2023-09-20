@@ -3,6 +3,7 @@ import { UnreachableCaseError } from '../error'
 import { TrancheNodes } from '../mecanisms/trancheUtils'
 import { ReplacementRule } from '../replacement'
 import { RuleNode } from '../rule'
+import { weakCopyObj } from '../utils'
 import {
 	ASTNode,
 	ASTTransformer,
@@ -117,11 +118,12 @@ export function traverseParsedRules<Names extends string>(
 	fn: ASTTransformer,
 	parsedRules: ParsedRules<Names>
 ): ParsedRules<Names> {
-	return Object.fromEntries(
-		(Object.entries(parsedRules) as Array<[Names, RuleNode]>).map(
-			([name, rule]) => [name, fn(rule)]
-		)
-	) as ParsedRules<Names>
+	const ret = {} as Record<Names, ASTNode>
+	for (const name in parsedRules) {
+		ret[name] = fn(parsedRules[name])
+	}
+
+	return ret as ParsedRules<Names>
 }
 
 /**
@@ -134,7 +136,7 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseRuleNode(fn, node)
 		case 'reference':
 		case 'constant':
-			return traverseLeafNode(fn, node)
+			return node
 		case 'arrondi':
 			return traverseArrondiNode(fn, node)
 		case 'simplifier unité':
@@ -180,35 +182,40 @@ const traverseSourceMap: TraverseFunction<NodeKind> = (fn, node) => {
 		return node
 	}
 	const sourceMap = node.sourceMap
+
+	const args = {}
+	for (const key in sourceMap.args) {
+		const value = sourceMap.args[key]
+		args[key] = Array.isArray(value) ? value.map((v) => fn(v)) : fn(value)
+	}
+
 	return {
 		...node,
 		sourceMap: {
 			...sourceMap,
-			args: Object.fromEntries(
-				Object.entries(sourceMap.args).map(([key, value]) => [
-					key,
-					Array.isArray(value) ? value.map((v) => fn(v)) : fn(value),
-				])
-			),
+			args,
 		},
 	}
 }
 
-const traverseRuleNode: TraverseFunction<'rule'> = (fn, node) => ({
-	...node,
-	replacements: node.replacements.map(fn) as Array<ReplacementRule>,
-	suggestions: Object.fromEntries(
-		Object.entries(node.suggestions).map(([key, value]) => [key, fn(value)])
-	),
-	explanation: {
+const traverseRuleNode: TraverseFunction<'rule'> = (fn, node) => {
+	const copy = weakCopyObj(node)
+	copy.suggestions = {}
+	for (const key in node.suggestions) {
+		copy.suggestions[key] = fn(node.suggestions[key])
+	}
+	copy.replacements = node.replacements.map(fn) as Array<ReplacementRule>
+	copy.explanation = {
 		ruleDisabledByItsParent: node.explanation.ruleDisabledByItsParent,
 		nullableParent: node.explanation.nullableParent
 			? fn(node.explanation.nullableParent)
 			: undefined,
 		parents: node.explanation.parents.map(fn),
 		valeur: fn(node.explanation.valeur),
-	},
-})
+	}
+
+	return copy
+}
 
 const traverseReplacementNode: TraverseFunction<'replacementRule'> = (
 	fn,
@@ -222,11 +229,6 @@ const traverseReplacementNode: TraverseFunction<'replacementRule'> = (
 		whiteListedNames: node.whiteListedNames.map(fn),
 		blackListedNames: node.blackListedNames.map(fn),
 	} as ReplacementRule)
-
-const traverseLeafNode: TraverseFunction<'reference' | 'constant'> = (
-	_,
-	node
-) => node
 
 const traverseUnaryOperationNode: TraverseFunction<
 	| 'simplifier unité'
@@ -262,10 +264,13 @@ const traverseArrayNode: TraverseFunction<'une possibilité'> = (fn, node) => ({
 	explanation: node.explanation.map(fn),
 })
 
-const traverseOperationNode: TraverseFunction<'operation'> = (fn, node) => ({
-	...node,
-	explanation: [fn(node.explanation[0]), fn(node.explanation[1])],
-})
+const traverseOperationNode: TraverseFunction<'operation'> = (fn, node) => {
+	const copy = weakCopyObj(node)
+	copy.explanation = [fn(node.explanation[0]), fn(node.explanation[1])]
+
+	return copy
+}
+
 const traverseDuréeNode: TraverseFunction<'durée'> = (fn, node) => ({
 	...node,
 	explanation: {
@@ -320,10 +325,12 @@ const traverseRecalculNode: TraverseFunction<'recalcul'> = (fn, node) => ({
 	},
 })
 
-const traverseUnitéNode: TraverseFunction<'unité'> = (fn, node) => ({
-	...node,
-	explanation: fn(node.explanation),
-})
+const traverseUnitéNode: TraverseFunction<'unité'> = (fn, node) => {
+	const copy = weakCopyObj(node)
+	copy.explanation = fn(node.explanation)
+
+	return copy
+}
 
 const traverseVariationNode: TraverseFunction<'variations'> = (fn, node) => ({
 	...node,
@@ -333,11 +340,13 @@ const traverseVariationNode: TraverseFunction<'variations'> = (fn, node) => ({
 	})),
 })
 
-const traverseConditionNode: TraverseFunction<'condition'> = (fn, node) => ({
-	...node,
-	explanation: {
+const traverseConditionNode: TraverseFunction<'condition'> = (fn, node) => {
+	const copy = weakCopyObj(node)
+	copy.explanation = {
 		si: fn(node.explanation.si),
 		alors: fn(node.explanation.alors),
 		sinon: fn(node.explanation.sinon),
-	},
-})
+	}
+
+	return copy
+}

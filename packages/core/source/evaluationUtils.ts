@@ -34,19 +34,21 @@ export const defaultNode = (nodeValue: Evaluation) =>
 	} as ConstantNode)
 
 export const parseObject = (objectShape, value, context) => {
-	return Object.fromEntries(
-		Object.entries(objectShape).map(([key, defaultValue]) => {
-			if (value[key] == undefined && !defaultValue) {
-				throw new PublicodesError(
-					'EngineError',
-					`Il manque une clé '${key}' dans ${JSON.stringify(value)} `,
-					{}
-				)
-			}
+	const ret = {} as Record<string, EvaluatedNode | ASTNode>
+	for (const key in objectShape) {
+		const defaultValue = objectShape[key]
+		if (value[key] == undefined && !defaultValue) {
+			throw new PublicodesError(
+				'EngineError',
+				`Il manque une clé '${key}' dans ${JSON.stringify(value)} `,
+				{}
+			)
+		}
 
-			const parsedValue =
-				value[key] != undefined ? parse(value[key], context) : defaultValue
-			return [key, parsedValue]
-		})
-	)
+		const parsedValue =
+			value[key] != undefined ? parse(value[key], context) : defaultValue
+		ret[key] = parsedValue
+	}
+
+	return ret
 }
