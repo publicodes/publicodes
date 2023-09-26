@@ -9,6 +9,5 @@
 		"transpileOnly": true,
 		"files": true
 	},
-	"exclude": ["./node_modules/", "./dist/"],
 	"include": ["source/**/*.ts", "bench/**/*.ts"]
 }
