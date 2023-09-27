@@ -1,5 +1,4 @@
 import Engine, { formatValue, utils } from 'publicodes'
-import yaml from 'yaml'
 const { encodeRuleName } = utils
 
 type Props = { dottedName: string; engine: Engine }
@@ -34,41 +33,25 @@ export const useRuleSource = (engine: Engine, dottedName: string) => {
 
 	const node = engine.evaluateNode(engine.context.parsedRules[dottedName])
 
+	const rules = {
+		[dottedName]: Object.fromEntries(
+			Object.entries(node.rawNode).filter(([key]) => key !== 'nom')
+		),
+	}
+
 	// When we import a rule in the Publicodes Studio, we need to provide a
 	// simplified definition of its dependencies to avoid undefined references.
-	const dependenciesValues = Object.fromEntries(
+	const situation = Object.fromEntries(
 		dependencies
 			.filter((name) => name !== dottedName && !name.endsWith(' . $SITUATION'))
 			.map((dottedName) => [dottedName, formatValueForStudio(node)])
 	)
 
-	const source =
-		`
-# Ci-dessous la règle d'origine, écrite en publicodes.
-
-# Publicodes est un langage déclaratif développé par l'Urssaf
-# en partenariat avec beta.gouv.fr pour encoder les algorithmes d'intérêt public.
-
-# Vous pouvez modifier les valeurs directement dans l'éditeur pour voir les calculs
-# s'actualiser en temps réel
-` +
-		yaml
-			.stringify({
-				[dottedName]: Object.fromEntries(
-					Object.entries(node.rawNode).filter(([key]) => key !== 'nom')
-				),
-			})
-			.replace(`${dottedName}:`, `\n${dottedName}:`) +
-		'\n\n# Situation :\n' +
-		yaml.stringify(dependenciesValues).split('\n').sort().join('\n')
-
-	// For clarity add a break line before the main rule
+	const source = encodeURIComponent(JSON.stringify({ rules, situation }))
 
 	const baseURL = location.hostname === 'localhost' ? '' : 'https://publi.codes'
 
-	return `${baseURL}/studio/${encodeRuleName(
-		dottedName
-	)}?code=${encodeURIComponent(source)}`
+	return `${baseURL}/studio/${encodeRuleName(dottedName)}#${source}`
 }
 
 // TODO: This formating function should be in the core code. We need to think
