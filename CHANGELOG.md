@@ -1,6 +1,8 @@
 # Changelog
 
 ## next
+## 1.0.0-beta.76
+- Fix `engine.inversionFail` dont la valeur était réinitialisée à chaque appel de `engine.evaluate`
 
 ## 1.0.0-beta.75
 
