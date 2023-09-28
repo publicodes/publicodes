@@ -1,12 +1,12 @@
 import { makeASTVisitor } from './AST/index'
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
-import { experimentalRuleWarning, PublicodesError } from './error'
+import { PublicodesError, experimentalRuleWarning } from './error'
 import { evaluationFunctions } from './evaluationFunctions'
 import parsePublicodes, {
 	Context,
+	RawPublicodes,
 	copyContext,
 	createContext,
-	RawPublicodes,
 } from './parsePublicodes'
 import { type Rule, type RuleNode } from './rule'
 import * as utils from './ruleUtils'
@@ -21,6 +21,7 @@ const emptyCache = (): Cache => ({
 })
 
 type Cache = {
+	inversionFail?: boolean
 	_meta: {
 		evaluationRuleStack: Array<string>
 		parentRuleStack: Array<string>
@@ -36,12 +37,6 @@ type Cache = {
 		 * reference.
 		 */
 		traversedVariablesStack: Array<Set<string>>
-		inversionFail?:
-			| {
-					given: string
-					estimated: string
-			  }
-			| true
 		currentRecalcul?: ASTNode
 	}
 	nodes: Map<PublicodesExpression | ASTNode, EvaluatedNode>
@@ -52,20 +47,20 @@ export type EvaluationOptions = Partial<{
 }>
 
 export {
-	makeASTTransformer as transformAST,
 	reduceAST,
+	makeASTTransformer as transformAST,
 	traverseASTNode,
 } from './AST/index'
 export { type Evaluation, type Unit } from './AST/types'
-export { isPublicodesError, PublicodesError } from './error'
+export { PublicodesError, isPublicodesError } from './error'
 export { capitalise0, formatValue } from './format'
 export { simplifyNodeUnit } from './nodeUnits'
+export { parseExpression, type ExprAST } from './parseExpression'
 export { default as serializeEvaluation } from './serializeEvaluation'
 export { parseUnit, serializeUnit } from './units'
-export { parseExpression, type ExprAST } from './parseExpression'
 export { parsePublicodes, utils }
 
-export { type Rule, type RuleNode, type ASTNode, type EvaluatedNode }
+export { type ASTNode, type EvaluatedNode, type Rule, type RuleNode }
 
 export type PublicodesExpression = string | Record<string, unknown> | number
 
@@ -195,7 +190,7 @@ export default class Engine<Name extends string = string> {
 	}
 
 	inversionFail(): boolean {
-		return !!this.cache._meta.inversionFail
+		return !!this.cache.inversionFail
 	}
 
 	getRule(dottedName: Name): ParsedRules<Name>[Name] {

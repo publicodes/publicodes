@@ -83,7 +83,7 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 
 		if (nodeValue === inversionFailed) {
 			nodeValue = undefined
-			this.cache._meta.inversionFail = true
+			this.cache.inversionFail = true
 		}
 		if (nodeValue !== undefined) {
 			valeur = evaluateWithValue(nodeValue)
