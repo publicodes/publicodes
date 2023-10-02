@@ -1,6 +1,12 @@
 import { BaseUnit, Evaluation, Unit } from './AST/types'
 import { PublicodesError } from './error'
 
+export type UnitEquivalencesTable = Record<BaseUnit, BaseUnit>
+export const defaultUnitEquivalances: UnitEquivalencesTable = {
+	'kW.h': 'kWh',
+	'mn / h': 'noeud',
+}
+
 export type getUnitKey = (writtenUnit: string) => string
 export type formatUnit = (unit: string, count: number) => string
 
@@ -229,32 +235,34 @@ function unitsConversionFactor(from: string[], to: string[]): number {
 // TODO(@clemog):
 // - Deal with other equivalent units : l: 'dm3',
 // - Convert unit instead of ignore warning
-const equivalentTable = {
-	'kW.h': 'kWh',
-	'mn / h': 'noeud',
-}
 
 function areEquivalentSerializedUnit(
 	serializedFrom: string | undefined,
-	serializedTo: string | undefined
+	serializedTo: string | undefined,
+	unitEquivalences: UnitEquivalencesTable
 ): Boolean {
 	if (!serializedFrom || !serializedTo) return false
 	return (
 		serializedFrom === serializedTo ||
-		serializedFrom === equivalentTable[serializedTo] ||
-		serializedTo === equivalentTable[serializedFrom]
+		serializedFrom === unitEquivalences[serializedTo] ||
+		serializedTo === unitEquivalences[serializedFrom]
 	)
 }
 
 export function convertUnit<ValType extends Evaluation<number>>(
 	from: Unit | undefined,
 	to: Unit | undefined,
-	value: ValType
+	value: ValType,
+	unitEquivalences: UnitEquivalencesTable
 ): ValType {
 	const serializedFrom = serializeUnit(from)
 	const serializedTo = serializeUnit(to)
 	if (
-		!areEquivalentSerializedUnit(serializedFrom, serializedTo) &&
+		!areEquivalentSerializedUnit(
+			serializedFrom,
+			serializedTo,
+			unitEquivalences
+		) &&
 		!areUnitConvertible(from, to)
 	) {
 		throw new PublicodesError(

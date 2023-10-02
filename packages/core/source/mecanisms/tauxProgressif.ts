@@ -63,7 +63,11 @@ const evaluate: EvaluationFunction<'taux progressif'> = function (node) {
 		tranches.every(({ isActive }) => isActive === false) ||
 		(lastTranche.isActive && lastTranche.plafond.nodeValue === Infinity)
 	) {
-		const taux = convertNodeToUnit(parseUnit('%'), evaluate(lastTranche.taux))
+		const taux = convertNodeToUnit(
+			parseUnit('%'),
+			evaluate(lastTranche.taux),
+			this.context.unitEquivalences
+		)
 		const { nodeValue, missingVariables } = taux
 		lastTranche.taux = taux
 		lastTranche.nodeValue = nodeValue
@@ -92,14 +96,16 @@ const evaluate: EvaluationFunction<'taux progressif'> = function (node) {
 	const activeTranche = tranches[activeTrancheIndex]
 	activeTranche.taux = convertNodeToUnit(
 		parseUnit('%'),
-		evaluate(activeTranche.taux)
+		evaluate(activeTranche.taux),
+		this.context.unitEquivalences
 	)
 
 	const previousTranche = tranches[activeTrancheIndex - 1]
 	if (previousTranche) {
 		previousTranche.taux = convertNodeToUnit(
 			parseUnit('%'),
-			evaluate(previousTranche.taux)
+			evaluate(previousTranche.taux),
+			this.context.unitEquivalences
 		)
 		previousTranche.isActive = true
 	}

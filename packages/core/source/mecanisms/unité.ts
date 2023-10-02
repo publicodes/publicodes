@@ -32,7 +32,8 @@ registerEvaluationFunction(parseUnité.nom, function evaluate(node) {
 			nodeValue = convertUnit(
 				valeur.unit,
 				node.unit,
-				valeur.nodeValue as number
+				valeur.nodeValue as number,
+				this.context.unitEquivalences
 			)
 		} catch (e) {
 			warning(

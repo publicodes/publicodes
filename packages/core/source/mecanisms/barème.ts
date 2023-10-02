@@ -3,7 +3,7 @@ import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { defaultNode, mergeAllMissing } from '../evaluationUtils'
 import parse from '../parse'
-import { convertUnit, parseUnit } from '../units'
+import { convertUnit, parseUnit, UnitEquivalencesTable } from '../units'
 import {
 	evaluatePlafondUntilActiveTranche,
 	parseTranches,
@@ -33,7 +33,12 @@ export default function parseBarème(v, context): BarèmeNode {
 	}
 }
 
-function evaluateBarème(tranches, assiette, evaluate) {
+function evaluateBarème(
+	tranches,
+	assiette,
+	evaluate,
+	unitEquivalences: UnitEquivalencesTable
+) {
 	return tranches.map((tranche) => {
 		if (tranche.isAfterActive) {
 			return { ...tranche, nodeValue: 0 }
@@ -63,7 +68,12 @@ function evaluateBarème(tranches, assiette, evaluate) {
 			nodeValue:
 				(Math.min(assiette.nodeValue, tranche.plafondValue) -
 					tranche.plancherValue) *
-				convertUnit(taux.unit, parseUnit(''), taux.nodeValue as number),
+				convertUnit(
+					taux.unit,
+					parseUnit(''),
+					taux.nodeValue as number,
+					unitEquivalences
+				),
 			missingVariables,
 		}
 	})
@@ -88,7 +98,8 @@ const evaluate: EvaluationFunction<'barème'> = function (node) {
 			multiplicateur,
 		}),
 		assiette,
-		evaluate
+		evaluate,
+		this.context.unitEquivalences
 	)
 	const nodeValue = tranches.reduce(
 		(value, { nodeValue }) =>

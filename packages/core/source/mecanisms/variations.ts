@@ -104,7 +104,8 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 					try {
 						evaluatedConsequence = convertNodeToUnit(
 							unit,
-							evaluatedConsequence!
+							evaluatedConsequence!,
+							this.context.unitEquivalences
 						)
 					} catch (e) {
 						warning(

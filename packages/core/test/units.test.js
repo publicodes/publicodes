@@ -5,7 +5,11 @@ import {
 	inferUnit,
 	parseUnit,
 	removeOnce,
+	defaultUnitEquivalances,
 } from '../source/units'
+
+const convertUnitTest = (from, to, value) =>
+	convertUnit(from, to, value, defaultUnitEquivalances)
 
 describe('parseUnit', () => {
 	it('should remove the first element encounter in the list', () => {
@@ -98,41 +102,40 @@ describe('inferUnit', () => {
 
 describe('convertUnit', () => {
 	it('should convert month to year in denominator', () => {
-		expect(convertUnit(parseUnit('/mois'), parseUnit('/an'), 10)).to.eq(120)
+		expect(convertUnitTest(parseUnit('/mois'), parseUnit('/an'), 10)).to.eq(120)
 	})
 	it('should convert year to month in denominator', () => {
-		expect(convertUnit(parseUnit('/an'), parseUnit('/mois'), 120)).to.eq(10)
+		expect(convertUnitTest(parseUnit('/an'), parseUnit('/mois'), 120)).to.eq(10)
 	})
 	it('should convert year to month in numerator', () => {
-		expect(convertUnit(parseUnit('mois'), parseUnit('an'), 12)).to.eq(1)
+		expect(convertUnitTest(parseUnit('mois'), parseUnit('an'), 12)).to.eq(1)
 	})
 	it('should convert month to year in numerator', () => {
-		expect(convertUnit(parseUnit('mois'), parseUnit('an'), 12)).to.eq(1)
+		expect(convertUnitTest(parseUnit('mois'), parseUnit('an'), 12)).to.eq(1)
 	})
 	it('should convert cm to m in numerator', () => {
-		expect(convertUnit(parseUnit('cm'), parseUnit('m'), 100)).to.eq(1)
+		expect(convertUnitTest(parseUnit('cm'), parseUnit('m'), 100)).to.eq(1)
 	})
 	it('should convert mm to m in numerator', () => {
-		expect(convertUnit(parseUnit('mm'), parseUnit('m'), 1000)).to.eq(1)
+		expect(convertUnitTest(parseUnit('mm'), parseUnit('m'), 1000)).to.eq(1)
 	})
 	it('should convert mm to cm in numerator', () => {
-		expect(convertUnit(parseUnit('mm'), parseUnit('cm'), 10)).to.eq(1)
+		expect(convertUnitTest(parseUnit('mm'), parseUnit('cm'), 10)).to.eq(1)
 	})
 	it('should convert percentage to simple value', () => {
-		expect(convertUnit(parseUnit('%'), parseUnit(''), 83)).to.closeTo(
+		expect(convertUnitTest(parseUnit('%'), parseUnit(''), 83)).to.closeTo(
 			0.83,
 			0.0000001
 		)
 	})
 	it('should convert more difficult value', () => {
-		expect(convertUnit(parseUnit('%/an'), parseUnit('/mois'), 12)).to.closeTo(
-			0.01,
-			0.0000001
-		)
+		expect(
+			convertUnitTest(parseUnit('%/an'), parseUnit('/mois'), 12)
+		).to.closeTo(0.01, 0.0000001)
 	})
 	it('should convert year, month, day, k€', () => {
 		expect(
-			convertUnit(
+			convertUnitTest(
 				parseUnit('€/personne/jour'),
 				parseUnit('k€/an/personne'),
 				'100'
@@ -141,16 +144,17 @@ describe('convertUnit', () => {
 	})
 	it('should handle simplification', () => {
 		expect(
-			convertUnit(parseUnit('€.an.%/mois'), parseUnit('€'), 100)
+			convertUnitTest(parseUnit('€.an.%/mois'), parseUnit('€'), 100)
 		).to.closeTo(12, 0.0000001)
 	})
 	it('should handle complexification', () => {
 		expect(
-			convertUnit(parseUnit('€'), parseUnit('€.an.%/mois'), 12)
+			convertUnitTest(parseUnit('€'), parseUnit('€.an.%/mois'), 12)
 		).to.closeTo(100, 0.0000001)
 	})
-	it('should not show unit conversion error when converting equivalent units', () => {
-		expect(convertUnit(parseUnit('kW.h'), parseUnit('kWh'), 1)).to.eq(1)
+
+	it('should not show unit conversion error when converting equivalent units when using equivalence table', () => {
+		expect(convertUnitTest(parseUnit('kW.h'), parseUnit('kWh'), 1)).to.eq(1)
 	})
 })
 
