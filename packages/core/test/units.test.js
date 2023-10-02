@@ -7,7 +7,7 @@ import {
 	removeOnce,
 } from '../source/units'
 
-describe('Units', () => {
+describe('parseUnit', () => {
 	it('should remove the first element encounter in the list', () => {
 		let result = removeOnce(4)([1, 4, 6, 5, 4])
 		expect(result).to.deep.equal([1, 6, 5, 4])
@@ -41,11 +41,29 @@ describe('Units', () => {
 			numerators: ['km'],
 			denominators: ['an', 'personne'],
 		})
+	})
+
+	it('should handle power decomposition', () => {
 		expect(parseUnit('m2')).to.deep.equal({
 			numerators: ['m', 'm'],
 			denominators: [],
 		})
+		expect(parseUnit('m2/m3')).to.deep.equal({
+			numerators: ['m', 'm'],
+			denominators: ['m', 'm', 'm'],
+		})
+		expect(parseUnit('m2.m2')).to.deep.equal({
+			numerators: ['m', 'm', 'm', 'm'],
+			denominators: [],
+		})
+		expect(parseUnit('m2.kg.m2.kg')).to.deep.equal({
+			numerators: ['m', 'm', 'm', 'm', 'kg', 'kg'],
+			denominators: [],
+		})
 	})
+})
+
+describe('inferUnit', () => {
 	it('should work with simple use case *', () => {
 		let unit1 = { numerators: ['m'], denominators: ['s'] }
 		let unit2 = { numerators: ['s'], denominators: [] }
