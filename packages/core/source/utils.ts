@@ -33,3 +33,12 @@ export function mergeWithArray<K extends string | number | symbol, T>(
 		obj1
 	) as Partial<Record<K, Array<T>>>
 }
+
+export const weakCopyObj = <T extends Record<string, unknown>>(obj: T): T => {
+	const copy = {} as T
+	for (const key in obj) {
+		copy[key] = obj[key]
+	}
+
+	return copy
+}

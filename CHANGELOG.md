@@ -1,6 +1,22 @@
 # Changelog
 
 ## next
+## 1.0.0-beta.76
+- Fix `engine.inversionFail` dont la valeur était réinitialisée à chaque appel de `engine.evaluate`
+
+## 1.0.0-beta.75
+
+- Remove yaml package from publicodes-react and use json instead
+- Use hash instead of url parameter in doc by default
+- Replace `react-monaco-editor` by `@monaco-editor/react` which add yaml coloration
+- Update packages: docusaurus, tsup, typescript, vitest, and more
+- Fix console.log à supprimer #379
+
+## 1.0.0-beta.74
+
+**core**
+- 30% d'amélioration des perfs de parsing grâce à des micros optimisations
+
 ## 1.0.0-beta.73
 **publicodes-react**
 

@@ -1,10 +1,11 @@
 import { utils } from 'publicodes'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import MonacoEditor from 'react-monaco-editor'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
 import styles from './studio.module.css'
+import { stringify } from 'yaml'
+import MonacoEditor from '@monaco-editor/react'
 
 const { decodeRuleName } = utils
 
@@ -24,15 +25,52 @@ dépenses primeur:
     - prix . carottes * 1.5 kg
     - prix . champignons * 500g
     - prix . avocat * 3 avocat
-`
+`.substring(1)
+
+const tryToParseJson = <T,>(str: string): T | string => {
+	try {
+		return JSON.parse(str)
+	} catch {
+		return str
+	}
+}
+
+interface JsonCode {
+	rules: Record<string, unknown>
+	situation: Record<string, unknown>
+}
+
+const jsonCodeToYaml = (json: JsonCode) =>
+	`
+# Ci-dessous la règle d'origine, écrite en publicodes.
+
+# Publicodes est un langage déclaratif développé par l'Urssaf
+# en partenariat avec beta.gouv.fr pour encoder les algorithmes d'intérêt public.
+
+# Vous pouvez modifier les valeurs directement dans l'éditeur pour voir les calculs
+# s'actualiser en temps réel
+
+`.substring(1) +
+	stringify(json.rules) +
+	'\n\n# Situation :\n' +
+	stringify(json.situation).split('\n').sort().join('\n')
 
 export default function Studio() {
 	const { search, pathname, hash } = useLocation()
 	const searchParams = new URLSearchParams(search ?? '')
 	const initialValue = useMemo(() => {
 		const code = searchParams.get('code')
-		const hashCode = hash && unescape(decodeURIComponent(hash.substring(1)))
-		return code || hashCode || EXAMPLE_CODE
+		const hashCode = hash && decodeURIComponent(hash.substring(1))
+
+		if (code || hashCode) {
+			const objOrYaml = tryToParseJson<JsonCode>(code || hashCode)
+
+			return typeof objOrYaml === 'string'
+				? objOrYaml
+				: jsonCodeToYaml(objOrYaml)
+		}
+
+		return EXAMPLE_CODE
 	}, [hash, search])
 	const [editorValue, setEditorValue] = useState(initialValue)
 	const debouncedEditorValue = useDebounce(editorValue, 1000)

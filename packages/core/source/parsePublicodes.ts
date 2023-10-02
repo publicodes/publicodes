@@ -10,6 +10,7 @@ import {
 	updateReferencesMapsFromReferenceNode,
 } from './ruleUtils'
 import { getUnitKey, defaultUnitEquivalances } from './units'
+import { weakCopyObj } from './utils'
 
 export type Context<RuleNames extends string = string> = {
 	dottedName: RuleNames | ''
@@ -81,18 +82,19 @@ export default function parsePublicodes<
 			'Publicodes does not parse yaml rule sets itself anymore. Please provide a parsed js object. E.g. the `eemeli/yaml` package.',
 			{}
 		)
-	let rules = { ...rawRules }
+
+	// let rules = { ...rawRules } // take 7-8ms
+	let rules = weakCopyObj(rawRules) // take 1-2ms
 
 	// STEP 2: Rules parsing
 	const context = createContext(partialContext)
 	let previousParsedRules = context.parsedRules
 	context.parsedRules = {} as ParsedRules<ContextNames>
 
-	Object.entries(rules).forEach(([dottedName, rule]) => {
+	for (const dottedName in rules) {
+		let rule = rules[dottedName]
 		if (typeof rule === 'string' || typeof rule === 'number') {
-			rule = {
-				valeur: `${rule}`,
-			}
+			rule = { valeur: `${rule}` }
 		}
 		if (typeof rule !== 'object') {
 			throw new PublicodesError(
@@ -101,13 +103,18 @@ export default function parsePublicodes<
 				{ dottedName }
 			)
 		}
-		parse({ nom: dottedName, ...rule }, context)
-	})
+		const copy = weakCopyObj(rule) as typeof rule & { nom: string }
+		copy.nom = dottedName
+		parse(copy, context)
+	}
 
-	let parsedRules = Object.assign(
-		previousParsedRules,
-		context.parsedRules
-	) as ParsedRules<NewRulesNames | ContextNames>
+	let parsedRules = {} as ParsedRules<NewRulesNames | ContextNames>
+	for (const dottedName in previousParsedRules) {
+		parsedRules[dottedName] = previousParsedRules[dottedName]
+	}
+	for (const dottedName in context.parsedRules) {
+		parsedRules[dottedName] = context.parsedRules[dottedName]
+	}
 
 	// STEP 3: Disambiguate reference
 	let [newRules, referencesMaps] = disambiguateReferencesAndCollectDependencies(
