@@ -1,6 +1,6 @@
 import { Evaluation, Unit } from './AST/types'
 import { simplifyNodeUnit } from './nodeUnits'
-import { formatUnit, serializeUnit, UnitEquivalencesTable } from './units'
+import { formatUnit, serializeUnit } from './units'
 
 export const numberFormatter =
 	({
@@ -117,15 +117,11 @@ type Options = {
 	formatUnit?: formatUnit
 }
 
-export function formatValue({
-	value,
-	unitEquivalences = {},
-	opts: { language = 'fr', displayedUnit, formatUnit, precision = 2 } = {},
-}: {
-	value: number | { nodeValue: Evaluation; unit?: Unit } | undefined
-	unitEquivalences?: UnitEquivalencesTable
-	opts?: Options
-}) {
+export function formatValue(
+	value: number | { nodeValue: Evaluation; unit?: Unit } | undefined,
+
+	{ language = 'fr', displayedUnit, formatUnit, precision = 2 }: Options = {}
+) {
 	let nodeValue =
 		typeof value === 'number' || typeof value === 'undefined' || value === null
 			? value
@@ -154,13 +150,10 @@ export function formatValue({
 				? undefined
 				: value.unit
 		if (unit) {
-			const simplifiedNode = simplifyNodeUnit(
-				{
-					unit,
-					nodeValue,
-				},
-				unitEquivalences
-			)
+			const simplifiedNode = simplifyNodeUnit({
+				unit,
+				nodeValue,
+			})
 			unit = simplifiedNode.unit
 			nodeValue = simplifiedNode.nodeValue as number
 		}

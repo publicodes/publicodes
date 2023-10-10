@@ -42,12 +42,7 @@ registerEvaluationFunction(NAME, function evaluate(node) {
 		),
 		nodeValue: explanation
 			.map((element) =>
-				typeof element === 'string'
-					? element
-					: formatValue({
-							value: element,
-							unitEquivalences: this.context.unitEquivalences,
-					  })
+				typeof element === 'string' ? element : formatValue(element)
 			)
 			.join(''),
 	}

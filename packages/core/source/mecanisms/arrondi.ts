@@ -21,10 +21,7 @@ function roundWithPrecision(n: number, fractionDigits: number) {
 const evaluate: EvaluationFunction<'arrondi'> = function (node) {
 	// We need to simplify the node unit to correctly round values containing
 	// percentages units, see #1358
-	const valeur = simplifyNodeUnit(
-		this.evaluateNode(node.explanation.valeur),
-		this.context.unitEquivalences
-	)
+	const valeur = simplifyNodeUnit(this.evaluateNode(node.explanation.valeur))
 	const nodeValue = valeur.nodeValue
 	let arrondi = node.explanation.arrondi
 	if (nodeValue !== false) {

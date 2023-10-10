@@ -9,7 +9,7 @@ import {
 	disambiguateReferenceNode,
 	updateReferencesMapsFromReferenceNode,
 } from './ruleUtils'
-import { getUnitKey, defaultUnitEquivalances } from './units'
+import { getUnitKey } from './units'
 import { weakCopyObj } from './utils'
 
 export type Context<RuleNames extends string = string> = {
@@ -19,9 +19,8 @@ export type Context<RuleNames extends string = string> = {
 	referencesMaps: ReferencesMaps<RuleNames>
 	rulesReplacements: RulesReplacements<RuleNames>
 	getUnitKey?: getUnitKey
-	readonly logger: Logger
-	readonly unitEquivalences: Record<string, string>
-	readonly inversionMaxIterations?: number
+	logger: Logger
+	inversionMaxIterations?: number
 }
 
 export type RulesReplacements<RuleNames extends string> = Partial<
@@ -49,7 +48,7 @@ export function createContext<RuleNames extends string>(
 		referencesMaps: { referencesIn: new Map(), rulesThatUse: new Map() },
 		nodesTypes: new WeakMap(),
 		rulesReplacements: {},
-		unitEquivalences: defaultUnitEquivalances,
+
 		...partialContext,
 	}
 }

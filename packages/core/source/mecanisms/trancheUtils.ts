@@ -67,8 +67,7 @@ export function evaluatePlafondUntilActiveTranche(
 						: convertUnit(
 								inferUnit('*', [plafond.unit, multiplicateur.unit]),
 								assiette.unit,
-								plafondValue,
-								this.context.unitEquivalences
+								plafondValue
 						  )
 			} catch (e) {
 				warning(

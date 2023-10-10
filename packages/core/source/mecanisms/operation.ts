@@ -112,17 +112,9 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	) {
 		try {
 			if (node1.unit && 'unit' in node2) {
-				node2 = convertNodeToUnit(
-					node1.unit,
-					node2,
-					this.context.unitEquivalences
-				)
+				node2 = convertNodeToUnit(node1.unit, node2)
 			} else if (node2.unit) {
-				node1 = convertNodeToUnit(
-					node2.unit,
-					node1,
-					this.context.unitEquivalences
-				)
+				node1 = convertNodeToUnit(node2.unit, node1)
 			}
 		} catch (e) {
 			warning(

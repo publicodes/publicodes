@@ -42,12 +42,7 @@ registerEvaluationFunction('simplifier unité', function evaluate(node) {
 		...defaultReturn,
 		nodeValue:
 			typeof nodeValue === 'number'
-				? convertUnit(
-						valeur.unit,
-						unit,
-						nodeValue,
-						this.context.unitEquivalences
-				  )
+				? convertUnit(valeur.unit, unit, nodeValue)
 				: nodeValue,
 		unit,
 	}
