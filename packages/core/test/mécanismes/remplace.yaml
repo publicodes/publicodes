@@ -73,12 +73,12 @@ exemple1:
   par défaut: non
   remplace:
     règle: cotisations . assiette
-    par: 100
+    par: 100 €
 
 exemple2:
   remplace:
     règle: cotisations . assiette
-    par: 500
+    par: 500 €
     dans: cotisations . retraite
   par défaut: non
 
@@ -86,7 +86,7 @@ exemple3:
   par défaut: non
   remplace:
     règle: cotisations . assiette
-    par: 100
+    par: 100 €
     sauf dans:
       - cotisations . chômage
       - cotisations . maladie
@@ -113,9 +113,9 @@ exemple5:
   par défaut: non
   remplace:
     - règle: cotisations . chômage
-      par: 10€
+      par: 10 €
     - règle: cotisations . maladie
-      par: 0
+      par: 0 €
 
 remplacements:
   formule: cotisations

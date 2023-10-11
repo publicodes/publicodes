@@ -8,7 +8,8 @@ douche . impact:
 
 douche . nombre:
   question: Combien prenez-vous de douches ?
-  par défaut: 30 douches
+  par défaut: 30
+  unité: douche
   suggestions:
     Une par jour: 30
 
@@ -85,7 +86,7 @@ chauffage . impact par kWh:
 
 chauffage . énergie consommée par litre:
   formule: 0.0325
-  unité: kWh
+  unité: kWh PCI/l
   références:
     analyse du prix d'une douche: https://www.econologie.com/forums/plomberie-et-sanitaire/prix-reel-d-un-bain-ou-d-une-douche-pour-l-eau-et-chauffage-t12727.html
 
@@ -101,7 +102,8 @@ chauffage . impact par litre:
 
 douche . durée de la douche:
   question: Combien de temps dure votre douche en général ?
-  par défaut: 5 min
+  par défaut: 5
+  unité: min
   suggestions:
     expresse: 5
     moyenne: 10

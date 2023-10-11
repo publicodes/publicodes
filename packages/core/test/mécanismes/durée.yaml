@@ -3,7 +3,7 @@ date de création:
   question: quelle est la date de création ?
 
 durée entre deux dates:
-  unité: jours
+  unité: jour
   formule:
     durée:
       depuis: date de création

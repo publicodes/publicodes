@@ -1,4 +1,4 @@
-import { Evaluation, Unit } from './AST/types'
+import { BaseUnit, Evaluation, Unit } from './AST/types'
 import { PublicodesError } from './error'
 
 export type getUnitKey = (writtenUnit: string) => string
@@ -8,38 +8,81 @@ export const parseUnit = (
 	string: string,
 	getUnitKey: getUnitKey = (x) => x
 ): Unit => {
-	const [a, ...b] = string.split('/').map((u) => u.trim()),
-		result = {
-			numerators: a
+	const [a, ...b] = string.split('/').map((u) => u.trim())
+	// denominator could be 'x/y' or 'x.y' or 'x.y/z'
+	const splitUnit = (string: string): string[] =>
+		decomposePower(
+			string
 				.split('.')
 				.filter(Boolean)
-				.map((unit) => getUnitKey(unit)),
-			denominators: b.map((unit) => getUnitKey(unit)),
-		}
+				.map((unit) => getUnitKey(unit))
+		)
+	const result = {
+		numerators: splitUnit(a),
+		denominators: b.flatMap((u) => splitUnit(u)),
+	}
 	return result
 }
 
+const lastNumberFromString = /(\d+)(?!.*[A-Za-z])/g
+
+/**
+ * Count the number of each unit, e.g. [m, m, kg, kg] -> {m: 2, kg: 2}
+ */
+function getUnitCounts(baseUnits: Array<BaseUnit>): Record<string, number> {
+	let countUnits = {}
+	baseUnits.forEach((e) => {
+		const powerMatch = e.match(lastNumberFromString)
+		if (powerMatch != null) {
+			const power = powerMatch[0]
+			const primaryUnit = e.split(power)[0]
+			countUnits[primaryUnit] = (countUnits[primaryUnit] ?? 0) + +power
+		} else {
+			countUnits[e] = (countUnits[e] ?? 0) + 1
+		}
+	})
+	return countUnits
+}
+
+/**
+ * Decompose power of units, e.g. [m2] -> [m, m] or [kg2, m3] -> [kg, kg, m, m, m]
+ */
+function decomposePower(baseUnits: Array<BaseUnit>): Array<BaseUnit> {
+	let unitCounts = getUnitCounts(baseUnits)
+	return Object.entries(unitCounts).flatMap(([primaryUnit, power]) =>
+		Array(power).fill(primaryUnit)
+	)
+}
+
+/**
+ * Combine power of units, e.g. [m2, m] -> [m3] or [m, m, kg, kg] -> [m2, kg2]
+ */
+function combinePower(baseUnit: Array<BaseUnit>): Array<BaseUnit> {
+	let unitCounts = getUnitCounts(baseUnit)
+	return Object.entries(unitCounts).map(([primaryUnit, power]) =>
+		power > 1 ? `${primaryUnit}${power}` : primaryUnit
+	)
+}
+
 const printUnits = (
-	units: Array<string>,
+	units: Array<BaseUnit>,
 	count: number,
 	formatUnit: formatUnit = (x) => x
-): string =>
-	units
-		.sort()
-		.map((unit) => formatUnit(unit, count))
-		.join('.')
+): string => {
+	return combinePower(units.map((unit) => formatUnit(unit, count))).join('.')
+}
 
 const plural = 2
-export const serializeUnit = (
+export function serializeUnit(
 	rawUnit: Unit | undefined | string,
 	count: number = plural,
 	formatUnit: formatUnit = (x) => x
-): string | undefined => {
+): string | undefined {
 	if (rawUnit === null || typeof rawUnit !== 'object') {
 		return typeof rawUnit === 'string' ? formatUnit(rawUnit, count) : rawUnit
 	}
-	const unit = simplify(rawUnit),
-		{ numerators = [], denominators = [] } = unit
+	const unit = simplify(rawUnit)
+	const { numerators = [], denominators = [] } = unit
 
 	const n = numerators.length > 0
 	const d = denominators.length > 0
@@ -118,8 +161,8 @@ export const removeOnce =
 const simplify = (
 	unit: Unit,
 	eqFn: (a: string, b: string) => boolean = equals
-): Unit =>
-	[...unit.numerators, ...unit.denominators].reduce(
+): Unit => {
+	const simplifiedUnit = [...unit.numerators, ...unit.denominators].reduce(
 		({ numerators, denominators }, next) =>
 			numerators.find((u) => eqFn(next, u)) &&
 			denominators.find((u) => eqFn(next, u))
@@ -130,6 +173,8 @@ const simplify = (
 				: { numerators, denominators },
 		unit
 	)
+	return simplifiedUnit
+}
 
 const convertTable: ConvertTable = {
 	'mois/an': 12,
@@ -181,17 +226,40 @@ function unitsConversionFactor(from: string[], to: string[]): number {
 	return factor
 }
 
+// TODO(@clemog):
+// - Deal with other equivalent units : l: 'dm3',
+// - Convert unit instead of ignore warning
+const equivalentTable = {
+	'kW.h': 'kWh',
+	'mn / h': 'noeud',
+}
+
+function areEquivalentSerializedUnit(
+	serializedFrom: string | undefined,
+	serializedTo: string | undefined
+): Boolean {
+	if (!serializedFrom || !serializedTo) return false
+	return (
+		serializedFrom === serializedTo ||
+		serializedFrom === equivalentTable[serializedTo] ||
+		serializedTo === equivalentTable[serializedFrom]
+	)
+}
+
 export function convertUnit<ValType extends Evaluation<number>>(
 	from: Unit | undefined,
 	to: Unit | undefined,
 	value: ValType
 ): ValType {
-	if (!areUnitConvertible(from, to)) {
+	const serializedFrom = serializeUnit(from)
+	const serializedTo = serializeUnit(to)
+	if (
+		!areEquivalentSerializedUnit(serializedFrom, serializedTo) &&
+		!areUnitConvertible(from, to)
+	) {
 		throw new PublicodesError(
 			'EngineError',
-			`Impossible de convertir l'unité '${serializeUnit(
-				from
-			)}' en '${serializeUnit(to)}'`,
+			`Impossible de convertir l'unité '${serializedFrom}' en '${serializedTo}'`,
 			{}
 		)
 	}
@@ -255,6 +323,7 @@ function areSameClass(a: string, b: string) {
 function round(value: number) {
 	return +value.toFixed(16)
 }
+
 export function simplifyUnit(unit: Unit): Unit {
 	const { numerators, denominators } = simplify(unit, areSameClass)
 	if (numerators.length && numerators.every((symb) => symb === '%')) {
@@ -262,6 +331,7 @@ export function simplifyUnit(unit: Unit): Unit {
 	}
 	return removePercentages({ numerators, denominators })
 }
+
 function simplifyUnitWithValue(unit: Unit, value = 1): [Unit, number] {
 	const factor = unitsConversionFactor(unit.numerators, unit.denominators)
 	return [
@@ -279,8 +349,7 @@ export function areUnitConvertible(a: Unit | undefined, b: Unit | undefined) {
 	if (a == null || b == null) {
 		return true
 	}
-
-	const countByUnitClass = (units: Array<string>) =>
+	const countByUnitClass = (units: Array<BaseUnit>) =>
 		units.reduce((counters, unit) => {
 			const classIndex = convertibleUnitClasses.findIndex((unitClass) =>
 				unitClass.has(unit)
