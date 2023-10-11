@@ -1,33 +1,47 @@
 # Changelog
 
 ## next
+
+## 1.0.0-beta.77
+
+-   Améliore la gestion des unités (#374)
+-   Améliore le message d'erreur pour les opérations
+-   Permet de convertir correctement un dénominateur produit
+-   Première fonction de gestion d'unité "puissance"
+-   Ajout d'une première table d'unités équivalentes
+-   Nouveaux tests
+
 ## 1.0.0-beta.76
-- Fix `engine.inversionFail` dont la valeur était réinitialisée à chaque appel de `engine.evaluate`
+
+-   Fix `engine.inversionFail` dont la valeur était réinitialisée à chaque appel de `engine.evaluate`
 
 ## 1.0.0-beta.75
 
-- Remove yaml package from publicodes-react and use json instead
-- Use hash instead of url parameter in doc by default
-- Replace `react-monaco-editor` by `@monaco-editor/react` which add yaml coloration
-- Update packages: docusaurus, tsup, typescript, vitest, and more
-- Fix console.log à supprimer #379
+-   Remove yaml package from publicodes-react and use json instead
+-   Use hash instead of url parameter in doc by default
+-   Replace `react-monaco-editor` by `@monaco-editor/react` which add yaml coloration
+-   Update packages: docusaurus, tsup, typescript, vitest, and more
+-   Fix console.log à supprimer #379
 
 ## 1.0.0-beta.74
 
 **core**
-- 30% d'amélioration des perfs de parsing grâce à des micros optimisations
+
+-   30% d'amélioration des perfs de parsing grâce à des micros optimisations
 
 ## 1.0.0-beta.73
+
 **publicodes-react**
 
-- Corrige un bug de style suite à la mise à jour de styled component v6
-- Cache les élements non applicable par défaut dans les mécanismes de type liste, et ajoute un bouton « Afficher les valeurs non applicables ».
+-   Corrige un bug de style suite à la mise à jour de styled component v6
+-   Cache les élements non applicable par défaut dans les mécanismes de type liste, et ajoute un bouton « Afficher les valeurs non applicables ».
 
 ## 1.0.0-beta.72
+
 **publicodes-react**
 
-- Corrige un bug dans la compilation esm de react-ui
-- BREAKING : passe à styled component v6
+-   Corrige un bug dans la compilation esm de react-ui
+-   BREAKING : passe à styled component v6
 
 ## 1.0.0-beta.71
 
