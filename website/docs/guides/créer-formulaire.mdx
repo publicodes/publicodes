@@ -87,7 +87,7 @@ console.log(commandeVin.nodeValue) // false - la valeur par défaut
 console.log(commandeVin.traversedVariables) // [ 'personne majeure', 'bière' ]
 ```
 
-Les variables traversées sont retournées dans leur ordre d’apparition. Ainsi par exemple les règles référencées dans le mécanisme [applicable si](/docs/mécanismes#applicable-si) apparaîtront avant celles utilisées dans le calcul de la valeur de la règle en elle-même, en effet publicodes évalue d'abord la condition avant d'évaluer le cas échéant la conséquence.
+Les variables traversées sont retournées dans leur ordre d’apparition. Ainsi par exemple les règles référencées dans le mécanisme [applicable si](/docs/api/mécanismes#applicable-si) apparaîtront avant celles utilisées dans le calcul de la valeur de la règle en elle-même, en effet publicodes évalue d'abord la condition avant d'évaluer le cas échéant la conséquence.
 
 À noter que les variables traversées dépendent de la situation courante.
 
