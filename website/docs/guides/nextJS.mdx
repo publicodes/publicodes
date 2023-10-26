@@ -1,0 +1,32 @@
+---
+sidebar_position: 2
+title: Afficher la documentation avec NextJS
+---
+
+Voici un exemple pour intégrer la documentation dans une application Next.js :
+
+```jsx
+import Head from 'next/head'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { RulePage } from 'publicodes-react'
+import engine from '../engine'
+
+export default function Documentation() {
+	const router = useRouter()
+	return (
+		<RulePage
+			documentationPath="/documentation"
+			engine={engine}
+			rulePath={router.query.slug?.join('/')}
+			language="fr"
+			renderers={{
+				Head,
+				Link: ({ to, children }) => <Link href={to}>{children}</Link>,
+			}}
+		/>
+	)
+}
+```
+
+**[Voir l'exemple complet sur Github](https://github.com/betagouv/publicodes/tree/master/examples/nextjs)**
