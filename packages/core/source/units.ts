@@ -8,7 +8,12 @@ export const parseUnit = (
 	string: string,
 	getUnitKey: getUnitKey = (x) => x
 ): Unit => {
-	const [a, ...b] = string.split('/').map((u) => u.trim())
+	if (string.includes(' /') || string.includes('/ ')) {
+		throw new Error(
+			`L'unité "${string}" ne doit pas contenir d'espace avant et après "/"`
+		)
+	}
+	const [a, ...b] = string.split('/')
 	// denominator could be 'x/y' or 'x.y' or 'x.y/z'
 	const splitUnit = (string: string): string[] =>
 		decomposePower(
