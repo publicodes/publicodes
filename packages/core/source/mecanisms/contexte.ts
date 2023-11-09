@@ -6,21 +6,39 @@ import { ReferenceNode } from '../reference'
 import { serializeUnit } from '../units'
 import { notApplicableNode } from './inlineMecanism'
 
-export type RecalculNode = {
+export type ContextNode = {
 	explanation: {
-		recalculNode: ASTNode
-		amendedSituation: Array<[ReferenceNode, ASTNode]>
+		node: ASTNode
+		contexte: Array<[ReferenceNode, ASTNode]>
 		subEngineId: number
 	}
-	nodeKind: 'recalcul'
+	nodeKind: 'contexte'
 }
 
-const evaluateRecalcul: EvaluationFunction<'recalcul'> = function (node) {
-	if (this.cache._meta.currentRecalcul === node.explanation.recalculNode) {
+export default function parseMecanismContexte(v, context) {
+	const contexte = Object.keys(v.contexte).map((dottedName) => [
+		parse(dottedName, context),
+		parse(v.contexte[dottedName], context),
+	])
+
+	const node = parse(v.valeur, context)
+
+	return {
+		explanation: {
+			node,
+			contexte,
+		},
+		nodeKind: parseMecanismContexte.nom,
+	} as ContextNode
+}
+parseMecanismContexte.nom = 'contexte' as const
+
+const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
+	if (this.cache._meta.currentEvaluationWithContext === node.explanation.node) {
 		return { ...notApplicableNode, ...node }
 	}
 	const amendedSituation = Object.fromEntries(
-		node.explanation.amendedSituation
+		node.explanation.contexte
 			.filter(([originRule, replacement]) => {
 				const originRuleEvaluation = this.evaluateNode(originRule)
 				const replacementEvaluation = this.evaluateNode(replacement)
@@ -51,39 +69,21 @@ const evaluateRecalcul: EvaluationFunction<'recalcul'> = function (node) {
 
 		this.subEngines.push(engine)
 	}
-	engine.cache._meta.currentRecalcul = node.explanation.recalculNode
-	const evaluatedNode = engine.evaluateNode(node.explanation.recalculNode)
+	engine.cache._meta.currentEvaluationWithContext = node.explanation.node
+	const evaluatedNode = engine.evaluateNode(node.explanation.node)
 
-	delete engine.cache._meta.currentRecalcul
+	delete engine.cache._meta.currentEvaluationWithContext
 
 	return {
 		...node,
 		nodeValue: evaluatedNode.nodeValue,
 		explanation: {
 			...node.explanation,
-			recalcul: evaluatedNode,
+			node: evaluatedNode,
 			subEngineId: engine.subEngineId as number,
 		},
 		missingVariables: evaluatedNode.missingVariables,
 		...('unit' in evaluatedNode && { unit: evaluatedNode.unit }),
 	}
 }
-
-export const mecanismRecalcul = (v, context) => {
-	const amendedSituation = Object.keys(v.avec).map((dottedName) => [
-		parse(dottedName, context),
-		parse(v.avec[dottedName], context),
-	])
-
-	const recalculNode = parse(v.règle ?? context.dottedName, context)
-
-	return {
-		explanation: {
-			recalculNode,
-			amendedSituation,
-		},
-		nodeKind: 'recalcul',
-	} as RecalculNode
-}
-
-registerEvaluationFunction('recalcul', evaluateRecalcul)
+registerEvaluationFunction('contexte', evaluateContexte)
