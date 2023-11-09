@@ -3077,9 +3077,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@publicodes/api@workspace:packages/api":
+"@publicodes/api@workspace:_deprecated/api":
   version: 0.0.0-use.local
-  resolution: "@publicodes/api@workspace:packages/api"
+  resolution: "@publicodes/api@workspace:_deprecated/api"
+  dependencies:
+    "@publicodes/rest-api": ^1.0.0-beta.77
+  languageName: unknown
+  linkType: soft
+
+"@publicodes/react-ui@^1.0.0-beta.77, @publicodes/react-ui@workspace:packages/react-ui":
+  version: 0.0.0-use.local
+  resolution: "@publicodes/react-ui@workspace:packages/react-ui"
+  dependencies:
+    "@types/react": ^18.2.23
+    "@types/styled-components": ^5.1.28
+    rimraf: ^3.0.2
+    styled-components: ^6.0.8
+    tsup: ^7.2.0
+    typescript: ^5.2.2
+  peerDependencies:
+    publicodes: ^1.0.0-beta.71
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
+  languageName: unknown
+  linkType: soft
+
+"@publicodes/rest-api@^1.0.0-beta.77, @publicodes/rest-api@workspace:packages/api":
+  version: 0.0.0-use.local
+  resolution: "@publicodes/rest-api@workspace:packages/api"
   dependencies:
     "@apidevtools/swagger-cli": ^4.0.4
     "@koa/cors": ^3.4.3
@@ -11781,20 +11806,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"publicodes-react@workspace:^, publicodes-react@workspace:packages/react-ui":
+"publicodes-react@workspace:^, publicodes-react@workspace:_deprecated/publicodes-react":
   version: 0.0.0-use.local
-  resolution: "publicodes-react@workspace:packages/react-ui"
+  resolution: "publicodes-react@workspace:_deprecated/publicodes-react"
   dependencies:
-    "@types/react": ^18.2.23
-    "@types/styled-components": ^5.1.28
-    rimraf: ^3.0.2
-    styled-components: ^6.0.8
-    tsup: ^7.2.0
-    typescript: ^5.2.2
-  peerDependencies:
-    publicodes: ^1.0.0-beta.71
-    react: ^17 || ^18
-    react-dom: ^17 || ^18
+    "@publicodes/react-ui": ^1.0.0-beta.77
   languageName: unknown
   linkType: soft
 

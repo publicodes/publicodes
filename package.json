@@ -2,10 +2,12 @@
 	"name": "publicodes-monorepo",
 	"private": true,
 	"workspaces": [
+		"_deprecated/publicodes-react",
+		"_deprecated/api",
+		"website",
 		"packages/api",
 		"packages/core",
-		"packages/react-ui",
-		"website"
+		"packages/react-ui"
 	],
 	"scripts": {
 		"test": "run prepack && yarn workspaces foreach run test",
