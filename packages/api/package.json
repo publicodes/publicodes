@@ -1,5 +1,5 @@
 {
-	"name": "@publicodes/api",
+	"name": "@publicodes/rest-api",
 	"version": "1.0.0-beta.77",
 	"description": "Publicodes API",
 	"type": "module",
