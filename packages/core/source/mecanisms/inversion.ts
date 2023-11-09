@@ -195,17 +195,21 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 }
 
 export const mecanismInversion = (v, context: Context) => {
-	if (!v.avec) {
+	let avec = typeof v === 'object' && 'avec' in v ? v.avec : v
+	if (v === null) {
 		throw new PublicodesError(
 			'SyntaxError',
-			"Une formule d'inversion doit préciser _avec_ quoi on peut inverser la variable",
+			"Il manque les règles avec laquelle effectuer le calcul d'inversion dans le mécanisme `inversion numérique`",
 			{ dottedName: context.dottedName }
 		)
+	}
+	if (!Array.isArray(avec)) {
+		avec = [avec]
 	}
 	return {
 		explanation: {
 			ruleToInverse: context.dottedName,
-			inversionCandidates: v.avec.map((node) => ({
+			inversionCandidates: avec.map((node) => ({
 				...parse(node, context),
 			})),
 		},
