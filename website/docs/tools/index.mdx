@@ -1,0 +1,57 @@
+---
+sidebar_position: 2
+title: Outillage des modèles
+hide_table_of_contents: true
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+[`@publicodes/tools`](https://github.com/publicodes/tools) regroupe un jeu de
+fonctions utilitaires permettant de faciliter la maintenance des modèles
+Publicodes.
+
+:::caution Attention
+
+Le projet est en cours d'expérimentation et est maintenu par l'équipe de [Nos
+Gestes Climat](https://nosgestesclimat.fr/a-propos).
+
+:::
+
+## Fonctionnalités
+
+Cette librairie propose plusieurs fonctionnalités, permettant de :
+
+- 🏗️ [**compiler**](./compilation) un ensemble de fichier Publicodes en un
+  seul fichier JSON ;
+- 📦 d'[**importer**](./imports) des règles de paquets publiées sur
+  [NPM](https://www.npmjs.com/package/@incubateur-ademe/publicodes-impact-livraison) ;
+- 🪶 de [**pré-calculer**](./optim) un modèle au moment de la compilation pour
+  ainsi réduire [le nombre de règles à instancier par
+  ~65%](https://github.com/incubateur-ademe/nosgestesclimat/pull/1697).
+
+:::tip
+
+An API documentation written in English is available
+[here](https://publicodes.github.io/tools/).
+
+:::
+
+## Installation
+
+<Tabs>
+<TabItem value="yarn" label="Yarn" default>
+
+```bash
+yarn add -D @publicodes/tools
+```
+
+</TabItem>
+
+<TabItem value="npm" label="NPM">
+
+```bash
+npm install --dev-dependency @publicodes/tools
+```
+
+</TabItem>
+</Tabs>
