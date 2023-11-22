@@ -1,8 +1,8 @@
 import { ParsedRules } from '..'
 import { UnreachableCaseError } from '../error'
 import { TrancheNodes } from '../mecanisms/trancheUtils'
+import { ReferenceNode } from '../reference'
 import { ReplacementRule } from '../replacement'
-import { RuleNode } from '../rule'
 import { weakCopyObj } from '../utils'
 import {
 	ASTNode,
@@ -159,8 +159,8 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 		case 'operation':
 			return traverseOperationNode(fn, node)
 
-		case 'recalcul':
-			return traverseRecalculNode(fn, node)
+		case 'contexte':
+			return traverseContexteNode(fn, node)
 		case 'unité':
 			return traverseUnitéNode(fn, node)
 		case 'variations':
@@ -312,16 +312,15 @@ const traverseTextNode: TraverseFunction<'texte'> = (fn, node) => ({
 	),
 })
 
-const traverseRecalculNode: TraverseFunction<'recalcul'> = (fn, node) => ({
+const traverseContexteNode: TraverseFunction<'contexte'> = (fn, node) => ({
 	...node,
 	explanation: {
 		...node.explanation,
-		amendedSituation: node.explanation.amendedSituation.map(([name, value]) => [
-			fn(name),
+		contexte: node.explanation.contexte.map(([name, value]) => [
+			fn(name) as ReferenceNode,
 			fn(value),
-		]) as any, //TODO
-		recalcul:
-			node.explanation.recalculNode && fn(node.explanation.recalculNode),
+		]),
+		node: fn(node.explanation.node),
 	},
 })
 

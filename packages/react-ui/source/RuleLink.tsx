@@ -87,7 +87,8 @@ export function RuleLinkWithContext(
 		new URLSearchParams(window.location.search).get('currentEngineId')
 	const currentEngineId =
 		props.useSubEngine !== false
-			? engine.subEngineId ||
+			? props.currentEngineId ||
+			  engine.subEngineId ||
 			  (currentEngineIdFromUrl ? Number(currentEngineIdFromUrl) : undefined)
 			: undefined
 	return (

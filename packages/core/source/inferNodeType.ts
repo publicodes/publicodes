@@ -68,7 +68,7 @@ export default function inferNodesTypes(
 				}
 
 			case 'inversion':
-			case 'recalcul':
+			case 'contexte':
 			case 'replacementRule':
 			case 'résoudre référence circulaire':
 				return { isNullable: false, type: 'number' }

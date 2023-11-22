@@ -62,7 +62,7 @@ const StyledNodeValuePointer = styled.span`
 // Un élément du graphe de calcul qui a une valeur interprétée (à afficher)
 type NodeProps = {
 	name: string
-	value: Evaluation<Types>
+	value?: Evaluation<Types>
 	unit?: Unit
 	children: React.ReactNode
 	displayName?: boolean

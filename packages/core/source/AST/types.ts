@@ -1,6 +1,7 @@
 import { ArrondiNode } from '../mecanisms/arrondi'
 import { BarèmeNode } from '../mecanisms/barème'
 import { ConditionNode } from '../mecanisms/condition'
+import { ContextNode } from '../mecanisms/contexte'
 import { DuréeNode } from '../mecanisms/durée'
 import { EstNonDéfiniNode } from '../mecanisms/est'
 import { EstNonApplicableNode } from '../mecanisms/est-non-applicable'
@@ -8,7 +9,6 @@ import { GrilleNode } from '../mecanisms/grille'
 import { InversionNode } from '../mecanisms/inversion'
 import { PossibilityNode } from '../mecanisms/one-possibility'
 import { OperationNode } from '../mecanisms/operation'
-import { RecalculNode } from '../mecanisms/recalcul'
 import { RésoudreRéférenceCirculaireNode } from '../mecanisms/résoudre-référence-circulaire'
 import { SimplifierUnitéNode } from '../mecanisms/simplifier-unité'
 import { TauxProgressifNode } from '../mecanisms/tauxProgressif'
@@ -39,7 +39,7 @@ export type ASTNode = (
 	| InversionNode
 	| OperationNode
 	| PossibilityNode
-	| RecalculNode
+	| ContextNode
 	| SimplifierUnitéNode
 	| RésoudreRéférenceCirculaireNode
 	| TauxProgressifNode
