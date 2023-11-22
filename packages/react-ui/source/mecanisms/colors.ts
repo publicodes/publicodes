@@ -14,7 +14,6 @@ const colors = {
 	'toutes ces conditions': '#3498db',
 	'le maximum de': '#795548',
 	'le minimum de': '#795548',
-	composantes: '#3498db',
 	variations: '#FF9800',
 	'par défaut': '#00695C',
 	'taux progressif': '#795548',
