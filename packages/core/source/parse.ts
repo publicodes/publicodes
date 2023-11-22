@@ -1,5 +1,5 @@
 import { ASTNode } from './AST/types'
-import { PublicodesError, PublicodesInternalError } from './error'
+import { PublicodesError } from './error'
 import abattement from './mecanisms/abattement'
 import applicable from './mecanisms/applicable'
 import arrondi from './mecanisms/arrondi'
@@ -7,6 +7,7 @@ import avec from './mecanisms/avec'
 import barème from './mecanisms/barème'
 import { decompose } from './mecanisms/composantes'
 import condition from './mecanisms/condition'
+import contexte from './mecanisms/contexte'
 import durée from './mecanisms/durée'
 import {
 	parseEstApplicable,
@@ -25,7 +26,6 @@ import parDéfaut from './mecanisms/parDéfaut'
 import plafond from './mecanisms/plafond'
 import plancher from './mecanisms/plancher'
 import produit from './mecanisms/product'
-import { mecanismRecalcul } from './mecanisms/recalcul'
 import résoudreRéférenceCirculaire from './mecanisms/résoudre-référence-circulaire'
 import simplifierUnité from './mecanisms/simplifier-unité'
 import situation from './mecanisms/situation'
@@ -148,6 +148,7 @@ ${e.message}`
 
 // Chainable mecanisme in their composition order (first one is applyied first)
 const chainableMecanisms = [
+	contexte,
 	variableManquante,
 	avec,
 	applicable,
@@ -201,7 +202,6 @@ const parseFunctions = {
 	grille,
 	multiplication: produit,
 	produit,
-	recalcul: mecanismRecalcul,
 	somme,
 	moyenne,
 	[texte.nom]: texte,

@@ -2,26 +2,24 @@ import chai, { expect } from 'chai'
 import 'mocha'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
+import { parse } from 'yaml'
 import Engine from '../source'
 import { parseYaml } from './utils'
-import { parse } from 'yaml'
 
 chai.use(sinonChai)
 
-describe('When two different recalculs are nested', () => {
+describe('When two different contexte are nested', () => {
 	const rulesYaml = parse(`
 a: 1
 b: a * 2
 c:
-  recalcul:
-    règle: b
-    avec:
+  valeur: b
+  contexte:
       a: 10
 d:
-  recalcul:
-    règle: c
-    avec:
-      a: 100
+  valeur: c
+  contexte:
+    a: 100
 `)
 	const sandbox = sinon.createSandbox()
 
@@ -31,7 +29,7 @@ d:
 	afterEach(() => {
 		sandbox.restore()
 	})
-	describe('evaluation of rule on top of the recalcul chain', () => {
+	describe('evaluation of rule on top of the chain', () => {
 		it('evaluates to something', () => {
 			expect(new Engine(rulesYaml).evaluate('d').nodeValue).to.eq(20)
 		})
@@ -42,7 +40,7 @@ d:
 		})
 	})
 
-	describe('evaluation of middle recalcul rule', () => {
+	describe('evaluation of middle rule', () => {
 		it('evaluates to something', () => {
 			expect(new Engine(rulesYaml).evaluate('c').nodeValue).to.be.not.undefined
 		})
@@ -54,7 +52,7 @@ d:
 	})
 })
 
-describe('When rule recalculing itself', () => {
+describe('When rule contains itself in the context', () => {
 	const rulesYaml = parseYaml`
 		a: 100 €
 		r:
@@ -62,9 +60,9 @@ describe('When rule recalculing itself', () => {
 		    assiette: a
 		    taux: 50%
 		  plafond:
-		    recalcul:
-		      avec:
-		        a: 1000 €
+		    valeur: r
+		    contexte:
+		      a: 1000 €
 `
 	const sandbox = sinon.createSandbox()
 

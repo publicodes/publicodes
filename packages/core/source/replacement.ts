@@ -196,16 +196,17 @@ export function makeReplacementInliner(
 		) {
 			return false
 		}
-		if (node.nodeKind === 'recalcul') {
-			// We don't replace references in recalcul keys
+		if (node.nodeKind === 'contexte') {
+			// We don't replace references in contexte keys
 			return {
 				...node,
 				explanation: {
 					...node.explanation,
-					recalculNode: transform(node.explanation.recalculNode),
-					amendedSituation: node.explanation.amendedSituation.map(
-						([name, value]) => [name, transform(value)]
-					),
+					node: transform(node.explanation.node),
+					contexte: node.explanation.contexte.map(([name, value]) => [
+						name,
+						transform(value),
+					]),
 				},
 			}
 		}

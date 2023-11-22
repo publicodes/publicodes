@@ -186,8 +186,8 @@ function Rule({
 								}}
 							>
 								<div>
-									Les valeurs affichées sont calculées avec la situation
-									spécifique du <strong>mécanisme recalcul</strong>
+									Vous naviguez la documentation avec un{' '}
+									<strong>contexte d'évaluation</strong> spécifique.
 								</div>
 								<div style={{ flex: 1 }} />
 								<div>

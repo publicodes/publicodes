@@ -5,6 +5,7 @@ import Avec from './mecanisms/Avec'
 import Barème from './mecanisms/Barème'
 import Composantes from './mecanisms/Composantes'
 import Condition from './mecanisms/Condition'
+import Contexte from './mecanisms/Contexte'
 import DefaultInlineMecanism from './mecanisms/DefaultInlineMecanism'
 import Durée from './mecanisms/Durée'
 import EstNonApplicable from './mecanisms/EstNonApplicable'
@@ -13,7 +14,6 @@ import Grille from './mecanisms/Grille'
 import InversionNumérique from './mecanisms/InversionNumérique'
 import Operation from './mecanisms/Operation'
 import Product from './mecanisms/Product'
-import Recalcul from './mecanisms/Recalcul'
 import Reference from './mecanisms/Reference'
 import Replacement from './mecanisms/Replacement'
 import ReplacementRule from './mecanisms/ReplacementRule'
@@ -45,7 +45,7 @@ const UIComponents = {
 	rule: Rule,
 	condition: Condition,
 	'dans la situation': Situation,
-	recalcul: Recalcul,
+	contexte: Contexte,
 	replacement: Replacement,
 	replacementRule: ReplacementRule,
 	'taux progressif': TauxProgressif,
