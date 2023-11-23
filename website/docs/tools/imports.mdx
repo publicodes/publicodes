@@ -58,7 +58,10 @@ Avec :
 
 Par défaut, si aucune `source` n'est spécifiée, le modèle est supposé être
 [compilé](./compilation) dans le fichier `<package_name>.model.json` à la racine
-du package NPM.
+du package NPM. Le package NPM du modèle à utiliser doit donc **être publié sur
+NPM** et être **ajouté aux dépendances du projet** courant.
+Il est également possible de spécifier le chemin vers un fichier local avec
+`source`.
 
 Si `dans` n'est pas spécifié, les règles seront importées dans le namespace
 correspondant au nom du package NPM (`nom`).
