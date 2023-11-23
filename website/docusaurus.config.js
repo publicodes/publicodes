@@ -30,7 +30,7 @@ module.exports = {
 					label: 'Bac à sable',
 				},
 				{
-					href: 'https://github.com/betagouv/publicodes',
+					href: 'https://github.com/publicodes/publicodes',
 					label: 'GitHub',
 					position: 'right',
 				},
