@@ -15,32 +15,6 @@ export type VariationNode = {
 	nodeKind: 'variations'
 }
 
-export const devariate = (k, v, context): ASTNode => {
-	if (k === 'valeur') {
-		return parse(v, context)
-	}
-	const { variations, ...factoredKeys } = v
-	const explanation = parse(
-		{
-			variations: variations.map(({ alors, sinon, si }) => {
-				const { attributs, ...otherKeys } = alors ?? sinon
-				return {
-					[alors !== undefined ? 'alors' : 'sinon']: {
-						...attributs,
-						[k]: {
-							...factoredKeys,
-							...otherKeys,
-						},
-					},
-					...(si !== undefined && { si }),
-				}
-			}),
-		},
-		context
-	)
-	return explanation
-}
-
 export default function parseVariations(v, context): VariationNode {
 	const explanation = v.map(({ si, alors, sinon }) =>
 		sinon !== undefined

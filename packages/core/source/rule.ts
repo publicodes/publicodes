@@ -85,6 +85,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 	}
 
 	const ruleValue: Record<string, unknown> = {}
+
 	for (const key in rawRule) {
 		if (mecanismKeys.includes(key)) {
 			ruleValue[key] = rawRule[key]
@@ -93,9 +94,9 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 	if ('formule' in rawRule) {
 		ruleValue.valeur = rawRule.formule
 	}
-
 	if (!privateRule && !dottedName.endsWith('$SITUATION')) {
-		// We create a $SITUATION child rule
+		// We create a $SITUATION child rule for each rule that is not private
+		// This value will be used to evaluate the rule in the current situation (`setSituation`)
 		ruleValue['dans la situation'] = `${dottedName} . $SITUATION`
 		ruleValue['avec'] = ruleValue['avec'] ?? {}
 		const situationValue = weakCopyObj(undefinedNode)

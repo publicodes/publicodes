@@ -35,7 +35,7 @@ import toutesCesConditions from './mecanisms/toutes-ces-conditions'
 import uneDeCesConditions from './mecanisms/une-de-ces-conditions'
 import unité from './mecanisms/unité'
 import variableManquante from './mecanisms/variablesManquantes'
-import variations, { devariate } from './mecanisms/variations'
+import variations from './mecanisms/variations'
 import { parseExpression } from './parseExpression'
 import { Context } from './parsePublicodes'
 import parseReference from './reference'
@@ -118,9 +118,6 @@ Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`,
 		)
 	}
 	try {
-		if (values?.variations && Object.values(values).length > 1) {
-			return devariate(mecanismName, values, context)
-		}
 		return parseFn(values, context)
 	} catch (e) {
 		if (e instanceof PublicodesError) {

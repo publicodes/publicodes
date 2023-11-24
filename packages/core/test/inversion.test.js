@@ -67,12 +67,11 @@ describe('inversions', () => {
           formule:
             produit:
               assiette: assiette
-              variations:
+              taux:
+                variations:
                 - si: cadre
-                  alors:
-                    taux: 80%
-                - sinon:
-                    taux: 70%
+                  alors: 80%
+                - sinon: 70%
 
         brut:
           formule:
@@ -94,12 +93,11 @@ describe('inversions', () => {
           formule:
             produit:
               assiette: 1200 €
-              variations:
+              taux: 
+                variations:
                 - si: cadre
-                  alors:
-                    taux: 80%
-                - sinon:
-                    taux: 70%
+                  alors: 80%
+                - sinon: 70%
       `
 		const result = new Engine(rules)
 			.setSituation({ net: '2000 €' })

@@ -209,29 +209,17 @@ tel que `produit` ou `barème`.
 
 ```publicodes
 taux réduit: oui
+taux majoré: non
 
 taux allocation familiales:
   variations:
     - si: taux réduit
       alors: 3.45%
+    - si: taux majoré
+      alors: 10%
     - sinon: 5.25%
 ```
 
-#### Dans un autre mécanisme
-
-```publicodes
-assiette cotisation: 2300 €/mois
-taux réduit: oui
-allocation familiales:
-  produit:
-    assiette: assiette cotisation
-    variations:
-    - si: taux réduit
-      alors:
-        taux: 3.45%
-    - sinon:
-        taux: 5.25%
-```
 
 ## somme
 
