@@ -1,10 +1,10 @@
 import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
+import { undefinedNumberNode } from '../evaluationUtils'
 import parse from '../parse'
 import { Context } from '../parsePublicodes'
 import uniroot from '../uniroot'
-import { undefinedNumberNode } from './inlineMecanism'
 
 export type RésoudreRéférenceCirculaireNode = {
 	explanation: {

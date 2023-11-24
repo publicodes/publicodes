@@ -139,7 +139,6 @@ export function formatValue(
 	if (typeof nodeValue === 'string') {
 		return nodeValue.replace('\\n', '\n')
 	}
-	if (typeof nodeValue === 'object') return (nodeValue as any).nom
 	if (typeof nodeValue === 'boolean')
 		return booleanTranslations[language][nodeValue]
 	if (typeof nodeValue === 'number') {

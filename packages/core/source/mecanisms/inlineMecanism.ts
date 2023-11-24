@@ -1,6 +1,6 @@
 import { PublicodesExpression } from '..'
 import { makeASTTransformer } from '../AST'
-import { ASTNode, ConstantNode, EvaluatedNode } from '../AST/types'
+import { ASTNode } from '../AST/types'
 import { PublicodesError } from '../error'
 import parse from '../parse'
 import { Context, createContext } from '../parsePublicodes'
@@ -125,24 +125,3 @@ function toCamelCase(str: string) {
 		.replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr) => ltr.toUpperCase())
 		.replace(/\s+/g, '')
 }
-
-export const notApplicableNode = {
-	nodeKind: 'constant',
-	nodeValue: null,
-	missingVariables: {},
-	type: undefined,
-	isNullable: true,
-} as ConstantNode & EvaluatedNode
-
-export const undefinedNode = {
-	nodeKind: 'constant',
-	nodeValue: undefined,
-	missingVariables: {},
-	type: undefined,
-	isNullable: false,
-} as ConstantNode & EvaluatedNode
-
-export const undefinedNumberNode = {
-	...undefinedNode,
-	type: 'number',
-} as ConstantNode & EvaluatedNode

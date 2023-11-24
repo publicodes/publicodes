@@ -2,9 +2,8 @@ import { Logger, ParsedRules } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
 import { PublicodesError } from './error'
 import inferNodeType, { NodesTypes } from './inferNodeType'
-import parse from './parse'
-import { inlineReplacements, ReplacementRule } from './replacement'
-import { Rule } from './rule'
+import { ReplacementRule, inlineReplacements } from './replacement'
+import { Rule, parseRules } from './rule'
 import {
 	disambiguateReferenceNode,
 	updateReferencesMapsFromReferenceNode,
@@ -89,23 +88,7 @@ export default function parsePublicodes<
 	const context = createContext(partialContext)
 	let previousParsedRules = context.parsedRules
 	context.parsedRules = {} as ParsedRules<ContextNames>
-
-	for (const dottedName in rules) {
-		let rule = rules[dottedName]
-		if (typeof rule === 'string' || typeof rule === 'number') {
-			rule = { valeur: `${rule}` }
-		}
-		if (typeof rule !== 'object') {
-			throw new PublicodesError(
-				'SyntaxError',
-				`Rule ${dottedName} is incorrectly written. Please give it a proper value.`,
-				{ dottedName }
-			)
-		}
-		const copy = weakCopyObj(rule) as typeof rule & { nom: string }
-		copy.nom = dottedName
-		parse(copy, context)
-	}
+	parseRules(rules, context)
 
 	let parsedRules = {} as ParsedRules<NewRulesNames | ContextNames>
 	for (const dottedName in previousParsedRules) {

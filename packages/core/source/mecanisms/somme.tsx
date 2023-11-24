@@ -1,8 +1,6 @@
 import { PublicodesExpression } from '..'
-import {
-	createParseInlinedMecanismWithArray,
-	notApplicableNode,
-} from './inlineMecanism'
+import { notApplicableNode } from '../evaluationUtils'
+import { createParseInlinedMecanismWithArray } from './inlineMecanism'
 
 export function reduceToSumNodes(
 	valeurs: Array<PublicodesExpression>

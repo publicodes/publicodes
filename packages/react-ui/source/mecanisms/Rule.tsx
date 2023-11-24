@@ -13,7 +13,7 @@ export default function RuleMecanism({
 	return (
 		<Styled>
 			<DottedNameContext.Provider value={dottedName}>
-				<small>{capitalise0(virtualRule ? rawNode.nom : title)}</small>
+				<small>{capitalise0(title)}</small>
 				<StyledExplanation>
 					<Explanation node={explanation.valeur} />
 				</StyledExplanation>

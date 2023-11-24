@@ -2,18 +2,18 @@ import Engine from '.'
 import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
 import { PublicodesError } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
-import { defaultNode, mergeMissing } from './evaluationUtils'
+import { defaultNode, mergeMissing, undefinedNode } from './evaluationUtils'
 import { capitalise0 } from './format'
-import { undefinedNode } from './mecanisms/inlineMecanism'
 import parse, { mecanismKeys } from './parse'
 import { Context } from './parsePublicodes'
 import { ReferenceNode } from './reference'
 import {
+	ReplacementRule,
 	parseRendNonApplicable,
 	parseReplacements,
-	ReplacementRule,
 } from './replacement'
 import { isAccessible, nameLeaf, ruleParents } from './ruleUtils'
+import { weakCopyObj } from './utils'
 
 export type Rule = {
 	formule?: Record<string, unknown> | string
@@ -23,7 +23,6 @@ export type Rule = {
 	unité?: string
 	acronyme?: string
 	exemples?: any
-	nom: string
 	résumé?: string
 	icônes?: string
 	titre?: string
@@ -69,14 +68,9 @@ export type RuleNode<Name extends string = string> = {
 	'identifiant court'?: string
 }
 
-export default function parseRule(
-	rawRule: Rule,
-	context: Context
-): ReferenceNode | RuleNode {
-	const privateRule = !!(
-		rawRule.privé === 'oui' || rawRule.nom.startsWith('[privé] ')
-	)
-	const nom = rawRule.nom.replace(/^\[privé\] /, '')
+function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
+	const privateRule = !!(rawRule.privé === 'oui' || nom.startsWith('[privé] '))
+	nom = nom.replace(/^\[privé\] /, '')
 	const dottedName = [context.dottedName, nom].filter(Boolean).join(' . ')
 
 	const name = nameLeaf(dottedName)
@@ -103,12 +97,11 @@ export default function parseRule(
 	if (!privateRule && !dottedName.endsWith('$SITUATION')) {
 		// We create a $SITUATION child rule
 		ruleValue['dans la situation'] = `${dottedName} . $SITUATION`
-		ruleValue['avec'] = {
-			...((ruleValue.avec as object) ?? {}),
-			'[privé] $SITUATION': {
-				...undefinedNode,
-				isNullable: rawRule['possiblement non applicable'] === 'oui',
-			},
+		ruleValue['avec'] = ruleValue['avec'] ?? {}
+		const situationValue = weakCopyObj(undefinedNode)
+		situationValue.isNullable = rawRule['possiblement non applicable'] === 'oui'
+		;(ruleValue['avec'] as Record<string, any>)['[privé] $SITUATION'] = {
+			valeur: situationValue,
 		}
 
 		// If the `par défaut` value is used, then the rule should be listed as a missingVariables
@@ -119,14 +112,19 @@ export default function parseRule(
 			}
 		}
 	}
-	const ruleContext = { ...context, dottedName }
+
+	// const ruleContext = weakCopyObj(context)
+	// ruleContext.dottedName = dottedName
+	// const ruleContext = { ...context, dottedName }
+	const currentDottedNameContext = context.dottedName
+	context.dottedName = dottedName
 
 	// The following ensures that nested rules appears after the root rule when
 	// iterating over parsedRule
 	context.parsedRules[dottedName] = undefined as any
 
 	const explanation = {
-		valeur: parse(ruleValue, ruleContext),
+		valeur: parse(ruleValue, context),
 		// We include a list of references to the parents to implement the branch
 		// desactivation feature. When evaluating a rule we only need to know the
 		// first nullable parent, but this is something that we can't determine at
@@ -139,7 +137,7 @@ export default function parseRule(
 		// code related to branch desactivation (ie find the first nullable parent
 		// statically after rules parsing)
 		parents: ruleParents(dottedName)
-			.map((parent) => parse(parent, ruleContext))
+			.map((parent) => parse(parent, context))
 			.map(
 				// This step ensure we skip the disambiguation step.
 				// This prevents to inadequatly disambiguate a parent as a children of rule (for instance if we have `a . b` and `a . b . a` rules).
@@ -154,15 +152,15 @@ export default function parseRule(
 	const suggestions = {} as Record<string, ASTNode>
 	if (rawRule.suggestions) {
 		for (const name in rawRule.suggestions) {
-			suggestions[name] = parse(rawRule.suggestions[name], ruleContext)
+			suggestions[name] = parse(rawRule.suggestions[name], context)
 		}
 	}
 
 	context.parsedRules[dottedName] = {
 		dottedName,
 		replacements: [
-			...parseRendNonApplicable(rawRule['rend non applicable'], ruleContext),
-			...parseReplacements(rawRule.remplace, ruleContext),
+			...parseRendNonApplicable(rawRule['rend non applicable'], context),
+			...parseReplacements(rawRule.remplace, context),
 		],
 		title: title,
 		private: privateRule,
@@ -172,11 +170,30 @@ export default function parseRule(
 		rawNode: rawRule,
 		virtualRule: !!context.dottedName,
 	} as RuleNode
+	context.dottedName = currentDottedNameContext
+	return context.parsedRules[dottedName]
+}
 
-	// We return the parsedReference
-	return !!context.dottedName
-		? (parse(nom, context) as ReferenceNode)
-		: context.parsedRules[dottedName]
+export function parseRules(
+	rules: Record<string, Rule | number | string | undefined>,
+	context: Context
+) {
+	for (const dottedName in rules) {
+		let rule = rules[dottedName]
+
+		if (typeof rule === 'string' || typeof rule === 'number') {
+			rule = { valeur: `${rule}` }
+		}
+		if (typeof rule !== 'object') {
+			throw new PublicodesError(
+				'SyntaxError',
+				`Rule ${dottedName} is incorrectly written. Please give it a proper value.`,
+				{ dottedName }
+			)
+		}
+		const copy = weakCopyObj(rule)
+		parseRule(dottedName, copy, context)
+	}
 }
 
 registerEvaluationFunction('rule', function evaluate(node) {

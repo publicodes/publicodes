@@ -1,6 +1,4 @@
-import { PublicodesError } from '.'
 import { ASTNode, ConstantNode, EvaluatedNode, Evaluation } from './AST/types'
-import parse from './parse'
 
 export const collectNodeMissing = (
 	node: EvaluatedNode | ASTNode
@@ -33,22 +31,23 @@ export const defaultNode = (nodeValue: Evaluation) =>
 		nodeKind: 'constant',
 	} as ConstantNode)
 
-export const parseObject = (objectShape, value, context) => {
-	const ret = {} as Record<string, EvaluatedNode | ASTNode>
-	for (const key in objectShape) {
-		const defaultValue = objectShape[key]
-		if (value[key] == undefined && !defaultValue) {
-			throw new PublicodesError(
-				'EngineError',
-				`Il manque une clé '${key}' dans ${JSON.stringify(value)} `,
-				{}
-			)
-		}
+export const notApplicableNode = {
+	nodeKind: 'constant',
+	nodeValue: null,
+	missingVariables: {},
+	type: undefined,
+	isNullable: true,
+} as ConstantNode & EvaluatedNode
 
-		const parsedValue =
-			value[key] != undefined ? parse(value[key], context) : defaultValue
-		ret[key] = parsedValue
-	}
+export const undefinedNode = {
+	nodeKind: 'constant',
+	nodeValue: undefined,
+	missingVariables: {},
+	type: undefined,
+	isNullable: false,
+} as ConstantNode & EvaluatedNode
 
-	return ret
-}
+export const undefinedNumberNode = {
+	...undefinedNode,
+	type: 'number',
+} as ConstantNode & EvaluatedNode
