@@ -26,14 +26,15 @@ définition des règles n'a pas d'importance.
 
 ## Chaînes de caractères littérales
 
-Pour qu'une valeur soit interprétée comme une chaîne de caractères littérale et non comme
-une référence à une autre règle, il faut que la chaîne de caractères soit
-encadrée d'apostrophes `'` ou de guillemets `"`. Dans certaines situations,
-notamment à la définition de la chaîne de caractères, ils devront être échappés
-pour qu'ils ne soient pas ignorés car considérés comme des éléments de la syntaxe Yaml.
+Pour qu'une valeur soit interprétée comme une chaîne de caractères littérale et
+non comme une référence à une autre règle, il faut que la chaîne de caractères
+soit encadrée d'apostrophes `'` ou de guillemets `"`. Ces symboles doivent être
+échappés dans certaines situations, pour qu'ils ne soient pas ignorés comme
+faisant partie de la syntaxe Yaml (cas notable : à la définition d'une règle
+avec pour valeur une chaîne de caractères).
 
-L'exemple suivant montre plusieurs façons de définir des chaînes de caractères
-littérales :
+L'exemple suivant montre plusieurs façons de définir et d'utiliser des chaînes
+de caractères littérales :
 
 ```publicodes
 # Différentes manières de définir une chaîne de caractère littérale
@@ -47,7 +48,7 @@ région 4:
 
 # Lors de comparaisons de chaînes de caractères, la syntaxe yaml échappe automatiquement
 # les guillemets.
-# Ces deux formulations sont équivalentes :
+# Ces deux formulations sont donc équivalentes :
 comparaison 1: région 1 = "Nouvelle-Aquitaine"
 comparaison 2: 'région 1 = "Nouvelle-Aquitaine"'
 
