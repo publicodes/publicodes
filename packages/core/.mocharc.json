@@ -5,5 +5,5 @@
     "no-warnings"
   ],
   "extension": ["js", "ts", "yaml"],
-  "parallel": false
+  "parallel": true
 }

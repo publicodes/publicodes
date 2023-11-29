@@ -113,12 +113,6 @@ remplacements:
       situation:
         exemple2: oui
       valeur attendue: 250
-    - nom: avec plusieurs remplacements existant pour une même variables
-      # ici, le remplacement de l'exemple 2 doit être effectué car plus précis que celui de l'exemple 1
-      situation:
-        exemple1: oui
-        exemple2: oui
-      valeur attendue: 70
     - nom: contextuel par exclusion
       situation:
         exemple3: oui
@@ -193,3 +187,66 @@ remplacement d'un nom de variable identique:
   formule: frais de repas
   exemples:
     - valeur attendue: 6
+
+# Ordre de remplacement en cas de conflits
+
+ordre de remplacement consistant:
+ordre de remplacement consistant . alphabétique par défaut:
+  valeur: a
+  avec:
+    a: 1
+    x:
+      remplace: a
+      valeur: 2
+    x . y:
+      remplace: a
+      valeur: 3
+
+  exemples:
+    - valeur attendue: 3 # car x . y remplace a
+
+ordre de remplacement consistant . avec définition de priorité:
+  valeur: a
+  avec:
+    a: 1
+    x:
+      remplace: a
+      valeur: 2
+      priorité: 1
+    y:
+      remplace: a
+      valeur: 3
+      priorité: 10
+
+  exemples:
+    - valeur attendue: 3 # car y remplace a
+
+ordre de remplacement consistant . avec définition de priorité et de priorité par défaut:
+  valeur: a
+  avec:
+    a: 1
+    x:
+      remplace: a
+      valeur: 2
+    y:
+      remplace: a
+      valeur: 3
+      priorité: 10
+
+  exemples:
+    - valeur attendue: 3 # car y remplace a
+
+ordre de remplacement consistant . lorsqu'ils sont définis sur la même variable:
+  valeur: a
+  avec:
+    a: 1
+    x:
+      valeur: oui
+      remplace:
+        - règle: a
+          dans: lorsqu'ils sont définis sur la même variable
+          par: 2
+        - règle: a
+          par: 3
+  exemples:
+    - valeur attendue: 3 # car c'est l'ordre de définition qui compte
