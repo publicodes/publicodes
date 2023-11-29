@@ -49,26 +49,12 @@ cotisations . retraite:
     - employeur
     - salarié
   avec:
-    employeur:
-      produit:
-        assiette: assiette
-        taux: 7%
-    salarié:
-      produit:
-        assiette: assiette
-        taux: 3%
+    employeur: assiette * 7%
+    salarié: assiette * 3%
 
-cotisations . chômage:
-  formule:
-    produit:
-      taux: 10%
-      assiette: assiette
+cotisations . chômage: 10% * assiette
 
-cotisations . maladie:
-  formule:
-    produit:
-      taux: 10%
-      assiette: assiette
+cotisations . maladie: 10% * assiette
 
 exemple1:
   par défaut: non
@@ -100,13 +86,13 @@ exemple4 . cotisations retraite:
     employeur:
       remplace: cotisations . retraite . employeur
       produit:
-        assiette: cotisations . assiette
-        taux: 12%
+        - cotisations . assiette
+        - 12%
     salarié:
       remplace: cotisations . retraite . salarié
       produit:
-        assiette: cotisations . assiette
-        taux: 8%
+        - cotisations . assiette
+        - 8%
 
 exemple5:
   par défaut: non

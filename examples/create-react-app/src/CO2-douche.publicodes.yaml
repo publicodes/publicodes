@@ -49,9 +49,8 @@ chauffage . énergie consommée par litre:
 
 chauffage . impact par litre:
   produit:
-    assiette: 0.0325 kWh/litre
-    facteur:
-      unité: kgCO2eq/kWh
+    - 0.0325 kWh/litre
+    - unité: kgCO2eq/kWh
       variations:
         - si: type = 'gaz'
           alors: 0.227
@@ -62,8 +61,8 @@ chauffage . impact par litre:
 
 douche . litres consommés:
   produit:
-    assiette: durée moyenne
-    facteur: débit
+    - durée moyenne
+    - débit
 
 douche . durée moyenne:
   question: Combien de temps dure votre douche en général ?

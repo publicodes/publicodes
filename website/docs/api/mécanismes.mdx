@@ -141,46 +141,30 @@ peut voter:
 
 ## produit
 
-C’est une multiplication adaptée pour exprimer au mieux les cotisations.
+Produit des facteurs de la liste.
 
-Sa propriété `assiette` est multipliée par un pourcentage `taux`, ou par un
-`facteur` quand ce nom est plus approprié.
-
-La multiplication peut être plafonnée : ce plafond sépare l’assiette en
-deux, et la partie au-dessus du plafond est tout simplement ignorée. Dans ce
-cas, elle se comporte comme une barème en taux marginaux à deux tranches, la
-deuxième au taux nul et allant de `plafond` à l’infini.
+Si un des facteur n’est pas applicable, le produit est non applicable.
 
 ### Utilisation
 
 ```json
 produit:
-  assiette: <valeur à multiplier>
-  taux: <taux à appliquer>
-  facteur: <facteur multiplicatif>
-  plafond: <plafond au-dessus duquel le taux appliqué est nul>
+  - <facteur 1>
+  - <facteur 2>
+  - ...
+
 ```
 
 ### Exemple
 
 ```publicodes
-cotisation:
+volume:
   produit:
-    assiette: 2000 €/mois
-    taux: 5%
+    - 2 m
+    - 3 m
+    - 50 cm
 ```
 
-#### assiette plafonnée
-
-```publicodes
-plafond sécurité sociale: 3000 €/mois
-assiette cotisation: 15000 €/mois
-chômage:
-  produit:
-    assiette: assiette cotisation
-    plafond: 400% * plafond sécurité sociale
-    taux: 4%
-```
 
 ## variations
 
@@ -355,10 +339,7 @@ même si le salaire est plus élevé dans la situation actuelle.
 ```publicodes
 brut: 2000€
 
-cotisations:
-  produit:
-    assiette: brut
-    taux: 20%
+cotisations: brut * 20%
 
 cotisations pour un SMIC:
   valeur: cotisations

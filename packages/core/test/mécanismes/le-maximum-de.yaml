@@ -2,11 +2,11 @@ Maximum:
   formule:
     le maximum de:
       - produit:
-          assiette: 100
-          taux: 1%
+          - 100
+          - 1%
       - produit:
-          assiette: 10
-          taux: 9%
+          - 10
+          - 9%
 
   exemples:
     - valeur attendue: 1

@@ -9,12 +9,8 @@ prix final:
 
 CSG non déductible:
   somme:
-    - produit:
-        assiette: 1000 €
-        taux: taux
-    - produit:
-        assiette: 200 €
-        taux: taux
+    - 1000 € * taux
+    - 200 € * taux
   avec:
     taux: 10%
   exemples:

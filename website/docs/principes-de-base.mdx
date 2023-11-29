@@ -160,24 +160,23 @@ peut également s'écrire en utilisant le mécanisme [`produit`](/docs/api/méca
 ```publicodes
 prix total:
   produit:
-    assiette: 9 €/repas
-    facteur: 5 repas
+    - 9 €/repas
+    - 5 repas
 ```
 
 Un des avantages de cette écriture est que la syntaxe hiérarchique de Yaml permet d'imbriquer les mécanismes :
 
 ```publicodes
-table: 12 personnes
+nombre de repas: 12 repas
 addition:
   somme:
     - 7 cafés * 1.5 €/cafés
     - produit: # Menu unique dégressif pour les groupes
-        assiette: table
-        facteur:
-          variations:
-          - si: table > 10 personnes
-            alors: 12 €/personnes
-          - sinon: 15 €/personnes
+        - nombre de repas
+        - variations:
+          - si: nombre de repas > 10 repas
+            alors: 12 €/menus
+          - sinon: 15 €/menus
 ```
 
 ### Mécanismes chaînés
@@ -211,8 +210,9 @@ Plusieurs propriétés sont reprises dans ces pages d'explications :
 - la **description** est affichée comme paragraphe d'introduction sur la page.
   On utilise le caractère `|` pour indiquer au parseur Yaml que la description est sur plusieurs lignes ;
 - une **note** de bas de page, affichée après la formule de calcul. Elle peut être sur plusieurs lignes également.
-<!-- TODO : expliquer les références nouvelle version- les **références** externes (documentation utile) affichées en
-  bas de page et qui sont constituées d'une liste de liens avec une description. -->
+
+{/* <!-- TODO : expliquer les références nouvelle version- les **références** externes (documentation utile) affichées en
+  bas de page et qui sont constituées d'une liste de liens avec une description. --> */}
 
 ```publicodes
 ticket resto:
@@ -471,8 +471,9 @@ On peut tout à fait imbriquer plusieurs niveaux de règles enfants :
 ```publicodes cotisation
 cotisation:
   produit:
-    assiette: assiette
-    taux: 2.8%
+    - valeur: assiette
+      plafond: plafond
+    - 2.8%
   avec: 
     plafond:
       le minimum de:
@@ -531,14 +532,15 @@ assiette: 2100 €
 PFSS: 4510 €
 cotisation:
   produit:
-    assiette: assiette
-    taux: 2.8%
+    - assiette
+    - taux
   plafond:
     le minimum de:
       - 50 % * PFSS
       - plafond forfaitaire
   avec:
     '[privé] plafond forfaitaire: 2000 €'
+    '[privé] taux: 2.8%'
 ```
 
 ### Comportement des règles privées

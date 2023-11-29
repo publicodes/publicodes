@@ -1,9 +1,9 @@
 {
-	"node-option": [
-		"experimental-specifier-resolution=node",
-		"loader=ts-node/esm/transpile-only",
-		"no-warnings"
-	],
-	"extension": ["js", "ts", "yaml"],
-	"parallel": true
+  "node-option": [
+    "experimental-specifier-resolution=node",
+    "loader=ts-node/esm/transpile-only",
+    "no-warnings"
+  ],
+  "extension": ["js", "ts", "yaml"],
+  "parallel": false
 }
