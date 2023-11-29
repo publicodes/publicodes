@@ -40,22 +40,23 @@ cotisations . assiette:
 cotisations:
   formule:
     somme:
-      - retraite . salarié
-      - retraite . employeur
+      - retraite
       - chômage
       - maladie
 
 cotisations . retraite:
-  formule:
-    produit:
-      composantes:
-        - attributs:
-            nom: employeur
-          taux: 8%
-        - attributs:
-            nom: salarié
-          taux: 2%
-      assiette: assiette
+  somme:
+    - employeur
+    - salarié
+  avec:
+    employeur:
+      produit:
+        assiette: assiette
+        taux: 7%
+    salarié:
+      produit:
+        assiette: assiette
+        taux: 3%
 
 cotisations . chômage:
   formule:
@@ -95,19 +96,17 @@ exemple4:
   par défaut: non
 
 exemple4 . cotisations retraite:
-  remplace: cotisations . retraite
-  formule:
-    produit:
-      assiette: cotisations . assiette
-      composantes:
-        - attributs:
-            remplace: cotisations . retraite . employeur
-            nom: employeur
-          taux: 12%
-        - attributs:
-            remplace: cotisations . retraite . salarié
-            nom: salarié
-          taux: 8%
+  avec:
+    employeur:
+      remplace: cotisations . retraite . employeur
+      produit:
+        assiette: cotisations . assiette
+        taux: 12%
+    salarié:
+      remplace: cotisations . retraite . salarié
+      produit:
+        assiette: cotisations . assiette
+        taux: 8%
 
 exemple5:
   par défaut: non
@@ -138,7 +137,7 @@ remplacements:
       situation:
         exemple3: oui
       valeur attendue: 210
-    - nom: variable avec composante
+    - nom: variable avec "avec"
       situation:
         exemple4: oui
       valeur attendue: 400

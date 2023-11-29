@@ -436,57 +436,8 @@ Les remplacement sont implémentés sous forme d'une substitution de variable. Q
 
 :::
 
-## Règle imbriquées
+## Définir une règle enfant directement depuis une règle parente
 
-### A l'intérieur des mécanismes : `nom`
-
-Si le mécanisme de remplacement permet de faire des substitutions de règles
-complètes, il est parfois utile de ne modifier qu'un seul paramètre d'une règle
-existante, par exemple modifier le facteur d'une multiplication tout en
-conservant le reste de sa définition inchangée.
-
-Une première manière de faire consiste à extraire le paramètre en question dans
-une règle indépendante, le rendant ainsi accessible et modifiable depuis
-l'extérieur :
-
-```publicodes prime
-prime:
-  multiplication:
-    assiette: 1000€
-    taux: taux
-
-prime . taux: 5%
-
-super-prime:
-  remplace: prime . taux
-  valeur: 10%
-```
-
-Ce code fonctionne mais il nous oblige a créer une règle `prime . taux` qui
-n'est pas pertinente en tant qu'entité autonome, uniquement pour pouvoir la modifier avec un `remplace`.
-
-On a aussi introduit une indirection dans la définition de la prime en remplaçant
-une ligne explicite `taux: 5%` par une référence vers une règle tierce
-`taux: taux`, qui est loin d'être aussi claire.
-
-Pour ce cas d'usage il est possible de définir une _règle imbriquée_.
-On garde la définition de la prime inchangée et on annote la valeur à laquelle
-on veut accéder depuis l'extérieur avec le mot clé `nom` :
-
-```publicodes prime
-prime:
-  multiplication:
-    assiette: 1000€
-    taux:
-      nom: taux
-      valeur: 5%
-
-super-prime:
-  remplace: prime . taux
-  valeur: 10%
-```
-
-### Directement sur la règle : `avec`
 
 ```publicodes prix-final
 prix final:
@@ -502,7 +453,7 @@ prix final . prix de base: 157€
 prix final . promotion: 20%
 ```
 
-Pour alléger cette écriture, on peut utiliser la notation `avec` qui permet de définir des règles imbriquées directement depuis une règle parente :
+Pour alléger cette écriture, on peut utiliser la notation `avec` qui permet de définir des règles enfants directement depuis une règle parente :
 
 ```publicodes
 prix final:
@@ -514,20 +465,21 @@ prix final:
 
 :::info
 
-On peut tout à fait combiner les deux écritures `nom` et `avec` :
+On peut tout à fait imbriquer plusieurs niveaux de règles enfants :
+
 
 ```publicodes cotisation
 cotisation:
   produit:
     assiette: assiette
     taux: 2.8%
-  plafond:
-    nom: plafond
-    le minimum de:
-      - 50 % * PFSS
-      - plafond forfaitaire
-    avec:
-      plafond forfaitaire: 2000 €
+  avec: 
+    plafond:
+      le minimum de:
+        - 50 % * PFSS
+        - plafond forfaitaire
+      avec:
+        plafond forfaitaire: 2000 €
 
 PFSS: 3400 €
 assiette: 2000 €
@@ -591,7 +543,7 @@ cotisation:
 
 ### Comportement des règles privées
 
-- Les règles privées peuvent être référencées depuis toutes les règles située dans l'espace de nom parent direct. Par exemple, si la règle a . b est privée, elle peut être référencée depuis a . b . c, a . x, a, mais pas d ou d . c.
+- Les règles privées peuvent être référencées depuis toutes les règles située dans l'espace de nom parent direct. Par exemple, si la règle `a . b` est privée, elle peut être référencée depuis `a . b . c`, `a . x`, `a`, mais pas par `d` ou `d . c`.
 - Les règles privées ne possèdent pas de page de documentation dédiées
 - L'appel de getRule sur une règle privée jette une erreur
 - Elles ne sont pas listées dans `getParsedRules`

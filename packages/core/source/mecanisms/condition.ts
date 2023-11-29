@@ -51,7 +51,7 @@ const evaluate: EvaluationFunction<'condition'> = function (node) {
 	}
 	const unit = evaluation.unit ?? (alors as any).unit
 	return {
-		...evaluation,
+		nodeValue: evaluation.nodeValue,
 		missingVariables: mergeMissing(
 			bonus(condition.missingVariables),
 			evaluation.missingVariables

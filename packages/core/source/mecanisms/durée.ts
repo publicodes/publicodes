@@ -2,7 +2,8 @@ import { EvaluationFunction } from '..'
 import { ASTNode, Unit } from '../AST/types'
 import { convertToDate, convertToString } from '../date'
 import { registerEvaluationFunction } from '../evaluationFunctions'
-import { defaultNode, mergeAllMissing, parseObject } from '../evaluationUtils'
+import { defaultNode, mergeAllMissing } from '../evaluationUtils'
+import parse from '../parse'
 import { parseUnit } from '../units'
 
 export type DuréeNode = {
@@ -12,12 +13,6 @@ export type DuréeNode = {
 	}
 	unit: Unit
 	nodeKind: 'durée'
-}
-
-const todayString = convertToString(new Date())
-const objectShape = {
-	depuis: defaultNode(todayString),
-	"jusqu'à": defaultNode(todayString),
 }
 const evaluate: EvaluationFunction<'durée'> = function (node) {
 	const from = this.evaluateNode(node.explanation.depuis)
@@ -47,8 +42,12 @@ const evaluate: EvaluationFunction<'durée'> = function (node) {
 	}
 }
 
+const today = defaultNode(convertToString(new Date()))
 export default (v, context) => {
-	const explanation = parseObject(objectShape, v, context)
+	const explanation = {
+		depuis: parse(v.depuis ?? today, context),
+		"jusqu'à": parse(v["jusqu'à"] ?? today, context),
+	}
 	return {
 		explanation,
 		unit: parseUnit('jour'),

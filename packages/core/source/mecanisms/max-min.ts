@@ -1,8 +1,6 @@
 import { PublicodesExpression } from '..'
-import {
-	createParseInlinedMecanismWithArray,
-	notApplicableNode,
-} from './inlineMecanism'
+import { notApplicableNode } from '../evaluationUtils'
+import { createParseInlinedMecanismWithArray } from './inlineMecanism'
 
 export const parseMaximumDe = createParseInlinedMecanismWithArray(
 	'le maximum de',
@@ -31,8 +29,8 @@ export const parseMaximumDe = createParseInlinedMecanismWithArray(
 					},
 				},
 				avec: {
-					'[privé] $INTERNAL valeur': value,
-					'[privé] $INTERNAL acc': acc,
+					'[privé] $INTERNAL valeur': { valeur: value },
+					'[privé] $INTERNAL acc': { valeur: acc },
 				},
 			}),
 			notApplicableNode
@@ -66,8 +64,8 @@ export const parseMinimumDe = createParseInlinedMecanismWithArray(
 					},
 				},
 				avec: {
-					'[privé] $INTERNAL valeur': value,
-					'[privé] $INTERNAL acc': acc,
+					'[privé] $INTERNAL valeur': { valeur: value },
+					'[privé] $INTERNAL acc': { valeur: acc },
 				},
 			}),
 			notApplicableNode

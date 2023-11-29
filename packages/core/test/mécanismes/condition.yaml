@@ -24,6 +24,9 @@ condition non applicable:
     valeur attendue: null
 
 x:
+  titre: 'yay'
+  question: why ?
+
 condition non définie:
   condition:
     si: x

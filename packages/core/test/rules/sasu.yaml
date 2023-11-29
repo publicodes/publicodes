@@ -30,12 +30,13 @@ dividendes:
 dividendes . brut: bénéfice - impôt sur les sociétés
 dividendes . net: brut - prélèvement forfaitaire unique
 dividendes . prélèvement forfaitaire unique:
-  formule:
-    produit:
-      assiette: brut
-      composantes:
-        - taux: 17.2%
-        - taux: 12.8%
+  somme:
+    - produit:
+        assiette: brut
+        taux: 17.2%
+    - produit:
+        assiette: brut
+        taux: 12.8%
 
 salaire total: chiffre affaires * répartition salaire sur dividendes
 revenu net après impôt:

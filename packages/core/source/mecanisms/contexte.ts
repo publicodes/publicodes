@@ -1,10 +1,10 @@
 import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
+import { notApplicableNode } from '../evaluationUtils'
 import parse from '../parse'
 import { ReferenceNode } from '../reference'
 import { serializeUnit } from '../units'
-import { notApplicableNode } from './inlineMecanism'
 
 export type ContextNode = {
 	explanation: {

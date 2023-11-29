@@ -18,9 +18,8 @@ expression avec parenthèses sur plusieurs lignes:
     - valeur attendue: 13.875
 
 très très long nom de variable que l'on voudrait pouvoir appeler sur plusieurs lignes:
-  valeur:
-    nom: même si cela peut-être troublant
-    valeur: oui
+  avec:
+    même si cela peut-être troublant: oui
 
 nom de variables sur plusieurs lignes:
   valeur: |

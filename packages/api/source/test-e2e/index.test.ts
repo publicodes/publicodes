@@ -186,7 +186,6 @@ describe('e2e koa middleware', () => {
 			  "coucou": {
 			    "nodeKind": "rule",
 			    "rawNode": {
-			      "nom": "coucou",
 			      "valeur": "0",
 			    },
 			    "replacements": [],
@@ -196,7 +195,6 @@ describe('e2e koa middleware', () => {
 			  "coucou . j'ai des caractères spéciaux": {
 			    "nodeKind": "rule",
 			    "rawNode": {
-			      "nom": "coucou . j'ai des caractères spéciaux",
 			      "valeur": "'ok'",
 			    },
 			    "replacements": [],
@@ -221,7 +219,6 @@ describe('e2e koa middleware', () => {
 			{
 			  "nodeKind": "rule",
 			  "rawNode": {
-			    "nom": "coucou",
 			    "valeur": "0",
 			  },
 			  "replacements": [],
@@ -245,7 +242,6 @@ describe('e2e koa middleware', () => {
 			{
 			  "nodeKind": "rule",
 			  "rawNode": {
-			    "nom": "coucou . j'ai des caractères spéciaux",
 			    "valeur": "'ok'",
 			  },
 			  "replacements": [],

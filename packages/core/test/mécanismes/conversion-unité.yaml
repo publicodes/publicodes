@@ -126,31 +126,6 @@ Conversion dans une somme compliquée:
         assiette annuelle: 20000
       valeur attendue: 130
 
-maladie:
-  formule:
-    produit:
-      assiette: assiette annuelle
-      composantes:
-        - attributs:
-            nom: employeur
-          taux: 15%
-        - attributs:
-            nom: salarié
-          taux: 5%
-          plafond: 1000 €/mois
-
-Conversion avec composantes:
-  unité: €/mois
-  formule:
-    somme:
-      - maladie . salarié
-      - retraite
-      - mutuelle
-  exemples:
-    - situation:
-        assiette annuelle: 20000
-      valeur attendue: 180
-
 Conversion dans un abattement:
   formule:
     valeur: 1000€/an

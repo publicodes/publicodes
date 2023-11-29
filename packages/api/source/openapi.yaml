@@ -122,8 +122,6 @@ components:
         rawNode:
           type: object
           properties:
-            nom:
-              type: string
             question:
               type: string
           additionalProperties:
