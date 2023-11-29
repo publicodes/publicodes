@@ -7,13 +7,14 @@
 
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
+import { parse } from 'yaml'
 import Engine from '../source/index'
 import { Rule } from '../source/rule'
 import { parseUnit } from '../source/units'
 import testSuites from './mécanismes/index'
-import { parse } from 'yaml'
 
 testSuites.forEach(([suiteName, suite]) => {
+	// if (suiteName !== 'avec') return
 	describe(`Mécanisme ${suiteName}`, () => {
 		const engine = new Engine(parse(suite))
 		Object.entries(engine.getParsedRules())

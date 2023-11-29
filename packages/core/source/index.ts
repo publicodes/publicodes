@@ -222,9 +222,9 @@ export default class Engine<Name extends string = string> {
 		if (cachedNode) {
 			return cachedNode
 		}
-		this.context = {
-			...this.context,
-			...parsePublicodes(
+		this.context = Object.assign(
+			this.context,
+			parsePublicodes(
 				{
 					'[privé] $EVALUATION':
 						value && typeof value === 'object' && 'nodeKind' in value
@@ -232,8 +232,8 @@ export default class Engine<Name extends string = string> {
 							: value,
 				},
 				this.context
-			),
-		}
+			)
+		)
 		this.checkExperimentalRule(this.context.parsedRules['$EVALUATION'])
 		this.cache._meta = emptyCache()._meta
 

@@ -1,11 +1,11 @@
 import { EvaluationFunction, PublicodesError } from '..'
 import { EvaluatedNode, Unit } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
+import { undefinedNumberNode } from '../evaluationUtils'
 import parse from '../parse'
 import { Context } from '../parsePublicodes'
 import { ReferenceNode } from '../reference'
 import uniroot from '../uniroot'
-import { undefinedNumberNode } from './inlineMecanism'
 
 export type InversionNode = {
 	explanation: {

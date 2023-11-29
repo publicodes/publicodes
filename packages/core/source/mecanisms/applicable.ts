@@ -1,4 +1,5 @@
-import { createParseInlinedMecanism, notApplicableNode } from './inlineMecanism'
+import { notApplicableNode } from '../evaluationUtils'
+import { createParseInlinedMecanism } from './inlineMecanism'
 
 export default createParseInlinedMecanism(
 	'applicable si',

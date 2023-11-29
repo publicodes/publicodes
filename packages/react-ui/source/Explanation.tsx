@@ -3,7 +3,6 @@ import { useEngine } from './hooks'
 import Arrondi from './mecanisms/Arrondi'
 import Avec from './mecanisms/Avec'
 import Barème from './mecanisms/Barème'
-import Composantes from './mecanisms/Composantes'
 import Condition from './mecanisms/Condition'
 import Contexte from './mecanisms/Contexte'
 import DefaultInlineMecanism from './mecanisms/DefaultInlineMecanism'
@@ -32,7 +31,6 @@ const UIComponents = {
 	arrondi: Arrondi,
 	barème: Barème,
 	avec: Avec,
-	composantes: Composantes,
 	durée: Durée,
 	produit: Product,
 	grille: Grille,

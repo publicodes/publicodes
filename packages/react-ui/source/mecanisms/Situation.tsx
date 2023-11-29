@@ -1,7 +1,7 @@
 import { RuleNode } from 'publicodes/source'
 import { useContext } from 'react'
-import { EngineContext } from '../contexts'
 import Explanation from '../Explanation'
+import { EngineContext } from '../contexts'
 import { InfixMecanism } from './common'
 
 export default function MecanismSituation({ sourceMap }) {

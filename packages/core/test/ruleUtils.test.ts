@@ -26,9 +26,7 @@ function createDummyRule(
 			nodeKind: 'rule',
 			virtualRule: false,
 			private: false,
-			rawNode: {
-				nom: dottedName,
-			},
+			rawNode: {},
 			replacements: [],
 			explanation: {} as any,
 			suggestions: {},

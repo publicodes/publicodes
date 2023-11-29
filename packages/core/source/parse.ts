@@ -5,7 +5,6 @@ import applicable from './mecanisms/applicable'
 import arrondi from './mecanisms/arrondi'
 import avec from './mecanisms/avec'
 import barème from './mecanisms/barème'
-import { decompose } from './mecanisms/composantes'
 import condition from './mecanisms/condition'
 import contexte from './mecanisms/contexte'
 import durée from './mecanisms/durée'
@@ -36,11 +35,10 @@ import toutesCesConditions from './mecanisms/toutes-ces-conditions'
 import uneDeCesConditions from './mecanisms/une-de-ces-conditions'
 import unité from './mecanisms/unité'
 import variableManquante from './mecanisms/variablesManquantes'
-import variations, { devariate } from './mecanisms/variations'
+import variations from './mecanisms/variations'
 import { parseExpression } from './parseExpression'
 import { Context } from './parsePublicodes'
 import parseReference from './reference'
-import parseRule from './rule'
 
 export default function parse(rawNode, context: Context): ASTNode {
 	if (rawNode == undefined) {
@@ -67,9 +65,6 @@ Utilisez leur contrepartie française : 'oui' / 'non'`,
 			: parseExpression(rawNode, context.dottedName)
 	if ('nodeKind' in node) {
 		return node
-	}
-	if ('nom' in node) {
-		return parseRule(node, context)
 	}
 
 	return {
@@ -123,13 +118,6 @@ Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`,
 		)
 	}
 	try {
-		// Mécanisme de composantes. Voir mécanismes.md/composantes
-		if (values?.composantes) {
-			return decompose(mecanismName, values, context)
-		}
-		if (values?.variations && Object.values(values).length > 1) {
-			return devariate(mecanismName, values, context)
-		}
 		return parseFn(values, context)
 	} catch (e) {
 		if (e instanceof PublicodesError) {

@@ -121,49 +121,6 @@ plusieurs variations et un cas défaut:
         effectif plafond: 60
       valeur attendue: 1
 
-variations au sein d'un mécanisme:
-  formule:
-    produit:
-      assiette: 100
-      variations:
-        - si: statut cadre
-          alors:
-            taux: 8%
-        - si: statut cadre != oui
-          alors:
-            taux: 5%
-
-  exemples:
-    - nom: Non cadre
-      situation:
-        statut cadre: non
-      valeur attendue: 5
-    - nom: Cadre
-      situation:
-        statut cadre: oui
-      valeur attendue: 8
-
-variations au sein d'un mécanisme avec sinon:
-  formule:
-    produit:
-      assiette: 100
-      variations:
-        - si: statut cadre
-          alors:
-            taux: 8%
-        - sinon:
-            taux: 5%
-
-  exemples:
-    - nom: Non cadre
-      situation:
-        statut cadre: non
-      valeur attendue: 5
-    - nom: Cadre
-      situation:
-        statut cadre: oui
-      valeur attendue: 8
-
 variations sans unité:
   unité: '%'
   formule:
@@ -174,22 +131,3 @@ variations sans unité:
   exemples:
     - valeur attendue: 7
       unité attendue: '%'
-
-taux réduit:
-variations dans un produit:
-  formule:
-    produit:
-      assiette: 2300 €/mois
-      variations:
-        - si: taux réduit
-          alors:
-            taux: 3.45%
-        - sinon:
-            taux: 5.25%
-  exemples:
-    - situation:
-        taux réduit: oui
-      valeur attendue: 79.35
-    - situation:
-        taux réduit: non
-      valeur attendue: 120.75
