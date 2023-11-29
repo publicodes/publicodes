@@ -4,8 +4,8 @@ import Engine from '../source/index'
 import { parseYaml } from './utils'
 
 describe('inversions', () => {
-	it('should handle basic inversion', () => {
-		const rules = parseYaml`
+  it('should handle basic inversion', () => {
+    const rules = parseYaml`
         a: b + 10
 
         b:
@@ -13,18 +13,14 @@ describe('inversions', () => {
             avec:
               - a
       `
-		const result = new Engine(rules).setSituation({ a: 30 }).evaluate('b')
+    const result = new Engine(rules).setSituation({ a: 30 }).evaluate('b')
 
-		expect(result.nodeValue).to.be.closeTo(30 - 10, 0.0001 * 2000)
-	})
+    expect(result.nodeValue).to.be.closeTo(30 - 10, 0.0001 * 2000)
+  })
 
-	it('should handle simple inversion', () => {
-		const rules = parseYaml`
-        net:
-          formule:
-            produit:
-              assiette: brut
-              taux: 77%
+  it('should handle simple inversion', () => {
+    const rules = parseYaml`
+        net: brut * 77%
 
         brut:
           formule:
@@ -33,21 +29,16 @@ describe('inversions', () => {
               avec:
                 - net
       `
-		const result = new Engine(rules)
-			.setSituation({ net: '2000 €' })
-			.evaluate('brut')
+    const result = new Engine(rules)
+      .setSituation({ net: '2000 €' })
+      .evaluate('brut')
 
-		expect(result.nodeValue).to.be.closeTo(2000 / (77 / 100), 0.0001 * 2000)
-	})
+    expect(result.nodeValue).to.be.closeTo(2000 / (77 / 100), 0.0001 * 2000)
+  })
 
-	it('should handle inversion with value at 0', () => {
-		const rules = parseYaml`
-        net:
-          formule:
-            produit:
-              assiette: brut
-              taux: 77%
-
+  it('should handle inversion with value at 0', () => {
+    const rules = parseYaml`
+        net: brut * 77%
         brut:
           formule:
             inversion numérique:
@@ -55,23 +46,22 @@ describe('inversions', () => {
               avec:
                 - net
       `
-		const result = new Engine(rules)
-			.setSituation({ net: '0 €' })
-			.evaluate('brut')
-		expect(result.nodeValue).to.be.closeTo(0, 0.0001)
-	})
+    const result = new Engine(rules)
+      .setSituation({ net: '0 €' })
+      .evaluate('brut')
+    expect(result.nodeValue).to.be.closeTo(0, 0.0001)
+  })
 
-	it('should handle inversions with missing variables', () => {
-		const rules = parseYaml`
+  it('should handle inversions with missing variables', () => {
+    const rules = parseYaml`
         net:
-          formule:
-            produit:
-              assiette: assiette
-              taux:
-                variations:
-                - si: cadre
-                  alors: 80%
-                - sinon: 70%
+          produit:
+            - assiette
+            - # taux
+              variations:
+              - si: cadre
+                alors: 80%
+              - sinon: 70%
 
         brut:
           formule:
@@ -81,7 +71,6 @@ describe('inversions', () => {
                 - net
         cadre:
         assiette:
-          formule:
             somme:
               - 1200
               - brut
@@ -92,22 +81,21 @@ describe('inversions', () => {
         taxe:
           formule:
             produit:
-              assiette: 1200 €
-              taux: 
-                variations:
+              - 1200 €
+              - variations:
                 - si: cadre
                   alors: 80%
                 - sinon: 70%
       `
-		const result = new Engine(rules)
-			.setSituation({ net: '2000 €' })
-			.evaluate('brut')
-		expect(result.nodeValue).to.be.undefined
-		expect(Object.keys(result.missingVariables)).to.include('cadre')
-	})
+    const result = new Engine(rules)
+      .setSituation({ net: '2000 €' })
+      .evaluate('brut')
+    expect(result.nodeValue).to.be.undefined
+    expect(Object.keys(result.missingVariables)).to.include('cadre')
+  })
 
-	it('should reset cache after a failed inversion', () => {
-		const rules = parseYaml`
+  it('should reset cache after a failed inversion', () => {
+    const rules = parseYaml`
 			net:
 		      variations:
 		        - si: assiette < 100
@@ -119,28 +107,22 @@ describe('inversions', () => {
 			    avec:
 			      - net
 		`
-		const engine = new Engine(rules)
-		engine.setSituation({ net: 150 }).evaluate('brut')
-		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
-	})
+    const engine = new Engine(rules)
+    engine.setSituation({ net: 150 }).evaluate('brut')
+    expect(engine.evaluate('assiette').nodeValue).to.be.undefined
+  })
 
-	it("shouldn't report a missing salary if another salary was input", () => {
-		const rules = parseYaml`
+  it("shouldn't report a missing salary if another salary was input", () => {
+    const rules = parseYaml`
         net:
-          formule:
-            produit:
-              assiette: assiette
-              taux:
-                variations:
-                  - si: cadre
-                    alors: 80%
-                  - sinon: 70%
+          produit:
+            - assiette
+            - variations:
+              - si: cadre
+                alors: 80%
+              - sinon: 70%
 
-        total:
-          formule:
-            produit:
-              assiette: assiette
-              taux: 150%
+        total: assiette * 150%
 
         brut:
           formule:
@@ -156,15 +138,15 @@ describe('inversions', () => {
           formule: 67 + brut
 
       `
-		const result = new Engine(rules)
-			.setSituation({ net: '2000 €', cadre: 'oui' })
-			.evaluate('total')
-		expect(result.nodeValue).to.be.closeTo(3750, 1)
-		expect(result.missingVariables).to.be.empty
-	})
+    const result = new Engine(rules)
+      .setSituation({ net: '2000 €', cadre: 'oui' })
+      .evaluate('total')
+    expect(result.nodeValue).to.be.closeTo(3750, 1)
+    expect(result.missingVariables).to.be.empty
+  })
 
-	it('should accept syntax without `avec`', () => {
-		const rules = parseYaml`
+  it('should accept syntax without `avec`', () => {
+    const rules = parseYaml`
 			net:
 		      variations:
 		        - si: assiette < 100
@@ -174,8 +156,8 @@ describe('inversions', () => {
 			brut:
 			  inversion numérique: net
 		`
-		const engine = new Engine(rules)
-		engine.setSituation({ net: 150 }).evaluate('brut')
-		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
-	})
+    const engine = new Engine(rules)
+    engine.setSituation({ net: 150 }).evaluate('brut')
+    expect(engine.evaluate('assiette').nodeValue).to.be.undefined
+  })
 })

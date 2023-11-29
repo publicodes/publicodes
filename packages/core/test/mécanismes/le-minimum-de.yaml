@@ -2,11 +2,11 @@ Minimum:
   formule:
     le minimum de:
       - produit:
-          assiette: 100
-          taux: 1%
+          - 100
+          - 1%
       - produit:
-          assiette: 10
-          taux: 9%
+          - 10
+          - 9%
 
   exemples:
     - valeur attendue: 0.9
@@ -18,11 +18,11 @@ Minimum avec variables:
   formule:
     le minimum de:
       - produit:
-          assiette: assiette
-          taux: 1%
+          - assiette
+          - 1%
       - produit:
-          assiette: assiette
-          taux: 9%
+          - assiette
+          - 9%
 
   exemples:
     - situation:

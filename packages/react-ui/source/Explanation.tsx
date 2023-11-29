@@ -12,7 +12,6 @@ import EstNonDéfini from './mecanisms/EstNonDéfini'
 import Grille from './mecanisms/Grille'
 import InversionNumérique from './mecanisms/InversionNumérique'
 import Operation from './mecanisms/Operation'
-import Product from './mecanisms/Product'
 import Reference from './mecanisms/Reference'
 import Replacement from './mecanisms/Replacement'
 import ReplacementRule from './mecanisms/ReplacementRule'
@@ -32,7 +31,6 @@ const UIComponents = {
 	barème: Barème,
 	avec: Avec,
 	durée: Durée,
-	produit: Product,
 	grille: Grille,
 	inversion: InversionNumérique,
 	operation: Operation,

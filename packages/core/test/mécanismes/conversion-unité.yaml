@@ -109,11 +109,10 @@ mutuelle:
   formule: 30 €/mois
 
 retraite:
-  formule:
-    produit:
-      assiette: assiette annuelle
-      taux: 10%
+  produit:
+    - valeur: assiette annuelle
       plafond: 12 k€/an
+    - 10%
 
 Conversion dans une somme compliquée:
   formule:
@@ -150,8 +149,8 @@ assiette cotisations:
 prévoyance cadre:
   formule:
     produit:
-      assiette: assiette cotisations
-      taux: 1.5%
+      - assiette cotisations
+      - 1.5%
 
 Conversion avec plusieurs échelons:
   formule:

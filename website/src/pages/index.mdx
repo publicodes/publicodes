@@ -21,7 +21,9 @@ salaire net: salaire brut - cotisations salariales
 
 cotisations salariales:
   produit:
-    assiette: salaire brut
+    - salaire brut
+    - taux
+  avec: 
     taux: 21.7%
 
 salaire brut: 2300 €/mois
