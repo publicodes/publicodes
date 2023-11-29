@@ -1,3 +1,3 @@
-export * from './icons'
 export * from './Accordion'
 export * from './Code'
+export * from './icons'

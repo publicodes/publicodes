@@ -1,7 +1,7 @@
-import { Logger, ParsedRules } from '.'
+import { Logger, ParsedRules, PublicodesError } from '.'
 import { makeASTTransformer, makeASTVisitor } from './AST'
 import { ASTNode } from './AST/types'
-import { PublicodesInternalError, warning } from './error'
+import { PublicodesInternalError } from './error'
 import { defaultNode, notApplicableNode } from './evaluationUtils'
 import parse from './parse'
 import { Context, ReferencesMaps, RulesReplacements } from './parsePublicodes'
@@ -11,9 +11,10 @@ import { mergeWithArray } from './utils'
 
 export type ReplacementRule = {
 	nodeKind: 'replacementRule'
-	definitionRule: ASTNode & { nodeKind: 'reference' }
+	definitionRule: ASTNode & { nodeKind: 'reference' } & { dottedName: string }
 	replacedReference: ASTNode & { nodeKind: 'reference' }
 	replacementNode: ASTNode
+	priority?: number
 	whiteListedNames: Array<ASTNode & { nodeKind: 'reference' }>
 	rawNode: any
 	blackListedNames: Array<ASTNode & { nodeKind: 'reference' }>
@@ -61,10 +62,20 @@ export function parseReplacements(
 					Array.isArray(dottedName) ? dottedName : [dottedName]
 				)
 				.map((refs) => refs.map((ref) => parse(ref, context)))
-
+			if (
+				replacement.priorité != null &&
+				(typeof replacement.priorité !== 'number' || replacement.priorité < 0)
+			) {
+				throw new PublicodesError(
+					'SyntaxError',
+					'La priorité du remplacement doit être un nombre positif',
+					context
+				)
+			}
 			return {
 				nodeKind: 'replacementRule',
 				rawNode: replacement,
+				priority: replacement.priorité,
 				definitionRule: parse(context.dottedName, context),
 				replacedReference,
 				replacementNode,
@@ -259,36 +270,22 @@ function replace(
 						!node.contextDottedName.startsWith(name.dottedName as string)
 				)
 		)
-		.sort((r1, r2) => {
-			// Replacement with whitelist conditions have precedence over the others
-			const criterion1 =
-				+!!r2.whiteListedNames.length - +!!r1.whiteListedNames.length
-			// Replacement with blacklist condition have precedence over the others
-			const criterion2 =
-				+!!r2.blackListedNames.length - +!!r1.blackListedNames.length
-			return criterion1 || criterion2
+		.reverse()
+		.sort((a, b) => {
+			const result = (b.priority ?? 0) - (a.priority ?? 0)
+			if (result !== 0) {
+				return result
+			}
+			return b.definitionRule.dottedName.localeCompare(
+				a.definitionRule.dottedName
+			)
 		})
+
 	if (!applicableReplacements.length) {
 		return node
 	}
-	if (applicableReplacements.length > 1) {
-		const displayVerboseWarning = false
-		if (displayVerboseWarning) {
-			warning(
-				logger,
-				`
-				Il existe plusieurs remplacements pour la référence '${node.dottedName}'.
-				Lors de l'execution, ils seront résolus dans l'odre suivant :
-				${applicableReplacements.map(
-					(replacement) =>
-						`\n\t- Celui définit dans la règle '${replacement.definitionRule.dottedName}'`
-				)}
-					`,
-				{ dottedName: node.contextDottedName }
-			)
-		}
-	}
 
+	applicableReplacements
 	const applicableReplacementsCacheKey = applicableReplacements
 		.map((n) => n.remplacementRuleId)
 		.join('-')

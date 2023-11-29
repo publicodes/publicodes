@@ -393,11 +393,73 @@ temps modifié:
   formule: temps de préparation + temps de cuisson
 ```
 
-:::info Note
+:::caution Attention
 
-Les remplacement sont implémentés sous forme d'une substitution de variable. Quand une règle en remplace une autre, c'est toutes les références à la règle remplacée qui vont être changées par la valeur de remplacement.
+Un remplacement remplace **les références** à une règle, et non la règle elle-même. 
+Dans l'exemple ci-dessus, la règle `temps de préparation` **n'est pas modifiée** : ce sont ses références qui le sont.
 
+Les remplacements sont implémentés sous forme d'une substitution de variable.
 :::
+
+### Remplacement défini dans une règle non applicable
+
+Si le remplacement est défini dans une règle dont la valeur est `non` ou `non applicable`, alors ce dernier n'est pas appliqué : 
+
+```publicodes
+a: 1
+b:
+  remplace: 
+    règle: a 
+    par: 5 
+  valeur: non
+
+c:
+  applicable si: non
+  remplace: a 
+  valeur: 10 
+
+résultat: a # vaut 1 car non remplacé
+```
+
+### Ordre de priorité 
+
+Lorsque plusieurs remplacements sont applicables pour une référence, l'ordre de priorité est le suivant : 
+
+1. Le remplacement avec la `priorité` la plus haute est utilisée
+
+  ```publicodes
+  a: 1
+
+  b: 
+    remplace: 
+      règle: a
+      priorité: 2
+    valeur: 5
+  
+  c: 
+    remplace: a
+    valeur: 10
+
+  résultat: a 
+  # vaut 5 car le remplacement défini dans `b` a une priorité 
+  # plus élevée que celui défini dans `c` (par défaut à zéro)
+  ```
+
+2. Sinon, c'est le nom de la règle de définition qui est utilisé (comparaison lexicographique)
+
+  ```publicodes
+  a: 1
+  b: 
+    remplace: a
+    valeur: 5
+  b . c: 
+    remplace: a
+    valeur: 10
+
+  résultat: a 
+  # vaut 10 car `b . c` est situé après `b` dans l'ordre alphabétique
+  ``` 
+
 
 ## Définir une règle enfant directement depuis une règle parente
 
@@ -411,14 +473,16 @@ Dans cet exemple, si l'on veut extraire le prix et la promotion dans des variabl
 
 ```publicodes prix-final
 prix final:
-   valeur: prix de base * (100% - promotion)
+   valeur: prix de base * (100% - réduction)
 prix final . prix de base: 157€
-prix final . promotion: 20%
+prix final . réduction: 20%
 ```
 
 Pour alléger cette écriture, on peut utiliser la notation `avec` qui permet de définir des règles enfants directement depuis une règle parente :
 
 ```publicodes
+# Equivalent à l'exemple précédent
+
 prix final:
    valeur: prix de base * (100% - réduction)
    avec:
@@ -426,27 +490,18 @@ prix final:
      réduction: 20%
 ```
 
-:::info
+:::tip
 
-On peut tout à fait imbriquer plusieurs niveaux de règles enfants :
+On peut tout à fait imbriquer plusieurs niveaux de règles :
 
-
-```publicodes cotisation
-cotisation:
-  produit:
-    - valeur: assiette
-      plafond: plafond
-    - 2.8%
+```publicodes
+a:
+  valeur: b
   avec: 
-    plafond:
-      le minimum de:
-        - 50 % * PFSS
-        - plafond forfaitaire
+    b:
+      valeur: c
       avec:
-        plafond forfaitaire: 2000 €
-
-PFSS: 3400 €
-assiette: 2000 €
+        c: 2000 €
 
 ```
 
@@ -492,18 +547,15 @@ permettent d'améliorer la maintenabilité sans sacrifier la lisibilité de la b
 
 ```publicodes
 assiette: 2100 €
-PFSS: 4510 €
 cotisation:
   produit:
     - assiette
     - taux
-  plafond:
-    le minimum de:
-      - 50 % * PFSS
-      - plafond forfaitaire
   avec:
-    '[privé] plafond forfaitaire: 2000 €'
-    '[privé] taux: 2.8%'
+    '[privé] taux': 2.8% 
+
+# Erreur : la règle `cotisation . taux` n'est pas accessible depuis `résultat`
+résultat: cotisation . taux
 ```
 
 ### Comportement des règles privées
