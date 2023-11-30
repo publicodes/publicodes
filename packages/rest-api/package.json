@@ -1,0 +1,65 @@
+{
+	"name": "@publicodes/rest-api",
+	"version": "1.0.0-beta.77",
+	"description": "Publicodes API",
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"require": "./dist/index.cjs",
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"scripts": {
+		"test": "vitest run",
+		"test:watch": "vitest watch",
+		"test:type": "tsc --noEmit",
+		"test:swagger": "swagger-cli validate ./src/openapi.yaml",
+		"dev": "codegen:dev && tsup-node --shims --watch & NODE_PATH=./ nodemon -d 500ms ./example.ts",
+		"build": "tsup-node --shims && run copy:openapi",
+		"copy:openapi": "cp ./src/openapi.codegen.json ./dist/openapi.json",
+		"codegen": "swagger-cli bundle ./src/openapi.yaml -o ./src/openapi.codegen.json",
+		"codegen:validate": "swagger-cli validate ./src/openapi.yaml",
+		"codegen:dev": "nodemon -d 500ms -w ./src/openapi.yaml -x \"yarn build:openapi\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/betagouv/publicodes.git",
+		"directory": "packages/api"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/betagouv/publicodes/issues"
+	},
+	"homepage": "https://github.com/betagouv/publicodes#readme",
+	"dependencies": {
+		"@koa/cors": "^3.4.3",
+		"@koa/router": "^10.1.1",
+		"koa": "^2.14.2",
+		"koa-body": "^5.0.0",
+		"openapi-validator-middleware": "^3.2.6"
+	},
+	"peerDependencies": {
+		"publicodes": "^1.0.0-beta.47"
+	},
+	"devDependencies": {
+		"@apidevtools/swagger-cli": "^4.0.4",
+		"@types/koa": "^2.13.9",
+		"@types/koa__cors": "^3.3.1",
+		"@types/koa__router": "^8.0.11",
+		"@types/node": "^18.18.0",
+		"chai-http": "^4.4.0",
+		"nodemon": "^3.0.1",
+		"publicodes": "workspace:^",
+		"ts-node": "^10.9.1",
+		"tsup": "^7.2.0",
+		"typescript": "^5.2.2",
+		"vite": "^4.4.9",
+		"vitest": "^0.34.5",
+		"wait-on": "^6.0.1",
+		"yaml": "^2.3.2"
+	}
+}

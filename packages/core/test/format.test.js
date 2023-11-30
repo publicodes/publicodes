@@ -1,6 +1,6 @@
 import { expect } from 'chai'
-import { parseUnit } from '../source/units'
-import { formatValue, capitalise0 } from '../source/format'
+import { capitalise0, formatValue } from '../src/format'
+import { parseUnit } from '../src/units'
 
 describe('format engine values', () => {
 	it('format currencies', () => {

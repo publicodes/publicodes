@@ -4,14 +4,17 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"postinstall": "ln -s ../../packages/core/dist/index.js public/publicodes.js",
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "vite preview",
-		"test": "playwright test"
+		"test": "playwright install && playwright test"
+	},
+	"dependencies": {
+		"publicodes": "workspace:^"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.28.1",
+		"@playwright/test": "next",
+		"@rollup/plugin-node-resolve": "^15.2.3",
 		"vite": "^3.2.3"
 	}
 }

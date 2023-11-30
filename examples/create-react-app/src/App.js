@@ -1,22 +1,24 @@
 import './App.css'
-import logo from './logo.png'
+import logo from './logo-publicodes.svg'
 import Publicodes from './Publicodes.js'
 
 function App() {
 	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
+		<div>
+			<header className="app_header">
 				<a
-					className="App-link"
 					href="https://publi.codes"
 					target="_blank"
 					rel="noopener noreferrer"
+					aria-label="voir la documentation de publicodes"
 				>
-					Voir la documentation
+					<img src={logo} alt="logo" />
+					Publicodes
 				</a>
 			</header>
-			<Publicodes />
+			<main className="app_container">
+				<Publicodes />
+			</main>
 		</div>
 	)
 }

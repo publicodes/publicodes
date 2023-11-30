@@ -6,5 +6,5 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "react"
 	},
-	"include": ["source/index.ts", "source/types"]
+	"include": ["src/index.ts", "src/types"]
 }

@@ -8,9 +8,9 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { parse } from 'yaml'
-import Engine from '../source/index'
-import { Rule } from '../source/rule'
-import { parseUnit } from '../source/units'
+import Engine from '../src/index'
+import { Rule } from '../src/rule'
+import { parseUnit } from '../src/units'
 import testSuites from './mécanismes/index'
 
 testSuites.forEach(([suiteName, suite]) => {

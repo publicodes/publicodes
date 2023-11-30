@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import Engine from '../source/index'
+import Engine from '../src/index'
 import { engineFromYaml, parseYaml } from './utils'
 
 describe('setSituation', () => {

@@ -1,13 +1,4 @@
 {
 	"extends": "../../tsconfig.json",
-	"compilerOptions": {
-		"outDir": "./dist/",
-		"declaration": true,
-		"emitDeclarationOnly": true
-	},
-	"ts-node": {
-		"transpileOnly": true,
-		"files": true
-	},
-	"include": ["source/**/*.ts", "bench/**/*.ts"]
+	"include": ["src/**/*.ts", "bench/**/*.ts"]
 }

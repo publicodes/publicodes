@@ -1,6 +1,6 @@
 // TODO: migrate to the 100% yaml test syntax in mecanisms/inversion.yaml
 import { expect } from 'chai'
-import Engine from '../source/index'
+import Engine from '../src/index'
 import { parseYaml } from './utils'
 
 describe('inversions', () => {

@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import Publicodes from '../source/index'
+import Publicodes from '../src/index'
 
 describe('Traversed variables - Basics', () => {
 	let engine
