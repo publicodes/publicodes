@@ -75,3 +75,13 @@ Produit avec un facteur non applicable:
   # unité attendue: points
   exemples:
     - valeur attendue: null
+# TODO
+# Produit avec des unité compatibles:
+#   produit:
+#     - 1.5m
+#     - 50cm
+#     - 2m
+#   unité: m3
+#   exemples:
+#     - valeur attendue: 1.5
+#       unité attendue: m3

@@ -1,11 +1,11 @@
 // @ts-check
-import { devices } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test'
 
 /**
  * @see https://playwright.dev/docs/test-configuration
  * @type {import('@playwright/test').PlaywrightTestConfig}
  */
-const config = {
+const config = defineConfig({
 	testDir: './tests',
 	timeout: 30 * 1000,
 	expect: {
@@ -33,6 +33,6 @@ const config = {
 			},
 		},
 	],
-}
+})
 
 export default config

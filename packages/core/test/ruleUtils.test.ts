@@ -4,7 +4,7 @@ import {
 	disambiguateReference,
 	isAccessible,
 	ruleParents,
-} from '../source/ruleUtils'
+} from '../src/ruleUtils'
 
 describe('ruleParents', function () {
 	it('should procude an array of the parents of a rule', function () {

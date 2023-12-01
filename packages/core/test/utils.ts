@@ -1,6 +1,6 @@
-import { parse } from 'yaml'
 import dedent from 'dedent-js'
-import Engine from '../source/index'
+import { parse } from 'yaml'
+import Engine from '../src/index'
 
 export const parseYaml = (yamlString: string) => {
 	return parse(dedent(yamlString))

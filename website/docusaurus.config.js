@@ -1,4 +1,5 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
+const { themes } = require('prism-react-renderer')
 module.exports = {
 	title: 'Publicodes',
 	tagline: "Le langage pour les algorithmes d'intérêt public",
@@ -9,7 +10,6 @@ module.exports = {
 	favicon: 'img/favicon-32x32.png',
 	organizationName: 'betagouv',
 	projectName: 'publicodes',
-	themes: ['@docusaurus/theme-live-codeblock'],
 	themeConfig: {
 		navbar: {
 			title: 'Publicodes',
@@ -40,7 +40,8 @@ module.exports = {
 			// Unfortunately, I can't find a good dark theme for `yaml` snippets. The
 			// `themes/github` works well with different colors for keys and values
 			// but it doesn't exist in dark mode variant in the default list.
-			theme: require('prism-react-renderer/themes/palenight'),
+			theme: themes.palenight,
+			additionalLanguages: ['json'],
 		},
 		footer: {
 			links: [
@@ -91,22 +92,6 @@ module.exports = {
 	],
 	plugins: [
 		require.resolve('./src/plugins/studio-route.cjs'),
-
-		function ConfigWebpackPlugin() {
-			return {
-				name: 'config-webpack',
-				configureWebpack() {
-					return {
-						devtool: 'source-map',
-						resolve: {
-							alias: {
-								// Fix an issue with publicodes-react and webpack : https://github.com/facebook/react/issues/20235#issuecomment-732205073
-								'react/jsx-runtime': 'react/jsx-runtime.js',
-							},
-						},
-					}
-				},
-			}
-		},
+		'@docusaurus/theme-live-codeblock',
 	],
 }

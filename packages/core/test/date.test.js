@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { getDifferenceInMonths } from '../source/date'
+import { getDifferenceInMonths } from '../src/date'
 
 describe('Date : getDifferenceInMonths', () => {
 	it('should compute the difference for one full month', () => {

@@ -24,43 +24,6 @@ prix total: 5 * prix d'un repas
 Il s'agit d'un langage déclaratif : comme dans une formule d'un tableur le `prix total` sera recalculé automatiquement si le prix d'un repas change. L'ordre de
 définition des règles n'a pas d'importance.
 
-## Chaînes de caractères littérales
-
-Pour qu'une valeur soit interprétée comme une chaîne de caractères littérale et
-non comme une référence à une autre règle, il faut que la chaîne de caractères
-soit encadrée d'apostrophes `'` ou de guillemets `"`. Ces symboles doivent être
-échappés dans certaines situations, pour qu'ils ne soient pas ignorés comme
-faisant partie de la syntaxe Yaml (cas notable : à la définition d'une règle
-avec pour valeur une chaîne de caractères).
-
-L'exemple suivant montre plusieurs façons de définir et d'utiliser des chaînes
-de caractères littérales :
-
-```publicodes
-# Différentes manières de définir une chaîne de caractère littérale
-région 1: '"Nouvelle-Aquitaine"'
-région 2: "'Provence-Alpes-Côte d'Azur'"
-région 3: |
-  "Occitanie"
-région 4:
-  texte:
-    Grand Est
-
-# Lors de comparaisons de chaînes de caractères, la syntaxe yaml échappe automatiquement
-# les guillemets.
-# Ces deux formulations sont donc équivalentes :
-comparaison 1: région 1 = "Nouvelle-Aquitaine"
-comparaison 2: 'région 1 = "Nouvelle-Aquitaine"'
-
-
-# Dans une définition, encadrer une valeur par de simples guillemets ne définit pas une
-# chaîne de caractères littérale
-région interprétée comme référence: "Bretagne"
-Bretagne:
-code interprété comme nombre: "12.34Z"
-```
-
-
 ## Unités
 
 Pour fiabiliser les calculs et faciliter leur compréhension, on peut préciser
@@ -365,6 +328,7 @@ Ici `contrat salarié . rémunération . primes . prime de vacances` va faire
 référence à `contrat salarié . rémunération . taux générique` trouvé deux
 espaces de noms plus haut, et va donc valoir `100 €`.
 
+
 ### Désactivation de branche
 
 Il est possible de désactiver l'ensemble des règles définies dans un espace de nom.
@@ -388,6 +352,43 @@ aides occitanie:
   applicable si: région = 'Occitanie'
 aides occitanie . subvention vélo : 500 €
 ```
+
+## Chaînes de caractères littérales
+
+Pour qu'une valeur soit interprétée comme une chaîne de caractères littérale et
+non comme une référence à une autre règle, il faut que la chaîne de caractères
+soit encadrée d'apostrophes `'` ou de guillemets `"`. Ces symboles doivent être
+échappés dans certaines situations, pour qu'ils ne soient pas ignorés comme
+faisant partie de la syntaxe Yaml (cas notable : à la définition d'une règle
+avec pour valeur une chaîne de caractères).
+
+L'exemple suivant montre plusieurs façons de définir et d'utiliser des chaînes
+de caractères littérales :
+
+```publicodes
+région: '"Nouvelle-Aquitaine"'
+région 2: "'Provence-Alpes-Côte d'Azur'"
+région 3: |
+  "Occitanie"
+région 4:
+  texte: Grand Est
+```
+
+Lors de comparaisons de chaînes de caractères, la syntaxe yaml échappe automatiquement les guillemets. Ces deux formulations sont donc équivalentes :
+```publicodes
+région:
+comparaison 1: région = "Nouvelle-Aquitaine"
+comparaison 2: 'région = "Nouvelle-Aquitaine"'
+```
+
+:::warning Attention
+Dans une définition, encadrer une valeur par de simples guillemets ne définit pas une chaîne de caractères littérale
+```publicodes
+région interprétée comme référence: "Bretagne"
+Bretagne:
+code interprété comme nombre: "12.34Z"
+```
+:::
 
 ## Remplacement
 

@@ -3,7 +3,7 @@ import 'mocha'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import { parse } from 'yaml'
-import Engine from '../source'
+import Engine from '../src'
 
 chai.use(sinonChai)
 

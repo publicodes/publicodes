@@ -1,15 +1,21 @@
+import { RulePage } from '@publicodes/react-ui'
 import Engine from 'publicodes'
-import { RulePage, getDocumentationSiteMap } from 'publicodes-react'
 import { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom'
+import {
+	Link,
+	Redirect,
+	Route,
+	BrowserRouter as Router,
+} from 'react-router-dom'
+import { parse } from 'yaml'
 
-const rulesURL = require('./CO2-douche.publicodes.yaml').default
 async function initEngine(setEngine) {
-	const response = await fetch(rulesURL)
+	const response = await fetch('/CO2-douche.publicodes.yaml')
 	const rules = await response.text()
-	setEngine(new Engine(rules))
+	// WARNING ! The parsing from yaml should not be done in the browser,
+	// but at compile time
+	setEngine(new Engine(parse(rules)))
 }
-
 export default function Publicodes() {
 	const [engine, setEngine] = useState(null)
 	useEffect(() => {
@@ -22,29 +28,18 @@ export default function Publicodes() {
 
 	return (
 		<Router>
-			<div style={{ margin: 'auto', maxWidth: '800px' }}>
-				<Route
-					path="/:name+"
-					render={({ match }) => (
-						<RulePage
-							engine={engine}
-							documentationPath=""
-							rulePath={match.params.name}
-							renderers={{ Link }}
-						/>
-					)}
-				/>
-				<h2>Toutes les règles</h2>
-				<ul>
-					{Object.entries(
-						getDocumentationSiteMap({ engine, documentationPath: '' })
-					).map(([link, name]) => (
-						<li key={link}>
-							<Link to={link}>{name}</Link>
-						</li>
-					))}
-				</ul>
-			</div>
+			<Redirect from="/" to="/douche" />
+			<Route
+				path="/:name+"
+				render={({ match }) => (
+					<RulePage
+						engine={engine}
+						documentationPath=""
+						rulePath={match.params.name}
+						renderers={{ Link }}
+					/>
+				)}
+			/>
 		</Router>
 	)
 }

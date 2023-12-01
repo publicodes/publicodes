@@ -1,28 +1,64 @@
 const escapeBackticks = (text) => text.replace(/`/g, '\\`')
 
 const plugin = (options) => {
-	const transformer = async (ast) => {
+	let alreadyImported = false
+	let transformed = false
+	const transformer = async (root) => {
 		const { visit } = await import('unist-util-visit')
-		let imported = false
-
-		visit(ast, [{ type: 'code', lang: 'publicodes' }], (node) => {
-			if (!imported) {
-				imported = true
-				ast.children.unshift({
-					type: 'import',
-					value:
-						"import PublicodeExample from '@site/src/components/PublicodeExample.tsx'",
-				})
-			}
-
+		visit(root, [{ type: 'code', lang: 'publicodes' }], (node) => {
 			const value = escapeBackticks(node.value)
-			const meta = node.meta ? `meta={\`${escapeBackticks(node.meta)}\`}` : ''
-
-			node.type = 'jsx'
-			node.value = `<PublicodeExample rules={\`${value}\`} ${meta} />`
+			transformed = true
+			node.type = 'mdxJsxFlowElement'
+			node.name = 'PublicodesExample'
+			node.attributes = [
+				createAttribute('rules', value),
+				node.meta && createAttribute('meta', node.meta),
+			].filter((attr) => Boolean(attr))
+			node.children = []
 		})
+		if (transformed && !alreadyImported) {
+			root.children.unshift(createImportNode())
+		}
 	}
 	return transformer
 }
 
 module.exports = plugin
+
+function createAttribute(attributeName, attributeValue) {
+	return {
+		type: 'mdxJsxAttribute',
+		name: attributeName,
+		value: attributeValue,
+	}
+}
+
+function createImportNode() {
+	return {
+		type: 'mdxjsEsm',
+		value:
+			"import PublicodesExample from '@site/src/components/PublicodesExample'",
+		data: {
+			estree: {
+				type: 'Program',
+				body: [
+					{
+						type: 'ImportDeclaration',
+						specifiers: [
+							{
+								type: 'ImportDefaultSpecifier',
+								local: { type: 'Identifier', name: 'PublicodesExample' },
+							},
+						],
+						source: {
+							type: 'Literal',
+							value: '@site/src/components/PublicodesExample',
+							raw: "'@site/src/components/PublicodesExample'",
+						},
+					},
+				],
+				sourceType: 'module',
+			},
+		},
+	}
+}

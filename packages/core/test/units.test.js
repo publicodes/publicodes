@@ -5,7 +5,7 @@ import {
 	inferUnit,
 	parseUnit,
 	removeOnce,
-} from '../source/units'
+} from '../src/units'
 
 describe('parseUnit', () => {
 	it('should remove the first element encounter in the list', () => {

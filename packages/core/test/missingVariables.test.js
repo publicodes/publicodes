@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import yaml from 'yaml'
-import Engine from '../source/index'
+import Engine from '../src/index'
 
 describe('Missing variables', function () {
 	it('should identify missing variables in applicability', function () {

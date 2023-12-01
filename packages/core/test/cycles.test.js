@@ -1,6 +1,5 @@
 import { expect } from 'chai'
-import dedent from 'dedent-js'
-import { cyclesInDependenciesGraph } from '../source/AST/graph'
+import { cyclesInDependenciesGraph } from '../src/AST/graph'
 import { parseYaml } from './utils'
 
 // Cycles due to parents dependencies are not handled currently.
