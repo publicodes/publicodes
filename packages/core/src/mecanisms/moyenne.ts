@@ -16,7 +16,7 @@ export default createParseInlinedMecanismWithArray(
 				reduceToSumNodes(valeurs.map(oneIfApplicable)),
 			],
 		}
-	}
+	},
 )
 
 function oneIfApplicable(exp: PublicodesExpression): PublicodesExpression {

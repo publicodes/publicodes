@@ -14,7 +14,7 @@ export function rules(engine: Engine) {
 				'replacements',
 				'suggestions',
 			]),
-		])
+		]),
 	)
 
 	return filteredRules
@@ -25,13 +25,13 @@ type RulesId = string
 export function rulesId(engine: Engine, id: RulesId) {
 	const [error, result] = catchError(() => engine.getRule(id))
 
-	return !error
-		? PickInObject(result, [
+	return !error ?
+			PickInObject(result, [
 				'title',
 				'nodeKind',
 				'rawNode',
 				'replacements',
 				'suggestions',
-		  ])
-		: { error: { message: error.message } }
+			])
+		:	{ error: { message: error.message } }
 }

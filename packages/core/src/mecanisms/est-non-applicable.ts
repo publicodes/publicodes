@@ -58,18 +58,18 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 					}
 				}
 				const isNotApplicableEvaluation = this.evaluateNode(
-					isNotApplicable(valeur.explanation.valeur)
+					isNotApplicable(valeur.explanation.valeur),
 				)
 				const missingVariables = mergeMissing(
 					parentMissingVariables,
-					isNotApplicableEvaluation.missingVariables
+					isNotApplicableEvaluation.missingVariables,
 				)
 
 				// If the rule can be disabled thought the situation, it should be listed inside the missing variables
 				if (
 					isNotApplicableEvaluation.nodeValue === false &&
 					this.context.nodesTypes.get(
-						this.context.parsedRules[`${valeur.dottedName} . $SITUATION`]
+						this.context.parsedRules[`${valeur.dottedName} . $SITUATION`],
 					)?.isNullable &&
 					!Object.keys(isNotApplicableEvaluation.missingVariables).length
 				) {
@@ -89,7 +89,7 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 
 				return {
 					...this.evaluateNode(
-						isNotApplicable(this.context.parsedRules[valeur.dottedName])
+						isNotApplicable(this.context.parsedRules[valeur.dottedName]),
 					),
 					...node,
 				}
@@ -112,9 +112,9 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 		return {
 			...node,
 			nodeValue:
-				evaluatedValeur.nodeValue === undefined
-					? undefined
-					: evaluatedValeur.nodeValue === null,
+				evaluatedValeur.nodeValue === undefined ?
+					undefined
+				:	evaluatedValeur.nodeValue === null,
 			missingVariables: evaluatedValeur.missingVariables,
 		}
 	}

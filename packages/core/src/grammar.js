@@ -280,9 +280,9 @@ let ParserRules = [
 		symbols: [
 			'AdditionSubstraction',
 			lexer.has('space') ? { type: 'space' } : space,
-			lexer.has('additionSubstraction')
-				? { type: 'additionSubstraction' }
-				: additionSubstraction,
+			lexer.has('additionSubstraction') ?
+				{ type: 'additionSubstraction' }
+			:	additionSubstraction,
 			lexer.has('space') ? { type: 'space' } : space,
 			'MultiplicationDivision',
 		],
@@ -298,9 +298,9 @@ let ParserRules = [
 		symbols: [
 			'MultiplicationDivision',
 			lexer.has('space') ? { type: 'space' } : space,
-			lexer.has('multiplicationDivision')
-				? { type: 'multiplicationDivision' }
-				: multiplicationDivision,
+			lexer.has('multiplicationDivision') ?
+				{ type: 'multiplicationDivision' }
+			:	multiplicationDivision,
 			lexer.has('space') ? { type: 'space' } : space,
 			'Parentheses',
 		],

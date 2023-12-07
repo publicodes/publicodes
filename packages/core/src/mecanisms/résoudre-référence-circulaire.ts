@@ -46,7 +46,7 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 						nodeValue: n,
 					},
 				},
-				{ keepPreviousSituation: true }
+				{ keepPreviousSituation: true },
 			)
 
 			return calculationEngine.evaluateNode(node.explanation.valeur)
@@ -115,5 +115,5 @@ parseRésoudreRéférenceCirculaire.nom = 'résoudre la référence circulaire'
 
 registerEvaluationFunction(
 	'résoudre référence circulaire',
-	evaluateRésoudreRéférenceCirculaire
+	evaluateRésoudreRéférenceCirculaire,
 )

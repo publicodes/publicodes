@@ -26,7 +26,7 @@ export type InversionNode = {
 // function x → f(x) - goal. The iteration logic between each test is
 // implemented in the `uniroot` file.
 export const evaluateInversion: EvaluationFunction<'inversion'> = function (
-	node
+	node,
 ) {
 	const inversionEngine = this.shallowCopy()
 	if (
@@ -55,13 +55,13 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 			const evaluation = inversionEngine.evaluateNode(
 				inversionEngine.context.parsedRules[
 					`${candidate.dottedName} . $SITUATION`
-				]
+				],
 			)
 			return (
 				typeof evaluation.nodeValue === 'number' &&
 				!(candidate.dottedName! in evaluation.missingVariables)
 			)
-		}
+		},
 	)
 
 	if (inversionGoal === undefined) {
@@ -73,7 +73,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 					node.explanation.inversionCandidates.map((candidate) => [
 						candidate.dottedName,
 						1,
-					])
+					]),
 				),
 				[node.explanation.ruleToInverse]: 1,
 			},
@@ -86,7 +86,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		{
 			[inversionGoal.dottedName!]: undefinedNumberNode,
 		},
-		{ keepPreviousSituation: true }
+		{ keepPreviousSituation: true },
 	)
 
 	let lastEvaluation: EvaluatedNode
@@ -101,7 +101,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 					unit: evaluatedInversionGoal.unit,
 				},
 			},
-			{ keepPreviousSituation: true }
+			{ keepPreviousSituation: true },
 		)
 
 		lastEvaluation = inversionEngine.evaluateNode(inversionGoal)
@@ -138,24 +138,23 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		// `max` arguments, so we can use our cached nodes if the function is called
 		// with the already computed x1 or x2.
 		const test = (x: number): number => {
-			const y = x === x1 ? y1 : x === x2 ? y2 : evaluateWithValue(x).nodeValue
+			const y =
+				x === x1 ? y1
+				: x === x2 ? y2
+				: evaluateWithValue(x).nodeValue
 			return (y as number) - goal
 		}
 
 		const defaultMin = -1000000
 		const defaultMax = 100000000
 		const nearestBelowGoal =
-			y2 !== undefined && y2 < goal && (y2 > y1 || y1 > goal)
-				? x2
-				: y1 !== undefined && y1 < goal && (y1 > y2 || y2 > goal)
-				? x1
-				: defaultMin
+			y2 !== undefined && y2 < goal && (y2 > y1 || y1 > goal) ? x2
+			: y1 !== undefined && y1 < goal && (y1 > y2 || y2 > goal) ? x1
+			: defaultMin
 		const nearestAboveGoal =
-			y2 !== undefined && y2 > goal && (y2 < y1 || y1 < goal)
-				? x2
-				: y1 !== undefined && y1 > goal && (y1 < y2 || y2 < goal)
-				? x1
-				: defaultMax
+			y2 !== undefined && y2 > goal && (y2 < y1 || y1 < goal) ? x2
+			: y1 !== undefined && y1 > goal && (y1 < y2 || y2 < goal) ? x1
+			: defaultMax
 
 		nodeValue = uniroot(
 			test,
@@ -163,7 +162,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 			nearestAboveGoal,
 			0.1,
 			maxIterations,
-			1
+			1,
 		)
 	}
 
@@ -179,7 +178,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	// console.log('iteration inversion:', numberOfIteration)
 
 	;(lastEvaluation!.traversedVariables ?? []).forEach((v) =>
-		this.cache._meta.traversedVariablesStack[0].add(v)
+		this.cache._meta.traversedVariablesStack[0].add(v),
 	)
 	return {
 		...node,
@@ -200,7 +199,7 @@ export const mecanismInversion = (v, context: Context) => {
 		throw new PublicodesError(
 			'SyntaxError',
 			"Il manque les règles avec laquelle effectuer le calcul d'inversion dans le mécanisme `inversion numérique`",
-			{ dottedName: context.dottedName }
+			{ dottedName: context.dottedName },
 		)
 	}
 	if (!Array.isArray(avec)) {

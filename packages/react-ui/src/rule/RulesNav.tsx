@@ -36,25 +36,25 @@ export const RulesNav = ({
 
 	const toggleDropdown = useCallback((ruleDottedName: string) => {
 		setLevel((prevLevel) =>
-			!prevLevel[ruleDottedName]
-				? {
-						...prevLevel,
-						[ruleDottedName]: !prevLevel[ruleDottedName],
-				  }
-				: Object.fromEntries(
-						Object.entries(prevLevel).map(([dot, val]) =>
-							dot.startsWith(ruleDottedName) ? [dot, false] : [dot, val]
-						)
-				  )
+			!prevLevel[ruleDottedName] ?
+				{
+					...prevLevel,
+					[ruleDottedName]: !prevLevel[ruleDottedName],
+				}
+			:	Object.fromEntries(
+					Object.entries(prevLevel).map(([dot, val]) =>
+						dot.startsWith(ruleDottedName) ? [dot, false] : [dot, val],
+					),
+				),
 		)
 	}, [])
 
 	const openNavButtonPortalElement =
-		typeof window === 'undefined'
-			? null
-			: (openNavButtonPortalId &&
-					window.document.getElementById(openNavButtonPortalId)) ||
-			  window.document.getElementById('rules-nav-open-nav-button')
+		typeof window === 'undefined' ? null : (
+			(openNavButtonPortalId &&
+				window.document.getElementById(openNavButtonPortalId)) ||
+			window.document.getElementById('rules-nav-open-nav-button')
+		)
 
 	const menu = (
 		<Container $open={navOpen}>
@@ -71,7 +71,7 @@ export const RulesNav = ({
 					<OpenNavButton onClick={() => setNavOpen(true)}>
 						Toutes les règles
 					</OpenNavButton>,
-					openNavButtonPortalElement
+					openNavButtonPortalElement,
 				)}
 
 			<Nav $open={navOpen}>
@@ -110,13 +110,13 @@ export const RulesNav = ({
 		window.matchMedia(`(max-width: ${breakpointsWidth.lg})`).matches
 
 	const mobileMenuPortalElement =
-		typeof window !== 'undefined' && mobileMenuPortalId
-			? window.document.getElementById(mobileMenuPortalId)
-			: null
+		typeof window !== 'undefined' && mobileMenuPortalId ?
+			window.document.getElementById(mobileMenuPortalId)
+		:	null
 
-	return isMobileMenu && mobileMenuPortalElement
-		? ReactDOM.createPortal(menu, mobileMenuPortalElement)
-		: menu
+	return isMobileMenu && mobileMenuPortalElement ?
+			ReactDOM.createPortal(menu, mobileMenuPortalElement)
+		:	menu
 }
 
 const NavLi = ({ ruleDottedName, open, active, onClickDropdown }) => {
@@ -125,11 +125,13 @@ const NavLi = ({ ruleDottedName, open, active, onClickDropdown }) => {
 	const parsedRules = baseEngine.getParsedRules()
 	const childrenCount = Object.keys(parsedRules).reduce(
 		(acc, ruleDot) =>
-			ruleDot.startsWith(ruleDottedName + ' . ') &&
-			ruleDot.split(' . ').length === ruleDottedName.split(' . ').length + 1
-				? acc + 1
-				: acc,
-		0
+			(
+				ruleDot.startsWith(ruleDottedName + ' . ') &&
+				ruleDot.split(' . ').length === ruleDottedName.split(' . ').length + 1
+			) ?
+				acc + 1
+			:	acc,
+		0,
 	)
 
 	const activeLi = useRef<HTMLLIElement>(null)

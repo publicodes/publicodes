@@ -119,16 +119,15 @@ function Rule({
 	const useSubEngine =
 		subEngineId && baseEngine.subEngines.length >= subEngineId
 
-	const engine = useSubEngine
-		? baseEngine.subEngines[subEngineId as number]
-		: baseEngine
+	const engine =
+		useSubEngine ? baseEngine.subEngines[subEngineId as number] : baseEngine
 
 	if (!(dottedName in engine.context.parsedRules)) {
 		return <p>Cette règle est introuvable dans la base</p>
 	}
 
 	const rule = engine.evaluateNode(
-		engine.context.parsedRules[dottedName]
+		engine.context.parsedRules[dottedName],
 	) as EvaluatedNode & { nodeKind: 'rule' }
 
 	const { description, question } = rule.rawNode
@@ -270,7 +269,7 @@ const Article = styled.article`
 
 function buildSituationUsedInRule<Names extends string>(
 	engine: Engine<Names>,
-	rule: EvaluatedNode & RuleNode
+	rule: EvaluatedNode & RuleNode,
 ): Partial<Record<Names, PublicodesExpression>> {
 	const situation = [...(rule.traversedVariables as Names[]), rule.dottedName]
 		.map((name) => {
@@ -281,17 +280,17 @@ function buildSituationUsedInRule<Names extends string>(
 		.filter(
 			([_, valeur]) =>
 				valeur &&
-				!(valeur.nodeKind === 'constant' && valeur.nodeValue === undefined)
+				!(valeur.nodeKind === 'constant' && valeur.nodeValue === undefined),
 		)
 		.reduce(
 			(acc, [name, valeur]) => ({
 				[name]:
-					typeof valeur === 'object' && valeur && 'rawNode' in valeur
-						? valeur.rawNode
-						: valeur,
+					typeof valeur === 'object' && valeur && 'rawNode' in valeur ?
+						valeur.rawNode
+					:	valeur,
 				...acc,
 			}),
-			{}
+			{},
 		)
 
 	return situation

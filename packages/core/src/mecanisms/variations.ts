@@ -17,9 +17,9 @@ export type VariationNode = {
 
 export default function parseVariations(v, context): VariationNode {
 	const explanation = v.map(({ si, alors, sinon }) =>
-		sinon !== undefined
-			? { consequence: parse(sinon, context), condition: defaultNode(true) }
-			: { consequence: parse(alors, context), condition: parse(si, context) }
+		sinon !== undefined ?
+			{ consequence: parse(sinon, context), condition: defaultNode(true) }
+		:	{ consequence: parse(alors, context), condition: parse(si, context) },
 	)
 
 	return {
@@ -34,13 +34,13 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 			EvaluatedNode['nodeValue'],
 			VariationNode['explanation'],
 			Unit | undefined,
-			boolean | undefined
+			boolean | undefined,
 		]
 	>(
 		(
 			[evaluation, explanations, unit, previousConditions],
 			{ condition, consequence },
-			i: number
+			i: number,
 		) => {
 			if (previousConditions === true) {
 				return [
@@ -52,13 +52,13 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 			}
 			const evaluatedCondition = this.evaluateNode(condition)
 			const currentCondition =
-				previousConditions === undefined
-					? previousConditions
-					: !previousConditions &&
-					  (evaluatedCondition.nodeValue === undefined
-							? undefined
-							: evaluatedCondition.nodeValue !== false &&
-							  evaluatedCondition.nodeValue !== null)
+				previousConditions === undefined ? previousConditions : (
+					!previousConditions &&
+					(evaluatedCondition.nodeValue === undefined ?
+						undefined
+					:	evaluatedCondition.nodeValue !== false &&
+						evaluatedCondition.nodeValue !== null)
+				)
 
 			if (currentCondition === false || currentCondition === null) {
 				return [
@@ -78,7 +78,7 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 					try {
 						evaluatedConsequence = convertNodeToUnit(
 							unit,
-							evaluatedConsequence!
+							evaluatedConsequence!,
 						)
 					} catch (e) {
 						warning(
@@ -87,7 +87,7 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 								i + 1
 							} du mécanisme 'variations' n'est pas compatible avec celle d'une branche précédente`,
 							{ dottedName: this.cache._meta.evaluationRuleStack[0] },
-							e
+							e,
 						)
 					}
 				}
@@ -105,7 +105,7 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 				previousConditions || currentCondition,
 			]
 		},
-		[null, [], undefined, false]
+		[null, [], undefined, false],
 	)
 
 	return {
@@ -119,14 +119,16 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 					values,
 					mergeMissing(
 						bonus((condition as EvaluatedNode).missingVariables),
-						'nodeValue' in condition &&
-							condition.nodeValue !== false &&
-							condition.nodeValue !== null
-							? (consequence as EvaluatedNode).missingVariables
-							: {}
-					)
+						(
+							'nodeValue' in condition &&
+								condition.nodeValue !== false &&
+								condition.nodeValue !== null
+						) ?
+							(consequence as EvaluatedNode).missingVariables
+						:	{},
+					),
 				),
-			{}
+			{},
 		),
 	}
 }

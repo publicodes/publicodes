@@ -5,13 +5,11 @@ export default function Texte({ nodeValue, unit, explanation }) {
 	return (
 		<p>
 			{explanation.map((element) =>
-				typeof element === 'string' ? (
-					element
-				) : (
+				typeof element === 'string' ? element : (
 					<Highlight>
 						<Explanation node={element} />
 					</Highlight>
-				)
+				),
 			)}
 		</p>
 	)

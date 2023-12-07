@@ -36,15 +36,13 @@ testSuites.forEach(([suiteName, suite]) => {
 							type: type,
 							'variables manquantes': expectedMissing,
 						},
-						i
+						i,
 					) => {
 						it(
 							name +
-								(testName
-									? ` [${testName}]`
-									: exemples.length > 1
-									? ` (${i + 1})`
-									: ''),
+								(testName ? ` [${testName}]`
+								: exemples.length > 1 ? ` (${i + 1})`
+								: ''),
 							() => {
 								const runExample = () =>
 									engine.setSituation(situation ?? {}).evaluate(name)
@@ -58,26 +56,26 @@ testSuites.forEach(([suiteName, suite]) => {
 									expect(result.nodeValue).to.be.closeTo(valeur, 0.001)
 								} else if (valeur !== undefined) {
 									expect(result.nodeValue).to.be.deep.eq(
-										valeur === 'undefined' ? undefined : valeur
+										valeur === 'undefined' ? undefined : valeur,
 									)
 								}
 								if (expectedMissing) {
 									expect(Object.keys(result.missingVariables)).to.eql(
-										expectedMissing
+										expectedMissing,
 									)
 								}
 								if (type) {
 									expect(
-										engine.context.nodesTypes.get(engine.getRule(name))!.type
+										engine.context.nodesTypes.get(engine.getRule(name))!.type,
 									).to.be.equal(type)
 								}
 								if (unit) {
 									expect(result.unit).not.to.be.equal(undefined)
 									expect(result.unit).to.deep.equal(parseUnit(unit))
 								}
-							}
+							},
 						)
-					}
+					},
 				)
 			})
 	})

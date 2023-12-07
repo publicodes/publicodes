@@ -36,7 +36,7 @@ interface PublicodesErrorTypes {
  */
 export const isPublicodesError = <Name extends keyof PublicodesErrorTypes>(
 	error: unknown,
-	name?: Name
+	name?: Name,
 ): error is PublicodesError<
 	typeof name extends undefined ? keyof PublicodesErrorTypes : Name
 > =>
@@ -47,7 +47,7 @@ export const isPublicodesError = <Name extends keyof PublicodesErrorTypes>(
  * Generic error for Publicodes
  */
 export class PublicodesError<
-	Name extends keyof PublicodesErrorTypes
+	Name extends keyof PublicodesErrorTypes,
 > extends Error {
 	name: Name
 	info: PublicodesErrorTypes[Name]
@@ -56,7 +56,7 @@ export class PublicodesError<
 		name: Name,
 		message: string,
 		info: PublicodesErrorTypes[Name],
-		originalError?: Error
+		originalError?: Error,
 	) {
 		super(buildMessage(name, message, info, originalError))
 		this.name = name
@@ -68,7 +68,7 @@ const buildMessage = (
 	name: string,
 	message: string,
 	info?: PublicodesErrorTypes[keyof PublicodesErrorTypes],
-	originalError?: Error
+	originalError?: Error,
 ) => {
 	const types: Partial<Record<keyof PublicodesErrorTypes, string>> = {
 		SyntaxError: 'Erreur syntaxique',
@@ -80,13 +80,13 @@ const buildMessage = (
 
 	return (
 		`\n[ ${types[name] ?? name} ]` +
-		(info && 'dottedName' in info && info.dottedName?.length
-			? `\n➡️  Dans la règle "${info.dottedName}"`
-			: '') +
+		(info && 'dottedName' in info && info.dottedName?.length ?
+			`\n➡️  Dans la règle "${info.dottedName}"`
+		:	'') +
 		`\n${isError ? '✖️' : '⚠️'}  ${message}` +
-		(originalError
-			? '\n' + (isError ? '    ' : 'ℹ️  ') + originalError.message
-			: '')
+		(originalError ?
+			'\n' + (isError ? '    ' : 'ℹ️  ') + originalError.message
+		:	'')
 	)
 }
 
@@ -105,7 +105,7 @@ Cette erreur est le signe d'un bug dans publicodes. Pour nous aider à le résou
 payload:
 ${JSON.stringify(payload, null, 2)}
 `,
-			payload
+			payload,
 		)
 	}
 }
@@ -124,10 +124,10 @@ export function warning(
 	logger: Logger,
 	message: string,
 	information: { dottedName: string },
-	originalError?: Error
+	originalError?: Error,
 ) {
 	logger.warn(
-		buildMessage('Avertissement', message, information, originalError)
+		buildMessage('Avertissement', message, information, originalError),
 	)
 }
 
@@ -136,7 +136,7 @@ export function experimentalRuleWarning(logger: Logger, dottedName: string) {
 		buildMessage(
 			'Avertissement',
 			"Cette règle est tagguée comme experimentale. \n\nCela veut dire qu'elle peut être modifiée, renommée, ou supprimée sans qu'il n'y ait de changement de version majeure dans l'API.\n",
-			{ dottedName }
-		)
+			{ dottedName },
+		),
 	)
 }

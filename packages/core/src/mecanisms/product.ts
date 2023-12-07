@@ -3,7 +3,7 @@ import { defaultNode } from '../evaluationUtils'
 import { createParseInlinedMecanismWithArray } from './inlineMecanism'
 
 export function reduceToProduitNodes(
-	valeurs: Array<PublicodesExpression>
+	valeurs: Array<PublicodesExpression>,
 ): PublicodesExpression {
 	return valeurs.reduce((acc, value) => ({ '*': [value, acc] }), defaultNode(1))
 }
@@ -16,5 +16,5 @@ export default createParseInlinedMecanismWithArray(
 	({ valeur }) => ({
 		valeur: reduceToProduitNodes([...(valeur as Array<PublicodesExpression>)]),
 		"simplifier l'unité": 'oui',
-	})
+	}),
 )

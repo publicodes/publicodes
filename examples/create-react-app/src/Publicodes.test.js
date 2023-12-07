@@ -19,7 +19,7 @@ const server = setupServer(
 		// in the `sessionStorage` by the `Login` component.
 		const rules = fs.readFileSync('./public/CO2-douche.publicodes.yaml', 'utf8')
 		return res(ctx.text(rules))
-	})
+	}),
 )
 
 // Enable API mocking before tests.
@@ -32,7 +32,7 @@ afterEach(() => server.resetHandlers())
 test('renders loading text while fetching rules', () => {
 	render(<Publicodes />)
 	const loadElement = screen.getByText(
-		/Chargement des règles de calculs en cours.../i
+		/Chargement des règles de calculs en cours.../i,
 	)
 	expect(loadElement).toBeInTheDocument()
 })

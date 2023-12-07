@@ -51,8 +51,8 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 			})
 			.map(
 				([originRule, replacement]) =>
-					[originRule.dottedName, replacement] as [string, ASTNode]
-			)
+					[originRule.dottedName, replacement] as [string, ASTNode],
+			),
 	)
 
 	let engine = this
@@ -64,7 +64,7 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 
 		// The value of the replaced ruled are computed **without the replacement active**
 		Object.values(amendedSituation).forEach((value) =>
-			engine.cache.nodes.set(value, this.evaluate(value))
+			engine.cache.nodes.set(value, this.evaluate(value)),
 		)
 
 		this.subEngines.push(engine)

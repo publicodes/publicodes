@@ -1,7 +1,7 @@
 import { EvaluatedNode } from './index'
 import { serializeUnit } from './units'
 export default function serializeEvaluation(
-	node: EvaluatedNode
+	node: EvaluatedNode,
 ): string | undefined {
 	if (typeof node.nodeValue === 'number') {
 		const serializedUnit = serializeUnit(node.unit)

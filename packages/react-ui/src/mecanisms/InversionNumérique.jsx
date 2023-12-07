@@ -4,7 +4,7 @@ import { Mecanism } from './common'
 export default function InversionNumérique({ nodeValue, explanation }) {
 	return (
 		<Mecanism name="inversion numérique" value={nodeValue}>
-			{explanation.inversionFailed ? (
+			{explanation.inversionFailed ?
 				<>
 					<p>
 						Cette valeur devrait pouvoir être estimée à partir d'une autre
@@ -17,7 +17,7 @@ export default function InversionNumérique({ nodeValue, explanation }) {
 						cette formule qui permette d'atterrir sur la valeur demandée.
 					</p>
 				</>
-			) : explanation.inversionGoal ? (
+			: explanation.inversionGoal ?
 				<>
 					<p>
 						Cette valeur a été estimée à partir d'une autre variable qui possède
@@ -26,8 +26,7 @@ export default function InversionNumérique({ nodeValue, explanation }) {
 					</p>
 					<Explanation node={explanation.inversionGoal} />
 				</>
-			) : (
-				<>
+			:	<>
 					<p>
 						Cette formule de calcul n'existe pas, mais on peut la calculer par
 						inversion en utilisant les formules des règles suivantes :
@@ -40,7 +39,7 @@ export default function InversionNumérique({ nodeValue, explanation }) {
 						))}
 					</ul>
 				</>
-			)}
+			}
 		</Mecanism>
 	)
 }

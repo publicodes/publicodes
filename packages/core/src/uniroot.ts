@@ -33,7 +33,7 @@ export default function uniroot(
 	upperLimit: number,
 	errorTol = 0,
 	maxIter = 100,
-	acceptableErrorTol = 0
+	acceptableErrorTol = 0,
 ) {
 	let a = lowerLimit,
 		b = upperLimit,

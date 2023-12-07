@@ -12,5 +12,5 @@ export default createParseInlinedMecanism(
 			alors: 'valeur',
 			sinon: 'dans la situation',
 		},
-	}
+	},
 )

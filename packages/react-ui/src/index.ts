@@ -9,11 +9,11 @@ export function getDocumentationSiteMap({ engine, documentationPath }) {
 		Object.keys(parsedRules)
 			.filter(
 				(dottedName) =>
-					!dottedName.match(/(\$SITUATION|\$EVALUATION|\$INTERNAL)/)
+					!dottedName.match(/(\$SITUATION|\$EVALUATION|\$INTERNAL)/),
 			)
 			.map((dottedName) => [
 				documentationPath + '/' + utils.encodeRuleName(dottedName),
 				dottedName,
-			])
+			]),
 	)
 }

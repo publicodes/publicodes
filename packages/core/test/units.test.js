@@ -121,13 +121,13 @@ describe('convertUnit', () => {
 	it('should convert percentage to simple value', () => {
 		expect(convertUnit(parseUnit('%'), parseUnit(''), 83)).to.closeTo(
 			0.83,
-			0.0000001
+			0.0000001,
 		)
 	})
 	it('should convert more difficult value', () => {
 		expect(convertUnit(parseUnit('%/an'), parseUnit('/mois'), 12)).to.closeTo(
 			0.01,
-			0.0000001
+			0.0000001,
 		)
 	})
 	it('should convert year, month, day, k€', () => {
@@ -135,18 +135,18 @@ describe('convertUnit', () => {
 			convertUnit(
 				parseUnit('€/personne/jour'),
 				parseUnit('k€/an/personne'),
-				'100'
-			)
+				'100',
+			),
 		).to.closeTo(36.5, 0.0000001)
 	})
 	it('should handle simplification', () => {
 		expect(
-			convertUnit(parseUnit('€.an.%/mois'), parseUnit('€'), 100)
+			convertUnit(parseUnit('€.an.%/mois'), parseUnit('€'), 100),
 		).to.closeTo(12, 0.0000001)
 	})
 	it('should handle complexification', () => {
 		expect(
-			convertUnit(parseUnit('€'), parseUnit('€.an.%/mois'), 12)
+			convertUnit(parseUnit('€'), parseUnit('€.an.%/mois'), 12),
 		).to.closeTo(100, 0.0000001)
 	})
 	it('should not show unit conversion error when converting equivalent units', () => {
@@ -158,25 +158,25 @@ describe('areUnitConvertible', () => {
 	it('should be true for temporel unit', () => {
 		expect(areUnitConvertible(parseUnit('mois'), parseUnit('an'))).to.eq(true)
 		expect(areUnitConvertible(parseUnit('kg/an'), parseUnit('kg/mois'))).to.eq(
-			true
+			true,
 		)
 	})
 	it('should be true for percentage', () => {
 		expect(areUnitConvertible(parseUnit('%/mois'), parseUnit('/an'))).to.eq(
-			true
+			true,
 		)
 	})
 	it('should be true for more complicated cases', () => {
 		expect(
 			areUnitConvertible(
 				parseUnit('€/personne/mois'),
-				parseUnit('€/an/personne')
-			)
+				parseUnit('€/an/personne'),
+			),
 		).to.eq(true)
 	})
 	it('should be false for unit not alike', () => {
 		expect(
-			areUnitConvertible(parseUnit('mois'), parseUnit('€/an/personne'))
+			areUnitConvertible(parseUnit('mois'), parseUnit('€/an/personne')),
 		).to.eq(false)
 		expect(areUnitConvertible(parseUnit('m.m'), parseUnit('m'))).to.eq(false)
 		expect(areUnitConvertible(parseUnit('m'), parseUnit('s'))).to.eq(false)

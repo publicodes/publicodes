@@ -19,8 +19,8 @@ const apiRoutes = publicodesAPI(
 		parse(`
 coucou: 0
 coucou . j'ai des caractères spéciaux: "'ok'"
-`)
-	)
+`),
+	),
 )
 
 router.use(apiRoutes)
@@ -53,7 +53,7 @@ describe('e2e koa middleware', () => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
 					return JSON.parse(res.text)
-				})
+				}),
 		).resolves.toMatchInlineSnapshot(
 			`
 			{
@@ -66,7 +66,7 @@ describe('e2e koa middleware', () => {
 			  ],
 			  "warnings": [],
 			}
-		`
+		`,
 		)
 	})
 
@@ -80,7 +80,7 @@ describe('e2e koa middleware', () => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
 					return JSON.parse(res.text)
-				})
+				}),
 		).resolves.toMatchSnapshot()
 	})
 
@@ -94,7 +94,7 @@ describe('e2e koa middleware', () => {
 					expect(res.status).toMatchInlineSnapshot('400')
 
 					return JSON.parse(res.text)
-				})
+				}),
 		).resolves.toMatchSnapshot()
 	})
 
@@ -108,7 +108,7 @@ describe('e2e koa middleware', () => {
 					expect(res.status).toMatchInlineSnapshot('400')
 
 					return JSON.parse(res.text)
-				})
+				}),
 		).resolves.toMatchSnapshot()
 	})
 
@@ -125,7 +125,7 @@ describe('e2e koa middleware', () => {
 					expect(res.status).toMatchInlineSnapshot('400')
 
 					return JSON.parse(res.text)
-				})
+				}),
 		).resolves.toMatchInlineSnapshot(`
 			[
 			  {
@@ -154,7 +154,7 @@ describe('e2e koa middleware', () => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
 					return JSON.parse(res.text)
-				})
+				}),
 		).resolves.toMatchInlineSnapshot(`
 			{
 			  "evaluate": [
@@ -180,7 +180,7 @@ describe('e2e koa middleware', () => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
 					return JSON.parse(res.text)
-				})
+				}),
 		).resolves.toMatchInlineSnapshot(`
 			{
 			  "coucou": {
@@ -214,7 +214,7 @@ describe('e2e koa middleware', () => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
 					return JSON.parse(res.text)
-				})
+				}),
 		).resolves.toMatchInlineSnapshot(`
 			{
 			  "nodeKind": "rule",
@@ -237,7 +237,7 @@ describe('e2e koa middleware', () => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
 					return JSON.parse(res.text)
-				})
+				}),
 		).resolves.toMatchInlineSnapshot(`
 			{
 			  "nodeKind": "rule",
@@ -260,7 +260,7 @@ describe('e2e koa middleware', () => {
 					expect(res.status).toMatchInlineSnapshot('200')
 
 					return JSON.parse(res.text)
-				})
+				}),
 		).resolves.toMatchInlineSnapshot(`
 			{
 			  "error": {

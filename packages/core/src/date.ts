@@ -12,14 +12,14 @@ const pad = (n: number): string => (+n < 10 ? `0${n}` : '' + n)
 export function normalizeDate(
 	year: number,
 	month: number,
-	day: number
+	day: number,
 ): string {
 	const date = new Date(+year, +month - 1, +day)
 	if (!+date || date.getDate() !== +day) {
 		throw new PublicodesError(
 			'SyntaxError',
 			`La date ${day}/${month}/${year} n'est pas valide`,
-			{ dottedName: '' }
+			{ dottedName: '' },
 		)
 	}
 	return `${pad(day)}/${pad(month)}/${pad(year)}`

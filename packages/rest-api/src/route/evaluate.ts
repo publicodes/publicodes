@@ -8,7 +8,7 @@ export interface EvaluateBody {
 
 export function evaluate(
 	originalEngine: Engine,
-	{ expressions, situation }: EvaluateBody
+	{ expressions, situation }: EvaluateBody,
 ) {
 	const engine = originalEngine.shallowCopy()
 	originalEngine.subEngines = [] // This line avoid memory leak cause by multiple call to shallowCopy(), issue https://github.com/betagouv/publicodes/issues/239
@@ -38,14 +38,15 @@ export function evaluate(
 	]
 
 	const evaluateResult = (
-		Array.isArray(expressions) ? expressions : [expressions]
-	).map((expression) => {
-		const [error, result] = catchError(() =>
-			PickInObject(engine.evaluate(expression), keysKept)
-		)
+		Array.isArray(expressions) ? expressions : [expressions]).map(
+		(expression) => {
+			const [error, result] = catchError(() =>
+				PickInObject(engine.evaluate(expression), keysKept),
+			)
 
-		return !error ? result : { error: { message: error.message }, warnings }
-	})
+			return !error ? result : { error: { message: error.message }, warnings }
+		},
+	)
 
 	return { evaluate: evaluateResult, warnings }
 }

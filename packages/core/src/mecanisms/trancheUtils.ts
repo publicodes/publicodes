@@ -14,31 +14,31 @@ export const parseTranches = (tranches, context): TrancheNodes => {
 			throw new PublicodesError(
 				'SyntaxError',
 				`La tranche n°${i} du barème n'a pas de plafond précisé. Seule la dernière tranche peut ne pas être plafonnée`,
-				{ dottedName: '' }
+				{ dottedName: '' },
 			)
 		}
 		return {
 			...node,
 			...(node.taux !== undefined ? { taux: parse(node.taux, context) } : {}),
-			...(node.montant !== undefined
-				? { montant: parse(node.montant, context) }
-				: {}),
+			...(node.montant !== undefined ?
+				{ montant: parse(node.montant, context) }
+			:	{}),
 			plafond:
-				'plafond' in node
-					? parse(node.plafond, context)
-					: {
-							nodeValue: Infinity,
-							nodeKind: 'constant',
-							type: 'number',
-							isNullable: false,
-					  },
+				'plafond' in node ?
+					parse(node.plafond, context)
+				:	{
+						nodeValue: Infinity,
+						nodeKind: 'constant',
+						type: 'number',
+						isNullable: false,
+					},
 		}
 	})
 }
 
 export function evaluatePlafondUntilActiveTranche(
 	this: Engine,
-	{ multiplicateur, assiette, parsedTranches }
+	{ multiplicateur, assiette, parsedTranches },
 ) {
 	return parsedTranches.reduce(
 		([tranches, activeTrancheFound], parsedTranche, i: number) => {
@@ -50,25 +50,26 @@ export function evaluatePlafondUntilActiveTranche(
 			}
 
 			const plafond = this.evaluateNode(parsedTranche.plafond)
-			const plancher = tranches[i - 1]
-				? tranches[i - 1].plafond
-				: { nodeValue: 0 }
+			const plancher =
+				tranches[i - 1] ? tranches[i - 1].plafond : { nodeValue: 0 }
 
 			let plafondValue: Evaluation<number> =
-				plafond.nodeValue === undefined ||
-				multiplicateur.nodeValue === undefined
-					? undefined
-					: plafond.nodeValue * multiplicateur.nodeValue
+				(
+					plafond.nodeValue === undefined ||
+					multiplicateur.nodeValue === undefined
+				) ?
+					undefined
+				:	plafond.nodeValue * multiplicateur.nodeValue
 
 			try {
 				plafondValue =
-					plafondValue === Infinity || plafondValue === 0
-						? plafondValue
-						: convertUnit(
-								inferUnit('*', [plafond.unit, multiplicateur.unit]),
-								assiette.unit,
-								plafondValue
-						  )
+					plafondValue === Infinity || plafondValue === 0 ?
+						plafondValue
+					:	convertUnit(
+							inferUnit('*', [plafond.unit, multiplicateur.unit]),
+							assiette.unit,
+							plafondValue,
+						)
 			} catch (e) {
 				warning(
 					this.context.logger,
@@ -76,14 +77,14 @@ export function evaluatePlafondUntilActiveTranche(
 						i + 1
 					}  n'est pas compatible avec celle l'assiette`,
 					{ dottedName: this.cache._meta.evaluationRuleStack[0] },
-					e
+					e,
 				)
 			}
 			const plancherValue = tranches[i - 1] ? tranches[i - 1].plafondValue : 0
 			const isAfterActive =
-				plancherValue === undefined || assiette.nodeValue === undefined
-					? undefined
-					: plancherValue > assiette.nodeValue
+				plancherValue === undefined || assiette.nodeValue === undefined ?
+					undefined
+				:	plancherValue > assiette.nodeValue
 
 			const calculationValues = [plafond, assiette, multiplicateur, plancher]
 			if (calculationValues.some((node) => node.nodeValue === undefined)) {
@@ -115,7 +116,7 @@ export function evaluatePlafondUntilActiveTranche(
 					`Le plafond de la tranche n°${
 						i + 1
 					} a une valeur inférieure à celui de la tranche précédente`,
-					{ dottedName: this.cache._meta.evaluationRuleStack[0] }
+					{ dottedName: this.cache._meta.evaluationRuleStack[0] },
 				)
 			}
 
@@ -132,6 +133,6 @@ export function evaluatePlafondUntilActiveTranche(
 
 			return [[...tranches, tranche], tranche.isActive]
 		},
-		[[], false]
+		[[], false],
 	)[0]
 }

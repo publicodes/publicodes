@@ -1,5 +1,5 @@
 console.warn(
-	'This package was renamed: please use @publicodes/rest-api instead'
+	'This package was renamed: please use @publicodes/rest-api instead',
 )
 /**
  * @deprecated This package was renamed: please use @publicodes/rest-api instead`

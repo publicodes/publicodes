@@ -6,14 +6,14 @@ export let evaluationFunctions = {
 } as any
 
 export function registerEvaluationFunction<
-	NodeName extends ASTNode['nodeKind']
+	NodeName extends ASTNode['nodeKind'],
 >(nodeKind: NodeName, evaluationFunction: EvaluationFunction<NodeName>) {
 	evaluationFunctions ??= {}
 	if (evaluationFunctions[nodeKind]) {
 		throw new PublicodesError(
 			'EvaluationError',
 			`Multiple evaluation functions registered for the nodeKind \x1b[4m${nodeKind}`,
-			{ dottedName: '' }
+			{ dottedName: '' },
 		)
 	}
 	evaluationFunctions[nodeKind] = evaluationFunction

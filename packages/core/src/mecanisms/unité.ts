@@ -32,14 +32,14 @@ registerEvaluationFunction(parseUnité.nom, function evaluate(node) {
 			nodeValue = convertUnit(
 				valeur.unit,
 				node.unit,
-				valeur.nodeValue as number
+				valeur.nodeValue as number,
 			)
 		} catch (e) {
 			warning(
 				this.context.logger,
 				"Erreur lors de la conversion d'unité explicite",
 				{ dottedName: this.cache._meta.evaluationRuleStack[0] },
-				e
+				e,
 			)
 		}
 	}

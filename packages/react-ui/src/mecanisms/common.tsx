@@ -23,7 +23,7 @@ export function ConstantNode({ nodeValue, type, fullPrecision, unit }) {
 					{ nodeValue, unit },
 					{
 						precision: 5,
-					}
+					},
 				)}
 			</span>
 		)
@@ -54,7 +54,9 @@ const StyledNodeValuePointer = styled.span`
 	flex-shrink: 0;
 	padding: 0.1rem 0.2rem;
 	text-decoration: none !important;
-	box-shadow: 0px 1px 2px 1px #d9d9d9, 0 0 0 1px #d9d9d9;
+	box-shadow:
+		0px 1px 2px 1px #d9d9d9,
+		0 0 0 1px #d9d9d9;
 	border: 1px solid #f8f9fa;
 	border-radius: 0.2rem;
 `
@@ -183,21 +185,21 @@ const StyledMecanismName = styled.a<{ name: string; inline?: boolean }>`
 		color: white;
 	}
 	${(props) =>
-		props.inline
-			? css`
-					border-radius: 0.3rem;
-					margin-bottom: 0.5rem;
-			  `
-			: css`
-					top: -0.5rem;
-					position: relative;
-					margin-left: -1rem;
-					border-radius: 0 !important;
-					border-bottom-right-radius: 0.3rem !important;
-					::first-letter {
-						text-transform: capitalize;
-					}
-			  `}
+		props.inline ?
+			css`
+				border-radius: 0.3rem;
+				margin-bottom: 0.5rem;
+			`
+		:	css`
+				top: -0.5rem;
+				position: relative;
+				margin-left: -1rem;
+				border-radius: 0 !important;
+				border-bottom-right-radius: 0.3rem !important;
+				::first-letter {
+					text-transform: capitalize;
+				}
+			`}
 	:hover {
 		opacity: 0.8;
 	}

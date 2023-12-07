@@ -28,14 +28,14 @@ export default function RuleSource({ engine, dottedName }: Props) {
 export const useRuleSource = (engine: Engine, dottedName: string) => {
 	// Array.from is a workaround for https://github.com/facebook/docusaurus/issues/7606#issuecomment-1330452598
 	const dependencies = Array.from(
-		engine.context.referencesMaps.referencesIn.get(dottedName) ?? []
+		engine.context.referencesMaps.referencesIn.get(dottedName) ?? [],
 	)
 
 	const node = engine.evaluateNode(engine.context.parsedRules[dottedName])
 
 	const rules = {
 		[dottedName]: Object.fromEntries(
-			Object.entries(node.rawNode).filter(([key]) => key !== 'nom')
+			Object.entries(node.rawNode).filter(([key]) => key !== 'nom'),
 		),
 	}
 
@@ -44,15 +44,15 @@ export const useRuleSource = (engine: Engine, dottedName: string) => {
 	const situation = Object.fromEntries(
 		dependencies
 			.filter((name) => name !== dottedName && !name.endsWith(' . $SITUATION'))
-			.map((dottedName) => [dottedName, formatValueForStudio(node)])
+			.map((dottedName) => [dottedName, formatValueForStudio(node)]),
 	)
 
 	const source = encodeURIComponent(JSON.stringify({ rules, situation }))
 
 	const baseURL =
-		typeof window !== 'undefined' && location.hostname === 'localhost'
-			? ''
-			: 'https://publi.codes'
+		typeof window !== 'undefined' && location.hostname === 'localhost' ?
+			''
+		:	'https://publi.codes'
 
 	return `${baseURL}/studio/${encodeRuleName(dottedName)}#${source}`
 }

@@ -3,7 +3,7 @@ import { notApplicableNode } from '../evaluationUtils'
 import { createParseInlinedMecanismWithArray } from './inlineMecanism'
 
 export function reduceToSumNodes(
-	valeurs: Array<PublicodesExpression>
+	valeurs: Array<PublicodesExpression>,
 ): PublicodesExpression {
 	return valeurs
 		.reverse()
@@ -15,5 +15,6 @@ export default createParseInlinedMecanismWithArray(
 	{
 		valeur: { type: 'liste' },
 	},
-	({ valeur }) => reduceToSumNodes([...(valeur as Array<PublicodesExpression>)])
+	({ valeur }) =>
+		reduceToSumNodes([...(valeur as Array<PublicodesExpression>)]),
 )

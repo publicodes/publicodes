@@ -81,7 +81,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		throw new PublicodesError(
 			'EvaluationError',
 			`La référence '${dottedName}' a déjà été définie`,
-			{ dottedName }
+			{ dottedName },
 		)
 	}
 
@@ -147,7 +147,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 				(n: ASTNode & { dottedName?: string }) => {
 					n.dottedName = (n as ReferenceNode).name
 					return n
-				}
+				},
 			),
 	}
 
@@ -178,7 +178,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 
 export function parseRules(
 	rules: Record<string, Rule | number | string | undefined>,
-	context: Context
+	context: Context,
 ) {
 	for (const dottedName in rules) {
 		let rule = rules[dottedName]
@@ -190,7 +190,7 @@ export function parseRules(
 			throw new PublicodesError(
 				'SyntaxError',
 				`Rule ${dottedName} is incorrectly written. Please give it a proper value.`,
-				{ dottedName }
+				{ dottedName },
 			)
 		}
 		const copy = weakCopyObj(rule)
@@ -210,7 +210,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 	if (!ruleDisabledByItsParent) {
 		if (
 			this.cache._meta.evaluationRuleStack.filter(
-				(dottedName) => dottedName === node.dottedName
+				(dottedName) => dottedName === node.dottedName,
 			).length > 1
 		) {
 			//  TODO : remettre ce warning. Je ne sais pas pourquoi, mais la base de règle de mon-entreprise lève un warning sur quasiment toutes les cotisations
@@ -244,7 +244,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 		...valeurEvaluation,
 		missingVariables: mergeMissing(
 			valeurEvaluation.missingVariables,
-			parentMissingVariables
+			parentMissingVariables,
 		),
 		...node,
 		explanation: {
@@ -265,7 +265,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 function updateRuleMissingVariables(
 	engine: Engine,
 	node: RuleNode,
-	valeurEvaluation: EvaluatedNode
+	valeurEvaluation: EvaluatedNode,
 ): void {
 	if (
 		node.private === true ||
@@ -286,7 +286,7 @@ function updateRuleMissingVariables(
 
 export function evaluateDisablingParent(
 	engine: Engine,
-	node: RuleNode
+	node: RuleNode,
 ): {
 	ruleDisabledByItsParent: boolean
 	parentMissingVariables: MissingVariables
@@ -302,7 +302,8 @@ export function evaluateDisablingParent(
 	const nodesTypes = engine.context.nodesTypes
 	const nullableParent = node.explanation.parents.find(
 		(ref) =>
-			nodesTypes.get(ref)?.isNullable || nodesTypes.get(ref)?.type === 'boolean'
+			nodesTypes.get(ref)?.isNullable ||
+			nodesTypes.get(ref)?.type === 'boolean',
 	)
 
 	if (!nullableParent) {

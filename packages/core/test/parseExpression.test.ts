@@ -14,7 +14,7 @@ describe("Enables external codebases to use publicodes's expression parser", () 
 						variable: 'facteur',
 					},
 				],
-			})
+			}),
 		)
 	})
 })

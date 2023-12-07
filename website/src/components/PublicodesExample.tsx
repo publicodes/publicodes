@@ -28,10 +28,9 @@ export default function PublicodesExample({
 
 	return (
 		<div className={publicodeStyles.container}>
-			{!edit ? (
+			{!edit ?
 				<CodeBlock language={language}>{code}</CodeBlock>
-			) : (
-				<Suspense fallback={<div>Chargement en cours</div>}>
+			:	<Suspense fallback={<div>Chargement en cours</div>}>
 					<Playground
 						language={language}
 						defaultTarget={target}
@@ -41,7 +40,7 @@ export default function PublicodesExample({
 						{code}
 					</Playground>
 				</Suspense>
-			)}
+			}
 			<button
 				className={publicodeStyles.button}
 				onClick={() => setEdit((e) => !e)}

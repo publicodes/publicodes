@@ -17,7 +17,7 @@ type koaValidate = (ctx: Record<string, any>, next: Function) => Promise<void> /
  */
 const applyKoaBodyIfNotPresent: Router.Middleware<{}, {}> = (
 	ctx: Context,
-	next: Next
+	next: Next,
 ) => {
 	if (typeof ctx.request.body === 'undefined') {
 		return koaBody()(ctx, next)
@@ -102,7 +102,7 @@ export default function publicodesAPI(engine: Engine) {
 					ctx.type = 'application/json'
 					ctx.body = evaluateResult
 				}
-			}
+			},
 		)
 		.get('/rules', validateInput('/rules'), (ctx: Context) => {
 			ctx.type = 'application/json'
@@ -116,7 +116,7 @@ export default function publicodesAPI(engine: Engine) {
 
 				ctx.type = 'application/json'
 				ctx.body = routes.rulesId(engine, rule)
-			}
+			},
 		)
 
 	const routesMiddleware = router.routes()

@@ -78,10 +78,9 @@ const Tranche = ({ tranche, multiplicateur }) => {
 	return (
 		<tr className={`tranche ${isHighlighted ? 'activated' : ''}`}>
 			<td key="tranche">
-				{tranche.plafond.nodeValue === Infinity ? (
+				{tranche.plafond.nodeValue === Infinity ?
 					'Au-delà du dernier plafond'
-				) : (
-					<>
+				:	<>
 						Inférieur à <Explanation node={tranche.plafond} />
 						{multiplicateur && !multiplicateur.isDefault && (
 							<>
@@ -90,7 +89,7 @@ const Tranche = ({ tranche, multiplicateur }) => {
 							</>
 						)}
 					</>
-				)}
+				}
 			</td>
 			{tranche.taux && (
 				<td key="taux">
@@ -99,11 +98,9 @@ const Tranche = ({ tranche, multiplicateur }) => {
 			)}
 			{(tranche.nodeValue != undefined || tranche.montant) && (
 				<td key="value">
-					{tranche.montant ? (
+					{tranche.montant ?
 						<Explanation node={tranche.montant} />
-					) : (
-						<NodeValuePointer data={tranche.nodeValue} unit={tranche.unit} />
-					)}
+					:	<NodeValuePointer data={tranche.nodeValue} unit={tranche.unit} />}
 				</td>
 			)}
 		</tr>

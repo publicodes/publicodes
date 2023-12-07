@@ -12,7 +12,7 @@ export default function Variations({
 	unit,
 }: VariationNode & EvaluatedNode) {
 	const [expandedVariation, toggleVariation] = useState<undefined | number>(
-		undefined
+		undefined,
 	)
 	return (
 		<StyledComponent>
@@ -39,31 +39,32 @@ export default function Variations({
 									style={{
 										transition: 'all 0.2s',
 										opacity:
-											expandedVariation === i ||
-											satisfied ||
-											nodeValue == undefined
-												? 1
-												: 0.8,
+											(
+												expandedVariation === i ||
+												satisfied ||
+												nodeValue == undefined
+											) ?
+												1
+											:	0.8,
 									}}
 								>
 									{!satisfied && (
 										<>
 											<em>non applicable </em>
-											{expandedVariation !== i ? (
+											{expandedVariation !== i ?
 												<button
 													className="ui__ link-button"
 													onClick={() => toggleVariation(i)}
 												>
 													détails ▶️
 												</button>
-											) : (
-												<button
+											:	<button
 													className="ui__ link-button"
 													onClick={() => toggleVariation(undefined)}
 												>
 													replier 🔽
 												</button>
-											)}
+											}
 										</>
 									)}
 									{(expandedVariation === i || satisfied) && (

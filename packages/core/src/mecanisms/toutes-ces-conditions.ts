@@ -9,6 +9,6 @@ export default createParseInlinedMecanismWithArray(
 	({ valeur }) =>
 		(valeur as Array<PublicodesExpression>).reduce(
 			(acc, value) => ({ et: [acc, value] }),
-			'oui'
-		)
+			'oui',
+		),
 )

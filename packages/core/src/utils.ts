@@ -9,28 +9,28 @@ export function addToMapSet<T>(map: Map<T, Set<T>>, key: T, value: T) {
 export function mergeWithArray<
 	N extends string | number | symbol,
 	M extends string | number | symbol,
-	T
+	T,
 >(obj1: Record<N, Array<T>>, obj2: Record<M, Array<T>>): Record<N | M, Array<T>>
 
 export function mergeWithArray<
 	N extends string | number | symbol,
 	M extends string | number | symbol,
-	T
+	T,
 >(
 	obj1: Partial<Record<N, Array<T>>>,
-	obj2: Partial<Record<M, Array<T>>>
+	obj2: Partial<Record<M, Array<T>>>,
 ): Partial<Record<N | M, Array<T>>>
 
 export function mergeWithArray<K extends string | number | symbol, T>(
 	obj1: Partial<Record<K, Array<T>>>,
-	obj2: Partial<Record<K, Array<T>>>
+	obj2: Partial<Record<K, Array<T>>>,
 ): Partial<Record<K, Array<T>>> {
 	return (Object.entries(obj2) as Array<[K, Array<T>]>).reduce(
 		(obj, [key, value]) => ({
 			...obj,
 			[key]: [...(obj[key] ?? []), ...value],
 		}),
-		obj1
+		obj1,
 	) as Partial<Record<K, Array<T>>>
 }
 

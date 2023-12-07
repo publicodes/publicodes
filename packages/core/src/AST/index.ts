@@ -29,7 +29,7 @@ import {
 	*/
 export function makeASTTransformer(
 	fn: (node: ASTNode, transform: ASTTransformer) => ASTNode | undefined | false,
-	stopOnUpdate = true
+	stopOnUpdate = true,
 ): ASTTransformer {
 	function transform(node: ASTNode): ASTNode {
 		const updatedNode = fn(node, transform)
@@ -44,7 +44,7 @@ export function makeASTTransformer(
 	return transform
 }
 export function makeASTVisitor(
-	fn: (node: ASTNode, visit: ASTVisitor) => 'continue' | 'stop'
+	fn: (node: ASTNode, visit: ASTVisitor) => 'continue' | 'stop',
 ): ASTVisitor {
 	function visit(node: ASTNode) {
 		switch (fn(node, visit)) {
@@ -65,7 +65,7 @@ export function makeASTVisitor(
 // Can be made more flexible with other args like a filter function (ASTNode -> Bool).
 export function iterAST(
 	childrenSelector: (node: ASTNode) => Iterable<ASTNode>,
-	node: ASTNode
+	node: ASTNode,
 ): ASTNode[] {
 	function* iterate(node: ASTNode): IterableIterator<ASTNode> {
 		yield node
@@ -93,7 +93,7 @@ export function iterAST(
 export function reduceAST<T>(
 	fn: (acc: T, n: ASTNode, reduceFn: (n: ASTNode) => T) => T | undefined,
 	start: T,
-	node: ASTNode
+	node: ASTNode,
 ): T {
 	function traverseFn(acc: T, node: ASTNode): T {
 		const result = fn(acc, node, traverseFn.bind(null, start))
@@ -116,7 +116,7 @@ export function getChildrenNodes(node: ASTNode): ASTNode[] {
 
 export function traverseParsedRules<Names extends string>(
 	fn: ASTTransformer,
-	parsedRules: ParsedRules<Names>
+	parsedRules: ParsedRules<Names>,
 ): ParsedRules<Names> {
 	const ret = {} as Record<Names, ASTNode>
 	for (const name in parsedRules) {
@@ -207,9 +207,10 @@ const traverseRuleNode: TraverseFunction<'rule'> = (fn, node) => {
 	copy.replacements = node.replacements.map(fn) as Array<ReplacementRule>
 	copy.explanation = {
 		ruleDisabledByItsParent: node.explanation.ruleDisabledByItsParent,
-		nullableParent: node.explanation.nullableParent
-			? fn(node.explanation.nullableParent)
-			: undefined,
+		nullableParent:
+			node.explanation.nullableParent ?
+				fn(node.explanation.nullableParent)
+			:	undefined,
 		parents: node.explanation.parents.map(fn),
 		valeur: fn(node.explanation.valeur),
 	}
@@ -219,7 +220,7 @@ const traverseRuleNode: TraverseFunction<'rule'> = (fn, node) => {
 
 const traverseReplacementNode: TraverseFunction<'replacementRule'> = (
 	fn,
-	node
+	node,
 ) =>
 	({
 		...node,
@@ -228,7 +229,7 @@ const traverseReplacementNode: TraverseFunction<'replacementRule'> = (
 		replacementNode: fn(node.replacementNode),
 		whiteListedNames: node.whiteListedNames.map(fn),
 		blackListedNames: node.blackListedNames.map(fn),
-	} as ReplacementRule)
+	}) as ReplacementRule
 
 const traverseUnaryOperationNode: TraverseFunction<
 	| 'simplifier unité'
@@ -308,7 +309,7 @@ const traverseRésoudreRéférenceCirculaireNode: TraverseFunction<
 const traverseTextNode: TraverseFunction<'texte'> = (fn, node) => ({
 	...node,
 	explanation: node.explanation.map((element) =>
-		typeof element === 'string' ? element : fn(element)
+		typeof element === 'string' ? element : fn(element),
 	),
 })
 

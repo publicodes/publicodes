@@ -66,7 +66,7 @@ describe('Traversed variables - Inversions', () => {
 
 		engine.setSituation({ net: 1234 })
 		expect(engine.evaluate('brut').traversedVariables).to.include(
-			'ne doit pas être traversée si brut vaut 2000'
+			'ne doit pas être traversée si brut vaut 2000',
 		)
 
 		engine.setSituation({ net: 1000 })

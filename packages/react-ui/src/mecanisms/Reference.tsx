@@ -11,7 +11,7 @@ import { NodeValuePointer } from './common'
 export default function Reference(
 	node: ReferenceNode & {
 		dottedName: string
-	} & EvaluatedNode
+	} & EvaluatedNode,
 ) {
 	const engine = useContext(EngineContext)
 	const { dottedName, nodeValue, unit } = node
@@ -55,9 +55,9 @@ export default function Reference(
 								onClick={() => setFolded(!folded)}
 								aria-expanded={!folded}
 								aria-label={
-									folded
-										? 'Déplier, afficher le détail'
-										: 'Replier, afficher le détail'
+									folded ?
+										'Déplier, afficher le détail'
+									:	'Replier, afficher le détail'
 								}
 							>
 								{folded ? 'Déplier' : 'Replier'}

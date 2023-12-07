@@ -1,5 +1,5 @@
 console.warn(
-	'This package was renamed: please use @publicodes/react-ui instead'
+	'This package was renamed: please use @publicodes/react-ui instead',
 )
 /**
  * @deprecated This package was renamed: please use @publicodes/react-ui instead`

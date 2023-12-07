@@ -37,7 +37,7 @@ export type RawPublicodes<RuleNames extends string> = Partial<
 >
 
 export function createContext<RuleNames extends string>(
-	partialContext: Partial<Context<RuleNames>>
+	partialContext: Partial<Context<RuleNames>>,
 ): Context<RuleNames> {
 	return {
 		dottedName: '',
@@ -64,10 +64,10 @@ export function copyContext<C extends Context>(context: C): C {
 }
 export default function parsePublicodes<
 	ContextNames extends string,
-	NewRulesNames extends string
+	NewRulesNames extends string,
 >(
 	rawRules: RawPublicodes<NewRulesNames>,
-	partialContext: Partial<Context<ContextNames>> = createContext({})
+	partialContext: Partial<Context<ContextNames>> = createContext({}),
 ): Pick<
 	Context<ContextNames | NewRulesNames>,
 	'parsedRules' | 'nodesTypes' | 'referencesMaps' | 'rulesReplacements'
@@ -78,7 +78,7 @@ export default function parsePublicodes<
 		throw new PublicodesError(
 			'EngineError',
 			'Publicodes does not parse yaml rule sets itself anymore. Please provide a parsed js object. E.g. the `eemeli/yaml` package.',
-			{}
+			{},
 		)
 
 	// let rules = { ...rawRules } // take 7-8ms
@@ -102,7 +102,7 @@ export default function parsePublicodes<
 	let [newRules, referencesMaps] = disambiguateReferencesAndCollectDependencies(
 		parsedRules,
 		context.parsedRules,
-		context.referencesMaps
+		context.referencesMaps,
 	)
 
 	// STEP 4: Inline replacements
@@ -122,7 +122,7 @@ export default function parsePublicodes<
 	const nodesTypes = inferNodeType(
 		Object.keys(newRules),
 		parsedRules,
-		context.nodesTypes
+		context.nodesTypes,
 	)
 
 	return {
@@ -135,17 +135,17 @@ export default function parsePublicodes<
 
 function disambiguateReferencesAndCollectDependencies<
 	NewNames extends string,
-	PreviousNames extends string
+	PreviousNames extends string,
 >(
 	parsedRules: ParsedRules<PreviousNames>,
 	newRules: ParsedRules<NewNames>,
-	referencesMaps: ReferencesMaps<PreviousNames>
+	referencesMaps: ReferencesMaps<PreviousNames>,
 ): [
 	parsedRules: ParsedRules<NewNames>,
-	referencesMap: ReferencesMaps<PreviousNames | NewNames>
+	referencesMap: ReferencesMaps<PreviousNames | NewNames>,
 ] {
 	const disambiguateReference = makeASTTransformer((node) =>
-		disambiguateReferenceNode(node, parsedRules)
+		disambiguateReferenceNode(node, parsedRules),
 	)
 	const disambiguateReferencesAndCollectDependencies = makeASTTransformer(
 		(node) => {
@@ -154,7 +154,7 @@ function disambiguateReferencesAndCollectDependencies<
 				updateReferencesMapsFromReferenceNode(n, referencesMaps)
 			}
 			return n
-		}
+		},
 	)
 	const disambiguatedRules = traverseParsedRules((node) => {
 		if (node.nodeKind === 'replacementRule') {

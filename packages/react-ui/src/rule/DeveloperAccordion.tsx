@@ -61,54 +61,54 @@ export function DeveloperAccordion({
 				</>
 			),
 		},
-		(apiDocumentationUrl && apiEvaluateUrl) || npmPackage
-			? {
-					title:
-						'Réutiliser ce calcul (' +
-						[
-							apiDocumentationUrl && apiEvaluateUrl ? 'API REST' : null,
-							npmPackage ? 'Paquet NPM' : null,
-						]
-							.filter((x) => x !== null)
-							.join(' / ') +
-						')',
-					id: 'usage',
-					children: (
-						<>
-							{utils.isExperimental(
-								engine.baseContext.parsedRules,
-								dottedName
-							) && (
-								<StyledWarning>
-									<h4>⚠️ Cette règle est tagguée comme experimentale ⚠️</h4>
-									<p>
-										Cela veut dire qu'elle peut être modifiée, renommée, ou
-										supprimée sans qu'il n'y ait de changement de version
-										majeure dans l'API.
-									</p>
-								</StyledWarning>
-							)}
-							{npmPackage && (
-								<PackageUsage
-									rule={rule}
-									situation={situation}
-									dottedName={dottedName}
-									npmPackage={npmPackage}
-								/>
-							)}
+		(apiDocumentationUrl && apiEvaluateUrl) || npmPackage ?
+			{
+				title:
+					'Réutiliser ce calcul (' +
+					[
+						apiDocumentationUrl && apiEvaluateUrl ? 'API REST' : null,
+						npmPackage ? 'Paquet NPM' : null,
+					]
+						.filter((x) => x !== null)
+						.join(' / ') +
+					')',
+				id: 'usage',
+				children: (
+					<>
+						{utils.isExperimental(
+							engine.baseContext.parsedRules,
+							dottedName,
+						) && (
+							<StyledWarning>
+								<h4>⚠️ Cette règle est tagguée comme experimentale ⚠️</h4>
+								<p>
+									Cela veut dire qu'elle peut être modifiée, renommée, ou
+									supprimée sans qu'il n'y ait de changement de version majeure
+									dans l'API.
+								</p>
+							</StyledWarning>
+						)}
+						{npmPackage && (
+							<PackageUsage
+								rule={rule}
+								situation={situation}
+								dottedName={dottedName}
+								npmPackage={npmPackage}
+							/>
+						)}
 
-							{apiDocumentationUrl && apiEvaluateUrl && (
-								<ApiUsage
-									situation={situation}
-									dottedName={dottedName}
-									apiDocumentationUrl={apiDocumentationUrl}
-									apiEvaluateUrl={apiEvaluateUrl}
-								/>
-							)}
-						</>
-					),
-			  }
-			: null,
+						{apiDocumentationUrl && apiEvaluateUrl && (
+							<ApiUsage
+								situation={situation}
+								dottedName={dottedName}
+								apiDocumentationUrl={apiDocumentationUrl}
+								apiEvaluateUrl={apiEvaluateUrl}
+							/>
+						)}
+					</>
+				),
+			}
+		:	null,
 		{
 			title: 'Dépendances et effets de la règle',
 			id: 'dependencies-effects',
@@ -169,17 +169,16 @@ function ActualSituation({
 	return (
 		<section>
 			<h4>Situation actuelle</h4>
-			{keys.length ? (
+			{keys.length ?
 				<p>
 					Voici les données que vous avez saisies dans notre simulateur sous
 					forme de JSON.
 				</p>
-			) : (
-				<p>
+			:	<p>
 					Votre situation est pour l'instant vide, vous n'avez probablement pas
 					encore fait de simulation.
 				</p>
-			)}
+			}
 			<Code tabs={tabs} />
 		</section>
 	)
@@ -307,7 +306,7 @@ function MissingVars({ selfMissing }: { selfMissing: string[] }) {
 	return (
 		<section>
 			<h4>Données manquantes</h4>
-			{!!selfMissing?.length ? (
+			{!!selfMissing?.length ?
 				<>
 					<p>
 						Les règles suivantes sont nécessaires pour le calcul mais n'ont pas
@@ -322,9 +321,7 @@ function MissingVars({ selfMissing }: { selfMissing: string[] }) {
 						))}
 					</Ul>
 				</>
-			) : (
-				<p>Il n'y a pas de données manquante.</p>
-			)}
+			:	<p>Il n'y a pas de données manquante.</p>}
 		</section>
 	)
 }
@@ -333,7 +330,7 @@ const isReplacementOfThisRule = (node: RuleNode, dottedName: string) =>
 	node &&
 	'replacements' in node &&
 	node.replacements.some(
-		({ replacedReference }) => replacedReference.dottedName === dottedName
+		({ replacedReference }) => replacedReference.dottedName === dottedName,
 	)
 
 function ReverseMissing({
@@ -346,20 +343,23 @@ function ReverseMissing({
 	ruleIsNotDefined?: boolean
 }) {
 	const ruleNamesWithMissing = Array.from(
-		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? []
+		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? [],
 	).filter(
 		(ruleName) =>
 			ruleName !== '$EVALUATION' &&
 			ruleName in engine.context.parsedRules &&
 			!engine.context.parsedRules[ruleName].private &&
-			!isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
+			!isReplacementOfThisRule(
+				engine.context.parsedRules[ruleName],
+				dottedName,
+			),
 	)
 
 	return (
 		<section>
 			<h4>Règles qui ont besoin de cette valeur</h4>
 
-			{ruleNamesWithMissing.length ? (
+			{ruleNamesWithMissing.length ?
 				<>
 					<p>
 						Les règles suivantes ont besoin de la règle courante pour être
@@ -381,9 +381,7 @@ function ReverseMissing({
 						))}
 					</Ul>
 				</>
-			) : (
-				<p>Aucune règle n'utilise cette valeur.</p>
-			)}
+			:	<p>Aucune règle n'utilise cette valeur.</p>}
 		</section>
 	)
 }
@@ -398,20 +396,20 @@ function Effect({
 	replacements: RuleNode['replacements']
 }) {
 	const effects = Array.from(
-		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? []
+		engine.context.referencesMaps.rulesThatUse.get(dottedName) ?? [],
 	).filter(
 		(ruleName) =>
 			ruleName !== '$EVALUATION' &&
 			ruleName in engine.context.parsedRules &&
 			!engine.context.parsedRules[ruleName].private &&
-			isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName)
+			isReplacementOfThisRule(engine.context.parsedRules[ruleName], dottedName),
 	)
 
 	return (
 		<>
 			<section>
 				<h4>Effets sur d'autres règles</h4>
-				{!!replacements.length ? (
+				{!!replacements.length ?
 					<>
 						<p>
 							Une règle peut avoir des effets sur d'autres règles afin de
@@ -428,14 +426,12 @@ function Effect({
 							))}
 						</Ul>
 					</>
-				) : (
-					<p>Cette règle ne modifie aucune autre règle.</p>
-				)}
+				:	<p>Cette règle ne modifie aucune autre règle.</p>}
 			</section>
 
 			<section>
 				<h4>Règles qui peuvent avoir un effet sur cette valeur</h4>
-				{effects.length ? (
+				{effects.length ?
 					<>
 						<p>
 							Les règles suivantes peuvent remplacer la valeur de la règle
@@ -449,9 +445,7 @@ function Effect({
 							))}
 						</Ul>
 					</>
-				) : (
-					<p>Aucune autre règle n'a d'effet sur cette valeur.</p>
-				)}
+				:	<p>Aucune autre règle n'a d'effet sur cette valeur.</p>}
 			</section>
 		</>
 	)

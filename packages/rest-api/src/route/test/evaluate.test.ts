@@ -42,7 +42,7 @@ describe('evaluate', () => {
 			evaluate(mockedEngine, {
 				expressions: 'expressions',
 				situation: { test: 'test' },
-			})
+			}),
 		).toMatchInlineSnapshot(`
 			{
 			  "evaluate": [
@@ -63,7 +63,7 @@ describe('evaluate', () => {
 
 	it('One expression in array should return same result as a single same expression', () => {
 		expect(evaluate(mockedEngine, { expressions: ['coucou'] })).toMatchObject(
-			evaluate(mockedEngine, { expressions: 'coucou' })
+			evaluate(mockedEngine, { expressions: 'coucou' }),
 		)
 	})
 
@@ -94,7 +94,7 @@ describe('evaluate', () => {
 		expect(
 			evaluate(engine, {
 				expressions: ['dépenses primeur', 'prix', 'prix . avocat * 21'],
-			})
+			}),
 		).toMatchInlineSnapshot(`
 			{
 			  "evaluate": [
@@ -150,7 +150,7 @@ describe('evaluate', () => {
 			evaluate(engine, {
 				expressions: ['1 + 1'],
 				situation: { test: '"42' },
-			})
+			}),
 		).toMatchSnapshot()
 	})
 
@@ -162,13 +162,13 @@ describe('evaluate', () => {
 		expect(
 			evaluate(engine, {
 				expressions: ['1+1', '"42', '42'],
-			})
+			}),
 		).toMatchSnapshot()
 	})
 
 	it('Test error in expression and situation at same time', () => {
 		expect(
-			evaluate(engine, { expressions: '1+1', situation: { test: '"42' } })
+			evaluate(engine, { expressions: '1+1', situation: { test: '"42' } }),
 		).toMatchSnapshot()
 	})
 

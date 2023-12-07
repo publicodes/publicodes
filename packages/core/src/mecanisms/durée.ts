@@ -22,13 +22,13 @@ const evaluate: EvaluationFunction<'durée'> = function (node) {
 		nodeValue = undefined
 	} else {
 		const [fromDate, toDate] = ([from.nodeValue, to.nodeValue] as string[]).map(
-			convertToDate
+			convertToDate,
 		)
 		nodeValue = Math.max(
 			0,
 			Math.round(
-				(toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
-			)
+				(toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24),
+			),
 		)
 	}
 	return {

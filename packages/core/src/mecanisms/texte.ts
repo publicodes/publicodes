@@ -29,7 +29,7 @@ parseTexte.nom = NAME
 
 registerEvaluationFunction(NAME, function evaluate(node) {
 	const explanation = node.explanation.map((element) =>
-		typeof element === 'string' ? element : this.evaluateNode(element)
+		typeof element === 'string' ? element : this.evaluateNode(element),
 	)
 
 	return {
@@ -37,12 +37,12 @@ registerEvaluationFunction(NAME, function evaluate(node) {
 		explanation,
 		missingVariables: mergeAllMissing(
 			node.explanation.filter(
-				(element) => typeof element !== 'string'
-			) as Array<ASTNode>
+				(element) => typeof element !== 'string',
+			) as Array<ASTNode>,
 		),
 		nodeValue: explanation
 			.map((element) =>
-				typeof element === 'string' ? element : formatValue(element)
+				typeof element === 'string' ? element : formatValue(element),
 			)
 			.join(''),
 	}

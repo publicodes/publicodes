@@ -12,13 +12,13 @@ export const catchError = <T>(fn: () => T): [null, T] | [Error] => {
 
 export const PickInObject = <
 	T extends Record<string, unknown>,
-	U extends (keyof T)[]
+	U extends (keyof T)[],
 >(
 	object: T,
-	keys: U
+	keys: U,
 ): Pick<T, U[number]> => {
 	return keys.reduce(
 		(newObj, key) => ({ ...newObj, [key]: object[key] }),
-		{} as Pick<T, U[number]>
+		{} as Pick<T, U[number]>,
 	)
 }

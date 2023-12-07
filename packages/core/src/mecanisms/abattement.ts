@@ -9,5 +9,5 @@ export default createParseInlinedMecanism(
 	{
 		'-': ['valeur', 'abattement'],
 		plancher: 0,
-	}
+	},
 )

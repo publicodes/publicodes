@@ -12,5 +12,5 @@ export default createParseInlinedMecanism(
 			alors: 'par défaut',
 			sinon: 'valeur',
 		},
-	}
+	},
 )

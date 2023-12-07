@@ -13,7 +13,7 @@ export type ReferenceNode = {
 
 export default function parseReference(
 	v: string,
-	context: Context
+	context: Context,
 ): ReferenceNode {
 	if (!context.dottedName) {
 		throw new PublicodesInternalError({
@@ -34,7 +34,7 @@ registerEvaluationFunction('reference', function evaluateReference(node) {
 		throw new PublicodesInternalError(node)
 	}
 	const explanation = this.evaluateNode(
-		this.context.parsedRules[node.dottedName]
+		this.context.parsedRules[node.dottedName],
 	)
 	delete explanation.sourceMap
 	return {

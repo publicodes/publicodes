@@ -8,12 +8,12 @@ describe('setSituation', () => {
 	})
 	it('should allow to evaluate with situation set', () => {
 		expect(
-			engineFromYaml('a: ').setSituation({ a: 5 }).evaluate('a').nodeValue
+			engineFromYaml('a: ').setSituation({ a: 5 }).evaluate('a').nodeValue,
 		).to.eq(5)
 	})
 	it('should overwrite initial value with situation', () => {
 		expect(
-			engineFromYaml('a: 10').setSituation({ a: 5 }).evaluate('a').nodeValue
+			engineFromYaml('a: 10').setSituation({ a: 5 }).evaluate('a').nodeValue,
 		).to.eq(5)
 	})
 	it('should not allow to set situation for private rule', () => {
@@ -22,13 +22,13 @@ describe('setSituation', () => {
 	})
 	it('should report missing variables depth first', () => {
 		expect(
-			engineFromYaml('a:\nb: a').evaluate('b').missingVariables
+			engineFromYaml('a:\nb: a').evaluate('b').missingVariables,
 		).to.have.all.keys('a')
 	})
 
 	it('should not show private missing variables', () => {
 		expect(
-			engineFromYaml('"[privé] a":\nb: a').evaluate('b').missingVariables
+			engineFromYaml('"[privé] a":\nb: a').evaluate('b').missingVariables,
 		).to.have.all.keys('b')
 	})
 

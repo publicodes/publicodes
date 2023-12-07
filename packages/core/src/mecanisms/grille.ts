@@ -21,9 +21,8 @@ export type GrilleNode = {
 export default function parseGrille(v, context): GrilleNode {
 	const explanation = {
 		assiette: parse(v.assiette, context),
-		multiplicateur: v.multiplicateur
-			? parse(v.multiplicateur, context)
-			: defaultNode(1),
+		multiplicateur:
+			v.multiplicateur ? parse(v.multiplicateur, context) : defaultNode(1),
 		tranches: parseTranches(v.tranches, context),
 	}
 	return {
@@ -43,7 +42,7 @@ const evaluate: EvaluationFunction<'grille'> = function (node) {
 			`Le multiplicateur ne peut pas être nul`,
 			{
 				dottedName: this.cache._meta.evaluationRuleStack[0],
-			}
+			},
 		)
 	}
 
@@ -75,14 +74,13 @@ const evaluate: EvaluationFunction<'grille'> = function (node) {
 		activeTranches = [{ nodeValue: false }]
 	} else {
 		activeTranches = tranches.filter(
-			(tranche) => tranche.isActive === undefined
+			(tranche) => tranche.isActive === undefined,
 		)
 	}
 
-	const nodeValue = !activeTranches[0]
-		? false
-		: activeTranches[0].isActive === undefined
-		? undefined
+	const nodeValue =
+		!activeTranches[0] ? false
+		: activeTranches[0].isActive === undefined ? undefined
 		: activeTranches[0].nodeValue
 
 	return {

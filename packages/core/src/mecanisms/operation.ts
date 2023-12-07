@@ -54,7 +54,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	if (
 		(node1.nodeValue === null &&
 			['<', '>', '<=', '>=', '/', '*', '-', 'et'].includes(
-				node.operationKind
+				node.operationKind,
 			)) ||
 		(node1.nodeValue === 0 && ['/', '*'].includes(node.operationKind)) ||
 		(node1.nodeValue === false && node.operationKind === 'et') ||
@@ -122,12 +122,12 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 				`Dans l'expression '${
 					node.operationKind
 				}', la partie gauche (unité: ${serializeUnit(
-					node1.unit
+					node1.unit,
 				)}) n'est pas compatible avec la partie droite (unité: ${serializeUnit(
-					node2.unit
+					node2.unit,
 				)})`,
 				{ dottedName: this.cache._meta.evaluationRuleStack[0] },
-				e
+				e,
 			)
 		}
 	}
@@ -138,18 +138,21 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	const b = node2.nodeValue as string | boolean | null
 
 	evaluatedNode.nodeValue =
-		'nodeValue' in evaluatedNode
-			? evaluatedNode.nodeValue
-			: ['<', '>', '<=', '>=', '*', '/'].includes(node.operationKind) &&
-			  node2.nodeValue === null
-			? null
-			: [a, b].every(
-					(value) =>
-						typeof value === 'string' &&
-						value.match?.(/^[\d]{2}\/[\d]{2}\/[\d]{4}$/)
-			  )
-			? operatorFunction(convertToDate(a as string), convertToDate(b as string))
-			: operatorFunction(a, b)
+		'nodeValue' in evaluatedNode ? evaluatedNode.nodeValue
+		: (
+			['<', '>', '<=', '>=', '*', '/'].includes(node.operationKind) &&
+			node2.nodeValue === null
+		) ?
+			null
+		: (
+			[a, b].every(
+				(value) =>
+					typeof value === 'string' &&
+					value.match?.(/^[\d]{2}\/[\d]{2}\/[\d]{4}$/),
+			)
+		) ?
+			operatorFunction(convertToDate(a as string), convertToDate(b as string))
+		:	operatorFunction(a, b)
 
 	if (
 		node.operationKind === '*' &&
@@ -172,12 +175,13 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		return {
 			...evaluatedNode,
 			nodeValue:
-				typeof node1.nodeValue === 'number' &&
-				typeof node2.nodeValue === 'number'
-					? node1.nodeValue *
-					  (1 +
-							(node2.nodeValue / 100) * (node.operationKind === '-' ? -1 : 1))
-					: evaluatedNode.nodeValue,
+				(
+					typeof node1.nodeValue === 'number' &&
+					typeof node2.nodeValue === 'number'
+				) ?
+					node1.nodeValue *
+					(1 + (node2.nodeValue / 100) * (node.operationKind === '-' ? -1 : 1))
+				:	evaluatedNode.nodeValue,
 			unit: inferUnit('*', [unit, { numerators: [], denominators: ['%'] }]),
 		}
 	}
@@ -203,7 +207,7 @@ const operationDispatch = Object.fromEntries(
 	Object.entries(knownOperations).map(([k, [f, symbol]]) => [
 		k,
 		parseOperation(k, symbol),
-	])
+	]),
 )
 
 export default operationDispatch

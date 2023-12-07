@@ -65,9 +65,9 @@ export default function Studio() {
 		if (code || hashCode) {
 			const objOrYaml = tryToParseJson<JsonCode>(code || hashCode)
 
-			return typeof objOrYaml === 'string'
-				? objOrYaml
-				: jsonCodeToYaml(objOrYaml)
+			return typeof objOrYaml === 'string' ? objOrYaml : (
+					jsonCodeToYaml(objOrYaml)
+				)
 		}
 
 		return EXAMPLE_CODE
@@ -138,7 +138,7 @@ function useDebounce<T>(value: T, delay: number) {
 				clearTimeout(handler)
 			}
 		},
-		[value, delay] // Only re-call effect if value or delay changes
+		[value, delay], // Only re-call effect if value or delay changes
 	)
 	return debouncedValue
 }

@@ -1,23 +1,23 @@
 import { ASTNode, ConstantNode, EvaluatedNode, Evaluation } from './AST/types'
 
 export const collectNodeMissing = (
-	node: EvaluatedNode | ASTNode
+	node: EvaluatedNode | ASTNode,
 ): Record<string, number> =>
 	'missingVariables' in node ? node.missingVariables : {}
 
 export const bonus = (missings: Record<string, number> = {}) =>
 	Object.fromEntries(
-		Object.entries(missings).map(([key, value]) => [key, value + 1])
+		Object.entries(missings).map(([key, value]) => [key, value + 1]),
 	)
 export const mergeMissing = (
 	left: Record<string, number> | undefined = {},
-	right: Record<string, number> | undefined = {}
+	right: Record<string, number> | undefined = {},
 ): Record<string, number> =>
 	Object.fromEntries(
 		[...Object.keys(left), ...Object.keys(right)].map((key) => [
 			key,
 			(left[key] ?? 0) + (right[key] ?? 0),
-		])
+		]),
 	)
 
 export const mergeAllMissing = (missings: Array<EvaluatedNode | ASTNode>) =>
@@ -29,7 +29,7 @@ export const defaultNode = (nodeValue: Evaluation) =>
 		type: typeof nodeValue,
 		isDefault: true,
 		nodeKind: 'constant',
-	} as ConstantNode)
+	}) as ConstantNode
 
 export const notApplicableNode = {
 	nodeKind: 'constant',

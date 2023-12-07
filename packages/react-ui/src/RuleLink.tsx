@@ -36,7 +36,7 @@ export function RuleLink<Name extends string>({
 	const renderers = useContext(RenderersContext)
 	const dottedNameContext = utils.findCommonAncestor(
 		useContext(DottedNameContext) ?? dottedName,
-		dottedName
+		dottedName,
 	)
 	const Link = linkComponent || renderers.Link
 	if (!Link) {
@@ -78,7 +78,7 @@ export function RuleLink<Name extends string>({
 export function RuleLinkWithContext(
 	props: Omit<RuleLinkProps<string>, 'engine' | 'documentationPath'> & {
 		useSubEngine?: boolean
-	}
+	},
 ) {
 	const engine = useEngine()
 	const documentationPath = useContext(BasepathContext)
@@ -86,11 +86,11 @@ export function RuleLinkWithContext(
 		typeof window !== 'undefined' &&
 		new URLSearchParams(window.location.search).get('currentEngineId')
 	const currentEngineId =
-		props.useSubEngine !== false
-			? props.currentEngineId ||
-			  engine.subEngineId ||
-			  (currentEngineIdFromUrl ? Number(currentEngineIdFromUrl) : undefined)
-			: undefined
+		props.useSubEngine !== false ?
+			props.currentEngineId ||
+			engine.subEngineId ||
+			(currentEngineIdFromUrl ? Number(currentEngineIdFromUrl) : undefined)
+		:	undefined
 	return (
 		<RuleLink
 			engine={engine}

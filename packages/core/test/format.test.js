@@ -7,13 +7,13 @@ describe('format engine values', () => {
 		expect(formatValue(12, { displayedUnit: '€' })).to.equal('12 €')
 		expect(formatValue(1200, { displayedUnit: '€' })).to.match(/1[\s]200 €/)
 		expect(formatValue(12, { displayedUnit: '€', language: 'en' })).to.equal(
-			'€12'
+			'€12',
 		)
 		expect(formatValue(12.1, { displayedUnit: '€', language: 'en' })).to.equal(
-			'€12.10'
+			'€12.10',
 		)
 		expect(
-			formatValue(12.123, { displayedUnit: '€', language: 'en' })
+			formatValue(12.123, { displayedUnit: '€', language: 'en' }),
 		).to.equal('€12.12')
 	})
 
@@ -25,7 +25,7 @@ describe('format engine values', () => {
 			formatValue({
 				nodeValue: 441,
 				unit: parseUnit('%.kgCO2e'),
-			})
+			}),
 		).to.equal('4,41 kgCO2e')
 	})
 
@@ -38,10 +38,10 @@ describe('Units handling', () => {
 	it('format displayedUnit', () => {
 		const formatUnit = (unit, count) => unit + (count > 1 ? 's' : '')
 		expect(formatValue(1, { displayedUnit: 'jour', formatUnit })).to.equal(
-			'1 jour'
+			'1 jour',
 		)
 		expect(formatValue(2, { displayedUnit: 'jour', formatUnit })).to.equal(
-			'2 jours'
+			'2 jours',
 		)
 		expect(
 			formatValue(
@@ -49,8 +49,8 @@ describe('Units handling', () => {
 					nodeValue: 7,
 					unit: parseUnit('jour/semaine'),
 				},
-				{ formatUnit }
-			)
+				{ formatUnit },
+			),
 		).to.equal('7 jours / semaine')
 	})
 })

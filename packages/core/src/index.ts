@@ -74,7 +74,7 @@ type Options = Partial<Pick<Context, 'logger' | 'getUnitKey'>>
 
 export type EvaluationFunction<Kind extends NodeKind = NodeKind> = (
 	this: Engine,
-	node: ASTNode & { nodeKind: Kind }
+	node: ASTNode & { nodeKind: Kind },
 ) => ASTNode & { nodeKind: Kind } & EvaluatedNode
 
 export type ParsedRules<Name extends string> = Record<Name, RuleNode<Name>>
@@ -127,7 +127,7 @@ export default class Engine<Name extends string = string> {
 
 	setSituation(
 		situation: Partial<Record<Name, PublicodesExpression | ASTNode>> = {},
-		options: { keepPreviousSituation?: boolean } = {}
+		options: { keepPreviousSituation?: boolean } = {},
 	) {
 		this.resetCache()
 
@@ -138,14 +138,14 @@ export default class Engine<Name extends string = string> {
 				throw new PublicodesError(
 					'EvaluationError',
 					`Erreur lors de la mise à jour de la situation : ${name} n'existe pas dans la base de règle.`,
-					{ dottedName: name }
+					{ dottedName: name },
 				)
 			}
 			if (this.baseContext.parsedRules[name].private) {
 				throw new PublicodesError(
 					'EvaluationError',
 					`Erreur lors de la mise à jour de la situation : ${name} est une règle privée (il n'est pas possible de modifier une règle privée).`,
-					{ dottedName: name }
+					{ dottedName: name },
 				)
 			}
 		})
@@ -155,10 +155,10 @@ export default class Engine<Name extends string = string> {
 		const situationToParse = Object.fromEntries(
 			Object.entries(situation).map(([nom, value]) => [
 				`[privé] ${nom} . $SITUATION`,
-				value && typeof value === 'object' && 'nodeKind' in value
-					? { valeur: value }
-					: value,
-			])
+				value && typeof value === 'object' && 'nodeKind' in value ?
+					{ valeur: value }
+				:	value,
+			]),
 		)
 
 		const savedBaseContext = copyContext(this.baseContext)
@@ -168,7 +168,7 @@ export default class Engine<Name extends string = string> {
 				...this.baseContext,
 				...parsePublicodes(
 					situationToParse as RawPublicodes<Name>,
-					keepPreviousSituation ? this.context : this.baseContext
+					keepPreviousSituation ? this.context : this.baseContext,
 				),
 			}
 		} catch (error) {
@@ -183,7 +183,7 @@ export default class Engine<Name extends string = string> {
 				experimentalRuleWarning(this.baseContext.logger, nom)
 			}
 			this.checkExperimentalRule(
-				this.context.parsedRules[`${nom} . $SITUATION`]
+				this.context.parsedRules[`${nom} . $SITUATION`],
 			)
 		})
 		return this
@@ -198,7 +198,7 @@ export default class Engine<Name extends string = string> {
 			throw new PublicodesError(
 				'UnknownRule',
 				`La règle '${dottedName}' n'existe pas`,
-				{ dottedName }
+				{ dottedName },
 			)
 		}
 
@@ -206,7 +206,7 @@ export default class Engine<Name extends string = string> {
 			throw new PublicodesError(
 				'PrivateRule',
 				`La règle ${dottedName} est une règle privée.`,
-				{ dottedName }
+				{ dottedName },
 			)
 		}
 
@@ -227,18 +227,18 @@ export default class Engine<Name extends string = string> {
 			parsePublicodes(
 				{
 					'[privé] $EVALUATION':
-						value && typeof value === 'object' && 'nodeKind' in value
-							? { valeur: value }
-							: value,
+						value && typeof value === 'object' && 'nodeKind' in value ?
+							{ valeur: value }
+						:	value,
 				},
-				this.context
-			)
+				this.context,
+			),
 		)
 		this.checkExperimentalRule(this.context.parsedRules['$EVALUATION'])
 		this.cache._meta = emptyCache()._meta
 
 		const evaluation = this.evaluateNode(
-			this.context.parsedRules['$EVALUATION'].explanation.valeur
+			this.context.parsedRules['$EVALUATION'].explanation.valeur,
 		)
 		this.cache.nodes.set(value, evaluation)
 		return evaluation
@@ -247,8 +247,8 @@ export default class Engine<Name extends string = string> {
 	evaluateNode<T extends ASTNode>(parsedNode: T): EvaluatedNode & T {
 		const cachedNode = this.cache.nodes.get(parsedNode)
 		if (cachedNode !== undefined) {
-			cachedNode.traversedVariables?.forEach((name) =>
-				this.cache._meta.traversedVariablesStack[0]?.add(name)
+			cachedNode.traversedVariables?.forEach(
+				(name) => this.cache._meta.traversedVariablesStack[0]?.add(name),
 			)
 			return cachedNode
 		}
@@ -257,7 +257,7 @@ export default class Engine<Name extends string = string> {
 			throw new PublicodesError(
 				'EvaluationError',
 				`Unknown "nodeKind": ${parsedNode.nodeKind}`,
-				{ dottedName: '' }
+				{ dottedName: '' },
 			)
 		}
 
@@ -283,12 +283,12 @@ export default class Engine<Name extends string = string> {
 
 		const evaluatedNode = evaluationFunctions[parsedNode.nodeKind].call(
 			this,
-			parsedNode
+			parsedNode,
 		)
 
 		if (isTraversedVariablesBoundary) {
 			evaluatedNode.traversedVariables = Array.from(
-				this.cache._meta.traversedVariablesStack.shift() ?? []
+				this.cache._meta.traversedVariablesStack.shift() ?? [],
 			)
 
 			if (this.cache._meta.traversedVariablesStack.length > 0) {
@@ -324,7 +324,7 @@ export default class Engine<Name extends string = string> {
 		) {
 			experimentalRuleWarning(
 				this.baseContext.logger,
-				node.dottedName as string
+				node.dottedName as string,
 			)
 		}
 		return 'continue'

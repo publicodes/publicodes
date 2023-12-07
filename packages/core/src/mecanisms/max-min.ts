@@ -33,8 +33,8 @@ export const parseMaximumDe = createParseInlinedMecanismWithArray(
 					'[privé] $INTERNAL acc': { valeur: acc },
 				},
 			}),
-			notApplicableNode
-		)
+			notApplicableNode,
+		),
 )
 
 export const parseMinimumDe = createParseInlinedMecanismWithArray(
@@ -68,6 +68,6 @@ export const parseMinimumDe = createParseInlinedMecanismWithArray(
 					'[privé] $INTERNAL acc': { valeur: acc },
 				},
 			}),
-			notApplicableNode
-		)
+			notApplicableNode,
+		),
 )

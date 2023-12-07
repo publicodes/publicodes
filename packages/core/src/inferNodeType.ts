@@ -18,7 +18,7 @@ const UNDEFINED_TYPE = {
 export default function inferNodesTypes(
 	newRulesNames: Array<string>,
 	parsedRules: ParsedRules<string>,
-	nodesTypes: NodesTypes
+	nodesTypes: NodesTypes,
 ) {
 	function inferNodeUnitAndCache(node: ASTNode): InferedType {
 		if (!node || typeof node !== 'object') {
@@ -52,19 +52,21 @@ export default function inferNodesTypes(
 				}
 			case 'operation':
 				return {
-					isNullable: ['<', '<=', '>', '>=', '/', '*'].includes(
-						node.operationKind
-					)
-						? inferNodeUnitAndCache(node.explanation[0]).isNullable ||
-						  inferNodeUnitAndCache(node.explanation[1]).isNullable
-						: node.operationKind === '-'
-						? inferNodeUnitAndCache(node.explanation[0]).isNullable
-						: false,
-					type: ['<', '<=', '>', '>=', '=', '!=', 'et', 'ou'].includes(
-						node.operationKind
-					)
-						? 'boolean'
-						: 'number',
+					isNullable:
+						['<', '<=', '>', '>=', '/', '*'].includes(node.operationKind) ?
+							inferNodeUnitAndCache(node.explanation[0]).isNullable ||
+							inferNodeUnitAndCache(node.explanation[1]).isNullable
+						: node.operationKind === '-' ?
+							inferNodeUnitAndCache(node.explanation[0]).isNullable
+						:	false,
+					type:
+						(
+							['<', '<=', '>', '>=', '=', '!=', 'et', 'ou'].includes(
+								node.operationKind,
+							)
+						) ?
+							'boolean'
+						:	'number',
 				}
 
 			case 'inversion':
@@ -98,11 +100,11 @@ export default function inferNodesTypes(
 
 			case 'variations':
 				const consequencesTypes = node.explanation.map(({ consequence }) =>
-					inferNodeUnitAndCache(consequence)
+					inferNodeUnitAndCache(consequence),
 				)
 				return {
 					isNullable: consequencesTypes.some(
-						(consequence) => consequence.isNullable
+						(consequence) => consequence.isNullable,
 					),
 					type: consequencesTypes
 						.map((c) => c.type)

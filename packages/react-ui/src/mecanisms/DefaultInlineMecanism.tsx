@@ -24,15 +24,14 @@ export default function DefaultInlineMecanism({
 			{isChainableMecanism && <ListOrScalarExplanation node={args.valeur} />}
 			<div style={{ paddingTop: '0.5rem' }}>
 				<Mecanism name={mecanismName} value={nodeValue} unit={unit}>
-					{isChainableMecanism ? (
+					{isChainableMecanism ?
 						<ListOrScalarExplanation node={args[mecanismName]} />
-					) : isUnaryMecanism ? (
+					: isUnaryMecanism ?
 						<ListOrScalarExplanation
 							node={args.valeur}
 							hideNotApplicable={mecanismName !== 'produit'}
 						/>
-					) : (
-						<ul>
+					:	<ul>
 							{Object.entries(args).map(([key, value]) => (
 								<li
 									key={key}
@@ -49,7 +48,7 @@ export default function DefaultInlineMecanism({
 								</li>
 							))}
 						</ul>
-					)}
+					}
 				</Mecanism>
 			</div>
 		</>
@@ -81,14 +80,14 @@ function Table({ explanation, hideNotApplicable = true }) {
 			acc[hideNotApplicable && isZeroOrNotApplicable(x) ? 1 : 0].push(x)
 			return acc
 		},
-		[[], []]
+		[[], []],
 	)
 	const [showNotApplicable, setShowNotApplicable] = useState(
-		applicableExplanation.length === 0
+		applicableExplanation.length === 0,
 	)
 	const id = useMemo(
 		() => 'notApplicableExplanation' + Math.random().toString(36).substring(7),
-		[]
+		[],
 	)
 	return (
 		<>
@@ -109,9 +108,9 @@ function Table({ explanation, hideNotApplicable = true }) {
 							aria-controls={id}
 							onClick={() => setShowNotApplicable(!showNotApplicable)}
 						>
-							{showNotApplicable
-								? 'Cacher les valeurs non applicables'
-								: `Afficher les valeurs non applicables`}
+							{showNotApplicable ?
+								'Cacher les valeurs non applicables'
+							:	`Afficher les valeurs non applicables`}
 						</button>
 					</StyledButtonContainer>
 				)}

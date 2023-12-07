@@ -28,7 +28,7 @@ export function cyclesInDependenciesGraph(rawRules: RawRules): GraphCycles {
  */
 export function squashCycle(
 	rulesDependenciesObject: Map<string, Set<string>>,
-	cycle: string[]
+	cycle: string[],
 ): string[] {
 	function* loopFrom(i: number) {
 		let j = i
@@ -57,7 +57,7 @@ export function squashCycle(
 	}
 
 	const smallest = smallCycleStartingAt.reduce((minCycle, someCycle) =>
-		someCycle.length > minCycle.length ? minCycle : someCycle
+		someCycle.length > minCycle.length ? minCycle : someCycle,
 	)
 	return smallest
 }
@@ -70,7 +70,7 @@ export function squashCycle(
  * smallest cycle is more readable.
  */
 export function cyclicDependencies(
-	rawRules: RawRules
+	rawRules: RawRules,
 ): [GraphCycles, string[]] {
 	const { referencesMaps } = parsePublicodes(rawRules)
 	const dependenciesGraph = buildDependenciesGraph(referencesMaps.referencesIn)
@@ -79,11 +79,11 @@ export function cyclicDependencies(
 	const reversedCycles = cycles.map((c) => c.reverse())
 
 	const smallCycles = reversedCycles.map((cycle) =>
-		squashCycle(referencesMaps.referencesIn, cycle)
+		squashCycle(referencesMaps.referencesIn, cycle),
 	)
 
 	const printableStronglyConnectedComponents = reversedCycles.map((c, i) =>
-		printInDotFormat(dependenciesGraph, c, smallCycles[i])
+		printInDotFormat(dependenciesGraph, c, smallCycles[i]),
 	)
 
 	return [smallCycles, printableStronglyConnectedComponents]
@@ -102,7 +102,7 @@ const edgeIsInCycle = (cycle: string[], v: string, w: string): boolean => {
 export function printInDotFormat(
 	dependenciesGraph: Graph,
 	cycle: string[],
-	subCycleToHighlight: string[]
+	subCycleToHighlight: string[],
 ) {
 	const edgesSet = new Set()
 	cycle.forEach((vertex) => {
@@ -112,7 +112,7 @@ export function printInDotFormat(
 			.forEach(({ v, w }) => {
 				edgesSet.add(
 					`"${v}" -> "${w}"` +
-						(edgeIsInCycle(subCycleToHighlight, v, w) ? ' [color=red]' : '')
+						(edgeIsInCycle(subCycleToHighlight, v, w) ? ' [color=red]' : ''),
 				)
 			})
 	})

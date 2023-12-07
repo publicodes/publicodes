@@ -18,12 +18,14 @@ export const numberFormatter =
 		// When we format currency we don't want to display a single decimal digit
 		// ie 8,1€ but we want to display 8,10€
 		const adaptedMinimumFractionDigits =
-			style === 'currency' &&
-			maximumFractionDigits >= 2 &&
-			minimumFractionDigits === 0 &&
-			!Number.isInteger(value)
-				? 2
-				: minimumFractionDigits
+			(
+				style === 'currency' &&
+				maximumFractionDigits >= 2 &&
+				minimumFractionDigits === 0 &&
+				!Number.isInteger(value)
+			) ?
+				2
+			:	minimumFractionDigits
 		return Intl.NumberFormat(language, {
 			style,
 			currency: 'EUR',
@@ -34,20 +36,20 @@ export const numberFormatter =
 
 export const formatCurrency = (
 	nodeValue: number | undefined,
-	language: string
+	language: string,
 ) => {
-	return nodeValue == undefined
-		? ''
-		: (formatNumber({ unit: '€', language, nodeValue }) ?? '').replace(
+	return nodeValue == undefined ? '' : (
+			(formatNumber({ unit: '€', language, nodeValue }) ?? '').replace(
 				/^(-)?€/,
-				'$1€\u00A0'
-		  )
+				'$1€\u00A0',
+			)
+		)
 }
 
 export const formatPercentage = (nodeValue: number | undefined) =>
-	nodeValue == undefined
-		? ''
-		: formatNumber({ unit: '%', nodeValue, maximumFractionDigits: 2 })
+	nodeValue == undefined ? '' : (
+		formatNumber({ unit: '%', nodeValue, maximumFractionDigits: 2 })
+	)
 
 type formatValueOptions = {
 	maximumFractionDigits?: number
@@ -69,9 +71,8 @@ function formatNumber({
 	if (typeof nodeValue !== 'number') {
 		return nodeValue
 	}
-	const serializedUnit = unit
-		? serializeUnit(unit, nodeValue, formatUnit)
-		: undefined
+	const serializedUnit =
+		unit ? serializeUnit(unit, nodeValue, formatUnit) : undefined
 	switch (serializedUnit) {
 		case '€':
 			return numberFormatter({
@@ -120,12 +121,16 @@ type Options = {
 export function formatValue(
 	value: number | { nodeValue: Evaluation; unit?: Unit } | undefined,
 
-	{ language = 'fr', displayedUnit, formatUnit, precision = 2 }: Options = {}
+	{ language = 'fr', displayedUnit, formatUnit, precision = 2 }: Options = {},
 ) {
 	let nodeValue =
-		typeof value === 'number' || typeof value === 'undefined' || value === null
-			? value
-			: value.nodeValue
+		(
+			typeof value === 'number' ||
+			typeof value === 'undefined' ||
+			value === null
+		) ?
+			value
+		:	value.nodeValue
 
 	if (typeof nodeValue === 'number' && Number.isNaN(nodeValue)) {
 		return 'Erreur dans le calcul du nombre'
@@ -143,11 +148,13 @@ export function formatValue(
 		return booleanTranslations[language][nodeValue]
 	if (typeof nodeValue === 'number') {
 		let unit =
-			typeof value === 'number' ||
-			typeof value === 'undefined' ||
-			!('unit' in value)
-				? undefined
-				: value.unit
+			(
+				typeof value === 'number' ||
+				typeof value === 'undefined' ||
+				!('unit' in value)
+			) ?
+				undefined
+			:	value.unit
 		if (unit) {
 			const simplifiedNode = simplifyNodeUnit({
 				unit,
@@ -170,12 +177,11 @@ export function formatValue(
 
 export function serializeValue(
 	{ nodeValue, unit }: { nodeValue: Evaluation; unit?: Unit },
-	{ format }: { format: formatUnit }
+	{ format }: { format: formatUnit },
 ) {
 	const serializedUnit = (
-		unit && typeof nodeValue === 'number'
-			? serializeUnit(unit, nodeValue, format)
-			: ''
-	)?.replace(/\s*\/\s*/g, '/')
+		unit && typeof nodeValue === 'number' ?
+			serializeUnit(unit, nodeValue, format)
+		:	'')?.replace(/\s*\/\s*/g, '/')
 	return `${nodeValue} ${serializedUnit}`.trim()
 }

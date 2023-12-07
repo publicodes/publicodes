@@ -11,7 +11,7 @@ export type VariableManquanteNode = {
 
 export default function parseVariableManquante(
 	v,
-	context
+	context,
 ): VariableManquanteNode {
 	return {
 		missingVariable: v['variable manquante'],
@@ -27,7 +27,7 @@ registerEvaluationFunction(parseVariableManquante.nom, function evaluate(node) {
 
 	const maxMissingScore = Object.values(valeur.missingVariables).reduce<number>(
 		(a, b) => (a > b ? a : b),
-		0
+		0,
 	)
 
 	return {

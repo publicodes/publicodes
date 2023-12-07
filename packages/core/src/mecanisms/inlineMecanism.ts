@@ -8,7 +8,7 @@ import { Context, createContext } from '../parsePublicodes'
 export function createParseInlinedMecanism(
 	name: string,
 	args: Record<string, { 'par défaut'?: PublicodesExpression; type?: 'liste' }>,
-	body: PublicodesExpression
+	body: PublicodesExpression,
 ) {
 	let parsedBody
 	let parsedDefaultArgs
@@ -19,7 +19,7 @@ export function createParseInlinedMecanism(
 			if ('par défaut' in args[name]) {
 				parsedDefaultArgs[name] = parse(
 					args[name]['par défaut'],
-					createContext({})
+					createContext({}),
 				)
 			}
 		}
@@ -50,7 +50,7 @@ export function createParseInlinedMecanism(
 			throw new PublicodesError(
 				'SyntaxError',
 				`Il manque la clé '${argName} dans le mécanisme ${name}`,
-				{ dottedName: argName }
+				{ dottedName: argName },
 			)
 		})(parsedBody)
 
@@ -87,7 +87,9 @@ export function createParseInlinedMecanism(
 export function createParseInlinedMecanismWithArray(
 	name: string,
 	args: Record<string, { type?: 'liste' }>,
-	body: (args: Record<string, ASTNode | Array<ASTNode>>) => PublicodesExpression
+	body: (
+		args: Record<string, ASTNode | Array<ASTNode>>,
+	) => PublicodesExpression,
 ) {
 	function parseInlineMecanism(providedArgs, context: Context) {
 		// Case of unary mecanism
@@ -100,9 +102,10 @@ export function createParseInlinedMecanismWithArray(
 		const parsedProvidedArgs = {}
 		for (const name in providedArgs) {
 			const value = providedArgs[name]
-			parsedProvidedArgs[name] = Array.isArray(value)
-				? value.map((v) => parse(v, context))
-				: parse(value, context)
+			parsedProvidedArgs[name] =
+				Array.isArray(value) ?
+					value.map((v) => parse(v, context))
+				:	parse(value, context)
 		}
 
 		const parsedInlineMecanism = parse(body(parsedProvidedArgs), context)

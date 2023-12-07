@@ -34,9 +34,9 @@ const evaluate: EvaluationFunction<'arrondi'> = function (node) {
 			throw new PublicodesError(
 				'EvaluationError',
 				`L'unité ${serializeUnit(
-					(arrondi as EvaluatedNode).unit
+					(arrondi as EvaluatedNode).unit,
 				)} de l'arrondi est inconnu. Vous devez utiliser l'unité “décimales”`,
-				{ dottedName: this.cache._meta.evaluationRuleStack[0] }
+				{ dottedName: this.cache._meta.evaluationRuleStack[0] },
 			)
 		}
 	}
@@ -44,15 +44,13 @@ const evaluate: EvaluationFunction<'arrondi'> = function (node) {
 	return {
 		...node,
 		nodeValue:
-			typeof valeur.nodeValue !== 'number' || !('nodeValue' in arrondi)
-				? valeur.nodeValue
-				: typeof arrondi.nodeValue === 'number'
-				? roundWithPrecision(valeur.nodeValue, arrondi.nodeValue)
-				: arrondi.nodeValue === true
-				? roundWithPrecision(valeur.nodeValue, 0)
-				: arrondi.nodeValue === undefined
-				? undefined
-				: valeur.nodeValue,
+			typeof valeur.nodeValue !== 'number' || !('nodeValue' in arrondi) ?
+				valeur.nodeValue
+			: typeof arrondi.nodeValue === 'number' ?
+				roundWithPrecision(valeur.nodeValue, arrondi.nodeValue)
+			: arrondi.nodeValue === true ? roundWithPrecision(valeur.nodeValue, 0)
+			: arrondi.nodeValue === undefined ? undefined
+			: valeur.nodeValue,
 		explanation: { valeur, arrondi },
 		missingVariables: mergeAllMissing([valeur, arrondi]),
 		unit: valeur.unit,

@@ -77,7 +77,7 @@ export type ASTVisitor = (n: ASTNode) => void
 export type NodeKind = ASTNode['nodeKind']
 export type TraverseFunction<Kind extends NodeKind> = (
 	fn: ASTTransformer,
-	node: ASTNode & { nodeKind: Kind }
+	node: ASTNode & { nodeKind: Kind },
 ) => ASTNode & { nodeKind: Kind }
 
 export type BaseUnit = string

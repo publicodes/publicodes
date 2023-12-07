@@ -75,7 +75,7 @@ Un problème est survenu lors du parsing de l'expression \`${singleLineExpressio
 
 	le parseur Nearley n'a pas réussi à parser l'expression.
 `,
-				{ dottedName }
+				{ dottedName },
 			)
 		}
 		return parseResult
@@ -87,7 +87,7 @@ Un problème est survenu lors du parsing de l'expression \`${singleLineExpressio
 			'SyntaxError',
 			`\`${singleLineExpression}\` n'est pas une expression valide`,
 			{ dottedName },
-			e
+			e,
 		)
 	}
 }

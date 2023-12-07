@@ -12,5 +12,5 @@ export default createParseInlinedMecanism(
 			alors: 'plafond',
 			sinon: 'valeur',
 		},
-	}
+	},
 )

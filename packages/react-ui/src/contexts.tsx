@@ -59,7 +59,7 @@ export const defaultRenderers = (renderers: SupportedRenderers = {}) => {
 	return Object.fromEntries(
 		[...Object.keys(base), ...Object.keys(renderers)]
 			.map((key) => [key, renderers[key] ?? base[key]])
-			.filter(([, val]) => val)
+			.filter(([, val]) => val),
 	) as RenderersCtx
 }
 
@@ -70,5 +70,5 @@ export const BasepathContext = createContext<string>('/documentation')
 export const DottedNameContext = createContext<string | undefined>(undefined)
 
 export const EngineContext = createContext<Engine<string> | undefined>(
-	undefined
+	undefined,
 )

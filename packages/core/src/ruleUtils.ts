@@ -64,12 +64,12 @@ export function ruleParents(dottedName: string): Array<string> {
  */
 export const getChildrenRules = (
 	parsedRules: ParsedRules<string>,
-	dottedName: string
+	dottedName: string,
 ) => {
 	const childrenRules = Object.keys(parsedRules).filter(
 		(ruleDottedName) =>
 			ruleDottedName.startsWith(dottedName) &&
-			splitName(ruleDottedName).length === splitName(dottedName).length + 1
+			splitName(ruleDottedName).length === splitName(dottedName).length + 1,
 	)
 
 	return childrenRules
@@ -82,7 +82,7 @@ export function findCommonAncestor(dottedName1: string, dottedName2: string) {
 	const splitDottedName1 = splitName(dottedName1)
 	const splitDottedName2 = splitName(dottedName2)
 	const index = splitDottedName1.findIndex(
-		(value, i) => splitDottedName2[i] !== value
+		(value, i) => splitDottedName2[i] !== value,
 	)
 
 	return index === -1 ? dottedName1 : joinName(splitDottedName1.slice(0, index))
@@ -101,13 +101,13 @@ export function findCommonAncestor(dottedName1: string, dottedName2: string) {
 export function isAccessible(
 	rules: Record<string, RuleNode>,
 	contextName: string,
-	name: string
+	name: string,
 ) {
 	if (!(name in rules)) {
 		throw new PublicodesError(
 			'InternalError',
 			`La règle "${name}" n'existe pas`,
-			{ dottedName: name }
+			{ dottedName: name },
 		)
 	}
 
@@ -115,12 +115,12 @@ export function isAccessible(
 	const parents = [name, ...ruleParents(name), '']
 	const rulesToCheckForPrivacy = parents.slice(
 		0,
-		Math.max(parents.indexOf(commonAncestor) - 1, 0)
+		Math.max(parents.indexOf(commonAncestor) - 1, 0),
 	)
 
 	return rulesToCheckForPrivacy.every(
 		(dottedName) =>
-			!(dottedName in rules) || rules[dottedName].private === false
+			!(dottedName in rules) || rules[dottedName].private === false,
 	)
 }
 
@@ -137,29 +137,33 @@ export function isExperimental(rules: Record<string, RuleNode>, name: string) {
 		throw new PublicodesError(
 			'InternalError',
 			`La règle "${name}" n'existe pas`,
-			{ dottedName: name }
+			{ dottedName: name },
 		)
 	}
 	const parents = [name, ...ruleParents(name)]
 	return parents.some(
 		(dottedName) =>
-			dottedName in rules && rules[dottedName].rawNode?.experimental === 'oui'
+			dottedName in rules && rules[dottedName].rawNode?.experimental === 'oui',
 	)
 }
 
 export function disambiguateReference<R extends Record<string, RuleNode>>(
 	rules: R,
 	contextName = '',
-	partialName: string
+	partialName: string,
 ): keyof R {
 	const possibleDottedName = [contextName, ...ruleParents(contextName), '']
 		.map((x) => (x ? x + ' . ' + partialName : partialName))
 		// Rules can reference themselves, but it should be the last thing to check
-		.sort((a, b) => (a === contextName ? 1 : b === contextName ? -1 : 0))
+		.sort((a, b) =>
+			a === contextName ? 1
+			: b === contextName ? -1
+			: 0,
+		)
 
 	const existingDottedName = possibleDottedName.filter((name) => name in rules)
 	const accessibleDottedName = existingDottedName.find((name) =>
-		isAccessible(rules, contextName, name)
+		isAccessible(rules, contextName, name),
 	)
 
 	if (!existingDottedName.length) {
@@ -167,7 +171,7 @@ export function disambiguateReference<R extends Record<string, RuleNode>>(
 			'SyntaxError',
 			`La référence "${partialName}" est introuvable.
 Vérifiez que l'orthographe et l'espace de nom sont corrects`,
-			{ dottedName: contextNameToDottedName(contextName) }
+			{ dottedName: contextNameToDottedName(contextName) },
 		)
 	}
 	if (!accessibleDottedName) {
@@ -175,7 +179,7 @@ Vérifiez que l'orthographe et l'espace de nom sont corrects`,
 			'SyntaxError',
 			`La règle "${existingDottedName[0]}" n'est pas accessible depuis "${contextName}".
 Cela vient du fait qu'elle est privée ou qu'un de ses parent est privé`,
-			{ dottedName: contextNameToDottedName(contextName) }
+			{ dottedName: contextNameToDottedName(contextName) },
 		)
 	}
 
@@ -195,24 +199,24 @@ export function ruleWithDedicatedDocumentationPage(rule) {
 export function updateReferencesMapsFromReferenceNode(
 	node: ASTNode,
 	referencesMaps: ReferencesMaps<string>,
-	ruleDottedName?: string
+	ruleDottedName?: string,
 ) {
 	if (node.nodeKind === 'reference') {
 		addToMapSet(
 			referencesMaps.referencesIn,
 			ruleDottedName ?? node.contextDottedName,
-			node.dottedName
+			node.dottedName,
 		)
 		addToMapSet(
 			referencesMaps.rulesThatUse,
 			node.dottedName,
-			ruleDottedName ?? node.contextDottedName
+			ruleDottedName ?? node.contextDottedName,
 		)
 	}
 }
 export function disambiguateReferenceNode(
 	node: ASTNode,
-	parsedRules: ParsedRules<string>
+	parsedRules: ParsedRules<string>,
 ): ReferenceNode | undefined {
 	if (node.nodeKind !== 'reference') {
 		return
@@ -224,7 +228,7 @@ export function disambiguateReferenceNode(
 	node.dottedName = disambiguateReference(
 		parsedRules,
 		node.contextDottedName,
-		node.name
+		node.name,
 	)
 	node.title = parsedRules[node.dottedName].title
 	node.acronym = parsedRules[node.dottedName].rawNode.acronyme

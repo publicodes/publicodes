@@ -189,7 +189,7 @@ export class Graph {
 		v: string,
 		w: string,
 		value: any = undefined,
-		name: string | undefined = undefined
+		name: string | undefined = undefined,
 	) {
 		v = '' + v
 		w = '' + w
@@ -227,25 +227,25 @@ export class Graph {
 
 	edge(v, w, name) {
 		const e =
-			arguments.length === 1
-				? edgeObjToId(this._isDirected, arguments[0])
-				: edgeArgsToId(this._isDirected, v, w, name)
+			arguments.length === 1 ?
+				edgeObjToId(this._isDirected, arguments[0])
+			:	edgeArgsToId(this._isDirected, v, w, name)
 		return this._edgeLabels[e]
 	}
 
 	hasEdge(v, w, name) {
 		const e =
-			arguments.length === 1
-				? edgeObjToId(this._isDirected, arguments[0])
-				: edgeArgsToId(this._isDirected, v, w, name)
+			arguments.length === 1 ?
+				edgeObjToId(this._isDirected, arguments[0])
+			:	edgeArgsToId(this._isDirected, v, w, name)
 		return has(this._edgeLabels, e)
 	}
 
 	removeEdge(v, w, name) {
 		const e =
-			arguments.length === 1
-				? edgeObjToId(this._isDirected, arguments[0])
-				: edgeArgsToId(this._isDirected, v, w, name)
+			arguments.length === 1 ?
+				edgeObjToId(this._isDirected, arguments[0])
+			:	edgeArgsToId(this._isDirected, v, w, name)
 		const edge = this._edgeObjs[e]
 		if (edge) {
 			v = edge.v

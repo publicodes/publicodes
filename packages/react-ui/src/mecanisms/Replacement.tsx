@@ -8,7 +8,7 @@ export default function Replacement(node: VariationNode & EvaluatedNode) {
 		({ condition }) =>
 			'nodeValue' in condition &&
 			condition.nodeValue !== false &&
-			condition.nodeValue !== null
+			condition.nodeValue !== null,
 	)?.consequence
 	const replacedNode = node.explanation.slice(-1)[0].consequence as {
 		dottedName: string

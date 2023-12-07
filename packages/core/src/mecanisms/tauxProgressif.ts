@@ -22,9 +22,8 @@ export type TauxProgressifNode = {
 export default function parseTauxProgressif(v, context): TauxProgressifNode {
 	const explanation = {
 		assiette: parse(v.assiette, context),
-		multiplicateur: v.multiplicateur
-			? parse(v.multiplicateur, context)
-			: defaultNode(1),
+		multiplicateur:
+			v.multiplicateur ? parse(v.multiplicateur, context) : defaultNode(1),
 		tranches: parseTranches(v.tranches, context),
 	} as TauxProgressifNode['explanation']
 	return {
@@ -87,25 +86,24 @@ const evaluate: EvaluationFunction<'taux progressif'> = function (node) {
 	}
 
 	const activeTrancheIndex = tranches.findIndex(
-		({ isActive }) => isActive === true
+		({ isActive }) => isActive === true,
 	)
 	const activeTranche = tranches[activeTrancheIndex]
 	activeTranche.taux = convertNodeToUnit(
 		parseUnit('%'),
-		evaluate(activeTranche.taux)
+		evaluate(activeTranche.taux),
 	)
 
 	const previousTranche = tranches[activeTrancheIndex - 1]
 	if (previousTranche) {
 		previousTranche.taux = convertNodeToUnit(
 			parseUnit('%'),
-			evaluate(previousTranche.taux)
+			evaluate(previousTranche.taux),
 		)
 		previousTranche.isActive = true
 	}
-	const previousTaux = previousTranche
-		? previousTranche.taux
-		: activeTranche.taux
+	const previousTaux =
+		previousTranche ? previousTranche.taux : activeTranche.taux
 	const calculationValues = [previousTaux, activeTranche.taux]
 	if (calculationValues.some((n) => n.nodeValue === undefined)) {
 		activeTranche.nodeValue = undefined

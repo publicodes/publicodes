@@ -8,9 +8,10 @@ import { Mecanism } from './common'
 
 export default function Contexte({ explanation }: ContextNode & EvaluatedNode) {
 	const engine = useEngine()
-	const contexteEngine = explanation.subEngineId
-		? engine.subEngines[explanation.subEngineId]
-		: engine
+	const contexteEngine =
+		explanation.subEngineId ?
+			engine.subEngines[explanation.subEngineId]
+		:	engine
 	return (
 		<>
 			<Mecanism name="contexte">

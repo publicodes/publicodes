@@ -22,9 +22,8 @@ export type BarèmeNode = {
 export default function parseBarème(v, context): BarèmeNode {
 	const explanation = {
 		assiette: parse(v.assiette, context),
-		multiplicateur: v.multiplicateur
-			? parse(v.multiplicateur, context)
-			: defaultNode(1),
+		multiplicateur:
+			v.multiplicateur ? parse(v.multiplicateur, context) : defaultNode(1),
 		tranches: parseTranches(v.tranches, context),
 	}
 	return {
@@ -77,7 +76,7 @@ const evaluate: EvaluationFunction<'barème'> = function (node) {
 		throw new PublicodesError(
 			'EvaluationError',
 			`Le multiplicateur ne peut pas être nul`,
-			{ dottedName: this.cache._meta.evaluationRuleStack[0] }
+			{ dottedName: this.cache._meta.evaluationRuleStack[0] },
 		)
 	}
 
@@ -88,12 +87,12 @@ const evaluate: EvaluationFunction<'barème'> = function (node) {
 			multiplicateur,
 		}),
 		assiette,
-		evaluate
+		evaluate,
 	)
 	const nodeValue = tranches.reduce(
 		(value, { nodeValue }) =>
 			nodeValue == undefined ? undefined : value + nodeValue,
-		0
+		0,
 	)
 
 	return {

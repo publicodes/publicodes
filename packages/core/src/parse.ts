@@ -47,7 +47,7 @@ export default function parse(rawNode, context: Context): ASTNode {
 			`
 	Une des valeurs de la formule est vide.
 	Vérifiez que tous les champs à droite des deux points sont remplis`,
-			{ dottedName: context.dottedName }
+			{ dottedName: context.dottedName },
 		)
 	}
 	if (typeof rawNode === 'boolean') {
@@ -56,13 +56,13 @@ export default function parse(rawNode, context: Context): ASTNode {
 			`
 Les valeurs booléennes true / false ne sont acceptées.
 Utilisez leur contrepartie française : 'oui' / 'non'`,
-			{ dottedName: context.dottedName }
+			{ dottedName: context.dottedName },
 		)
 	}
 	const node =
-		typeof rawNode === 'object'
-			? rawNode
-			: parseExpression(rawNode, context.dottedName)
+		typeof rawNode === 'object' ? rawNode : (
+			parseExpression(rawNode, context.dottedName)
+		)
 	if ('nodeKind' in node) {
 		return node
 	}
@@ -83,7 +83,7 @@ Il manque le nom du mécanisme pour le tableau : [${rawNode
 				.join(', ')}]
 Les mécanisme possibles sont : 'somme', 'le maximum de', 'le minimum de', 'toutes ces conditions', 'une de ces conditions'.
 		`,
-			{ dottedName: context.dottedName }
+			{ dottedName: context.dottedName },
 		)
 	}
 
@@ -97,7 +97,7 @@ Les mécanismes suivants se situent au même niveau : ${keys
 				.join(', ')}
 Cela vient probablement d'une erreur dans l'indentation
 	`,
-			{ dottedName: context.dottedName }
+			{ dottedName: context.dottedName },
 		)
 	}
 	if (keys.length === 0) {
@@ -114,7 +114,7 @@ Cela vient probablement d'une erreur dans l'indentation
 			`Le mécanisme "${mecanismName}" est inconnu.
 
 Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`,
-			{ dottedName: context.dottedName }
+			{ dottedName: context.dottedName },
 		)
 	}
 	try {
@@ -125,11 +125,11 @@ Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`,
 		}
 		throw new PublicodesError(
 			'SyntaxError',
-			mecanismName
-				? `➡️ Dans le mécanisme ${mecanismName}
+			mecanismName ?
+				`➡️ Dans le mécanisme ${mecanismName}
 ${e.message}`
-				: e.message,
-			{ dottedName: context.dottedName }
+			:	e.message,
+			{ dottedName: context.dottedName },
 		)
 	}
 }
@@ -166,7 +166,7 @@ function parseChainedMecanisms(rawNode, context: Context): ASTNode {
 				[parseFn.nom]: param,
 			},
 		},
-		context
+		context,
 	)
 }
 

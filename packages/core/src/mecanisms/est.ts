@@ -25,7 +25,7 @@ const parseEstDéfini = createParseInlinedMecanism(
 	},
 	{
 		'=': [{ 'est non défini': 'valeur' }, 'non'],
-	}
+	},
 )
 
 const parseEstApplicable = createParseInlinedMecanism(
@@ -35,7 +35,7 @@ const parseEstApplicable = createParseInlinedMecanism(
 	},
 	{
 		'=': [{ 'est non applicable': 'valeur' }, 'non'],
-	}
+	},
 )
 
 export { parseEstDéfini, parseEstApplicable }

@@ -36,7 +36,7 @@ const cache = {}
 
 export function parseReplacements(
 	replacements: Rule['remplace'],
-	context: Context
+	context: Context,
 ): Array<ReplacementRule> {
 	if (!replacements) {
 		return []
@@ -51,7 +51,7 @@ export function parseReplacements(
 			const replacedReference = parse(replacement.règle, context)
 			const replacementNode = parse(
 				replacement.par ?? context.dottedName,
-				context
+				context,
 			)
 
 			const [whiteListedNames, blackListedNames] = [
@@ -59,7 +59,7 @@ export function parseReplacements(
 				replacement['sauf dans'] ?? [],
 			]
 				.map((dottedName) =>
-					Array.isArray(dottedName) ? dottedName : [dottedName]
+					Array.isArray(dottedName) ? dottedName : [dottedName],
 				)
 				.map((refs) => refs.map((ref) => parse(ref, context)))
 			if (
@@ -69,7 +69,7 @@ export function parseReplacements(
 				throw new PublicodesError(
 					'SyntaxError',
 					'La priorité du remplacement doit être un nombre positif',
-					context
+					context,
 				)
 			}
 			return {
@@ -83,25 +83,25 @@ export function parseReplacements(
 				blackListedNames,
 				remplacementRuleId: remplacementRuleId++,
 			} as ReplacementRule
-		}
+		},
 	)
 }
 
 export function parseRendNonApplicable(
 	rules: Rule['rend non applicable'],
-	context: Context
+	context: Context,
 ): Array<ReplacementRule> {
 	return parseReplacements(rules, context).map(
 		(replacement) =>
 			({
 				...replacement,
 				replacementNode: notApplicableNode,
-			} as ReplacementRule)
+			}) as ReplacementRule,
 	)
 }
 
 export function getReplacements(
-	parsedRules: Record<string, RuleNode>
+	parsedRules: Record<string, RuleNode>,
 ): RulesReplacements<string> {
 	const ret = {}
 	for (const dottedName in parsedRules) {
@@ -120,7 +120,7 @@ export function getReplacements(
 
 export function inlineReplacements<
 	NewNames extends string,
-	PreviousNames extends string
+	PreviousNames extends string,
 >({
 	newRules,
 	previousReplacements,
@@ -135,7 +135,7 @@ export function inlineReplacements<
 	logger: Logger
 }): [
 	ParsedRules<NewNames | PreviousNames>,
-	RulesReplacements<NewNames | PreviousNames>
+	RulesReplacements<NewNames | PreviousNames>,
 ] {
 	type Names = NewNames | PreviousNames
 	const newReplacements = getReplacements(newRules) as RulesReplacements<Names>
@@ -155,9 +155,9 @@ export function inlineReplacements<
 		(Object.keys(newRules) as Array<NewNames>).filter((ruleName) =>
 			[...(referencesMaps.referencesIn.get(ruleName) ?? new Set())].some(
 				(reference) =>
-					(previousReplacements[reference as PreviousNames] ?? []).length
-			)
-		)
+					(previousReplacements[reference as PreviousNames] ?? []).length,
+			),
+		),
 	)
 
 	const replacements = mergeWithArray(previousReplacements, newReplacements)
@@ -171,22 +171,22 @@ export function inlineReplacements<
 	const inlinePreviousReplacement = makeReplacementInliner(
 		previousReplacements,
 		referencesMaps,
-		logger
+		logger,
 	)
 	const inlineNewReplacement = makeReplacementInliner(
 		newReplacements,
 		referencesMaps,
-		logger
+		logger,
 	)
 
 	newRuleNamesWithPreviousReplacements.forEach((name) => {
 		parsedRules[name] = inlinePreviousReplacement(
-			parsedRules[name]
+			parsedRules[name],
 		) as RuleNode<Names>
 	})
 	ruleNamesWithNewReplacements.forEach((name) => {
 		parsedRules[name] = inlineNewReplacement(
-			parsedRules[name]
+			parsedRules[name],
 		) as RuleNode<Names>
 	})
 
@@ -196,7 +196,7 @@ export function inlineReplacements<
 export function makeReplacementInliner(
 	replacements: RulesReplacements<string>,
 	referencesMaps: ReferencesMaps<string>,
-	logger: Logger
+	logger: Logger,
 ): (n: ASTNode) => ASTNode {
 	return makeASTTransformer((node, transform) => {
 		if (
@@ -227,14 +227,14 @@ export function makeReplacementInliner(
 			const replacedReferenceNode = replace(
 				node,
 				replacements[node.dottedName] ?? [],
-				logger
+				logger,
 			)
 			// Collect inlined replacement
 			makeASTVisitor((n) => {
 				updateReferencesMapsFromReferenceNode(
 					n,
 					referencesMaps,
-					node.contextDottedName
+					node.contextDottedName,
 				)
 				return 'continue'
 			})(replacedReferenceNode)
@@ -246,29 +246,29 @@ export function makeReplacementInliner(
 function replace(
 	node: ASTNode & { nodeKind: 'reference' }, //& { dottedName: string },
 	replacements: Array<ReplacementRule>,
-	logger: Logger
+	logger: Logger,
 ): ASTNode {
 	// TODO : handle transitivité
 
 	const applicableReplacements = replacements
 		.filter(
 			({ definitionRule }) =>
-				definitionRule.dottedName !== node.contextDottedName
+				definitionRule.dottedName !== node.contextDottedName,
 		)
 		.filter(
 			({ whiteListedNames }) =>
 				!whiteListedNames.length ||
 				whiteListedNames.some((name) =>
-					node.contextDottedName.startsWith(name.dottedName as string)
-				)
+					node.contextDottedName.startsWith(name.dottedName as string),
+				),
 		)
 		.filter(
 			({ blackListedNames }) =>
 				!blackListedNames.length ||
 				blackListedNames.every(
 					(name) =>
-						!node.contextDottedName.startsWith(name.dottedName as string)
-				)
+						!node.contextDottedName.startsWith(name.dottedName as string),
+				),
 		)
 		.reverse()
 		.sort((a, b) => {
@@ -277,7 +277,7 @@ function replace(
 				return result
 			}
 			return b.definitionRule.dottedName.localeCompare(
-				a.definitionRule.dottedName
+				a.definitionRule.dottedName,
 			)
 		})
 
