@@ -1,6 +1,6 @@
 import Head from '@docusaurus/Head'
+import { getDocumentationSiteMap, RulePage } from '@publicodes/react-ui'
 import Engine, { utils } from 'publicodes'
-import { getDocumentationSiteMap, RulePage } from 'publicodes-react'
 import { invertObj, last } from 'ramda'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'

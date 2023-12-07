@@ -30,12 +30,12 @@
 			"outputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"]
 		},
 		"dev": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["^build", "codegen"],
 			"cache": false,
 			"persistent": true
 		},
 		"test:watch": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["^build", "codegen"],
 			"cache": false,
 			"persistent": true
 		},

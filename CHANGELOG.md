@@ -2,6 +2,26 @@
 
 ## next
 
+## 1.0.0-rfc.1
+
+**BREAKING**
+
+- Empêcher les espaces dans le mécanisme unités: par cohérence avec l'écriture dans les expressions  (#332)
+- [Syntax] Changer le mécanisme `recalcul` par `contexte` (#410)
+- Remove mecanisms nom and composantes (#420)
+- refactor: change recalcul to contexte (#412)
+- Enforce a consistent order for replacement rules (#313)
+
+**publicodes**
+- Add `priorité` to replacement
+- Supprimer le paramètre avec dans le mécanisme inversion numérique #321
+
+**publicodes-react**
+- Rename publicodes-react into @publicodes/react #296
+
+**@publicodes/api**
+- Rename @publicodes/api to @publicodes/rest-api #304
+
 ## 1.0.0-beta.77
 
 -   Améliore la gestion des unités (#374)

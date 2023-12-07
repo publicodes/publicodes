@@ -1,6 +1,6 @@
 {
 	"name": "publicodes-react",
-	"version": "1.0.0-beta.77",
+	"version": "1.0.0-rfc.1",
 	"description": "Publicodes API",
 	"type": "module",
 	"main": "./index.cjs",
@@ -24,6 +24,6 @@
 	},
 	"homepage": "https://github.com/betagouv/publicodes#readme",
 	"dependencies": {
-		"@publicodes/react-ui": "^1.0.0-beta.77"
+		"@publicodes/react-ui": "^1.0.0-rfc.1"
 	}
 }

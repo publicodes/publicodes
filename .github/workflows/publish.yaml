@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        package: ['publicodes', 'publicodes-react', '@publicodes/api']
+        package: ['publicodes', '@publicodes/react-ui', '@publicodes/rest-api']
 
     steps:
       - uses: actions/checkout@v2

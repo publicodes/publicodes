@@ -3,8 +3,8 @@ sidebar_position: 2
 title: Tutoriel
 ---
 
-import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem'
+import Tabs from '@theme/Tabs'
 
 ## Installation
 
@@ -74,8 +74,8 @@ Une extension VSCode est disponible pour éditer les fichiers publicodes. Elle
 permet de bénéficier de l'autocomplétion et de la documentation des règles.
 
 > Le language serveur est en cours de réécriture, il est possible qu'il ne
-fonctionne pas correctement. En particulier, si vous utilisez le [sytème
-d'import de règles](./tools/imports).
+> fonctionne pas correctement. En particulier, si vous utilisez le [sytème
+> d'import de règles](./tools/imports).
 
 [➡ Installer
 l'extension](https://marketplace.visualstudio.com/items?itemName=EmileRolley.publicodes-language-server)
@@ -153,8 +153,8 @@ La valeur de `dépenses primeur` se base maintenant sur un avocat à 3€ :
 // On ré-évalue la règle dans la nouvelle situation
 console.log(
 	`Nouveau prix ! Dépenses mises à jour: ${formatValue(
-		engine.evaluate('dépenses primeur')
-	)}.`
+		engine.evaluate('dépenses primeur'),
+	)}.`,
 )
 ```
 
@@ -236,7 +236,7 @@ Puis configurer le router en ajoutant les pages de documentations :
 
 ```jsx
 import { BrowserRouter as Router, Link } from 'react-router-dom'
-import { RulePage } from 'publicodes-react'
+import { RulePage } from '@publicodes/react-ui'
 
 function MonApp() {
 	return (
@@ -262,7 +262,7 @@ Vous pourrez ensuite faire un lien vers la documentation avec le composant
 
 ```jsx
 import { Link } from 'react-router-dom'
-import { RuleLink } from 'publicodes-react'
+import { RuleLink } from '@publicodes/react-ui'
 
 function MesDépenses() {
 	return (
