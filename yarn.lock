@@ -3970,14 +3970,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@publicodes/api@workspace:_deprecated/api":
-  version: 0.0.0-use.local
-  resolution: "@publicodes/api@workspace:_deprecated/api"
-  dependencies:
-    "@publicodes/rest-api": ^1.0.0-rfc.1
-  languageName: unknown
-  linkType: soft
-
 "@publicodes/codemod@workspace:packages/codemod":
   version: 0.0.0-use.local
   resolution: "@publicodes/codemod@workspace:packages/codemod"
@@ -3988,7 +3980,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@publicodes/react-ui@^1.0.0-rfc.1, @publicodes/react-ui@workspace:^, @publicodes/react-ui@workspace:packages/react-ui":
+"@publicodes/react-ui@workspace:^, @publicodes/react-ui@workspace:packages/react-ui":
   version: 0.0.0-use.local
   resolution: "@publicodes/react-ui@workspace:packages/react-ui"
   dependencies:
@@ -4006,7 +3998,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@publicodes/rest-api@^1.0.0-rfc.1, @publicodes/rest-api@workspace:packages/rest-api":
+"@publicodes/rest-api@workspace:packages/rest-api":
   version: 0.0.0-use.local
   resolution: "@publicodes/rest-api@workspace:packages/rest-api"
   dependencies:
@@ -17874,14 +17866,6 @@ __metadata:
     prettier: ^3.1.0
     rimraf: ^3.0.2
     turbo: latest
-  languageName: unknown
-  linkType: soft
-
-"publicodes-react@workspace:_deprecated/publicodes-react":
-  version: 0.0.0-use.local
-  resolution: "publicodes-react@workspace:_deprecated/publicodes-react"
-  dependencies:
-    "@publicodes/react-ui": ^1.0.0-rfc.1
   languageName: unknown
   linkType: soft
 

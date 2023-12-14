@@ -2,7 +2,6 @@
 	"name": "publicodes-monorepo",
 	"private": true,
 	"workspaces": [
-		"_deprecated/*",
 		"website",
 		"packages/*",
 		"examples/*"

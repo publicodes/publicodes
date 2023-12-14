@@ -1,6 +1,6 @@
 ---
-sidebar_position: 4
-title: Migrer vers la version 1.0
+sidebar_position: 2
+title: Migrating to v1.0
 hide_table_of_contents: false
 ---
 
@@ -9,7 +9,7 @@ hide_table_of_contents: false
 La version 1.0 de publicodes est une version majeure qui apporte des changements importants dans la syntaxe des règles.
 Voir le [changelog](https://github.com/publicodes/publicodes/blob/master/CHANGELOG.md) pour plus de détails.
 
-## Codemod pour migrer automatiquement votre base de règle
+## Migration vers la version 1.0
 
 Vous pouvez utiliser le package `@publicodes/codemod` pour migrer vos règles vers la nouvelle syntaxe de la version 1.0.
 
@@ -25,16 +25,20 @@ Ce codemod effectue les modifications suivantes :
 
 ### Utilisation
 
+### Usage
+
 ```bash npm2yarn
 npx @publicodes/codemod <path>
 ```
 
 `path` is the path to the folder containing the `yaml` files of the rules you want to migrate.
 
-## Autres changements manuels
+### Limites
 
-1. Le paquet `@publicodes/api` a été renommé en `@publicodes/rest-api`
-1. Le paquet `@publicodes/react` a été renommé en `@publicodes/react-ui`
-1. Le codemod ne mettra pas à jour la syntaxe exotique des variations (très peu utilisée). Si vous l'utilisez, vous devriez mettre à jour la syntaxe manuellement **avant** d'exécuter le codemod.
-1. Les remplacements sont appliqués avec un ordre de priorité différent, ce qui peut aboutir a des évaluations différente pour une même situation. Si vous utilisez des remplacements, faites tourner vos tests pour vérifier que les résultats sont toujours les mêmes après la migration.
-1. Vous devrez mettre à jour manuellement les appels à `evaluate` contenant une expression publicodes dont la syntaxe a changé (notamment `unité`, qui n'accepte plus d'espace entre `/`).
+1. Vous devriez mettre à jour manuellement la version des packages publicodes dans `package.json`.
+
+2. Ce codemod ne mettra pas à jour la syntaxe exotique des variations (très peu utilisée). Si vous l'utilisez, vous devriez mettre à jour la syntaxe manuellement **avant** d'exécuter le codemod.
+
+3. Les remplacements sont appliqués avec un ordre de priorité différent, ce qui peut aboutir a des évaluations différente pour une même situation. Si vous utilisez des remplacements, faites tourner vos tests pour vérifier que les résultats sont toujours les mêmes après la migration.
+
+4. Vous devrez mettre à jour manuellement les appels à `evaluate` contenant une expression publicodes dont la syntaxe a changé (par exemple `unité`).

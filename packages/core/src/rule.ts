@@ -170,7 +170,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		nodeKind: 'rule',
 		explanation,
 		rawNode: rawRule,
-		virtualRule: !!context.dottedName,
+		virtualRule: privateRule,
 	} as RuleNode
 	context.dottedName = currentDottedNameContext
 	return context.parsedRules[dottedName]

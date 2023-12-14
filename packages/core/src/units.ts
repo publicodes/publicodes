@@ -95,7 +95,7 @@ export function serializeUnit(
 		!n && !d ? ''
 		: n && !d ? printUnits(numerators, count, formatUnit)
 		: !n && d ? `/${printUnits(denominators, 1, formatUnit)}`
-		: `${printUnits(numerators, plural, formatUnit)} / ${printUnits(
+		: `${printUnits(numerators, plural, formatUnit)}/${printUnits(
 				denominators,
 				1,
 				formatUnit,
@@ -235,7 +235,7 @@ function unitsConversionFactor(from: string[], to: string[]): number {
 // - Convert unit instead of ignore warning
 const equivalentTable = {
 	'kW.h': 'kWh',
-	'mn / h': 'noeud',
+	'mn/h': 'noeud',
 }
 
 function areEquivalentSerializedUnit(

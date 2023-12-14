@@ -32,7 +32,7 @@
 -   Ajout d'une première table d'unités équivalentes
 -   Nouveaux tests
 
-## 1.0.0-beta.76
+## 1.0.0-rfc.1
 
 -   Fix `engine.inversionFail` dont la valeur était réinitialisée à chaque appel de `engine.evaluate`
 

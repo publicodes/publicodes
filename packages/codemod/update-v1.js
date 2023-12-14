@@ -121,7 +121,7 @@ function updateComposantes(node, mecanismName) {
 			argsNode.add(item, true)
 		})
 		const termeNode = new YAMLMap()
-		termeNode.add({ key: 'produit', value: argsNode })
+		termeNode.add({ key: mecanismName, value: argsNode })
 		attributsNode?.items.forEach((item) => {
 			termeNode.add(item, true)
 		})
