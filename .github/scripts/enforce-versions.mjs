@@ -1,10 +1,14 @@
 #!/usr/bin/env zx
 
+const exclude = ['codemod']
+
 // Ensure that all packages in the workspace have the same version.
-const packagesVersions = (await fs.readdir('./packages')).map((name) => {
-	const packageJson = fs.readJsonSync(`./packages/${name}/package.json`)
-	return { name, version: packageJson.version }
-})
+const packagesVersions = (await fs.readdir('./packages'))
+	.filter((name) => !exclude.includes(name))
+	.map((name) => {
+		const packageJson = fs.readJsonSync(`./packages/${name}/package.json`)
+		return { name, version: packageJson.version }
+	})
 
 if (new Set(packagesVersions.map(({ version }) => version)).size > 1) {
 	console.table(packagesVersions)
@@ -17,6 +21,6 @@ const changelog = await fs.readFile('./CHANGELOG.md')
 
 if (!changelog.includes(`## ${packageVersion}\n`)) {
 	throw Error(
-		`Current version ${packageVersion} is not referenced in the CHANGELOG.md`
+		`Current version ${packageVersion} is not referenced in the CHANGELOG.md`,
 	)
 }

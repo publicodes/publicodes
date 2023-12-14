@@ -47,5 +47,5 @@ test('navigation in documentation', async () => {
 	render(<Publicodes />)
 	const debit = await screen.findAllByText('Débit')
 	fireEvent.click(debit[0])
-	expect(document.body).toHaveTextContent('18 litre / min')
+	expect(document.body).toHaveTextContent('18 litre/min')
 })
