@@ -24,43 +24,6 @@ prix total: 5 * prix d'un repas
 Il s'agit d'un langage déclaratif : comme dans une formule d'un tableur le `prix total` sera recalculé automatiquement si le prix d'un repas change. L'ordre de
 définition des règles n'a pas d'importance.
 
-## Chaînes de caractères littérales
-
-Pour qu'une valeur soit interprétée comme une chaîne de caractères littérale et
-non comme une référence à une autre règle, il faut que la chaîne de caractères
-soit encadrée d'apostrophes `'` ou de guillemets `"`. Ces symboles doivent être
-échappés dans certaines situations, pour qu'ils ne soient pas ignorés comme
-faisant partie de la syntaxe Yaml (cas notable : à la définition d'une règle
-avec pour valeur une chaîne de caractères).
-
-L'exemple suivant montre plusieurs façons de définir et d'utiliser des chaînes
-de caractères littérales :
-
-```publicodes
-# Différentes manières de définir une chaîne de caractère littérale
-région 1: '"Nouvelle-Aquitaine"'
-région 2: "'Provence-Alpes-Côte d'Azur'"
-région 3: |
-  "Occitanie"
-région 4:
-  texte:
-    Grand Est
-
-# Lors de comparaisons de chaînes de caractères, la syntaxe yaml échappe automatiquement
-# les guillemets.
-# Ces deux formulations sont donc équivalentes :
-comparaison 1: région 1 = "Nouvelle-Aquitaine"
-comparaison 2: 'région 1 = "Nouvelle-Aquitaine"'
-
-
-# Dans une définition, encadrer une valeur par de simples guillemets ne définit pas une
-# chaîne de caractères littérale
-région interprétée comme référence: "Bretagne"
-Bretagne:
-code interprété comme nombre: "12.34Z"
-```
-
-
 ## Unités
 
 Pour fiabiliser les calculs et faciliter leur compréhension, on peut préciser
@@ -160,24 +123,23 @@ peut également s'écrire en utilisant le mécanisme [`produit`](/docs/api/méca
 ```publicodes
 prix total:
   produit:
-    assiette: 9 €/repas
-    facteur: 5 repas
+    - 9 €/repas
+    - 5 repas
 ```
 
 Un des avantages de cette écriture est que la syntaxe hiérarchique de Yaml permet d'imbriquer les mécanismes :
 
 ```publicodes
-table: 12 personnes
+nombre de repas: 12 repas
 addition:
   somme:
     - 7 cafés * 1.5 €/cafés
     - produit: # Menu unique dégressif pour les groupes
-        assiette: table
-        facteur:
-          variations:
-          - si: table > 10 personnes
-            alors: 12 €/personnes
-          - sinon: 15 €/personnes
+        - nombre de repas
+        - variations:
+          - si: nombre de repas > 10 repas
+            alors: 12 €/menus
+          - sinon: 15 €/menus
 ```
 
 ### Mécanismes chaînés
@@ -211,8 +173,9 @@ Plusieurs propriétés sont reprises dans ces pages d'explications :
 - la **description** est affichée comme paragraphe d'introduction sur la page.
   On utilise le caractère `|` pour indiquer au parseur Yaml que la description est sur plusieurs lignes ;
 - une **note** de bas de page, affichée après la formule de calcul. Elle peut être sur plusieurs lignes également.
-<!-- TODO : expliquer les références nouvelle version- les **références** externes (documentation utile) affichées en
-  bas de page et qui sont constituées d'une liste de liens avec une description. -->
+
+{/* <!-- TODO : expliquer les références nouvelle version- les **références** externes (documentation utile) affichées en
+  bas de page et qui sont constituées d'une liste de liens avec une description. --> */}
 
 ```publicodes
 ticket resto:
@@ -365,6 +328,7 @@ Ici `contrat salarié . rémunération . primes . prime de vacances` va faire
 référence à `contrat salarié . rémunération . taux générique` trouvé deux
 espaces de noms plus haut, et va donc valoir `100 €`.
 
+
 ### Désactivation de branche
 
 Il est possible de désactiver l'ensemble des règles définies dans un espace de nom.
@@ -388,6 +352,43 @@ aides occitanie:
   applicable si: région = 'Occitanie'
 aides occitanie . subvention vélo : 500 €
 ```
+
+## Chaînes de caractères littérales
+
+Pour qu'une valeur soit interprétée comme une chaîne de caractères littérale et
+non comme une référence à une autre règle, il faut que la chaîne de caractères
+soit encadrée d'apostrophes `'` ou de guillemets `"`. Ces symboles doivent être
+échappés dans certaines situations, pour qu'ils ne soient pas ignorés comme
+faisant partie de la syntaxe Yaml (cas notable : à la définition d'une règle
+avec pour valeur une chaîne de caractères).
+
+L'exemple suivant montre plusieurs façons de définir et d'utiliser des chaînes
+de caractères littérales :
+
+```publicodes
+région: '"Nouvelle-Aquitaine"'
+région 2: "'Provence-Alpes-Côte d'Azur'"
+région 3: |
+  "Occitanie"
+région 4:
+  texte: Grand Est
+```
+
+Lors de comparaisons de chaînes de caractères, la syntaxe yaml échappe automatiquement les guillemets. Ces deux formulations sont donc équivalentes :
+```publicodes
+région:
+comparaison 1: région = "Nouvelle-Aquitaine"
+comparaison 2: 'région = "Nouvelle-Aquitaine"'
+```
+
+:::warning Attention
+Dans une définition, encadrer une valeur par de simples guillemets ne définit pas une chaîne de caractères littérale
+```publicodes
+région interprétée comme référence: "Bretagne"
+Bretagne:
+code interprété comme nombre: "12.34Z"
+```
+:::
 
 ## Remplacement
 
@@ -430,63 +431,76 @@ temps modifié:
   formule: temps de préparation + temps de cuisson
 ```
 
-:::info Note
+:::caution Attention
 
-Les remplacement sont implémentés sous forme d'une substitution de variable. Quand une règle en remplace une autre, c'est toutes les références à la règle remplacée qui vont être changées par la valeur de remplacement.
+Un remplacement remplace **les références** à une règle, et non la règle elle-même. 
+Dans l'exemple ci-dessus, la règle `temps de préparation` **n'est pas modifiée** : ce sont ses références qui le sont.
 
+Les remplacements sont implémentés sous forme d'une substitution de variable.
 :::
 
-## Règle imbriquées
+### Remplacement défini dans une règle non applicable
 
-### A l'intérieur des mécanismes : `nom`
+Si le remplacement est défini dans une règle dont la valeur est `non` ou `non applicable`, alors ce dernier n'est pas appliqué : 
 
-Si le mécanisme de remplacement permet de faire des substitutions de règles
-complètes, il est parfois utile de ne modifier qu'un seul paramètre d'une règle
-existante, par exemple modifier le facteur d'une multiplication tout en
-conservant le reste de sa définition inchangée.
+```publicodes
+a: 1
+b:
+  remplace: 
+    règle: a 
+    par: 5 
+  valeur: non
 
-Une première manière de faire consiste à extraire le paramètre en question dans
-une règle indépendante, le rendant ainsi accessible et modifiable depuis
-l'extérieur :
+c:
+  applicable si: non
+  remplace: a 
+  valeur: 10 
 
-```publicodes prime
-prime:
-  multiplication:
-    assiette: 1000€
-    taux: taux
-
-prime . taux: 5%
-
-super-prime:
-  remplace: prime . taux
-  valeur: 10%
+résultat: a # vaut 1 car non remplacé
 ```
 
-Ce code fonctionne mais il nous oblige a créer une règle `prime . taux` qui
-n'est pas pertinente en tant qu'entité autonome, uniquement pour pouvoir la modifier avec un `remplace`.
+### Ordre de priorité 
 
-On a aussi introduit une indirection dans la définition de la prime en remplaçant
-une ligne explicite `taux: 5%` par une référence vers une règle tierce
-`taux: taux`, qui est loin d'être aussi claire.
+Lorsque plusieurs remplacements sont applicables pour une référence, l'ordre de priorité est le suivant : 
 
-Pour ce cas d'usage il est possible de définir une _règle imbriquée_.
-On garde la définition de la prime inchangée et on annote la valeur à laquelle
-on veut accéder depuis l'extérieur avec le mot clé `nom` :
+1. Le remplacement avec la `priorité` la plus haute est utilisée
 
-```publicodes prime
-prime:
-  multiplication:
-    assiette: 1000€
-    taux:
-      nom: taux
-      valeur: 5%
+  ```publicodes
+  a: 1
 
-super-prime:
-  remplace: prime . taux
-  valeur: 10%
-```
+  b: 
+    remplace: 
+      règle: a
+      priorité: 2
+    valeur: 5
+  
+  c: 
+    remplace: a
+    valeur: 10
 
-### Directement sur la règle : `avec`
+  résultat: a 
+  # vaut 5 car le remplacement défini dans `b` a une priorité 
+  # plus élevée que celui défini dans `c` (par défaut à zéro)
+  ```
+
+2. Sinon, c'est le nom de la règle de définition qui est utilisé (comparaison lexicographique)
+
+  ```publicodes
+  a: 1
+  b: 
+    remplace: a
+    valeur: 5
+  b . c: 
+    remplace: a
+    valeur: 10
+
+  résultat: a 
+  # vaut 10 car `b . c` est situé après `b` dans l'ordre alphabétique
+  ``` 
+
+
+## Définir une règle enfant directement depuis une règle parente
+
 
 ```publicodes prix-final
 prix final:
@@ -497,14 +511,16 @@ Dans cet exemple, si l'on veut extraire le prix et la promotion dans des variabl
 
 ```publicodes prix-final
 prix final:
-   valeur: prix de base * (100% - promotion)
+   valeur: prix de base * (100% - réduction)
 prix final . prix de base: 157€
-prix final . promotion: 20%
+prix final . réduction: 20%
 ```
 
-Pour alléger cette écriture, on peut utiliser la notation `avec` qui permet de définir des règles imbriquées directement depuis une règle parente :
+Pour alléger cette écriture, on peut utiliser la notation `avec` qui permet de définir des règles enfants directement depuis une règle parente :
 
 ```publicodes
+# Equivalent à l'exemple précédent
+
 prix final:
    valeur: prix de base * (100% - réduction)
    avec:
@@ -512,25 +528,18 @@ prix final:
      réduction: 20%
 ```
 
-:::info
+:::tip
 
-On peut tout à fait combiner les deux écritures `nom` et `avec` :
+On peut tout à fait imbriquer plusieurs niveaux de règles :
 
-```publicodes cotisation
-cotisation:
-  produit:
-    assiette: assiette
-    taux: 2.8%
-  plafond:
-    nom: plafond
-    le minimum de:
-      - 50 % * PFSS
-      - plafond forfaitaire
-    avec:
-      plafond forfaitaire: 2000 €
-
-PFSS: 3400 €
-assiette: 2000 €
+```publicodes
+a:
+  valeur: b
+  avec: 
+    b:
+      valeur: c
+      avec:
+        c: 2000 €
 
 ```
 
@@ -576,22 +585,20 @@ permettent d'améliorer la maintenabilité sans sacrifier la lisibilité de la b
 
 ```publicodes
 assiette: 2100 €
-PFSS: 4510 €
 cotisation:
   produit:
-    assiette: assiette
-    taux: 2.8%
-  plafond:
-    le minimum de:
-      - 50 % * PFSS
-      - plafond forfaitaire
+    - assiette
+    - taux
   avec:
-    '[privé] plafond forfaitaire: 2000 €'
+    '[privé] taux': 2.8% 
+
+# Erreur : la règle `cotisation . taux` n'est pas accessible depuis `résultat`
+résultat: cotisation . taux
 ```
 
 ### Comportement des règles privées
 
-- Les règles privées peuvent être référencées depuis toutes les règles située dans l'espace de nom parent direct. Par exemple, si la règle a . b est privée, elle peut être référencée depuis a . b . c, a . x, a, mais pas d ou d . c.
+- Les règles privées peuvent être référencées depuis toutes les règles située dans l'espace de nom parent direct. Par exemple, si la règle `a . b` est privée, elle peut être référencée depuis `a . b . c`, `a . x`, `a`, mais pas par `d` ou `d . c`.
 - Les règles privées ne possèdent pas de page de documentation dédiées
 - L'appel de getRule sur une règle privée jette une erreur
 - Elles ne sont pas listées dans `getParsedRules`

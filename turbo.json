@@ -1,0 +1,46 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"pipeline": {
+		"codegen:validate": {},
+		"codegen": {
+			"outputs": ["**/*.codegen.*"],
+			"dependsOn": ["codegen:validate"]
+		},
+		"build": {
+			"dependsOn": ["^build", "codegen"],
+			"outputs": [
+				"dist",
+				".next/**",
+				"!.next/cache/**",
+				".docusaurus",
+				"build",
+				"public"
+			]
+		},
+		"prepack": {
+			"dependsOn": ["build"]
+		},
+		"test:type": {
+			"dependsOn": ["^build", "codegen"]
+		},
+		"test": {
+			"dependsOn": ["test:type"]
+		},
+		"lint:fix": {
+			"outputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"]
+		},
+		"dev": {
+			"dependsOn": ["^build", "codegen"],
+			"cache": false,
+			"persistent": true
+		},
+		"test:watch": {
+			"dependsOn": ["^build", "codegen"],
+			"cache": false,
+			"persistent": true
+		},
+		"clean": {
+			"cache": false
+		}
+	}
+}

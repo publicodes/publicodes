@@ -8,14 +8,9 @@ prix final:
     - valeur attendue: 109.6
 
 CSG non déductible:
-  produit:
-    assiette: 1000 €
-    composantes:
-      - taux: taux
-      - attributs:
-          nom: revenus de remplacement
-        assiette: 200 €
-        taux: taux
+  somme:
+    - 1000 € * taux
+    - 200 € * taux
   avec:
     taux: 10%
   exemples:

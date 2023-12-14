@@ -1,6 +1,6 @@
 import Head from '@docusaurus/Head'
+import { getDocumentationSiteMap, RulePage } from '@publicodes/react-ui'
 import Engine, { utils } from 'publicodes'
-import { getDocumentationSiteMap, RulePage } from 'publicodes-react'
 import { invertObj, last } from 'ramda'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
@@ -56,26 +56,26 @@ export default function Documentation({
 	const logger = useMemo(() => new Logger(), [rules])
 	const engine = useMemo(
 		() => new Engine(parse(rules), { logger }),
-		[rules, logger]
+		[rules, logger],
 	)
 	const targets = useMemo(() => Object.keys(engine.getParsedRules()), [engine])
 	const pathToRules = useMemo(
 		() => getDocumentationSiteMap({ engine, documentationPath: '' }),
-		[engine]
+		[engine],
 	)
 	const ruleToPaths = useMemo(() => invertObj(pathToRules), [pathToRules])
 	const { search, pathname } = useLocation()
 	const searchParams = new URLSearchParams(search ?? '')
 	const history = useHistory()
 	const [currentTarget, setTarget] = useState(
-		searchParams.get('rule') || defaultTarget
+		searchParams.get('rule') || defaultTarget,
 	)
 	const setCurrentTarget = useCallback(
 		(target) => {
 			onTargetChange?.(target)
 			setTarget(target)
 		},
-		[onTargetChange]
+		[onTargetChange],
 	)
 
 	useEffect(() => {

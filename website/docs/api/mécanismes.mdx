@@ -141,46 +141,30 @@ peut voter:
 
 ## produit
 
-C’est une multiplication adaptée pour exprimer au mieux les cotisations.
+Produit des facteurs de la liste.
 
-Sa propriété `assiette` est multipliée par un pourcentage `taux`, ou par un
-`facteur` quand ce nom est plus approprié.
-
-La multiplication peut être plafonnée : ce plafond sépare l’assiette en
-deux, et la partie au-dessus du plafond est tout simplement ignorée. Dans ce
-cas, elle se comporte comme une barème en taux marginaux à deux tranches, la
-deuxième au taux nul et allant de `plafond` à l’infini.
+Si un des facteur n’est pas applicable, le produit est non applicable.
 
 ### Utilisation
 
 ```json
 produit:
-  assiette: <valeur à multiplier>
-  taux: <taux à appliquer>
-  facteur: <facteur multiplicatif>
-  plafond: <plafond au-dessus duquel le taux appliqué est nul>
+  - <facteur 1>
+  - <facteur 2>
+  - ...
+
 ```
 
 ### Exemple
 
 ```publicodes
-cotisation:
+volume:
   produit:
-    assiette: 2000 €/mois
-    taux: 5%
+    - 2.5 m
+    - 3 m
+    - 4 m
 ```
 
-#### assiette plafonnée
-
-```publicodes
-plafond sécurité sociale: 3000 €/mois
-assiette cotisation: 15000 €/mois
-chômage:
-  produit:
-    assiette: assiette cotisation
-    plafond: 400% * plafond sécurité sociale
-    taux: 4%
-```
 
 ## variations
 
@@ -209,29 +193,17 @@ tel que `produit` ou `barème`.
 
 ```publicodes
 taux réduit: oui
+taux majoré: non
 
 taux allocation familiales:
   variations:
     - si: taux réduit
       alors: 3.45%
+    - si: taux majoré
+      alors: 10%
     - sinon: 5.25%
 ```
 
-#### Dans un autre mécanisme
-
-```publicodes
-assiette cotisation: 2300 €/mois
-taux réduit: oui
-allocation familiales:
-  produit:
-    assiette: assiette cotisation
-    variations:
-    - si: taux réduit
-      alors:
-        taux: 3.45%
-    - sinon:
-        taux: 5.25%
-```
 
 ## somme
 
@@ -303,7 +275,7 @@ Renvoie la valeur numérique de la liste de propositions fournie qui est la
 plus grande.
 
 Pour ajouter un plancher à une valeur, préférer l’utilisation du
-mécanisme `encadrement`.
+mécanisme [`plancher`](#plancher).
 
 ### Exemple
 
@@ -319,7 +291,7 @@ max:
 Renvoie la valeur numérique de la liste de propositions fournie qui est la
 plus petite.
 
-Pour plafonner une valeur, préférer l’utilisation du mécanisme `encadrement`.
+Pour plafonner une valeur, préférer l’utilisation du mécanisme [`plafond`](#plafond).
 
 ### Exemple
 
@@ -352,33 +324,27 @@ arrondi:
   valeur: 2 / 3
 ```
 
-## recalcul
+## contexte
 
-Relance le calcul d’une règle dans une situation différente de la situation
-courante. Permet par exemple de calculer le montant des cotisations au niveau du
-SMIC, même si le salaire est plus élevé dans la situation actuelle.
+Spécifie le contexte d'évaluation d'une règle.
 
-:::caution Attention
-
-Les **recalculs imbriqués** ne sont pas encore fonctionnels. On parle de recalcul imbriqués lorsqu’une variable `a` recalcul une règle `b` qui elle même recalcul la règle `a`.
-
-:::
+Permet d'effectuer l'évaluation d’une règle en écrasant les valeurs
+par défaut ou présente dans la situation.
 
 ### Exemple
+
+On peut par exemple, calculer le montant des cotisations au niveau du SMIC,
+même si le salaire est plus élevé dans la situation actuelle.
 
 ```publicodes
 brut: 2000€
 
-cotisations:
-  produit:
-    assiette: brut
-    taux: 20%
+cotisations: brut * 20%
 
 cotisations pour un SMIC:
-  recalcul:
-    règle: cotisations
-    avec:
-      brut: 1500 €
+  valeur: cotisations
+  contexte:
+    brut: 1500 €
 ```
 
 ## barème
@@ -490,73 +456,6 @@ taux réduction de cotisation:
         plafond: 100%
 ```
 
-## composantes
-
-Beaucoup de cotisations sont composées de deux parties qui partagent la
-méthode de calcul mais diffèrent selons certains paramètres. Pour ne pas
-définir deux variables quasi-redondantes, on utilise ce mécanisme.
-
-Cela permet d’avoir une écriture factorisée, plus facile à lire.
-
-Dans les calculs, `composantes` se comporte **exactement comme une somme**.
-La documentation, elle, sera adaptée pour montrer chaque composante.
-
-Il est possible par exemple pour le mécanisme `produit` de garder en
-commun l’assiette, et de déclarer des composantes pour le taux.
-
-Chaque composante peut également contenir un champs `attributs` de type objet
-contenant les mécanismes chainés à appliquer à la composante en question.
-
-Lorsque l’on utilise l’attribut `nom`, cela aboutit à la définition de règles
-imbriquées pour chacun des termes de la somme.
-
-### Exemple
-
-```publicodes composante
-assiette de base: 2000 €
-composante:
-  produit:
-    assiette: assiette de base
-    composantes:
-      - taux: 2%
-      - taux: 4%
-        plafond: 500 €
-```
-
-#### Calcul de cotisation avec part salariale et patronale
-
-```publicodes
-assiette de base: 10000 €
-cotisation 1:
-  produit:
-    assiette: assiette de base
-    composantes:
-    - attributs:
-        nom: employeur
-      taux: 5%
-    - attributs:
-        nom: salarié
-      taux: 1%
-
-cotisations salariales :
-  somme:
-    - cotisation 1 . salarié
-    # ...
-```
-
-#### Prix HT et TVA
-
-```publicodes prix TTC
-prix TTC:
-  produit:
-    assiette: 150€
-    composantes:
-      - attributs:
-          nom: HT
-      - attributs:
-          nom: TVA
-        taux: 20%
-```
 
 ## abattement
 
@@ -599,18 +498,21 @@ revenu imposable:
 
 ## plancher
 
+Applique un minimum à une valeur.
+
 > **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
 
 ### Exemple
 
 ```publicodes
-revenus: -500€
-assiette des cotisations:
-  valeur: revenus
-  plancher: 0 €
+temperature mesurée: 
+  valeur:  -500 °C
+  plancher: -273.15 °C
 ```
 
 ## plafond
+
+Applique un maximum à une valeur.
 
 > **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
 
@@ -675,6 +577,8 @@ caractères.
 
 ### Exemple
 
+#### Texte documentation dynamique
+
 ```publicodes aide vélo
 aide vélo:
   texte: >
@@ -683,15 +587,31 @@ aide vélo:
     Les éventuelles aides locales déjà perçues sont déduites de
     ce montant.
 
-    Par exemple, pour un vélo de {{ 250 € }}, la région vous
+    Par exemple, pour un vélo de {{ exemple }}, la région vous
     versera {{
-      250 € * 50%
+      exemple * prise en charge
     }}.
 
-aide vélo . prise en charge: 50%
-aide vélo . plafond: 500 €
+  avec: 
+    prise en charge: 50%
+    plafond: 500 €
+    '[privé] exemple': 250 €
 ```
 
+#### Éviter les doubles quotes
+
+On peut utiliser ce mécanisme pour éviter d’avoir à [échapper les doubles quotes](/docs/principes-de-base#cha%C3%AEnes-de-caract%C3%A8res-litt%C3%A9rales) dans un texte.
+
+```publicodes
+# ces deux règles sont équivalentes :
+
+exemple 1: 
+  valeur: "'Ministère de la transition écologique et solidaire'"
+
+exemple 2: 
+  texte: Ministère de la transition écologique et solidaire
+
+```
 ## inversion numérique
 
 > **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
@@ -706,7 +626,7 @@ De façon simplifiée, il s’agira donc, à partir d’une règle existante
 explicitant `y = ƒ(x)` de calculer `x` à partir de `y`.
 
 L’inversion numérique permet d’estimer la valeur de la variable en question
-au plus près à partir d’un des _objectifs_, listés dans la propriété `avec`.
+au plus près à partir d’un des _objectifs_, listés dans les arguments.
 Il faut alors renseigner une valeur cible pour ces objectifs.
 
 L’algorithme utilisé est la [méthode de

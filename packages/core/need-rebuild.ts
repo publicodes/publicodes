@@ -6,16 +6,15 @@ const path = '.deps.json'
 const deps = Object.fromEntries(getPackageDeps('./source'))
 const depsEntries = Object.entries(deps)
 
-const existingDeps = existsSync(path)
-	? JSON.parse(readFileSync(path, { encoding: 'utf8' }))
-	: {}
+const existingDeps =
+	existsSync(path) ? JSON.parse(readFileSync(path, { encoding: 'utf8' })) : {}
 const existingDepsEntries = Object.entries(existingDeps)
 
 const fileChanged =
 	depsEntries.length !== existingDepsEntries.length ||
 	depsEntries.findIndex(
 		([a, b], i) =>
-			existingDepsEntries[i][0] !== a || existingDepsEntries[i][1] !== b
+			existingDepsEntries[i][0] !== a || existingDepsEntries[i][1] !== b,
 	)
 
 if (fileChanged === true || fileChanged > -1) {

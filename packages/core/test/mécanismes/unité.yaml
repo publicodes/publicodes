@@ -18,8 +18,8 @@ conversion d'unité:
 unité chainée:
   formule:
     produit:
-      assiette: 10 €/mois
-      taux: 50%
+      - 10 €/mois
+      - 50%
     unité: €/an
   exemples:
     - unité attendue: €/an

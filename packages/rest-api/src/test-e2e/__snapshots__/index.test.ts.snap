@@ -1,0 +1,239 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`e2e koa middleware > Test evaluate endpoint with bad expression 2`] = `
+{
+  "evaluate": [
+    {
+      "error": {
+        "message": "
+[ Erreur syntaxique ]
+➡️  Dans la règle \\"$EVALUATION\\"
+✖️  \`1+1\` n'est pas une expression valide
+    Syntax error at line 1 col 2:
+
+1  1+1
+    ^
+Unexpected additionSubstraction token: \\"+\\". Instead, I was expecting to see one of the following:
+
+A space token based on:
+    number$ebnf$1$subexpression$1 →  ● %space
+    number$ebnf$1 →  ● number$ebnf$1$subexpression$1
+    number → %number ● number$ebnf$1 Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A word token based on:
+    Words →  ● %word
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A word token based on:
+    WordOrKeyword →  ● %word
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A boolean token based on:
+    WordOrKeyword →  ● %boolean
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words UnitNumerator$ebnf$1
+    Unit$ebnf$1 →  ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    Comparison → Comparable ● %space %comparison %space Comparable
+    main →  ● Comparison
+A space token based on:
+    UnitDenominator$ebnf$1$subexpression$1 →  ● %space
+    UnitDenominator$ebnf$1 →  ● UnitDenominator$ebnf$1$subexpression$1
+    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" Words
+    Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
+    Unit → Unit$ebnf$1 ● Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A \\"/\\" based on:
+    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" Words
+    Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
+    Unit → Unit$ebnf$1 ● Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    Comparison → Comparable ● %space %comparison %space Comparable
+    main →  ● Comparison
+",
+      },
+      "warnings": [],
+    },
+  ],
+  "warnings": [],
+}
+`;
+
+exports[`e2e koa middleware > Test evaluate endpoint with empty expression 2`] = `
+[
+  {
+    "dataPath": ".expressions",
+    "keyword": "minItems",
+    "message": "should NOT have fewer than 1 items",
+    "params": {
+      "limit": 1,
+    },
+    "schemaPath": "#/properties/expressions/oneOf/0/minItems",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be number",
+    "params": {
+      "type": "number",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/0/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be string",
+    "params": {
+      "type": "string",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/1/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be object",
+    "params": {
+      "type": "object",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/2/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "oneOf",
+    "message": "should match exactly one schema in oneOf",
+    "params": {
+      "passingSchemas": null,
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "oneOf",
+    "message": "should match exactly one schema in oneOf",
+    "params": {
+      "passingSchemas": null,
+    },
+    "schemaPath": "#/properties/expressions/oneOf",
+  },
+]
+`;
+
+exports[`e2e koa middleware > Test evaluate endpoint with null expression 2`] = `
+[
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be array",
+    "params": {
+      "type": "array",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/0/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be number",
+    "params": {
+      "type": "number",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/0/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be string",
+    "params": {
+      "type": "string",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/1/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "type",
+    "message": "should be object",
+    "params": {
+      "type": "object",
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf/2/type",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "oneOf",
+    "message": "should match exactly one schema in oneOf",
+    "params": {
+      "passingSchemas": null,
+    },
+    "schemaPath": "#/properties/expressions/oneOf/1/oneOf",
+  },
+  {
+    "dataPath": ".expressions",
+    "keyword": "oneOf",
+    "message": "should match exactly one schema in oneOf",
+    "params": {
+      "passingSchemas": null,
+    },
+    "schemaPath": "#/properties/expressions/oneOf",
+  },
+]
+`;

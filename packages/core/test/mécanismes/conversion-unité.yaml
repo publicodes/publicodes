@@ -109,11 +109,10 @@ mutuelle:
   formule: 30 €/mois
 
 retraite:
-  formule:
-    produit:
-      assiette: assiette annuelle
-      taux: 10%
+  produit:
+    - valeur: assiette annuelle
       plafond: 12 k€/an
+    - 10%
 
 Conversion dans une somme compliquée:
   formule:
@@ -125,31 +124,6 @@ Conversion dans une somme compliquée:
     - situation:
         assiette annuelle: 20000
       valeur attendue: 130
-
-maladie:
-  formule:
-    produit:
-      assiette: assiette annuelle
-      composantes:
-        - attributs:
-            nom: employeur
-          taux: 15%
-        - attributs:
-            nom: salarié
-          taux: 5%
-          plafond: 1000 €/mois
-
-Conversion avec composantes:
-  unité: €/mois
-  formule:
-    somme:
-      - maladie . salarié
-      - retraite
-      - mutuelle
-  exemples:
-    - situation:
-        assiette annuelle: 20000
-      valeur attendue: 180
 
 Conversion dans un abattement:
   formule:
@@ -175,8 +149,8 @@ assiette cotisations:
 prévoyance cadre:
   formule:
     produit:
-      assiette: assiette cotisations
-      taux: 1.5%
+      - assiette cotisations
+      - 1.5%
 
 Conversion avec plusieurs échelons:
   formule:

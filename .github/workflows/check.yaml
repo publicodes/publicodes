@@ -1,0 +1,52 @@
+name: Check
+on: [push]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install
+      - run: yarn lint
+
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install
+        with:
+          node-version: 18
+      - run: yarn build
+
+  test:
+    name: Test
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install
+        with:
+          node-version: 18
+      - run: yarn test
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install
+      - run: yarn test:type
+
+  test-packages-versioning:
+    name: Package versioning
+
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 18
+      - run: npx zx ./.github/scripts/enforce-versions.mjs

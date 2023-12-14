@@ -1,11 +1,11 @@
+import MonacoEditor from '@monaco-editor/react'
 import { utils } from 'publicodes'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
+import { stringify } from 'yaml'
 import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
 import styles from './studio.module.css'
-import { stringify } from 'yaml'
-import MonacoEditor from '@monaco-editor/react'
 
 const { decodeRuleName } = utils
 
@@ -65,9 +65,9 @@ export default function Studio() {
 		if (code || hashCode) {
 			const objOrYaml = tryToParseJson<JsonCode>(code || hashCode)
 
-			return typeof objOrYaml === 'string'
-				? objOrYaml
-				: jsonCodeToYaml(objOrYaml)
+			return typeof objOrYaml === 'string' ? objOrYaml : (
+					jsonCodeToYaml(objOrYaml)
+				)
 		}
 
 		return EXAMPLE_CODE
@@ -84,7 +84,8 @@ export default function Studio() {
 	}, [debouncedEditorValue, history])
 
 	const handleShare = useCallback(() => {
-		window?.navigator.clipboard.writeText(window.location.href)
+		typeof window !== 'undefined' &&
+			window?.navigator.clipboard.writeText(window.location.href)
 	}, [window.location.href])
 
 	const { target } = useParams<{ target?: string }>()
@@ -137,7 +138,7 @@ function useDebounce<T>(value: T, delay: number) {
 				clearTimeout(handler)
 			}
 		},
-		[value, delay] // Only re-call effect if value or delay changes
+		[value, delay], // Only re-call effect if value or delay changes
 	)
 	return debouncedValue
 }

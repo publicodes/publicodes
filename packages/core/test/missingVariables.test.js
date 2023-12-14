@@ -1,7 +1,6 @@
 import { expect } from 'chai'
 import yaml from 'yaml'
-import Engine from '../source/index'
-import { parseYaml } from './utils.ts'
+import Engine from '../src/index'
 
 describe('Missing variables', function () {
 	it('should identify missing variables in applicability', function () {
@@ -80,7 +79,7 @@ describe('Missing variables', function () {
 			'sum . evt . nyet': {},
 		}
 		const result = new Engine(rawRules).evaluate(
-			'sum . startHere'
+			'sum . startHere',
 		).missingVariables
 
 		expect(Object.keys(result)).to.include('sum . evt . nyet')
@@ -97,35 +96,42 @@ describe('Missing variables', function () {
 			'sum . trois': {},
 		}
 		const result = new Engine(rawRules).evaluate(
-			'sum . startHere'
+			'sum . startHere',
 		).missingVariables
 
 		expect(Object.keys(result)).to.be.empty
 	})
 
 	it('should ignore missing variables from the parent', () => {
-		const rawRules = parseYaml`
-		  a:
-		    somme:
-		      - nom: b
-		      - nom: c`
+		const rawRules = {
+			a: {
+				somme: ['b', 'c'],
+				avec: {
+					b: {},
+					c: {},
+				},
+			},
+		}
 		const missingVariables = new Engine(rawRules).evaluate(
-			'a . b'
+			'a . b',
 		).missingVariables
 
 		expect(Object.keys(missingVariables)).to.deep.equal(['a . b'])
 	})
 
 	it('should ignore missing variables from the nullable parent', () => {
-		const rawRules = parseYaml`
-  a:
-    applicable si: oui
-    somme:
-      - nom: b
-      - nom: c
-`
+		const rawRules = {
+			a: {
+				'applicable si': 'oui',
+				somme: ['b', 'c'],
+				avec: {
+					b: {},
+					c: {},
+				},
+			},
+		}
 		const missingVariables = new Engine(rawRules).evaluate(
-			'a . b'
+			'a . b',
 		).missingVariables
 
 		expect(Object.keys(missingVariables)).to.deep.equal(['a . b'])
@@ -143,7 +149,7 @@ describe('Missing variables', function () {
 			'sum . trois': {},
 		}
 		const result = new Engine(rawRules).evaluate(
-			'sum . startHere'
+			'sum . startHere',
 		).missingVariables
 
 		expect(Object.keys(result)).to.be.empty
@@ -159,7 +165,7 @@ describe('Missing variables', function () {
 			},
 		}
 		const result = new Engine(rawRules).evaluate(
-			'top . startHere'
+			'top . startHere',
 		).missingVariables
 
 		expect(Object.keys(result)).to.include('top . trois')
@@ -176,7 +182,7 @@ describe('Missing variables', function () {
 			},
 		}
 		const result = new Engine(rawRules).evaluate(
-			'top . startHere'
+			'top . startHere',
 		).missingVariables
 
 		expect(Object.keys(result)).to.be.empty
@@ -353,7 +359,7 @@ transport . avion . usager:
   par défaut: oui
 `)
 		const result = new Engine(rawRules).evaluate(
-			'transport . avion'
+			'transport . avion',
 		).missingVariables
 
 		expect(Object.keys(result)).deep.to.equal([
@@ -401,7 +407,7 @@ transport . avion . usager:
   par défaut: oui
 `)
 		const result = new Engine(rawRules).evaluate(
-			'transport . voiture'
+			'transport . voiture',
 		).missingVariables
 
 		expect(Object.keys(result)).deep.to.equal([
@@ -429,7 +435,7 @@ avion . impact . en vol:
 avion . impact . au sol: 5
 `)
 		const result = new Engine(rawRules).evaluate(
-			'avion . impact . au sol'
+			'avion . impact . au sol',
 		).missingVariables
 
 		expect(Object.keys(result)).deep.to.equal(['avion'])
@@ -482,12 +488,12 @@ contrat . temps partiel:
 	
 `)
 		const result = new Engine(rawRules).evaluate(
-			'contrat . temps partiel'
+			'contrat . temps partiel',
 		).missingVariables
 
 		expect(result).to.have.keys('contrat', 'contrat . temps partiel')
 		expect(result['contrat']).to.be.greaterThan(
-			result['contrat . temps partiel']
+			result['contrat . temps partiel'],
 		)
 	})
 

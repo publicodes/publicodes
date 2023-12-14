@@ -4,12 +4,12 @@ import {
 	disambiguateReference,
 	isAccessible,
 	ruleParents,
-} from '../source/ruleUtils'
+} from '../src/ruleUtils'
 
 describe('ruleParents', function () {
 	it('should procude an array of the parents of a rule', function () {
 		let parents = ruleParents(
-			'CDD . taxe . montant annuel . exonération annuelle'
+			'CDD . taxe . montant annuel . exonération annuelle',
 		)
 		expect(parents).to.eql(['CDD . taxe . montant annuel', 'CDD . taxe', 'CDD'])
 	})
@@ -17,7 +17,7 @@ describe('ruleParents', function () {
 
 function createDummyRule(
 	dottedName: string,
-	properties: Partial<RuleNode> = {}
+	properties: Partial<RuleNode> = {},
 ): Record<string, RuleNode> {
 	return {
 		[dottedName]: {
@@ -26,9 +26,7 @@ function createDummyRule(
 			nodeKind: 'rule',
 			virtualRule: false,
 			private: false,
-			rawNode: {
-				nom: dottedName,
-			},
+			rawNode: {},
 			replacements: [],
 			explanation: {} as any,
 			suggestions: {},
@@ -40,7 +38,7 @@ function createDummyRule(
 describe('isAccessible', () => {
 	it("should throws if rule to check doesn't exists", () => {
 		expect(() => isAccessible({}, '', 'a')).to.throw(
-			'\n[ InternalError ]\n➡️  Dans la règle "a"\n✖️  La règle "a" n\'existe pas'
+			'\n[ InternalError ]\n➡️  Dans la règle "a"\n✖️  La règle "a" n\'existe pas',
 		)
 	})
 
@@ -116,7 +114,7 @@ describe('isAccessible', () => {
 describe('disambiguateReference', function () {
 	it('should throw an error if no rule is found', () => {
 		expect(() =>
-			disambiguateReference({}, 'a', 'exonération annuelle')
+			disambiguateReference({}, 'a', 'exonération annuelle'),
 		).to.throw(/[Erreur syntaxique]/)
 	})
 
@@ -132,15 +130,15 @@ describe('disambiguateReference', function () {
 			disambiguateReference(
 				parsedRules,
 				'CDD . taxe . montant annuel',
-				'exonération annuelle'
-			)
+				'exonération annuelle',
+			),
 		).to.eql('CDD . taxe . montant annuel . exonération annuelle')
 		expect(
 			disambiguateReference(
 				parsedRules,
 				'CDD . taxe . montant annuel',
-				'condition'
-			)
+				'condition',
+			),
 		).to.eql('CDD . condition')
 	})
 
@@ -156,10 +154,10 @@ describe('disambiguateReference', function () {
 		expect(disambiguateReference(parsedRules, 'b', 'a')).to.eq('b . a')
 		expect(disambiguateReference(parsedRules, 'b', 'a . a')).to.eq('a . a')
 		expect(disambiguateReference(parsedRules, 'b . a', 'a . a')).to.eq(
-			'b . a . a'
+			'b . a . a',
 		)
 		expect(() => disambiguateReference(parsedRules, '', 'b . a . a')).to.throw(
-			/[Erreur syntaxique]/
+			/[Erreur syntaxique]/,
 		)
 	})
 })

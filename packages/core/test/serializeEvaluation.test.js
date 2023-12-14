@@ -1,6 +1,6 @@
-import Engine from '../source/index'
-import serializeEvaluation from '../source/serializeEvaluation'
 import { expect } from 'chai'
+import Engine from '../src/index'
+import serializeEvaluation from '../src/serializeEvaluation'
 
 describe('serializeEvaluation', () => {
 	it('should serialize a number', () => {

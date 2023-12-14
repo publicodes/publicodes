@@ -1,6 +1,6 @@
 {
 	"name": "publicodes",
-	"version": "1.0.0-beta.77",
+	"version": "1.0.0-rfc.1",
 	"description": "A declarative language for encoding public algorithm",
 	"types": "dist/index.d.ts",
 	"type": "module",
@@ -37,7 +37,6 @@
 		"modele-social": "^1.7.2",
 		"moo": "^0.5.2",
 		"nearley": "^2.20.1",
-		"rimraf": "^3.0.2",
 		"sinon": "^12.0.1",
 		"sinon-chai": "^3.7.0",
 		"ts-node": "^10.9.1",
@@ -46,15 +45,12 @@
 		"yaml": "^2.3.2"
 	},
 	"scripts": {
-		"build:grammar": "nearleyc ./source/grammar.ne -o ./source/grammar.js",
-		"build": "run build:grammar && tsup",
-		"build:ifNeeded": "ts-node-esm need-rebuild.ts || run build",
-		"start": "run build --watch",
-		"prepack": "run build:ifNeeded",
-		"test:type": "run build:grammar && run tsc",
-		"test": "run build:grammar && mocha \"./test/**/*.test.{js,ts}\"",
-		"bench": "tsup --entry.bench ./bench/index.ts && node ./dist/bench.js",
-		"clean": "rimraf dist node_modules source/grammar.js .deps.json"
+		"codegen": "nearleyc ./src/grammar.ne -o ./src/grammar.codegen.js",
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"test:type": "tsc --noEmit",
+		"test": "mocha \"./test/**/*.test.{js,ts}\"",
+		"bench": "tsup --entry.bench ./bench/index.ts && node ./dist/bench.js"
 	},
 	"peerDependencies": {
 		"@types/mocha": "^9.0.0"

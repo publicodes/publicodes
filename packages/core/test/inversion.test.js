@@ -1,6 +1,6 @@
 // TODO: migrate to the 100% yaml test syntax in mecanisms/inversion.yaml
 import { expect } from 'chai'
-import Engine from '../source/index'
+import Engine from '../src/index'
 import { parseYaml } from './utils'
 
 describe('inversions', () => {
@@ -20,11 +20,7 @@ describe('inversions', () => {
 
 	it('should handle simple inversion', () => {
 		const rules = parseYaml`
-        net:
-          formule:
-            produit:
-              assiette: brut
-              taux: 77%
+        net: brut * 77%
 
         brut:
           formule:
@@ -42,12 +38,7 @@ describe('inversions', () => {
 
 	it('should handle inversion with value at 0', () => {
 		const rules = parseYaml`
-        net:
-          formule:
-            produit:
-              assiette: brut
-              taux: 77%
-
+        net: brut * 77%
         brut:
           formule:
             inversion numérique:
@@ -64,15 +55,13 @@ describe('inversions', () => {
 	it('should handle inversions with missing variables', () => {
 		const rules = parseYaml`
         net:
-          formule:
-            produit:
-              assiette: assiette
+          produit:
+            - assiette
+            - # taux
               variations:
-                - si: cadre
-                  alors:
-                    taux: 80%
-                - sinon:
-                    taux: 70%
+              - si: cadre
+                alors: 80%
+              - sinon: 70%
 
         brut:
           formule:
@@ -82,7 +71,6 @@ describe('inversions', () => {
                 - net
         cadre:
         assiette:
-          formule:
             somme:
               - 1200
               - brut
@@ -93,13 +81,11 @@ describe('inversions', () => {
         taxe:
           formule:
             produit:
-              assiette: 1200 €
-              variations:
+              - 1200 €
+              - variations:
                 - si: cadre
-                  alors:
-                    taux: 80%
-                - sinon:
-                    taux: 70%
+                  alors: 80%
+                - sinon: 70%
       `
 		const result = new Engine(rules)
 			.setSituation({ net: '2000 €' })
@@ -129,20 +115,14 @@ describe('inversions', () => {
 	it("shouldn't report a missing salary if another salary was input", () => {
 		const rules = parseYaml`
         net:
-          formule:
-            produit:
-              assiette: assiette
-              taux:
-                variations:
-                  - si: cadre
-                    alors: 80%
-                  - sinon: 70%
+          produit:
+            - assiette
+            - variations:
+              - si: cadre
+                alors: 80%
+              - sinon: 70%
 
-        total:
-          formule:
-            produit:
-              assiette: assiette
-              taux: 150%
+        total: assiette * 150%
 
         brut:
           formule:
@@ -165,41 +145,19 @@ describe('inversions', () => {
 		expect(result.missingVariables).to.be.empty
 	})
 
-	it('complex inversion with composantes', () => {
+	it('should accept syntax without `avec`', () => {
 		const rules = parseYaml`
-      net:
-        formule:
-          produit:
-            assiette: 67 + brut
-            taux: 80%
-
-      cotisation:
-        formule:
-          produit:
-            assiette: 67 + brut
-            composantes:
-              - attributs:
-                  nom: employeur
-                taux: 100%
-              - attributs:
-                  nom: salarié
-                taux: 50%
-
-      total:
-        formule: cotisation . employeur + cotisation . salarié
-
-      brut:
-        formule:
-          inversion numérique:
-            unité: €
-            avec:
-              - net
-              - total
-    `
-		const result = new Engine(rules)
-			.setSituation({ net: '2000 €' })
-			.evaluate('total')
-		expect(result.nodeValue).to.be.closeTo(3750, 1)
-		expect(result.missingVariables).to.be.empty
+			net:
+		      variations:
+		        - si: assiette < 100
+		          alors: 100
+		        - sinon: 200
+			assiette: brut
+			brut:
+			  inversion numérique: net
+		`
+		const engine = new Engine(rules)
+		engine.setSituation({ net: 150 }).evaluate('brut')
+		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
 	})
 })

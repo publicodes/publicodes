@@ -38,28 +38,6 @@ Barème en taux marginaux:
         base: 0
       exception: multiplicateur ne peut pas être nul
 
-Barème à composantes:
-  formule:
-    barème:
-      assiette: assiette
-      multiplicateur: base
-      composantes:
-        - tranches:
-            - taux: 2%
-              plafond: 1
-            - taux: 0%
-        - tranches:
-            - taux: 9%
-              plafond: 2
-            - taux: 29%
-  exemples:
-    - nom:
-      situation:
-        assiette: 12000
-        base: 5000
-      valeur attendue: 1580
-      unité attendue: €/mois
-
 ma condition:
 
 taux variable:

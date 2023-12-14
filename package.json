@@ -2,23 +2,24 @@
 	"name": "publicodes-monorepo",
 	"private": true,
 	"workspaces": [
-		"packages/api",
-		"packages/core",
-		"packages/react-ui",
-		"website"
+		"website",
+		"packages/*",
+		"examples/*"
 	],
 	"scripts": {
-		"test": "run prepack && yarn workspaces foreach run test",
-		"prepack": "yarn workspaces foreach --topological-dev -i run prepack",
-		"test:type": "run prepack && yarn workspaces foreach -pi run test:type",
-		"lint": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml}\"",
+		"test": "turbo run test",
+		"prepack": "build",
+		"test:type": "turbo run test:type",
+		"build": "turbo run build",
+		"lint": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml,json}\" --ignore-path .gitignore",
 		"lint:fix": "run lint --write",
-		"build": "yarn workspaces foreach --topological-dev -i --exclude website run build",
-		"start": "yarn workspaces foreach --exclude \"@publicodes/api\" -pi run start",
-		"clean": "yarn workspaces foreach run clean"
+		"dev": "turbo run dev --parallel --filter=\"website...\"",
+		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\""
 	},
 	"devDependencies": {
-		"prettier": "^2.8.8"
+		"prettier": "^3.1.0",
+		"rimraf": "^3.0.2",
+		"turbo": "latest"
 	},
 	"packageManager": "yarn@3.3.0",
 	"engines": {

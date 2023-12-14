@@ -1,0 +1,13 @@
+{
+	"name": "@publicodes/codemod",
+	"version": "1.0.0",
+	"packageManager": "yarn@3.3.0",
+	"engines": {
+		"node": ">=20.0.0"
+	},
+	"type": "module",
+	"dependencies": {
+		"yaml": "^2.3.4"
+	},
+	"bin": "./update-v1.js"
+}

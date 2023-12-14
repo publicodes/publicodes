@@ -5,7 +5,7 @@ import React from 'react'
 import { Editor } from 'react-live'
 import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
-import publicodeStyles from './publicodeExample.module.css'
+import publicodeStyles from './publicodesExample.module.css'
 
 export default function Playground({
 	language,

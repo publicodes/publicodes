@@ -6,7 +6,15 @@ yarn-error.log
 package-lock.json
 node_modules/
 .env
+
+
 dist/
+.turbo
+**/*.codegen.*
+.docusaurus
+build/
+.cache-loader
+.next 
 
 # Local Netlify folder
 .netlify

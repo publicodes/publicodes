@@ -15,5 +15,5 @@ dépenses primeur:
     - prix . carottes * 1.5 kg
     - prix . champignons * 500g
     - prix . avocat * 3 avocat
-`)
+`),
 )

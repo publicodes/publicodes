@@ -1,6 +1,6 @@
 {
-	"name": "publicodes-react",
-	"version": "1.0.0-beta.77",
+	"name": "@publicodes/react-ui",
+	"version": "1.0.0-rfc.1",
 	"description": "UI to explore publicodes computations",
 	"license": "MIT",
 	"types": "dist/index.d.ts",
@@ -20,27 +20,26 @@
 		"directory": "packages/react-ui"
 	},
 	"scripts": {
-		"clean": "rimraf dist node_modules data",
 		"build": "tsup",
-		"prepack": "yarn workspace publicodes run prepack && yarn run build",
-		"start": "run build --watch",
-		"test:type": "run tsc"
+		"dev": "tsup --watch",
+		"test:type": "tsc --noEmit"
 	},
 	"files": [
 		"dist"
 	],
 	"dependencies": {
-		"styled-components": "^6.0.8"
+		"styled-components": "^6.1.1"
 	},
 	"peerDependencies": {
 		"publicodes": "^1.0.0-beta.71",
-		"react": "^17 || ^18",
-		"react-dom": "^17 || ^18"
+		"react": "^18",
+		"react-dom": "^18"
 	},
 	"devDependencies": {
 		"@types/react": "^18.2.23",
+		"@types/react-dom": "^18.0.11",
 		"@types/styled-components": "^5.1.28",
-		"rimraf": "^3.0.2",
+		"publicodes": "workspace:^",
 		"tsup": "^7.2.0",
 		"typescript": "^5.2.2"
 	}

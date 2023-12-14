@@ -1,13 +1,12 @@
 import { expect } from 'chai'
-import Engine from '../source/index'
-import { parseYaml } from './utils.ts'
 import { parse } from 'yaml'
+import Engine from '../src/index'
 
+import fs from 'fs'
+import path from 'path'
 import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-import fs from 'fs'
-import path from 'path'
 
 const co2Yaml = fs.readFileSync(path.resolve(__dirname, './co2.yaml'), 'utf8')
 

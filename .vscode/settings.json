@@ -1,7 +1,4 @@
 {
-    "spellright.language": [],
-    "spellright.documentTypes": [
-        "latex",
-        "plaintext"
-    ]
+	"spellright.language": [],
+	"spellright.documentTypes": ["latex", "plaintext"]
 }

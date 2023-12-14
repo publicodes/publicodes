@@ -1,6 +1,27 @@
 # Changelog
 
+
 ## next
+## 1.0.0-rfc.1
+
+**BREAKING**
+- [Syntax] Changer le mécanisme `recalcul` par `contexte` (#410)
+- Remove mecanisms nom and composantes (#420)
+- Enforce a consistent order for replacement rules (#313)
+- Change the syntax of `produit` to accept a list of factors (#419)
+- Rename publicodes-react into @publicodes/react #296
+- Rename @publicodes/api to @publicodes/rest-api #304
+- Throw error when there is a space arround `/` in `unité` mecanism` (#332)
+
+**publicodes**
+- Add `priorité` to replacement
+- Supprimer le paramètre avec dans le mécanisme inversion numérique #321
+
+**@publicodes/codemod**
+- Add a codemod to refactor rules for the following breaking :  #332, #410, #420, #412, #321
+- You'll need to check for for bug following changes in the order of applied replacement rules
+
+**@publicodes/doc**
 
 ## 1.0.0-beta.77
 
@@ -11,7 +32,7 @@
 -   Ajout d'une première table d'unités équivalentes
 -   Nouveaux tests
 
-## 1.0.0-beta.76
+## 1.0.0-rfc.1
 
 -   Fix `engine.inversionFail` dont la valeur était réinitialisée à chaque appel de `engine.evaluate`
 

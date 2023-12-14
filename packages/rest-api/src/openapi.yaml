@@ -1,0 +1,220 @@
+openapi: 3.0.0
+
+info:
+  title: Publicode API
+  version: 1.0.0-beta.41
+  description: Cet API expose vos règles Publicodes.
+
+components:
+  schemas:
+    Expressions:
+      description: Une expression ou un tableau d'expressions Publicodes
+      oneOf:
+        - type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/PublicodesExpression'
+        - $ref: '#/components/schemas/PublicodesExpression'
+
+    Situation:
+      description: La situation avec laquelle l'expression ou les expressions seront évaluées
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/PublicodesExpression'
+
+    PublicodesExpression:
+      description: Une expression Publicodes
+      oneOf:
+        - type: number
+        - type: string
+        - type: object
+          minProperties: 1
+          additionalProperties:
+            # We use a free-form object cause circular $ref is not support by openapi-validator-middleware,
+            # see issue : https://github.com/PayU/openapi-validator-middleware/issues/151#issuecomment-877793999
+            {} # $ref: '#/components/schemas/PublicodesExpression'
+
+    EvaluateBody:
+      type: object
+      required:
+        - expressions
+      properties:
+        expressions:
+          $ref: '#/components/schemas/Expressions'
+        situation:
+          $ref: '#/components/schemas/Situation'
+
+    EvaluateResponse:
+      description: Schéma retourné par l'endpoint evaluate
+      oneOf:
+        - type: object
+          properties:
+            evaluate:
+              type: array
+              items:
+                anyOf:
+                  - type: object
+                    properties:
+                      nodeValue:
+                        type: number
+                      traversedVariables:
+                        type: array
+                        items:
+                          type: string
+                      missingVariables:
+                        type: array
+                        items:
+                          type: string
+            warnings:
+              type: array
+              items:
+                type: object
+                properties:
+                  message:
+                    type: string
+        - type: object
+          properties:
+            situationError:
+              type: object
+              properties:
+                message:
+                  type: string
+        - type: object
+          properties:
+            error:
+              type: object
+              properties:
+                message:
+                  type: string
+            warnings:
+              type: array
+              items:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+    InputValidationError:
+      type: array
+      items:
+        type: object
+        properties:
+          keyword:
+            type: string
+          dataPath:
+            type: string
+          schemaPath:
+            type: string
+          message:
+            type: string
+          params:
+            type: object
+            additionalProperties:
+              type: string
+
+    Rule:
+      type: object
+      properties:
+        title:
+          type: string
+        nodeKind:
+          type: string
+        rawNode:
+          type: object
+          properties:
+            question:
+              type: string
+          additionalProperties:
+            type: object
+        replacements:
+          type: array
+          items:
+            type: object
+        suggestions:
+          type: object
+
+    Rules:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Rule'
+
+paths:
+  /evaluate:
+    post:
+      tags:
+        - publicodes-api
+      operationId: evaluate
+      summary: Evalue une expression avec un situation donnée
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluateBody'
+      responses:
+        '200':
+          description: La requête a réussi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluateResponse'
+        '400':
+          description: Erreur de validation d'entrée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InputValidationError'
+  /rules:
+    get:
+      tags:
+        - publicodes-api
+      operationId: rules
+      summary: Retourne toutes les règles
+      responses:
+        '200':
+          description: La requête a réussi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rules'
+        '400':
+          description: Erreur de validation d'entrée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InputValidationError'
+  /rules/{rule}:
+    get:
+      tags:
+        - publicodes-api
+      operationId: rules-rule
+      summary: Retourne la règle demandée
+      parameters:
+        - name: rule
+          in: path
+          required: true
+          description: Rule to get
+          schema:
+            type: string
+      responses:
+        '200':
+          description: La requête a réussi
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Rule'
+                  - type: object
+                    properties:
+                      error:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+
+        '400':
+          description: Erreur de validation d'entrée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InputValidationError'

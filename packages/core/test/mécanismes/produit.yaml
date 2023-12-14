@@ -1,0 +1,87 @@
+mon assiette:
+  unité: €
+
+Produit simple:
+  produit:
+    - mon assiette
+    - 3%
+  unité attendue: €
+  exemples:
+    - nom: entier
+      situation:
+        mon assiette: 100
+      valeur attendue: 3
+    - nom: flottant
+      situation:
+        mon assiette: 333.33
+      valeur attendue: 9.999
+
+Produit à taux flottant sans unité:
+  produit:
+    - 300
+    - 3.3%
+  exemples:
+    - nom:
+      situation:
+      valeur attendue: 9.9
+
+mon plafond:
+  unité: €
+
+Produit plafonnée:
+  produit:
+    - valeur: mon assiette
+      plafond: mon plafond
+    - 3%
+  exemples:
+    - nom: plafond non atteint
+      situation:
+        mon assiette: 100
+        mon plafond: 200
+      valeur attendue: 3
+    - nom: plafond atteint
+      situation:
+        mon assiette: 100
+        mon plafond: 50
+      valeur attendue: 1.5
+
+mon facteur:
+  unité: patates
+
+Produit a trois facteurs:
+  produit:
+    - valeur: mon assiette
+      plafond: mon plafond
+    - mon facteur
+    - 0.5%
+
+  unité attendue: patates.€
+  exemples:
+    - nom:
+      situation:
+        mon assiette: 200
+        mon facteur: 2
+        mon plafond: 100
+      valeur attendue: 1
+
+Produit avec un facteur non applicable:
+  produit:
+    - 100 €
+    - valeur: 10 %
+      applicable si: non
+    - 4 points/€
+  # TODO : unité inference does note work when a factor is not applicable
+  # see https://github.com/publicodes/publicodes/issues/35
+  # unité attendue: points
+  exemples:
+    - valeur attendue: null
+# TODO
+# Produit avec des unité compatibles:
+#   produit:
+#     - 1.5m
+#     - 50cm
+#     - 2m
+#   unité: m3
+#   exemples:
+#     - valeur attendue: 1.5
+#       unité attendue: m3

@@ -1,25 +1,26 @@
 {
-  "name": "publicodes-example",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@types/node": "20.5.9",
-    "@types/react": "18.2.21",
-    "@types/react-dom": "18.2.7",
-    "eslint": "8.48.0",
-    "eslint-config-next": "13.4.19",
-    "next": "13.4.19",
-    "publicodes": "^1.0.0-beta.74",
-    "publicodes-react": "^1.0.0-beta.74",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "typescript": "5.2.2",
-    "yaml": "^2.3.2"
-  }
+	"name": "demo-publicodes-next",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"@publicodes/react-ui": "workspace:^",
+		"@types/node": "20.5.9",
+		"@types/react": "18.2.21",
+		"@types/react-dom": "18.2.7",
+		"eslint": "8.48.0",
+		"eslint-config-next": "13.4.19",
+		"next": "13.4.19",
+		"publicodes": "workspace:^",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
+		"styled-components": "^6.1.1",
+		"typescript": "5.2.2",
+		"yaml": "^2.3.2"
+	}
 }
