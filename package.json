@@ -8,7 +8,7 @@
 	],
 	"scripts": {
 		"test": "turbo run test",
-		"prepack": "build",
+		"prepack": "run build",
 		"test:type": "turbo run test:type",
 		"build": "turbo run build",
 		"lint": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml,json}\" --ignore-path .gitignore",
