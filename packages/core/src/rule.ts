@@ -70,7 +70,7 @@ export type RuleNode<Name extends string = string> = {
 }
 
 function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
-	const privateRule = !!(rawRule.privé === 'oui' || nom.startsWith('[privé] '))
+	const privateRule = rawRule.privé === 'oui' || nom.startsWith('[privé] ')
 	nom = nom.replace(/^\[privé\] /, '')
 	const dottedName = [context.dottedName, nom].filter(Boolean).join(' . ')
 
@@ -99,7 +99,8 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		// We create a $SITUATION child rule for each rule that is not private
 		// This value will be used to evaluate the rule in the current situation (`setSituation`)
 		ruleValue['dans la situation'] = `${dottedName} . $SITUATION`
-		ruleValue['avec'] = ruleValue['avec'] ?? {}
+		ruleValue['avec'] =
+			weakCopyObj(ruleValue['avec'] as Record<string, unknown>) ?? {}
 		const situationValue = weakCopyObj(undefinedNode)
 		situationValue.isNullable = rawRule['possiblement non applicable'] === 'oui'
 		;(ruleValue['avec'] as Record<string, any>)['[privé] $SITUATION'] = {
