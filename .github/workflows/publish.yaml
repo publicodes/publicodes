@@ -10,12 +10,18 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        package: ['publicodes', '@publicodes/react-ui', '@publicodes/rest-api']
+        package:
+          [
+            'publicodes',
+            '@publicodes/react-ui',
+            '@publicodes/rest-api',
+            '@publicodes/codemod',
+          ]
 
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/install
-      - run: yarn prepack
+      - run: yarn turbo run build --filter ${{matrix.package}}
       - run: yarn workspace ${{matrix.package}} npm publish --access public
         env:
           NODE_ENV: production

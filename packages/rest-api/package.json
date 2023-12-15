@@ -25,10 +25,13 @@
 		"codegen:validate": "swagger-cli validate ./src/openapi.yaml",
 		"codegen:dev": "nodemon -d 500ms -w ./src/openapi.yaml -x \"yarn build:openapi\""
 	},
+	"files": [
+		"dist"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/betagouv/publicodes.git",
-		"directory": "packages/api"
+		"directory": "packages/rest-api"
 	},
 	"license": "MIT",
 	"bugs": {
