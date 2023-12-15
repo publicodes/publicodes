@@ -15,8 +15,6 @@ jobs:
             'publicodes',
             '@publicodes/react-ui',
             '@publicodes/rest-api',
-            'publicodes-react',
-            '@publicodes/api',
           ]
 
     steps:
