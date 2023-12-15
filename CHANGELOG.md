@@ -2,6 +2,11 @@
 
 
 ## next
+## 1.0.0-rfc.2
+**fix**
+- Engine(rules) altered the rules object passed as argument
+- Wrong package published for @publicodes/rest-api
+
 ## 1.0.0-rfc.1
 
 **BREAKING**
@@ -32,7 +37,7 @@
 -   Ajout d'une première table d'unités équivalentes
 -   Nouveaux tests
 
-## 1.0.0-rfc.1
+## 1.0.0-beta.76
 
 -   Fix `engine.inversionFail` dont la valeur était réinitialisée à chaque appel de `engine.evaluate`
 
