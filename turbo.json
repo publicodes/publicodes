@@ -9,12 +9,12 @@
 		"build": {
 			"dependsOn": ["^build", "codegen"],
 			"outputs": [
-				"dist",
+				"dist/**",
 				".next/**",
 				"!.next/cache/**",
-				".docusaurus",
-				"build",
-				"public"
+				".docusaurus/**",
+				"build/**",
+				"public/**"
 			]
 		},
 		"prepack": {
