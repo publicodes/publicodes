@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import fs from 'fs/promises'
-import yaml, { Scalar, YAMLMap, YAMLSeq, isMap } from 'yaml'
+import yaml, { Scalar, YAMLMap, YAMLSeq, isMap, isSeq } from 'yaml'
 
 // Get folder path from command line arguments
 const folderPath = process.argv[2]
@@ -24,7 +24,6 @@ for (const yamlFile of yamlFiles) {
 	const yamlOutput = yaml.stringify(doc, { keepCstNodes: true })
 	// Write YAML output
 	await fs.writeFile(yamlFile, yamlOutput)
-	console.log('Done')
 }
 
 console.log(
@@ -60,6 +59,12 @@ function codemod1(doc) {
 		Map(_, map) {
 			if (map.has('recalcul')) {
 				return updateRecalcul(map)
+			}
+			if (map.has('remplace')) {
+				return updateRemplace(map)
+			}
+			if (map.has('rend non applicable')) {
+				return updateRendNonapplicable(map)
 			}
 		},
 	})
@@ -132,6 +137,70 @@ function updateComposantes(node, mecanismName) {
 	newNode.delete(mecanismName)
 	newNode.add({ key: 'somme', value: sommeNode })
 	return newNode
+}
+
+function updateRendNonapplicable(node) {
+	yaml.visit(node.get('rend non applicable'), {
+		Pair(_, pair) {
+			if (pair.key.value === 'règle') {
+				pair.key.value = 'références à'
+			}
+		},
+	})
+}
+function updateRemplace(node) {
+	yaml.visit(node.get('remplace'), {
+		Pair(_, pair) {
+			if (pair.key.value === 'règle') {
+				pair.key.value = 'références à'
+			}
+		},
+		Map(_, map) {
+			if (map.has('par')) {
+				const valeur = map.get('par')
+				map.delete('par')
+				const avec = node.get('avec') ?? new YAMLMap()
+				const règle = map.get('règle')
+				const dans = map.get('dans')
+				const saufDans = map.get('sauf dans')
+
+				let replacementNode = règle
+				if (dans || saufDans) {
+					replacementNode = new YAMLMap()
+					replacementNode.add({ key: 'références à', value: règle })
+					dans && replacementNode.add({ key: 'dans', value: dans })
+					saufDans && replacementNode.add({ key: 'sauf dans', value: saufDans })
+				}
+
+				const replacementRuleValue = isMap(valeur) ? valeur : new YAMLMap()
+				replacementRuleValue.add({
+					key: new Scalar('remplace'),
+					value: replacementNode,
+				})
+				if (!isMap(valeur)) {
+					replacementRuleValue.add({ key: new Scalar('valeur'), value: valeur })
+				}
+
+				let replacementRuleName = règle.replaceAll(' . ', ' ')
+				if (map.get('dans') && !isSeq(map.get('dans'))) {
+					replacementRuleName += ' ' + map.get('dans').replaceAll(' . ', ' ')
+				}
+
+				avec.add({
+					key: new Scalar(replacementRuleName),
+					value: replacementRuleValue,
+				})
+				node.set('avec', avec)
+				if (isMap(node.get('remplace'))) {
+					node.delete('remplace')
+				}
+				return yaml.visit.REMOVE
+			}
+		},
+	})
+	if (node.get('remplace')?.items?.length === 0) {
+		node.delete('remplace')
+	}
 }
 
 function changeNomToAvec(node) {

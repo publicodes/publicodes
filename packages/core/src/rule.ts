@@ -32,8 +32,8 @@ export type Rule = {
 	'possiblement non applicable'?: 'oui'
 	privé?: 'oui'
 	note?: string
-	remplace?: RendNonApplicable | Array<RendNonApplicable>
-	'rend non applicable'?: Remplace | Array<string>
+	remplace?: Remplace | Array<Remplace>
+	'rend non applicable'?: Remplace | Array<Remplace>
 	suggestions?: Record<string, string | number | Record<string, unknown>>
 	références?: { [source: string]: string }
 	API?: string
@@ -42,14 +42,12 @@ export type Rule = {
 
 type Remplace =
 	| {
-			règle: string
-			par?: Record<string, unknown> | string | number
+			'références à': string
 			dans?: Array<string> | string
 			'sauf dans'?: Array<string> | string
 			priorité?: number
 	  }
 	| string
-type RendNonApplicable = Exclude<Remplace, { par: any }>
 
 export type RuleNode<Name extends string = string> = {
 	dottedName: Name

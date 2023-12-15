@@ -13,12 +13,12 @@ export type ReplacementRule = {
 	nodeKind: 'replacementRule'
 	definitionRule: ASTNode & { nodeKind: 'reference' } & { dottedName: string }
 	replacedReference: ASTNode & { nodeKind: 'reference' }
-	replacementNode: ASTNode
 	priority?: number
 	whiteListedNames: Array<ASTNode & { nodeKind: 'reference' }>
 	rawNode: any
 	blackListedNames: Array<ASTNode & { nodeKind: 'reference' }>
 	remplacementRuleId: number
+	replaceByNonApplicable: boolean
 }
 
 // Replacements depend on the context and their evaluation implies using
@@ -45,14 +45,10 @@ export function parseReplacements(
 	return (Array.isArray(replacements) ? replacements : [replacements]).map(
 		(replacement) => {
 			if (typeof replacement === 'string') {
-				replacement = { règle: replacement }
+				replacement = { 'références à': replacement }
 			}
 
-			const replacedReference = parse(replacement.règle, context)
-			const replacementNode = parse(
-				replacement.par ?? context.dottedName,
-				context,
-			)
+			const replacedReference = parse(replacement['références à'], context)
 
 			const [whiteListedNames, blackListedNames] = [
 				replacement.dans ?? [],
@@ -78,7 +74,7 @@ export function parseReplacements(
 				priority: replacement.priorité,
 				definitionRule: parse(context.dottedName, context),
 				replacedReference,
-				replacementNode,
+				replaceByNonApplicable: false,
 				whiteListedNames,
 				blackListedNames,
 				remplacementRuleId: remplacementRuleId++,
@@ -91,13 +87,11 @@ export function parseRendNonApplicable(
 	rules: Rule['rend non applicable'],
 	context: Context,
 ): Array<ReplacementRule> {
-	return parseReplacements(rules, context).map(
-		(replacement) =>
-			({
-				...replacement,
-				replacementNode: notApplicableNode,
-			}) as ReplacementRule,
+	const rendNonApplicableReplacements = parseReplacements(rules, context)
+	rendNonApplicableReplacements.forEach(
+		(r) => (r.replaceByNonApplicable = true),
 	)
+	return rendNonApplicableReplacements
 }
 
 export function getReplacements(
@@ -285,27 +279,32 @@ function replace(
 		return node
 	}
 
-	applicableReplacements
 	const applicableReplacementsCacheKey = applicableReplacements
 		.map((n) => n.remplacementRuleId)
 		.join('-')
-
-	cache[applicableReplacementsCacheKey] ??= {
+	if (cache[applicableReplacementsCacheKey]) {
+		return cache[applicableReplacementsCacheKey]
+	}
+	const replacementNode = {
 		nodeKind: 'variations',
-		sourceMap: {
-			mecanismName: 'replacement',
-		},
-		rawNode: node.rawNode,
 		explanation: [
-			...applicableReplacements.map((replacement) => ({
-				condition: replacement.definitionRule,
-				consequence: replacement.replacementNode,
-			})),
-			{
-				condition: defaultNode(true),
-				consequence: node,
-			},
+			...applicableReplacements.map(
+				({ definitionRule, replaceByNonApplicable }) => ({
+					condition: definitionRule,
+					consequence:
+						replaceByNonApplicable ? notApplicableNode : definitionRule,
+				}),
+			),
+			{ condition: defaultNode(true), consequence: node },
 		],
 	}
+	;(replacementNode as any).sourceMap = {
+		mecanismName: 'replacement',
+		args: {
+			applicableReplacements,
+			originalNode: node,
+		},
+	}
+	cache[applicableReplacementsCacheKey] = replacementNode
 	return cache[applicableReplacementsCacheKey]
 }

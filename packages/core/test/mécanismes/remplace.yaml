@@ -1,24 +1,20 @@
-restaurant: oui
-restaurant . prix du repas:
-  valeur: 10 €/repas
+restaurant:
+  avec:
+    prix du repas: 10 €/repas
+    client gourmand: oui
+    client enfant:
+      valeur: non
+      rend non applicable: client gourmand
 
-restaurant . client gourmand: oui
-restaurant . client enfant:
-  rend non applicable:
-    - client gourmand
-  formule: non
+    menu gourmand:
+      applicable si: client gourmand
+      remplace: prix du repas
+      valeur: 15 €/repas
 
-restaurant . prix du repas gourmand:
-  applicable si: client gourmand
-  remplace: prix du repas
-  formule: 15 €/repas
-
-restaurant . menu enfant:
-  formule: oui
-  applicable si: client enfant
-  remplace:
-    règle: prix du repas
-    par: 8 €/repas
+    menu enfant:
+      applicable si: client enfant
+      valeur: 8€/repas
+      remplace: prix du repas
 
 modifie une règle:
   formule: restaurant . prix du repas
@@ -58,25 +54,30 @@ cotisations . maladie: 10% * assiette
 
 exemple1:
   par défaut: non
-  remplace:
-    règle: cotisations . assiette
-    par: 100 €
+  avec:
+    assiette:
+      valeur: 100 €
+      remplace: cotisations . assiette
 
 exemple2:
-  remplace:
-    règle: cotisations . assiette
-    par: 500 €
-    dans: cotisations . retraite
   par défaut: non
+  avec:
+    assiette:
+      valeur: 500 €
+      remplace:
+        références à: cotisations . assiette
+        dans: cotisations . retraite
 
 exemple3:
   par défaut: non
-  remplace:
-    règle: cotisations . assiette
-    par: 100 €
-    sauf dans:
-      - cotisations . chômage
-      - cotisations . maladie
+  avec:
+    assiette:
+      valeur: 100 €
+      remplace:
+        références à: cotisations . assiette
+        sauf dans:
+          - cotisations . chômage
+          - cotisations . maladie
 
 exemple4:
   par défaut: non
@@ -96,11 +97,13 @@ exemple4 . cotisations retraite:
 
 exemple5:
   par défaut: non
-  remplace:
-    - règle: cotisations . chômage
-      par: 10 €
-    - règle: cotisations . maladie
-      par: 0 €
+  avec:
+    chômage:
+      remplace: cotisations . chômage
+      valeur: 10 €
+    maladie:
+      remplace: cotisations . maladie
+      valeur: 0 €
 
 remplacements:
   formule: cotisations
@@ -210,43 +213,32 @@ ordre de remplacement consistant . avec définition de priorité:
   avec:
     a: 1
     x:
-      remplace: a
+      remplace:
+        références à: a
+        priorité: 10
       valeur: 2
-      priorité: 1
-    y:
-      remplace: a
-      valeur: 3
       priorité: 10
+    x . y:
+      remplace:
+        références à: a
+        priorité: 1
+      valeur: 3
 
   exemples:
-    - valeur attendue: 3 # car y remplace a
+    - valeur attendue: 2 # car x remplace a
 
 ordre de remplacement consistant . avec définition de priorité et de priorité par défaut:
   valeur: a
   avec:
     a: 1
     x:
-      remplace: a
+      remplace:
+        références à: a
+        priorité: 3
       valeur: 2
     y:
       remplace: a
       valeur: 3
-      priorité: 10
 
   exemples:
-    - valeur attendue: 3 # car y remplace a
-
-ordre de remplacement consistant . lorsqu'ils sont définis sur la même variable:
-  valeur: a
-  avec:
-    a: 1
-    x:
-      valeur: oui
-      remplace:
-        - règle: a
-          dans: lorsqu'ils sont définis sur la même variable
-          par: 2
-        - règle: a
-          par: 3
-  exemples:
-    - valeur attendue: 3 # car c'est l'ordre de définition qui compte
+    - valeur attendue: 2 # car x remplace a
