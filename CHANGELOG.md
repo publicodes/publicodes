@@ -2,6 +2,10 @@
 
 
 ## next
+## 1.0.0-rc.4
+**@publicodes/rest-api**
+- fix openapi.json filename in /dist
+
 ## 1.0.0-rc.3
 **BREAKING**
 - Renommage des paramètres des remplacements #319

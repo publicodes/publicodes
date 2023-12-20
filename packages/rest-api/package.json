@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/rest-api",
-	"version": "1.0.0-rc.3",
+	"version": "1.0.0-rc.4",
 	"description": "Publicodes API",
 	"type": "module",
 	"main": "./dist/index.cjs",
@@ -20,7 +20,7 @@
 		"test:swagger": "swagger-cli validate ./src/openapi.yaml",
 		"dev": "codegen:dev && tsup-node --shims --watch & NODE_PATH=./ nodemon -d 500ms ./example.ts",
 		"build": "tsup-node --shims && run copy:openapi",
-		"copy:openapi": "cp ./src/openapi.codegen.json ./dist/openapi.json",
+		"copy:openapi": "cp ./src/openapi.codegen.json ./dist/",
 		"codegen": "swagger-cli bundle ./src/openapi.yaml -o ./src/openapi.codegen.json",
 		"codegen:validate": "swagger-cli validate ./src/openapi.yaml",
 		"codegen:dev": "nodemon -d 500ms -w ./src/openapi.yaml -x \"yarn build:openapi\""
