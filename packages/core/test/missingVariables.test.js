@@ -119,7 +119,7 @@ describe('Missing variables', function () {
 		expect(Object.keys(missingVariables)).to.deep.equal(['a . b'])
 	})
 
-	it('should ignore missing variables from the nullable parent', () => {
+	it('should ignore missing variables from the non nullable parent', () => {
 		const rawRules = {
 			a: {
 				'applicable si': 'oui',

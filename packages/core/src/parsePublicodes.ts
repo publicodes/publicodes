@@ -115,7 +115,6 @@ export default function parsePublicodes<
 		newRules: newRules as any,
 		referencesMaps,
 		previousReplacements: context.rulesReplacements,
-		logger: context.logger,
 	})
 
 	// STEP 5: type inference

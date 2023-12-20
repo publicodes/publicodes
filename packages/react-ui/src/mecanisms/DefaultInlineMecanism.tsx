@@ -1,6 +1,6 @@
 import { ASTNode, EvaluatedNode } from 'publicodes'
 import { useContext, useMemo, useState } from 'react'
-import { styled } from 'styled-components'
+import { css, styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { EngineContext } from '../contexts'
 import { UnfoldIsEnabledContext } from './Reference'
@@ -25,11 +25,14 @@ export default function DefaultInlineMecanism({
 			<div style={{ paddingTop: '0.5rem' }}>
 				<Mecanism name={mecanismName} value={nodeValue} unit={unit}>
 					{isChainableMecanism ?
-						<ListOrScalarExplanation node={args[mecanismName]} />
+						<ListOrScalarExplanation
+							node={args[mecanismName]}
+							mecanismName={mecanismName}
+						/>
 					: isUnaryMecanism ?
 						<ListOrScalarExplanation
 							node={args.valeur}
-							hideNotApplicable={mecanismName !== 'produit'}
+							mecanismName={mecanismName}
 						/>
 					:	<ul>
 							{Object.entries(args).map(([key, value]) => (
@@ -57,13 +60,23 @@ export default function DefaultInlineMecanism({
 
 function ListOrScalarExplanation({
 	node,
-	hideNotApplicable,
+	mecanismName,
 }: {
 	node: ASTNode | Array<ASTNode>
-	hideNotApplicable?: boolean
+	mecanismName?: string
 }) {
 	if (Array.isArray(node)) {
-		return <Table explanation={node} hideNotApplicable={hideNotApplicable} />
+		const sign =
+			mecanismName === 'produit' ? '×'
+			: mecanismName === 'somme' ? '+'
+			: undefined
+		return (
+			<Table
+				explanation={node}
+				hideNotApplicable={mecanismName !== 'produit'}
+				sign={sign}
+			/>
+		)
 	}
 	return <Explanation node={node} />
 }
@@ -74,7 +87,7 @@ const isZeroOrNotApplicable = (x: ASTNode) => {
 	return nodeValue === null || nodeValue === 0
 }
 
-function Table({ explanation, hideNotApplicable = true }) {
+function Table({ explanation, hideNotApplicable = true, sign }) {
 	const [applicableExplanation, notApplicableExplanation] = explanation.reduce(
 		(acc, x) => {
 			acc[hideNotApplicable && isZeroOrNotApplicable(x) ? 1 : 0].push(x)
@@ -91,7 +104,7 @@ function Table({ explanation, hideNotApplicable = true }) {
 	)
 	return (
 		<>
-			<StyledContainer>
+			<StyledContainer $sign={sign}>
 				{applicableExplanation.map((node: EvaluatedNode, i) => (
 					<Row key={i} node={node} />
 				))}
@@ -115,7 +128,11 @@ function Table({ explanation, hideNotApplicable = true }) {
 					</StyledButtonContainer>
 				)}
 			{showNotApplicable && (
-				<StyledContainer id={id}>
+				<StyledContainer
+					id={id}
+					$sign={sign}
+					$showFirst={applicableExplanation.length > 0}
+				>
 					{notApplicableExplanation.map((node: EvaluatedNode, i) => (
 						<Row key={i} node={node} />
 					))}
@@ -126,12 +143,28 @@ function Table({ explanation, hideNotApplicable = true }) {
 }
 const StyledButtonContainer = styled.div`
 	margin: 0.5rem 0;
-	margin-left: 1.5rem;
+	margin-left: 1rem;
 `
-const StyledContainer = styled.ul`
+const StyledContainer = styled.ul<{ $sign?: string; $showFirst?: boolean }>`
 	margin: 0;
-	margin-left: 0.5rem;
-	list-style: disc !important;
+	margin-left: 1rem;
+
+	${({ $sign, $showFirst }) =>
+		$sign &&
+		!$showFirst &&
+		css`
+			& > li:first-child::marker {
+				content: '';
+			}
+		`}
+	${({ $sign }) =>
+		$sign &&
+		css`
+			& > li::marker {
+				font-weight: bold;
+				content: '${$sign}  ';
+			}
+		`}
 `
 
 /* La colonne peut au clic afficher une nouvelle colonne qui sera une autre somme imbriquée */

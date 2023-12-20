@@ -75,7 +75,7 @@ type Options = Partial<Pick<Context, 'logger' | 'getUnitKey'>>
 export type EvaluationFunction<Kind extends NodeKind = NodeKind> = (
 	this: Engine,
 	node: ASTNode & { nodeKind: Kind },
-) => ASTNode & { nodeKind: Kind } & EvaluatedNode
+) => { nodeKind: Kind } & EvaluatedNode
 
 export type ParsedRules<Name extends string> = Record<Name, RuleNode<Name>>
 

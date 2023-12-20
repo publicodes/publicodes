@@ -57,8 +57,19 @@ cotisation . taux réduit:
   exemples:
     - valeur attendue: true
 cotisation . taux réduit . seuil: 20000 €
+
 cotisation . réduction très bas revenu:
   applicable si: revenu < 1000 €
-  remplace:
-    règle: taux réduit
-    par: oui
+  remplace: taux réduit
+  valeur: oui
+
+desactivation d'enfants nécessaire:
+  valeur:
+    le maximum de:
+      - a
+      - b
+  avec:
+    a: 10
+    b: 8
+  exemples:
+    - valeur attendue: 10

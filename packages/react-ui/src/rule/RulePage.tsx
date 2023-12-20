@@ -128,7 +128,7 @@ function Rule({
 
 	const rule = engine.evaluateNode(
 		engine.context.parsedRules[dottedName],
-	) as EvaluatedNode & { nodeKind: 'rule' }
+	) as EvaluatedNode<'rule'>
 
 	const { description, question } = rule.rawNode
 	const { valeur, nullableParent, ruleDisabledByItsParent } = rule.explanation

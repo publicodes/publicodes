@@ -226,7 +226,6 @@ const traverseReplacementNode: TraverseFunction<'replacementRule'> = (
 		...node,
 		definitionRule: fn(node.definitionRule),
 		replacedReference: fn(node.replacedReference),
-		replacementNode: fn(node.replacementNode),
 		whiteListedNames: node.whiteListedNames.map(fn),
 		blackListedNames: node.blackListedNames.map(fn),
 	}) as ReplacementRule

@@ -5,11 +5,6 @@ export default function ReplacementMecanism(node: ReplacementRule) {
 	return (
 		<span>
 			Remplace <Explanation node={node.replacedReference} />{' '}
-			{node.rawNode.par && (
-				<>
-					par <Explanation node={node.replacementNode} />
-				</>
-			)}
 			{node.rawNode.dans && (
 				<>
 					dans{' '}

@@ -1,97 +1,73 @@
-import { EvaluatedNode } from 'publicodes/src/AST/types'
-import { VariationNode } from 'publicodes/src/mecanisms/variations'
-import React, { useEffect, useRef } from 'react'
+import { ASTNode, EvaluatedNode } from 'publicodes'
+import { useState } from 'react'
 import Explanation from '../Explanation'
+import { useEngine } from '../hooks'
 
-export default function Replacement(node: VariationNode & EvaluatedNode) {
-	const applicableReplacement = node.explanation.find(
-		({ condition }) =>
-			'nodeValue' in condition &&
-			condition.nodeValue !== false &&
-			condition.nodeValue !== null,
-	)?.consequence
-	const replacedNode = node.explanation.slice(-1)[0].consequence as {
-		dottedName: string
-	}
-	return <Explanation node={applicableReplacement ?? replacedNode} />
-
-	//  TODO : remettre le bouton pour les remplacements mais de manière plus discrète et accessible
-	// const [displayReplacements, changeDisplayReplacement] = useState(false)
-
-	// return (
-	// 	<span style={{ display: 'inline-flex' }}>
-	// 		{applicableReplacement && replacedNode !== applicableReplacement && (
-	// 			<>
-	// 				&nbsp;
-	// 				<button
-	// 					onClick={() => changeDisplayReplacement(!displayReplacements)}
-	// 				>
-	// 					🔄
-	// 				</button>{' '}
-	// 				&nbsp;
-	// 			</>
-	// 		)}
-	// 		<span style={{ flex: 1, display: 'inline-flex' }}>
-	// 			<Explanation node={applicableReplacement ?? replacedNode} />
-	// 		</span>
-	// 		{displayReplacements && (
-	// 			<Overlay onClose={() => changeDisplayReplacement(false)}>
-	// 				<h3>Remplacement existant</h3>
-	// 				<p>
-	// 					Un ou plusieurs remplacements ciblent la règle{' '}
-	// 					<RuleLinkWithContext dottedName={replacedNode.dottedName} /> à cet
-	// 					endroit. Sa valeur est calculée selon la formule suivante :
-	// 				</p>
-
-	// 				<Variations {...node} />
-	// 				<div style={{ marginTop: '1rem' }} />
-	// 				<p>
-	// 					<a href="https://publi.codes/documentation/principes-de-base#remplacement">
-	// 						En savoir plus sur le remplacement dans publicodes
-	// 					</a>
-	// 				</p>
-	// 			</Overlay>
-	// 		)}
-	// 	</span>
-	// )
-}
-
-function Overlay({
-	children,
-	onClose,
-}: {
-	children: React.ReactNode
-	onClose: () => void
-}) {
-	const divRef = useRef<HTMLDivElement>(null)
-
-	useEffect(() => {
-		const hideOnClickOutside = (click) => {
-			if (!divRef.current) {
-				return
-			}
-			if (divRef.current.contains(click.target)) {
-				return
-			}
-			onClose()
+export default function Replacement(node: EvaluatedNode<'variations'>) {
+	const engine = useEngine()
+	const sourceMaps = node.sourceMap as {
+		mecanismName: 'replacement'
+		args: {
+			originalNode: EvaluatedNode<'reference'>
+			applicableReplacements: Array<ASTNode<'replacementRule'>>
 		}
-		window.addEventListener('click', hideOnClickOutside)
-		return () => window.removeEventListener('click', hideOnClickOutside)
-	}, [])
+	}
+	const originalNode = sourceMaps.args.originalNode
+	const applicableReplacement = sourceMaps.args.applicableReplacements.find(
+		({ definitionRule }) =>
+			engine.evaluate(definitionRule).nodeValue === node.nodeValue,
+	)
+
+	if (!applicableReplacement || applicableReplacement.replaceByNonApplicable) {
+		originalNode.nodeValue = node.nodeValue
+		return <Explanation node={originalNode} />
+	}
+	const [showOriginal, setShowOriginal] = useState(false)
 	return (
-		<div
-			ref={divRef}
-			style={{
-				backgroundColor: 'white',
-				zIndex: 3,
-				boxShadow: '0px 1px 2px rgba(0,0,0,0.25)',
-				position: 'absolute',
-				padding: '1rem',
-				border: '1px solid rgba(0,0,0,0.25)',
-				borderRadius: '0.3rem',
-			}}
-		>
-			{children}
-		</div>
+		<>
+			<span
+				style={{
+					display: 'inline-flex',
+					maxWidth: '100%',
+					alignItems: 'baseline',
+				}}
+			>
+				<button
+					style={{
+						marginRight: '0.4rem',
+					}}
+					onClick={() => setShowOriginal(!showOriginal)}
+					type="button"
+					aria-expanded="true"
+					aria-controls="id_about_menu"
+					title={
+						showOriginal ?
+							'Voir la valeur remplacée'
+						:	'Cacher la valeur remplacée'
+					}
+				>
+					🔄
+				</button>{' '}
+				<span
+					style={{
+						display: 'flex',
+						flexDirection: 'column',
+						flex: '1 1 .0%',
+					}}
+				>
+					{showOriginal && (
+						<span
+							style={{
+								opacity: '0.6',
+								textDecoration: 'line-through',
+							}}
+						>
+							<Explanation node={originalNode} />
+						</span>
+					)}
+					<Explanation node={applicableReplacement.definitionRule} />
+				</span>
+			</span>
+		</>
 	)
 }

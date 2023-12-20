@@ -20,7 +20,7 @@ contribution:
 vélo occasion:
   par défaut: oui
   rend non applicable:
-    règle: aides
+    références à: aides
     sauf dans:
       - aides . montant total
       - aides . bamako

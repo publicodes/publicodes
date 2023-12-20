@@ -1,4 +1,4 @@
-import { Logger, ParsedRules, PublicodesError } from '.'
+import { ParsedRules, PublicodesError } from '.'
 import { makeASTTransformer, makeASTVisitor } from './AST'
 import { ASTNode } from './AST/types'
 import { PublicodesInternalError } from './error'
@@ -11,14 +11,14 @@ import { mergeWithArray } from './utils'
 
 export type ReplacementRule = {
 	nodeKind: 'replacementRule'
-	definitionRule: ASTNode & { nodeKind: 'reference' } & { dottedName: string }
-	replacedReference: ASTNode & { nodeKind: 'reference' }
-	replacementNode: ASTNode
+	definitionRule: ASTNode<'reference'> & { dottedName: string }
+	replacedReference: ASTNode<'reference'>
 	priority?: number
-	whiteListedNames: Array<ASTNode & { nodeKind: 'reference' }>
+	whiteListedNames: Array<ASTNode<'reference'>>
 	rawNode: any
-	blackListedNames: Array<ASTNode & { nodeKind: 'reference' }>
+	blackListedNames: Array<ASTNode<'reference'>>
 	remplacementRuleId: number
+	replaceByNonApplicable: boolean
 }
 
 // Replacements depend on the context and their evaluation implies using
@@ -45,14 +45,10 @@ export function parseReplacements(
 	return (Array.isArray(replacements) ? replacements : [replacements]).map(
 		(replacement) => {
 			if (typeof replacement === 'string') {
-				replacement = { règle: replacement }
+				replacement = { 'références à': replacement }
 			}
 
-			const replacedReference = parse(replacement.règle, context)
-			const replacementNode = parse(
-				replacement.par ?? context.dottedName,
-				context,
-			)
+			const replacedReference = parse(replacement['références à'], context)
 
 			const [whiteListedNames, blackListedNames] = [
 				replacement.dans ?? [],
@@ -78,7 +74,7 @@ export function parseReplacements(
 				priority: replacement.priorité,
 				definitionRule: parse(context.dottedName, context),
 				replacedReference,
-				replacementNode,
+				replaceByNonApplicable: false,
 				whiteListedNames,
 				blackListedNames,
 				remplacementRuleId: remplacementRuleId++,
@@ -91,13 +87,11 @@ export function parseRendNonApplicable(
 	rules: Rule['rend non applicable'],
 	context: Context,
 ): Array<ReplacementRule> {
-	return parseReplacements(rules, context).map(
-		(replacement) =>
-			({
-				...replacement,
-				replacementNode: notApplicableNode,
-			}) as ReplacementRule,
+	const rendNonApplicableReplacements = parseReplacements(rules, context)
+	rendNonApplicableReplacements.forEach(
+		(r) => (r.replaceByNonApplicable = true),
 	)
+	return rendNonApplicableReplacements
 }
 
 export function getReplacements(
@@ -126,13 +120,11 @@ export function inlineReplacements<
 	previousReplacements,
 	parsedRules,
 	referencesMaps,
-	logger,
 }: {
 	newRules: ParsedRules<NewNames>
 	previousReplacements: RulesReplacements<PreviousNames>
 	parsedRules: ParsedRules<PreviousNames | NewNames>
 	referencesMaps: ReferencesMaps<NewNames | PreviousNames>
-	logger: Logger
 }): [
 	ParsedRules<NewNames | PreviousNames>,
 	RulesReplacements<NewNames | PreviousNames>,
@@ -171,12 +163,10 @@ export function inlineReplacements<
 	const inlinePreviousReplacement = makeReplacementInliner(
 		previousReplacements,
 		referencesMaps,
-		logger,
 	)
 	const inlineNewReplacement = makeReplacementInliner(
 		newReplacements,
 		referencesMaps,
-		logger,
 	)
 
 	newRuleNamesWithPreviousReplacements.forEach((name) => {
@@ -196,7 +186,6 @@ export function inlineReplacements<
 export function makeReplacementInliner(
 	replacements: RulesReplacements<string>,
 	referencesMaps: ReferencesMaps<string>,
-	logger: Logger,
 ): (n: ASTNode) => ASTNode {
 	return makeASTTransformer((node, transform) => {
 		if (
@@ -227,7 +216,6 @@ export function makeReplacementInliner(
 			const replacedReferenceNode = replace(
 				node,
 				replacements[node.dottedName] ?? [],
-				logger,
 			)
 			// Collect inlined replacement
 			makeASTVisitor((n) => {
@@ -244,9 +232,8 @@ export function makeReplacementInliner(
 }
 
 function replace(
-	node: ASTNode & { nodeKind: 'reference' }, //& { dottedName: string },
+	node: ASTNode<'reference'>,
 	replacements: Array<ReplacementRule>,
-	logger: Logger,
 ): ASTNode {
 	// TODO : handle transitivité
 
@@ -285,27 +272,33 @@ function replace(
 		return node
 	}
 
-	applicableReplacements
 	const applicableReplacementsCacheKey = applicableReplacements
 		.map((n) => n.remplacementRuleId)
 		.join('-')
-
-	cache[applicableReplacementsCacheKey] ??= {
-		nodeKind: 'variations',
-		sourceMap: {
-			mecanismName: 'replacement',
-		},
-		rawNode: node.rawNode,
-		explanation: [
-			...applicableReplacements.map((replacement) => ({
-				condition: replacement.definitionRule,
-				consequence: replacement.replacementNode,
-			})),
-			{
-				condition: defaultNode(true),
-				consequence: node,
-			},
-		],
+	if (cache[applicableReplacementsCacheKey]) {
+		return cache[applicableReplacementsCacheKey]
 	}
+	const replacementNode = {
+		nodeKind: 'variations',
+		explanation: [
+			...applicableReplacements.map(
+				({ definitionRule, replaceByNonApplicable }) => ({
+					condition: definitionRule,
+					consequence:
+						replaceByNonApplicable ? notApplicableNode : definitionRule,
+				}),
+			),
+			{ condition: defaultNode(true), consequence: node },
+		],
+	} as ASTNode<'variations'>
+
+	replacementNode.sourceMap = {
+		mecanismName: 'replacement',
+		args: {
+			applicableReplacements,
+			originalNode: node,
+		},
+	}
+	cache[applicableReplacementsCacheKey] = replacementNode
 	return cache[applicableReplacementsCacheKey]
 }

@@ -2,6 +2,24 @@
 
 
 ## next
+## 1.0.0-rc.3
+**BREAKING**
+- Renommage des paramètres des remplacements #319
+
+**@publicodes/core**
+- improve type signature of ASTNode & EvaluatedNode
+
+**@publicodes/codemod**
+- Add codemod for replacement parameters renaming
+
+**@publicodes/react-ui**
+- improve documentation for replacement
+- improve documentation style of produit and somme
+
+**website**
+- update doc
+
+
 ## 1.0.0-rfc.2
 **fix**
 - Engine(rules) altered the rules object passed as argument
@@ -26,7 +44,9 @@
 - Add a codemod to refactor rules for the following breaking :  #332, #410, #420, #412, #321
 - You'll need to check for for bug following changes in the order of applied replacement rules
 
-**@publicodes/doc**
+**website**
+- update doc
+
 
 ## 1.0.0-beta.77
 
