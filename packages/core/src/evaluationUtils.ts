@@ -37,7 +37,7 @@ export const notApplicableNode = {
 	missingVariables: {},
 	type: undefined,
 	isNullable: true,
-} as ConstantNode & EvaluatedNode
+} as EvaluatedNode<'constant'>
 
 export const undefinedNode = {
 	nodeKind: 'constant',
@@ -45,9 +45,9 @@ export const undefinedNode = {
 	missingVariables: {},
 	type: undefined,
 	isNullable: false,
-} as ConstantNode & EvaluatedNode
+} as EvaluatedNode<'constant'>
 
 export const undefinedNumberNode = {
 	...undefinedNode,
 	type: 'number',
-} as ConstantNode & EvaluatedNode
+} as EvaluatedNode<'constant'>

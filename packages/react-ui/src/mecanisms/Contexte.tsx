@@ -1,12 +1,11 @@
 import { EvaluatedNode } from 'publicodes'
-import { ContextNode } from 'publicodes/src/mecanisms/contexte'
 import Explanation from '../Explanation'
 import { RuleLinkWithContext } from '../RuleLink'
 import { EngineContext } from '../contexts'
 import { useEngine } from '../hooks'
 import { Mecanism } from './common'
 
-export default function Contexte({ explanation }: ContextNode & EvaluatedNode) {
+export default function Contexte({ explanation }: EvaluatedNode<'contexte'>) {
 	const engine = useEngine()
 	const contexteEngine =
 		explanation.subEngineId ?

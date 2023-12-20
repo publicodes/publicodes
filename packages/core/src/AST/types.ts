@@ -27,7 +27,7 @@ export type ConstantNode = {
 	isNullable?: boolean
 	isDefault?: boolean
 }
-export type ASTNode = (
+type PossibleNodes =
 	| RuleNode
 	| ReferenceNode
 	| ArrondiNode
@@ -50,7 +50,10 @@ export type ASTNode = (
 	| ReplacementRule
 	| VariableManquanteNode
 	| TexteNode
-) & {
+
+export type NodeKind = PossibleNodes['nodeKind']
+export type ASTNode<N extends NodeKind = NodeKind> = PossibleNodes & {
+	nodeKind: N
 	isDefault?: boolean
 	sourceMap?: {
 		mecanismName: string
@@ -64,21 +67,20 @@ export type ASTNode = (
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		| {}
 	)
+
 // TODO : separate type for evaluated AST Tree
 
-export type MecanismNode = Exclude<
-	ASTNode,
-	RuleNode | ConstantNode | ReferenceNode
+export type MecanismNode = ASTNode<
+	Exclude<NodeKind, 'rule' | 'reference' | 'constant'>
 >
 
 export type ASTTransformer = (n: ASTNode) => ASTNode
 export type ASTVisitor = (n: ASTNode) => void
 
-export type NodeKind = ASTNode['nodeKind']
-export type TraverseFunction<Kind extends NodeKind> = (
+export type TraverseFunction<K extends NodeKind> = (
 	fn: ASTTransformer,
-	node: ASTNode & { nodeKind: Kind },
-) => ASTNode & { nodeKind: Kind }
+	node: ASTNode<K>,
+) => ASTNode<K>
 
 export type BaseUnit = string
 
@@ -107,7 +109,9 @@ export type Evaluation<T extends Types = Types> =
 	| null // Non applicable
 	| undefined // Non défini
 
-export type EvaluatedNode<T extends Types = Types> = ASTNode &
-	EvaluationDecoration<T>
+export type EvaluatedNode<
+	K extends NodeKind = NodeKind,
+	T extends Types = Types,
+> = EvaluationDecoration<T> & ASTNode<K>
 
 export type MissingVariables = Record<string, number>

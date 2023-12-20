@@ -39,7 +39,7 @@ export function DeveloperAccordion({
 	apiEvaluateUrl,
 	npmPackage,
 }: {
-	rule: EvaluatedNode & { nodeKind: 'rule' }
+	rule: EvaluatedNode<'rule'>
 	engine: Engine
 	dottedName: string
 	situation?: Record<string, unknown>
@@ -193,7 +193,7 @@ function PackageUsage({
 	dottedName,
 	npmPackage,
 }: {
-	rule: EvaluatedNode & { nodeKind: 'rule' }
+	rule: EvaluatedNode<'rule'>
 	situation: Record<string, unknown>
 	dottedName: string
 	npmPackage: string

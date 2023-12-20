@@ -1,5 +1,4 @@
 import { EvaluatedNode } from 'publicodes'
-import type { VariationNode } from 'publicodes/src/mecanisms/variations'
 import { useState } from 'react'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
@@ -10,7 +9,7 @@ export default function Variations({
 	nodeValue,
 	explanation,
 	unit,
-}: VariationNode & EvaluatedNode) {
+}: EvaluatedNode<'variations'>) {
 	const [expandedVariation, toggleVariation] = useState<undefined | number>(
 		undefined,
 	)

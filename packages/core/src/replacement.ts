@@ -1,4 +1,4 @@
-import { Logger, ParsedRules, PublicodesError } from '.'
+import { ParsedRules, PublicodesError } from '.'
 import { makeASTTransformer, makeASTVisitor } from './AST'
 import { ASTNode } from './AST/types'
 import { PublicodesInternalError } from './error'
@@ -11,12 +11,12 @@ import { mergeWithArray } from './utils'
 
 export type ReplacementRule = {
 	nodeKind: 'replacementRule'
-	definitionRule: ASTNode & { nodeKind: 'reference' } & { dottedName: string }
-	replacedReference: ASTNode & { nodeKind: 'reference' }
+	definitionRule: ASTNode<'reference'> & { dottedName: string }
+	replacedReference: ASTNode<'reference'>
 	priority?: number
-	whiteListedNames: Array<ASTNode & { nodeKind: 'reference' }>
+	whiteListedNames: Array<ASTNode<'reference'>>
 	rawNode: any
-	blackListedNames: Array<ASTNode & { nodeKind: 'reference' }>
+	blackListedNames: Array<ASTNode<'reference'>>
 	remplacementRuleId: number
 	replaceByNonApplicable: boolean
 }
@@ -120,13 +120,11 @@ export function inlineReplacements<
 	previousReplacements,
 	parsedRules,
 	referencesMaps,
-	logger,
 }: {
 	newRules: ParsedRules<NewNames>
 	previousReplacements: RulesReplacements<PreviousNames>
 	parsedRules: ParsedRules<PreviousNames | NewNames>
 	referencesMaps: ReferencesMaps<NewNames | PreviousNames>
-	logger: Logger
 }): [
 	ParsedRules<NewNames | PreviousNames>,
 	RulesReplacements<NewNames | PreviousNames>,
@@ -165,12 +163,10 @@ export function inlineReplacements<
 	const inlinePreviousReplacement = makeReplacementInliner(
 		previousReplacements,
 		referencesMaps,
-		logger,
 	)
 	const inlineNewReplacement = makeReplacementInliner(
 		newReplacements,
 		referencesMaps,
-		logger,
 	)
 
 	newRuleNamesWithPreviousReplacements.forEach((name) => {
@@ -190,7 +186,6 @@ export function inlineReplacements<
 export function makeReplacementInliner(
 	replacements: RulesReplacements<string>,
 	referencesMaps: ReferencesMaps<string>,
-	logger: Logger,
 ): (n: ASTNode) => ASTNode {
 	return makeASTTransformer((node, transform) => {
 		if (
@@ -221,7 +216,6 @@ export function makeReplacementInliner(
 			const replacedReferenceNode = replace(
 				node,
 				replacements[node.dottedName] ?? [],
-				logger,
 			)
 			// Collect inlined replacement
 			makeASTVisitor((n) => {
@@ -238,9 +232,8 @@ export function makeReplacementInliner(
 }
 
 function replace(
-	node: ASTNode & { nodeKind: 'reference' }, //& { dottedName: string },
+	node: ASTNode<'reference'>,
 	replacements: Array<ReplacementRule>,
-	logger: Logger,
 ): ASTNode {
 	// TODO : handle transitivité
 
@@ -297,8 +290,9 @@ function replace(
 			),
 			{ condition: defaultNode(true), consequence: node },
 		],
-	}
-	;(replacementNode as any).sourceMap = {
+	} as ASTNode<'variations'>
+
+	replacementNode.sourceMap = {
 		mecanismName: 'replacement',
 		args: {
 			applicableReplacements,

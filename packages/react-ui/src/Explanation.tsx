@@ -1,7 +1,6 @@
 import { transformAST } from 'publicodes'
 import { useEngine } from './hooks'
 import Arrondi from './mecanisms/Arrondi'
-import Avec from './mecanisms/Avec'
 import Barème from './mecanisms/Barème'
 import Condition from './mecanisms/Condition'
 import Contexte from './mecanisms/Contexte'
@@ -29,7 +28,6 @@ const UIComponents = {
 	constant: ConstantNode,
 	arrondi: Arrondi,
 	barème: Barème,
-	avec: Avec,
 	durée: Durée,
 	grille: Grille,
 	inversion: InversionNumérique,

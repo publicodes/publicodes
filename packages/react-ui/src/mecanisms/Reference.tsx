@@ -1,5 +1,4 @@
 import { EvaluatedNode } from 'publicodes/src/AST/types'
-import { ReferenceNode } from 'publicodes/src/reference'
 import { createContext, useContext, useState } from 'react'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
@@ -9,9 +8,9 @@ import { NodeValuePointer } from './common'
 
 // Un élément du graphe de calcul qui a une valeur interprétée (à afficher)
 export default function Reference(
-	node: ReferenceNode & {
+	node: EvaluatedNode<'reference'> & {
 		dottedName: string
-	} & EvaluatedNode,
+	},
 ) {
 	const engine = useContext(EngineContext)
 	const { dottedName, nodeValue, unit } = node

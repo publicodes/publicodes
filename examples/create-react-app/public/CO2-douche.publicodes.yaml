@@ -81,8 +81,9 @@ douche . débit:
     économise l'eau: https://www.jeconomiseleau.org/index.php/particuliers/economies-par-usage/la-douche-et-le-bain
 
 douche . pomme de douche économe:
-  remplace:
-    règle: débit
-    par: 9 litre/min
   question: Utilisez-vous une pomme de douche économe ?
   par défaut: non
+  avec:
+    débit:
+      remplace: débit
+      valeur: 9 litre/min
