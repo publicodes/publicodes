@@ -1,134 +1,93 @@
-import { EvaluatedNode } from 'publicodes'
 import { useState } from 'react'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
-import writtenNumbers from '../writtenNumbers'
-import { CapitalizeFirstLetter, InlineMecanismName, Mecanism } from './common'
+import { Mecanism } from './common'
 
-export default function Variations({
-	nodeValue,
-	explanation,
-	unit,
-}: EvaluatedNode<'variations'>) {
-	const [expandedVariation, toggleVariation] = useState<undefined | number>(
-		undefined,
+export default function Variations({ nodeValue, explanation, unit }) {
+	const activeCaseIndex = explanation.findIndex(
+		({ condition }) => condition.nodeValue === true,
 	)
+
+	let activeCase
+	if (activeCaseIndex !== undefined) {
+		activeCase = explanation[activeCaseIndex]
+		explanation = [
+			...explanation.slice(0, activeCaseIndex),
+			...explanation.slice(activeCaseIndex + 1),
+		]
+	}
+
+	const [isExpanded, setIsExpanded] = useState(!activeCase)
 	return (
-		<StyledComponent>
-			<Mecanism
-				name="variations"
-				displayName={false}
-				unit={unit}
-				value={nodeValue}
-			>
-				<>
-					<CapitalizeFirstLetter>
-						{writtenNumbers[explanation.length]}{' '}
-						<InlineMecanismName name="variations" /> possibles :
-					</CapitalizeFirstLetter>
-					<ol>
-						{explanation.map(({ condition, consequence }, i: number) => {
-							const satisfied =
-								'nodeValue' in condition &&
-								condition.nodeValue !== false &&
-								condition.nodeValue !== null
-							return (
-								<li
-									key={i}
-									style={{
-										transition: 'all 0.2s',
-										opacity:
-											(
-												expandedVariation === i ||
-												satisfied ||
-												nodeValue == undefined
-											) ?
-												1
-											:	0.8,
-									}}
-								>
-									{!satisfied && (
-										<>
-											<em>non applicable </em>
-											{expandedVariation !== i ?
-												<button
-													className="ui__ link-button"
-													onClick={() => toggleVariation(i)}
-												>
-													détails ▶️
-												</button>
-											:	<button
-													className="ui__ link-button"
-													onClick={() => toggleVariation(undefined)}
-												>
-													replier 🔽
-												</button>
-											}
-										</>
-									)}
-									{(expandedVariation === i || satisfied) && (
-										<div style={{ margin: '1rem 0' }}>
-											{!condition.isDefault && (
-												<div
-													style={{
-														display: 'flex',
-														flexWrap: 'wrap',
-														alignItems: 'baseline',
-														marginBottom: '0.4rem',
-													}}
-												>
-													Si :&nbsp;
-													<Explanation node={condition} />
-												</div>
-											)}
-											<div
-												style={{
-													display: 'flex',
-													width: 'fit-content',
-													flexWrap: 'wrap',
-													alignItems: 'baseline',
-												}}
-											>
-												<span
-													className={`consequenceType ${
-														satisfied ? 'satisfied' : ''
-													}`}
-												>
-													{!condition.isDefault ? 'Alors' : 'Sinon'} :&nbsp;
-												</span>
-												<span
-													className={`consequenceContent ${
-														satisfied ? 'satisfied' : ''
-													}`}
-												>
-													{consequence && <Explanation node={consequence} />}
-												</span>
-											</div>
-										</div>
-									)}
-								</li>
-							)
-						})}
-					</ol>
-				</>
-			</Mecanism>
-		</StyledComponent>
+		<Mecanism name="variations" unit={unit} value={nodeValue}>
+			<ul>
+				{activeCase && (
+					<li>
+						<Case {...activeCase} />
+						<span style={{ paddingLeft: '1rem' }}>
+							<button
+								className="publicodes_btn-small"
+								onClick={() => setIsExpanded(!isExpanded)}
+							>
+								{isExpanded ? 'Masquer' : 'Afficher'} les autres cas
+							</button>
+						</span>
+					</li>
+				)}
+				{isExpanded && (
+					<>
+						{explanation.map((currentCase, i) => (
+							<li key={i}>
+								<Case {...currentCase} />
+							</li>
+						))}
+					</>
+				)}
+			</ul>
+		</Mecanism>
 	)
 }
 
-const StyledComponent = styled.div`
-	.mecanism > ol {
-		margin-left: 1rem;
-		margin-top: 1rem;
-	}
-	.mecanism > ol > li {
-		margin-bottom: 0.3em;
-	}
-	.mecanism > ol > li span.consequenceType {
-		margin: 0 0.6em 0.6em 0;
-	}
+function Case({ condition, consequence }) {
+	return (
+		<StyledCaseContainer>
+			<StyledCase>
+				<StyledCondition>
+					{condition.nodeKind === 'constant' && condition.nodeValue === true ?
+						<StyledText>Par défaut&nbsp;:&nbsp;</StyledText>
+					:	<>
+							<StyledText>Condition&nbsp;:&nbsp;</StyledText>
+							<StyledExplanation>
+								<Explanation node={condition} />
+							</StyledExplanation>
+						</>
+					}
+				</StyledCondition>
+				<StyledExplanation>
+					<Explanation node={consequence} />
+				</StyledExplanation>
+			</StyledCase>
+		</StyledCaseContainer>
+	)
+}
 
-	.mecanism > ol > li span.consequenceType.satisfied {
-		background: yellow;
-	}
+const StyledExplanation = styled.div``
+const StyledText = styled.span`
+	font-weight: bold;
+`
+const StyledCondition = styled.div`
+	padding-bottom: 1rem;
+	padding-top: 0.5rem;
+	display: flex;
+	align-items: baseline;
+`
+
+const StyledCase = styled.div`
+	border-left: 1rem solid hsl(36, 60%, 97%);
+	padding-left: 1rem;
+	margin-left: -1rem;
+`
+
+const StyledCaseContainer = styled.div`
+	padding: 1rem 0;
 `

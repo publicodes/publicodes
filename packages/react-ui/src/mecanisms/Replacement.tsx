@@ -1,5 +1,5 @@
 import { ASTNode, EvaluatedNode } from 'publicodes'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import Explanation from '../Explanation'
 import { useEngine } from '../hooks'
 
@@ -23,40 +23,25 @@ export default function Replacement(node: EvaluatedNode<'variations'>) {
 		return <Explanation node={originalNode} />
 	}
 	const [showOriginal, setShowOriginal] = useState(false)
+	const id = useId()
 	return (
 		<>
 			<span
 				style={{
 					display: 'inline-flex',
 					maxWidth: '100%',
-					alignItems: 'baseline',
 				}}
 			>
-				<button
-					style={{
-						marginRight: '0.4rem',
-					}}
-					onClick={() => setShowOriginal(!showOriginal)}
-					type="button"
-					aria-expanded="true"
-					aria-controls="id_about_menu"
-					title={
-						showOriginal ?
-							'Voir la valeur remplacée'
-						:	'Cacher la valeur remplacée'
-					}
-				>
-					🔄
-				</button>{' '}
 				<span
 					style={{
 						display: 'flex',
 						flexDirection: 'column',
-						flex: '1 1 .0%',
+						flex: '1 1 0%',
 					}}
 				>
 					{showOriginal && (
 						<span
+							id={id}
 							style={{
 								opacity: '0.6',
 								textDecoration: 'line-through',
@@ -67,6 +52,26 @@ export default function Replacement(node: EvaluatedNode<'variations'>) {
 					)}
 					<Explanation node={applicableReplacement.definitionRule} />
 				</span>
+				<div
+					style={{
+						marginLeft: '0.4rem',
+					}}
+				>
+					<button
+						onClick={() => setShowOriginal(!showOriginal)}
+						type="button"
+						className="publicodes_btn-small"
+						aria-expanded={showOriginal}
+						aria-controls={id}
+						title={
+							showOriginal ?
+								'Cacher la valeur d’origine'
+							:	'Voir la valeur d’origine'
+						}
+					>
+						🔄
+					</button>
+				</div>
 			</span>
 		</>
 	)

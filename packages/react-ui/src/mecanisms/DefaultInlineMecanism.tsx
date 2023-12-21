@@ -22,7 +22,11 @@ export default function DefaultInlineMecanism({
 	return (
 		<>
 			{isChainableMecanism && <ListOrScalarExplanation node={args.valeur} />}
-			<div style={{ paddingTop: '0.5rem' }}>
+			<div
+				style={{
+					marginTop: isChainableMecanism ? '1rem' : 0,
+				}}
+			>
 				<Mecanism name={mecanismName} value={nodeValue} unit={unit}>
 					{isChainableMecanism ?
 						<ListOrScalarExplanation
@@ -119,11 +123,12 @@ function Table({ explanation, hideNotApplicable = true, sign }) {
 						<button
 							aria-expanded={showNotApplicable}
 							aria-controls={id}
+							className="publicodes_btn-small"
 							onClick={() => setShowNotApplicable(!showNotApplicable)}
 						>
 							{showNotApplicable ?
-								'Cacher les valeurs non applicables'
-							:	`Afficher les valeurs non applicables`}
+								'Masquer les valeurs non applicable'
+							:	`Afficher tout`}
 						</button>
 					</StyledButtonContainer>
 				)}
@@ -168,7 +173,7 @@ const StyledContainer = styled.ul<{ $sign?: string; $showFirst?: boolean }>`
 `
 
 /* La colonne peut au clic afficher une nouvelle colonne qui sera une autre somme imbriquée */
-function Row({ node }: { node: EvaluatedNode }) {
+export function Row({ node }: { node: EvaluatedNode }) {
 	return (
 		<StyledRow style={{ padding: '0.25rem 0' }}>
 			<UnfoldIsEnabledContext.Provider value={true}>

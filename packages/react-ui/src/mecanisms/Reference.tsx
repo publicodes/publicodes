@@ -45,14 +45,24 @@ export default function Reference(
 					justifyContent: 'space-between',
 				}}
 			>
-				<RuleLinkWithContext dottedName={dottedName} />
+				<span style={{ paddingRight: '0.2rem' }}>
+					<RuleLinkWithContext dottedName={dottedName} />
+				</span>
 
-				<div style={{ flex: 1, display: 'flex', alignItems: 'baseline' }}>
+				<div
+					style={{
+						flex: 1,
+
+						display: 'flex',
+						alignItems: 'baseline',
+					}}
+				>
 					{isFoldEnabled && (
 						<>
 							<UnfoldButton
 								onClick={() => setFolded(!folded)}
 								aria-expanded={!folded}
+								className="publicodes_btn-small"
 								aria-label={
 									folded ?
 										'Déplier, afficher le détail'
@@ -85,7 +95,6 @@ export const UnfoldIsEnabledContext = createContext<boolean>(false)
 
 const UnfoldButton = styled.button`
 	text-transform: none !important;
-	margin-left: 0.5rem;
 `
 const StyledGuide = styled.div`
 	@media (max-width: 500px) {

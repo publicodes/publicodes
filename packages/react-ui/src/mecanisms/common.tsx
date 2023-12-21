@@ -39,8 +39,14 @@ type NodeValuePointerProps = {
 
 export const NodeValuePointer = ({ data, unit }: NodeValuePointerProps) => {
 	return (
-		<StyledNodeValuePointer className="node-value-pointer">
-			{formatValue({ nodeValue: data, unit })}
+		<StyledNodeValuePointer
+			className="node-value-pointer"
+			title={data === null ? 'Non applicable' : ''}
+			aria-label={data === null ? 'Valeur non applicable' : ''}
+		>
+			{data === null ?
+				<span aria-hidden>-</span>
+			:	formatValue({ nodeValue: data, unit })}
 		</StyledNodeValuePointer>
 	)
 }
@@ -160,7 +166,6 @@ const StyledMecanism = styled.div<{ mecanismName: string }>`
 	max-width: 100%;
 	border-radius: 3px;
 	padding: 0.5rem 1rem;
-	margin-bottom: 0.5rem;
 	position: relative;
 	flex: 1;
 	flex-direction: column;
