@@ -147,43 +147,69 @@ export function isExperimental(rules: Record<string, RuleNode>, name: string) {
 	)
 }
 
+function dottedNameFromContext(context: string, partialName: string) {
+	return context ? context + ' . ' + partialName : partialName
+}
 export function disambiguateReference<R extends Record<string, RuleNode>>(
 	rules: R,
-	contextName = '',
+	referencedFrom = '',
 	partialName: string,
 ): keyof R {
-	const possibleDottedName = [contextName, ...ruleParents(contextName), '']
-		.map((x) => (x ? x + ' . ' + partialName : partialName))
-		// Rules can reference themselves, but it should be the last thing to check
-		.sort((a, b) =>
-			a === contextName ? 1
-			: b === contextName ? -1
-			: 0,
-		)
+	const possibleContexts = ruleParents(referencedFrom)
+	possibleContexts.push(referencedFrom)
 
-	const existingDottedName = possibleDottedName.filter((name) => name in rules)
-	const accessibleDottedName = existingDottedName.find((name) =>
-		isAccessible(rules, contextName, name),
+	// If the partialName starts with ^ . ^ . ^ . , we want to go up in the parents
+	if (partialName.startsWith('^ . ')) {
+		const numberParent = partialName.match(/^(\^ \. )+/)![0].length / 4
+		partialName = partialName.replace(/^(\^ \. )+/, '')
+		possibleContexts.splice(-numberParent)
+	}
+
+	const rootContext = possibleContexts.pop()
+	possibleContexts.unshift(rootContext as string)
+	possibleContexts.push('')
+
+	const context = possibleContexts.find((context) => {
+		const dottedName = dottedNameFromContext(context, partialName)
+		if (!(dottedName in rules)) {
+			return false
+		}
+		if (dottedName === referencedFrom) {
+			return false
+		}
+		return isAccessible(rules, referencedFrom, dottedName)
+	})
+
+	if (context !== undefined) {
+		return dottedNameFromContext(context, partialName) as keyof R
+	}
+
+	// The last possibility we want to check is if the rule is referencing itself
+	if (referencedFrom.endsWith(partialName)) {
+		return referencedFrom as keyof R
+	}
+
+	const possibleDottedName = possibleContexts.map((c) =>
+		dottedNameFromContext(c, partialName),
 	)
 
-	if (!existingDottedName.length) {
+	if (possibleDottedName.every((dottedName) => !(dottedName in rules))) {
 		throw new PublicodesError(
 			'SyntaxError',
 			`La référence "${partialName}" est introuvable.
 Vérifiez que l'orthographe et l'espace de nom sont corrects`,
-			{ dottedName: contextNameToDottedName(contextName) },
-		)
-	}
-	if (!accessibleDottedName) {
-		throw new PublicodesError(
-			'SyntaxError',
-			`La règle "${existingDottedName[0]}" n'est pas accessible depuis "${contextName}".
-Cela vient du fait qu'elle est privée ou qu'un de ses parent est privé`,
-			{ dottedName: contextNameToDottedName(contextName) },
+			{ dottedName: contextNameToDottedName(referencedFrom) },
 		)
 	}
 
-	return accessibleDottedName
+	throw new PublicodesError(
+		'SyntaxError',
+		`La règle "${possibleDottedName.find(
+			(dottedName) => dottedName in rules,
+		)}" n'est pas accessible depuis "${referencedFrom}".
+	Cela vient du fait qu'elle est privée ou qu'un de ses parent est privé`,
+		{ dottedName: contextNameToDottedName(referencedFrom) },
+	)
 }
 
 export function ruleWithDedicatedDocumentationPage(rule) {

@@ -57,10 +57,6 @@ components:
                     properties:
                       nodeValue:
                         type: number
-                      traversedVariables:
-                        type: array
-                        items:
-                          type: string
                       missingVariables:
                         type: array
                         items:

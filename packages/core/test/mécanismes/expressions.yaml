@@ -326,10 +326,14 @@ chaine de charactère:
         chaine de charactère: "'Pendant que le loup n'y est pas'"
       valeur attendue: Pendant que le loup n'y est pas
 
-a: oui
+a: 1
 b: 5
 a . b: b + 5
 a . c: b + 5
+
+a . d: ^ . a
+a . d . a: 10
+
 désambiguation du nom de règle 1:
   formule: a . b
   exemples:
@@ -339,3 +343,8 @@ désambiguation du nom de règle 2:
   formule: a . c
   exemples:
     - valeur attendue: 15
+
+désambiguation du nom de règle 3:
+  formule: a . d
+  exemples:
+    - valeur attendue: 1

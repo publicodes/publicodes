@@ -242,3 +242,13 @@ ordre de remplacement consistant . avec définition de priorité et de priorité
 
   exemples:
     - valeur attendue: 2 # car x remplace a
+
+a: 3
+b:
+  remplace: a
+  valeur: non
+
+peut remplacer par non:
+  formule: a
+  exemples:
+    - valeur attendue: false

@@ -160,6 +160,20 @@ function disambiguateReferencesAndCollectDependencies<
 			// The dependencies of replacements will be collected later, during the inlining
 			return disambiguateReference(node)
 		}
+		if (node.nodeKind === 'rule') {
+			const parentUndefined = (node.explanation.parents as any).find(
+				(n: any) => !(n.dottedName in parsedRules),
+			)
+			if (parentUndefined) {
+				throw new PublicodesError(
+					'SyntaxError',
+					`La règle parente "${parentUndefined.dottedName}" n'existe pas`,
+					{
+						dottedName: node.dottedName,
+					},
+				)
+			}
+		}
 		return disambiguateReferencesAndCollectDependencies(node)
 	}, newRules)
 	return [

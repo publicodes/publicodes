@@ -10,13 +10,18 @@ import parsePublicodes, {
 } from './parsePublicodes'
 import { type Rule, type RuleNode } from './rule'
 import * as utils from './ruleUtils'
+import {
+	computeTraversedVariableAfterEval,
+	computeTraversedVariableBeforeEval,
+	isTraversedVariablesBoundary,
+} from './traversedVariables'
 
 const emptyCache = (): Cache => ({
 	_meta: {
 		evaluationRuleStack: [],
 		parentRuleStack: [],
-		traversedVariablesStack: [],
 	},
+	traversedVariablesStack: undefined,
 	nodes: new Map(),
 })
 
@@ -25,26 +30,22 @@ type Cache = {
 	_meta: {
 		evaluationRuleStack: Array<string>
 		parentRuleStack: Array<string>
-		/**
-		 * Every time we encounter a reference to a rule in an expression we add it
-		 * to the current Set of traversed variables. Because we evaluate the
-		 * expression graph “top to bottom” (ie. we start by the high-level goal and
-		 * recursively evaluate its dependencies), we need to handle rule
-		 * “boundaries”, so that when we “enter” in the evaluation of a dependency,
-		 * we start with a clear empty set of traversed variables. Then, when we go
-		 * back to the referencer rule, we need to add all to merge the two sets :
-		 * rules already traversed in the current expression and the one from the
-		 * reference.
-		 */
-		traversedVariablesStack: Array<Set<string>>
 		currentEvaluationWithContext?: ASTNode
 	}
+	/**
+	 * Every time we encounter a reference to a rule in an expression we add it
+	 * to the current Set of traversed variables. Because we evaluate the
+	 * expression graph “top to bottom” (ie. we start by the high-level goal and
+	 * recursively evaluate its dependencies), we need to handle rule
+	 * “boundaries”, so that when we “enter” in the evaluation of a dependency,
+	 * we start with a clear empty set of traversed variables. Then, when we go
+	 * back to the referencer rule, we need to add all to merge the two sets :
+	 * rules already traversed in the current expression and the one from the
+	 * reference.
+	 */
+	traversedVariablesStack?: Array<Set<string>>
 	nodes: Map<PublicodesExpression | ASTNode, EvaluatedNode>
 }
-
-export type EvaluationOptions = Partial<{
-	unit: string
-}>
 
 export {
 	reduceAST,
@@ -246,10 +247,19 @@ export default class Engine<Name extends string = string> {
 
 	evaluateNode<T extends ASTNode>(parsedNode: T): EvaluatedNode & T {
 		const cachedNode = this.cache.nodes.get(parsedNode)
+		const traversedVariableBoundary = isTraversedVariablesBoundary(
+			this.cache.traversedVariablesStack,
+			parsedNode,
+		)
+		computeTraversedVariableBeforeEval(
+			this.cache.traversedVariablesStack,
+			parsedNode,
+			cachedNode,
+			this.publicParsedRules,
+			traversedVariableBoundary,
+		)
+
 		if (cachedNode !== undefined) {
-			cachedNode.traversedVariables?.forEach(
-				(name) => this.cache._meta.traversedVariablesStack[0]?.add(name),
-			)
 			return cachedNode
 		}
 
@@ -261,42 +271,15 @@ export default class Engine<Name extends string = string> {
 			)
 		}
 
-		const isTraversedVariablesBoundary =
-			this.cache._meta.traversedVariablesStack.length === 0 ||
-			parsedNode.nodeKind === 'rule'
-
-		if (isTraversedVariablesBoundary) {
-			// Note: we use `unshift` instead of the more usual `push` to reverse the
-			// order of the elements in the stack. This simplify access to the “top
-			// element” with [0], instead of [length - 1]. We could also use the new
-			// method `.at(-1)` but it isn't supported below Node v16.
-			this.cache._meta.traversedVariablesStack.unshift(new Set())
-		}
-
-		if (
-			parsedNode.nodeKind === 'reference' &&
-			parsedNode.dottedName &&
-			parsedNode.dottedName in this.publicParsedRules
-		) {
-			this.cache._meta.traversedVariablesStack[0].add(parsedNode.dottedName)
-		}
-
 		const evaluatedNode = evaluationFunctions[parsedNode.nodeKind].call(
 			this,
 			parsedNode,
 		)
-
-		if (isTraversedVariablesBoundary) {
-			evaluatedNode.traversedVariables = Array.from(
-				this.cache._meta.traversedVariablesStack.shift() ?? [],
-			)
-
-			if (this.cache._meta.traversedVariablesStack.length > 0) {
-				evaluatedNode.traversedVariables.forEach((name) => {
-					this.cache._meta.traversedVariablesStack[0].add(name)
-				})
-			}
-		}
+		computeTraversedVariableAfterEval(
+			this.cache.traversedVariablesStack,
+			evaluatedNode,
+			traversedVariableBoundary,
+		)
 
 		this.cache.nodes.set(parsedNode, evaluatedNode)
 		return evaluatedNode
@@ -312,6 +295,7 @@ export default class Engine<Name extends string = string> {
 		newEngine.publicParsedRules = this.publicParsedRules
 		newEngine.cache = {
 			...emptyCache(),
+
 			nodes: new Map(this.cache.nodes),
 		}
 		return newEngine

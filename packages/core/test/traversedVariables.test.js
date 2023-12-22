@@ -15,6 +15,7 @@ describe('Traversed variables - Basics', () => {
 			f: 'g',
 			g: 1,
 		})
+		engine.cache.traversedVariablesStack = []
 	})
 	it('should be empty if there are no external references', () => {
 		expect(engine.evaluate('5 + 5').traversedVariables).to.deep.equal([])
@@ -65,11 +66,14 @@ describe('Traversed variables - Inversions', () => {
 		})
 
 		engine.setSituation({ net: 1234 })
+		engine.cache.traversedVariablesStack = []
+
 		expect(engine.evaluate('brut').traversedVariables).to.include(
 			'ne doit pas être traversée si brut vaut 2000',
 		)
 
 		engine.setSituation({ net: 1000 })
+		engine.cache.traversedVariablesStack = []
 		expect(engine.evaluate('brut').nodeValue).to.equal(2000)
 		expect(engine.evaluate('brut').traversedVariables).to.deep.equal([
 			'brut',

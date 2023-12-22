@@ -258,6 +258,8 @@ primes:
     - 150€
 ```
 
+Si on change la valeur de la règle `nouveau salarié` à `non`, alors la référence à `prime de vacances` redevient applicable.
+
 :::info Note
 
 La syntaxe `rend non applicable` fonctionne de la même manière que le remplacement : elle rend non applicable toutes les références à la règle choisie.
@@ -300,9 +302,9 @@ Pour faire référence à une règle hors de son espace de nom, on peut écrire 
 nom complet de cette règle:
 
 ```publicodes
-autre prime:
-autre prime . taux: 19%
-prime de vacances v2: autre prime . taux * 1000 €
+a:
+a . b: 10
+c: a . b
 ```
 
 Dans le cas d'espaces de noms imbriqués (à plus qu'un étage), le nom inscrit
@@ -310,20 +312,34 @@ dans une règle donnée est recherché de plus en plus haut dans la hiérarchie 
 espaces de nom jusqu'à la racine.
 
 ```publicodes
-contrat salarié:
-contrat salarié . rémunération:
-contrat salarié . rémunération . primes:
+salarié:
+salarié . rémunération:
+salarié . rémunération . primes:
 
-contrat salarié . rémunération . primes . prime de vacances:
+salarié . rémunération . primes . vacances:
   valeur: taux générique * 1000 €
 
-contrat salarié . rémunération . taux générique:
+salarié . rémunération . taux générique:
   valeur: 10%
 ```
 
-Ici `contrat salarié . rémunération . primes . prime de vacances` va faire
-référence à `contrat salarié . rémunération . taux générique` trouvé deux
+Ici `salarié . rémunération . primes . vacances` va faire
+référence à `salarié . rémunération . taux générique` trouvé deux
 espaces de noms plus haut, et va donc valoir `100 €`.
+
+:::info Référencer le parent
+
+Pour faire référence explicitement référence à une règle parente, on peut utiliser le préfixe `^ . `.
+
+C'est utile pour lever l'ambiguïté lorsqu'une règle parente a le même nom qu'une règle enfant.
+
+```publicodes
+a: 1
+a . b: a + ^ . a
+a . b . a: 2
+```
+
+:::
 
 ### Désactivation de branche
 
@@ -333,7 +349,7 @@ Toutes les règles possèdent une dépendance implicite à leur parent. Si ce de
 
 ```publicodes
 CDD: non
-CDD . indemnité de précarité: 10% * 1500€/mois * 6 mois
+CDD . indemnité de précarité: 1500€ # non applicable
 
 indemnités:
   somme:
@@ -402,64 +418,76 @@ quelle règle existante sans avoir besoin de la modifier :
 ```publicodes
 frais de repas: 5 €/repas
 
-convention hôtels cafés restaurants: oui
-convention hôtels cafés restaurants . frais de repas restaurateur:
-  remplace: frais de repas
+cafés-restaurants: oui
+
+cafés-restaurants . frais de repas:
+  remplace:
+    références à: frais de repas
   valeur: 6 €/repas
 
 montant repas mensuels: 20 repas * frais de repas
 ```
 
+Dans cet exemple, toutes les références à la règle `frais de repas` seront remplacées par une références à `hôtels cafés restaurants . frais de repas`.
+Il est possible d'alléger le code en écrivant directement : `remplace: frais de repas`.
+
 On peut également choisir de remplacer dans un contexte donné :
 
 ```publicodes
-temps de préparation: 20 min
-temps de cuisson: 20 min
+foo: 0
 
-robot de cuisine:
-  valeur: oui
-  avec:
-    temps de préparation:
-      remplace:
-        références à: temps de préparation
-        sauf dans: temps original
-      valeur: 10 min
+foo remplacé dans résultat 1:
+  remplace:
+    références à: foo
+    dans: résultat 1
+  valeur: 2
 
-temps original:
-  formule: temps de préparation + temps de cuisson
+foo remplacé dans résultat 2:
+  remplace:
+    références à: foo
+    sauf dans: résultat 1
+  valeur: 3
 
-temps total:
-  formule: temps de préparation + temps de cuisson
+résultat 1: foo # vaut 1
+résultat 2: foo # vaut 2
 
 ```
 
 :::caution Attention
 
-Un remplacement remplace **les références** à une règle, et non la règle elle-même.
-Dans l'exemple ci-dessus, la règle `temps de préparation` **n'est pas modifiée** : ce sont ses références qui le sont.
-
-Les remplacements sont implémentés sous forme d'une substitution de variable.
+Un remplacement modifie **les références**, et non la règle elle-même.
+Dans l'exemple ci-dessus, **la règle `foo` n'est pas modifiée** : ce sont ses références qui le sont (dans `résultat 1` et `résultat 2`).
 :::
 
-### Remplacement défini dans une règle non applicable
+### Remplacement non applicable
 
-Si le remplacement est défini dans une règle dont la valeur est `non` ou `non applicable`, alors ce dernier n'est pas appliqué :
+Si le remplacement est défini dans une règle dont la valeur est `non applicable`, alors ce dernier n'est pas appliqué :
 
 ```publicodes
 a: 1
-b:
-  remplace:
-    références à: a
-    par: 5
-  valeur: non
 
-c:
+b:
   applicable si: non
   remplace: a
-  valeur: 10
+  valeur: 5
 
-résultat: a # vaut 1 car non remplacé
+résultat: a # vaut 1 car b est non applicable
 ```
+
+:::warning La valeur `non` est applicable
+
+On peut ainsi remplacer une règle par `non`.
+
+```publicodes
+a: oui
+b:
+  remplace: a
+  valeur: non
+
+résultat: a # vaut non car b est applicable
+```
+
+:::
 
 ### Ordre de priorité
 
@@ -481,8 +509,8 @@ c:
   valeur: 10
 
 résultat: a
-# vaut 5 car le remplacement défini dans `b` a une priorité
-# plus élevée que celui défini dans `c` (par défaut à zéro)
+# est remplacé par `b` car ce remplacement a une priorité
+# plus élevée que celui de `c` (par défaut à zéro)
 ```
 
 2. Sinon, c'est le nom de la règle de définition qui est utilisé (comparaison lexicographique)
@@ -497,10 +525,10 @@ b . c:
   valeur: 10
 
 résultat: a
-# vaut 10 car `b . c` est situé après `b` dans l'ordre alphabétique
+# est remplacé par `b . c` car il est situé après `b` dans l'ordre alphabétique
 ```
 
-## Définir une règle enfant directement depuis une règle parente
+## Définir des règles imbriquées
 
 ```publicodes prix-final
 prix final:

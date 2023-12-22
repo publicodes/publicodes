@@ -68,7 +68,6 @@ export default function publicodesAPI(engine: Engine) {
 			await (OAPIValidatorMiddleware.validate as koaValidate)(ctx, () => {})
 			ctx._matchedRoute = backupMatchedRoute
 			ctx.req.body = backupReqBody
-
 			return await next()
 		}
 

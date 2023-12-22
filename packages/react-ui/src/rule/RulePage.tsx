@@ -126,6 +126,8 @@ function Rule({
 		return <p>Cette règle est introuvable dans la base</p>
 	}
 
+	engine.resetCache()
+	engine.cache.traversedVariablesStack = []
 	const rule = engine.evaluateNode(
 		engine.context.parsedRules[dottedName],
 	) as EvaluatedNode<'rule'>

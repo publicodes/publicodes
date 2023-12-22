@@ -61,7 +61,6 @@ describe('e2e koa middleware', () => {
 			    {
 			      "missingVariables": {},
 			      "nodeValue": 2,
-			      "traversedVariables": [],
 			    },
 			  ],
 			  "warnings": [],
@@ -161,9 +160,6 @@ describe('e2e koa middleware', () => {
 			    {
 			      "missingVariables": {},
 			      "nodeValue": true,
-			      "traversedVariables": [
-			        "coucou",
-			      ],
 			    },
 			  ],
 			  "warnings": [],
@@ -232,10 +228,9 @@ describe('e2e koa middleware', () => {
 		await expect(
 			chai
 				.request(server)
-				.get("/rules/coucou . j'ai des caractères spéciaux")
+				.get(encodeURI("/rules/coucou . j'ai des caractères spéciaux"))
 				.then(async (res) => {
 					expect(res.status).toMatchInlineSnapshot('200')
-
 					return JSON.parse(res.text)
 				}),
 		).resolves.toMatchInlineSnapshot(`

@@ -282,13 +282,18 @@ function replace(
 		nodeKind: 'variations',
 		explanation: [
 			...applicableReplacements.map(
-				({ definitionRule, replaceByNonApplicable }) => ({
-					condition: definitionRule,
-					consequence:
-						replaceByNonApplicable ? notApplicableNode : definitionRule,
-				}),
+				({ definitionRule, replaceByNonApplicable }) =>
+					replaceByNonApplicable ?
+						{
+							condition: definitionRule,
+							consequence: notApplicableNode,
+						}
+					:	{
+							condition: estApplicable(definitionRule),
+							consequence: definitionRule,
+						},
 			),
-			{ condition: defaultNode(true), consequence: node },
+			{ condition: oui, consequence: node },
 		],
 	} as ASTNode<'variations'>
 
@@ -302,3 +307,17 @@ function replace(
 	cache[applicableReplacementsCacheKey] = replacementNode
 	return cache[applicableReplacementsCacheKey]
 }
+
+function estApplicable(node: ASTNode) {
+	return {
+		nodeKind: 'condition',
+		explanation: {
+			si: { nodeKind: 'est non applicable', explanation: node },
+			alors: non,
+			sinon: oui,
+		},
+	} as ASTNode<'condition'>
+}
+
+const oui = defaultNode(true)
+const non = defaultNode(false)

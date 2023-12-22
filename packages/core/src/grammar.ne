@@ -30,6 +30,7 @@ const lexer = moo.compile({
   number: new RegExp(numberRegExp),
   word:  new RegExp(word),
   string: [/'.*'/, /".*"/],
+  parentSelector: "^",
   JSONObject: /{.*}/,
   additionSubstraction: /[\+-]/,
   multiplicationDivision: ['*','/'],
@@ -39,7 +40,7 @@ const lexer = moo.compile({
 });
 
 const join = (args) => ({value: (args.map(x => x && x.value).join(""))})
-const flattenJoin = ([a, b]) => Array.isArray(b) ? join([a, ...b]) : a
+const flattenJoin = (args) => join(args.flat())
 %}
 
 @lexer lexer
@@ -81,7 +82,12 @@ NonNumericTerminal ->
     %boolean  {% boolean %}
   | %string   {% string %}
 
-Variable -> Words (%dot Words {% join %}):* {% x => variable(flattenJoin(x)) %}
+Variable -> 
+    VariableWithoutParentSelector {% ([x]) => variable(x) %} 
+  | (%parentSelector %dot {% join %}):* VariableWithoutParentSelector {% x => variable(flattenJoin(x)) %}
+
+VariableWithoutParentSelector -> 
+    Words (%dot Words {% join %}):* {% x => flattenJoin(x) %}
 
 Words ->
 	  WordOrKeyword (%space:? WordOrNumber {% join %}):+ {% flattenJoin %}

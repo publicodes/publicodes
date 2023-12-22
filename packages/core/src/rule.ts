@@ -6,7 +6,6 @@ import { defaultNode, mergeMissing, undefinedNode } from './evaluationUtils'
 import { capitalise0 } from './format'
 import parse, { mecanismKeys } from './parse'
 import { Context } from './parsePublicodes'
-import { ReferenceNode } from './reference'
 import {
 	ReplacementRule,
 	parseRendNonApplicable,
@@ -137,17 +136,14 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		// An alternative implementation would be possible that would colocate the
 		// code related to branch desactivation (ie find the first nullable parent
 		// statically after rules parsing)
-		parents: ruleParents(dottedName)
-			.map((parent) => parse(parent, context))
-			.map(
-				// This step ensure we skip the disambiguation step.
-				// This prevents to inadequatly disambiguate a parent as a children of rule (for instance if we have `a . b` and `a . b . a` rules).
-				// It's necessary while https://github.com/betagouv/publicodes/issues/253 is not implemented
-				(n: ASTNode & { dottedName?: string }) => {
-					n.dottedName = (n as ReferenceNode).name
-					return n
-				},
-			),
+		parents: ruleParents(dottedName).map(
+			(parent) =>
+				({
+					dottedName: parent,
+					nodeKind: 'reference',
+					contextDottedName: context.dottedName,
+				}) as ASTNode<'reference'>,
+		),
 	}
 
 	const suggestions = {} as Record<string, ASTNode>
