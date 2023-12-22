@@ -2,6 +2,26 @@
 
 
 ## next
+## 1.0.0-rc.5
+**BREAKING**
+- replacement are effective if they are defined on a rule applicable (or not non applicable)  #432
+- remove `traversedVariables` from `evaluate` #422
+
+**@publicodes/core**
+- add possibility to disambiguate between parent and child rules with the same name #253
+- add error message when a parent rule is missing #431
+- perf improvement for parsing (+50%)
+- perf improvement for evaluation (+15%)
+
+**@publicodes/react-ui**
+Lighten the explanations in the documentation : 
+- New shiny visualisation for variations, and deplier
+- improve visualisation for replacement
+- possibility to cutomize the styling of small button with the class `publicodes_btn-small`
+
+**website**
+- update doc
+
 ## 1.0.0-rc.4
 **@publicodes/rest-api**
 - fix openapi.json filename in /dist
