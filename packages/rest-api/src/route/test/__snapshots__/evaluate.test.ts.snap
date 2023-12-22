@@ -285,11 +285,6 @@ A \\"-\\" based on:
     Negation →  ● \\"-\\" %space Parentheses
     NumericValue →  ● Negation
     main →  ● NumericValue
-A word token based on:
-    Words →  ● %word
-    Variable →  ● Words Variable$ebnf$1
-    Date →  ● Variable
-    main →  ● Date
 A \\"(\\" based on:
     Parentheses →  ● \\"(\\" %space NumericValue %space \\")\\"
     MultiplicationDivision →  ● Parentheses
@@ -303,15 +298,29 @@ A \\"(\\" based on:
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
 A word token based on:
+    Words →  ● %word
+    VariableWithoutParentSelector →  ● Words VariableWithoutParentSelector$ebnf$1
+    Variable →  ● VariableWithoutParentSelector
+    Date →  ● Variable
+    main →  ● Date
+A word token based on:
     WordOrKeyword →  ● %word
     Words →  ● WordOrKeyword Words$ebnf$1
-    Variable →  ● Words Variable$ebnf$1
+    VariableWithoutParentSelector →  ● Words VariableWithoutParentSelector$ebnf$1
+    Variable →  ● VariableWithoutParentSelector
     Date →  ● Variable
     main →  ● Date
 A boolean token based on:
     WordOrKeyword →  ● %boolean
     Words →  ● WordOrKeyword Words$ebnf$1
-    Variable →  ● Words Variable$ebnf$1
+    VariableWithoutParentSelector →  ● Words VariableWithoutParentSelector$ebnf$1
+    Variable →  ● VariableWithoutParentSelector
+    Date →  ● Variable
+    main →  ● Date
+A parentSelector token based on:
+    Variable$ebnf$1$subexpression$1 →  ● %parentSelector %dot
+    Variable$ebnf$1 → Variable$ebnf$1 ● Variable$ebnf$1$subexpression$1
+    Variable →  ● Variable$ebnf$1 VariableWithoutParentSelector
     Date →  ● Variable
     main →  ● Date
 A number token based on:
