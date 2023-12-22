@@ -1,4 +1,4 @@
-import { PublicodesInternalError } from './error'
+import { PublicodesError, PublicodesInternalError } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { Context } from './parsePublicodes'
 
@@ -16,12 +16,24 @@ export default function parseReference(
 	context: Context,
 ): ReferenceNode {
 	if (!context.dottedName) {
-		throw new PublicodesInternalError({
-			message:
-				"Une référence ne peut pas exister en dehors d'une règle (`context.dottedName` est vide)",
-			context,
-		})
+		throw new PublicodesError(
+			'InternalError',
+			"Une référence ne peut pas exister en dehors d'une règle (`context.dottedName` est vide)",
+			{
+				dottedName: v,
+			},
+		)
 	}
+	if (!v) {
+		throw new PublicodesError(
+			'SyntaxError',
+			'Une référence ne peut pas être vide',
+			{
+				dottedName: context.dottedName,
+			},
+		)
+	}
+
 	return {
 		nodeKind: 'reference',
 		name: v,

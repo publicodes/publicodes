@@ -10,9 +10,9 @@ export const unaryOperation = ([operator, , A]) => ({
 	[operator]: [number([{ value: '0' }]), A],
 })
 
-export const variable = ({ value: variable }) => {
+export const variable = (arg) => {
 	return {
-		variable,
+		variable: arg.value,
 	}
 }
 
