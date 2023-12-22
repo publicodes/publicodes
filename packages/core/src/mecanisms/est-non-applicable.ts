@@ -1,4 +1,4 @@
-import { EvaluationFunction, PublicodesError } from '..'
+import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { mergeMissing } from '../evaluationUtils'
@@ -28,9 +28,11 @@ const isNotApplicable = (node: ASTNode) => {
 const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 	function (node) {
 		const valeur = node.explanation
+
 		if (
 			this.context.nodesTypes.get(valeur)?.isNullable === false &&
-			valeur.nodeKind !== 'rule'
+			valeur.nodeKind !== 'rule' &&
+			valeur.nodeKind !== 'reference'
 		) {
 			return { ...node, nodeValue: false, missingVariables: {} }
 		}
@@ -50,6 +52,7 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 			case 'rule':
 				const { ruleDisabledByItsParent, parentMissingVariables } =
 					evaluateDisablingParent(this, valeur)
+
 				if (ruleDisabledByItsParent) {
 					return {
 						...node,
@@ -83,13 +86,9 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 				}
 
 			case 'reference':
-				if (!valeur.dottedName) {
-					throw new PublicodesError('InternalError', 'Missing dottedName', {})
-				}
-
 				return {
 					...this.evaluateNode(
-						isNotApplicable(this.context.parsedRules[valeur.dottedName]),
+						isNotApplicable(this.context.parsedRules[valeur.dottedName!]),
 					),
 					...node,
 				}
