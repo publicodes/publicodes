@@ -88,6 +88,8 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		},
 		{ keepPreviousSituation: true },
 	)
+	inversionEngine.cache.traversedVariablesStack =
+		this.cache.traversedVariablesStack ? [] : undefined
 
 	let lastEvaluation: EvaluatedNode
 	const evaluateWithValue = (n: number) => {
@@ -103,6 +105,8 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 			},
 			{ keepPreviousSituation: true },
 		)
+		inversionEngine.cache.traversedVariablesStack =
+			this.cache.traversedVariablesStack ? [] : undefined
 
 		lastEvaluation = inversionEngine.evaluateNode(inversionGoal)
 		return lastEvaluation
@@ -176,10 +180,14 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	// 	{ x: x2, y: y2 },
 	// ])
 	// console.log('iteration inversion:', numberOfIteration)
-
-	;(lastEvaluation!.traversedVariables ?? []).forEach((v) =>
-		this.cache._meta.traversedVariablesStack[0].add(v),
-	)
+	if (this.cache.traversedVariablesStack) {
+		const traversedVariablesStack = this.cache.traversedVariablesStack[0]
+		if (traversedVariablesStack) {
+			;(lastEvaluation!.traversedVariables ?? []).forEach((v) =>
+				traversedVariablesStack.add(v),
+			)
+		}
+	}
 	return {
 		...node,
 		nodeValue,

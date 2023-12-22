@@ -1,15 +1,14 @@
 import Engine from 'publicodes'
 import { describe, expect, it, vi } from 'vitest'
+import { parse } from 'yaml'
 import { Expressions, Situation } from '../../types'
 import { evaluate } from '../evaluate'
-import { parse } from 'yaml'
 
 const obj = {
 	setSituation: (_situation?: Situation) => 42,
 	evaluate: (_expressions: Expressions) => ({
 		nodeValue: 42,
 		unit: 42,
-		traversedVariables: 42,
 		missingVariables: 42,
 	}),
 	shallowCopy: () => obj,
@@ -49,7 +48,6 @@ describe('evaluate', () => {
 			    {
 			      "missingVariables": 42,
 			      "nodeValue": 42,
-			      "traversedVariables": 42,
 			      "unit": 42,
 			    },
 			  ],
@@ -75,13 +73,11 @@ describe('evaluate', () => {
 				    {
 				      "missingVariables": {},
 				      "nodeValue": 42,
-				      "traversedVariables": [],
 				      "unit": undefined,
 				    },
 				    {
 				      "missingVariables": {},
 				      "nodeValue": 42,
-				      "traversedVariables": [],
 				      "unit": undefined,
 				    },
 				  ],
@@ -101,12 +97,6 @@ describe('evaluate', () => {
 			    {
 			      "missingVariables": {},
 			      "nodeValue": 11.5,
-			      "traversedVariables": [
-			        "dépenses primeur",
-			        "prix . carottes",
-			        "prix . champignons",
-			        "prix . avocat",
-			      ],
 			      "unit": {
 			        "denominators": [],
 			        "numerators": [
@@ -119,17 +109,11 @@ describe('evaluate', () => {
 			        "prix": 1,
 			      },
 			      "nodeValue": undefined,
-			      "traversedVariables": [
-			        "prix",
-			      ],
 			      "unit": undefined,
 			    },
 			    {
 			      "missingVariables": {},
 			      "nodeValue": 42,
-			      "traversedVariables": [
-			        "prix . avocat",
-			      ],
 			      "unit": {
 			        "denominators": [
 			          "avocat",

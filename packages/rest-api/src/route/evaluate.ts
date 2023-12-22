@@ -1,5 +1,5 @@
 import { Engine, Expressions, Situation } from '../types.js'
-import { catchError, PickInObject } from '../utils.js'
+import { PickInObject, catchError } from '../utils.js'
 
 export interface EvaluateBody {
 	expressions: Expressions
@@ -33,7 +33,6 @@ export function evaluate(
 	const keysKept = [
 		'nodeValue' as const,
 		'unit' as const,
-		'traversedVariables' as const,
 		'missingVariables' as const,
 	]
 

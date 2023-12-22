@@ -337,7 +337,6 @@ A number token based on:
     {
       "missingVariables": {},
       "nodeValue": 42,
-      "traversedVariables": [],
       "unit": undefined,
     },
   ],
