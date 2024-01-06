@@ -2,6 +2,10 @@
 
 
 ## next
+## 1.0.0-rc.6
+**@publicodes/core**
+- small improvement on performance of `evaluate`
+
 ## 1.0.0-rc.5
 **BREAKING**
 - replacement are effective if they are defined on a rule applicable (or not non applicable)  #432

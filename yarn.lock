@@ -15595,12 +15595,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"modele-social@npm:^1.7.2":
-  version: 1.8.3
-  resolution: "modele-social@npm:1.8.3"
+"modele-social@npm:^2.0.0-rc.2":
+  version: 2.0.0-rc.2
+  resolution: "modele-social@npm:2.0.0-rc.2"
   peerDependencies:
-    publicodes: ^1.0.0-beta.55
-  checksum: 649a588695f192aaf5e5ff4a5dfdf56e917a3d5aa6a7787ff516006d909334095970ea4f6f4e22ef8348c1d73934b45971d346201b0dbed89b58df85ac95a240
+    publicodes: ^1.0.0-rc.5
+  checksum: 5d2c86222e746a6902bb933afee5d6f071360aacc6f72886be731cb12cb8ee5aa1f2393922435acc16d6d0eef0c686d43e9fc3e8777a3475e8a6999251785fd1
   languageName: node
   linkType: hard
 
@@ -17882,7 +17882,7 @@ __metadata:
     intl: ^1.2.5
     mitata: ^0.1.6
     mocha: ^9.2.2
-    modele-social: ^1.7.2
+    modele-social: ^2.0.0-rc.2
     moo: ^0.5.2
     nearley: ^2.20.1
     sinon: ^12.0.1

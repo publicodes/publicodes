@@ -247,17 +247,20 @@ export default class Engine<Name extends string = string> {
 
 	evaluateNode<T extends ASTNode>(parsedNode: T): EvaluatedNode & T {
 		const cachedNode = this.cache.nodes.get(parsedNode)
-		const traversedVariableBoundary = isTraversedVariablesBoundary(
-			this.cache.traversedVariablesStack,
-			parsedNode,
-		)
-		computeTraversedVariableBeforeEval(
-			this.cache.traversedVariablesStack,
-			parsedNode,
-			cachedNode,
-			this.publicParsedRules,
-			traversedVariableBoundary,
-		)
+		let traversedVariableBoundary: boolean = false
+		if (this.cache.traversedVariablesStack) {
+			traversedVariableBoundary = isTraversedVariablesBoundary(
+				this.cache.traversedVariablesStack,
+				parsedNode,
+			)
+			computeTraversedVariableBeforeEval(
+				this.cache.traversedVariablesStack,
+				parsedNode,
+				cachedNode,
+				this.publicParsedRules,
+				traversedVariableBoundary,
+			)
+		}
 
 		if (cachedNode !== undefined) {
 			return cachedNode
@@ -275,11 +278,13 @@ export default class Engine<Name extends string = string> {
 			this,
 			parsedNode,
 		)
-		computeTraversedVariableAfterEval(
-			this.cache.traversedVariablesStack,
-			evaluatedNode,
-			traversedVariableBoundary,
-		)
+		if (this.cache.traversedVariablesStack) {
+			computeTraversedVariableAfterEval(
+				this.cache.traversedVariablesStack,
+				evaluatedNode,
+				traversedVariableBoundary,
+			)
+		}
 
 		this.cache.nodes.set(parsedNode, evaluatedNode)
 		return evaluatedNode
