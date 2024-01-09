@@ -2,6 +2,11 @@
 
 
 ## next
+
+## 1.0.0-rc.7
+**@publicodes/core**
+- introduce a new engine option `allowOrphanRules` #435
+
 ## 1.0.0-rc.6
 **@publicodes/core**
 - small improvement on performance of `evaluate`
