@@ -20,6 +20,9 @@ export type Context<RuleNames extends string = string> = {
 	getUnitKey?: getUnitKey
 	logger: Logger
 	inversionMaxIterations?: number
+	// Don't throw an error if the parent of a rule is not found.
+	// This is useful to parse partial rule sets (e.g. optimized ones).
+	allowOrphanRules: boolean
 }
 
 export type RulesReplacements<RuleNames extends string> = Partial<
@@ -47,6 +50,7 @@ export function createContext<RuleNames extends string>(
 		referencesMaps: { referencesIn: new Map(), rulesThatUse: new Map() },
 		nodesTypes: new WeakMap(),
 		rulesReplacements: {},
+		allowOrphanRules: false,
 
 		...partialContext,
 	}
@@ -103,6 +107,7 @@ export default function parsePublicodes<
 		parsedRules,
 		context.parsedRules,
 		context.referencesMaps,
+		context.allowOrphanRules,
 	)
 
 	// STEP 4: Inline replacements
@@ -139,6 +144,7 @@ function disambiguateReferencesAndCollectDependencies<
 	parsedRules: ParsedRules<PreviousNames>,
 	newRules: ParsedRules<NewNames>,
 	referencesMaps: ReferencesMaps<PreviousNames>,
+	allowOrphanRules: boolean,
 ): [
 	parsedRules: ParsedRules<NewNames>,
 	referencesMap: ReferencesMaps<PreviousNames | NewNames>,
@@ -164,7 +170,7 @@ function disambiguateReferencesAndCollectDependencies<
 			const parentUndefined = (node.explanation.parents as any).find(
 				(n: any) => !(n.dottedName in parsedRules),
 			)
-			if (parentUndefined) {
+			if (!allowOrphanRules && parentUndefined) {
 				throw new PublicodesError(
 					'SyntaxError',
 					`La règle parente "${parentUndefined.dottedName}" n'existe pas`,
