@@ -18,9 +18,21 @@ Crée un moteur d'évaluation avec les règles publicodes données en argument.
 **Arguments**
 
 - `rules` : les règles publicodes utilisées. Ces dernières doivent être sous la
-  forme d'un objet javascript respectant la syntaxe publicodes. Elle peuvent aussi être sous la forme de règles publicodes déjà parsées.
+  forme d'un objet javascript respectant la syntaxe publicodes. Elle peuvent
+  aussi être sous la forme de règles publicodes déjà parsées.
+- `options` : les options de configuration du moteur
+  - `allowOrphanRules` : par défaut, le moteur lève une erreur si une règle est
+    orpheline (c'est-à-dire que sa règle parente n'existe pas). Pour désactiver
+    cette vérification, il suffit de mettre ce paramètre à `true`.
+  - `logger` : un logger permettant de spécifier le traitement des logs. Par
+    défaut, les logs sont affichés dans la console. Par exemple, pour afficher
+    seulement les erreurs, il suffit d'utiliser :
+    `logger: { log: (_) => {}, warn: (_) => {}, error: console.error }`.
+  - `getUnitKey` : permet de spécifier une fonction de _normalisation_ des unités.
+    Par défaut, les unités ne sont pas _normalisées_.
 
-> publicodes n'accepte plus en entrée une chaîne de caractères YAML, car le parser YAML alourdissait beaucoup la biblitothèque
+> publicodes n'accepte plus en entrée une chaîne de caractères YAML, car le
+> parser YAML alourdissait beaucoup la biblitothèque
 
 **Retourne**
 Un moteur d'évaluation qui expose les fonctions suivantes :
