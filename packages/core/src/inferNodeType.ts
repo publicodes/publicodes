@@ -1,5 +1,5 @@
 import { ParsedRules } from '.'
-import { ASTNode } from './AST/types'
+import { ASTNode, ConstantNode } from './AST/types'
 
 export type NodesTypes = WeakMap<ASTNode, InferedType>
 
@@ -7,8 +7,7 @@ export type NodesTypes = WeakMap<ASTNode, InferedType>
 // extended to support the full unit type system.
 export type InferedType = {
 	isNullable: boolean | undefined
-	type: 'string' | 'number' | 'boolean' | undefined
-}
+} & Pick<ConstantNode, 'type'>
 
 const UNDEFINED_TYPE = {
 	isNullable: undefined,
