@@ -70,10 +70,14 @@ export default function Documentation({
 	const [currentTarget, setTarget] = useState(
 		searchParams.get('rule') || defaultTarget,
 	)
+	const [currentSearch, setSearch] = useState(search)
 	const setCurrentTarget = useCallback(
-		(target) => {
+		(target, search = undefined) => {
 			onTargetChange?.(target)
 			setTarget(target)
+			if (search !== undefined) {
+				setSearch(search)
+			}
 		},
 		[onTargetChange],
 	)
@@ -85,16 +89,14 @@ export default function Documentation({
 	}, [currentTarget])
 
 	useEffect(() => {
-		if (searchParams.get('rule') !== currentTarget) {
-			searchParams.set('rule', currentTarget)
-		}
-	}, [searchParams, currentTarget])
-
-	useEffect(() => {
 		if (baseUrl == null) {
 			return
 		}
-		const newPathname = baseUrl + '/' + utils.encodeRuleName(currentTarget)
+		const newPathname =
+			baseUrl +
+			'/' +
+			utils.encodeRuleName(currentTarget) +
+			(currentSearch ?? '')
 
 		if (pathname !== newPathname) {
 			history.replace({
@@ -102,7 +104,7 @@ export default function Documentation({
 				pathname: newPathname,
 			})
 		}
-	}, [baseUrl, currentTarget, pathname, history])
+	}, [baseUrl, currentTarget, currentSearch, pathname, history])
 
 	return (
 		<div style={{ padding: '1rem' }}>
@@ -123,7 +125,8 @@ export default function Documentation({
 									onClick={(evt) => {
 										evt.preventDefault()
 										evt.stopPropagation()
-										setCurrentTarget(pathToRules[to])
+										const { pathname, search } = evt.currentTarget
+										setCurrentTarget(pathToRules[pathname], search)
 									}}
 								>
 									{children}
