@@ -21,7 +21,7 @@ import { ReplacementRule } from '../replacement'
 import { RuleNode } from '../rule'
 
 export type ConstantNode = {
-	type: 'boolean' | 'number' | 'string' | undefined
+	type: 'boolean' | 'number' | 'string' | 'date' | undefined
 	nodeValue: Evaluation
 	nodeKind: 'constant'
 	isNullable?: boolean

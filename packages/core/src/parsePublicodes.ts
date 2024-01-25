@@ -34,7 +34,7 @@ export type ReferencesMaps<Names extends string> = {
 	rulesThatUse: Map<Names, Set<Names>>
 }
 
-type RawRule = Omit<Rule, 'nom'> | string | number
+export type RawRule = Omit<Rule, 'nom'> | string | number | null
 export type RawPublicodes<RuleNames extends string> = Partial<
 	Record<RuleNames, RawRule>
 >

@@ -5,7 +5,7 @@ import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing, undefinedNode } from './evaluationUtils'
 import { capitalise0 } from './format'
 import parse, { mecanismKeys } from './parse'
-import { Context } from './parsePublicodes'
+import { Context, RawRule } from './parsePublicodes'
 import {
 	ReplacementRule,
 	parseRendNonApplicable,
@@ -172,7 +172,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 }
 
 export function parseRules(
-	rules: Record<string, Rule | number | string | undefined>,
+	rules: Partial<Record<string, RawRule>>,
 	context: Context,
 ) {
 	for (const dottedName in rules) {
@@ -188,7 +188,7 @@ export function parseRules(
 				{ dottedName },
 			)
 		}
-		const copy = weakCopyObj(rule)
+		const copy = rule === null ? {} : weakCopyObj(rule)
 		parseRule(dottedName, copy, context)
 	}
 }
@@ -253,7 +253,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 	return evaluation
 })
 
-/* 
+/*
 	We implement the terminal case for missing variables manually here as
 	a rule is missing if it is undefined and has no other missing dependencies
 */
