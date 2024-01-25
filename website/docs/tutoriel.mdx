@@ -237,7 +237,9 @@ Puis configurer le router en ajoutant les pages de documentations :
 ```jsx
 import { BrowserRouter as Router, Link } from 'react-router-dom'
 import { RulePage } from '@publicodes/react-ui'
+import rules from './rules.yaml'
 
+const engine = new Publicodes(rules)
 function MonApp() {
 	return (
 		<Router>
@@ -245,6 +247,7 @@ function MonApp() {
 				path="documentation/:name+"
 				render={({ match }) => (
 					<RulePage
+						engine={engine}
 						documentationPath="/documentation"
 						rulePath={match.params.name}
 						renderers={{ Link }}
@@ -256,6 +259,12 @@ function MonApp() {
 	)
 }
 ```
+
+> Note : si vous utilisez Next.js, utilisez l'option renderers suivante : 
+```js
+renderers={{ Link: ({ to, ...rest }) => <Link href={to} {...rest} /> }}
+```
+
 
 Vous pourrez ensuite faire un lien vers la documentation avec le composant
 `RuleLink`.
