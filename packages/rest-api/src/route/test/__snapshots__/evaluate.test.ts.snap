@@ -56,36 +56,21 @@ A space token based on:
     AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
+A \\".\\" based on:
+    UnitNumerator →  ● \\".\\" UnitNumerator
+    Unit$ebnf$1 → Unit$ebnf$1 ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
 A word token based on:
     Words →  ● %word
-    UnitNumerator →  ● Words UnitNumerator$ebnf$1
-    Unit$ebnf$1 →  ● UnitNumerator
-    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
-    number → %number number$ebnf$1 ● Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A word token based on:
-    WordOrKeyword →  ● %word
-    Words →  ● WordOrKeyword Words$ebnf$1
-    UnitNumerator →  ● Words UnitNumerator$ebnf$1
-    Unit$ebnf$1 →  ● UnitNumerator
-    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
-    number → %number number$ebnf$1 ● Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A boolean token based on:
-    WordOrKeyword →  ● %boolean
-    Words →  ● WordOrKeyword Words$ebnf$1
-    UnitNumerator →  ● Words UnitNumerator$ebnf$1
-    Unit$ebnf$1 →  ● UnitNumerator
+    UnitNumerator →  ● Words
+    Unit$ebnf$1 → Unit$ebnf$1 ● UnitNumerator
     Unit →  ● Unit$ebnf$1 Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
     NumericTerminal →  ● number
@@ -97,10 +82,34 @@ A boolean token based on:
 A space token based on:
     Comparison → Comparable ● %space %comparison %space Comparable
     main →  ● Comparison
-A space token based on:
-    UnitDenominator$ebnf$1$subexpression$1 →  ● %space
-    UnitDenominator$ebnf$1 →  ● UnitDenominator$ebnf$1$subexpression$1
-    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" Words
+A word token based on:
+    WordOrKeyword →  ● %word
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words
+    Unit$ebnf$1 → Unit$ebnf$1 ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A boolean token based on:
+    WordOrKeyword →  ● %boolean
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words
+    Unit$ebnf$1 → Unit$ebnf$1 ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A \\"/\\" based on:
+    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" UnitDenominator$ebnf$2
     Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
     Unit → Unit$ebnf$1 ● Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -110,8 +119,10 @@ A space token based on:
     AdditionSubstraction →  ● MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
-A \\"/\\" based on:
-    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" Words
+A space token based on:
+    UnitDenominator$ebnf$1$subexpression$1 →  ● %space
+    UnitDenominator$ebnf$1 → UnitDenominator$ebnf$1 ● UnitDenominator$ebnf$1$subexpression$1
+    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" UnitDenominator$ebnf$2
     Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
     Unit → Unit$ebnf$1 ● Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -176,36 +187,21 @@ A space token based on:
     AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
+A \\".\\" based on:
+    UnitNumerator →  ● \\".\\" UnitNumerator
+    Unit$ebnf$1 → Unit$ebnf$1 ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
 A word token based on:
     Words →  ● %word
-    UnitNumerator →  ● Words UnitNumerator$ebnf$1
-    Unit$ebnf$1 →  ● UnitNumerator
-    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
-    number → %number number$ebnf$1 ● Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A word token based on:
-    WordOrKeyword →  ● %word
-    Words →  ● WordOrKeyword Words$ebnf$1
-    UnitNumerator →  ● Words UnitNumerator$ebnf$1
-    Unit$ebnf$1 →  ● UnitNumerator
-    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
-    number → %number number$ebnf$1 ● Unit
-    NumericTerminal →  ● number
-    Parentheses →  ● NumericTerminal
-    MultiplicationDivision →  ● Parentheses
-    AdditionSubstraction →  ● MultiplicationDivision
-    NumericValue →  ● AdditionSubstraction
-    main →  ● NumericValue
-A boolean token based on:
-    WordOrKeyword →  ● %boolean
-    Words →  ● WordOrKeyword Words$ebnf$1
-    UnitNumerator →  ● Words UnitNumerator$ebnf$1
-    Unit$ebnf$1 →  ● UnitNumerator
+    UnitNumerator →  ● Words
+    Unit$ebnf$1 → Unit$ebnf$1 ● UnitNumerator
     Unit →  ● Unit$ebnf$1 Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
     NumericTerminal →  ● number
@@ -217,10 +213,34 @@ A boolean token based on:
 A space token based on:
     Comparison → Comparable ● %space %comparison %space Comparable
     main →  ● Comparison
-A space token based on:
-    UnitDenominator$ebnf$1$subexpression$1 →  ● %space
-    UnitDenominator$ebnf$1 →  ● UnitDenominator$ebnf$1$subexpression$1
-    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" Words
+A word token based on:
+    WordOrKeyword →  ● %word
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words
+    Unit$ebnf$1 → Unit$ebnf$1 ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A boolean token based on:
+    WordOrKeyword →  ● %boolean
+    Words →  ● WordOrKeyword Words$ebnf$1
+    UnitNumerator →  ● Words
+    Unit$ebnf$1 → Unit$ebnf$1 ● UnitNumerator
+    Unit →  ● Unit$ebnf$1 Unit$ebnf$2
+    number → %number number$ebnf$1 ● Unit
+    NumericTerminal →  ● number
+    Parentheses →  ● NumericTerminal
+    MultiplicationDivision →  ● Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A \\"/\\" based on:
+    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" UnitDenominator$ebnf$2
     Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
     Unit → Unit$ebnf$1 ● Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
@@ -230,8 +250,10 @@ A space token based on:
     AdditionSubstraction →  ● MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
-A \\"/\\" based on:
-    UnitDenominator → UnitDenominator$ebnf$1 ● \\"/\\" Words
+A space token based on:
+    UnitDenominator$ebnf$1$subexpression$1 →  ● %space
+    UnitDenominator$ebnf$1 → UnitDenominator$ebnf$1 ● UnitDenominator$ebnf$1$subexpression$1
+    UnitDenominator →  ● UnitDenominator$ebnf$1 \\"/\\" UnitDenominator$ebnf$2
     Unit$ebnf$2 → Unit$ebnf$2 ● UnitDenominator
     Unit → Unit$ebnf$1 ● Unit$ebnf$2
     number → %number number$ebnf$1 ● Unit
