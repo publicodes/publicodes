@@ -51,9 +51,8 @@ export function getYear(date: string): number {
 export function getDifferenceInDays(from: string, to: string): number {
 	const millisecondsPerDay = 1000 * 60 * 60 * 24
 	return (
-		1 +
 		(convertToDate(from).getTime() - convertToDate(to).getTime()) /
-			millisecondsPerDay
+		millisecondsPerDay
 	)
 }
 
@@ -72,6 +71,23 @@ export function getDifferenceInMonths(from: string, to: string): number {
 }
 
 export function getDifferenceInYears(from: string, to: string): number {
-	// Todo : take leap year into account
-	return getDifferenceInDays(from, to) / 365.25
+	const differenceInDays = getDifferenceInDays(to, from)
+
+	const isLeapYear = (year: number) =>
+		(year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
+	const after1stMarch = (date: Date) =>
+		date >= new Date(date.getFullYear(), 2, 1)
+
+	const fromDate = convertToDate(from)
+	const toDate = convertToDate(to)
+
+	const fromYear = fromDate.getFullYear() + (after1stMarch(fromDate) ? 1 : 0)
+	const toYear = toDate.getFullYear() + (after1stMarch(fromDate) ? 0 : -1)
+
+	const leapYearsCount = Array.from(
+		{ length: toYear - fromYear + 1 },
+		(_, i) => fromYear + i,
+	).filter(isLeapYear).length
+
+	return (differenceInDays - leapYearsCount) / 365
 }
