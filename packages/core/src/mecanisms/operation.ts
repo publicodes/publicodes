@@ -151,7 +151,12 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 					value.match?.(/^[\d]{2}\/[\d]{2}\/[\d]{4}$/),
 			)
 		) ?
-			operatorFunction(convertToDate(a as string), convertToDate(b as string))
+			// We convert the date objects to timestamps to support comparison with the "===" operator:
+			// new Date('2020-01-01') !== new Date('2020-01-01')
+			operatorFunction(
+				convertToDate(a as string).getTime(),
+				convertToDate(b as string).getTime(),
+			)
 		:	operatorFunction(a, b)
 
 	if (

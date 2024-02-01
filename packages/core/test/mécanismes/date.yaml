@@ -13,6 +13,11 @@ Comparaison sur les dates:
   exemples:
     - valeur attendue: true
 
+Égalité entre dates:
+  formule: 02/03/2019 = 02/03/2019
+  exemples:
+    - valeur attendue: true
+
 date de création:
 
 Comparaison sur les dates avec référence:
