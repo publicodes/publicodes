@@ -126,7 +126,7 @@ export default function Documentation({
 										evt.preventDefault()
 										evt.stopPropagation()
 										const { pathname, search } = evt.currentTarget
-										setCurrentTarget(pathToRules[pathname], search)
+										setCurrentTarget(pathToRules[decodeURI(pathname)], search)
 									}}
 								>
 									{children}
