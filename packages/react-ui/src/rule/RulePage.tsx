@@ -116,11 +116,8 @@ function Rule({
 	const baseEngine = useEngine()
 	const { References, Text } = useContext(RenderersContext)
 
-	const useSubEngine =
-		subEngineId && baseEngine.subEngines.length >= subEngineId
-
-	const engine =
-		useSubEngine ? baseEngine.subEngines[subEngineId as number] : baseEngine
+	const useSubEngine = subEngineId && baseEngine.subEngines[subEngineId]
+	const engine = useSubEngine ? baseEngine.subEngines[subEngineId] : baseEngine
 
 	if (!(dottedName in engine.context.parsedRules)) {
 		return <p>Cette règle est introuvable dans la base</p>

@@ -23,6 +23,8 @@ export type Context<RuleNames extends string = string> = {
 	// Don't throw an error if the parent of a rule is not found.
 	// This is useful to parse partial rule sets (e.g. optimized ones).
 	allowOrphanRules: boolean
+
+	subEngineIncrementingNumber?: number
 }
 
 export type RulesReplacements<RuleNames extends string> = Partial<
@@ -51,6 +53,10 @@ export function createContext<RuleNames extends string>(
 		nodesTypes: new WeakMap(),
 		rulesReplacements: {},
 		allowOrphanRules: false,
+
+		// This is used to generate unique IDs for sub-engines, we need to generate them at
+		// parse time in order to have a stable identity accros multiple evaluations.
+		subEngineIncrementingNumber: 1,
 
 		...partialContext,
 	}

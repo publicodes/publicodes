@@ -27,6 +27,7 @@ export default function parseMecanismContexte(v, context) {
 		explanation: {
 			node,
 			contexte,
+			subEngineId: context.subEngineIncrementingNumber++,
 		},
 		nodeKind: parseMecanismContexte.nom,
 	} as ContextNode
@@ -60,14 +61,14 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 		engine = this.shallowCopy().setSituation(amendedSituation, {
 			keepPreviousSituation: true,
 		})
-		engine.subEngineId = this.subEngines.length
+		engine.subEngineId = node.explanation.subEngineId
 
 		// The value of the replaced ruled are computed **without the replacement active**
 		Object.values(amendedSituation).forEach((value) =>
 			engine.cache.nodes.set(value, this.evaluate(value)),
 		)
 
-		this.subEngines.push(engine)
+		this.subEngines[node.explanation.subEngineId] = engine
 	}
 	engine.cache._meta.currentEvaluationWithContext = node.explanation.node
 	const evaluatedNode = engine.evaluateNode(node.explanation.node)
@@ -80,7 +81,6 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 		explanation: {
 			...node.explanation,
 			node: evaluatedNode,
-			subEngineId: engine.subEngineId as number,
 		},
 		missingVariables: evaluatedNode.missingVariables,
 		...('unit' in evaluatedNode && { unit: evaluatedNode.unit }),
