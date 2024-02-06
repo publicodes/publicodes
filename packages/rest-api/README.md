@@ -39,11 +39,11 @@ app.use(router.routes()).listen(3000)
 // ...
 ```
 
-A complete example file is in the sources if needed : [example.ts](https://github.com/betagouv/publicodes/blob/master/packages/api/example.ts).
+A complete example file is in the sources if needed : [example.ts](https://github.com/publicodes/publicodes/blob/master/packages/rest-api/example.ts).
 
 ## Documentation
 
--   [Publicodes API](https://publi.codes/api-rest)
+-   [Publicodes API](https://publi.codes/docs/api/api-rest/)
 -   [Publicodes](https://publi.codes/)
 
 ## Projets phares
