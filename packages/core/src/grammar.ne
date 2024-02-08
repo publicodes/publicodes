@@ -82,11 +82,11 @@ NonNumericTerminal ->
     %boolean  {% boolean %}
   | %string   {% string %}
 
-Variable -> 
-    VariableWithoutParentSelector {% ([x]) => variable(x) %} 
+Variable ->
+    VariableWithoutParentSelector {% ([x]) => variable(x) %}
   | (%parentSelector %dot {% join %}):* VariableWithoutParentSelector {% x => variable(flattenJoin(x)) %}
 
-VariableWithoutParentSelector -> 
+VariableWithoutParentSelector ->
     Words (%dot Words {% join %}):* {% x => flattenJoin(x) %}
 
 Words ->
@@ -102,11 +102,14 @@ WordOrNumber ->
 	| %number {% id %}
 
 
-UnitDenominator ->
-  (%space):? "/" Words {% join %}
-UnitNumerator -> Words ("." Words):? {% flattenJoin %}
+Unit -> UnitNumerator:* UnitDenominator:* {% flattenJoin %}
 
-Unit -> UnitNumerator:? UnitDenominator:* {% flattenJoin %}
+UnitNumerator ->
+	  Words {% id %}
+	| "." UnitNumerator {% join %}
+
+UnitDenominator -> (%space):* "/" UnitNumerator:+ {% flattenJoin %}
+
 
 AdditionSubstraction ->
     AdditionSubstraction %space %additionSubstraction %space MultiplicationDivision  {%  binaryOperation  %}
