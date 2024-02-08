@@ -7,6 +7,9 @@
 **@publicodes/core**
 
 - fix: correctly parse inlined unit (#444)
+- fix: date equality (#441)
+- fix: subcontexts links in the studio (#438)
+- support leap years (#439)
 
 ## 1.0.0-rc.7
 
