@@ -15596,11 +15596,11 @@ __metadata:
   linkType: hard
 
 "modele-social@npm:^2.0.0-rc.2":
-  version: 2.0.0-rc.2
-  resolution: "modele-social@npm:2.0.0-rc.2"
+  version: 2.0.0-rc.5
+  resolution: "modele-social@npm:2.0.0-rc.5"
   peerDependencies:
-    publicodes: ^1.0.0-rc.5
-  checksum: 5d2c86222e746a6902bb933afee5d6f071360aacc6f72886be731cb12cb8ee5aa1f2393922435acc16d6d0eef0c686d43e9fc3e8777a3475e8a6999251785fd1
+    publicodes: ^1.0.0-rc.6
+  checksum: 03d4e9130acc01c00acbb0131a9f805f871380670b8adbbfa87fc47172d98982c6f047b7fb517445445fa0f91f84fb890afb415f620352e0314b80fdcefcd3c4
   languageName: node
   linkType: hard
 
