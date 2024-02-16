@@ -201,7 +201,7 @@ export function makeReplacementInliner(
 				...node,
 				explanation: {
 					...node.explanation,
-					node: transform(node.explanation.node),
+					valeur: transform(node.explanation.valeur),
 					contexte: node.explanation.contexte.map(([name, value]) => [
 						name,
 						transform(value),

@@ -320,7 +320,7 @@ const traverseContexteNode: TraverseFunction<'contexte'> = (fn, node) => ({
 			fn(name) as ReferenceNode,
 			fn(value),
 		]),
-		node: fn(node.explanation.node),
+		valeur: fn(node.explanation.valeur),
 	},
 })
 

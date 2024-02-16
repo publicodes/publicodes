@@ -2,6 +2,9 @@
 
 ## next
 
+## 1.0.2
+- fix: value of `est non applicable` with `context` mecanism ([#454](https://github.com/publicodes/publicodes/issues/454))
+
 ## 1.0.1
 
 **@publicodes/core**

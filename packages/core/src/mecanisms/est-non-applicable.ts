@@ -67,7 +67,11 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 					parentMissingVariables,
 					isNotApplicableEvaluation.missingVariables,
 				)
-
+				console.log(
+					'isNotApplicableRule',
+					valeur.dottedName,
+					isNotApplicableEvaluation.nodeValue,
+				)
 				// If the rule can be disabled thought the situation, it should be listed inside the missing variables
 				if (
 					isNotApplicableEvaluation.nodeValue === false &&
