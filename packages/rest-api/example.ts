@@ -45,5 +45,6 @@ app.use(router.allowedMethods())
 const port = 3002
 
 app.listen(port, function () {
+	// eslint-disable-next-line no-console
 	console.log('listening on port:', port)
 })

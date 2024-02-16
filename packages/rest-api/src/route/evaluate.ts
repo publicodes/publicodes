@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Engine, Expressions, Situation } from '../types.js'
 import { PickInObject, catchError } from '../utils.js'
 

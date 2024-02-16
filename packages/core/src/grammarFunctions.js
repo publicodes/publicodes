@@ -17,7 +17,7 @@ export const variable = (arg) => {
 }
 
 export const JSONObject = ([{ value }]) => {
-	console.log(value)
+	value
 	// TODO
 }
 export const number = ([{ value }]) => ({

@@ -1,5 +1,6 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs'
+/* eslint-disable no-console */
 import { getPackageDeps } from '@rushstack/package-deps-hash'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 
 const path = '.deps.json'
 

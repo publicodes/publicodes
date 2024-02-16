@@ -30,7 +30,7 @@ module.exports = {
 	rules: {
 		'react/react-in-jsx-scope': 'off',
 		'@typescript-eslint/no-explicit-any': 'warn',
-
+		'no-console': 'error',
 		// The following rules makes sure that we use named import for styled-components (otherwise it will create a bug with ESM import)
 		'no-restricted-imports': [
 			'error',

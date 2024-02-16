@@ -5,6 +5,7 @@ export default class ErrorBoundary extends React.Component<{
 	state: { error: false | { message: string; name: string } } = { error: false }
 
 	static getDerivedStateFromError(error: Error) {
+		// eslint-disable-next-line no-console
 		console.error(error)
 		return { error: { message: error.message, name: error.name } }
 	}
