@@ -1,9 +1,9 @@
 import { utils } from 'publicodes'
-import { useEngine } from '../hooks'
 import { RuleLinkWithContext } from '../RuleLink'
+import { useEngine } from '../hooks'
 import Meta from './Meta'
 
-export default function RuleHeader({ dottedName }) {
+export default function RuleHeader({ dottedName }: { dottedName: string }) {
 	const engine = useEngine()
 	const {
 		title,

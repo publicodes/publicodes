@@ -60,7 +60,6 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 		let valeur = evaluateWithValue(x0)
 		const y0 = valeur.nodeValue as number
 		const unit = valeur.unit
-		let i = 0
 		if (y0 !== undefined) {
 			// The `uniroot` function parameter. It will be called with its `min` and
 			// `max` arguments, so we can use our cached nodes if the function is called
@@ -71,7 +70,6 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 				}
 				valeur = evaluateWithValue(x)
 				const y = valeur.nodeValue
-				i++
 				return (y as number) - x
 			}
 

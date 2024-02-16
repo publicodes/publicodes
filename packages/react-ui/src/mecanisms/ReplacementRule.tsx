@@ -1,7 +1,9 @@
-import { ReplacementRule } from 'publicodes/src/replacement'
+import { EvaluatedNode } from 'publicodes'
 import Explanation from '../Explanation'
 
-export default function ReplacementMecanism(node: ReplacementRule) {
+export default function ReplacementMecanism(
+	node: EvaluatedNode<'replacementRule'>,
+) {
 	return (
 		<span>
 			Remplace <Explanation node={node.replacedReference} />{' '}

@@ -1,8 +1,18 @@
+import { EvaluatedNode } from 'publicodes'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
-import { NodeValuePointer } from './common'
+import { NodeValueLeaf } from './common/NodeValueLeaf'
 
-export default function Operation({ nodeValue, explanation, operator, unit }) {
+type Props = EvaluatedNode<'operation'> & {
+	explanation: [EvaluatedNode, EvaluatedNode]
+}
+
+export default function Operation({
+	nodeValue,
+	explanation,
+	operator,
+	unit,
+}: Props) {
 	const isUnaryOperation =
 		explanation[0].nodeValue === 0 &&
 		operator === '−' &&
@@ -22,7 +32,7 @@ export default function Operation({ nodeValue, explanation, operator, unit }) {
 			{nodeValue != undefined && (
 				<span className="result">
 					<small> =&nbsp;</small>
-					<NodeValuePointer data={nodeValue} unit={unit} />
+					<NodeValueLeaf data={nodeValue} unit={unit} />
 				</span>
 			)}
 			<span>)</span>

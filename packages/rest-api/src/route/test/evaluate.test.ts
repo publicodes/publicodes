@@ -1,12 +1,11 @@
 import Engine from 'publicodes'
 import { describe, expect, it, vi } from 'vitest'
 import { parse } from 'yaml'
-import { Expressions, Situation } from '../../types'
 import { evaluate } from '../evaluate'
 
 const obj = {
-	setSituation: (_situation?: Situation) => 42,
-	evaluate: (_expressions: Expressions) => ({
+	setSituation: () => 42,
+	evaluate: () => ({
 		nodeValue: 42,
 		unit: 42,
 		missingVariables: 42,

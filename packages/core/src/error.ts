@@ -7,7 +7,7 @@ interface PublicodesErrorTypes {
 	InternalError: {
 		dottedName?: string
 	}
-	EngineError: {}
+	EngineError: Record<string, never>
 	SyntaxError: {
 		dottedName: string
 	}
@@ -94,7 +94,7 @@ const buildMessage = (
  * @deprecated Throw an internal server error, replace this by `throw new PublicodesError('InternalError', ...)`
  */
 export class PublicodesInternalError extends PublicodesError<'InternalError'> {
-	constructor(payload: {}) {
+	constructor(payload: Record<string, unknown>) {
 		super(
 			'InternalError',
 			`

@@ -1,7 +1,7 @@
 import Engine from 'publicodes'
 import yaml from 'yaml'
 
-export default new Engine(
+const engine = new Engine(
 	yaml.parse(`
 
 prix:
@@ -17,3 +17,5 @@ dépenses primeur:
     - prix . avocat * 3 avocat
 `),
 )
+
+export default engine

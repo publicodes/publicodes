@@ -1,7 +1,10 @@
+import { EvaluatedNode } from 'publicodes'
 import Explanation from '../Explanation'
-import { Mecanism } from './common'
+import { Mecanism } from './common/Mecanism'
 
-export default function MecanismRésoudreRéférenceCirculaire({ explanation }) {
+export default function MecanismRésoudreRéférenceCirculaire({
+	explanation,
+}: EvaluatedNode<'résoudre référence circulaire'>) {
 	return (
 		<Mecanism
 			name="résoudre la référence circulaire"

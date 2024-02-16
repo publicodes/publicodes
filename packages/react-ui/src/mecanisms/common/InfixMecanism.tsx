@@ -1,0 +1,28 @@
+import { EvaluatedNode } from 'publicodes/src/AST/types'
+import React from 'react'
+import Explanation from '../../Explanation'
+
+export const InfixMecanism = ({
+	value,
+	prefixed,
+	children,
+}: {
+	value: EvaluatedNode
+	children: React.ReactNode
+	prefixed?: boolean
+}) => {
+	return (
+		<div>
+			{prefixed && children}
+			<div
+				className="value"
+				style={{
+					position: 'relative',
+				}}
+			>
+				<Explanation node={value} />
+			</div>
+			{!prefixed && children}
+		</div>
+	)
+}

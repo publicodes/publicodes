@@ -1,6 +1,9 @@
 # Changelog
 
 ## next
+**@publicodes/react-ui**
+
+- fix: `inversion numérique` view
 
 ## 1.0.2
 - fix: value of `est non applicable` with `context` mecanism ([#454](https://github.com/publicodes/publicodes/issues/454))

@@ -1,10 +1,10 @@
-import { transformAST } from 'publicodes'
+import { ASTNode, transformAST } from 'publicodes'
 import { useEngine } from './hooks'
 import Arrondi from './mecanisms/Arrondi'
 import Barème from './mecanisms/Barème'
 import Condition from './mecanisms/Condition'
+import Constant from './mecanisms/Constant'
 import Contexte from './mecanisms/Contexte'
-import DefaultInlineMecanism from './mecanisms/DefaultInlineMecanism'
 import Durée from './mecanisms/Durée'
 import EstNonApplicable from './mecanisms/EstNonApplicable'
 import EstNonDéfini from './mecanisms/EstNonDéfini'
@@ -22,10 +22,10 @@ import Texte from './mecanisms/Texte'
 import UnePossibilité from './mecanisms/UnePossibilité'
 import Unité from './mecanisms/Unité'
 import Variations from './mecanisms/Variations'
-import { ConstantNode } from './mecanisms/common'
+import DefaultInlineMecanism from './mecanisms/common/DefaultInlineMecanism'
 
 const UIComponents = {
-	constant: ConstantNode,
+	constant: Constant,
 	arrondi: Arrondi,
 	barème: Barème,
 	durée: Durée,
@@ -50,7 +50,7 @@ const UIComponents = {
 	variations: Variations,
 } as const
 
-export default function Explanation({ node }) {
+export default function Explanation({ node }: { node: ASTNode }) {
 	const visualisationKind = node.sourceMap?.mecanismName ?? node.nodeKind
 	const engine = useEngine()
 	const evaluateEverything = transformAST((node) => {

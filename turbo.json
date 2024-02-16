@@ -27,7 +27,11 @@
 			"dependsOn": ["test:type"]
 		},
 		"lint:fix": {
+			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"],
 			"outputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"]
+		},
+		"lint": {
+			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"]
 		},
 		"dev": {
 			"dependsOn": ["^build", "codegen"],

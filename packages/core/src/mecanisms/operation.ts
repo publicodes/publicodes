@@ -163,7 +163,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 		node.operationKind === '*' &&
 		inferUnit('*', [node1.unit, node2.unit])?.numerators.includes('%')
 	) {
-		let unit = inferUnit('*', [node1.unit, node2.unit])
+		const unit = inferUnit('*', [node1.unit, node2.unit])
 		const nodeValue = evaluatedNode.nodeValue
 		return {
 			...evaluatedNode,
@@ -176,7 +176,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	// TODO : this logic should be handle statically by changing sum with percentage into product.
 	// It can be done when we'll have a sound type/unit inference
 	if (isAdditionOrSubstractionWithPercentage) {
-		let unit = inferUnit('*', [node1.unit, node2.unit])
+		const unit = inferUnit('*', [node1.unit, node2.unit])
 		return {
 			...evaluatedNode,
 			nodeValue:
@@ -209,7 +209,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 registerEvaluationFunction('operation', evaluate)
 
 const operationDispatch = Object.fromEntries(
-	Object.entries(knownOperations).map(([k, [f, symbol]]) => [
+	Object.entries(knownOperations).map(([k, [, symbol]]) => [
 		k,
 		parseOperation(k, symbol),
 	]),

@@ -1,7 +1,20 @@
-import { BarèmeAttributes, StyledComponent, TrancheTable } from './Barème'
-import { Mecanism } from './common'
+import { EvaluatedNode } from 'publicodes'
+import {
+	BaremeExplanation,
+	BarèmeAttributes,
+	StyledComponent,
+	TrancheTable,
+} from './Barème'
+import { Mecanism } from './common/Mecanism'
 
-export default function TauxProgressif({ nodeValue, explanation, unit }) {
+type Props = EvaluatedNode<'taux progressif', number> & {
+	explanation: BaremeExplanation
+}
+export default function TauxProgressif({
+	nodeValue,
+	explanation,
+	unit,
+}: Props) {
 	return (
 		<StyledComponent>
 			<Mecanism name="taux progressif" value={nodeValue} unit={unit}>

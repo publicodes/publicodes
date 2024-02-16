@@ -5,9 +5,9 @@ import { defaultNode, mergeAllMissing } from '../evaluationUtils'
 import parse from '../parse'
 import { convertUnit, parseUnit } from '../units'
 import {
+	TrancheNodes,
 	evaluatePlafondUntilActiveTranche,
 	parseTranches,
-	TrancheNodes,
 } from './trancheUtils'
 
 // Barème en taux marginaux.

@@ -1,7 +1,16 @@
-import { BarèmeAttributes, TrancheTable, StyledComponent } from './Barème'
-import { Mecanism } from './common'
+import { EvaluatedNode } from 'publicodes'
+import {
+	BaremeExplanation,
+	BarèmeAttributes,
+	StyledComponent,
+	TrancheTable,
+} from './Barème'
+import { Mecanism } from './common/Mecanism'
 
-export default function Grille({ nodeValue, explanation, unit }) {
+type Props = EvaluatedNode<'grille', number> & {
+	explanation: BaremeExplanation
+}
+export default function Grille({ nodeValue, explanation, unit }: Props) {
 	return (
 		<StyledComponent>
 			<Mecanism name="grille" value={nodeValue} unit={unit}>

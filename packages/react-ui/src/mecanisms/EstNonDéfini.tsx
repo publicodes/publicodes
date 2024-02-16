@@ -1,6 +1,9 @@
-import DefaultInlineMecanism from './DefaultInlineMecanism'
+import { EvaluatedNode } from 'publicodes'
+import DefaultInlineMecanism from './common/DefaultInlineMecanism'
 
-export default function MecanismCondition(node) {
+export default function MecanismEstNonDéfini(
+	node: EvaluatedNode<'est non défini'>,
+) {
 	return (
 		<DefaultInlineMecanism
 			{...node}

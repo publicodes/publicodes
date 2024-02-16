@@ -1,5 +1,5 @@
 import { EvaluationFunction, PublicodesError } from '..'
-import { EvaluatedNode, Unit } from '../AST/types'
+import { ASTNode, EvaluatedNode, Unit } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { undefinedNumberNode } from '../evaluationUtils'
 import parse from '../parse'
@@ -12,6 +12,11 @@ export type InversionNode = {
 		ruleToInverse: string
 		inversionCandidates: Array<ReferenceNode>
 		unit?: Unit
+
+		// Explanation computed during evaluation
+		inversionGoal?: ASTNode
+		numberOfIteration?: number
+		inversionFail?: boolean
 	}
 	nodeKind: 'inversion'
 }
@@ -196,6 +201,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 			...node.explanation,
 			inversionGoal,
 			numberOfIteration,
+			inversionFail: this.cache.inversionFail,
 		},
 		missingVariables: lastEvaluation!.missingVariables,
 	}

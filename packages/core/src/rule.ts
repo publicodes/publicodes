@@ -45,6 +45,7 @@ type Remplace =
 			dans?: Array<string> | string
 			'sauf dans'?: Array<string> | string
 			priorité?: number
+			// eslint-disable-next-line no-mixed-spaces-and-tabs
 	  }
 	| string
 

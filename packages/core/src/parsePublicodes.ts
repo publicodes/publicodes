@@ -92,11 +92,11 @@ export default function parsePublicodes<
 		)
 
 	// let rules = { ...rawRules } // take 7-8ms
-	let rules = weakCopyObj(rawRules) // take 1-2ms
+	const rules = weakCopyObj(rawRules) // take 1-2ms
 
 	// STEP 2: Rules parsing
 	const context = createContext(partialContext)
-	let previousParsedRules = context.parsedRules
+	const previousParsedRules = context.parsedRules
 	context.parsedRules = {} as ParsedRules<ContextNames>
 	parseRules(rules, context)
 
@@ -109,15 +109,17 @@ export default function parsePublicodes<
 	}
 
 	// STEP 3: Disambiguate reference
-	let [newRules, referencesMaps] = disambiguateReferencesAndCollectDependencies(
-		parsedRules,
-		context.parsedRules,
-		context.referencesMaps,
-		context.allowOrphanRules,
-	)
+	const [newRules, referencesMaps] =
+		disambiguateReferencesAndCollectDependencies(
+			parsedRules,
+			context.parsedRules,
+			context.referencesMaps,
+			context.allowOrphanRules,
+		)
 
 	// STEP 4: Inline replacements
 	let rulesReplacements
+		// eslint-disable-next-line prefer-const
 	;[parsedRules, rulesReplacements] = inlineReplacements<
 		NewRulesNames,
 		ContextNames

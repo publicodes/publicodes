@@ -8,7 +8,7 @@ import {
 
 describe('ruleParents', function () {
 	it('should procude an array of the parents of a rule', function () {
-		let parents = ruleParents(
+		const parents = ruleParents(
 			'CDD . taxe . montant annuel . exonération annuelle',
 		)
 		expect(parents).to.eql(['CDD . taxe . montant annuel', 'CDD . taxe', 'CDD'])

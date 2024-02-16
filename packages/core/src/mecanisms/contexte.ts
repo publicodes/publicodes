@@ -58,6 +58,7 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 			),
 	)
 
+	// eslint-disable-next-line @typescript-eslint/no-this-alias
 	let engine = this
 	if (Object.keys(amendedSituation).length) {
 		engine = this.shallowCopy().setSituation(amendedSituation, {
