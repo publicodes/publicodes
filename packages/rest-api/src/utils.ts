@@ -3,6 +3,7 @@ export const catchError = <T>(fn: () => T): [null, T] | [Error] => {
 		return [null, fn()]
 	} catch (error) {
 		if (error instanceof Error) {
+			// eslint-disable-next-line no-console
 			console.error(error, error.name, error.message)
 			return [error]
 		}

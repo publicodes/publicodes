@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import chai, { expect } from 'chai'
 import 'mocha'
 import sinon from 'sinon'

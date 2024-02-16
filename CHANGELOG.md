@@ -1,6 +1,10 @@
 # Changelog
 
 ## next
+
+**@publicodes/core**
+- remove console.log
+ 
 **@publicodes/react-ui**
 
 - fix: `inversion numérique` view
