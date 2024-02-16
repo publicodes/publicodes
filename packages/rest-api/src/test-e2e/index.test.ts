@@ -33,7 +33,7 @@ const server = app.listen(3003)
 chai.use(chaiHttp)
 
 beforeAll(async () => {
-	await new Promise((res, _rej) => {
+	await new Promise((res) => {
 		server.once('listening', () => res(null))
 	})
 })

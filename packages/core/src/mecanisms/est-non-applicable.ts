@@ -49,7 +49,7 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 		}
 
 		switch (valeur.nodeKind) {
-			case 'rule':
+			case 'rule': {
 				const { ruleDisabledByItsParent, parentMissingVariables } =
 					evaluateDisablingParent(this, valeur)
 
@@ -88,7 +88,7 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 					nodeValue: isNotApplicableEvaluation.nodeValue,
 					missingVariables,
 				}
-
+			}
 			case 'reference':
 				return {
 					...this.evaluateNode(

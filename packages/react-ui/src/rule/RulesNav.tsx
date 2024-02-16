@@ -78,7 +78,7 @@ export const RulesNav = ({
 				<ul>
 					{Object.entries(parsedRules)
 						.sort(([a], [b]) => a.localeCompare(b))
-						.map(([ruleDottedName, rest]) => {
+						.map(([ruleDottedName]) => {
 							const parentDottedName = utils.ruleParent(ruleDottedName)
 
 							if (
@@ -119,7 +119,18 @@ export const RulesNav = ({
 		:	menu
 }
 
-const NavLi = ({ ruleDottedName, open, active, onClickDropdown }) => {
+type NavLiProps = {
+	ruleDottedName: string
+	open: boolean
+	active: boolean
+	onClickDropdown: (ruleDottedName: string) => void
+}
+const NavLi = ({
+	ruleDottedName,
+	open,
+	active,
+	onClickDropdown,
+}: NavLiProps) => {
 	const baseEngine = useEngine()
 
 	const parsedRules = baseEngine.getParsedRules()

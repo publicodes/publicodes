@@ -3,7 +3,7 @@ import Explanation from '../Explanation'
 import { RuleLinkWithContext } from '../RuleLink'
 import { EngineContext } from '../contexts'
 import { useEngine } from '../hooks'
-import { Mecanism } from './common'
+import { Mecanism } from './common/Mecanism'
 
 export default function Contexte({ explanation }: EvaluatedNode<'contexte'>) {
 	const engine = useEngine()
@@ -23,7 +23,7 @@ export default function Contexte({ explanation }: EvaluatedNode<'contexte'>) {
 					))}
 				</ul>
 				<small>
-					Ces valeurs remplacent celles d'origine dans le calcul qui suit
+					Ces valeurs remplacent celles d’origine dans le calcul qui suit
 				</small>
 			</Mecanism>
 			<EngineContext.Provider value={contexteEngine}>

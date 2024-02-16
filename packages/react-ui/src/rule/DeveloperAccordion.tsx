@@ -82,9 +82,9 @@ export function DeveloperAccordion({
 							<StyledWarning>
 								<h4>⚠️ Cette règle est tagguée comme experimentale ⚠️</h4>
 								<p>
-									Cela veut dire qu'elle peut être modifiée, renommée, ou
-									supprimée sans qu'il n'y ait de changement de version majeure
-									dans l'API.
+									Cela veut dire qu’elle peut être modifiée, renommée, ou
+									supprimée sans qu’il n’y ait de changement de version majeure
+									dans l’API.
 								</p>
 							</StyledWarning>
 						)}
@@ -175,7 +175,7 @@ function ActualSituation({
 					forme de JSON.
 				</p>
 			:	<p>
-					Votre situation est pour l'instant vide, vous n'avez probablement pas
+					Votre situation est pour l’instant vide, vous n’avez probablement pas
 					encore fait de simulation.
 				</p>
 			}
@@ -220,7 +220,7 @@ console.log(formatValue(evaluation))
 		<section>
 			<h4>Lancer un calcul avec Publicodes</h4>
 			<p>
-				Vous pouvez installer notre package de règles pour l'utiliser avec le{' '}
+				Vous pouvez installer notre package de règles pour l’utiliser avec le{' '}
 				<Link
 					aria-label={`${LINK_PUBLICODES_LABEL}, accéder au site publi.codes, nouvelle fenêtre`}
 					href="https://publi.codes/"
@@ -284,7 +284,7 @@ console.log(evaluate)`,
 		<section>
 			<h4>Utiliser notre API REST</h4>
 			<p>
-				Vous trouverez ici un exemple d'utilisation de notre API REST via curl
+				Vous trouverez ici un exemple d’utilisation de notre API REST via curl
 				ou un fetch javascript.
 			</p>
 			<Code tabs={tabs} />
@@ -306,10 +306,10 @@ function MissingVars({ selfMissing }: { selfMissing: string[] }) {
 	return (
 		<section>
 			<h4>Données manquantes</h4>
-			{!!selfMissing?.length ?
+			{selfMissing?.length ?
 				<>
 					<p>
-						Les règles suivantes sont nécessaires pour le calcul mais n'ont pas
+						Les règles suivantes sont nécessaires pour le calcul mais n’ont pas
 						été saisies dans la situation. Leur valeur par défaut est utilisée.
 					</p>
 
@@ -321,7 +321,7 @@ function MissingVars({ selfMissing }: { selfMissing: string[] }) {
 						))}
 					</Ul>
 				</>
-			:	<p>Il n'y a pas de données manquante.</p>}
+			:	<p>Il n’y a pas de données manquante.</p>}
 		</section>
 	)
 }
@@ -367,7 +367,7 @@ function ReverseMissing({
 						{ruleIsNotDefined && (
 							<>
 								{' '}
-								La règle courante n'étant pas encore définie, c'est sa valeur
+								La règle courante n’étant pas encore définie, c’est sa valeur
 								par défaut qui est utilisée pour déterminer la valeur de ces
 								règles.
 							</>
@@ -381,7 +381,7 @@ function ReverseMissing({
 						))}
 					</Ul>
 				</>
-			:	<p>Aucune règle n'utilise cette valeur.</p>}
+			:	<p>Aucune règle n’utilise cette valeur.</p>}
 		</section>
 	)
 }
@@ -408,11 +408,11 @@ function Effect({
 	return (
 		<>
 			<section>
-				<h4>Effets sur d'autres règles</h4>
-				{!!replacements.length ?
+				<h4>Effets sur d’autres règles</h4>
+				{replacements.length ?
 					<>
 						<p>
-							Une règle peut avoir des effets sur d'autres règles afin de
+							Une règle peut avoir des effets sur d’autres règles afin de
 							modifier leur comportement.
 						</p>
 						<Ul>
@@ -445,7 +445,7 @@ function Effect({
 							))}
 						</Ul>
 					</>
-				:	<p>Aucune autre règle n'a d'effet sur cette valeur.</p>}
+				:	<p>Aucune autre règle n’a d’effets sur cette valeur.</p>}
 			</section>
 		</>
 	)

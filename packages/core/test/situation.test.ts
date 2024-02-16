@@ -33,7 +33,7 @@ describe('setSituation', () => {
 	})
 
 	it('should let the user reference rules in the situation', function () {
-		let rules = parseYaml`
+		const rules = parseYaml`
 	referenced in situation:
 	  formule: 200
 	overwrited in situation:
@@ -41,7 +41,7 @@ describe('setSituation', () => {
 	result:
 	  formule: overwrited in situation + 22
 	`
-		let engine = new Engine(rules)
+		const engine = new Engine(rules)
 		engine.setSituation({
 			'overwrited in situation': 'referenced in situation',
 		})
@@ -49,7 +49,7 @@ describe('setSituation', () => {
 	})
 
 	it('should allow to create rules in the situation', function () {
-		let engine = engineFromYaml('a:')
+		const engine = engineFromYaml('a:')
 		engine.setSituation({
 			a: {
 				valeur: 'b',
@@ -62,7 +62,7 @@ describe('setSituation', () => {
 	})
 
 	it('should allow to replace rules in the situation', function () {
-		let engine = engineFromYaml('a: 5\nb:')
+		const engine = engineFromYaml('a: 5\nb:')
 		engine.setSituation({
 			b: {
 				valeur: 10,
@@ -73,7 +73,7 @@ describe('setSituation', () => {
 	})
 
 	it('should allow to keep previous situation', () => {
-		let engine = engineFromYaml('a:\nb:\nc:')
+		const engine = engineFromYaml('a:\nb:\nc:')
 			.setSituation({ a: 5, c: 3 })
 			.setSituation({ b: 10, c: 'a' }, { keepPreviousSituation: true })
 		expect(engine.evaluate('a').nodeValue).to.equal(5)

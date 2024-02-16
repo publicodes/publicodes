@@ -2,7 +2,13 @@ import Head from '@docusaurus/Head'
 import { getDocumentationSiteMap, RulePage } from '@publicodes/react-ui'
 import Engine, { utils } from 'publicodes'
 import { invertObj, last } from 'ramda'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, {
+	ComponentProps,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import ErrorBoundary, { nl2br } from './ErrorBoundary'
 
@@ -118,7 +124,13 @@ export default function Documentation({
 					documentationPath={''}
 					showDevSection={showDevSection}
 					renderers={{
-						Link: ({ to, children }) => {
+						Link: ({
+							to,
+							children,
+						}: {
+							to?: ComponentProps<typeof Link>['to']
+							children: React.ReactNode
+						}) => {
 							return (
 								<Link
 									to={to}

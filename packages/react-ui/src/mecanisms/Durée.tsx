@@ -1,6 +1,7 @@
-import DefaultInlineMecanism from './DefaultInlineMecanism'
+import { EvaluatedNode } from 'publicodes'
+import DefaultInlineMecanism from './common/DefaultInlineMecanism'
 
-export default function MecanismDurée(node) {
+export default function MecanismDurée(node: EvaluatedNode<'durée'>) {
 	return (
 		<DefaultInlineMecanism
 			{...node}

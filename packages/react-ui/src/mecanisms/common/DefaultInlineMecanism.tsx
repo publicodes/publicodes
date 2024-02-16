@@ -1,10 +1,10 @@
 import { ASTNode, EvaluatedNode } from 'publicodes'
 import { useContext, useMemo, useState } from 'react'
 import { css, styled } from 'styled-components'
-import Explanation from '../Explanation'
-import { EngineContext } from '../contexts'
-import { UnfoldIsEnabledContext } from './Reference'
-import { Mecanism } from './common'
+import Explanation from '../../Explanation'
+import { EngineContext } from '../../contexts'
+import { UnfoldIsEnabledContext } from '../Reference'
+import { Mecanism } from './Mecanism'
 
 export default function DefaultInlineMecanism({
 	sourceMap,
@@ -76,7 +76,7 @@ function ListOrScalarExplanation({
 			: undefined
 		return (
 			<Table
-				explanation={node}
+				explanation={node as Array<EvaluatedNode>}
 				hideNotApplicable={mecanismName !== 'produit'}
 				sign={sign}
 			/>
@@ -91,13 +91,18 @@ const isZeroOrNotApplicable = (x: ASTNode) => {
 	return nodeValue === null || nodeValue === 0
 }
 
-function Table({ explanation, hideNotApplicable = true, sign }) {
+type TableProps = {
+	explanation: Array<EvaluatedNode>
+	hideNotApplicable?: boolean
+	sign?: string
+}
+function Table({ explanation, hideNotApplicable = true, sign }: TableProps) {
 	const [applicableExplanation, notApplicableExplanation] = explanation.reduce(
 		(acc, x) => {
 			acc[hideNotApplicable && isZeroOrNotApplicable(x) ? 1 : 0].push(x)
 			return acc
 		},
-		[[], []],
+		[[], []] as [Array<EvaluatedNode>, Array<EvaluatedNode>],
 	)
 	const [showNotApplicable, setShowNotApplicable] = useState(
 		applicableExplanation.length === 0,

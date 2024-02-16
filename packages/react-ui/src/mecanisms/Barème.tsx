@@ -1,9 +1,26 @@
-import { parseUnit } from 'publicodes'
+import { EvaluatedNode, parseUnit } from 'publicodes'
+import { NodeKind } from 'publicodes/src/AST/types'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
-import { Mecanism, NodeValuePointer } from './common'
+import { Mecanism } from './common/Mecanism'
+import { NodeValueLeaf } from './common/NodeValueLeaf'
 
-export default function Barème({ nodeValue, explanation, unit }) {
+type EvaluatedTranche =
+	EvaluatedNode<'barème'>['explanation']['tranches'][number] &
+		EvaluatedNode & {
+			plafond: EvaluatedNode
+		}
+
+export type BaremeExplanation = {
+	tranches: Array<EvaluatedTranche>
+	multiplicateur: EvaluatedNode<NodeKind, number>
+	assiette: EvaluatedNode<NodeKind, number>
+}
+
+type Props = EvaluatedNode<'barème', number> & {
+	explanation: BaremeExplanation
+}
+export default function Barème({ nodeValue, explanation, unit }: Props) {
 	return (
 		<Mecanism name="barème" value={nodeValue} unit={unit}>
 			<StyledComponent>
@@ -14,11 +31,11 @@ export default function Barème({ nodeValue, explanation, unit }) {
 						multiplicateur={explanation.multiplicateur}
 					/>
 					{/* nous avons remarqué que la notion de taux moyen pour un barème à 2 tranches est moins pertinent pour les règles de calcul des indépendants. Règle empirique à faire évoluer ! */}
-					{nodeValue !== undefined && explanation.tranches.length > 2 && (
+					{nodeValue != undefined && explanation.tranches.length > 2 && (
 						<>
 							<b>Taux moyen : </b>
-							<NodeValuePointer
-								data={(100 * nodeValue) / explanation.assiette.nodeValue}
+							<NodeValueLeaf
+								data={(100 * nodeValue) / (explanation.assiette.nodeValue ?? 1)}
 								unit={parseUnit('%')}
 							/>
 						</>
@@ -29,7 +46,9 @@ export default function Barème({ nodeValue, explanation, unit }) {
 	)
 }
 
-export const BarèmeAttributes = ({ explanation }) => {
+export const BarèmeAttributes = ({
+	explanation,
+}: Pick<Props, 'explanation'>) => {
 	const multiplicateur = explanation.multiplicateur
 	return (
 		<>
@@ -51,17 +70,26 @@ export const BarèmeAttributes = ({ explanation }) => {
 	)
 }
 
-export const TrancheTable = ({ tranches, multiplicateur }) => {
+type TrancheTableProps = {
+	tranches: Array<EvaluatedTranche>
+	multiplicateur: EvaluatedNode
+}
+export const TrancheTable = ({
+	tranches,
+	multiplicateur,
+}: TrancheTableProps) => {
 	const activeTranche = tranches.find(({ isActive }) => isActive)
+	if (!tranches.length) {
+		return null
+	}
 	return (
 		<table className="tranches">
 			<thead>
 				<tr>
 					<th>Plafonds des tranches</th>
-					{tranches[0].taux && <th>Taux</th>}
-					{(tranches[0].montant || activeTranche?.nodeValue != undefined) && (
-						<th>Montant</th>
-					)}
+					{'taux' in tranches[0] && <th>Taux</th>}
+					{('montant' in tranches[0] ||
+						activeTranche?.nodeValue != undefined) && <th>Montant</th>}
 				</tr>
 			</thead>
 			<tbody>
@@ -73,7 +101,11 @@ export const TrancheTable = ({ tranches, multiplicateur }) => {
 	)
 }
 
-const Tranche = ({ tranche, multiplicateur }) => {
+type TrancheProps = {
+	tranche: EvaluatedTranche
+	multiplicateur: EvaluatedNode
+}
+const Tranche = ({ tranche, multiplicateur }: TrancheProps) => {
 	const isHighlighted = tranche.isActive
 	return (
 		<tr className={`tranche ${isHighlighted ? 'activated' : ''}`}>
@@ -91,16 +123,16 @@ const Tranche = ({ tranche, multiplicateur }) => {
 					</>
 				}
 			</td>
-			{tranche.taux && (
+			{'taux' in tranche && (
 				<td key="taux">
 					<Explanation node={tranche.taux} />
 				</td>
 			)}
-			{(tranche.nodeValue != undefined || tranche.montant) && (
+			{(tranche.nodeValue != undefined || 'montant' in tranche) && (
 				<td key="value">
-					{tranche.montant ?
+					{'montant' in tranche ?
 						<Explanation node={tranche.montant} />
-					:	<NodeValuePointer data={tranche.nodeValue} unit={tranche.unit} />}
+					:	<NodeValueLeaf data={tranche.nodeValue} unit={tranche.unit} />}
 				</td>
 			)}
 		</tr>

@@ -7,6 +7,14 @@ import Documentation from './Documentation'
 import ErrorBoundary from './ErrorBoundary'
 import publicodeStyles from './publicodesExample.module.css'
 
+type Props = {
+	language: string
+	defaultTarget: string
+	onTargetChange: (target: string) => void
+	onChange: (code: string) => void
+	children: string
+}
+
 export default function Playground({
 	language,
 	defaultTarget,
@@ -14,7 +22,7 @@ export default function Playground({
 	onChange,
 	children,
 	...props
-}): JSX.Element {
+}: Props): JSX.Element {
 	const prismTheme = usePrismTheme()
 
 	return (

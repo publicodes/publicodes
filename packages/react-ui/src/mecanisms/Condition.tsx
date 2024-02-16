@@ -1,6 +1,7 @@
-import DefaultInlineMecanism from './DefaultInlineMecanism'
+import { EvaluatedNode } from 'publicodes'
+import DefaultInlineMecanism from './common/DefaultInlineMecanism'
 
-export default function MecanismCondition(node) {
+export default function MecanismCondition(node: EvaluatedNode<'condition'>) {
 	return (
 		<DefaultInlineMecanism
 			{...node}

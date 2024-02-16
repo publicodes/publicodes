@@ -7,7 +7,7 @@ import Engine, {
 	serializeUnit,
 	utils,
 } from 'publicodes'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { styled } from 'styled-components'
 import {
 	BasepathContext,
@@ -56,12 +56,9 @@ export default function RulePage({
 		new URLSearchParams(window.location.search).get('currentEngineId')
 
 	const prevRenderers = useRef(renderers)
-	const [renderersValue, setRenderers] = useState(defaultRenderers(renderers))
 	useEffect(() => {
 		if (prevRenderers.current !== renderers) {
 			prevRenderers.current = renderers
-
-			setRenderers(defaultRenderers(renderers))
 		}
 	}, [renderers])
 
@@ -163,11 +160,11 @@ function Rule({
 							)}
 						</p>
 
-						{ruleDisabledByItsParent && (
+						{ruleDisabledByItsParent && nullableParent && (
 							<>
 								<blockquote>
 									Cette règle est <strong>non applicable</strong> car elle
-									appartient à l'espace de nom :{' '}
+									appartient à l’espace de nom :{' '}
 									<Explanation node={nullableParent} />
 								</blockquote>
 							</>
@@ -185,7 +182,7 @@ function Rule({
 							>
 								<div>
 									Vous naviguez la documentation avec un{' '}
-									<strong>contexte d'évaluation</strong> spécifique.
+									<strong>contexte d’évaluation</strong> spécifique.
 								</div>
 								<div style={{ flex: 1 }} />
 								<div>
@@ -225,7 +222,7 @@ function Rule({
 								<h3>Informations techniques</h3>
 								<Text>
 									Si vous êtes développeur/euse vous trouverez ci-dessous des
-									informations techniques utiles pour l'intégration de cette
+									informations techniques utiles pour l’intégration de cette
 									règle dans votre application.
 								</Text>
 								<DeveloperAccordion
@@ -277,7 +274,7 @@ function buildSituationUsedInRule<Names extends string>(
 			return [name, valeur] as const
 		})
 		.filter(
-			([_, valeur]) =>
+			([, valeur]) =>
 				valeur &&
 				!(valeur.nodeKind === 'constant' && valeur.nodeValue === undefined),
 		)

@@ -1,12 +1,13 @@
+import { EvaluatedNode } from 'publicodes'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 
-export default function Texte({ nodeValue, unit, explanation }) {
+export default function Texte({ explanation }: EvaluatedNode<'texte'>) {
 	return (
 		<p>
 			{explanation.map((element) =>
 				typeof element === 'string' ? element : (
-					<Highlight>
+					<Highlight key={element.rawNode}>
 						<Explanation node={element} />
 					</Highlight>
 				),

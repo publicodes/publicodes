@@ -25,6 +25,7 @@ export default function References({ references }: ReferencesProps) {
 						style={{
 							marginRight: '1rem',
 						}}
+						rel="noreferrer"
 					>
 						{capitalise0(name)}
 					</a>

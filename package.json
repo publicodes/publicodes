@@ -11,12 +11,21 @@
 		"prepack": "run build",
 		"test:type": "turbo run test:type",
 		"build": "turbo run build",
-		"lint": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml,json}\" --ignore-path .gitignore",
-		"lint:fix": "run lint --write",
+		"lint:prettier": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml,json}\" --ignore-path .gitignore",
+		"lint:prettier:fix": "run lint:prettier --write",
+		"lint:eslint": "run eslint --ext .ts,.tsx --max-warnings 37 --ignore-path .gitignore .",
+		"lint:eslint:fix": "run lint:eslint --fix",
+		"lint": "run lint:eslint && run lint:prettier",
+		"lint:fix": "run lint:eslint:fix && run lint:prettier:fix",
 		"dev": "turbo run dev --parallel --filter=\"website...\"",
 		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\""
 	},
 	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "latest",
+		"@typescript-eslint/parser": "latest",
+		"eslint": "latest",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-react": "latest",
 		"prettier": "^3.1.0",
 		"rimraf": "^3.0.2",
 		"turbo": "latest"

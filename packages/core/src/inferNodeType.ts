@@ -96,7 +96,7 @@ export default function inferNodesTypes(
 						inferNodeUnitAndCache(node.explanation.sinon).type,
 				}
 
-			case 'variations':
+			case 'variations': {
 				const consequencesTypes = node.explanation.map(({ consequence }) =>
 					inferNodeUnitAndCache(consequence),
 				)
@@ -108,6 +108,7 @@ export default function inferNodesTypes(
 						.map((c) => c.type)
 						.find((type) => type !== undefined),
 				}
+			}
 
 			case 'reference':
 				return inferNodeUnitAndCache(parsedRules[node.dottedName as string])

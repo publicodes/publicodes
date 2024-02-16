@@ -27,8 +27,12 @@ Pour vérifier que le script de publication fonctionne, il est possible d'éxecu
 
 Pour développer en local, il faut installer les dépendances avec `yarn` puis lancer `yarn dev`. Le site de la doc sera alors disponible sur `http://localhost:3001`, et tous les changements de `publicodes` et `@publicodes/react` seront automatiquement recompilés.
 
-Si vous souhaitez uniquement travailler un package / workspace en particulier, vous pouvez lancer la commande `yarn -T turbo run dev` depuis le dossier du package en question.
+## TurboRepo
 
-Plus globalement, vous pouvez utiliser `yarn -T turbo run <command>` pour lancer une commande dans un package en particulier. Par exemple pour lancer le type-checking dans `@publicodes/react-ui` : `yarn -T turbo run test:type`. Cela compilera automatiquement les dépendances nécessaires (`publicodes` dans ce cas).
+Vous pouvez installer TurboRepo avec `npm install -g turbo`. L'autre solution est d'utiliser `npx` pour lancer les commandes.
+
+Si vous souhaitez uniquement travailler un package / workspace en particulier, vous pouvez lancer la commande `turbo run dev` depuis le dossier du package en question.
+
+Plus globalement, vous pouvez utiliser `turbo run <command>` pour lancer une commande dans un package en particulier. Par exemple pour lancer le type-checking dans `@publicodes/react-ui` : `turbo run test:type`. Cela compilera automatiquement les dépendances nécessaires (`publicodes` dans ce cas).
 
 Pour en savoir plus, [voir la doc de TurboRepo](https://turbo.build/repo)

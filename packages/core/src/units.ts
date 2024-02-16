@@ -35,7 +35,7 @@ const lastNumberFromString = /(\d+)(?!.*[A-Za-z])/g
  * Count the number of each unit, e.g. [m, m, kg, kg] -> {m: 2, kg: 2}
  */
 function getUnitCounts(baseUnits: Array<BaseUnit>): Record<string, number> {
-	let countUnits = {}
+	const countUnits = {}
 	baseUnits.forEach((e) => {
 		const powerMatch = e.match(lastNumberFromString)
 		if (powerMatch != null) {
@@ -53,7 +53,7 @@ function getUnitCounts(baseUnits: Array<BaseUnit>): Record<string, number> {
  * Decompose power of units, e.g. [m2] -> [m, m] or [kg2, m3] -> [kg, kg, m, m, m]
  */
 function decomposePower(baseUnits: Array<BaseUnit>): Array<BaseUnit> {
-	let unitCounts = getUnitCounts(baseUnits)
+	const unitCounts = getUnitCounts(baseUnits)
 	return Object.entries(unitCounts).flatMap(([primaryUnit, power]) =>
 		Array(power).fill(primaryUnit),
 	)
@@ -63,7 +63,7 @@ function decomposePower(baseUnits: Array<BaseUnit>): Array<BaseUnit> {
  * Combine power of units, e.g. [m2, m] -> [m3] or [m, m, kg, kg] -> [m2, kg2]
  */
 function combinePower(baseUnit: Array<BaseUnit>): Array<BaseUnit> {
-	let unitCounts = getUnitCounts(baseUnit)
+	const unitCounts = getUnitCounts(baseUnit)
 	return Object.entries(unitCounts).map(([primaryUnit, power]) =>
 		power > 1 ? `${primaryUnit}${power}` : primaryUnit,
 	)
@@ -241,7 +241,7 @@ const equivalentTable = {
 function areEquivalentSerializedUnit(
 	serializedFrom: string | undefined,
 	serializedTo: string | undefined,
-): Boolean {
+): boolean {
 	if (!serializedFrom || !serializedTo) return false
 	return (
 		serializedFrom === serializedTo ||

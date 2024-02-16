@@ -9,13 +9,16 @@ import { Engine, Expressions, Situation } from '../types.js'
 
 const InputValidationError = OAPIValidator.InputValidationError
 
-type koaValidate = (ctx: Record<string, any>, next: Function) => Promise<void> // koa
+type koaValidate = (
+	ctx: Record<string, unknown>,
+	next: () => Promise<void> | void,
+) => Promise<void> // koa
 
 /**
  * This middleware detects if koa-body has already been applied by the user because
  * koa-body throws an InternalServerError if we apply it multiple times.
  */
-const applyKoaBodyIfNotPresent: Router.Middleware<{}, {}> = (
+const applyKoaBodyIfNotPresent: Router.Middleware<unknown, unknown> = (
 	ctx: Context,
 	next: Next,
 ) => {

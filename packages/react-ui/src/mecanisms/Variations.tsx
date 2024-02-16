@@ -1,11 +1,14 @@
+import { EvaluatedNode } from 'publicodes'
 import { useState } from 'react'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
-import { Mecanism } from './common'
+import { Mecanism } from './common/Mecanism'
 
-export default function Variations({ nodeValue, explanation, unit }) {
+type Props = EvaluatedNode<'variations'>
+
+export default function Variations({ nodeValue, explanation, unit }: Props) {
 	const activeCaseIndex = explanation.findIndex(
-		({ condition }) => condition.nodeValue === true,
+		({ condition }) => (condition as EvaluatedNode).nodeValue === true,
 	)
 
 	let activeCase
@@ -38,7 +41,7 @@ export default function Variations({ nodeValue, explanation, unit }) {
 					<>
 						{explanation.map((currentCase, i) => (
 							<li key={i}>
-								<Case {...currentCase} />
+								<Case {...(currentCase as CaseProps)} />
 							</li>
 						))}
 					</>
@@ -48,7 +51,11 @@ export default function Variations({ nodeValue, explanation, unit }) {
 	)
 }
 
-function Case({ condition, consequence }) {
+type CaseProps = {
+	condition: EvaluatedNode
+	consequence: EvaluatedNode
+}
+function Case({ condition, consequence }: CaseProps) {
 	return (
 		<StyledCaseContainer>
 			<StyledCase>

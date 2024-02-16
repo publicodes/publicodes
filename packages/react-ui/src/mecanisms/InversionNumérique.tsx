@@ -1,26 +1,33 @@
+import { EvaluatedNode } from 'publicodes'
 import Explanation from '../Explanation'
-import { Mecanism } from './common'
+import { useEngine } from '../hooks'
+import { Mecanism } from './common/Mecanism'
 
-export default function InversionNumérique({ nodeValue, explanation }) {
+export default function InversionNumérique({
+	nodeValue,
+	explanation,
+}: EvaluatedNode<'inversion'>) {
+	const engine = useEngine()
+
 	return (
 		<Mecanism name="inversion numérique" value={nodeValue}>
-			{explanation.inversionFailed ?
+			{engine.cache.inversionFail && explanation.inversionGoal ?
 				<>
 					<p>
-						Cette valeur devrait pouvoir être estimée à partir d'une autre
+						Cette valeur devrait pouvoir être estimée à partir d’une autre
 						variable qui possède une formule de calcul et dont la valeur a été
 						fixée dans la simulation :
 					</p>
 					<Explanation node={explanation.inversionGoal} />
 					<p>
 						Malheureusement, il a été impossible de retrouver une valeur pour
-						cette formule qui permette d'atterrir sur la valeur demandée.
+						cette formule qui permette d’atterrir sur la valeur demandée.
 					</p>
 				</>
 			: explanation.inversionGoal ?
 				<>
 					<p>
-						Cette valeur a été estimée à partir d'une autre variable qui possède
+						Cette valeur a été estimée à partir d’une autre variable qui possède
 						une formule de calcul et dont la valeur a été fixée dans la
 						simulation :
 					</p>
@@ -28,7 +35,7 @@ export default function InversionNumérique({ nodeValue, explanation }) {
 				</>
 			:	<>
 					<p>
-						Cette formule de calcul n'existe pas, mais on peut la calculer par
+						Cette formule de calcul n’existe pas, mais on peut la calculer par
 						inversion en utilisant les formules des règles suivantes :
 					</p>
 					<ul id="inversionsPossibles">

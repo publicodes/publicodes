@@ -4,7 +4,7 @@ import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { RuleLinkWithContext } from '../RuleLink'
 import { EngineContext } from '../contexts'
-import { NodeValuePointer } from './common'
+import { NodeValueLeaf } from './common/NodeValueLeaf'
 
 // Un élément du graphe de calcul qui a une valeur interprétée (à afficher)
 export default function Reference(
@@ -76,7 +76,7 @@ export default function Reference(
 					)}
 
 					{nodeValue !== undefined && (
-						<NodeValuePointer data={nodeValue} unit={unit} />
+						<NodeValueLeaf data={nodeValue} unit={unit} />
 					)}
 				</div>
 			</div>{' '}

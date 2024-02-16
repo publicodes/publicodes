@@ -1,11 +1,11 @@
-import Layout from '@theme/Layout'
 import BrowserOnly from '@docusaurus/BrowserOnly'
+import Layout from '@theme/Layout'
 import React, { lazy, Suspense } from 'react'
 import styles from './studio.module.css'
 
 const LazyStudio = lazy(() => import('../components/Studio'))
 
-export default function () {
+export default function Studio() {
 	return (
 		<Layout title="Bac à sable">
 			<BrowserOnly fallback={<div>Bac à sable Publicodes</div>}>
@@ -17,7 +17,7 @@ export default function () {
 								<div className={styles.div2}></div>
 								<div className={styles.div3}></div>
 
-								<p>Chargement de l'éditeur en cours...</p>
+								<p>Chargement de l’éditeur en cours...</p>
 							</div>
 						}
 					>

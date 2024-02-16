@@ -1,14 +1,12 @@
+import { EvaluatedNode } from 'publicodes'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { DottedNameContext } from '../contexts'
 
 export default function RuleMecanism({
-	rawNode,
 	explanation,
 	dottedName,
-	title,
-	virtualRule,
-}) {
+}: EvaluatedNode<'rule'>) {
 	return (
 		<Styled>
 			<DottedNameContext.Provider value={dottedName}>

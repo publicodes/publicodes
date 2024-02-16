@@ -9,7 +9,7 @@ function has(obj, key) {
 	return obj != null && Object.prototype.hasOwnProperty.call(obj, key)
 }
 function constant(value) {
-	return function (...args) {
+	return function () {
 		return value
 	}
 }

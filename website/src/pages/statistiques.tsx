@@ -20,7 +20,6 @@ function IFrame() {
 	return (
 		<>
 			<iframe
-				plausible-embed=""
 				src={`https://plausible.io/share/publi.codes?auth=EA2slHSJ5y9FMHp5RC9ip&embed=true&theme=${
 					isDarkTheme ? 'dark' : 'light'
 				}&background=transparent`}

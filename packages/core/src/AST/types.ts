@@ -26,6 +26,7 @@ export type ConstantNode = {
 	nodeKind: 'constant'
 	isNullable?: boolean
 	isDefault?: boolean
+	fullPrecision?: boolean
 }
 type PossibleNodes =
 	| RuleNode
