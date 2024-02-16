@@ -118,3 +118,13 @@ est applicable avec désactivation du parent:
     - valeur attendue: false
     - situation: { c: oui }
       valeur attendue: true
+
+d:
+  applicable si: c
+  contexte:
+    c: non
+
+est non applicable avec contexte:
+  est non applicable: d
+  exemples:
+    - valeur attendue: true

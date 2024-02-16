@@ -69,15 +69,14 @@ export default function inferNodesTypes(
 				}
 
 			case 'inversion':
-			case 'contexte':
 			case 'replacementRule':
 			case 'résoudre référence circulaire':
 				return { isNullable: false, type: 'number' }
-
 			case 'texte':
 			case 'une possibilité':
 				return { isNullable: false, type: 'string' }
 
+			case 'contexte':
 			case 'rule':
 			case 'arrondi':
 				return inferNodeUnitAndCache(node.explanation.valeur)

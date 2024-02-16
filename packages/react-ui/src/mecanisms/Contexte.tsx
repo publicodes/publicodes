@@ -27,7 +27,7 @@ export default function Contexte({ explanation }: EvaluatedNode<'contexte'>) {
 				</small>
 			</Mecanism>
 			<EngineContext.Provider value={contexteEngine}>
-				<Explanation node={explanation.node} />
+				<Explanation node={explanation.valeur} />
 			</EngineContext.Provider>
 		</>
 	)

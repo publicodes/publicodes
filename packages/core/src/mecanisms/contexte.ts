@@ -8,7 +8,7 @@ import { serializeUnit } from '../units'
 
 export type ContextNode = {
 	explanation: {
-		node: ASTNode
+		valeur: ASTNode
 		contexte: Array<[ReferenceNode, ASTNode]>
 		subEngineId: number
 	}
@@ -25,7 +25,7 @@ export default function parseMecanismContexte(v, context) {
 
 	return {
 		explanation: {
-			node,
+			valeur: node,
 			contexte,
 			subEngineId: context.subEngineIncrementingNumber++,
 		},
@@ -35,7 +35,9 @@ export default function parseMecanismContexte(v, context) {
 parseMecanismContexte.nom = 'contexte' as const
 
 const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
-	if (this.cache._meta.currentEvaluationWithContext === node.explanation.node) {
+	if (
+		this.cache._meta.currentEvaluationWithContext === node.explanation.valeur
+	) {
 		return { ...notApplicableNode, ...node }
 	}
 	const amendedSituation = Object.fromEntries(
@@ -70,8 +72,8 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 
 		this.subEngines[node.explanation.subEngineId] = engine
 	}
-	engine.cache._meta.currentEvaluationWithContext = node.explanation.node
-	const evaluatedNode = engine.evaluateNode(node.explanation.node)
+	engine.cache._meta.currentEvaluationWithContext = node.explanation.valeur
+	const evaluatedNode = engine.evaluateNode(node.explanation.valeur)
 
 	delete engine.cache._meta.currentEvaluationWithContext
 
@@ -80,7 +82,7 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 		nodeValue: evaluatedNode.nodeValue,
 		explanation: {
 			...node.explanation,
-			node: evaluatedNode,
+			valeur: evaluatedNode,
 		},
 		missingVariables: evaluatedNode.missingVariables,
 		...('unit' in evaluatedNode && { unit: evaluatedNode.unit }),
