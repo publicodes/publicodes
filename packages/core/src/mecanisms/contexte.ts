@@ -35,11 +35,6 @@ export default function parseMecanismContexte(v, context) {
 parseMecanismContexte.nom = 'contexte' as const
 
 const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
-	if (
-		this.cache._meta.currentEvaluationWithContext === node.explanation.valeur
-	) {
-		return { ...notApplicableNode, ...node }
-	}
 	const amendedSituation = Object.fromEntries(
 		node.explanation.contexte
 			.filter(([originRule, replacement]) => {
@@ -57,26 +52,31 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 					[originRule.dottedName, replacement] as [string, ASTNode],
 			),
 	)
+	if (
+		this.cache._meta.currentContexteSituation ===
+		JSON.stringify(amendedSituation)
+	) {
+		return {
+			...notApplicableNode,
+			...node,
+		}
+	}
 
-	// eslint-disable-next-line @typescript-eslint/no-this-alias
-	let engine = this
+	const engine = this.shallowCopy()
+	engine.subEngineId = node.explanation.subEngineId
+	this.subEngines[node.explanation.subEngineId] = engine
 	if (Object.keys(amendedSituation).length) {
-		engine = this.shallowCopy().setSituation(amendedSituation, {
+		engine.setSituation(amendedSituation, {
 			keepPreviousSituation: true,
 		})
-		engine.subEngineId = node.explanation.subEngineId
-
 		// The value of the replaced ruled are computed **without the replacement active**
 		Object.values(amendedSituation).forEach((value) =>
 			engine.cache.nodes.set(value, this.evaluate(value)),
 		)
-
-		this.subEngines[node.explanation.subEngineId] = engine
 	}
-	engine.cache._meta.currentEvaluationWithContext = node.explanation.valeur
-	const evaluatedNode = engine.evaluateNode(node.explanation.valeur)
 
-	delete engine.cache._meta.currentEvaluationWithContext
+	engine.cache._meta.currentContexteSituation = JSON.stringify(amendedSituation)
+	const evaluatedNode = engine.evaluateNode(node.explanation.valeur)
 
 	return {
 		...node,

@@ -109,6 +109,6 @@ const StyledMecanismName = styled.a<{ name: string; inline?: boolean }>`
 
 const StyledMecanismValue = styled.div`
 	text-align: right;
-	margin-top: 0.25rem;
+	margin-top: 1rem;
 	font-weight: bold;
 `

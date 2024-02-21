@@ -172,28 +172,36 @@ function Rule({
 						{useSubEngine && (
 							<div
 								style={{
+									margin: '1rem 0',
+									padding: '0rem 1rem',
 									display: 'flex',
+									justifyContent: 'flex-end',
+									columnGap: '1rem',
 									alignItems: 'baseline',
 									flexWrap: 'wrap',
-									margin: '1rem 0',
-									padding: '0.4rem 0',
 									background: 'hsl(220, 60%, 97.5%)',
 									borderRadius: '0.25rem',
 								}}
 							>
-								<div>
+								<p>
 									Vous naviguez la documentation avec un{' '}
-									<strong>contexte d’évaluation</strong> spécifique.
-								</div>
+									<strong>contexte</strong> d’évaluation{' '}
+									<strong>spécifique</strong>.
+								</p>
 								<div style={{ flex: 1 }} />
-								<div>
+								<p
+									style={{
+										textAlign: 'right',
+										marginTop: 0,
+									}}
+								>
 									<RuleLinkWithContext
 										dottedName={dottedName}
 										useSubEngine={false}
 									>
 										Retourner à la version de base
 									</RuleLinkWithContext>
-								</div>
+								</p>
 							</div>
 						)}
 						<h2>Comment cette donnée est-elle calculée ?</h2>

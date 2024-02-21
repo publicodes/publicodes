@@ -13,6 +13,7 @@ export default function Contexte({ explanation }: EvaluatedNode<'contexte'>) {
 		explanation.subEngineId ?
 			engine.subEngines[explanation.subEngineId]
 		:	engine
+
 	return (
 		<>
 			<Mecanism name="contexte">
