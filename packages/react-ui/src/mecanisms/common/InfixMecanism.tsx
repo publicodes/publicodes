@@ -18,6 +18,7 @@ export const InfixMecanism = ({
 				className="value"
 				style={{
 					position: 'relative',
+					margin: '1rem 0',
 				}}
 			>
 				<Explanation node={value} />

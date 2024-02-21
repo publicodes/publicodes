@@ -96,6 +96,7 @@ type TableProps = {
 	hideNotApplicable?: boolean
 	sign?: string
 }
+
 function Table({ explanation, hideNotApplicable = true, sign }: TableProps) {
 	const [applicableExplanation, notApplicableExplanation] = explanation.reduce(
 		(acc, x) => {
@@ -113,11 +114,11 @@ function Table({ explanation, hideNotApplicable = true, sign }: TableProps) {
 	)
 	return (
 		<>
-			<StyledContainer $sign={sign}>
+			<StyledListContainer $sign={sign}>
 				{applicableExplanation.map((node: EvaluatedNode, i) => (
 					<Row key={i} node={node} />
 				))}
-			</StyledContainer>
+			</StyledListContainer>
 			{notApplicableExplanation.length > 0 &&
 				applicableExplanation.length !== 0 && (
 					<StyledButtonContainer
@@ -138,7 +139,7 @@ function Table({ explanation, hideNotApplicable = true, sign }: TableProps) {
 					</StyledButtonContainer>
 				)}
 			{showNotApplicable && (
-				<StyledContainer
+				<StyledListContainer
 					id={id}
 					$sign={sign}
 					$showFirst={applicableExplanation.length > 0}
@@ -146,7 +147,7 @@ function Table({ explanation, hideNotApplicable = true, sign }: TableProps) {
 					{notApplicableExplanation.map((node: EvaluatedNode, i) => (
 						<Row key={i} node={node} />
 					))}
-				</StyledContainer>
+				</StyledListContainer>
 			)}
 		</>
 	)
@@ -155,7 +156,10 @@ const StyledButtonContainer = styled.div`
 	margin: 0.5rem 0;
 	margin-left: 1rem;
 `
-const StyledContainer = styled.ul<{ $sign?: string; $showFirst?: boolean }>`
+const StyledListContainer = styled.ul<{
+	$sign?: string
+	$showFirst?: boolean
+}>`
 	margin: 0;
 	margin-left: 1rem;
 
@@ -178,7 +182,7 @@ const StyledContainer = styled.ul<{ $sign?: string; $showFirst?: boolean }>`
 `
 
 /* La colonne peut au clic afficher une nouvelle colonne qui sera une autre somme imbriquée */
-export function Row({ node }: { node: EvaluatedNode }) {
+function Row({ node }: { node: EvaluatedNode }) {
 	return (
 		<StyledRow style={{ padding: '0.25rem 0' }}>
 			<UnfoldIsEnabledContext.Provider value={true}>
