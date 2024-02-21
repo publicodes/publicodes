@@ -1,4 +1,6 @@
 import { EvaluatedNode } from 'publicodes'
+import { Fragment } from 'react'
+import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { RuleLinkWithContext } from '../RuleLink'
 import { EngineContext } from '../contexts'
@@ -14,17 +16,22 @@ export default function Contexte({ explanation }: EvaluatedNode<'contexte'>) {
 	return (
 		<>
 			<Mecanism name="contexte">
-				<ul>
+				<p>
+					Ce calcul est effectué en changeant les valeurs des règles suivantes :
+				</p>
+				<StyledDL>
 					{explanation.contexte.map(([origin, newValue]) => (
-						<li key={origin.dottedName}>
-							<RuleLinkWithContext dottedName={origin.dottedName as string} /> ={' '}
-							<Explanation node={newValue} />
-						</li>
+						<Fragment key={origin.dottedName as string}>
+							<dt>
+								<RuleLinkWithContext dottedName={origin.dottedName as string} />
+							</dt>
+							<dd>
+								<span aria-hidden> = </span>
+								<Explanation node={newValue} />
+							</dd>
+						</Fragment>
 					))}
-				</ul>
-				<small>
-					Ces valeurs remplacent celles d’origine dans le calcul qui suit
-				</small>
+				</StyledDL>
 			</Mecanism>
 			<EngineContext.Provider value={contexteEngine}>
 				<Explanation node={explanation.valeur} />
@@ -32,3 +39,23 @@ export default function Contexte({ explanation }: EvaluatedNode<'contexte'>) {
 		</>
 	)
 }
+
+const StyledDL = styled.dl`
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 0.6rem;
+	line-height: 1.75;
+	dd {
+		margin: 0;
+		display: flex;
+		gap: 0.5rem;
+	}
+	@media (max-width: 600px) {
+		grid-template-columns: auto;
+		line-height: initial;
+		dd {
+			justify-content: flex-end;
+			margin-bottom: 0.5rem;
+		}
+	}
+`

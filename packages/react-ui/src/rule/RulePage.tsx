@@ -176,8 +176,9 @@ function Rule({
 									alignItems: 'baseline',
 									flexWrap: 'wrap',
 									margin: '1rem 0',
-									paddingTop: '0.4rem',
-									paddingBottom: '0.4rem',
+									padding: '0.4rem 0',
+									background: 'hsl(220, 60%, 97.5%)',
+									borderRadius: '0.25rem',
 								}}
 							>
 								<div>

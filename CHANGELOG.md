@@ -1,12 +1,13 @@
 # Changelog
 
-## next
+## 1.0.3
 
 **@publicodes/core**
 - remove console.log
  
 **@publicodes/react-ui**
-
+- style: improve readability of `context` mecanism
+- fix: `arrondi` visualisation crash (severe)
 - fix: `inversion numérique` view
 
 ## 1.0.2
