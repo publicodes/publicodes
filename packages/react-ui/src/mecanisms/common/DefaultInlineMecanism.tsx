@@ -122,9 +122,9 @@ function Table({ explanation, hideNotApplicable = true, sign }: TableProps) {
 			{notApplicableExplanation.length > 0 &&
 				applicableExplanation.length !== 0 && (
 					<StyledButtonContainer
-						css={`
-							text-align: center;
-						`}
+						style={{
+							textAlign: 'right',
+						}}
 					>
 						<button
 							aria-expanded={showNotApplicable}
@@ -134,7 +134,7 @@ function Table({ explanation, hideNotApplicable = true, sign }: TableProps) {
 						>
 							{showNotApplicable ?
 								'Masquer les valeurs non applicable'
-							:	`Afficher tout`}
+							:	`Voir toute la liste`}
 						</button>
 					</StyledButtonContainer>
 				)}

@@ -20,10 +20,14 @@ export type Context<RuleNames extends string = string> = {
 	getUnitKey?: getUnitKey
 	logger: Logger
 	inversionMaxIterations?: number
-	// Don't throw an error if the parent of a rule is not found.
-	// This is useful to parse partial rule sets (e.g. optimized ones).
+	/**
+	 * Don't throw an error if the parent of a rule is not found.
+	 * This is useful to parse partial rule sets (e.g. optimized ones).
+	 */
 	allowOrphanRules: boolean
-
+	/**
+	 * This is used to generate unique IDs for sub-engines, we need to generate them at
+	 *  */
 	subEngineIncrementingNumber?: number
 }
 
@@ -54,8 +58,6 @@ export function createContext<RuleNames extends string>(
 		rulesReplacements: {},
 		allowOrphanRules: false,
 
-		// This is used to generate unique IDs for sub-engines, we need to generate them at
-		// parse time in order to have a stable identity accros multiple evaluations.
 		subEngineIncrementingNumber: 1,
 
 		...partialContext,

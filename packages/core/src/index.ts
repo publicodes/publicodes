@@ -30,7 +30,7 @@ type Cache = {
 	_meta: {
 		evaluationRuleStack: Array<string>
 		parentRuleStack: Array<string>
-		currentEvaluationWithContext?: ASTNode
+		currentContexteSituation?: string
 	}
 	/**
 	 * Every time we encounter a reference to a rule in an expression we add it

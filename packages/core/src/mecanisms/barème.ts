@@ -1,5 +1,5 @@
 import { EvaluationFunction, PublicodesError } from '..'
-import { ASTNode } from '../AST/types'
+import { ASTNode, EvaluatedNode, NodeKind } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { defaultNode, mergeAllMissing } from '../evaluationUtils'
 import parse from '../parse'
@@ -69,7 +69,9 @@ function evaluateBarème(tranches, assiette, evaluate) {
 }
 const evaluate: EvaluationFunction<'barème'> = function (node) {
 	const evaluate = this.evaluateNode.bind(this)
-	const assiette = this.evaluateNode(node.explanation.assiette)
+	const assiette = this.evaluateNode(
+		node.explanation.assiette,
+	) as EvaluatedNode<NodeKind, number>
 	const multiplicateur = this.evaluateNode(node.explanation.multiplicateur)
 
 	if (multiplicateur.nodeValue === 0) {
@@ -80,20 +82,25 @@ const evaluate: EvaluationFunction<'barème'> = function (node) {
 		)
 	}
 
-	const tranches = evaluateBarème(
-		evaluatePlafondUntilActiveTranche.call(this, {
-			parsedTranches: node.explanation.tranches,
+	let tranches: any = node.explanation.tranches
+	let nodeValue = assiette.nodeValue
+
+	if (![0, undefined, null].includes(assiette.nodeValue)) {
+		tranches = evaluateBarème(
+			evaluatePlafondUntilActiveTranche.call(this, {
+				parsedTranches: node.explanation.tranches,
+				assiette,
+				multiplicateur,
+			}),
 			assiette,
-			multiplicateur,
-		}),
-		assiette,
-		evaluate,
-	)
-	const nodeValue = tranches.reduce(
-		(value, { nodeValue }) =>
-			nodeValue == undefined ? undefined : value + nodeValue,
-		0,
-	)
+			evaluate,
+		)
+		nodeValue = tranches.reduce(
+			(value, { nodeValue }) =>
+				nodeValue == undefined ? undefined : value + nodeValue,
+			0,
+		)
+	}
 
 	return {
 		...node,
