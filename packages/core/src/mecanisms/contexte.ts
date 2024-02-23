@@ -52,10 +52,13 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 					[originRule.dottedName, replacement] as [string, ASTNode],
 			),
 	)
+
 	if (
 		this.cache._meta.currentContexteSituation ===
 		JSON.stringify(amendedSituation)
 	) {
+		// If the situation is the same as the last time we evaluated the contexte, it means that
+		// there is a loop
 		return {
 			...notApplicableNode,
 			...node,

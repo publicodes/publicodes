@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.4
+
+**@publicodes/core**
+- [Perf] Don't evaluate barème tranche if assiette is null/undefined/0
+- Fix contexte mecanism
+
+**@publicodes/react-ui**
+- Various style improvement
+- Improve wording and position of « voir plus » button in somme and produit
+
 ## 1.0.3
 
 **@publicodes/core**
