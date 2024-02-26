@@ -121,6 +121,7 @@ export default function Documentation({
 					language={'fr'}
 					rulePath={ruleToPaths[currentTarget]?.replace(/^\//, '') || ''}
 					engine={engine}
+					searchBar={true}
 					documentationPath={''}
 					showDevSection={showDevSection}
 					renderers={{

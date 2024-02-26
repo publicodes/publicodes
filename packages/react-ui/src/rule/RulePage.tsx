@@ -7,7 +7,7 @@ import Engine, {
 	serializeUnit,
 	utils,
 } from 'publicodes'
-import { useContext, useEffect, useRef } from 'react'
+import { lazy, Suspense, useContext, useEffect, useRef } from 'react'
 import { styled } from 'styled-components'
 import {
 	BasepathContext,
@@ -24,12 +24,15 @@ import { DeveloperAccordion } from './DeveloperAccordion'
 import RuleHeader from './Header'
 import { breakpointsWidth, RulesNav } from './RulesNav'
 
+const RulesSearch = lazy(() => import('./RulesSearch'))
+
 type RulePageProps = {
 	documentationPath: string
 	rulePath: string
 	engine: Engine
 	language: 'fr' | 'en'
 	renderers: SupportedRenderers
+	searchBar?: boolean
 	apiDocumentationUrl?: string
 	apiEvaluateUrl?: string
 	npmPackage?: string
@@ -43,6 +46,7 @@ export default function RulePage({
 	rulePath,
 	engine,
 	renderers,
+	searchBar,
 	language,
 	apiDocumentationUrl,
 	apiEvaluateUrl,
@@ -78,6 +82,7 @@ export default function RulePage({
 						mobileMenuPortalId={mobileMenuPortalId}
 						openNavButtonPortalId={openNavButtonPortalId}
 						showDevSection={showDevSection}
+						searchBar={searchBar}
 					/>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
@@ -97,12 +102,14 @@ type RuleProps = {
 	| 'mobileMenuPortalId'
 	| 'openNavButtonPortalId'
 	| 'showDevSection'
+	| 'searchBar'
 >
 
 function Rule({
 	dottedName,
 	language,
 	subEngineId,
+	searchBar,
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 	npmPackage,
@@ -145,6 +152,11 @@ function Rule({
 				/>
 				<Article>
 					<DottedNameContext.Provider value={dottedName}>
+						{searchBar ?
+							<Suspense>
+								<RulesSearch />
+							</Suspense>
+						:	null}
 						<RuleHeader dottedName={dottedName} />
 						<section>
 							<Text>{description || question || ''}</Text>

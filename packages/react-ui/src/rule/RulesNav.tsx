@@ -5,6 +5,7 @@ import { styled } from 'styled-components'
 import { RuleLinkWithContext } from '../RuleLink'
 import { Arrow } from '../component/icons'
 import { useEngine } from '../hooks'
+
 interface Props {
 	dottedName: string
 	mobileMenuPortalId?: string
