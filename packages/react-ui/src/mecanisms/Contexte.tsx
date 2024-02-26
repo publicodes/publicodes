@@ -11,7 +11,7 @@ export default function Contexte({ explanation }: EvaluatedNode<'contexte'>) {
 	const engine = useEngine()
 	const contexteEngine =
 		explanation.subEngineId ?
-			engine.subEngines[explanation.subEngineId]
+			engine.subEngines[explanation.subEngineId] ?? engine
 		:	engine
 
 	return (
