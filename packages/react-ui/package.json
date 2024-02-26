@@ -16,7 +16,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/betagouv/publicodes.git",
+		"url": "https://github.com/publicodes/publicodes.git",
 		"directory": "packages/react-ui"
 	},
 	"scripts": {

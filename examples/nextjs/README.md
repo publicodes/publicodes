@@ -3,7 +3,7 @@ Projet [Next.js](https://nextjs.org/) implémentant la documentation publicodes
 Pour cloner :
 
 ```bash
-npx create-next-app --example https://github.com/betagouv/publicodes/tree/master/examples/create-react-app publicodes-nextJS
+npx create-next-app --example https://github.com/publicodes/publicodes/tree/master/examples/create-react-app publicodes-nextJS
 cd publicodes-nextJS
 ```
 
@@ -31,4 +31,3 @@ To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-

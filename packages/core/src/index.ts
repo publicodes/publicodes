@@ -97,7 +97,7 @@ export default class Engine<Name extends string = string> {
 	// TODO: A better implementation would to remove the "runtime" concept of
 	// "subEngines" and instead duplicate all rules names in the scope of the
 	// `contexte` as described in
-	// https://github.com/betagouv/publicodes/discussions/92
+	// https://github.com/publicodes/publicodes/discussions/92
 	subEngines: Array<Engine<Name>> = []
 	subEngineId: number | undefined
 

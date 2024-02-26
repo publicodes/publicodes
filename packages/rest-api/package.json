@@ -30,14 +30,14 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/betagouv/publicodes.git",
+		"url": "git+https://github.com/publicodes/publicodes.git",
 		"directory": "packages/rest-api"
 	},
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/betagouv/publicodes/issues"
+		"url": "https://github.com/publicodes/publicodes/issues"
 	},
-	"homepage": "https://github.com/betagouv/publicodes#readme",
+	"homepage": "https://github.com/publicodes/publicodes#readme",
 	"dependencies": {
 		"@koa/cors": "^3.4.3",
 		"@koa/router": "^10.1.1",

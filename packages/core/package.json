@@ -15,10 +15,10 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/betagouv/publicodes.git",
+		"url": "https://github.com/publicodes/publicodes.git",
 		"directory": "packages/core"
 	},
-	"bugs": "https://github.com/betagouv/publicodes/issues",
+	"bugs": "https://github.com/publicodes/publicodes/issues",
 	"homepage": "https://publi.codes/",
 	"license": "MIT",
 	"files": [

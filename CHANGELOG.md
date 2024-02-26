@@ -374,8 +374,8 @@ Lighten the explanations in the documentation :
 - Ajout d’une fonction `isPublicodesError` qui permet de detecter une erreur publicodes et de la typer
 - Ajout d’un attribut `dottedName` au erreurs `SyntaxError`, `EvaluationError`, `UnknownRule` et `PrivateRule`
 - Remplace la fonction `neverHappens` par une erreur `UnreachableCaseError`
-- Ajout d’une arborescence des règles dans la documentation [#250](https://github.com/betagouv/publicodes/pull/250)
-- Répare l’inférence d’unité dans une somme avec un élément non applicable [#252](https://github.com/betagouv/publicodes/pull/252)
+- Ajout d’une arborescence des règles dans la documentation [#250](https://github.com/publicodes/publicodes/pull/250)
+- Répare l’inférence d’unité dans une somme avec un élément non applicable [#252](https://github.com/publicodes/publicodes/pull/252)
 
 ## 1.0.0-beta.48
 
@@ -421,7 +421,7 @@ Lighten the explanations in the documentation :
 
 **api**
 
-- fix temporaire d’une fuite de mémoire dans l’api causée par `shallowCopy()`, issue https://github.com/betagouv/publicodes/issues/239
+- fix temporaire d’une fuite de mémoire dans l’api causée par `shallowCopy()`, issue https://github.com/publicodes/publicodes/issues/239
 
 ## 1.0.0-beta.42
 
@@ -510,7 +510,7 @@ Lighten the explanations in the documentation :
 **core**
 
 - ⚠ Changement cassant : Nouvelles valeurs littérales pour les règles non applicables (`null`) et non définies (`undefined`)
-  cf. https://github.com/betagouv/publicodes/discussions/158#discussioncomment-2132390
+  cf. https://github.com/publicodes/publicodes/discussions/158#discussioncomment-2132390
 - Nouvelle implémentation de la désactivation de branche pour éviter la remontée de « variables manquantes » inattendues
 - ⚠ Changement cassant : La fonction `parsePublicodes` retourne maintenant un objet `{ parsedRules, rulesUnit, rulesDependencies }` et non plus les seules règles parsées
 

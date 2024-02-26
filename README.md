@@ -1,4 +1,4 @@
-> 🇬🇧 Most of the documentation (including issues and commit messages) is written in French, please raise an [issue](https://github.com/betagouv/publicodes/issues/new) if you are interested and do not speak French. We intend to translate the language and the documentation in the coming weeks.
+> 🇬🇧 Most of the documentation (including issues and commit messages) is written in French, please raise an [issue](https://github.com/publicodes/publicodes/issues/new) if you are interested and do not speak French. We intend to translate the language and the documentation in the coming weeks.
 
 ## Publicodes
 
@@ -25,18 +25,18 @@ npm install publicodes
 
 ## Documentation
 
--   [Se lancer](https://publi.codes/docs/tutoriel)
--   [Principes de base](https://publi.codes/docs/principes-de-base)
--   [Bac à sable](https://publi.codes/studio)
+- [Se lancer](https://publi.codes/docs/tutoriel)
+- [Principes de base](https://publi.codes/docs/principes-de-base)
+- [Bac à sable](https://publi.codes/studio)
 
 ## Projets phares
 
--   **[mon-entreprise.fr](https://mon-entreprise.urssaf.fr/simulateurs)** utilise publicodes
-    pour spécifier l'ensemble des calculs relatifs à la législation socio-fiscale
-    en France. Le site permet entre autre de simuler une fiche de paie complète,
-    de calculer les cotisations sociales pour un indépendant ou encore connaître
-    le montant du chômage partiel.
--   **[Nos Gestes Climat](https://nosgestesclimat.fr)** utilise publicodes pour proposer un calculateur d'empreinte climat personnel de référence complètement ouvert
--   **[Code du travail numérique](https://code.travail.gouv.fr)** utilise publicodes pour des simulateur d'indemnité de licenciement et de durée de préavis de retraite.
--   **[futur.eco](https://futur.eco/)** utilise publicodes pour calculer les bilans
-    carbone d'un grand nombre d'activités, plats, transports ou biens.
+- **[mon-entreprise.fr](https://mon-entreprise.urssaf.fr/simulateurs)** utilise publicodes
+  pour spécifier l'ensemble des calculs relatifs à la législation socio-fiscale
+  en France. Le site permet entre autre de simuler une fiche de paie complète,
+  de calculer les cotisations sociales pour un indépendant ou encore connaître
+  le montant du chômage partiel.
+- **[Nos Gestes Climat](https://nosgestesclimat.fr)** utilise publicodes pour proposer un calculateur d'empreinte climat personnel de référence complètement ouvert
+- **[Code du travail numérique](https://code.travail.gouv.fr)** utilise publicodes pour des simulateur d'indemnité de licenciement et de durée de préavis de retraite.
+- **[futur.eco](https://futur.eco/)** utilise publicodes pour calculer les bilans
+  carbone d'un grand nombre d'activités, plats, transports ou biens.

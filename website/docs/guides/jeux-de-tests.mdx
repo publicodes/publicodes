@@ -85,11 +85,11 @@ test('doit renvoyer la bonne interpretation pour T=150,P=90)', () => {
 	const evaluated = engine.evaluate('résultat')
 	expect(evaluated.nodeValue.trim()).toEqual(
 		// le caractère `\u00A0` est un espace insecable inséré par publi.codes lors du formatage d'unité
-		`Votre IMC est de 40\u00A0kg / m²\nInterprétation: obésité morbide ou massive`
+		`Votre IMC est de 40\u00A0kg / m²\nInterprétation: obésité morbide ou massive`,
 	)
 })
 ```
 
-Lancez `yarn jest` et intégrez ces tests [dans votre intégration-continue](https://github.com/betagouv/publicodes/blob/3161e4017970a77f8a793fc0bb614643b28b758e/.github/workflows/test.yaml#L12) pour détecter d'éventuelles régressions.
+Lancez `yarn jest` et intégrez ces tests [dans votre intégration-continue](https://github.com/publicodes/publicodes/blob/3161e4017970a77f8a793fc0bb614643b28b758e/.github/workflows/test.yaml#L12) pour détecter d'éventuelles régressions.
 
 Tip: Utilisez [`test.each`](https://jestjs.io/fr/docs/api#testeachtablename-fn-timeout) pour créer des tableaux de tests.

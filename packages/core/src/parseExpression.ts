@@ -40,8 +40,7 @@ export type ExprAST =
 /**
  * Parse a publicodes expression into an JSON object representing the AST.
  *
- * The parsing is done with the [nearley](https://nearley.js.org/) parser based
- * on the [grammar](https://github.com/betagouv/publicodes/blob/290c079d1f22baed77a96bdd834ef6cb44fa8da9/packages/core/src/grammar.ne)
+ * The parsing is done with the [nearley](https://nearley.js.org/) parser
  *
  * @param rawNode The expression to parse
  * @param dottedName The dottedName of the rule being parsed

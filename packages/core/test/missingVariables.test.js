@@ -329,7 +329,7 @@ describe('nextSteps', function () {
 	})
 
 	it("Parent's other descendants in sums should not be included as missing variables", function () {
-		// See https://github.com/betagouv/publicodes/issues/33
+		// See https://github.com/publicodes/publicodes/issues/33
 		const rawRules = yaml.parse(`
 transport:
   somme:
@@ -369,7 +369,7 @@ transport . avion . usager:
 	})
 
 	it("Parent's other descendants in sums should not be included as missing variables, even when parent evluation is triggered by a comparison", function () {
-		// See https://github.com/betagouv/publicodes/issues/33
+		// See https://github.com/publicodes/publicodes/issues/33
 		const rawRules = yaml.parse(`
 transport:
   somme:
@@ -416,7 +416,7 @@ transport . avion . usager:
 		])
 	})
 	it("Parent's other descendants in sums should not be included as missing variables - 2", function () {
-		// See https://github.com/betagouv/publicodes/issues/33
+		// See https://github.com/publicodes/publicodes/issues/33
 		const rawRules = yaml.parse(`
 avion:
   question: prenez-vous l'avion ?
@@ -442,7 +442,7 @@ avion . impact . au sol: 5
 	})
 
 	it("Parent's other descendants in sums in applicability should be included as missing variables", function () {
-		// See https://github.com/betagouv/publicodes/issues/33
+		// See https://github.com/publicodes/publicodes/issues/33
 		const rawRules = yaml.parse(`
 a:
   applicable si: d > 3

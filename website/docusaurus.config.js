@@ -64,7 +64,7 @@ module.exports = {
 				docs: {
 					sidebarPath: require.resolve('./sidebars.js'),
 					editUrl:
-						'https://github.com/betagouv/publicodes/edit/master/website/',
+						'https://github.com/publicodes/publicodes/edit/master/website/',
 					remarkPlugins: [
 						[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }],
 						require('./src/plugins/match-publicodes.cjs'),
