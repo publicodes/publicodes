@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.5
+
+**@publicodes/react-ui**
+- fix: `contexte` visualisation crash ([#463](https://github.com/publicodes/publicodes/pull/463))
+
 ## 1.0.4
 
 **@publicodes/core**
@@ -21,6 +26,7 @@
 - fix: `inversion numérique` view
 
 ## 1.0.2
+
 - fix: value of `est non applicable` with `context` mecanism ([#454](https://github.com/publicodes/publicodes/issues/454))
 
 ## 1.0.1
