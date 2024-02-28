@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0
+
+**@publicodes/react-ui**
+- feat: add an optional search bar in the documentation ([#470](https://github.com/publicodes/publicodes/pull/463))
+
 ## 1.0.5
 
 **@publicodes/react-ui**
