@@ -19,17 +19,18 @@ export default function RulesSearch() {
 		},
 	)
 	const [searchResults, setSearchResults] = useState<SearchableRule[]>([])
+	const [searchQuery, setSearchQuery] = useState('')
 
 	const fuse = new Fuse(rules, { keys: ['title', 'name'] })
 
-	const search = (query: string) => {
-		const results = fuse.search(query, { limit: 10 })
-		setSearchResults(results.map((result) => result.item))
-	}
+	useEffect(() => {
+		setSearchQuery('')
+	}, [dottedName])
 
 	useEffect(() => {
-		search('')
-	}, [dottedName])
+		const results = fuse.search(searchQuery, { limit: 10 })
+		setSearchResults(results.map((result) => result.item))
+	}, [searchQuery])
 
 	const isEmpty = searchResults.length === 0
 
@@ -39,8 +40,9 @@ export default function RulesSearch() {
 				id="documentation-search-input"
 				type="text"
 				placeholder="Chercher une règle"
-				onChange={(e) => search(e.target.value)}
-				onFocus={(e) => search(e.target.value)}
+				value={searchQuery}
+				onChange={(e) => setSearchQuery(e.target.value)}
+				onFocus={(e) => setSearchQuery(e.target.value)}
 				empty={isEmpty}
 			/>
 			{!isEmpty ?
@@ -52,15 +54,17 @@ export default function RulesSearch() {
 								key={name}
 								id="documentation-search-item"
 								isLast={isLast}
-								onClick={() => search('')}
+								onClick={() => setSearchQuery('')}
 							>
-								<RuleLinkWithContext dottedName={name} displayIcon={true}>
-									<ItemName id="documentation-search-item-name">
-										{name}
-									</ItemName>
-									<ItemTitle id="documentation-search-item-title">
-										{title}
-									</ItemTitle>
+								<RuleLinkWithContext dottedName={name}>
+									<ItemContent>
+										<ItemName id="documentation-search-item-name">
+											{name}
+										</ItemName>
+										<ItemTitle id="documentation-search-item-title">
+											{title}
+										</ItemTitle>
+									</ItemContent>
 								</RuleLinkWithContext>
 							</SearchItem>
 						)
@@ -72,7 +76,8 @@ export default function RulesSearch() {
 }
 
 const SearchContainer = styled.div`
-	margin-bottom: 1rem;
+	margin: 1rem;
+	max-width: 350px;
 `
 
 const SearchInput = styled.input<{ empty: boolean }>`
@@ -92,6 +97,7 @@ const SearchResults = styled.div`
 	border: 1px solid #ccc;
 	border-top: none;
 	border-radius: 0 0 0.25rem 0.25rem;
+	position: relative;
 `
 
 const SearchItem = styled.div<{ isLast: boolean }>`
@@ -104,11 +110,16 @@ const SearchItem = styled.div<{ isLast: boolean }>`
 		background-color: #f6f6f6;
 	}
 `
+const ItemContent = styled.span`
+	display: flex;
+	flex-wrap: wrap;
+	flex-gap: 0.5rem;
+	align-items: center;
+`
 
 const ItemName = styled.span`
 	width: 100%;
 `
 const ItemTitle = styled.span`
-	margin-left: 1rem;
 	color: #666;
 `

@@ -109,7 +109,7 @@ function Rule({
 	dottedName,
 	language,
 	subEngineId,
-	searchBar,
+	searchBar = false,
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 	npmPackage,
@@ -149,14 +149,10 @@ function Rule({
 					dottedName={dottedName}
 					mobileMenuPortalId={mobileMenuPortalId}
 					openNavButtonPortalId={openNavButtonPortalId}
+					searchBar={searchBar}
 				/>
 				<Article>
 					<DottedNameContext.Provider value={dottedName}>
-						{searchBar ?
-							<Suspense>
-								<RulesSearch />
-							</Suspense>
-						:	null}
 						<RuleHeader dottedName={dottedName} />
 						<section>
 							<Text>{description || question || ''}</Text>
