@@ -48,16 +48,15 @@ export default function RulesSearch() {
 			{!isEmpty ?
 				<SearchResults id="documentation-search-results">
 					{searchResults.map(({ name, title }, i) => {
-						const isLast = i === searchResults.length - 1
 						return (
 							<SearchItem
 								key={name}
 								id="documentation-search-item"
-								isLast={isLast}
+								isLast={i === searchResults.length - 1}
 								onClick={() => setSearchQuery('')}
 							>
 								<RuleLinkWithContext dottedName={name}>
-									<ItemContent>
+									<ItemContent onClick={() => setSearchQuery('')}>
 										<ItemName id="documentation-search-item-name">
 											{name}
 										</ItemName>
@@ -76,7 +75,8 @@ export default function RulesSearch() {
 }
 
 const SearchContainer = styled.div`
-	margin: 1rem;
+	margin-bottom: 1rem;
+	margin-right: 1rem;
 	max-width: 350px;
 `
 

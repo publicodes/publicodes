@@ -7,7 +7,7 @@ import Engine, {
 	serializeUnit,
 	utils,
 } from 'publicodes'
-import { lazy, Suspense, useContext, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { styled } from 'styled-components'
 import {
 	BasepathContext,
@@ -23,8 +23,6 @@ import { RuleLinkWithContext } from '../RuleLink'
 import { DeveloperAccordion } from './DeveloperAccordion'
 import RuleHeader from './Header'
 import { breakpointsWidth, RulesNav } from './RulesNav'
-
-const RulesSearch = lazy(() => import('./RulesSearch'))
 
 type RulePageProps = {
 	documentationPath: string
