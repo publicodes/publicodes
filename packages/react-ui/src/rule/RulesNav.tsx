@@ -1,22 +1,38 @@
 import { utils } from 'publicodes'
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import {
+	Suspense,
+	lazy,
+	memo,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from 'react'
 import ReactDOM from 'react-dom'
 import { styled } from 'styled-components'
 import { RuleLinkWithContext } from '../RuleLink'
 import { Arrow } from '../component/icons'
 import { useEngine } from '../hooks'
+
+const RulesSearch = lazy(() => import('./RulesSearch'))
+
 interface Props {
 	dottedName: string
+	searchBar: boolean
 	mobileMenuPortalId?: string
 	openNavButtonPortalId?: string
 }
 
 export const RulesNav = ({
 	dottedName,
+	searchBar,
 	mobileMenuPortalId,
 	openNavButtonPortalId,
 }: Props) => {
 	const baseEngine = useEngine()
+	const parsedRules = baseEngine.getParsedRules()
+	const parsedRulesNames = Object.keys(parsedRules)
+
 	const [navOpen, setNavOpen] = useState(false)
 
 	const initLevel = (dn: string) =>
@@ -29,10 +45,7 @@ export const RulesNav = ({
 
 	useEffect(() => {
 		setLevel((prev) => ({ ...prev, ...initLevel(dottedName) }))
-		setNavOpen(false)
 	}, [dottedName])
-
-	const parsedRules = baseEngine.getParsedRules()
 
 	const toggleDropdown = useCallback((ruleDottedName: string) => {
 		setLevel((prevLevel) =>
@@ -75,10 +88,15 @@ export const RulesNav = ({
 				)}
 
 			<Nav $open={navOpen}>
+				{searchBar ?
+					<Suspense fallback={<p>Chargement...</p>}>
+						<RulesSearch />
+					</Suspense>
+				:	null}
 				<ul>
-					{Object.entries(parsedRules)
-						.sort(([a], [b]) => a.localeCompare(b))
-						.map(([ruleDottedName]) => {
+					{parsedRulesNames
+						.sort((a, b) => a.localeCompare(b))
+						.map((ruleDottedName) => {
 							const parentDottedName = utils.ruleParent(ruleDottedName)
 
 							if (

@@ -30,6 +30,7 @@ type RulePageProps = {
 	engine: Engine
 	language: 'fr' | 'en'
 	renderers: SupportedRenderers
+	searchBar?: boolean
 	apiDocumentationUrl?: string
 	apiEvaluateUrl?: string
 	npmPackage?: string
@@ -43,6 +44,7 @@ export default function RulePage({
 	rulePath,
 	engine,
 	renderers,
+	searchBar,
 	language,
 	apiDocumentationUrl,
 	apiEvaluateUrl,
@@ -78,6 +80,7 @@ export default function RulePage({
 						mobileMenuPortalId={mobileMenuPortalId}
 						openNavButtonPortalId={openNavButtonPortalId}
 						showDevSection={showDevSection}
+						searchBar={searchBar}
 					/>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
@@ -97,12 +100,14 @@ type RuleProps = {
 	| 'mobileMenuPortalId'
 	| 'openNavButtonPortalId'
 	| 'showDevSection'
+	| 'searchBar'
 >
 
 function Rule({
 	dottedName,
 	language,
 	subEngineId,
+	searchBar = false,
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 	npmPackage,
@@ -142,6 +147,7 @@ function Rule({
 					dottedName={dottedName}
 					mobileMenuPortalId={mobileMenuPortalId}
 					openNavButtonPortalId={openNavButtonPortalId}
+					searchBar={searchBar}
 				/>
 				<Article>
 					<DottedNameContext.Provider value={dottedName}>
