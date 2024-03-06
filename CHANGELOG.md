@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1
+
+**@publicodes/core**
+- fix: mecanism « contexte » bug when using rules impacted by the context in the context itself [#360](https://github.com/publicodes/publicodes/issues/360)  
+
 ## 1.1.0
 
 **@publicodes/react-ui**
