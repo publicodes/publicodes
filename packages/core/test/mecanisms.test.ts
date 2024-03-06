@@ -14,7 +14,7 @@ import { parseUnit } from '../src/units'
 import testSuites from './mécanismes/index'
 
 testSuites.forEach(([suiteName, suite]) => {
-	// if (suiteName !== 'remplace') return
+	// if (suiteName !== 'contexte') return
 	describe(`Mécanisme ${suiteName}`, () => {
 		const engine = new Engine(parse(suite))
 		Object.entries(engine.getParsedRules())

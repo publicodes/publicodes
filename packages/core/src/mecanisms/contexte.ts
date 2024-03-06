@@ -1,4 +1,4 @@
-import { EvaluationFunction } from '..'
+import { EvaluationFunction, PublicodesError } from '..'
 import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { notApplicableNode } from '../evaluationUtils'
@@ -40,7 +40,6 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 			.filter(([originRule, replacement]) => {
 				const originRuleEvaluation = this.evaluateNode(originRule)
 				const replacementEvaluation = this.evaluateNode(replacement)
-
 				return (
 					originRuleEvaluation.nodeValue !== replacementEvaluation.nodeValue ||
 					serializeUnit(originRuleEvaluation.unit) !==
@@ -52,7 +51,6 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 					[originRule.dottedName, replacement] as [string, ASTNode],
 			),
 	)
-
 	if (
 		this.cache._meta.currentContexteSituation ===
 		JSON.stringify(amendedSituation)
@@ -72,10 +70,40 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 		engine.setSituation(amendedSituation, {
 			keepPreviousSituation: true,
 		})
-		// The value of the replaced ruled are computed **without the replacement active**
-		Object.values(amendedSituation).forEach((value) =>
-			engine.cache.nodes.set(value, this.evaluate(value)),
-		)
+
+		// The following code ensure that we use the **origin context** evaluation
+		// for the values in the ammended situation
+
+		// We do so by altering the cache so that the situation rule seems to have already
+		// been evaluated
+
+		// This is not an elegant way of doing so, but its temporary.
+		// The correct implementation is discussed in :
+		// https://github.com/publicodes/publicodes/discussions/92
+		Object.entries(amendedSituation).forEach(([originDottedName, value]) => {
+			const evaluation = this.cache.nodes.get(value)
+			if (!evaluation) {
+				throw new PublicodesError(
+					'InternalError',
+					'The situation should have already been evaluated',
+					{
+						dottedName: this.context.dottedName,
+					},
+				)
+			}
+			const originRule =
+				engine.context.parsedRules[originDottedName + ' . $SITUATION']
+			if (!originRule?.explanation.valeur) {
+				throw new PublicodesError(
+					'InternalError',
+					'The origin rule should be defined',
+					{
+						dottedName: this.context.dottedName,
+					},
+				)
+			}
+			engine.cache.nodes.set(originRule.explanation.valeur, evaluation)
+		})
 	}
 
 	engine.cache._meta.currentContexteSituation = JSON.stringify(amendedSituation)
@@ -92,4 +120,5 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 		...('unit' in evaluatedNode && { unit: evaluatedNode.unit }),
 	}
 }
+
 registerEvaluationFunction('contexte', evaluateContexte)
