@@ -23,6 +23,27 @@ règle courante:
   exemples:
     - valeur attendue: 10
 
-x: a + b
-a: 6
-b: 6
+les variables remplacé dans un contexte sont évaluées en dehors de ce dernier:
+  avec:
+    test simple:
+      valeur: a
+      avec:
+        a: b
+        b: 5
+      contexte:
+        b: b + 10
+      exemples:
+        - valeur attendue: 15
+
+    test composé:
+      somme:
+        - a
+        - b
+      avec:
+        a: 5
+        b: 10
+      contexte:
+        a: a + b
+        b: 0
+      exemples:
+        - valeur attendue: 15
