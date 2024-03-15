@@ -1,6 +1,13 @@
-import { EvaluationFunction } from '..'
-import { ASTNode, Unit } from '../AST/types'
-import { convertToDate, convertToString } from '../date'
+import { EvaluationFunction, PublicodesError } from '..'
+import { ASTNode, Evaluation, Unit } from '../AST/types'
+import {
+	convertToString,
+	getDifferenceInDays,
+	getDifferenceInMonths,
+	getDifferenceInYears,
+	getTrimestreCivile,
+	getYear,
+} from '../date'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { defaultNode, mergeAllMissing } from '../evaluationUtils'
 import parse from '../parse'
@@ -15,29 +22,61 @@ export type DuréeNode = {
 	nodeKind: 'durée'
 }
 const evaluate: EvaluationFunction<'durée'> = function (node) {
-	const from = this.evaluateNode(node.explanation.depuis)
-	const to = this.evaluateNode(node.explanation["jusqu'à"])
-	let nodeValue
-	if ([from, to].some(({ nodeValue }) => nodeValue === undefined)) {
+	const fromNode = this.evaluateNode(node.explanation.depuis)
+	const toNode = this.evaluateNode(node.explanation["jusqu'à"])
+
+	const from = fromNode.nodeValue as Evaluation<string>
+	const to = toNode.nodeValue as Evaluation<string>
+
+	let nodeValue: Evaluation<number>
+	if (from === null || to === null) {
+		nodeValue = null
+	} else if (from === undefined || to === undefined) {
 		nodeValue = undefined
 	} else {
-		const [fromDate, toDate] = ([from.nodeValue, to.nodeValue] as string[]).map(
-			convertToDate,
-		)
-		nodeValue = Math.max(
-			0,
-			Math.round(
-				(toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24),
-			),
-		)
+		switch (node.unit.numerators[0] as PossibleUnit) {
+			case 'jour':
+				nodeValue = getDifferenceInDays(from, to)
+				break
+			case 'mois':
+				nodeValue = getDifferenceInMonths(from, to)
+				break
+			case 'an':
+				nodeValue = getDifferenceInYears(from, to)
+				break
+			case 'trimestre':
+				nodeValue = getDifferenceInMonths(from, to) / 3
+				break
+			case 'trimestre civil':
+				nodeValue =
+					Math.floor(
+						getDifferenceInMonths(
+							getTrimestreCivile(from),
+							getTrimestreCivile(to),
+						) / 3,
+					) + 1
+				break
+			case 'année civile':
+				{
+					const fromYear = '01/' + getYear(from)
+					const toYear = '01/' + getYear(to)
+					nodeValue = Math.floor(getDifferenceInYears(fromYear, toYear)) + 1
+				}
+				break
+		}
 	}
+
+	if (typeof nodeValue === 'number') {
+		nodeValue = Math.max(0, nodeValue)
+	}
+
 	return {
 		...node,
-		missingVariables: mergeAllMissing([from, to]),
+		missingVariables: mergeAllMissing([fromNode, toNode]),
 		nodeValue,
 		explanation: {
-			depuis: from,
-			"jusqu'à": to,
+			depuis: fromNode,
+			"jusqu'à": toNode,
 		},
 	}
 }
@@ -48,11 +87,38 @@ export default (v, context) => {
 		depuis: parse(v.depuis ?? today, context),
 		"jusqu'à": parse(v["jusqu'à"] ?? today, context),
 	}
+	const unit = v.unité ? parseUnit(v.unité) : parseUnit('jour')
+	if (
+		unit.denominators.length > 0 ||
+		unit.numerators.length > 1 ||
+		!possibleUnit.includes(unit.numerators[0] as PossibleUnit)
+	) {
+		throw new PublicodesError(
+			'SyntaxError',
+			`Seules les unités suivantes sont acceptées pour une durée : ${possibleUnit.join(
+				', ',
+			)}.
+	L'unité fournie est: ${unit.numerators[0]}`,
+			{
+				dottedName: context.dottedName,
+			},
+		)
+	}
 	return {
 		explanation,
-		unit: parseUnit('jour'),
+		unit,
 		nodeKind: 'durée',
 	} as DuréeNode
 }
 
 registerEvaluationFunction('durée', evaluate)
+
+type PossibleUnit = (typeof possibleUnit)[number]
+const possibleUnit = [
+	'mois',
+	'jour',
+	'an',
+	'trimestre',
+	'trimestre civil',
+	'année civile',
+] as const
