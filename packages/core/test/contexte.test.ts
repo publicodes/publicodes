@@ -84,3 +84,38 @@ describe('When rule contains itself in the context', () => {
 		})
 	})
 })
+
+describe('When we have a contexte and a situation with answers that should be taken into the "recalcul"', () => {
+	const rules = {
+		a: '10 * b',
+		'a . b': {
+			question: 'Combien ?',
+			'par défaut': 100,
+		},
+		'a . c': {
+			valeur: 'a',
+			contexte: {
+				b: '2 * b',
+			},
+		},
+	}
+
+	const situation = {
+		'a . b': 5,
+	}
+	const sandbox = sinon.createSandbox()
+
+	beforeEach(() => {
+		sandbox.spy(console, 'warn')
+	})
+	afterEach(() => {
+		sandbox.restore()
+	})
+	describe('evaluation of rule', () => {
+		it('evaluates properly', () => {
+			expect(
+				new Engine(rules).setSituation(situation).evaluate('a . c').nodeValue,
+			).to.eq(100)
+		})
+	})
+})
