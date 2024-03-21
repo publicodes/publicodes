@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import {
 	getDifferenceInMonths,
 	getDifferenceInYears,
-	getTrimestreCivile,
+	getTrimestreCivil,
 } from '../src/date'
 
 describe('Date', () => {
@@ -42,9 +42,9 @@ describe('Date', () => {
 
 	describe('trimestreCivile', () => {
 		it('should return the correct trimestre for a given date', () => {
-			expect(getTrimestreCivile('01/01/2020')).to.equal('01/01/2020')
-			expect(getTrimestreCivile('26/07/2019')).to.equal('01/07/2019')
-			expect(getTrimestreCivile('31/12/2019')).to.equal('01/10/2019')
+			expect(getTrimestreCivil('01/01/2020')).to.equal('01/01/2020')
+			expect(getTrimestreCivil('26/07/2019')).to.equal('01/07/2019')
+			expect(getTrimestreCivil('31/12/2019')).to.equal('01/10/2019')
 		})
 	})
 })

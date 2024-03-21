@@ -48,11 +48,11 @@ export function getYear(date: string): number {
 	return +date.slice(-4)
 }
 
-export function getTrimestreCivile(date: string) {
+export function getTrimestreCivil(date: string) {
 	const [, month, year] = date.split('/')
 	const trimester = Math.floor((Number.parseInt(month, 10) - 1) / 3)
 	const startingMonth = 3 * trimester + 1
-	return `01/${(startingMonth < 10 ? '0' : '') + startingMonth}/${year}`
+	return `01/${startingMonth.toString().padStart(2, '0')}/${year}`
 }
 
 export function getDifferenceInDays(from: string, to: string): number {
@@ -97,4 +97,21 @@ export function getDifferenceInYears(from: string, to: string): number {
 	).filter(isLeapYear).length
 
 	return (differenceInDays - leapYearsCount) / 365
+}
+
+export function getDifferenceInTrimestreCivils(
+	from: string,
+	to: string,
+): number {
+	return (
+		Math.floor(
+			getDifferenceInMonths(getTrimestreCivil(from), getTrimestreCivil(to)) / 3,
+		) + 1
+	)
+}
+
+export function getDifferenceInYearsCivil(from: string, to: string): number {
+	const fromYear = '01/' + getYear(from)
+	const toYear = '01/' + getYear(to)
+	return Math.floor(getDifferenceInYears(fromYear, toYear)) + 1
 }

@@ -4,9 +4,9 @@ import {
 	convertToString,
 	getDifferenceInDays,
 	getDifferenceInMonths,
+	getDifferenceInTrimestreCivils,
 	getDifferenceInYears,
-	getTrimestreCivile,
-	getYear,
+	getDifferenceInYearsCivil,
 } from '../date'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { defaultNode, mergeAllMissing } from '../evaluationUtils'
@@ -48,20 +48,10 @@ const evaluate: EvaluationFunction<'durée'> = function (node) {
 				nodeValue = getDifferenceInMonths(from, to) / 3
 				break
 			case 'trimestre civil':
-				nodeValue =
-					Math.floor(
-						getDifferenceInMonths(
-							getTrimestreCivile(from),
-							getTrimestreCivile(to),
-						) / 3,
-					) + 1
+				nodeValue = getDifferenceInTrimestreCivils(from, to)
 				break
 			case 'année civile':
-				{
-					const fromYear = '01/' + getYear(from)
-					const toYear = '01/' + getYear(to)
-					nodeValue = Math.floor(getDifferenceInYears(fromYear, toYear)) + 1
-				}
+				nodeValue = getDifferenceInYearsCivil(from, to)
 				break
 		}
 	}
