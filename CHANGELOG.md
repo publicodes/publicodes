@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+**@publicodes/core**
+- feat: add optional `unité` parameter to `durée` mecanism.
+
 ## 1.1.1
 
 **@publicodes/core**

@@ -165,7 +165,6 @@ volume:
     - 4 m
 ```
 
-
 ## variations
 
 Contient une liste de conditions (`si`) et leurs conséquences associées
@@ -203,7 +202,6 @@ taux allocation familiales:
       alors: 10%
     - sinon: 5.25%
 ```
-
 
 ## somme
 
@@ -456,7 +454,6 @@ taux réduction de cotisation:
         plafond: 100%
 ```
 
-
 ## abattement
 
 > **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
@@ -505,7 +502,7 @@ Applique un minimum à une valeur.
 ### Exemple
 
 ```publicodes
-temperature mesurée: 
+temperature mesurée:
   valeur:  -500 °C
   plancher: -273.15 °C
 ```
@@ -526,15 +523,54 @@ déduction fiscale:
 
 ## durée
 
+Permet de calculer la durée entre deux dates (la dernière date est excluse)
+
+Lorsqu'une des date est omise, la date du jour est utilisée.
+
+Il est possible de spécifier une unité pour le calcul de la durée. Les valeurs possibles sont :
+
+- `jour` : jours entre les deux dates (par défaut)
+- `mois` : mois complet (les mois incomplets sont proratisés par rapport à leur nombre de jours)
+- `trimestre` : trimestres entre les deux dates (nombre de mois / 3)
+- `an` : année complète (prend en compte les années bissextiles)
+- `année civile` : année civile différente écoulées entre les deux dates
+- `trimestre civil` : trimestres civils différents écoulés entre les deux dates
+
 ### Exemple
 
+#### Durée entre deux dates
+
 ```publicodes
-date d'embauche: 14/04/2008
-ancienneté en fin d'année:
-  unité: an
+durée de 2024:
   durée:
+    depuis: 01/01/2024
+    jusqu'à: 01/01/2025
+
+durée de 2024 en années:
+  durée:
+    unité: an
+    depuis: 01/01/2024
+    jusqu'à: 01/01/2025
+```
+
+#### En ommettant une date
+
+```publicodes
+date d'embauche: 12/04/2008
+ancienneté:
+  durée:
+    unité: an
     depuis: date d'embauche
-    jusqu'à: 31/12/2020
+```
+
+#### Durée civile
+
+```publicodes
+date de création: 31/12/2023
+durée d'activité en année civile:
+  durée:
+    unité: année civile
+    depuis: date de création
 ```
 
 ## unité
@@ -592,7 +628,7 @@ aide vélo:
       exemple * prise en charge
     }}.
 
-  avec: 
+  avec:
     prise en charge: 50%
     plafond: 500 €
     '[privé] exemple': 250 €
@@ -605,13 +641,14 @@ On peut utiliser ce mécanisme pour éviter d’avoir à [échapper les doubles 
 ```publicodes
 # ces deux règles sont équivalentes :
 
-exemple 1: 
+exemple 1:
   valeur: "'Ministère de la transition écologique et solidaire'"
 
-exemple 2: 
+exemple 2:
   texte: Ministère de la transition écologique et solidaire
 
 ```
+
 ## inversion numérique
 
 > **Mécanisme chainable** ([plus d’infos](/docs/principes-de-base#mécanismes-chaînés))
