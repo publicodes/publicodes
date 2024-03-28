@@ -1,10 +1,9 @@
 ---
 sidebar_position: 3.5
-title: Pourquoi écrire le code source en .yaml ?
+title: Pourquoi écrire le code source en yaml ?
 ---
 
-
-Exemple: l'implémentation d'un version simplifiée de la taxe sur les salaires. 
+Prenons un exemple concret : l'implémentation d'une version simplifiée de la taxe sur les salaires.
 
 ```yaml
 nom: barème annuel
@@ -36,16 +35,40 @@ formule:
 
 ```
 
-En YAML, on est libre d'écrire ce qu'on veut, quitte à demander une évolution de la syntaxe, dans la limite suivante : on écrit des objets ou des listes. 
-Ça oblige à utiliser des fonctions pour tout calcul : impossible d'écrire un code ad-hoc qui manipule des variables. 
+### Un code source déclaratif réutilisable
 
-Il faut écrire, nommer, spécifier, implémenter et documenter une fonction, que l'on appelle des mécanismes. 
+Le principe du langage YAML est simple : le langage nous met à disposition deux types, les listes et les objets. On est libre d'écrire ce que l'on veut sémantiquement, mais en n'utilisant que ces deux constructions universelles.
 
-L'avantage, c'est que c'est relativement lisible, à la fois pour le développeur et pour un ordinateur. Il est donc facile de produire à partir de cette source des visualisation qui expliquent les calculs. 
+Cette contrainte a l'avantage de rendre le code facilement interprétable, que ce
+soit par Publicodes, ou par n'importe quel autre programme : par exemple, pour
+afficher le barème ci-dessus dans une page Web, il suffit de transformer le YAML
+en object, puis d'itérer sur la valeur de l'attribut `tranches` :
 
-Ci-dessous, un équivalent en Javascript. On voit de suite apparaître les éléments de syntaxe du langage lui-même, que l'on ne peut contourner : import, from, function, `{`, `(` etc. 
+```js
+const render = (json) => (
+	<div>
+		<h3>{json.nom}</h3>
+		<ol>
+			{json.formule.barème.tranches.map((tranche) => (
+				<li>{tranche.taux}%</li>
+			))}
+		</ol>
+	</div>
+)
+```
 
+Le code YAML est donc à la fois facile à écrire, relativement expressif, et lisible à la fois par un programme et par un humain, grace à son style déclaratif. On décrit l'algorithme, plutôt que de l'implémenter dans ses détails avec l'énorme liberté d'un lanage de programmation complet.
 
+La contrainte en échange, c'est qu'on ne peut pas à la volée définir de
+nouvelles fonctions comme dans un langage généraliste : `barème` est ce qu'on
+appelle un mécanisme publicodes, disponible parmi une liste finie de mécanismes.
+
+Pourtant, c'est bien volontaire. Chaque règle doit utiliser un jeu limité de
+mécanismes, pour garantir la lisibilité et la documentation des algorithmes.
+
+Il faut écrire, nommer, spécifier, implémenter et documenter ces fonctions, que l'on appelle des mécanismes.
+
+Ci-dessous, un équivalent en Javascript.
 
 ```js
 import { calcBarème, calcAllègement } from 'Engine/mecanisms'
@@ -54,41 +77,46 @@ export default function taxeSalaires(assiette) {
 	let taxe = calcBarème(assiette, [
 		{
 			to: 7721,
-			rate: 0.0425
+			rate: 0.0425,
 		},
 		{
 			from: 7721,
 			to: 15417,
-			rate: 0.085
+			rate: 0.085,
 		},
 		{
 			from: 15417,
 			to: 152279,
-			rate: 0.136
+			rate: 0.136,
 		},
 		{
 			from: 152279,
-			rate: 0
-		}
+			rate: 0,
+		},
 	])
 
 	let taxeAllegée = calcAllègement(
 		taxe,
 		1200,
 		{ plafond: 2040, taux: 0.75 },
-		20507
+		20507,
 	)
 
 	return taxeAllegée
 }
-
 ```
 
-L'avantage de cette version, c'est qu'on peut coder ce qu'on veut plus rapidement. 
-Il est fort probable que la liberté de ne pas définir des fonctions et d'utiliser du code ad-hoc soit fréquemment exploitée par les développeurs. L'écriture est plus rapide... mais la relecture peut devenir très pénible. 
+On voit de suite apparaître les éléments de syntaxe du langage lui-même, qui sont incontournables mais qui sont des barrières à la lisibilité du domaine métier : import, from, function, `{`, `(` etc.
 
-Le code n'est plus une représentation de la loi, mais simplement une implémentation dans le seul but de faire des calculs. Il alors aussi très difficile de le lire avec un programme pour en faire autre chose.
+Le code n'est plus une représentation de la loi, mais simplement une implémentation particulière dans le seul but de faire des calculs. Il n'est pas du tout aisé de l'interpréter par exemple dans un environnement Python pour en faire quelque chose d'autre : il faut pour cela le réécrire pour extraire, spécifier, documenter les "paramètres" importants du calcul. C'est ce qu'offre Publicodes.
 
-Évidemment, on pourrait améliorer cette implémentation. Par exemple, le paramètre "franchise" qui vaut 1200 n'est plus nommé. On pourrait facilement passer un objet entier à `calclAllègement` qui permettrait de nommer ces paramètres. 
+### Moins de liberté d'écriture
 
+Il est également fort probable que la liberté de pouvoir écrire du code ad-hoc (écrit pour l'occasion) soit fréquemment exploitée par les développeurs.
 
+L'écriture est plus rapide et facile... mais la relecture peut devenir très pénible, et des erreurs s'introduisent facilement en l'absence de tests exhaustifs : concernant les barèmes, l'erreur classique concerne les seuils : supérieur ou égal, oubli du comportement au-delà des bornes, etc.
+
+D'autre part, le jeu limité de mécanisme à disposition rend l'écriture et la
+lecture plus simple pour les contributeurs non-développeurs. Le jeu de mécanisme
+à appréhender est plus limité que les possibilités d'un langage de programmation
+complet.
