@@ -5,31 +5,46 @@ title: Projets similaires
 
 # Projets similaires
 
-Le problème ciblé par publicodes est évidemment vaste. Il est donc important de noter que chaque solution, que ce soit publicodes ou un autre langage ou plateforme, ne répond qu'à un besoin précis.
+Le champ des problèmes ciblés par Publicodes est vaste. Il est donc important de ne pas tomber dans le travers "une solution pour tous les problèmes" : en fonction de votre besoin, Publicodes pourra être adapté, ou pas, et de nombreuses autres solutions existent.
 
-Alors pourquoi ce projet alors que X existe ?
+Voici quelques exemples de langages et bibliothèques qui répondent à des problèmes similaires. Alors pourquoi Publicodes alors que X existe ?
 
 ## X = n'importe quel langage de programmation complet
 
-Toutes les applications de publicodes auraient assurément pu être codées directement en Javascript, en Python, en Clojure... Ces langages permettent de tout faire, mais nous constatons que n'importe quel projet incluant un modèle de calcul qui dure avec un besoin d'itérer dans l'année et de proposer une interface utilisateur, est amené à coder ses propres fichiers de configuration (pour faciliter la tâche mentale du développeur, fiabiliser les tests, publier les données, intégrer des experts métiers non-dev...), qui deviennent alors souvent des DSL (langages personnalisés dédiées au domaine en question).
+Toutes les applications de Publicodes auraient assurément pu être codées directement en Javascript, en Python, en Clojure...
 
-Le projet passe souvent par d'autres phases incontournables, comme la gestion des conversions temporelles ou unités de calcul, etc.
+Ces langages permettent de tout faire, mais c'est aussi leur défaut, comme nous l'expliquons dans la page [pourquoi YAML](/docs/pourquoi-publicodes/pourquoi-yaml).
 
-On pourra lire à ce propos la page [Pourquoi YAML](/docs/pourquoi-publicodes/pourquoi-yaml).
+En pratique, n'importe quel projet qui développe un modèle de calcul aura besoin, pour être pérenne et maintenable, de définir ses propres fichiers de configuration (pour faciliter la tâche mentale du développeur, fiabiliser les tests, publier les données, intégrer des experts métiers non-dev...), qui deviennent alors souvent des DSL : des langages personnalisés dédiées au domaine en question.
 
 > Ecobalyse est un bon exemple de projet calculatoire [ayant développé son projet moteur de calcul](https://github.com/MTES-MCT/ecobalyse/blob/master/src/Data/Food/Process.elm), en Elm. Quite à partir sur un langage de programmation complet, il est en effet intéressant d'en choisir un fortement typé.
 
+Les projets passent souvent par d'autres phases incontournables, comme la gestion des conversions temporelles ou unités de calcul, etc.
+
+Nous pensons que Publicodes répond à un certain nombres de ces besoins, en
+particulier pour les projet de code qui comportent des algorithmes d'intérêt
+public qu'on ne peut pas se permettre de cacher au fin donc d'un code complexe,
+inaccessible si l'on n'est pas développeur expérimenté.
+
+Pourtant, les cas où Publicodes n'est pas adapté sont nombreux. Une base de code
+très simple en Javascript, ou bien typée en Typescript, peut être un choix
+pertinent en fonction de votre domaine métier.
+
 ## X = Un tableur LibreOffice, Excel ou Google Spreadsheet
 
-Une façon de voir publicodes, c'est qu'il s'agit d'un langage permettant de versionner des tableurs calculatoires dans lesquels les variables ont été nommées.
+Une façon de voir Publicodes, c'est qu'il s'agit d'un langage permettant de versionner des tableurs calculatoires dans lesquels les variables ont été nommées.
 
-Bien sûr, les tableurs gardent leur avantage incontournable : une vue 2D d'un calcul qui permet notammenr de manipuler facilement des tableaux, l'absence de nommage des variables, la facilité de travail dans un logiciel, etc.
+Par exemple dans un tableur, une case `=SOMME` sera précédée d'une case au texte en gras `Total`, et fera appel à une autre case de `=MIN`, etc. Dans Publicodes, ces cases sont des règles qui comportent les attributs standards `titre`, `description`, `notes`, `formule` faisant appel à d'autres règles.
 
-Si les tableurs sont un super moyen de commencer à travailler sur un projet calculatoire, **ses avantages sont précisément ses limites**. Impossibilité de s'y retrouver dans les variables non nommées, onglets présentés de façon linéaires, référence à d'autres tableurs introuvables, versionnage dans le nom de fichier et collaboration très difficile, etc.
+Bien sûr, les tableurs gardent leur avantage incontournable : une vue 2D d'un calcul qui permet notamment de manipuler facilement de grands tableaux, de ne pas s'embetter à nommer certaines variables, de ne pas avoir à écrire du code source dans un fichier texte, etc.
 
-On notera en particulier que collaborer sur un projet publicodes, comme sur n'importe quel projet de code source texte, permet d'utiliser [la puissance bien démontrée](docs/pourquoi-publicodes/standard-modeles-ouverts) des forges en lignes telles que Github ou Gitlab.
+Si les tableurs sont un super moyen pour commencer à travailler sur un projet calculatoire, par exemple un modèle de calcul du coût d'un trajet en voiture, **ses avantages sont précisément ses limites**.
 
-## X = Moteurs de calcul numérique, comme OpenFisca
+Impossibilité de s'y retrouver 6 mois après dans des variables non nommées, liste d'onglets comme principale organisation haut niveau, référence à d'autres tableurs souvent introuvables, versionnage dans le nom de fichier (CalculCoutVoiture3.4-revision-Cyril.xlsx) et collaboration très difficile, etc.
+
+On notera en particulier que collaborer sur un projet Publicodes, comme sur n'importe quel projet de code source texte, permet d'utiliser [la praticité éprouvée](/docs/pourquoi-publicodes/standard-modeles-ouverts) des forges en ligne telles que Github ou Gitlab et leurs _issues_, _pull requests_, _milestones_, _kanban_, etc.
+
+## X = Moteurs de calcul numérique statistique, comme OpenFisca
 
 ---
 
@@ -49,9 +64,9 @@ Le développement de toute une gamme d'applications est fortement compliqué par
 
 Une simplification a été faite dans cet exposé : le code métier est aujourd'hui en partie externalisé dans des paramètres contenant les nombres historisés utilisés par les règles de calcul. Par exemple, les valeurs historisées de votre taux de cotisation de retraite complémentaire, ou celles du SMIC. Contrairement au code métier, ces paramètres sont théoriquement de la donnée facilement exploitable par d'autres applications : on peut par exemple les visualiser sous forme de tableaux. Malheureusement, la loi n'est que rarement si simple, et l'on s'en apercevra vite : les paramètres sont eux même paramétrés... par exemple, il y a deux retraites complémentaires dans le régime général : pour les cadres et les non-cadres. Il y a donc de la logique incrustée dans ces paramètres (liste historique des taux cadres, liste historique des taux non-cadre), exploitée par le code métier pour pouvoir calculer la bonne valeur de votre cotisation retraite.
 
-L'idée de publicodes est de prendre clairement le parti d'inscrire toute la logique métier sous forme déclarative dans de la donnée. Dans notre exemple, c'est toute la description de la retraite et son calcul (des références législatives, un barème à taux marginal, des exceptions etc.) qui seront inscrits dans une base de règles lisible. Différents moteurs d'exécution pourront exploiter cette donnée pour construire les applications aujourd'hui manquantes. Il faut donc définir une nouvelle syntaxe, un format de données interprétable par un programme et assez expressif pour être lisible et agréable à écrire.
+L'idée de Publicodes est de prendre clairement le parti d'inscrire toute la logique métier sous forme déclarative dans de la donnée. Dans notre exemple, c'est toute la description de la retraite et son calcul (des références législatives, un barème à taux marginal, des exceptions etc.) qui seront inscrits dans une base de règles lisible. Différents moteurs d'exécution pourront exploiter cette donnée pour construire les applications aujourd'hui manquantes. Il faut donc définir une nouvelle syntaxe, un format de données interprétable par un programme et assez expressif pour être lisible et agréable à écrire.
 
-Pour aller plus loin, voici [un exemple d'implémentation d'une fonction de calcul dans ces deux plateformes](/docs/pourquoi-publicodes/coder-un-barème).
+Pour aller plus loin, voici [un exemple d'implémentation d'une fonction de calcul dans ces deux plateformes](/docs/pourquoi-Publicodes/coder-un-barème).
 
 [^1]: il couvre notamment les 3 grands domaines impôts sur le revenu, prestations sociales et prélèvements sur les salaires. Ceci grâce au travail de l'Institut des Politiques Publiques, d'Étalab et de l'Incubateur des Services numériques, services de l'État, ainsi qu'un certain nombre d'autres acteurs.
 [^2]: Numpy est une brique logicielle qui permet en théorie au moteur de simuler des populations entières (millions d'individus) dix fois plus rapidement. Eh oui, les processeurs qui font tourner nos ordinateurs et smartphones sont souvent mal exploités !
@@ -76,7 +91,7 @@ Une autre différence importante est que les formulaires sont à renseigner enti
 
 ## X = Catala
 
-Le [langage Catala](https://catala-lang.org/) a beaucoup de similarité avec publicodes. Il diffère notamment dans son objectif premier, qui est de couvrir le domaine métier de la loi française.
+Le [langage Catala](https://catala-lang.org/) a beaucoup de similarité avec Publicodes. Il diffère notamment dans son objectif premier, qui est de couvrir le domaine métier de la loi française.
 
 À compléter.
 
