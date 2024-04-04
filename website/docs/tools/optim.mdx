@@ -87,10 +87,15 @@ import { constantFolding } from '@publicodes/tools/optims'
 const optimizedRules = constantFolding(
   // A publicode engine instantiated with the rules to optimize.
   new Engine(baseRules),
-  // A predicate returning true if the rule needs to be kept.
-  ([ruleName, ruleNode]) => {
-    return ['root', 'root . bis'].includes(ruleName) ||  ruleNode.rawNode['to keep']
-  }
+  {
+    // A predicate returning true if the rule needs to be kept.
+    toKeep: (rule) => {
+      return (
+        ['root', 'root . bis'].includes(rule.dottedName) ||
+        !!rule.rawNode['to keep']
+      )
+    },
+  },
 )
 ```
 
