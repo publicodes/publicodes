@@ -30,6 +30,11 @@ module.exports = {
 					label: 'Bac à sable',
 				},
 				{
+					href: 'https://app.element.io/#/room/#publicodes:matrix.org',
+					label: 'Communauté',
+					position: 'right',
+				},
+				{
 					href: 'https://github.com/publicodes/publicodes',
 					label: 'GitHub',
 					position: 'right',

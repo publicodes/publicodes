@@ -3,7 +3,7 @@
 ## Publicodes
 
 [![Npm version](https://img.shields.io/npm/v/publicodes)](https://www.npmjs.com/package/publicodes)
-[![Gitter chat](https://badges.gitter.im/publicodes/publicodes.png)](https://gitter.im/publicodes/community)
+![Matrix](https://img.shields.io/matrix/publicodes%3Amatrix.org)
 
 Publicodes est un langage déclaratif pour encoder les algorithmes d'intérêt
 public. Il permet de réaliser des calculs généraux tout en fournissant une
