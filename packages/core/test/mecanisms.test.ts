@@ -11,7 +11,7 @@ import { parse } from 'yaml'
 import Engine from '../src/index'
 import { Rule } from '../src/rule'
 import { parseUnit } from '../src/units'
-import testSuites from './mecanismes/index'
+import testSuites from './mécanismes/index'
 
 testSuites.forEach(([suiteName, suite]) => {
 	// if (suiteName !== 'durée') return
