@@ -138,9 +138,10 @@ export default class Engine<Name extends string = string> {
 		this.resetCache()
 
 		const keepPreviousSituation = options.keepPreviousSituation ?? false
+		const filterSituation = options.filterSituation ?? false
 
 		Object.keys(situation).forEach((name) => {
-			if (!options.filterSituation === false) {
+			if (filterSituation === false) {
 				if (!(name in this.baseContext.parsedRules)) {
 					throw new PublicodesError(
 						'EvaluationError',
@@ -179,6 +180,9 @@ export default class Engine<Name extends string = string> {
 					delete situation[name]
 				}
 			}
+		})
+
+		Object.keys(situation).forEach((name) => {
 			if (this.baseContext.parsedRules[name].private) {
 				throw new PublicodesError(
 					'EvaluationError',
