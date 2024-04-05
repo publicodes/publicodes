@@ -33,14 +33,14 @@ describe('setSituation', () => {
 	})
 
 	it('should let the user reference rules in the situation', function () {
-		const rules = parseYaml`
+		const rules = parseYaml(`
 	referenced in situation:
 	  formule: 200
 	overwrited in situation:
 	  formule: 100
 	result:
 	  formule: overwrited in situation + 22
-	`
+	`)
 		const engine = new Engine(rules)
 		engine.setSituation({
 			'overwrited in situation': 'referenced in situation',
@@ -89,5 +89,24 @@ a . b: 5
 		`).setSituation({ a: 'oui' })
 		expect(engine.evaluate('a').nodeValue).to.equal(true)
 		expect(engine.evaluate('a . b').nodeValue).to.equal(5)
+	})
+
+	it('should filter wrong situation when option enabled (and raise warning)', () => {
+		const engine = engineFromYaml(`
+a:
+  une possibilité:
+    choix obligatoire: oui
+    possibilités:
+      - b
+      - c
+      - d
+  avec:
+    b:
+    c:
+    d:
+`).setSituation(
+			{ 'règle non valide': 10, a: 'valeur non valide' },
+			{ filterSituation: true },
+		)
 	})
 })
