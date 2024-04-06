@@ -82,10 +82,15 @@ export type EvaluationFunction<Kind extends NodeKind = NodeKind> = (
 
 export type ParsedRules<Name extends string> = Record<Name, RuleNode<Name>>
 
+export type Situation<Name extends string> = Partial<
+	Record<Name, PublicodesExpression | ASTNode>
+>
+
 export default class Engine<Name extends string = string> {
 	baseContext: Context<Name>
 	context: Context<string>
 	publicParsedRules: ParsedRules<Name>
+	publicSituation: Situation<Name>
 
 	cache: Cache = emptyCache()
 
@@ -122,6 +127,8 @@ export default class Engine<Name extends string = string> {
 				this.publicParsedRules[name] = rule as RuleNode<Name>
 			}
 		}
+
+		this.publicSituation = {} as Situation<Name>
 	}
 
 	resetCache() {
@@ -129,7 +136,7 @@ export default class Engine<Name extends string = string> {
 	}
 
 	setSituation(
-		situation: Partial<Record<Name, PublicodesExpression | ASTNode>> = {},
+		situation: Situation<Name> = {},
 		options: {
 			keepPreviousSituation?: boolean
 			filterSituation?: boolean
@@ -213,6 +220,7 @@ export default class Engine<Name extends string = string> {
 					keepPreviousSituation ? this.context : this.baseContext,
 				),
 			}
+			this.publicSituation = situation
 		} catch (error) {
 			this.baseContext = savedBaseContext
 
@@ -257,6 +265,10 @@ export default class Engine<Name extends string = string> {
 
 	getParsedRules(): ParsedRules<Name> {
 		return this.publicParsedRules
+	}
+
+	getSituation(): Situation<Name> {
+		return this.publicSituation
 	}
 
 	evaluate(value: PublicodesExpression): EvaluatedNode {
