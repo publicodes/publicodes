@@ -1,6 +1,7 @@
-import { expect } from 'chai'
+import { assert, expect } from 'chai'
 import Engine from '../src/index'
 import { engineFromYaml, parseYaml } from './utils'
+import { parse } from 'yaml'
 
 describe('setSituation', () => {
 	it('should allow to evaluate without situation', () => {
@@ -91,8 +92,9 @@ a . b: 5
 		expect(engine.evaluate('a . b').nodeValue).to.equal(5)
 	})
 
-	it('should filter wrong situation when option enabled (and raise warning)', () => {
-		const engine = engineFromYaml(`
+	it('should filter wrong situation when option enabled', () => {
+		const engine = new Engine(
+			parse(`
 a:
   une possibilité:
     choix obligatoire: oui
@@ -104,9 +106,27 @@ a:
     b:
     c:
     d:
-`).setSituation(
+`),
+			{ logger: { log: () => {}, warn: () => {}, error: () => {} } },
+		).setSituation(
 			{ 'règle non valide': 10, a: 'valeur non valide' },
 			{ filterSituation: true },
+		)
+
+		const filteredSituation = engine.getSituation()
+		expect(filteredSituation).to.deep.equal({})
+	})
+
+	it('should raise an error when rule in situation is absent in base rules', () => {
+		const engine = engineFromYaml(`
+a:
+`)
+
+		assert.throws(
+			() => engine.setSituation({ 'règle non valide': 10 }),
+			`[ Erreur dans la situation ]
+➡️  Dans la règle "règle non valide"
+✖️  Erreur lors de la mise à jour de la situation : 'règle non valide' n'existe pas dans la base de règle.`,
 		)
 	})
 })
