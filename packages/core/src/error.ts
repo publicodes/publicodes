@@ -14,6 +14,7 @@ interface PublicodesErrorTypes {
 	EvaluationError: {
 		dottedName: string
 	}
+	SituationError: { dottedName: string }
 	UnknownRule: {
 		dottedName: string
 	}
@@ -73,6 +74,7 @@ const buildMessage = (
 	const types: Partial<Record<keyof PublicodesErrorTypes, string>> = {
 		SyntaxError: 'Erreur syntaxique',
 		EvaluationError: "Erreur d'évaluation",
+		SituationError: 'Erreur dans la situation',
 		UnknownRule: 'Règle inconnue',
 		PrivateRule: 'Règle privée',
 	}

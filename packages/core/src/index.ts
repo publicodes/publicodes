@@ -151,8 +151,8 @@ export default class Engine<Name extends string = string> {
 			if (filterSituation === false) {
 				if (!(name in this.baseContext.parsedRules)) {
 					throw new PublicodesError(
-						'EvaluationError',
-						`Erreur lors de la mise à jour de la situation : ${name} n'existe pas dans la base de règle.`,
+						'SituationError',
+						`Erreur lors de la mise à jour de la situation : '${name}' n'existe pas dans la base de règle.`,
 						{ dottedName: name },
 					)
 				}
@@ -161,7 +161,7 @@ export default class Engine<Name extends string = string> {
 				if (!(name in this.baseContext.parsedRules)) {
 					warning(
 						this.baseContext.logger,
-						`La règle ${name} présente dans la situation n'existe pas dans la base de règle.`,
+						`La règle '${name}' présente dans la situation n'existe pas dans la base de règle.`,
 						{ dottedName: name },
 					)
 					delete situation[name]
@@ -170,6 +170,7 @@ export default class Engine<Name extends string = string> {
 				// We check if the value from a mutliple choices question `dottedName`
 				// is defined as a rule `dottedName . value` in the model.
 				// If not, the value in the situation is an old option, that is not an option anymore.
+				// TODO: should use a more robust way to check if the value is a possible answer already implemented elsewhere ?
 				if (
 					typeof situation[name] === 'string' &&
 					situation[name] !== 'oui' &&
@@ -181,7 +182,7 @@ export default class Engine<Name extends string = string> {
 				) {
 					warning(
 						this.baseContext.logger,
-						`La valeur "${situation[name]}" de la règle ${name} présente dans la situation n'existe pas dans la base de règle.`,
+						`La valeur "${situation[name]}" de la règle '${name}' présente dans la situation n'existe pas dans la base de règle.`,
 						{ dottedName: name },
 					)
 					delete situation[name]
