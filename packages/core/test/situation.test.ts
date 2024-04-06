@@ -129,4 +129,21 @@ a:
 ✖️  Erreur lors de la mise à jour de la situation : 'règle non valide' n'existe pas dans la base de règle.`,
 		)
 	})
+
+	it('should raise an error when situation value is not a possible answer in base rules', () => {
+		const engine = engineFromYaml(`
+a:
+  une possibilité:
+    choix obligatoire: oui
+    possibilités:
+      - b
+      - c
+      - d
+  avec:
+    b:
+    c:
+    d:
+`)
+		assert.throws(() => engine.setSituation({ a: 'valeur non valide' }), 'TODO')
+	})
 })
