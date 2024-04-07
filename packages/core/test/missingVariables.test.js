@@ -196,6 +196,7 @@ describe('Missing variables', function () {
 			'top . trois': {
 				formule: { 'une possibilité': ['ko'] },
 			},
+			'top . trois . ko': null,
 		}
 		const result = new Engine(rawRules)
 			.setSituation({ 'top . trois': "'ko'" })

@@ -109,7 +109,7 @@ a:
 `),
 			{ logger: { log: () => {}, warn: () => {}, error: () => {} } },
 		).setSituation(
-			{ 'règle non valide': 10, a: 'valeur non valide' },
+			{ 'règle non valide': 10, a: "'valeur non valide'" },
 			{ filterSituation: true },
 		)
 
@@ -144,6 +144,11 @@ a:
     c:
     d:
 `)
-		assert.throws(() => engine.setSituation({ a: 'valeur non valide' }), 'TODO')
+		assert.throws(
+			() => engine.setSituation({ a: "'valeur non valide'" }),
+			`[ Erreur dans la situation ]
+➡️  Dans la règle "a"
+✖️  La valeur "'valeur non valide'" de la règle 'a' présente dans la situation n'existe pas dans la base de règle.`,
+		)
 	})
 })

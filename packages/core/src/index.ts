@@ -2,6 +2,7 @@ import { makeASTVisitor } from './AST/index'
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
 import { PublicodesError, experimentalRuleWarning, warning } from './error'
 import { evaluationFunctions } from './evaluationFunctions'
+import { parseExpression } from './parseExpression'
 import parsePublicodes, {
 	Context,
 	RawPublicodes,
@@ -148,44 +149,45 @@ export default class Engine<Name extends string = string> {
 		const filterSituation = options.filterSituation ?? false
 
 		Object.keys(situation).forEach((name) => {
-			if (filterSituation === false) {
-				if (!(name in this.baseContext.parsedRules)) {
-					throw new PublicodesError(
-						'SituationError',
-						`Erreur lors de la mise à jour de la situation : '${name}' n'existe pas dans la base de règle.`,
-						{ dottedName: name },
-					)
-				}
-			} else {
-				// We check if the dotteName is a rule of the model
-				if (!(name in this.baseContext.parsedRules)) {
-					warning(
-						this.baseContext.logger,
-						`La règle '${name}' présente dans la situation n'existe pas dans la base de règle.`,
-						{ dottedName: name },
-					)
-					delete situation[name]
-				}
+			// We check if the dotteName is a rule of the model
+			if (!(name in this.baseContext.parsedRules)) {
+				const errorMessage = `Erreur lors de la mise à jour de la situation : '${name}' n'existe pas dans la base de règle.`
 
-				// We check if the value from a mutliple choices question `dottedName`
-				// is defined as a rule `dottedName . value` in the model.
-				// If not, the value in the situation is an old option, that is not an option anymore.
-				// TODO: should use a more robust way to check if the value is a possible answer already implemented elsewhere ?
-				if (
-					typeof situation[name] === 'string' &&
-					situation[name] !== 'oui' &&
-					situation[name] !== 'non' &&
-					!(
-						`${name} . ${situation[name]?.replaceAll(/^'|'$/g, '')}` in
-						this.baseContext.parsedRules
-					)
-				) {
-					warning(
-						this.baseContext.logger,
-						`La valeur "${situation[name]}" de la règle '${name}' présente dans la situation n'existe pas dans la base de règle.`,
-						{ dottedName: name },
-					)
+				if (filterSituation === true) {
+					warning(this.baseContext.logger, errorMessage, { dottedName: name })
 					delete situation[name]
+				} else {
+					throw new PublicodesError('SituationError', errorMessage, {
+						dottedName: name,
+					})
+				}
+			}
+
+			// We check if the value from a mutliple choices question `dottedName`
+			// is defined as a rule `dottedName . value` in the model.
+			// If not, the value in the situation is an old option, that is not an option anymore.
+			// TODO: should use a more robust way to check if the value is a possible answer already implemented elsewhere ?
+			const parsedSituationExpr =
+				typeof situation[name] === 'object' ?
+					situation[name]
+				:	parseExpression(situation[name], name)
+
+			if (
+				parsedSituationExpr?.constant?.type === 'string' &&
+				typeof situation[name] !== 'boolean' &&
+				!(
+					`${name} . ${situation[name]?.replaceAll(/^'|'$/g, '')}` in
+					this.baseContext.parsedRules
+				)
+			) {
+				const errorMessage = `La valeur "${situation[name]}" de la règle '${name}' présente dans la situation n'existe pas dans la base de règle.`
+				if (filterSituation === true) {
+					warning(this.baseContext.logger, errorMessage, { dottedName: name })
+					delete situation[name]
+				} else {
+					throw new PublicodesError('SituationError', errorMessage, {
+						dottedName: name,
+					})
 				}
 			}
 		})
