@@ -38,6 +38,7 @@ Crée un moteur d'évaluation avec les règles publicodes données en argument.
 Un moteur d'évaluation qui expose les fonctions suivantes :
 
 - `setSituation`
+- `getSituation`
 - `evaluate`
 - `getRule`
 - `getParsedRules`
@@ -62,13 +63,18 @@ avec une gestion plus fine du cache de calcul.
   des expressions, des références vers d'autres règles ou même d'utiliser des mécanismes.
 
 - `options` : Paramètres optionnels sous forme d'objet
-  - `keepPreviousSituation` : par défaut, l'appel à `setSituation` écrase la situation
-    précedemment renseignée. Pour faire une mise à jour en gardant l'état en cours, il
-    suffit de mettre ce paramètre à `true`.
+  - `keepPreviousSituation` : par défaut, l'appel à `setSituation` écrase la situation précedemment renseignée. Pour faire une mise à jour en gardant l'état en cours, il suffit de mettre ce paramètre à `true`.
+  - `filterSituation` : par défaut, si la situation renseignée contient :
+    - une règle absent de la base de règle
+    - une "réponse" donnée via un mécanisme comme "une possibilité" n'est pas une option de réponse dans la base de règle alors, le moteur renvoie une erreur. Cette option permet d'éviter au moteur de casser. Des warnings sont alors levés dans la console.
 
 **Retourne**
 L'objet engine (`this`) sur lequel la fonction a été appelée, afin de pouvoir
 utiliser une écriture chaînée (`engine.setSituation(situation).evaluate()`).
+
+### _method_ `engine.getSituation()`
+
+Permet de récuperer la situation courante du moteur, notamment dans le cas ou la situation initiale a été filtrée avec l'option `filterSituation`.
 
 ### _method_ `engine.evaluate(expression)`
 
@@ -79,8 +85,7 @@ dans un cache. Par conséquent, les appels suivants seront plus rapides.
 
 **Arguments**
 
-- `expression`: la valeur à évaluer. Cela peut-être n'importe quelle expression publicodes
-  bien formée (expression arithmétique, mécanisme, réference vers une règle).
+- `expression`: la valeur à évaluer. Cela peut-être n'importe quelle expression publicodes bien formée (expression arithmétique, mécanisme, réference vers une règle).
 
 **Retourne**
 
