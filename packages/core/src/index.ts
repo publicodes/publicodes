@@ -148,6 +148,8 @@ export default class Engine<Name extends string = string> {
 		const keepPreviousSituation = options.keepPreviousSituation ?? false
 		const filterSituation = options.filterSituation ?? false
 
+		const situationCopy = { ...situation }
+
 		Object.keys(situation).forEach((name) => {
 			// We check if the dotteName is a rule of the model
 			if (!(name in this.baseContext.parsedRules)) {
@@ -155,7 +157,7 @@ export default class Engine<Name extends string = string> {
 
 				if (filterSituation === true) {
 					warning(this.baseContext.logger, errorMessage, { dottedName: name })
-					delete situation[name]
+					delete situationCopy[name]
 				} else {
 					throw new PublicodesError('SituationError', errorMessage, {
 						dottedName: name,
@@ -183,7 +185,7 @@ export default class Engine<Name extends string = string> {
 				const errorMessage = `La valeur "${situation[name]}" de la règle '${name}' présente dans la situation n'existe pas dans la base de règle.`
 				if (filterSituation === true) {
 					warning(this.baseContext.logger, errorMessage, { dottedName: name })
-					delete situation[name]
+					delete situationCopy[name]
 				} else {
 					throw new PublicodesError('SituationError', errorMessage, {
 						dottedName: name,
@@ -192,7 +194,7 @@ export default class Engine<Name extends string = string> {
 			}
 		})
 
-		Object.keys(situation).forEach((name) => {
+		Object.keys(situationCopy).forEach((name) => {
 			if (this.baseContext.parsedRules[name].private) {
 				throw new PublicodesError(
 					'SituationError',
@@ -205,7 +207,7 @@ export default class Engine<Name extends string = string> {
 		// The situation is implemented as a special sub namespace `$SITUATION`,
 		// present on each non-private rules
 		const situationToParse = Object.fromEntries(
-			Object.entries(situation).map(([nom, value]) => [
+			Object.entries(situationCopy).map(([nom, value]) => [
 				`[privé] ${nom} . $SITUATION`,
 				value && typeof value === 'object' && 'nodeKind' in value ?
 					{ valeur: value }
@@ -223,7 +225,7 @@ export default class Engine<Name extends string = string> {
 					keepPreviousSituation ? this.context : this.baseContext,
 				),
 			}
-			this.publicSituation = situation
+			this.publicSituation = situationCopy
 		} catch (error) {
 			this.baseContext = savedBaseContext
 
@@ -231,7 +233,7 @@ export default class Engine<Name extends string = string> {
 		}
 		this.baseContext = savedBaseContext
 
-		Object.keys(situation).forEach((nom) => {
+		Object.keys(situationCopy).forEach((nom) => {
 			if (utils.isExperimental(this.context.parsedRules, nom)) {
 				experimentalRuleWarning(this.baseContext.logger, nom)
 			}
