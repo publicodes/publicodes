@@ -1,0 +1,72 @@
+BEGIN:VCALENDAR
+CALSCALE:GREGORIAN
+VERSION:2.0
+PRODID:-//IDN nextcloud.com//Calendar app 4.6.2//EN
+BEGIN:VEVENT
+CREATED:20240426T082228Z
+DTSTAMP:20240426T083043Z
+LAST-MODIFIED:20240426T083043Z
+SEQUENCE:5
+UID:2da073d0-298d-40a1-9a2f-6f92974718ce
+DTSTART;TZID=Europe/Paris:20240502T143000
+DTEND;TZID=Europe/Paris:20240502T153000
+STATUS:CONFIRMED
+DESCRIPTION:Discussion libre autour du langage publicodes (nouvelles foncti
+ onnalités\, réutilisations\, et tout ce qui touche à l'écosystème en g
+ énéral). \n\n👐 Le café est ouvert à toutes et tous\n📆 Il a lieu u
+ n jeudi sur deux \n📋 La liste des CR et les prochains sujet est accessib
+ le ici : https://pad.numerique.gouv.fr/s/A8k0lXmo1
+SUMMARY:Publicodes Café ☕ 📖
+LOCATION: https://webinaire.numerique.gouv.fr//meeting/signin/24334/creator
+ /3203/hash/4108415d48e44d515a9bc901530ba9b7ec4bd71b 
+RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=TH
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:-PT15M
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+CREATED:20240426T083107Z
+DTSTAMP:20240426T083206Z
+LAST-MODIFIED:20240426T083206Z
+SEQUENCE:2
+UID:2da073d0-298d-40a1-9a2f-6f92974718ce
+DTSTART;TZID=Europe/Paris:20240502T143000
+DTEND;TZID=Europe/Paris:20240502T153000
+STATUS:CONFIRMED
+DESCRIPTION:Discussions libres autour du langage publicodes (nouvelles fonc
+ tionnalités\, réutilisations\, et tout ce qui touche à l'écosystème en
+  général). \n\n👐 Le café est ouvert à toutes et tous\n📆 Il a lieu
+  un jeudi sur deux \n📋 La liste des CR et les prochains sujet est access
+ ible ici : https://pad.numerique.gouv.fr/s/A8k0lXmo1
+SUMMARY:Publicodes Café ☕ 📖
+LOCATION: https://webinaire.numerique.gouv.fr//meeting/signin/24334/creator
+ /3203/hash/4108415d48e44d515a9bc901530ba9b7ec4bd71b 
+RECURRENCE-ID;TZID=Europe/Paris:20240502T143000
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER;RELATED=START:-PT15M
+END:VALARM
+END:VEVENT
+BEGIN:VTIMEZONE
+TZID:Europe/Paris
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+END:VCALENDAR
