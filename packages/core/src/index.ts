@@ -195,7 +195,7 @@ export default class Engine<Name extends string = string> {
 		Object.keys(situation).forEach((name) => {
 			if (this.baseContext.parsedRules[name].private) {
 				throw new PublicodesError(
-					'EvaluationError',
+					'SituationError',
 					`Erreur lors de la mise à jour de la situation : ${name} est une règle privée (il n'est pas possible de modifier une règle privée).`,
 					{ dottedName: name },
 				)
