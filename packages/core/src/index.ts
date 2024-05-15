@@ -168,7 +168,6 @@ export default class Engine<Name extends string = string> {
 			// We check if the value from a mutliple choices question `dottedName`
 			// is defined as a rule `dottedName . value` in the model.
 			// If not, the value in the situation is an old option, that is not an option anymore.
-			// TODO: should use a more robust way to check if the value is a possible answer already implemented elsewhere ?
 			const parsedSituationExpr =
 				typeof situation[name] === 'object' ?
 					situation[name]
@@ -176,13 +175,16 @@ export default class Engine<Name extends string = string> {
 
 			if (
 				parsedSituationExpr?.constant?.type === 'string' &&
-				typeof situation[name] !== 'boolean' &&
 				!(
 					`${name} . ${situation[name]?.replaceAll(/^'|'$/g, '')}` in
 					this.baseContext.parsedRules
-				)
+				) &&
+				this.baseContext.parsedRules[name].explanation?.valeur?.rawNode?.[
+					'une possibilité'
+				]
 			) {
 				const errorMessage = `La valeur "${situation[name]}" de la règle '${name}' présente dans la situation n'existe pas dans la base de règle.`
+
 				if (filterSituation === true) {
 					warning(this.baseContext.logger, errorMessage, { dottedName: name })
 					delete situationCopy[name]
