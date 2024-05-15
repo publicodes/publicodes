@@ -92,7 +92,7 @@ a . b: 5
 		expect(engine.evaluate('a . b').nodeValue).to.equal(5)
 	})
 
-	it('should filter wrong situation when option enabled', () => {
+	it('should filter wrong situation when option enabled in setSituation', () => {
 		const engine = new Engine(
 			parse(`
 a:
@@ -114,6 +114,58 @@ a:
 		)
 
 		const filteredSituation = engine.getSituation()
+		expect(filteredSituation).to.deep.equal({})
+	})
+
+	it('should filter wrong situation when option enabled at Engine level', () => {
+		const engine = new Engine(
+			parse(`
+a:
+  une possibilité:
+    choix obligatoire: oui
+    possibilités:
+      - b
+      - c
+      - d
+  avec:
+    b:
+    c:
+    d:
+`),
+			{
+				logger: { log: () => {}, warn: () => {}, error: () => {} },
+				useSafeGetSituation: true,
+			},
+		).setSituation({ 'règle non valide': 10, a: "'valeur non valide'" })
+
+		const filteredSituation = engine.getSituation()
+		expect(filteredSituation).to.deep.equal({})
+	})
+
+	it('should filter wrong situation with safeGetSituation function', () => {
+		const engine = new Engine(
+			parse(`
+a:
+  une possibilité:
+    choix obligatoire: oui
+    possibilités:
+      - b
+      - c
+      - d
+  avec:
+    b:
+    c:
+    d:
+`),
+			{ logger: { log: () => {}, warn: () => {}, error: () => {} } },
+		)
+
+		const filteredSituation = engine.safeGetSituation({
+			situation: {
+				'règle non valide': 10,
+				a: "'valeur non valide'",
+			},
+		})
 		expect(filteredSituation).to.deep.equal({})
 	})
 
