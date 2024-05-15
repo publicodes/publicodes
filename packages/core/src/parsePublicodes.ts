@@ -29,6 +29,10 @@ export type Context<RuleNames extends string = string> = {
 	 * This is used to generate unique IDs for sub-engines, we need to generate them at
 	 *  */
 	subEngineIncrementingNumber?: number
+	/**
+	 * This is used to avoid engine to break when a situation is unvalid
+	 *  */
+	useSafeGetSituation?: boolean
 }
 
 export type RulesReplacements<RuleNames extends string> = Partial<

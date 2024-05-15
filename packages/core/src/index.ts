@@ -73,7 +73,10 @@ export type Logger = {
 }
 
 type Options = Partial<
-	Pick<Context, 'logger' | 'getUnitKey' | 'allowOrphanRules'>
+	Pick<
+		Context,
+		'logger' | 'getUnitKey' | 'allowOrphanRules' | 'useSafeGetSituation'
+	>
 >
 
 export type EvaluationFunction<Kind extends NodeKind = NodeKind> = (
@@ -146,54 +149,12 @@ export default class Engine<Name extends string = string> {
 		this.resetCache()
 
 		const keepPreviousSituation = options.keepPreviousSituation ?? false
-		const filterSituation = options.filterSituation ?? false
+		const filterSituation =
+			(options.filterSituation || this.baseContext.useSafeGetSituation) ?? false
 
-		const situationCopy = { ...situation }
-
-		Object.keys(situation).forEach((name) => {
-			// We check if the dotteName is a rule of the model
-			if (!(name in this.baseContext.parsedRules)) {
-				const errorMessage = `Erreur lors de la mise à jour de la situation : '${name}' n'existe pas dans la base de règle.`
-
-				if (filterSituation === true) {
-					warning(this.baseContext.logger, errorMessage, { dottedName: name })
-					delete situationCopy[name]
-				} else {
-					throw new PublicodesError('SituationError', errorMessage, {
-						dottedName: name,
-					})
-				}
-			}
-
-			// We check if the value from a mutliple choices question `dottedName`
-			// is defined as a rule `dottedName . value` in the model.
-			// If not, the value in the situation is an old option, that is not an option anymore.
-			const parsedSituationExpr =
-				typeof situation[name] === 'object' ?
-					situation[name]
-				:	parseExpression(situation[name], name)
-
-			if (
-				parsedSituationExpr?.constant?.type === 'string' &&
-				!(
-					`${name} . ${situation[name]?.replaceAll(/^'|'$/g, '')}` in
-					this.baseContext.parsedRules
-				) &&
-				this.baseContext.parsedRules[name].explanation?.valeur?.rawNode?.[
-					'une possibilité'
-				]
-			) {
-				const errorMessage = `La valeur "${situation[name]}" de la règle '${name}' présente dans la situation n'existe pas dans la base de règle.`
-
-				if (filterSituation === true) {
-					warning(this.baseContext.logger, errorMessage, { dottedName: name })
-					delete situationCopy[name]
-				} else {
-					throw new PublicodesError('SituationError', errorMessage, {
-						dottedName: name,
-					})
-				}
-			}
+		const situationCopy = this.safeGetSituation({
+			situation,
+			shouldThrowError: !filterSituation,
 		})
 
 		Object.keys(situationCopy).forEach((name) => {
@@ -243,6 +204,7 @@ export default class Engine<Name extends string = string> {
 				this.context.parsedRules[`${nom} . $SITUATION`],
 			)
 		})
+
 		return this
 	}
 
@@ -276,6 +238,63 @@ export default class Engine<Name extends string = string> {
 
 	getSituation(): Situation<Name> {
 		return this.publicSituation
+	}
+
+	safeGetSituation({
+		situation,
+		shouldThrowError = false,
+	}: {
+		situation: Situation<Name>
+		shouldThrowError?: boolean
+	}): Situation<Name> {
+		const situationCopy = JSON.parse(JSON.stringify(situation))
+
+		Object.keys(situation).forEach((name) => {
+			// We check if the dotteName is a rule of the model
+			if (!(name in this.baseContext.parsedRules)) {
+				const errorMessage = `Erreur lors de la mise à jour de la situation : '${name}' n'existe pas dans la base de règle.`
+
+				if (shouldThrowError === false) {
+					warning(this.baseContext.logger, errorMessage, { dottedName: name })
+					delete situationCopy[name]
+				} else {
+					throw new PublicodesError('SituationError', errorMessage, {
+						dottedName: name,
+					})
+				}
+			}
+
+			// We check if the value from a mutliple choices question `dottedName`
+			// is defined as a rule `dottedName . value` in the model.
+			// If not, the value in the situation is an old option, that is not an option anymore.
+			const parsedSituationExpr =
+				typeof situation[name] === 'object' ?
+					situation[name]
+				:	parseExpression(situation[name], name)
+
+			if (
+				parsedSituationExpr?.constant?.type === 'string' &&
+				!(
+					`${name} . ${situation[name]?.replaceAll(/^'|'$/g, '')}` in
+					this.baseContext.parsedRules
+				) &&
+				this.baseContext.parsedRules[name].explanation?.valeur?.rawNode?.[
+					'une possibilité'
+				]
+			) {
+				const errorMessage = `La valeur "${situation[name]}" de la règle '${name}' présente dans la situation n'existe pas dans la base de règle.`
+
+				if (shouldThrowError === false) {
+					warning(this.baseContext.logger, errorMessage, { dottedName: name })
+					delete situationCopy[name]
+				} else {
+					throw new PublicodesError('SituationError', errorMessage, {
+						dottedName: name,
+					})
+				}
+			}
+		})
+		return situationCopy
 	}
 
 	evaluate(value: PublicodesExpression): EvaluatedNode {
