@@ -110,7 +110,7 @@ a:
 			{ logger: { log: () => {}, warn: () => {}, error: () => {} } },
 		).setSituation(
 			{ 'règle non valide': 10, a: "'valeur non valide'" },
-			{ filterSituation: true },
+			{ shouldFilterSituation: true },
 		)
 
 		const filteredSituation = engine.getSituation()

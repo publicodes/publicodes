@@ -143,18 +143,19 @@ export default class Engine<Name extends string = string> {
 		situation: Situation<Name> = {},
 		options: {
 			keepPreviousSituation?: boolean
-			filterSituation?: boolean
+			shouldFilterSituation?: boolean
 		} = {},
 	) {
 		this.resetCache()
 
 		const keepPreviousSituation = options.keepPreviousSituation ?? false
-		const filterSituation =
-			(options.filterSituation || this.baseContext.useSafeGetSituation) ?? false
+		const shouldFilterSituation =
+			(options.shouldFilterSituation || this.baseContext.useSafeGetSituation) ??
+			false
 
 		const situationCopy = this.safeGetSituation({
 			situation,
-			shouldThrowError: !filterSituation,
+			shouldThrowError: !shouldFilterSituation,
 		})
 
 		Object.keys(situationCopy).forEach((name) => {
