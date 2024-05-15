@@ -1,40 +1,63 @@
 # Changelog
 
-## 1.2.0
+## 1.2.1
+
 **@publicodes/core**
+
+- Ajoute une méthode `safeGetSituation` à l'Engine.
+- Ajoute une option `filterSituation: boolean` à la méthode `setSituation` pour permettre de filter les règles invalides de la situation dans 2 cas :
+
+  - La règle n'est pas présente dans la base de règle
+  - La réponse donnée via un mécanisme "une possibilité" n'est pas une option de réponse
+
+  Désormais, si l'option est activée, l'évaluation de cassera pas, seule un warning sera levé.
+
+- Ajoute une option `useSafeGetSituation` à l'Engine pour utiliser activer l'option `filterSituation` par défaut.
+
+## 1.2.0
+
+**@publicodes/core**
+
 - feat: add optional `unité` parameter to `durée` mecanism.
 
 ## 1.1.1
 
 **@publicodes/core**
-- fix: mecanism « contexte » bug when using rules impacted by the context in the context itself [#360](https://github.com/publicodes/publicodes/issues/360)  
+
+- fix: mecanism « contexte » bug when using rules impacted by the context in the context itself [#360](https://github.com/publicodes/publicodes/issues/360)
 
 ## 1.1.0
 
 **@publicodes/react-ui**
+
 - feat: add an optional search bar in the documentation ([#470](https://github.com/publicodes/publicodes/pull/463))
 
 ## 1.0.5
 
 **@publicodes/react-ui**
+
 - fix: `contexte` visualisation crash ([#463](https://github.com/publicodes/publicodes/pull/463))
 
 ## 1.0.4
 
 **@publicodes/core**
+
 - [Perf] Don't evaluate barème tranche if assiette is null/undefined/0
 - Fix contexte mecanism
 
 **@publicodes/react-ui**
+
 - Various style improvement
 - Improve wording and position of « voir plus » button in somme and produit
 
 ## 1.0.3
 
 **@publicodes/core**
+
 - remove console.log
- 
+
 **@publicodes/react-ui**
+
 - style: improve readability of `context` mecanism
 - fix: `arrondi` visualisation crash (severe)
 - fix: `inversion numérique` view
