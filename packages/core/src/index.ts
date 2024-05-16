@@ -248,7 +248,7 @@ export default class Engine<Name extends string = string> {
 		situation: Situation<Name>
 		shouldThrowError?: boolean
 	}): Situation<Name> {
-		const situationCopy = JSON.parse(JSON.stringify(situation))
+		const situationCopy = {...situation}
 
 		Object.keys(situation).forEach((name) => {
 			// We check if the dotteName is a rule of the model
