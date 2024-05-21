@@ -376,6 +376,7 @@ export default class Engine<Name extends string = string> {
 		newEngine.baseContext = copyContext(this.baseContext)
 		newEngine.context = copyContext(this.context)
 		newEngine.publicParsedRules = this.publicParsedRules
+		newEngine.publicSituation = this.publicSituation
 		newEngine.cache = {
 			...emptyCache(),
 
