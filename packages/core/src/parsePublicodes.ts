@@ -32,7 +32,7 @@ export type Context<RuleNames extends string = string> = {
 	/**
 	 * This is used to avoid engine to break when a situation is unvalid
 	 *  */
-	useSafeGetSituation?: boolean
+	safeMode?: boolean
 }
 
 export type RulesReplacements<RuleNames extends string> = Partial<

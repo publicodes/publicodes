@@ -73,10 +73,7 @@ export type Logger = {
 }
 
 type Options = Partial<
-	Pick<
-		Context,
-		'logger' | 'getUnitKey' | 'allowOrphanRules' | 'useSafeGetSituation'
-	>
+	Pick<Context, 'logger' | 'getUnitKey' | 'allowOrphanRules' | 'safeMode'>
 >
 
 export type EvaluationFunction<Kind extends NodeKind = NodeKind> = (
@@ -143,22 +140,24 @@ export default class Engine<Name extends string = string> {
 		situation: Situation<Name> = {},
 		options: {
 			keepPreviousSituation?: boolean
-			shouldFilterSituation?: boolean
 		} = {},
 	) {
 		this.resetCache()
 
 		const keepPreviousSituation = options.keepPreviousSituation ?? false
-		const shouldFilterSituation =
-			(options.shouldFilterSituation || this.baseContext.useSafeGetSituation) ??
-			false
+		const safeMode = this.baseContext.safeMode ?? false
 
-		const situationCopy = this.safeGetSituation({
+		const filteredSituation = this.safeGetSituation({
 			situation,
-			shouldThrowError: !shouldFilterSituation,
+			shouldThrowError: !safeMode,
 		})
 
-		Object.keys(situationCopy).forEach((name) => {
+		this.publicSituation =
+			keepPreviousSituation ?
+				{ ...this.publicSituation, ...filteredSituation }
+			:	filteredSituation
+
+		Object.keys(this.publicSituation).forEach((name) => {
 			if (this.baseContext.parsedRules[name].private) {
 				throw new PublicodesError(
 					'SituationError',
@@ -171,7 +170,7 @@ export default class Engine<Name extends string = string> {
 		// The situation is implemented as a special sub namespace `$SITUATION`,
 		// present on each non-private rules
 		const situationToParse = Object.fromEntries(
-			Object.entries(situationCopy).map(([nom, value]) => [
+			Object.entries(this.publicSituation).map(([nom, value]) => [
 				`[privé] ${nom} . $SITUATION`,
 				value && typeof value === 'object' && 'nodeKind' in value ?
 					{ valeur: value }
@@ -189,7 +188,6 @@ export default class Engine<Name extends string = string> {
 					keepPreviousSituation ? this.context : this.baseContext,
 				),
 			}
-			this.publicSituation = situationCopy
 		} catch (error) {
 			this.baseContext = savedBaseContext
 
@@ -197,7 +195,7 @@ export default class Engine<Name extends string = string> {
 		}
 		this.baseContext = savedBaseContext
 
-		Object.keys(situationCopy).forEach((nom) => {
+		Object.keys(this.publicSituation).forEach((nom) => {
 			if (utils.isExperimental(this.context.parsedRules, nom)) {
 				experimentalRuleWarning(this.baseContext.logger, nom)
 			}

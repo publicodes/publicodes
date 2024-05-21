@@ -29,7 +29,7 @@ Crée un moteur d'évaluation avec les règles publicodes données en argument.
     seulement les erreurs, il suffit d'utiliser :
     `logger: { log: (_) => {}, warn: (_) => {}, error: console.error }`.
   - `getUnitKey` : permet de spécifier une fonction de _normalisation_ des unités. Par défaut, les unités ne sont pas _normalisées_.
-  - `useSafeGetSituation` : permet d'activer l'option `shouldFilterSituation` par défaut dans l'engine lors de l'utilisation de la méthode `setSituation`.
+  - `safeMode` : permet de gérer les erreurs de `situation` invalides pour afficher des warnings à la place des erreurs. Par défaut, cette option est désactivée.
 
 > publicodes n'accepte plus en entrée une chaîne de caractères YAML, car le
 > parser YAML alourdissait beaucoup la biblitothèque
@@ -64,7 +64,6 @@ une situation particulière. La situation est gardée en mémoire, et chaque app
 
 - `options` : Paramètres optionnels sous forme d'objet
   - `keepPreviousSituation` : par défaut à `false`, l'appel à `setSituation` écrase la situation précedemment renseignée. Pour faire une mise à jour en gardant l'état en cours, il suffit de mettre ce paramètre à `true`.
-  - `shouldFilterSituation` : par défaut à `false`, permet de forcer l'utilisation de la méthode `safeGetSituation` pour traiter la situation renseignée. Cela permet de gérer les cas où la situation renseignée est invalide et d'éviter de lever une erreur.
 
 **Retourne**
 L'objet engine (`this`) sur lequel la fonction a été appelée, afin de pouvoir
