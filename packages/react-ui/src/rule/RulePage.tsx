@@ -1,5 +1,4 @@
 import Engine, {
-	ASTNode,
 	EvaluatedNode,
 	formatValue,
 	PublicodesExpression,
@@ -278,31 +277,21 @@ const Article = styled.article`
 	}
 `
 
+// We get related-to-rule variables from the current situation
 function buildSituationUsedInRule<Names extends string>(
 	engine: Engine<Names>,
 	rule: EvaluatedNode & RuleNode,
 ): Partial<Record<Names, PublicodesExpression>> {
-	const situation = [...(rule.traversedVariables as Names[]), rule.dottedName]
-		.map((name) => {
-			const valeur = engine.context.parsedRules[`${name} . $SITUATION`]?.rawNode
-				.valeur as ASTNode
-			return [name, valeur] as const
-		})
-		.filter(
-			([, valeur]) =>
-				valeur &&
-				!(valeur.nodeKind === 'constant' && valeur.nodeValue === undefined),
-		)
-		.reduce(
-			(acc, [name, valeur]) => ({
-				[name]:
-					typeof valeur === 'object' && valeur && 'rawNode' in valeur ?
-						valeur.rawNode
-					:	valeur,
-				...acc,
-			}),
-			{},
-		)
+	const currentSituation = engine.getSituation()
 
-	return situation
+	const situationUsedInRule = Object.fromEntries(
+		Object.entries(currentSituation).filter(([dottedName]) => {
+			if (dottedName === rule.dottedName) {
+				return true
+			}
+			return rule.traversedVariables?.includes(dottedName)
+		}),
+	) as Record<Names, PublicodesExpression>
+
+	return situationUsedInRule
 }
