@@ -1,6 +1,6 @@
 import { makeASTVisitor } from './AST/index'
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
-import { PublicodesError, experimentalRuleWarning, warning } from './error'
+import { PublicodesError, experimentalRuleWarning } from './error'
 import { evaluationFunctions } from './evaluationFunctions'
 import { parseExpression } from './parseExpression'
 import parsePublicodes, {
@@ -140,60 +140,62 @@ export default class Engine<Name extends string = string> {
 		situation: Situation<Name> = {},
 		options: {
 			keepPreviousSituation?: boolean
+			safeMode?: boolean
 		} = {},
 	) {
 		this.resetCache()
 
 		const keepPreviousSituation = options.keepPreviousSituation ?? false
-		const safeMode = this.baseContext.safeMode ?? false
+		const safeMode = options.safeMode ?? this.baseContext.safeMode ?? false
+		const previousContext = this.context
 
-		const filteredSituation = this.safeGetSituation({
-			situation,
-			shouldThrowError: !safeMode,
-		})
+		this.context =
+			keepPreviousSituation ? this.context : copyContext(this.baseContext)
 
-		this.publicSituation =
-			keepPreviousSituation ?
-				{ ...this.publicSituation, ...filteredSituation }
-			:	filteredSituation
-
-		Object.keys(this.publicSituation).forEach((name) => {
-			if (this.baseContext.parsedRules[name].private) {
-				throw new PublicodesError(
-					'SituationError',
-					`Erreur lors de la mise à jour de la situation : ${name} est une règle privée (il n'est pas possible de modifier une règle privée).`,
-					{ dottedName: name },
-				)
-			}
-		})
-
-		// The situation is implemented as a special sub namespace `$SITUATION`,
-		// present on each non-private rules
-		const situationToParse = Object.fromEntries(
-			Object.entries(this.publicSituation).map(([nom, value]) => [
-				`[privé] ${nom} . $SITUATION`,
-				value && typeof value === 'object' && 'nodeKind' in value ?
-					{ valeur: value }
-				:	value,
-			]),
+		let situationRules = Object.entries(situation).filter(
+			([dottedName, value]) => {
+				const error = this.checkSituationRule(dottedName, value)
+				if (!error) return true
+				if (safeMode) {
+					this.baseContext.logger.error(error.message)
+					return false
+				} else {
+					this.context = previousContext
+					throw error
+				}
+			},
 		)
 
-		const savedBaseContext = copyContext(this.baseContext)
-
-		try {
-			this.context = {
-				...this.baseContext,
-				...parsePublicodes(
-					situationToParse as RawPublicodes<Name>,
-					keepPreviousSituation ? this.context : this.baseContext,
-				),
+		if (!safeMode) {
+			// Without safemode, we parse everything at once to improve performance,
+			// as the first error will stop the process anyway
+			const error = this.parseSituationRules(situationRules)
+			if (error) {
+				this.context = previousContext
+				throw error
 			}
-		} catch (error) {
-			this.baseContext = savedBaseContext
-
-			throw error
+		} else {
+			// With safemode on, we filter out the rules that throw an error during parsing
+			// So we need to parse them one by one
+			situationRules = situationRules.filter((situationRule) => {
+				if (!safeMode) {
+					return true
+				}
+				const error = this.parseSituationRules([situationRule])
+				if (error) {
+					this.baseContext.logger.error(error.message)
+				}
+				return !error
+			})
 		}
-		this.baseContext = savedBaseContext
+
+		if (!keepPreviousSituation) {
+			this.publicSituation = {}
+		}
+		this.publicSituation = Object.assign(
+			this.publicSituation,
+			Object.fromEntries(situationRules),
+		)
 
 		Object.keys(this.publicSituation).forEach((nom) => {
 			if (utils.isExperimental(this.context.parsedRules, nom)) {
@@ -237,63 +239,6 @@ export default class Engine<Name extends string = string> {
 
 	getSituation(): Situation<Name> {
 		return this.publicSituation
-	}
-
-	safeGetSituation({
-		situation,
-		shouldThrowError = false,
-	}: {
-		situation: Situation<Name>
-		shouldThrowError?: boolean
-	}): Situation<Name> {
-		const situationCopy = { ...situation }
-
-		Object.keys(situation).forEach((name) => {
-			// We check if the dotteName is a rule of the model
-			if (!(name in this.baseContext.parsedRules)) {
-				const errorMessage = `Erreur lors de la mise à jour de la situation : '${name}' n'existe pas dans la base de règle.`
-
-				if (shouldThrowError === false) {
-					warning(this.baseContext.logger, errorMessage, { dottedName: name })
-					delete situationCopy[name]
-				} else {
-					throw new PublicodesError('SituationError', errorMessage, {
-						dottedName: name,
-					})
-				}
-			}
-
-			// We check if the value from a mutliple choices question `dottedName`
-			// is defined as a rule `dottedName . value` in the model.
-			// If not, the value in the situation is an old option, that is not an option anymore.
-			const parsedSituationExpr =
-				typeof situation[name] === 'object' ?
-					situation[name]
-				:	parseExpression(situation[name], name)
-
-			if (
-				parsedSituationExpr?.constant?.type === 'string' &&
-				!(
-					`${name} . ${situation[name]?.replaceAll(/^'|'$/g, '')}` in
-					this.baseContext.parsedRules
-				) &&
-				this.baseContext.parsedRules[name].explanation?.valeur?.rawNode?.[
-					'une possibilité'
-				]
-			) {
-				const errorMessage = `La valeur "${situation[name]}" de la règle '${name}' présente dans la situation n'existe pas dans la base de règle.`
-
-				if (shouldThrowError === false) {
-					warning(this.baseContext.logger, errorMessage, { dottedName: name })
-					delete situationCopy[name]
-				} else {
-					throw new PublicodesError('SituationError', errorMessage, {
-						dottedName: name,
-					})
-				}
-			}
-		})
-		return situationCopy
 	}
 
 	evaluate(value: PublicodesExpression): EvaluatedNode {
@@ -397,4 +342,72 @@ export default class Engine<Name extends string = string> {
 		}
 		return 'continue'
 	})
+
+	private checkSituationRule(
+		dottedName: string,
+		value: unknown,
+	): false | PublicodesError<'SituationError'> {
+		// We check if the dotteName is a rule of the model
+		if (!(dottedName in this.baseContext.parsedRules)) {
+			const errorMessage = `'${dottedName}' n'existe pas dans la base de règle.`
+
+			return new PublicodesError('SituationError', errorMessage, {
+				dottedName,
+			})
+		}
+
+		if (this.baseContext.parsedRules[dottedName].private) {
+			const errorMessage = `La règle ${dottedName} est une règle privée.`
+			return new PublicodesError('SituationError', errorMessage, { dottedName })
+		}
+
+		// We check if the value from a mutliple choices question `dottedName`
+		// is defined as a rule `dottedName . value` in the model.
+		// If not, the value in the situation is an old option, that is not an option anymore.
+		const parsedSituationExpr =
+			typeof value === 'string' && parseExpression(value, dottedName)
+
+		if (
+			parsedSituationExpr &&
+			'constant' in parsedSituationExpr &&
+			parsedSituationExpr.constant.type === 'string' &&
+			!(
+				`${dottedName} . ${parsedSituationExpr.constant.nodeValue}` in
+				this.baseContext.parsedRules
+			) &&
+			this.baseContext.parsedRules[dottedName].explanation?.valeur?.rawNode?.[
+				'une possibilité'
+			]
+		) {
+			const errorMessage = `La valeur ${value} ne fait pas parti des possibilités listées dans la base de règles.`
+
+			return new PublicodesError('SituationError', errorMessage, {
+				dottedName,
+			})
+		}
+
+		return false
+	}
+
+	private parseSituationRules(
+		situation: Array<[dottedName: string, value: unknown]>,
+	): false | PublicodesError<'SituationError'> {
+		const situationToParse = Object.fromEntries(
+			situation.map(([dottedName, value]) => [
+				`[privé] ${dottedName} . $SITUATION`,
+				value && typeof value === 'object' && 'nodeKind' in value ?
+					{ valeur: value }
+				:	value,
+			]),
+		) as RawPublicodes<Name>
+		try {
+			const newContext = parsePublicodes(situationToParse, this.context)
+			this.context = Object.assign(this.context, newContext)
+			return false
+		} catch (error) {
+			return new PublicodesError('SituationError', error.message, {
+				dottedName: error.dottedName,
+			})
+		}
+	}
 }

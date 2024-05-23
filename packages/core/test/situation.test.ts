@@ -1,7 +1,7 @@
 import { assert, expect } from 'chai'
+import { parse } from 'yaml'
 import Engine from '../src/index'
 import { engineFromYaml, parseYaml } from './utils'
-import { parse } from 'yaml'
 
 describe('setSituation', () => {
 	it('should allow to evaluate without situation', () => {
@@ -117,33 +117,6 @@ a:
 		expect(filteredSituation).to.deep.equal({})
 	})
 
-	it('should filter wrong situation with safeGetSituation function', () => {
-		const engine = new Engine(
-			parse(`
-a:
-  une possibilité:
-    choix obligatoire: oui
-    possibilités:
-      - b
-      - c
-      - d
-  avec:
-    b:
-    c:
-    d:
-`),
-			{ logger: { log: () => {}, warn: () => {}, error: () => {} } },
-		)
-
-		const filteredSituation = engine.safeGetSituation({
-			situation: {
-				'règle non valide': 10,
-				a: "'valeur non valide'",
-			},
-		})
-		expect(filteredSituation).to.deep.equal({})
-	})
-
 	it('should raise an error when rule in situation is absent in base rules', () => {
 		const engine = engineFromYaml(`
 a:
@@ -151,9 +124,9 @@ a:
 
 		assert.throws(
 			() => engine.setSituation({ 'règle non valide': 10 }),
-			`[ Erreur dans la situation ]
+			`[ Erreur lors de la mise à jour de la situation ]
 ➡️  Dans la règle "règle non valide"
-✖️  Erreur lors de la mise à jour de la situation : 'règle non valide' n'existe pas dans la base de règle.`,
+✖️  'règle non valide' n'existe pas dans la base de règle.`,
 		)
 	})
 
@@ -173,9 +146,22 @@ a:
 `)
 		assert.throws(
 			() => engine.setSituation({ a: "'valeur non valide'" }),
-			`[ Erreur dans la situation ]
+			`[ Erreur lors de la mise à jour de la situation ]
 ➡️  Dans la règle "a"
-✖️  La valeur "'valeur non valide'" de la règle 'a' présente dans la situation n'existe pas dans la base de règle.`,
+✖️  La valeur 'valeur non valide' ne fait pas parti des possibilités listées dans la base de règles.`,
 		)
+	})
+
+	it('should keep previous situation when an error occurs in setSituation', () => {
+		const engine = engineFromYaml(`
+a:
+`)
+		engine.setSituation({ a: 10 })
+
+		try {
+			engine.setSituation({ a: 'non valide' })
+		} catch (e) {
+			expect(engine.evaluate('a').nodeValue).to.equal(10)
+		}
 	})
 })

@@ -74,7 +74,7 @@ const buildMessage = (
 	const types: Partial<Record<keyof PublicodesErrorTypes, string>> = {
 		SyntaxError: 'Erreur syntaxique',
 		EvaluationError: "Erreur d'évaluation",
-		SituationError: 'Erreur dans la situation',
+		SituationError: 'Erreur lors de la mise à jour de la situation',
 		UnknownRule: 'Règle inconnue',
 		PrivateRule: 'Règle privée',
 	}

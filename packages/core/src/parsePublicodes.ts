@@ -69,14 +69,13 @@ export function createContext<RuleNames extends string>(
 }
 
 export function copyContext<C extends Context>(context: C): C {
-	return {
-		...context,
-		parsedRules: { ...context.parsedRules },
+	return Object.assign({}, context, {
+		parsedRules: weakCopyObj(context.parsedRules),
 		referencesMaps: {
 			referencesIn: new Map(context.referencesMaps.referencesIn),
 			rulesThatUse: new Map(context.referencesMaps.rulesThatUse),
 		},
-	}
+	})
 }
 export default function parsePublicodes<
 	ContextNames extends string,
