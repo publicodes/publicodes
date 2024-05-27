@@ -4,15 +4,13 @@
 
 **@publicodes/core**
 
-- Ajoute une méthode `safeGetSituation` à l'Engine.
-- Ajoute une option `shouldFilterSituation: boolean` à la méthode `setSituation` pour permettre de filter les règles invalides de la situation dans 2 cas :
+- Ajoute une méthode `getSituation` à l'Engine.
+- Ajoute une option `safeMode: boolean` à la méthode `setSituation` et à l'`engine` pour permettre de filter les règles invalides de la situation dans 2 cas :
 
   - La règle n'est pas présente dans la base de règle
   - La réponse donnée via un mécanisme "une possibilité" n'est pas une option de réponse
 
-  Désormais, si l'option est activée, l'évaluation de cassera pas, seule un warning sera levé.
-
-- Ajoute une option `useSafeGetSituation` à l'Engine pour utiliser activer l'option `shouldFilterSituation` par défaut.
+  Désormais, si l'option est activée, l'évaluation de cassera pas et un warning sera levé.
 
 ## 1.2.0
 

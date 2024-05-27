@@ -29,7 +29,7 @@ Crée un moteur d'évaluation avec les règles publicodes données en argument.
     seulement les erreurs, il suffit d'utiliser :
     `logger: { log: (_) => {}, warn: (_) => {}, error: console.error }`.
   - `getUnitKey` : permet de spécifier une fonction de _normalisation_ des unités. Par défaut, les unités ne sont pas _normalisées_.
-  - `safeMode` : permet de gérer les erreurs de `situation` invalides pour afficher des warnings à la place des erreurs. Par défaut, cette option est désactivée.
+  - `safeMode` : (cette option correspond à celle de `setSituation`) permet de gérer les erreurs de `situation` invalides pour éviter à l'engine de casser. Par défaut, cette option est désactivée. Passée à l'engine, la méthode `setSituation` sera appelée avec cette option activée.
 
 > publicodes n'accepte plus en entrée une chaîne de caractères YAML, car le
 > parser YAML alourdissait beaucoup la biblitothèque
@@ -50,7 +50,7 @@ Permet de spécifier une situation en entrée. Toutes les prochaines évaluation
 seront effectuées en se basant sur ces valeurs plutôt que les valeurs présentes
 dans la base de règles.
 
-Si la situation n'est pas valide (règles absentes du modèle de calcul, valeurs non correctes), le moteur lèvera une erreur. Pour éviter cela, il est possible d'utiliser l'option `shouldFilterSituation`, des warnings seront alors levés dans la console et la situation sera filtrée.
+Si la situation n'est pas valide (règles absentes du modèle de calcul, valeurs non correctes), le moteur lèvera une erreur. Pour éviter cela, il est possible d'utiliser l'option `safeMode`, des warnings seront alors levés dans la console et la situation sera filtrée. Il sera possible d'observer les différences entre les deux situations via `getSituation`.
 
 C'est le point d'entrée principal pour adapter les calculs de règles générales à
 une situation particulière. La situation est gardée en mémoire, et chaque appel
@@ -64,6 +64,7 @@ une situation particulière. La situation est gardée en mémoire, et chaque app
 
 - `options` : Paramètres optionnels sous forme d'objet
   - `keepPreviousSituation` : par défaut à `false`, l'appel à `setSituation` écrase la situation précedemment renseignée. Pour faire une mise à jour en gardant l'état en cours, il suffit de mettre ce paramètre à `true`.
+  - `safeMode` : par défaut à `false`, permet de filtrer les règles et valeurs de la situation invalides au moment de l'ajout de la situation au moteur.
 
 **Retourne**
 L'objet engine (`this`) sur lequel la fonction a été appelée, afin de pouvoir
@@ -71,30 +72,10 @@ utiliser une écriture chaînée (`engine.setSituation(situation).evaluate()`).
 
 ### _method_ `engine.getSituation()`
 
-Permet de récupérer la situation courante du moteur, notamment dans le cas ou la situation initiale a été filtrée avec l'option `shouldFilterSituation`.
+Permet de récupérer la situation courante du moteur, notamment dans le cas ou la situation initiale a été filtrée avec l'option `safeMode`.
 
 **Retourne**
 La situation courante du moteur.
-
-### _method_ `engine.safeGetSituation()`
-
-Permet de traiter une `situation` donnée dans le contexte du moteur. En effet, dans certains cas, la situation peut être invalide:
-
-- une règle absent de la base de règle
-- une "réponse" donnée via un mécanisme comme "une possibilité" qui n'est pas une option de réponse dans la base de règle
-
-Les erreurs ou warnings sont gérés par cette méthode.
-
-**Arguments**
-
-- `situation` : cf arguments de `setSituation`.
-
-- `options` : Paramètres optionnels sous forme d'objet
-  - `shouldThrowError` : par défaut à `false`. Permet de forcer le moteur à lever une erreur si la situation renseignée est invalide.
-
-**Retourne**
-
-La situation traitée.
 
 ### _method_ `engine.evaluate(expression)`
 
