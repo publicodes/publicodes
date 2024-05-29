@@ -54,9 +54,23 @@ type Cache = {
 	nodes: Map<PublicodesExpression | ASTNode, EvaluatedNode>
 }
 
-type Options = Partial<
-	Pick<Context, 'logger' | 'getUnitKey' | 'allowOrphanRules' | 'safeMode'>
->
+/**
+ * @typedef {Object} Options
+ */
+type Options = Partial<Pick<Context, 'logger' | 'getUnitKey'>> & {
+	/**
+	 * Don't throw an error if the parent of a rule is not found.
+	 * This is useful to parse partial rule sets (e.g. optimized ones).
+	 * @deprecated Use the `strict: { parentRule: false }` option instead
+	 */
+	allowOrphanRules?: boolean
+	/**
+	 * Specify if the engine should throw error when it detects an anomaly or just log it and continue.
+	 * Can be be set globally or for specific rules.
+	 * @default true
+	 *  */
+	strict?: boolean | Context['strict']
+}
 
 export default class Engine<Name extends string = string> {
 	baseContext: Context<Name>
@@ -79,10 +93,19 @@ export default class Engine<Name extends string = string> {
 	subEngineId: number | undefined
 
 	constructor(rules: RawPublicodes<Name> = {}, options: Options = {}) {
+		const strict = options.strict ?? true
 		const initialContext = {
 			dottedName: '' as const,
 			...options,
+			strict:
+				typeof strict === 'boolean' ?
+					{
+						situation: strict,
+						noOrphanRule: strict,
+					}
+				:	strict,
 		}
+
 		this.baseContext = createContext({
 			...initialContext,
 			...parsePublicodes<never, Name>(rules, initialContext),
@@ -110,25 +133,41 @@ export default class Engine<Name extends string = string> {
 	setSituation(
 		situation: Situation<Name> = {},
 		options: {
+			/**
+			 * If true, the previous situation is kept and the new values are added to it.
+			 * @default false
+			 */
 			keepPreviousSituation?: boolean
-			safeMode?: boolean
+			/**
+			 * If set to true, the engine will throw when the
+			 * situation contains invalid values
+			 * (rules that don't exists, or values with syntax errors).
+			 *
+			 * If set to false, it will log the error and filter the invalid values from the situation
+			 *
+			 * Overrides the [global strict option]{@link Options.strict}
+			 */
+			strict?: boolean
 		} = {},
 	) {
 		this.resetCache()
 
 		const keepPreviousSituation = options.keepPreviousSituation ?? false
-		const safeMode = options.safeMode ?? this.baseContext.safeMode ?? false
+		const strictMode =
+			options.strict ?? this.baseContext.strict.situation ?? true
 
 		let situationRules = Object.entries(situation).filter(
 			([dottedName, value]) => {
-				const error = this.checkSituationRule(dottedName, value)
+				const error = this.checkSituationRule(
+					dottedName as Name,
+					value as PublicodesExpression | ASTNode,
+				)
 				if (!error) return true
-				if (safeMode) {
-					this.baseContext.logger.error(error.message)
-					return false
+				if (strictMode) {
+					throw error
 				}
-
-				throw error
+				this.baseContext.logger.error(error.message)
+				return false
 			},
 		)
 
@@ -138,8 +177,8 @@ export default class Engine<Name extends string = string> {
 			this.publicSituation = {}
 		}
 
-		if (!safeMode) {
-			// Without safemode, we parse everything at once to improve performance,
+		if (strictMode) {
+			// With strict mode, we parse everything at once to improve performance,
 			// as the first error will stop the process anyway
 			const error = this.parseSituationRules(situationRules)
 			if (error) {
@@ -147,7 +186,7 @@ export default class Engine<Name extends string = string> {
 				throw error
 			}
 		} else {
-			// With safemode on, we filter out the rules that throw an error during parsing
+			// With strict mode off, we filter out the rules that throw an error during parsing
 			// So we need to parse them one by one
 			situationRules = situationRules.filter((situationRule) => {
 				const error = this.parseSituationRules([situationRule])
@@ -310,8 +349,8 @@ export default class Engine<Name extends string = string> {
 	})
 
 	private checkSituationRule(
-		dottedName: string,
-		value: unknown,
+		dottedName: Name,
+		value: PublicodesExpression | ASTNode,
 	): false | PublicodesError<'SituationError'> {
 		// We check if the dotteName is a rule of the model
 		if (!(dottedName in this.baseContext.parsedRules)) {
@@ -327,9 +366,7 @@ export default class Engine<Name extends string = string> {
 			return new PublicodesError('SituationError', errorMessage, { dottedName })
 		}
 
-		if (
-			!isAValidOption(this, dottedName as Name, value as Situation<Name>[Name])
-		) {
+		if (!isAValidOption(this, dottedName, value)) {
 			const errorMessage = `La valeur ${value} ne fait pas parti des possibilités listées dans la base de règles.`
 
 			return new PublicodesError('SituationError', errorMessage, {

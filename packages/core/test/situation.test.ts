@@ -92,7 +92,7 @@ a . b: 5
 		expect(engine.evaluate('a . b').nodeValue).to.equal(5)
 	})
 
-	it('should filter wrong situation when `safeMode` option enabled', () => {
+	it('should filter wrong situation when `strict` option is set to `false`', () => {
 		const engine = new Engine(
 			parse(`
 a:
@@ -109,7 +109,9 @@ a:
 `),
 			{
 				logger: { log: () => {}, warn: () => {}, error: () => {} },
-				safeMode: true,
+				strict: {
+					situation: false,
+				},
 			},
 		).setSituation({ 'règle non valide': 10, a: "'valeur non valide'" })
 
