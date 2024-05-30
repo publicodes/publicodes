@@ -70,7 +70,7 @@ export default function RulePage({
 					<Rule
 						dottedName={utils.decodeRuleName(rulePath)}
 						subEngineId={
-							currentEngineId ? parseInt(currentEngineId) : undefined
+							currentEngineId ? parseInt(currentEngineId, 10) : undefined
 						}
 						language={language}
 						apiDocumentationUrl={apiDocumentationUrl}
@@ -116,9 +116,10 @@ function Rule({
 }: RuleProps) {
 	const baseEngine = useEngine()
 	const { References, Text } = useContext(RenderersContext)
-
-	const useSubEngine = subEngineId && baseEngine.subEngines[subEngineId]
-	const engine = useSubEngine ? baseEngine.subEngines[subEngineId] : baseEngine
+	const subEngines = baseEngine.context.subEngines
+	const useSubEngine = subEngineId && subEngines.has(subEngineId)
+	const engine =
+		useSubEngine ? (subEngines.get(subEngineId) as Engine) : baseEngine
 
 	if (!(dottedName in engine.context.parsedRules)) {
 		return <p>Cette règle est introuvable dans la base</p>

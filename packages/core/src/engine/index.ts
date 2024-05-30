@@ -80,18 +80,6 @@ export default class Engine<Name extends string = string> {
 
 	cache: Cache = emptyCache()
 
-	// The subEngines attribute is used to get an outside reference to the
-	// `contexte` intermediate calculations. The `contexte` mechanism uses
-	// `shallowCopy` to instanciate a new engine, and we want to keep a reference
-	// to it for the documentation.
-	//
-	// TODO: A better implementation would to remove the "runtime" concept of
-	// "subEngines" and instead duplicate all rules names in the scope of the
-	// `contexte` as described in
-	// https://github.com/publicodes/publicodes/discussions/92
-	subEngines: Array<Engine<Name>> = []
-	subEngineId: number | undefined
-
 	constructor(rules: RawPublicodes<Name> = {}, options: Options = {}) {
 		const strict = options.strict ?? true
 		const initialContext = {

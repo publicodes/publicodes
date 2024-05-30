@@ -16,18 +16,22 @@ export type ContextNode = {
 }
 
 export default function parseMecanismContexte(v, context) {
-	const contexte = Object.keys(v.contexte).map((dottedName) => [
-		parse(dottedName, context),
-		parse(v.contexte[dottedName], context),
-	])
-
 	const node = parse(v.valeur, context)
+
+	const contexte = (
+		Object.keys(v.contexte).map((dottedName) => [
+			parse(dottedName, context),
+			parse(v.contexte[dottedName], context),
+		]) as Array<[ReferenceNode, ASTNode]>
+	).sort(([a], [b]) => a.name.localeCompare(b.name))
+
+	const contextHash = simpleHash(JSON.stringify(contexte))
 
 	return {
 		explanation: {
 			valeur: node,
 			contexte,
-			subEngineId: context.subEngineIncrementingNumber++,
+			subEngineId: contextHash,
 		},
 		nodeKind: parseMecanismContexte.nom,
 	} as ContextNode
@@ -63,47 +67,53 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 		}
 	}
 
-	const engine = this.shallowCopy()
-	engine.subEngineId = node.explanation.subEngineId
-	this.subEngines[node.explanation.subEngineId] = engine
-	if (Object.keys(amendedSituation).length) {
-		engine.setSituation(amendedSituation, {
-			keepPreviousSituation: true,
-		})
+	let engine
+	if (this.context.subEngines.has(node.explanation.subEngineId)) {
+		engine = this.context.subEngines.get(node.explanation.subEngineId)
+	} else {
+		engine = this.shallowCopy()
+		engine.context.subEngineId = node.explanation.subEngineId
+		this.context.subEngines.set(node.explanation.subEngineId, engine)
 
-		// The following code ensure that we use the **origin context** evaluation
-		// for the values in the ammended situation
+		if (Object.keys(amendedSituation).length) {
+			engine.setSituation(amendedSituation, {
+				keepPreviousSituation: true,
+			})
 
-		// We do so by altering the cache so that the situation rule seems to have already
-		// been evaluated
+			// The following code ensure that we use the **origin context** evaluation
+			// for the values in the ammended situation
 
-		// This is not an elegant way of doing so, but its temporary.
-		// The correct implementation is discussed in :
-		// https://github.com/publicodes/publicodes/discussions/92
-		Object.entries(amendedSituation).forEach(([originDottedName, value]) => {
-			const evaluation = this.cache.nodes.get(value)
-			if (!evaluation) {
-				throw new PublicodesError(
-					'InternalError',
-					'The situation should have already been evaluated',
-					{
-						dottedName: this.context.dottedName,
-					},
-				)
-			}
-			const originRule =
-				engine.context.parsedRules[originDottedName + ' . $SITUATION']
-			if (!originRule?.explanation.valeur) {
-				throw new PublicodesError(
-					'InternalError',
-					'The origin rule should be defined',
-					{
-						dottedName: this.context.dottedName,
-					},
-				)
-			}
-			engine.cache.nodes.set(originRule.explanation.valeur, evaluation)
-		})
+			// We do so by altering the cache so that the situation rule seems to have already
+			// been evaluated
+
+			// This is not an elegant way of doing so, but its temporary.
+			// The correct implementation is discussed in :
+			// https://github.com/publicodes/publicodes/discussions/92
+			Object.entries(amendedSituation).forEach(([originDottedName, value]) => {
+				const evaluation = this.cache.nodes.get(value)
+				if (!evaluation) {
+					throw new PublicodesError(
+						'InternalError',
+						'The situation should have already been evaluated',
+						{
+							dottedName: this.context.dottedName,
+						},
+					)
+				}
+				const originRule =
+					engine.context.parsedRules[originDottedName + ' . $SITUATION']
+				if (!originRule?.explanation.valeur) {
+					throw new PublicodesError(
+						'InternalError',
+						'The origin rule should be defined',
+						{
+							dottedName: this.context.dottedName,
+						},
+					)
+				}
+				engine.cache.nodes.set(originRule.explanation.valeur, evaluation)
+			})
+		}
 	}
 
 	engine.cache._meta.currentContexteSituation = JSON.stringify(amendedSituation)
@@ -122,3 +132,10 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 }
 
 registerEvaluationFunction('contexte', evaluateContexte)
+
+function simpleHash(s: string) {
+	let h
+	for (let i = 0, h = 9; i < s.length; )
+		h = Math.imul(h ^ s.charCodeAt(i++), 9 ** 9)
+	return h ^ (h >>> 9)
+}

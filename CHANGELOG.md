@@ -1,10 +1,16 @@
 # Changelog
 
+## 1.3.2
+**@publicodes/core**
+
+- Perf : améliore les performance du mécanisme `contexte`. Si plusieurs contextes sont identiques, alors ils partagent un `subEngine` pour éviter de recalculer les mêmes règles plusieurs fois (#484)
+
 ## 1.3.1
 
 **@publicodes/core**
 
 - Fix `allowOrphanRules` option which was broken by 1.3.0
+
 
 ## 1.3.0
 
