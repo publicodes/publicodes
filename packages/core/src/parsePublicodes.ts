@@ -20,15 +20,30 @@ export type Context<RuleNames extends string = string> = {
 	getUnitKey?: getUnitKey
 	logger: Logger
 	inversionMaxIterations?: number
-	/**
-	 * Don't throw an error if the parent of a rule is not found.
-	 * This is useful to parse partial rule sets (e.g. optimized ones).
-	 */
-	allowOrphanRules: boolean
+
 	/**
 	 * This is used to generate unique IDs for sub-engines, we need to generate them at
 	 *  */
 	subEngineIncrementingNumber?: number
+
+	strict: {
+		/**
+		 * If set to true, the engine will throw when the
+		 * situation contains invalid values
+		 * (rules that don't exists, or values with syntax errors).
+		 *
+		 * If set to false, it will log the error and filter the invalid values from the situation
+		 * @default true
+		 */
+		situation?: boolean
+
+		/**
+		 * If set to true, the engine will throw when parsing a rule whose parent doesn't exist
+		 * This can be set to false to parse partial rule sets (e.g. optimized ones).
+		 * @default true
+		 */
+		noOrphanRule?: boolean
+	}
 }
 
 export type RulesReplacements<RuleNames extends string> = Partial<
@@ -56,23 +71,24 @@ export function createContext<RuleNames extends string>(
 		referencesMaps: { referencesIn: new Map(), rulesThatUse: new Map() },
 		nodesTypes: new WeakMap(),
 		rulesReplacements: {},
-		allowOrphanRules: false,
-
 		subEngineIncrementingNumber: 1,
-
+		strict: {
+			situation: true,
+			noOrphanRule: true,
+			...partialContext.strict,
+		},
 		...partialContext,
 	}
 }
 
 export function copyContext<C extends Context>(context: C): C {
-	return {
-		...context,
-		parsedRules: { ...context.parsedRules },
+	return Object.assign({}, context, {
+		parsedRules: weakCopyObj(context.parsedRules),
 		referencesMaps: {
 			referencesIn: new Map(context.referencesMaps.referencesIn),
 			rulesThatUse: new Map(context.referencesMaps.rulesThatUse),
 		},
-	}
+	})
 }
 export default function parsePublicodes<
 	ContextNames extends string,
@@ -116,7 +132,7 @@ export default function parsePublicodes<
 			parsedRules,
 			context.parsedRules,
 			context.referencesMaps,
-			context.allowOrphanRules,
+			!context.strict.noOrphanRule,
 		)
 
 	// STEP 4: Inline replacements

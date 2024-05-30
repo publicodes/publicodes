@@ -4,9 +4,9 @@ exports[`evaluate > Test error in expression and situation at same time 1`] = `
 {
   "situationError": {
     "message": "
-[ Erreur d'évaluation ]
+[ Erreur lors de la mise à jour de la situation ]
 ➡️  Dans la règle \\"test\\"
-✖️  Erreur lors de la mise à jour de la situation : test n'existe pas dans la base de règle.",
+✖️  'test' n'existe pas dans la base de règle.",
   },
 }
 `;
@@ -15,9 +15,9 @@ exports[`evaluate > Test invalid syntax in situation 1`] = `
 {
   "situationError": {
     "message": "
-[ Erreur d'évaluation ]
+[ Erreur lors de la mise à jour de la situation ]
 ➡️  Dans la règle \\"test\\"
-✖️  Erreur lors de la mise à jour de la situation : test n'existe pas dans la base de règle.",
+✖️  'test' n'existe pas dans la base de règle.",
   },
 }
 `;

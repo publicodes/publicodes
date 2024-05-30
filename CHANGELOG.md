@@ -1,40 +1,61 @@
 # Changelog
 
-## 1.2.0
+## 1.2.1
+
 **@publicodes/core**
+
+- Ajoute une méthode `getSituation` à l'Engine.
+- Ajoute une option `strict` à l'engine qui permet de lever des erreurs au lieu de warning. Elle peut être finement configurée pour lever certaines erreurs et pas d'autres.
+
+- Ajoute une option `situation` dans le mode strict. Si cette dernière est passée à `false`, alors les règles invalides de la situation seront filtrées sans lever d'erreurs. Une règle est invalide si : 
+  - La règle n'est pas présente dans la base de règle ou est privée
+  - La réponse donnée via un mécanisme "une possibilité" n'est pas une option de réponse
+  - La valeur donnée pour une règle n'est pas valide (syntaxe incorrecte, etc.)
+
+## 1.2.0
+
+**@publicodes/core**
+
 - feat: add optional `unité` parameter to `durée` mecanism.
 
 ## 1.1.1
 
 **@publicodes/core**
-- fix: mecanism « contexte » bug when using rules impacted by the context in the context itself [#360](https://github.com/publicodes/publicodes/issues/360)  
+
+- fix: mecanism « contexte » bug when using rules impacted by the context in the context itself [#360](https://github.com/publicodes/publicodes/issues/360)
 
 ## 1.1.0
 
 **@publicodes/react-ui**
+
 - feat: add an optional search bar in the documentation ([#470](https://github.com/publicodes/publicodes/pull/463))
 
 ## 1.0.5
 
 **@publicodes/react-ui**
+
 - fix: `contexte` visualisation crash ([#463](https://github.com/publicodes/publicodes/pull/463))
 
 ## 1.0.4
 
 **@publicodes/core**
+
 - [Perf] Don't evaluate barème tranche if assiette is null/undefined/0
 - Fix contexte mecanism
 
 **@publicodes/react-ui**
+
 - Various style improvement
 - Improve wording and position of « voir plus » button in somme and produit
 
 ## 1.0.3
 
 **@publicodes/core**
+
 - remove console.log
- 
+
 **@publicodes/react-ui**
+
 - style: improve readability of `context` mecanism
 - fix: `arrondi` visualisation crash (severe)
 - fix: `inversion numérique` view

@@ -1,4 +1,5 @@
-import { expect } from 'chai'
+import { assert, expect } from 'chai'
+import { parse } from 'yaml'
 import Engine from '../src/index'
 import { engineFromYaml, parseYaml } from './utils'
 
@@ -33,14 +34,14 @@ describe('setSituation', () => {
 	})
 
 	it('should let the user reference rules in the situation', function () {
-		const rules = parseYaml`
+		const rules = parseYaml(`
 	referenced in situation:
 	  formule: 200
 	overwrited in situation:
 	  formule: 100
 	result:
 	  formule: overwrited in situation + 22
-	`
+	`)
 		const engine = new Engine(rules)
 		engine.setSituation({
 			'overwrited in situation': 'referenced in situation',
@@ -89,5 +90,80 @@ a . b: 5
 		`).setSituation({ a: 'oui' })
 		expect(engine.evaluate('a').nodeValue).to.equal(true)
 		expect(engine.evaluate('a . b').nodeValue).to.equal(5)
+	})
+
+	it('should filter wrong situation when `strict` option is set to `false`', () => {
+		const engine = new Engine(
+			parse(`
+a:
+  une possibilité:
+    choix obligatoire: oui
+    possibilités:
+      - b
+      - c
+      - d
+  avec:
+    b:
+    c:
+    d:
+`),
+			{
+				logger: { log: () => {}, warn: () => {}, error: () => {} },
+				strict: {
+					situation: false,
+				},
+			},
+		).setSituation({ 'règle non valide': 10, a: "'valeur non valide'" })
+
+		const filteredSituation = engine.getSituation()
+		expect(filteredSituation).to.deep.equal({})
+	})
+
+	it('should raise an error when rule in situation is absent in base rules', () => {
+		const engine = engineFromYaml(`
+a:
+`)
+
+		assert.throws(
+			() => engine.setSituation({ 'règle non valide': 10 }),
+			`[ Erreur lors de la mise à jour de la situation ]
+➡️  Dans la règle "règle non valide"
+✖️  'règle non valide' n'existe pas dans la base de règle.`,
+		)
+	})
+
+	it('should raise an error when situation value is not a possible answer in base rules', () => {
+		const engine = engineFromYaml(`
+a:
+  une possibilité:
+    choix obligatoire: oui
+    possibilités:
+      - b
+      - c
+      - d
+  avec:
+    b:
+    c:
+    d:
+`)
+		assert.throws(
+			() => engine.setSituation({ a: "'valeur non valide'" }),
+			`[ Erreur lors de la mise à jour de la situation ]
+➡️  Dans la règle "a"
+✖️  La valeur 'valeur non valide' ne fait pas parti des possibilités listées dans la base de règles.`,
+		)
+	})
+
+	it('should keep previous situation when an error occurs in setSituation', () => {
+		const engine = engineFromYaml(`
+a:
+`)
+		engine.setSituation({ a: 10 })
+
+		try {
+			engine.setSituation({ a: 'non valide' })
+		} catch (e) {
+			expect(engine.evaluate('a').nodeValue).to.equal(10)
+		}
 	})
 })
