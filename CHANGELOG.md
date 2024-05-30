@@ -1,13 +1,13 @@
 # Changelog
 
-## 1.2.1
+## 1.3.0
 
 **@publicodes/core**
 
 - Ajoute une méthode `getSituation` à l'Engine.
 - Ajoute une option `strict` à l'engine qui permet de lever des erreurs au lieu de warning. Elle peut être finement configurée pour lever certaines erreurs et pas d'autres.
 
-- Ajoute une option `situation` dans le mode strict. Si cette dernière est passée à `false`, alors les règles invalides de la situation seront filtrées sans lever d'erreurs. Une règle est invalide si : 
+- Ajoute une option `situation` dans le mode strict. Si cette dernière est passée à `false`, alors les règles invalides de la situation seront filtrées sans lever d'erreurs. Une règle est invalide si :
   - La règle n'est pas présente dans la base de règle ou est privée
   - La réponse donnée via un mécanisme "une possibilité" n'est pas une option de réponse
   - La valeur donnée pour une règle n'est pas valide (syntaxe incorrecte, etc.)
