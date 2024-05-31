@@ -1,10 +1,10 @@
 # Changelog
 
-## 1.3.2
+## 1.3.1
 
 - Ajoute une explication sur le calcul du score des `missingVariables` souvent utilisé pour la gestion de l'ordre des questions dans les questionnaires.
 
-## 1.2.1
+## 1.3.0
 
 **@publicodes/core**
 
