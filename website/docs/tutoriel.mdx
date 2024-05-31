@@ -220,6 +220,12 @@ portion non active de l'évaluation (par exemple dans un bloc condition non
 actif, ou la tranche d'un barème non actif) elle sera filtrée et n'apparaîtra
 pas dans les `missingVariables`.
 
+:::info
+
+> Un "score" est attribué à chacune de ces variables manquantes. Ce score traduit le poids de la règle dans le calcul de la variable évaluée et est calculé selon une heuristique propre à Publicodes. Il prend en compte notamment le nombre d'occurences de la variable dans le calcul, le nombre de règles qui dépendent de cette variable, sa présence dans certains mécanismes. Ainsi, et à titre d'exemple, une variable qui conditionne l'applicabilité d'une autre sera prioritaire dans la liste des variables manquantes.
+
+:::
+
 ### Documentation interactive
 
 Publicodes génère également pour vous une documentation interactive, très
@@ -260,11 +266,11 @@ function MonApp() {
 }
 ```
 
-> Note : si vous utilisez Next.js, utilisez l'option renderers suivante : 
+> Note : si vous utilisez Next.js, utilisez l'option renderers suivante :
+
 ```js
 renderers={{ Link: ({ to, ...rest }) => <Link href={to} {...rest} /> }}
 ```
-
 
 Vous pourrez ensuite faire un lien vers la documentation avec le composant
 `RuleLink`.
