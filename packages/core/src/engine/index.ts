@@ -101,7 +101,7 @@ export default class Engine<Name extends string = string> {
 				typeof strict === 'boolean' ?
 					{
 						situation: strict,
-						noOrphanRule: strict,
+						noOrphanRule: options.allowOrphanRules === true ? false : strict,
 					}
 				:	strict,
 		}
