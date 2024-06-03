@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.1
+
+**@publicodes/core**
+
+- Fix `allowOrphanRules` option which was broken by 1.3.0
+
 ## 1.3.0
 
 **@publicodes/core**
