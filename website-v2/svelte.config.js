@@ -1,18 +1,17 @@
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { escapeSvelte, mdsvex } from 'mdsvex';
-import { getHighlighter } from 'shiki';
+import { mdsvex } from 'mdsvex';
 
 /** @type {import('mdsvex').MdsvexOptions} */
 const mdsvexOptions = {
-	extensions: ['.md'],
-	highlight: {
-		highlighter: async (code, lang = 'text') => {
-			const highlighter = await getHighlighter({ theme: 'github-light' });
-			const html = escapeSvelte(highlighter.codeToHtml(code, { lang }));
-			return `{@html \`${html}\` }`;
-		}
-	}
+	extensions: ['.svelte.md']
+	// highlight: {
+	// 	highlighter: async (code, lang = 'text') => {
+	// 		const highlighter = await getHighlighter({ theme: 'github-light' });
+	// 		const html = escapeSvelte(highlighter.codeToHtml(code, { lang }));
+	// 		return `{@html \`${html}\` }`;
+	// 	}
+	// }
 };
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -26,7 +25,7 @@ const config = {
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter()
 	},
-	extensions: ['.svelte', '.md']
+	extensions: ['.svelte', '.svelte.md']
 };
 
 export default config;

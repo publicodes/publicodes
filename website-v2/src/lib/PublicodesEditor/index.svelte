@@ -6,7 +6,7 @@
 	const html = highlight(code);
 </script>
 
-<div class="editor rounded-lg bg-sky-600">
+<div class="editor not-prose rounded-lg bg-sky-600">
 	<div class="text-bold w-full p-4 font-bold text-blue-50">{title}</div>
 	{#await html}
 		<pre><code>{code}</code></pre>

@@ -8,7 +8,6 @@
 	import Card from '$lib/ui/card.svelte';
 </script>
 
-<!-- Gradient is a little bit inclined (30deg) -->
 <header class="bg-gradient-to-r from-sky-700 to-slate-400 py-4">
 	<div class="mx-auto mt-4 flex gap-12 p-10 lg:container">
 		<div class="flex-1">
@@ -21,8 +20,8 @@
 				<a href="/tutoriel">
 					<Button>Tutoriel</Button>
 				</a>
-				<a href="/tutoriel">
-					<Button light>Voir le guide</Button>
+				<a href="/docs">
+					<Button light>Documentation</Button>
 				</a>
 			</div>
 		</div>
