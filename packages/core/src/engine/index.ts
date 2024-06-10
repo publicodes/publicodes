@@ -21,6 +21,7 @@ import {
 	computeTraversedVariableBeforeEval,
 	isTraversedVariablesBoundary,
 } from '../traversedVariables'
+import { weakCopyObj } from '../utils'
 import { isAValidOption } from './utils'
 
 const emptyCache = (): Cache => ({
@@ -314,10 +315,9 @@ export default class Engine<Name extends string = string> {
 		newEngine.baseContext = copyContext(this.baseContext)
 		newEngine.context = copyContext(this.context)
 		newEngine.publicParsedRules = this.publicParsedRules
-		newEngine.publicSituation = this.publicSituation
+		newEngine.publicSituation = weakCopyObj(this.publicSituation)
 		newEngine.cache = {
 			...emptyCache(),
-
 			nodes: new Map(this.cache.nodes),
 		}
 		return newEngine
