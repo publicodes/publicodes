@@ -82,6 +82,22 @@ describe('setSituation', () => {
 		expect(engine.evaluate('c').nodeValue).to.equal(5)
 	})
 
+	it('context rules should not be added in the situation with keepPreviousSituation', () => {
+		const engine = new Engine(
+			parse(`
+a:
+  formule: b
+  contexte:
+    b: 50
+b: 10
+c: 20
+`),
+		).setSituation({ c: 100 }, { keepPreviousSituation: true })
+		engine.evaluate('a')
+		const filteredSituation = engine.getSituation()
+		expect(filteredSituation).to.deep.equal({ c: 100 })
+	})
+
 	it('should allow to make a rule applicable in the situation', () => {
 		const engine = engineFromYaml(`
 a:
