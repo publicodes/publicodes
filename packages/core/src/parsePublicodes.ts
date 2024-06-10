@@ -1,4 +1,4 @@
-import { Logger, ParsedRules } from '.'
+import Engine, { Logger, ParsedRules } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
 import { PublicodesError } from './error'
 import inferNodeType, { NodesTypes } from './inferNodeType'
@@ -44,7 +44,21 @@ export type Context<RuleNames extends string = string> = {
 		 */
 		noOrphanRule?: boolean
 	}
+
+	// The subEngines attribute is used to get an outside reference to the
+	// `contexte` intermediate calculations. The `contexte` mechanism uses
+	// `shallowCopy` to instanciate a new engine, and we want to keep a reference
+	// to it for the documentation.
+	//
+	// TODO: A better implementation would to remove the "runtime" concept of
+	// "subEngines" and instead duplicate all rules names in the scope of the
+	// `contexte` as described in
+	// https://github.com/publicodes/publicodes/discussions/92
+	subEngines: Map<SituationHash, Engine<RuleNames>>
+	subEngineId: SituationHash | undefined
 }
+
+type SituationHash = number
 
 export type RulesReplacements<RuleNames extends string> = Partial<
 	Record<RuleNames, ReplacementRule[]>
@@ -71,7 +85,8 @@ export function createContext<RuleNames extends string>(
 		referencesMaps: { referencesIn: new Map(), rulesThatUse: new Map() },
 		nodesTypes: new WeakMap(),
 		rulesReplacements: {},
-		subEngineIncrementingNumber: 1,
+		subEngines: new Map(),
+		subEngineId: undefined,
 		strict: {
 			situation: true,
 			noOrphanRule: true,
@@ -88,6 +103,7 @@ export function copyContext<C extends Context>(context: C): C {
 			referencesIn: new Map(context.referencesMaps.referencesIn),
 			rulesThatUse: new Map(context.referencesMaps.rulesThatUse),
 		},
+		subEngines: new Map(),
 	})
 }
 export default function parsePublicodes<

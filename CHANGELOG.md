@@ -1,10 +1,19 @@
 # Changelog
 
+
+## 1.3.2
+
+**@publicodes/core**
+- Fix `setSituation` with `keepPreviousSituation` option which was broken when using `context` mecanism (#487)
+- Perf: improves the performance of the `context` mechanism. If several contexts are identical, then they share a `subEngine` to avoid recalculating the same rules several times (#484)
+
+
 ## 1.3.1
 
 **@publicodes/core**
 
 - Fix `allowOrphanRules` option which was broken by 1.3.0
+
 
 ## 1.3.0
 
