@@ -1,6 +1,6 @@
 {
 	"name": "publicodes",
-	"version": "1.3.2",
+	"version": "1.3.3",
 	"description": "A declarative language for encoding public algorithm",
 	"types": "dist/index.d.ts",
 	"type": "module",

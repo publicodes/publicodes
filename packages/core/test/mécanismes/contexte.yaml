@@ -47,3 +47,47 @@ les variables remplacé dans un contexte sont évaluées en dehors de ce dernier
         b: 0
       exemples:
         - valeur attendue: 15
+
+les contextes imbriqués fonctionnent comme attendu:
+  description: Lors de plusieurs contextes imbriqués, le contexte le plus profond a la priorité.
+  avec:
+    x:
+      valeur: y
+      contexte:
+        a: 1
+        b: 1
+      exemples:
+        - valeur attendue: 3
+
+    y:
+      valeur: z
+      contexte:
+        a: 2
+      exemples:
+        - valeur attendue: 2
+
+    z: a + b
+    a: 0
+    b: 0
+
+deux contextes différents donnent des résultats différents:
+  avec:
+    x:
+      valeur: a
+      contexte:
+        a: 1
+      exemples:
+        - valeur attendue: 1
+
+    y:
+      valeur: a
+      contexte:
+        a: 2
+      exemples:
+        - valeur attendue: 2
+
+    a: 0
+  valeur: x + y
+
+  exemples:
+    - valeur attendue: 3
