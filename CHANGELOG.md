@@ -1,5 +1,7 @@
 # Changelog
 
+## 1.3.3
+- Fix critical bug with `context` mecanism introduced in 1.3.2
 
 ## 1.3.2
 

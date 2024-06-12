@@ -24,9 +24,7 @@ export default function parseMecanismContexte(v, context) {
 			parse(v.contexte[dottedName], context),
 		]) as Array<[ReferenceNode, ASTNode]>
 	).sort(([a], [b]) => a.name.localeCompare(b.name))
-
 	const contextHash = simpleHash(JSON.stringify(contexte))
-
 	return {
 		explanation: {
 			valeur: node,
@@ -133,9 +131,12 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 
 registerEvaluationFunction('contexte', evaluateContexte)
 
-function simpleHash(s: string) {
-	let h
-	for (let i = 0, h = 9; i < s.length; )
-		h = Math.imul(h ^ s.charCodeAt(i++), 9 ** 9)
-	return h ^ (h >>> 9)
+function simpleHash(str) {
+	let hash = 0
+	for (let i = 0, len = str.length; i < len; i++) {
+		const chr = str.charCodeAt(i)
+		hash = (hash << 5) - hash + chr
+		hash |= 0 // Convert to 32bit integer
+	}
+	return hash
 }
