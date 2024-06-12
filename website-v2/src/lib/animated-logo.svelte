@@ -1,45 +1,65 @@
-<script>
-	import { onMount } from 'svelte';
+<script lang="ts">
+	let nodes: Array<SVGElement> = [];
+	function registerAnimation(node: SVGElement) {
+		nodes.push(node);
+	}
 
-	let animate = false;
-	// add class to animate pages on mount
-	onMount(() => {
-		animate = true;
-	});
+	function restartAnimation() {
+		nodes.forEach((node, i) => {
+			const animation = node.getAnimations()[0];
+			if (!animation || animation.playState === 'running') {
+				return;
+			}
+			animation.playbackRate = 2.5;
+			animation.effect?.updateTiming({ easing: 'ease-out' });
+			animation.reverse();
+			animation.onfinish = () => {
+				animation.reverse();
+				animation.onfinish = null;
+			};
+		});
+	}
 </script>
 
-<svg xmlns="http://www.w3.org/2000/svg" width="190" height="135.1" viewBox="0 0 41.1 35.7">
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	width="190"
+	height="135.1"
+	viewBox="0 0 41.1 35.7"
+	on:mouseenter={restartAnimation}
+	on:touchstart={restartAnimation}
+>
 	<path
 		id="cover"
-		class:animate
-		class="cover"
+		use:registerAnimation
+		class="animate cover"
 		d="M21.1 7 0 2.9v28.7l21 4.2"
 		fill="#2975d1"
 		fill-rule="evenodd"
 	/>
 	<path
-		class:animate
-		class="page-1"
+		use:registerAnimation
+		class="animate page-1"
 		d="m21 35.6 20-4.2L41 3l-20 4z"
 		fill="#2975d1"
 		fill-rule="evenodd"
 	/>
 	<path
-		class:animate
-		class="page-2"
+		use:registerAnimation
+		class="animate page-2"
 		d="m21 35.7 17.3-5.5V1.8L21.1 7.2z"
 		fill="#2d5ea7"
 		fill-rule="evenodd"
 	/>
 	<path
-		class:animate
-		class="page-3"
+		use:registerAnimation
+		class="animate page-3"
 		d="m20.9 35.6 13.7-7V0L21 7z"
 		fill="#333350"
 		fill-rule="evenodd"
 	/>
 
-	<g class:animate class="page-3 text">
+	<g use:registerAnimation class="page-3 text animate">
 		<path
 			class="st0"
 			fill="none"
@@ -65,7 +85,7 @@
 			></text
 		>
 	</g>
-	<g class:animate class="cover">
+	<g use:registerAnimation class="animate cover">
 		<g fill="#fff" stroke="#fff" stroke-width=".3">
 			<path
 				d="M481 585.5h.9v1.5h-1zM467.9 601.2v1h22.3v-1h-1.6v-1h-19.1v1z"
@@ -116,6 +136,7 @@
 	.animate {
 		animation: rotatePage 1s forwards;
 	}
+
 	.text {
 		opacity: 0;
 		transform: translateY(-5px);
