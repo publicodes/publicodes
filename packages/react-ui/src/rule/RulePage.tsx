@@ -210,7 +210,7 @@ function Rule({
 								</p>
 							</div>
 						)}
-						<h2>Comment cette donnée est-elle calculée ?</h2>
+						<h2>Comment cette donnée est-elle calculée&nbsp;?</h2>
 						<div id="documentation-rule-explanation">
 							<Explanation node={valeur} />
 						</div>

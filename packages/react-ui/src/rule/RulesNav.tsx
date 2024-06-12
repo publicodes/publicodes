@@ -162,15 +162,19 @@ const NavLi = ({
 			:	acc,
 		0,
 	)
-
+	const initialRender = useRef(true)
 	const activeLi = useRef<HTMLLIElement>(null)
 	useEffect(() => {
+		if (initialRender.current) {
+			initialRender.current = false
+			return
+		}
 		activeLi.current?.scrollIntoView?.({
 			behavior: 'auto',
-			block: 'center',
+			block: 'nearest',
 			inline: 'start',
 		})
-	}, [])
+	}, [active])
 	return (
 		<li
 			key={ruleDottedName}

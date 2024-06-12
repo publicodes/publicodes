@@ -1,17 +1,17 @@
 <script>
-	const { light = false, ...rest } = $props();
+    const { light = false, ...rest } = $props();
 </script>
 
-<a
-	{...rest}
-	class="text-md border-1 mt-8 inline-block rounded-lg border border-blue-100 px-4 py-2 text-white shadow-md transition duration-300 ease-in-out hover:shadow-lg"
-	class:background={!light}
+<span
+    {...rest}
+    class="border-1 font-lg inline-block cursor-pointer rounded border border-white px-4 py-2 font-sans font-semibold text-white transition duration-100 ease-in-out hover:bg-slate-300 hover:bg-opacity-15"
+    class:background={!light}
 >
-	<slot></slot>
-</a>
+    <slot></slot>
+</span>
 
 <style>
-	.background {
-		@apply bg-blue-600 hover:bg-blue-700;
-	}
+    .background {
+        @apply bg-sky-700 hover:bg-sky-600;
+    }
 </style>

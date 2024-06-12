@@ -10,6 +10,6 @@
 
 ## Écrire ses premières règles
 
-<Publicodes code={`salaire net = salaire brut - cotisations sociales`} />
+<Publicodes code={`salaire net: salaire brut - cotisations sociales`} />
 
 ## Aller plus loin
