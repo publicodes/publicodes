@@ -1,6 +1,7 @@
 <script>
     import favicon from '$lib/assets/favicon-32x32.png';
     import Logo from '$lib/assets/logo.svg';
+    import NavTab from '$lib/ui/nav-tab.svelte';
     import '../app.css';
 </script>
 
@@ -23,11 +24,11 @@
         </a>
         <nav class="ml-auto">
             <ul class="flex gap-4">
-                <li><a class="hover:underline" href="/studio">Studio</a></li>
-                <li><a class="hover:underline" href="/docs">Docs</a></li>
-                <li><a class="hover:underline" href="/bliliotheques">Bibliothèques</a></li>
-                <li><a class="hover:underline" href="/blog">Blog</a></li>
-                <li><a class="hover:underline" href="/tutoriel">Tutoriel</a></li>
+                <NavTab href="/studio">Studio</NavTab>
+                <NavTab href="/docs">Docs</NavTab>
+                <NavTab href="/bliliotheques">Bibliothèques</NavTab>
+                <NavTab href="/blog">Blog</NavTab>
+                <NavTab href="/tutoriel">Tutoriel</NavTab>
                 <!-- <li>
                 <a
                     class="hover:underline"
