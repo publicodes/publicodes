@@ -4,7 +4,10 @@ import { mdsvex } from 'mdsvex';
 
 /** @type {import('mdsvex').MdsvexOptions} */
 const mdsvexOptions = {
-    extensions: ['.svelte.md']
+    extensions: ['.svelte.md'],
+    layout: {
+        blog: './src/routes/blog/post.svelte'
+    }
     // highlight: {
     // 	highlighter: async (code, lang = 'text') => {
     // 		const highlighter = await getHighlighter({ theme: 'github-light' });
