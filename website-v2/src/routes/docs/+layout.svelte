@@ -12,13 +12,13 @@
         };
     };
     const { children, data }: Props = $props();
-    function getChildPage(slug: string) {
+    function getChildPage(path: string) {
         return data.docPages
             .filter((page) => {
                 return (
-                    page.slug.startsWith(slug) &&
-                    page.slug !== slug &&
-                    page.slug.split('/').length === slug.split('/').length + 1
+                    page.path.startsWith(path) &&
+                    page.path !== path &&
+                    page.path.split('/').length === path.split('/').length + 1
                 );
             })
             .sort(
@@ -30,7 +30,7 @@
 
     const entryPages = getChildPage('');
     const currentPageMetadata = $derived(
-        data.docPages.find((page) => `/docs${page.slug}` === $page.url.pathname)?.metadata
+        data.docPages.find((page) => `/docs${page.path}` === $page.url.pathname)?.metadata
     );
     let showMobileMenuLeft = $state(false);
     let showMobileMenuRight = $state(false);
@@ -43,12 +43,12 @@
 
 {#snippet MenuLeft()}
     <ul>
-        {#each entryPages as { slug, metadata }}
-            <MenuLink href={`/docs${slug}`}>
+        {#each entryPages as { path, metadata }}
+            <MenuLink href={`/docs${path}`}>
                 {metadata.menu_title || metadata.title}
                 {#snippet submenu()}
-                    {#each getChildPage(slug) as { slug: childSlug, metadata }}
-                        <MenuLink href={`/docs${childSlug}`}>
+                    {#each getChildPage(path) as { path: childPath, metadata }}
+                        <MenuLink href={`/docs${childPath}`}>
                             {metadata.menu_title || metadata.title}
                         </MenuLink>
                     {/each}
@@ -63,9 +63,9 @@
         <div class="mx-2">
             <h2 class="not-prose my-2 p-2 uppercase text-slate-500">Sur cette page</h2>
             <ul>
-                {#each currentPageMetadata.headings as { title, slug }}
+                {#each currentPageMetadata.headings as { title, path }}
                     <li class="p-2">
-                        <a href={`#${slug}`}>{title}</a>
+                        <a href={`#${path}`}>{title}</a>
                     </li>
                 {/each}
             </ul>

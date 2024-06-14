@@ -25,10 +25,8 @@ prénom:
 On peut filtrer les règles publicodes pour obtenir uniquement la liste des questions :
 
 ```js
-const engine = new Publicodes(rules)
-const questions = engine.parsedRules.filter(
-	(rule) => rule.rawNode.question !== undefined,
-)
+const engine = new Publicodes(rules);
+const questions = engine.parsedRules.filter((rule) => rule.rawNode.question !== undefined);
 ```
 
 Vu qu'il s'agit de règles publicodes standard, on peut utiliser l'applicabilité pour déterminer la liste des questions à afficher :
@@ -43,8 +41,8 @@ commande . bière:
 
 ```js
 const questionsToDisplay = questions.filter((question) =>
-	engine.evaluate({ 'est applicable': question }),
-)
+    engine.evaluate({ 'est applicable': question })
+);
 ```
 
 <Callout type="caution" title="Composants UI pour afficher un formulaire">
@@ -53,8 +51,8 @@ Nous ne proposons pas de bibliothèque de composants graphiques directement inte
 
 Vous devez donc interfacer votre UI avec le moteur Publicodes :
 
-- Pour lire la valeur courante : `engine.evaluate('age')`
-- Pour modifier la valeur suite à une saisie de l'utilisateur : `engine.setSituation({ age: 17 })`
+-   Pour lire la valeur courante : `engine.evaluate('age')`
+-   Pour modifier la valeur suite à une saisie de l'utilisateur : `engine.setSituation({ age: 17 })`
 
 À l’avenir, il est possible que nous exportions des fonctions utilitaires pour simplifier ce travail d’interfaçage.
 </Callout>
@@ -82,9 +80,9 @@ commande . vin:
 On peut évaluer la règle `commande . vin` pour déterminer sa valeur actuelle ainsi que les variables manquantes dans le calcul :
 
 ```js
-const commandeVin = engine.evaluate('commande . vin')
-console.log(commandeVin.nodeValue) // false - la valeur par défaut
-console.log(commandeVin.missingVariables) // { 'personne majeure' : <number>, 'bière': <number> }
+const commandeVin = engine.evaluate('commande . vin');
+console.log(commandeVin.nodeValue); // false - la valeur par défaut
+console.log(commandeVin.missingVariables); // { 'personne majeure' : <number>, 'bière': <number> }
 ```
 
 Les missingVariables sont des variables qui n'ont pas de valeur dans la situation courante. On peut donc les utiliser pour déterminer les questions à poser.

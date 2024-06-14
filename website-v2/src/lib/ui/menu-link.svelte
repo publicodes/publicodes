@@ -11,7 +11,7 @@
 
 <li>
     <a
-        class="text-primary-950 not-prose block rounded px-4 py-2 hover:bg-slate-100 hover:underline 2xl:px-6 2xl:py-3 2xl:text-lg"
+        class="not-prose block rounded px-4 py-2 text-primary-950 hover:bg-slate-100 hover:underline 2xl:px-6 2xl:py-3 2xl:text-lg"
         class:active
         class:isParentActive
         {href}
@@ -33,6 +33,6 @@
         @apply bg-slate-100;
     }
     .isParentActive {
-        @apply text-primary-700 font-bold;
+        @apply font-bold text-primary-700;
     }
 </style>

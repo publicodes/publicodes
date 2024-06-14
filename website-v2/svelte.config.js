@@ -4,7 +4,7 @@ import { escapeSvelte, mdsvex } from 'mdsvex';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
 import { getSingletonHighlighter } from 'shiki';
-import { remarkHeadings } from './src/utils/remark-headings.js';
+import { remarkHeadings } from './src/lib/utils/remark-headings.js';
 
 const highlighter = await getSingletonHighlighter({
     themes: ['dracula'],

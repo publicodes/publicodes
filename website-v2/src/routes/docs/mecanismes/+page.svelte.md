@@ -131,10 +131,9 @@ Si un des facteur n’est pas applicable, le produit est non applicable.
 
 ```yaml
 produit:
-  - <facteur 1>
-  - <facteur 2>
-  - ...
-
+    - <facteur 1>
+    - <facteur 2>
+    - ...
 ```
 
 ```publicodes title="Exemple"
@@ -322,8 +321,6 @@ sécurité sociale.
 
 ### Exemple
 
-
-
 ```publicodes title="Sans multiplicateur"
 revenu imposable: 54126 €
 impôt sur le revenu:
@@ -392,8 +389,8 @@ l’assiette.
 
 Par exemple, si nous nous avons les tranches suivantes :
 
-- taux: 50% / plafond: 0
-- taux: 100% / plafond: 1000
+-   taux: 50% / plafond: 0
+-   taux: 100% / plafond: 1000
 
 Pour une assiette de 500, le taux retourné sera 75%, car il correspond au
 taux situé à la moitié de la tranche correspondante.
@@ -422,8 +419,8 @@ Le résultat vaudra toujours au moins zéro, y compris quand le montant de l’a
 
 Il est possible d’utiliser le mécanisme `abattement` de deux manières :
 
-- soit en indiquant un montant de la même unité que la valeur, qui lui sera alors soustrait
-- soit en indiquant un pourcentage qui sera utilisé pour calculer l’abattement de manière relative
+-   soit en indiquant un montant de la même unité que la valeur, qui lui sera alors soustrait
+-   soit en indiquant un pourcentage qui sera utilisé pour calculer l’abattement de manière relative
 
 ### Exemple
 
@@ -483,12 +480,12 @@ Lorsqu'une des date est omise, la date du jour est utilisée.
 
 Il est possible de spécifier une unité pour le calcul de la durée. Les valeurs possibles sont :
 
-- `jour` : jours entre les deux dates (par défaut)
-- `mois` : mois complet (les mois incomplets sont proratisés par rapport à leur nombre de jours)
-- `trimestre` : trimestres entre les deux dates (nombre de mois / 3)
-- `an` : année complète (prend en compte les années bissextiles)
-- `année civile` : année civile différente écoulées entre les deux dates
-- `trimestre civil` : trimestres civils différents écoulés entre les deux dates
+-   `jour` : jours entre les deux dates (par défaut)
+-   `mois` : mois complet (les mois incomplets sont proratisés par rapport à leur nombre de jours)
+-   `trimestre` : trimestres entre les deux dates (nombre de mois / 3)
+-   `an` : année complète (prend en compte les années bissextiles)
+-   `année civile` : année civile différente écoulées entre les deux dates
+-   `trimestre civil` : trimestres civils différents écoulés entre les deux dates
 
 ### Exemple
 
@@ -562,8 +559,6 @@ Ce principe est connu en informatique sous le nom d’interpolation de chaine de
 caractères.
 
 ### Exemple
-
-
 
 ```publicodes title="Texte documentation dynamique" selectedRuleInDoc="aide vélo"
 aide vélo:
