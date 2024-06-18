@@ -4,7 +4,7 @@
 
     const { href, children }: { href: string; children: Snippet } = $props();
 
-    const active = $derived($page.url.pathname === href);
+    const active = $derived($page.url.pathname.startsWith(href));
 </script>
 
 <li>
