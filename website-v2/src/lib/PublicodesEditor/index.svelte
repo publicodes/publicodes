@@ -70,13 +70,13 @@
 
 <div class="editor overflow-hidden border border-slate-300 max-sm:-mx-6 sm:rounded-lg">
     <div
-        class="text-bold relative w-full border-b border-slate-300 bg-sky-50 p-3 text-center font-bold text-sky-600"
+        class="text-bold bg-primary-50 text-primary-600 relative w-full border-b border-slate-300 p-3 text-center font-bold"
     >
         <span>
             {title}
         </span>
         <button
-            class="absolute bottom-0 right-0 top-0 flex h-full items-center border-l border-slate-300 p-4 hover:bg-sky-100"
+            class="hover:bg-primary-100 absolute bottom-0 right-0 top-0 flex h-full items-center border-l border-slate-300 p-4"
             on:click={() => (showDoc = !showDoc)}
             aria-label={showDoc ? 'Fermer la documentation' : 'Ouvrir la documentation'}
             ><span>
@@ -119,7 +119,7 @@
             @apply h-full py-4;
         }
         & :global(.cm-gutters) {
-            @apply bg-sky-50;
+            @apply bg-primary-50;
         }
 
         & :global(.codemirror-wrapper) {
@@ -158,7 +158,7 @@
 
         /* Custom styling of rules list menu + layout */
         & :global(:not(.content) > a) {
-            @apply text-sky-600 underline hover:text-sky-700;
+            @apply text-primary-600 hover:text-primary-700 underline;
         }
         & :global(.content > a) {
             @apply block flex-1;
@@ -167,7 +167,7 @@
             @apply w-full hover:bg-slate-100;
         }
         & :global(.active .content) {
-            @apply bg-slate-100 font-bold text-sky-600;
+            @apply text-primary-600 bg-slate-100 font-bold;
         }
         & :global(#documentation-rule-root) {
             @apply h-full xl:flex xl:flex-col-reverse 2xl:flex-row-reverse;

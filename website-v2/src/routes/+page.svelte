@@ -8,7 +8,7 @@
     import Card from '$lib/ui/card.svelte';
 </script>
 
-<header class="overflow-hidden bg-gradient-to-r from-sky-700 to-slate-400 py-4">
+<header class="from-primary-700 overflow-hidden bg-gradient-to-r to-slate-400 py-4">
     <div class="mx-auto gap-12 p-6 lg:container sm:flex md:p-10 lg:flex-row-reverse">
         <div class="flex justify-center self-center max-sm:scale-75 xl:flex-1 xl:scale-125">
             <AnimatedLogo />
@@ -33,7 +33,9 @@
 
 <main class="container prose-lg mx-auto p-8">
     <section>
-        <p class="prose-lg my-6 border-l-4 border-sky-700 pl-4 text-2xl leading-relaxed lg:mb-10">
+        <p
+            class="border-primary-700 prose-lg my-6 border-l-4 pl-4 text-2xl leading-relaxed lg:mb-10"
+        >
             Publicodes permet de modéliser des <strong>domaines métiers complexes</strong>, en les
             décomposant en <strong>règles élémentaires simples</strong> qui soient
             <strong>lisibles par tout le monde</strong>.

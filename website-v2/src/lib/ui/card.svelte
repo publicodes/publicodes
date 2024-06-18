@@ -1,11 +1,11 @@
 <script>
 </script>
 
-<div class="prose mt-36 flex flex-col rounded-lg bg-sky-50 p-8 pt-0">
+<div class="bg-primary-50 prose mt-36 flex flex-col rounded-lg p-8 pt-0">
     <div class="not-prose img-container -mt-40 flex justify-center">
         <slot name="img"></slot>
     </div>
-    <div class="not-prose -mt-2 mb-4 text-center text-2xl font-bold text-sky-950">
+    <div class="not-prose text-primary-950 -mt-2 mb-4 text-center text-2xl font-bold">
         <slot name="title"></slot>
     </div>
     <div class="flex-1">

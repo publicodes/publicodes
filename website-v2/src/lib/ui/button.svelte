@@ -12,6 +12,6 @@
 
 <style>
     .background {
-        @apply bg-sky-700 hover:bg-sky-600;
+        @apply bg-primary-700 hover:bg-primary-600;
     }
 </style>
