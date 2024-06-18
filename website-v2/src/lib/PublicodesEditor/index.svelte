@@ -70,14 +70,14 @@
 
 <div class="editor overflow-hidden border border-slate-300 max-sm:-mx-6 sm:rounded-lg">
     <div
-        class="text-bold bg-primary-50 text-primary-600 relative w-full border-b border-slate-300 p-3 text-center font-bold"
+        class="text-bold relative w-full border-b border-slate-300 bg-primary-50 p-3 text-center font-bold text-primary-600"
     >
         <span>
             {title}
         </span>
         <button
-            class="hover:bg-primary-100 absolute bottom-0 right-0 top-0 flex h-full items-center border-l border-slate-300 p-4"
-            on:click={() => (showDoc = !showDoc)}
+            class="absolute bottom-0 right-0 top-0 flex h-full items-center border-l border-slate-300 p-4 hover:bg-primary-100"
+            onclick={() => (showDoc = !showDoc)}
             aria-label={showDoc ? 'Fermer la documentation' : 'Ouvrir la documentation'}
             ><span>
                 {#if showDoc}
@@ -93,6 +93,8 @@
             <CodeMirror
                 bind:value
                 lang={yaml()}
+                useTab={false}
+                lineWrapping
                 theme={espresso}
                 on:change={() => (showDoc = true)}
                 editable={true}
@@ -127,10 +129,12 @@
         }
     }
     .publicodes-documentation {
-        @apply transition-all;
+        @apply transition-transform;
         @apply -mb-4;
         @apply min-h-full flex-1 border-slate-300 max-xl:border-t max-lg:px-4 lg:max-xl:pr-4 xl:border-l;
-
+        &:not(.showDoc) {
+            @apply absolute;
+        }
         &.showDoc {
             @apply xl:max-w-fit;
         }
@@ -158,7 +162,7 @@
 
         /* Custom styling of rules list menu + layout */
         & :global(:not(.content) > a) {
-            @apply text-primary-600 hover:text-primary-700 underline;
+            @apply text-primary-600 underline hover:text-primary-700;
         }
         & :global(.content > a) {
             @apply block flex-1;
@@ -167,7 +171,7 @@
             @apply w-full hover:bg-slate-100;
         }
         & :global(.active .content) {
-            @apply text-primary-600 bg-slate-100 font-bold;
+            @apply bg-slate-100 font-bold text-primary-600;
         }
         & :global(#documentation-rule-root) {
             @apply h-full xl:flex xl:flex-col-reverse 2xl:flex-row-reverse;
