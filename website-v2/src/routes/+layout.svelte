@@ -43,7 +43,7 @@
         </nav>
     </div>
     <div
-        class="flex flex-1 flex-col prose-h2:font-bold prose-h2:text-sky-950 prose-strong:text-sky-700"
+        class="prose-h2:text-primary-950 prose-strong:text-primary-700 flex flex-1 flex-col prose-h2:font-bold"
     >
         <slot />
     </div>
