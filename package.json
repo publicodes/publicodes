@@ -3,6 +3,7 @@
 	"private": true,
 	"workspaces": [
 		"website",
+		"website-v2",
 		"packages/*",
 		"examples/*"
 	],
@@ -11,9 +12,9 @@
 		"prepack": "run build",
 		"test:type": "turbo run test:type",
 		"build": "turbo run build",
-		"lint:prettier": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml,json}\" --ignore-path .gitignore",
+		"lint:prettier": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml,json}\" ",
 		"lint:prettier:fix": "run lint:prettier --write",
-		"lint:eslint": "run eslint --ext .ts,.tsx --max-warnings 37 --ignore-path .gitignore .",
+		"lint:eslint": "run eslint --ext .ts,.tsx --max-warnings 37  .",
 		"lint:eslint:fix": "run lint:eslint --fix",
 		"lint": "run lint:eslint && run lint:prettier",
 		"lint:fix": "run lint:eslint:fix && run lint:prettier:fix",
@@ -27,6 +28,8 @@
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-react": "latest",
 		"prettier": "^3.1.0",
+		"prettier-plugin-svelte": "^3.2.4",
+		"prettier-plugin-tailwindcss": "^0.6.5",
 		"rimraf": "^3.0.2",
 		"turbo": "latest"
 	},
