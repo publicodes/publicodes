@@ -80,7 +80,8 @@
                         la testabilité en découplant clairement le code métier du code applicatif.
                     </li>
                     <li>
-                        <strong>Facile à prendre en main</strong> ⋅ Il dispose d'une extension VSCode
+                        <strong>Facile à prendre en main</strong> ⋅ Il dispose d'une
+                        <a href="https://marketplace.visualstudio.com/items?itemName=EmileRolley.publicodes-language-server" target="_blank">extension VSCode</a>
                         dédiée (coloration syntaxique, goto def, auto-complétion…) et est basé sur la
                         syntaxe YAML.
                     </li>
