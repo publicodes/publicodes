@@ -12,12 +12,11 @@
     } = $props();
     const inConf = $derived({ y: 10 * (condition ? 1 : -1), duration: 100 });
     const outConf = $derived({ ...inConf, y: -inConf.y });
-    $inspect(condition);
 </script>
 
 {#if condition}
     <div
-        class="absolute left-0 right-0 top-2 whitespace-nowrap will-change-transform"
+        class="absolute left-0 right-0 top-3 whitespace-nowrap will-change-transform"
         in:fly={inConf}
         out:fly={outConf}
     >
@@ -25,7 +24,7 @@
     </div>
 {:else}
     <div
-        class="absolute left-0 right-0 top-2 whitespace-nowrap will-change-transform"
+        class="absolute left-0 right-0 top-3 whitespace-nowrap will-change-transform"
         in:fly={inConf}
         out:fly={outConf}
     >

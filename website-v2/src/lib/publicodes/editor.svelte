@@ -2,44 +2,60 @@
     import { yaml } from '@codemirror/lang-yaml';
     import { espresso } from 'thememirror';
 
+    import Tag from '$lib/ui/tag.svelte';
+    import type { Snippet } from 'svelte';
     import CodeMirror from 'svelte-codemirror-editor';
     import { fly } from 'svelte/transition';
-    import { createEngine } from './create-engine.svelte';
+    import { createEngine } from './create-engine';
     import FlyInOutTransition from './fly-in-out-transition.svelte';
 
-    const {
-        code,
+    let {
+        code = '',
         title = 'Publicodes',
-        higlightedRule,
+        selectedRuleInDoc,
         showDocByDefault = false,
-        hideDocButton = false
+        hideDocButton = false,
+        onchange,
+        fontSize = 'MD',
+        additionnalButton
     }: {
         code: string;
         title: string;
-        higlightedRule?: string;
+        selectedRuleInDoc?: string;
         showDocByDefault?: boolean;
         hideDocButton?: boolean;
+        onchange?: (code: string, currentlySelected?: string) => void;
+        fontSize?: 'LG' | 'MD';
+        additionnalButton?: Snippet;
     } = $props();
+
     let showDoc = $state(showDocByDefault);
-    let currentCode = $state(code);
     let copied = $state(false);
+
     function handleCopy() {
-        navigator.clipboard.writeText(currentCode);
+        navigator.clipboard.writeText(code);
         copied = true;
         setTimeout(() => {
             copied = false;
         }, 3000);
     }
 
-    let { engine, error, warning } = $derived(createEngine(currentCode));
-    const currentlyHighlighted = $derived(
-        higlightedRule ?? (engine && Object.keys(engine.getParsedRules()).at(-1)) ?? ''
-    );
+    let { engine, error, warning } = $derived(createEngine(code));
+    const selectedRule: string | undefined = $derived.by(() => {
+        if (engine && !(selectedRuleInDoc && selectedRuleInDoc in engine.getParsedRules())) {
+            return Object.keys(engine.getParsedRules()).at(-1);
+        }
+        return selectedRuleInDoc;
+    });
+
+    $effect(() => {
+        onchange?.(code, showDoc ? selectedRule : undefined);
+    });
 </script>
 
-<div class="editor not-prose flex flex-col overflow-hidden border border-slate-300 sm:rounded-lg">
+<div class="editor-container not-prose flex flex-col border border-slate-300 sm:rounded-lg">
     <div
-        class="bg-primary-50 relative flex items-center overflow-hidden border-b border-slate-300 text-center"
+        class="relative flex shrink-0 items-center overflow-hidden border-b border-slate-300 bg-primary-50 text-center"
     >
         <button class="border-r" title="Copier" onclick={handleCopy} aria-label="Copier le code">
             📋
@@ -49,14 +65,17 @@
             <div
                 in:fly={{ x: -10 }}
                 out:fly={{ duration: 75 }}
-                class="bg-primary-600 absolute left-12 m-2 rounded-full px-3 py-1 text-sm text-white will-change-transform"
+                class="absolute left-16 will-change-transform"
             >
-                Code copié !
+                <Tag>Code copié !</Tag>
             </div>
         {/if}
-        <span class="text-primary-600 flex-1 p-2 font-bold">
+        <span class="flex-1 p-3 font-bold text-primary-600">
             {title}
         </span>
+        {#if additionnalButton}
+            {@render additionnalButton()}
+        {/if}
         {#if !hideDocButton && engine}
             <button
                 transition:fly
@@ -71,26 +90,26 @@
             </button>
         {/if}
     </div>
-    <div class="editor flex flex-1 max-xl:flex-col">
-        <div class="flex flex-1 flex-col">
+    <div class="editor flex h-full flex-col xl:flex-row">
+        <div class="flex flex-1 flex-col overflow-auto">
             <CodeMirror
-                bind:value={currentCode}
+                bind:value={code}
                 lang={yaml()}
-                useTab={false}
+                useTab
                 lineWrapping
                 theme={espresso}
-                on:change={() => (showDoc = true)}
                 editable={true}
                 styles={{
                     '&': {
-                        fontSize: '1rem'
+                        fontSize:
+                            fontSize === 'LG' ? '1.1rem' : fontSize === 'MD' ? '0.9rem' : '0.8rem'
                     }
                 }}
             />
             <ul class="sticky bottom-0">
                 {#each [...warning, ...error] as message}
-                    <li class="prose-sm flex whitespace-pre-line bg-yellow-100" in:fly>
-                        <span class="bg-primary-50 w-12 border-r"></span>
+                    <li class="flex whitespace-pre-line bg-yellow-100" in:fly>
+                        <span class="w-14 border-r bg-primary-50"></span>
                         <span class="max-h-40 flex-1 overflow-auto p-2 first-line:font-bold"
                             >{message}</span
                         >
@@ -99,12 +118,15 @@
             </ul>
         </div>
         {#await import('./doc.svelte') then c}
-            {#if engine}
+            {#if engine && selectedRule}
                 <div class="publicodes-documentation" class:showDoc>
                     <svelte:component
                         this={c.default}
                         {engine}
-                        higlightedRule={higlightedRule ?? currentlyHighlighted}
+                        {selectedRule}
+                        onchange={(selectedRule) => {
+                            onchange?.(code, selectedRule);
+                        }}
                     />
                 </div>
             {/if}
@@ -113,62 +135,28 @@
 </div>
 
 <style>
-    button {
-        @apply hover:bg-primary-100 active:bg-primary-200 relative w-12 self-stretch border-slate-300 py-2 text-center transition-colors;
-    }
-    .editor {
-        & :global {
-            .cm-editor {
-                @apply w-0 flex-grow;
-            }
-            .cm-content {
-                @apply py-4;
-            }
-            .cm-gutters {
-                @apply bg-primary-50 flex w-12;
-            }
-            .cm-gutter {
-                &:first-child {
-                    @apply flex-1;
-                }
-                &:last-child {
-                    @apply w-4;
-                }
-            }
-            .codemirror-wrapper {
-                @apply flex flex-1;
-            }
-            .cm-activeLine {
-                @apply bg-transparent;
-            }
-            .ͼ2 .cm-selectionBackground {
-                @apply bg-primary-100;
-            }
-        }
-    }
-
     .publicodes-documentation {
         transition:
             opacity 0.1s,
             transform 0.1s;
+
+        @apply xl:max-w-1/2 overflow-auto max-md:min-h-full xl:w-fit;
         @apply -mb-4;
         @apply flex border-slate-300 max-xl:border-t max-lg:px-4 lg:max-xl:pr-4 xl:border-l;
+
         &:not(.showDoc) {
             @apply absolute;
-            @apply invisible max-h-0 max-w-0 opacity-0 max-xl:-translate-y-10 xl:translate-x-64;
-        }
-        &.showDoc {
-            @apply xl:max-w-fit;
+            @apply invisible opacity-0 max-xl:translate-y-10 xl:translate-x-64;
         }
 
         & :global {
             h1 {
-                @apply my-3 text-xl font-bold;
+                @apply my-2 text-xl font-bold;
                 /* @apply hidden; */
             }
 
             h2 {
-                @apply my-2 text-lg font-bold;
+                @apply -mx-4 border-t border-slate-300 p-4 font-bold;
             }
             p {
                 @apply my-3;
@@ -184,8 +172,8 @@
             }
 
             /* Custom styling of rules list menu + layout */
-            :not(.content) > a {
-                @apply text-primary-600 hover:text-primary-700 underline;
+            :not(.content, h1) > a {
+                @apply text-primary-600 underline hover:text-primary-700;
             }
             .content > a {
                 @apply flex-1 p-2 pl-0 pr-8;
@@ -194,7 +182,7 @@
                 @apply flex w-full p-0 hover:bg-slate-100;
             }
             .active .content {
-                @apply text-primary-600 bg-slate-100 font-bold;
+                @apply bg-slate-100 font-bold text-primary-600;
             }
             .content::before {
                 margin: 1rem !important;
@@ -209,26 +197,67 @@
             }
 
             article {
-                @apply flex-1 border-slate-300 xl:border-l-0 xl:pr-4 2xl:border-r;
+                @apply w-full flex-1 border-slate-300 pt-2 xl:border-l-0 xl:pr-4 2xl:border-r;
             }
             nav {
                 padding-right: 1px;
-                @apply overflow-hidden rounded border-r-0 xl:max-2xl:mb-4 xl:max-2xl:rounded-l-none xl:max-2xl:border xl:max-2xl:border-l-0;
+                @apply overflow-hidden rounded border-r-0 xl:max-2xl:rounded-l-none xl:max-2xl:border xl:max-2xl:border-l-0;
             }
             #documentation-rule-root {
-                @apply flex-1 xl:flex xl:flex-col-reverse 2xl:flex-row-reverse;
+                @apply flex-1 items-stretch overflow-y-auto overflow-x-hidden max-lg:pb-6 xl:flex xl:flex-col-reverse xl:max-2xl:items-start 2xl:flex-row-reverse;
                 & > * {
-                    @apply h-full max-w-full xl:max-2xl:h-fit;
+                    @apply max-w-full;
                 }
             }
 
             /* Removing link to parent inside rule */
-            #rules-nav-open-nav-button + span {
-                @apply sm:hidden;
+            #rules-nav-open-nav-button ~ span {
+                @apply text-sm;
             }
             & > * {
-                @apply flex flex-1;
+                @apply flex max-xl:flex-1;
             }
+        }
+    }
+
+    @tailwind utilities;
+    @layer utilities {
+        .max-w-1\/2 {
+            max-width: 50%;
+        }
+    }
+
+    .editor-container {
+        max-height: calc(100% - 64px);
+        & :global(button) {
+            @apply relative w-14 self-stretch border-slate-300 py-2 text-center transition-colors hover:bg-primary-100 active:bg-primary-200;
+            @apply lg:text-xl;
+        }
+    }
+
+    .editor :global {
+        .cm-editor {
+            @apply flex w-0 flex-1;
+        }
+        .cm-gutters {
+            @apply flex min-w-14 bg-primary-50;
+        }
+        .cm-gutter {
+            &:first-child {
+                @apply flex-1;
+            }
+            &:last-child {
+                @apply w-4;
+            }
+        }
+        .codemirror-wrapper {
+            @apply flex flex-1;
+        }
+        .cm-activeLine {
+            @apply bg-transparent;
+        }
+        .ͼ2 .cm-selectionBackground {
+            @apply bg-primary-100;
         }
     }
 </style>
