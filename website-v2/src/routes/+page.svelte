@@ -3,7 +3,7 @@
     import AdministrationSVG from '$lib/assets/administration.svg';
     import CodeTypingSVG from '$lib/assets/code-typing.svg';
     import SpreadsheetsSVG from '$lib/assets/spreadsheets.svg';
-    import Publicodes from '$lib/PublicodesEditor/index.svelte';
+    import Publicodes from '$lib/Publicodes/editor.svelte';
     import Button from '$lib/ui/button.svelte';
     import Card from '$lib/ui/card.svelte';
 </script>
@@ -31,10 +31,10 @@
     </div>
 </header>
 
-<main class="container prose-lg mx-auto p-8">
+<main class="prose-lg container mx-auto p-8">
     <section>
         <p
-            class="border-primary-700 prose-lg my-6 border-l-4 pl-4 text-2xl leading-relaxed lg:mb-10"
+            class="prose-lg border-primary-700 my-6 border-l-4 pl-4 text-2xl leading-relaxed lg:mb-10"
         >
             Publicodes permet de modéliser des <strong>domaines métiers complexes</strong>, en les
             décomposant en <strong>règles élémentaires simples</strong> qui soient
@@ -128,23 +128,24 @@
             Essayez de modifiez le <strong>salaire brut</strong> à
             <strong>3000 €/mois</strong> dans l'exemple suivant...
         </p>
+        <div class="max-sm:-mx-6">
+            <Publicodes
+                title="Calcul du salaire net"
+                showDocByDefault
+                hideDocButton
+                code={`salaire brut: 2500 €/mois
 
-        <Publicodes
-            title="Calcul du salaire net"
-            code={`cotisations salariales:
-  description: |
-    Les cotisations salariales permettent de financer la 
-    protection sociale.
-    
+cotisations salariales:
+  description: Les cotisations salariales permettent de financer la protection sociale.
   produit:
     - salaire brut
     - taux
   avec:
     taux: 21.7%
 
-salaire net: salaire brut - cotisations salariales
-salaire brut: 2300 €/mois`}
-        ></Publicodes>
+salaire net: salaire brut - cotisations salariales`}
+            ></Publicodes>
+        </div>
         <p>
             <strong>C'était facile, non ?</strong> Même sans connaissances en informatique, il est possible
             de comprendre du code écrit avec Publicodes.
