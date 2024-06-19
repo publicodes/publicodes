@@ -19272,19 +19272,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-svelte@npm:^3.1.2":
-  version: 3.2.3
-  resolution: "prettier-plugin-svelte@npm:3.2.3"
+"prettier-plugin-svelte@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "prettier-plugin-svelte@npm:3.2.4"
   peerDependencies:
     prettier: ^3.0.0
     svelte: ^3.2.0 || ^4.0.0-next.0 || ^5.0.0-next.0
-  checksum: 9055b7d2c394f71b066b44eab6a943d6aac151e2a55213bc68be4196bebdbce56d54ddf36346d831a03860d77ca2ed6258af7408a6dbf121beca88f24b10641f
+  checksum: 512504d76556c81938383322ff671ceb31ebb49d592470a2cccc702f51892dd8ca1e41cd79c31dc20a8129533de685d274cb6a82386e7420a292e3f863959f2f
   languageName: node
   linkType: hard
 
-"prettier-plugin-tailwindcss@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "prettier-plugin-tailwindcss@npm:0.6.0"
+"prettier-plugin-tailwindcss@npm:^0.6.5":
+  version: 0.6.5
+  resolution: "prettier-plugin-tailwindcss@npm:0.6.5"
   peerDependencies:
     "@ianvs/prettier-plugin-sort-imports": "*"
     "@prettier/plugin-pug": "*"
@@ -19333,7 +19333,7 @@ __metadata:
       optional: true
     prettier-plugin-svelte:
       optional: true
-  checksum: 9c02ec47ee84e25aa4e871564c8dd4e8dde84039c10b5bf4b8b18aea2bf0e10c585c29303fe7f69570f8afd7e93cfd25a325a30eedfa07f90bace5fc459c5885
+  checksum: 550039fe046b34bf641e4bdff5c767c2607756bfdd35a67851a91f0a26ad8bc2c07964aeb30355b25771ea938d7e6a9246b8a87c109ae58be4def4142777e179
   languageName: node
   linkType: hard
 
@@ -19557,6 +19557,8 @@ __metadata:
     eslint-config-prettier: ^9.1.0
     eslint-plugin-react: latest
     prettier: ^3.1.0
+    prettier-plugin-svelte: ^3.2.4
+    prettier-plugin-tailwindcss: ^0.6.5
     rimraf: ^3.0.2
     turbo: latest
   languageName: unknown
@@ -24296,8 +24298,6 @@ __metadata:
     mdsvex: ^0.11.0
     postcss: ^8.4.38
     prettier: ^3.1.1
-    prettier-plugin-svelte: ^3.1.2
-    prettier-plugin-tailwindcss: ^0.6.0
     publicodes: "workspace:^"
     svelte: ^5.0.0-next.1
     svelte-check: ^3.6.0

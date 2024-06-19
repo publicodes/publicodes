@@ -10,6 +10,7 @@
 			"dependsOn": ["^build", "codegen"],
 			"outputs": [
 				"dist/**",
+				".svelte-kit/**",
 				".next/**",
 				"!.next/cache/**",
 				".docusaurus/**",

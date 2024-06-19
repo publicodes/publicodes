@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Publicodes from '$lib/PublicodesEditor/index.svelte';
+	import Publicodes from '$lib/publicodes/editor.svelte';
 </script>
 
 # Manuel d'utilisation
