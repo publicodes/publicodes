@@ -16,7 +16,7 @@ export function createEngine(yamlRules: string): EngineAndErrors {
         const rawRules = parse(yamlRules);
         if (typeof rawRules === 'string') {
             if (rawRules.includes(':')) {
-                error.push('[Erreur de parsing]\n Il manque un espace après les `:`');
+                error.push(formatError('[Erreur de parsing]\n Il manque un espace après les `:`'));
             }
             return {
                 engine,
@@ -44,12 +44,17 @@ export function createEngine(yamlRules: string): EngineAndErrors {
             error.push(e.message);
         }
     }
-    error = error.map(removeInitialLine);
-    warning = warning.map(removeInitialLine);
+    error = error.map(formatError);
+    warning = warning.map(formatError);
 
     return { engine, error, warning };
 }
 
-function removeInitialLine(string: string) {
-    return string.replace(/^\n/, '');
+function formatError(string: string) {
+    return (
+        string
+            .replace(/^\n/, '')
+            // replace "[Erreur syntaxique]" by "Erreur syntaxique"
+            .replace(/\[(.*)\]/, '$1')
+    );
 }

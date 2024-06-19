@@ -27,19 +27,6 @@ dépenses primeur:
     - prix . avocat * 3 avocat
 `.substring(1)
 
-const tryToParseJson = <T,>(str: string): T | string => {
-	try {
-		return JSON.parse(str)
-	} catch {
-		return str
-	}
-}
-
-interface JsonCode {
-	rules: Record<string, unknown>
-	situation: Record<string, unknown>
-}
-
 const jsonCodeToYaml = (json: JsonCode) =>
 	`
 # Ci-dessous la règle d'origine, écrite en publicodes.

@@ -7,7 +7,12 @@
     import Engine from 'publicodes';
     import { objectFlip } from './utils';
 
-    const { engine, higlightedRule }: { engine: Engine; higlightedRule: string } = $props();
+    const {
+        engine,
+        selectedRule,
+        onchange
+    }: { engine: Engine; selectedRule?: string; onchange?: (selectedRule: string) => void } =
+        $props();
 
     const pathToRules = $derived(getDocumentationSiteMap({ engine, documentationPath: '' }));
     const ruleToPaths = $derived(objectFlip(pathToRules));
@@ -19,9 +24,13 @@
             activeRule = undefined;
         }
     });
-    let rulePath = $derived(activeRule ?? higlightedRule ?? Object.keys(ruleToPaths)[0]);
+    let rulePath = $derived(activeRule ?? selectedRule ?? Object.keys(ruleToPaths)[0]);
 
-    // let rulePath = $state(ruleToPaths[activeRule]);
+    $effect(() => {
+        if (activeRule) {
+            onchange?.(activeRule);
+        }
+    });
 
     function Link({ to, children }) {
         const onClick = (evt) => {
