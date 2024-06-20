@@ -144,7 +144,7 @@
 
         @apply xl:max-w-1/2 overflow-auto xl:w-fit;
         /* @apply -mb-4; */
-        @apply flex border-slate-300 max-xl:border-t max-lg:px-4 lg:max-xl:pr-4 xl:border-l;
+        @apply flex border-slate-300 max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
 
         &:not(.showDoc) {
             @apply absolute;
@@ -199,14 +199,14 @@
             }
 
             article {
-                @apply w-full flex-1 border-slate-300 pt-2 xl:border-l-0 xl:pr-4 2xl:border-r;
+                @apply w-full flex-1 border-slate-300 pt-2 lg:pr-4 xl:border-l-0 2xl:border-r;
             }
             nav {
                 padding-right: 1px;
-                @apply overflow-hidden rounded border-r-0 xl:max-2xl:rounded-l-none xl:max-2xl:border xl:max-2xl:border-l-0;
+                @apply overflow-hidden border-r-0 xl:max-2xl:rounded-tr xl:max-2xl:border-r xl:max-2xl:border-t;
             }
             #documentation-rule-root {
-                @apply flex-1 items-stretch overflow-y-auto overflow-x-hidden xl:flex xl:flex-col-reverse xl:max-2xl:items-start 2xl:flex-row-reverse;
+                @apply flex-1 items-stretch overflow-y-auto overflow-x-hidden xl:flex xl:h-full xl:flex-col-reverse xl:max-2xl:items-start 2xl:flex-row-reverse;
                 & > * {
                     @apply max-w-full;
                 }
