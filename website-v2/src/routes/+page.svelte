@@ -62,8 +62,6 @@
                         la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.
                     </li>
                 </ol>
-
-                <a slot="link" href="/lp/administration"> En savoir plus </a>
             </Card>
             <Card>
                 <img
@@ -81,7 +79,10 @@
                     </li>
                     <li>
                         <strong>Facile à prendre en main</strong> ⋅ Il dispose d'une
-                        <a href="https://marketplace.visualstudio.com/items?itemName=EmileRolley.publicodes-language-server" target="_blank">extension VSCode</a>
+                        <a
+                            href="https://marketplace.visualstudio.com/items?itemName=EmileRolley.publicodes-language-server"
+                            target="_blank">extension VSCode</a
+                        >
                         dédiée (coloration syntaxique, goto def, auto-complétion…) et est basé sur la
                         syntaxe YAML.
                     </li>
@@ -90,8 +91,6 @@
                         embarqué dans dans un navigateur et évite des appels réseaux inutiles.
                     </li>
                 </ol>
-
-                <a slot="link" href="/lp/administration"> En savoir plus </a>
             </Card>
             <Card>
                 <img
@@ -118,8 +117,6 @@
                         publics.
                     </li>
                 </ol>
-
-                <a slot="link" href="/lp/administration"> En savoir plus </a>
             </Card>
         </div>
     </section>
