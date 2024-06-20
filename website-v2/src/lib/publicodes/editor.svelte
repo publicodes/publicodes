@@ -53,9 +53,11 @@
     });
 </script>
 
-<div class="editor-container not-prose flex flex-col border border-slate-300 sm:rounded-lg">
+<div
+    class="editor-container not-prose flex flex-col overflow-hidden border border-slate-300 sm:rounded-lg"
+>
     <div
-        class="relative flex shrink-0 items-center overflow-hidden border-b border-slate-300 bg-primary-50 text-center"
+        class="bg-primary-50 editor-header relative flex shrink-0 items-center overflow-hidden border-b border-slate-300 text-center"
     >
         <button class="border-r" title="Copier" onclick={handleCopy} aria-label="Copier le code">
             📋
@@ -70,7 +72,7 @@
                 <Tag>Code copié !</Tag>
             </div>
         {/if}
-        <span class="flex-1 p-3 font-bold text-primary-600">
+        <span class="text-primary-600 flex-1 p-3 font-bold">
             {title}
         </span>
         {#if additionnalButton}
@@ -90,7 +92,7 @@
             </button>
         {/if}
     </div>
-    <div class="editor flex h-full flex-col xl:flex-row">
+    <div class="editor flex flex-1 flex-col xl:flex-row">
         <div class="flex flex-1 flex-col overflow-auto">
             <CodeMirror
                 bind:value={code}
@@ -109,7 +111,7 @@
             <ul class="sticky bottom-0">
                 {#each [...warning, ...error] as message}
                     <li class="flex whitespace-pre-line bg-yellow-100" in:fly>
-                        <span class="w-14 border-r bg-primary-50"></span>
+                        <span class="bg-primary-50 w-14 border-r"></span>
                         <span class="max-h-40 flex-1 overflow-auto p-2 first-line:font-bold"
                             >{message}</span
                         >
@@ -140,8 +142,8 @@
             opacity 0.1s,
             transform 0.1s;
 
-        @apply xl:max-w-1/2 overflow-auto max-md:min-h-full xl:w-fit;
-        @apply -mb-4;
+        @apply xl:max-w-1/2 overflow-auto xl:w-fit;
+        /* @apply -mb-4; */
         @apply flex border-slate-300 max-xl:border-t max-lg:px-4 lg:max-xl:pr-4 xl:border-l;
 
         &:not(.showDoc) {
@@ -173,7 +175,7 @@
 
             /* Custom styling of rules list menu + layout */
             :not(.content, h1) > a {
-                @apply text-primary-600 underline hover:text-primary-700;
+                @apply text-primary-600 hover:text-primary-700 underline;
             }
             .content > a {
                 @apply flex-1 p-2 pl-0 pr-8;
@@ -182,7 +184,7 @@
                 @apply flex w-full p-0 hover:bg-slate-100;
             }
             .active .content {
-                @apply bg-slate-100 font-bold text-primary-600;
+                @apply text-primary-600 bg-slate-100 font-bold;
             }
             .content::before {
                 margin: 1rem !important;
@@ -204,18 +206,17 @@
                 @apply overflow-hidden rounded border-r-0 xl:max-2xl:rounded-l-none xl:max-2xl:border xl:max-2xl:border-l-0;
             }
             #documentation-rule-root {
-                @apply flex-1 items-stretch overflow-y-auto overflow-x-hidden max-lg:pb-6 xl:flex xl:flex-col-reverse xl:max-2xl:items-start 2xl:flex-row-reverse;
+                @apply flex-1 items-stretch overflow-y-auto overflow-x-hidden xl:flex xl:flex-col-reverse xl:max-2xl:items-start 2xl:flex-row-reverse;
                 & > * {
                     @apply max-w-full;
                 }
             }
 
-            /* Removing link to parent inside rule */
             #rules-nav-open-nav-button ~ span {
                 @apply text-sm;
             }
-            & > * {
-                @apply flex max-xl:flex-1;
+            #rules-nav-open-nav-button button {
+                @apply whitespace-nowrap;
             }
         }
     }
@@ -227,20 +228,21 @@
         }
     }
 
-    .editor-container {
-        max-height: calc(100% - 64px);
+    .editor-header {
         & :global(button) {
-            @apply relative w-14 self-stretch border-slate-300 py-2 text-center transition-colors hover:bg-primary-100 active:bg-primary-200;
+            @apply hover:bg-primary-100 active:bg-primary-200 relative w-14 self-stretch border-slate-300 py-2 text-center transition-colors;
             @apply lg:text-xl;
         }
     }
-
+    .editor {
+        max-height: calc(100% - 49px);
+    }
     .editor :global {
         .cm-editor {
             @apply flex w-0 flex-1;
         }
         .cm-gutters {
-            @apply flex min-w-14 bg-primary-50;
+            @apply bg-primary-50 flex min-w-14;
         }
         .cm-gutter {
             &:first-child {

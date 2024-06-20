@@ -50,7 +50,7 @@
     }
 </script>
 
-<div class="publicodes-container flex max-h-screen flex-1 flex-col">
+<div class="publicodes-container flex max-h-screen flex-1 flex-col overflow-hidden">
     {#if initialCode}
         <PublicodesEditor
             code={initialCode}
