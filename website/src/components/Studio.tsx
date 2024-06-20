@@ -129,3 +129,16 @@ function useDebounce<T>(value: T, delay: number) {
 	)
 	return debouncedValue
 }
+
+const tryToParseJson = <T,>(str: string): T | string => {
+	try {
+		return JSON.parse(str)
+	} catch {
+		return str
+	}
+}
+
+interface JsonCode {
+	rules: Record<string, unknown>
+	situation: Record<string, unknown>
+}
