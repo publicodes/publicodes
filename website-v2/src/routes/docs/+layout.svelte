@@ -24,7 +24,12 @@
                 {/snippet}
             </MenuLink>
 
-            <MenuLink href="/docs/guides">Guides</MenuLink>
+            <MenuLink href="/docs/guides">
+                Guides
+                {#snippet submenu()}
+                    <MenuLink href="/docs/guides/elm">Elm</MenuLink>
+                {/snippet}
+            </MenuLink>
 
             <MenuLink href="/docs/api">API</MenuLink>
         </ul>
