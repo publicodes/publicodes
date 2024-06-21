@@ -8,7 +8,7 @@ import { getSingletonHighlighter } from 'shiki';
 import { remarkHeadings } from './src/lib/utils/remark-headings.js';
 const highlighter = await getSingletonHighlighter({
     themes: ['one-light'],
-    langs: ['yaml', 'javascript', 'typescript', 'html', 'jsx', 'bash']
+    langs: ['yaml', 'javascript', 'typescript', 'html', 'jsx', 'bash', 'elm']
 });
 /** @type {import('mdsvex').MdsvexOptions}*/
 const mdsvexOptions = {

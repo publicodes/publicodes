@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 title: Migrer vers la version 1.0
 hide_table_of_contents: false
 ---
