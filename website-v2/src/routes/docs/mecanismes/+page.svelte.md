@@ -619,6 +619,18 @@ est de prendre une valeur au hasard pour la variable en question, et
 d’améliorer mathématiquement le choix jusqu’à ce que les valeurs cibles
 soient toutes suffisamment proches des objectifs.
 
+Afin d'optimiser les performances du calcul d'inversion numérique, il est possible d'utiliser le champ `min` (par défaut: `-1000000`) et/ou `max` (par défault: `100000000`) afin de limiter à une certaine plage la valeur au hasard choisi en début de calcul.
+
+```publicodes title="Exemple min/max"
+a: b + 10
+b:
+  inversion numérique:
+    avec:
+      - a
+    min: 0
+    max: 100000
+```
+
 Si on demande au moteur la valeur d’une variable qui a pour formule une
 inversion, il va vérifier qu’une des variables `avec` a bien une valeur
 (calculée ou saisie), et procéder à l’inversion décrite plus haut à partir
