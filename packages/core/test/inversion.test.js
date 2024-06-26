@@ -160,4 +160,19 @@ describe('inversions', () => {
 		engine.setSituation({ net: 150 }).evaluate('brut')
 		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
 	})
+
+	it('should accept syntax with min and max', () => {
+		const rules = parseYaml`
+        a: b + 10
+
+        b:
+          inversion numérique:
+            avec:
+              - a
+            min: 0
+            max: 30
+      `
+		const result = new Engine(rules).setSituation({ a: 30 }).evaluate('b')
+		expect(result.nodeValue).to.be.closeTo(30 - 10, 0.0001 * 2000)
+	})
 })
