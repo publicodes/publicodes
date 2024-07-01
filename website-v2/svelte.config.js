@@ -1,17 +1,39 @@
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { mdsvex } from 'mdsvex';
+import { escapeSvelte, mdsvex } from 'mdsvex';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeSlug from 'rehype-slug';
+import { getSingletonHighlighter } from 'shiki';
+import { remarkHeadings } from './src/utils/remark-headings.js';
+
+const highlighter = await getSingletonHighlighter({
+    themes: ['dracula'],
+    langs: ['yaml', 'javascript', 'typescript', 'html', 'jsx']
+});
 
 /** @type {import('mdsvex').MdsvexOptions} */
 const mdsvexOptions = {
-    extensions: ['.svelte.md']
-    // highlight: {
-    // 	highlighter: async (code, lang = 'text') => {
-    // 		const highlighter = await getHighlighter({ theme: 'github-light' });
-    // 		const html = escapeSvelte(highlighter.codeToHtml(code, { lang }));
-    // 		return `{@html \`${html}\` }`;
-    // 	}
-    // }
+    extensions: ['.svelte.md'],
+
+    rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
+    remarkPlugins: [remarkHeadings],
+    highlight: {
+        highlighter: async (code, lang = 'text', metastring) => {
+            if (lang && lang.startsWith('publicodes')) {
+                const withTitle = (metastring || '').match(/title=".*?"/);
+                const withRule = (metastring || '').match(/selectedRuleInDoc="(.*?)"/);
+                return `
+<PublicodesEditor 
+    code={\`${code.replaceAll('`', '\\`')}\`}
+    ${withTitle ? withTitle[0] : ''}
+    ${withRule ? withRule[0] : ''}
+>
+</PublicodesEditor>`;
+            }
+            const html = escapeSvelte(highlighter.codeToHtml(code, { lang, theme: 'dracula' }));
+            return `{@html \`${html}\` }`;
+        }
+    }
 };
 /** @type {import('@sveltejs/kit').Config} */
 const config = {

@@ -16,7 +16,7 @@
 
 {#if condition}
     <div
-        class="absolute left-0 right-0 top-3 whitespace-nowrap will-change-transform"
+        class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center whitespace-nowrap will-change-transform"
         in:fly={inConf}
         out:fly={outConf}
     >
@@ -24,7 +24,7 @@
     </div>
 {:else}
     <div
-        class="absolute left-0 right-0 top-3 whitespace-nowrap will-change-transform"
+        class="top- absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center whitespace-nowrap will-change-transform"
         in:fly={inConf}
         out:fly={outConf}
     >
