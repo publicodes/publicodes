@@ -2,8 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.global-min-full-h {
+    min-height: calc(100vh - 64px);
+}
+
+.global-full-h {
+    max-height: calc(100vh - 64px);
+}
+
 html,
 body {
     height: 100%;
-
+    overflow: hidden;
 }

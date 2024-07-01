@@ -1,8 +1,14 @@
-<script>
+<script lang="ts">
     import favicon from '$lib/assets/favicon-32x32.png';
     import Logo from '$lib/assets/logo.svg';
+    import PublicodesEditor from '$lib/publicodes/editor.svelte';
+    import Callout from '$lib/ui/callout.svelte';
     import NavTab from '$lib/ui/nav-tab.svelte';
+
     import '../app.css';
+
+    globalThis.PublicodesEditor = PublicodesEditor;
+    globalThis.Callout = Callout;
 </script>
 
 <svelte:head>
@@ -15,20 +21,18 @@
 
     <link rel="icon" type="image/png" href={favicon} />
 </svelte:head>
-
-<div class="flex h-full flex-col">
-    <div class="flex items-center p-4 text-cyan-950">
+<div class="h-full overflow-auto">
+    <div class="flex items-center bg-white p-4 text-cyan-950">
         <a class="inline-flex items-center gap-2 text-lg font-bold" href="/">
             <img src={Logo} class="h-8" alt="Logo de publicodes" />
             Publicodes
         </a>
         <nav class="ml-auto">
             <ul class="flex gap-4">
-                <NavTab href="/studio">Studio</NavTab>
                 <NavTab href="/docs">Docs</NavTab>
-                <NavTab href="/bliliotheques">Bibliothèques</NavTab>
-                <NavTab href="/blog">Blog</NavTab>
-                <NavTab href="/tutoriel">Tutoriel</NavTab>
+                <NavTab href="/studio">Studio</NavTab>
+                <NavTab href="/bibliotheque">Bibliothèque</NavTab>
+                <!-- <NavTab href="/blog">Blog</NavTab> -->
                 <!-- <li>
                 <a
                     class="hover:underline"
@@ -43,7 +47,7 @@
         </nav>
     </div>
     <div
-        class="prose-h2:text-primary-950 prose-strong:text-primary-700 flex flex-1 flex-col prose-h2:font-bold"
+        class="prose-h2:text-primary-950 prose-h1:text-primary-950 prose-h3:text-primary-950 prose-h2:font-bold prose- hover:prose-a:text-primary-700 prose-a:text-primary-900 prose-code:bg-slate-100 prose-code:py-0.5 prose-code:px-1 prose-code:rounded prose-code:border-slate-200 prose-code:border overflow-hidden"
     >
         <slot />
     </div>

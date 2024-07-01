@@ -3,39 +3,34 @@
     import AdministrationSVG from '$lib/assets/administration.svg';
     import CodeTypingSVG from '$lib/assets/code-typing.svg';
     import SpreadsheetsSVG from '$lib/assets/spreadsheets.svg';
-    import Publicodes from '$lib/publicodes/editor.svelte';
+    // import PublicodesEditor from '$lib/publicodes/editor.svelte';
     import Button from '$lib/ui/button.svelte';
     import Card from '$lib/ui/card.svelte';
 </script>
 
-<header class="from-primary-700 overflow-hidden bg-gradient-to-r to-slate-400 py-4">
+<header class="from-primary-700 not-prose overflow-hidden bg-gradient-to-r to-slate-400 py-4">
     <div class="mx-auto gap-12 p-6 lg:container sm:flex md:p-10 lg:flex-row-reverse">
         <div class="flex justify-center self-center max-sm:scale-75 xl:flex-1 xl:scale-125">
             <AnimatedLogo />
         </div>
         <div class="flex-1">
-            <h1 class="py-8 text-5xl font-bold text-blue-50">Publicodes</h1>
+            <h1 class=" py-8 text-5xl font-bold text-blue-50">Publicodes</h1>
             <p class="mb-4 text-2xl text-blue-50">
                 Un langage commun pour les développeurs et les experts
             </p>
             <!-- Large button style whith strong blue background  -->
             <div class="mt-8 flex gap-4">
-                <a href="/tutoriel">
-                    <Button>Tutoriel</Button>
-                </a>
                 <a href="/docs">
-                    <Button light>Documentation</Button>
+                    <Button>Documentation</Button>
                 </a>
             </div>
         </div>
     </div>
 </header>
 
-<main class="prose-lg container mx-auto p-8">
+<main class="prose-xl prose-strong:text-primary-700 container mx-auto p-8">
     <section>
-        <p
-            class="prose-lg border-primary-700 my-6 border-l-4 pl-4 text-2xl leading-relaxed lg:mb-10"
-        >
+        <p class="border-primary-700 my-6 border-l-4 pl-4 text-2xl leading-relaxed lg:mb-10">
             Publicodes permet de modéliser des <strong>domaines métiers complexes</strong>, en les
             décomposant en <strong>règles élémentaires simples</strong> qui soient
             <strong>lisibles par tout le monde</strong>.
@@ -120,18 +115,18 @@
             </Card>
         </div>
     </section>
-    <section class="mt-12">
+    <section class=" mt-12">
         <h2>Du code clair et lisible.</h2>
         <p>
             Essayez de modifiez le <strong>salaire brut</strong> à
             <strong>3000 €/mois</strong> dans l'exemple suivant...
         </p>
         <div class="max-sm:-mx-6">
-            <Publicodes
+            <PublicodesEditor
                 title="Calcul du salaire net"
                 showDocByDefault
                 hideDocButton
-                fontSize="LG"
+                size="LG"
                 code={`salaire brut: 2500 €/mois
 
 cotisations salariales:
@@ -143,13 +138,13 @@ cotisations salariales:
     taux: 21.7%
 
 salaire net: salaire brut - cotisations salariales`}
-            ></Publicodes>
+            ></PublicodesEditor>
         </div>
         <p>
             <strong>C'était facile, non ?</strong> Même sans connaissances en informatique, il est possible
             de comprendre du code écrit avec Publicodes.
         </p>
-        <a href="/tutoriel"><Button>Découvrir le langage</Button></a>
+        <a href="/docs"><Button>Découvrir le langage</Button></a>
     </section>
     <section>
         <h2>Accélérateur d'impact.</h2>

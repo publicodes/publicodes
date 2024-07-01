@@ -11,7 +11,7 @@
 
 <li>
     <a
-        class="block rounded px-4 py-2 text-gray-800 transition-all hover:bg-gray-100"
+        class="text-primary-950 not-prose block rounded px-4 py-2 hover:bg-slate-100 hover:underline 2xl:px-6 2xl:py-3 2xl:text-lg"
         class:active
         class:isParentActive
         {href}
@@ -26,10 +26,13 @@
 </li>
 
 <style>
+    a {
+        transition: background-color 0.2s;
+    }
     .active {
         @apply bg-slate-100;
     }
     .isParentActive {
-        @apply font-bold text-cyan-700;
+        @apply text-primary-700 font-bold;
     }
 </style>

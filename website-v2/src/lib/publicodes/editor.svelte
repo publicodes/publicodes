@@ -11,12 +11,12 @@
 
     let {
         code = '',
-        title = 'Publicodes',
+        title = '',
         selectedRuleInDoc,
         showDocByDefault = false,
         hideDocButton = false,
         onchange,
-        fontSize = 'MD',
+        size = 'MD',
         additionnalButton
     }: {
         code: string;
@@ -25,7 +25,7 @@
         showDocByDefault?: boolean;
         hideDocButton?: boolean;
         onchange?: (code: string, currentlySelected?: string) => void;
-        fontSize?: 'LG' | 'MD';
+        size?: 'LG' | 'MD';
         additionnalButton?: Snippet;
     } = $props();
 
@@ -48,6 +48,7 @@
         return selectedRuleInDoc;
     });
 
+    const documentationIsBroken = $derived(!engine || !Object.keys(engine.getParsedRules()).length);
     $effect(() => {
         onchange?.(code, showDoc ? selectedRule : undefined);
     });
@@ -72,20 +73,22 @@
                 <Tag>Code copié !</Tag>
             </div>
         {/if}
-        <span class="text-primary-600 flex-1 p-3 font-bold">
+        <span class="text-primary-600 flex-1 font-bold" class:p-3={size === 'LG'}>
             {title}
         </span>
         {#if additionnalButton}
             {@render additionnalButton()}
         {/if}
-        {#if !hideDocButton && engine}
+        {#if !hideDocButton}
             <button
                 transition:fly
                 class="border-l"
                 onclick={() => (showDoc = !showDoc)}
                 aria-label={showDoc ? 'Fermer la documentation' : 'Ouvrir la documentation'}
+                class:saturate-0={documentationIsBroken}
+                disabled={documentationIsBroken}
             >
-                <FlyInOutTransition condition={showDoc}>
+                <FlyInOutTransition condition={showDoc && !documentationIsBroken}>
                     {#snippet ifTrue()}❌{/snippet}
                     {#snippet ifFalse()}📚{/snippet}
                 </FlyInOutTransition>
@@ -103,8 +106,7 @@
                 editable={true}
                 styles={{
                     '&': {
-                        fontSize:
-                            fontSize === 'LG' ? '1.1rem' : fontSize === 'MD' ? '0.9rem' : '0.8rem'
+                        fontSize: size === 'LG' ? '1.1rem' : size === 'MD' ? '0.9rem' : '0.8rem'
                     }
                 }}
             />
@@ -230,8 +232,11 @@
 
     .editor-header {
         & :global(button) {
-            @apply hover:bg-primary-100 active:bg-primary-200 relative w-14 self-stretch border-slate-300 py-2 text-center transition-colors;
+            @apply relative w-14 self-stretch border-slate-300 py-2 text-center transition-colors;
             @apply lg:text-xl;
+            &:not(:disabled) {
+                @apply hover:bg-primary-100 active:bg-primary-200;
+            }
         }
     }
     .editor {
