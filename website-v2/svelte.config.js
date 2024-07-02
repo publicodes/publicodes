@@ -8,7 +8,7 @@ import { remarkHeadings } from './src/utils/remark-headings.js';
 
 const highlighter = await getSingletonHighlighter({
     themes: ['dracula'],
-    langs: ['yaml', 'javascript', 'typescript', 'html', 'jsx']
+    langs: ['yaml', 'javascript', 'typescript', 'html', 'jsx', 'bash']
 });
 
 /** @type {import('mdsvex').MdsvexOptions} */
