@@ -11,12 +11,12 @@
 
     let {
         code = '',
-        title = 'Publicodes',
+        title = '',
         selectedRuleInDoc,
         showDocByDefault = false,
         hideDocButton = false,
         onchange,
-        fontSize = 'MD',
+        size = 'MD',
         additionnalButton
     }: {
         code: string;
@@ -25,7 +25,7 @@
         showDocByDefault?: boolean;
         hideDocButton?: boolean;
         onchange?: (code: string, currentlySelected?: string) => void;
-        fontSize?: 'LG' | 'MD';
+        size?: 'LG' | 'MD';
         additionnalButton?: Snippet;
     } = $props();
 
@@ -48,16 +48,15 @@
         return selectedRuleInDoc;
     });
 
+    const documentationIsBroken = $derived(!engine || !Object.keys(engine.getParsedRules()).length);
     $effect(() => {
         onchange?.(code, showDoc ? selectedRule : undefined);
     });
 </script>
 
-<div
-    class="editor-container not-prose flex flex-col overflow-hidden border border-slate-300 sm:rounded-lg"
->
+<div class="editor-container not-prose flex flex-col overflow-hidden border sm:rounded-lg">
     <div
-        class="bg-primary-50 editor-header relative flex shrink-0 items-center overflow-hidden border-b border-slate-300 text-center"
+        class="bg-primary-50 editor-header relative flex shrink-0 items-center overflow-hidden border-b text-center"
     >
         <button class="border-r" title="Copier" onclick={handleCopy} aria-label="Copier le code">
             📋
@@ -72,20 +71,22 @@
                 <Tag>Code copié !</Tag>
             </div>
         {/if}
-        <span class="text-primary-600 flex-1 p-3 font-bold">
+        <span class="text-primary-600 flex-1 font-bold" class:p-3={size === 'LG'}>
             {title}
         </span>
         {#if additionnalButton}
             {@render additionnalButton()}
         {/if}
-        {#if !hideDocButton && engine}
+        {#if !hideDocButton}
             <button
                 transition:fly
                 class="border-l"
                 onclick={() => (showDoc = !showDoc)}
                 aria-label={showDoc ? 'Fermer la documentation' : 'Ouvrir la documentation'}
+                class:saturate-0={documentationIsBroken}
+                disabled={documentationIsBroken}
             >
-                <FlyInOutTransition condition={showDoc}>
+                <FlyInOutTransition condition={showDoc && !documentationIsBroken}>
                     {#snippet ifTrue()}❌{/snippet}
                     {#snippet ifFalse()}📚{/snippet}
                 </FlyInOutTransition>
@@ -103,8 +104,7 @@
                 editable={true}
                 styles={{
                     '&': {
-                        fontSize:
-                            fontSize === 'LG' ? '1.1rem' : fontSize === 'MD' ? '0.9rem' : '0.8rem'
+                        fontSize: size === 'LG' ? '1.1rem' : size === 'MD' ? '0.9rem' : '0.8rem'
                     }
                 }}
             />
@@ -144,7 +144,7 @@
 
         @apply xl:max-w-1/2 overflow-auto xl:w-fit;
         /* @apply -mb-4; */
-        @apply flex border-slate-300 max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
+        @apply flex max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
 
         &:not(.showDoc) {
             @apply absolute;
@@ -158,7 +158,7 @@
             }
 
             h2 {
-                @apply -mx-4 border-t border-slate-300 p-4 font-bold;
+                @apply -mx-4 border-t p-4 font-bold;
             }
             p {
                 @apply my-3;
@@ -199,7 +199,7 @@
             }
 
             article {
-                @apply w-full flex-1 border-slate-300 pt-2 lg:pr-4 xl:border-l-0 2xl:border-r;
+                @apply w-full flex-1 pt-2 lg:pr-4 xl:border-l-0 2xl:border-r;
             }
             nav {
                 padding-right: 1px;
@@ -230,8 +230,11 @@
 
     .editor-header {
         & :global(button) {
-            @apply hover:bg-primary-100 active:bg-primary-200 relative w-14 self-stretch border-slate-300 py-2 text-center transition-colors;
+            @apply relative w-14 self-stretch py-2 text-center transition-colors;
             @apply lg:text-xl;
+            &:not(:disabled) {
+                @apply hover:bg-primary-100 active:bg-primary-200;
+            }
         }
     }
     .editor {

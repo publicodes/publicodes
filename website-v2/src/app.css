@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+.global-min-full-h {
+    min-height: calc(100vh - 64px);
+}
+
 html,
 body {
+    width: 100%;
     height: 100%;
-
 }

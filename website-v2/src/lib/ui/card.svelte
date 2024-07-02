@@ -1,7 +1,7 @@
 <script>
 </script>
 
-<div class="bg-primary-50 prose mt-36 flex flex-col rounded-lg p-8 pt-0">
+<article class="bg-primary-50 prose mt-36 flex flex-col rounded-lg p-8 pt-0">
     <div class="not-prose img-container -mt-40 flex justify-center">
         <slot name="img"></slot>
     </div>
@@ -14,7 +14,7 @@
     <div class="text-center">
         <slot name="link"></slot>
     </div>
-</div>
+</article>
 
 <style>
     .img-container :global(img) {

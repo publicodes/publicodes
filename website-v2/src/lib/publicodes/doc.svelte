@@ -35,7 +35,6 @@
     function Link({ to, children }) {
         const onClick = (evt) => {
             evt.preventDefault();
-            console.log(to);
             activeRule = pathToRules[to];
         };
         return createElement('a', { onClick }, children);

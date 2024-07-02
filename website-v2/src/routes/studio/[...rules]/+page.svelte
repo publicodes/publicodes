@@ -50,40 +50,42 @@
     }
 </script>
 
-<div class="publicodes-container flex max-h-screen flex-1 flex-col overflow-hidden">
-    {#if initialCode}
-        <PublicodesEditor
-            code={initialCode}
-            onchange={updateUrl}
-            showDocByDefault={!!selectedRuleInDoc}
-            title={'Publicodes studio'}
-            {selectedRuleInDoc}
-        >
-            {#snippet additionnalButton()}
-                {#if copied}
-                    <div
-                        in:fly={{ x: 10 }}
-                        out:fly={{ duration: 75 }}
-                        class="absolute right-32 will-change-transform"
+<div class="global-min-full-h flex">
+    <div class="publicodes-container flex max-h-screen flex-1 flex-col overflow-hidden">
+        {#if initialCode}
+            <PublicodesEditor
+                code={initialCode}
+                onchange={updateUrl}
+                showDocByDefault={!!selectedRuleInDoc}
+                title={'Publicodes studio'}
+                {selectedRuleInDoc}
+            >
+                {#snippet additionnalButton()}
+                    {#if copied}
+                        <div
+                            in:fly={{ x: 10 }}
+                            out:fly={{ duration: 75 }}
+                            class="absolute right-32 will-change-transform"
+                        >
+                            <Tag>Lien copié !</Tag>
+                        </div>
+                    {/if}
+                    <button
+                        class="border-l"
+                        title="Lien de partage"
+                        onclick={handleCopyLink}
+                        aria-label="Copier le lien de partage"
                     >
-                        <Tag>Lien copié !</Tag>
-                    </div>
-                {/if}
-                <button
-                    class="border-l"
-                    title="Lien de partage"
-                    onclick={handleCopyLink}
-                    aria-label="Copier le lien de partage"
-                >
-                    🔗
-                </button>
-            {/snippet}
-        </PublicodesEditor>
-    {/if}
+                        🔗
+                    </button>
+                {/snippet}
+            </PublicodesEditor>
+        {/if}
+    </div>
 </div>
 
 <style>
     .publicodes-container > :global(:first-child) {
-        @apply flex-1 rounded-none;
+        @apply flex-1 rounded-none border-none;
     }
 </style>

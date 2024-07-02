@@ -6,6 +6,28 @@ export default {
             serif: ['Petrona', 'serif']
         },
         extend: {
+            typography: (theme) => ({
+                DEFAULT: {
+                    css: {
+                        code: {
+                            '&::before': {
+                                content: '"" !important'
+                            },
+                            '&::after': {
+                                content: '"" !important'
+                            },
+                            color: theme('colors.primary.950')
+                        },
+                        pre: {
+                            '& code': {
+                                backgroundColor: 'transparent',
+                                border: 'none',
+                                padding: 0
+                            }
+                        }
+                    }
+                }
+            }),
             colors: {
                 primary: {
                     50: '#f0f9fe',
