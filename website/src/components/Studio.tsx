@@ -12,7 +12,7 @@ const { decodeRuleName } = utils
 const EXAMPLE_CODE = `
 # Bienvenue dans le bac à sable du langage publicode !
 # Pour en savoir plus sur le langage :
-# => https://publi.codes/docs/principes-de-base
+# => https://publi.codes/docs/manuel
 
 prix:
   avec:
