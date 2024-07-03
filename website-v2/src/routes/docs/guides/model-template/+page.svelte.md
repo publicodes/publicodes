@@ -21,12 +21,13 @@ La suite des instructions est disponible dans le README du dépôt.
 ### Fonctionnalités
 
 Ce template permet d'initialiser un dépôt avec les fonctionnalités suivantes :
-- 📦 compilation des règles publicodes en un seul fichier JSON
-- 📖 documentation du modèle interactive disponible sur GitHub
-- 🚀 API REST pour utiliser le modèle dans une application
+
+-   📦 compilation des règles publicodes en un seul fichier JSON
+-   📖 documentation du modèle interactive disponible sur GitHub
+-   🚀 API REST pour utiliser le modèle dans une application
 
 ## Exemple de dépôts utilisant ce template
 
-- [`@incubateur-ademe/publicodes-impact-livraison`](https://github.com/incubateur-ademe/publicodes-impact-livraison)
-- [`@incubateur-ademe/publicodes-negaoctet`](https://github.com/incubateur-ademe/publicodes-negaoctet)
-- [`@incubateur-ademe/publicodes-commun`](https://github.com/incubateur-ademe/publicodes-commun)
+-   [`@incubateur-ademe/publicodes-impact-livraison`](https://github.com/incubateur-ademe/publicodes-impact-livraison)
+-   [`@incubateur-ademe/publicodes-negaoctet`](https://github.com/incubateur-ademe/publicodes-negaoctet)
+-   [`@incubateur-ademe/publicodes-commun`](https://github.com/incubateur-ademe/publicodes-commun)

@@ -5,7 +5,7 @@
     }
 
     function restartAnimation() {
-        nodes.forEach((node, i) => {
+        nodes.forEach((node) => {
             const animation = node.getAnimations()[0];
             if (!animation || animation.playState === 'running') {
                 return;
@@ -24,6 +24,7 @@
 <svg
     xmlns="http://www.w3.org/2000/svg"
     width="190"
+    aria-hidden="true"
     height="135.1"
     viewBox="0 0 41.1 35.7"
     on:mouseenter={restartAnimation}

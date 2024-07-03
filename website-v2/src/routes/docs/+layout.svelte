@@ -5,20 +5,24 @@
     import type { Snippet } from 'svelte';
     import { fly } from 'svelte/transition';
     import Page from '../+page.svelte';
+
     type Props = {
         children: Snippet;
         data: {
             docPages: Array<Page>;
         };
     };
+
     const { children, data }: Props = $props();
-    function getChildPage(slug: string) {
+    const currentPage = $derived($page);
+
+    function getChildPage(path: string) {
         return data.docPages
             .filter((page) => {
                 return (
-                    page.slug.startsWith(slug) &&
-                    page.slug !== slug &&
-                    page.slug.split('/').length === slug.split('/').length + 1
+                    page.path.startsWith(path) &&
+                    page.path !== path &&
+                    page.path.split('/').length === path.split('/').length + 1
                 );
             })
             .sort(
@@ -30,62 +34,83 @@
 
     const entryPages = getChildPage('');
     const currentPageMetadata = $derived(
-        data.docPages.find((page) => `/docs${page.slug}` === $page.url.pathname)?.metadata
+        data.docPages.find((page) => `/docs${page.path}` === currentPage.url.pathname)?.metadata
     );
     let showMobileMenuLeft = $state(false);
     let showMobileMenuRight = $state(false);
     afterNavigate(() => {
-        showMobileMenuLeft = false;
         showMobileMenuRight = false;
     });
+
     // class="prose  mx-auto mt-8 max-w-none flex-1 flex-shrink p-8 xl:max-w-screen-md"
 </script>
 
 {#snippet MenuLeft()}
-    <ul>
-        {#each entryPages as { slug, metadata }}
-            <MenuLink href={`/docs${slug}`}>
-                {metadata.menu_title || metadata.title}
-                {#snippet submenu()}
-                    {#each getChildPage(slug) as { slug: childSlug, metadata }}
-                        <MenuLink href={`/docs${childSlug}`}>
-                            {metadata.menu_title || metadata.title}
-                        </MenuLink>
-                    {/each}
-                {/snippet}
-            </MenuLink>
-        {/each}
-    </ul>
+    <nav>
+        <ul>
+            {#each entryPages as { path, metadata }}
+                {@const childPages = getChildPage(path)}
+                <MenuLink
+                    href={`/docs${path}`}
+                    onclick={() => {
+                        if (childPages.length) {
+                            return;
+                        }
+                        showMobileMenuLeft = false;
+                    }}
+                >
+                    {metadata.menu_title || metadata.title}
+                    {#snippet submenu()}
+                        {#each childPages as { path: childPath, metadata }}
+                            <MenuLink
+                                href={`/docs${childPath}`}
+                                onclick={() => (showMobileMenuLeft = false)}
+                            >
+                                {metadata.menu_title || metadata.title}
+                            </MenuLink>
+                        {/each}
+                    {/snippet}
+                </MenuLink>
+            {/each}
+        </ul>
+    </nav>
 {/snippet}
 
 {#snippet MenuRight()}
     {#if currentPageMetadata.headings.length}
-        <div class="mx-2">
+        <nav class="mx-2">
             <h2 class="not-prose my-2 p-2 uppercase text-slate-500">Sur cette page</h2>
             <ul>
                 {#each currentPageMetadata.headings as { title, slug }}
                     <li class="p-2">
-                        <a href={`#${slug}`}>{title}</a>
+                        <a href={`#${slug}`} onclick={() => (showMobileMenuRight = false)}
+                            >{title}</a
+                        >
                     </li>
                 {/each}
             </ul>
-        </div>
+        </nav>
     {/if}
 {/snippet}
 
 <div class="flex max-h-full items-start">
     <!-- MOBILE NAV -->
     {#if showMobileMenuLeft}
-        <nav
+        <div
+            role="dialog"
             class="fixed z-20 h-full overflow-auto border-r bg-white will-change-transform"
             transition:fly={{ x: -100 }}
         >
             {@render MenuLeft()}
-        </nav>
-        <div class="fixed inset-0 z-10" onclick={() => (showMobileMenuLeft = false)}></div>
+        </div>
+        <div
+            class="fixed inset-0 z-10"
+            aria-hidden="true"
+            onclick={() => (showMobileMenuLeft = false)}
+        ></div>
     {/if}
 
-    <nav class="sticky top-16 min-w-72 pr-4 max-md:hidden">{@render MenuLeft()}</nav>
+    <div class="sticky top-16 min-w-72 pr-4 max-md:hidden">{@render MenuLeft()}</div>
     <div class="self-stretch border-r"></div>
     <div
         class="mx-auto flex flex-1 flex-col px-4 pt-8 transition-all 2xl:prose-lg max-md:max-w-full md:px-8 xl:max-w-screen-md 2xl:max-w-4xl"
@@ -129,19 +154,23 @@
     </div>
 
     {#if showMobileMenuRight}
-        <nav
-            onclick={() => (showMobileMenuRight = false)}
+        <div
+            role="dialog"
             class="fixed right-0 z-20 h-full overflow-auto border-l bg-white will-change-transform"
             transition:fly={{ x: 100 }}
         >
             {@render MenuRight()}
-        </nav>
-        <div class="fixed inset-0 z-10" onclick={() => (showMobileMenuRight = false)}></div>
+        </div>
+        <div
+            class="fixed inset-0 z-10"
+            aria-hidden="true"
+            onclick={() => (showMobileMenuRight = false)}
+        ></div>
     {/if}
 
-    <nav class="sticky top-16 max-h-screen w-64 overflow-auto pt-16 text-sm max-lg:hidden">
+    <div class="sticky top-16 max-h-screen w-64 overflow-auto pt-16 text-sm max-lg:hidden">
         {@render MenuRight()}
-    </nav>
+    </div>
 </div>
 
 <style>

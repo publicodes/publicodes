@@ -1,5 +1,14 @@
-<script>
-    const { light = false, ...rest } = $props();
+<script lang="ts">
+    import type { Snippet } from 'svelte';
+
+    const {
+        light = false,
+        children,
+        ...rest
+    }: {
+        light?: boolean;
+        children: Snippet;
+    } = $props();
 </script>
 
 <span
@@ -7,7 +16,7 @@
     class="border-1 font-lg inline-block cursor-pointer rounded border border-white px-4 py-2 font-sans font-semibold text-white transition duration-100 ease-in-out hover:bg-slate-300 hover:bg-opacity-15"
     class:background={!light}
 >
-    <slot></slot>
+    {@render children()}
 </span>
 
 <style>

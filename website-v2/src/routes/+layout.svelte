@@ -31,7 +31,7 @@
         <ul class="flex gap-4">
             <NavTab href="/docs">Docs</NavTab>
             <NavTab href="/studio">Studio</NavTab>
-            <NavTab href="/bibliotheque">Bibliothèque</NavTab>
+            <NavTab href="/blog">Blog</NavTab>
             <!-- <NavTab href="/blog">Blog</NavTab> -->
             <!-- <li>
                 <a
@@ -47,7 +47,8 @@
     </nav>
 </div>
 <div
-    class="prose-h2:text-primary-950 prose-h1:text-primary-950 prose-h3:text-primary-950 prose-h2:font-bold prose- hover:prose-a:text-primary-700 prose-a:text-primary-900 prose-code:bg-slate-100 prose-code:py-0.5 prose-code:px-1 prose-code:rounded prose-code:border-slate-200 prose-code:border max-h-full pt-16"
+    class="prose- max-h-full pt-16 prose-h1:text-primary-950 prose-h2:font-bold prose-h2:text-primary-950 prose-h3:text-primary-950 prose-a:text-primary-900 hover:prose-a:text-primary-700 prose-blockquote:rounded-l-sm prose-blockquote:bg-slate-100 prose-blockquote:px-4 prose-blockquote:py-2
+    prose-blockquote:font-normal prose-blockquote:not-italic prose-code:rounded prose-code:border prose-code:border-slate-200 prose-code:bg-slate-100 prose-code:px-1 prose-code:py-0.5"
 >
     <slot />
 </div>

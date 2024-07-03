@@ -3,12 +3,12 @@
     import AdministrationSVG from '$lib/assets/administration.svg';
     import CodeTypingSVG from '$lib/assets/code-typing.svg';
     import SpreadsheetsSVG from '$lib/assets/spreadsheets.svg';
-    // import PublicodesEditor from '$lib/publicodes/editor.svelte';
+    import PublicodesEditor from '$lib/publicodes/editor.svelte';
     import Button from '$lib/ui/button.svelte';
     import Card from '$lib/ui/card.svelte';
 </script>
 
-<header class="from-primary-700 not-prose overflow-hidden bg-gradient-to-r to-slate-400 py-4">
+<header class="not-prose overflow-hidden bg-gradient-to-r from-primary-700 to-slate-400 py-4">
     <div class="mx-auto gap-12 p-6 lg:container sm:flex md:p-10 lg:flex-row-reverse">
         <div class="flex justify-center self-center max-sm:scale-75 xl:flex-1 xl:scale-125">
             <AnimatedLogo />
@@ -28,9 +28,9 @@
     </div>
 </header>
 
-<main class="prose-xl prose-strong:text-primary-700 container mx-auto p-8">
+<main class="container prose-xl mx-auto p-8 prose-strong:text-primary-700">
     <section>
-        <p class="border-primary-700 my-6 border-l-4 pl-4 text-2xl leading-relaxed lg:mb-10">
+        <p class="my-6 border-l-4 border-primary-700 pl-4 text-2xl leading-relaxed lg:mb-10">
             Publicodes permet de modéliser des <strong>domaines métiers complexes</strong>, en les
             décomposant en <strong>règles élémentaires simples</strong> qui soient
             <strong>lisibles par tout le monde</strong>.

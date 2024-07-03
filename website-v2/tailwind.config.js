@@ -1,3 +1,5 @@
+import typography from '@tailwindcss/typography';
+
 export default {
     content: ['./src/**/*.{html,js,svelte,ts,md}'],
     theme: {
@@ -11,10 +13,10 @@ export default {
                     css: {
                         code: {
                             '&::before': {
-                                content: '"" !important'
+                                content: 'none !important'
                             },
                             '&::after': {
-                                content: '"" !important'
+                                content: 'none !important'
                             },
                             color: theme('colors.primary.950')
                         },
@@ -23,6 +25,17 @@ export default {
                                 backgroundColor: 'transparent',
                                 border: 'none',
                                 padding: 0
+                            }
+                        },
+                        blockquote: {
+                            p: {
+                                margin: '0.5rem'
+                            },
+                            'p:first-of-type::before': {
+                                content: 'none'
+                            },
+                            'p:first-of-type::after': {
+                                content: 'none'
                             }
                         }
                     }
@@ -58,5 +71,5 @@ export default {
             }
         }
     },
-    plugins: [require('@tailwindcss/typography')]
+    plugins: [typography]
 };

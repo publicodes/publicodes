@@ -4983,9 +4983,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sveltejs/kit@npm:^2.0.0":
-  version: 2.5.10
-  resolution: "@sveltejs/kit@npm:2.5.10"
+"@sveltejs/kit@npm:^2.5.18":
+  version: 2.5.18
+  resolution: "@sveltejs/kit@npm:2.5.18"
   dependencies:
     "@types/cookie": ^0.6.0
     cookie: ^0.6.0
@@ -5005,7 +5005,7 @@ __metadata:
     vite: ^5.0.3
   bin:
     svelte-kit: svelte-kit.js
-  checksum: 602aad9c8920031923eefcdb3eede2b1571bfc9326de4ecc71740967d6b6d9b8fe496a2f720807d9f3da09ef2ffd2fdfc8105db0622a028beb703375b30e568b
+  checksum: 61d02aaa73bdd22ff3dd2d19183fb785ff791d6b4eaa84b8b5ed4b38e4552e3c316c77ad20950408c74018b7033010c26a7e618b00450c70c7dead8c1bb91b6e
   languageName: node
   linkType: hard
 
@@ -5022,7 +5022,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sveltejs/vite-plugin-svelte@npm:^3.0.0":
+"@sveltejs/vite-plugin-svelte@npm:^3.1.1":
   version: 3.1.1
   resolution: "@sveltejs/vite-plugin-svelte@npm:3.1.1"
   dependencies:
@@ -9701,6 +9701,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dayjs@npm:^1.11.10":
+  version: 1.11.11
+  resolution: "dayjs@npm:1.11.11"
+  checksum: 84788275aad8a87fee4f1ce4be08861df29687aae6b7b43dd65350118a37dda56772a3902f802cb2dc651dfed447a5a8df62d88f0fb900dba8333e411190a5d5
+  languageName: node
+  linkType: hard
+
 "debounce@npm:^1.2.1":
   version: 1.2.1
   resolution: "debounce@npm:1.2.1"
@@ -11177,14 +11184,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-compat-utils@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "eslint-compat-utils@npm:0.5.0"
+"eslint-compat-utils@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "eslint-compat-utils@npm:0.5.1"
   dependencies:
     semver: ^7.5.4
   peerDependencies:
     eslint: ">=6.0.0"
-  checksum: 85ec8ad39e2fe73824d05d21d13ea4ae6531ce3421f2938f6d9a17090eb3b031994736369778ed9dce673a39dac0054ad2f5ad20b4b18877d1f94aeba597c3df
+  checksum: beccf2a5bd7c7974e3584b269f8a02667c83bca64cfd4c866f3055867f187e78b00ee826721765bdee9b13efaaa248f8068c581f7bb05803e8f47abb116e68fc
   languageName: node
   linkType: hard
 
@@ -11415,29 +11422,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-svelte@npm:^2.36.0":
-  version: 2.39.0
-  resolution: "eslint-plugin-svelte@npm:2.39.0"
+"eslint-plugin-svelte@npm:^2.41.0":
+  version: 2.41.0
+  resolution: "eslint-plugin-svelte@npm:2.41.0"
   dependencies:
     "@eslint-community/eslint-utils": ^4.4.0
     "@jridgewell/sourcemap-codec": ^1.4.15
-    debug: ^4.3.4
-    eslint-compat-utils: ^0.5.0
+    eslint-compat-utils: ^0.5.1
     esutils: ^2.0.3
-    known-css-properties: ^0.31.0
+    known-css-properties: ^0.34.0
     postcss: ^8.4.38
     postcss-load-config: ^3.1.4
     postcss-safe-parser: ^6.0.0
-    postcss-selector-parser: ^6.0.16
-    semver: ^7.6.0
-    svelte-eslint-parser: ">=0.36.0 <1.0.0"
+    postcss-selector-parser: ^6.1.0
+    semver: ^7.6.2
+    svelte-eslint-parser: ^0.39.2
   peerDependencies:
     eslint: ^7.0.0 || ^8.0.0-0 || ^9.0.0-0
-    svelte: ^3.37.0 || ^4.0.0 || ^5.0.0-next.112
+    svelte: ^3.37.0 || ^4.0.0 || ^5.0.0-next.155
   peerDependenciesMeta:
     svelte:
       optional: true
-  checksum: 784fee8222c178737998024d926b6c9fedc8a5ae035b432a6b0036a37ae348493dc36d10b68a37c71a4734ff940419a7626bd6b969d552e99c523807b554a7be
+  checksum: eaf016d64eaaf94370fe1ba3e0d03dc3bead3bcb987c83afe4ebbd8832edf27581faf1706a09d7adda5598722db7d1db80448b23a00d8594e40c43f33bc4576e
   languageName: node
   linkType: hard
 
@@ -12053,7 +12059,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.7, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.1":
+"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0, fast-glob@npm:^3.3.1":
   version: 3.3.2
   resolution: "fast-glob@npm:3.3.2"
   dependencies:
@@ -15502,10 +15508,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"known-css-properties@npm:^0.31.0":
-  version: 0.31.0
-  resolution: "known-css-properties@npm:0.31.0"
-  checksum: 814979212974f229f33ece048a54c3da5b689cbf1275fcfda83b9317a3826605c5d85b28ed68d9b62300a8eb9db61708a662ef6ec2ec12029f3139d117ebb2a1
+"known-css-properties@npm:^0.34.0":
+  version: 0.34.0
+  resolution: "known-css-properties@npm:0.34.0"
+  checksum: 2f1c562767164672442949c44310cf8bbd0cc8a1fbf76b2437a0a2ed364876f40b03d18ffee3de2490e789e916be6c635823e4137fcb3c2f690a96e79bd66a8c
   languageName: node
   linkType: hard
 
@@ -19196,7 +19202,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-selector-parser@npm:^6.0.16":
+"postcss-selector-parser@npm:^6.1.0":
   version: 6.1.0
   resolution: "postcss-selector-parser@npm:6.1.0"
   dependencies:
@@ -21217,7 +21223,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.6.0":
+"semver@npm:^7.6.0, semver@npm:^7.6.2":
   version: 7.6.2
   resolution: "semver@npm:7.6.2"
   bin:
@@ -22244,14 +22250,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte-check@npm:^3.6.0":
-  version: 3.8.0
-  resolution: "svelte-check@npm:3.8.0"
+"svelte-check@npm:^3.8.4":
+  version: 3.8.4
+  resolution: "svelte-check@npm:3.8.4"
   dependencies:
     "@jridgewell/trace-mapping": ^0.3.17
     chokidar: ^3.4.1
-    fast-glob: ^3.2.7
-    import-fresh: ^3.2.1
     picocolors: ^1.0.0
     sade: ^1.7.4
     svelte-preprocess: ^5.1.3
@@ -22260,7 +22264,7 @@ __metadata:
     svelte: ^3.55.0 || ^4.0.0-next.0 || ^4.0.0 || ^5.0.0-next.0
   bin:
     svelte-check: bin/svelte-check
-  checksum: 977912f6ef6d37ffed1fea8ca5bb73b1d435b95d09221e81e2558edc14843b07de128368f66877299e787d4ef26a8204a7699c150a7d39bf394784c99d5db655
+  checksum: 8218c1d6b091cb500fa5373ee4a02be02c14a70b275f7c729a401b11ac3085cd4581ba6ac330905ba8d725ad9a95687a63d164cd53367cab7007dc53dc9e65db
   languageName: node
   linkType: hard
 
@@ -22274,9 +22278,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte-eslint-parser@npm:>=0.36.0 <1.0.0":
-  version: 0.36.0
-  resolution: "svelte-eslint-parser@npm:0.36.0"
+"svelte-eslint-parser@npm:^0.39.2":
+  version: 0.39.2
+  resolution: "svelte-eslint-parser@npm:0.39.2"
   dependencies:
     eslint-scope: ^7.2.2
     eslint-visitor-keys: ^3.4.3
@@ -22288,7 +22292,7 @@ __metadata:
   peerDependenciesMeta:
     svelte:
       optional: true
-  checksum: 65b420347da556aca59d8699183fac48884d8c3887778e7e15aabf03114e3f07d338dd5a1b320679701482cd6b452665dd43c4a0360fa28f0626f3511fc360fa
+  checksum: 8d848c737a2e4b850ab5decbe7529490bdc8b835ccd9ae91d27055d5aba9201d2b33a0aa6d73e80f54b14a49e579dbf7246d1181088e045eadfb49d875c8f654
   languageName: node
   linkType: hard
 
@@ -22347,9 +22351,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte@npm:^5.0.0-next.1":
-  version: 5.0.0-next.144
-  resolution: "svelte@npm:5.0.0-next.144"
+"svelte-time@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "svelte-time@npm:0.9.0"
+  dependencies:
+    dayjs: ^1.11.10
+  checksum: 843f03957fd038fbb8c206f6acb01f36b1c9f00f89630b68d1d092233da3ecb03187bd85433d0471d4dfd4547cddd6d3dd7c41af165ecec70f4bfed113a496cc
+  languageName: node
+  linkType: hard
+
+"svelte@npm:^5.0.0-next.171":
+  version: 5.0.0-next.172
+  resolution: "svelte@npm:5.0.0-next.172"
   dependencies:
     "@ampproject/remapping": ^2.2.1
     "@jridgewell/sourcemap-codec": ^1.4.15
@@ -22364,7 +22377,7 @@ __metadata:
     locate-character: ^3.0.0
     magic-string: ^0.30.5
     zimmerframe: ^1.1.2
-  checksum: 428e99b734c28e20bad050c3b955b157fe072665a89b182a9a353aa1b4091d44100d64fc1f1bcc08f29e5562cd8454d37b604dd40e7c94ca7dd4bd6b8ac0c365
+  checksum: 3fe8e584d5b4af916df32875878371adba73bcb08a80835310650c63ca76f93a4f27636bff123fb84a579fc86ed52f9ed2644f7ea3b1864288249816eaec00b0
   languageName: node
   linkType: hard
 
@@ -24362,15 +24375,15 @@ __metadata:
     "@codemirror/lang-yaml": ^6.1.1
     "@publicodes/react-ui": "workspace:^"
     "@sveltejs/adapter-auto": ^3.0.0
-    "@sveltejs/kit": ^2.0.0
-    "@sveltejs/vite-plugin-svelte": ^3.0.0
+    "@sveltejs/kit": ^2.5.18
+    "@sveltejs/vite-plugin-svelte": ^3.1.1
     "@tailwindcss/typography": ^0.5.13
     "@types/eslint": ^8.56.7
     autoprefixer: ^10.4.19
     codemirror: ^6.0.1
     eslint: ^9.0.0
     eslint-config-prettier: ^9.1.0
-    eslint-plugin-svelte: ^2.36.0
+    eslint-plugin-svelte: ^2.41.0
     github-slugger: ^2.0.0
     globals: ^15.0.0
     mdast-util-to-string: ^4.0.0
@@ -24381,9 +24394,10 @@ __metadata:
     rehype-autolink-headings: ^7.1.0
     rehype-slug: ^6.0.0
     shiki: ^1.10.0
-    svelte: ^5.0.0-next.1
-    svelte-check: ^3.6.0
+    svelte: ^5.0.0-next.171
+    svelte-check: ^3.8.4
     svelte-codemirror-editor: ^1.4.0
+    svelte-time: ^0.9.0
     tailwindcss: ^3.4.3
     thememirror: ^2.0.1
     tslib: ^2.4.1

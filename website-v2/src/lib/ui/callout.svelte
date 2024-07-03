@@ -54,6 +54,7 @@
         .bgColor}"
 >
     <header class="flex items-center gap-2 {callouts[type].textColor}">
+        <!-- eslint-disable-next-line svelte/no-at-html-tags -->
         {@html callouts[type].hint}
         <strong>
             {title ?? callouts[type].title}

@@ -56,7 +56,7 @@
 
 <div class="editor-container not-prose flex flex-col overflow-hidden border sm:rounded-lg">
     <div
-        class="bg-primary-50 editor-header relative flex shrink-0 items-center overflow-hidden border-b text-center"
+        class="editor-header relative flex shrink-0 items-center overflow-hidden border-b bg-primary-50 text-center"
     >
         <button class="border-r" title="Copier" onclick={handleCopy} aria-label="Copier le code">
             📋
@@ -71,7 +71,7 @@
                 <Tag>Code copié !</Tag>
             </div>
         {/if}
-        <span class="text-primary-600 flex-1 font-bold" class:p-3={size === 'LG'}>
+        <span class="flex-1 font-bold text-primary-600" class:p-3={size === 'LG'}>
             {title}
         </span>
         {#if additionnalButton}
@@ -111,7 +111,7 @@
             <ul class="sticky bottom-0">
                 {#each [...warning, ...error] as message}
                     <li class="flex whitespace-pre-line bg-yellow-100" in:fly>
-                        <span class="bg-primary-50 w-14 border-r"></span>
+                        <span class="w-14 border-r bg-primary-50"></span>
                         <span class="max-h-40 flex-1 overflow-auto p-2 first-line:font-bold"
                             >{message}</span
                         >
@@ -142,9 +142,9 @@
             opacity 0.1s,
             transform 0.1s;
 
-        @apply xl:max-w-1/2 overflow-auto xl:w-fit;
         /* @apply -mb-4; */
         @apply flex max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
+        @apply xl:max-w-1/2 overflow-auto xl:w-fit;
 
         &:not(.showDoc) {
             @apply absolute;
@@ -175,7 +175,7 @@
 
             /* Custom styling of rules list menu + layout */
             :not(.content, h1) > a {
-                @apply text-primary-600 hover:text-primary-700 underline;
+                @apply text-primary-600 underline hover:text-primary-700;
             }
             .content > a {
                 @apply flex-1 p-2 pl-0 pr-8;
@@ -184,7 +184,7 @@
                 @apply flex w-full p-0 hover:bg-slate-100;
             }
             .active .content {
-                @apply text-primary-600 bg-slate-100 font-bold;
+                @apply bg-slate-100 font-bold text-primary-600;
             }
             .content::before {
                 margin: 1rem !important;
@@ -221,13 +221,6 @@
         }
     }
 
-    @tailwind utilities;
-    @layer utilities {
-        .max-w-1\/2 {
-            max-width: 50%;
-        }
-    }
-
     .editor-header {
         & :global(button) {
             @apply relative w-14 self-stretch py-2 text-center transition-colors;
@@ -245,7 +238,7 @@
             @apply flex w-0 flex-1;
         }
         .cm-gutters {
-            @apply bg-primary-50 flex min-w-14;
+            @apply flex min-w-14 bg-primary-50;
         }
         .cm-gutter {
             &:first-child {
@@ -263,6 +256,14 @@
         }
         .ͼ2 .cm-selectionBackground {
             @apply bg-primary-100;
+        }
+    }
+
+    @tailwind utilities;
+
+    @layer utilities {
+        :gobal(.max-w-1\/2) {
+            max-width: 50%;
         }
     }
 </style>
