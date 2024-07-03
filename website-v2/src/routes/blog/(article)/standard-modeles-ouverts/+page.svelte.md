@@ -8,6 +8,8 @@ icon: '🏛️'
 featured: true
 ---
 
+# {title}
+
 Un modèle de calcul est un programme, qui prend des données en entrée (par exemple le gabarit d'une voiture et son type de moteur), et permet de calculer de nouvelles valeurs sur cette base (par exemple, son empreinte climat en gCO2e/km).
 
 Aujourd'hui, les équipes de [Betagouv](https://beta.gouv.fr/) développent de nombreux modèles de calcul, dont voici une liste non exhaustive :

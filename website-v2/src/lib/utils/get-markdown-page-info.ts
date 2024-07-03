@@ -17,7 +17,10 @@ export function getMarkdownPagesInfo<Metadata>(
             metadata.headings = metadata.headings.filter((heading) => heading.level === 2);
 
             return {
-                path: path.replace('./', '/').replace('/+page.svelte.md', ''),
+                path: path
+                    .replace('./', '/')
+                    .replace('/+page.svelte.md', '')
+                    .replace(/\(.*\)\//g, ''),
                 metadata
             };
         })

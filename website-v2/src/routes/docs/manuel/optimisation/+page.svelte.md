@@ -18,12 +18,12 @@ retours sur les problèmes rencontrés sur le dépôt
 ### Motivation
 
 Les modèles de calculs écrits en Publicodes sont par
-[_design_](../pourquoi-publicodes/standard-modeles-ouverts#document%C3%A9s-sourc%C3%A9s)
+[_design_](/blog/standard-modeles-ouverts#document%C3%A9s-sourc%C3%A9s)
 implémentés pour être le plus transparent et intelligible possible pour le plus
 grand nombre.
 Cela implique de détailler au maximum les calculs, ce qui peut conduire à une
 complexité importante des modèles. Cependant, cette complexité n'est justifiée
-que pour la [documentation](../api/react-ui) et non pour le calcul en lui-même.
+que pour la [documentation](https://publi.codes/docs/api/react-ui/) et non pour le calcul en lui-même.
 
 Par exemple, considérons les règles suivantes :
 

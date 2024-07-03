@@ -258,4 +258,12 @@
             @apply bg-primary-100;
         }
     }
+
+    @tailwind utilities;
+
+    @layer utilities {
+        :gobal(.max-w-1\/2) {
+            max-width: 50%;
+        }
+    }
 </style>
