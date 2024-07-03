@@ -121,7 +121,7 @@
         </div>
         {#await import('./doc.svelte') then c}
             {#if engine && selectedRule}
-                <div class="publicodes-documentation" class:showDoc>
+                <div class="publicodes-documentation xl:publicodes-documentation" class:showDoc>
                     <svelte:component
                         this={c.default}
                         {engine}
@@ -137,6 +137,12 @@
 </div>
 
 <style>
+    /* TODO use something else */
+    @media (min-width: 1280px) {
+        .publicodes-documentation {
+            max-width: 60%;
+        }
+    }
     .publicodes-documentation {
         transition:
             opacity 0.1s,
@@ -144,7 +150,7 @@
 
         /* @apply -mb-4; */
         @apply flex max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
-        @apply xl:max-w-1/2 overflow-auto xl:w-fit;
+        @apply overflow-auto xl:w-fit;
 
         &:not(.showDoc) {
             @apply absolute;
@@ -256,14 +262,6 @@
         }
         .ͼ2 .cm-selectionBackground {
             @apply bg-primary-100;
-        }
-    }
-
-    @tailwind utilities;
-
-    @layer utilities {
-        :gobal(.max-w-1\/2) {
-            max-width: 50%;
         }
     }
 </style>
