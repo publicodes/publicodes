@@ -2,7 +2,6 @@
     import Time from 'svelte-time/Time.svelte';
 
     export let title = '';
-    export let description = '';
     export let date = '';
 </script>
 
@@ -26,12 +25,3 @@
         </div>
     </section>
 </article>
-
-<style>
-    blockquote {
-        @apply bg-gray-100;
-        @apply rounded-md;
-        padding: 1rem 1rem 0.25rem;
-        margin: 1rem 0;
-    }
-</style>

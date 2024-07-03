@@ -142,9 +142,9 @@
             opacity 0.1s,
             transform 0.1s;
 
-        @apply xl:max-w-1/2 overflow-auto xl:w-fit;
         /* @apply -mb-4; */
         @apply flex max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
+        @apply xl:max-w-1/2 overflow-auto xl:w-fit;
 
         &:not(.showDoc) {
             @apply absolute;
@@ -218,13 +218,6 @@
             #rules-nav-open-nav-button button {
                 @apply whitespace-nowrap;
             }
-        }
-    }
-
-    @tailwind utilities;
-    @layer utilities {
-        .max-w-1\/2 {
-            max-width: 50%;
         }
     }
 

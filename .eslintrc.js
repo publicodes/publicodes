@@ -10,6 +10,7 @@ module.exports = {
 		'plugin:react/recommended',
 		'prettier',
 	],
+	ignorePatterns: ['dist'],
 	overrides: [
 		{
 			env: {

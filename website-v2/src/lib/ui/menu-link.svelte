@@ -3,8 +3,12 @@
     import type { Snippet } from 'svelte';
     import { fly } from 'svelte/transition';
 
-    const { href, children, submenu }: { href: string; children: Snippet; submenu?: Snippet } =
-        $props();
+    const {
+        href,
+        children,
+        submenu,
+        onclick
+    }: { href: string; children: Snippet; submenu?: Snippet; onclick?: () => void } = $props();
     const active = $derived($page.url.pathname === href);
     const isParentActive = $derived($page.url.pathname.startsWith(href));
 </script>
@@ -15,6 +19,7 @@
         class:active
         class:isParentActive
         {href}
+        {onclick}
     >
         {@render children()}
     </a>

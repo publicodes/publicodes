@@ -3,7 +3,7 @@
     import AdministrationSVG from '$lib/assets/administration.svg';
     import CodeTypingSVG from '$lib/assets/code-typing.svg';
     import SpreadsheetsSVG from '$lib/assets/spreadsheets.svg';
-    // import PublicodesEditor from '$lib/publicodes/editor.svelte';
+    import PublicodesEditor from '$lib/publicodes/editor.svelte';
     import Button from '$lib/ui/button.svelte';
     import Card from '$lib/ui/card.svelte';
 </script>
