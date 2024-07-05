@@ -1,6 +1,5 @@
 ---
 title: 'Standards de conception des modèles publics'
-description: '[TODO - MAJ] Standards de conception des modèles publics'
 author: 'Mäel'
 date: '2024-06-14'
 tags: 'modelisation, open-data'
@@ -8,7 +7,9 @@ icon: '🏛️'
 featured: true
 ---
 
-# {title}
+<h1 class='mb-0'>{title}</h1>
+
+<span class='italic'>Publié le {date}</span>
 
 Un modèle de calcul est un programme, qui prend des données en entrée (par exemple le gabarit d'une voiture et son type de moteur), et permet de calculer de nouvelles valeurs sur cette base (par exemple, son empreinte climat en gCO2e/km).
 

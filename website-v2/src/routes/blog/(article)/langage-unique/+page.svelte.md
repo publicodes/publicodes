@@ -1,13 +1,14 @@
 ---
 title: 'Pourquoi ce projet alors que X existe ?'
-description: '[TODO - MAJ] Pourquoi ce projet alors que X existe ?'
 author: 'Maël'
 date: '2019-04-02'
 tags: 'open-data'
 icon: '👀'
 ---
 
-# {title}
+<h1 class='mb-0'>{title}</h1>
+
+<span class='italic'>Publié le {date}</span>
 
 ## X = Moteurs de calcul numérique, comme OpenFisca
 
