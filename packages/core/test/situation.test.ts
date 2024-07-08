@@ -135,6 +135,34 @@ a:
 		expect(filteredSituation).to.deep.equal({})
 	})
 
+	it('should filter wrong situation when `strict` option is set to `false` (with "formule")', () => {
+		const engine = new Engine(
+			parse(`
+a:
+  formule:
+    une possibilité:
+      choix obligatoire: oui
+      possibilités:
+        - b
+        - c
+        - d
+  avec:
+    b:
+    c:
+    d:
+`),
+			{
+				logger: { log: () => {}, warn: () => {}, error: () => {} },
+				strict: {
+					situation: false,
+				},
+			},
+		).setSituation({ 'règle non valide': 10, a: "'valeur non valide'" })
+
+		const filteredSituation = engine.getSituation()
+		expect(filteredSituation).to.deep.equal({})
+	})
+
 	it('should raise an error when rule in situation is absent in base rules', () => {
 		const engine = engineFromYaml(`
 a:
