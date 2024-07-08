@@ -13,6 +13,7 @@ export type InversionNode = {
 		inversionCandidates: Array<ReferenceNode>
 		min: number
 		max: number
+		errorTolerance: number
 		unit?: Unit
 
 		// Explanation computed during evaluation
@@ -164,12 +165,13 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 			y2 !== undefined && y2 > goal && (y2 < y1 || y1 < goal) ? x2
 			: y1 !== undefined && y1 > goal && (y1 < y2 || y2 < goal) ? x1
 			: node.explanation.max
+		const errorTolerance = node.explanation.errorTolerance
 
 		nodeValue = uniroot(
 			test,
 			nearestBelowGoal,
 			nearestAboveGoal,
-			0.1,
+			errorTolerance,
 			maxIterations,
 			1,
 		)
@@ -219,6 +221,10 @@ export const mecanismInversion = (v, context: Context) => {
 	let avec = typeof v === 'object' && 'avec' in v ? v.avec : v
 	const min = typeof v === 'object' && 'min' in v ? v.min : -1000000
 	const max = typeof v === 'object' && 'max' in v ? v.max : 100000000
+	const errorTolerance =
+		typeof v === 'object' && "tolérance d'erreur" in v ?
+			v["tolérance d'erreur"]
+		:	0.1
 	if (v === null) {
 		throw new PublicodesError(
 			'SyntaxError',
@@ -237,6 +243,7 @@ export const mecanismInversion = (v, context: Context) => {
 			})),
 			min,
 			max,
+			errorTolerance,
 		},
 		nodeKind: 'inversion',
 	} as InversionNode

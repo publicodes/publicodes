@@ -617,7 +617,16 @@ L’algorithme utilisé est la [méthode de
 Brent](https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Brent). L’idée générale
 est de prendre une valeur au hasard pour la variable en question, et
 d’améliorer mathématiquement le choix jusqu’à ce que les valeurs cibles
-soient toutes suffisamment proches des objectifs.
+soient toutes suffisamment proches des objectifs. La tolérance entre le choix et les valeurs cibles peut être configuré avec `tolérance d'erreur` (par défaut: `0.1`).
+
+```publicodes title="Exemple tolérance d'erreur"
+a: b + 10
+b:
+  inversion numérique:
+    avec:
+      - a
+    tolérance d'erreur: 1
+```
 
 Afin d'optimiser les performances du calcul d'inversion numérique, il est possible d'utiliser le champ `min` (par défaut: `-1000000`) et/ou `max` (par défault: `100000000`) afin de limiter à une certaine plage la valeur au hasard choisi en début de calcul.
 

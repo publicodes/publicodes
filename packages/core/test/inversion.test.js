@@ -232,4 +232,22 @@ describe('inversions', () => {
 
 		expect(result.nodeValue).to.be.equal(undefined)
 	})
+
+	it('should handle an inversion with "tolérance d\'erreur"', () => {
+		const errorTolerance = 0.1
+		const rules = parseYaml`
+        net: brut * 50%
+        brut:
+          formule:
+            inversion numérique:
+              unité: €
+              avec:
+                - net
+              tolérance d'erreur: ${errorTolerance}
+      `
+		const result = new Engine(rules, { inversionMaxIterations: 1 })
+			.setSituation({ net: 1000 })
+			.evaluate('brut')
+		expect(result.nodeValue).to.be.closeTo(1000 * 2, errorTolerance)
+	})
 })

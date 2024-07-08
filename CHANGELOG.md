@@ -3,6 +3,7 @@
 ## 1.4.0
 
 - Ajoute les champs `min` et `max` pour le mécanisme d'inversion numérique
+- Ajoute du champ `tolérance d'erreur` pour le mécanisme d'inversion numérique
 
 ## 1.3.3
 
