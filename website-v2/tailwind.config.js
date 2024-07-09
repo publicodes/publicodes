@@ -117,22 +117,22 @@ export default {
                             }
                         },
                         h1: {
-                            fontWeight: theme('fontWeight.regular'),
+                            fontWeight: theme('fontWeight.normal'),
                             color: theme('colors.dark')
                         },
                         h2: {
-                            fontWeight: theme('fontWeight.regular'),
+                            fontWeight: theme('fontWeight.normal'),
                             color: theme('colors.dark')
                         },
                         h3: {
-                            fontWeight: theme('fontWeight.regular'),
+                            fontWeight: theme('fontWeight.normal'),
                             color: theme('colors.dark')
                         },
                         h4: {
-                            fontWeight: theme('fontWeight.regular')
+                            fontWeight: theme('fontWeight.normal')
                         },
                         h5: {
-                            fontWeight: theme('fontWeight.regular')
+                            fontWeight: theme('fontWeight.normal')
                         }
                     }
                 }

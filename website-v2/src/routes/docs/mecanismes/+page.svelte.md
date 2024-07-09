@@ -3,7 +3,7 @@ sidebar_position: 3
 title: Liste des mécanismes
 ---
 
-## applicable si
+## `applicable si`
 
 > **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
 
@@ -18,7 +18,7 @@ prime de vacances:
   valeur: 200€
 ```
 
-## non applicable si
+## `non applicable si`
 
 > **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
 
@@ -33,7 +33,7 @@ prime de vacances:
   valeur: 200€
 ```
 
-## est non défini
+## `est non défini`
 
 Renvoit `oui` si la valeur est non définie.
 
@@ -43,7 +43,7 @@ age inconnu:
   est non défini: age
 ```
 
-## est défini
+## `est défini`
 
 Renvoit `oui` si la valeur est non définie.
 
@@ -53,7 +53,7 @@ age connu:
   est défini: age
 ```
 
-## est non applicable
+## `est non applicable`
 
 Renvoit `oui` si la valeur est non applicable.
 
@@ -72,7 +72,7 @@ lodeom non applicable:
   est non applicable: exonérations . lodeom
 ```
 
-## est applicable
+## `est applicable`
 
 Renvoit `oui` si la valeur est applicable.
 
@@ -91,7 +91,7 @@ lodeom applicable:
   est applicable: exonérations . lodeom
 ```
 
-## une de ces conditions
+## `une de ces conditions`
 
 Renvoie `oui` si l’une des règles listées est _applicable_.
 
@@ -106,7 +106,7 @@ est majeur:
     - mineur émancipé
 ```
 
-## toutes ces conditions
+## `toutes ces conditions`
 
 Renvoie `oui` si toutes toutes les règles listées sont _applicables_.
 
@@ -121,7 +121,7 @@ peut voter:
     - âge >= 18 ans
 ```
 
-## produit
+## `produit`
 
 Produit des facteurs de la liste.
 
@@ -144,7 +144,7 @@ volume:
     - 4 m
 ```
 
-## variations
+## `variations`
 
 Contient une liste de conditions (`si`) et leurs conséquences associées
 (`alors`), ainsi qu’un cas par défaut (`sinon`).
@@ -180,7 +180,7 @@ taux allocation familiales:
     - sinon: 5.25%
 ```
 
-## somme
+## `somme`
 
 Somme de chaque terme de la liste.
 
@@ -209,7 +209,7 @@ somme:
     - 40 €
 ```
 
-## moyenne
+## `moyenne`
 
 Moyenne de chaque terme de la liste.
 
@@ -223,9 +223,7 @@ exemple:
     - (-20 €)
 ```
 
-#### Terme non applicable
-
-```publicodes
+```publicodes title="Terme non applicable"
 a: 50 €
 b:
   applicable si: non
@@ -238,7 +236,7 @@ moyenne:
     - 40 €
 ```
 
-## le maximum de
+## `le maximum de`
 
 Renvoie la valeur numérique de la liste de propositions fournie qui est la
 plus grande.
@@ -253,7 +251,7 @@ max:
     - 100
 ```
 
-## le minimum de
+## `le minimum de`
 
 Renvoie la valeur numérique de la liste de propositions fournie qui est la
 plus petite.
@@ -267,7 +265,7 @@ min:
     - 100
 ```
 
-## arrondi
+## `arrondi`
 
 > **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
 
@@ -285,7 +283,7 @@ arrondi:
   valeur: 2 / 3
 ```
 
-## contexte
+## `contexte`
 
 Spécifie le contexte d'évaluation d'une règle.
 
@@ -308,7 +306,7 @@ cotisations pour un SMIC:
     brut: 1500 €
 ```
 
-## barème
+## `barème`
 
 par son utilisation dans le calcul de l’impôt sur le revenu.
 
@@ -352,7 +350,7 @@ cotisation retraite:
   arrondi: oui
 ```
 
-## grille
+## `grille`
 
 C’est un barème sous la forme d’une grille de correspondance simple. C’est
 le mécanisme de calcul de l’impôt neutre, aussi appelé impôt non
@@ -380,7 +378,7 @@ trimestres validés:
       - montant: 4
 ```
 
-## taux progressif
+## `taux progressif`
 
 Ce mécanisme permet de calculer un taux progressif. On spécifie pour chaque
 tranche le plafond et le taux associé. Le taux effectif renvoyé est calculé
@@ -409,7 +407,7 @@ taux réduction de cotisation:
         plafond: 100%
 ```
 
-## abattement
+## `abattement`
 
 > **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
 
@@ -424,31 +422,25 @@ Il est possible d’utiliser le mécanisme `abattement` de deux manières :
 
 ### Exemple
 
-#### Abattement simple
-
-```publicodes
+```publicodes title="Abattement simple"
 revenu imposable:
   valeur: 10000€
   abattement: 2000€
 ```
 
-#### Abattement supérieur à la valeur
-
-```publicodes
+```publicodes title="Abattement supérieur à la valeur"
 revenu imposable:
   valeur: 1000€
   abattement: 2000€
 ```
 
-#### Abattement relatif
-
-```publicodes
+```publicodes title="Abattement relatif"
 revenu imposable:
   valeur: 2000€
   abattement: 10%
 ```
 
-## plancher
+## `plancher`
 
 Applique un minimum à une valeur.
 
@@ -460,7 +452,7 @@ temperature mesurée:
   plancher: -273.15 °C
 ```
 
-## plafond
+## `plafond`
 
 Applique un maximum à une valeur.
 
@@ -472,7 +464,7 @@ déduction fiscale:
   plafond: 200 €/mois
 ```
 
-## durée
+## `durée`
 
 Permet de calculer la durée entre deux dates (la dernière date est excluse)
 
@@ -489,9 +481,7 @@ Il est possible de spécifier une unité pour le calcul de la durée. Les valeur
 
 ### Exemple
 
-#### Durée entre deux dates
-
-```publicodes
+```publicodes title="Durée entre deux dates"
 durée de 2024:
   durée:
     depuis: 01/01/2024
@@ -504,9 +494,7 @@ durée de 2024 en années:
     jusqu'à: 01/01/2025
 ```
 
-#### En ommettant une date
-
-```publicodes
+```publicodes title="En ommettant une date"
 date d'embauche: 12/04/2008
 ancienneté:
   durée:
@@ -514,9 +502,7 @@ ancienneté:
     depuis: date d'embauche
 ```
 
-#### Durée civile
-
-```publicodes
+```publicodes title="Durée civile"
 date de création: 31/12/2023
 durée d'activité en année civile:
   durée:
@@ -524,7 +510,7 @@ durée d'activité en année civile:
     depuis: date de création
 ```
 
-## unité
+## `unité`
 
 > **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
 
@@ -538,7 +524,7 @@ salaire:
   unité: €/mois
 ```
 
-## par défaut
+## `par défaut`
 
 > **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
 
@@ -552,7 +538,7 @@ TVA:
   par défaut: 20%
 ```
 
-## texte
+## `texte`
 
 Permet de mettre en forme un texte avec des expressions évaluée dynamiquement.
 Ce principe est connu en informatique sous le nom d’interpolation de chaine de
@@ -596,7 +582,7 @@ exemple 2:
 
 </Callout>
 
-## inversion numérique
+## `inversion numérique`
 
 > **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
 
@@ -650,9 +636,7 @@ x:
   résoudre la référence circulaire: oui
 ```
 
-#### Calcul du revenu professionnel
-
-```publicodes
+```publicodes title="Calcul du revenu professionnel"
 chiffre d'affaires: 10000 €/an
 
 cotisations: 25% * revenu professionnel
