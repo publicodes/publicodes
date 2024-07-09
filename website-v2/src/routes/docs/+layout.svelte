@@ -112,7 +112,7 @@
         ></div>
     {/if}
 
-    <div class="sticky top-16 min-h-max w-80 max-md:hidden">
+    <div class="sticky top-16 min-h-max w-60 max-md:hidden">
         {@render MenuLeft()}
     </div>
     <div class="self-stretch border-r border-primary-100"></div>

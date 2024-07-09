@@ -1,6 +1,6 @@
 <script lang="ts">
     import { yaml } from '@codemirror/lang-yaml';
-    import { espresso } from 'thememirror';
+    import { tomorrow } from 'thememirror';
 
     import Tag from '$lib/ui/tag.svelte';
     import type { Snippet } from 'svelte';
@@ -124,7 +124,7 @@
                 lang={yaml()}
                 useTab
                 lineWrapping
-                theme={espresso}
+                theme={tomorrow}
                 editable={true}
                 styles={{
                     '&': {
