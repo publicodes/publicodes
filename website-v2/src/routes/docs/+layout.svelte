@@ -78,13 +78,15 @@
 
 {#snippet MenuRight()}
     {#if currentPageMetadata.headings.length}
-        <nav class="mx-2">
+        <nav class="mx-2 border-l border-primary-50">
             <h2 class="not-prose my-2 p-2 uppercase text-slate-500">Sur cette page</h2>
             <ul>
                 {#each currentPageMetadata.headings as { title, slug }}
                     <li class="p-2">
-                        <a href={`#${slug}`} onclick={() => (showMobileMenuRight = false)}
-                            >{title}</a
+                        <a
+                            class="font-regular text-slate-700 hover:text-primary-400"
+                            href={`#${slug}`}
+                            onclick={() => (showMobileMenuRight = false)}>{title}</a
                         >
                     </li>
                 {/each}
@@ -110,8 +112,10 @@
         ></div>
     {/if}
 
-    <div class="sticky top-16 min-w-72 pr-4 max-md:hidden">{@render MenuLeft()}</div>
-    <div class="self-stretch border-r"></div>
+    <div class="sticky top-16 min-h-max w-80 max-md:hidden">
+        {@render MenuLeft()}
+    </div>
+    <div class="self-stretch border-r border-primary-100"></div>
     <div
         class="mx-auto flex flex-1 flex-col px-4 pt-8 transition-all 2xl:prose-lg max-md:max-w-full md:px-8 xl:max-w-screen-md 2xl:max-w-4xl"
     >
@@ -146,7 +150,7 @@
         <article
             class:blur-sm={showMobileMenuLeft || showMobileMenuRight}
             class:opacity-50={showMobileMenuLeft || showMobileMenuRight}
-            class="prose py-8"
+            class="prose prose-lg py-8"
         >
             <h1>{currentPageMetadata.title}</h1>
             {@render children()}

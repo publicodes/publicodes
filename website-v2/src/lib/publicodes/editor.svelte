@@ -8,6 +8,7 @@
     import { fly } from 'svelte/transition';
     import { createEngine } from './create-engine';
     import FlyInOutTransition from './fly-in-out-transition.svelte';
+    import { ClipboardCopy, PanelRightClose, PanelRightOpen } from 'lucide-svelte';
 
     let {
         code = '',
@@ -15,6 +16,7 @@
         selectedRuleInDoc,
         showDocByDefault = false,
         hideDocButton = false,
+
         onchange,
         size = 'MD',
         additionnalButton
@@ -31,6 +33,9 @@
 
     let showDoc = $state(showDocByDefault);
     let copied = $state(false);
+
+    let iconSize = size === 'MD' ? 20 : 26;
+    let iconStrokeWidth = 1.5;
 
     function handleCopy() {
         navigator.clipboard.writeText(code);
@@ -54,12 +59,20 @@
     });
 </script>
 
-<div class="editor-container not-prose flex flex-col overflow-hidden border sm:rounded-lg">
+<div
+    class="editor-container not-prose flex flex-col overflow-hidden border border-primary-100 sm:rounded"
+>
     <div
-        class="editor-header relative flex shrink-0 items-center overflow-hidden border-b bg-primary-50 text-center"
+        class="editor-header flex shrink-0 items-center overflow-hidden
+		border-b border-primary-200 bg-primary-50 text-center"
     >
-        <button class="border-r" title="Copier" onclick={handleCopy} aria-label="Copier le code">
-            📋
+        <button
+            class="flex items-center justify-center border-r border-primary-200 text-primary-500"
+            title="Copier"
+            onclick={handleCopy}
+            aria-label="Copier le code"
+        >
+            <ClipboardCopy strokeWidth={iconStrokeWidth} size={iconSize} />
         </button>
 
         {#if copied}
@@ -71,7 +84,12 @@
                 <Tag>Code copié !</Tag>
             </div>
         {/if}
-        <span class="flex-1 font-bold text-primary-600" class:p-3={size === 'LG'}>
+        <span
+            class="font-mono font-regular flex-1 text-primary-500"
+            class:text-lg={size === 'LG'}
+            class:text-sm={size === 'MD'}
+            class:p-3={size === 'LG'}
+        >
             {title}
         </span>
         {#if additionnalButton}
@@ -80,15 +98,21 @@
         {#if !hideDocButton}
             <button
                 transition:fly
-                class="border-l"
+                class="border-l border-primary-200 text-primary-500"
                 onclick={() => (showDoc = !showDoc)}
                 aria-label={showDoc ? 'Fermer la documentation' : 'Ouvrir la documentation'}
                 class:saturate-0={documentationIsBroken}
                 disabled={documentationIsBroken}
             >
                 <FlyInOutTransition condition={showDoc && !documentationIsBroken}>
-                    {#snippet ifTrue()}❌{/snippet}
-                    {#snippet ifFalse()}📚{/snippet}
+                    {#snippet ifTrue()}<PanelRightClose
+                            strokeWidth={iconStrokeWidth}
+                            size={iconSize}
+                        />{/snippet}
+                    {#snippet ifFalse()}<PanelRightOpen
+                            strokeWidth={iconStrokeWidth}
+                            size={iconSize}
+                        />{/snippet}
                 </FlyInOutTransition>
             </button>
         {/if}
@@ -112,7 +136,7 @@
                 {#each [...warning, ...error] as message}
                     <li class="flex whitespace-pre-line bg-yellow-100" in:fly>
                         <span class="w-14 border-r bg-primary-50"></span>
-                        <span class="max-h-40 flex-1 overflow-auto p-2 first-line:font-bold"
+                        <span class="first-line:font-regular max-h-40 flex-1 overflow-auto p-2"
                             >{message}</span
                         >
                     </li>
@@ -149,7 +173,7 @@
             transform 0.1s;
 
         /* @apply -mb-4; */
-        @apply flex max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
+        @apply flex border-primary-200 max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
         @apply overflow-auto xl:w-fit;
 
         &:not(.showDoc) {
@@ -159,21 +183,21 @@
 
         & :global {
             h1 {
-                @apply my-2 text-xl font-bold;
+                @apply font-regular my-2 text-xl;
                 /* @apply hidden; */
             }
 
             h2 {
-                @apply -mx-4 border-t p-4 font-bold;
+                @apply font-regular -mx-4 border-t p-4;
             }
             p {
-                @apply my-3;
+                @apply my-3 font-light;
             }
             li {
                 @apply my-0;
             }
             button {
-                @apply cursor-pointer border bg-slate-50 px-2 py-1 text-sm hover:bg-slate-100;
+                @apply mx-2 cursor-pointer rounded border border-primary-100 bg-primary-50 px-1 py-1 text-xs hover:border-primary-200 hover:bg-primary-100;
             }
             a {
                 @apply cursor-pointer font-sans hover:underline;
@@ -181,7 +205,7 @@
 
             /* Custom styling of rules list menu + layout */
             :not(.content, h1) > a {
-                @apply text-primary-600 underline hover:text-primary-700;
+                @apply text-primary-400 hover:text-opacity-75;
             }
             .content > a {
                 @apply flex-1 p-2 pl-0 pr-8;
@@ -190,13 +214,13 @@
                 @apply flex w-full p-0 hover:bg-slate-100;
             }
             .active .content {
-                @apply bg-slate-100 font-bold text-primary-600;
+                @apply font-regular bg-slate-100 text-primary-600;
             }
             .content::before {
                 margin: 1rem !important;
             }
             .content > button {
-                @apply h-full border-0 text-center opacity-90;
+                @apply h-full rounded border-0 text-center opacity-90;
                 margin: 0 !important;
 
                 width: 2.5rem;
@@ -243,8 +267,14 @@
         .cm-editor {
             @apply flex w-0 flex-1;
         }
+        .cm-content {
+            @apply font-mono font-light;
+        }
         .cm-gutters {
-            @apply flex min-w-14 bg-primary-50;
+            @apply font-mono flex min-w-14 bg-primary-50 bg-opacity-30;
+        }
+        .cm-activeLineGutter {
+            @apply mt-0 bg-primary-50;
         }
         .cm-gutter {
             &:first-child {
@@ -261,7 +291,7 @@
             @apply bg-transparent;
         }
         .ͼ2 .cm-selectionBackground {
-            @apply bg-primary-100;
+            @apply bg-primary-50;
         }
     }
 </style>

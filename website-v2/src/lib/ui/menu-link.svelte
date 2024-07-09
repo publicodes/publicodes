@@ -11,20 +11,23 @@
     }: { href: string; children: Snippet; submenu?: Snippet; onclick?: () => void } = $props();
     const active = $derived($page.url.pathname === href);
     const isParentActive = $derived($page.url.pathname.startsWith(href));
+    const isParentActiveWithSubmenu = $derived(isParentActive && submenu);
+    const section = submenu;
 </script>
 
-<li>
+<li class:section>
     <a
-        class="not-prose block rounded px-4 py-2 text-primary-950 hover:bg-slate-100 hover:underline 2xl:px-6 2xl:py-3 2xl:text-lg"
+        class="not-prose text-dark block px-4 py-2 hover:text-primary-400"
         class:active
         class:isParentActive
+        class:isParentActiveWithSubmenu
         {href}
         {onclick}
     >
         {@render children()}
     </a>
     {#if submenu && isParentActive}
-        <ul class="ml-4" in:fly={{ y: -10 }}>
+        <ul class="font-light">
             {@render submenu()}
         </ul>
     {/if}
@@ -35,9 +38,15 @@
         transition: background-color 0.2s;
     }
     .active {
-        @apply bg-slate-100;
+        @apply text-primary-400;
     }
     .isParentActive {
-        @apply font-bold text-primary-700;
+        @apply text-primary-400;
+    }
+    .isParentActiveWithSubmenu {
+        @apply bg-primary-50;
+    }
+    .section {
+        @apply border-b border-primary-50;
     }
 </style>

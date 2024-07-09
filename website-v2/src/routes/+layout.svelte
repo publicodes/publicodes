@@ -22,8 +22,11 @@
     <link rel="icon" type="image/png" href={favicon} />
 </svelte:head>
 
-<div class="fixed z-10 flex h-16 w-full items-center border-b bg-white p-4 text-cyan-950">
-    <a class="inline-flex items-center gap-2 text-lg font-bold" href="/">
+<div
+    class="fixed z-10 flex h-16 w-full items-center border-b border-primary-200 bg-white
+	px-8 py-4 text-cyan-950"
+>
+    <a class="inline-flex items-center gap-2 text-lg font-medium" href="/">
         <img src={Logo} class="h-8" alt="Logo de publicodes" />
         Publicodes
     </a>
@@ -46,9 +49,6 @@
         </ul>
     </nav>
 </div>
-<div
-    class="max-h-full pt-16 prose-h1:text-primary-950 prose-h2:font-bold prose-h2:text-primary-950 prose-h3:text-primary-950 prose-a:text-primary-900 hover:prose-a:text-primary-700 prose-blockquote:rounded-l-sm prose-blockquote:bg-slate-100 prose-blockquote:px-4 prose-blockquote:py-2
-    prose-blockquote:font-normal prose-blockquote:not-italic prose-code:rounded prose-code:border prose-code:border-slate-200 prose-code:bg-slate-100 prose-code:px-1 prose-code:py-0.5"
->
+<div class="max-h-full pt-16">
     <slot />
 </div>

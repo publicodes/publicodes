@@ -2,6 +2,7 @@
     import { page } from '$app/stores';
     import PublicodesEditor from '$lib/publicodes/editor.svelte';
     import Tag from '$lib/ui/tag.svelte';
+    import { Link } from 'lucide-svelte';
     import { utils } from 'publicodes';
     import { onMount } from 'svelte';
     import { fly } from 'svelte/transition';
@@ -71,12 +72,13 @@
                         </div>
                     {/if}
                     <button
-                        class="border-l"
+                        class="flex justify-center border-l border-primary-200
+						text-primary-500"
                         title="Lien de partage"
                         onclick={handleCopyLink}
                         aria-label="Copier le lien de partage"
                     >
-                        🔗
+                        <Link strokeWidth={1.5} />
                     </button>
                 {/snippet}
             </PublicodesEditor>

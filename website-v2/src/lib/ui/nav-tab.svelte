@@ -15,6 +15,6 @@
 
 <style>
     .active {
-        @apply font-bold;
+        @apply font-medium text-primary-400;
     }
 </style>

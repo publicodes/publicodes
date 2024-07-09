@@ -3,24 +3,42 @@
 
     const {
         light = false,
+        type = 'primary',
+        icon,
         children,
         ...rest
     }: {
         light?: boolean;
+        type?: 'primary' | 'secondary';
+        icon?: Snippet;
         children: Snippet;
     } = $props();
 </script>
 
-<span
-    {...rest}
-    class="border-1 font-lg inline-block cursor-pointer rounded border border-white px-4 py-2 font-sans font-semibold text-white transition duration-100 ease-in-out hover:bg-slate-300 hover:bg-opacity-15"
-    class:background={!light}
->
-    {@render children()}
-</span>
+{#if type === 'primary'}
+    <span
+        {...rest}
+        class="border-1 font-regular flex cursor-pointer justify-center
+	rounded border border-primary-400 px-4 py-2 font-sans text-xl
+		text-white duration-100 ease-in-out hover:bg-primary-600"
+        class:background={!light}
+    >
+        {@render children()}
+    </span>
+{:else}
+    <span
+        {...rest}
+        class="border-1 font-regular flex cursor-pointer items-center justify-center
+	gap-2 rounded border border-primary-400 bg-white px-4 py-2 font-sans
+		text-xl text-primary-400 transition
+		duration-100 ease-in-out hover:bg-slate-300 hover:bg-opacity-15"
+    >
+        {@render children()}
+    </span>
+{/if}
 
 <style>
     .background {
-        @apply bg-primary-700 hover:bg-primary-600;
+        @apply bg-primary-400 hover:bg-opacity-75;
     }
 </style>
