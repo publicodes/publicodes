@@ -188,7 +188,9 @@ salaire net: salaire brut - cotisations salariales`}
                     est possible de comprendre du code écrit avec Publicodes.
                 </p>
             </div>
-            <a class="w-fit" href="/docs"><Button>Découvrir le langage</Button></a>
+            <a class="w-fit self-center" href="/docs">
+                {@render buttonWithRightArrow('Découvrir le langage')}
+            </a>
         </div>
     </section>
     <section class="mt-32 flex w-full flex-col items-center gap-16">
