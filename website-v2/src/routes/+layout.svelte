@@ -23,16 +23,16 @@
 </svelte:head>
 
 <div
-    class="fixed z-10 flex h-16 w-full items-center border-b border-primary-200 bg-white
-	px-8 py-4 text-cyan-950"
+    class="fixed z-10 flex h-16 w-full items-center justify-center border-b border-primary-200
+	bg-white px-8 py-2 text-cyan-950"
 >
-    <a class="inline-flex items-center gap-2 text-lg font-medium" href="/">
-        <img src={Logo} class="h-8" alt="Logo de publicodes" />
+    <a class="inline-flex items-center gap-2 text-lg font-light hover:text-primary-400" href="/">
+        <img src={Logo} class="h-7" alt="Logo de publicodes" />
         Publicodes
     </a>
     <nav class="ml-auto">
         <ul class="flex gap-4">
-            <NavTab href="/docs">Docs</NavTab>
+            <NavTab href="/docs">Documentation</NavTab>
             <NavTab href="/studio">Studio</NavTab>
             <NavTab href="/blog">Blog</NavTab>
             <!-- <NavTab href="/blog">Blog</NavTab> -->

@@ -8,13 +8,13 @@
 </script>
 
 <li>
-    <a class="hover:underline" {href} class:active>
+    <a class="font-light hover:text-primary-400" {href} class:active>
         {@render children()}
     </a>
 </li>
 
 <style>
     .active {
-        @apply font-medium text-primary-400;
+        @apply font-light text-primary-400;
     }
 </style>
