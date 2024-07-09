@@ -15809,6 +15809,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lucide-svelte@npm:^0.399.0":
+  version: 0.399.0
+  resolution: "lucide-svelte@npm:0.399.0"
+  peerDependencies:
+    svelte: ^3 || ^4 || ^5.0.0-next.42
+  checksum: 51b5556844b51d578cd34f0a6ca7b6fe8a91a7e0ee0ea155232d6de453eed21faf6df3416db47fc1c166ae26b0459903ebb7a92df2e8e6a0343a2096178c095c
+  languageName: node
+  linkType: hard
+
 "lz-string@npm:^1.5.0":
   version: 1.5.0
   resolution: "lz-string@npm:1.5.0"
@@ -24292,6 +24301,7 @@ __metadata:
     eslint-plugin-svelte: ^2.41.0
     github-slugger: ^2.0.0
     globals: ^15.0.0
+    lucide-svelte: ^0.399.0
     mdast-util-to-string: ^4.0.0
     mdsvex: ^0.11.2
     postcss: ^8.4.38

@@ -46,6 +46,7 @@
     "dependencies": {
         "@codemirror/lang-yaml": "^6.1.1",
         "codemirror": "^6.0.1",
+        "lucide-svelte": "^0.399.0",
         "svelte-codemirror-editor": "^1.4.0",
         "thememirror": "^2.0.1",
         "yaml": "^2.4.5"
