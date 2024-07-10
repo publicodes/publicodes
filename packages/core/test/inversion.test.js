@@ -160,4 +160,94 @@ describe('inversions', () => {
 		engine.setSituation({ net: 150 }).evaluate('brut')
 		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
 	})
+
+	it('should handle an inversion with min', () => {
+		const rules = parseYaml`
+        net: brut * 50%
+        brut:
+          formule:
+            inversion numérique:
+              unité: €
+              avec:
+                - net
+              min: 1500
+      `
+		const result = new Engine(rules)
+			.setSituation({ net: 1000 })
+			.evaluate('brut')
+
+		expect(result.nodeValue).to.be.equal(2000)
+	})
+
+	it('should handle an inversion with max', () => {
+		const rules = parseYaml`
+        net: brut * 50%
+        brut:
+          formule:
+            inversion numérique:
+              unité: €
+              avec:
+                - net
+              max: 2500
+      `
+		const result = new Engine(rules)
+			.setSituation({ net: 1000 })
+			.evaluate('brut')
+
+		expect(result.nodeValue).to.be.equal(2000)
+	})
+
+	it('should not succeed when result are lower than the min', () => {
+		const rules = parseYaml`
+        net: brut * 50%
+        brut:
+          formule:
+            inversion numérique:
+              unité: €
+              avec:
+                - net
+              min: 2500
+      `
+		const result = new Engine(rules)
+			.setSituation({ net: 1000 })
+			.evaluate('brut')
+
+		expect(result.nodeValue).to.be.equal(undefined)
+	})
+
+	it('should not succeed when result are greater than the max', () => {
+		const rules = parseYaml`
+        net: brut * 50%
+        brut:
+          formule:
+            inversion numérique:
+              unité: €
+              avec:
+                - net
+              max: 1500
+      `
+		const result = new Engine(rules)
+			.setSituation({ net: 1000 })
+			.evaluate('brut')
+
+		expect(result.nodeValue).to.be.equal(undefined)
+	})
+
+	it('should handle an inversion with "tolérance d\'erreur"', () => {
+		const errorTolerance = 0.1
+		const rules = parseYaml`
+        net: brut * 50%
+        brut:
+          formule:
+            inversion numérique:
+              unité: €
+              avec:
+                - net
+              tolérance d'erreur: ${errorTolerance}
+      `
+		const result = new Engine(rules, { inversionMaxIterations: 1 })
+			.setSituation({ net: 1000 })
+			.evaluate('brut')
+		expect(result.nodeValue).to.be.closeTo(1000 * 2, errorTolerance)
+	})
 })

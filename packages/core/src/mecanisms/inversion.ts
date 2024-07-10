@@ -11,6 +11,9 @@ export type InversionNode = {
 	explanation: {
 		ruleToInverse: string
 		inversionCandidates: Array<ReferenceNode>
+		min: number
+		max: number
+		errorTolerance: number
 		unit?: Unit
 
 		// Explanation computed during evaluation
@@ -154,25 +157,32 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 			return (y as number) - goal
 		}
 
-		const defaultMin = -1000000
-		const defaultMax = 100000000
 		const nearestBelowGoal =
 			y2 !== undefined && y2 < goal && (y2 > y1 || y1 > goal) ? x2
 			: y1 !== undefined && y1 < goal && (y1 > y2 || y2 > goal) ? x1
-			: defaultMin
+			: node.explanation.min
 		const nearestAboveGoal =
 			y2 !== undefined && y2 > goal && (y2 < y1 || y1 < goal) ? x2
 			: y1 !== undefined && y1 > goal && (y1 < y2 || y2 < goal) ? x1
-			: defaultMax
+			: node.explanation.max
+		const errorTolerance = node.explanation.errorTolerance
 
 		nodeValue = uniroot(
 			test,
 			nearestBelowGoal,
 			nearestAboveGoal,
-			0.1,
+			errorTolerance,
 			maxIterations,
 			1,
 		)
+
+		// nodeValue found is out of min/max bound
+		if (
+			nodeValue &&
+			(nodeValue < node.explanation.min || nodeValue > node.explanation.max)
+		) {
+			nodeValue = undefined
+		}
 	}
 
 	if (nodeValue == undefined) {
@@ -209,6 +219,12 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 
 export const mecanismInversion = (v, context: Context) => {
 	let avec = typeof v === 'object' && 'avec' in v ? v.avec : v
+	const min = typeof v === 'object' && 'min' in v ? v.min : -1000000
+	const max = typeof v === 'object' && 'max' in v ? v.max : 100000000
+	const errorTolerance =
+		typeof v === 'object' && "tolérance d'erreur" in v ?
+			v["tolérance d'erreur"]
+		:	0.1
 	if (v === null) {
 		throw new PublicodesError(
 			'SyntaxError',
@@ -225,6 +241,9 @@ export const mecanismInversion = (v, context: Context) => {
 			inversionCandidates: avec.map((node) => ({
 				...parse(node, context),
 			})),
+			min,
+			max,
+			errorTolerance,
 		},
 		nodeKind: 'inversion',
 	} as InversionNode
