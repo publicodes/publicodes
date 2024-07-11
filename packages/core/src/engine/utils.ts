@@ -15,17 +15,18 @@ export function isAValidOption<Name extends string>(
 ) {
 	const parsedSituationExpr =
 		typeof value === 'string' ? parseExpression(value, dottedName) : undefined
-
+	const parsedRules = engine.getParsedRules()
 	return !(
 		parsedSituationExpr &&
 		'constant' in parsedSituationExpr &&
 		parsedSituationExpr.constant.type === 'string' &&
 		!(
-			`${dottedName} . ${parsedSituationExpr.constant.nodeValue}` in
-			engine.getParsedRules()
+			`${dottedName} . ${parsedSituationExpr.constant.nodeValue}` in parsedRules
 		) &&
-		engine.getParsedRules()[dottedName].explanation?.valeur?.rawNode?.[
-			'une possibilité'
-		]
+		// We check on rawNode directly.
+		// The alternative would be to browser the AST of the rule to find the 'une possibilité' node, but this works fine.
+		(parsedRules[dottedName].rawNode?.['une possibilité'] ||
+			parsedRules[dottedName].rawNode?.formule?.['une possibilité'] ||
+			parsedRules[dottedName].rawNode?.valeur?.['une possibilité'])
 	)
 }

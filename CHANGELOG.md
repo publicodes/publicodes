@@ -4,6 +4,7 @@
 
 - Ajoute les champs `min` et `max` pour le mécanisme d'inversion numérique
 - Ajoute du champ `tolérance d'erreur` pour le mécanisme d'inversion numérique
+- Fix `isAValidOption` function used to parse situation
 
 ## 1.3.3
 
