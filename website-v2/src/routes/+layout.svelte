@@ -50,7 +50,7 @@
     </nav>
 </div>
 
-<div>
+<div class="max-h-full pt-16">
     <slot />
     <footer class="flex w-full flex-col items-center border-t border-primary-200 py-10">
         <div class="flex w-full max-w-7xl items-start justify-between">
@@ -66,7 +66,7 @@
                     <p class="font-light text-slate-500">Ressources</p>
                     <ul class="flex flex-col gap-1 font-light">
                         <li>
-                            <a href="/about">À propos</a>
+                            <a href="/docs">À propos</a>
                         </li>
                         <li>
                             <a href="/docs">Documentation</a>
@@ -78,10 +78,10 @@
                             <a href="/docs">Réalisations</a>
                         </li>
                         <li>
-                            <a href="/statistiques">Statistiques</a>
+                            <a href="/docs">Statistiques</a>
                         </li>
                         <li>
-                            <a href="/docs/faq">FAQ</a>
+                            <a href="/docs">FAQ</a>
                         </li>
                     </ul>
                 </div>
@@ -95,17 +95,11 @@
                             <a href="https://github.com/publicodes" target="_blank">GitHub</a>
                         </li>
                         <li>
-                            <a href="/docs/blog">Blog</a>
+                            <a href="/blog">Blog</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <!-- <div class="flex flex-col gap-4"> -->
-            <!--     <p class="text-sm text-primary-400">© 2021 Publicodes. Tous droits réservés.</p> -->
-            <!--     <p class="text-sm text-primary-400"> -->
-            <!--         <a href="/mentions-legales">Mentions légales</a> -->
-            <!--     </p> -->
-            <!-- </div> -->
         </div>
     </footer>
 </div>

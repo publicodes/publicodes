@@ -60,7 +60,8 @@
 </script>
 
 <div
-    class="editor-container not-prose flex flex-col overflow-hidden border border-primary-100 sm:rounded"
+    class="editor-container not-prose flex flex-col overflow-hidden
+	border border-primary-100 sm:rounded"
 >
     <div
         class="editor-header flex shrink-0 items-center overflow-hidden
@@ -173,7 +174,7 @@
             transform 0.1s;
 
         /* @apply -mb-4; */
-        @apply flex border-primary-200 max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
+        @apply flex max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
         @apply overflow-auto xl:w-fit;
 
         &:not(.showDoc) {
@@ -262,6 +263,7 @@
     }
     .editor {
         max-height: calc(100% - 49px);
+        @apply font-mono text-sm;
     }
     .editor :global {
         .cm-editor {

@@ -150,7 +150,7 @@
         <article
             class:blur-sm={showMobileMenuLeft || showMobileMenuRight}
             class:opacity-50={showMobileMenuLeft || showMobileMenuRight}
-            class="prose prose-lg py-32"
+            class="prose prose-lg"
         >
             <h1>{currentPageMetadata.title}</h1>
             {@render children()}
