@@ -85,7 +85,7 @@
             </div>
         {/if}
         <span
-            class="font-mono font-regular flex-1 text-primary-500"
+            class="flex-1 font-mono font-regular text-primary-500"
             class:text-lg={size === 'LG'}
             class:text-sm={size === 'MD'}
             class:p-3={size === 'LG'}
@@ -136,7 +136,7 @@
                 {#each [...warning, ...error] as message}
                     <li class="flex whitespace-pre-line bg-yellow-100" in:fly>
                         <span class="w-14 border-r bg-primary-50"></span>
-                        <span class="first-line:font-regular max-h-40 flex-1 overflow-auto p-2"
+                        <span class="max-h-40 flex-1 overflow-auto p-2 first-line:font-regular"
                             >{message}</span
                         >
                     </li>
@@ -183,12 +183,12 @@
 
         & :global {
             h1 {
-                @apply font-regular my-2 text-xl;
+                @apply my-2 text-xl font-regular;
                 /* @apply hidden; */
             }
 
             h2 {
-                @apply font-regular -mx-4 border-t p-4;
+                @apply -mx-4 border-t p-4 font-regular;
             }
             p {
                 @apply my-3 font-light;
@@ -214,7 +214,7 @@
                 @apply flex w-full p-0 hover:bg-slate-100;
             }
             .active .content {
-                @apply font-regular bg-slate-100 text-primary-600;
+                @apply bg-slate-100 font-regular text-primary-600;
             }
             .content::before {
                 margin: 1rem !important;
@@ -271,7 +271,7 @@
             @apply font-mono font-light;
         }
         .cm-gutters {
-            @apply font-mono flex min-w-14 bg-primary-50 bg-opacity-30;
+            @apply flex min-w-14 bg-primary-50 bg-opacity-30 font-mono;
         }
         .cm-activeLineGutter {
             @apply mt-0 bg-primary-50;

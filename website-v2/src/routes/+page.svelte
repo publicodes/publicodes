@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { ArrowRight, LibraryBig, Microscope, Play, Rocket } from 'lucide-svelte';
 
     import AnimatedLogo from '$lib/animated-logo.svelte';
@@ -6,10 +6,23 @@
     import PublicodesEditor from '$lib/publicodes/editor.svelte';
     import Button from '$lib/ui/button.svelte';
     import Card from '$lib/ui/card.svelte';
+    import {
+        updateWatchedPackages,
+        getSortedPackages,
+        type PublicodesPackages
+    } from '$lib/package-library/npm';
+    import { onMount } from 'svelte';
 
     const microscope = $derived(Microscope);
     const iconSize = 36;
     const iconStrokeWidth = 1.5;
+
+    let packages: PublicodesPackages = $state([]);
+
+    onMount(async () => {
+        // TODO: more efficient way to update the packages with a store?
+        packages = await updateWatchedPackages();
+    });
 </script>
 
 <header class="not-prose w-full overflow-hidden bg-primary-50">
@@ -193,7 +206,7 @@ salaire net: salaire brut - cotisations salariales`}
     <!-- TODO: factorize sections in a snippet? -->
     <section class="flex w-full flex-col items-center gap-16">
         <section class="not-prose flex w-full justify-center py-32">
-            <div class="flex w-full max-w-7xl flex-col gap-10">
+            <div class="flex w-full max-w-3xl flex-col gap-10 lg:max-w-5xl xl:max-w-7xl">
                 <div class="flex gap-4">
                     <LibraryBig size={iconSize} strokeWidth={iconStrokeWidth} />
                     <h2 class="m-0 text-4xl font-normal">Créateur de communs</h2>
@@ -202,51 +215,7 @@ salaire net: salaire brut - cotisations salariales`}
                     Déjà <strong>une dizaine de modèles publiés</strong>. Découvrez les dans la
                     bibliothèque de modèles publicodes.
                 </p>
-                {@render packageItems([
-                    // TODO: fetch this informations directly from npm
-                    {
-                        name: '@socialgouv/modeles-social',
-                        version: '4.146.3',
-                        lastUpdate: 'il y a 3 jours',
-                        description:
-                            'Les règles publicodes des simulateurs de code du travail numérique'
-                    },
-                    {
-                        name: '@incubateur-ademe/nosgestesclimat',
-                        version: '2.5.4',
-                        lastUpdate: 'il y a 3 jours',
-                        description:
-                            'Les règles publicodes des simulateurs de code du travail numérique'
-                    },
-                    {
-                        name: '@socialgouv/modeles-social',
-                        version: '4.146.3',
-                        lastUpdate: 'il y a 3 jours',
-                        description:
-                            'Les règles publicodes des simulateurs de code du travail numérique'
-                    },
-                    {
-                        name: '@socialgouv/modeles-social',
-                        version: '4.146.3',
-                        lastUpdate: 'il y a 3 jours',
-                        description:
-                            'Les règles publicodes des simulateurs de code du travail numérique'
-                    },
-                    {
-                        name: '@socialgouv/modeles-social',
-                        version: '4.146.3',
-                        lastUpdate: 'il y a 3 jours',
-                        description:
-                            'Les règles publicodes des simulateurs de code du travail numérique'
-                    },
-                    {
-                        name: '@socialgouv/modeles-social',
-                        version: '4.146.3',
-                        lastUpdate: 'il y a 3 jours',
-                        description:
-                            'Les règles publicodes des simulateurs de code du travail numérique'
-                    }
-                ])}
+                {@render packageItems(packages)}
                 <!-- TODO: add correct link -->
                 <a class="w-fit self-center" href="/docs">
                     {@render buttonWithRightArrow('Découvrir tous les modèles')}
@@ -284,13 +253,20 @@ salaire net: salaire brut - cotisations salariales`}
 {/snippet}
 
 {#snippet packageItems(items)}
-    <ul class="flex justify-center gap-8">
+    <ul class="grid max-w-3xl grid-cols-2 gap-8 lg:max-w-5xl xl:max-w-7xl xl:grid-cols-3">
         {#each items as { name, version, lastUpdate, description }}
-            <li class="flex flex-col gap-1 rounded-sm border border-primary-300 p-2">
+            <li
+                class="relative flex max-h-24 min-w-96 flex-col gap-1 rounded-sm
+				border border-primary-300 p-2
+				hover:border-primary-400 hover:bg-primary-400
+				hover:bg-opacity-5"
+            >
+                <!-- TODO: this should redirect to the package's page -->
                 <a
                     href={`https://www.npmjs.com/package/${name}`}
-                    class="flex flex-col gap-2 font-regular
-			text-primary-400 hover:text-primary-600"
+                    class="after:contents-[''] flex flex-col gap-2 font-regular
+			text-primary-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:top-0 hover:text-primary-600"
+                    target="_blank"
                 >
                     {name}
                 </a>
@@ -298,7 +274,7 @@ salaire net: salaire brut - cotisations salariales`}
                     <span>{version}</span>
                     <span class="text-sm italic">{lastUpdate}</span>
                 </span>
-                <p class="text-md font-normal">{description}</p>
+                <p class="text-md max-h-12 truncate font-normal">{description}</p>
             </li>
         {/each}
     </ul>

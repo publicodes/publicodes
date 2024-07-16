@@ -17,7 +17,7 @@
 
 <li class:section>
     <a
-        class="not-prose text-dark block px-4 py-2 hover:text-primary-400"
+        class="not-prose block px-4 py-2 text-dark hover:text-primary-400"
         class:active
         class:isParentActive
         class:isParentActiveWithSubmenu

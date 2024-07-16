@@ -18,8 +18,8 @@
 {#if type === 'primary'}
     <span
         {...rest}
-        class="border-1 font-regular flex cursor-pointer justify-center
-	rounded border border-primary-400 px-4 py-2 font-sans text-xl
+        class="border-1 flex cursor-pointer justify-center rounded
+	border border-primary-400 px-4 py-2 font-sans text-xl font-regular
 		text-white duration-100 ease-in-out hover:bg-primary-600"
         class:background={!light}
     >
@@ -28,9 +28,9 @@
 {:else}
     <span
         {...rest}
-        class="border-1 font-regular flex cursor-pointer items-center justify-center
-	gap-2 rounded border border-primary-400 bg-white px-4 py-2 font-sans
-		text-xl text-primary-400 transition
+        class="border-1 flex cursor-pointer items-center justify-center gap-2
+	rounded border border-primary-400 bg-white px-4 py-2 font-sans text-xl
+		font-regular text-primary-400 transition
 		duration-100 ease-in-out hover:bg-slate-300 hover:bg-opacity-15"
     >
         {@render children()}
