@@ -5,6 +5,7 @@
     import PublicodesSchemaSVG from '$lib/assets/publicodes-schema.svg';
     import PublicodesEditor from '$lib/publicodes/editor.svelte';
     import Button from '$lib/ui/button.svelte';
+    import Card from '$lib/ui/card.svelte';
 
     const microscope = $derived(Microscope);
     const iconSize = 36;
@@ -18,7 +19,7 @@
         </div>
         <div class="flex max-w-4xl flex-col gap-6">
             <!-- <h1 class=" py-8 text-5xl font-bold text-blue-50">Publicodes</h1> -->
-            <p class="text-dark mb-4 text-5xl font-normal">
+            <p class="mb-4 text-5xl font-normal text-dark">
                 Un <span class="font-regular">langage commun</span> pour les développeur·euses et les
                 expert·es
             </p>
@@ -33,54 +34,6 @@
         </div>
     </div>
 </header>
-
-<!-- FIXME: Find a way to use the icon as a component -->
-{#snippet banner(icon, background, title, items)}
-    <section class={'not-prose flex w-full justify-center py-16 ' + background}>
-        <div class="flex max-w-7xl flex-col gap-10">
-            <div class="flex items-center gap-4">
-                <h2 class="m-0 text-4xl font-normal">{title}</h2>
-            </div>
-            <div class="flex gap-4">
-                {#each items as { subtitle, content }}
-                    <div class="flex flex-1 flex-col gap-2">
-                        <h3 class="text-xl italic">{subtitle}</h3>
-                        <p class="text-lg font-normal leading-snug">{content}</p>
-                    </div>
-                {/each}
-            </div>
-        </div>
-    </section>
-{/snippet}
-
-{#snippet userCards(items)}
-    <div class="flex justify-center gap-8">
-        {#each items as { img, title, description, url }}
-            {@render userCard(img, title, description, url)}
-        {/each}
-    </div>
-{/snippet}
-
-{#snippet userCard(img, title, description, url)}
-    <div class="flex flex-1 flex-col rounded bg-white">
-        <img src={img} alt={title} class="flex-2 rounded-t object-cover" />
-        <div class="flex flex-1 flex-col gap-2 border-t border-primary-300 p-5">
-            <a target="_blank" class="text-xl text-primary-400 hover:text-opacity-75" href={url}>
-                {title}
-            </a>
-            <p class="font-normal leading-snug">{description}</p>
-        </div>
-    </div>
-{/snippet}
-
-{#snippet buttonWithRightArrow(text)}
-    <Button type="secondary">
-        <span class="flex items-center gap-2">
-            {text}
-            <ArrowRight size={26} strokeWidth={1.75} />
-        </span>
-    </Button>
-{/snippet}
 
 <main class="">
     <section class="mt-36 flex flex-col items-center justify-center gap-8">
@@ -232,7 +185,7 @@ salaire net: salaire brut - cotisations salariales`}
                 ])}
                 <!-- TODO: add correct link -->
                 <a class="w-fit self-center" href="/docs">
-                    {@render buttonWithRightArrow('Découvrir toustes les utilisateurices')}
+                    {@render buttonWithRightArrow('Découvrir toutes les réalisations')}
                 </a>
             </div>
         </section>
@@ -249,29 +202,49 @@ salaire net: salaire brut - cotisations salariales`}
                     Déjà <strong>une dizaine de modèles publiés</strong>. Découvrez les dans la
                     bibliothèque de modèles publicodes.
                 </p>
-                {@render userCards([
-                    // TODO: fetch this informations directly from targetted
-                    // website's metadata.
+                {@render packageItems([
+                    // TODO: fetch this informations directly from npm
                     {
-                        img: 'https://nosgestesclimat.fr/images/misc/metadata.png',
-                        title: 'Nos Gestes Climat',
+                        name: '@socialgouv/modeles-social',
+                        version: '4.146.3',
+                        lastUpdate: 'il y a 3 jours',
                         description:
-                            "Le calculateur d'empreinte climat personnelle de référence, complètement ouvert.",
-                        url: 'https://nosgestesclimat.fr'
+                            'Les règles publicodes des simulateurs de code du travail numérique'
                     },
                     {
-                        img: 'https://mon-entreprise.urssaf.fr/logo-share.png',
-                        title: 'Mon-entreprise',
+                        name: '@incubateur-ademe/nosgestesclimat',
+                        version: '2.5.4',
+                        lastUpdate: 'il y a 3 jours',
                         description:
-                            'Utilise publicodes pour implémenter la législation socio-fiscale dans des simulateurs (paie, cotisations, impôts, droits ouverts)',
-                        url: 'https://mon-entreprise.urssaf.fr'
+                            'Les règles publicodes des simulateurs de code du travail numérique'
                     },
                     {
-                        img: 'https://code.travail.gouv.fr/static/assets/img/social-preview.png',
-                        title: 'Code du travail numérique',
+                        name: '@socialgouv/modeles-social',
+                        version: '4.146.3',
+                        lastUpdate: 'il y a 3 jours',
                         description:
-                            'Développe un simulateur de préavis de retraite intégrant de nombreuses conventions collectives.',
-                        url: 'https://code.travail.gouv.fr'
+                            'Les règles publicodes des simulateurs de code du travail numérique'
+                    },
+                    {
+                        name: '@socialgouv/modeles-social',
+                        version: '4.146.3',
+                        lastUpdate: 'il y a 3 jours',
+                        description:
+                            'Les règles publicodes des simulateurs de code du travail numérique'
+                    },
+                    {
+                        name: '@socialgouv/modeles-social',
+                        version: '4.146.3',
+                        lastUpdate: 'il y a 3 jours',
+                        description:
+                            'Les règles publicodes des simulateurs de code du travail numérique'
+                    },
+                    {
+                        name: '@socialgouv/modeles-social',
+                        version: '4.146.3',
+                        lastUpdate: 'il y a 3 jours',
+                        description:
+                            'Les règles publicodes des simulateurs de code du travail numérique'
                     }
                 ])}
                 <!-- TODO: add correct link -->
@@ -282,3 +255,60 @@ salaire net: salaire brut - cotisations salariales`}
         </section>
     </section>
 </main>
+
+<!-- FIXME: Find a way to use the icon as a component -->
+{#snippet banner(icon, background, title, items)}
+    <section class={'not-prose flex w-full justify-center py-16 ' + background}>
+        <div class="flex max-w-7xl flex-col gap-10">
+            <div class="flex items-center gap-4">
+                <h2 class="m-0 text-4xl font-normal">{title}</h2>
+            </div>
+            <div class="flex gap-4">
+                {#each items as { subtitle, content }}
+                    <div class="flex flex-1 flex-col gap-2">
+                        <h3 class="text-xl italic">{subtitle}</h3>
+                        <p class="text-lg font-normal leading-snug">{content}</p>
+                    </div>
+                {/each}
+            </div>
+        </div>
+    </section>
+{/snippet}
+
+{#snippet userCards(items)}
+    <ul class="flex justify-center gap-8">
+        {#each items as { img, title, description, url }}
+            <Card {img} {title} {description} {url} />
+        {/each}
+    </ul>
+{/snippet}
+
+{#snippet packageItems(items)}
+    <ul class="flex justify-center gap-8">
+        {#each items as { name, version, lastUpdate, description }}
+            <li class="flex flex-col gap-1 rounded-sm border border-primary-300 p-2">
+                <a
+                    href={`https://www.npmjs.com/package/${name}`}
+                    class="flex flex-col gap-2 font-regular
+			text-primary-400 hover:text-primary-600"
+                >
+                    {name}
+                </a>
+                <span class="flex items-center gap-2 font-normal">
+                    <span>{version}</span>
+                    <span class="text-sm italic">{lastUpdate}</span>
+                </span>
+                <p class="text-md font-normal">{description}</p>
+            </li>
+        {/each}
+    </ul>
+{/snippet}
+
+{#snippet buttonWithRightArrow(text)}
+    <Button type="secondary">
+        <span class="flex items-center gap-2">
+            {text}
+            <ArrowRight size={26} strokeWidth={1.75} />
+        </span>
+    </Button>
+{/snippet}
