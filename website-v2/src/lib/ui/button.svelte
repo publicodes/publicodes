@@ -31,7 +31,7 @@
         class="border-1 flex cursor-pointer items-center justify-center gap-2
 	rounded border border-primary-400 bg-white px-4 py-2 font-sans text-xl
 		font-regular text-primary-400 transition
-		duration-100 ease-in-out hover:bg-slate-300 hover:bg-opacity-15"
+		duration-100 ease-in-out hover:bg-primary-400 hover:bg-opacity-5"
     >
         {@render children()}
     </span>

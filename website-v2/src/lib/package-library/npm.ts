@@ -22,6 +22,7 @@ const watchedPackages = [
     '@incubateur-ademe/publicodes-impact-livraison',
     '@socialgouv/modeles-social',
     'exoneration-covid',
+    'modele-social',
     'futureco-data',
     'publicodes-evenements'
 ];

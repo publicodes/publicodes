@@ -25,16 +25,16 @@
     });
 </script>
 
-<header class="not-prose w-full overflow-hidden bg-primary-50">
-    <div class="w-full items-center justify-center gap-24 sm:flex md:py-48 lg:flex-row">
-        <div class="ml-44 flex justify-center self-center max-sm:scale-75 xl:scale-125">
+<header class="not-prose flex w-full justify-center overflow-hidden bg-primary-50">
+    <div class="max-w-6xl items-center justify-center gap-24 sm:flex md:py-48 lg:flex-row">
+        <div class="flex justify-center self-center max-sm:scale-75 xl:scale-125">
             <AnimatedLogo />
         </div>
-        <div class="flex max-w-4xl flex-col gap-6">
-            <!-- <h1 class=" py-8 text-5xl font-bold text-blue-50">Publicodes</h1> -->
-            <p class="mb-4 text-5xl font-normal text-dark">
-                Un <span class="font-regular">langage commun</span> pour les développeur·euses et les
-                expert·es
+        <div class="flex flex-col gap-8">
+            <h1 class="text-7xl font-normal text-dark">Publicodes</h1>
+            <p class="mb-4 text-4xl font-normal text-dark">
+                <!-- <span class="font-regular">Publicodes</span> :  -->
+                Un langage commun pour les devs et les expert·es
             </p>
             <div class="flex gap-4">
                 <a href="/docs/tutoriel">
@@ -64,66 +64,11 @@
             class="mt-12 w-full max-w-4xl"
         />
     </section>
-    <section class="mt-36 flex flex-col gap-8">
-        {@render banner(microscope, 'bg-publicodes-orange bg-opacity-10', 'Pour les expert·es', [
-            {
-                subtitle: 'Low code',
-                content:
-                    'Entre le no-code et le code, Publicodes est compréhensible par toute personne ayant déjà manipulé un tableau Excel.'
-            },
-            {
-                subtitle: 'Transparent',
-                content:
-                    "Plus d'erreurs cachées : pour vérifier qu’une règle est correctement implémentées, il suffit de la lire."
-            },
-            {
-                subtitle: 'Un langage commun',
-                content:
-                    'Développeurs, expert·es : tout le monde parle la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.'
-            }
-        ])}
-        {@render banner(
-            microscope,
-            'bg-publicodes-green bg-opacity-10',
-            'Pour les développeur·euses',
-            [
-                {
-                    subtitle: 'Clean architecture',
-                    content:
-                        'Publicodes favorise la maintenabilité et la testabilité en découplant clairement le code métier du code applicatif.'
-                },
-                {
-                    subtitle: 'Facile à prendre en main',
-                    content:
-                        "Il dispose d'une extension VSCode dédiée (coloration syntaxique, goto def, auto-complétion…) et est basé sur la syntaxe YAML."
-                },
-                {
-                    subtitle: 'Multi-support',
-                    content:
-                        'Son interpréteur JavaScript lui permet d’être embarqué dans un navigateur et évite des appels réseux inutiles.'
-                }
-            ]
-        )}
-        {@render banner(microscope, 'bg-primary-50', 'Pour les administrations', [
-            {
-                subtitle: 'Rules as code par design',
-                content:
-                    'Publicodes est un langage particulièrement adapté pour transposer la loi en code.'
-            },
-            {
-                subtitle: 'Facile à prendre en main',
-                content:
-                    'Vos règles peuvent être facilement publiée et être réutilisées par d’autres acteurs.'
-            },
-            {
-                subtitle: 'Multi-support',
-                content:
-                    'Tout le monde parle la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.'
-            }
-        ])}
-    </section>
     <section class="mt-32 flex w-full flex-col items-center gap-16">
-        <div class="flex w-full max-w-7xl flex-col gap-10">
+        <div
+            class="flex w-full max-w-7xl flex-col gap-10 rounded-sm
+			border border-primary-300 p-8"
+        >
             <h2 class="text-4xl font-normal">Du code clair et lisible</h2>
             <div class="flex flex-col gap-4">
                 <p class="prose prose-xl font-normal text-black">
@@ -223,6 +168,64 @@ salaire net: salaire brut - cotisations salariales`}
             </div>
         </section>
     </section>
+    <section class="flex flex-col gap-8">
+        {@render banner(microscope, 'bg-publicodes-orange bg-opacity-10', 'Pour les expert·es', [
+            {
+                subtitle: 'Low code',
+                content:
+                    'Entre le no-code et le code, Publicodes est compréhensible par toute personne ayant déjà manipulé un tableau Excel.'
+            },
+            {
+                subtitle: 'Transparent',
+                content:
+                    "Plus d'erreurs cachées : pour vérifier qu’une règle est correctement implémentées, il suffit de la lire."
+            },
+            {
+                subtitle: 'Un langage commun',
+                content:
+                    'Développeurs, expert·es : tout le monde parle la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.'
+            }
+        ])}
+        {@render banner(
+            microscope,
+            'bg-publicodes-green bg-opacity-10',
+            'Pour les développeur·euses',
+            [
+                {
+                    subtitle: 'Clean architecture',
+                    content:
+                        'Publicodes favorise la maintenabilité et la testabilité en découplant clairement le code métier du code applicatif.'
+                },
+                {
+                    subtitle: 'Facile à prendre en main',
+                    content:
+                        "Il dispose d'une extension VSCode dédiée (coloration syntaxique, goto def, auto-complétion…) et est basé sur la syntaxe YAML."
+                },
+                {
+                    subtitle: 'Multi-support',
+                    content:
+                        'Son interpréteur JavaScript lui permet d’être embarqué dans un navigateur et évite des appels réseux inutiles.'
+                }
+            ]
+        )}
+        {@render banner(microscope, 'bg-primary-50', 'Pour les administrations', [
+            {
+                subtitle: 'Rules as code par design',
+                content:
+                    'Publicodes est un langage particulièrement adapté pour transposer la loi en code.'
+            },
+            {
+                subtitle: 'Facile à prendre en main',
+                content:
+                    'Vos règles peuvent être facilement publiée et être réutilisées par d’autres acteurs.'
+            },
+            {
+                subtitle: 'Multi-support',
+                content:
+                    'Tout le monde parle la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.'
+            }
+        ])}
+    </section>
 </main>
 
 <!-- FIXME: Find a way to use the icon as a component -->
@@ -257,7 +260,7 @@ salaire net: salaire brut - cotisations salariales`}
         {#each items as { name, version, lastUpdate, description }}
             <li
                 class="relative flex max-h-24 min-w-96 flex-col gap-1 rounded-sm
-				border border-primary-300 p-2
+				border border-primary-400 p-2
 				hover:border-primary-400 hover:bg-primary-400
 				hover:bg-opacity-5"
             >
