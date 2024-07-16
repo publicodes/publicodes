@@ -1,21 +1,22 @@
 <script lang="ts">
-    import { ArrowRight, LibraryBig, Microscope, Play, Rocket } from 'lucide-svelte';
+    import {
+        ArrowRight,
+        CodeXmlIcon,
+        LandmarkIcon,
+        LibraryBig,
+        Microscope,
+        Play,
+        Rocket
+    } from 'lucide-svelte';
 
     import AnimatedLogo from '$lib/animated-logo.svelte';
     import PublicodesSchemaSVG from '$lib/assets/publicodes-schema.svg';
     import PublicodesEditor from '$lib/publicodes/editor.svelte';
     import Button from '$lib/ui/button.svelte';
     import Card from '$lib/ui/card.svelte';
-    import {
-        updateWatchedPackages,
-        getSortedPackages,
-        type PublicodesPackages
-    } from '$lib/package-library/npm';
+    import Banner from '$lib/ui/banner.svelte';
+    import { updateWatchedPackages, type PublicodesPackages } from '$lib/package-library/npm';
     import { onMount } from 'svelte';
-
-    const microscope = $derived(Microscope);
-    const iconSize = 36;
-    const iconStrokeWidth = 1.5;
 
     let packages: PublicodesPackages = $state([]);
 
@@ -23,6 +24,9 @@
         // TODO: more efficient way to update the packages with a store?
         packages = await updateWatchedPackages();
     });
+
+    const iconSize = 36;
+    const iconStrokeWidth = 1;
 </script>
 
 <header class="not-prose flex w-full justify-center overflow-hidden bg-primary-50">
@@ -169,28 +173,33 @@ salaire net: salaire brut - cotisations salariales`}
         </section>
     </section>
     <section class="flex flex-col gap-8 pb-8">
-        {@render banner(microscope, 'bg-publicodes-orange bg-opacity-10', 'Pour les expert·es', [
-            {
-                subtitle: 'Low code',
-                content:
-                    'Entre le no-code et le code, Publicodes est compréhensible par toute personne ayant déjà manipulé un tableau Excel.'
-            },
-            {
-                subtitle: 'Transparent',
-                content:
-                    "Plus d'erreurs cachées : pour vérifier qu’une règle est correctement implémentées, il suffit de la lire."
-            },
-            {
-                subtitle: 'Un langage commun',
-                content:
-                    'Développeurs, expert·es : tout le monde parle la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.'
-            }
-        ])}
-        {@render banner(
-            microscope,
-            'bg-publicodes-green bg-opacity-10',
-            'Pour les développeur·euses',
-            [
+        <Banner
+            icon={Microscope}
+            background="bg-publicodes-orange bg-opacity-10"
+            title="Pour expert·es"
+            items={[
+                {
+                    subtitle: 'Low code',
+                    content:
+                        'Entre le no-code et le code, Publicodes est compréhensible par toute personne ayant déjà manipulé un tableau Excel.'
+                },
+                {
+                    subtitle: 'Transparent',
+                    content:
+                        "Plus d'erreurs cachées : pour vérifier qu’une règle est correctement implémentées, il suffit de la lire."
+                },
+                {
+                    subtitle: 'Un langage commun',
+                    content:
+                        'Développeurs, expert·es : tout le monde parle la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.'
+                }
+            ]}
+        />
+        <Banner
+            icon={CodeXmlIcon}
+            background="bg-publicodes-green bg-opacity-10"
+            title="Pour les développeur·euses"
+            items={[
                 {
                     subtitle: 'Clean architecture',
                     content:
@@ -206,46 +215,32 @@ salaire net: salaire brut - cotisations salariales`}
                     content:
                         'Son interpréteur JavaScript lui permet d’être embarqué dans un navigateur et évite des appels réseux inutiles.'
                 }
-            ]
-        )}
-        {@render banner(microscope, 'bg-primary-50', 'Pour les administrations', [
-            {
-                subtitle: 'Rules as code par design',
-                content:
-                    'Publicodes est un langage particulièrement adapté pour transposer la loi en code.'
-            },
-            {
-                subtitle: 'Facile à prendre en main',
-                content:
-                    'Vos règles peuvent être facilement publiée et être réutilisées par d’autres acteurs.'
-            },
-            {
-                subtitle: 'Multi-support',
-                content:
-                    'Tout le monde parle la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.'
-            }
-        ])}
+            ]}
+        />
+        <Banner
+            icon={LandmarkIcon}
+            background={'bg-primary-50'}
+            title="Pour les administrations"
+            items={[
+                {
+                    subtitle: 'Rules as code par design',
+                    content:
+                        'Publicodes est un langage particulièrement adapté pour transposer la loi en code.'
+                },
+                {
+                    subtitle: 'Facile à prendre en main',
+                    content:
+                        'Vos règles peuvent être facilement publiée et être réutilisées par d’autres acteurs.'
+                },
+                {
+                    subtitle: 'Multi-support',
+                    content:
+                        'Tout le monde parle la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.'
+                }
+            ]}
+        />
     </section>
 </main>
-
-<!-- FIXME: Find a way to use the icon as a component -->
-{#snippet banner(icon, background, title, items)}
-    <section class={'not-prose flex w-full justify-center py-16 ' + background}>
-        <div class="flex max-w-7xl flex-col gap-10">
-            <div class="flex items-center gap-4">
-                <h2 class="m-0 text-4xl font-normal">{title}</h2>
-            </div>
-            <div class="flex gap-4">
-                {#each items as { subtitle, content }}
-                    <div class="flex flex-1 flex-col gap-2">
-                        <h3 class="text-xl italic">{subtitle}</h3>
-                        <p class="text-lg font-normal leading-snug">{content}</p>
-                    </div>
-                {/each}
-            </div>
-        </div>
-    </section>
-{/snippet}
 
 {#snippet userCards(items)}
     <ul class="flex justify-center gap-8">

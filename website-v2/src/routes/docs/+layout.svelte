@@ -95,7 +95,7 @@
     {/if}
 {/snippet}
 
-<div class="flex max-h-full items-start">
+<div class="flex items-start">
     <!-- MOBILE NAV -->
     {#if showMobileMenuLeft}
         <div
@@ -150,7 +150,7 @@
         <article
             class:blur-sm={showMobileMenuLeft || showMobileMenuRight}
             class:opacity-50={showMobileMenuLeft || showMobileMenuRight}
-            class="prose prose-lg py-8"
+            class="prose prose-lg py-32"
         >
             <h1>{currentPageMetadata.title}</h1>
             {@render children()}
