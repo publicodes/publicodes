@@ -168,7 +168,7 @@ salaire net: salaire brut - cotisations salariales`}
             </div>
         </section>
     </section>
-    <section class="flex flex-col gap-8">
+    <section class="flex flex-col gap-8 pb-8">
         {@render banner(microscope, 'bg-publicodes-orange bg-opacity-10', 'Pour les expert·es', [
             {
                 subtitle: 'Low code',
