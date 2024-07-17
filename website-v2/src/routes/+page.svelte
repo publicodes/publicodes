@@ -108,69 +108,67 @@ salaire net: salaire brut - cotisations salariales`}
             </a>
         </div>
     </section>
-    <section class="mt-32 flex w-full flex-col items-center gap-16">
-        <section class="not-prose flex w-full justify-center bg-primary-50 py-32">
-            <div class="flex w-full max-w-7xl flex-col gap-10">
-                <div class="flex gap-4">
-                    <Rocket size={iconSize} strokeWidth={iconStrokeWidth} />
-                    <h2 class="m-0 text-4xl font-normal">Accélérateur d'impact</h2>
-                </div>
-                <p class="max-w-7xl text-xl font-normal text-black">
-                    Publicodes est utilisé pour calculer <strong
-                        >plusieurs millions de simulations</strong
-                    > chaque mois. Découvrez les produits phares qui utilisent cette technologie.
-                </p>
-                {@render userCards([
-                    // TODO: fetch this informations directly from targetted
-                    // website's metadata.
-                    {
-                        img: 'https://nosgestesclimat.fr/images/misc/metadata.png',
-                        title: 'Nos Gestes Climat',
-                        description:
-                            "Le calculateur d'empreinte climat personnelle de référence, complètement ouvert.",
-                        url: 'https://nosgestesclimat.fr'
-                    },
-                    {
-                        img: 'https://mon-entreprise.urssaf.fr/logo-share.png',
-                        title: 'Mon-entreprise',
-                        description:
-                            'Utilise publicodes pour implémenter la législation socio-fiscale dans des simulateurs (paie, cotisations, impôts, droits ouverts)',
-                        url: 'https://mon-entreprise.urssaf.fr'
-                    },
-                    {
-                        img: 'https://code.travail.gouv.fr/static/assets/img/social-preview.png',
-                        title: 'Code du travail numérique',
-                        description:
-                            'Développe un simulateur de préavis de retraite intégrant de nombreuses conventions collectives.',
-                        url: 'https://code.travail.gouv.fr'
-                    }
-                ])}
-                <!-- TODO: add correct link -->
-                <a class="w-fit self-center" href="/docs">
-                    {@render buttonWithRightArrow('Découvrir toutes les réalisations')}
-                </a>
+    <section class="mt-32 flex w-full flex-col items-center gap-16 bg-primary-50">
+        <div class="not-prose flex w-full max-w-7xl flex-col justify-center gap-10 py-32">
+            <div class="flex gap-4">
+                <Rocket size={iconSize} strokeWidth={iconStrokeWidth} />
+                <h2 class="m-0 text-4xl font-normal">Accélérateur d'impact</h2>
             </div>
-        </section>
+            <p class="max-w-7xl text-xl font-normal text-black">
+                Publicodes est utilisé pour calculer <strong
+                    >plusieurs millions de simulations</strong
+                > chaque mois. Découvrez les produits phares qui utilisent cette technologie.
+            </p>
+            {@render userCards([
+                // TODO: fetch this informations directly from targetted
+                // website's metadata.
+                {
+                    img: 'https://nosgestesclimat.fr/images/misc/metadata.png',
+                    title: 'Nos Gestes Climat',
+                    description:
+                        "Le calculateur d'empreinte climat personnelle de référence, complètement ouvert.",
+                    url: 'https://nosgestesclimat.fr'
+                },
+                {
+                    img: 'https://mon-entreprise.urssaf.fr/logo-share.png',
+                    title: 'Mon-entreprise',
+                    description:
+                        'Utilise publicodes pour implémenter la législation socio-fiscale dans des simulateurs (paie, cotisations, impôts, droits ouverts)',
+                    url: 'https://mon-entreprise.urssaf.fr'
+                },
+                {
+                    img: 'https://code.travail.gouv.fr/static/assets/img/social-preview.png',
+                    title: 'Code du travail numérique',
+                    description:
+                        'Développe un simulateur de préavis de retraite intégrant de nombreuses conventions collectives.',
+                    url: 'https://code.travail.gouv.fr'
+                }
+            ])}
+            <!-- TODO: add correct link -->
+            <a class="w-fit self-center" href="/docs">
+                {@render buttonWithRightArrow('Découvrir toutes les réalisations')}
+            </a>
+        </div>
     </section>
     <!-- TODO: factorize sections in a snippet? -->
     <section class="flex w-full flex-col items-center gap-16">
-        <section class="not-prose flex w-full justify-center py-32">
-            <div class="flex w-full max-w-3xl flex-col gap-10 lg:max-w-5xl xl:max-w-7xl">
-                <div class="flex gap-4">
-                    <LibraryBig size={iconSize} strokeWidth={iconStrokeWidth} />
-                    <h2 class="m-0 text-4xl font-normal">Créateur de communs</h2>
-                </div>
-                <p class="max-w-7xl text-xl font-normal text-black">
-                    Déjà <strong>une dizaine de modèles publiés</strong>. Découvrez les dans la
-                    bibliothèque de modèles publicodes.
-                </p>
-                {@render packageItems(packages)}
-                <!-- TODO: add correct link -->
-                <a class="w-fit self-center" href="/docs">
-                    {@render buttonWithRightArrow('Découvrir tous les modèles')}
-                </a>
+        <div
+            class="not-prose flex w-full max-w-3xl flex-col justify-center gap-10 py-32 lg:max-w-5xl xl:max-w-7xl"
+        >
+            <div class="flex gap-4">
+                <LibraryBig size={iconSize} strokeWidth={iconStrokeWidth} />
+                <h2 class="m-0 text-4xl font-normal">Créateur de communs</h2>
             </div>
-        </section>
+            <p class="max-w-7xl text-xl font-normal text-black">
+                Déjà <strong>une dizaine de modèles publiés</strong>. Découvrez les dans la
+                bibliothèque de modèles publicodes.
+            </p>
+            {@render packageItems(packages)}
+            <!-- TODO: add correct link -->
+            <a class="w-fit self-center" href="/docs">
+                {@render buttonWithRightArrow('Découvrir tous les modèles')}
+            </a>
+        </div>
     </section>
     <section class="flex flex-col gap-8 pb-8">
         <Banner
