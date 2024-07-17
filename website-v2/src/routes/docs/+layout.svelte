@@ -58,6 +58,7 @@
                         }
                         showMobileMenuLeft = false;
                     }}
+                    isSection={childPages.length > 0}
                 >
                     {metadata.menu_title || metadata.title}
                     {#snippet submenu()}

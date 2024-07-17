@@ -1,20 +1,28 @@
 <script lang="ts">
     import { page } from '$app/stores';
+    import { ChevronDown, ChevronRight } from 'lucide-svelte';
     import type { Snippet } from 'svelte';
 
     const {
         href,
         children,
+        isSection = false,
         submenu,
         onclick
-    }: { href: string; children: Snippet; submenu?: Snippet; onclick?: () => void } = $props();
+    }: {
+        href: string;
+        children: Snippet;
+        isSection?: boolean;
+        submenu?: Snippet;
+        onclick?: () => void;
+    } = $props();
+
     const active = $derived($page.url.pathname === href);
     const isParentActive = $derived($page.url.pathname.startsWith(href));
-    const isParentActiveWithSubmenu = $derived(isParentActive && submenu);
-    const section = submenu;
+    const isParentActiveWithSubmenu = $derived(isParentActive && isSection);
 </script>
 
-<li class:section>
+<li class:section={submenu}>
     <a
         class="not-prose block px-4 py-2 text-dark hover:text-primary-400"
         class:active
@@ -23,10 +31,19 @@
         {href}
         {onclick}
     >
-        {@render children()}
+        <span class="flex items-center justify-between gap-2">
+            {@render children()}
+            {#if isSection}
+                {#if isParentActive}
+                    <ChevronDown size={24} strokeWidth={1} />
+                {:else}
+                    <ChevronRight size={24} strokeWidth={1} />
+                {/if}
+            {/if}
+        </span>
     </a>
     {#if submenu && isParentActive}
-        <ul class="font-light">
+        <ul class="bg-primary-50 bg-opacity-15 pl-2 font-light">
             {@render submenu()}
         </ul>
     {/if}

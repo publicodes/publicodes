@@ -32,7 +32,7 @@
     class="fixed z-10 flex h-16 w-full items-center justify-center border-b border-primary-200
 	bg-white px-8 py-2 text-cyan-950"
 >
-    <a class="inline-flex items-center gap-2 text-lg font-light hover:text-primary-400" href="/">
+    <a class="inline-flex items-center gap-2 text-xl font-light hover:text-primary-400" href="/">
         <img src={Logo} class="h-7" alt="Logo de publicodes" />
         Publicodes
     </a>
@@ -61,7 +61,7 @@
     <footer class="flex w-full flex-col items-center border-t border-primary-200 py-10">
         <div class="flex w-full max-w-7xl items-start justify-between">
             <div class="flex flex-col gap-2">
-                <span class="inline-flex items-center gap-2 text-xl font-light">
+                <span class="inline-flex items-center gap-2 text-2xl font-light">
                     <img src={Logo} class="h-7" alt="Logo de publicodes" />
                     Publicodes
                 </span>
