@@ -274,7 +274,7 @@ salaire net: salaire brut - cotisations salariales`}
 				hover:bg-primary-400 hover:bg-opacity-5
 				md:min-w-96"
             >
-                <div class="m-3 flex max-h-24 flex-col gap-1">
+                <div class="m-3 flex flex-col gap-1">
                     <!-- TODO: this should redirect to the package's page -->
                     <a
                         href={`https://www.npmjs.com/package/${name}`}
