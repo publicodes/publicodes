@@ -1,6 +1,5 @@
 <script lang="ts">
-    import 'dayjs/locale/fr';
-    import Time, { dayjs } from 'svelte-time';
+    import Time from 'svelte-time';
     import Tags from './tags.svelte';
 
     export let url = '';
@@ -31,9 +30,7 @@
         </p>
     </div>
     <div class="flex flex-col gap-3 text-sm font-light">
-        <Time class="text-slate-500" format="DD MMMM YYYY" timestamp={dayjs().locale('fr')}
-            >{date}</Time
-        >
+        <Time class="text-slate-600" format="DD MMMM YYYY" timestamp={date} />
         <Tags {tags} />
     </div>
 </li>

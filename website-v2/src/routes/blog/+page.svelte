@@ -36,7 +36,7 @@
         >
             <div class="flex gap-4">
                 <Newspaper size={iconSize} strokeWidth={iconStrokeWidth} />
-                <h2 class="m-0 text-4xl font-normal">Tous articles</h2>
+                <h2 class="m-0 text-4xl font-normal">Tous les articles</h2>
             </div>
             <ul class="not-prose divide-y divide-primary-100">
                 {#each data.blogPosts as { path, metadata: { title, description, tags } }}

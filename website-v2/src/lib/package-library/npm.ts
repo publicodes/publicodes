@@ -51,6 +51,8 @@ export async function fetchPackage(name: string): Promise<PublicodesPackage> {
     const data = await response.json();
     const description = data.description.startsWith('<div') ? '' : data.description;
 
+    console.log('modfied', data.time.modified);
+    console.log('date', new Date(data.time.modified));
     return {
         name: data.name,
         version: Object.keys(data.versions).pop()!,

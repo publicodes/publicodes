@@ -1,14 +1,20 @@
 <script lang="ts">
+    import 'dayjs/locale/fr';
+
     import favicon from '$lib/assets/favicon-32x32.png';
     import Logo from '$lib/assets/logo.svg';
     import PublicodesEditor from '$lib/publicodes/editor.svelte';
     import Callout from '$lib/ui/callout.svelte';
     import NavTab from '$lib/ui/nav-tab.svelte';
+    import { dayjs } from 'svelte-time';
 
     import '../app.css';
 
     globalThis.PublicodesEditor = PublicodesEditor;
     globalThis.Callout = Callout;
+
+    // Set the locale time to French
+    dayjs.locale('fr');
 </script>
 
 <svelte:head>

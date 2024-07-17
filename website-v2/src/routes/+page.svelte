@@ -11,6 +11,7 @@
 
     import AnimatedLogo from '$lib/animated-logo.svelte';
     import PublicodesSchemaSVG from '$lib/assets/publicodes-schema.svg';
+    import Time from 'svelte-time';
     import PublicodesEditor from '$lib/publicodes/editor.svelte';
     import Button from '$lib/ui/button.svelte';
     import Card from '$lib/ui/card.svelte';
@@ -23,6 +24,9 @@
     onMount(async () => {
         // TODO: more efficient way to update the packages with a store?
         packages = await updateWatchedPackages();
+        packages.sort((a, b) => {
+            return b.modified.getTime() - a.modified.getTime();
+        });
     });
 
     const iconSize = 36;
@@ -250,27 +254,29 @@ salaire net: salaire brut - cotisations salariales`}
 
 {#snippet packageItems(items)}
     <ul class="grid max-w-3xl grid-cols-2 gap-8 lg:max-w-5xl xl:max-w-7xl xl:grid-cols-3">
-        {#each items as { name, version, lastUpdate, description }}
+        {#each items as { name, version, modified, description }}
             <li
-                class="relative flex max-h-24 min-w-96 flex-col gap-1 rounded-sm
-				border border-primary-400 p-2
+                class="relative min-w-96 rounded-sm
+				border border-primary-400
 				hover:border-primary-400 hover:bg-primary-400
 				hover:bg-opacity-5"
             >
-                <!-- TODO: this should redirect to the package's page -->
-                <a
-                    href={`https://www.npmjs.com/package/${name}`}
-                    class="after:contents-[''] flex flex-col gap-2 font-regular
+                <div class="m-3 flex max-h-24 flex-col gap-1">
+                    <!-- TODO: this should redirect to the package's page -->
+                    <a
+                        href={`https://www.npmjs.com/package/${name}`}
+                        class="after:contents-[''] flex flex-col gap-2 font-medium
 			text-primary-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:top-0 hover:text-primary-600"
-                    target="_blank"
-                >
-                    {name}
-                </a>
-                <span class="flex items-center gap-2 font-normal">
-                    <span>{version}</span>
-                    <span class="text-sm italic">{lastUpdate}</span>
-                </span>
-                <p class="text-md max-h-12 truncate font-normal">{description}</p>
+                        target="_blank"
+                    >
+                        {name}
+                    </a>
+                    <p class="truncate font-normal">{description}</p>
+                    <span class="flex items-center gap-2 text-sm text-slate-700">
+                        <span>v{version}</span>
+                        <Time class="italic text-slate-600" relative timestamp={modified} />
+                    </span>
+                </div>
             </li>
         {/each}
     </ul>
