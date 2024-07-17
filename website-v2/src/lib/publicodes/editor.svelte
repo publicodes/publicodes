@@ -18,7 +18,7 @@
         hideDocButton = false,
 
         onchange,
-        size = 'MD',
+        size = 'md',
         additionnalButton
     }: {
         code: string;
@@ -27,14 +27,14 @@
         showDocByDefault?: boolean;
         hideDocButton?: boolean;
         onchange?: (code: string, currentlySelected?: string) => void;
-        size?: 'LG' | 'MD';
+        size?: 'md' | 'lg';
         additionnalButton?: Snippet;
     } = $props();
 
     let showDoc = $state(showDocByDefault);
     let copied = $state(false);
 
-    let iconSize = size === 'MD' ? 20 : 26;
+    let iconSize = size === 'md' ? 20 : 26;
     let iconStrokeWidth = 1.5;
 
     function handleCopy() {
@@ -64,7 +64,7 @@
 	border border-primary-100 sm:rounded"
 >
     <div
-        class="editor-header flex shrink-0 items-center overflow-hidden
+        class="editor-header relative flex shrink-0 items-center overflow-hidden
 		border-b border-primary-200 bg-primary-50 text-center"
     >
         <button
@@ -82,14 +82,14 @@
                 out:fly={{ duration: 75 }}
                 class="absolute left-16 will-change-transform"
             >
-                <Tag>Code copié !</Tag>
+                <Tag {size} bgColor="bg-publicodes-green bg-opacity-20">Code copié !</Tag>
             </div>
         {/if}
         <span
             class="flex-1 font-mono font-regular text-primary-500"
-            class:text-lg={size === 'LG'}
-            class:text-sm={size === 'MD'}
-            class:p-3={size === 'LG'}
+            class:text-lg={size === 'lg'}
+            class:text-sm={size === 'md'}
+            class:p-3={size === 'lg'}
         >
             {title}
         </span>
@@ -129,7 +129,7 @@
                 editable={true}
                 styles={{
                     '&': {
-                        fontSize: size === 'LG' ? '1.1rem' : size === 'MD' ? '0.9rem' : '0.8rem'
+                        fontSize: size === 'lg' ? '1.1rem' : size === 'md' ? '0.9rem' : '0.8rem'
                     }
                 }}
             />

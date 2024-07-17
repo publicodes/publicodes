@@ -88,7 +88,7 @@
                         title="Calcul du salaire net"
                         showDocByDefault
                         hideDocButton
-                        size="LG"
+                        size="lg"
                         code={`salaire brut: 2500 €/mois
 
 cotisations salariales:
