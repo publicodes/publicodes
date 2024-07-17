@@ -8,7 +8,7 @@
     export let description = '';
     export let date = '';
     export let tags = '';
-    export let icon = '';
+    // export let icon = '';
 </script>
 
 <li
@@ -21,7 +21,7 @@
             class="after:contents-[''] text-xl text-primary-400 after:absolute
 		after:bottom-0 after:left-0 after:right-0 after:top-0 hover:text-primary-600"
         >
-            <p class="text-2xl">
+            <p class="text-2xl font-light">
                 <!-- {icon} -->
                 {title}
             </p>

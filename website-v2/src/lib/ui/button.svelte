@@ -4,13 +4,11 @@
     const {
         light = false,
         type = 'primary',
-        icon,
         children,
         ...rest
     }: {
         light?: boolean;
         type?: 'primary' | 'secondary';
-        icon?: Snippet;
         children: Snippet;
     } = $props();
 </script>

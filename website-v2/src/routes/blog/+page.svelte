@@ -24,8 +24,8 @@
                 <h2 class="m-0 text-4xl font-normal">Les derniers articles</h2>
             </div>
             <ul class="grid gap-5 lg:grid-cols-2">
-                {#each featuredPosts as { path, metadata: { title, description, date, tags, icon } }}
-                    <PostCard url={'blog' + path} {title} {description} {date} {tags} {icon} />
+                {#each featuredPosts as { path, metadata: { title, description, date, tags } }}
+                    <PostCard url={'blog' + path} {title} {description} {date} {tags} />
                 {/each}
             </ul>
         </div>

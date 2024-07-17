@@ -1,7 +1,6 @@
 <script lang="ts">
     import { page } from '$app/stores';
     import type { Snippet } from 'svelte';
-    import { fly } from 'svelte/transition';
 
     const {
         href,

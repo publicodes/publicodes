@@ -12,13 +12,13 @@
     <div class="flex max-w-7xl flex-col gap-10">
         <div class="flex items-center gap-4">
             <svelte:component this={icon} size={36} strokeWidth={1} />
-            <h2 class="m-0 text-4xl font-normal">{@html title}</h2>
+            <h2 class="m-0 text-4xl font-normal">{title}</h2>
         </div>
         <div class="flex gap-4">
             {#each items as { subtitle, content }}
                 <div class="flex flex-1 flex-col gap-2">
-                    <h3 class="text-xl italic">{@html subtitle}</h3>
-                    <p class="text-lg font-normal leading-snug">{@html content}</p>
+                    <h3 class="text-xl italic">{subtitle}</h3>
+                    <p class="text-lg font-normal leading-snug">{content}</p>
                 </div>
             {/each}
         </div>
