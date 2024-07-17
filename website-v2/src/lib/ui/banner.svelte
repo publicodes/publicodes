@@ -18,7 +18,7 @@
             {#each items as { subtitle, content }}
                 <div class="flex flex-1 flex-col gap-2">
                     <h3 class="text-xl italic">{subtitle}</h3>
-                    <p class="font-normal leading-snug md:text-lg">{content}</p>
+                    <p class="prose font-light leading-snug md:text-lg">{content}</p>
                 </div>
             {/each}
         </div>

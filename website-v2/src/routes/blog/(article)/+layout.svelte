@@ -10,7 +10,7 @@
                 <Button type="secondary" icon={ArrowLeft} light>Retourner à la liste</Button>
             </a>
         </div>
-        <div class="prose lg:prose-lg">
+        <div class="prose lg:prose-lg xl:max-w-4xl">
             <slot></slot>
         </div>
     </div>

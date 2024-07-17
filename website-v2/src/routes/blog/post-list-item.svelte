@@ -15,7 +15,7 @@
         >
             {title}
         </a>
-        <p class="font-normal leading-snug md:text-lg">
+        <p class="prose font-light leading-snug md:text-lg">
             {description}
         </p>
     </div>

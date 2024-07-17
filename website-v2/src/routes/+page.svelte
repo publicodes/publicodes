@@ -284,7 +284,7 @@ salaire net: salaire brut - cotisations salariales`}
                     >
                         {name}
                     </a>
-                    <p class="truncate font-normal">{description}</p>
+                    <p class="prose truncate font-light">{description}</p>
                     <span class="flex items-center gap-2 text-sm text-slate-700">
                         <span>v{version}</span>
                         <Time class="italic text-slate-600" relative timestamp={modified} />
