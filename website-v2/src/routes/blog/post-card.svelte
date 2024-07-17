@@ -20,12 +20,12 @@
             class="after:contents-[''] text-xl text-primary-400 after:absolute
 		after:bottom-0 after:left-0 after:right-0 after:top-0 hover:text-primary-600"
         >
-            <p class="text-2xl font-light">
+            <p class="text-xl font-light md:text-2xl">
                 <!-- {icon} -->
                 {title}
             </p>
         </a>
-        <p class="font-normal leading-snug">
+        <p class="text-md font-normal leading-snug">
             {description}
         </p>
     </div>

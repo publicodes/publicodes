@@ -9,12 +9,21 @@
     import { dayjs } from 'svelte-time';
 
     import '../app.css';
+    import { afterNavigate } from '$app/navigation';
+    import { MenuIcon } from 'lucide-svelte';
 
     globalThis.PublicodesEditor = PublicodesEditor;
     globalThis.Callout = Callout;
 
+    const { children } = $props();
+
     // Set the locale time to French
     dayjs.locale('fr');
+
+    let showMobileMenu = $state(false);
+    afterNavigate(() => {
+        showMobileMenu = false;
+    });
 </script>
 
 <svelte:head>
@@ -29,15 +38,42 @@
 </svelte:head>
 
 <div
-    class="fixed z-10 flex h-16 w-full items-center justify-center border-b border-primary-200
-	bg-white px-8 py-2 text-cyan-950"
+    class="fixed top-0 z-10 flex h-16 w-screen items-center justify-between border-b border-primary-200 bg-white
+	px-6 py-2 text-cyan-950 md:px-8"
 >
     <a class="inline-flex items-center gap-2 text-xl font-light hover:text-primary-400" href="/">
         <img src={Logo} class="h-7" alt="Logo de publicodes" />
         Publicodes
     </a>
-    <nav class="ml-auto">
-        <ul class="flex gap-4">
+    {#if showMobileMenu}
+        <div
+            role="dialog"
+            class="fixed right-0 top-0 z-20 h-full border-l
+			border-primary-300 bg-white sm:hidden"
+        >
+            {@render Menu()}
+        </div>
+        <div
+            class="fixed z-20 sm:hidden"
+            aria-hidden="true"
+            onclick={() => (showMobileMenu = false)}
+        ></div>
+    {/if}
+    <button
+        class="text-primary-400 hover:text-primary-600 sm:hidden"
+        onclick={() => (showMobileMenu = true)}
+    >
+        <MenuIcon size={24} />
+    </button>
+
+    <div class="hidden sm:block">
+        {@render Menu()}
+    </div>
+</div>
+
+{#snippet Menu()}
+    <nav class="p-6 sm:p-0">
+        <ul class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center">
             <NavTab href="/docs">Documentation</NavTab>
             <NavTab href="/studio">Studio</NavTab>
             <NavTab href="/blog">Blog</NavTab>
@@ -54,12 +90,14 @@
             </li> -->
         </ul>
     </nav>
-</div>
+{/snippet}
 
-<div class="max-h-full pt-16">
-    <slot />
+<div class="max-h-full pt-16" class:blur-sm={showMobileMenu} class:opacity-50={showMobileMenu}>
+    {@render children()}
     <footer class="flex w-full flex-col items-center border-t border-primary-200 py-10">
-        <div class="flex w-full max-w-7xl items-start justify-between">
+        <div
+            class="flex w-full flex-col items-start gap-8 px-6 md:max-w-7xl md:flex-row md:justify-between"
+        >
             <div class="flex flex-col gap-2">
                 <span class="inline-flex items-center gap-2 text-2xl font-light">
                     <img src={Logo} class="h-7" alt="Logo de publicodes" />
@@ -67,7 +105,7 @@
                 </span>
                 <p class="text-lg font-normal text-dark">Collaboratif, accessible et ouvert.</p>
             </div>
-            <div class="flex gap-16">
+            <div class="flex flex-row gap-16">
                 <div class="flex flex-col gap-2">
                     <p class="font-light text-slate-500">Ressources</p>
                     <ul class="flex flex-col gap-1 font-light">

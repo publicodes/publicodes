@@ -29,19 +29,22 @@
         });
     });
 
-    const iconSize = 36;
+    const isMobile = false; //window.innerWidth < 768;
+    const iconSize = isMobile ? 32 : 36;
     const iconStrokeWidth = 1;
 </script>
 
 <header class="not-prose flex w-full justify-center overflow-hidden bg-primary-50">
-    <div class="max-w-6xl items-center justify-center gap-24 sm:flex md:py-48 lg:flex-row">
-        <div class="flex justify-center self-center max-sm:scale-75 xl:scale-125">
+    <div
+        class="flex max-w-3xl items-center justify-center px-6 py-20 md:flex-row md:gap-12
+		md:py-48 lg:max-w-5xl xl:max-w-7xl xl:gap-24"
+    >
+        <div class="hidden justify-center self-center max-sm:scale-75 md:flex xl:scale-125">
             <AnimatedLogo />
         </div>
-        <div class="flex flex-col gap-8">
-            <h1 class="text-7xl font-normal text-dark">Publicodes</h1>
-            <p class="mb-4 text-4xl font-normal text-dark">
-                <!-- <span class="font-regular">Publicodes</span> :  -->
+        <div class="flex flex-col gap-8 lg:gap-8">
+            <h1 class="text-5xl font-normal text-dark md:text-6xl xl:text-7xl">Publicodes</h1>
+            <p class="mb-4 text-2xl font-normal text-dark md:text-3xl lg:text-4xl">
                 Un langage commun pour les devs et les expert·es
             </p>
             <div class="flex gap-4">
@@ -49,7 +52,7 @@
                     <Button type={'primary'}>Tutoriel</Button>
                 </a>
                 <a href="/studio">
-                    <Button type={'secondary'}><Play />Essayer</Button>
+                    <Button icon={Play} type={'secondary'}>Essayer</Button>
                 </a>
             </div>
         </div>
@@ -57,8 +60,8 @@
 </header>
 
 <main class="">
-    <section class="mt-36 flex flex-col items-center justify-center gap-8">
-        <p class="max-w-5xl text-center text-2xl font-normal">
+    <section class="mt-20 flex flex-col items-center justify-center gap-8 md:mt-36">
+        <p class="px-6 text-center text-lg font-normal md:max-w-5xl md:text-2xl">
             Publicodes permet de modéliser des <span class="font-regular"
                 >domaines métiers complexes</span
             >, en les décomposant en <span class="font-regular">règles élémentaires simples</span>
@@ -69,26 +72,26 @@
             src={PublicodesSchemaSVG}
             alt="Schéma de fonctionnement de
 		Publicodes"
-            class="mt-12 w-full max-w-4xl"
+            class="mt-12 hidden w-full md:block md:max-w-3xl lg:max-w-4xl"
         />
     </section>
-    <section class="mt-32 flex w-full flex-col items-center gap-16">
+    <section class="mt-20 flex w-full flex-col items-center gap-16 md:mt-32">
         <div
-            class="flex w-full max-w-7xl flex-col gap-10 rounded-sm
-			border border-primary-300 p-8"
+            class="flex w-full max-w-3xl flex-col gap-10 rounded-sm px-6 md:max-w-4xl lg:max-w-5xl
+			xl:max-w-7xl xl:border xl:border-primary-300 xl:p-8"
         >
-            <h2 class="text-4xl font-normal">Du code clair et lisible</h2>
+            <h2 class="text-3xl font-normal sm:text-4xl">Du code clair et lisible</h2>
             <div class="flex flex-col gap-4">
-                <p class="prose prose-xl font-normal text-black">
+                <p class="prose-md prose font-normal text-black md:prose-xl">
                     Essayez de modifiez le <code>salaire brut</code> à
                     <code>3000 €/mois</code> dans l'exemple suivant...
                 </p>
-                <div class="max-sm:-mx-6">
+                <div class="">
                     <PublicodesEditor
                         title="Calcul du salaire net"
                         showDocByDefault
                         hideDocButton
-                        size="lg"
+                        size={isMobile ? 'md' : 'lg'}
                         code={`salaire brut: 2500 €/mois
 
 cotisations salariales:
@@ -102,7 +105,7 @@ cotisations salariales:
 salaire net: salaire brut - cotisations salariales`}
                     ></PublicodesEditor>
                 </div>
-                <p class="max-w-7xl text-xl font-normal text-black">
+                <p class="font-normal text-black md:text-xl lg:max-w-7xl">
                     <strong>C'était facile, non ?</strong> Même sans connaissances en informatique, il
                     est possible de comprendre du code écrit avec Publicodes.
                 </p>
@@ -112,13 +115,16 @@ salaire net: salaire brut - cotisations salariales`}
             </a>
         </div>
     </section>
-    <section class="mt-32 flex w-full flex-col items-center gap-16 bg-primary-50">
-        <div class="not-prose flex w-full max-w-7xl flex-col justify-center gap-10 py-32">
-            <div class="flex gap-4">
-                <Rocket size={iconSize} strokeWidth={iconStrokeWidth} />
-                <h2 class="m-0 text-4xl font-normal">Accélérateur d'impact</h2>
+    <section class="mt-20 flex w-full flex-col items-center gap-16 bg-primary-50 md:mt-32">
+        <div
+            class="not-prose flex w-full max-w-3xl flex-col justify-center gap-10 px-6 py-20 md:max-w-4xl
+			md:py-32 lg:max-w-5xl xl:max-w-7xl"
+        >
+            <div class="flex gap-2 md:gap-4">
+                <Rocket class="hidden md:block" size={iconSize} strokeWidth={iconStrokeWidth} />
+                <h2 class="m-0 text-3xl font-normal md:text-4xl">Accélérateur d'impact</h2>
             </div>
-            <p class="max-w-7xl text-xl font-normal text-black">
+            <p class="w-full text-lg font-normal text-black md:text-xl">
                 Publicodes est utilisé pour calculer <strong
                     >plusieurs millions de simulations</strong
                 > chaque mois. Découvrez les produits phares qui utilisent cette technologie.
@@ -150,24 +156,28 @@ salaire net: salaire brut - cotisations salariales`}
             ])}
             <!-- TODO: add correct link -->
             <a class="w-fit self-center" href="/docs">
-                {@render buttonWithRightArrow('Découvrir toutes les réalisations')}
+                {@render buttonWithRightArrow('Toutes les réalisations')}
             </a>
         </div>
     </section>
     <!-- TODO: factorize sections in a snippet? -->
     <section class="flex w-full flex-col items-center gap-16">
         <div
-            class="not-prose flex w-full max-w-3xl flex-col justify-center gap-10 py-32 lg:max-w-5xl xl:max-w-7xl"
+            class="not-prose flex w-full max-w-3xl flex-col justify-center gap-10
+			px-6 py-20 md:max-w-4xl md:py-32
+			lg:max-w-5xl xl:max-w-7xl"
         >
             <div class="flex gap-4">
-                <LibraryBig size={iconSize} strokeWidth={iconStrokeWidth} />
-                <h2 class="m-0 text-4xl font-normal">Créateur de communs</h2>
+                <LibraryBig class="hidden md:block" size={iconSize} strokeWidth={iconStrokeWidth} />
+                <h2 class="m-0 text-3xl font-normal md:text-4xl">Créateur de communs</h2>
             </div>
-            <p class="max-w-7xl text-xl font-normal text-black">
+            <p class="text-lg font-normal text-black md:max-w-7xl md:text-xl">
                 Déjà <strong>une dizaine de modèles publiés</strong>. Découvrez les dans la
                 bibliothèque de modèles publicodes.
             </p>
-            {@render packageItems(packages)}
+            <div class="flex justify-center">
+                {@render packageItems(packages)}
+            </div>
             <!-- TODO: add correct link -->
             <a class="w-fit self-center" href="/docs">
                 {@render buttonWithRightArrow('Découvrir tous les modèles')}
@@ -245,7 +255,7 @@ salaire net: salaire brut - cotisations salariales`}
 </main>
 
 {#snippet userCards(items)}
-    <ul class="flex justify-center gap-8">
+    <ul class="grid grid-cols-1 gap-8 px-6 sm:grid-cols-2 lg:grid-cols-3">
         {#each items as { img, title, description, url }}
             <Card {img} {title} {description} {url} />
         {/each}
@@ -253,13 +263,16 @@ salaire net: salaire brut - cotisations salariales`}
 {/snippet}
 
 {#snippet packageItems(items)}
-    <ul class="grid max-w-3xl grid-cols-2 gap-8 lg:max-w-5xl xl:max-w-7xl xl:grid-cols-3">
+    <ul
+        class="grid grid-flow-row grid-cols-1 justify-center gap-3 md:max-w-3xl md:grid-cols-2
+		 lg:max-w-5xl xl:max-w-7xl xl:grid-cols-3 xl:gap-4"
+    >
         {#each items as { name, version, modified, description }}
             <li
-                class="relative min-w-96 rounded-sm
-				border border-primary-400
-				hover:border-primary-400 hover:bg-primary-400
-				hover:bg-opacity-5"
+                class="relative rounded-sm border
+				border-primary-400 hover:border-primary-400
+				hover:bg-primary-400 hover:bg-opacity-5
+				md:min-w-96"
             >
                 <div class="m-3 flex max-h-24 flex-col gap-1">
                     <!-- TODO: this should redirect to the package's page -->

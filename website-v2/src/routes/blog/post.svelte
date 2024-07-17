@@ -14,7 +14,7 @@
                 {title}
             </h1>
             <p class="mx-auto mt-3 max-w-xl text-xl text-gray-900">
-                <Time>{date}</Time>
+                <Time timestamp={date}></Time>
             </p>
         </div>
     </div>

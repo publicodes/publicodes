@@ -11,11 +11,11 @@
     <div class="flex flex-col gap-3">
         <a
             href={url}
-            class="mt-3 text-2xl font-light tracking-tight text-primary-400 hover:text-primary-600"
+            class="mt-3 text-xl font-light tracking-tight text-primary-400 hover:text-primary-600 md:text-2xl"
         >
             {title}
         </a>
-        <p class="text-lg font-normal leading-snug">
+        <p class="font-normal leading-snug md:text-lg">
             {description}
         </p>
     </div>
