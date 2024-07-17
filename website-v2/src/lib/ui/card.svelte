@@ -12,8 +12,8 @@
 </script>
 
 <li
-    class="relative flex flex-1 flex-col rounded bg-white hover:outline hover:outline-1
-	hover:outline-primary-300"
+    class="relative flex flex-1 flex-col rounded bg-white outline outline-1
+    outline-primary-300 hover:outline-primary-400"
 >
     <img src={img} alt="" class="flex-2 rounded-t object-cover" />
     <div class="flex flex-1 flex-col gap-2 border-t border-primary-300 p-5">
@@ -25,7 +25,7 @@
         >
             {title}
         </a>
-        <p class="relative font-normal leading-snug">{description}</p>
+        <p class="font-normal leading-snug">{description}</p>
     </div>
 </li>
 
