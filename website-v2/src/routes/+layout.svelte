@@ -8,9 +8,9 @@
     import NavTab from '$lib/ui/nav-tab.svelte';
     import { dayjs } from 'svelte-time';
 
-    import '../app.css';
     import { afterNavigate } from '$app/navigation';
     import { MenuIcon } from 'lucide-svelte';
+    import '../app.css';
 
     globalThis.PublicodesEditor = PublicodesEditor;
     globalThis.Callout = Callout;
@@ -106,7 +106,7 @@
                 <p class="text-lg font-normal text-dark">Collaboratif, accessible et ouvert.</p>
             </div>
             <div class="flex flex-row gap-16">
-                <div class="flex flex-col gap-2">
+                <!-- <div class="flex flex-col gap-2">
                     <p class="font-light text-slate-500">Ressources</p>
                     <ul class="flex flex-col gap-1 font-light">
                         <li>
@@ -128,7 +128,7 @@
                             <a href="/docs">FAQ</a>
                         </li>
                     </ul>
-                </div>
+                </div> -->
                 <div class="flex flex-col gap-2">
                     <p class="font-light text-slate-500">Communauté</p>
                     <ul class="flex flex-col gap-1 font-light">

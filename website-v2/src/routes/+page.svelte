@@ -155,9 +155,9 @@ salaire net: salaire brut - cotisations salariales`}
                 }
             ])}
             <!-- TODO: add correct link -->
-            <a class="w-fit self-center" href="/docs">
+            <!-- <a class="w-fit self-center" href="/docs">
                 {@render buttonWithRightArrow('Toutes les réalisations')}
-            </a>
+            </a> -->
         </div>
     </section>
     <!-- TODO: factorize sections in a snippet? -->
@@ -179,9 +179,9 @@ salaire net: salaire brut - cotisations salariales`}
                 {@render packageItems(packages)}
             </div>
             <!-- TODO: add correct link -->
-            <a class="w-fit self-center" href="/docs">
+            <!-- <a class="w-fit self-center" href="/docs">
                 {@render buttonWithRightArrow('Découvrir tous les modèles')}
-            </a>
+            </a> -->
         </div>
     </section>
     <section class="flex flex-col">
