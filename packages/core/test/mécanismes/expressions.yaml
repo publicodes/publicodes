@@ -366,3 +366,9 @@ multiplication précède puissance avec parenthèses:
   exemples:
     - situation:
       valeur attendue: 36
+
+intérêts composés:
+  formule: 100 * ( 1 + 2% ) ** 3
+  exemples:
+    - situation:
+      valeur attendue: 106.12
