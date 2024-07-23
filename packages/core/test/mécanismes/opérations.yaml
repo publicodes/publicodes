@@ -188,6 +188,17 @@ multiplication:
       valeur attendue: 200
       unité attendue: '€'
 
+puissance:
+  '**':
+    - a
+    - b
+  exemples:
+    - nom: standard
+      situation:
+        a: 2
+        b: 2
+      valeur attendue: 4
+
 division:
   '/':
     - a
