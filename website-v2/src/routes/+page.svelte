@@ -11,13 +11,13 @@
 
     import AnimatedLogo from '$lib/animated-logo.svelte';
     import PublicodesSchemaSVG from '$lib/assets/publicodes-schema.svg';
-    import Time from 'svelte-time';
+    import { updateWatchedPackages, type PublicodesPackages } from '$lib/package-library/npm';
     import PublicodesEditor from '$lib/publicodes/editor.svelte';
+    import Banner from '$lib/ui/banner.svelte';
     import Button from '$lib/ui/button.svelte';
     import Card from '$lib/ui/card.svelte';
-    import Banner from '$lib/ui/banner.svelte';
-    import { updateWatchedPackages, type PublicodesPackages } from '$lib/package-library/npm';
     import { onMount } from 'svelte';
+    import Time from 'svelte-time';
 
     let packages: PublicodesPackages = $state([]);
 
@@ -49,10 +49,10 @@
             </p>
             <div class="flex gap-4">
                 <a href="/docs/tutoriel">
-                    <Button type={'primary'}>Tutoriel</Button>
+                    <Button type={'primary'}>Documentation</Button>
                 </a>
-                <a href="/studio">
-                    <Button icon={Play} type={'secondary'}>Essayer</Button>
+                <a href="/docs/tutoriel">
+                    <Button icon={Play} type={'secondary'}>Se lancer</Button>
                 </a>
             </div>
         </div>
@@ -184,11 +184,11 @@ salaire net: salaire brut - cotisations salariales`}
             </a>
         </div>
     </section>
-    <section class="flex flex-col gap-8 pb-8">
+    <section class="flex flex-col">
         <Banner
             icon={Microscope}
             background="bg-publicodes-orange bg-opacity-10"
-            title="Pour expert·es"
+            title="Pour les expert·es"
             items={[
                 {
                     subtitle: 'Low code',
@@ -240,14 +240,14 @@ salaire net: salaire brut - cotisations salariales`}
                         'Publicodes est un langage particulièrement adapté pour transposer la loi en code.'
                 },
                 {
-                    subtitle: 'Facile à prendre en main',
+                    subtitle: 'Accerateur d’open-data',
                     content:
                         'Vos règles peuvent être facilement publiée et être réutilisées par d’autres acteurs.'
                 },
                 {
-                    subtitle: 'Multi-support',
+                    subtitle: 'Explicabilité',
                     content:
-                        'Tout le monde parle la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.'
+                        'L’explications auto-générée des résultats de calculs permet de vous conformer à l’obligation de transparence des algorithmes publics.'
                 }
             ]}
         />
