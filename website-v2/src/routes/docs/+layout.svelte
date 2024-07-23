@@ -41,8 +41,6 @@
     afterNavigate(() => {
         showMobileMenuRight = false;
     });
-
-    // class="prose  mx-auto mt-8 max-w-none flex-1 flex-shrink p-8 xl:max-w-screen-md"
 </script>
 
 {#snippet MenuLeft()}
@@ -58,6 +56,7 @@
                         }
                         showMobileMenuLeft = false;
                     }}
+                    isSection={childPages.length > 0}
                 >
                     {metadata.menu_title || metadata.title}
                     {#snippet submenu()}
@@ -78,13 +77,15 @@
 
 {#snippet MenuRight()}
     {#if currentPageMetadata.headings.length}
-        <nav class="mx-2">
+        <nav class="mx-2 border-primary-50" class:md:border-l={!showMobileMenuRight}>
             <h2 class="not-prose my-2 p-2 uppercase text-slate-500">Sur cette page</h2>
             <ul>
                 {#each currentPageMetadata.headings as { title, slug }}
                     <li class="p-2">
-                        <a href={`#${slug}`} onclick={() => (showMobileMenuRight = false)}
-                            >{title}</a
+                        <a
+                            class="font-regular text-slate-700 hover:text-primary-400"
+                            href={`#${slug}`}
+                            onclick={() => (showMobileMenuRight = false)}>{title}</a
                         >
                     </li>
                 {/each}
@@ -93,12 +94,12 @@
     {/if}
 {/snippet}
 
-<div class="flex max-h-full items-start">
+<div class="flex items-start">
     <!-- MOBILE NAV -->
     {#if showMobileMenuLeft}
         <div
             role="dialog"
-            class="fixed z-20 h-full overflow-auto border-r bg-white will-change-transform"
+            class="fixed z-20 h-full overflow-auto border-r border-primary-300 bg-white will-change-transform"
             transition:fly={{ x: -100 }}
         >
             {@render MenuLeft()}
@@ -110,34 +111,25 @@
         ></div>
     {/if}
 
-    <div class="sticky top-16 min-w-72 pr-4 max-md:hidden">{@render MenuLeft()}</div>
-    <div class="self-stretch border-r"></div>
+    <div class="sticky top-16 min-h-max w-60 max-md:hidden">
+        {@render MenuLeft()}
+    </div>
+    <div class="self-stretch border-r border-primary-100"></div>
     <div
         class="mx-auto flex flex-1 flex-col px-4 pt-8 transition-all 2xl:prose-lg max-md:max-w-full md:px-8 xl:max-w-screen-md 2xl:max-w-4xl"
     >
-        <div class="mb-4 flex justify-between gap-2">
+        <div class="flex justify-between gap-2">
             <button
-                class="self flex gap-2 rounded-md border px-4 py-2 text-primary-700 hover:bg-slate-100 md:hidden"
+                class="self flex gap-2 rounded-sm border border-primary-300 px-4
+				py-2 text-primary-400 hover:bg-slate-100 md:hidden"
                 onclick={() => (showMobileMenuLeft = true)}
             >
-                <svg
-                    class="h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 6h16M4 12h16m-7 6h7"
-                    ></path>
-                </svg>Menu
+                Menu
             </button>
 
             <button
-                class="flex rounded-md border px-4 py-2 text-primary-700 hover:bg-slate-100 lg:hidden"
+                class="flex rounded-sm border border-primary-300 px-4 py-2
+				text-primary-400 hover:bg-slate-100 lg:hidden"
                 onclick={() => (showMobileMenuRight = true)}
             >
                 <span>Sur cette page</span>
@@ -146,7 +138,7 @@
         <article
             class:blur-sm={showMobileMenuLeft || showMobileMenuRight}
             class:opacity-50={showMobileMenuLeft || showMobileMenuRight}
-            class="prose py-8"
+            class="prose py-8 lg:prose-lg"
         >
             <h1>{currentPageMetadata.title}</h1>
             {@render children()}
@@ -156,7 +148,8 @@
     {#if showMobileMenuRight}
         <div
             role="dialog"
-            class="fixed right-0 z-20 h-full overflow-auto border-l bg-white will-change-transform"
+            class="fixed right-0 z-20 h-full overflow-auto border-l
+			border-primary-300 bg-white will-change-transform"
             transition:fly={{ x: 100 }}
         >
             {@render MenuRight()}
@@ -168,7 +161,10 @@
         ></div>
     {/if}
 
-    <div class="sticky top-16 max-h-screen w-64 overflow-auto pt-16 text-sm max-lg:hidden">
+    <div
+        class="sticky top-16 hidden max-h-screen w-64 overflow-auto pt-16
+		text-sm lg:block"
+    >
         {@render MenuRight()}
     </div>
 </div>

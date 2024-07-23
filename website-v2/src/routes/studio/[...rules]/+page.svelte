@@ -2,6 +2,7 @@
     import { page } from '$app/stores';
     import PublicodesEditor from '$lib/publicodes/editor.svelte';
     import Tag from '$lib/ui/tag.svelte';
+    import { Link } from 'lucide-svelte';
     import { utils } from 'publicodes';
     import { onMount } from 'svelte';
     import { fly } from 'svelte/transition';
@@ -50,8 +51,9 @@
     }
 </script>
 
-<div class="global-min-full-h flex">
-    <div class="publicodes-container flex max-h-screen flex-1 flex-col overflow-hidden">
+<div class="global-min-full-h">
+    <!-- FIXME: problem with the height of the editor: there is a gap between the editor and the footer -->
+    <div class="publicodes-container flex h-screen max-h-screen flex-1 flex-col overflow-hidden">
         {#if initialCode}
             <PublicodesEditor
                 code={initialCode}
@@ -71,12 +73,13 @@
                         </div>
                     {/if}
                     <button
-                        class="border-l"
+                        class="flex justify-center border-l border-primary-200
+						text-primary-500"
                         title="Lien de partage"
                         onclick={handleCopyLink}
                         aria-label="Copier le lien de partage"
                     >
-                        🔗
+                        <Link strokeWidth={1.5} />
                     </button>
                 {/snippet}
             </PublicodesEditor>

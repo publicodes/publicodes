@@ -1,14 +1,29 @@
 <script lang="ts">
+    import 'dayjs/locale/fr';
+
     import favicon from '$lib/assets/favicon-32x32.png';
     import Logo from '$lib/assets/logo.svg';
     import PublicodesEditor from '$lib/publicodes/editor.svelte';
     import Callout from '$lib/ui/callout.svelte';
     import NavTab from '$lib/ui/nav-tab.svelte';
+    import { dayjs } from 'svelte-time';
 
+    import { afterNavigate } from '$app/navigation';
+    import { MenuIcon } from 'lucide-svelte';
     import '../app.css';
 
     globalThis.PublicodesEditor = PublicodesEditor;
     globalThis.Callout = Callout;
+
+    const { children } = $props();
+
+    // Set the locale time to French
+    dayjs.locale('fr');
+
+    let showMobileMenu = $state(false);
+    afterNavigate(() => {
+        showMobileMenu = false;
+    });
 </script>
 
 <svelte:head>
@@ -22,14 +37,44 @@
     <link rel="icon" type="image/png" href={favicon} />
 </svelte:head>
 
-<div class="fixed z-10 flex h-16 w-full items-center border-b bg-white p-4 text-cyan-950">
-    <a class="inline-flex items-center gap-2 text-lg font-bold" href="/">
-        <img src={Logo} class="h-8" alt="Logo de publicodes" />
+<div
+    class="fixed top-0 z-10 flex h-16 w-screen items-center justify-between border-b border-primary-200 bg-white
+	px-6 py-2 text-cyan-950 md:px-8"
+>
+    <a class="inline-flex items-center gap-2 text-xl font-light hover:text-primary-400" href="/">
+        <img src={Logo} class="h-7" alt="Logo de publicodes" />
         Publicodes
     </a>
-    <nav class="ml-auto">
-        <ul class="flex gap-4">
-            <NavTab href="/docs">Docs</NavTab>
+    {#if showMobileMenu}
+        <div
+            role="dialog"
+            class="fixed right-0 top-0 z-20 h-full border-l
+			border-primary-300 bg-white sm:hidden"
+        >
+            {@render Menu()}
+        </div>
+        <div
+            class="fixed z-20 sm:hidden"
+            aria-hidden="true"
+            onclick={() => (showMobileMenu = false)}
+        ></div>
+    {/if}
+    <button
+        class="text-primary-400 hover:text-primary-600 sm:hidden"
+        onclick={() => (showMobileMenu = true)}
+    >
+        <MenuIcon size={24} />
+    </button>
+
+    <div class="hidden sm:block">
+        {@render Menu()}
+    </div>
+</div>
+
+{#snippet Menu()}
+    <nav class="p-6 sm:p-0">
+        <ul class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center">
+            <NavTab href="/docs">Documentation</NavTab>
             <NavTab href="/studio">Studio</NavTab>
             <NavTab href="/blog">Blog</NavTab>
             <!-- <NavTab href="/blog">Blog</NavTab> -->
@@ -45,10 +90,66 @@
             </li> -->
         </ul>
     </nav>
+{/snippet}
+
+<div class="max-h-full pt-16" class:blur-sm={showMobileMenu} class:opacity-50={showMobileMenu}>
+    {@render children()}
+    <footer class="flex w-full flex-col items-center border-t border-primary-200 py-10">
+        <div
+            class="flex w-full flex-col items-start gap-8 px-6 md:max-w-7xl md:flex-row md:justify-between"
+        >
+            <div class="flex flex-col gap-2">
+                <span class="inline-flex items-center gap-2 text-2xl font-light">
+                    <img src={Logo} class="h-7" alt="Logo de publicodes" />
+                    Publicodes
+                </span>
+                <p class="text-lg font-normal text-dark">Collaboratif, accessible et ouvert.</p>
+            </div>
+            <div class="flex flex-row gap-16">
+                <!-- <div class="flex flex-col gap-2">
+                    <p class="font-light text-slate-500">Ressources</p>
+                    <ul class="flex flex-col gap-1 font-light">
+                        <li>
+                            <a href="/docs">À propos</a>
+                        </li>
+                        <li>
+                            <a href="/docs">Documentation</a>
+                        </li>
+                        <li>
+                            <a href="/docs">Bibliothèque</a>
+                        </li>
+                        <li>
+                            <a href="/docs">Réalisations</a>
+                        </li>
+                        <li>
+                            <a href="/docs">Statistiques</a>
+                        </li>
+                        <li>
+                            <a href="/docs">FAQ</a>
+                        </li>
+                    </ul>
+                </div> -->
+                <div class="flex flex-col gap-2">
+                    <p class="font-light text-slate-500">Communauté</p>
+                    <ul class="flex flex-col gap-1 font-light">
+                        <li>
+                            <a href="https://matrix.to/#/#publicodes:matrix.org">Matrix</a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/publicodes" target="_blank">GitHub</a>
+                        </li>
+                        <li>
+                            <a href="/blog">Blog</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 </div>
-<div
-    class="max-h-full pt-16 prose-h1:text-primary-950 prose-h2:font-bold prose-h2:text-primary-950 prose-h3:text-primary-950 prose-a:text-primary-900 hover:prose-a:text-primary-700 prose-blockquote:rounded-l-sm prose-blockquote:bg-slate-100 prose-blockquote:px-4 prose-blockquote:py-2
-    prose-blockquote:font-normal prose-blockquote:not-italic prose-code:rounded prose-code:border prose-code:border-slate-200 prose-code:bg-slate-100 prose-code:px-1 prose-code:py-0.5"
->
-    <slot />
-</div>
+
+<style>
+    footer a {
+        @apply text-sm hover:text-primary-400;
+    }
+</style>

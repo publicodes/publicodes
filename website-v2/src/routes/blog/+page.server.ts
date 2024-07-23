@@ -7,6 +7,7 @@ export type Metadata = {
     date: string;
     tags: string;
     icon: string;
+    draft?: boolean;
     featured?: boolean;
 };
 
@@ -18,5 +19,5 @@ blogPosts.forEach((page) => {
 });
 
 export function load() {
-    return { blogPosts };
+    return { blogPosts: blogPosts.filter((page) => page.metadata.draft !== true) };
 }

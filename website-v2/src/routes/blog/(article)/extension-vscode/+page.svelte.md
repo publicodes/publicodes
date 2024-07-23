@@ -6,6 +6,7 @@ date: '2024-06-14'
 tags: 'tech'
 icon: '⚙️'
 featured: true
+draft: true
 ---
 
 # {title}

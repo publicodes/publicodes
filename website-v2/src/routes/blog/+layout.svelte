@@ -1,3 +1,3 @@
-<article class="container mx-auto mt-12 p-8">
+<article class="flex flex-col">
     <slot></slot>
 </article>

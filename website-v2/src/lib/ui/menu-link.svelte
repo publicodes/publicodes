@@ -1,30 +1,49 @@
 <script lang="ts">
     import { page } from '$app/stores';
+    import { ChevronDown, ChevronRight } from 'lucide-svelte';
     import type { Snippet } from 'svelte';
-    import { fly } from 'svelte/transition';
 
     const {
         href,
         children,
+        isSection = false,
         submenu,
         onclick
-    }: { href: string; children: Snippet; submenu?: Snippet; onclick?: () => void } = $props();
+    }: {
+        href: string;
+        children: Snippet;
+        isSection?: boolean;
+        submenu?: Snippet;
+        onclick?: () => void;
+    } = $props();
+
     const active = $derived($page.url.pathname === href);
     const isParentActive = $derived($page.url.pathname.startsWith(href));
+    const isParentActiveWithSubmenu = $derived(isParentActive && isSection);
 </script>
 
-<li>
+<li class:section={submenu}>
     <a
-        class="not-prose block rounded px-4 py-2 text-primary-950 hover:bg-slate-100 hover:underline 2xl:px-6 2xl:py-3 2xl:text-lg"
+        class="not-prose block px-4 py-2 text-dark hover:text-primary-400"
         class:active
         class:isParentActive
+        class:isParentActiveWithSubmenu
         {href}
         {onclick}
     >
-        {@render children()}
+        <span class="flex items-center justify-between gap-2">
+            {@render children()}
+            {#if isSection}
+                {#if isParentActive}
+                    <ChevronDown size={24} strokeWidth={1} />
+                {:else}
+                    <ChevronRight size={24} strokeWidth={1} />
+                {/if}
+            {/if}
+        </span>
     </a>
     {#if submenu && isParentActive}
-        <ul class="ml-4" in:fly={{ y: -10 }}>
+        <ul class="bg-primary-50 bg-opacity-15 pl-2 font-light">
             {@render submenu()}
         </ul>
     {/if}
@@ -35,9 +54,15 @@
         transition: background-color 0.2s;
     }
     .active {
-        @apply bg-slate-100;
+        @apply text-primary-400;
     }
     .isParentActive {
-        @apply font-bold text-primary-700;
+        @apply text-primary-400;
+    }
+    .isParentActiveWithSubmenu {
+        @apply bg-primary-50;
+    }
+    .section {
+        @apply border-b border-primary-50;
     }
 </style>

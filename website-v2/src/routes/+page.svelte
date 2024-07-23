@@ -1,133 +1,98 @@
-<script>
+<script lang="ts">
+    import {
+        ArrowRight,
+        CodeXmlIcon,
+        LandmarkIcon,
+        LibraryBig,
+        Microscope,
+        Play,
+        Rocket
+    } from 'lucide-svelte';
+
     import AnimatedLogo from '$lib/animated-logo.svelte';
-    import AdministrationSVG from '$lib/assets/administration.svg';
-    import CodeTypingSVG from '$lib/assets/code-typing.svg';
-    import SpreadsheetsSVG from '$lib/assets/spreadsheets.svg';
+    import PublicodesSchemaSVG from '$lib/assets/publicodes-schema.svg';
+    import { updateWatchedPackages, type PublicodesPackages } from '$lib/package-library/npm';
     import PublicodesEditor from '$lib/publicodes/editor.svelte';
+    import Banner from '$lib/ui/banner.svelte';
     import Button from '$lib/ui/button.svelte';
     import Card from '$lib/ui/card.svelte';
+    import { onMount } from 'svelte';
+    import Time from 'svelte-time';
+
+    let packages: PublicodesPackages = $state([]);
+
+    onMount(async () => {
+        // TODO: more efficient way to update the packages with a store?
+        packages = await updateWatchedPackages();
+        packages.sort((a, b) => {
+            return b.modified.getTime() - a.modified.getTime();
+        });
+    });
+
+    const isMobile = false; //window.innerWidth < 768;
+    const iconSize = isMobile ? 32 : 36;
+    const iconStrokeWidth = 1;
 </script>
 
-<header class="not-prose overflow-hidden bg-gradient-to-r from-primary-700 to-slate-400 py-4">
-    <div class="mx-auto gap-12 p-6 lg:container sm:flex md:p-10 lg:flex-row-reverse">
-        <div class="flex justify-center self-center max-sm:scale-75 xl:flex-1 xl:scale-125">
+<header class="not-prose flex w-full justify-center overflow-hidden bg-primary-50">
+    <div
+        class="flex max-w-3xl items-center justify-center px-6 py-20 md:flex-row md:gap-12
+		md:py-48 lg:max-w-5xl xl:max-w-7xl xl:gap-24"
+    >
+        <div class="hidden justify-center self-center max-sm:scale-75 md:flex xl:scale-125">
             <AnimatedLogo />
         </div>
-        <div class="flex-1">
-            <h1 class=" py-8 text-5xl font-bold text-blue-50">Publicodes</h1>
-            <p class="mb-4 text-2xl text-blue-50">
-                Un langage commun pour les développeurs et les experts
+        <div class="flex flex-col gap-8 lg:gap-8">
+            <h1 class="text-5xl font-normal text-dark md:text-6xl xl:text-7xl">Publicodes</h1>
+            <p class="mb-4 text-2xl font-normal text-dark md:text-3xl lg:text-4xl">
+                Un langage commun pour les devs et les expert·es
             </p>
-            <!-- Large button style whith strong blue background  -->
-            <div class="mt-8 flex gap-4">
-                <a href="/docs">
-                    <Button>Documentation</Button>
+            <div class="flex gap-4">
+                <a href="/docs/tutoriel">
+                    <Button type={'primary'}>Documentation</Button>
+                </a>
+                <a href="/docs/tutoriel">
+                    <Button icon={Play} type={'secondary'}>Se lancer</Button>
                 </a>
             </div>
         </div>
     </div>
 </header>
 
-<main class="container prose-xl mx-auto p-8 prose-strong:text-primary-700">
-    <section>
-        <p class="my-6 border-l-4 border-primary-700 pl-4 text-2xl leading-relaxed lg:mb-10">
-            Publicodes permet de modéliser des <strong>domaines métiers complexes</strong>, en les
-            décomposant en <strong>règles élémentaires simples</strong> qui soient
-            <strong>lisibles par tout le monde</strong>.
+<main class="">
+    <section class="mt-20 flex flex-col items-center justify-center gap-8 md:mt-36">
+        <p class="px-6 text-center text-lg font-normal md:max-w-5xl md:text-2xl">
+            Publicodes permet de modéliser des <span class="font-regular"
+                >domaines métiers complexes</span
+            >, en les décomposant en <span class="font-regular">règles élémentaires simples</span>
+            qui soient
+            <span class="font-regular">lisibles par tout le monde</span>.
         </p>
+        <img
+            src={PublicodesSchemaSVG}
+            alt="Schéma de fonctionnement de
+		Publicodes"
+            class="mt-12 hidden w-full md:block md:max-w-3xl lg:max-w-4xl"
+        />
     </section>
-    <section>
-        <div class="grid justify-center gap-12 lg:grid-cols-2 2xl:grid-cols-3">
-            <Card>
-                <img slot="img" src={SpreadsheetsSVG} alt="Illustration d'un tableur Excel" />
-
-                <h2 slot="title">Pour les experts</h2>
-
-                <ol slot="content">
-                    <li>
-                        <strong>Low code</strong> ⋅ Entre le no-code et le code, Publicodes est compréhensible
-                        par toute personne ayant déjà manipulé un tableau Excel.
-                    </li>
-                    <li>
-                        <strong>Transparent</strong> ⋅ Plus d'erreurs cachées : pour vérifier qu’une
-                        règle est correctement implémentées, il suffit de la lire.
-                    </li>
-                    <li>
-                        <strong>Un langage commun</strong> ⋅ Développeurs, experts : tout le monde parle
-                        la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.
-                    </li>
-                </ol>
-            </Card>
-            <Card>
-                <img
-                    slot="img"
-                    src={CodeTypingSVG}
-                    alt="Illustration d'un ordinateur de développement informatique"
-                />
-
-                <h2 slot="title">Pour les développeurs</h2>
-
-                <ol slot="content">
-                    <li>
-                        <strong>Clean architecture</strong> ⋅ Publicodes favorise la maintenabilité et
-                        la testabilité en découplant clairement le code métier du code applicatif.
-                    </li>
-                    <li>
-                        <strong>Facile à prendre en main</strong> ⋅ Il dispose d'une
-                        <a
-                            href="https://marketplace.visualstudio.com/items?itemName=EmileRolley.publicodes-language-server"
-                            target="_blank">extension VSCode</a
-                        >
-                        dédiée (coloration syntaxique, goto def, auto-complétion…) et est basé sur la
-                        syntaxe YAML.
-                    </li>
-                    <li>
-                        <strong>Multi-support</strong> ⋅ Son interpréteur JavaScript lui permet d’être
-                        embarqué dans dans un navigateur et évite des appels réseaux inutiles.
-                    </li>
-                </ol>
-            </Card>
-            <Card>
-                <img
-                    slot="img"
-                    src={AdministrationSVG}
-                    alt="Illustration d'une administration"
-                    class="object-contain"
-                />
-
-                <h2 slot="title">Pour les administrations</h2>
-
-                <ol slot="content">
-                    <li>
-                        <strong> Rule as code par design</strong> ⋅ Publicodes est un langage particulièrement
-                        adapté pour transposer la loi en code.
-                    </li>
-                    <li>
-                        <strong>Accerateur d'open-data</strong> ⋅ Vos règles peuvent être facilement
-                        publiée et être réutilisées par d’autres acteurs.
-                    </li>
-                    <li>
-                        <strong>Explicabilité</strong> ⋅ L’explications auto-générée des résultats de
-                        calculs permet de vous conformer à l’obligation de transparence des algorithmes
-                        publics.
-                    </li>
-                </ol>
-            </Card>
-        </div>
-    </section>
-    <section class=" mt-12">
-        <h2>Du code clair et lisible.</h2>
-        <p>
-            Essayez de modifiez le <strong>salaire brut</strong> à
-            <strong>3000 €/mois</strong> dans l'exemple suivant...
-        </p>
-        <div class="max-sm:-mx-6">
-            <PublicodesEditor
-                title="Calcul du salaire net"
-                showDocByDefault
-                hideDocButton
-                size="LG"
-                code={`salaire brut: 2500 €/mois
+    <section class="mt-20 flex w-full flex-col items-center gap-16 md:mt-32">
+        <div
+            class="flex w-full max-w-3xl flex-col gap-10 rounded-sm px-6 md:max-w-4xl lg:max-w-5xl
+			xl:max-w-7xl xl:border xl:border-primary-300 xl:p-8"
+        >
+            <h2 class="text-3xl font-normal sm:text-4xl">Du code clair et lisible</h2>
+            <div class="flex flex-col gap-4">
+                <p class="prose-md prose font-normal text-black md:prose-xl">
+                    Essayez de modifiez le <code>salaire brut</code> à
+                    <code>3000 €/mois</code> dans l'exemple suivant...
+                </p>
+                <div class="">
+                    <PublicodesEditor
+                        title="Calcul du salaire net"
+                        showDocByDefault
+                        hideDocButton
+                        size={isMobile ? 'md' : 'lg'}
+                        code={`salaire brut: 2500 €/mois
 
 cotisations salariales:
   description: Les cotisations salariales permettent de financer la protection sociale.
@@ -138,19 +103,203 @@ cotisations salariales:
     taux: 21.7%
 
 salaire net: salaire brut - cotisations salariales`}
-            ></PublicodesEditor>
+                    ></PublicodesEditor>
+                </div>
+                <p class="font-normal text-black md:text-xl lg:max-w-7xl">
+                    <strong>C'était facile, non ?</strong> Même sans connaissances en informatique, il
+                    est possible de comprendre du code écrit avec Publicodes.
+                </p>
+            </div>
+            <a class="w-fit self-center" href="/docs">
+                {@render buttonWithRightArrow('Découvrir le langage')}
+            </a>
         </div>
-        <p>
-            <strong>C'était facile, non ?</strong> Même sans connaissances en informatique, il est possible
-            de comprendre du code écrit avec Publicodes.
-        </p>
-        <a href="/docs"><Button>Découvrir le langage</Button></a>
     </section>
-    <section>
-        <h2>Accélérateur d'impact.</h2>
-        <p>
-            Publicodes est utilisé pour calculer <strong>plusieurs millions de simulations</strong> chaque
-            mois. Découvrez les produits phares qui utilisent cette technologie.
-        </p>
+    <section class="mt-20 flex w-full flex-col items-center gap-16 bg-primary-50 md:mt-32">
+        <div
+            class="not-prose flex w-full max-w-3xl flex-col justify-center gap-10 px-6 py-20 md:max-w-4xl
+			md:py-32 lg:max-w-5xl xl:max-w-7xl"
+        >
+            <div class="flex gap-2 md:gap-4">
+                <Rocket class="hidden md:block" size={iconSize} strokeWidth={iconStrokeWidth} />
+                <h2 class="m-0 text-3xl font-normal md:text-4xl">Accélérateur d'impact</h2>
+            </div>
+            <p class="w-full text-lg font-normal text-black md:text-xl">
+                Publicodes est utilisé pour calculer <strong
+                    >plusieurs millions de simulations</strong
+                > chaque mois. Découvrez les produits phares qui utilisent cette technologie.
+            </p>
+            {@render userCards([
+                // TODO: fetch this informations directly from targetted
+                // website's metadata.
+                {
+                    img: 'https://nosgestesclimat.fr/images/misc/metadata.png',
+                    title: 'Nos Gestes Climat',
+                    description:
+                        "Le calculateur d'empreinte climat personnelle de référence, complètement ouvert.",
+                    url: 'https://nosgestesclimat.fr'
+                },
+                {
+                    img: 'https://mon-entreprise.urssaf.fr/logo-share.png',
+                    title: 'Mon-entreprise',
+                    description:
+                        'Utilise publicodes pour implémenter la législation socio-fiscale dans des simulateurs (paie, cotisations, impôts, droits ouverts)',
+                    url: 'https://mon-entreprise.urssaf.fr'
+                },
+                {
+                    img: 'https://code.travail.gouv.fr/static/assets/img/social-preview.png',
+                    title: 'Code du travail numérique',
+                    description:
+                        'Développe un simulateur de préavis de retraite intégrant de nombreuses conventions collectives.',
+                    url: 'https://code.travail.gouv.fr'
+                }
+            ])}
+            <!-- TODO: add correct link -->
+            <!-- <a class="w-fit self-center" href="/docs">
+                {@render buttonWithRightArrow('Toutes les réalisations')}
+            </a> -->
+        </div>
+    </section>
+    <!-- TODO: factorize sections in a snippet? -->
+    <section class="flex w-full flex-col items-center gap-16">
+        <div
+            class="not-prose flex w-full max-w-3xl flex-col justify-center gap-10
+			px-6 py-20 md:max-w-4xl md:py-32
+			lg:max-w-5xl xl:max-w-7xl"
+        >
+            <div class="flex gap-4">
+                <LibraryBig class="hidden md:block" size={iconSize} strokeWidth={iconStrokeWidth} />
+                <h2 class="m-0 text-3xl font-normal md:text-4xl">Créateur de communs</h2>
+            </div>
+            <p class="text-lg font-normal text-black md:max-w-7xl md:text-xl">
+                Déjà <strong>une dizaine de modèles publiés</strong>. Découvrez les dans la
+                bibliothèque de modèles publicodes.
+            </p>
+            <div class="flex justify-center">
+                {@render packageItems(packages)}
+            </div>
+            <!-- TODO: add correct link -->
+            <!-- <a class="w-fit self-center" href="/docs">
+                {@render buttonWithRightArrow('Découvrir tous les modèles')}
+            </a> -->
+        </div>
+    </section>
+    <section class="flex flex-col">
+        <Banner
+            icon={Microscope}
+            background="bg-publicodes-orange bg-opacity-10"
+            title="Pour les expert·es"
+            items={[
+                {
+                    subtitle: 'Low code',
+                    content:
+                        'Entre le no-code et le code, Publicodes est compréhensible par toute personne ayant déjà manipulé un tableau Excel.'
+                },
+                {
+                    subtitle: 'Transparent',
+                    content:
+                        "Plus d'erreurs cachées : pour vérifier qu’une règle est correctement implémentées, il suffit de la lire."
+                },
+                {
+                    subtitle: 'Un langage commun',
+                    content:
+                        'Développeurs, expert·es : tout le monde parle la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.'
+                }
+            ]}
+        />
+        <Banner
+            icon={CodeXmlIcon}
+            background="bg-publicodes-green bg-opacity-10"
+            title="Pour les développeur·euses"
+            items={[
+                {
+                    subtitle: 'Clean architecture',
+                    content:
+                        'Publicodes favorise la maintenabilité et la testabilité en découplant clairement le code métier du code applicatif.'
+                },
+                {
+                    subtitle: 'Facile à prendre en main',
+                    content:
+                        "Il dispose d'une extension VSCode dédiée (coloration syntaxique, goto def, auto-complétion…) et est basé sur la syntaxe YAML."
+                },
+                {
+                    subtitle: 'Multi-support',
+                    content:
+                        'Son interpréteur JavaScript lui permet d’être embarqué dans un navigateur et évite des appels réseux inutiles.'
+                }
+            ]}
+        />
+        <Banner
+            icon={LandmarkIcon}
+            background={'bg-primary-50'}
+            title="Pour les administrations"
+            items={[
+                {
+                    subtitle: 'Rules as code par design',
+                    content:
+                        'Publicodes est un langage particulièrement adapté pour transposer la loi en code.'
+                },
+                {
+                    subtitle: 'Accerateur d’open-data',
+                    content:
+                        'Vos règles peuvent être facilement publiée et être réutilisées par d’autres acteurs.'
+                },
+                {
+                    subtitle: 'Explicabilité',
+                    content:
+                        'L’explications auto-générée des résultats de calculs permet de vous conformer à l’obligation de transparence des algorithmes publics.'
+                }
+            ]}
+        />
     </section>
 </main>
+
+{#snippet userCards(items)}
+    <ul class="grid grid-cols-1 gap-8 px-6 sm:grid-cols-2 lg:grid-cols-3">
+        {#each items as { img, title, description, url }}
+            <Card {img} {title} {description} {url} />
+        {/each}
+    </ul>
+{/snippet}
+
+{#snippet packageItems(items)}
+    <ul
+        class="grid grid-flow-row grid-cols-1 justify-center gap-3 md:max-w-3xl md:grid-cols-2
+		 lg:max-w-5xl xl:max-w-7xl xl:grid-cols-3 xl:gap-4"
+    >
+        {#each items as { name, version, modified, description }}
+            <li
+                class="relative rounded-sm border
+				border-primary-400 hover:border-primary-400
+				hover:bg-primary-400 hover:bg-opacity-5
+				md:min-w-96"
+            >
+                <div class="m-3 flex flex-col gap-1">
+                    <!-- TODO: this should redirect to the package's page -->
+                    <a
+                        href={`https://www.npmjs.com/package/${name}`}
+                        class="after:contents-[''] flex flex-col gap-2 font-medium
+			text-primary-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:top-0 hover:text-primary-600"
+                        target="_blank"
+                    >
+                        {name}
+                    </a>
+                    <p class="prose truncate font-light">{description}</p>
+                    <span class="flex items-center gap-2 text-sm text-slate-700">
+                        <span>v{version}</span>
+                        <Time class="italic text-slate-600" relative timestamp={modified} />
+                    </span>
+                </div>
+            </li>
+        {/each}
+    </ul>
+{/snippet}
+
+{#snippet buttonWithRightArrow(text)}
+    <Button type="secondary">
+        <span class="flex items-center gap-2">
+            {text}
+            <ArrowRight size={26} strokeWidth={1.75} />
+        </span>
+    </Button>
+{/snippet}

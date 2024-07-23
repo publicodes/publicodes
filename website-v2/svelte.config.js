@@ -7,14 +7,13 @@ import { getSingletonHighlighter } from 'shiki';
 import { remarkHeadings } from './src/lib/utils/remark-headings.js';
 
 const highlighter = await getSingletonHighlighter({
-    themes: ['dracula'],
+    themes: ['one-light'],
     langs: ['yaml', 'javascript', 'typescript', 'html', 'jsx', 'bash']
 });
 
 /** @type {import('mdsvex').MdsvexOptions} */
 const mdsvexOptions = {
     extensions: ['.svelte.md'],
-
     rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
     remarkPlugins: [remarkHeadings],
     highlight: {
@@ -22,15 +21,14 @@ const mdsvexOptions = {
             if (lang && lang.startsWith('publicodes')) {
                 const withTitle = (metastring || '').match(/title=".*?"/);
                 const withRule = (metastring || '').match(/selectedRuleInDoc="(.*?)"/);
-                return `
-<PublicodesEditor 
+                // FIXME: this is causing bug in the scroll
+                return `<PublicodesEditor
     code={\`${code.replaceAll('`', '\\`')}\`}
     ${withTitle ? withTitle[0] : ''}
     ${withRule ? withRule[0] : ''}
->
-</PublicodesEditor>`;
+/>`;
             }
-            const html = escapeSvelte(highlighter.codeToHtml(code, { lang, theme: 'dracula' }));
+            const html = escapeSvelte(highlighter.codeToHtml(code, { lang, theme: 'one-light' }));
             return `{@html \`${html}\` }`;
         }
     }
