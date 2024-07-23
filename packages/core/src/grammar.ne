@@ -33,7 +33,8 @@ const lexer = moo.compile({
   parentSelector: "^",
   JSONObject: /{.*}/,
   additionSubstraction: /[\+-]/,
-  multiplicationDivisionExponentiation: ['*','/','**'],
+  exponentiation: '**',
+  multiplicationDivision: ['*','/'],
   dot: ' . ',
   ".": '.',
   space: { match: /[\s]+/, lineBreaks: true },
@@ -112,11 +113,18 @@ UnitDenominator -> (%space):* "/" UnitNumerator:+ {% flattenJoin %}
 
 
 AdditionSubstraction ->
-    AdditionSubstraction %space %additionSubstraction %space multiplicationDivisionExponentiation  {%  binaryOperation  %}
-  | multiplicationDivisionExponentiation  {% id %}
+    AdditionSubstraction %space %additionSubstraction %space MultiplicationDivision  {%  binaryOperation  %}
+  | MultiplicationDivision  {% id %}
+  | Exponentiation {% id %}
 
-multiplicationDivisionExponentiation ->
-    multiplicationDivisionExponentiation %space %multiplicationDivisionExponentiation %space Parentheses  {% binaryOperation  %}
+Exponentiation ->
+    Exponentiation %space %exponentiation %space Parentheses {% binaryOperation  %}
+  | Parentheses  {% id %}
+
+MultiplicationDivision ->
+    MultiplicationDivision %space %multiplicationDivision %space Parentheses  {% binaryOperation  %}
+  | Exponentiation %space %multiplicationDivision %space Parentheses  {% binaryOperation  %}
+  | MultiplicationDivision %space %multiplicationDivision %space Exponentiation  {% binaryOperation  %}
   | Parentheses   {% id %}
 
 
