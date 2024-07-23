@@ -1,7 +1,7 @@
 ---
 title: 'Standards de conception des modèles publics'
-description: '[TODO - MAJ] Standards de conception des modèles publics'
-author: 'Mäel'
+description: 'Un guide pour les administration listant les prérequis pour proposer des modèles de calcul fiables, modernes, qui fassent référence et qui profitent un maximum aux autres acteurs.'
+author: 'Mäel Thomas'
 date: '2024-06-14'
 tags: 'modelisation, open-data'
 icon: '🏛️'

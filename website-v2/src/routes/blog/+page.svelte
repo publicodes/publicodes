@@ -41,8 +41,8 @@
                 <h2 class="m-0 text-3xl font-normal md:text-4xl">Tous les articles</h2>
             </div>
             <ul class="not-prose divide-y divide-primary-100">
-                {#each data.blogPosts as { path, metadata: { title, description, tags } }}
-                    <PostListItem url={'blog' + path} {title} {description} {tags} />
+                {#each data.blogPosts as { path, metadata: { title, description, tags, date } }}
+                    <PostListItem url={'blog' + path} {title} {date} {description} {tags} />
                 {/each}
             </ul>
         </div>

@@ -1,20 +1,28 @@
 <script lang="ts">
+    import Time from 'svelte-time/Time.svelte';
     import Tags from './tags.svelte';
-
-    export let url = '';
-    export let title = '';
-    export let description = '';
-    export let tags = '';
+    type Props = {
+        url: string;
+        title: string;
+        description: string;
+        tags: string;
+        date: string;
+    };
+    const { url, title, description, tags, date }: Props = $props();
 </script>
 
 <li class="flex flex-col gap-6 py-6">
-    <div class="flex flex-col gap-3">
+    <div class="mt-3 flex flex-col gap-3">
+        <div class="text-sm font-light">
+            <Time class="text-slate-600" format="DD MMMM YYYY" timestamp={date} />
+        </div>
         <a
             href={url}
-            class="mt-3 text-xl font-light tracking-tight text-primary-400 hover:text-primary-600 md:text-2xl"
+            class="text-xl font-light tracking-tight text-primary-400 hover:text-primary-600 md:text-2xl"
         >
             {title}
         </a>
+
         <p class="prose font-light leading-snug md:text-lg">
             {description}
         </p>

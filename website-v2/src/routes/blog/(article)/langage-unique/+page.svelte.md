@@ -1,10 +1,10 @@
 ---
-title: 'Pourquoi ce projet alors que X existe ?'
-description: '[TODO - MAJ] Pourquoi ce projet alors que X existe ?'
-author: 'Maël'
-date: '2019-04-02'
-tags: 'open-data'
-icon: '👀'
+title: Pourquoi publicodes alors que X existe ?
+description: Une comparaison de publicodes avec d'autres outils de modélisations utilisés dans l’administration
+author: Maël Thomas
+date: 2019-04-02
+tags: open-data
+icon: 👀
 ---
 
 # {title}
