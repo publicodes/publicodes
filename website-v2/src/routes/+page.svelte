@@ -187,7 +187,7 @@ salaire net: salaire brut - cotisations salariales`}
     <section class="flex flex-col">
         <Banner
             icon={Microscope}
-            background="bg-publicodes-orange bg-opacity-10"
+            background="bg-primary-50"
             title="Pour les expert·es"
             items={[
                 {
@@ -209,7 +209,7 @@ salaire net: salaire brut - cotisations salariales`}
         />
         <Banner
             icon={CodeXmlIcon}
-            background="bg-publicodes-green bg-opacity-10"
+            background=""
             title="Pour les développeur·euses"
             items={[
                 {
@@ -231,7 +231,7 @@ salaire net: salaire brut - cotisations salariales`}
         />
         <Banner
             icon={LandmarkIcon}
-            background={'bg-primary-50'}
+            background="bg-primary-50"
             title="Pour les administrations"
             items={[
                 {

@@ -8,7 +8,7 @@
     export let items: { subtitle: string; content: string }[];
 </script>
 
-<section class={' flex w-full justify-center py-16 ' + background}>
+<section class={'flex w-full justify-center py-20 md:py-32 ' + background}>
     <div class="flex max-w-3xl flex-col gap-10 px-6 md:max-w-5xl xl:max-w-7xl">
         <div class="flex items-center gap-4">
             <svelte:component this={icon} class="hidden sm:block" size={36} strokeWidth={1} />
@@ -17,7 +17,7 @@
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {#each items as { subtitle, content }}
                 <div class="prose prose-lg">
-                    <h3>{subtitle}</h3>
+                    <h3 class="italic">{subtitle}</h3>
                     <p class="leading-snug">{content}</p>
                 </div>
             {/each}
