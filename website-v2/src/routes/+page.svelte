@@ -121,7 +121,7 @@ salaire net: salaire brut - cotisations salariales`}
 			md:py-32 lg:max-w-5xl xl:max-w-7xl"
         >
             <div class="flex gap-2 md:gap-4">
-                <Rocket class="hidden md:block" size={iconSize} strokeWidth={iconStrokeWidth} />
+                <Rocket size={iconSize} strokeWidth={iconStrokeWidth} />
                 <h2 class="m-0 text-3xl font-normal md:text-4xl">Accélérateur d'impact</h2>
             </div>
             <p class="w-full text-lg font-normal text-black md:text-xl">
@@ -168,7 +168,7 @@ salaire net: salaire brut - cotisations salariales`}
 			lg:max-w-5xl xl:max-w-7xl"
         >
             <div class="flex gap-4">
-                <LibraryBig class="hidden md:block" size={iconSize} strokeWidth={iconStrokeWidth} />
+                <LibraryBig size={iconSize} strokeWidth={iconStrokeWidth} />
                 <h2 class="m-0 text-3xl font-normal md:text-4xl">Créateur de communs</h2>
             </div>
             <p class="text-lg font-normal text-black md:max-w-7xl md:text-xl">
