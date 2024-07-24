@@ -51,9 +51,8 @@
     }
 </script>
 
-<div class="global-min-full-h">
-    <!-- FIXME: problem with the height of the editor: there is a gap between the editor and the footer -->
-    <div class="publicodes-container flex h-screen max-h-screen flex-1 flex-col overflow-hidden">
+<div class="">
+    <div class="publicodes-container flex h-[94vh] flex-1 flex-col">
         {#if initialCode}
             <PublicodesEditor
                 code={initialCode}

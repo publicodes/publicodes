@@ -171,7 +171,8 @@
 
 <style>
     :global(.editor-container) {
-        @apply mb-8;
+        /* NOTE: this was an issue with the studio */
+        /* @apply mb-8; */
     }
     :global(h2:hover .icon.icon-link::before),
     :global(h3:hover .icon.icon-link::before),

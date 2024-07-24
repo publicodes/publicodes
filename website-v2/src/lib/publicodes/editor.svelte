@@ -82,7 +82,7 @@
                 out:fly={{ duration: 75 }}
                 class="absolute left-16 will-change-transform"
             >
-                <Tag {size} bgColor="bg-publicodes-green bg-opacity-20">Code copié !</Tag>
+                <Tag {size} bgColor="bg-primary-600 text-white ">Code copié !</Tag>
             </div>
         {/if}
         <span
@@ -104,6 +104,7 @@
                 aria-label={showDoc ? 'Fermer la documentation' : 'Ouvrir la documentation'}
                 class:saturate-0={documentationIsBroken}
                 disabled={documentationIsBroken}
+                class:text-slate-400={documentationIsBroken}
             >
                 <FlyInOutTransition condition={showDoc && !documentationIsBroken}>
                     {#snippet ifTrue()}<PanelRightClose
@@ -247,7 +248,7 @@
                 @apply text-sm;
             }
             #rules-nav-open-nav-button button {
-                @apply whitespace-nowrap;
+                @apply m-0 mr-4 whitespace-nowrap px-2 py-1;
             }
         }
     }
