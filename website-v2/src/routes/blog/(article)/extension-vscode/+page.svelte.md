@@ -9,8 +9,6 @@ featured: true
 draft: true
 ---
 
-# {title}
-
 ## Hello World
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non libero ex. Proin cursus odio lectus, ut molestie sapien eleifend sit amet. Curabitur eu augue sit amet justo accumsan fringilla. Praesent euismod tortor id turpis vehicula feugiat. Aenean dictum ipsum purus, eget porta mi porta et. Nunc et sem quis arcu vehicula lacinia. Suspendisse sapien ligula, ornare quis placerat at, tristique vel mi. Aenean faucibus placerat lectus non dictum. Fusce blandit metus a lectus fringilla convallis. Donec ut porta nulla. Suspendisse eros leo, luctus in quam egestas, sagittis bibendum nisl. Sed blandit, lorem non dapibus dapibus, tellus ex malesuada quam, vel faucibus sapien massa id mauris. Duis in justo nec sapien congue tempor eu ut massa.

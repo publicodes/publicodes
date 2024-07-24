@@ -7,8 +7,6 @@ tags: open-data
 icon: 👀
 ---
 
-# {title}
-
 ## X = Moteurs de calcul numérique, comme OpenFisca
 
 Il existe aujourd'hui un certain nombre de simulateurs numériques du système social français. Par exemple INES, développé par l'INSEE. OpenFisca, ouvert, relativement étendu et _collaboratif_ en est un représentant inédit.\*
