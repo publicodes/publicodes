@@ -11,6 +11,7 @@
     import { afterNavigate } from '$app/navigation';
     import { MenuIcon } from 'lucide-svelte';
     import '../app.css';
+    import { fly } from 'svelte/transition';
 
     globalThis.PublicodesEditor = PublicodesEditor;
     globalThis.Callout = Callout;
@@ -37,6 +38,7 @@
     <link rel="icon" type="image/png" href={favicon} />
 </svelte:head>
 
+<!-- FIXME: there is an issue with the documentation width in the mobile view -->
 <div
     class="fixed top-0 z-10 flex h-16 w-screen items-center justify-between border-b border-primary-200 bg-white
 	px-6 py-2 text-cyan-950 md:px-8"
@@ -49,7 +51,8 @@
         <div
             role="dialog"
             class="fixed right-0 top-0 z-20 h-full border-l
-			border-primary-300 bg-white sm:hidden"
+			border-primary-300 bg-white will-change-transform sm:hidden"
+            transition:fly={{ x: 100 }}
         >
             {@render Menu()}
         </div>
