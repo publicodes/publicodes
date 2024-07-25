@@ -95,7 +95,6 @@
                         code={`salaire brut: 2500 €/mois
 
 cotisations salariales:
-  description: Les cotisations salariales permettent de financer la protection sociale.
   produit:
     - salaire brut
     - taux

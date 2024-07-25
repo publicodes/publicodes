@@ -10,8 +10,8 @@
 
     import { afterNavigate } from '$app/navigation';
     import { MenuIcon } from 'lucide-svelte';
-    import '../app.css';
     import { fly } from 'svelte/transition';
+    import '../app.css';
 
     globalThis.PublicodesEditor = PublicodesEditor;
     globalThis.Callout = Callout;
@@ -49,21 +49,7 @@
         <img src={Logo} class="h-7" alt="Logo de publicodes" />
         Publicodes
     </a>
-    {#if showMobileMenu}
-        <div
-            role="dialog"
-            class="fixed right-0 top-0 z-20 h-full border-l
-			border-primary-300 bg-white will-change-transform sm:hidden"
-            transition:fly={{ x: 100 }}
-        >
-            {@render Menu()}
-        </div>
-        <div
-            class="fixed z-20 sm:hidden"
-            aria-hidden="true"
-            onclick={() => (showMobileMenu = false)}
-        ></div>
-    {/if}
+
     <button
         class="text-primary-400 hover:text-primary-600 sm:hidden"
         onclick={() => (showMobileMenu = true)}
@@ -97,6 +83,21 @@
     </nav>
 {/snippet}
 
+{#if showMobileMenu}
+    <div
+        role="dialog"
+        class="fixed right-0 top-0 z-40 h-full border-l
+        border-primary-300 bg-white will-change-transform sm:hidden"
+        transition:fly={{ x: 100 }}
+    >
+        {@render Menu()}
+    </div>
+    <div
+        class="fixed inset-0 z-40 sm:hidden"
+        aria-hidden="true"
+        onclick={() => (showMobileMenu = false)}
+    ></div>
+{/if}
 <div class="max-h-full pt-16" class:blur-sm={showMobileMenu} class:opacity-50={showMobileMenu}>
     {@render children()}
     <footer class="flex w-full flex-col items-center border-t border-primary-200 py-10">
