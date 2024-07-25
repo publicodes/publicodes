@@ -50,12 +50,7 @@ export const useRuleSource = (engine: Engine, dottedName: string) => {
 
 	const source = encodeURIComponent(JSON.stringify({ rules, situation }))
 
-	const baseURL =
-		typeof window !== 'undefined' && location.hostname === 'localhost' ?
-			''
-		:	'https://publi.codes'
-
-	return `${baseURL}/studio/${encodeRuleName(dottedName)}#${source}`
+	return `https://publi.codes/studio/${encodeRuleName(dottedName)}#${source}`
 }
 
 // TODO: This formating function should be in the core code. We need to think
