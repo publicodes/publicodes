@@ -28,11 +28,13 @@
 </script>
 
 <svelte:head>
-    <title>Publicodes ⋅ Langage pour experts et développeurs</title>
+    <title>Publicodes ⋅ Langage pour expert·es et développeur·euses</title>
 
     <meta
         name="description"
-        content="Publicodes permet de modéliser des domaines métiers complexes, en les décomposant en règles élémentaires simples qui soient lisibles par tous."
+        content="Publicodes permet de modéliser des domaines métiers complexes,
+		en les décomposant en règles élémentaires simples qui soient
+		lisibles par tout le monde."
     />
 
     <link rel="icon" type="image/png" href={favicon} />
