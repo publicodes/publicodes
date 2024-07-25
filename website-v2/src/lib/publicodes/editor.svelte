@@ -19,6 +19,7 @@
 
         onchange,
         size = 'md',
+        fullPage = false,
         additionnalButton
     }: {
         code: string;
@@ -28,6 +29,7 @@
         hideDocButton?: boolean;
         onchange?: (code: string, currentlySelected?: string) => void;
         size?: 'md' | 'lg';
+        fullPage?: boolean;
         additionnalButton?: Snippet;
     } = $props();
 
@@ -62,6 +64,7 @@
 <div
     class="editor-container not-prose flex flex-col overflow-hidden
 	border border-primary-100 sm:rounded"
+    class:mb-8={!fullPage}
 >
     <div
         class="editor-header relative flex shrink-0 items-center overflow-hidden

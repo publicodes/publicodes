@@ -59,6 +59,7 @@
                 onchange={updateUrl}
                 showDocByDefault={!!selectedRuleInDoc}
                 title={'Publicodes studio'}
+                fullPage={true}
                 {selectedRuleInDoc}
             >
                 {#snippet additionnalButton()}
