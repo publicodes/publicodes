@@ -20021,9 +20021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"website-v2@workspace:website":
+"website@workspace:website":
   version: 0.0.0-use.local
-  resolution: "website-v2@workspace:website"
+  resolution: "website@workspace:website"
   dependencies:
     "@codemirror/lang-yaml": ^6.1.1
     "@publicodes/react-ui": "workspace:^"
