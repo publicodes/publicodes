@@ -170,9 +170,6 @@
 </div>
 
 <style>
-    :global(.editor-container) {
-        @apply mb-8;
-    }
     :global(h2:hover .icon.icon-link::before),
     :global(h3:hover .icon.icon-link::before),
     :global(h4:hover .icon.icon-link::before),
