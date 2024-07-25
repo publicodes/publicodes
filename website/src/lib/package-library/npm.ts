@@ -35,7 +35,7 @@ export function getSortedPackages() {
     return packages.sort((a, b) => a.modified.getTime() - b.modified.getTime());
 }
 
-export async function updateWatchedPackages() {
+export async function updateWatchedPackages(): Promise<PublicodesPackages> {
     // if (packages.length === 0) {
     return Promise.all(
         watchedPackages.map(async (pkg) => {
