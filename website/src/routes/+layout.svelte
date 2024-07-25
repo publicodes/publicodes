@@ -66,6 +66,7 @@
     <nav class="p-6 sm:p-0">
         <ul class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center">
             <NavTab href="/docs">Documentation</NavTab>
+            <NavTab href="/bibliotheque">Bibliothèque</NavTab>
             <NavTab href="/studio">Studio</NavTab>
             <NavTab href="/blog">Blog</NavTab>
             <!-- <NavTab href="/blog">Blog</NavTab> -->

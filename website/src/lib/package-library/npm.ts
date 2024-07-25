@@ -10,7 +10,6 @@ export type PublicodesPackage = {
     version: string;
     modified: Date;
     description: string;
-    rules: Record<string, Rule>;
 };
 
 export type PublicodesPackages = PublicodesPackage[];
@@ -55,8 +54,6 @@ export async function fetchPackage(name: string): Promise<PublicodesPackage> {
         name: data.name,
         version: Object.keys(data.versions).pop()!,
         modified: new Date(data.time.modified),
-        description,
-        // TODO: fetch the rules from the package
-        rules: {}
+        description
     };
 }
