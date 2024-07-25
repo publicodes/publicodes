@@ -22,6 +22,7 @@
 		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\""
 	},
 	"devDependencies": {
+		"@sveltejs/adapter-netlify": "^4.3.1",
 		"@typescript-eslint/eslint-plugin": "latest",
 		"@typescript-eslint/parser": "latest",
 		"eslint": "latest",
