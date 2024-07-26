@@ -10,7 +10,6 @@ export type PublicodesPackage = {
     version: string;
     modified: Date;
     description: string;
-    rules: Record<string, Rule>;
 };
 
 export type PublicodesPackages = PublicodesPackage[];
@@ -35,7 +34,7 @@ export function getSortedPackages() {
     return packages.sort((a, b) => a.modified.getTime() - b.modified.getTime());
 }
 
-export async function updateWatchedPackages() {
+export async function updateWatchedPackages(): Promise<PublicodesPackages> {
     // if (packages.length === 0) {
     return Promise.all(
         watchedPackages.map(async (pkg) => {
@@ -55,8 +54,6 @@ export async function fetchPackage(name: string): Promise<PublicodesPackage> {
         name: data.name,
         version: Object.keys(data.versions).pop()!,
         modified: new Date(data.time.modified),
-        description,
-        // TODO: fetch the rules from the package
-        rules: {}
+        description
     };
 }

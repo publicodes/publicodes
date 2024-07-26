@@ -18,16 +18,9 @@
     import Card from '$lib/ui/card.svelte';
     import { onMount } from 'svelte';
     import Time from 'svelte-time';
+    import type { PageData } from './$types';
 
-    let packages: PublicodesPackages = $state([]);
-
-    onMount(async () => {
-        // TODO: more efficient way to update the packages with a store?
-        packages = await updateWatchedPackages();
-        packages.sort((a, b) => {
-            return b.modified.getTime() - a.modified.getTime();
-        });
-    });
+    const { data }: { data: PageData } = $props();
 
     const isMobile = false; //window.innerWidth < 768;
     const iconSize = isMobile ? 32 : 36;
@@ -175,7 +168,7 @@ salaire net: salaire brut - cotisations salariales`}
                 bibliothèque de modèles publicodes.
             </p>
             <div class="flex justify-center">
-                {@render packageItems(packages)}
+                {@render packageItems(data.packages)}
             </div>
             <!-- TODO: add correct link -->
             <!-- <a class="w-fit self-center" href="/docs">
