@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.0
+
+**@publicodes/core**
+
+- Ajoute le mécanisme puissance via la syntaxe `**`
+
 ## 1.4.0
 
 - Ajoute les champs `min` et `max` pour le mécanisme d'inversion numérique
