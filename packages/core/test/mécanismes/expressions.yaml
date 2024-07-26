@@ -348,3 +348,27 @@ désambiguation du nom de règle 3:
   formule: a . d
   exemples:
     - valeur attendue: 1
+
+puissance précède multiplication:
+  formule: 2 ** 2 * 2
+  exemples:
+    - situation:
+      valeur attendue: 8
+
+multiplication précède puissance:
+  formule: 3 * 2 ** 2
+  exemples:
+    - situation:
+      valeur attendue: 12
+
+multiplication précède puissance avec parenthèses:
+  formule: (3 * 2) ** 2
+  exemples:
+    - situation:
+      valeur attendue: 36
+
+intérêts composés:
+  formule: 100 * ( 1 + 2% ) ** 3
+  exemples:
+    - situation:
+      valeur attendue: 106.12
