@@ -26,8 +26,27 @@ A space token based on:
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
 A space token based on:
+    Exponentiation → Exponentiation ● %space %exponentiation %space Parentheses
+    AdditionSubstraction →  ● Exponentiation
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → Exponentiation ● %space %multiplicationDivision %space Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Exponentiation
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
     MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
     AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
 A space token based on:
@@ -57,6 +76,9 @@ A word token based on:
     AdditionSubstraction →  ● MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
+A space token based on:
+    Comparison → Comparable ● %space %comparison %space Comparable
+    main →  ● Comparison
 A space token based on:
     Comparison → Comparable ● %space %comparison %space Comparable
     main →  ● Comparison
@@ -111,6 +133,21 @@ A space token based on:
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
 A space token based on:
+    Exponentiation → Exponentiation ● %space %exponentiation %space Parentheses
+    AdditionSubstraction →  ● Exponentiation
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → Exponentiation ● %space %multiplicationDivision %space Parentheses
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Exponentiation
+    AdditionSubstraction →  ● MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
     MultiplicationDivision → MultiplicationDivision ● %space %multiplicationDivision %space Parentheses
     AdditionSubstraction →  ● MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
@@ -119,6 +156,13 @@ A space token based on:
     AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
     NumericValue →  ● AdditionSubstraction
     main →  ● NumericValue
+A space token based on:
+    AdditionSubstraction → AdditionSubstraction ● %space %additionSubstraction %space MultiplicationDivision
+    NumericValue →  ● AdditionSubstraction
+    main →  ● NumericValue
+A space token based on:
+    Comparison → Comparable ● %space %comparison %space Comparable
+    main →  ● Comparison
 A space token based on:
     Comparison → Comparable ● %space %comparison %space Comparable
     main →  ● Comparison
