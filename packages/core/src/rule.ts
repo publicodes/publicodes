@@ -15,8 +15,8 @@ import { isAccessible, nameLeaf, ruleParents } from './ruleUtils'
 import { weakCopyObj } from './utils'
 
 export type Rule = {
-	formule?: Record<string, unknown> | string
-	valeur?: Record<string, unknown> | string
+	formule?: Record<string, unknown> | string | number
+	valeur?: Record<string, unknown> | string | number
 	question?: string
 	description?: string
 	unité?: string
