@@ -3,12 +3,12 @@
     import { tomorrow } from 'thememirror';
 
     import Tag from '$lib/ui/tag.svelte';
+    import { ClipboardCopy, PanelRightClose, PanelRightOpen } from 'lucide-svelte';
     import type { Snippet } from 'svelte';
     import CodeMirror from 'svelte-codemirror-editor';
     import { fly } from 'svelte/transition';
     import { createEngine } from './create-engine';
     import FlyInOutTransition from './fly-in-out-transition.svelte';
-    import { ClipboardCopy, PanelRightClose, PanelRightOpen } from 'lucide-svelte';
 
     let {
         code = '',
@@ -148,17 +148,16 @@
                 {/each}
             </ul>
         </div>
-        {#await import('./doc.svelte') then c}
+        {#await import('./doc.svelte') then doc}
             {#if engine && selectedRule}
                 <div class="publicodes-documentation xl:publicodes-documentation" class:showDoc>
-                    <svelte:component
-                        this={c.default}
+                    <doc.default
                         {engine}
                         {selectedRule}
                         onchange={(selectedRule) => {
                             onchange?.(code, selectedRule);
                         }}
-                    />
+                    ></doc.default>
                 </div>
             {/if}
         {/await}

@@ -11,11 +11,11 @@
     } = $props();
 </script>
 
-<div
+<span
     class={'h-fit break-keep rounded px-2 py-1 text-slate-800 will-change-transform ' + bgColor}
     class:px-3={size === 'lg'}
     class:py-2={size === 'lg'}
     class:text-sm={size === 'md'}
 >
     {@render children()}
-</div>
+</span>
