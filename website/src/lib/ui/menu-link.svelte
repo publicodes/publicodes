@@ -1,7 +1,8 @@
 <script lang="ts">
     import { page } from '$app/stores';
-    import { ChevronDown, ChevronRight } from 'lucide-svelte';
+    import { ChevronRight } from 'lucide-svelte';
     import type { Snippet } from 'svelte';
+    import { slide } from 'svelte/transition';
 
     const {
         href,
@@ -34,16 +35,16 @@
         <span class="flex items-center justify-between gap-2">
             {@render children()}
             {#if isSection}
-                {#if isParentActive}
-                    <ChevronDown size={24} strokeWidth={1} />
-                {:else}
-                    <ChevronRight size={24} strokeWidth={1} />
-                {/if}
+                <ChevronRight
+                    size={24}
+                    strokeWidth={1}
+                    class={'transition-transform ' + (isParentActive ? 'rotate-90' : '')}
+                />
             {/if}
         </span>
     </a>
     {#if submenu && isParentActive}
-        <ul class="bg-primary-50 bg-opacity-15 pl-2 font-light">
+        <ul class="bg-primary-50 bg-opacity-15 pl-2 font-light" transition:slide>
             {@render submenu()}
         </ul>
     {/if}

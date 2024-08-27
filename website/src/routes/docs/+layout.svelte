@@ -44,7 +44,7 @@
 </script>
 
 {#snippet MenuLeft()}
-    <nav>
+    <nav class="w-60">
         <ul>
             {#each entryPages as { path, metadata }}
                 {@const childPages = getChildPage(path)}
@@ -94,7 +94,7 @@
     {/if}
 {/snippet}
 
-<div class="flex items-start">
+<div class="flex min-h-full items-start">
     <!-- MOBILE NAV -->
     {#if showMobileMenuLeft}
         <div
@@ -111,12 +111,12 @@
         ></div>
     {/if}
 
-    <div class="sticky top-16 min-h-max w-60 max-md:hidden">
+    <div class="sticky top-16 min-h-max max-md:hidden">
         {@render MenuLeft()}
     </div>
     <div class="self-stretch border-r border-primary-100"></div>
     <div
-        class="mx-auto flex flex-1 flex-col px-4 pt-8 transition-all 2xl:prose-lg max-md:max-w-full md:px-8 xl:max-w-screen-md 2xl:max-w-4xl"
+        class="prose mx-auto flex flex-col px-4 pt-8 transition-all max-md:max-w-full md:px-8 2xl:max-w-4xl"
     >
         <div class="flex justify-between gap-2">
             <button
@@ -138,7 +138,7 @@
         <article
             class:blur-sm={showMobileMenuLeft || showMobileMenuRight}
             class:opacity-50={showMobileMenuLeft || showMobileMenuRight}
-            class="prose py-8 lg:prose-lg"
+            class=" py-8"
         >
             <h1>{currentPageMetadata.title}</h1>
             {@render children()}
