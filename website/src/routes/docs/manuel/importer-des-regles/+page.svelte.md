@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 4
 title: Imports de règles
 hide_table_of_contents: false
 ---
