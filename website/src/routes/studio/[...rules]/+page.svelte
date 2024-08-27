@@ -1,6 +1,6 @@
 <script lang="ts">
     import { page } from '$app/stores';
-    import PublicodesEditor from '$lib/publicodes/editor.svelte';
+    import PublicodesEditor from '$lib/component/publicodes/editor.svelte';
     import Tag from '$lib/ui/tag.svelte';
     import { Link } from 'lucide-svelte';
     import { utils } from 'publicodes';

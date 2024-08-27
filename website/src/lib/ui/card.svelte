@@ -1,33 +1,43 @@
 <script lang="ts">
+    import { ExternalLink } from 'lucide-svelte';
     import type { Snippet } from 'svelte';
 
     type CardProps = {
         img: string;
         url: string;
         title: Snippet;
-        description: Snippet;
+        children: Snippet;
+        role?: string;
     };
 
-    const { img, url, title, description }: CardProps = $props();
+    const { img, url, title, children, role }: CardProps = $props();
 </script>
 
-<li
+<div
     class="relative flex flex-1 flex-col rounded-sm bg-white outline outline-1
     outline-primary-300 hover:outline-primary-400"
+    {role}
 >
     <img src={img} alt="" class="flex-2 rounded-t object-cover" />
     <div class="flex flex-1 flex-col gap-2 border-t border-primary-300 p-5">
         <a
             target="_blank"
-            class="after:contents-[''] text-xl text-primary-400 after:absolute
+            class="after:contents-[''] items-center text-xl text-primary-400 after:absolute
 		after:bottom-0 after:left-0 after:right-0 after:top-0 hover:text-primary-600"
             href={url}
         >
-            {title}
+            <div class="title">
+                {@render title()}
+                <ExternalLink size={16}></ExternalLink>
+            </div>
         </a>
-        <p class="prose font-light leading-snug">{description}</p>
+        <div class="prose flex flex-1 flex-col">{@render children()}</div>
     </div>
-</li>
+</div>
 
 <style>
+    .title :global(*) {
+        display: inline;
+        vertical-align: middle;
+    }
 </style>

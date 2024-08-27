@@ -9,29 +9,25 @@
         Rocket
     } from 'lucide-svelte';
 
-    import AnimatedLogo from '$lib/animated-logo.svelte';
+    import { produits, type Produit } from '$data/produits';
     import PublicodesSchemaSVG from '$lib/assets/publicodes-schema.svg';
-    import { updateWatchedPackages, type PublicodesPackages } from '$lib/package-library/npm';
-    import PublicodesEditor from '$lib/publicodes/editor.svelte';
+    import AnimatedLogo from '$lib/component/animated-logo.svelte';
+    import PublicodesPackages from '$lib/component/publicode-packages.svelte';
+    import PublicodesEditor from '$lib/component/publicodes/editor.svelte';
     import Banner from '$lib/ui/banner.svelte';
     import Button from '$lib/ui/button.svelte';
     import Card from '$lib/ui/card.svelte';
-    import { onMount } from 'svelte';
-    import Time from 'svelte-time';
 
-    let packages: PublicodesPackages = $state([]);
-
-    onMount(async () => {
-        // TODO: more efficient way to update the packages with a store?
-        packages = await updateWatchedPackages();
-        packages.sort((a, b) => {
-            return b.modified.getTime() - a.modified.getTime();
-        });
-    });
+    const { data } = $props();
+    const packages = data.packages;
 
     const isMobile = false; //window.innerWidth < 768;
     const iconSize = isMobile ? 32 : 36;
     const iconStrokeWidth = 1;
+
+    const displayedProduits = produits.filter(({ img }) => !!img).slice(0, 3) as (Produit & {
+        img: string;
+    })[];
 </script>
 
 <header class="not-prose flex w-full justify-center overflow-hidden bg-primary-50">
@@ -48,11 +44,11 @@
                 Un langage commun pour les devs et les expert·es
             </p>
             <div class="flex gap-4">
-                <a href="/docs/tutoriel">
+                <a href="/docs/">
                     <Button type={'primary'}>Documentation</Button>
                 </a>
-                <a href="/docs/tutoriel">
-                    <Button icon={Play} type={'secondary'}>Se lancer</Button>
+                <a href="/studio">
+                    <Button icon={Play} type={'secondary'}>Essayer le langage</Button>
                 </a>
             </div>
         </div>
@@ -128,35 +124,21 @@ salaire net: salaire brut - cotisations salariales`}
                     >plusieurs millions de simulations</strong
                 > chaque mois. Découvrez les produits phares qui utilisent cette technologie.
             </p>
-            {@render userCards([
-                // TODO: fetch this informations directly from targetted
-                // website's metadata.
-                {
-                    img: 'https://nosgestesclimat.fr/images/misc/metadata.png',
-                    title: 'Nos Gestes Climat',
-                    description:
-                        "Le calculateur d'empreinte climat personnelle de référence, complètement ouvert.",
-                    url: 'https://nosgestesclimat.fr'
-                },
-                {
-                    img: 'https://mon-entreprise.urssaf.fr/logo-share.png',
-                    title: 'Mon-entreprise',
-                    description:
-                        'Utilise publicodes pour implémenter la législation socio-fiscale dans des simulateurs (paie, cotisations, impôts, droits ouverts)',
-                    url: 'https://mon-entreprise.urssaf.fr'
-                },
-                {
-                    img: 'https://code.travail.gouv.fr/static/assets/img/social-preview.png',
-                    title: 'Code du travail numérique',
-                    description:
-                        'Développe un simulateur de préavis de retraite intégrant de nombreuses conventions collectives.',
-                    url: 'https://code.travail.gouv.fr'
-                }
-            ])}
-            <!-- TODO: add correct link -->
-            <!-- <a class="w-fit self-center" href="/docs">
+
+            <div role="list" class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {#each displayedProduits.slice(0, 3) as { img, name, description, url }}
+                    <Card {img} {url} role="listitem">
+                        {#snippet title()}
+                            <h3>{name}</h3>
+                        {/snippet}
+                        {description}
+                    </Card>
+                {/each}
+            </div>
+
+            <a class="w-fit self-center" href="/realisations">
                 {@render buttonWithRightArrow('Toutes les réalisations')}
-            </a> -->
+            </a>
         </div>
     </section>
     <!-- TODO: factorize sections in a snippet? -->
@@ -175,12 +157,11 @@ salaire net: salaire brut - cotisations salariales`}
                 bibliothèque de modèles publicodes.
             </p>
             <div class="flex justify-center">
-                {@render packageItems(packages)}
+                <PublicodesPackages {packages} />
             </div>
-            <!-- TODO: add correct link -->
-            <!-- <a class="w-fit self-center" href="/docs">
+            <a class="w-fit self-center" href="/bibliotheque">
                 {@render buttonWithRightArrow('Découvrir tous les modèles')}
-            </a> -->
+            </a>
         </div>
     </section>
     <section class="flex flex-col">
@@ -253,48 +234,7 @@ salaire net: salaire brut - cotisations salariales`}
     </section>
 </main>
 
-{#snippet userCards(items)}
-    <ul class="grid grid-cols-1 gap-8 px-6 sm:grid-cols-2 lg:grid-cols-3">
-        {#each items as { img, title, description, url }}
-            <Card {img} {title} {description} {url} />
-        {/each}
-    </ul>
-{/snippet}
-
-{#snippet packageItems(items)}
-    <ul
-        class="grid grid-flow-row grid-cols-1 justify-center gap-3 md:max-w-3xl md:grid-cols-2
-		 lg:max-w-5xl xl:max-w-7xl xl:grid-cols-3 xl:gap-4"
-    >
-        {#each items as { name, version, modified, description }}
-            <li
-                class="relative rounded-sm border
-				border-primary-400 hover:border-primary-400
-				hover:bg-primary-400 hover:bg-opacity-5
-				md:min-w-96"
-            >
-                <div class="m-3 flex flex-col gap-1">
-                    <!-- TODO: this should redirect to the package's page -->
-                    <a
-                        href={`https://www.npmjs.com/package/${name}`}
-                        class="after:contents-[''] flex flex-col gap-2 font-medium
-			text-primary-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:top-0 hover:text-primary-600"
-                        target="_blank"
-                    >
-                        {name}
-                    </a>
-                    <p class="prose truncate font-light">{description}</p>
-                    <span class="flex items-center gap-2 text-sm text-slate-700">
-                        <span>v{version}</span>
-                        <Time class="italic text-slate-600" relative timestamp={modified} />
-                    </span>
-                </div>
-            </li>
-        {/each}
-    </ul>
-{/snippet}
-
-{#snippet buttonWithRightArrow(text)}
+{#snippet buttonWithRightArrow(text: string)}
     <Button type="secondary">
         <span class="flex items-center gap-2">
             {text}

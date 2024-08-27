@@ -3,7 +3,7 @@
 
     import favicon from '$lib/assets/favicon-32x32.png';
     import Logo from '$lib/assets/logo.svg';
-    import PublicodesEditor from '$lib/publicodes/editor.svelte';
+    import PublicodesEditor from '$lib/component/publicodes/editor.svelte';
     import Callout from '$lib/ui/callout.svelte';
     import NavTab from '$lib/ui/nav-tab.svelte';
     import { dayjs } from 'svelte-time';
@@ -13,8 +13,10 @@
     import { fly } from 'svelte/transition';
     import '../app.css';
 
-    globalThis.PublicodesEditor = PublicodesEditor;
-    globalThis.Callout = Callout;
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    (globalThis as any).PublicodesEditor = PublicodesEditor;
+    (globalThis as any).Callout = Callout;
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     const { children } = $props();
 
@@ -65,7 +67,9 @@
 {#snippet Menu()}
     <nav class="p-6 sm:p-0">
         <ul class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center">
-            <NavTab href="/docs">Documentation</NavTab>
+            <NavTab href="/docs">Doc</NavTab>
+            <NavTab href="/bibliotheque">Bibliothèque</NavTab>
+            <NavTab href="/realisations">Réalisations</NavTab>
             <NavTab href="/studio">Studio</NavTab>
             <NavTab href="/blog">Blog</NavTab>
             <!-- <NavTab href="/blog">Blog</NavTab> -->
@@ -98,8 +102,14 @@
         onclick={() => (showMobileMenu = false)}
     ></div>
 {/if}
-<div class="max-h-full pt-16" class:blur-sm={showMobileMenu} class:opacity-50={showMobileMenu}>
-    {@render children()}
+<div
+    class="flex h-full flex-col pt-16"
+    class:blur-sm={showMobileMenu}
+    class:opacity-50={showMobileMenu}
+>
+    <div class="flex-1">
+        {@render children()}
+    </div>
     <footer class="flex w-full flex-col items-center border-t border-primary-200 py-10">
         <div
             class="flex w-full flex-col items-start gap-8 px-6 md:max-w-7xl md:flex-row md:justify-between"

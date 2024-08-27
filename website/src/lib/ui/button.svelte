@@ -5,7 +5,7 @@
     const {
         light = false,
         type = 'primary',
-        icon,
+        icon: Icon,
         children,
         ...rest
     }: {
@@ -26,8 +26,8 @@
 		ease-in-out hover:bg-primary-600 md:px-4 md:py-2 md:text-xl"
         class:background={!light}
     >
-        {#if icon}
-            <svelte:component this={icon} strokeWidth={iconStrokeWidth} />
+        {#if Icon}
+            <Icon strokeWidth={iconStrokeWidth} />
         {/if}
         {@render children()}
     </span>
@@ -40,8 +40,8 @@
 		duration-100 ease-in-out hover:bg-primary-400
 		hover:bg-opacity-5 md:px-4 md:py-2 md:text-xl"
     >
-        {#if icon}
-            <svelte:component this={icon} strokeWidth={iconStrokeWidth} />
+        {#if Icon}
+            <Icon strokeWidth={iconStrokeWidth} />
         {/if}
         {@render children()}
     </span>
