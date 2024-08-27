@@ -9,7 +9,7 @@
     import { dayjs } from 'svelte-time';
 
     import { afterNavigate } from '$app/navigation';
-    import { MenuIcon } from 'lucide-svelte';
+    import { Github, MenuIcon, MessagesSquare } from 'lucide-svelte';
     import { fly } from 'svelte/transition';
     import '../app.css';
 
@@ -66,13 +66,23 @@
 
 {#snippet Menu()}
     <nav class="p-6 sm:p-0">
-        <ul class="flex flex-col items-start justify-center gap-4 sm:flex-row sm:items-center">
-            <NavTab href="/docs">Doc</NavTab>
-            <NavTab href="/bibliotheque">Bibliothèque</NavTab>
-            <NavTab href="/realisations">Réalisations</NavTab>
-            <NavTab href="/studio">Studio</NavTab>
-            <NavTab href="/blog">Blog</NavTab>
-            <!-- <NavTab href="/blog">Blog</NavTab> -->
+        <ul class="flex flex-col items-start justify-center gap-1 sm:flex-row sm:items-center">
+            <NavTab class="pr-2" href="/docs">Doc</NavTab>
+            <NavTab class="pr-2" href="/bibliotheque">Bibliothèque</NavTab>
+            <NavTab class="pr-2" href="/realisations">Réalisations</NavTab>
+            <NavTab class="pr-2" href="/studio">Studio</NavTab>
+            <NavTab class="pr-2" href="/blog">Blog</NavTab>
+            <NavTab
+                href="https://matrix.to/#/#publicodes:matrix.org"
+                title="Discuter avec la communauté"
+                ><span class="sm:hidden">Communauté</span><MessagesSquare
+                    class="inline py-1"
+                /></NavTab
+            >
+            <NavTab href="https://github.com/publicodes/publicodes" title="Voir le code source"
+                ><span class="sm:hidden">Code source</span><Github class="inline py-1" /></NavTab
+            >
+
             <!-- <li>
                 <a
                     class="hover:underline"
@@ -97,7 +107,7 @@
         {@render Menu()}
     </div>
     <div
-        class="fixed inset-0 z-40 sm:hidden"
+        class="fixed inset-0 z-20 sm:hidden"
         aria-hidden="true"
         onclick={() => (showMobileMenu = false)}
     ></div>

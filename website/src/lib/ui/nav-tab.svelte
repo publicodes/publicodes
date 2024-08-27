@@ -1,14 +1,16 @@
 <script lang="ts">
     import { page } from '$app/stores';
     import type { Snippet } from 'svelte';
+    import type { HTMLAnchorAttributes } from 'svelte/elements';
 
-    const { href, children }: { href: string; children: Snippet } = $props();
+    const { children, href, ...rest }: { href: string; children: Snippet } & HTMLAnchorAttributes =
+        $props();
 
     const active = $derived($page.url.pathname.startsWith(href));
 </script>
 
 <li>
-    <a class="font-light hover:text-primary-400" {href} class:active>
+    <a {...rest} class="font-light hover:text-primary-400 {rest.class}" class:active {href}>
         {@render children()}
     </a>
 </li>
