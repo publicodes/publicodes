@@ -17,13 +17,12 @@
     import Banner from '$lib/ui/banner.svelte';
     import Button from '$lib/ui/button.svelte';
     import Card from '$lib/ui/card.svelte';
+    import Heading from '$lib/component/heading.svelte';
 
     const { data } = $props();
     const packages = data.packages;
 
     const isMobile = false; //window.innerWidth < 768;
-    const iconSize = isMobile ? 32 : 36;
-    const iconStrokeWidth = 1;
 
     const displayedProduits = produits.filter(({ img }) => !!img).slice(0, 3) as (Produit & {
         img: string;
@@ -76,7 +75,7 @@
             class="flex w-full max-w-3xl flex-col gap-10 rounded-sm px-6 md:max-w-4xl lg:max-w-5xl
 			xl:max-w-7xl xl:border xl:border-primary-300 xl:p-8"
         >
-            <h2 class="text-3xl font-normal sm:text-4xl">Du code clair et lisible</h2>
+            <Heading level="h2">Du code clair et lisible</Heading>
             <div class="flex flex-col gap-4">
                 <p class="prose-md prose font-normal text-black md:prose-xl">
                     Essayez de modifiez le <code>salaire brut</code> à
@@ -115,10 +114,7 @@ salaire net: salaire brut - cotisations salariales`}
             class="not-prose flex w-full max-w-3xl flex-col justify-center gap-10 px-6 py-20 md:max-w-4xl
 			md:py-32 lg:max-w-5xl xl:max-w-7xl"
         >
-            <div class="flex gap-2 md:gap-4">
-                <Rocket size={iconSize} strokeWidth={iconStrokeWidth} />
-                <h2 class="m-0 text-3xl font-normal md:text-4xl">Accélérateur d'impact</h2>
-            </div>
+            <Heading level="h2" icon={Rocket}>Accélérateur d'impact</Heading>
             <p class="w-full text-lg font-normal text-black md:text-xl">
                 Publicodes est utilisé pour calculer <strong
                     >plusieurs millions de simulations</strong
@@ -148,10 +144,7 @@ salaire net: salaire brut - cotisations salariales`}
 			px-6 py-20 md:max-w-4xl md:py-32
 			lg:max-w-5xl xl:max-w-7xl"
         >
-            <div class="flex gap-4">
-                <LibraryBig size={iconSize} strokeWidth={iconStrokeWidth} />
-                <h2 class="m-0 text-3xl font-normal md:text-4xl">Créateur de communs</h2>
-            </div>
+            <Heading level="h2" icon={LibraryBig}>Créateur de communs</Heading>
             <p class="text-lg font-normal text-black md:max-w-7xl md:text-xl">
                 Déjà <strong>une dizaine de modèles publiés</strong>. Découvrez les dans la
                 bibliothèque de modèles publicodes.

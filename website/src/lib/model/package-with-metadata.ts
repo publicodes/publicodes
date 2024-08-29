@@ -27,13 +27,13 @@ async function fetchPackageMetadata(
     const response = await fetch(`${NPM_REGISTRY_URL}/${pkg.npm}`);
     const data = await response.json();
     const description = data.description.startsWith('<div') ? '' : data.description;
-    const maintener = produits.find((produit) => produit.slug === pkg.maintener);
+    const maintener = produits.find((produit) => produit.slug === pkg.maintainer);
     if (!maintener) {
-        throw new Error(`Maintener ${pkg.maintener} not found in projets.json`);
+        throw new Error(`Maintainer ${pkg.maintainer} not found in projets.json`);
     }
     return {
         ...pkg,
-        maintener: maintener.name,
+        maintainer: maintener.name,
         name: data.name,
         version: Object.keys(data.versions).pop()!,
         modified: new Date(data.time.modified),

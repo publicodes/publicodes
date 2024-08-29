@@ -1,6 +1,7 @@
 <script lang="ts">
     import { produits, type Produit } from '$data/produits';
     import { publicodesPackages } from '$data/publicodes-packages';
+    import Heading from '$lib/component/heading.svelte';
 
     import Card from '$lib/ui/card.svelte';
     import Tooltip from '$lib/ui/tooltip.svelte';
@@ -18,7 +19,7 @@
 </script>
 
 <div class="prose pb-10 lg:max-w-screen-md">
-    <h1>Propulsé par Publicodes <Rocket class="inline" /></h1>
+    <Heading level="h1" icon={Rocket}>Propulsé par Publicodes</Heading>
     <p class="text-xl">Découvrez les produits qui utilisent publicodes au quotidien.</p>
 </div>
 
