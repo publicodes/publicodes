@@ -144,7 +144,7 @@ salaire net: salaire brut - cotisations salariales`}
     <!-- TODO: factorize sections in a snippet? -->
     <section class="flex w-full flex-col items-center gap-16">
         <div
-            class="not-prose flex w-full max-w-3xl flex-col justify-center gap-10
+            class="flex w-full max-w-3xl flex-col justify-center gap-10
 			px-6 py-20 md:max-w-4xl md:py-32
 			lg:max-w-5xl xl:max-w-7xl"
         >
