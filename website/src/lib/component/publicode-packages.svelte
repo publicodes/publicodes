@@ -28,7 +28,7 @@
                         {name}
                     </a>
 
-                    <code class="text-sm">{version}</code>
+                    <code class="ml-1 text-xs">{version}</code>
                 </strong>
                 <div class="flex-1">
                     {#if description}
