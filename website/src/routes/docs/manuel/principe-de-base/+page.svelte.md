@@ -51,31 +51,15 @@ Un des avantages de cette écriture est que la syntaxe hiérarchique de Yaml per
 
 ```publicodes
 nombre de repas: 12 repas
-addition:
+prix total:
   somme:
     - 7 cafés * 1.5 €/cafés
-    - produit: # Menu unique dégressif pour les groupes
+    - produit:
         - nombre de repas
-        - variations:
-          - si: nombre de repas > 10 repas
-            alors: 12 €/repas
-          - sinon: 15 €/repas
+        - 12 €/repas
 ```
 
-### Mécanismes chaînés
-
-Certains mécanismes peuvent apparaître au même niveau d'indentation. Dans ce cas, le moteur appliquera les transformations dans un ordre préétabli.
-
-```publicodes
-nombre de repas: 12 repas
-remboursement repas:
-  valeur: nombre de repas * 4.21 €/repas
-  plafond: 500€
-  abattement: 25€
-  arrondi: oui
-```
-
-> **[Voir la liste des mécanismes existants](/docs/mecanismes)**
+> [En savoir plus sur les mécanismes](/docs/manuel/mecanismes)
 
 ## Pages d'explications
 

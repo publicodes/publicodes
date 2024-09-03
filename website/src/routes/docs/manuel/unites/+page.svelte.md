@@ -97,7 +97,7 @@ Publicodes simplifie automatiquement les unités avec exposants.
 vitesse après 3 secondes: 9.81 m/s2 * 3s
 ```
 
-### Pourcentage `%`
+## Pourcentage `%`
 
 Il est possible de préciser un pourcentage comme unité. Un pourcentage est une unité "neutre", sans dimension, qui exprime un rapport entre deux valeurs.
 
@@ -109,7 +109,7 @@ taux de TVA:
     unité: ''
 ```
 
-#### Opérations sur les pourcentages
+### Opérations sur les pourcentages
 
 L'addition d'un nombre et d'un pourcentage revient à ajouter le pourcentage à ce nombre. De même pour la soustraction.
 
@@ -123,16 +123,16 @@ En revanche, le résultat de l'addition de deux pourcentages est bien la somme d
 réduction: 2.4% + 5.0%
 ```
 
-#### Pourcentage combiné à une unité
+### Pourcentage combiné à une unité
 
 Il est possible de combiner un pourcentage à une unité.
 
 ```publicodes
-inflation: 2.4%/an
+taxe: 2.4%/voitures
 ```
 
-En revanche, dans ce cas, les opérations + et - se comporteront comme pour les unités classiques.
+En revanche, dans ce cas, les opérations + et - se comporteront comme pour les unités classiques, et des erreurs seront levées si les unités ne sont pas compatibles.
 
 ```publicodes
-valeur après inflation: 4 + 2.4%/an # erreur de cohérence d'unité
+valeur: 4 voitures + 2.4%/voitures
 ```
