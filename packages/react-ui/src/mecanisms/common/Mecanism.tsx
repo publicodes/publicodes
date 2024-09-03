@@ -65,7 +65,7 @@ const MecanismName = ({
 				name={name}
 				inline={inline}
 				target="_blank"
-				href={`https://publi.codes/docs/api/mécanismes#${name}`}
+				href={`https://publi.codes/docs/mecanismes#${name}`}
 			>
 				{children}
 			</StyledMecanismName>

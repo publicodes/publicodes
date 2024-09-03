@@ -5,7 +5,7 @@ title: Liste des mécanismes
 
 ## `applicable si`
 
-> **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
 Renvoie `non` si la condition est égale à `non`. Renvoie la valeur sinon.
 
@@ -20,7 +20,7 @@ prime de vacances:
 
 ## `non applicable si`
 
-> **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
 Renvoit `non` si la condition n’est pas égale à `non`
 
@@ -267,7 +267,7 @@ min:
 
 ## `arrondi`
 
-> **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
 Arrondit à l’entier le plus proche, ou à une précision donnée.
 
@@ -409,7 +409,7 @@ taux réduction de cotisation:
 
 ## `abattement`
 
-> **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
 Permet de réduire le montant d’une valeur.
 
@@ -444,7 +444,7 @@ revenu imposable:
 
 Applique un minimum à une valeur.
 
-> **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
 ```publicodes title="Exemple"
 temperature mesurée:
@@ -456,7 +456,7 @@ temperature mesurée:
 
 Applique un maximum à une valeur.
 
-> **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
 ```publicodes title="Exemple"
 déduction fiscale:
@@ -512,7 +512,7 @@ durée d'activité en année civile:
 
 ## `unité`
 
-> **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
 Permet de convertir explicitement une unité.
 
@@ -526,7 +526,7 @@ salaire:
 
 ## `par défaut`
 
-> **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
 Permet de donner une valeur par défaut pour le calcul, sans influer sur les variables manquantes retournées.
 
@@ -584,7 +584,7 @@ exemple 2:
 
 ## `inversion numérique`
 
-> **Mécanisme chainable** ([plus d’infos](/docs/manuel#mécanismes-chaînés))
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
 Il est souhaitable de rédiger les règles de calcul
 en publicodes de la même façon qu’elles sont décrites dans la loi ou les
@@ -665,4 +665,5 @@ cotisations: 25% * revenu professionnel
 revenu professionnel:
   valeur: chiffre d'affaires - cotisations
   résoudre la référence circulaire: oui
+  unité: €/an
 ```
