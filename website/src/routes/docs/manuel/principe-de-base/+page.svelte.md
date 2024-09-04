@@ -3,6 +3,10 @@ sidebar_position: 1
 title: Principes de base
 ---
 
+<script>
+    import { PanelRightOpen } from 'lucide-svelte';
+</script>
+
 La syntaxe de Publicodes est basée sur le langage
 [Yaml](https://en.wikipedia.org/wiki/YAML).
 
@@ -63,54 +67,37 @@ prix total:
 
 ## Pages d'explications
 
-L'explication des règles est un des objectifs fondamentaux de Publicodes.
+L'explication des calculs est un des objectifs fondamentaux de Publicodes. Un utilitaire permet de générer automatiquement une documentation explorable à partir des règles définies.
 
-Chaque règle se voit générer automatiquement une page explicative
-correspondante dans le front-end, contenant une information facilement digeste
-mise en regard des calculs eux-mêmes.
-
-Plusieurs propriétés sont reprises dans ces pages d'explications :
-
--   le **titre**, qui s'affiche en haut de la page. Par défaut on utilise le nom
-    de la règle, mais la propriété `titre` permet de choisir un titre plus
-    approprié ;
--   la **description** est affichée comme paragraphe d'introduction sur la page.
-    On utilise le caractère `|` pour indiquer au parseur Yaml que la description est sur plusieurs lignes ;
--   une **note** de bas de page, affichée après la formule de calcul. Elle peut être sur plusieurs lignes également.
+Sur ce site, vous pouvez afficher la documentation d'un exemple en cliquant sur le bouton <PanelRightOpen class="inline"/> en haut à droite.
 
 ```publicodes
 ticket resto:
   titre: Prise en charge des titres-restaurants
   formule: 4 €/repas
-  description: |-
+  description: |
     L'employeur peut remettre des titres restaurants sous plusieurs formats: ticket papier, carte à puce
     ou appli mobile
-  note: |-
+  note: |
     La valeur a été revalorisée en 2022 pour faire face à l'inflation.
 ```
 
-## Conditions booléennes
+> [En savoir plus sur les pages d'explication](/docs/manuel/documentation)
 
-Publicodes supporte des opérateurs booléens basiques.
+## Types
+
+En plus des nombres, publicodes supporte différents types de valeurs :
 
 ```publicodes
-âge: 17 ans
-nationalité française: oui
-citoyen européen:
-domicilié en France:
-
-droit de vote municipale:
-  toutes ces conditions:
-    - âge >= 18 ans
-    - une de ces conditions:
-        - nationalité française
-        - toutes ces conditions:
-          - citoyen européen
-          - domicilié en France
-
+# Chaine de caractères
+nationalité: "'française'"
+# Date
+date de naissance: 11/01/2000
+# Booléen
+majeur: oui
 ```
 
-Il est possible de faire des branchements conditionnels via le mécanisme [`variations`](/docs/mecanismes#variations)
+> [En savoir plus sur les types de base](/docs/manuel/types)
 
 ## Applicabilité
 
@@ -137,7 +124,7 @@ Par exemple le mécanisme `somme` comptera une prime non applicable comme valant
 
 <Callout type="caution" title="La valeur `non` est applicable">
 
-Publicodes différencie désormais la valeur booléenne `non` d'une valeur _non applicable_. Cela permet par exemple de cacher les questions non applicable [dans un formulaire](/docs/guides/creer-formulaire) tout en affichant les questions dont la réponse est `non`.
+Publicodes différencie la valeur booléenne `non` d'une valeur _non applicable_. Cela permet par exemple de cacher les questions non applicable [dans un formulaire](/docs/guides/formulaire) tout en affichant les questions dont la réponse est `non`.
 
 </Callout>
 
@@ -171,10 +158,9 @@ La syntaxe `rend non applicable` fonctionne de la même manière que le remplace
 **[En savoir plus sur le remplacement](/docs/manuel#remplacement)**
 </Callout>
 
-## Espaces de noms
+## Espace de nom
 
-Les espaces de noms sont utiles pour organiser un grand nombre de règles. On
-utilise le `.` pour exprimer la hiérarchie des noms.
+Les espaces de noms sont utiles pour organiser un grand nombre de règles. On utilise le `.` pour exprimer la hiérarchie des noms.
 
 ```publicodes
 prime de vacances: taux * 1000 €
@@ -210,40 +196,6 @@ a:
 a . b: 10
 c: a . b
 ```
-
-Dans le cas d'espaces de noms imbriqués (à plus qu'un étage), le nom inscrit
-dans une règle donnée est recherché de plus en plus haut dans la hiérarchie des
-espaces de nom jusqu'à la racine.
-
-```publicodes
-salarié:
-salarié . rémunération:
-salarié . rémunération . primes:
-
-salarié . rémunération . primes . vacances:
-  valeur: taux générique * 1000 €
-
-salarié . rémunération . taux générique:
-  valeur: 10%
-```
-
-Ici `salarié . rémunération . primes . vacances` va faire
-référence à `salarié . rémunération . taux générique` trouvé deux
-espaces de noms plus haut, et va donc valoir `100 €`.
-
-<Callout type="info" title="Référencer le parent">
-
-Pour faire référence explicitement référence à une règle parente, on peut utiliser le préfixe `^ . `.
-
-C'est utile pour lever l'ambiguïté lorsqu'une règle parente a le même nom qu'une règle enfant.
-
-```publicodes
-a: 1
-a . b: a + ^ . a
-a . b . a: 2
-```
-
-</Callout>
 
 ### Désactivation de branche
 

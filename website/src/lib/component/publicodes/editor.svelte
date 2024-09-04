@@ -150,7 +150,7 @@
         </div>
         {#await import('./doc.svelte') then doc}
             {#if engine && selectedRule}
-                <div class="publicodes-documentation xl:publicodes-documentation" class:showDoc>
+                <div class="publicodes-documentation" class:showDoc>
                     <doc.default
                         {engine}
                         {selectedRule}
@@ -194,6 +194,10 @@
             h2 {
                 @apply -mx-4 border-t p-4 font-regular;
             }
+            h3 {
+                @apply pb-2 pt-4 font-regular;
+            }
+
             p {
                 @apply my-3 font-light;
             }
@@ -212,7 +216,7 @@
                 @apply text-primary-400 hover:text-opacity-75;
             }
             .content > a {
-                @apply flex-1 p-2 pl-0 pr-8;
+                @apply min-w-10 flex-1 p-2 pl-0 pr-4;
             }
             .content {
                 @apply flex w-full p-0 hover:bg-slate-100;
@@ -237,7 +241,7 @@
             }
             nav {
                 padding-right: 1px;
-                @apply overflow-hidden border-r-0 xl:max-2xl:rounded-tr xl:max-2xl:border-r xl:max-2xl:border-t;
+                @apply overflow-hidden border-r-0 lg:max-xl:max-w-64 xl:max-2xl:rounded-tr xl:max-2xl:border-r xl:max-2xl:border-t 2xl:max-w-64;
             }
             #documentation-rule-root {
                 @apply flex-1 items-stretch overflow-y-auto overflow-x-hidden xl:flex xl:h-full xl:flex-col-reverse xl:max-2xl:items-start 2xl:flex-row-reverse;

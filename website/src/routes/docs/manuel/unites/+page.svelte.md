@@ -1,10 +1,10 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 title: Unités
 ---
 
 Pour fiabiliser les calculs et faciliter leur compréhension, on peut préciser
-l'unité des valeurs littérales :
+l'unité d'un nombre :
 
 ```publicodes title="Exemple avec unité"
 prix d'un repas: 10 €/repas

@@ -9,7 +9,7 @@
     class=" grid grid-flow-row grid-cols-1 justify-center gap-3 md:grid-cols-2
  xl:grid-cols-3 xl:gap-4"
 >
-    {#each packages as { name, version, modified, description, maintener }}
+    {#each packages as { name, version, modified, description, maintainer }}
         <li
             class="relative flex rounded-sm
 				border border-primary-400
@@ -37,7 +37,7 @@
                 </div>
                 <span class=" text-sm font-light text-slate-500">
                     Publié <Time class="" relative timestamp={modified} />
-                    par {maintener}
+                    par {maintainer}
                 </span>
             </div>
         </li>
