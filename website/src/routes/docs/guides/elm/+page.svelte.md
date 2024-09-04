@@ -383,7 +383,7 @@ app.ports.evaluateAll.subscribe((rules: RuleName[]) => {
 ```
 
 > **Astuce** : pour plus d'informations sur la création de formulaires à partir
-> de modèles Publicodes, vous pouvez consulter le [guide dédié](/docs/guides/creer-formulaire).
+> de modèles Publicodes, vous pouvez consulter le [guide dédié](/docs/guides/formulaire).
 
 ## Utilisation de `@publicodes/react-ui` pour la documentation
 

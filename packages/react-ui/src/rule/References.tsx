@@ -29,7 +29,6 @@ export default function References({ references }: ReferencesProps) {
 					>
 						{capitalise0(name)}
 					</a>
-					<span className="ui__ label">{link}</span>
 				</li>
 			))}
 		</ul>

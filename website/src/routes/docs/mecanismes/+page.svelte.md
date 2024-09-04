@@ -466,9 +466,9 @@ déduction fiscale:
 
 ## `durée`
 
-Permet de calculer la durée entre deux dates (la dernière date est excluse)
+Permet de calculer la durée entre deux dates (la dernière date est exclue)
 
-Lorsqu'une des date est omise, la date du jour est utilisée.
+Lorsqu'une des dates est omise, la date du jour est utilisée.
 
 Il est possible de spécifier une unité pour le calcul de la durée. Les valeurs possibles sont :
 
@@ -476,8 +476,8 @@ Il est possible de spécifier une unité pour le calcul de la durée. Les valeur
 -   `mois` : mois complet (les mois incomplets sont proratisés par rapport à leur nombre de jours)
 -   `trimestre` : trimestres entre les deux dates (nombre de mois / 3)
 -   `an` : année complète (prend en compte les années bissextiles)
--   `année civile` : année civile différente écoulées entre les deux dates
--   `trimestre civil` : trimestres civils différents écoulés entre les deux dates
+-   `année civile` : nombre d'années civiles écoulées entre les deux dates
+-   `trimestre civil` : nombre de trimestres civils écoulées entre les deux dates
 
 ### Exemple
 
@@ -567,7 +567,7 @@ aide vélo:
 
 <Callout type="tip" title="Éviter les doubles quotes">
 
-On peut utiliser ce mécanisme pour éviter d’avoir à [échapper les doubles quotes](/docs/manuel#cha%C3%AEnes-de-caract%C3%A8res-litt%C3%A9rales) dans un texte.
+On peut utiliser ce mécanisme pour éviter d’avoir à [échapper les doubles quotes](/docs/manuel/types#texte) dans un texte.
 
 ```publicodes
 # ces deux règles sont équivalentes :

@@ -66,8 +66,8 @@
 
 {#snippet Menu()}
     <nav class="p-6 sm:p-0">
-        <ul class="flex flex-col items-start justify-center gap-1 sm:flex-row sm:items-center">
-            <NavTab class="pr-2" href="/docs">Doc</NavTab>
+        <ul class="flex flex-col items-start justify-center gap-2 sm:flex-row sm:items-center">
+            <NavTab class="pr-2" href="/docs">Docs</NavTab>
             <NavTab class="pr-2" href="/bibliotheque">Bibliothèque</NavTab>
             <NavTab class="pr-2" href="/realisations">Réalisations</NavTab>
             <NavTab class="pr-2" href="/studio">Studio</NavTab>

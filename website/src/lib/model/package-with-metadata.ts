@@ -29,7 +29,7 @@ async function fetchPackageMetadata(
     const description = data.description.startsWith('<div') ? '' : data.description;
     const maintener = produits.find((produit) => produit.slug === pkg.maintainer);
     if (!maintener) {
-        throw new Error(`Maintainer ${pkg.maintainer} not found in projets.json`);
+        throw new Error(`Maintener ${pkg.maintainer} not found in produits.json`);
     }
     return {
         ...pkg,
