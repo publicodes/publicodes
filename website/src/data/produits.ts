@@ -1,6 +1,7 @@
 import ekofestLogo from './logos/ekofest-logo.png';
 import karburanProImg from './logos/karburan-pro.png';
 import mesAidesVeloImg from './logos/mes-aides-velo.png';
+import mesAidesRenoImg from './logos/mes-aides-reno.png';
 
 export const produits: readonly Produit[] = [
     {
@@ -97,6 +98,15 @@ export const produits: readonly Produit[] = [
         url: 'https://mission-transition-ecologique.beta.gouv.fr/',
         img: 'https://mission-transition-ecologique.beta.gouv.fr/images/TEE-preview-image-529-by-298.png',
         github: 'https://github.com/betagouv/mission-transition-ecologique/'
+    },
+    {
+        slug: 'mes-aides-reno',
+        name: 'Mes Aides Réno',
+        description:
+            'Calculateur des aides à la rénovation énergétique de votre logement (MaPrimeRénov, CEE...).',
+        url: 'https://mesaidesreno.beta.gouv.fr/',
+        img: mesAidesRenoImg,
+        github: 'https://github.com/betagouv/reno/'
     }
 ];
 
