@@ -1,29 +1,29 @@
-name: Publish
+name: Release
+
 on:
-  workflow_run:
-    workflows: ['Check']
-    types: [completed]
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  publish:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref == 'refs/heads/master' }}
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        package:
-          [
-            'publicodes',
-            '@publicodes/react-ui',
-            '@publicodes/rest-api',
-            '@publicodes/codemod',
-          ]
-
+  release:
+    name: Release
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: ./.github/actions/install
-      - run: yarn turbo run build --filter ${{matrix.package}}
-      - run: yarn workspace ${{matrix.package}} npm publish --access public
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Install node & npm dependencies
+        uses: ./.github/actions/install
+
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: yarn release
+
         env:
-          NODE_ENV: production
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_SECRET }}
-        continue-on-error: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
