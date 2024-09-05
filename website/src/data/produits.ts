@@ -28,7 +28,7 @@ export const produits: readonly Produit[] = [
         img: 'https://code.travail.gouv.fr/static/assets/img/social-preview.png',
         description:
             'Développe un simulateur de préavis de retraite intégrant de nombreuses conventions collectives.',
-        url: 'https://code.travail.gouv.f',
+        url: 'https://code.travail.gouv.fr',
         github: 'https://github.com/SocialGouv/code-du-travail-numerique'
     },
     {
