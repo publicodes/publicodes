@@ -19,9 +19,11 @@
 		"lint": "run lint:eslint && run lint:prettier && turbo run lint --parallel",
 		"format": "run format:eslint && run format:prettier && turbo run format --parallel",
 		"dev": "turbo run dev --parallel --filter=\"website...\"",
-		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\""
+		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\"",
+		"release": "build && run changeset publish"
 	},
 	"devDependencies": {
+		"@changesets/cli": "^2.27.8",
 		"@sveltejs/adapter-netlify": "^4.3.3",
 		"@typescript-eslint/eslint-plugin": "latest",
 		"@typescript-eslint/parser": "latest",
