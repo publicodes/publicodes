@@ -1,9 +1,10 @@
 ---
 '@publicodes/react-ui': patch
-'publicodes': patch
 ---
 
-Improve arrondi and significative digit handling
+Improve significative digit handling
 
-- Fix arrondi to handle some edge cases
-- Improve the logic for the number of significative digits displayed in the documentation page
+Improve the logic for the number of significative digits displayed in the documentation page :
+
+- Use the number of digits specified in `arrondi` mecanism if it exists
+- If the value is a constant, use the number of digits in the constant
