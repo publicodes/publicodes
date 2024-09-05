@@ -4,6 +4,7 @@ import { styled } from 'styled-components'
 type Props = {
 	data: Evaluation
 	unit: Unit | undefined
+	fullPrecision?: boolean
 }
 
 export const NodeValueLeaf = ({ data, unit }: Props) => {

@@ -1,104 +1,66 @@
-arrondi oui:
-  formule:
-    valeur: 30.4167 jours
-    arrondi: oui
+test: 30.4167 jours
+arrondi: oui
+
+test arrondi:
+  valeur: test
+  arrondi: arrondi
   exemples:
-    - valeur attendue: 30
+    - nom: 'oui'
+      valeur attendue: 30
       unité attendue: jours
-
-arrondi non:
-  formule:
-    valeur: 30.4167 jours
-    arrondi: non
-  exemples:
-    - valeur attendue: 30.4167
-
-arrondi décimales:
-  formule:
-    valeur: 30.4167 jours
-    arrondi: 2 décimales
-  exemples:
-    - valeur attendue: 30.42
-
-demie part:
-  formule:
-    valeur: 0.5 * 100.2€
-    arrondi: oui
-  exemples:
-    - valeur attendue: 50
-
-demie part avec pourcentage:
-  formule:
-    valeur: 50% * 100.2€
-    arrondi: oui
-  exemples:
-    - valeur attendue: 50
-
-arrondi de pourcentage:
-  formule:
-    valeur: 50.5%
-    arrondi: oui
-  exemples:
-    - valeur attendue: 51
+    - nom: 'non'
+      situation:
+        arrondi: non
+      valeur attendue: 30.4167
+      unité attendue: jours
+    - nom: '2 décimales'
+      situation:
+        arrondi: 2 décimales
+      valeur attendue: 30.42
+      unité attendue: jours
+    - nom: '1 décimales'
+      situation:
+        arrondi: 1 décimales
+        test: 4.55
+      valeur attendue: 4.6
+    - nom: '0 décimales'
+      situation:
+        arrondi: 0 décimales
+      valeur attendue: 30
+    - nom: '0 décimales'
+      situation:
+        arrondi: 0 décimales
+      valeur attendue: 30
+    - nom: demie part
+      situation:
+        test: 0.5 * 100.2€
+      valeur attendue: 50
+    - nom: demie part avec pourcentage
+      situation:
+        test: 50% * 100.2€
+      valeur attendue: 50
+      unité attendue: ''
+    - nom: pourcentage
+      situation:
+        test: 50.5%
+      valeur attendue: 51
       unité attendue: '%'
 
-ref non définie:
-
-arrondi valeur non définie:
-  formule:
-    valeur: ref non définie
-    arrondi: oui
-  exemples:
-    - valeur attendue: undefined
-
-arrondi valeur non applicable:
-  formule:
-    valeur:
-      applicable si: non
-    arrondi: oui
-  exemples:
-    - valeur attendue: null
-
-cotisation retraite:
-
-Arrondi:
-  formule:
-    valeur: cotisation retraite
-    arrondi: oui
-
-  exemples:
-    - nom: arrondi en dessous
+    - nom: nom applicable
       situation:
-        cotisation retraite: 1200.21
-      valeur attendue: 1200
-    - nom: arrondi au-dessous
-      situation:
-        cotisation retraite: 1200.50
-      valeur attendue: 1201
-
-nombre de décimales:
-  unité: décimales
-
-Arrondi avec precision:
-  formule:
-    valeur: cotisation retraite
-    arrondi: nombre de décimales
-  exemples:
-    - nom: pas de décimales
-      situation:
-        cotisation retraite: 1200.21
-        nombre de décimales: 0 décimales
-      valeur attendue: 1200
-    - nom: deux décimales
-      situation:
-        cotisation retraite: 1200.21
-        nombre de décimales: 2 décimales
-      valeur attendue: 1200.21
+        test:
+          applicable si: non
+      valeur attendue: null
 
 arrondi avec conversion d'unités:
-  formule:
-    valeur: 12.5 €/mois
-    unité: €/an
-    arrondi: oui
+  valeur: 12.5 €/mois
+  unité: €/an
+  arrondi: oui
   exemples:
     - valeur attendue: 150
+      unité attendue: €/an
+
+arrondi avec non défini:
+  arrondi: oui
+  exemples:
+    - valeur attendue: undefined

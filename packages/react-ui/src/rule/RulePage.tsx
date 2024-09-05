@@ -19,6 +19,7 @@ import {
 import Explanation from '../Explanation'
 import { useEngine } from '../hooks'
 import { RuleLinkWithContext } from '../RuleLink'
+import { getPrecision } from '../utils'
 import { DeveloperAccordion } from './DeveloperAccordion'
 import RuleHeader from './Header'
 import { breakpointsWidth, RulesNav } from './RulesNav'
@@ -157,7 +158,8 @@ function Rule({
 						</section>
 
 						<p style={{ fontSize: '1.25rem', lineHeight: '2rem' }}>
-							Valeur : {formatValue(rule, { language })}
+							Valeur :{' '}
+							{formatValue(rule, { language, precision: getPrecision(rule) })}
 							{rule.nodeValue === undefined && rule.unit && (
 								<>
 									<br />

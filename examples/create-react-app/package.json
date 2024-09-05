@@ -1,6 +1,5 @@
 {
 	"name": "demo-publicodes-cra",
-	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
 		"@publicodes/react-ui": "workspace:^",
