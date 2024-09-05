@@ -5,11 +5,13 @@
     import Logo from '$lib/assets/logo.svg';
     import PublicodesEditor from '$lib/component/publicodes/editor.svelte';
     import Callout from '$lib/ui/callout.svelte';
-    import NavTab from '$lib/ui/nav-tab.svelte';
     import { dayjs } from 'svelte-time';
 
     import { afterNavigate } from '$app/navigation';
+    import { insertDocsearch } from '$lib/search/insert-docsearch';
+    import NavTab from '$lib/ui/nav-tab.svelte';
     import { Github, MenuIcon, MessagesSquare } from 'lucide-svelte';
+    import { onMount } from 'svelte';
     import { fly } from 'svelte/transition';
     import '../app.css';
 
@@ -27,6 +29,9 @@
     afterNavigate(() => {
         showMobileMenu = false;
     });
+    onMount(() => {
+        insertDocsearch('div#search');
+    });
 </script>
 
 <svelte:head>
@@ -38,20 +43,23 @@
 		en les décomposant en règles élémentaires simples qui soient
 		lisibles par tout le monde."
     />
-
     <link rel="icon" type="image/png" href={favicon} />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
 </svelte:head>
 
-<!-- FIXME: there is an issue with the documentation width in the mobile view -->
 <div
-    class="fixed top-0 z-10 flex h-16 w-screen items-center justify-between border-b border-primary-200 bg-white
+    class="fixed top-0 z-10 flex h-16 w-screen items-center gap-4 border-b border-primary-200 bg-white
 	px-6 py-2 text-cyan-950 md:px-8"
 >
-    <a class="inline-flex items-center gap-2 text-xl font-light hover:text-primary-400" href="/">
+    <a
+        class="inline-flex shrink-0 items-center gap-2 text-xl font-light hover:text-primary-400"
+        href="/"
+    >
         <img src={Logo} class="h-7" alt="Logo de publicodes" />
         Publicodes
     </a>
 
+    <div id="search" class="flex flex-1 justify-end md:justify-center"></div>
     <button
         class="text-primary-400 hover:text-primary-600 sm:hidden"
         onclick={() => (showMobileMenu = true)}
@@ -59,19 +67,46 @@
         <MenuIcon size={24} />
     </button>
 
-    <div class="hidden sm:block">
+    <div class="hidden flex-1 sm:block">
         {@render Menu()}
     </div>
 </div>
 
+{#if showMobileMenu}
+    <div
+        role="dialog"
+        class="fixed right-0 top-0 z-40 h-full border-l
+        border-primary-300 bg-white will-change-transform sm:hidden"
+        transition:fly={{ x: 100 }}
+    >
+        {@render Menu()}
+    </div>
+    <div
+        class="fixed inset-0 z-20 sm:hidden"
+        aria-hidden="true"
+        onclick={() => (showMobileMenu = false)}
+    ></div>
+{/if}
+
+<div
+    class="flex h-full flex-col pt-16"
+    class:blur-sm={showMobileMenu}
+    class:opacity-50={showMobileMenu}
+>
+    <div class="flex-1">
+        {@render children()}
+    </div>
+    {@render Footer()}
+</div>
+
 {#snippet Menu()}
     <nav class="p-6 sm:p-0">
-        <ul class="flex flex-col items-start justify-center gap-2 sm:flex-row sm:items-center">
-            <NavTab class="pr-2" href="/docs">Docs</NavTab>
-            <NavTab class="pr-2" href="/bibliotheque">Bibliothèque</NavTab>
-            <NavTab class="pr-2" href="/realisations">Réalisations</NavTab>
-            <NavTab class="pr-2" href="/studio">Studio</NavTab>
-            <NavTab class="pr-2" href="/blog">Blog</NavTab>
+        <ul class="flex flex-col items-start justify-center gap-3 sm:flex-row sm:items-center">
+            <NavTab href="/docs">Docs</NavTab>
+            <NavTab href="/bibliotheque">Bibliothèque</NavTab>
+            <NavTab class="sm:max-lg:hidden" href="/realisations">Réalisations</NavTab>
+            <NavTab href="/studio">Studio</NavTab>
+            <NavTab href="/blog">Blog</NavTab>
             <NavTab
                 href="https://matrix.to/#/#publicodes:matrix.org"
                 title="Discuter avec la communauté"
@@ -97,29 +132,7 @@
     </nav>
 {/snippet}
 
-{#if showMobileMenu}
-    <div
-        role="dialog"
-        class="fixed right-0 top-0 z-40 h-full border-l
-        border-primary-300 bg-white will-change-transform sm:hidden"
-        transition:fly={{ x: 100 }}
-    >
-        {@render Menu()}
-    </div>
-    <div
-        class="fixed inset-0 z-20 sm:hidden"
-        aria-hidden="true"
-        onclick={() => (showMobileMenu = false)}
-    ></div>
-{/if}
-<div
-    class="flex h-full flex-col pt-16"
-    class:blur-sm={showMobileMenu}
-    class:opacity-50={showMobileMenu}
->
-    <div class="flex-1">
-        {@render children()}
-    </div>
+{#snippet Footer()}
     <footer class="flex w-full flex-col items-center border-t border-primary-200 py-10">
         <div
             class="flex w-full flex-col items-start gap-8 px-6 md:max-w-7xl md:flex-row md:justify-between"
@@ -133,28 +146,28 @@
             </div>
             <div class="flex flex-row gap-16">
                 <!-- <div class="flex flex-col gap-2">
-                    <p class="font-light text-slate-500">Ressources</p>
-                    <ul class="flex flex-col gap-1 font-light">
-                        <li>
-                            <a href="/docs">À propos</a>
-                        </li>
-                        <li>
-                            <a href="/docs">Documentation</a>
-                        </li>
-                        <li>
-                            <a href="/docs">Bibliothèque</a>
-                        </li>
-                        <li>
-                            <a href="/docs">Réalisations</a>
-                        </li>
-                        <li>
-                            <a href="/docs">Statistiques</a>
-                        </li>
-                        <li>
-                            <a href="/docs">FAQ</a>
-                        </li>
-                    </ul>
-                </div> -->
+                <p class="font-light text-slate-500">Ressources</p>
+                <ul class="flex flex-col gap-1 font-light">
+                    <li>
+                        <a href="/docs">À propos</a>
+                    </li>
+                    <li>
+                        <a href="/docs">Documentation</a>
+                    </li>
+                    <li>
+                        <a href="/docs">Bibliothèque</a>
+                    </li>
+                    <li>
+                        <a href="/docs">Réalisations</a>
+                    </li>
+                    <li>
+                        <a href="/docs">Statistiques</a>
+                    </li>
+                    <li>
+                        <a href="/docs">FAQ</a>
+                    </li>
+                </ul>
+            </div> -->
                 <div class="flex flex-col gap-2">
                     <p class="font-light text-slate-500">Communauté</p>
                     <ul class="flex flex-col gap-1 font-light">
@@ -172,7 +185,7 @@
             </div>
         </div>
     </footer>
-</div>
+{/snippet}
 
 <style>
     footer a {

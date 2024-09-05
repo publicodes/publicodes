@@ -42,12 +42,12 @@
             <p class="mb-4 text-2xl font-normal text-dark md:text-3xl lg:text-4xl">
                 Un langage commun pour les devs et les expert·es
             </p>
-            <div class="flex gap-4">
-                <a href="/docs/">
+            <div class="flex flex-wrap gap-4">
+                <a href="/docs/" class="max-sm:flex-1">
                     <Button type={'primary'}>Documentation</Button>
                 </a>
-                <a href="/studio">
-                    <Button icon={Play} type={'secondary'}>Essayer le langage</Button>
+                <a href="/studio" class="max-sm:flex-1">
+                    <Button icon={Play} type={'secondary'}>Éditeur en ligne</Button>
                 </a>
             </div>
         </div>
