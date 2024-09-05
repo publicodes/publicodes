@@ -23,6 +23,7 @@
 		"release": "build && run changeset publish"
 	},
 	"devDependencies": {
+		"@changesets/changelog-github": "^0.5.0",
 		"@changesets/cli": "^2.27.8",
 		"@sveltejs/adapter-netlify": "^4.3.3",
 		"@typescript-eslint/eslint-plugin": "latest",
