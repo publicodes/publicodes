@@ -9,8 +9,8 @@
     const active = $derived($page.url.pathname.startsWith(href));
 </script>
 
-<li>
-    <a {...rest} class="font-light hover:text-primary-400 {rest.class}" class:active {href}>
+<li class={rest.class}>
+    <a {...rest} class="font-light hover:text-primary-400" class:active {href}>
         {@render children()}
     </a>
 </li>
