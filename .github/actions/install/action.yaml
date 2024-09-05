@@ -9,5 +9,5 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
         cache: yarn
-    - run: yarn install --immutable
+    - run: yarn install --refresh-lockfile --immutable
       shell: bash
