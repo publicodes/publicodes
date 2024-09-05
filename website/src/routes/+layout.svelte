@@ -48,27 +48,29 @@
 </svelte:head>
 
 <div
-    class="fixed top-0 z-10 flex h-16 w-screen items-center gap-4 border-b border-primary-200 bg-white
-	px-6 py-2 text-cyan-950 md:px-8"
+    class="fixed top-0 z-20 w-screen border-b border-primary-200 bg-white
+	 text-cyan-950"
 >
-    <a
-        class="inline-flex shrink-0 items-center gap-2 text-xl font-light hover:text-primary-400"
-        href="/"
-    >
-        <img src={Logo} class="h-7" alt="Logo de publicodes" />
-        Publicodes
-    </a>
+    <div class="mx-auto flex h-16 items-center gap-4 px-6 py-2 lg:container md:px-8">
+        <a
+            class="inline-flex shrink-0 items-center gap-2 text-xl font-light hover:text-primary-400"
+            href="/"
+        >
+            <img src={Logo} class="h-7" alt="Logo de publicodes" />
+            Publicodes
+        </a>
 
-    <div id="search" class="flex flex-1 justify-end md:justify-center"></div>
-    <button
-        class="text-primary-400 hover:text-primary-600 sm:hidden"
-        onclick={() => (showMobileMenu = true)}
-    >
-        <MenuIcon size={24} />
-    </button>
+        <div id="search" class="flex flex-1 justify-end md:justify-center"></div>
+        <button
+            class="text-primary-400 hover:text-primary-600 sm:hidden"
+            onclick={() => (showMobileMenu = true)}
+        >
+            <MenuIcon size={24} />
+        </button>
 
-    <div class="hidden flex-1 sm:block">
-        {@render Menu()}
+        <div class="hidden sm:block">
+            {@render Menu()}
+        </div>
     </div>
 </div>
 
