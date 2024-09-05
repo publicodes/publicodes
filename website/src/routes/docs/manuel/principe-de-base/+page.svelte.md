@@ -285,7 +285,7 @@ cafés-restaurants . frais de repas:
 montant repas mensuels: 20 repas * frais de repas
 ```
 
-Dans cet exemple, toutes les références à la règle `frais de repas` seront remplacées par une références à `hôtels cafés restaurants . frais de repas`.
+Dans cet exemple, toutes les références à la règle `frais de repas` seront remplacées par une références à `cafés-restaurants . frais de repas`.
 Il est possible d'alléger le code en écrivant directement : `remplace: frais de repas`.
 
 On peut également choisir de remplacer dans un contexte donné :
@@ -299,14 +299,15 @@ foo remplacé dans résultat 1:
     dans: résultat 1
   valeur: 2
 
-foo remplacé dans résultat 2:
+foo remplacé dans autres résultats:
   remplace:
     références à: foo
     sauf dans: résultat 1
   valeur: 3
 
-résultat 1: foo # vaut 1
-résultat 2: foo # vaut 2
+résultat 1: foo # vaut 2
+résultat 2: foo # vaut 3
+résultat 3: foo # vaut 3
 
 ```
 
