@@ -1,5 +1,14 @@
 # Changelog
 
+- [CHANGELOG de `publicodes`](./packages/core/CHANGELOG.md)
+- [CHANGELOG de `@publicodes/react-ui`](./packages/react-ui/CHANGELOG.md)
+- [CHANGELOG de `@publicodes/rest-api`](./packages/rest-api/CHANGELOG.md)
+
+<details>
+<summary>
+Changelog antérieur à la v1.5.0
+</summary>
+
 ## 1.5.0
 
 **@publicodes/core**
@@ -737,3 +746,5 @@ Lighten the explanations in the documentation :
 
 - Améliore l’affichage des règles virtuelles dépliée dans une somme
 - Ajoute les meta dans les pages de règles (#1411)
+
+</details>
