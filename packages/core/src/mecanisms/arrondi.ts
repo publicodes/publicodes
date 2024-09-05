@@ -15,7 +15,10 @@ export type ArrondiNode = {
 }
 
 function roundWithPrecision(n: number, fractionDigits: number) {
-	return +n.toFixed(fractionDigits)
+	return (
+		Math.round((n + Number.EPSILON) * 10 ** fractionDigits) /
+		10 ** fractionDigits
+	)
 }
 
 const evaluate: EvaluationFunction<'arrondi'> = function (node) {
