@@ -4193,7 +4193,7 @@ __metadata:
     tsup: ^7.2.0
     typescript: ^5.2.2
   peerDependencies:
-    publicodes: ^1.0.1
+    publicodes: ^1.5.1
     react: ^18
     react-dom: ^18
   languageName: unknown
@@ -4224,7 +4224,7 @@ __metadata:
     wait-on: ^6.0.1
     yaml: ^2.3.2
   peerDependencies:
-    publicodes: ^1.0.1
+    publicodes: ^1.5.1
   languageName: unknown
   linkType: soft
 

@@ -37,7 +37,7 @@
 		"rimraf": "^3.0.2",
 		"turbo": "latest"
 	},
-	"packageManager": "yarn@3.3.0",
+	"packageManager": "yarn@4.4.1",
 	"engines": {
 		"node": ">=18 <20"
 	}
