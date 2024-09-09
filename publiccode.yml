@@ -17,10 +17,7 @@ usedBy:
 
 roadmap: 'https://github.com/orgs/publicodes/projects/2'
 categories:
-  - regulations-and-directives
-  - taxes-management
-  - website-builder
-  - application-development
+  - collaboration
 developmentStatus: stable
 softwareType: library
 intendedAudience:
@@ -41,6 +38,7 @@ description:
     features:
       - Langage de programmation
       - Modélisation de la loi
+      - Modélisation de domaines métiers
       - Création de simulateurs
       - Explication des calculs
       - API REST
