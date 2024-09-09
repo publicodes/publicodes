@@ -1,0 +1,61 @@
+publiccodeYmlVersion: '0.2'
+name: Publicodes
+url: https://github.com/publicodes/publicodes
+landingURL: https://publi.codes
+creationDate: 2019-04-02
+softwareVersion: 1.5.1
+releaseDate: 2024-09-05
+platforms:
+  - web
+
+logo: https://github.com/publicodes.png
+usedBy:
+  - Urssaf
+  - Ademe
+  - Ministère du Travail, du Plein Emploi et de l'Insertion (MTPEI)
+  - Direction interministérielle du numérique (Dinum)
+
+roadmap: 'https://github.com/orgs/publicodes/projects/2'
+categories:
+  - collaboration
+developmentStatus: stable
+softwareType: library
+intendedAudience:
+  countries: [FR]
+  scope:
+    - environment
+    - finance-and-economic-development
+    - energy
+    - healthcare
+    - welfare
+
+description:
+  fr:
+    localisedName: Publicodes
+    shortDescription: Le langage pour les algorithmes d'intérêt public
+    longDescription: Publicodes permet de modéliser des domaines métiers complexes, en les décomposant en règles élémentaires simples qui soient lisibles par tout le monde.
+    documentation: https://publi.codes/docs
+    features:
+      - Langage de programmation
+      - Modélisation de la loi
+      - Modélisation de domaines métiers
+      - Création de simulateurs
+      - Explication des calculs
+      - API REST
+
+legal:
+  license: mit
+  repoOwner: publicodes
+  mainCopyrightOwner: '@laem, @johangirod, @mquandalle, @wiinxt, @EmileRolley, et toute la communauté des contributeurs'
+
+maintenance:
+  type: community
+  contacts:
+    - name: 'Johan Girod'
+      email: 'dev\x64johangirod.com'
+    - name: 'Emile Rolley'
+      email: 'emile.rolley\x64tuta.io'
+
+localisation:
+  localisationReady: false
+  availableLanguages: [fr]
