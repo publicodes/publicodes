@@ -1,5 +1,11 @@
 # @publicodes/react-ui
 
+## 1.5.2
+
+### Patch Changes
+
+- [#555](https://github.com/publicodes/publicodes/pull/555) [`da617c2`](https://github.com/publicodes/publicodes/commit/da617c2e159edd6bfc6a0d6e7d209056eee2f69e) Thanks [@JalilArfaoui](https://github.com/JalilArfaoui)! - better automatic scroll to active rule in documentation, compatible with iFrame integration
+
 ## 1.5.1
 
 ### Patch Changes
