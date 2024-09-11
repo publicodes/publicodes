@@ -1,8 +1,9 @@
 import { utils } from 'publicodes'
 import {
-	Suspense,
 	lazy,
 	memo,
+	RefObject,
+	Suspense,
 	useCallback,
 	useEffect,
 	useRef,
@@ -69,6 +70,8 @@ export const RulesNav = ({
 			window.document.getElementById('rules-nav-open-nav-button')
 		)
 
+	const navRef = useRef<HTMLHtmlElement>(null)
+
 	const menu = (
 		<Container $open={navOpen}>
 			<Background
@@ -87,7 +90,7 @@ export const RulesNav = ({
 					openNavButtonPortalElement,
 				)}
 
-			<Nav $open={navOpen}>
+			<Nav $open={navOpen} ref={navRef}>
 				{searchBar ?
 					<Suspense fallback={<p>Chargement...</p>}>
 						<RulesSearch />
@@ -115,6 +118,7 @@ export const RulesNav = ({
 									open={open}
 									active={dottedName === ruleDottedName}
 									onClickDropdown={toggleDropdown}
+									navRef={navRef}
 								/>
 							)
 						})}
@@ -142,12 +146,14 @@ type NavLiProps = {
 	open: boolean
 	active: boolean
 	onClickDropdown: (ruleDottedName: string) => void
+	navRef: RefObject<HTMLHtmlElement>
 }
 const NavLi = ({
 	ruleDottedName,
 	open,
 	active,
 	onClickDropdown,
+	navRef,
 }: NavLiProps) => {
 	const baseEngine = useEngine()
 
@@ -169,11 +175,9 @@ const NavLi = ({
 			initialRender.current = false
 			return
 		}
-		activeLi.current?.scrollIntoView?.({
-			behavior: 'auto',
-			block: 'nearest',
-			inline: 'start',
-		})
+		if (navRef.current && activeLi.current?.offsetTop) {
+			navRef.current.scrollTop = activeLi.current?.offsetTop
+		}
 	}, [active])
 	return (
 		<li
