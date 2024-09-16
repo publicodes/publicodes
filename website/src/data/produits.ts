@@ -19,7 +19,7 @@ export const produits: readonly Produit[] = [
         img: 'https://mon-entreprise.urssaf.fr/logo-share.png',
         description:
             'Trouvez des réponses personnalisées à vos questions sur la création et la gestion de votre entreprise avec des assistants et simulateurs.',
-        url: 'https://mon-entreprise.urssaf.f',
+        url: 'https://mon-entreprise.urssaf.fr',
         github: 'https://github.com/betagouv/mon-entreprise/'
     },
     {
