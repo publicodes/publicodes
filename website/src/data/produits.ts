@@ -2,6 +2,7 @@ import ekofestLogo from './logos/ekofest-logo.png';
 import karburanProImg from './logos/karburan-pro.png';
 import mesAidesVeloImg from './logos/mes-aides-velo.png';
 import mesAidesRenoImg from './logos/mes-aides-reno.png';
+import monEmpreinteEauImg from './logos/mon-empreinte-eau.png';
 
 export const produits: readonly Produit[] = [
     {
@@ -59,7 +60,6 @@ export const produits: readonly Produit[] = [
     },
     {
         slug: 'estime',
-
         name: 'Estime',
         url: 'https://beta.gouv.fr/startups/estime.html',
         img: 'https://raw.githubusercontent.com/StartupsPoleEmploi/estime-frontend/master/.gitlab/images/logo_estime_v2.png',
@@ -71,7 +71,6 @@ export const produits: readonly Produit[] = [
         img: karburanProImg,
         name: 'karburan',
         url: 'https://www.karburan.pro/',
-
         description: "Solution de portage salarial en marque blanche et prête à l'emploi."
     },
 
@@ -107,6 +106,14 @@ export const produits: readonly Produit[] = [
         url: 'https://mesaidesreno.beta.gouv.fr/',
         img: mesAidesRenoImg,
         github: 'https://github.com/betagouv/reno/'
+    },
+    {
+        slug: 'mon-empreinte-eau',
+        name: 'Mon Empreinte Eau',
+        description:
+            'Calculateur d’empreinte eau individuelle pour sensibiliser à la consommation d’eau directe et indirecte.',
+        url: 'https://mon-empreinte-eau.fr/',
+        img: monEmpreinteEauImg
     }
 ];
 
