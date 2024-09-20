@@ -14,12 +14,12 @@
 </script>
 
 <ul class="flex gap-2">
-	{#each splitedTags as tag}
-		{@const className = tagsColors[tag] + ' bg-opacity-10'}
-		<li>
-			<Tag class={className}>
-				{tag}
-			</Tag>
-		</li>
-	{/each}
+    {#each splitedTags as tag}
+        {@const bgColor = (tagsColors[tag] ?? 'bg-slate-400') + ' bg-opacity-10'}
+        <li>
+            <Tag {bgColor}>
+                {tag}
+            </Tag>
+        </li>
+    {/each}
 </ul>
