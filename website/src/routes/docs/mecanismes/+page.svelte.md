@@ -614,7 +614,11 @@ b:
     tolérance d'erreur: 1
 ```
 
-Afin d'optimiser les performances du calcul d'inversion numérique, il est possible d'utiliser le champ `min` (par défaut: `-1000000`) et/ou `max` (par défault: `100000000`) afin de limiter à une certaine plage la valeur au hasard choisi en début de calcul.
+<Callout type="caution" title="Améliorer les performance">
+
+L'inversion est un mécanisme couteux en temps de calcul. Afin d'optimiser ses performances, il est possible d'utiliser le champ `min` (par défaut: `-1000000`) et/ou `max` (par défault: `100000000`) afin de limiter à une certaine plage la valeur au hasard choisi en début de calcul.
+
+Par exemple, si on sait qu'une valeur est forcément positive, on peut préciser `min: 0`.
 
 ```publicodes title="Exemple min/max"
 a: b + 10
@@ -625,6 +629,10 @@ b:
     min: 0
     max: 100000
 ```
+
+Cela a permis une amélioration du temps de calcul de 25% des inversions complexes.
+
+</Callout>
 
 Si on demande au moteur la valeur d’une variable qui a pour formule une
 inversion, il va vérifier qu’une des variables `avec` a bien une valeur

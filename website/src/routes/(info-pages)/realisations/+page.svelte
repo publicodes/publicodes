@@ -11,8 +11,8 @@
         .map((produit) => ({
             ...produit,
             pkg: publicodesPackages.filter(
-                ({ maintener, users }) =>
-                    maintener === produit.slug || users?.includes(produit.slug)
+                ({ maintainer, users }) =>
+                    maintainer === produit.slug || users?.includes(produit.slug)
             )
         }))
         .sort((a, b) => b.pkg.length - a.pkg.length);
