@@ -19,7 +19,7 @@
 		"lint": "run lint:eslint && run lint:prettier && turbo run lint --parallel",
 		"format": "run format:eslint && run format:prettier && turbo run format --parallel",
 		"dev": "turbo run dev --parallel --filter=\"website...\"",
-		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\"",
+		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\" \"**/.turbo\"",
 		"release": "run prepack && changeset publish"
 	},
 	"devDependencies": {
@@ -35,7 +35,7 @@
 		"prettier-plugin-svelte": "^3.2.4",
 		"prettier-plugin-tailwindcss": "^0.6.5",
 		"rimraf": "^3.0.2",
-		"turbo": "latest"
+		"turbo": "^2.1.2"
 	},
 	"packageManager": "yarn@4.4.1",
 	"engines": {

@@ -55,6 +55,7 @@ export type ExprAST =
  * parseExpression('20.3 * nombre', 'foo . bar')
  * // returns { "*": [ { constant: { type: "number", nodeValue: 20.3 } }, { variable:"nombre" } ] }
  * ```
+ * @experimental
  */
 export function parseExpression(rawNode: string, dottedName: string): ExprAST {
 	/* Strings correspond to infix expressions.

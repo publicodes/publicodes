@@ -1,20 +1,16 @@
-## `@publicodes/api`
-
 This package allows you to create a REST API, which follows OpenAPI 3.0 specifications, from your Publicodes rules.
 
 It consists of [Koa](https://github.com/koajs/koa) middleware that adds routes to your router:
 
--   `POST` `/evaluate` Evaluate one or more expressions with a given situation
--   `GET` `/rules` Returns the list of all your rules
--   `GET` `/rules/{rule}` Returns a specific rule
+- `POST` `/evaluate` Evaluate one or more expressions with a given situation
+- `GET` `/rules` Returns the list of all your rules
+- `GET` `/rules/{rule}` Returns a specific rule
 
-## Installation
+## Getting started
 
 ```bash
 npm install @publicodes/api
 ```
-
-## Utilisation
 
 ```ts
 import Router from '@koa/router'
@@ -39,13 +35,5 @@ app.use(router.routes()).listen(3000)
 // ...
 ```
 
-A complete example file is in the sources if needed : [example.ts](https://github.com/publicodes/publicodes/blob/master/packages/rest-api/example.ts).
-
-## Documentation
-
--   [Publicodes API](https://publi.codes/docs/api/api-rest/)
--   [Publicodes](https://publi.codes/)
-
-## Projets phares
-
--   **[mycompanyinfrance API](https://mycompanyinfrance.urssaf.fr/developer/api)**
+- A complete example file is in the sources if needed : [example.ts](https://github.com/publicodes/publicodes/blob/master/packages/rest-api/example.ts).
+- This package is used in production by **[mon-entreprise API](https://mon-entreprise.urssaf.fr/d%C3%A9veloppeur/api)**

@@ -10,19 +10,13 @@ import { useEngine } from './hooks'
 
 const { encodeRuleName } = utils
 
-type RuleLinkProps<Name extends string> = {
-	dottedName: Name
-	engine: Engine<Name>
-	documentationPath: string
-	displayIcon?: boolean
-	currentEngineId?: number
-	linkComponent?: SupportedRenderers['Link']
-	children?: React.ReactNode
-} & Omit<
-	ComponentProps<Required<SupportedRenderers>['Link']>,
-	'to' | 'children'
->
-
+/**
+ * Create a link to a rule in the documentation.
+ *
+ * @param props
+ * @group Components
+ *
+ */
 export function RuleLink<Name extends string>({
 	dottedName,
 	engine,
@@ -32,7 +26,53 @@ export function RuleLink<Name extends string>({
 	linkComponent,
 	children,
 	...propsRest
-}: RuleLinkProps<Name>) {
+}: {
+	/**
+	 * The dotted name of the rule.
+	 */
+	dottedName: Name
+	/**
+	 * The engine instance containing the rule.
+	 */
+	engine: Engine<Name>
+	/**
+	 * The base path for the documentation.
+	 */
+	documentationPath: string
+	/**
+	 * Whether to display an icon next to the link.
+	 */
+	displayIcon?: boolean
+	/**
+	 * The current engine ID, if applicable.
+	 */
+	currentEngineId?: number
+	/**
+	 * A custom link component to use for rendering the link.
+	 */
+	linkComponent?: SupportedRenderers['Link']
+	/**
+	 * The children to render inside the link
+	 * @default The title of the rule
+	 */
+	children?: React.ReactNode
+	/**
+	 * The href attribute for the link.
+	 */
+	href?: string
+	/**
+	 * The title attribute for the link.
+	 */
+	title?: string
+	/**
+	 * Whether to render the link in a smaller size.
+	 */
+	small?: boolean
+	/**
+	 * The aria-label attribute for the link.
+	 */
+	'aria-label'?: string
+}) {
 	const renderers = useContext(RenderersContext)
 	const dottedNameContext = utils.findCommonAncestor(
 		useContext(DottedNameContext) ?? dottedName,
@@ -76,7 +116,10 @@ export function RuleLink<Name extends string>({
 }
 
 export function RuleLinkWithContext(
-	props: Omit<RuleLinkProps<string>, 'engine' | 'documentationPath'> & {
+	props: Omit<
+		ComponentProps<typeof RuleLink>,
+		'engine' | 'documentationPath'
+	> & {
 		useSubEngine?: boolean
 	},
 ) {

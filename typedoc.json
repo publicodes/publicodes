@@ -1,0 +1,44 @@
+{
+	"$schema": "https://typedoc-plugin-markdown.org/schema.json",
+	"cleanOutputDir": false,
+	"entryFileName": "index",
+	"entryPointStrategy": "packages",
+	"exclude": ["./examples/**", "./website", "./packages/codemod"],
+	"hidePageHeader": true,
+	"hidePageTitle": true,
+	"includeVersion": true,
+	"indexFormat": "table",
+	"mergeReadme": true,
+	"modulesFileName": "API",
+	"excludeScopesInPaths": true,
+	// "expandObjects": true,
+	// "expandParameters": true,
+	"name": "API",
+	"packageOptions": {
+		"mergeReadme": true,
+		"excludeInternal": true,
+		"visibilityFilters": {
+			"@experimental": false,
+			"inherited": false,
+			"private": false,
+			"protected": false
+		},
+
+		"groupOrder": ["Classes", "Functions", "TypeAlias", "Namespaces", "*"]
+	},
+	"parametersFormat": "table",
+	"plugin": [
+		"typedoc-plugin-rename-defaults",
+		"typedoc-plugin-markdown",
+		"typedoc-plugin-frontmatter",
+		"./.typedoc/markdown-plugin.mjs"
+	],
+
+	"readme": "none",
+	"sanitizeComments": false,
+	"tableColumnSettings": {
+		"leftAlignHeaders": true
+	},
+	"typeDeclarationFormat": "table",
+	"useCodeBlocks": true
+}

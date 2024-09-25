@@ -1,11 +1,11 @@
-import Engine from '.'
+import Engine, { RawPublicodes } from '.'
 import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
 import { PublicodesError } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing, undefinedNode } from './evaluationUtils'
 import { capitalise0 } from './format'
 import parse, { mecanismKeys } from './parse'
-import { Context, RawRule } from './parsePublicodes'
+import { Context } from './parsePublicodes'
 import {
 	ReplacementRule,
 	parseRendNonApplicable,
@@ -172,8 +172,8 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 	return context.parsedRules[dottedName]
 }
 
-export function parseRules(
-	rules: Partial<Record<string, RawRule>>,
+export function parseRules<RuleNames extends string>(
+	rules: RawPublicodes<RuleNames>,
 	context: Context,
 ) {
 	for (const dottedName in rules) {

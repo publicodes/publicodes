@@ -1,6 +1,6 @@
 {
 	"$schema": "https://turbo.build/schema.json",
-	"pipeline": {
+	"tasks": {
 		"codegen:validate": {},
 		"codegen": {
 			"outputs": ["**/*.codegen.*"],
@@ -47,6 +47,21 @@
 		},
 		"clean": {
 			"cache": false
+		},
+		"website#doc": {
+			"dependsOn": ["^codegen", "@publicodes/rest-api#codegen"],
+			"inputs": [
+				"../packages/**/*.{ts,tsx}",
+				"../typedoc.json",
+				"../.typedoc/markdown-plugin.mjs"
+			],
+			"outputs": ["./website/src/routes/docs/api"]
+		},
+		"website#build": {
+			"dependsOn": ["^build", "doc"]
+		},
+		"website#dev": {
+			"dependsOn": ["^build", "doc"]
 		}
 	}
 }

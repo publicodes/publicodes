@@ -6,7 +6,7 @@ import Engine, {
 	serializeUnit,
 	utils,
 } from 'publicodes'
-import { useContext, useEffect, useRef } from 'react'
+import { ComponentProps, useContext, useEffect, useRef } from 'react'
 import { styled } from 'styled-components'
 import {
 	BasepathContext,
@@ -24,21 +24,15 @@ import { DeveloperAccordion } from './DeveloperAccordion'
 import RuleHeader from './Header'
 import { breakpointsWidth, RulesNav } from './RulesNav'
 
-type RulePageProps = {
-	documentationPath: string
-	rulePath: string
-	engine: Engine
-	language: 'fr' | 'en'
-	renderers: SupportedRenderers
-	searchBar?: boolean
-	apiDocumentationUrl?: string
-	apiEvaluateUrl?: string
-	npmPackage?: string
-	mobileMenuPortalId?: string
-	openNavButtonPortalId?: string
-	showDevSection?: boolean
-}
-
+/**
+ * Display the documentation page of a given rule
+ *
+ * See the [sandbox](https://publi.codes/studio) to see the component in action (it is displayed on the right screen).
+ *
+ * @param props
+ * @group Components
+ *
+ */
 export default function RulePage({
 	documentationPath,
 	rulePath,
@@ -52,7 +46,58 @@ export default function RulePage({
 	mobileMenuPortalId,
 	openNavButtonPortalId,
 	showDevSection = true,
-}: RulePageProps) {
+}: {
+	/**
+	 * The base path on which the documentation will be mounted. For example, if it is /documentation, the URL of the rule remuneration.primes will be /documentation/remuneration/primes.
+	 */
+	documentationPath: string
+	/**
+	 * The path of the rule to display.
+	 */
+	rulePath: string
+	/**
+	 * The engine object whose calculations we want to display.
+	 */
+	engine: Engine
+	/**
+	 * The language in which to display the documentation (currently, only 'fr' and 'en' are supported).
+	 */
+	language: 'fr' | 'en'
+	/**
+	 * The React components that will be used in the documentation page.
+	 */
+	renderers: SupportedRenderers
+	/**
+	 * Displays a search bar to navigate through the documentation
+	 * @default false
+	 */
+	searchBar?: boolean
+	/**
+	 * The URL for the API documentation.
+	 */
+	apiDocumentationUrl?: string
+	/**
+	 * The URL for the API evaluation.
+	 */
+	apiEvaluateUrl?: string
+	/**
+	 * The name of the npm package.
+	 */
+	npmPackage?: string
+	/**
+	 * The ID of the portal for the mobile menu.
+	 */
+	mobileMenuPortalId?: string
+	/**
+	 * The ID of the portal for the open navigation button.
+	 */
+	openNavButtonPortalId?: string
+	/**
+	 * Whether to show the development section.
+	 * @default true
+	 */
+	showDevSection?: boolean
+}) {
 	const currentEngineId =
 		typeof window !== 'undefined' &&
 		new URLSearchParams(window.location.search).get('currentEngineId')
@@ -92,7 +137,7 @@ type RuleProps = {
 	dottedName: string
 	subEngineId?: number
 } & Pick<
-	RulePageProps,
+	ComponentProps<typeof RulePage>,
 	| 'language'
 	| 'apiDocumentationUrl'
 	| 'apiEvaluateUrl'

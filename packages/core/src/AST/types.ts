@@ -52,7 +52,21 @@ type PossibleNodes =
 	| VariableManquanteNode
 	| TexteNode
 
+/**@hidden */
 export type NodeKind = PossibleNodes['nodeKind']
+
+/**
+ * Represents a node in the Abstract Syntax Tree of a publicodes expression.
+ *
+ * It can be browsed and transformed using the {@link transformAST}, {@link reduceAST} and {@link traverseASTNode} methods.
+ *
+ * @typeParam N - The kind of node this ASTNode represents (a string literal type).
+ *
+ * @example
+ * ```ts
+ * let node: ASTNode<'rule'>
+ * ```
+ */
 export type ASTNode<N extends NodeKind = NodeKind> = PossibleNodes & {
 	nodeKind: N
 	isDefault?: boolean
@@ -61,14 +75,7 @@ export type ASTNode<N extends NodeKind = NodeKind> = PossibleNodes & {
 		args: Record<string, ASTNode | Array<ASTNode>>
 	}
 	rawNode?: string | Record<string, unknown>
-} & (
-		| EvaluationDecoration<Types>
-		// We remove the ESLINT warning as it does not concern intersection type and is actually useful here
-		// https://github.com/typescript-eslint/typescript-eslint/issues/2063#issuecomment-675156492
-		// eslint-disable-next-line @typescript-eslint/ban-types
-		| {}
-	)
-
+}
 // TODO : separate type for evaluated AST Tree
 
 export type MecanismNode = ASTNode<
@@ -84,35 +91,68 @@ export type TraverseFunction<K extends NodeKind> = (
 ) => ASTNode<K>
 
 export type BaseUnit = string
-
 // TODO: I believe it would be more effecient (for unit conversion and for
 // inference), and more general to represent units using a map of base unit to
 // their power number :
 //
 // type Unit = Map<BaseUnit, number>
 // N.m²/kg² <-> {N: 1, m: 2, kg: -2} (gravity constant)
+/**
+ * Represents the unit of a number.
+ *
+ * @example 'm/s²'
+ * ```ts
+ * {
+ * 	numerators: ['m'],
+ * 	denominators: ['s', 's']
+ * }
+ * ```
+ *
+ * @see {@link serializeUnit}
+ * @see {@link parseUnit}
+ */
 export type Unit = {
-	numerators: Array<BaseUnit>
-	denominators: Array<BaseUnit>
+	numerators: Array<string>
+	denominators: Array<string>
 }
 
-// Idée : une évaluation est un n-uple : (value, unit, missingVariables, isApplicable)
-type EvaluationDecoration<T extends Types> = {
-	nodeValue: Evaluation<T>
-	unit?: Unit
-	traversedVariables?: Array<string>
-	missingVariables: MissingVariables
-}
-export type Types = number | boolean | string | Record<string, unknown>
+export type EvaluatedValueTypes = number | boolean | string
 
-export type Evaluation<T extends Types = Types> =
+export type Evaluation<T extends EvaluatedValueTypes = EvaluatedValueTypes> =
 	| T
 	| null // Non applicable
 	| undefined // Non défini
 
+/**
+ * An {@link ASTNode} decorated with evaluation information
+ *
+ * Returned by {@link Engine.evaluate}.
+ *
+ */
+
 export type EvaluatedNode<
 	K extends NodeKind = NodeKind,
-	T extends Types = Types,
-> = EvaluationDecoration<T> & ASTNode<K>
+	T extends EvaluatedValueTypes = EvaluatedValueTypes,
+> = {
+	/**
+	 * The value of the node after evaluation.
+	 *
+	 * Can be a number, a string, a boolean, null (« non applicable ») or undefined (« non défini »).
+	 */
+	nodeValue: Evaluation<T>
+	/**
+	 * The unit in which the value is expressed.
+	 */
+	unit?: Unit
+	/**
+	 * @experimental
+	 * The list of all the rules that have been traversed to evaluate this node.
+	 */
+	traversedVariables?: Array<string>
+	/**
+	 * The rules that are needed in the situation to compute the exact value for this node.
+	 */
+	missingVariables: MissingVariables
+} & ASTNode<K>
 
 export type MissingVariables = Record<string, number>

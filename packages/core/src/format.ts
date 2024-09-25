@@ -1,6 +1,5 @@
 import { Evaluation, Unit } from './AST/types'
-import { simplifyNodeUnit } from './nodeUnits'
-import { formatUnit, serializeUnit } from './units'
+import { convertUnit, formatUnit, serializeUnit, simplifyUnit } from './units'
 
 export const numberFormatter =
 	({
@@ -9,7 +8,7 @@ export const numberFormatter =
 		minimumFractionDigits = 0,
 		language,
 	}: {
-		style?: string
+		style?: 'currency' | 'percent' | 'decimal'
 		maximumFractionDigits?: number
 		minimumFractionDigits?: number
 		language?: string
@@ -102,6 +101,9 @@ function formatNumber({
 
 export function capitalise0(name: undefined): undefined
 export function capitalise0(name: string): string
+/**
+ * @internal
+ */
 export function capitalise0(name?: string) {
 	return name && name[0].toUpperCase() + name.slice(1)
 }
@@ -111,17 +113,37 @@ const booleanTranslations = {
 	en: { true: 'yes', false: 'no' },
 }
 
-type Options = {
-	language?: string
-	displayedUnit?: string
-	precision?: number
-	formatUnit?: formatUnit
-}
-
+/**
+ * Format the result of an evaluation
+ *
+ * Useful to display the result of a calculation in a user interface.
+ * It use the {@link Unit} to format the number and the unit.
+ *
+ * @param value - The value to format, usually a {@link EvaluatedNode}
+ * @param options - Options to customize the formatting
+ * @param options.language - @internal The language in which to display the result
+ * @param options.displayedUnit - The unit to display, if different from the unit of the value
+ * @param options.precision - The number of decimal digits to display
+ *
+ * @example
+ *
+ * ```ts
+ * formatValue(engine.evaluate('3 € + 2 €')) // '5 €'
+ * ```
+ */
 export function formatValue(
 	value: number | { nodeValue: Evaluation; unit?: Unit } | undefined,
-
-	{ language = 'fr', displayedUnit, formatUnit, precision = 2 }: Options = {},
+	{
+		language = 'fr',
+		displayedUnit,
+		formatUnit,
+		precision = 2,
+	}: {
+		language?: string
+		displayedUnit?: string
+		precision?: number
+		formatUnit?: formatUnit
+	} = {},
 ) {
 	let nodeValue =
 		(
@@ -156,12 +178,9 @@ export function formatValue(
 				undefined
 			:	value.unit
 		if (unit) {
-			const simplifiedNode = simplifyNodeUnit({
-				unit,
-				nodeValue,
-			})
-			unit = simplifiedNode.unit
-			nodeValue = simplifiedNode.nodeValue as number
+			const simplifiedUnit = simplifyUnit(unit)
+			nodeValue = convertUnit(unit, simplifiedUnit, nodeValue)
+			unit = simplifiedUnit
 		}
 		return formatNumber({
 			minimumFractionDigits: 0,

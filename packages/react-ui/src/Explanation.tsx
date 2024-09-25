@@ -50,6 +50,14 @@ const UIComponents = {
 	variations: Variations,
 } as const
 
+/**
+ * Display the documentation of a parsed publicodes AST node
+ *
+ * @param props
+ * @param props.node - The AST node to display
+ * @group Components
+ *
+ */
 export default function Explanation({ node }: { node: ASTNode }) {
 	const visualisationKind = node.sourceMap?.mecanismName ?? node.nodeKind
 	const engine = useEngine()
