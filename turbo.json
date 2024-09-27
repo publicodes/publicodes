@@ -28,9 +28,9 @@
 		"test": {
 			"dependsOn": ["test:type"]
 		},
-		"lint:fix": {
-			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"],
-			"outputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"]
+		"format": {
+			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"],
+			"outputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"]
 		},
 		"lint": {
 			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"]

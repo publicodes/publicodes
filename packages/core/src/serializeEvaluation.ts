@@ -1,4 +1,4 @@
-import { PublicodesExpression } from '../dist'
+import { PublicodesExpression } from './'
 import { EvaluatedNode } from './index'
 import { serializeUnit } from './units'
 
