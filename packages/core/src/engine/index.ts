@@ -1,7 +1,9 @@
 import {
+	Logger,
 	ParsedRules,
 	PublicodesError,
 	PublicodesExpression,
+	RawPublicodes,
 	Situation,
 } from '..'
 import { makeASTVisitor } from '../AST'
@@ -10,7 +12,6 @@ import { experimentalRuleWarning } from '../error'
 import { evaluationFunctions } from '../evaluationFunctions'
 import parsePublicodes, {
 	Context,
-	RawPublicodes,
 	copyContext,
 	createContext,
 } from '../parsePublicodes'
@@ -21,6 +22,7 @@ import {
 	computeTraversedVariableBeforeEval,
 	isTraversedVariablesBoundary,
 } from '../traversedVariables'
+import { getUnitKey } from '../units'
 import { weakCopyObj } from '../utils'
 import { isAValidOption } from './utils'
 
@@ -55,10 +57,29 @@ type Cache = {
 	nodes: Map<PublicodesExpression | ASTNode, EvaluatedNode>
 }
 
+export type StrictOptions = {
+	/**
+	 * If set to true, the engine will throw when the
+	 * situation contains invalid values
+	 * (rules that don't exists, or values with syntax errors).
+	 *
+	 * If set to false, it will log the error and filter the invalid values from the situation
+	 * @default true
+	 */
+	situation?: boolean
+
+	/**
+	 * If set to true, the engine will throw when parsing a rule whose parent doesn't exist
+	 * This can be set to false to parse partial rule sets (e.g. optimized ones).
+	 * @default true
+	 */
+	noOrphanRule?: boolean
+}
+
 /**
- * @typedef {Object} Options
+ * Options for the engine constructor
  */
-type Options = Partial<Pick<Context, 'logger' | 'getUnitKey'>> & {
+export type EngineOptions = {
 	/**
 	 * Don't throw an error if the parent of a rule is not found.
 	 * This is useful to parse partial rule sets (e.g. optimized ones).
@@ -66,25 +87,60 @@ type Options = Partial<Pick<Context, 'logger' | 'getUnitKey'>> & {
 	 */
 	allowOrphanRules?: boolean
 	/**
-	 * Specify if the engine should throw error when it detects an anomaly or just log it and continue.
-	 * Can be be set globally or for specific rules.
+	 * Whether the engine should trigger an error when it detects an anomaly,
+	 * or whether it should simply record it and continue.
+	 *
+	 * This option can be set globally (true or false) or for specific rules ({@link StrictOptions}).
 	 * @default true
 	 *  */
-	strict?: boolean | Context['strict']
+	strict?: boolean | StrictOptions
+
+	/**
+	 * The logger used to log errors and warnings (default to console).
+	 * @type {Logger}
+	 */
+	logger?: Logger
+
+	/**
+	 * getUnitKey is a function that allows to normalize the unit in the engine.
+	 * @experimental
+	 */
+	getUnitKey?: getUnitKey
 }
 
-export default class Engine<Name extends string = string> {
-	baseContext: Context<Name>
+/**
+ * The engine is used to parse rules and evaluate expressions.
+ * It is the main entry point to the publicodes library.
+ *
+ * @typeParam RuleNames - All rules names. Allows to automatically autocomplete rules names in the engine when using {@link Engine.getRule} or {@link Engine.setSituation}
+ *
+ */
+export class Engine<RuleNames extends string = string> {
+	/**@internal */
+	baseContext: Context<RuleNames>
+	/**@internal */
 	context: Context<string>
-	publicParsedRules: ParsedRules<Name>
-	publicSituation: Situation<Name>
+	/**@internal */
+	publicParsedRules: ParsedRules<RuleNames>
+	/**@internal */
+	publicSituation: Situation<RuleNames>
 
+	/**@internal */
 	cache: Cache = emptyCache()
 
-	constructor(rules: RawPublicodes<Name> = {}, options: Options = {}) {
+	/**
+	 * Creates an evaluation engine with the publicode rules given as arguments.
+
+	 * @param rules The publicodes model to use ({@link RawPublicodes} or {@link ParsedRules})
+	 * @param options Configuration options
+	 */
+	constructor(
+		rules: RawPublicodes<RuleNames> | ParsedRules<RuleNames> = {},
+		options: EngineOptions = {},
+	) {
 		const strict = options.strict ?? true
 		const initialContext = {
-			dottedName: '' as const,
+			dottedName: '' as never,
 			...options,
 			strict:
 				typeof strict === 'boolean' ?
@@ -97,30 +153,42 @@ export default class Engine<Name extends string = string> {
 
 		this.baseContext = createContext({
 			...initialContext,
-			...parsePublicodes<never, Name>(rules, initialContext),
+			...parsePublicodes(rules as RawPublicodes<RuleNames>, initialContext),
 		})
 		this.context = this.baseContext
 
-		this.publicParsedRules = {} as ParsedRules<Name>
+		this.publicParsedRules = {} as ParsedRules<RuleNames>
 		for (const name in this.baseContext.parsedRules) {
 			const rule = this.baseContext.parsedRules[name]
 			if (
 				!(rule as RuleNode).private &&
 				utils.isAccessible(this.baseContext.parsedRules, '', name)
 			) {
-				this.publicParsedRules[name] = rule as RuleNode<Name>
+				this.publicParsedRules[name] = rule as RuleNode<RuleNames>
 			}
 		}
 
-		this.publicSituation = {} as Situation<Name>
+		this.publicSituation = {} as Situation<RuleNames>
 	}
 
+	/**
+	 * Reset the engine cache. This will clear all the cached evaluations.
+	 */
 	resetCache() {
 		this.cache = emptyCache()
 	}
 
+	/**
+	 * Set the situation used for the evaluation.
+	 *
+	 * All subsequent evaluations will use this situation.
+	 * Reset the evaluation cache to avoid inconsistencies, so it is costly to call this method frequently with the same situation.
+	 */
 	setSituation(
-		situation: Situation<Name> = {},
+		/**
+		 * The situation to set (see {@link Situation})
+		 */
+		situation: Situation<RuleNames> = {},
 		options: {
 			/**
 			 * If true, the previous situation is kept and the new values are added to it.
@@ -134,7 +202,7 @@ export default class Engine<Name extends string = string> {
 			 *
 			 * If set to false, it will log the error and filter the invalid values from the situation
 			 *
-			 * Overrides the [global strict option]{@link Options.strict}
+			 * Overrides the {@link EngineOptions} strict option
 			 */
 			strict?: boolean
 		} = {},
@@ -148,7 +216,7 @@ export default class Engine<Name extends string = string> {
 		let situationRules = Object.entries(situation).filter(
 			([dottedName, value]) => {
 				const error = this.checkSituationRule(
-					dottedName as Name,
+					dottedName as RuleNames,
 					value as PublicodesExpression | ASTNode,
 				)
 				if (!error) return true
@@ -203,11 +271,21 @@ export default class Engine<Name extends string = string> {
 		return this
 	}
 
+	/**
+	 *
+	 * @returns true if the engine has encountered an inversion error during the last evaluation
+	 */
 	inversionFail(): boolean {
 		return !!this.cache.inversionFail
 	}
 
-	getRule(dottedName: Name): ParsedRules<Name>[Name] {
+	/**
+	 * Get the rule with the given dottedName.
+	 * @param dottedName
+	 *
+	 * @throws PublicodesError if the rule does not exist or is private
+	 */
+	getRule(dottedName: RuleNames): RuleNode {
 		if (!(dottedName in this.baseContext.parsedRules)) {
 			throw new PublicodesError(
 				'UnknownRule',
@@ -227,15 +305,44 @@ export default class Engine<Name extends string = string> {
 		return this.publicParsedRules[dottedName]
 	}
 
-	getParsedRules(): ParsedRules<Name> {
+	/**
+	 *
+	 * @returns the parsed rules used by the engine
+	 *
+	 * @remarks The private rules are not included in the parsed rules
+	 */
+	getParsedRules(): ParsedRules<RuleNames> {
 		return this.publicParsedRules
 	}
 
-	getSituation(): Situation<Name> {
+	/**
+	 * Retrieve the current situation used for the evaluation
+	 *
+	 * This situation can be slightly different from the one set with
+	 * {@link setSituation} if some values were filtered out because of
+	 * evaluation errors.
+	 *
+	 * @returns {@link Situation} used by the engine
+	 */
+	getSituation(): Situation<RuleNames> {
 		return this.publicSituation
 	}
-
-	evaluate(value: PublicodesExpression): EvaluatedNode {
+	/**
+	 * Evaluate a publicodes expression.
+	 *
+	 * Use the current situation set by {@link setSituation}.
+	 *
+	 * @remarks
+	 * 	To improve performance, the engine will cache the evaluation of the expression,
+	 * 	and all its byproducts (intermediate evaluations).
+	 * 	The cache is reset when the situation is updated with {@link setSituation}.
+	 * 	You can also manually reset it with {@link resetCache}.
+	 *
+	 * @param value - The publicodes expression to evaluate.
+	 * @returns The {@link ASTNode} of the publicodes expression decorated with evaluation results (nodeValue, unit, missingVariables, etc.)
+	 *
+	 */
+	evaluate(value: PublicodesExpression | ASTNode): EvaluatedNode {
 		const cachedNode = this.cache.nodes.get(value)
 		if (cachedNode) {
 			return cachedNode
@@ -262,6 +369,7 @@ export default class Engine<Name extends string = string> {
 		return evaluation
 	}
 
+	/**@internal */
 	evaluateNode<T extends ASTNode>(parsedNode: T): EvaluatedNode & T {
 		const cachedNode = this.cache.nodes.get(parsedNode)
 		let traversedVariableBoundary: boolean = false
@@ -308,10 +416,12 @@ export default class Engine<Name extends string = string> {
 	}
 
 	/**
-	 * Shallow Engine instance copy. Keeps references to the original Engine instance attributes.
+	 * Shallow Engine instance copy. Useful to evaluate the same rules with different situations.
+	 *
+	 * @returns a new Engine instance with the same baseContext, context, publicParsedRules, publicSituation and cache attributes.
 	 */
-	shallowCopy(): Engine<Name> {
-		const newEngine = new Engine<Name>()
+	shallowCopy(): Engine<RuleNames> {
+		const newEngine = new Engine<RuleNames>()
 		newEngine.baseContext = copyContext(this.baseContext)
 		newEngine.context = copyContext(this.context)
 		newEngine.publicParsedRules = this.publicParsedRules
@@ -337,7 +447,7 @@ export default class Engine<Name extends string = string> {
 	})
 
 	private checkSituationRule(
-		dottedName: Name,
+		dottedName: RuleNames,
 		value: PublicodesExpression | ASTNode,
 	): false | PublicodesError<'SituationError'> {
 		// We check if the dotteName is a rule of the model
@@ -375,7 +485,7 @@ export default class Engine<Name extends string = string> {
 					{ valeur: value }
 				:	value,
 			]),
-		) as RawPublicodes<Name>
+		) as RawPublicodes<RuleNames>
 		try {
 			const newContext = parsePublicodes(situationToParse, this.context)
 			this.context = Object.assign(this.context, newContext)

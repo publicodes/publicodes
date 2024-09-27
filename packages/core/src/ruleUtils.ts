@@ -3,7 +3,6 @@ import { ASTNode } from './AST/types'
 import { PublicodesError } from './error'
 import { ReferencesMaps } from './parsePublicodes'
 import { ReferenceNode } from './reference'
-import { RuleNode } from './rule'
 import { addToMapSet } from './utils'
 
 export { cyclicDependencies } from './AST/graph'
@@ -99,7 +98,7 @@ export function findCommonAncestor(dottedName1: string, dottedName2: string) {
  * @param name The namespace checked for accessibility
  */
 export function isAccessible(
-	rules: Record<string, RuleNode>,
+	rules: ParsedRules,
 	contextName: string,
 	name: string,
 ) {
@@ -132,7 +131,7 @@ export function isAccessible(
  * @param rules The parsed rules
  * @param name The namespace checked for experimental
  */
-export function isExperimental(rules: Record<string, RuleNode>, name: string) {
+export function isExperimental(rules: ParsedRules, name: string) {
 	if (!(name in rules)) {
 		throw new PublicodesError(
 			'InternalError',
@@ -150,7 +149,7 @@ export function isExperimental(rules: Record<string, RuleNode>, name: string) {
 function dottedNameFromContext(context: string, partialName: string) {
 	return context ? context + ' . ' + partialName : partialName
 }
-export function disambiguateReference<R extends Record<string, RuleNode>>(
+export function disambiguateReference<R extends ParsedRules>(
 	rules: R,
 	referencedFrom = '',
 	partialName: string,

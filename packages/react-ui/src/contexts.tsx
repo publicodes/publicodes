@@ -7,6 +7,9 @@ type PartialRequired<T, R extends keyof T> = Omit<T, R> & Required<Pick<T, R>>
 
 export type AccordionItem = { title: string; id: string; children: ReactNode }
 
+/**
+ * The custom renderers for the markdown content.
+ */
 export type SupportedRenderers = {
 	Link?: ComponentType<{
 		children: ReactNode
@@ -16,6 +19,7 @@ export type SupportedRenderers = {
 		small?: boolean
 		'aria-label'?: string
 	}>
+
 	Head?: ComponentType<{ children: ReactNode }>
 
 	/**

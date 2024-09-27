@@ -1,4 +1,4 @@
-import Engine from '.'
+import { Engine } from '.'
 import { Situation } from '..'
 import { parseExpression } from '../parseExpression'
 

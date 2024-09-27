@@ -1,5 +1,3 @@
-# codemod
-
 This package contains a codemod script that you can use to update your codebase to the latest version of publicodes.
 
 ## Usage
@@ -18,6 +16,8 @@ npx @publicodes/codemod <path-to-publicode-folder>
 
 2. **This codemod will not update the exotic syntax of variations**. If you use it, you should update the syntax manually **before** running the codemod.
 
-3. **This codemod does not handle the breaking of replacement priority order change**. 
+3. **This codemod does not handle the breaking of replacement priority order change**.
 
 4. **You'll need to update manually call to `evaluate` with publicodes expression** in your codebase, if needed.
+
+See the [migration guide](https://publi.codes/docs/guides/migration-v1) for more details.

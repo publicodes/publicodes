@@ -3,11 +3,25 @@ import { PublicodesError } from './error'
 
 export type getUnitKey = (writtenUnit: string) => string
 export type formatUnit = (unit: string, count: number) => string
-
-export const parseUnit = (
+/**
+ * Parse a unit string into a Unit object
+ *
+ * @param string The unit string to parse
+ *
+ * @returns The parsed unit object
+ *
+ * @example
+ * ```ts
+ * parseUnit('m/s2')
+ * // returns { numerators: ['m'], denominators: ['s', 's'] }
+ * ```
+ *
+ * @experimental
+ */
+export function parseUnit(
 	string: string,
 	getUnitKey: getUnitKey = (x) => x,
-): Unit => {
+): Unit {
 	if (string.includes(' /') || string.includes('/ ')) {
 		throw new Error(
 			`L'unité "${string}" ne doit pas contenir d'espace avant et après "/"`,
@@ -78,6 +92,11 @@ const printUnits = (
 }
 
 const plural = 2
+
+/**
+ * Serialize a unit to a readable string
+ * @experimental
+ */
 export function serializeUnit(
 	rawUnit: Unit | undefined | string,
 	count: number = plural,

@@ -1,4 +1,10 @@
-import Engine, { Logger, ParsedRules } from '.'
+import Engine, {
+	Logger,
+	ParsedRules,
+	PublicodesExpression,
+	RawPublicodes,
+	StrictOptions,
+} from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
 import { PublicodesError } from './error'
 import inferNodeType, { NodesTypes } from './inferNodeType'
@@ -17,7 +23,6 @@ export type Context<RuleNames extends string = string> = {
 	nodesTypes: NodesTypes
 	referencesMaps: ReferencesMaps<RuleNames>
 	rulesReplacements: RulesReplacements<RuleNames>
-	getUnitKey?: getUnitKey
 	logger: Logger
 	inversionMaxIterations?: number
 
@@ -26,24 +31,7 @@ export type Context<RuleNames extends string = string> = {
 	 *  */
 	subEngineIncrementingNumber?: number
 
-	strict: {
-		/**
-		 * If set to true, the engine will throw when the
-		 * situation contains invalid values
-		 * (rules that don't exists, or values with syntax errors).
-		 *
-		 * If set to false, it will log the error and filter the invalid values from the situation
-		 * @default true
-		 */
-		situation?: boolean
-
-		/**
-		 * If set to true, the engine will throw when parsing a rule whose parent doesn't exist
-		 * This can be set to false to parse partial rule sets (e.g. optimized ones).
-		 * @default true
-		 */
-		noOrphanRule?: boolean
-	}
+	strict: StrictOptions
 
 	// The subEngines attribute is used to get an outside reference to the
 	// `contexte` intermediate calculations. The `contexte` mechanism uses
@@ -56,6 +44,8 @@ export type Context<RuleNames extends string = string> = {
 	// https://github.com/publicodes/publicodes/discussions/92
 	subEngines: Map<SituationHash, Engine<RuleNames>>
 	subEngineId: SituationHash | undefined
+
+	getUnitKey: getUnitKey
 }
 
 type SituationHash = number
@@ -69,10 +59,7 @@ export type ReferencesMaps<Names extends string> = {
 	rulesThatUse: Map<Names, Set<Names>>
 }
 
-export type RawRule = Omit<Rule, 'nom'> | string | number | null
-export type RawPublicodes<RuleNames extends string> = Partial<
-	Record<RuleNames, RawRule>
->
+export type RawRule = Omit<Rule, 'nom'> | PublicodesExpression
 
 export function createContext<RuleNames extends string>(
 	partialContext: Partial<Context<RuleNames>>,
@@ -106,6 +93,18 @@ export function copyContext<C extends Context>(context: C): C {
 		subEngines: new Map(),
 	})
 }
+/**
+ * Parse a set of publicodes rules
+ *
+ * Allows to add new rules to a previously parsed set of rules (partialContext)
+ *
+ * @param rawRules - The new rules to parse
+ * @param partialContext - The context to use for the parsing (if we want to add a set of rules to a previously parsed one)
+ *
+ * @returns The new context containing the parsed rules, the nodes types, the references maps and the rules replacements
+ *
+ * @experimental
+ */
 export default function parsePublicodes<
 	ContextNames extends string,
 	NewRulesNames extends string,

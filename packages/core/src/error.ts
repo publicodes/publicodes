@@ -24,7 +24,10 @@ interface PublicodesErrorTypes {
 }
 
 /**
- * Return true if `error` is a PublicodesError,
+ * @returns true if `error` is a PublicodesError
+ *
+ * @internal
+ *
  * use `name` parameter to check and narow error type
  * @example
  * try {
@@ -46,6 +49,7 @@ export const isPublicodesError = <Name extends keyof PublicodesErrorTypes>(
 
 /**
  * Generic error for Publicodes
+ * @internal
  */
 export class PublicodesError<
 	Name extends keyof PublicodesErrorTypes,

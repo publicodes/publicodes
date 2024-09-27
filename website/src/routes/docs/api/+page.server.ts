@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
 
 export function load() {
-    redirect(301, '/docs/mecanismes');
+    redirect(301, '/docs/api/publicodes');
 }

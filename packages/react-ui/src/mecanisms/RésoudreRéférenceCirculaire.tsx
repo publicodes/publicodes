@@ -4,12 +4,10 @@ import { Mecanism } from './common/Mecanism'
 
 export default function MecanismRésoudreRéférenceCirculaire({
 	explanation,
+	nodeValue,
 }: EvaluatedNode<'résoudre référence circulaire'>) {
 	return (
-		<Mecanism
-			name="résoudre la référence circulaire"
-			value={explanation.valeur}
-		>
+		<Mecanism name="résoudre la référence circulaire" value={nodeValue}>
 			<p>
 				{' '}
 				Cette valeur a été retrouvé en résolvant la référence circulaire dans la

@@ -2,6 +2,7 @@ export type Page<Metadata> = {
     path: string;
     metadata: Metadata & {
         headings: Array<{ title: string; level: number; slug: string }>;
+        description: string;
     };
 };
 
