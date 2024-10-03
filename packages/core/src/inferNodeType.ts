@@ -39,6 +39,8 @@ export default function inferNodesTypes(
 			case 'durée':
 			case 'grille':
 			case 'taux progressif':
+			case 'inversion':
+			case 'résoudre référence circulaire':
 				return { isNullable: false, type: 'number' }
 			case 'est non défini':
 			case 'est non applicable':
@@ -68,20 +70,26 @@ export default function inferNodesTypes(
 						:	'number',
 				}
 
-			case 'inversion':
 			case 'replacementRule':
-			case 'résoudre référence circulaire':
 				return { isNullable: false, type: 'number' }
 			case 'texte':
 			case 'une possibilité':
 				return { isNullable: false, type: 'string' }
 
+			case 'arrondi':
+				return {
+					type: 'number',
+					isNullable: inferNodeUnitAndCache(node.explanation.valeur).isNullable,
+				}
 			case 'contexte':
 			case 'rule':
-			case 'arrondi':
 				return inferNodeUnitAndCache(node.explanation.valeur)
 			case 'unité':
 			case 'simplifier unité':
+				return {
+					type: 'number',
+					isNullable: inferNodeUnitAndCache(node.explanation).isNullable,
+				}
 			case 'variable manquante':
 				return inferNodeUnitAndCache(node.explanation)
 			case 'condition':
