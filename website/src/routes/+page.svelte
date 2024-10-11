@@ -78,7 +78,7 @@
             <Heading level="h2">Du code clair et lisible</Heading>
             <div class="flex flex-col gap-4">
                 <p class="prose-md prose font-normal text-black md:prose-xl">
-                    Essayez de modifiez le <code>salaire brut</code> à
+                    Essayez de modifier le <code>salaire brut</code> à
                     <code>3000 €/mois</code> dans l'exemple suivant...
                 </p>
                 <div class="">
