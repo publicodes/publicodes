@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/react-ui",
-	"version": "1.5.2",
+	"version": "1.5.3",
 	"description": "UI to explore publicodes computations",
 	"license": "MIT",
 	"types": "dist/index.d.ts",
@@ -32,7 +32,7 @@
 		"styled-components": "^6.1.1"
 	},
 	"peerDependencies": {
-		"publicodes": "^1.5.1",
+		"publicodes": "^1.5.3",
 		"react": "^18",
 		"react-dom": "^18"
 	},

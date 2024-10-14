@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/rest-api",
-	"version": "1.5.0",
+	"version": "1.5.3",
 	"description": "Publicodes API",
 	"type": "module",
 	"main": "./dist/index.cjs",
@@ -46,7 +46,7 @@
 		"openapi-validator-middleware": "^3.2.6"
 	},
 	"peerDependencies": {
-		"publicodes": "^1.5.1"
+		"publicodes": "^1.5.3"
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-cli": "^4.0.4",
