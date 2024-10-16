@@ -4193,7 +4193,7 @@ __metadata:
     tsup: "npm:^7.2.0"
     typescript: "npm:^5.2.2"
   peerDependencies:
-    publicodes: ^1.5.1
+    publicodes: ^1.5.3
     react: ^18
     react-dom: ^18
   languageName: unknown
@@ -4224,7 +4224,7 @@ __metadata:
     wait-on: "npm:^6.0.1"
     yaml: "npm:^2.3.2"
   peerDependencies:
-    publicodes: ^1.5.1
+    publicodes: ^1.5.3
   languageName: unknown
   linkType: soft
 
