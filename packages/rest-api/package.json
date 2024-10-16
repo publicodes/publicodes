@@ -46,7 +46,7 @@
 		"openapi-validator-middleware": "^3.2.6"
 	},
 	"peerDependencies": {
-		"publicodes": "^1.5.3"
+		"publicodes": "^1.5.4"
 	},
 	"devDependencies": {
 		"@apidevtools/swagger-cli": "^4.0.4",
