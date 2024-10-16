@@ -213,7 +213,7 @@ salaire net: salaire brut - cotisations salariales`}
                         'Publicodes est un langage particulièrement adapté pour transposer la loi en code.'
                 },
                 {
-                    subtitle: 'Accerateur d’open-data',
+                    subtitle: 'Accélérateur d’open-data',
                     content:
                         'Vos règles peuvent être facilement publiée et être réutilisées par d’autres acteurs.'
                 },
