@@ -108,6 +108,15 @@ export const produits: readonly Produit[] = [
         github: 'https://github.com/betagouv/reno/'
     },
     {
+        slug: 'jagis',
+        name: "J'agis",
+        description:
+            'Des solutions pour la transition écologique à mon échelle : aides financières, conseils adaptés et outils pratiques pour un quotidien durable.',
+        url: 'https://jagis.beta.gouv.fr/',
+        img: jagisImg,
+        github: 'https://github.com/betagouv/agir-back'
+    },
+    {
         slug: 'mon-empreinte-eau',
         name: 'Mon Empreinte Eau',
         description:

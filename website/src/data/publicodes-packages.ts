@@ -39,7 +39,7 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
     {
         npm: 'aides-velo',
         maintainer: 'mes-aides-vélo',
-        users: ['aides-jeune']
+        users: ['aides-jeune', 'jagis']
     },
     {
         npm: 'exoneration-covid',
