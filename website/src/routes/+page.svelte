@@ -31,6 +31,7 @@
     })[];
 
     let showDoc = $state(false);
+    
     function showDocOnSuccess(code: string) {
         if (!showDoc && code.includes('salaire brut: 3000 €/mois')) {
             setTimeout(() => {

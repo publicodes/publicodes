@@ -3,12 +3,13 @@
     import { tomorrow } from 'thememirror';
 
     import Tag from '$lib/ui/tag.svelte';
-    import { ClipboardCopy, PanelRightClose, PanelRightOpen } from 'lucide-svelte';
-    import type { Snippet } from 'svelte';
+    import { ClipboardCopy, PanelBottomClose, PanelBottomOpen, PanelRightClose, PanelRightOpen } from 'lucide-svelte';
+    import { type Snippet } from 'svelte';
     import CodeMirror from 'svelte-codemirror-editor';
     import { fly } from 'svelte/transition';
     import { createEngine } from './create-engine';
     import FlyInOutTransition from './fly-in-out-transition.svelte';
+    import transition, { getTransitionDirection } from './transition.svelte';
 
     let {
         code = '',
@@ -54,6 +55,9 @@
         return selectedRuleInDoc;
     });
 
+    
+    // const transition = $derived(getTransition(screen.currentBreakpoint));
+    
     const documentationIsBroken = $derived(!engine || !Object.keys(engine.getParsedRules()).length);
     $effect(() => {
         onchange?.(code, showDoc ? selectedRule : undefined);
@@ -109,19 +113,38 @@
                 class:text-slate-400={documentationIsBroken}
             >
                 <FlyInOutTransition condition={showDoc && !documentationIsBroken}>
-                    {#snippet ifTrue()}<PanelRightClose
+                    {#snippet ifTrue()}
+                        
+                    {#if getTransitionDirection() === 'horizontal'}
+                        <PanelRightClose
                             strokeWidth={iconStrokeWidth}
                             size={iconSize}
-                        />{/snippet}
-                    {#snippet ifFalse()}<PanelRightOpen
+                        />
+                    {:else}
+                        <PanelBottomOpen
                             strokeWidth={iconStrokeWidth}
                             size={iconSize}
-                        />{/snippet}
+                        />
+                    {/if}
+                    {/snippet}
+                    {#snippet ifFalse()}
+                    {#if getTransitionDirection() === 'horizontal'}
+                        <PanelRightOpen
+                            strokeWidth={iconStrokeWidth}
+                            size={iconSize}
+                        />
+                    {:else}
+                        <PanelBottomClose
+                            strokeWidth={iconStrokeWidth}
+                            size={iconSize}
+                        />
+                    {/if}
+                    {/snippet}
                 </FlyInOutTransition>
             </button>
         {/if}
     </div>
-    <div class="editor flex flex-1 flex-col xl:flex-row">
+    <div class="editor flex flex-1 flex-col xl:flex-row bg-white">
         <div class="flex flex-1 flex-col overflow-auto">
             <CodeMirror
                 bind:value={code}
@@ -149,7 +172,11 @@
         </div>
         {#await import('./doc.svelte') then doc}
             {#if engine && selectedRule && showDoc}
-                <div class="publicodes-documentation" transition:fly={{ x: 400, duration: 250 }}>
+                <div 
+                    class="publicodes-documentation " 
+                    in:transition().in
+                    out:transition().out
+                >
                     <doc.default
                         {engine}
                         {selectedRule}
