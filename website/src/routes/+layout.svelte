@@ -147,29 +147,29 @@
                 <p class="text-lg font-normal text-dark">Collaboratif, accessible et ouvert.</p>
             </div>
             <div class="flex flex-row gap-16">
-                <!-- <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-2">
                 <p class="font-light text-slate-500">Ressources</p>
                 <ul class="flex flex-col gap-1 font-light">
-                    <li>
+                    <!-- <li>
                         <a href="/docs">À propos</a>
-                    </li>
+                    </li> -->
                     <li>
                         <a href="/docs">Documentation</a>
                     </li>
                     <li>
-                        <a href="/docs">Bibliothèque</a>
+                        <a href="/bibliotheque">Bibliothèque</a>
                     </li>
                     <li>
-                        <a href="/docs">Réalisations</a>
+                        <a href="/realisations">Réalisations</a>
                     </li>
                     <li>
-                        <a href="/docs">Statistiques</a>
+                        <a target="_blank" href="https://dashboard.simpleanalytics.com/publi.codes" aria-label="Statistiques de consultation, nouvelle fenêtre">Statistiques</a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="/docs">FAQ</a>
-                    </li>
+                    </li> -->
                 </ul>
-            </div> -->
+            </div>
                 <div class="flex flex-col gap-2">
                     <p class="font-light text-slate-500">Communauté</p>
                     <ul class="flex flex-col gap-1 font-light">

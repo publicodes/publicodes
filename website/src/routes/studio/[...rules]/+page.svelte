@@ -57,7 +57,7 @@
             <PublicodesEditor
                 code={initialCode}
                 onchange={updateUrl}
-                showDocByDefault={!!selectedRuleInDoc}
+                showDoc={!!selectedRuleInDoc || initialCode === defaultCode}
                 title={'Publicodes studio'}
                 fullPage={true}
                 {selectedRuleInDoc}

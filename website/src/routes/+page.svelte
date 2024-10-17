@@ -12,12 +12,14 @@
     import { produits, type Produit } from '$data/produits';
     import PublicodesSchemaSVG from '$lib/assets/publicodes-schema.svg';
     import AnimatedLogo from '$lib/component/animated-logo.svelte';
+    import Heading from '$lib/component/heading.svelte';
     import PublicodesPackages from '$lib/component/publicode-packages.svelte';
     import PublicodesEditor from '$lib/component/publicodes/editor.svelte';
     import Banner from '$lib/ui/banner.svelte';
     import Button from '$lib/ui/button.svelte';
+    import Callout from '$lib/ui/callout.svelte';
     import Card from '$lib/ui/card.svelte';
-    import Heading from '$lib/component/heading.svelte';
+    import { fly } from 'svelte/transition';
 
     const { data } = $props();
     const packages = data.packages;
@@ -27,6 +29,15 @@
     const displayedProduits = produits.filter(({ img }) => !!img).slice(0, 3) as (Produit & {
         img: string;
     })[];
+
+    let showDoc = $state(false);
+    function showDocOnSuccess(code: string) {
+        if (!showDoc && code.includes('salaire brut: 3000 €/mois')) {
+            setTimeout(() => {
+                showDoc = true;
+            }, 500);
+        }
+    }
 </script>
 
 <header class="not-prose flex w-full justify-center overflow-hidden bg-primary-50">
@@ -79,34 +90,45 @@
             <div class="flex flex-col gap-4">
                 <p class="prose-md prose font-normal text-black md:prose-xl">
                     Essayez de modifier le <code>salaire brut</code> à
-                    <code>3000 €/mois</code> dans l'exemple suivant...
+                    <code>3000 €/mois</code> dans l'exemple suivant :
                 </p>
                 <div class="">
                     <PublicodesEditor
                         title="Calcul du salaire net"
-                        showDocByDefault
-                        hideDocButton
+                        onchange={showDocOnSuccess}
+                        {showDoc}
                         size={isMobile ? 'md' : 'lg'}
                         code={`salaire brut: 2500 €/mois
 
-cotisations salariales:
+cotisations:
   produit:
     - salaire brut
     - taux
   avec:
     taux: 21.7%
 
-salaire net: salaire brut - cotisations salariales`}
+salaire net: salaire brut - cotisations
+`}
                     ></PublicodesEditor>
                 </div>
-                <p class="font-normal text-black md:text-xl lg:max-w-7xl">
-                    <strong>C'était facile, non ?</strong> Même sans connaissances en informatique, il
-                    est possible de comprendre du code écrit avec Publicodes.
-                </p>
+                {#if showDoc}
+                    <div
+                        in:fly={{ y: -50, opacity: 0, duration: 100, delay: 500 }}
+                        class="will-change-transform md:text-xl"
+                    >
+                        <Callout type="tip" title="C'était facile, non ?">
+                            <p class="py-4 font-normal text-black md:text-xl lg:max-w-7xl">
+                                Même sans connaissances en informatique, il est possible de
+                                comprendre du code écrit avec Publicodes.
+                            </p>
+                        </Callout>
+                    </div>
+                {/if}
+
+                <a class="w-fit" href="/docs">
+                    {@render buttonWithRightArrow('Découvrir le langage')}
+                </a>
             </div>
-            <a class="w-fit self-center" href="/docs">
-                {@render buttonWithRightArrow('Découvrir le langage')}
-            </a>
         </div>
     </section>
     <section class="mt-20 flex w-full flex-col items-center gap-16 bg-primary-50 md:mt-32">

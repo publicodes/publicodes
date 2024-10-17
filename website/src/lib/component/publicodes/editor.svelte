@@ -14,7 +14,7 @@
         code = '',
         title = '',
         selectedRuleInDoc,
-        showDocByDefault = false,
+        showDoc = false,
         hideDocButton = false,
 
         onchange,
@@ -25,7 +25,7 @@
         code: string;
         title: string;
         selectedRuleInDoc?: string;
-        showDocByDefault?: boolean;
+        showDoc?: boolean;
         hideDocButton?: boolean;
         onchange?: (code: string, currentlySelected?: string) => void;
         size?: 'md' | 'lg';
@@ -33,7 +33,6 @@
         additionnalButton?: Snippet;
     } = $props();
 
-    let showDoc = $state(showDocByDefault);
     let copied = $state(false);
 
     let iconSize = size === 'md' ? 20 : 26;
@@ -64,7 +63,7 @@
 <div
     class="editor-container not-prose flex flex-col overflow-hidden
 	border border-primary-100 sm:rounded"
-    class:mb-8={!fullPage}
+    class:mb-4={!fullPage}
 >
     <div
         class="editor-header relative flex shrink-0 items-center overflow-hidden
@@ -149,8 +148,8 @@
             </ul>
         </div>
         {#await import('./doc.svelte') then doc}
-            {#if engine && selectedRule}
-                <div class="publicodes-documentation" class:showDoc>
+            {#if engine && selectedRule && showDoc}
+                <div class="publicodes-documentation" transition:fly={{ x: 400, duration: 250 }}>
                     <doc.default
                         {engine}
                         {selectedRule}
@@ -168,10 +167,12 @@
     /* TODO use something else */
     @media (min-width: 1280px) {
         .publicodes-documentation {
-            max-width: 60%;
+            max-width: 55%;
         }
     }
     .publicodes-documentation {
+        @apply bg-slate-50;
+
         transition:
             opacity 0.1s,
             transform 0.1s;
@@ -180,10 +181,10 @@
         @apply flex max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
         @apply overflow-auto xl:w-fit;
 
-        &:not(.showDoc) {
+        /* &:not(.showDoc) {
             @apply absolute;
             @apply invisible opacity-0 max-xl:translate-y-10 xl:translate-x-64;
-        }
+        } */
 
         & :global {
             h1 {
@@ -219,19 +220,21 @@
                 @apply min-w-10 flex-1 p-2 pl-0 pr-4;
             }
             .content {
-                @apply flex w-full p-0 hover:bg-slate-100;
+                @apply flex p-0 hover:text-primary-400;
             }
             .active .content {
-                @apply bg-slate-100 font-regular text-primary-600;
+                @apply bg-slate-50 font-regular text-primary-400;
             }
+
             .content::before {
-                margin: 1rem !important;
+                margin-left: 0.5rem !important;
+                margin-right: 0.5rem !important;
+                @apply mx-2 scale-75;
             }
             .content > button {
-                @apply h-full rounded border-0 text-center opacity-90;
+                @apply h-full rounded border-0 text-center opacity-90 will-change-transform;
                 margin: 0 !important;
-
-                width: 2.5rem;
+                padding: 0 !important;
                 background: none !important;
                 opacity: 0.5;
             }
@@ -240,13 +243,13 @@
                 @apply w-full flex-1 pt-2 lg:pr-4 xl:border-l-0 2xl:border-r;
             }
             nav {
-                padding-right: 1px;
-                @apply overflow-hidden border-r-0 lg:max-xl:max-w-64 xl:max-2xl:rounded-tr xl:max-2xl:border-r xl:max-2xl:border-t 2xl:max-w-64;
+                @apply h-full overflow-hidden border-r-0 bg-white p-2 lg:max-xl:border-r xl:max-2xl:border-t 2xl:max-w-64;
             }
             #documentation-rule-root {
                 @apply flex-1 items-stretch overflow-y-auto overflow-x-hidden xl:flex xl:h-full xl:flex-col-reverse xl:max-2xl:items-start 2xl:flex-row-reverse;
+
                 & > * {
-                    @apply max-w-full;
+                    @apply max-w-full xl:max-2xl:w-full;
                 }
             }
 
