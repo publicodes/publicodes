@@ -1,10 +1,11 @@
-import ekofestLogo from './logos/ekofest-logo.png';
-import karburanProImg from './logos/karburan-pro.png';
-import mesAidesVeloImg from './logos/mes-aides-velo.png';
-import mesAidesRenoImg from './logos/mes-aides-reno.png';
-import monEmpreinteEauImg from './logos/mon-empreinte-eau.png';
+import ekofestLogo from './logos/ekofest-logo.webp';
+import karburanProImg from './logos/karburan-pro.webp';
+import mesAidesVeloImg from './logos/mes-aides-velo.webp';
+import mesAidesRenoImg from './logos/mes-aides-reno.webp';
+import monEmpreinteEauImg from './logos/mon-empreinte-eau.webp';
+import jagisImg from './logos/jagis.webp';
 
-export const produits: readonly Produit[] = [
+const rawProduits = [
     {
         slug: 'nos-gestes-climat',
         name: 'Nos Gestes Climat',
@@ -124,11 +125,15 @@ export const produits: readonly Produit[] = [
         url: 'https://mon-empreinte-eau.fr/',
         img: monEmpreinteEauImg
     }
-];
+] as const;
+
+export const produits: readonly Produit[] = rawProduits;
+
+export type ProduitSlug = (typeof rawProduits)[number]['slug'];
 
 export type Produit = {
     name: string;
-    slug: string;
+    slug: ProduitSlug;
     description: string;
     url: string;
     img?: string;

@@ -1,3 +1,5 @@
+import type { ProduitSlug } from './produits';
+
 export const publicodesPackages: readonly PublicodesPackage[] = [
     {
         npm: '@incubateur-ademe/nosgestesclimat',
@@ -50,5 +52,5 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
 export type PublicodesPackage = {
     npm: string;
     maintainer: string;
-    users?: string[];
+    users?: ProduitSlug[];
 };

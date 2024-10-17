@@ -15,7 +15,10 @@
                     maintainer === produit.slug || users?.includes(produit.slug)
             )
         }))
-        .sort((a, b) => b.pkg.length - a.pkg.length);
+        .sort((a, b) => {
+            const lengthDiff = b.pkg.length - a.pkg.length;
+            return lengthDiff !== 0 ? lengthDiff : a.name.localeCompare(b.name);
+        });
 </script>
 
 <div class="prose pb-10 lg:max-w-screen-md">
