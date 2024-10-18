@@ -10,7 +10,7 @@
     const defaultCode = `
 # Bienvenue dans le bac à sable du langage publicode !
 # Pour apprendre le langage :
-# => https://publi.codes/tutoriel
+# => https://publi.codes/docs/tutoriel
 `;
 
     let initialCode: string = $state('');
