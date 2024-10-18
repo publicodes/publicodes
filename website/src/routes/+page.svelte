@@ -66,21 +66,6 @@
         </div>
     </div>
 </header>
-<aside class="bg-secondary-600 px-4 py-4 text-white">
-    <div class="container text-center">
-        <MessageCircleHeart class="inline" strokeWidth={1.5} /> Aidez-nous à améliorer Publicodes en
-        5 minutes chrono !
-        <a
-            href="https://tally.so/r/3yEBlB"
-            class="border-1 background ml-2 cursor-pointer whitespace-nowrap rounded border bg-white bg-gradient-to-r px-3 py-1.5 font-sans font-regular text-secondary-600 duration-100 ease-in-out hover:bg-secondary-100 [&:hover_svg]:translate-x-1"
-        >
-            Répondre à l'enquête<ArrowRight
-                class="ml-1 inline transition-transform"
-                strokeWidth={1.5}
-            />
-        </a>
-    </div>
-</aside>
 
 <main class="">
     <section class="mt-20 flex flex-col items-center justify-center gap-8 md:mt-36">

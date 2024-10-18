@@ -41,78 +41,76 @@
         <meta name="description" content={currentPageMetadata.description} />
     {/if}
 </svelte:head>
-<div class="flex min-h-full items-start">
-    <!-- MOBILE NAV -->
-    {#if showMobileMenuLeft}
-        <div
-            role="dialog"
-            class="fixed z-20 h-full overflow-auto border-r border-primary-300 bg-white will-change-transform"
-            transition:fly={{ x: -100 }}
-        >
+<div class="flex min-h-full items-start lg:justify-center">
+    <div class="flex lg:container">
+        <!-- MOBILE NAV -->
+        {#if showMobileMenuLeft}
+            <div
+                role="dialog"
+                class="fixed z-20 h-full overflow-auto border-r border-primary-300 bg-white will-change-transform"
+                transition:fly={{ x: -100 }}
+            >
+                {@render MenuLeft()}
+            </div>
+            <div
+                class="fixed inset-0 z-10"
+                aria-hidden="true"
+                onclick={() => (showMobileMenuLeft = false)}
+            ></div>
+        {/if}
+
+        <div class="sticky top-16 max-h-screen max-md:hidden">
             {@render MenuLeft()}
         </div>
+        <div class="self-stretch border-r border-primary-100"></div>
         <div
-            class="fixed inset-0 z-10"
-            aria-hidden="true"
-            onclick={() => (showMobileMenuLeft = false)}
-        ></div>
-    {/if}
-
-    <div class="sticky top-16 min-h-max max-md:hidden">
-        {@render MenuLeft()}
-    </div>
-    <div class="self-stretch border-r border-primary-100"></div>
-    <div
-        class="prose mx-auto flex flex-col px-4 pt-8 transition-all xl:prose-lg max-md:max-w-full md:px-8 2xl:max-w-4xl"
-    >
-        <div class="flex justify-between gap-2">
-            <button
-                class="self flex gap-2 rounded-sm border border-primary-300 px-4
+            class="prose mx-auto flex flex-col px-4 pt-8 transition-all xl:prose-lg max-md:max-w-full md:px-8 2xl:max-w-4xl"
+        >
+            <div class="flex justify-between gap-2">
+                <button
+                    class="self flex gap-2 rounded-sm border border-primary-300 px-4
 				py-2 text-primary-400 hover:bg-slate-100 md:hidden"
-                onclick={() => (showMobileMenuLeft = true)}
-            >
-                Menu
-            </button>
+                    onclick={() => (showMobileMenuLeft = true)}
+                >
+                    Menu
+                </button>
 
-            <button
-                class="flex rounded-sm border border-primary-300 px-4 py-2
+                <button
+                    class="flex rounded-sm border border-primary-300 px-4 py-2
 				text-primary-400 hover:bg-slate-100 lg:hidden"
-                onclick={() => (showMobileMenuRight = true)}
+                    onclick={() => (showMobileMenuRight = true)}
+                >
+                    <span>Sur cette page</span>
+                </button>
+            </div>
+            <article
+                class:blur-sm={showMobileMenuLeft || showMobileMenuRight}
+                class:opacity-50={showMobileMenuLeft || showMobileMenuRight}
+                class=" py-8"
             >
-                <span>Sur cette page</span>
-            </button>
+                <h1>{currentPageMetadata?.title}</h1>
+                {@render children()}
+            </article>
         </div>
-        <article
-            class:blur-sm={showMobileMenuLeft || showMobileMenuRight}
-            class:opacity-50={showMobileMenuLeft || showMobileMenuRight}
-            class=" py-8"
-        >
-            <h1>{currentPageMetadata?.title}</h1>
-            {@render children()}
-        </article>
-    </div>
 
-    {#if showMobileMenuRight}
-        <div
-            role="dialog"
-            class="fixed right-0 z-20 h-full overflow-auto border-l
-			border-primary-300 bg-white will-change-transform"
-            transition:fly={{ x: 100 }}
-        >
+        {#if showMobileMenuRight}
+            <div
+                role="dialog"
+                class="fixed right-0 z-20 h-full overflow-auto border-l border-primary-300 bg-white will-change-transform"
+                transition:fly={{ x: 100 }}
+            >
+                {@render MenuRight()}
+            </div>
+            <div
+                class="fixed inset-0 z-10"
+                aria-hidden="true"
+                onclick={() => (showMobileMenuRight = false)}
+            ></div>
+        {/if}
+
+        <div class="sticky top-16 hidden max-h-screen w-64 overflow-auto pt-16 text-sm lg:block">
             {@render MenuRight()}
         </div>
-        <div
-            class="fixed inset-0 z-10"
-            aria-hidden="true"
-            onclick={() => (showMobileMenuRight = false)}
-        ></div>
-    {/if}
-
-    <div
-        class="sticky top-16 hidden max-h-screen w-64 overflow-auto pt-16
-		text-sm lg:block"
-    >
-        {@render MenuRight()}
     </div>
 </div>
 
