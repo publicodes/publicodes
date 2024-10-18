@@ -10,7 +10,14 @@
     import { afterNavigate } from '$app/navigation';
     import { insertDocsearch } from '$lib/search/insert-docsearch';
     import NavTab from '$lib/ui/nav-tab.svelte';
-    import { Github, MenuIcon, MessagesSquare } from 'lucide-svelte';
+    import {
+        Github,
+        MenuIcon,
+        MessageCircleHeart,
+        MessagesSquare,
+        ChevronRight,
+        X
+    } from 'lucide-svelte';
     import { onMount } from 'svelte';
     import { fly } from 'svelte/transition';
     import '../app.css';
@@ -26,6 +33,8 @@
     dayjs.locale('fr');
 
     let showMobileMenu = $state(false);
+    let showSurvey = $state(true);
+
     afterNavigate(() => {
         showMobileMenu = false;
     });
@@ -51,7 +60,47 @@
     class="fixed top-0 z-20 w-screen border-b border-primary-200 bg-white
 	 text-cyan-950"
 >
-    <div class="mx-auto flex h-16 items-center gap-4 px-6 py-2 md:px-8">
+    {#if showSurvey}
+        <aside
+            class="flex items-center justify-between bg-secondary-600 px-2
+			py-1 text-white"
+        >
+            <div
+                class="container mx-auto flex flex-col items-start gap-3 p-2 text-left
+			sm:flex-row sm:items-center sm:justify-center sm:text-left"
+            >
+                <MessageCircleHeart class="hidden sm:inline" strokeWidth={1.5} size={28} />
+                <span
+                    >Aidez-nous à améliorer Publicodes en <span class="font-semibold"
+                        >5 minutes chrono !</span
+                    ></span
+                >
+                <a
+                    href="https://tally.so/r/3yEBlB"
+                    target="_blank"
+                    class="border-1 background flex w-fit cursor-pointer items-center
+			whitespace-nowrap rounded-full border border-secondary-600
+			bg-white bg-gradient-to-r px-4 py-1.5 font-sans text-sm
+				font-semibold leading-none text-secondary-600
+				duration-100 ease-in-out hover:bg-secondary-900 hover:text-white [&:hover_svg]:translate-x-1"
+                    >Participer à l'enquête
+                    <ChevronRight class="inline transition-transform" strokeWidth={2} size={22} />
+                </a>
+            </div>
+            <button
+                onclick={() => (showSurvey = false)}
+                class="absolute right-4 flex h-fit w-fit items-center
+				rounded-full bg-secondary-700 p-2 text-white
+			hover:bg-secondary-900 hover:text-white"
+            >
+                <X class="m-0 inline" size={16} strokeWidth={2} />
+            </button>
+        </aside>
+    {/if}
+    <div
+        class="mx-auto flex h-16 items-center justify-center gap-4 px-6 py-2 lg:container
+		md:px-8"
+    >
         <a
             class="inline-flex shrink-0 items-center gap-2 text-xl font-light hover:text-primary-400"
             href="/"
@@ -60,7 +109,7 @@
             Publicodes
         </a>
 
-        <div id="search" class="flex flex-1 justify-end md:justify-center"></div>
+        <div id="search" class="flex justify-center md:flex-1"></div>
         <button
             class="text-primary-400 hover:text-primary-600 sm:hidden"
             onclick={() => (showMobileMenu = true)}
@@ -102,22 +151,23 @@
 </div>
 
 {#snippet Menu()}
-    <nav class="p-6 sm:p-0">
+    <nav class="flex flex-col justify-between gap-6 p-6 sm:flex-row sm:p-0">
         <ul class="flex flex-col items-start justify-center gap-3 sm:flex-row sm:items-center">
             <NavTab href="/docs">Docs</NavTab>
             <NavTab href="/bibliotheque">Bibliothèque</NavTab>
             <NavTab class="sm:max-lg:hidden" href="/realisations">Réalisations</NavTab>
             <NavTab href="/studio">Studio</NavTab>
             <NavTab href="/blog">Blog</NavTab>
+        </ul>
+        <!-- divider -->
+        <div class="self-stretch border-b border-primary-100 sm:border-r"></div>
+        <ul class="flex flex-row items-start justify-center gap-3 sm:items-center">
             <NavTab
                 href="https://matrix.to/#/#publicodes:matrix.org"
-                title="Discuter avec la communauté"
-                ><span class="sm:hidden">Communauté</span><MessagesSquare
-                    class="inline py-1"
-                /></NavTab
+                title="Discuter avec la communauté"><MessagesSquare class="inline py-1" /></NavTab
             >
             <NavTab href="https://github.com/publicodes/publicodes" title="Voir le code source"
-                ><span class="sm:hidden">Code source</span><Github class="inline py-1" /></NavTab
+                ><Github class="inline py-1" /></NavTab
             >
 
             <!-- <li>
@@ -137,7 +187,7 @@
 {#snippet Footer()}
     <footer class="flex w-full flex-col items-center border-t border-primary-200 py-10">
         <div
-            class="flex w-full flex-col items-start gap-8 px-6 md:max-w-7xl md:flex-row md:justify-between"
+            class="flex w-full flex-col items-start gap-8 px-6 md:container md:flex-row md:justify-between"
         >
             <div class="flex flex-col gap-2">
                 <span class="inline-flex items-center gap-2 text-2xl font-light">

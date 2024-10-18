@@ -54,8 +54,8 @@
             copied = false;
         }, 3000);
     }
-    $inspect(fullPage);
-    const transition = $derived(getTransition(fullPage));
+
+    const { in: transitionIn, out: transitionOut } = $derived(getTransition(fullPage));
     let { engine, error, warning } = $derived(createEngine(code));
     const selectedRule: string | undefined = $derived.by(() => {
         if (engine && !(selectedRuleInDoc && selectedRuleInDoc in engine.getParsedRules())) {
@@ -137,8 +137,11 @@
             </button>
         {/if}
     </div>
-    <div class="editor flex flex-1 flex-col bg-white xl:flex-row">
-        <div class="flex flex-1 flex-col overflow-auto">
+    <div class="editor flex flex-1 flex-col xl:flex-row">
+        <div
+            class="z-10 flex flex-1 flex-col overflow-auto bg-white max-xl:border-b"
+            style="margin-bottom: -1px"
+        >
             <CodeMirror
                 bind:value={code}
                 lang={yaml()}
@@ -166,7 +169,12 @@
         </div>
         {#await import('./doc.svelte') then doc}
             {#if engine && selectedRule && showDoc}
-                <div class="publicodes-documentation" in:transition.in out:transition.out>
+                <div
+                    class="publicodes-documentation"
+                    style="margin-top: 1px"
+                    in:transitionIn
+                    out:transitionOut
+                >
                     <doc.default
                         {engine}
                         {selectedRule}
@@ -195,7 +203,7 @@
             transform 0.1s;
 
         /* @apply -mb-4; */
-        @apply flex max-xl:flex-col max-xl:border-t max-lg:px-4 xl:border-l;
+        @apply flex max-xl:flex-col max-lg:px-4 xl:border-l;
         @apply overflow-auto xl:w-fit;
 
         /* &:not(.showDoc) {
