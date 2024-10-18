@@ -56,30 +56,25 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
 </svelte:head>
 
-<div
-    class="fixed top-0 z-20 w-screen border-b border-primary-200 bg-white
-	 text-cyan-950"
->
+<div class="fixed top-0 z-20 w-screen border-b border-primary-200 bg-white text-cyan-950">
     <div
-        class="mx-auto flex h-16 items-center justify-center gap-4 px-6 py-2 lg:container
-		md:px-8"
+        class="flex h-16 w-full items-center gap-8 px-6 py-2 lg:container md:px-8 lg:mx-auto
+		lg:justify-center"
     >
         <a
-            class="inline-flex shrink-0 items-center gap-2 text-xl font-light hover:text-primary-400"
+            class="inline-flex flex-1 shrink-0 items-center gap-2 text-xl font-light hover:text-primary-400"
             href="/"
         >
             <img src={Logo} class="h-7" alt="Logo de publicodes" />
             Publicodes
         </a>
-
-        <div id="search" class="flex justify-center md:flex-1"></div>
+        <div id="search" class="flex justify-center"></div>
         <button
             class="text-primary-400 hover:text-primary-600 sm:hidden"
             onclick={() => (showMobileMenu = true)}
         >
             <MenuIcon size={24} />
         </button>
-
         <div class="hidden sm:block">
             {@render Menu()}
         </div>
@@ -159,9 +154,8 @@
             <NavTab href="/studio">Studio</NavTab>
             <NavTab href="/blog">Blog</NavTab>
         </ul>
-        <!-- divider -->
         <div class="self-stretch border-b border-primary-100 sm:border-r"></div>
-        <ul class="flex flex-row items-start justify-center gap-3 sm:items-center">
+        <ul class="flex flex-row items-start justify-center gap-2 sm:items-center">
             <NavTab
                 href="https://matrix.to/#/#publicodes:matrix.org"
                 title="Discuter avec la communauté"><MessagesSquare class="inline py-1" /></NavTab
