@@ -1,5 +1,11 @@
 # publicodes
 
+## 1.5.4
+
+### Patch Changes
+
+- [#570](https://github.com/publicodes/publicodes/pull/570) [`8688aba`](https://github.com/publicodes/publicodes/commit/8688abaed51924b461ae77184cad332ac338e8f8) Thanks [@johangirod](https://github.com/johangirod)! - Improve type inference
+
 ## 1.5.3
 
 ### Patch Changes

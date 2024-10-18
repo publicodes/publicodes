@@ -1,5 +1,11 @@
 # website
 
+## 1.0.2
+
+### Patch Changes
+
+-   [#577](https://github.com/publicodes/publicodes/pull/577) [`f52f0e4`](https://github.com/publicodes/publicodes/commit/f52f0e419d486304899eb42fdc51209150d5d0b5) Thanks [@EmileRolley](https://github.com/EmileRolley)! - Add jagis.beta.gouv.fr to produits.ts
+
 ## 1.0.1
 
 ### Patch Changes
