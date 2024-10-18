@@ -16,12 +16,11 @@
         MessageCircleHeart,
         MessagesSquare,
         ChevronRight,
-        ChevronRightCircle
+        X
     } from 'lucide-svelte';
     import { onMount } from 'svelte';
     import { fly } from 'svelte/transition';
     import '../app.css';
-    import ArrowRight from 'lucide-svelte/icons/arrow-right';
 
     /* eslint-disable @typescript-eslint/no-explicit-any */
     (globalThis as any).PublicodesEditor = PublicodesEditor;
@@ -34,6 +33,8 @@
     dayjs.locale('fr');
 
     let showMobileMenu = $state(false);
+    let showSurvey = $state(true);
+
     afterNavigate(() => {
         showMobileMenu = false;
     });
@@ -59,6 +60,43 @@
     class="fixed top-0 z-20 w-screen border-b border-primary-200 bg-white
 	 text-cyan-950"
 >
+    {#if showSurvey}
+        <aside
+            class="flex items-center justify-between bg-secondary-600 px-2
+			py-1 text-white"
+        >
+            <div
+                class="container mx-auto flex flex-col items-start gap-3 p-2 text-left
+			sm:flex-row sm:items-center sm:justify-center sm:text-left"
+            >
+                <MessageCircleHeart class="hidden sm:inline" strokeWidth={1.5} size={28} />
+                <span
+                    >Aidez-nous à améliorer Publicodes en <span class="font-semibold"
+                        >5 minutes chrono !</span
+                    ></span
+                >
+                <a
+                    href="https://tally.so/r/3yEBlB"
+                    target="_blank"
+                    class="border-1 background flex w-fit cursor-pointer items-center
+			whitespace-nowrap rounded-full border border-secondary-600
+			bg-white bg-gradient-to-r px-4 py-1.5 font-sans text-sm
+				font-semibold leading-none text-secondary-600
+				duration-100 ease-in-out hover:bg-secondary-900 hover:text-white [&:hover_svg]:translate-x-1"
+                    >Participer à l'enquête
+                    <ChevronRight class="inline transition-transform" strokeWidth={2} size={22} />
+                </a>
+            </div>
+            <button
+                onclick={() => (showSurvey = false)}
+                class="absolute right-4 flex h-fit w-fit items-center
+				rounded-full bg-secondary-700 p-2 text-white
+			hover:bg-secondary-900 hover:text-white"
+            >
+                <X class="m-0 inline" size={16} strokeWidth={2} />
+            </button>
+        </aside>
+    {/if}
     <div
         class="mx-auto flex h-16 items-center justify-center gap-4 px-6 py-2 lg:container
 		md:px-8"
@@ -106,27 +144,6 @@
     class:blur-sm={showMobileMenu}
     class:opacity-50={showMobileMenu}
 >
-    <aside class="bg-secondary-600 py-3 text-white">
-        <div class="container mx-auto flex items-center justify-center gap-3">
-            <MessageCircleHeart class="inline" strokeWidth={1.5} size={28} />
-            <span
-                >Aidez-nous à améliorer Publicodes en <span class="font-semibold"
-                    >5 minutes chrono !</span
-                ></span
-            >
-            <a
-                href="https://tally.so/r/3yEBlB"
-                target="_blank"
-                class="border-1 background ml-2 flex cursor-pointer items-center
-			whitespace-nowrap rounded-full border border-secondary-600
-			bg-white bg-gradient-to-r px-4 py-1.5 font-sans text-sm
-				font-semibold leading-none text-secondary-600
-				duration-100 ease-in-out hover:bg-secondary-900 hover:text-white [&:hover_svg]:translate-x-1"
-                >Participer à l'enquête
-                <ChevronRight class="inline transition-transform" strokeWidth={2} size={22} />
-            </a>
-        </div>
-    </aside>
     <div class="flex-1">
         {@render children()}
     </div>

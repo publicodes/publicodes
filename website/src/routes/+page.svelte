@@ -4,7 +4,6 @@
         CodeXmlIcon,
         LandmarkIcon,
         LibraryBig,
-        MessageCircleHeart,
         Microscope,
         Play,
         Rocket
