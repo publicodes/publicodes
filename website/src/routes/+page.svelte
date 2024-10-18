@@ -31,7 +31,7 @@
     })[];
 
     let showDoc = $state(false);
-    
+
     function showDocOnSuccess(code: string) {
         if (!showDoc && code.includes('salaire brut: 3000 €/mois')) {
             setTimeout(() => {
@@ -93,13 +93,13 @@
                     Essayez de modifier le <code>salaire brut</code> à
                     <code>3000 €/mois</code> dans l'exemple suivant :
                 </p>
-                <div class="">
+                <div class="max-sm:-mx-6">
                     <PublicodesEditor
                         title="Calcul du salaire net"
                         onchange={showDocOnSuccess}
                         {showDoc}
                         size={isMobile ? 'md' : 'lg'}
-                        code={`salaire brut: 2500 €/mois
+                        code={`salaire brut: 2000 €/mois
 
 cotisations:
   produit:

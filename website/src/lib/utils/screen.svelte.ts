@@ -6,16 +6,11 @@ type Breakpoint = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 const screen: { currentBreakpoint: Breakpoint | undefined } = $state({
     currentBreakpoint: undefined
 });
-
 if (typeof window !== 'undefined') {
     (
         [
-            [
-                window.matchMedia(
-                    `(max-width: ${fullConfig.theme.screens.sm}) and (max-width: ${fullConfig.theme.screens.md})`
-                ),
-                'sm'
-            ],
+            // [window.matchMedia(`(max-width: ${fullConfig.theme.screens.sm})`), 'xs'],
+            [window.matchMedia(`(max-width: ${fullConfig.theme.screens.md})`), 'sm'],
             [
                 window.matchMedia(
                     `(min-width: ${fullConfig.theme.screens.md}) and (max-width: ${fullConfig.theme.screens.lg})`
@@ -42,7 +37,6 @@ if (typeof window !== 'undefined') {
         }
         matchMedia.addEventListener('change', () => {
             if (matchMedia.matches) {
-                console.log('change', breakpoint);
                 screen.currentBreakpoint = breakpoint;
             }
         });

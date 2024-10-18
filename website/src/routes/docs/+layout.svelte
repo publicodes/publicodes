@@ -63,7 +63,7 @@
     </div>
     <div class="self-stretch border-r border-primary-100"></div>
     <div
-        class="prose mx-auto flex flex-col px-4 pt-8 transition-all max-md:max-w-full md:px-8 2xl:max-w-4xl"
+        class="prose mx-auto flex flex-col px-4 pt-8 transition-all xl:prose-lg max-md:max-w-full md:px-8 2xl:max-w-4xl"
     >
         <div class="flex justify-between gap-2">
             <button

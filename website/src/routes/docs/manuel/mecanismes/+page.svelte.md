@@ -45,9 +45,11 @@ b: 10
 Certains mécanismes prennent plusieurs paramètres. Dans ce cas, les paramètres sont passés en tant qu'objet.
 
 ```publicodes
-durée:
-  depuis: 11/06/1991
-  jusqu'à: 12/12/2012
+exemple:
+  durée:
+    depuis: 11/06/1991
+    jusqu'à: 12/12/2012
+    unité: an
 ```
 
 ### Les mécanismes à liste
@@ -55,9 +57,11 @@ durée:
 Enfin, certains mécanismes prennent une liste de paramètres. Les paramètres sont alors écrits les uns en dessous des autres, avec un tiret `-` devant chacun d'eux.
 
 ```publicodes
-somme:
-  - 10
-  - 20
+exemple:
+  somme:
+    - 10
+    - 20
+    - 12.4 * 1.2
 ```
 
 ## Mécanismes chaînés

@@ -37,7 +37,9 @@
                 <div class="z-10 text-right">
                     <Tooltip>
                         {#snippet text()}
-                            <h3 class="prose">Modèle{pkg.length > 1 ? 's' : ''} Publicodes :</h3>
+                            <h3 class="prose">
+                                Modèle{pkg.length > 1 ? 's' : ''} Publicodes
+                            </h3>
                             <ul>
                                 {#each pkg as { npm }}
                                     <li class="prose prose-sm">

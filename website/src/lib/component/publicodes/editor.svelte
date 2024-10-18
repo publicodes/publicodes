@@ -3,13 +3,20 @@
     import { tomorrow } from 'thememirror';
 
     import Tag from '$lib/ui/tag.svelte';
-    import { ClipboardCopy, PanelBottomClose, PanelBottomOpen, PanelRightClose, PanelRightOpen } from 'lucide-svelte';
+    import screen from '$lib/utils/screen.svelte';
+    import {
+        ClipboardCopy,
+        PanelBottomClose,
+        PanelBottomOpen,
+        PanelRightClose,
+        PanelRightOpen
+    } from 'lucide-svelte';
     import { type Snippet } from 'svelte';
     import CodeMirror from 'svelte-codemirror-editor';
     import { fly } from 'svelte/transition';
     import { createEngine } from './create-engine';
     import FlyInOutTransition from './fly-in-out-transition.svelte';
-    import transition, { getTransitionDirection } from './transition.svelte';
+    import getTransition, { getTransitionDirection } from './transition.svelte';
 
     let {
         code = '',
@@ -17,7 +24,6 @@
         selectedRuleInDoc,
         showDoc = false,
         hideDocButton = false,
-
         onchange,
         size = 'md',
         fullPage = false,
@@ -31,12 +37,14 @@
         onchange?: (code: string, currentlySelected?: string) => void;
         size?: 'md' | 'lg';
         fullPage?: boolean;
-        additionnalButton?: Snippet;
+        additionnalButton?: Snippet<[iconSize: number]>;
     } = $props();
 
     let copied = $state(false);
 
-    let iconSize = size === 'md' ? 20 : 26;
+    let iconSize = $derived(
+        (size === 'md' ? 20 : 26) - (screen.currentBreakpoint === 'sm' ? 4 : 0)
+    );
     let iconStrokeWidth = 1.5;
 
     function handleCopy() {
@@ -46,7 +54,8 @@
             copied = false;
         }, 3000);
     }
-
+    $inspect(fullPage);
+    const transition = $derived(getTransition(fullPage));
     let { engine, error, warning } = $derived(createEngine(code));
     const selectedRule: string | undefined = $derived.by(() => {
         if (engine && !(selectedRuleInDoc && selectedRuleInDoc in engine.getParsedRules())) {
@@ -55,9 +64,6 @@
         return selectedRuleInDoc;
     });
 
-    
-    // const transition = $derived(getTransition(screen.currentBreakpoint));
-    
     const documentationIsBroken = $derived(!engine || !Object.keys(engine.getParsedRules()).length);
     $effect(() => {
         onchange?.(code, showDoc ? selectedRule : undefined);
@@ -88,19 +94,19 @@
                 out:fly={{ duration: 75 }}
                 class="absolute left-16 will-change-transform"
             >
-                <Tag {size} bgColor="bg-primary-600 text-white ">Code copié !</Tag>
+                <Tag {size}>Code copié !</Tag>
             </div>
         {/if}
         <span
-            class="flex-1 font-mono font-regular text-primary-500"
-            class:text-lg={size === 'lg'}
-            class:text-sm={size === 'md'}
+            class="flex-1 font-mono font-regular text-primary-500 xl:p-2 xl:text-lg {size === 'lg'
+                ? 'lg:text-lg xl:text-xl'
+                : 'max-md:text-sm'}"
             class:p-3={size === 'lg'}
         >
             {title}
         </span>
         {#if additionnalButton}
-            {@render additionnalButton()}
+            {@render additionnalButton(iconSize)}
         {/if}
         {#if !hideDocButton}
             <button
@@ -114,37 +120,24 @@
             >
                 <FlyInOutTransition condition={showDoc && !documentationIsBroken}>
                     {#snippet ifTrue()}
-                        
-                    {#if getTransitionDirection() === 'horizontal'}
-                        <PanelRightClose
-                            strokeWidth={iconStrokeWidth}
-                            size={iconSize}
-                        />
-                    {:else}
-                        <PanelBottomOpen
-                            strokeWidth={iconStrokeWidth}
-                            size={iconSize}
-                        />
-                    {/if}
+                        {#if getTransitionDirection() === 'horizontal'}
+                            <PanelRightClose strokeWidth={iconStrokeWidth} size={iconSize} />
+                        {:else}
+                            <PanelBottomClose strokeWidth={iconStrokeWidth} size={iconSize} />
+                        {/if}
                     {/snippet}
                     {#snippet ifFalse()}
-                    {#if getTransitionDirection() === 'horizontal'}
-                        <PanelRightOpen
-                            strokeWidth={iconStrokeWidth}
-                            size={iconSize}
-                        />
-                    {:else}
-                        <PanelBottomClose
-                            strokeWidth={iconStrokeWidth}
-                            size={iconSize}
-                        />
-                    {/if}
+                        {#if getTransitionDirection() === 'horizontal'}
+                            <PanelRightOpen strokeWidth={iconStrokeWidth} size={iconSize} />
+                        {:else}
+                            <PanelBottomOpen strokeWidth={iconStrokeWidth} size={iconSize} />
+                        {/if}
                     {/snippet}
                 </FlyInOutTransition>
             </button>
         {/if}
     </div>
-    <div class="editor flex flex-1 flex-col xl:flex-row bg-white">
+    <div class="editor flex flex-1 flex-col bg-white xl:flex-row">
         <div class="flex flex-1 flex-col overflow-auto">
             <CodeMirror
                 bind:value={code}
@@ -153,9 +146,10 @@
                 lineWrapping
                 theme={tomorrow}
                 editable={true}
+                class={size}
                 styles={{
                     '&': {
-                        fontSize: size === 'lg' ? '1.1rem' : size === 'md' ? '0.9rem' : '0.8rem'
+                        fontSize: 'inherit'
                     }
                 }}
             />
@@ -172,11 +166,7 @@
         </div>
         {#await import('./doc.svelte') then doc}
             {#if engine && selectedRule && showDoc}
-                <div 
-                    class="publicodes-documentation " 
-                    in:transition().in
-                    out:transition().out
-                >
+                <div class="publicodes-documentation" in:transition.in out:transition.out>
                     <doc.default
                         {engine}
                         {selectedRule}
@@ -277,6 +267,7 @@
 
                 & > * {
                     @apply max-w-full xl:max-2xl:w-full;
+                    z-index: 10 !important;
                 }
             }
 
@@ -299,7 +290,7 @@
         }
     }
     .editor {
-        max-height: calc(100% - 49px);
+        max-height: calc(100%);
         @apply font-mono text-sm;
     }
     .editor :global {
@@ -324,7 +315,13 @@
             }
         }
         .codemirror-wrapper {
-            @apply flex flex-1;
+            @apply flex flex-1 text-sm md:text-base;
+            &.lg {
+                @apply text-base md:text-lg;
+            }
+            &.sm {
+                @apply text-xs md:text-sm;
+            }
         }
         .cm-activeLine {
             @apply bg-transparent;

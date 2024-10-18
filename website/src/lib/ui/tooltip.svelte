@@ -20,7 +20,7 @@
         positioning: {
             placement: 'top'
         },
-        arrowSize: 8,
+        arrowSize: 10,
         open: dialogOpened,
         openDelay: 0,
         closeDelay: 0,
@@ -40,13 +40,15 @@
     <div
         use:melt={$content}
         transition:fade={{ duration: 100 }}
-        class="z-10 rounded bg-primary-50 px-4 py-3 text-sm shadow"
+        class="rounded border border-slate-300 bg-white text-sm shadow"
     >
-        {#if typeof text === 'string'}
-            {text}
-        {:else}
-            {@render text()}
-        {/if}
-        <div use:melt={$arrow}></div>
+        <div class="relative z-20 bg-white px-4 py-3">
+            {#if typeof text === 'string'}
+                {text}
+            {:else}
+                {@render text()}
+            {/if}
+        </div>
+        <div class="border border-slate-300 shadow" use:melt={$arrow}></div>
     </div>
 {/if}

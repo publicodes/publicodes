@@ -58,11 +58,11 @@
                 code={initialCode}
                 onchange={updateUrl}
                 showDoc={!!selectedRuleInDoc || initialCode === defaultCode}
-                title={'Publicodes studio'}
+                title={'Studio'}
                 fullPage={true}
                 {selectedRuleInDoc}
             >
-                {#snippet additionnalButton()}
+                {#snippet additionnalButton(iconSize: number)}
                     {#if copied}
                         <div
                             in:fly={{ x: 10 }}
@@ -73,13 +73,13 @@
                         </div>
                     {/if}
                     <button
-                        class="flex justify-center border-l border-primary-200
-						text-primary-500"
+                        class="flex items-center justify-center border-l
+						border-primary-200 text-primary-500"
                         title="Lien de partage"
                         onclick={handleCopyLink}
                         aria-label="Copier le lien de partage"
                     >
-                        <Link strokeWidth={1.5} />
+                        <Link strokeWidth={1.5} size={iconSize} />
                     </button>
                 {/snippet}
             </PublicodesEditor>

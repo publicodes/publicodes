@@ -14,9 +14,9 @@
 
 <ul class="flex gap-2">
     {#each splitedTags as tag}
-        {@const bgColor = tagsColors[tag] + ' bg-opacity-10'}
+        {@const className = tagsColors[tag] + ' bg-opacity-10'}
         <li>
-            <Tag {bgColor}>
+            <Tag class={className}>
                 {tag}
             </Tag>
         </li>

@@ -51,7 +51,7 @@
     class="fixed top-0 z-20 w-screen border-b border-primary-200 bg-white
 	 text-cyan-950"
 >
-    <div class="mx-auto flex h-16 items-center gap-4 px-6 py-2 lg:container md:px-8">
+    <div class="mx-auto flex h-16 items-center gap-4 px-6 py-2 md:px-8">
         <a
             class="inline-flex shrink-0 items-center gap-2 text-xl font-light hover:text-primary-400"
             href="/"
@@ -148,28 +148,33 @@
             </div>
             <div class="flex flex-row gap-16">
                 <div class="flex flex-col gap-2">
-                <p class="font-light text-slate-500">Ressources</p>
-                <ul class="flex flex-col gap-1 font-light">
-                    <!-- <li>
+                    <p class="font-light text-slate-500">Ressources</p>
+                    <ul class="flex flex-col gap-1 font-light">
+                        <!-- <li>
                         <a href="/docs">À propos</a>
                     </li> -->
-                    <li>
-                        <a href="/docs">Documentation</a>
-                    </li>
-                    <li>
-                        <a href="/bibliotheque">Bibliothèque</a>
-                    </li>
-                    <li>
-                        <a href="/realisations">Réalisations</a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="https://dashboard.simpleanalytics.com/publi.codes" aria-label="Statistiques de consultation, nouvelle fenêtre">Statistiques</a>
-                    </li>
-                    <!-- <li>
+                        <li>
+                            <a href="/docs">Documentation</a>
+                        </li>
+                        <li>
+                            <a href="/bibliotheque">Bibliothèque</a>
+                        </li>
+                        <li>
+                            <a href="/realisations">Réalisations</a>
+                        </li>
+                        <li>
+                            <a
+                                target="_blank"
+                                href="https://dashboard.simpleanalytics.com/publi.codes"
+                                aria-label="Statistiques de consultation, nouvelle fenêtre"
+                                >Statistiques</a
+                            >
+                        </li>
+                        <!-- <li>
                         <a href="/docs">FAQ</a>
                     </li> -->
-                </ul>
-            </div>
+                    </ul>
+                </div>
                 <div class="flex flex-col gap-2">
                     <p class="font-light text-slate-500">Communauté</p>
                     <ul class="flex flex-col gap-1 font-light">
@@ -189,7 +194,13 @@
     </footer>
     <!-- Simple analytics -->
     <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-    <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+    <noscript
+        ><img
+            src="https://queue.simpleanalyticscdn.com/noscript.gif"
+            alt=""
+            referrerpolicy="no-referrer-when-downgrade"
+        /></noscript
+    >
 {/snippet}
 
 <style>
