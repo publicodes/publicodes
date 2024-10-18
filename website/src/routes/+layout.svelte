@@ -60,7 +60,7 @@
             Publicodes
         </a>
 
-        <div id="search" class="flex flex-1 justify-end md:justify-center"></div>
+        <div id="search" class="flex flex-1 justify-end"></div>
         <button
             class="text-primary-400 hover:text-primary-600 sm:hidden"
             onclick={() => (showMobileMenu = true)}
@@ -73,6 +73,7 @@
         </div>
     </div>
 </div>
+<!-- Une bannière clickbait pour le questionnaire publicodes -->
 
 {#if showMobileMenu}
     <div
