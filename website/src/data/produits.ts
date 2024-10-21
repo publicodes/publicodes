@@ -124,6 +124,15 @@ const rawProduits = [
             'Calculateur d’empreinte eau individuelle pour sensibiliser à la consommation d’eau directe et indirecte.',
         url: 'https://mon-empreinte-eau.fr/',
         img: monEmpreinteEauImg
+    },
+    {
+        slug: 'france-chaleur-urbaine',
+        name: 'France Chaleur Urbaine',
+        description:
+            "Projet d'innovation pour accélérer le raccordement des bâtiments aux réseaux de chaleur en vue de l'atteinte des objectifs de développement de la chaleur d'origine renouvelable.",
+        url: 'https://france-chaleur-urbaine.beta.gouv.fr',
+        github: 'https://github.com/betagouv/france-chaleur-urbaine-publicodes',
+        img: 'https://france-chaleur-urbaine.beta.gouv.fr/img/preview/fcu-preview-20220517.min.jpg'
     }
 ] as const;
 

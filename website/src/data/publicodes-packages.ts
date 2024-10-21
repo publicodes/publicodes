@@ -46,6 +46,10 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
     {
         npm: 'exoneration-covid',
         maintainer: 'mon-entreprise'
+    },
+    {
+        npm: '@betagouv/france-chaleur-urbaine-publicodes',
+        maintainer: 'france-chaleur-urbaine'
     }
 ];
 
