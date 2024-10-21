@@ -3,7 +3,8 @@ import type { ProduitSlug } from './produits';
 export const publicodesPackages: readonly PublicodesPackage[] = [
     {
         npm: '@incubateur-ademe/nosgestesclimat',
-        maintainer: 'nos-gestes-climat'
+        maintainer: 'nos-gestes-climat',
+        users: ['jagis']
     },
     {
         npm: '@incubateur-ademe/publicodes-acv-numerique',
