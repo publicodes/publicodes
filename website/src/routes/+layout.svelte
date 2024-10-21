@@ -238,6 +238,11 @@
     </footer>
     <!-- Simple analytics -->
     <script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+    <script
+        async
+        data-collect="outbound"
+        src="https://scripts.simpleanalyticscdn.com/auto-events.js"
+    ></script>
     <noscript
         ><img
             src="https://queue.simpleanalyticscdn.com/noscript.gif"
