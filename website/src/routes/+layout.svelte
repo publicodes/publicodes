@@ -150,12 +150,12 @@
         <ul class="flex flex-col items-start justify-center gap-3 sm:flex-row sm:items-center">
             <NavTab href="/docs">Docs</NavTab>
             <NavTab href="/bibliotheque">Bibliothèque</NavTab>
-            <NavTab class="sm:max-lg:hidden" href="/realisations">Réalisations</NavTab>
+            <NavTab href="/realisations">Réalisations</NavTab>
             <NavTab href="/studio">Studio</NavTab>
             <NavTab href="/blog">Blog</NavTab>
         </ul>
-        <div class="self-stretch border-b border-primary-100 sm:border-r"></div>
-        <ul class="flex flex-row items-start justify-center gap-2 sm:items-center">
+        <div class="self-stretch border-b border-primary-100 sm:border-r sm:max-lg:hidden"></div>
+        <ul class="flex flex-row items-start justify-center gap-2 sm:items-center sm:max-lg:hidden">
             <NavTab
                 href="https://matrix.to/#/#publicodes:matrix.org"
                 title="Discuter avec la communauté"><MessagesSquare class="inline py-1" /></NavTab
