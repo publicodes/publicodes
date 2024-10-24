@@ -14,7 +14,7 @@ export default function Documentation({ slug }) {
 				language="fr"
 				renderers={{
 					Head,
-					Link: ({ to, children }) => <Link href={to}>{children}</Link>,
+					Link: ({ to,  ...props }) => <Link href={to} {...props}/>,
 				}}
 			/>
 		</StyledContainer>

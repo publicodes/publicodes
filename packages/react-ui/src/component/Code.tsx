@@ -13,21 +13,19 @@ const Bar = styled.div`
 	position: absolute;
 	right: 0;
 	top: 0;
-	margin: 0.5rem;
+	margin: 0 0.5rem;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
 	line-height: 0;
 
 	& button {
+		transform: translateT(-50%);
 		margin: 0;
 		padding: 1px 3px;
 		transition: opacity ease-in-out 0.1s;
-		opacity: 0.25;
-
-		:hover {
-			cursor: pointer;
-		}
-		:not(:last-child) {
-			margin-right: 0.5rem;
-		}
+		cursor: pointer;
 	}
 `
 
