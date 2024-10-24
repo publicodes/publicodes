@@ -4,7 +4,7 @@
 npm install publicodes
 ```
 
-The library exports a default class [`Engine`](https://publi.codes/docs/api/publicodes/Engine) which allows you to instantiate an publicodes interpreter with a set of publicodes rules.
+The library exports a default class [`Engine`](https://publi.codes/docs/api/publicodes/classes/engine) which allows you to instantiate an publicodes interpreter with a set of publicodes rules.
 
 ```js
 import Engine from 'publicodes'
