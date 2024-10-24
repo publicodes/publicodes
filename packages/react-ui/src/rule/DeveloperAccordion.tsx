@@ -80,7 +80,7 @@ export function DeveloperAccordion({
 							dottedName,
 						) && (
 							<StyledWarning>
-								<h4>⚠️ Cette règle est tagguée comme experimentale ⚠️</h4>
+								<h5>⚠️ Cette règle est tagguée comme experimentale ⚠️</h5>
 								<p>
 									Cela veut dire qu’elle peut être modifiée, renommée, ou
 									supprimée sans qu’il n’y ait de changement de version majeure
@@ -146,7 +146,7 @@ function ActualRule({
 
 	return (
 		<section>
-			<h4>Règle actuelle</h4>
+			<h5>Règle actuelle</h5>
 			<Code tabs={{ dottedName }} />
 			<RuleSource dottedName={dottedName} engine={engine} />
 		</section>
@@ -168,7 +168,7 @@ function ActualSituation({
 
 	return (
 		<section>
-			<h4>Situation actuelle</h4>
+			<h5>Situation actuelle</h5>
 			{keys.length ?
 				<p>
 					Voici les données que vous avez saisies dans notre simulateur sous
@@ -218,11 +218,11 @@ console.log(formatValue(evaluation))
 
 	return (
 		<section>
-			<h4>Lancer un calcul avec Publicodes</h4>
+			<h5>Lancer un calcul avec Publicodes</h5>
 			<p>
 				Vous pouvez installer notre package de règles pour l’utiliser avec le{' '}
 				<Link
-					aria-label={`${LINK_PUBLICODES_LABEL}, accéder au site publi.codes, nouvelle fenêtre`}
+					title={`${LINK_PUBLICODES_LABEL}, accéder au site publi.codes, nouvelle fenêtre`}
 					href="https://publi.codes/"
 				>
 					{LINK_PUBLICODES_LABEL}
@@ -235,7 +235,7 @@ console.log(formatValue(evaluation))
 			<p style={{ textAlign: 'right' }}>
 				<Link
 					href={'https://www.npmjs.com/package/' + npmPackage}
-					aria-label={`${LINK_NPM_LABEL}, accéder à la page npm du package Publicodes, nouvelle fenêtre`}
+					title={`${LINK_NPM_LABEL}, accéder à la page npm du package Publicodes, nouvelle fenêtre`}
 				>
 					<span aria-hidden>📦</span> {LINK_NPM_LABEL}
 				</Link>
@@ -282,7 +282,7 @@ console.log(evaluate)`,
 
 	return (
 		<section>
-			<h4>Utiliser notre API REST</h4>
+			<h5>Utiliser notre API REST</h5>
 			<p>
 				Vous trouverez ici un exemple d’utilisation de notre API REST via curl
 				ou un fetch javascript.
@@ -292,7 +292,7 @@ console.log(evaluate)`,
 				<p style={{ textAlign: 'right' }}>
 					<Link
 						to={apiDocumentationUrl}
-						aria-label={`${LINK_API_LABEL}, accéder à la documentation, nouvelle fenêtre`}
+						title={`${LINK_API_LABEL}, accéder à la documentation, nouvelle fenêtre`}
 					>
 						<span aria-hidden>👩‍💻</span> {LINK_API_LABEL}
 					</Link>
@@ -305,7 +305,7 @@ console.log(evaluate)`,
 function MissingVars({ selfMissing }: { selfMissing: string[] }) {
 	return (
 		<section>
-			<h4>Données manquantes</h4>
+			<h5>Données manquantes</h5>
 			{selfMissing?.length ?
 				<>
 					<p>
@@ -357,7 +357,7 @@ function ReverseMissing({
 
 	return (
 		<section>
-			<h4>Règles qui ont besoin de cette valeur</h4>
+			<h5>Règles qui ont besoin de cette valeur</h5>
 
 			{ruleNamesWithMissing.length ?
 				<>
@@ -408,7 +408,7 @@ function Effect({
 	return (
 		<>
 			<section>
-				<h4>Effets sur d’autres règles</h4>
+				<h5>Effets sur d’autres règles</h5>
 				{replacements.length ?
 					<>
 						<p>
@@ -430,7 +430,7 @@ function Effect({
 			</section>
 
 			<section>
-				<h4>Règles qui peuvent avoir un effet sur cette valeur</h4>
+				<h5>Règles qui peuvent avoir un effet sur cette valeur</h5>
 				{effects.length ?
 					<>
 						<p>

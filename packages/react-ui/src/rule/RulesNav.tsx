@@ -2,17 +2,20 @@ import { utils } from 'publicodes'
 import {
 	lazy,
 	memo,
+	ReactNode,
 	RefObject,
 	Suspense,
 	useCallback,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from 'react'
 import ReactDOM from 'react-dom'
 import { styled } from 'styled-components'
 import { RuleLinkWithContext } from '../RuleLink'
-import { Arrow } from '../component/icons'
+import { Arrow } from '../component/icons/Arrow'
+import { Close } from '../component/icons/Close'
 import { useEngine } from '../hooks'
 
 const RulesSearch = lazy(() => import('./RulesSearch'))
@@ -32,7 +35,10 @@ export const RulesNav = ({
 }: Props) => {
 	const baseEngine = useEngine()
 	const parsedRules = baseEngine.getParsedRules()
-	const parsedRulesNames = Object.keys(parsedRules)
+	const parsedRulesNames = useMemo(
+		() => Object.keys(parsedRules).sort((a, b) => a.localeCompare(b)),
+		[parsedRules],
+	)
 
 	const [navOpen, setNavOpen] = useState(false)
 
@@ -70,7 +76,58 @@ export const RulesNav = ({
 			window.document.getElementById('rules-nav-open-nav-button')
 		)
 
-	const navRef = useRef<HTMLHtmlElement>(null)
+	const openNavButtonRef = useRef<HTMLButtonElement>(null)
+
+	useEffect(() => {
+		if (openNavButtonRef.current && !navOpen) {
+			openNavButtonRef.current.focus()
+		}
+	}, [openNavButtonRef, navOpen])
+
+	const navRef = useRef<HTMLDivElement>(null)
+	useEffect(() => {
+		if (!navRef.current || !navOpen) {
+			return
+		}
+
+		const focusableElements = navRef.current.querySelectorAll(
+			'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])',
+		)
+
+		const firstElement = focusableElements[0] as HTMLElement
+		const lastElement = focusableElements[
+			focusableElements.length - 1
+		] as HTMLElement
+
+		const handleKeyDown = (event) => {
+			if (openNavButtonPortalElement && navOpen) {
+				if (event.key === 'Escape') {
+					event.preventDefault()
+					setNavOpen(false)
+				} else if (event.key === 'Tab' && navRef.current) {
+					if (event.shiftKey) {
+						if (document.activeElement === firstElement) {
+							event.preventDefault()
+							lastElement.focus()
+						}
+					} else {
+						if (document.activeElement === lastElement) {
+							event.preventDefault()
+							firstElement.focus()
+						}
+					}
+				}
+			}
+		}
+
+		navRef.current.addEventListener('keydown', handleKeyDown)
+
+		return () => {
+			if (navRef.current) {
+				navRef.current.removeEventListener('keydown', handleKeyDown)
+			}
+		}
+	}, [navRef, navOpen])
 
 	const menu = (
 		<Container $open={navOpen}>
@@ -84,46 +141,57 @@ export const RulesNav = ({
 			{/* Portal in Header */}
 			{openNavButtonPortalElement &&
 				ReactDOM.createPortal(
-					<OpenNavButton onClick={() => setNavOpen(true)}>
+					<OpenNavButton
+						ref={openNavButtonRef}
+						onClick={() => {
+							setNavOpen(true)
+							if (navRef.current) {
+								navRef.current.focus()
+							}
+						}}
+					>
 						Toutes les règles
 					</OpenNavButton>,
 					openNavButtonPortalElement,
 				)}
-
-			<Nav $open={navOpen} ref={navRef}>
-				{searchBar ?
-					<Suspense fallback={<p>Chargement...</p>}>
-						<RulesSearch />
-					</Suspense>
-				:	null}
-				<ul>
-					{parsedRulesNames
-						.sort((a, b) => a.localeCompare(b))
-						.map((ruleDottedName) => {
-							const parentDottedName = utils.ruleParent(ruleDottedName)
-
-							if (
-								ruleDottedName.split(' . ').length > 1 &&
-								!level[parentDottedName]
-							) {
-								return null
-							}
-
-							const open = ruleDottedName in level && level[ruleDottedName]
-
-							return (
-								<MemoNavLi
-									key={ruleDottedName}
-									ruleDottedName={ruleDottedName}
-									open={open}
-									active={dottedName === ruleDottedName}
-									onClickDropdown={toggleDropdown}
-									navRef={navRef}
-								/>
-							)
-						})}
-				</ul>
-			</Nav>
+			<NavContainer
+				role={navOpen ? 'dialog' : undefined}
+				aria-modal={navOpen ? 'true' : undefined}
+				aria-label={navOpen ? 'Menu de navigation' : undefined}
+				$open={navOpen}
+				ref={navRef}
+				tabIndex={-1}
+			>
+				<nav
+					role="navigation"
+					aria-label="Menu de navigation sur les règles de la documentation"
+				>
+					{searchBar ?
+						<Suspense fallback={<p>Chargement...</p>}>
+							<RulesSearch />
+						</Suspense>
+					:	null}
+					<NavUl
+						onClick={() => {
+							setNavOpen(false)
+						}}
+						rules={parsedRulesNames}
+						level={level}
+						navRef={navRef}
+						toggleDropdown={toggleDropdown}
+						dottedName={dottedName}
+						parentName=""
+					/>
+				</nav>
+				{navOpen && (
+					<CloseButton
+						aria-label="Fermer le menu de navigation"
+						onClick={() => setNavOpen(false)}
+					>
+						<Close />
+					</CloseButton>
+				)}
+			</NavContainer>
 		</Container>
 	)
 
@@ -141,19 +209,78 @@ export const RulesNav = ({
 		:	menu
 }
 
+type NavUlProps = {
+	rules: string[]
+	level: Record<string, boolean>
+	navRef: RefObject<HTMLDivElement>
+	onClick: () => void
+	toggleDropdown: (name: string) => void
+	dottedName: string
+	parentName: string
+}
+const NavUl = ({
+	rules,
+	level,
+	navRef,
+	onClick,
+	toggleDropdown,
+	dottedName,
+	parentName,
+}: NavUlProps) => {
+	return (
+		<ul>
+			{rules.map((ruleDottedName) => {
+				const parentDottedName = utils.ruleParent(ruleDottedName)
+				if (parentDottedName !== parentName) {
+					return null
+				}
+
+				const open = ruleDottedName in level && level[ruleDottedName]
+				return (
+					<MemoNavLi
+						onClick={onClick}
+						key={ruleDottedName}
+						ruleDottedName={ruleDottedName}
+						open={open}
+						active={dottedName === ruleDottedName}
+						onClickDropdown={toggleDropdown}
+						navRef={navRef}
+					>
+						{level[ruleDottedName] && (
+							<NavUl
+								onClick={onClick}
+								rules={rules}
+								level={level}
+								navRef={navRef}
+								toggleDropdown={toggleDropdown}
+								dottedName={dottedName}
+								parentName={ruleDottedName}
+							/>
+						)}
+					</MemoNavLi>
+				)
+			})}
+		</ul>
+	)
+}
+
 type NavLiProps = {
 	ruleDottedName: string
 	open: boolean
 	active: boolean
+	onClick: () => void
 	onClickDropdown: (ruleDottedName: string) => void
-	navRef: RefObject<HTMLHtmlElement>
+	navRef: RefObject<HTMLDivElement>
+	children?: ReactNode
 }
 const NavLi = ({
 	ruleDottedName,
 	open,
 	active,
+	onClick,
 	onClickDropdown,
 	navRef,
+	children,
 }: NavLiProps) => {
 	const baseEngine = useEngine()
 
@@ -186,11 +313,14 @@ const NavLi = ({
 			style={{
 				paddingLeft: (ruleDottedName.split(' . ').length - 1) * 16,
 			}}
-			className={
-				(childrenCount > 0 ? 'dropdown ' : '') + (active ? 'active ' : '')
-			}
+			className={childrenCount > 0 ? 'dropdown ' : ''}
 		>
-			<span className="content">
+			<span className={`content ${active ? 'active ' : ''}`}>
+				<RuleLinkWithContext
+					dottedName={ruleDottedName}
+					displayIcon
+					onClick={onClick}
+				/>
 				{childrenCount > 0 && (
 					<DropdownButton
 						aria-label={open ? 'Replier le sous-menu' : 'Déplier le sous-menu'}
@@ -200,8 +330,8 @@ const NavLi = ({
 						<StyledArrow $open={open} />
 					</DropdownButton>
 				)}
-				<RuleLinkWithContext dottedName={ruleDottedName} displayIcon />
 			</span>
+			{children}
 		</li>
 	)
 }
@@ -263,7 +393,7 @@ const OpenNavButton = styled.button`
 	}
 `
 
-const Nav = styled.nav<{ $open: boolean }>`
+const NavContainer = styled.div<{ $open: boolean }>`
 	@media (min-width: ${breakpointsWidth.lg}) {
 		flex-shrink: 0;
 	}
@@ -277,6 +407,7 @@ const Nav = styled.nav<{ $open: boolean }>`
 		top: 0;
 		left: 0;
 		padding-top: 1rem;
+		padding-right: 2rem;
 		bottom: 0;
 		z-index: 200;
 		max-height: initial;
@@ -286,6 +417,10 @@ const Nav = styled.nav<{ $open: boolean }>`
 
 		transition: all ease-in-out 0.25s;
 		${({ $open }) => ($open ? '' : 'transform: translateX(-100%);')}
+	}
+
+	&:focus {
+		outline: none;
 	}
 
 	ul {
@@ -303,17 +438,20 @@ const Nav = styled.nav<{ $open: boolean }>`
 				display: flex;
 				width: fit-content;
 				align-items: center;
-				flex-direction: row;
+				flex-direction: row-reverse;
 				flex-wrap: nowrap;
 			}
 
-			&.active .content {
-				background-color: #e6e6e6;
+			span {
+				&.active {
+					background-color: #e6e6e6;
+				}
 			}
+
 			&:not(.active) a {
 				font-weight: normal;
 			}
-			&:not(.dropdown) .content:before {
+			&:not(.dropdown) .content:after {
 				content: ' ';
 				display: inline-block;
 				background-color: #b3b3b3;
@@ -346,4 +484,20 @@ const StyledArrow = styled(Arrow)<{ $open: boolean }>`
 	transition: transform 0.1s;
 	height: 100%;
 	transform: rotate(${({ $open }) => ($open ? '0deg' : '-90deg')});
+`
+
+const CloseButton = styled.button`
+	cursor: pointer;
+	position: absolute;
+	border-radius: 0.25rem;
+	top: 0.25rem;
+	padding: 0.25rem;
+	right: 0.25rem;
+	height: 1.5rem;
+	background-color: transparent;
+	border: none;
+
+	&:hover {
+		background-color: #e6e6e6;
+	}
 `
