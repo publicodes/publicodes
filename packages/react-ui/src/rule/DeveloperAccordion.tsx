@@ -6,6 +6,11 @@ import { RuleLinkWithContext } from '../RuleLink'
 import { RenderersContext } from '../contexts'
 import RuleSource from './RuleSource'
 
+const H5 = styled.h5`
+	font-weight: 700;
+	font-size: 1rem;
+`
+
 const Ul = styled.ul`
 	padding: 0;
 	max-height: 400px;
@@ -80,7 +85,7 @@ export function DeveloperAccordion({
 							dottedName,
 						) && (
 							<StyledWarning>
-								<h4>⚠️ Cette règle est tagguée comme experimentale ⚠️</h4>
+								<H5>⚠️ Cette règle est tagguée comme experimentale ⚠️</H5>
 								<p>
 									Cela veut dire qu’elle peut être modifiée, renommée, ou
 									supprimée sans qu’il n’y ait de changement de version majeure
@@ -146,7 +151,7 @@ function ActualRule({
 
 	return (
 		<section>
-			<h4>Règle actuelle</h4>
+			<H5>Règle actuelle</H5>
 			<Code tabs={{ dottedName }} />
 			<RuleSource dottedName={dottedName} engine={engine} />
 		</section>
@@ -168,7 +173,7 @@ function ActualSituation({
 
 	return (
 		<section>
-			<h4>Situation actuelle</h4>
+			<H5>Situation actuelle</H5>
 			{keys.length ?
 				<p>
 					Voici les données que vous avez saisies dans notre simulateur sous
@@ -218,7 +223,7 @@ console.log(formatValue(evaluation))
 
 	return (
 		<section>
-			<h4>Lancer un calcul avec Publicodes</h4>
+			<H5>Lancer un calcul avec Publicodes</H5>
 			<p>
 				Vous pouvez installer notre package de règles pour l’utiliser avec le{' '}
 				<Link
@@ -282,7 +287,7 @@ console.log(evaluate)`,
 
 	return (
 		<section>
-			<h4>Utiliser notre API REST</h4>
+			<H5>Utiliser notre API REST</H5>
 			<p>
 				Vous trouverez ici un exemple d’utilisation de notre API REST via curl
 				ou un fetch javascript.
@@ -305,7 +310,7 @@ console.log(evaluate)`,
 function MissingVars({ selfMissing }: { selfMissing: string[] }) {
 	return (
 		<section>
-			<h4>Données manquantes</h4>
+			<H5>Données manquantes</H5>
 			{selfMissing?.length ?
 				<>
 					<p>
@@ -357,7 +362,7 @@ function ReverseMissing({
 
 	return (
 		<section>
-			<h4>Règles qui ont besoin de cette valeur</h4>
+			<H5>Règles qui ont besoin de cette valeur</H5>
 
 			{ruleNamesWithMissing.length ?
 				<>
@@ -408,7 +413,7 @@ function Effect({
 	return (
 		<>
 			<section>
-				<h4>Effets sur d’autres règles</h4>
+				<H5>Effets sur d’autres règles</H5>
 				{replacements.length ?
 					<>
 						<p>
@@ -430,7 +435,7 @@ function Effect({
 			</section>
 
 			<section>
-				<h4>Règles qui peuvent avoir un effet sur cette valeur</h4>
+				<H5>Règles qui peuvent avoir un effet sur cette valeur</H5>
 				{effects.length ?
 					<>
 						<p>

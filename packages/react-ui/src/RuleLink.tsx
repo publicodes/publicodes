@@ -72,6 +72,10 @@ export function RuleLink<Name extends string>({
 	 * The aria-label attribute for the link.
 	 */
 	'aria-label'?: string
+	/**
+	 * * Custom function when the link is clicked
+	 */
+	onClick?: () => void
 }) {
 	const renderers = useContext(RenderersContext)
 	const dottedNameContext = utils.findCommonAncestor(

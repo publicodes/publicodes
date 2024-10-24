@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { css, styled } from 'styled-components'
 import { AccordionItem } from '../contexts'
-import { Arrow } from './icons'
+import { Arrow } from './icons/Arrow'
 
 const AccordionContainer = styled.div`
 	overflow: hidden;
@@ -10,7 +10,6 @@ const AccordionContainer = styled.div`
 `
 
 const H4 = styled.h4`
-	font-size: 16px;
 	font-weight: 700;
 	margin: 2rem 0px 1rem;
 	font-size: 1.25rem;
