@@ -21,7 +21,7 @@ dépenses primeur:
 const parsedRules = parseYaml(rules)
 const engine = new Engine(parsedRules)
 
-const result = engine.evaluate('dépense primeur')
+const result = engine.evaluate('dépenses primeur')
 ```
 
 [👉 Continue to the « Getting started » section](https://publi.codes/docs/tutoriel)
