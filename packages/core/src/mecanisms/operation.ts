@@ -11,6 +11,7 @@ import { inferUnit, serializeUnit } from '../units'
 const knownOperations = {
 	'*': [(a, b) => a * b, '×'],
 	'/': [(a, b) => a / b, '∕'],
+	'//': [(a, b) => (a - a%b)/ b, '//'],
 	'**': [(a, b) => a ** b, '**'],
 	'+': [(a, b) => a + b],
 	'-': [(a, b) => a - b, '−'],

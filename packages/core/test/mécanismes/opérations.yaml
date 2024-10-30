@@ -256,6 +256,22 @@ division:
         b: 0
       exception: Division by zero
 
+division entière:
+  '//':
+    - a
+    - b
+  exemples:
+    - nom: standard supérieur
+      situation:
+        a: 11
+        b: 4
+      valeur attendue: 2
+    - nom: standard inférieur
+      situation:
+        a: 9
+        b: 4
+      valeur attendue: 2
+
 comparaison plus grand ou egal:
   '>=':
     - a

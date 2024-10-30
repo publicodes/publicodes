@@ -34,7 +34,7 @@ const lexer = moo.compile({
   JSONObject: /{.*}/,
   additionSubstraction: /[\+-]/,
   exponentiation: '**',
-  multiplicationDivision: ['*','/'],
+  multiplicationDivision: ['*','/','//'],
   dot: ' . ',
   ".": '.',
   space: { match: /[\s]+/, lineBreaks: true },
