@@ -17,7 +17,7 @@ export default function RuleSource({ engine, dottedName }: Props) {
 			<a
 				target="_blank"
 				href={href}
-				aria-label={`${linkLabel}, nouvelle fenêtre`}
+				title={`${linkLabel}, nouvelle fenêtre`}
 				rel="noreferrer"
 			>
 				<span aria-hidden>✍️</span> {linkLabel}
