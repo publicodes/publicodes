@@ -91,3 +91,15 @@ deux contextes différents donnent des résultats différents:
 
   exemples:
     - valeur attendue: 3
+
+contexte et inversion fonctionnent ensemble:
+  valeur: b
+  avec:
+    a: 4 * b
+    b:
+      inversion numérique:
+        - a
+      contexte:
+        a: 8
+  exemples:
+    - valeur attendue: 2

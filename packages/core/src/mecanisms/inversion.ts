@@ -71,7 +71,6 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 			)
 		},
 	)
-
 	if (inversionGoal === undefined) {
 		return {
 			...node,
@@ -87,6 +86,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 			},
 		}
 	}
+
 	const evaluatedInversionGoal = inversionEngine.evaluateNode(inversionGoal)
 	let numberOfIteration = 0
 
@@ -96,6 +96,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 		},
 		{ keepPreviousSituation: true },
 	)
+
 	inversionEngine.cache.traversedVariablesStack =
 		this.cache.traversedVariablesStack ? [] : undefined
 
@@ -117,6 +118,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 			this.cache.traversedVariablesStack ? [] : undefined
 
 		lastEvaluation = inversionEngine.evaluateNode(inversionGoal)
+
 		return lastEvaluation
 	}
 
