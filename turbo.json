@@ -1,5 +1,6 @@
 {
 	"$schema": "https://turbo.build/schema.json",
+	"ui": "tui",
 	"tasks": {
 		"codegen:validate": {},
 		"codegen": {
@@ -49,7 +50,7 @@
 			"cache": false
 		},
 		"website#doc": {
-			"dependsOn": ["^codegen", "@publicodes/rest-api#codegen"],
+			"dependsOn": ["^build", "@publicodes/rest-api#build"],
 			"inputs": [
 				"../packages/**/*.{ts,tsx}",
 				"../typedoc.json",
@@ -61,7 +62,9 @@
 			"dependsOn": ["^build", "doc"]
 		},
 		"website#dev": {
-			"dependsOn": ["^build", "doc"]
+			"dependsOn": ["^build", "doc"],
+			"cache": false,
+			"persistent": true
 		}
 	}
 }
