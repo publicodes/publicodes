@@ -176,6 +176,7 @@ export class Engine<RuleNames extends string = string> {
 	 */
 	resetCache() {
 		this.cache = emptyCache()
+		this.context.subEngines = new Map()
 	}
 
 	/**

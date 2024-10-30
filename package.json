@@ -18,7 +18,7 @@
 		"format:eslint": "run lint:eslint --fix",
 		"lint": "run lint:eslint && run lint:prettier && turbo run lint --parallel",
 		"format": "run format:eslint && run format:prettier && turbo run format --parallel",
-		"dev": "turbo run dev --parallel --filter=\"website...\"",
+		"dev": "turbo run dev --filter=\"website...\"",
 		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\" \"**/.turbo\"",
 		"release": "yarn install --refresh-lockfile && run prepack && changeset publish"
 	},
