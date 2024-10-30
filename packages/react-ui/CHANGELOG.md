@@ -1,5 +1,19 @@
 # @publicodes/react-ui
 
+## 1.5.4
+
+### Patch Changes
+
+- [#581](https://github.com/publicodes/publicodes/pull/581) [`a61f705`](https://github.com/publicodes/publicodes/commit/a61f705a2a634792d7f6fe1f174f471a120bed11) Thanks [@desoindx](https://github.com/desoindx)! - Multiple improvement on accessibility :
+
+  - Change level of title inside accordion
+  - Increase constrate on Copy button
+  - Implement Aria Dialog pattern on mobile menu
+  - Use proper ul/li imbrication on menu
+  - Use title instead of aria label to specify that link open in a new window
+
+  Note that the markup of the navigation menu is modified, which can lead to break its style if it was overridden manually by CSS from the application.
+
 ## 1.5.3
 
 ### Patch Changes

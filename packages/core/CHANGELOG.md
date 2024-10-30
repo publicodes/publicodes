@@ -1,5 +1,20 @@
 # publicodes
 
+## 1.5.4
+
+### Patch Changes
+
+- [#584](https://github.com/publicodes/publicodes/pull/584) [`da688c7`](https://github.com/publicodes/publicodes/commit/da688c76b47fb327ef9d3dcde835f6165c3c8423) Thanks [@johangirod](https://github.com/johangirod)! - Fix bug with contexte
+
+  v1.3.2 introduced a bug when using contexte :
+
+  - If a contexte was evaluated before and after `setSituation` with `keepPreviousSituation` on, the returned value would be the one of the first evaluation (before setSituation)
+  - If a contexte was used within a `inversion numérique`, the returned value would be `undefined`
+
+  This fixes it.
+
+- [#570](https://github.com/publicodes/publicodes/pull/570) [`8688aba`](https://github.com/publicodes/publicodes/commit/8688abaed51924b461ae77184cad332ac338e8f8) Thanks [@johangirod](https://github.com/johangirod)! - Improve type inference
+
 ## 1.5.3
 
 ### Patch Changes
