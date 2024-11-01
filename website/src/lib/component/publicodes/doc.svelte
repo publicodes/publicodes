@@ -32,12 +32,13 @@
         }
     });
 
-    function Link({ to, children }) {
-        const onClick = (evt) => {
+    function Link({ to, children, onClick }) {
+        const onButtonClick = (evt) => {
             evt.preventDefault();
             activeRule = pathToRules[to];
+            onClick(evt);
         };
-        return createElement('a', { onClick }, children);
+        return createElement('button', { onClick: onButtonClick }, children);
     }
     const documentationProps = $derived({
         engine,

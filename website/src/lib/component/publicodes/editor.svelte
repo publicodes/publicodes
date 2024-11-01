@@ -71,16 +71,16 @@
 </script>
 
 <div
-    class="editor-container not-prose flex flex-col overflow-hidden
-	border border-primary-100 sm:rounded"
+    class="editor-container not-prose border-primary-100 flex flex-col
+	overflow-hidden border sm:rounded"
     class:mb-4={!fullPage}
 >
     <div
-        class="editor-header relative flex shrink-0 items-center overflow-hidden
-		border-b border-primary-200 bg-primary-50 text-center"
+        class="editor-header border-primary-200 bg-primary-50 relative flex shrink-0
+		items-center overflow-hidden border-b text-center"
     >
         <button
-            class="flex items-center justify-center border-r border-primary-200 text-primary-500"
+            class="border-primary-200 text-primary-500 flex items-center justify-center border-r"
             title="Copier"
             onclick={handleCopy}
             aria-label="Copier le code"
@@ -98,7 +98,7 @@
             </div>
         {/if}
         <span
-            class="flex-1 font-mono font-regular text-primary-500 xl:p-2 xl:text-lg {size === 'lg'
+            class="font-regular text-primary-500 flex-1 font-mono xl:p-2 xl:text-lg {size === 'lg'
                 ? 'lg:text-lg xl:text-xl'
                 : 'max-md:text-sm'}"
             class:p-3={size === 'lg'}
@@ -111,7 +111,7 @@
         {#if !hideDocButton}
             <button
                 transition:fly
-                class="border-l border-primary-200 text-primary-500"
+                class="border-primary-200 text-primary-500 border-l"
                 onclick={() => (showDoc = !showDoc)}
                 aria-label={showDoc ? 'Fermer la documentation' : 'Ouvrir la documentation'}
                 class:saturate-0={documentationIsBroken}
@@ -159,8 +159,8 @@
             <ul class="sticky bottom-0">
                 {#each [...warning, ...error] as message}
                     <li class="flex whitespace-pre-line bg-yellow-100" in:fly>
-                        <span class="w-14 border-r bg-primary-50"></span>
-                        <span class="max-h-40 flex-1 overflow-auto p-2 first-line:font-regular"
+                        <span class="bg-primary-50 w-14 border-r"></span>
+                        <span class="first-line:font-regular max-h-40 flex-1 overflow-auto p-2"
                             >{message}</span
                         >
                     </li>
@@ -213,15 +213,15 @@
 
         & :global {
             h1 {
-                @apply my-2 text-xl font-regular;
+                @apply font-regular my-2 text-xl;
                 /* @apply hidden; */
             }
 
             h2 {
-                @apply -mx-4 border-t p-4 font-regular;
+                @apply font-regular -mx-4 border-t p-4;
             }
             h3 {
-                @apply pb-2 pt-4 font-regular;
+                @apply font-regular pb-2 pt-4;
             }
 
             p {
@@ -230,11 +230,11 @@
             li {
                 @apply my-0;
             }
-            button {
-                @apply mx-2 cursor-pointer rounded border border-primary-100 bg-primary-50 px-1 py-1 text-xs hover:border-primary-200 hover:bg-primary-100;
+            button[aria-label] {
+                @apply border-primary-100 bg-primary-50 hover:border-primary-200 hover:bg-primary-100 mx-2 cursor-pointer rounded border px-1 py-1 text-xs;
             }
-            a {
-                @apply cursor-pointer font-sans hover:underline;
+            button:not([aria-label]) {
+                @apply cursor-pointer p-1 font-sans hover:underline;
             }
 
             /* Custom styling of rules list menu + layout */
@@ -245,10 +245,10 @@
                 @apply min-w-10 flex-1 p-2 pl-0 pr-4;
             }
             .content {
-                @apply flex p-0 hover:text-primary-400;
+                @apply hover:text-primary-400 flex p-0;
             }
-            .active .content {
-                @apply bg-slate-50 font-regular text-primary-400;
+            .content.active {
+                @apply font-regular text-primary-400 bg-slate-50;
             }
 
             .content::before {
@@ -256,7 +256,7 @@
                 margin-right: 0.5rem !important;
                 @apply mx-2 scale-75;
             }
-            .content > button {
+            .content > button[aria-label] {
                 @apply h-full rounded border-0 text-center opacity-90 will-change-transform;
                 margin: 0 !important;
                 padding: 0 !important;
@@ -267,15 +267,23 @@
             article {
                 @apply w-full flex-1 pt-2 lg:pr-4 xl:border-l-0 2xl:border-r;
             }
+            div[tabindex] {
+                @apply h-full bg-white;
+            }
             nav {
-                @apply h-full overflow-hidden border-r-0 bg-white p-2 lg:max-xl:border-r xl:max-2xl:border-t 2xl:max-w-64;
+                @apply h-full overflow-hidden border-r-0 p-2 lg:max-xl:border-r xl:max-2xl:border-t 2xl:max-w-64;
             }
             #documentation-rule-root {
                 @apply flex-1 items-stretch overflow-y-auto overflow-x-hidden xl:flex xl:h-full xl:flex-col-reverse xl:max-2xl:items-start 2xl:flex-row-reverse;
 
                 & > * {
                     @apply max-w-full xl:max-2xl:w-full;
-                    z-index: 10 !important;
+                }
+
+                @media (min-width: 1024px) {
+                    & > div {
+                        z-index: 1 !important;
+                    }
                 }
             }
 
@@ -309,10 +317,10 @@
             @apply font-mono font-light;
         }
         .cm-gutters {
-            @apply flex min-w-14 bg-primary-50 bg-opacity-30 font-mono;
+            @apply bg-primary-50 flex min-w-14 bg-opacity-30 font-mono;
         }
         .cm-activeLineGutter {
-            @apply mt-0 bg-primary-50;
+            @apply bg-primary-50 mt-0;
         }
         .cm-gutter {
             &:first-child {
