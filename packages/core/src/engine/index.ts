@@ -6,7 +6,7 @@ import {
 	RawPublicodes,
 	Situation,
 } from '..'
-import { makeASTVisitor } from '../AST'
+import { makeASTVisitor, reduceAST } from '../AST'
 import { type ASTNode, type EvaluatedNode } from '../AST/types'
 import { experimentalRuleWarning } from '../error'
 import { evaluationFunctions } from '../evaluationFunctions'
@@ -432,6 +432,44 @@ export class Engine<RuleNames extends string = string> {
 			nodes: new Map(this.cache.nodes),
 		}
 		return newEngine
+	}
+
+	/**
+	 * Get the list of possible values for a rule containing the mecanism "une
+	 * possibilité".
+	 *
+	 * @param node The rule node to extract the possibilities from.
+	 * @returns The list of possibilities or undefined if the rule doesn't have any.
+	 *
+	 * @example
+	 * ```ts
+	 * const engine = new Engine({
+	 *	"rule": {
+	 *		"une possibilité": {
+	 *			"possibilités": ["a", "b"]
+	 *		},
+	 *	"rule2": "rule"
+	 * })
+	 *
+	 * engine.getOptions("rule")  // ["a", "b"]
+	 * engine.getOptions("rule2") // undefined
+	 */
+	getOptions(name: RuleNames): string[] | undefined {
+		return reduceAST<string[] | undefined>(
+			(_, node) => {
+				if (node.nodeKind === 'une possibilité') {
+					return node.explanation
+						.map((e) => {
+							if (e.nodeKind === 'reference') {
+								return e.name
+							}
+						})
+						.filter(Boolean) as string[]
+				}
+			},
+			undefined,
+			this.getRule(name),
+		)
 	}
 
 	private checkExperimentalRule = makeASTVisitor((node) => {
