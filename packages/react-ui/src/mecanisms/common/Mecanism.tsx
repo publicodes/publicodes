@@ -19,7 +19,7 @@ export function Mecanism({
 	displayName = true,
 }: Props) {
 	return (
-		<StyledMecanism mecanismName={name}>
+		<StyledMecanism $mecanismName={name}>
 			{displayName && <MecanismName name={name}>{name}</MecanismName>}
 			<div>
 				{children}
@@ -35,7 +35,7 @@ export function Mecanism({
 	)
 }
 
-const StyledMecanism = styled.div<{ mecanismName: string }>`
+const StyledMecanism = styled.div<{ $mecanismName: string }>`
 	border: 1px solid;
 	max-width: 100%;
 	border-radius: 3px;
@@ -44,7 +44,7 @@ const StyledMecanism = styled.div<{ mecanismName: string }>`
 	flex: 1;
 	flex-direction: column;
 	text-align: left;
-	border-color: ${({ mecanismName }) => mecanismColors(mecanismName)};
+	border-color: ${({ $mecanismName }) => mecanismColors($mecanismName)};
 	.properties > li {
 		margin: 1rem 0;
 	}
@@ -63,7 +63,7 @@ const MecanismName = ({
 		<>
 			<StyledMecanismName
 				name={name}
-				inline={inline}
+				$inline={inline}
 				target="_blank"
 				href={`https://publi.codes/docs/mecanismes#${name}`}
 			>
@@ -73,7 +73,7 @@ const MecanismName = ({
 	)
 }
 
-const StyledMecanismName = styled.a<{ name: string; inline?: boolean }>`
+const StyledMecanismName = styled.a<{ name: string; $inline?: boolean }>`
 	background-color: ${({ name }) => mecanismColors(name)} !important;
 	font-size: inherit;
 	display: inline-block;
@@ -87,7 +87,7 @@ const StyledMecanismName = styled.a<{ name: string; inline?: boolean }>`
 		color: white;
 	}
 	${(props) =>
-		props.inline ?
+		props.$inline ?
 			css`
 				border-radius: 0.3rem;
 				margin-bottom: 0.5rem;
