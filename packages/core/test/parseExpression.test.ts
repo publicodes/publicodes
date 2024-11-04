@@ -34,6 +34,22 @@ describe("Enables external codebases to use publicodes's expression parser", () 
 		)
 	})
 
+	it('should parse an integer division expression', () => {
+		const parsed = parseExpression('équipement // facteur', 'foo . bar')
+		expect(JSON.stringify(parsed)).to.equal(
+			JSON.stringify({
+				'//': [
+					{
+						variable: 'équipement',
+					},
+					{
+						variable: 'facteur',
+					},
+				],
+			}),
+		)
+	})
+
 	it('should parse complexe unit expression', () => {
 		expect(parseExpression('10 a.b')).to.deep.equal({
 			constant: { nodeValue: 10, type: 'number' },

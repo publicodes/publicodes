@@ -123,7 +123,7 @@ export function serializeUnit(
 	return string
 }
 
-type SupportedOperators = '*' | '/' | '+' | '-'
+type SupportedOperators = '*' | '/' | '//' | '+' | '-'
 
 const noUnit = { numerators: [], denominators: [] }
 export const inferUnit = (

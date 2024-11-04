@@ -11,6 +11,7 @@ import { inferUnit, serializeUnit } from '../units'
 const knownOperations = {
 	'*': [(a, b) => a * b, '×'],
 	'/': [(a, b) => a / b, '∕'],
+	'//': [(a, b) => (a - a%b)/ b, '//'],
 	'**': [(a, b) => a ** b, '**'],
 	'+': [(a, b) => a + b],
 	'-': [(a, b) => a - b, '−'],
@@ -54,7 +55,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	// LAZY EVALUATION
 	if (
 		(node1.nodeValue === null &&
-			['<', '>', '<=', '>=', '/', '*', '-', 'et'].includes(
+			['<', '>', '<=', '>=', '/', '*', '//', '-', 'et'].includes(
 				node.operationKind,
 			)) ||
 		(node1.nodeValue === 0 && ['/', '*'].includes(node.operationKind)) ||
@@ -80,7 +81,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	// LAZY EVALUATION 2
 	if (
 		(node2.nodeValue === null &&
-			['<', '>', '<=', '>=', '/', '*', 'et'].includes(node.operationKind)) ||
+			['<', '>', '<=', '>=', '/', '*', '//', 'et'].includes(node.operationKind)) ||
 		(node2.nodeValue === 0 && ['*'].includes(node.operationKind)) ||
 		(node2.nodeValue === false && node.operationKind === 'et') ||
 		(node2.nodeValue === true && node.operationKind === 'ou')
@@ -108,7 +109,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 
 	if (
 		!('nodeValue' in evaluatedNode) &&
-		!['/', '*'].includes(node.operationKind) &&
+		!['/', '*', '//'].includes(node.operationKind) &&
 		!isAdditionOrSubstractionWithPercentage
 	) {
 		try {
@@ -141,7 +142,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	evaluatedNode.nodeValue =
 		'nodeValue' in evaluatedNode ? evaluatedNode.nodeValue
 		: (
-			['<', '>', '<=', '>=', '*', '/'].includes(node.operationKind) &&
+			['<', '>', '<=', '>=', '*', '/', '//'].includes(node.operationKind) &&
 			node2.nodeValue === null
 		) ?
 			null
@@ -195,6 +196,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	if (
 		node.operationKind === '*' ||
 		node.operationKind === '/' ||
+		node.operationKind === '//' ||
 		node.operationKind === '-' ||
 		node.operationKind === '+'
 	) {

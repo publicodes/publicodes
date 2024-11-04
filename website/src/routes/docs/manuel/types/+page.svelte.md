@@ -22,6 +22,7 @@ somme: 1 + 2
 soustraction: 3 - 4
 multiplication: 5 * 6
 division: 7 / 8
+division entière: 11 // 2
 puissance: 2 ** 10
 ```
 

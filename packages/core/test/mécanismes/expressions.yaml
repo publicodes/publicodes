@@ -372,3 +372,9 @@ intérêts composés:
   exemples:
     - situation:
       valeur attendue: 106.12
+
+division entière:
+  formule: 11 // 4
+  exemples:
+    - situation:
+      valeur attendue: 2
