@@ -8,7 +8,8 @@
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
 		"resolveJsonModule": true,
-		"allowJs": true,
+		// "allowJs": true,
+
 		// The end goal is to enable `"strict": true` which correspond to the
 		// following settings: noImplicitAny, noImplicitThis, alwaysStrict,
 		// strictBindCallApply, strictNullChecks, strictFunctionTypes, and
@@ -16,6 +17,7 @@
 		// settings one by one.
 		// Note: almost all parameters are now enabled. The only one remaining
 		// is noImplicitAny -- but it's a hard one.
+		// "strict": false,
 		"noImplicitThis": true,
 		"strictBindCallApply": true,
 		"strictFunctionTypes": true,

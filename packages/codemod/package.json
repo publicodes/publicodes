@@ -7,7 +7,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"yaml": "^2.3.4"
+		"yaml": "^2.6.0"
 	},
 	"bin": "./update-v1.js"
 }
