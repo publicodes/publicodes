@@ -8,7 +8,8 @@
     const tagsColors: Record<string, string> = {
         'open-data': 'bg-primary-400',
         tech: 'bg-publicodes-green',
-        modelisation: 'bg-publicodes-orange'
+        modelisation: 'bg-publicodes-orange',
+        communauté: 'bg-purple-400'
     };
 </script>
 
