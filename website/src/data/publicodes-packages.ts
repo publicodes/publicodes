@@ -51,6 +51,9 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
     {
         npm: '@betagouv/france-chaleur-urbaine-publicodes',
         maintainer: 'france-chaleur-urbaine'
+    }, {
+        npm: 'mesaidesreno',
+        maintainer: 'Mes Aides Réno'
     }
 ];
 
