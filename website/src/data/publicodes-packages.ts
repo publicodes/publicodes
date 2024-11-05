@@ -53,7 +53,7 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
         maintainer: 'france-chaleur-urbaine'
     }, {
         npm: 'mesaidesreno',
-        maintainer: 'Mes Aides Réno'
+        maintainer: 'mes-aides-reno'
     }
 ];
 
