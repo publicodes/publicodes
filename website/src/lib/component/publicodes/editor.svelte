@@ -71,16 +71,16 @@
 </script>
 
 <div
-    class="editor-container not-prose border-primary-100 flex flex-col
-	overflow-hidden border sm:rounded"
+    class="editor-container not-prose flex flex-col overflow-hidden
+	border border-primary-100 sm:rounded"
     class:mb-4={!fullPage}
 >
     <div
-        class="editor-header border-primary-200 bg-primary-50 relative flex shrink-0
-		items-center overflow-hidden border-b text-center"
+        class="editor-header relative flex shrink-0 items-center overflow-hidden
+		border-b border-primary-200 bg-primary-50 text-center"
     >
         <button
-            class="border-primary-200 text-primary-500 flex items-center justify-center border-r"
+            class="flex items-center justify-center border-r border-primary-200 text-primary-500"
             title="Copier"
             onclick={handleCopy}
             aria-label="Copier le code"
@@ -98,7 +98,7 @@
             </div>
         {/if}
         <span
-            class="font-regular text-primary-500 flex-1 font-mono xl:p-2 xl:text-lg {size === 'lg'
+            class="flex-1 font-mono font-regular text-primary-500 xl:p-2 xl:text-lg {size === 'lg'
                 ? 'lg:text-lg xl:text-xl'
                 : 'max-md:text-sm'}"
             class:p-3={size === 'lg'}
@@ -111,7 +111,7 @@
         {#if !hideDocButton}
             <button
                 transition:fly
-                class="border-primary-200 text-primary-500 border-l"
+                class="border-l border-primary-200 text-primary-500"
                 onclick={() => (showDoc = !showDoc)}
                 aria-label={showDoc ? 'Fermer la documentation' : 'Ouvrir la documentation'}
                 class:saturate-0={documentationIsBroken}
@@ -159,8 +159,8 @@
             <ul class="sticky bottom-0">
                 {#each [...warning, ...error] as message}
                     <li class="flex whitespace-pre-line bg-yellow-100" in:fly>
-                        <span class="bg-primary-50 w-14 border-r"></span>
-                        <span class="first-line:font-regular max-h-40 flex-1 overflow-auto p-2"
+                        <span class="w-14 border-r bg-primary-50"></span>
+                        <span class="max-h-40 flex-1 overflow-auto p-2 first-line:font-regular"
                             >{message}</span
                         >
                     </li>
@@ -213,15 +213,15 @@
 
         & :global {
             h1 {
-                @apply font-regular my-2 text-xl;
+                @apply my-2 text-xl font-regular;
                 /* @apply hidden; */
             }
 
             h2 {
-                @apply font-regular -mx-4 border-t p-4;
+                @apply -mx-4 border-t p-4 font-regular;
             }
             h3 {
-                @apply font-regular pb-2 pt-4;
+                @apply pb-2 pt-4 font-regular;
             }
 
             p {
@@ -231,7 +231,7 @@
                 @apply my-0;
             }
             button[aria-label] {
-                @apply border-primary-100 bg-primary-50 hover:border-primary-200 hover:bg-primary-100 mx-2 cursor-pointer rounded border px-1 py-1 text-xs;
+                @apply mx-2 cursor-pointer rounded border border-primary-100 bg-primary-50 px-1 py-1 text-xs hover:border-primary-200 hover:bg-primary-100;
             }
             button:not([aria-label]) {
                 @apply cursor-pointer p-1 font-sans hover:underline;
@@ -245,10 +245,10 @@
                 @apply min-w-10 flex-1 p-2 pl-0 pr-4;
             }
             .content {
-                @apply hover:text-primary-400 flex p-0;
+                @apply flex p-0 hover:text-primary-400;
             }
             .content.active {
-                @apply font-regular text-primary-400 bg-slate-50;
+                @apply bg-slate-50 font-regular text-primary-400;
             }
 
             .content::before {
@@ -317,10 +317,10 @@
             @apply font-mono font-light;
         }
         .cm-gutters {
-            @apply bg-primary-50 flex min-w-14 bg-opacity-30 font-mono;
+            @apply flex min-w-14 bg-primary-50 bg-opacity-30 font-mono;
         }
         .cm-activeLineGutter {
-            @apply bg-primary-50 mt-0;
+            @apply mt-0 bg-primary-50;
         }
         .cm-gutter {
             &:first-child {

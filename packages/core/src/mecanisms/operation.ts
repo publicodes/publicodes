@@ -11,7 +11,7 @@ import { inferUnit, serializeUnit } from '../units'
 const knownOperations = {
 	'*': [(a, b) => a * b, '×'],
 	'/': [(a, b) => a / b, '∕'],
-	'//': [(a, b) => (a - a%b)/ b, '//'],
+	'//': [(a, b) => (a - (a % b)) / b, '//'],
 	'**': [(a, b) => a ** b, '**'],
 	'+': [(a, b) => a + b],
 	'-': [(a, b) => a - b, '−'],
@@ -81,7 +81,9 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 	// LAZY EVALUATION 2
 	if (
 		(node2.nodeValue === null &&
-			['<', '>', '<=', '>=', '/', '*', '//', 'et'].includes(node.operationKind)) ||
+			['<', '>', '<=', '>=', '/', '*', '//', 'et'].includes(
+				node.operationKind,
+			)) ||
 		(node2.nodeValue === 0 && ['*'].includes(node.operationKind)) ||
 		(node2.nodeValue === false && node.operationKind === 'et') ||
 		(node2.nodeValue === true && node.operationKind === 'ou')
