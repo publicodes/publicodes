@@ -32,7 +32,7 @@
                 </strong>
                 <div class="flex-1">
                     {#if description}
-                        <p class="mt-0">{description}</p>
+                        <p class="mt-1">{description}</p>
                     {/if}
                 </div>
                 <span class=" text-sm font-light text-slate-500">
