@@ -27,7 +27,6 @@
     const currentPageMetadata = $derived(
         data.docPages.find((page) => `/docs${page.path}` === currentPage.url.pathname)?.metadata
     );
-    $inspect(currentPageMetadata);
     let showMobileMenuLeft = $state(false);
     let showMobileMenuRight = $state(false);
     afterNavigate(() => {

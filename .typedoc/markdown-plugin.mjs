@@ -17,7 +17,6 @@ export function load(app) {
 			} else {
 				url.url = url.url.replace(/(.*?)\.md$/, '$1/+page.svelte.md')
 			}
-			url.url = url.url.toLocaleLowerCase()
 		})
 	})
 
@@ -44,6 +43,5 @@ export function load(app) {
 			// Fix escaping of < and >
 			.replaceAll('\\<', '&amp;lt;')
 			.replaceAll('\\>', '&amp;gt;')
-			.toLocaleLowerCase()
 	})
 }
