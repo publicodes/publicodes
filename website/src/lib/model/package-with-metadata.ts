@@ -26,7 +26,10 @@ async function fetchPackageMetadata(
 ): Promise<PublicodesPackageWithMetadata> {
     const response = await fetch(`${NPM_REGISTRY_URL}/${pkg.npm}`);
     const data = await response.json();
-    const description = data.description.startsWith('<div') ? '' : data.description;
+    const description =
+        data.description.startsWith('<div') || data.description.startsWith('> [!')
+            ? pkg.description ?? ''
+            : data.description;
     const maintener = produits.find((produit) => produit.slug === pkg.maintainer);
     if (!maintener) {
         throw new Error(`Maintener ${pkg.maintainer} not found in produits.json`);
