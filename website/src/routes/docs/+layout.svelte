@@ -1,14 +1,13 @@
 <script lang="ts">
     import { afterNavigate } from '$app/navigation';
-    import { page } from '$app/stores';
     import MenuLink from '$lib/ui/menu-link.svelte';
     import { fly } from 'svelte/transition';
 
     const { children, data } = $props();
-    const currentPage = $derived($page);
+    const { title, description, headings, menuEntries } = data;
 
     function getChildPage(path: string) {
-        return data.docPages
+        return menuEntries
             .filter((page) => {
                 return (
                     page.path.startsWith(path) &&
@@ -22,12 +21,7 @@
                     (a.metadata.sidebar_position as number)
             );
     }
-
-    const entryPages = getChildPage('');
-    const currentPageMetadata = $derived(
-        data.docPages.find((page) => `/docs${page.path}` === currentPage.url.pathname)?.metadata
-    );
-    $inspect(currentPageMetadata);
+    const entryPages = getChildPage('/docs');
     let showMobileMenuLeft = $state(false);
     let showMobileMenuRight = $state(false);
     afterNavigate(() => {
@@ -36,9 +30,9 @@
 </script>
 
 <svelte:head>
-    <title>{currentPageMetadata?.title} - Publicodes</title>
-    {#if currentPageMetadata?.description}
-        <meta name="description" content={currentPageMetadata.description} />
+    <title>{title} - Publicodes</title>
+    {#if description}
+        <meta name="description" content={description} />
     {/if}
 </svelte:head>
 <div class="flex min-h-full items-start lg:justify-center">
@@ -88,7 +82,7 @@
                 class:opacity-50={showMobileMenuLeft || showMobileMenuRight}
                 class=" py-8"
             >
-                <h1>{currentPageMetadata?.title}</h1>
+                <h1>{title}</h1>
                 {@render children()}
             </article>
         </div>
@@ -120,7 +114,7 @@
             {#each entryPages as { path, metadata }}
                 {@const childPages = getChildPage(path)}
                 <MenuLink
-                    href={`/docs${path}`}
+                    href={path}
                     onclick={() => {
                         if (childPages.length) {
                             return;
@@ -132,10 +126,7 @@
                     {metadata.menu_title || metadata.title}
                     {#snippet submenu()}
                         {#each childPages as { path: childPath, metadata }}
-                            <MenuLink
-                                href={`/docs${childPath}`}
-                                onclick={() => (showMobileMenuLeft = false)}
-                            >
+                            <MenuLink href={childPath} onclick={() => (showMobileMenuLeft = false)}>
                                 {metadata.menu_title || metadata.title}
                             </MenuLink>
                         {/each}
@@ -147,11 +138,11 @@
 {/snippet}
 
 {#snippet MenuRight()}
-    {#if currentPageMetadata?.headings.length}
+    {#if headings?.length}
         <nav class="mx-2 border-primary-50" class:md:border-l={!showMobileMenuRight}>
             <h2 class="not-prose my-2 p-2 uppercase text-slate-500">Sur cette page</h2>
             <ul>
-                {#each currentPageMetadata.headings as { title, slug }}
+                {#each headings as { title, slug }}
                     <li class="p-2">
                         <a
                             class="font-regular text-slate-700 hover:text-primary-400"

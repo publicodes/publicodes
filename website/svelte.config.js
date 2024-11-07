@@ -17,9 +17,6 @@ const mdsvexOptions = {
     extensions: ['.svelte.md'],
     rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
     remarkPlugins: [remarkHeadings],
-    layout: {
-        blog: new URL('./src/routes/blog/(article)/article-layout.svelte', import.meta.url).pathname
-    },
     highlight: {
         highlighter: async (code, lang = 'text', metastring) => {
             if (lang && lang.startsWith('publicodes')) {
@@ -56,7 +53,8 @@ const config = {
             split: true
         }),
         alias: {
-            $data: './src/data'
+            $data: './src/data',
+            $routes: './src/routes'
         }
     },
     extensions: ['.svelte', '.svelte.md']

@@ -6,13 +6,23 @@ export type Metadata = {
     menu_title: string;
 };
 
-const docPages = await getMarkdownPagesInfo<Metadata>(import.meta.glob('./**/+page.svelte.md'));
+const docPages = await getMarkdownPagesInfo<Metadata>(
+    import.meta.glob('$routes/docs/**/+page.svelte.md')
+);
+
 docPages.forEach((page) => {
     if (page.metadata?.title === undefined) {
-        console.error(`Missing title in ${page.path}`);
+        throw new Error(`Missing title in ${page.path}`);
     }
 });
 
-export function load() {
-    return { docPages };
+const menuEntries = docPages.filter((page) => page.path.split('/').length <= 4);
+
+export function load({ url }) {
+    const metadata = docPages.find((page) => page.path === url.pathname)?.metadata;
+
+    return {
+        menuEntries,
+        ...metadata
+    };
 }

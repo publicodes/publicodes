@@ -1,12 +1,10 @@
 <script lang="ts">
-    import type { Page } from '$lib/utils/get-markdown-page-info';
     import { Newspaper, Rss } from 'lucide-svelte';
-    import type { Metadata } from './+page.server';
 
     import PostCard from './post-card.svelte';
     import PostListItem from './post-list-item.svelte';
 
-    const { data }: { data: { blogPosts: Array<Page<Metadata>> } } = $props();
+    const { data } = $props();
     const featuredPosts = data.blogPosts.filter((post) => post.metadata.featured);
 
     // TODO: factorize icon size et width with other components
@@ -26,7 +24,7 @@
             </div>
             <ul class="grid gap-5 lg:grid-cols-2">
                 {#each featuredPosts as { path, metadata: { title, description, date, tags } }}
-                    <PostCard url={'blog' + path} {title} {description} {date} {tags} />
+                    <PostCard url={path} {title} {description} {date} {tags} />
                 {/each}
             </ul>
         </div>
@@ -42,7 +40,7 @@
             </div>
             <ul class="not-prose divide-y divide-primary-100">
                 {#each data.blogPosts as { path, metadata: { title, description, tags, date } }}
-                    <PostListItem url={'blog' + path} {title} {date} {description} {tags} />
+                    <PostListItem url={path} {title} {date} {description} {tags} />
                 {/each}
             </ul>
         </div>

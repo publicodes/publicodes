@@ -1,4 +1,5 @@
 export type Page<Metadata> = {
+    slug: string;
     path: string;
     metadata: Metadata & {
         headings: Array<{ title: string; level: number; slug: string }>;
@@ -15,13 +16,15 @@ export function getMarkdownPagesInfo<Metadata>(
                 metadata: Page<Metadata>['metadata'];
             };
             const metadata = pageContent.metadata;
-            metadata.headings = metadata.headings.filter((heading) => heading.level === 2);
 
+            metadata.headings = metadata.headings.filter((heading) => heading.level === 2);
+            path = path
+                .replace(/^.*\/routes/, '')
+                .replace('/+page.svelte.md', '')
+                .replace(/\(.*?\)\//g, '');
             return {
-                path: path
-                    .replace('./', '/')
-                    .replace('/+page.svelte.md', '')
-                    .replace(/\(.*\)\//g, ''),
+                slug: path.split('/').pop() as string,
+                path,
                 metadata
             };
         })

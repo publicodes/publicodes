@@ -10,15 +10,13 @@
     import { afterNavigate } from '$app/navigation';
     import { insertDocsearch } from '$lib/search/insert-docsearch';
     import NavTab from '$lib/ui/nav-tab.svelte';
-    import {
-        Github,
-        MenuIcon,
-        MessageCircleHeart,
-        MessagesSquare,
-        ChevronRight,
-        X
-    } from 'lucide-svelte';
+    import { Github, MenuIcon, MessagesSquare } from 'lucide-svelte';
     import { onMount } from 'svelte';
+
+    import {
+        setLastBlogPostDate,
+        showBlogPostIndicator
+    } from '$lib/model/new-blog-post-indicator.svelte';
     import { fly } from 'svelte/transition';
     import '../app.css';
 
@@ -27,17 +25,17 @@
     (globalThis as any).Callout = Callout;
     /* eslint-enable @typescript-eslint/no-explicit-any */
 
-    const { children } = $props();
+    const { children, data } = $props();
 
     // Set the locale time to French
     dayjs.locale('fr');
 
     let showMobileMenu = $state(false);
-    let showSurvey = $state(true);
 
     afterNavigate(() => {
         showMobileMenu = false;
     });
+    setLastBlogPostDate(data.lastBlogPostDate);
     onMount(() => {
         insertDocsearch('div#search');
     });
@@ -102,43 +100,6 @@
     class:blur-sm={showMobileMenu}
     class:opacity-50={showMobileMenu}
 >
-    {#if showSurvey}
-        <aside
-            class="flex items-center justify-between bg-secondary-600 px-2
-			py-1 text-white"
-        >
-            <div
-                class="container mx-auto flex flex-col items-start gap-3 p-2 text-left
-			sm:flex-row sm:items-center sm:justify-center sm:text-left"
-            >
-                <MessageCircleHeart class="hidden sm:inline" strokeWidth={1.5} size={28} />
-                <span
-                    >Aidez-nous à améliorer Publicodes en <span class="font-semibold"
-                        >5 minutes chrono !</span
-                    ></span
-                >
-                <a
-                    href="https://tally.so/r/3yEBlB"
-                    target="_blank"
-                    class="border-1 background flex w-fit cursor-pointer items-center
-			whitespace-nowrap rounded-full border border-secondary-600
-			bg-white bg-gradient-to-r px-4 py-1.5 font-sans text-sm
-				font-semibold leading-none text-secondary-600
-				duration-100 ease-in-out hover:bg-secondary-900 hover:text-white [&:hover_svg]:translate-x-1"
-                    >Participer à l'enquête
-                    <ChevronRight class="inline transition-transform" strokeWidth={2} size={22} />
-                </a>
-            </div>
-            <button
-                onclick={() => (showSurvey = false)}
-                class="absolute right-4 flex h-fit w-fit items-center
-				rounded-full bg-secondary-700 p-2 text-white
-			hover:bg-secondary-900 hover:text-white"
-            >
-                <X class="m-0 inline" size={16} strokeWidth={2} />
-            </button>
-        </aside>
-    {/if}
     <div class="flex-1">
         {@render children()}
     </div>
@@ -152,7 +113,22 @@
             <NavTab href="/bibliotheque">Bibliothèque</NavTab>
             <NavTab href="/realisations">Réalisations</NavTab>
             <NavTab href="/studio">Studio</NavTab>
-            <NavTab href="/blog">Blog</NavTab>
+
+            <NavTab class="relative" href="/blog">
+                Blog
+                {#if showBlogPostIndicator()}
+                    <span
+                        aria-label="Nouvel article"
+                        class="absolute -right-1.5 top-0 flex h-1.5 w-1.5"
+                    >
+                        <span
+                            class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-300 opacity-75"
+                        ></span>
+                        <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary-400"
+                        ></span>
+                    </span>
+                {/if}
+            </NavTab>
         </ul>
         <div class="self-stretch border-b border-primary-100 sm:border-r sm:max-lg:hidden"></div>
         <ul class="flex flex-row items-start justify-center gap-2 sm:items-center sm:max-lg:hidden">
