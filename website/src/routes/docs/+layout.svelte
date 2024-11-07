@@ -4,8 +4,7 @@
     import { fly } from 'svelte/transition';
 
     const { children, data } = $props();
-    const { title, description, headings, menuEntries } = data;
-
+    const { title, description, headings, menuEntries } = $derived(data);
     function getChildPage(path: string) {
         return menuEntries
             .filter((page) => {

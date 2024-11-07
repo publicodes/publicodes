@@ -16,13 +16,10 @@ docPages.forEach((page) => {
     }
 });
 
-const menuEntries = docPages.filter((page) => page.path.split('/').length <= 4);
-
 export function load({ url }) {
     const metadata = docPages.find((page) => page.path === url.pathname)?.metadata;
-
     return {
-        menuEntries,
+        menuEntries: docPages.filter((page) => page.path.split('/').length <= 4),
         ...metadata
     };
 }
