@@ -1,5 +1,9 @@
-import { blogPosts } from '../posts';
+import { blogPosts } from '$lib/model/blog-posts.js';
 
-export function load({ route }) {
-    return blogPosts.filter((post) => post.path === '/' + route.id.split('/').pop())[0]?.metadata;
+export function load({ url }) {
+    const metadata = blogPosts.find((page) => page.path === url.pathname)?.metadata;
+    if (!metadata) {
+        throw new Error(`No metadata found for ${url.pathname}`);
+    }
+    return metadata;
 }

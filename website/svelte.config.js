@@ -53,7 +53,8 @@ const config = {
             split: true
         }),
         alias: {
-            $data: './src/data'
+            $data: './src/data',
+            $routes: './src/routes'
         }
     },
     extensions: ['.svelte', '.svelte.md']

@@ -2,8 +2,8 @@
     import { ArrowLeft } from 'lucide-svelte';
     import Time from 'svelte-time/Time.svelte';
     import Tags from '../tags.svelte';
-    const { data, children } = $props();
-    const { author, date, title } = data;
+    const { children, data } = $props();
+    const { author, date, title, tags } = data;
 </script>
 
 <article class="lg:py-18 flex justify-center px-6 py-14">
@@ -19,7 +19,7 @@
 
         <div class="prose col-span-3 lg:prose-lg xl:max-w-4xl">
             <div class="border-b pb-6">
-                <div class="not-prose mb-4"><Tags tags={data.tags} /></div>
+                <div class="not-prose mb-4"><Tags {tags} /></div>
 
                 <h1>{title}</h1>
 

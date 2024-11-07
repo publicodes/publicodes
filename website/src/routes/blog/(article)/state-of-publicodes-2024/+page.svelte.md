@@ -2,7 +2,7 @@
 title: State of Publicodes 2024
 description: "Un état des lieux de l'écosystème Publicodes en 2024 : satisfaction, fonctionnalités, améliorations souhaitées..."
 author: Johan Girod
-date: 2024-11-10
+date: 2024-11-07
 tags: communauté
 icon: 📊
 featured: true
@@ -10,6 +10,7 @@ featured: true
 
 <script>
     import Tag from '$lib/ui/tag.svelte';
+    import Callour from '$lib/ui/callout.svelte';
    
     const { data } = $props();
     const { topProjets, topAméliorations, nombreRépondants, enProduction, NPSValue } = data;
@@ -95,6 +96,13 @@ Enfin le cœur du sujet ! Voici le top des améliorations les plus demandées :
 
 Cela tombe bien, nous avons **déjà commencé à réfléchir à ces sujets**, et nous avons quelques idées de par où commencer.
 
+<Callout type="caution" title="Coming soon ...">
+
+-   Faire évoluer `une possibilité` vers un type `enum` [#571](https://github.com/publicodes/publicodes/discussions/571)
+-   Utiliser un modèle précompilé pour améliorer les perfomances [#256](https://github.com/publicodes/publicodes/discussions/256)
+-   Une nouvelle CLI avec la commande `publicodes compile` [#567](https://github.com/publicodes/publicodes/discussions/567)
+
+</Callout>
 <small>
 Voici les autres améliorations demandées :
 

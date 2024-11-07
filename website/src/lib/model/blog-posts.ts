@@ -11,11 +11,12 @@ export type Metadata = {
     featured?: boolean;
 };
 
-const blogPosts = await getMarkdownPagesInfo<Metadata>(import.meta.glob('./**/+page.svelte.md'));
-
+const blogPosts = await getMarkdownPagesInfo<Metadata>(
+    import.meta.glob('$routes/blog/**/+page.svelte.md')
+);
 blogPosts.forEach((page) => {
     if (page.metadata?.title === undefined) {
-        console.error(`Missing title in ${page.path}`);
+        throw new Error(`Missing blog post title in ${page.slug}`);
     }
 });
 
@@ -23,4 +24,6 @@ blogPosts.sort((a, b) => {
     return new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime();
 });
 
-export { blogPosts };
+const lastBlogPostDate = new Date(blogPosts[0].metadata.date);
+
+export { blogPosts, lastBlogPostDate };
