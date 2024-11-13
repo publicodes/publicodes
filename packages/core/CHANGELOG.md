@@ -1,5 +1,16 @@
 # publicodes
 
+## 1.6.0
+
+### Minor Changes
+
+- [#585](https://github.com/publicodes/publicodes/pull/585) [`ed32af2`](https://github.com/publicodes/publicodes/commit/ed32af259a347dae6f289120f02d9b6c08f2e056) Thanks [@totakoko](https://github.com/totakoko)! - Ajoute le mécanisme division entière via la syntaxe `//`
+
+### Patch Changes
+
+- [`27a7f75`](https://github.com/publicodes/publicodes/commit/27a7f751c5e02e3e52e29c87d5e02f8112dd1d27) Thanks [@johangirod](https://github.com/johangirod)! - Use external dependencies for moo and nearley.
+  (instead of devDependencies, which means that the packages were bundled with publicodes even with esm)
+
 ## 1.5.4
 
 ### Patch Changes
