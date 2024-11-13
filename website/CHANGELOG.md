@@ -1,5 +1,11 @@
 # website
 
+## 1.1.0
+
+### Minor Changes
+
+-   [#585](https://github.com/publicodes/publicodes/pull/585) [`ed32af2`](https://github.com/publicodes/publicodes/commit/ed32af259a347dae6f289120f02d9b6c08f2e056) Thanks [@totakoko](https://github.com/totakoko)! - Ajoute le mécanisme division entière via la syntaxe `//`
+
 ## 1.0.2
 
 ### Patch Changes
