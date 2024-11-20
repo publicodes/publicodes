@@ -64,4 +64,14 @@ describe('inputDetails', function () {
 			type: 'date',
 		})
 	})
+
+	test('for enum rules', function () {
+		expect(inputForRule({ 'choix possibles': ['1', '2'] })).to.deep.equal({
+			element: 'select',
+			options: [
+				{ value: 1, label: '1' },
+				{ value: 2, label: '2' },
+			],
+		})
+	}
 })

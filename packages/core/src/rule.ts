@@ -6,6 +6,7 @@ import { defaultNode, mergeMissing, undefinedNode } from './evaluationUtils'
 import { capitalise0 } from './format'
 import { RuleInputDetails } from './inputDetails'
 import parse, { mecanismKeys } from './parse'
+import { parseChoixPossibles } from './parseChoixPossibles'
 import { Context } from './parsePublicodes'
 import {
 	ReplacementRule,
@@ -31,6 +32,7 @@ export type Rule = {
 	'possiblement non applicable'?: 'oui'
 	privé?: 'oui'
 	note?: string
+	'choix possibles'?: Array<string | Record<string, unknown>>
 	remplace?: Remplace | Array<Remplace>
 	'rend non applicable'?: Remplace | Array<Remplace>
 	suggestions?: Record<string, string | number | Record<string, unknown>>
@@ -57,6 +59,7 @@ export type RuleNode<Name extends string = string> = {
 	virtualRule: boolean
 	private: boolean
 	rawNode: Rule
+	possibleChoices?: Array<ASTNode<'constant' | 'reference'>>
 	replacements: Array<ReplacementRule>
 	explanation: {
 		valeur: ASTNode
@@ -115,15 +118,23 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		}
 	}
 
-	// const ruleContext = weakCopyObj(context)
-	// ruleContext.dottedName = dottedName
-	// const ruleContext = { ...context, dottedName }
 	const currentDottedNameContext = context.dottedName
 	context.dottedName = dottedName
 
 	// The following ensures that nested rules appears after the root rule when
 	// iterating over parsedRule
 	context.parsedRules[dottedName] = undefined as any
+
+	// Parse possible choices
+	let possibleChoices = undefined
+	if (rawRule['choix possibles']) {
+		let avec
+		;[possibleChoices, avec] = parseChoixPossibles(
+			rawRule['choix possibles'],
+			context,
+		)
+		ruleValue['avec'] = Object.create(ruleValue['avec'] ?? {}, avec)
+	}
 
 	const explanation = {
 		valeur: parse(ruleValue, context),
@@ -156,6 +167,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 	}
 
 	context.parsedRules[dottedName] = {
+		possibleChoices,
 		dottedName,
 		replacements: [
 			...parseRendNonApplicable(rawRule['rend non applicable'], context),
@@ -169,6 +181,9 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		rawNode: rawRule,
 		virtualRule: privateRule,
 	} as RuleNode
+	if (possibleChoices) {
+		context.parsedRules[dottedName].possibleChoices = possibleChoices
+	}
 	context.dottedName = currentDottedNameContext
 	return context.parsedRules[dottedName]
 }
