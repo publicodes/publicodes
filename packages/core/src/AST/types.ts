@@ -18,7 +18,7 @@ import { VariableManquanteNode } from '../mecanisms/variablesManquantes'
 import { VariationNode } from '../mecanisms/variations'
 import { ReferenceNode } from '../reference'
 import { ReplacementRule } from '../replacement'
-import { RuleNode } from '../rule'
+import { Rule, RuleNode } from '../rule'
 
 export type ConstantNode = {
 	type: 'boolean' | 'number' | 'string' | 'date' | undefined
@@ -74,7 +74,7 @@ export type ASTNode<N extends NodeKind = NodeKind> = PossibleNodes & {
 		mecanismName: string
 		args: Record<string, ASTNode | Array<ASTNode>>
 	}
-	rawNode?: string | Record<string, unknown>
+	rawNode?: string | Rule
 }
 // TODO : separate type for evaluated AST Tree
 

@@ -4,6 +4,7 @@ import { PublicodesError } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing, undefinedNode } from './evaluationUtils'
 import { capitalise0 } from './format'
+import { RuleInputDetails } from './inputDetails'
 import parse, { mecanismKeys } from './parse'
 import { Context } from './parsePublicodes'
 import {
@@ -26,7 +27,6 @@ export type Rule = {
 	icônes?: string
 	titre?: string
 	sévérité?: string
-	type?: string
 	experimental?: 'oui'
 	'possiblement non applicable'?: 'oui'
 	privé?: 'oui'
@@ -37,7 +37,8 @@ export type Rule = {
 	références?: { [source: string]: string }
 	API?: string
 	'identifiant court'?: string
-} & Record<string, unknown>
+} & RuleInputDetails &
+	Record<string, unknown>
 
 type Remplace =
 	| {
@@ -190,7 +191,7 @@ export function parseRules<RuleNames extends string>(
 			)
 		}
 		const copy = rule === null ? {} : weakCopyObj(rule)
-		parseRule(dottedName, copy, context)
+		parseRule(dottedName, copy as Rule, context)
 	}
 }
 
