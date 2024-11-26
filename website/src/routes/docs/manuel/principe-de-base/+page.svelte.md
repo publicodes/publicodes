@@ -28,7 +28,7 @@ prix total: 5 * prix d'un repas
 Il s'agit d'un langage déclaratif : comme dans une formule d'un tableur le `prix total` sera recalculé automatiquement si le prix d'un repas change. L'ordre de
 définition des règles n'a pas d'importance.
 
-Il est possible de préciser des _unités_ pour les valeurs littérales. Ici, prix d'un repas à pour unité `€`. Les unités sont propagées dans les calculs, et les incohérences d'unités sont détectées automatiquement.
+Il est possible de préciser des _unités_ pour les valeurs littérales. Ici, prix d'un repas a pour unité `€`. Les unités sont propagées dans les calculs, et les incohérences d'unités sont détectées automatiquement.
 
 > [En savoir plus sur les unités](/docs/manuel/unites)
 
