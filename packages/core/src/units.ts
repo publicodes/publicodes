@@ -295,7 +295,7 @@ export function convertUnit<ValType extends Evaluation<number>>(
 	const [fromSimplified, factorTo] = simplifyUnitWithValue(from || noUnit)
 	const [toSimplified, factorFrom] = simplifyUnitWithValue(to || noUnit)
 	return round(
-		(((value as number) * factorTo) / factorFrom) *
+		((value * factorTo) / factorFrom) *
 			unitsConversionFactor(
 				fromSimplified.numerators,
 				toSimplified.numerators,

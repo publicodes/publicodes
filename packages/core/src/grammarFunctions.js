@@ -16,10 +16,10 @@ export const variable = (arg) => {
 	}
 }
 
-export const JSONObject = ([{ value }]) => {
-	value
+export const JSONObject = ([{ value }]) => ({
+	value,
 	// TODO
-}
+})
 export const number = ([{ value }]) => ({
 	constant: {
 		type: 'number',

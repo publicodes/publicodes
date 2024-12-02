@@ -3,8 +3,8 @@ import { expect } from 'chai'
 import Engine from '../src/index'
 import { parseYaml } from './utils'
 
-describe('inversions', () => {
-	it('should handle basic inversion', () => {
+describe('inversions', function () {
+	it('should handle basic inversion', function () {
 		const rules = parseYaml`
         a: b + 10
 
@@ -18,7 +18,7 @@ describe('inversions', () => {
 		expect(result.nodeValue).to.be.closeTo(30 - 10, 0.0001 * 2000)
 	})
 
-	it('should handle simple inversion', () => {
+	it('should handle simple inversion', function () {
 		const rules = parseYaml`
         net: brut * 77%
 
@@ -36,7 +36,7 @@ describe('inversions', () => {
 		expect(result.nodeValue).to.be.closeTo(2000 / (77 / 100), 0.0001 * 2000)
 	})
 
-	it('should handle inversion with value at 0', () => {
+	it('should handle inversion with value at 0', function () {
 		const rules = parseYaml`
         net: brut * 77%
         brut:
@@ -52,7 +52,7 @@ describe('inversions', () => {
 		expect(result.nodeValue).to.be.closeTo(0, 0.0001)
 	})
 
-	it('should handle inversions with missing variables', () => {
+	it('should handle inversions with missing variables', function () {
 		const rules = parseYaml`
         net:
           produit:
@@ -94,7 +94,7 @@ describe('inversions', () => {
 		expect(Object.keys(result.missingVariables)).to.include('cadre')
 	})
 
-	it('should reset cache after a failed inversion', () => {
+	it('should reset cache after a failed inversion', function () {
 		const rules = parseYaml`
 			net:
 		      variations:
@@ -112,7 +112,7 @@ describe('inversions', () => {
 		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
 	})
 
-	it("shouldn't report a missing salary if another salary was input", () => {
+	it("shouldn't report a missing salary if another salary was input", function () {
 		const rules = parseYaml`
         net:
           produit:
@@ -145,7 +145,7 @@ describe('inversions', () => {
 		expect(result.missingVariables).to.be.empty
 	})
 
-	it('should accept syntax without `avec`', () => {
+	it('should accept syntax without `avec`', function () {
 		const rules = parseYaml`
 			net:
 		      variations:
@@ -161,7 +161,7 @@ describe('inversions', () => {
 		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
 	})
 
-	it('should handle an inversion with min', () => {
+	it('should handle an inversion with min', function () {
 		const rules = parseYaml`
         net: brut * 50%
         brut:
@@ -179,7 +179,7 @@ describe('inversions', () => {
 		expect(result.nodeValue).to.be.equal(2000)
 	})
 
-	it('should handle an inversion with max', () => {
+	it('should handle an inversion with max', function () {
 		const rules = parseYaml`
         net: brut * 50%
         brut:
@@ -197,7 +197,7 @@ describe('inversions', () => {
 		expect(result.nodeValue).to.be.equal(2000)
 	})
 
-	it('should not succeed when result are lower than the min', () => {
+	it('should not succeed when result are lower than the min', function () {
 		const rules = parseYaml`
         net: brut * 50%
         brut:
@@ -215,7 +215,7 @@ describe('inversions', () => {
 		expect(result.nodeValue).to.be.equal(undefined)
 	})
 
-	it('should not succeed when result are greater than the max', () => {
+	it('should not succeed when result are greater than the max', function () {
 		const rules = parseYaml`
         net: brut * 50%
         brut:
@@ -233,7 +233,7 @@ describe('inversions', () => {
 		expect(result.nodeValue).to.be.equal(undefined)
 	})
 
-	it('should handle an inversion with "tolérance d\'erreur"', () => {
+	it('should handle an inversion with "tolérance d\'erreur"', function () {
 		const errorTolerance = 0.1
 		const rules = parseYaml`
         net: brut * 50%

@@ -492,8 +492,20 @@ export class Engine<RuleNames extends string = string> {
 			this.context = Object.assign(this.context, newContext)
 			return false
 		} catch (error) {
-			return new PublicodesError('SituationError', error.message, {
-				dottedName: error.dottedName,
+			let message: string = ''
+			let dottedName: string | undefined
+			if (!(error instanceof Error)) {
+				throw error
+			}
+
+			message = error.message
+
+			if ('dottedName' in error) {
+				dottedName = error.dottedName as string
+			}
+
+			return new PublicodesError('SituationError', message, {
+				dottedName: dottedName ?? '',
 			})
 		}
 	}

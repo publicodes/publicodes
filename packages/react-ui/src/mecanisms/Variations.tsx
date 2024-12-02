@@ -26,7 +26,7 @@ export default function Variations({ nodeValue, explanation, unit }: Props) {
 			<ul>
 				{activeCase && (
 					<li>
-						<Case {...activeCase} />
+						<Case {...(activeCase as CaseProps)} />
 						<span style={{ paddingLeft: '1rem' }}>
 							<button
 								className="publicodes_btn-small"

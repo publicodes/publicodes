@@ -1,6 +1,6 @@
 import Engine from 'publicodes'
 import { describe, expect, it } from 'vitest'
-import { rules, rulesId } from '../rules'
+import { rules, rulesId } from '../rules.js'
 
 const engine = new Engine({ rules: 42 })
 

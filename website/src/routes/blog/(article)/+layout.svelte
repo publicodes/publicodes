@@ -3,7 +3,7 @@
     import Time from 'svelte-time/Time.svelte';
     import Tags from '../tags.svelte';
     const { children, data } = $props();
-    const { author, date, title, tags } = data;
+    const { author, date, title, tags } = $derived(data);
 </script>
 
 <article class="lg:py-18 flex justify-center px-6 py-14">

@@ -99,7 +99,7 @@ export const RulesNav = ({
 			focusableElements.length - 1
 		] as HTMLElement
 
-		const handleKeyDown = (event) => {
+		const handleKeyDown = (event: KeyboardEvent) => {
 			if (openNavButtonPortalElement && navOpen) {
 				if (event.key === 'Escape') {
 					event.preventDefault()

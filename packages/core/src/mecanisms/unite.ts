@@ -35,6 +35,9 @@ registerEvaluationFunction(parseUnité.nom, function evaluate(node) {
 				valeur.nodeValue as number,
 			)
 		} catch (e) {
+			if (!(e instanceof Error)) {
+				throw e
+			}
 			warning(
 				this.context.logger,
 				"Erreur lors de la conversion d'unité explicite",

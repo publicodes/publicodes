@@ -1,4 +1,4 @@
-import { EvaluatedNode } from 'publicodes/src/AST/types'
+import { EvaluatedNode } from 'publicodes'
 import { createContext, useContext, useState } from 'react'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'

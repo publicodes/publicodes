@@ -120,7 +120,7 @@ Vérifiez qu'il n'y ait pas d'erreur dans l'orthographe du nom.`,
 	try {
 		return parseFn(values, context)
 	} catch (e) {
-		if (e instanceof PublicodesError) {
+		if (e instanceof PublicodesError || !(e instanceof Error)) {
 			throw e
 		}
 		throw new PublicodesError(

@@ -1,5 +1,8 @@
 {
+	"extends": "../../tsconfig.json",
+
 	"compilerOptions": {
+		"rootDir": ".",
 		/* Basic Options */
 		// "incremental": true, // disabled for tsup, see https://github.com/egoist/tsup/issues/615 for implementation status
 		"target": "ES2020",
@@ -34,9 +37,8 @@
 
 		"skipLibCheck": true
 	},
+	"exclude": ["example.ts"],
 	"ts-node": {
 		"esm": true
-	},
-	"include": ["src"],
-	"exclude": ["**/node_modules", "**/dist", "**/*.test.*"]
+	}
 }

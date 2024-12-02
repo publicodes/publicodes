@@ -73,7 +73,7 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 				evaluatedCondition.nodeValue !== false &&
 				evaluatedCondition.nodeValue !== null
 			) {
-				evaluatedConsequence = this.evaluateNode(consequence!)
+				evaluatedConsequence = this.evaluateNode(consequence)
 				if (unit) {
 					try {
 						evaluatedConsequence = convertNodeToUnit(
@@ -81,6 +81,9 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 							evaluatedConsequence!,
 						)
 					} catch (e) {
+						if (!(e instanceof Error)) {
+							throw e
+						}
 						warning(
 							this.context.logger,
 							`L'unité de la branche n° ${
