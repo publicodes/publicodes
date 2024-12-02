@@ -214,4 +214,15 @@ a:
 			expect(engine.evaluate('a').nodeValue).to.equal(10)
 		}
 	})
+
+	it("can use undefined value to reset a rule's value with keepPreviousSituation", function() {
+		const engine = engineFromYaml(`
+a:
+  valeur: 10
+b: 
+`)
+		engine.setSituation({ a: 14, b: 20 })
+		engine.setSituation({ a: undefined }, { keepPreviousSituation: true })
+		expect(engine.evaluate('a').nodeValue).to.equal(10)
+	})
 })

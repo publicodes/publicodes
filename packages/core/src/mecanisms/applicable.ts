@@ -9,7 +9,7 @@ export default createParseInlinedMecanism(
 	},
 	{
 		condition: {
-			si: 'applicable si != non',
+			si: { et: [{ 'est défini': 'applicable si' }, 'applicable si != non'] },
 			alors: 'valeur',
 			sinon: notApplicableNode,
 		},
