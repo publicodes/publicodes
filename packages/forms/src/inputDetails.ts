@@ -75,7 +75,7 @@ export type InputDetails = {
 export function inputDetails<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
-): InputDetails | null {
+): InputDetails {
 	const rule = engine.getRule(dottedName)
 
 	const typeInfo = engine.context.nodesTypes.get(rule)
@@ -98,7 +98,7 @@ export function inputDetails<Name extends string>(
 		},
 	}).nodeValue
 
-	let saisie = rule.rawNode.saisie
+	let saisie = rule.rawNode.saisie as RuleInputDetails['saisie']
 	const situationValue = engine.getSituation()[dottedName]
 	const inputDetails = {
 		label: rule.rawNode.question || rule.title,
@@ -172,6 +172,7 @@ export function inputDetails<Name extends string>(
 			}
 		}
 		const style = typeof saisie === 'string' ? saisie : saisie.style
+
 		const orientation =
 			typeof saisie === 'string' ?
 				choices.length > 2 && saisie !== 'cartes' ?

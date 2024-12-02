@@ -1,7 +1,7 @@
 import Engine from 'publicodes'
-import { inputDetails } from './inputDetails'
+import { InputDetails, inputDetails } from './inputDetails'
 
-function inputForRule(rule) {
+function inputForRule(rule: Record<string, unknown> | string | number) {
 	const engine = new Engine({
 		a: rule,
 	})
@@ -72,6 +72,7 @@ describe('inputDetails', function () {
 	})
 
 	describe('for "une possibilité" rules', function () {
+		type InputWithOptions = InputDetails & { options: NonNullable<unknown> }
 		it('should be "RadioGroup" by default', function () {
 			const input = inputForRule({ 'une possibilité': ["'a'", "'b'"] })
 
@@ -89,9 +90,10 @@ describe('inputDetails', function () {
 		test('should list the possible values in `options`', function () {
 			const input = inputForRule({
 				'une possibilité': ["'a'", "'b'"],
-			})
+			}) as InputWithOptions
 
-			expect(input.options).to.deep.equal([
+			expect(input).to.have.property('options')
+			expect(input).to.deep.equal([
 				{ value: 'a', label: 'a', publicodesValue: "'a'" },
 				{ value: 'b', label: 'b', publicodesValue: "'b'" },
 			])
@@ -100,7 +102,7 @@ describe('inputDetails', function () {
 		test('display number with unit in label', function () {
 			const input = inputForRule({
 				'une possibilité': ['1 €', '2 €'],
-			})
+			}) as InputWithOptions
 
 			expect(input.options).to.deep.equal([
 				{ value: 1, label: '1 €', publicodesValue: '1 €' },
@@ -112,7 +114,7 @@ describe('inputDetails', function () {
 			const input = inputForRule({
 				'une possibilité': ['a', 'b'],
 				avec: { a: { description: 'blabla' }, b: { titre: 'bloblo' } },
-			})
+			}) as InputWithOptions
 
 			expect(input.options).to.deep.equal([
 				{
@@ -137,18 +139,19 @@ describe('inputDetails', function () {
 				})
 				expect(input.element).to.equal('select')
 			})
+			type InputRadio = InputDetails & { element: 'RadioGroup' }
 			test('boutons radio (horizontal if less than two element)', function () {
 				const input = inputForRule({
 					'une possibilité': [1, 2],
 					saisie: 'boutons radio',
-				})
+				}) as InputRadio
 				expect(input.element).to.equal('RadioGroup')
 				expect(input.orientation).to.equal('horizontal')
 
 				const input2 = inputForRule({
 					'une possibilité': [1, 2, 3],
 					saisie: 'boutons radio',
-				})
+				}) as InputRadio
 				expect(input2.orientation).to.equal('vertical')
 			})
 
@@ -156,7 +159,7 @@ describe('inputDetails', function () {
 				const input = inputForRule({
 					'une possibilité': [1, 2, 3, 4],
 					saisie: 'cartes',
-				})
+				}) as InputRadio
 				expect(input.element).to.equal('RadioGroup')
 				expect(input.style).to.equal('card')
 				expect(input.orientation).to.equal('horizontal')
@@ -169,7 +172,7 @@ describe('inputDetails', function () {
 						style: 'boutons radio',
 						orientation: 'vertical',
 					},
-				})
+				}) as InputRadio
 				expect(input.orientation).to.equal('vertical')
 			})
 		})
