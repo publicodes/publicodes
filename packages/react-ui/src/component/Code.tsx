@@ -51,7 +51,9 @@ export const Code = ({ tabs }: CodeProps) => {
 			<Bar>
 				{typeof navigator !== 'undefined' && navigator.clipboard && (
 					<button
-						onClick={() => navigator.clipboard.writeText(tabs[activeTab])}
+						onClick={() => {
+							void navigator.clipboard.writeText(tabs[activeTab])
+						}}
 					>
 						copier
 					</button>

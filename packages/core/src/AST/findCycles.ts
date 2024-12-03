@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* eslint-disable @typescript-eslint/no-this-alias */
+
 // Adapted from https://github.com/dagrejs/graphlib (MIT license)
 // and https://github.com/lodash/lodash (MIT license)
 

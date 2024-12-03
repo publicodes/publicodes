@@ -3,8 +3,8 @@ import { cyclesInDependenciesGraph } from '../src/AST/graph'
 import { parseYaml } from './utils'
 
 // Cycles due to parents dependencies are not handled currently.
-describe.skip('Cyclic dependencies detectron 3000 ™', () => {
-	it('should detect the trivial formule cycle', () => {
+describe.skip('Cyclic dependencies detectron 3000 ™', function () {
+	it('should detect the trivial formule cycle', function () {
 		const rules = parseYaml`
 			a:
 				formule: a + 1
@@ -13,7 +13,7 @@ describe.skip('Cyclic dependencies detectron 3000 ™', () => {
 		expect(cycles).to.deep.equal([['a']])
 	})
 
-	it('should detect nested and parallel formule cycles', () => {
+	it('should detect nested and parallel formule cycles', function () {
 		const rules = parseYaml`
 			a:
 				formule: b + 1
@@ -28,7 +28,7 @@ describe.skip('Cyclic dependencies detectron 3000 ™', () => {
 		expect(cycles).to.deep.equal([['a', 'b', 'c', 'd']])
 	})
 
-	it('should not detect formule cycles due to parent dependency', () => {
+	it('should not detect formule cycles due to parent dependency', function () {
 		const rules = parseYaml`
 			a:
 				formule: b + 1
@@ -39,7 +39,7 @@ describe.skip('Cyclic dependencies detectron 3000 ™', () => {
 		expect(cycles).to.deep.equal([])
 	})
 
-	it('should not detect cycles when résoudre référence circulaire', () => {
+	it('should not detect cycles when résoudre référence circulaire', function () {
 		const rules = parseYaml`
 			fx:
 				200 - x

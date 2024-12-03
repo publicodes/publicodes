@@ -1,9 +1,10 @@
 import { expect } from 'chai'
 import Publicodes from '../src/index'
 
-describe('Traversed variables - Basics', () => {
+describe('Traversed variables - Basics', function () {
 	let engine
-	before(() => {
+
+	before(function () {
 		engine = new Publicodes({
 			a: 1,
 			b: '1 + a',
@@ -17,31 +18,37 @@ describe('Traversed variables - Basics', () => {
 		})
 		engine.cache.traversedVariablesStack = []
 	})
-	it('should be empty if there are no external references', () => {
+
+	it('should be empty if there are no external references', function () {
 		expect(engine.evaluate('5 + 5').traversedVariables).to.deep.equal([])
 	})
-	it('should countain single rule if it has no dependency', () => {
+
+	it('should countain single rule if it has no dependency', function () {
 		expect(engine.evaluate('a').traversedVariables).to.deep.equal(['a'])
 	})
-	it('should not be polluted by previous evaluations', () => {
+
+	it('should not be polluted by previous evaluations', function () {
 		expect(engine.evaluate('a').traversedVariables).to.deep.equal(['a'])
 		engine.evaluate('d')
 		expect(engine.evaluate('d').traversedVariables).to.deep.equal(['d', 'e'])
 	})
-	it('should contain simple dependency', () => {
+
+	it('should contain simple dependency', function () {
 		expect(engine.evaluate('b').traversedVariables).to.deep.equal(['b', 'a'])
 	})
-	it('should contain simple dependency without duplication', () => {
+
+	it('should contain simple dependency without duplication', function () {
 		expect(engine.evaluate('c').traversedVariables).to.deep.equal(['c', 'a'])
 	})
-	it('should not be polluted by previous term in an operation', () => {
+
+	it('should not be polluted by previous term in an operation', function () {
 		engine.evaluate('branches')
 		expect(engine.evaluate('f').traversedVariables).to.deep.equal(['f', 'g'])
 	})
 })
 
-describe('Traversed variables - Inversions', () => {
-	it('should ignore variables traversed only during the inversion search', () => {
+describe('Traversed variables - Inversions', function () {
+	it('should ignore variables traversed only during the inversion search', function () {
 		const engine = new Publicodes({
 			brut: {
 				'inversion numérique': {

@@ -1,25 +1,23 @@
-
-  .app_header {
+.app_header {
 	background-color: #eee;
 	color: white;
 	padding: 1rem;
 	margin-bottom: 1rem;
 	font-size: 80px;
-
-  }
-  .app_header a {
+}
+.app_header a {
 	display: flex;
 	align-items: center;
 	font-weight: bold;
 	gap: 1rem;
 	text-decoration: none;
-  }
-  .app_header a:hover {
+}
+.app_header a:hover {
 	text-decoration: underline;
-  }
+}
 
-  .app_container {
+.app_container {
 	max-width: 1000px;
 	margin: 0 auto;
 	padding: 1rem;
-  }
+}

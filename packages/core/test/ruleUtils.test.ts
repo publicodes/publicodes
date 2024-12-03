@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { RuleNode } from '../source'
+import { RuleNode } from '../src'
 import {
 	disambiguateReference,
 	isAccessible,
@@ -32,17 +32,17 @@ function createDummyRule(
 			suggestions: {},
 			...properties,
 		},
-	}
+	} as any
 }
 
-describe('isAccessible', () => {
-	it("should throws if rule to check doesn't exists", () => {
+describe('isAccessible', function () {
+	it("should throws if rule to check doesn't exists", function () {
 		expect(() => isAccessible({}, '', 'a')).to.throw(
 			'\n[ InternalError ]\n➡️  Dans la règle "a"\n✖️  La règle "a" n\'existe pas',
 		)
 	})
 
-	it('should return true if no rules are private', () => {
+	it('should return true if no rules are private', function () {
 		const parsedRules = {
 			...createDummyRule('a'),
 			...createDummyRule('b'),
@@ -54,7 +54,7 @@ describe('isAccessible', () => {
 		expect(isAccessible(parsedRules, 'b . c', 'a')).to.be.true
 	})
 
-	it('should return false for grandchildren rules if they are private', () => {
+	it('should return false for grandchildren rules if they are private', function () {
 		const parsedRules = {
 			...createDummyRule('a'),
 			...createDummyRule('a . b', { private: true }),
@@ -62,14 +62,15 @@ describe('isAccessible', () => {
 		expect(isAccessible(parsedRules, '', 'a . b')).to.be.false
 	})
 
-	it('should return true for itself', () => {
+	it('should return true for itself', function () {
 		const parsedRules = {
 			...createDummyRule('a'),
 			...createDummyRule('a . b', { private: true }),
 		}
 		expect(isAccessible(parsedRules, 'a . b', 'a . b')).to.be.true
 	})
-	it('should return true for a parent', () => {
+
+	it('should return true for a parent', function () {
 		const parsedRules = {
 			...createDummyRule('a', { private: true }),
 			...createDummyRule('a . b'),
@@ -77,14 +78,16 @@ describe('isAccessible', () => {
 		}
 		expect(isAccessible(parsedRules, 'a . b . c', 'a')).to.be.true
 	})
-	it('should return true if a children rule is private', () => {
+
+	it('should return true if a children rule is private', function () {
 		const parsedRules = {
 			...createDummyRule('a', { private: true }),
 			...createDummyRule('a . b'),
 		}
 		expect(isAccessible(parsedRules, 'a', 'a . b')).to.be.true
 	})
-	it('should return true if a sibling rule is private', () => {
+
+	it('should return true if a sibling rule is private', function () {
 		const parsedRules = {
 			...createDummyRule('a'),
 			...createDummyRule('a . b', { private: true }),
@@ -92,7 +95,8 @@ describe('isAccessible', () => {
 		}
 		expect(isAccessible(parsedRules, 'a . c', 'a . b')).to.be.true
 	})
-	it('should return false if a nephew rule is private', () => {
+
+	it('should return false if a nephew rule is private', function () {
 		const parsedRules = {
 			...createDummyRule('a'),
 			...createDummyRule('a . b', { private: true }),
@@ -100,7 +104,8 @@ describe('isAccessible', () => {
 		}
 		expect(isAccessible(parsedRules, 'c', 'a . b')).to.be.false
 	})
-	it('should return false for the child of a private nephew rule', () => {
+
+	it('should return false for the child of a private nephew rule', function () {
 		const parsedRules = {
 			...createDummyRule('a'),
 			...createDummyRule('a . a', { private: true }),
@@ -112,7 +117,7 @@ describe('isAccessible', () => {
 })
 
 describe('disambiguateReference', function () {
-	it('should throw an error if no rule is found', () => {
+	it('should throw an error if no rule is found', function () {
 		expect(() =>
 			disambiguateReference({}, 'a', 'exonération annuelle'),
 		).to.throw(/[Erreur syntaxique]/)

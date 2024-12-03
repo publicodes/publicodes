@@ -74,6 +74,13 @@ export type StrictOptions = {
 	 * @default true
 	 */
 	noOrphanRule?: boolean
+
+	/**
+	 * If set to true, the engine will throw when a rule with 'une possibilité'
+	 * is evaluated to a value that is not in the list.
+	 * @default false
+	 */
+	checkPossibleValues?: boolean
 }
 
 /**
@@ -138,7 +145,7 @@ export class Engine<RuleNames extends string = string> {
 		rules: RawPublicodes<RuleNames> | ParsedRules<RuleNames> = {},
 		options: EngineOptions = {},
 	) {
-		const strict = options.strict ?? true
+		const strict = options.strict
 		const initialContext = {
 			dottedName: '' as never,
 			...options,
@@ -147,8 +154,10 @@ export class Engine<RuleNames extends string = string> {
 					{
 						situation: strict,
 						noOrphanRule: options.allowOrphanRules === true ? false : strict,
+						checkPossibleValues: strict,
 					}
-				:	strict,
+				: typeof strict === 'object' ? strict
+				: {},
 		}
 
 		this.baseContext = createContext({
@@ -259,7 +268,6 @@ export class Engine<RuleNames extends string = string> {
 			this.publicSituation,
 			Object.fromEntries(situationRules),
 		)
-
 		Object.keys(this.publicSituation).forEach((nom) => {
 			if (utils.isExperimental(this.context.parsedRules, nom)) {
 				experimentalRuleWarning(this.baseContext.logger, nom)
@@ -459,13 +467,16 @@ export class Engine<RuleNames extends string = string> {
 				dottedName,
 			})
 		}
-
-		if (this.baseContext.parsedRules[dottedName].private) {
+		const rule = this.baseContext.parsedRules[dottedName]
+		if (rule.private) {
 			const errorMessage = `La règle ${dottedName} est une règle privée.`
 			return new PublicodesError('SituationError', errorMessage, { dottedName })
 		}
-
-		if (!isAValidOption(this, dottedName, value)) {
+		const possibleChoices = rule.possibleChoices
+		if (
+			possibleChoices &&
+			!isAValidOption(possibleChoices, this.evaluate(value))
+		) {
 			const errorMessage = `La valeur ${value} ne fait pas parti des possibilités listées dans la base de règles.`
 
 			return new PublicodesError('SituationError', errorMessage, {
@@ -492,8 +503,20 @@ export class Engine<RuleNames extends string = string> {
 			this.context = Object.assign(this.context, newContext)
 			return false
 		} catch (error) {
-			return new PublicodesError('SituationError', error.message, {
-				dottedName: error.dottedName,
+			let message: string = ''
+			let dottedName: string | undefined
+			if (!(error instanceof Error)) {
+				throw error
+			}
+
+			message = error.message
+
+			if ('dottedName' in error) {
+				dottedName = error.dottedName as string
+			}
+
+			return new PublicodesError('SituationError', message, {
+				dottedName: dottedName ?? '',
 			})
 		}
 	}

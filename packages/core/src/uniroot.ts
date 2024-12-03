@@ -6,6 +6,8 @@
 // An interesting description of the algorithm can be found here:
 // https://blogs.mathworks.com/cleve/2015/10/26/zeroin-part-2-brents-version/
 
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 /**
  * Copied from https://gist.github.com/borgar/3317728
  *

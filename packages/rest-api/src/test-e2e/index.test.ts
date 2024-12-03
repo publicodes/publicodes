@@ -5,7 +5,7 @@ import Koa from 'koa'
 import Engine from 'publicodes'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { parse } from 'yaml'
-import publicodesAPI from '../middleware/koa'
+import publicodesAPI from '../middleware/koa.js'
 
 interface State extends Koa.DefaultState {}
 

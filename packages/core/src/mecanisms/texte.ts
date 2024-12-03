@@ -3,7 +3,7 @@ import { registerEvaluationFunction } from '../evaluationFunctions'
 import { mergeAllMissing } from '../evaluationUtils'
 import parse from '../parse'
 
-const NAME = 'texte' as const
+const NAME = 'texte'
 
 export type TexteNode = {
 	explanation: Array<ASTNode | string>
@@ -36,9 +36,7 @@ registerEvaluationFunction(NAME, function evaluate(node) {
 		...node,
 		explanation,
 		missingVariables: mergeAllMissing(
-			node.explanation.filter(
-				(element) => typeof element !== 'string',
-			) as Array<ASTNode>,
+			node.explanation.filter((element) => typeof element !== 'string'),
 		),
 		nodeValue: explanation
 			.map((element) =>

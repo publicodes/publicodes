@@ -35,4 +35,4 @@ group('Contexte vs situation', () => {
 	})
 })
 
-run()
+await run()

@@ -1,5 +1,4 @@
-import { EvaluatedNode, parseUnit } from 'publicodes'
-import { NodeKind } from 'publicodes/src/AST/types'
+import { EvaluatedNode, NodeKind, parseUnit } from 'publicodes'
 import { styled } from 'styled-components'
 import Explanation from '../Explanation'
 import { Mecanism } from './common/Mecanism'

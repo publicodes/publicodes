@@ -34,6 +34,7 @@
 			"outputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"]
 		},
 		"lint": {
+			"dependsOn": ["^build", "codegen"],
 			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"]
 		},
 		"dev": {

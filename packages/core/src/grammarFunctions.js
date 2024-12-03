@@ -1,6 +1,7 @@
 /* Those are postprocessor functions for the Nearley grammar.ne.
 The advantage of putting them here is to get prettier's JS formatting, since Nealrey doesn't support it https://github.com/kach/nearley/issues/310 */
 import { normalizeDateString } from './date.ts'
+import { parseUnit } from './units.ts'
 
 export const binaryOperation = ([A, , operator, , B]) => ({
 	[operator.value.toLowerCase()]: [A, B],
@@ -16,10 +17,10 @@ export const variable = (arg) => {
 	}
 }
 
-export const JSONObject = ([{ value }]) => {
-	value
+export const JSONObject = ([{ value }]) => ({
+	value,
 	// TODO
-}
+})
 export const number = ([{ value }]) => ({
 	constant: {
 		type: 'number',
@@ -28,8 +29,11 @@ export const number = ([{ value }]) => ({
 })
 
 export const numberWithUnit = (value) => ({
-	...number(value),
-	unité: value[2].value,
+	constant: {
+		type: 'number',
+		nodeValue: parseFloat(value[0].value),
+		unit: parseUnit(value[2].value),
+	},
 })
 
 export const date = ([{ value }]) => {

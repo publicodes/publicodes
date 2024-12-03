@@ -1,4 +1,4 @@
-import { EvaluatedNode } from 'publicodes/src/AST/types'
+import { EvaluatedNode } from 'publicodes'
 import React from 'react'
 import Explanation from '../../Explanation'
 

@@ -1,4 +1,4 @@
-import nearley from 'nearley'
+import nearley, { CompiledRules } from 'nearley'
 import { PublicodesError } from './error'
 import grammar from './grammar.codegen'
 
@@ -9,7 +9,7 @@ import grammar from './grammar.codegen'
 // https://github.com/kach/nearley/issues/535
 const { Grammar, Parser } = nearley
 
-const compiledGrammar = Grammar.fromCompiled(grammar)
+const compiledGrammar = Grammar.fromCompiled(grammar as CompiledRules)
 
 const parser = new Parser(compiledGrammar)
 const initialState = parser.save()
@@ -80,7 +80,7 @@ Un problème est survenu lors du parsing de l'expression \`${singleLineExpressio
 		}
 		return parseResult
 	} catch (e) {
-		if (e instanceof PublicodesError) {
+		if (e instanceof PublicodesError || !(e instanceof Error)) {
 			throw e
 		}
 		throw new PublicodesError(

@@ -77,6 +77,7 @@ export function createContext<RuleNames extends string>(
 		strict: {
 			situation: true,
 			noOrphanRule: true,
+			checkPossibleValues: false,
 			...partialContext.strict,
 		},
 		...partialContext,

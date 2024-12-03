@@ -62,7 +62,11 @@ export const defaultRenderers = (renderers: SupportedRenderers = {}) => {
 	}
 
 	return Object.fromEntries(
-		[...Object.keys(base), ...Object.keys(renderers)]
+		(
+			[...Object.keys(base), ...Object.keys(renderers)] as Array<
+				keyof SupportedRenderers
+			>
+		)
 			.map((key) => [key, renderers[key] ?? base[key]])
 			.filter(([, val]) => val),
 	) as RenderersCtx

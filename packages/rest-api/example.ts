@@ -1,6 +1,6 @@
 import cors from '@koa/cors'
 import Router from '@koa/router'
-import { koaMiddleware as publicodesAPI } from '@publicodes/api'
+import { koaMiddleware as publicodesAPI } from '@publicodes/rest-api'
 import Koa from 'koa'
 import Engine from 'publicodes'
 import { parse } from 'yaml'

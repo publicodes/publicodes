@@ -20,5 +20,11 @@ const colors = {
 	barème: '#9B296F',
 	grille: '#AD1457',
 	avec: '#2653ce',
+} as const
+
+export default (name: string) => {
+	if (name in colors) {
+		return colors[name as keyof typeof colors]
+	}
+	return 'palevioletred'
 }
-export default (name) => colors[name] || 'palevioletred'
