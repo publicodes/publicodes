@@ -46,7 +46,9 @@ const UIComponents = {
 	'une possibilité': UnePossibilité,
 	'résoudre référence circulaire': RésoudreRéférenceCirculaire,
 	unité: Unité,
-	'variable manquante': (node) => <Explanation node={node.explanation} />,
+	'variable manquante': (node: ASTNode<'variable manquante'>) => (
+		<Explanation node={node.explanation} />
+	),
 	variations: Variations,
 } as const
 
@@ -69,8 +71,8 @@ export default function Explanation({ node }: { node: ASTNode }) {
 		return engine.evaluateNode(node)
 	}, false)
 	const displayedNode = evaluateEverything(node)
-	const Component =
-		UIComponents[visualisationKind] ??
+	const Component: any =
+		UIComponents[visualisationKind as keyof typeof UIComponents] ??
 		(node.sourceMap?.mecanismName ? DefaultInlineMecanism : undefined)
 
 	if (!Component) {

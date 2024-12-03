@@ -3,31 +3,35 @@ import { parse } from 'yaml'
 import Engine from '../src/index'
 import { engineFromYaml, parseYaml } from './utils'
 
-describe('setSituation', () => {
-	it('should allow to evaluate without situation', () => {
+describe('setSituation', function () {
+	it('should allow to evaluate without situation', function () {
 		expect(engineFromYaml('a: ').evaluate('a').nodeValue).to.eq(undefined)
 	})
-	it('should allow to evaluate with situation set', () => {
+
+	it('should allow to evaluate with situation set', function () {
 		expect(
 			engineFromYaml('a: ').setSituation({ a: 5 }).evaluate('a').nodeValue,
 		).to.eq(5)
 	})
-	it('should overwrite initial value with situation', () => {
+
+	it('should overwrite initial value with situation', function () {
 		expect(
 			engineFromYaml('a: 10').setSituation({ a: 5 }).evaluate('a').nodeValue,
 		).to.eq(5)
 	})
-	it('should not allow to set situation for private rule', () => {
+
+	it('should not allow to set situation for private rule', function () {
 		expect(() => engineFromYaml('[privé] a: 10').setSituation({ a: 5 })).to
 			.throw
 	})
-	it('should report missing variables depth first', () => {
+
+	it('should report missing variables depth first', function () {
 		expect(
 			engineFromYaml('a:\nb: a').evaluate('b').missingVariables,
 		).to.have.all.keys('a')
 	})
 
-	it('should not show private missing variables', () => {
+	it('should not show private missing variables', function () {
 		expect(
 			engineFromYaml('"[privé] a":\nb: a').evaluate('b').missingVariables,
 		).to.have.all.keys('b')
@@ -73,7 +77,7 @@ describe('setSituation', () => {
 		expect(engine.evaluate('a').nodeValue).to.equal(10)
 	})
 
-	it('should allow to keep previous situation', () => {
+	it('should allow to keep previous situation', function () {
 		const engine = engineFromYaml('a:\nb:\nc:')
 			.setSituation({ a: 5, c: 3 })
 			.setSituation({ b: 10, c: 'a' }, { keepPreviousSituation: true })
@@ -82,7 +86,7 @@ describe('setSituation', () => {
 		expect(engine.evaluate('c').nodeValue).to.equal(5)
 	})
 
-	it('context rules should not be added in the situation with keepPreviousSituation', () => {
+	it('context rules should not be added in the situation with keepPreviousSituation', function () {
 		const engine = new Engine(
 			parse(`
 a:
@@ -98,7 +102,7 @@ c: 20
 		expect(filteredSituation).to.deep.equal({ c: 100 })
 	})
 
-	it('should allow to make a rule applicable in the situation', () => {
+	it('should allow to make a rule applicable in the situation', function () {
 		const engine = engineFromYaml(`
 a:
   par défaut: non
@@ -108,7 +112,7 @@ a . b: 5
 		expect(engine.evaluate('a . b').nodeValue).to.equal(5)
 	})
 
-	it('should filter wrong situation when `strict` option is set to `false`', () => {
+	it('should filter wrong situation when `strict` option is set to `false`', function () {
 		const engine = new Engine(
 			parse(`
 a:
@@ -135,7 +139,7 @@ a:
 		expect(filteredSituation).to.deep.equal({})
 	})
 
-	it('should filter wrong situation when `strict` option is set to `false` (with "formule")', () => {
+	it('should filter wrong situation when `strict` option is set to `false` (with "formule")', function () {
 		const engine = new Engine(
 			parse(`
 a:
@@ -163,7 +167,7 @@ a:
 		expect(filteredSituation).to.deep.equal({})
 	})
 
-	it('should raise an error when rule in situation is absent in base rules', () => {
+	it('should raise an error when rule in situation is absent in base rules', function () {
 		const engine = engineFromYaml(`
 a:
 `)
@@ -176,7 +180,7 @@ a:
 		)
 	})
 
-	it('should raise an error when situation value is not a possible answer in base rules', () => {
+	it('should raise an error when situation value is not a possible answer in base rules', function () {
 		const engine = engineFromYaml(`
 a:
   une possibilité:
@@ -198,7 +202,7 @@ a:
 		)
 	})
 
-	it('should keep previous situation when an error occurs in setSituation', () => {
+	it('should keep previous situation when an error occurs in setSituation', function () {
 		const engine = engineFromYaml(`
 a:
 `)

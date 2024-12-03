@@ -102,7 +102,7 @@ describe('Missing variables', function () {
 		expect(Object.keys(result)).to.be.empty
 	})
 
-	it('should ignore missing variables from the parent', () => {
+	it('should ignore missing variables from the parent', function () {
 		const rawRules = {
 			a: {
 				somme: ['b', 'c'],
@@ -119,7 +119,7 @@ describe('Missing variables', function () {
 		expect(Object.keys(missingVariables)).to.deep.equal(['a . b'])
 	})
 
-	it('should ignore missing variables from the non nullable parent', () => {
+	it('should ignore missing variables from the non nullable parent', function () {
 		const rawRules = {
 			a: {
 				'applicable si': 'oui',
@@ -291,6 +291,7 @@ describe('nextSteps', function () {
 		expect(Object.keys(result)).to.have.lengthOf(1)
 		expect(Object.keys(result)[0]).to.equal('top . sum . evt')
 	})
+
 	it('should generate questions', function () {
 		const rawRules = {
 			top: 'oui',
@@ -304,7 +305,7 @@ describe('nextSteps', function () {
 		}
 
 		const result = new Engine(rawRules).evaluate('top . sum').missingVariables
-
+		console.log('yayay', result)
 		expect(Object.keys(result)).to.have.lengthOf(1)
 		expect(Object.keys(result)[0]).to.equal('top . sum . evt')
 	})
@@ -416,6 +417,7 @@ transport . avion . usager:
 			'transport . voiture . km',
 		])
 	})
+
 	it("Parent's other descendants in sums should not be included as missing variables - 2", function () {
 		// See https://github.com/publicodes/publicodes/issues/33
 		const rawRules = yaml.parse(`

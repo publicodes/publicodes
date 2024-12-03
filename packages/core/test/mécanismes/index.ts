@@ -3,7 +3,7 @@ import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 
 const _dirname = dirname(fileURLToPath(import.meta.url))
-let mecanismsTestFiles = fs
+const mecanismsTestFiles = fs
 	.readdirSync(_dirname)
 	.filter((name) => name.endsWith('.yaml'))
 

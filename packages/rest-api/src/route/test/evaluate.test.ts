@@ -1,7 +1,7 @@
 import Engine from 'publicodes'
 import { describe, expect, it, vi } from 'vitest'
 import { parse } from 'yaml'
-import { evaluate } from '../evaluate'
+import { evaluate } from '../evaluate.js'
 
 const obj = {
 	setSituation: () => 42,

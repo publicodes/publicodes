@@ -1,5 +1,6 @@
 {
 	"name": "publicodes-monorepo",
+	"type": "module",
 	"private": true,
 	"workspaces": [
 		"website",
@@ -12,12 +13,10 @@
 		"prepack": "run build",
 		"test:type": "turbo run test:type",
 		"build": "turbo run build",
-		"lint:prettier": "run prettier --check \"**/*.{js,jsx,ts,tsx,yaml,yml,json}\" ",
-		"format:prettier": "run lint:prettier --write",
-		"lint:eslint": "run eslint --ext .ts,.tsx --max-warnings 37  ./packages",
-		"format:eslint": "run lint:eslint --fix",
-		"lint": "run lint:eslint && run lint:prettier && turbo run lint --parallel",
-		"format": "run format:eslint && run format:prettier && turbo run format --parallel",
+		"build:packages": "turbo run build --filter=\\{./packages/*\\}",
+		"eslint": "eslint --cache --flag unstable_config_lookup_from_file",
+		"lint": "prettier --check . && run build:packages && run eslint . && turbo run lint --parallel",
+		"format": "run build:packages  && run eslint --fix . && prettier --write . && turbo run format --parallel",
 		"dev": "turbo run dev --filter=\"website...\"",
 		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\" \"**/.turbo\"",
 		"release": "yarn install --refresh-lockfile && run prepack && changeset publish"
@@ -25,17 +24,17 @@
 	"devDependencies": {
 		"@changesets/changelog-github": "^0.5.0",
 		"@changesets/cli": "^2.27.8",
-		"@sveltejs/adapter-netlify": "^4.3.3",
-		"@typescript-eslint/eslint-plugin": "latest",
-		"@typescript-eslint/parser": "latest",
-		"eslint": "latest",
+		"@eslint/js": "^9.16.0",
+		"eslint": "^9.16.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-react": "latest",
+		"globals": "^15.13.0",
 		"prettier": "^3.1.0",
 		"prettier-plugin-svelte": "^3.2.4",
 		"prettier-plugin-tailwindcss": "^0.6.5",
 		"rimraf": "^3.0.2",
-		"turbo": "^2.2.3"
+		"turbo": "^2.2.3",
+		"typescript-eslint": "^8.16.0"
 	},
 	"packageManager": "yarn@4.4.1",
 	"engines": {

@@ -7,12 +7,13 @@ import {
 	removeOnce,
 } from '../src/units'
 
-describe('parseUnit', () => {
-	it('should remove the first element encounter in the list', () => {
+describe('parseUnit', function () {
+	it('should remove the first element encounter in the list', function () {
 		let result = removeOnce(4)([1, 4, 6, 5, 4])
 		expect(result).to.deep.equal([1, 6, 5, 4])
 	})
-	it('should parse string units into object', () => {
+
+	it('should parse string units into object', function () {
 		expect(parseUnit('m')).to.deep.equal({
 			numerators: ['m'],
 			denominators: [],
@@ -43,7 +44,7 @@ describe('parseUnit', () => {
 		})
 	})
 
-	it('should handle power decomposition', () => {
+	it('should handle power decomposition', function () {
 		expect(parseUnit('m2')).to.deep.equal({
 			numerators: ['m', 'm'],
 			denominators: [],
@@ -63,8 +64,8 @@ describe('parseUnit', () => {
 	})
 })
 
-describe('inferUnit', () => {
-	it('should work with simple use case *', () => {
+describe('inferUnit', function () {
+	it('should work with simple use case *', function () {
 		let unit1 = { numerators: ['m'], denominators: ['s'] }
 		let unit2 = { numerators: ['s'], denominators: [] }
 		let unit = inferUnit('*', [unit1, unit2])
@@ -74,7 +75,8 @@ describe('inferUnit', () => {
 			denominators: [],
 		})
 	})
-	it('should work with simple use case / ', () => {
+
+	it('should work with simple use case / ', function () {
 		let unit1 = { numerators: ['m'], denominators: ['s'] }
 		let unit2 = { numerators: ['m'], denominators: [] }
 		let unit = inferUnit('/', [unit1, unit2])
@@ -84,7 +86,8 @@ describe('inferUnit', () => {
 			denominators: ['s'],
 		})
 	})
-	it('should work with advanced use case /', () => {
+
+	it('should work with advanced use case /', function () {
 		let unit1 = { numerators: ['a', 'b', 'a', 'z'], denominators: ['c'] }
 		let unit2 = { numerators: ['a', 'e', 'f'], denominators: ['z', 'c'] }
 		let unit = inferUnit('/', [unit1, unit2])
@@ -96,41 +99,50 @@ describe('inferUnit', () => {
 	})
 })
 
-describe('convertUnit', () => {
-	it('should convert month to year in denominator', () => {
+describe('convertUnit', function () {
+	it('should convert month to year in denominator', function () {
 		expect(convertUnit(parseUnit('/mois'), parseUnit('/an'), 10)).to.eq(120)
 	})
-	it('should convert year to month in denominator', () => {
+
+	it('should convert year to month in denominator', function () {
 		expect(convertUnit(parseUnit('/an'), parseUnit('/mois'), 120)).to.eq(10)
 	})
-	it('should convert year to month in numerator', () => {
+
+	it('should convert year to month in numerator', function () {
 		expect(convertUnit(parseUnit('mois'), parseUnit('an'), 12)).to.eq(1)
 	})
-	it('should convert month to year in numerator', () => {
+
+	it('should convert month to year in numerator', function () {
 		expect(convertUnit(parseUnit('mois'), parseUnit('an'), 12)).to.eq(1)
 	})
-	it('should convert cm to m in numerator', () => {
+
+	it('should convert cm to m in numerator', function () {
 		expect(convertUnit(parseUnit('cm'), parseUnit('m'), 100)).to.eq(1)
 	})
-	it('should convert mm to m in numerator', () => {
+
+	it('should convert mm to m in numerator', function () {
 		expect(convertUnit(parseUnit('mm'), parseUnit('m'), 1000)).to.eq(1)
 	})
-	it('should convert mm to cm in numerator', () => {
+
+	it('should convert mm to cm in numerator', function () {
 		expect(convertUnit(parseUnit('mm'), parseUnit('cm'), 10)).to.eq(1)
 	})
-	it('should convert percentage to simple value', () => {
+
+	it('should convert percentage to simple value', function () {
 		expect(convertUnit(parseUnit('%'), parseUnit(''), 83)).to.closeTo(
 			0.83,
 			0.0000001,
 		)
 	})
-	it('should convert more difficult value', () => {
+
+	it('should convert more difficult value', function () {
 		expect(convertUnit(parseUnit('%/an'), parseUnit('/mois'), 12)).to.closeTo(
 			0.01,
 			0.0000001,
 		)
 	})
-	it('should convert year, month, day, k€', () => {
+
+	it('should convert year, month, day, k€', function () {
 		expect(
 			convertUnit(
 				parseUnit('€/personne/jour'),
@@ -139,34 +151,39 @@ describe('convertUnit', () => {
 			),
 		).to.closeTo(36.5, 0.0000001)
 	})
-	it('should handle simplification', () => {
+
+	it('should handle simplification', function () {
 		expect(
 			convertUnit(parseUnit('€.an.%/mois'), parseUnit('€'), 100),
 		).to.closeTo(12, 0.0000001)
 	})
-	it('should handle complexification', () => {
+
+	it('should handle complexification', function () {
 		expect(
 			convertUnit(parseUnit('€'), parseUnit('€.an.%/mois'), 12),
 		).to.closeTo(100, 0.0000001)
 	})
-	it('should not show unit conversion error when converting equivalent units', () => {
+
+	it('should not show unit conversion error when converting equivalent units', function () {
 		expect(convertUnit(parseUnit('kW.h'), parseUnit('kWh'), 1)).to.eq(1)
 	})
 })
 
-describe('areUnitConvertible', () => {
-	it('should be true for temporel unit', () => {
+describe('areUnitConvertible', function () {
+	it('should be true for temporel unit', function () {
 		expect(areUnitConvertible(parseUnit('mois'), parseUnit('an'))).to.eq(true)
 		expect(areUnitConvertible(parseUnit('kg/an'), parseUnit('kg/mois'))).to.eq(
 			true,
 		)
 	})
-	it('should be true for percentage', () => {
+
+	it('should be true for percentage', function () {
 		expect(areUnitConvertible(parseUnit('%/mois'), parseUnit('/an'))).to.eq(
 			true,
 		)
 	})
-	it('should be true for more complicated cases', () => {
+
+	it('should be true for more complicated cases', function () {
 		expect(
 			areUnitConvertible(
 				parseUnit('€/personne/mois'),
@@ -174,7 +191,8 @@ describe('areUnitConvertible', () => {
 			),
 		).to.eq(true)
 	})
-	it('should be false for unit not alike', () => {
+
+	it('should be false for unit not alike', function () {
 		expect(
 			areUnitConvertible(parseUnit('mois'), parseUnit('€/an/personne')),
 		).to.eq(false)

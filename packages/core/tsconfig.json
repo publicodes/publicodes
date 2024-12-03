@@ -1,4 +1,7 @@
 {
 	"extends": "../../tsconfig.json",
-	"include": ["src/**/*.ts", "bench/**/*.ts"]
+	"compilerOptions": {
+		"allowJs": true,
+		"noImplicitAny": false
+	}
 }

@@ -4,3 +4,6 @@ package-lock.json
 yarn.lock
 .svelte-kit
 .netlify
+.yarn
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*

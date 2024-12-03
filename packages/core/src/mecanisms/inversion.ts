@@ -123,7 +123,7 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	}
 
 	const goal = evaluatedInversionGoal.nodeValue as number
-	let nodeValue: number | undefined | undefined = undefined
+	let nodeValue: number | undefined = undefined
 
 	// We do some blind attempts here to avoid using the default minimum and
 	// maximum of +/- 10^8 that are required by the `uniroot` function. For the

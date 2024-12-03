@@ -121,6 +121,9 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 				node1 = convertNodeToUnit(node2.unit, node1)
 			}
 		} catch (e) {
+			if (!(e instanceof Error)) {
+				throw e
+			}
 			warning(
 				this.context.logger,
 				`Dans l'expression '${

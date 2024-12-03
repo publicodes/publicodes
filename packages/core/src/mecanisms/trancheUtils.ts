@@ -73,6 +73,9 @@ export function evaluatePlafondUntilActiveTranche(
 							plafondValue,
 						)
 			} catch (e) {
+				if (!(e instanceof Error)) {
+					throw e
+				}
 				warning(
 					this.context.logger,
 					`L'unité du plafond de la tranche n°${
