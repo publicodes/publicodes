@@ -19,7 +19,6 @@ import RésoudreRéférenceCirculaire from './mecanisms/RésoudreRéférenceCirc
 import Situation from './mecanisms/Situation'
 import TauxProgressif from './mecanisms/TauxProgressif'
 import Texte from './mecanisms/Texte'
-import UnePossibilité from './mecanisms/UnePossibilité'
 import Unité from './mecanisms/Unité'
 import Variations from './mecanisms/Variations'
 import DefaultInlineMecanism from './mecanisms/common/DefaultInlineMecanism'
@@ -43,7 +42,6 @@ const UIComponents = {
 	replacement: Replacement,
 	replacementRule: ReplacementRule,
 	'taux progressif': TauxProgressif,
-	'une possibilité': UnePossibilité,
 	'résoudre référence circulaire': RésoudreRéférenceCirculaire,
 	unité: Unité,
 	'variable manquante': (node: ASTNode<'variable manquante'>) => (

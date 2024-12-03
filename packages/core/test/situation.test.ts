@@ -214,4 +214,25 @@ a:
 			expect(engine.evaluate('a').nodeValue).to.equal(10)
 		}
 	})
+
+	it.skip("can use undefined value to reset a rule's value with keepPreviousSituation", function () {
+		const engine = engineFromYaml(`
+a:
+  valeur: 10
+b: 
+`)
+		engine.setSituation({ a: 14, b: 20 })
+		engine.setSituation({ a: undefined }, { keepPreviousSituation: true })
+		expect(engine.evaluate('a').nodeValue).to.equal(10)
+	})
+
+	it('should allow to reset a rule when use keepPreviousSituation', function () {
+		const engine = engineFromYaml(`
+a:
+`)
+		engine.setSituation({ a: 10 }, { keepPreviousSituation: true })
+		engine.setSituation({})
+		const missings = engine.evaluate('a').missingVariables
+		expect(missings).to.have.all.keys('a')
+	})
 })

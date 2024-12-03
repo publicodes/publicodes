@@ -25,10 +25,9 @@ parseVariableManquante.nom = 'variable manquante' as const
 registerEvaluationFunction(parseVariableManquante.nom, function evaluate(node) {
 	const valeur = this.evaluateNode(node.explanation)
 
-	const maxMissingScore = Object.values(valeur.missingVariables).reduce<number>(
-		(a, b) => (a > b ? a : b),
-		0,
-	)
+	const maxMissingScore = Object.values(
+		valeur.missingVariables ?? {},
+	).reduce<number>((a, b) => (a > b ? a : b), 0)
 
 	return {
 		...node,
