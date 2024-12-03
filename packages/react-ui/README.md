@@ -11,6 +11,6 @@ Then follow the [tutorial](https://publi.codes/docs/tutoriel#documentation-inter
 
 You can also jump to a specific guide for your framework:
 
-- [Next.js](https://publi.codes/docs/guides/nextjs)
-- [Svelte](https://publi.codes/docs/guides/nextjs)
-- [Other example (on Github)](https://github.com/publicodes/publicodes/tree/master/examples)
+-   [Next.js](https://publi.codes/docs/guides/nextjs)
+-   [Svelte](https://publi.codes/docs/guides/nextjs)
+-   [Other example (on Github)](https://github.com/publicodes/publicodes/tree/master/examples)

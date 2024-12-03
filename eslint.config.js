@@ -10,7 +10,10 @@ export default tseslint.config(
 		languageOptions: {
 			parserOptions: {
 				// projectService: true,
-				projectService: true,
+				projectService: {
+					allowDefaultProject: ['packages/rest-api/example.ts'],
+					defaultProject: 'tsconfig.json',
+				},
 				tsconfigRootDir: import.meta.dirname,
 			},
 		},
