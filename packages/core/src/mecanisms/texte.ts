@@ -31,12 +31,11 @@ registerEvaluationFunction(NAME, function evaluate(node) {
 	const explanation = node.explanation.map((element) =>
 		typeof element === 'string' ? element : this.evaluateNode(element),
 	)
-
 	return {
 		...node,
 		explanation,
 		missingVariables: mergeAllMissing(
-			node.explanation.filter((element) => typeof element !== 'string'),
+			explanation.filter((element) => typeof element !== 'string'),
 		),
 		nodeValue: explanation
 			.map((element) =>

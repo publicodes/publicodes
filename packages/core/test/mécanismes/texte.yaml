@@ -26,6 +26,7 @@ interpolation de chaine de caractères:
 interpolation de booléen:
   texte: Je ne dis jamais {{ variable }}.
   exemples:
+    - variables manquantes: [variable]
     - situation:
         variable: oui
       valeur attendue: Je ne dis jamais oui.
