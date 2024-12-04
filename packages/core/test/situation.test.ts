@@ -214,4 +214,14 @@ a:
 			expect(engine.evaluate('a').nodeValue).to.equal(10)
 		}
 	})
+
+	it('should allow to reset a rule when use keepPreviousSituation first', function () {
+		const engine = engineFromYaml(`
+a:
+`)
+		engine.setSituation({ a: 10 }, { keepPreviousSituation: true })
+		engine.setSituation({})
+		const missings = engine.evaluate('a').missingVariables
+		expect(missings).to.have.all.keys('a')
+	})
 })
