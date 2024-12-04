@@ -13,20 +13,29 @@ export function isAValidOption<Name extends string>(
 	dottedName: Name,
 	value: Situation<Name>[Name],
 ) {
-	const parsedSituationExpr =
-		typeof value === 'string' ? parseExpression(value, dottedName) : undefined
+	const parsedSituationExpr =	typeof value === 'string' ? parseExpression(value, dottedName) : undefined
+	if (!parsedSituationExpr) {
+		return true
+	}
 	const parsedRules = engine.getParsedRules()
-	return !(
-		parsedSituationExpr &&
-		'constant' in parsedSituationExpr &&
-		parsedSituationExpr.constant.type === 'string' &&
-		!(
-			`${dottedName} . ${parsedSituationExpr.constant.nodeValue}` in parsedRules
-		) &&
-		// We check on rawNode directly.
-		// The alternative would be to browser the AST of the rule to find the 'une possibilité' node, but this works fine.
-		(parsedRules[dottedName].rawNode?.['une possibilité'] ||
-			parsedRules[dottedName].rawNode?.formule?.['une possibilité'] ||
-			parsedRules[dottedName].rawNode?.valeur?.['une possibilité'])
+	const compareValue =
+		parsedSituationExpr && 'constant' in parsedSituationExpr ?
+			parsedSituationExpr.constant.type === 'boolean' ?
+				value
+			:	`'${parsedSituationExpr.constant.nodeValue}'`
+		:	(parsedSituationExpr as any).variable
+	const options =
+		(
+			parsedRules[dottedName].rawNode?.['une possibilit\xE9'] ??
+			parsedRules[dottedName].rawNode?.formule?.['une possibilit\xE9'] ??
+			parsedRules[dottedName].rawNode?.valeur?.['une possibilit\xE9'] ??
+			parsedRules[dottedName].rawNode?.['par défaut']?.['une possibilit\xE9']
+		)?.possibilités ?? []
+
+	return (
+		options.length === 0 ||
+		options.some((option) => option === compareValue) ||
+		`${dottedName} . ${(parsedSituationExpr as any).variable}` in parsedRules ||
+		`${dottedName} . ${(parsedSituationExpr as any).constant.nodeValue}` in parsedRules
 	)
 }
