@@ -1,15 +1,17 @@
 import Engine, { RawPublicodes } from '.'
 import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
+import { isAValidOption } from './engine/utils'
 import { PublicodesError, warning } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing, undefinedNode } from './evaluationUtils'
 import { capitalise0 } from './format'
 import parse, { mecanismKeys } from './parse'
+import { parseUnePossibilité, RulePossibilities } from './parseChoixPossibles'
 import { Context } from './parsePublicodes'
 import {
-	ReplacementRule,
 	parseRendNonApplicable,
 	parseReplacements,
+	ReplacementRule,
 } from './replacement'
 import { isAccessible, nameLeaf, ruleParents } from './ruleUtils'
 import { weakCopyObj } from './utils'
@@ -26,11 +28,11 @@ export type Rule = {
 	icônes?: string
 	titre?: string
 	sévérité?: string
-	type?: string
 	experimental?: 'oui'
 	'possiblement non applicable'?: 'oui'
 	privé?: 'oui'
 	note?: string
+	'une possibilité'?: RulePossibilities
 	remplace?: Remplace | Array<Remplace>
 	'rend non applicable'?: Remplace | Array<Remplace>
 	suggestions?: Record<string, string | number | Record<string, unknown>>
@@ -55,6 +57,7 @@ export type RuleNode<Name extends string = string> = {
 	virtualRule: boolean
 	private: boolean
 	rawNode: Rule
+	possibleChoices: Array<ASTNode> | null
 	replacements: Array<ReplacementRule>
 	explanation: {
 		valeur: ASTNode
@@ -90,8 +93,28 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		}
 	}
 	if ('formule' in rawRule) {
-		ruleValue.valeur = rawRule.formule
+		const formule = rawRule.formule
+		// Support deprecated 'une possibilité' key inside 'formule'
+		if (typeof formule === 'object' && formule['une possibilité']) {
+			rawRule['une possibilité'] = formule[
+				'une possibilité'
+			] as RulePossibilities
+			delete formule['une possibilité']
+		}
+		ruleValue.valeur = formule
 	}
+
+	if (rawRule.valeur && rawRule.valeur['une possibilité']) {
+		rawRule['une possibilité'] = rawRule.valeur['une possibilité']
+		warning(
+			context.logger,
+			`La clé 'une possibilité' à l'intérieur de la clé 'valeur' est dépréciée, veuillez la déplacer
+au niveau supérieur.`,
+			{ dottedName },
+		)
+		delete rawRule.valeur['une possibilité']
+	}
+
 	if (!privateRule && !dottedName.endsWith('$SITUATION')) {
 		// We create a $SITUATION child rule for each rule that is not private
 		// This value will be used to evaluate the rule in the current situation (`setSituation`)
@@ -123,6 +146,16 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 	// iterating over parsedRule
 	context.parsedRules[dottedName] = undefined as any
 
+	// Parse possible choices
+	let possibleChoices: RuleNode['possibleChoices'] = null
+	if (rawRule['une possibilité'] || rawRule.formule?.['une possibilité']) {
+		let avec
+		;[possibleChoices, avec] = parseUnePossibilité(
+			rawRule['une possibilité'] || rawRule.formule!['une possibilité'],
+			context,
+		)
+		ruleValue['avec'] = Object.assign(avec, ruleValue['avec'])
+	}
 	const explanation = {
 		valeur: parse(ruleValue, context),
 		/*
@@ -156,6 +189,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 	}
 
 	context.parsedRules[dottedName] = {
+		possibleChoices,
 		dottedName,
 		replacements: [
 			...parseRendNonApplicable(rawRule['rend non applicable'], context),
@@ -169,6 +203,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		rawNode: rawRule,
 		virtualRule: privateRule,
 	} as RuleNode
+
 	context.dottedName = currentDottedNameContext
 	return context.parsedRules[dottedName]
 }
@@ -186,12 +221,12 @@ export function parseRules<RuleNames extends string>(
 		if (typeof rule !== 'object') {
 			throw new PublicodesError(
 				'SyntaxError',
-				`Rule ${dottedName} is incorrectly written. Please give it a proper value.`,
+				`Rule ${dottedName} is incorrectly written. Please give it a proper value.\n ${rule}`,
 				{ dottedName },
 			)
 		}
 		const copy = rule === null ? {} : weakCopyObj(rule)
-		parseRule(dottedName, copy, context)
+		parseRule(dottedName, copy as Rule, context)
 	}
 }
 
@@ -258,6 +293,19 @@ Si le cycle est voulu, vous pouvez indiquer au moteur de résoudre la référenc
 			updateRuleMissingVariables(this, node, valeurEvaluation)
 		}
 	}
+	// Check if the value is one of the possible choices
+	if (
+		this.context.strict.checkPossibleValues &&
+		node.possibleChoices &&
+		!isAValidOption(node.possibleChoices, valeurEvaluation)
+	) {
+		throw new PublicodesError(
+			'EvaluationError',
+			`La valeur ${valeurEvaluation.nodeValue} n'est pas une valeur possible pour la règle ${node.dottedName}`,
+			{ dottedName: node.dottedName },
+		)
+	}
+
 	const evaluation = {
 		...valeurEvaluation,
 		missingVariables: mergeMissing(

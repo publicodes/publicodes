@@ -148,8 +148,6 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 		case 'taux progressif':
 		case 'grille':
 			return traverseNodeWithTranches(fn, node)
-		case 'une possibilité':
-			return traverseArrayNode(fn, node)
 		case 'durée':
 			return traverseDuréeNode(fn, node)
 		case 'résoudre référence circulaire':
@@ -214,6 +212,9 @@ const traverseRuleNode: TraverseFunction<'rule'> = (fn, node) => {
 		parents: node.explanation.parents.map(fn),
 		valeur: fn(node.explanation.valeur),
 	}
+	if ('possibleChoices' in node && node.possibleChoices) {
+		copy.possibleChoices = node.possibleChoices.map(fn)
+	}
 
 	return copy
 }
@@ -257,11 +258,6 @@ const traverseNodeWithTranches: TraverseFunction<
 		multiplicateur: fn(node.explanation.multiplicateur),
 		tranches: traverseTranche(fn, node.explanation.tranches),
 	},
-})
-
-const traverseArrayNode: TraverseFunction<'une possibilité'> = (fn, node) => ({
-	...node,
-	explanation: node.explanation.map(fn),
 })
 
 const traverseOperationNode: TraverseFunction<'operation'> = (fn, node) => {

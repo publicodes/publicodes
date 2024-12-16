@@ -73,7 +73,6 @@ export default function inferNodesTypes(
 			case 'replacementRule':
 				return { isNullable: false, type: 'number' }
 			case 'texte':
-			case 'une possibilité':
 				return { isNullable: false, type: 'string' }
 
 			case 'arrondi':
@@ -83,24 +82,32 @@ export default function inferNodesTypes(
 				}
 			case 'contexte':
 				return inferNodeUnitAndCache(node.explanation.valeur)
-
-			case 'rule': {
-				const typeInfo = inferNodeUnitAndCache(node.explanation.valeur)
-				if (typeInfo.type !== undefined) {
-					return typeInfo
+			case 'rule':
+				{
+					const typeInfo = inferNodeUnitAndCache(node.explanation.valeur)
+					if (typeInfo.type !== undefined) {
+						return typeInfo
+					}
+					let type =
+						node.rawNode.type === 'nombre' ? 'number'
+						: node.rawNode.type === 'texte' ? 'string'
+						: node.rawNode.type === 'date' ? 'date'
+						: node.rawNode.type === 'booléen' ? 'boolean'
+						: undefined
+					if (!type && node.possibleChoices) {
+						const firstChoice = node.possibleChoices[0]
+						if (firstChoice.nodeKind === 'constant') {
+							type = firstChoice.type
+						} else {
+							type = 'string'
+						}
+					}
+					if (!type && node.rawNode.question) {
+						type = 'boolean'
+					}
+					return { isNullable: typeInfo.isNullable, type } as InferedType
 				}
-				let type =
-					node.rawNode.type === 'nombre' ? 'number'
-					: node.rawNode.type === 'texte' ? 'string'
-					: node.rawNode.type === 'date' ? 'date'
-					: node.rawNode.type === 'booléen' ? 'boolean'
-					: undefined
-				if (!type && node.rawNode.question) {
-					type = 'boolean'
-				}
-				return { isNullable: typeInfo.isNullable, type } as InferedType
-			}
-
+				break
 			case 'unité':
 			case 'simplifier unité':
 				return {

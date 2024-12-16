@@ -7,7 +7,6 @@ import { EstNonDéfiniNode } from '../mecanisms/est'
 import { EstNonApplicableNode } from '../mecanisms/est-non-applicable'
 import { GrilleNode } from '../mecanisms/grille'
 import { InversionNode } from '../mecanisms/inversion'
-import { PossibilityNode } from '../mecanisms/one-possibility'
 import { OperationNode } from '../mecanisms/operation'
 import { RésoudreRéférenceCirculaireNode } from '../mecanisms/resoudre-reference-circulaire'
 import { SimplifierUnitéNode } from '../mecanisms/simplifier-unite'
@@ -18,16 +17,19 @@ import { VariableManquanteNode } from '../mecanisms/variablesManquantes'
 import { VariationNode } from '../mecanisms/variations'
 import { ReferenceNode } from '../reference'
 import { ReplacementRule } from '../replacement'
-import { RuleNode } from '../rule'
+import { Rule, RuleNode } from '../rule'
 
 export type ConstantNode = {
-	type: 'boolean' | 'number' | 'string' | 'date' | undefined
-	nodeValue: Evaluation
 	nodeKind: 'constant'
 	isNullable?: boolean
 	isDefault?: boolean
 	fullPrecision?: boolean
-}
+	nodeValue: Evaluation
+} & (
+	| { type: 'number'; unit?: Unit }
+	| { type: 'boolean' | 'string' | 'date' | undefined }
+)
+
 type PossibleNodes =
 	| RuleNode
 	| ReferenceNode
@@ -39,7 +41,6 @@ type PossibleNodes =
 	| EstNonDéfiniNode
 	| InversionNode
 	| OperationNode
-	| PossibilityNode
 	| ContextNode
 	| SimplifierUnitéNode
 	| RésoudreRéférenceCirculaireNode
@@ -74,7 +75,7 @@ export type ASTNode<N extends NodeKind = NodeKind> = PossibleNodes & {
 		mecanismName: string
 		args: Record<string, ASTNode | Array<ASTNode>>
 	}
-	rawNode?: string | Record<string, unknown>
+	rawNode?: string | Rule
 }
 // TODO : separate type for evaluated AST Tree
 
