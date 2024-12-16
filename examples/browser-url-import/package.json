@@ -12,7 +12,7 @@
 		"publicodes": "workspace:^"
 	},
 	"devDependencies": {
-		"@playwright/test": "next",
+		"@playwright/test": "^1.49.0",
 		"@rollup/plugin-node-resolve": "^15.2.3",
 		"vite": "^5.4.10"
 	}

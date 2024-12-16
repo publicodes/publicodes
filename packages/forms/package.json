@@ -1,0 +1,47 @@
+{
+	"name": "@publicodes/forms",
+	"version": "0.1.0",
+	"description": "Utilities to convert publicodes rules in interactive forms",
+	"type": "module",
+	"types": "dist/index.d.ts",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/publicodes/publicodes.git",
+		"directory": "packages/forms"
+	},
+	"bugs": "https://github.com/publicodes/publicodes/issues",
+	"homepage": "https://publi.codes/",
+	"license": "MIT",
+	"files": [
+		"dist/"
+	],
+	"peerDependencies": {
+		"publicodes": "^1.7.0"
+	},
+	"devDependencies": {
+		"@vitest/eslint-plugin": "^1.1.13",
+		"publicodes": "workspace:^",
+		"tsup": "^8.3.5",
+		"typescript": "^5.7.3",
+		"vitest": "^2.1.7"
+	},
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"test:type": "tsc --noEmit",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"engines": {
+		"node": ">=22"
+	}
+}
