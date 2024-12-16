@@ -10,6 +10,7 @@ export type Props = {
 	unit?: Unit
 	children: React.ReactNode
 	displayName?: boolean
+	docUrl?: string
 }
 export function Mecanism({
 	name,
@@ -17,10 +18,15 @@ export function Mecanism({
 	children,
 	unit,
 	displayName = true,
+	docUrl,
 }: Props) {
 	return (
 		<StyledMecanism $mecanismName={name}>
-			{displayName && <MecanismName name={name}>{name}</MecanismName>}
+			{displayName && (
+				<MecanismName name={name} href={docUrl}>
+					{name}
+				</MecanismName>
+			)}
 			<div>
 				{children}
 
@@ -54,10 +60,12 @@ const MecanismName = ({
 	name,
 	inline = false,
 	children,
+	href,
 }: {
 	name: string
 	inline?: boolean
 	children: React.ReactNode
+	href?: string
 }) => {
 	return (
 		<>
@@ -65,7 +73,7 @@ const MecanismName = ({
 				name={name}
 				$inline={inline}
 				target="_blank"
-				href={`https://publi.codes/docs/mecanismes#${name}`}
+				href={href ?? `https://publi.codes/docs/mecanismes#${name}`}
 			>
 				{children}
 			</StyledMecanismName>

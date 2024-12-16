@@ -24,7 +24,7 @@ import {
 } from '../traversedVariables'
 import { getUnitKey } from '../units'
 import { weakCopyObj } from '../utils'
-import { isAValidOption } from './utils'
+import { isAValidOption } from './isAValidOption'
 
 const emptyCache = (): Cache => ({
 	_meta: {
@@ -80,6 +80,13 @@ export type StrictOptions = {
 	 * @default false
 	 */
 	noCycleRuntime?: boolean
+
+	/**
+	 * If set to true, the engine will throw when a rule with 'une possibilité'
+	 * is evaluated to a value that is not in the list.
+	 * @default false
+	 */
+	checkPossibleValues?: boolean
 }
 
 /**
@@ -471,8 +478,11 @@ export class Engine<RuleNames extends string = string> {
 			const errorMessage = `La règle ${dottedName} est une règle privée.`
 			return new PublicodesError('SituationError', errorMessage, { dottedName })
 		}
-		if (!isAValidOption(this, dottedName, value)) {
-			const errorMessage = `La valeur ${value} ne fait pas parti des possibilités listées dans la base de règles.`
+		if (
+			rule.possibilities &&
+			!isAValidOption(this, rule.possibilities, this.evaluate(value))
+		) {
+			const errorMessage = `La valeur ${value} ne fait pas parti des possibilités applicables listées pour cette règle.`
 
 			return new PublicodesError('SituationError', errorMessage, {
 				dottedName,
