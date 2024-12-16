@@ -1,5 +1,5 @@
 import { Engine } from '.'
-import { Situation } from '..'
+import { RuleNode, Situation, reduceAST } from '..'
 import { parseExpression } from '../parseExpression'
 
 /**
@@ -16,6 +16,7 @@ export function isAValidOption<Name extends string>(
 	const parsedSituationExpr =
 		typeof value === 'string' ? parseExpression(value, dottedName) : undefined
 	const parsedRules = engine.getParsedRules()
+
 	return !(
 		parsedSituationExpr &&
 		'constant' in parsedSituationExpr &&
@@ -23,10 +24,6 @@ export function isAValidOption<Name extends string>(
 		!(
 			`${dottedName} . ${parsedSituationExpr.constant.nodeValue}` in parsedRules
 		) &&
-		// We check on rawNode directly.
-		// The alternative would be to browser the AST of the rule to find the 'une possibilité' node, but this works fine.
-		(parsedRules[dottedName].rawNode?.['une possibilité'] ||
-			parsedRules[dottedName].rawNode?.formule?.['une possibilité'] ||
-			parsedRules[dottedName].rawNode?.valeur?.['une possibilité'])
+		engine.getOptions(dottedName) !== undefined
 	)
 }
