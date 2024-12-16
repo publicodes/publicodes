@@ -20,6 +20,7 @@ testSuites.forEach(([suiteName, suite]) => {
 		Object.entries(engine.getParsedRules())
 			.filter(([, rule]) => !!rule.rawNode.exemples)
 			.forEach(([name, test]) => {
+				const title = test.title
 				const { exemples, 'unité attendue': defaultUnit } =
 					test.rawNode as Rule & {
 						'unité attendue': string
@@ -39,7 +40,7 @@ testSuites.forEach(([suiteName, suite]) => {
 						i,
 					) => {
 						it(
-							name +
+							title +
 								(testName ? ` [${testName}]`
 								: exemples.length > 1 ? ` (${i + 1})`
 								: ''),

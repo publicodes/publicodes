@@ -19,7 +19,6 @@ import { mecanismInversion } from './mecanisms/inversion'
 import { parseMaximumDe, parseMinimumDe } from './mecanisms/max-min'
 import moyenne from './mecanisms/moyenne'
 import nonApplicable from './mecanisms/non-applicable'
-import { mecanismOnePossibility } from './mecanisms/one-possibility'
 import operations from './mecanisms/operation'
 import parDéfaut from './mecanisms/parDefaut'
 import plafond from './mecanisms/plafond'
@@ -38,7 +37,7 @@ import variableManquante from './mecanisms/variablesManquantes'
 import variations from './mecanisms/variations'
 import { parseExpression } from './parseExpression'
 import { Context } from './parsePublicodes'
-import parseReference from './reference'
+import parseReference from './parseReference'
 
 export default function parse(rawNode, context: Context): ASTNode {
 	if (rawNode == undefined) {
@@ -183,7 +182,6 @@ const parseFunctions = {
 	'est applicable': parseEstApplicable,
 	'est défini': parseEstDéfini,
 	'une de ces conditions': uneDeCesConditions,
-	'une possibilité': mecanismOnePossibility,
 	condition,
 	barème,
 	durée,
@@ -196,17 +194,19 @@ const parseFunctions = {
 	valeur: parse,
 	variable: parseReference,
 	variations,
-	constant: (v) => ({
-		type: v.type,
-		// In the documentation we want to display constants defined in the source
-		// with their full precision. This is especially useful for percentages like
-		// APEC 0,036 %.
-		fullPrecision: true,
-		isNullable: v.nodeValue == null,
-		missingVariables: {},
-		nodeValue: v.nodeValue,
-		nodeKind: 'constant',
-	}),
+	constant: (v) =>
+		Object.assign(v, {
+			// In the documentation we want to display constants defined in the source
+			// with their full precision. This is especially useful for percentages like
+			// APEC 0,036 %.
+			fullPrecision: true,
+			isNullable: v.nodeValue == null,
+			missingVariables: {},
+			nodeKind: 'constant',
+		}),
 }
 
 export const mecanismKeys = Object.keys(parseFunctions)
+export const valueMecanismKeys = mecanismKeys.filter(
+	(name) => !chainableMecanisms.find(({ nom }) => nom === name),
+)
