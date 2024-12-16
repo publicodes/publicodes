@@ -97,7 +97,6 @@ export type EngineOptions = {
 	 * or whether it should simply record it and continue.
 	 *
 	 * This option can be set globally (true or false) or for specific rules ({@link StrictOptions}).
-	 * @default true
 	 *  */
 	strict?: boolean | StrictOptions
 
@@ -154,6 +153,7 @@ export class Engine<RuleNames extends string = string> {
 						situation: strict,
 						noOrphanRule: options.allowOrphanRules === true ? false : strict,
 						checkPossibleValues: strict,
+						noCycleRuntime: strict,
 					}
 				: typeof strict === 'object' ? strict
 				: {},
