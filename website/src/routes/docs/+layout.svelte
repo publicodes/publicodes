@@ -33,12 +33,12 @@
 	{/if}
 </svelte:head>
 <div class="flex items-start lg:justify-center">
-	<div class="flex lg:container ">
+	<div class="flex lg:container">
 		<!-- MOBILE NAV -->
 		{#if showMobileMenuLeft}
 			<div
 				role="dialog"
-				class="fixed z-20 h-full  border-r border-primary-300 bg-white will-change-transform"
+				class="fixed z-20 h-full border-r border-primary-300 bg-white will-change-transform"
 				transition:fly={{ x: -100 }}
 			>
 				{@render MenuLeft()}
@@ -50,7 +50,7 @@
 			></div>
 		{/if}
 
-		<div class="sticky top-16 shrink-0 max-md:hidden max-h-[calc(100vh-4rem)] overflow-auto">
+		<div class="sticky top-16 max-h-[calc(100vh-4rem)] shrink-0 overflow-auto max-md:hidden">
 			{@render MenuLeft()}
 		</div>
 		<div class="self-stretch border-r border-primary-100"></div>
@@ -99,7 +99,9 @@
 			></div>
 		{/if}
 
-		<div class="sticky top-16 hidden w-48 shrink-0 pt-16 text-sm lg:block max-h-[calc(100vh-4rem)] overflow-auto">
+		<div
+			class="sticky top-16 hidden max-h-[calc(100vh-4rem)] w-48 shrink-0 overflow-auto pt-16 text-sm lg:block"
+		>
 			{@render MenuRight()}
 		</div>
 	</div>
