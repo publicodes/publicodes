@@ -10,9 +10,9 @@ import { updateSituationWithFormValue } from './updateSituationWithFormValue'
  *
  * This module is the main entry point for creating automatic forms with Publicodes. It provides functions to create, update and navigate a form state.
  *
- * A form is a set of questions that are automatically generated from a set of targets. Thoses questions are paginated and the user can navigate between them.
+ * A form is a set of questions that are automatically generated from a set of targets (the result to compute). Thoses questions are paginated and the user can navigate between them.
  *
- * The form state is a representation of the current state of the form, including the current page, the list of targets, the list of pages and the last answered question.
+ * The form state includes the current page, the list of targets, the list of pages and the last answered question, and can be serialized. The current situation is stored in the engine.
  *
  * Theses function are designed to be used indifferently with any state management system (React's useState, Redux, Svelte Rune, etc.).
  *
@@ -88,9 +88,16 @@ export function currentPage<Name extends string>(
 }
 
 /**
+ * Get pagination information for the current form state.
+ *
+ * This information can be used to display navigation buttons in the form.
  *
  * @param formState
- * @returns
+ * @returns {{
+ *  		current: number,
+ * }
+ * }
+ *
  */
 export function pagination<Name extends string>(formState: FormState<Name>) {
 	const { currentPageIndex, pages } = formState

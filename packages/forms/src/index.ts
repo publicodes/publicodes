@@ -27,7 +27,7 @@ export type RuleWithFormMeta = Rule & {
 	type?: 'date' | 'nombre' | 'texte' | 'booléen'
 } & (
 		| {
-				type: 'booléen'
+				type?: 'booléen'
 				saisie?: 'case à cocher' | 'oui/non' // | 'interrupteur'
 		  }
 		| {
@@ -35,18 +35,18 @@ export type RuleWithFormMeta = Rule & {
 				saisie?:
 					| 'menu déroulant'
 					| 'boutons radio'
-					| 'cartes'
+					// | 'cartes'
 					| {
-							style?: 'boutons radio' | 'cartes' | 'défaut'
+							style?: 'boutons radio' // | 'cartes' | 'défaut'
 							orientation: 'horizontal' | 'vertical'
 					  }
 		  }
 		| {
-				type: 'texte'
+				type?: 'texte'
 				saisie?: 'texte court' | 'texte long' // | 'email' | 'url' | 'téléphone'
 		  }
 		| {
-				type: 'date'
+				type?: 'date'
 				saisie?: 'année' | 'mois'
 		  }
 	)
