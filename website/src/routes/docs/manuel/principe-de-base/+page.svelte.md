@@ -490,3 +490,17 @@ résultat: cotisation . taux
 -   Elles ne sont pas listées dans `getParsedRules`
 -   On ne peut pas évaluer une référence à une règle privée
 -   On ne peut pas modifier une règles privée via la situation
+
+## Cycle
+
+Publicodes détecte les cycles dans les règles au runtime. Si un cycle est détecté, un warning est affiché et la règle est évaluée à `non défini`.
+
+```publicodes
+a: b + 2
+b: c + 3
+c: a + 4
+```
+
+Pour lever une exception plutôt qu'un warning, on peut utiliser l'option [`noCycleRuntime`](/docs/api/publicodes/type-aliases/StrictOptions)
+
+Il est possible de résoudre une référence circulaire avec le mécanisme [`résoudre la référence circulaire`](/docs/mecanismes#résoudre-la-référence-circulaire).

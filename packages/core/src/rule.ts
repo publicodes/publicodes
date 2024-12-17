@@ -1,15 +1,17 @@
 import Engine, { RawPublicodes } from '.'
 import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
-import { PublicodesError } from './error'
+import { isAValidOption } from './engine/utils'
+import { PublicodesError, warning } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing, undefinedNode } from './evaluationUtils'
 import { capitalise0 } from './format'
 import parse, { mecanismKeys } from './parse'
+import { parseChoixPossibles, RulePossibilities } from './parseChoixPossibles'
 import { Context } from './parsePublicodes'
 import {
-	ReplacementRule,
 	parseRendNonApplicable,
 	parseReplacements,
+	ReplacementRule,
 } from './replacement'
 import { isAccessible, nameLeaf, ruleParents } from './ruleUtils'
 import { weakCopyObj } from './utils'
@@ -26,11 +28,11 @@ export type Rule = {
 	icônes?: string
 	titre?: string
 	sévérité?: string
-	type?: string
 	experimental?: 'oui'
 	'possiblement non applicable'?: 'oui'
 	privé?: 'oui'
 	note?: string
+	'une possibilité'?: RulePossibilities
 	remplace?: Remplace | Array<Remplace>
 	'rend non applicable'?: Remplace | Array<Remplace>
 	suggestions?: Record<string, string | number | Record<string, unknown>>
@@ -55,6 +57,7 @@ export type RuleNode<Name extends string = string> = {
 	virtualRule: boolean
 	private: boolean
 	rawNode: Rule
+	possibleChoices: Array<ASTNode> | null
 	replacements: Array<ReplacementRule>
 	explanation: {
 		valeur: ASTNode
@@ -90,8 +93,28 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		}
 	}
 	if ('formule' in rawRule) {
-		ruleValue.valeur = rawRule.formule
+		const formule = rawRule.formule
+		// Support deprecated 'une possibilité' key inside 'formule'
+		if (typeof formule === 'object' && formule['une possibilité']) {
+			rawRule['une possibilité'] = formule[
+				'une possibilité'
+			] as RulePossibilities
+			delete formule['une possibilité']
+		}
+		ruleValue.valeur = formule
 	}
+
+	if (rawRule.valeur && rawRule.valeur['une possibilité']) {
+		rawRule['une possibilité'] = rawRule.valeur['une possibilité']
+		warning(
+			context.logger,
+			`La clé 'une possibilité' à l'intérieur de la clé 'valeur' est dépréciée, veuillez la déplacer
+au niveau supérieur.`,
+			{ dottedName },
+		)
+		delete rawRule.valeur['une possibilité']
+	}
+
 	if (!privateRule && !dottedName.endsWith('$SITUATION')) {
 		// We create a $SITUATION child rule for each rule that is not private
 		// This value will be used to evaluate the rule in the current situation (`setSituation`)
@@ -123,19 +146,31 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 	// iterating over parsedRule
 	context.parsedRules[dottedName] = undefined as any
 
+	// Parse possible choices
+	let possibleChoices: RuleNode['possibleChoices'] = null
+	if (rawRule['une possibilité'] || rawRule.formule?.['une possibilité']) {
+		let avec
+		;[possibleChoices, avec] = parseChoixPossibles(
+			rawRule['une possibilité'] || rawRule.formule!['une possibilité'],
+			context,
+		)
+		ruleValue['avec'] = Object.assign(avec, ruleValue['avec'])
+	}
 	const explanation = {
 		valeur: parse(ruleValue, context),
-		// We include a list of references to the parents to implement the branch
-		// desactivation feature. When evaluating a rule we only need to know the
-		// first nullable parent, but this is something that we can't determine at
-		// this stage :
-		// - we need to run remplacements (which works on references in the ASTs
-		//   which is why we insert these “virtual” references)
-		// - we need to infer unit of the rules
-		//
-		// An alternative implementation would be possible that would colocate the
-		// code related to branch desactivation (ie find the first nullable parent
-		// statically after rules parsing)
+		/*
+		We include a list of references to the parents to implement the branch
+		desactivation feature. When evaluating a rule we only need to know the
+		first nullable parent, but this is something that we can't determine at
+		this stage :
+		- we need to run remplacements (which works on references in the ASTs
+		  which is why we insert these “virtual” references)
+		- we need to infer unit of the rules
+		
+		An alternative implementation would be possible that would colocate the
+		code related to branch desactivation (ie find the first nullable parent
+		statically after rules parsing)
+		*/
 		parents: ruleParents(dottedName).map(
 			(parent) =>
 				({
@@ -154,6 +189,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 	}
 
 	context.parsedRules[dottedName] = {
+		possibleChoices,
 		dottedName,
 		replacements: [
 			...parseRendNonApplicable(rawRule['rend non applicable'], context),
@@ -167,6 +203,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		rawNode: rawRule,
 		virtualRule: privateRule,
 	} as RuleNode
+
 	context.dottedName = currentDottedNameContext
 	return context.parsedRules[dottedName]
 }
@@ -184,12 +221,12 @@ export function parseRules<RuleNames extends string>(
 		if (typeof rule !== 'object') {
 			throw new PublicodesError(
 				'SyntaxError',
-				`Rule ${dottedName} is incorrectly written. Please give it a proper value.`,
+				`Rule ${dottedName} is incorrectly written. Please give it a proper value.\n ${rule}`,
 				{ dottedName },
 			)
 		}
 		const copy = rule === null ? {} : weakCopyObj(rule)
-		parseRule(dottedName, copy, context)
+		parseRule(dottedName, copy as Rule, context)
 	}
 }
 
@@ -208,21 +245,42 @@ registerEvaluationFunction('rule', function evaluate(node) {
 				(dottedName) => dottedName === node.dottedName,
 			).length > 1
 		) {
-			//  TODO : remettre ce warning. Je ne sais pas pourquoi, mais la base de règle de mon-entreprise lève un warning sur quasiment toutes les cotisations
-			// 			warning(
-			// 				this.context.logger,
-			// 				`Un cycle a été détecté lors de l'évaluation de cette règle.
+			const cycleIndex = this.cache._meta.evaluationRuleStack.indexOf(
+				node.dottedName,
+			)
+			const cycle = [
+				...this.cache._meta.evaluationRuleStack
+					.slice(0, cycleIndex + 1)
+					.reverse(),
+				node.dottedName,
+			]
+			const message = `
+Un cycle a été détecté lors de l'évaluation de cette règle:
+${cycle.join(cycle.length > 5 ? '\n → ' : ' → ')}
 
-			// Par défaut cette règle sera évaluée à 'null'.
-			// Pour indiquer au moteur de résoudre la référence circulaire en trouvant le point fixe
-			// de la fonction, il vous suffit d'ajouter l'attribut suivant niveau de la règle :
+Cela vient probablement d'une erreur dans votre modèle.
 
-			// 	${node.dottedName}:
-			// 		résoudre la référence circulaire: oui"
-			// 		...
-			// `,
-			// 				{ dottedName: node.dottedName }
-			// 			)
+Si le cycle est voulu, vous pouvez indiquer au moteur de résoudre la référence circulaire en trouvant le point fixe de la fonction. Pour cela, ajoutez l'attribut suivant niveau de la règle :
+
+	${node.dottedName}:
+		résoudre la référence circulaire: oui"
+		...
+`
+
+			// Do not warn if the cycle is due to a rule being disabled by its parent (see https://github.com/publicodes/publicodes/issues/206 for the proper way of doing it)
+			if (
+				!this.cache._meta.parentRuleStack.length ||
+				this.cache._meta.parentRuleStack.some(
+					(dottedName) => !dottedName.startsWith(node.dottedName),
+				)
+			) {
+				if (this.context.strict.noCycleRuntime) {
+					throw new PublicodesError('EvaluationError', message, {
+						dottedName: node.dottedName,
+					})
+				}
+				warning(this.context.logger, message, { dottedName: node.dottedName })
+			}
 
 			valeurEvaluation = {
 				nodeValue: undefined,
@@ -231,10 +289,23 @@ registerEvaluationFunction('rule', function evaluate(node) {
 			this.cache._meta.evaluationRuleStack.unshift(node.dottedName)
 			valeurEvaluation = this.evaluateNode(node.explanation.valeur)
 			this.cache._meta.evaluationRuleStack.shift()
+			valeurEvaluation.missingVariables ??= {}
+			updateRuleMissingVariables(this, node, valeurEvaluation)
 		}
 	}
-	valeurEvaluation.missingVariables ??= {}
-	updateRuleMissingVariables(this, node, valeurEvaluation)
+	// Check if the value is one of the possible choices
+	if (
+		this.context.strict.checkPossibleValues &&
+		node.possibleChoices &&
+		!isAValidOption(node.possibleChoices, valeurEvaluation)
+	) {
+		throw new PublicodesError(
+			'EvaluationError',
+			`La valeur ${valeurEvaluation.nodeValue} n'est pas une valeur possible pour la règle ${node.dottedName}`,
+			{ dottedName: node.dottedName },
+		)
+	}
+
 	const evaluation = {
 		...valeurEvaluation,
 		missingVariables: mergeMissing(
