@@ -1,12 +1,12 @@
 import Engine, { RawPublicodes } from '.'
 import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
-import { isAValidOption } from './engine/utils'
+import { isAValidOption } from './engine/isAValidOption'
 import { PublicodesError, warning } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing, undefinedNode } from './evaluationUtils'
 import { capitalise0 } from './format'
 import parse, { mecanismKeys } from './parse'
-import { parseUnePossibilité, RulePossibilities } from './parseChoixPossibles'
+import { parseUnePossibilité, RulePossibilities } from './parseUnePossibilité'
 import { Context } from './parsePublicodes'
 import {
 	parseRendNonApplicable,
@@ -57,7 +57,7 @@ export type RuleNode<Name extends string = string> = {
 	virtualRule: boolean
 	private: boolean
 	rawNode: Rule
-	possibleChoices: Array<ASTNode> | null
+	possibleChoices: Array<ASTNode<'constant' | 'reference'>> | null
 	replacements: Array<ReplacementRule>
 	explanation: {
 		valeur: ASTNode
@@ -104,17 +104,6 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		ruleValue.valeur = formule
 	}
 
-	if (rawRule.valeur && rawRule.valeur['une possibilité']) {
-		rawRule['une possibilité'] = rawRule.valeur['une possibilité']
-		warning(
-			context.logger,
-			`La clé 'une possibilité' à l'intérieur de la clé 'valeur' est dépréciée, veuillez la déplacer
-au niveau supérieur.`,
-			{ dottedName },
-		)
-		delete rawRule.valeur['une possibilité']
-	}
-
 	if (!privateRule && !dottedName.endsWith('$SITUATION')) {
 		// We create a $SITUATION child rule for each rule that is not private
 		// This value will be used to evaluate the rule in the current situation (`setSituation`)
@@ -147,15 +136,11 @@ au niveau supérieur.`,
 	context.parsedRules[dottedName] = undefined as any
 
 	// Parse possible choices
-	let possibleChoices: RuleNode['possibleChoices'] = null
-	if (rawRule['une possibilité'] || rawRule.formule?.['une possibilité']) {
-		let avec
-		;[possibleChoices, avec] = parseUnePossibilité(
-			rawRule['une possibilité'] || rawRule.formule!['une possibilité'],
-			context,
-		)
-		ruleValue['avec'] = Object.assign(avec, ruleValue['avec'])
+	const possibilités = parseUnePossibilité(rawRule, context)
+	if (possibilités) {
+		ruleValue['avec'] = Object.assign(possibilités.avec, ruleValue['avec'])
 	}
+
 	const explanation = {
 		valeur: parse(ruleValue, context),
 		/*
@@ -189,7 +174,7 @@ au niveau supérieur.`,
 	}
 
 	context.parsedRules[dottedName] = {
-		possibleChoices,
+		possibleChoices: possibilités?.possibleChoices ?? null,
 		dottedName,
 		replacements: [
 			...parseRendNonApplicable(rawRule['rend non applicable'], context),

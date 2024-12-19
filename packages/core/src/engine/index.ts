@@ -24,7 +24,7 @@ import {
 } from '../traversedVariables'
 import { getUnitKey } from '../units'
 import { weakCopyObj } from '../utils'
-import { isAValidOption } from './utils'
+import { isAValidOption } from './isAValidOption'
 
 const emptyCache = (): Cache => ({
 	_meta: {
