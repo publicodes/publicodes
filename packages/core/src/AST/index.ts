@@ -1,8 +1,8 @@
 import { ParsedRules } from '..'
 import { UnreachableCaseError } from '../error'
 import { TrancheNodes } from '../mecanisms/trancheUtils'
-import { ReferenceNode } from '../reference'
-import { ReplacementRule } from '../replacement'
+import { ReferenceNode } from '../parseReference'
+import { ReplacementRule } from '../parseReplacement'
 import { weakCopyObj } from '../utils'
 import {
 	ASTNode,
@@ -156,6 +156,8 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseInversionNode(fn, node)
 		case 'operation':
 			return traverseOperationNode(fn, node)
+		case 'une possibilité':
+			return traverseUnePossibilitéNode(fn, node)
 
 		case 'contexte':
 			return traverseContexteNode(fn, node)
@@ -212,8 +214,8 @@ const traverseRuleNode: TraverseFunction<'rule'> = (fn, node) => {
 		parents: node.explanation.parents.map(fn),
 		valeur: fn(node.explanation.valeur),
 	}
-	if ('possibleChoices' in node && node.possibleChoices) {
-		copy.possibleChoices = node.possibleChoices.map(fn)
+	if (node.possibilities) {
+		copy.possibilities = fn(node.possibilities)
 	}
 
 	return copy
@@ -345,3 +347,11 @@ const traverseConditionNode: TraverseFunction<'condition'> = (fn, node) => {
 
 	return copy
 }
+
+const traverseUnePossibilitéNode: TraverseFunction<'une possibilité'> = (
+	fn,
+	node,
+) => ({
+	...node,
+	explanation: node.explanation.map((n) => fn(n)) as any, // TODO
+})

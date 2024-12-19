@@ -15,8 +15,9 @@ import { TexteNode } from '../mecanisms/texte'
 import { UnitéNode } from '../mecanisms/unite'
 import { VariableManquanteNode } from '../mecanisms/variablesManquantes'
 import { VariationNode } from '../mecanisms/variations'
-import { ReferenceNode } from '../reference'
-import { ReplacementRule } from '../replacement'
+import { UnePossibilitéNode } from '../parseUnePossibilité'
+import { ReferenceNode } from '../parseReference'
+import { ReplacementRule } from '../parseReplacement'
 import { Rule, RuleNode } from '../rule'
 
 export type ConstantNode = {
@@ -50,6 +51,7 @@ type PossibleNodes =
 	| ConditionNode
 	| ConstantNode
 	| ReplacementRule
+	| UnePossibilitéNode
 	| VariableManquanteNode
 	| TexteNode
 

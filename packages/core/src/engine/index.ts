@@ -24,7 +24,7 @@ import {
 } from '../traversedVariables'
 import { getUnitKey } from '../units'
 import { weakCopyObj } from '../utils'
-import { isAValidOption } from './utils'
+import { isAValidOption } from './isAValidOption'
 
 const emptyCache = (): Cache => ({
 	_meta: {
@@ -478,12 +478,11 @@ export class Engine<RuleNames extends string = string> {
 			const errorMessage = `La règle ${dottedName} est une règle privée.`
 			return new PublicodesError('SituationError', errorMessage, { dottedName })
 		}
-		const possibleChoices = rule.possibleChoices
 		if (
-			possibleChoices &&
-			!isAValidOption(possibleChoices, this.evaluate(value))
+			rule.possibilities &&
+			!isAValidOption(this, rule.possibilities, this.evaluate(value))
 		) {
-			const errorMessage = `La valeur ${value} ne fait pas parti des possibilités listées dans la base de règles.`
+			const errorMessage = `La valeur ${value} ne fait pas parti des possibilités listées dans la base de règles ou est non applicable dans la situation courante.`
 
 			return new PublicodesError('SituationError', errorMessage, {
 				dottedName,

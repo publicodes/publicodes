@@ -94,14 +94,14 @@ export default function inferNodesTypes(
 						: node.rawNode.type === 'date' ? 'date'
 						: node.rawNode.type === 'booléen' ? 'boolean'
 						: undefined
-					if (!type && node.possibleChoices) {
-						const firstChoice = node.possibleChoices[0]
-						if (firstChoice.nodeKind === 'constant') {
-							type = firstChoice.type
-						} else {
-							type = 'string'
-						}
+
+					if (!type && node.possibilities) {
+						type =
+							node.possibilities.type === 'reference' ?
+								'string'
+							:	node.possibilities.type
 					}
+
 					if (!type && node.rawNode.question) {
 						type = 'boolean'
 					}

@@ -8,7 +8,7 @@ import Engine, {
 import { makeASTTransformer, traverseParsedRules } from './AST'
 import { PublicodesError } from './error'
 import inferNodeType, { NodesTypes } from './inferNodeType'
-import { ReplacementRule, inlineReplacements } from './replacement'
+import { ReplacementRule, inlineReplacements } from './parseReplacement'
 import { Rule, parseRules } from './rule'
 import {
 	disambiguateReferenceNode,
