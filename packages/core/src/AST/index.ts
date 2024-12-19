@@ -1,8 +1,8 @@
 import { ParsedRules } from '..'
 import { UnreachableCaseError } from '../error'
 import { TrancheNodes } from '../mecanisms/trancheUtils'
-import { ReferenceNode } from '../reference'
-import { ReplacementRule } from '../replacement'
+import { ReferenceNode } from '../parseReference'
+import { ReplacementRule } from '../parseReplacement'
 import { weakCopyObj } from '../utils'
 import {
 	ASTNode,
@@ -148,8 +148,6 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 		case 'taux progressif':
 		case 'grille':
 			return traverseNodeWithTranches(fn, node)
-		case 'une possibilité':
-			return traverseArrayNode(fn, node)
 		case 'durée':
 			return traverseDuréeNode(fn, node)
 		case 'résoudre référence circulaire':
@@ -158,6 +156,8 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseInversionNode(fn, node)
 		case 'operation':
 			return traverseOperationNode(fn, node)
+		case 'une possibilité':
+			return traverseUnePossibilitéNode(fn, node)
 
 		case 'contexte':
 			return traverseContexteNode(fn, node)
@@ -214,6 +214,9 @@ const traverseRuleNode: TraverseFunction<'rule'> = (fn, node) => {
 		parents: node.explanation.parents.map(fn),
 		valeur: fn(node.explanation.valeur),
 	}
+	if (node.possibilities) {
+		copy.possibilities = fn(node.possibilities)
+	}
 
 	return copy
 }
@@ -257,11 +260,6 @@ const traverseNodeWithTranches: TraverseFunction<
 		multiplicateur: fn(node.explanation.multiplicateur),
 		tranches: traverseTranche(fn, node.explanation.tranches),
 	},
-})
-
-const traverseArrayNode: TraverseFunction<'une possibilité'> = (fn, node) => ({
-	...node,
-	explanation: node.explanation.map(fn),
 })
 
 const traverseOperationNode: TraverseFunction<'operation'> = (fn, node) => {
@@ -349,3 +347,11 @@ const traverseConditionNode: TraverseFunction<'condition'> = (fn, node) => {
 
 	return copy
 }
+
+const traverseUnePossibilitéNode: TraverseFunction<'une possibilité'> = (
+	fn,
+	node,
+) => ({
+	...node,
+	explanation: node.explanation.map((n) => fn(n)) as any, // TODO
+})

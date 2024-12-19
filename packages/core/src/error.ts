@@ -21,6 +21,9 @@ interface PublicodesErrorTypes {
 	PrivateRule: {
 		dottedName: string
 	}
+	TypeError: {
+		dottedName: string
+	}
 }
 
 /**

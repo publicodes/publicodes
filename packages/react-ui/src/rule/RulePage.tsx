@@ -222,6 +222,20 @@ function Rule({
 								</blockquote>
 							</>
 						)}
+
+						{rule.possibleChoices && (
+							<>
+								<h3>Choix possibles : </h3>
+								<ul>
+									{rule.possibleChoices.map((choice, i) => (
+										<li key={i}>
+											<Explanation node={choice} />
+										</li>
+									))}
+								</ul>
+							</>
+						)}
+
 						{useSubEngine && (
 							<div
 								style={{
