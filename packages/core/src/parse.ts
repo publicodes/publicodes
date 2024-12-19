@@ -37,7 +37,7 @@ import variableManquante from './mecanisms/variablesManquantes'
 import variations from './mecanisms/variations'
 import { parseExpression } from './parseExpression'
 import { Context } from './parsePublicodes'
-import parseReference from './reference'
+import parseReference from './parseReference'
 
 export default function parse(rawNode, context: Context): ASTNode {
 	if (rawNode == undefined) {

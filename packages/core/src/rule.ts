@@ -1,18 +1,22 @@
 import Engine, { RawPublicodes } from '.'
 import { ASTNode, EvaluatedNode, MissingVariables } from './AST/types'
-import { isAValidOption } from './engine/utils'
+import { isAValidOption } from './engine/isAValidOption'
 import { PublicodesError, warning } from './error'
 import { registerEvaluationFunction } from './evaluationFunctions'
 import { defaultNode, mergeMissing, undefinedNode } from './evaluationUtils'
 import { capitalise0 } from './format'
+import {
+	parseUnePossibilité,
+	RulePossibilités,
+	UnePossibilitéNode,
+} from './mecanisms/unePossibilité'
 import parse, { mecanismKeys } from './parse'
-import { parseUnePossibilité, RulePossibilities } from './parseChoixPossibles'
 import { Context } from './parsePublicodes'
 import {
 	parseRendNonApplicable,
 	parseReplacements,
 	ReplacementRule,
-} from './replacement'
+} from './parseReplacement'
 import { isAccessible, nameLeaf, ruleParents } from './ruleUtils'
 import { weakCopyObj } from './utils'
 
@@ -32,7 +36,7 @@ export type Rule = {
 	'possiblement non applicable'?: 'oui'
 	privé?: 'oui'
 	note?: string
-	'une possibilité'?: RulePossibilities
+	'une possibilité'?: RulePossibilités
 	remplace?: Remplace | Array<Remplace>
 	'rend non applicable'?: Remplace | Array<Remplace>
 	suggestions?: Record<string, string | number | Record<string, unknown>>
@@ -57,9 +61,9 @@ export type RuleNode<Name extends string = string> = {
 	virtualRule: boolean
 	private: boolean
 	rawNode: Rule
-	possibleChoices: Array<ASTNode> | null
 	replacements: Array<ReplacementRule>
 	explanation: {
+		possibilities: UnePossibilitéNode | undefined
 		valeur: ASTNode
 		parents: Array<ASTNode>
 		nullableParent?: ASTNode
@@ -85,42 +89,37 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		)
 	}
 
+	const currentDottedNameContext = context.dottedName
+	context.dottedName = dottedName
+
+	// The following ensures that nested rules appears after the root rule when
+	// iterating over parsedRule
+	context.parsedRules[dottedName] = undefined as any
+
 	const ruleValue: Record<string, unknown> = {}
+
+	ruleValue.avec = Object.assign({}, rawRule.avec)
+	const possibilities = parseUnePossibilité(
+		rawRule,
+		context,
+		ruleValue.avec as Record<string, Rule>,
+	)
 
 	for (const key in rawRule) {
 		if (mecanismKeys.includes(key)) {
-			ruleValue[key] = rawRule[key]
+			ruleValue[key] ??= rawRule[key]
 		}
-	}
-	if ('formule' in rawRule) {
-		const formule = rawRule.formule
-		// Support deprecated 'une possibilité' key inside 'formule'
-		if (typeof formule === 'object' && formule['une possibilité']) {
-			rawRule['une possibilité'] = formule[
-				'une possibilité'
-			] as RulePossibilities
-			delete formule['une possibilité']
-		}
-		ruleValue.valeur = formule
 	}
 
-	if (rawRule.valeur && rawRule.valeur['une possibilité']) {
-		rawRule['une possibilité'] = rawRule.valeur['une possibilité']
-		warning(
-			context.logger,
-			`La clé 'une possibilité' à l'intérieur de la clé 'valeur' est dépréciée, veuillez la déplacer
-au niveau supérieur.`,
-			{ dottedName },
-		)
-		delete rawRule.valeur['une possibilité']
+	if ('formule' in rawRule) {
+		ruleValue.valeur = rawRule.formule
 	}
 
 	if (!privateRule && !dottedName.endsWith('$SITUATION')) {
 		// We create a $SITUATION child rule for each rule that is not private
 		// This value will be used to evaluate the rule in the current situation (`setSituation`)
 		ruleValue['dans la situation'] = `${dottedName} . $SITUATION`
-		ruleValue['avec'] =
-			weakCopyObj(ruleValue['avec'] as Record<string, unknown>) ?? {}
+
 		const situationValue = weakCopyObj(undefinedNode)
 		situationValue.isNullable = rawRule['possiblement non applicable'] === 'oui'
 		;(ruleValue['avec'] as Record<string, any>)['[privé] $SITUATION'] = {
@@ -136,27 +135,9 @@ au niveau supérieur.`,
 		}
 	}
 
-	// const ruleContext = weakCopyObj(context)
-	// ruleContext.dottedName = dottedName
-	// const ruleContext = { ...context, dottedName }
-	const currentDottedNameContext = context.dottedName
-	context.dottedName = dottedName
-
-	// The following ensures that nested rules appears after the root rule when
-	// iterating over parsedRule
-	context.parsedRules[dottedName] = undefined as any
-
 	// Parse possible choices
-	let possibleChoices: RuleNode['possibleChoices'] = null
-	if (rawRule['une possibilité'] || rawRule.formule?.['une possibilité']) {
-		let avec
-		;[possibleChoices, avec] = parseUnePossibilité(
-			rawRule['une possibilité'] || rawRule.formule!['une possibilité'],
-			context,
-		)
-		ruleValue['avec'] = Object.assign(avec, ruleValue['avec'])
-	}
 	const explanation = {
+		possibilities,
 		valeur: parse(ruleValue, context),
 		/*
 		We include a list of references to the parents to implement the branch
@@ -189,7 +170,6 @@ au niveau supérieur.`,
 	}
 
 	context.parsedRules[dottedName] = {
-		possibleChoices,
 		dottedName,
 		replacements: [
 			...parseRendNonApplicable(rawRule['rend non applicable'], context),
@@ -234,27 +214,35 @@ registerEvaluationFunction('rule', function evaluate(node) {
 	const { ruleDisabledByItsParent, nullableParent, parentMissingVariables } =
 		evaluateDisablingParent(this, node)
 
-	let valeurEvaluation: EvaluatedNode = {
-		...node.explanation.valeur,
-		nodeValue: null,
-		missingVariables: {},
+	const explanation = {
+		...node.explanation,
+		nullableParent,
+		ruleDisabledByItsParent,
 	}
-	if (!ruleDisabledByItsParent) {
-		if (
-			this.cache._meta.evaluationRuleStack.filter(
-				(dottedName) => dottedName === node.dottedName,
-			).length > 1
-		) {
-			const cycleIndex = this.cache._meta.evaluationRuleStack.indexOf(
-				node.dottedName,
-			)
-			const cycle = [
-				...this.cache._meta.evaluationRuleStack
-					.slice(0, cycleIndex + 1)
-					.reverse(),
-				node.dottedName,
-			]
-			const message = `
+	if (ruleDisabledByItsParent) {
+		return {
+			...node,
+			nodeValue: null,
+			missingVariables: parentMissingVariables,
+			explanation,
+		}
+	}
+
+	if (
+		this.cache._meta.evaluationRuleStack.filter(
+			(dottedName) => dottedName === node.dottedName,
+		).length > 1
+	) {
+		const cycleIndex = this.cache._meta.evaluationRuleStack.indexOf(
+			node.dottedName,
+		)
+		const cycle = [
+			...this.cache._meta.evaluationRuleStack
+				.slice(0, cycleIndex + 1)
+				.reverse(),
+			node.dottedName,
+		]
+		const message = `
 Un cycle a été détecté lors de l'évaluation de cette règle:
 ${cycle.join(cycle.length > 5 ? '\n → ' : ' → ')}
 
@@ -267,61 +255,88 @@ Si le cycle est voulu, vous pouvez indiquer au moteur de résoudre la référenc
 		...
 `
 
-			// Do not warn if the cycle is due to a rule being disabled by its parent (see https://github.com/publicodes/publicodes/issues/206 for the proper way of doing it)
-			if (
-				!this.cache._meta.parentRuleStack.length ||
-				this.cache._meta.parentRuleStack.some(
-					(dottedName) => !dottedName.startsWith(node.dottedName),
-				)
-			) {
-				if (this.context.strict.noCycleRuntime) {
-					throw new PublicodesError('EvaluationError', message, {
-						dottedName: node.dottedName,
-					})
-				}
-				warning(this.context.logger, message, { dottedName: node.dottedName })
+		// Do not warn if the cycle is due to a rule being disabled by its parent (see https://github.com/publicodes/publicodes/issues/206 for the proper way of doing it)
+		if (
+			!this.cache._meta.parentRuleStack.length ||
+			this.cache._meta.parentRuleStack.some(
+				(dottedName) => !dottedName.startsWith(node.dottedName),
+			)
+		) {
+			if (this.context.strict.noCycleRuntime) {
+				throw new PublicodesError('EvaluationError', message, {
+					dottedName: node.dottedName,
+				})
 			}
+			warning(this.context.logger, message, { dottedName: node.dottedName })
+		}
 
-			valeurEvaluation = {
-				nodeValue: undefined,
-			} as EvaluatedNode
-		} else {
-			this.cache._meta.evaluationRuleStack.unshift(node.dottedName)
-			valeurEvaluation = this.evaluateNode(node.explanation.valeur)
-			this.cache._meta.evaluationRuleStack.shift()
-			valeurEvaluation.missingVariables ??= {}
-			updateRuleMissingVariables(this, node, valeurEvaluation)
+		return {
+			...node,
+			nodeValue: undefined,
+			missingVariables: parentMissingVariables,
+			explanation,
 		}
 	}
-	// Check if the value is one of the possible choices
+
+	this.cache._meta.evaluationRuleStack.unshift(node.dottedName)
+	const possibilities =
+		explanation.possibilities && this.evaluateNode(explanation.possibilities)
+
+	if (possibilities?.nodeValue !== undefined) {
+		return {
+			...node,
+			...(possibilities.unit ? { unit: possibilities.unit } : {}),
+			nodeValue: possibilities.nodeValue,
+			missingVariables: mergeMissing(
+				possibilities.missingVariables,
+				parentMissingVariables,
+			),
+			explanation: {
+				...explanation,
+				possibilities,
+			},
+		}
+	}
+
+	const valeurEvaluation = this.evaluateNode(node.explanation.valeur)
+	this.cache._meta.evaluationRuleStack.shift()
+	valeurEvaluation.missingVariables ??= {}
+	updateRuleMissingVariables(this, node, valeurEvaluation)
+
 	if (
+		possibilities &&
 		this.context.strict.checkPossibleValues &&
-		node.possibleChoices &&
-		!isAValidOption(node.possibleChoices, valeurEvaluation)
+		!isAValidOption(this, possibilities, valeurEvaluation)
 	) {
 		throw new PublicodesError(
 			'EvaluationError',
-			`La valeur ${valeurEvaluation.nodeValue} n'est pas une valeur possible pour la règle ${node.dottedName}`,
-			{ dottedName: node.dottedName },
+			`La valeur de la règle ${node.dottedName} n'est pas une des possibilités attendues`,
+			{
+				dottedName: node.dottedName,
+			},
 		)
 	}
-
-	const evaluation = {
-		...valeurEvaluation,
-		missingVariables: mergeMissing(
+	const unit = possibilities?.unit ?? valeurEvaluation.unit
+	const missingVariables = mergeMissing(
+		mergeMissing(
+			possibilities?.missingVariables ?? {},
 			valeurEvaluation.missingVariables,
-			parentMissingVariables,
 		),
+		parentMissingVariables,
+	)
+	return {
+		...valeurEvaluation,
+		...(unit ? { unit } : {}),
+		missingVariables,
 		...node,
 		explanation: {
+			possibilities,
 			parents: node.explanation.parents,
 			valeur: valeurEvaluation,
 			nullableParent,
 			ruleDisabledByItsParent,
 		},
 	}
-
-	return evaluation
 })
 
 /*

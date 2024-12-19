@@ -137,3 +137,5 @@ Pour lever une erreur si la valeur n'est pas dans la liste des possibilités, on
 ```typescript
 const rules = new Engine(rules, { strictOptions: { checkPossibleValues: true } });
 ```
+
+<!-- TODO : caveat, remplace et rend non applicable non implémentés -->

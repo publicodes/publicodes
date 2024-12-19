@@ -198,7 +198,7 @@ a:
 			() => engine.setSituation({ a: "'valeur non valide'" }),
 			`[ Erreur lors de la mise à jour de la situation ]
 ➡️  Dans la règle "a"
-✖️  La valeur 'valeur non valide' ne fait pas parti des possibilités listées dans la base de règles.`,
+✖️  La valeur 'valeur non valide' ne fait pas parti des possibilités applicables listées pour cette règle.`,
 		)
 	})
 

@@ -15,8 +15,9 @@ import { TexteNode } from '../mecanisms/texte'
 import { UnitéNode } from '../mecanisms/unite'
 import { VariableManquanteNode } from '../mecanisms/variablesManquantes'
 import { VariationNode } from '../mecanisms/variations'
-import { ReferenceNode } from '../reference'
-import { ReplacementRule } from '../replacement'
+import { UnePossibilitéNode } from '../mecanisms/unePossibilité'
+import { ReferenceNode } from '../parseReference'
+import { ReplacementRule } from '../parseReplacement'
 import { Rule, RuleNode } from '../rule'
 
 export type ConstantNode = {
@@ -31,27 +32,28 @@ export type ConstantNode = {
 )
 
 type PossibleNodes =
-	| RuleNode
-	| ReferenceNode
 	| ArrondiNode
 	| BarèmeNode
-	| DuréeNode
-	| GrilleNode
-	| EstNonApplicableNode
-	| EstNonDéfiniNode
-	| InversionNode
-	| OperationNode
-	| ContextNode
-	| SimplifierUnitéNode
-	| RésoudreRéférenceCirculaireNode
-	| TauxProgressifNode
-	| UnitéNode
-	| VariationNode
 	| ConditionNode
 	| ConstantNode
+	| ContextNode
+	| DuréeNode
+	| EstNonApplicableNode
+	| EstNonDéfiniNode
+	| GrilleNode
+	| InversionNode
+	| OperationNode
+	| ReferenceNode
 	| ReplacementRule
-	| VariableManquanteNode
+	| RésoudreRéférenceCirculaireNode
+	| RuleNode
+	| SimplifierUnitéNode
+	| TauxProgressifNode
 	| TexteNode
+	| UnePossibilitéNode
+	| UnitéNode
+	| VariableManquanteNode
+	| VariationNode
 
 /**@hidden */
 export type NodeKind = PossibleNodes['nodeKind']

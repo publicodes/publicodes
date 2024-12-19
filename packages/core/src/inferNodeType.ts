@@ -71,7 +71,7 @@ export default function inferNodesTypes(
 				}
 
 			case 'replacementRule':
-				return { isNullable: false, type: 'number' }
+				return { isNullable: false, type: undefined }
 			case 'texte':
 				return { isNullable: false, type: 'string' }
 
@@ -82,6 +82,19 @@ export default function inferNodesTypes(
 				}
 			case 'contexte':
 				return inferNodeUnitAndCache(node.explanation.valeur)
+			case 'une possibilité':
+				return node.type === 'reference' ?
+						{
+							isNullable: node.explanation.every(
+								(n) => inferNodeUnitAndCache(n).isNullable,
+							),
+							type: 'string',
+						}
+					:	{
+							isNullable: false,
+							type: node.type,
+						}
+
 			case 'rule':
 				{
 					const typeInfo = inferNodeUnitAndCache(node.explanation.valeur)
@@ -94,14 +107,11 @@ export default function inferNodesTypes(
 						: node.rawNode.type === 'date' ? 'date'
 						: node.rawNode.type === 'booléen' ? 'boolean'
 						: undefined
-					if (!type && node.possibleChoices) {
-						const firstChoice = node.possibleChoices[0]
-						if (firstChoice.nodeKind === 'constant') {
-							type = firstChoice.type
-						} else {
-							type = 'string'
-						}
+
+					if (!type && node.explanation.possibilities) {
+						return inferNodeUnitAndCache(node.explanation.possibilities)
 					}
+
 					if (!type && node.rawNode.question) {
 						type = 'boolean'
 					}

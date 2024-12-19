@@ -188,7 +188,11 @@ export function makeReplacementInliner(
 	referencesMaps: ReferencesMaps<string>,
 ): (n: ASTNode) => ASTNode {
 	return makeASTTransformer((node, transform) => {
-		if (node.nodeKind === 'replacementRule' || node.nodeKind === 'inversion') {
+		if (
+			node.nodeKind === 'replacementRule' ||
+			node.nodeKind === 'inversion' ||
+			node.nodeKind === 'une possibilité'
+		) {
 			return false
 		}
 		if (node.nodeKind === 'contexte') {

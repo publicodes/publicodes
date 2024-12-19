@@ -3,7 +3,7 @@ import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { notApplicableNode } from '../evaluationUtils'
 import parse from '../parse'
-import { ReferenceNode } from '../reference'
+import { ReferenceNode } from '../parseReference'
 import { serializeUnit } from '../units'
 
 export type ContextNode = {
