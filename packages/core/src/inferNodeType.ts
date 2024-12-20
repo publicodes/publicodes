@@ -82,8 +82,25 @@ export default function inferNodesTypes(
 					isNullable: inferNodeUnitAndCache(node.explanation.valeur).isNullable,
 				}
 			case 'contexte':
-			case 'rule':
 				return inferNodeUnitAndCache(node.explanation.valeur)
+
+			case 'rule': {
+				const typeInfo = inferNodeUnitAndCache(node.explanation.valeur)
+				if (typeInfo.type !== undefined) {
+					return typeInfo
+				}
+				let type =
+					node.rawNode.type === 'nombre' ? 'number'
+					: node.rawNode.type === 'texte' ? 'string'
+					: node.rawNode.type === 'date' ? 'date'
+					: node.rawNode.type === 'booléen' ? 'boolean'
+					: undefined
+				if (!type && node.rawNode.question) {
+					type = 'boolean'
+				}
+				return { isNullable: typeInfo.isNullable, type } as InferedType
+			}
+
 			case 'unité':
 			case 'simplifier unité':
 				return {
