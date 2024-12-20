@@ -34,7 +34,10 @@ Voici comment importer publicodes en fonction de l'environnement.
 -   Dans le navigateur
 
     ```html
-    <script type="module" src="https://unpkg.com/publicodes@next/dist/index.js"></script>
+    <script
+        type="module"
+        src="https://unpkg.com/publicodes@next/dist/index.js"
+    ></script>
     <script type="module">
         import Engine from 'publicodes';
     </script>
@@ -128,7 +131,9 @@ La valeur de `dépenses primeur` se base maintenant sur un avocat à 3€ :
 ```js
 // On ré-évalue la règle dans la nouvelle situation
 console.log(
-    `Nouveau prix ! Dépenses mises à jour: ${formatValue(engine.evaluate('dépenses primeur'))}.`
+    `Nouveau prix ! Dépenses mises à jour: ${formatValue(
+        engine.evaluate('dépenses primeur')
+    )}.`
 );
 ```
 

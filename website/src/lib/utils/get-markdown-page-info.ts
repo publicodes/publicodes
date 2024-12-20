@@ -17,7 +17,9 @@ export function getMarkdownPagesInfo<Metadata>(
 			};
 			const metadata = pageContent.metadata;
 
-			metadata.headings = metadata.headings.filter((heading) => heading.level === 2);
+			metadata.headings = metadata.headings.filter(
+				(heading) => heading.level === 2
+			);
 			path = path
 				.replace(/^.*\/routes/, '')
 				.replace('/+page.svelte.md', '')

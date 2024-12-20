@@ -51,7 +51,7 @@
 		"dev": "tsup --watch",
 		"test:type": "tsc --noEmit",
 		"test": "mocha \"./test/**/*.test.{js,ts}\"",
-		"bench": "tsup --entry.bench ./bench/index.ts && node ./dist/bench.js"
+		"bench": "tsup --entry.bench ./bench/index.ts --format esm && node ./dist/bench.js"
 	},
 	"dependencies": {
 		"moo": "^0.5.2",

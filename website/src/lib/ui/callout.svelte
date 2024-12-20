@@ -45,12 +45,16 @@
 		type,
 		title,
 		children
-	}: { type: 'tip' | 'info' | 'caution' | 'warning'; title?: string; children: Snippet } = $props();
+	}: {
+		type: 'tip' | 'info' | 'caution' | 'warning';
+		title?: string;
+		children: Snippet;
+	} = $props();
 </script>
 
 <aside
-	class="mb-6 flex flex-col rounded-r border-l-4 p-4 {callouts[type].borderColor} {callouts[type]
-		.bgColor}"
+	class="mb-6 flex flex-col rounded-r border-l-4 p-4 {callouts[type]
+		.borderColor} {callouts[type].bgColor}"
 >
 	<header class="flex items-center gap-2 {callouts[type].textColor}">
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->

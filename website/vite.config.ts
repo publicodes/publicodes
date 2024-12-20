@@ -4,7 +4,11 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [dsv(), sveltekit()],
 	optimizeDeps: {
-		exclude: ['svelte-codemirror-editor', 'codemirror', '@codemirror/language-yaml' /* ... */]
+		exclude: [
+			'svelte-codemirror-editor',
+			'codemirror',
+			'@codemirror/language-yaml' /* ... */
+		]
 	},
 	server: {
 		fs: {

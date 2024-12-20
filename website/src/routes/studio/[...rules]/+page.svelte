@@ -39,7 +39,8 @@
 		}
 	});
 
-	const selectedRuleInDoc = utils.decodeRuleName($page.params.rules) || undefined;
+	const selectedRuleInDoc =
+		utils.decodeRuleName($page.params.rules) || undefined;
 
 	let copied = $state(false);
 	function handleCopyLink() {
