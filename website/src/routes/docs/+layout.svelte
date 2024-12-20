@@ -15,7 +15,9 @@
 				);
 			})
 			.sort(
-				(b, a) => (b.metadata.sidebar_position as number) - (a.metadata.sidebar_position as number)
+				(b, a) =>
+					(b.metadata.sidebar_position as number) -
+					(a.metadata.sidebar_position as number)
 			);
 	}
 	const entryPages = getChildPage('/docs');
@@ -33,12 +35,12 @@
 	{/if}
 </svelte:head>
 <div class="flex items-start lg:justify-center">
-	<div class="flex lg:container ">
+	<div class="flex lg:container">
 		<!-- MOBILE NAV -->
 		{#if showMobileMenuLeft}
 			<div
 				role="dialog"
-				class="fixed z-20 h-full  border-r border-primary-300 bg-white will-change-transform"
+				class="fixed z-20 h-full border-r border-primary-300 bg-white will-change-transform"
 				transition:fly={{ x: -100 }}
 			>
 				{@render MenuLeft()}
@@ -50,7 +52,9 @@
 			></div>
 		{/if}
 
-		<div class="sticky top-16 shrink-0 max-md:hidden max-h-[calc(100vh-4rem)] overflow-auto">
+		<div
+			class="sticky top-16 max-h-[calc(100vh-4rem)] shrink-0 overflow-auto max-md:hidden"
+		>
 			{@render MenuLeft()}
 		</div>
 		<div class="self-stretch border-r border-primary-100"></div>
@@ -99,7 +103,9 @@
 			></div>
 		{/if}
 
-		<div class="sticky top-16 hidden w-48 shrink-0 pt-16 text-sm lg:block max-h-[calc(100vh-4rem)] overflow-auto">
+		<div
+			class="sticky top-16 hidden max-h-[calc(100vh-4rem)] w-48 shrink-0 overflow-auto pt-16 text-sm lg:block"
+		>
 			{@render MenuRight()}
 		</div>
 	</div>
@@ -123,7 +129,10 @@
 					{metadata.menu_title || metadata.title}
 					{#snippet submenu()}
 						{#each childPages as { path: childPath, metadata }}
-							<MenuLink href={childPath} onclick={() => (showMobileMenuLeft = false)}>
+							<MenuLink
+								href={childPath}
+								onclick={() => (showMobileMenuLeft = false)}
+							>
 								{metadata.menu_title || metadata.title}
 							</MenuLink>
 						{/each}
@@ -136,8 +145,13 @@
 
 {#snippet MenuRight()}
 	{#if headings?.length}
-		<nav class="mx-2 border-primary-50" class:md:border-l={!showMobileMenuRight}>
-			<h2 class="not-prose my-2 p-2 uppercase text-slate-500">Sur cette page</h2>
+		<nav
+			class="mx-2 border-primary-50"
+			class:md:border-l={!showMobileMenuRight}
+		>
+			<h2 class="not-prose my-2 p-2 uppercase text-slate-500">
+				Sur cette page
+			</h2>
 			<ul>
 				{#each headings as { title, slug }}
 					<li class="p-2">

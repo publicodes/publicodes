@@ -152,16 +152,19 @@ Pour évaluer les possibilités non applicable, on peut utiliser la méthode `ev
 const applicablePossibilities = engine
     .evaluate(possibilities)
     .explanation.filter(
-        (possibility: PossibilitéNode) => possibility.notApplicable?.nodeValue !== true
+        (possibility: PossibilityNode) =>
+            possibility.notApplicable?.nodeValue !== true
     );
 ```
 
-Pour en savoir plus, voir le type [`PossibilitéNode` dans l'API](/docs/api/publicodes/type-aliases/PossibilityNode).
+Pour en savoir plus, voir le type [`PossibilityNode` dans l'API](/docs/api/publicodes/type-aliases/PossibilityNode).
 
 Pour lever une erreur si la valeur n'est pas dans la liste des possibilités, on peut passer le paramètre `checkPossibleValues` à `true` (voir [l'api Engine](/docs/api/publicodes/classes/Engine)).
 
 ```typescript
-const rules = new Engine(rules, { strictOptions: { checkPossibleValues: true } });
+const rules = new Engine(rules, {
+    strictOptions: { checkPossibleValues: true }
+});
 ```
 
 <!-- TODO : caveat, remplace et rend non applicable non implémentés -->

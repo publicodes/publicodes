@@ -90,7 +90,10 @@ const optimizedRules = constantFolding(
     {
         // A predicate returning true if the rule needs to be kept.
         toKeep: (rule) => {
-            return ['root', 'root . bis'].includes(rule.dottedName) || !!rule.rawNode['to keep'];
+            return (
+                ['root', 'root . bis'].includes(rule.dottedName) ||
+                !!rule.rawNode['to keep']
+            );
         }
     }
 );

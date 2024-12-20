@@ -39,7 +39,7 @@ export {
 	type StrictOptions,
 }
 
-export type { PossibilitéNode } from './mecanisms/unePossibilité'
+export type { PossibilityNode } from './mecanisms/unePossibilité'
 /**
  * A publicodes expression that can be evaluated by the {@link Engine}.
  *

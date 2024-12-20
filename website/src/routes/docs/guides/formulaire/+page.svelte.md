@@ -26,7 +26,9 @@ On peut filtrer les règles publicodes pour obtenir uniquement la liste des ques
 
 ```js
 const engine = new Publicodes(rules);
-const questions = engine.parsedRules.filter((rule) => rule.rawNode.question !== undefined);
+const questions = engine.parsedRules.filter(
+    (rule) => rule.rawNode.question !== undefined
+);
 ```
 
 Vu qu'il s'agit de règles publicodes standard, on peut utiliser l'applicabilité pour déterminer la liste des questions à afficher :
