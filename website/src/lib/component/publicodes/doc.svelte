@@ -11,10 +11,15 @@
 		engine,
 		selectedRule,
 		onchange
-	}: { engine: Engine; selectedRule?: string; onchange?: (selectedRule: string) => void } =
-		$props();
+	}: {
+		engine: Engine;
+		selectedRule?: string;
+		onchange?: (selectedRule: string) => void;
+	} = $props();
 
-	const pathToRules = $derived(getDocumentationSiteMap({ engine, documentationPath: '' }));
+	const pathToRules = $derived(
+		getDocumentationSiteMap({ engine, documentationPath: '' })
+	);
 	const ruleToPaths = $derived(objectFlip(pathToRules));
 	let docElement: HTMLDivElement;
 
@@ -24,7 +29,9 @@
 			activeRule = undefined;
 		}
 	});
-	let rulePath = $derived(activeRule ?? selectedRule ?? Object.keys(ruleToPaths)[0]);
+	let rulePath = $derived(
+		activeRule ?? selectedRule ?? Object.keys(ruleToPaths)[0]
+	);
 
 	$effect(() => {
 		if (activeRule) {

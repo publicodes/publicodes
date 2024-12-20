@@ -7,11 +7,14 @@
 	import Tooltip from '$lib/ui/tooltip.svelte';
 	import { ExternalLink, Package, Rocket } from 'lucide-svelte';
 
-	const displayedProduit = (produits.filter(({ img }) => !!img) as (Produit & { img: string })[])
+	const displayedProduit = (
+		produits.filter(({ img }) => !!img) as (Produit & { img: string })[]
+	)
 		.map((produit) => ({
 			...produit,
 			pkg: publicodesPackages.filter(
-				({ maintainer, users }) => maintainer === produit.slug || users?.includes(produit.slug)
+				({ maintainer, users }) =>
+					maintainer === produit.slug || users?.includes(produit.slug)
 			)
 		}))
 		.sort((a, b) => {
@@ -22,10 +25,15 @@
 
 <div class="prose pb-10 lg:max-w-screen-md">
 	<Heading level="h1" icon={Rocket}>Propulsé par Publicodes</Heading>
-	<p class="text-xl">Découvrez les produits qui utilisent publicodes au quotidien.</p>
+	<p class="text-xl">
+		Découvrez les produits qui utilisent publicodes au quotidien.
+	</p>
 </div>
 
-<div role="list" class="grid grid-cols-1 gap-8 pb-16 sm:grid-cols-2 lg:grid-cols-3">
+<div
+	role="list"
+	class="grid grid-cols-1 gap-8 pb-16 sm:grid-cols-2 lg:grid-cols-3"
+>
 	{#each displayedProduit as { img, name, description, url, pkg }}
 		<Card {img} {url} role="listitem">
 			{#snippet title()}
@@ -42,7 +50,11 @@
 							<ul>
 								{#each pkg as { npm }}
 									<li class="prose prose-sm">
-										<a href={`https://www.npmjs.com/package/${npm}`} target="_blank" rel="noopener">
+										<a
+											href={`https://www.npmjs.com/package/${npm}`}
+											target="_blank"
+											rel="noopener"
+										>
 											{npm}
 											<ExternalLink class="inline" size={12}></ExternalLink>
 										</a>
@@ -50,7 +62,9 @@
 								{/each}
 							</ul>
 						{/snippet}
-						<span class="mb-1 inline-flex items-center gap-1 text-sm text-slate-500">
+						<span
+							class="mb-1 inline-flex items-center gap-1 text-sm text-slate-500"
+						>
 							<Package size={16} strokeWidth={1} />
 							{pkg.length}
 						</span>
@@ -62,8 +76,10 @@
 </div>
 <div class="prose max-w-full py-10">
 	<p>
-		Si vous souhaitez <strong>ajouter votre produit à cette liste</strong>, vous pouvez
-		<a href="https://github.com/publicodes/publicodes/tree/master/website/src/data/produits.ts"
+		Si vous souhaitez <strong>ajouter votre produit à cette liste</strong>, vous
+		pouvez
+		<a
+			href="https://github.com/publicodes/publicodes/tree/master/website/src/data/produits.ts"
 			>proposer une contribution.</a
 		>
 	</p>

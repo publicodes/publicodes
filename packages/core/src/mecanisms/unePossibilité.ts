@@ -18,7 +18,7 @@ export type RulePossibilités =
  * Represents a node that defines a single possibility in a "une possibilité" mechanism.
  * It is an ASTNode representing either a constant value (string or number) or a reference to another rule.
  */
-export type PossibilitéNode = ASTNode<'constant' | 'reference'> & {
+export type PossibilityNode = ASTNode<'constant' | 'reference'> & {
 	/** Optional node indicating if the possibility is not applicable */
 	notApplicable?: ASTNode<'est non applicable'>
 	/** Optional string representation of the value in publicodes syntax, wrapped in single quotes */
@@ -32,7 +32,7 @@ export type UnePossibilitéNode = {
 	/**
 	 * The list of possibility node, each representing a possible value for the rule.
 	 */
-	explanation: Array<PossibilitéNode>
+	explanation: Array<PossibilityNode>
 }
 
 export function parseUnePossibilité(
@@ -145,7 +145,7 @@ function parsePossibilités(
 	let referenceNode: ASTNode<'constant' | 'reference'>
 
 	const explanation = possibilities.map((possibility) => {
-		const node = parsePossibilité(possibility, avec, context) as PossibilitéNode
+		const node = parsePossibilité(possibility, avec, context) as PossibilityNode
 
 		referenceNode ??= node
 
