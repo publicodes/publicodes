@@ -18,7 +18,8 @@ export default function value(fullPage: boolean) {
 }
 
 export function getTransitionDirection() {
-	return screen.currentBreakpoint && ['lg', 'sm', 'md'].includes(screen.currentBreakpoint)
+	return screen.currentBreakpoint &&
+		['lg', 'sm', 'md'].includes(screen.currentBreakpoint)
 		? 'vertical'
 		: 'horizontal';
 }

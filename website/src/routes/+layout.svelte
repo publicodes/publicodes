@@ -54,7 +54,9 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
 </svelte:head>
 
-<div class="fixed top-0 z-20 w-screen border-b border-primary-200 bg-white text-cyan-950">
+<div
+	class="fixed top-0 z-20 w-screen border-b border-primary-200 bg-white text-cyan-950"
+>
 	<div
 		class="flex h-16 w-full items-center gap-8 px-6 py-2 lg:container md:px-8 lg:mx-auto
 		lg:justify-center"
@@ -108,7 +110,9 @@
 
 {#snippet Menu()}
 	<nav class="flex flex-col justify-between gap-6 p-6 sm:flex-row sm:p-0">
-		<ul class="flex flex-col items-start justify-center gap-3 sm:flex-row sm:items-center">
+		<ul
+			class="flex flex-col items-start justify-center gap-3 sm:flex-row sm:items-center"
+		>
 			<NavTab href="/docs">Docs</NavTab>
 			<NavTab href="/bibliotheque">Bibliothèque</NavTab>
 			<NavTab href="/realisations">Réalisations</NavTab>
@@ -117,22 +121,34 @@
 			<NavTab class="relative" href="/blog">
 				Blog
 				{#if showBlogPostIndicator()}
-					<span aria-label="Nouvel article" class="absolute -right-1.5 top-0 flex h-1.5 w-1.5">
+					<span
+						aria-label="Nouvel article"
+						class="absolute -right-1.5 top-0 flex h-1.5 w-1.5"
+					>
 						<span
 							class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-300 opacity-75"
 						></span>
-						<span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary-400"></span>
+						<span
+							class="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary-400"
+						></span>
 					</span>
 				{/if}
 			</NavTab>
 		</ul>
-		<div class="self-stretch border-b border-primary-100 sm:border-r sm:max-lg:hidden"></div>
-		<ul class="flex flex-row items-start justify-center gap-2 sm:items-center sm:max-lg:hidden">
-			<NavTab href="https://matrix.to/#/#publicodes:matrix.org" title="Discuter avec la communauté"
+		<div
+			class="self-stretch border-b border-primary-100 sm:border-r sm:max-lg:hidden"
+		></div>
+		<ul
+			class="flex flex-row items-start justify-center gap-2 sm:items-center sm:max-lg:hidden"
+		>
+			<NavTab
+				href="https://matrix.to/#/#publicodes:matrix.org"
+				title="Discuter avec la communauté"
 				><MessagesSquare class="inline py-1" /></NavTab
 			>
-			<NavTab href="https://github.com/publicodes/publicodes" title="Voir le code source"
-				><Github class="inline py-1" /></NavTab
+			<NavTab
+				href="https://github.com/publicodes/publicodes"
+				title="Voir le code source"><Github class="inline py-1" /></NavTab
 			>
 
 			<!-- <li>
@@ -150,7 +166,9 @@
 {/snippet}
 
 {#snippet Footer()}
-	<footer class="flex w-full flex-col items-center border-t border-primary-200 py-10">
+	<footer
+		class="flex w-full flex-col items-center border-t border-primary-200 py-10"
+	>
 		<div
 			class="flex w-full flex-col items-start gap-8 px-6 md:container md:flex-row md:justify-between"
 		>
@@ -159,7 +177,9 @@
 					<img src={Logo} class="h-7" alt="Logo de publicodes" />
 					Publicodes
 				</span>
-				<p class="text-lg font-normal text-dark">Collaboratif, accessible et ouvert.</p>
+				<p class="text-lg font-normal text-dark">
+					Collaboratif, accessible et ouvert.
+				</p>
 			</div>
 			<div class="flex flex-row gap-16">
 				<div class="flex flex-col gap-2">
@@ -181,7 +201,8 @@
 							<a
 								target="_blank"
 								href="https://dashboard.simpleanalytics.com/publi.codes"
-								aria-label="Statistiques de consultation, nouvelle fenêtre">Statistiques</a
+								aria-label="Statistiques de consultation, nouvelle fenêtre"
+								>Statistiques</a
 							>
 						</li>
 						<!-- <li>
@@ -207,7 +228,11 @@
 		</div>
 	</footer>
 	<!-- Simple analytics -->
-	<script async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+	<script
+		async
+		defer
+		src="https://scripts.simpleanalyticscdn.com/latest.js"
+	></script>
 	<script
 		async
 		data-collect="outbound"

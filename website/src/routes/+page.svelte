@@ -26,7 +26,9 @@
 
 	const isMobile = false; //window.innerWidth < 768;
 
-	const displayedProduits = produits.filter(({ img }) => !!img).slice(0, 3) as (Produit & {
+	const displayedProduits = produits
+		.filter(({ img }) => !!img)
+		.slice(0, 3) as (Produit & {
 		img: string;
 	})[];
 
@@ -41,16 +43,22 @@
 	}
 </script>
 
-<header class="not-prose flex w-full justify-center overflow-hidden bg-primary-50">
+<header
+	class="not-prose flex w-full justify-center overflow-hidden bg-primary-50"
+>
 	<div
 		class="flex max-w-3xl items-center justify-center px-6 py-20 md:flex-row md:gap-12
 		md:py-48 lg:max-w-5xl xl:max-w-7xl xl:gap-24"
 	>
-		<div class="hidden justify-center self-center max-sm:scale-75 md:flex xl:scale-125">
+		<div
+			class="hidden justify-center self-center max-sm:scale-75 md:flex xl:scale-125"
+		>
 			<AnimatedLogo />
 		</div>
 		<div class="flex flex-col gap-8 lg:gap-8">
-			<h1 class="text-5xl font-normal text-dark md:text-6xl xl:text-7xl">Publicodes</h1>
+			<h1 class="text-5xl font-normal text-dark md:text-6xl xl:text-7xl">
+				Publicodes
+			</h1>
 			<p class="mb-4 text-2xl font-normal text-dark md:text-3xl lg:text-4xl">
 				Un langage commun pour les devs et les expert·es
 			</p>
@@ -67,10 +75,14 @@
 </header>
 
 <main class="">
-	<section class="mt-20 flex flex-col items-center justify-center gap-8 md:mt-36">
+	<section
+		class="mt-20 flex flex-col items-center justify-center gap-8 md:mt-36"
+	>
 		<p class="px-6 text-center text-lg font-normal md:max-w-5xl md:text-2xl">
-			Publicodes permet de modéliser des <span class="font-regular">domaines métiers complexes</span
-			>, en les décomposant en <span class="font-regular">règles élémentaires simples</span>
+			Publicodes permet de modéliser des <span class="font-regular"
+				>domaines métiers complexes</span
+			>, en les décomposant en
+			<span class="font-regular">règles élémentaires simples</span>
 			qui soient
 			<span class="font-regular">lisibles par tout le monde</span>.
 		</p>
@@ -118,8 +130,8 @@ salaire net: salaire brut - cotisations
 					>
 						<Callout type="tip" title="C'était facile, non ?">
 							<p class="py-4 font-normal text-black md:text-xl lg:max-w-7xl">
-								Même sans connaissances en informatique, il est possible de comprendre du code écrit
-								avec Publicodes.
+								Même sans connaissances en informatique, il est possible de
+								comprendre du code écrit avec Publicodes.
 							</p>
 						</Callout>
 					</div>
@@ -131,18 +143,24 @@ salaire net: salaire brut - cotisations
 			</div>
 		</div>
 	</section>
-	<section class="mt-20 flex w-full flex-col items-center gap-16 bg-primary-50 md:mt-32">
+	<section
+		class="mt-20 flex w-full flex-col items-center gap-16 bg-primary-50 md:mt-32"
+	>
 		<div
 			class="not-prose flex w-full max-w-3xl flex-col justify-center gap-10 px-6 py-20 md:max-w-4xl
 			md:py-32 lg:max-w-5xl xl:max-w-7xl"
 		>
 			<Heading level="h2" icon={Rocket}>Accélérateur d'impact</Heading>
 			<p class="w-full text-lg font-normal text-black md:text-xl">
-				Publicodes est utilisé pour calculer <strong>plusieurs millions de simulations</strong> chaque
-				mois. Découvrez les produits phares qui utilisent cette technologie.
+				Publicodes est utilisé pour calculer <strong
+					>plusieurs millions de simulations</strong
+				> chaque mois. Découvrez les produits phares qui utilisent cette technologie.
 			</p>
 
-			<div role="list" class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+			<div
+				role="list"
+				class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
+			>
 				{#each displayedProduits.slice(0, 3) as { img, name, description, url }}
 					<Card {img} {url} role="listitem">
 						{#snippet title()}
@@ -167,8 +185,8 @@ salaire net: salaire brut - cotisations
 		>
 			<Heading level="h2" icon={LibraryBig}>Créateur de communs</Heading>
 			<p class="text-lg font-normal text-black md:max-w-7xl md:text-xl">
-				Déjà <strong>une dizaine de modèles publiés</strong>. Découvrez les dans la bibliothèque de
-				modèles publicodes.
+				Déjà <strong>une dizaine de modèles publiés</strong>. Découvrez les dans
+				la bibliothèque de modèles publicodes.
 			</p>
 			<div class="flex justify-center">
 				<PublicodesPackages {packages} />

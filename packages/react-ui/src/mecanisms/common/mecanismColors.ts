@@ -19,6 +19,7 @@ const colors = {
 	'taux progressif': '#795548',
 	barème: '#9B296F',
 	grille: '#AD1457',
+	'une possibilité': '#00796B',
 	avec: '#2653ce',
 } as const
 
