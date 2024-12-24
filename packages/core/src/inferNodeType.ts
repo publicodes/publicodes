@@ -40,6 +40,7 @@ export default function inferNodesTypes(
 			case 'grille':
 			case 'taux progressif':
 			case 'inversion':
+			case 'logarithme':
 			case 'résoudre référence circulaire':
 				return { isNullable: false, type: 'number' }
 			case 'est non défini':
