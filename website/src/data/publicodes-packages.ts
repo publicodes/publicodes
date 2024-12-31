@@ -44,9 +44,14 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
 		description: "Modèle du simulateur d'empreinte carbone des événements d'Ekofest"
 	},
 	{
+		npm: '@betagouv/aides-velo',
+		maintainer: 'jagis',
+		users: ['aides-jeune']
+	},
+	{
 		npm: 'aides-velo',
 		maintainer: 'mes-aides-vélo',
-		users: ['aides-jeune', 'jagis']
+		users: []
 	},
 	{
 		npm: 'exoneration-covid',
