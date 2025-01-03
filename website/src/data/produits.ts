@@ -10,7 +10,8 @@ const rawProduits = [
 		slug: 'nos-gestes-climat',
 		name: 'Nos Gestes Climat',
 		img: 'https://nosgestesclimat.fr/images/misc/metadata.png',
-		description: "Le calculateur d'empreinte climat personnelle de référence, complètement ouvert.",
+		description:
+			"Le calculateur d'empreinte climat personnelle de référence, complètement ouvert.",
 		url: 'https://nosgestesclimat.fr',
 		github: 'https://github.com/incubateur-ademe/nosgestesclimat'
 	},
@@ -38,7 +39,8 @@ const rawProduits = [
 		name: 'Impact CO2',
 		url: 'https://impactco2.fr',
 		github: 'https://github.com/incubateur-ademe/impactco2',
-		description: "Comparateurs d'empreinte carbone pour les produits du quotidien et le transport."
+		description:
+			"Comparateurs d'empreinte carbone pour les produits du quotidien et le transport."
 	},
 	{
 		slug: 'mes-aides-vélo',
@@ -70,7 +72,8 @@ const rawProduits = [
 		img: karburanProImg,
 		name: 'karburan',
 		url: 'https://www.karburan.pro/',
-		description: "Solution de portage salarial en marque blanche et prête à l'emploi."
+		description:
+			"Solution de portage salarial en marque blanche et prête à l'emploi."
 	},
 
 	{

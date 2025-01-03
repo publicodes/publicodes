@@ -22,7 +22,8 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
 		npm: '@incubateur-ademe/publicodes-impact-livraison',
 		maintainer: 'nos-gestes-climat',
 		users: ['impact-co2'],
-		description: 'Un modèle Publicodes pour le simulateur Impact Livraison de Impact CO2'
+		description:
+			'Un modèle Publicodes pour le simulateur Impact Livraison de Impact CO2'
 	},
 	{
 		npm: '@socialgouv/modeles-social',
@@ -41,7 +42,8 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
 	{
 		npm: 'publicodes-evenements',
 		maintainer: 'ekofest',
-		description: "Modèle du simulateur d'empreinte carbone des événements d'Ekofest"
+		description:
+			"Modèle du simulateur d'empreinte carbone des événements d'Ekofest"
 	},
 	{
 		npm: '@betagouv/aides-velo',

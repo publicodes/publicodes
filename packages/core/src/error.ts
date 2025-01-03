@@ -21,6 +21,9 @@ interface PublicodesErrorTypes {
 	PrivateRule: {
 		dottedName: string
 	}
+	TypeError: {
+		dottedName: string
+	}
 }
 
 /**
@@ -122,7 +125,10 @@ ${JSON.stringify(payload, null, 2)}
  */
 export class UnreachableCaseError extends PublicodesInternalError {
 	constructor(value: never) {
-		super(value)
+		super({
+			type: 'UNREACHABLE_CODE',
+			value,
+		})
 	}
 }
 

@@ -1,0 +1,63 @@
+a applicable:
+b applicable:
+choix:
+
+test:
+  titre: Une possibilité avec condition d'applicabilité sur les valeurs
+  valeur: choix
+  une possibilité:
+    - a:
+        applicable si: a applicable
+    - b:
+        applicable si: b applicable
+
+  exemples:
+    - valeur attendue: undefined
+      variables manquantes: [a applicable, b applicable, choix]
+
+    - situation:
+        a applicable: oui
+      valeur attendue: undefined
+      variables manquantes: [b applicable, choix]
+
+    - nom: Une seule possibilité
+      situation:
+        b applicable: non
+      valeur attendue: a
+      variables manquantes: [a applicable]
+
+    - nom: Aucune possibilité
+      situation:
+        a applicable: non
+        b applicable: non
+      valeur attendue: null
+
+    - nom: valeur choisie non applicable
+      situation:
+        a applicable: non
+        choix: "'a'"
+      valeur attendue: b
+      variables manquantes: [b applicable]
+
+    - nom: valeur choisie et aucune possibilité applicable
+      situation:
+        a applicable: non
+        b applicable: non
+        choix: "'a'"
+      valeur attendue: null
+      variables manquantes: []
+
+    - nom: valeur choisie applicable
+      situation:
+        choix: "'a'"
+      valeur attendue: a
+      variables manquantes: [a applicable, b applicable]
+
+une possibilité avec unité:
+  une possibilité:
+    - 1 m
+    - 50cm
+
+  exemples:
+    - valeur attendue: undefined
+      unité attendue: cm

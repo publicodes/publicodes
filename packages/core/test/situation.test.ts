@@ -117,15 +117,9 @@ a . b: 5
 			parse(`
 a:
   une possibilité:
-    choix obligatoire: oui
-    possibilités:
-      - b
-      - c
-      - d
-  avec:
-    b:
-    c:
-    d:
+    - b:
+    - c:
+    - d:
 `),
 			{
 				logger: { log: () => {}, warn: () => {}, error: () => {} },
@@ -143,17 +137,10 @@ a:
 		const engine = new Engine(
 			parse(`
 a:
-  formule:
-    une possibilité:
-      choix obligatoire: oui
-      possibilités:
-        - b
-        - c
-        - d
-  avec:
-    b:
-    c:
-    d:
+  une possibilité:
+    - b:
+    - c:
+    - d:
 `),
 			{
 				logger: { log: () => {}, warn: () => {}, error: () => {} },
@@ -184,8 +171,6 @@ a:
 		const engine = engineFromYaml(`
 a:
   une possibilité:
-    choix obligatoire: oui
-    possibilités:
       - b
       - c
       - d
@@ -198,7 +183,7 @@ a:
 			() => engine.setSituation({ a: "'valeur non valide'" }),
 			`[ Erreur lors de la mise à jour de la situation ]
 ➡️  Dans la règle "a"
-✖️  La valeur 'valeur non valide' ne fait pas parti des possibilités listées dans la base de règles.`,
+✖️  La valeur 'valeur non valide' ne fait pas parti des possibilités applicables listées pour cette règle.`,
 		)
 	})
 

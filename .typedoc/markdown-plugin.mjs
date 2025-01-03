@@ -43,5 +43,8 @@ export function load(app) {
 			// Fix escaping of < and >
 			.replaceAll('\\<', '&amp;lt;')
 			.replaceAll('\\>', '&amp;gt;')
+			.replaceAll(/\\\`(.*)\\\`/g, '`&#96;$1&#96;`')
+
+		// .replaceAll(/\\\{(.*)\\\}/g, '{&#39;&#123;$1&#125;&#39;}')
 	})
 }

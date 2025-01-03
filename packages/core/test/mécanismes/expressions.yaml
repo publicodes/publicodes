@@ -219,11 +219,9 @@ inférence d'unité littéraux:
   unité attendue: €
 
 catégorie d'activité:
-  formule:
-    une possibilité:
-      possibilités:
-        - commerciale
-        - artisanale
+  une possibilité:
+    - commerciale
+    - artisanale
 
 catégorie d'activité . artisanale:
 catégorie d'activité . commerciale:

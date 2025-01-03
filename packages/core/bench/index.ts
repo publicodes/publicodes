@@ -1,14 +1,14 @@
 import { bench, group, run } from 'mitata'
 import modeleSocial from 'modele-social'
 import Publicodes from '../src/index'
-
-const engine = new Publicodes(modeleSocial, {
+const options = {
 	logger: { warn: () => {}, error: () => {}, log: () => {} },
-})
+}
+const engine = new Publicodes(modeleSocial, options)
 
 group('Parsing initial des règles', () => {
 	bench('Modele-social', () => {
-		new Publicodes(modeleSocial)
+		new Publicodes(modeleSocial, options)
 	})
 })
 

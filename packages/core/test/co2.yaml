@@ -47,13 +47,10 @@ chauffage:
 
 chauffage . type:
   question: Comment est chauffée votre eau ?
-  formule:
-    une possibilité:
-      choix obligatoire: oui
-      possibilités:
-        - gaz
-        - fioul
-        - électricité
+  une possibilité:
+    - gaz
+    - fioul
+    - électricité
   par défaut: "'gaz'"
 
 chauffage . type . gaz:
