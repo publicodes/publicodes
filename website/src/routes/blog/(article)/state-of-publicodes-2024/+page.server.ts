@@ -4,7 +4,8 @@ const percentFormat = new Intl.NumberFormat('fr-FR', { style: 'percent' });
 export function load() {
 	const enProduction = percentFormat.format(
 		surveyData.filter(
-			(item) => item['Avez-vous déjà utilisé Publicodes en production ? '] === 'Oui'
+			(item) =>
+				item['Avez-vous déjà utilisé Publicodes en production ? '] === 'Oui'
 		).length / surveyData.length
 	);
 	const topProjets = Object.entries(
@@ -26,7 +27,9 @@ export function load() {
 
 	const NPS = surveyData.reduce(
 		(acc, item) => {
-			const note = parseInt(item['Globalement, recommanderiez-vous Publicodes ?']);
+			const note = parseInt(
+				item['Globalement, recommanderiez-vous Publicodes ?']
+			);
 			if (!note) {
 				return acc;
 			}
@@ -41,17 +44,23 @@ export function load() {
 		},
 		{ promote: 0, passive: 0, detract: 0 }
 	);
-	const NPSValue = new Intl.NumberFormat('fr-FR', { maximumSignificantDigits: 2 }).format(
-		(100 * (NPS.promote - NPS.detract)) / surveyData.length
-	);
+	const NPSValue = new Intl.NumberFormat('fr-FR', {
+		maximumSignificantDigits: 2
+	}).format((100 * (NPS.promote - NPS.detract)) / surveyData.length);
 
 	const topAméliorations = Object.entries(
 		surveyData.reduce((acc, item) => {
 			const améliorations = Object.entries(item)
-				.filter(([key, value]) => key.startsWith('Quels chantiers') && value === 'true')
+				.filter(
+					([key, value]) =>
+						key.startsWith('Quels chantiers') && value === 'true'
+				)
 				.map(([key]) =>
 					key
-						.replace(/Quels chantiers devraient-ils être prioriser \? \((.*)\)/, '$1')
+						.replace(
+							/Quels chantiers devraient-ils être prioriser \? \((.*)\)/,
+							'$1'
+						)
 						.replace(/\(.*\)/, '')
 				);
 			if (!améliorations) {

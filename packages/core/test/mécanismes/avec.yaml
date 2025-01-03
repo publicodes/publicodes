@@ -19,17 +19,15 @@ CSG non déductible:
 début d'activité:
   titre: Période de début d’activité
   question: À quelle période avez-vous débuté votre activité ?
-  une possibilité:
-    choix obligatoire: oui
-    possibilités:
-      - avant 2021
-      - janvier 2021
-      - février 2021
-      - mars 2021
-      - avril 2021
-      - mai 2021
-      - juin 2021
-      - juillet 2021
+  une possibilités:
+    - avant 2021
+    - janvier 2021
+    - février 2021
+    - mars 2021
+    - avril 2021
+    - mai 2021
+    - juin 2021
+    - juillet 2021
   par défaut: "'avant 2021'"
   avec:
     avant 2021:

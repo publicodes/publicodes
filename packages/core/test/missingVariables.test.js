@@ -35,7 +35,7 @@ describe('Missing variables', function () {
 				'non applicable si': 'evt . ko',
 			},
 			evt: {
-				formule: { 'une possibilité': ['ko'] },
+				'une possibilité': ['ko', { ki: {} }],
 				titre: 'Truc',
 				question: '?',
 			},
@@ -161,7 +161,7 @@ describe('Missing variables', function () {
 			ko: 'oui',
 			'top . startHere': { formule: 'trois' },
 			'top . trois': {
-				formule: { 'une possibilité': ['ko'] },
+				'une possibilité': ['ko', { ki: {} }],
 			},
 		}
 		const result = new Engine(rawRules).evaluate(
@@ -177,7 +177,7 @@ describe('Missing variables', function () {
 			ko: 'oui',
 			'top . startHere': { formule: 'trois' },
 			'top . trois': {
-				formule: { 'une possibilité': ['ko'] },
+				'une possibilité': ['ko', { ki: {} }],
 				'non applicable si': 'oui',
 			},
 		}
@@ -194,9 +194,10 @@ describe('Missing variables', function () {
 			ko: 'oui',
 			'top . startHere': { formule: 'trois' },
 			'top . trois': {
-				formule: { 'une possibilité': ['ko'] },
+				'une possibilité': ['ko', 'ki'],
 			},
-			'top . trois . ko': null,
+			'top . trois . ko': {},
+			'top . trois . ki': {},
 		}
 		const result = new Engine(rawRules)
 			.setSituation({ 'top . trois': "'ko'" })
@@ -305,7 +306,6 @@ describe('nextSteps', function () {
 		}
 
 		const result = new Engine(rawRules).evaluate('top . sum').missingVariables
-		console.log('yayay', result)
 		expect(Object.keys(result)).to.have.lengthOf(1)
 		expect(Object.keys(result)[0]).to.equal('top . sum . evt')
 	})
@@ -319,11 +319,12 @@ describe('nextSteps', function () {
 				'non applicable si': "top . sum . evt = 'ko'",
 			},
 			'top . sum . evt': {
-				formule: { 'une possibilité': ['ko'] },
+				'une possibilité': ['ko', 'ki'],
 				titre: 'Truc',
 				question: '?',
 			},
 			'top . sum . evt . ko': {},
+			'top . sum . evt . ki': {},
 		}
 		const result = new Engine(rawRules).evaluate('top . sum').missingVariables
 
@@ -473,10 +474,9 @@ a . b: 20 + 9
 		const rawRules = yaml.parse(`
 contrat:
   une possibilité:
-    possibilités: 
-      - stage
-      - CDI
-      - CDD
+    - stage
+    - CDI
+    - CDD
   avec:
     stage:
       valeur: contrat = 'stage'

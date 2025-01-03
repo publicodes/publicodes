@@ -16,7 +16,9 @@ export function createEngine(yamlRules: string): EngineAndErrors {
 		const rawRules = parse(yamlRules);
 		if (typeof rawRules === 'string') {
 			if (rawRules.includes(':')) {
-				error.push(formatError('[Erreur de parsing]\n Il manque un espace après les `:`'));
+				error.push(
+					formatError('[Erreur de parsing]\n Il manque un espace après les `:`')
+				);
 			}
 			return {
 				engine,
