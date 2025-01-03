@@ -171,6 +171,8 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 			return traverseTextNode(fn, node)
 		case 'condition':
 			return traverseConditionNode(fn, node)
+		case 'logarithme':
+			return traverseLogarithmNode(fn, node)
 
 		default:
 			throw new UnreachableCaseError(node)
@@ -349,3 +351,8 @@ const traverseConditionNode: TraverseFunction<'condition'> = (fn, node) => {
 
 	return copy
 }
+
+const traverseLogarithmNode: TraverseFunction<'logarithme'> = (fn, node) => ({
+	...node,
+	explanation: fn(node.explanation),
+})

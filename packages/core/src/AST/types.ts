@@ -7,6 +7,7 @@ import { EstNonDéfiniNode } from '../mecanisms/est'
 import { EstNonApplicableNode } from '../mecanisms/est-non-applicable'
 import { GrilleNode } from '../mecanisms/grille'
 import { InversionNode } from '../mecanisms/inversion'
+import { LogarithmeNode } from '../mecanisms/logarithme'
 import { PossibilityNode } from '../mecanisms/one-possibility'
 import { OperationNode } from '../mecanisms/operation'
 import { RésoudreRéférenceCirculaireNode } from '../mecanisms/resoudre-reference-circulaire'
@@ -51,6 +52,7 @@ type PossibleNodes =
 	| ReplacementRule
 	| VariableManquanteNode
 	| TexteNode
+	| LogarithmeNode
 
 /**@hidden */
 export type NodeKind = PossibleNodes['nodeKind']

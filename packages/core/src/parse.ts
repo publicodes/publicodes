@@ -3,6 +3,7 @@ import { PublicodesError } from './error'
 import abattement from './mecanisms/abattement'
 import applicable from './mecanisms/applicable'
 import arrondi from './mecanisms/arrondi'
+import logarithme from './mecanisms/logarithme'
 import avec from './mecanisms/avec'
 import barème from './mecanisms/bareme'
 import condition from './mecanisms/condition'
@@ -39,6 +40,7 @@ import variations from './mecanisms/variations'
 import { parseExpression } from './parseExpression'
 import { Context } from './parsePublicodes'
 import parseReference from './reference'
+
 
 export default function parse(rawNode, context: Context): ASTNode {
 	if (rawNode == undefined) {
@@ -173,6 +175,7 @@ function parseChainedMecanisms(rawNode, context: Context): ASTNode {
 const parseFunctions = {
 	...operations,
 	...chainableMecanisms.reduce((acc, fn) => ({ [fn.nom]: fn, ...acc }), {}),
+	'logarithme': logarithme,
 	'inversion numérique': mecanismInversion,
 	'le maximum de': parseMaximumDe,
 	'le minimum de': parseMinimumDe,
@@ -184,6 +187,7 @@ const parseFunctions = {
 	'est défini': parseEstDéfini,
 	'une de ces conditions': uneDeCesConditions,
 	'une possibilité': mecanismOnePossibility,
+
 	condition,
 	barème,
 	durée,
