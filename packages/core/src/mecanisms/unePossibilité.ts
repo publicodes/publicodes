@@ -15,14 +15,21 @@ export type RulePossibilités =
 	| { possibilités: Array<string | Record<string, Rule>> }
 
 /**
- * Represents a node that defines a single possibility in a "une possibilité" mechanism.
- * It is an ASTNode representing either a constant value (string or number) or a reference to another rule.
- *
+ * Represents a node for a single possibility value in a "une possibilité" mechanism.
+ * Can be either:
+ * - A constant node containing a string/number literal value
+ * - A reference node pointing to another rule
  */
 export type PossibilityNode = ASTNode<'constant' | 'reference'> & {
-	/** Optional node indicating if the possibility is not applicable */
+	/**
+	 * If the possibility is a reference, this contains a node that evaluates the applicability conditions of the referenced rule.
+	 */
 	notApplicable?: ASTNode<'est non applicable'>
-	/** Optional string representation of the value in publicodes syntax, wrapped in single quotes */
+
+	/**
+	 * String representation of this possibility's value in publicodes syntax, if the possibility is a reference or a string.
+	 * Always wrapped in single quotes, e.g. 'my value' or '123'
+	 */
 	publicodesValue?: `'${string}'`
 }
 

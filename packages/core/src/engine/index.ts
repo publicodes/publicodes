@@ -1,6 +1,7 @@
 import {
 	Logger,
 	ParsedRules,
+	PossibilityNode,
 	PublicodesError,
 	PublicodesExpression,
 	RawPublicodes,
@@ -342,6 +343,44 @@ export class Engine<RuleNames extends string = string> {
 	getSituation(): Situation<RuleNames> {
 		return this.publicSituation
 	}
+
+	/**
+	 * Retrieves the list of possible values for a given rule.
+	 *
+	 * @param dottedName - The dotted name of the rule to get possibilities for
+	 * @param options - Options object
+	 * @param options.filterNotApplicable - When true, filters out possibilities that are not applicable based on the current situation. Defaults to false.
+	 * @returns Array of possibility nodes if the rule has possibilities defined, null otherwise
+	 *
+	 * Each possibility node contains:
+	 * - The value or reference
+	 * - Applicability conditions (if defined)
+	 * - Publicodes string representation
+	 * @see {@link PossibilityNode}
+	 * ```
+	 */
+	getPossibilitiesFor(
+		dottedName: RuleNames,
+		{
+			filterNotApplicable = false,
+		}: {
+			filterNotApplicable?: boolean
+		} = {},
+	): Array<PossibilityNode> | null {
+		const rule = this.getRule(dottedName)
+		if (!rule.possibilities) {
+			return null
+		}
+		if (filterNotApplicable) {
+			return (
+				this.evaluateNode(rule.possibilities).explanation as Array<
+					PossibilityNode & EvaluatedNode & { notApplicable?: EvaluatedNode }
+				>
+			).filter((possibility) => possibility.notApplicable?.nodeValue !== true)
+		}
+		return rule.possibilities.explanation
+	}
+
 	/**
 	 * Evaluate a publicodes expression.
 	 *
