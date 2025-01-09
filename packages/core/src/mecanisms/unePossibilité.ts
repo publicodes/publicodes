@@ -1,5 +1,5 @@
 import { ASTNode, PublicodesError, serializeUnit } from '..'
-import { Unit } from '../AST/types'
+import { EvaluatedNode, Unit } from '../AST/types'
 import { warning } from '../error'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { mergeAllMissing } from '../evaluationUtils'
@@ -17,6 +17,7 @@ export type RulePossibilités =
 /**
  * Represents a node that defines a single possibility in a "une possibilité" mechanism.
  * It is an ASTNode representing either a constant value (string or number) or a reference to another rule.
+ *
  */
 export type PossibilityNode = ASTNode<'constant' | 'reference'> & {
 	/** Optional node indicating if the possibility is not applicable */
@@ -35,12 +36,38 @@ export type UnePossibilitéNode = {
 	explanation: Array<PossibilityNode>
 }
 
+/**
+ * Parses a "une possibilité" mechanism in a rule, which defines a finite list of possible values.
+ *
+ * The values can be defined in three ways (latter two are deprecated):
+ * 1. At the root level with 'une possibilité'
+ * 2. Inside 'valeur' or 'formule'
+ * 3. With a nested 'possibilités'
+ *
+ * Allowed value types:
+ * - Strings
+ * - Numbers
+ * - References to existing rules
+ * - Inline rule definitions
+ *
+ * @param rawRule - Raw rule object containing the possibilities
+ * @param context - Parser context with logging and metadata
+ * @param avec - Rule definitions object, modified to include inline rules
+ * @returns Node representing the mechanism, or null if not defined
+ * @throws {PublicodesError} If possibilities are empty or invalid
+ *
+ * @example
+ * ```yaml
+ * my rule:
+ *   une possibilité:
+ *     - value1
+ *     - value2:
+ *         applicable si: condition
+ * ```
+ */
 export function parseUnePossibilité(
 	rawRule: Rule,
 	context: Context,
-	/**
-	 * The `avec` object is used to store the rules that are defined in the `avec` key of the rule. It is modified in place to add the rules defined in the possibilities.
-	 */
 	avec: Record<string, Rule>,
 ): UnePossibilitéNode | null {
 	let possibilités: RulePossibilités | false = false
@@ -104,18 +131,11 @@ au niveau supérieur.`,
 	const node = parsePossibilités(possibilités, avec, context)
 
 	// Check for duplicates
-	const values = node.explanation.map((n) => n.publicodesValue)
-	if (node.type !== 'number' && new Set(values).size !== values.length) {
-		throw new PublicodesError(
-			'SyntaxError',
-			`Il ne doit pas y avoir de doublons parmi les possibilités.`,
-			context,
-		)
-	}
+	let values: Array<string | number>
 
-	// Check for duplicates after unit conversion
 	if (node.type === 'number') {
-		const values = (
+		// Unit conversion before checking for duplicates
+		values = (
 			node.explanation as Array<
 				ASTNode<'constant'> & {
 					type: 'number'
@@ -125,13 +145,23 @@ au niveau supérieur.`,
 		).map((currentNode) =>
 			convertUnit(currentNode.unit, node.unit, currentNode.nodeValue),
 		)
-		if (new Set(values).size !== values.length) {
-			throw new PublicodesError(
-				'SyntaxError',
-				`Il ne doit pas y avoir de doublons parmi les possibilités.`,
-				context,
+	} else {
+		values = node.explanation.map((n) => n.publicodesValue as string)
+	}
+
+	if (new Set(values).size !== values.length) {
+		const doublons = values
+			.map((v, i, a) =>
+				a.indexOf(v) !== i ? node.explanation[i].rawNode : null,
 			)
-		}
+			.filter(Boolean)
+		throw new PublicodesError(
+			'SyntaxError',
+			`Il ne doit pas y avoir de doublons parmi les possibilités.
+Les valeurs suivantes sont en double : ${doublons.join(', ')}.`,
+
+			context,
+		)
 	}
 
 	return node
@@ -152,8 +182,7 @@ function parsePossibilités(
 		if (node.nodeKind !== referenceNode.nodeKind) {
 			throw new PublicodesError(
 				'SyntaxError',
-				`Les possibilités doivent être toutes des constantes ou toutes des références à des règles.
-				`,
+				`Les possibilités doivent être toutes des constantes ou toutes des références à des règles.`,
 				context,
 			)
 		}
@@ -162,7 +191,8 @@ function parsePossibilités(
 			if (node.type !== referenceNode.type) {
 				throw new PublicodesError(
 					'SyntaxError',
-					`Les possibilités doivent être toutes du même type.`,
+					`Les possibilités doivent être toutes du même type.
+${referenceNode.rawNode} n'est pas convertible en ${node.type}.`,
 					context,
 				)
 			}
@@ -213,8 +243,11 @@ function parsePossibilités(
 registerEvaluationFunction(
 	'une possibilité',
 	function evaluate(node: UnePossibilitéNode) {
+		const evalNode = weakCopyObj(node) as EvaluatedNode & UnePossibilitéNode
 		if (node.type !== 'reference') {
-			return { ...node, missingVariables: {}, nodeValue: undefined }
+			evalNode.missingVariables = {}
+			evalNode.nodeValue = undefined
+			return evalNode
 		}
 
 		const explanation = node.explanation.map((n) => {
@@ -225,6 +258,8 @@ registerEvaluationFunction(
 				missingVariables: notApplicable.missingVariables,
 			}
 		})
+		evalNode.explanation = explanation
+		evalNode.missingVariables = mergeAllMissing(explanation)
 
 		const applicableValues = explanation.filter(
 			(n) => n.notApplicable?.nodeValue !== true,
@@ -232,29 +267,17 @@ registerEvaluationFunction(
 
 		// If all values are not applicable, the whole possibility is not applicable
 		if (applicableValues.length === 0) {
-			return {
-				...node,
-				nodeValue: null,
-				missingVariables: mergeAllMissing(explanation),
-				explanation,
-			}
+			evalNode.nodeValue = null
+			return evalNode
 		}
 
 		// If only one value is applicable, return it
 		if (applicableValues.length === 1) {
-			return {
-				...node,
-				nodeValue: applicableValues[0].rawNode as string,
-				missingVariables: mergeAllMissing(explanation),
-				explanation,
-			}
+			evalNode.nodeValue = applicableValues[0].rawNode as string
+			return evalNode
 		}
 
-		return {
-			...node,
-			nodeValue: undefined,
-			missingVariables: mergeAllMissing(explanation),
-			explanation,
-		}
+		evalNode.nodeValue = undefined
+		return evalNode
 	},
 )

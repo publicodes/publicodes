@@ -71,7 +71,7 @@ Dans ce cas, la valeur possible est **le nom de la règle** et non sa valeur. Da
 
 <Callout type="warning" title="Attention aux doubles quotes">
 
-Pour selectionner une possibilité, il faut entourer le nom de la règle de doubles quotes (`"<ma règle>"`). Sinon, c'est la valeur de la règle qui sera utilisée.
+Pour selectionner une possibilité, il faut entourer le nom de la règle de doubles quotes (`"'<ma règle>'"`). Sinon, c'est la valeur de la règle qui sera utilisée.
 
 ```publicodes title="Double quotes" selectedRuleInDoc="contrat"
 contrat:
@@ -108,7 +108,7 @@ contrat:
 
 ### Métadonnées
 
-En utilisant des références à une règle plutôt que des constantes, vous pouvez ajouter des métadonnées à chaque possibilité, comme une `description` ou un `titre`. Ces métadonnées peuvent être utilisées pour afficher des informations supplémentaires dans l'interface utilisateur.
+En utilisant des références à une règle plutôt que des constantes, vous pouvez ajouter des métadonnées à chaque possibilité, comme une `description` ou un `titre`.
 
 ### Condition
 

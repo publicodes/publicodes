@@ -63,6 +63,12 @@ export type NodeKind = PossibleNodes['nodeKind']
  *
  * It can be browsed and transformed using the {@link transformAST}, {@link reduceAST} and {@link traverseASTNode} methods.
  *
+ *
+ * @warning
+ * The ASTNode types are considered internal implementation details.
+ * They are not covered by semantic versioning guarantees and may undergo breaking changes
+ * without a major version bump. Use them at your own risk.
+ *
  * @typeParam N - The kind of node this ASTNode represents (a string literal type).
  *
  * @example
