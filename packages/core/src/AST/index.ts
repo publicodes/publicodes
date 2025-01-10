@@ -1,4 +1,4 @@
-import { ParsedRules } from '..'
+import { ParsedRules, Possibility } from '..'
 import { UnreachableCaseError } from '../error'
 import { TrancheNodes } from '../mecanisms/trancheUtils'
 import { ReferenceNode } from '../parseReference'
@@ -367,12 +367,11 @@ const traverseUnePossibilitéNode: TraverseFunction<'une possibilité'> = (
 ) => {
 	const copy = weakCopyObj(node)
 	copy.explanation = node.explanation.map((node) => {
-		const copy = fn(node) as any
-		if ('notApplicable' in node) {
-			copy.notApplicable = fn(node.notApplicable as any)
-		}
+		const copy = fn(node) as Possibility & ASTNode<'reference' | 'constant'>
+		copy.notApplicable = fn(node.notApplicable)
+
 		return copy
-	}) as Array<ReferenceNode>
+	})
 
 	return copy
 }

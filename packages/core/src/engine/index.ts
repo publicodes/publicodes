@@ -1,14 +1,14 @@
 import {
 	Logger,
 	ParsedRules,
-	PossibilityNode,
+	Possibility,
 	PublicodesError,
 	PublicodesExpression,
 	RawPublicodes,
 	Situation,
 } from '..'
 import { makeASTVisitor } from '../AST'
-import { type ASTNode, type EvaluatedNode } from '../AST/types'
+import { Evaluation, type ASTNode, type EvaluatedNode } from '../AST/types'
 import { experimentalRuleWarning } from '../error'
 import { evaluationFunctions } from '../evaluationFunctions'
 import parsePublicodes, {
@@ -352,11 +352,16 @@ export class Engine<RuleNames extends string = string> {
 	 * @param options.filterNotApplicable - When true, filters out possibilities that are not applicable based on the current situation. Defaults to false.
 	 * @returns Array of possibility nodes if the rule has possibilities defined, null otherwise
 	 *
-	 * Each possibility node contains:
-	 * - The value or reference
-	 * - Applicability conditions (if defined)
-	 * - Publicodes string representation
-	 * @see {@link PossibilityNode}
+	 * @example
+	 * **Publicodes**
+	 * ```yaml
+	 * contrat:
+	 *  une possibilité:
+	 *   - "'CDI'"
+	 *   - "'CDD'"
+	 * ```js
+	 * engine.getPossibilitiesFor('contrat')
+	 *
 	 * ```
 	 */
 	getPossibilitiesFor(
@@ -366,7 +371,7 @@ export class Engine<RuleNames extends string = string> {
 		}: {
 			filterNotApplicable?: boolean
 		} = {},
-	): Array<PossibilityNode> | null {
+	): Array<Possibility> | null {
 		const rule = this.getRule(dottedName)
 		if (!rule.possibilities) {
 			return null
@@ -374,7 +379,9 @@ export class Engine<RuleNames extends string = string> {
 		if (filterNotApplicable) {
 			return (
 				this.evaluateNode(rule.possibilities).explanation as Array<
-					PossibilityNode & EvaluatedNode & { notApplicable?: EvaluatedNode }
+					Possibility & {
+						notApplicable: { nodeValue: Evaluation }
+					}
 				>
 			).filter((possibility) => possibility.notApplicable?.nodeValue !== true)
 		}

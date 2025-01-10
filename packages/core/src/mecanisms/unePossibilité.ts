@@ -1,37 +1,17 @@
-import { ASTNode, PublicodesError, serializeUnit } from '..'
-import { EvaluatedNode, Unit } from '../AST/types'
+import { PublicodesError, serializeUnit } from '..'
+import { ASTNode, EvaluatedNode, Unit } from '../AST/types'
 import { warning } from '../error'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { mergeAllMissing } from '../evaluationUtils'
-import { parsePossibilité } from '../parsePossibilité'
+import { parsePossibilité, Possibility } from '../parsePossibilité'
 import { Context } from '../parsePublicodes'
 import { Rule } from '../rule'
 import { convertUnit } from '../units'
 import { weakCopyObj } from '../utils'
-import { parseEstNonApplicable } from './est-non-applicable'
 
 export type RulePossibilités =
 	| Array<string | Record<string, Rule>>
 	| { possibilités: Array<string | Record<string, Rule>> }
-
-/**
- * Represents a node for a single possibility value in a "une possibilité" mechanism.
- * Can be either:
- * - A constant node containing a string/number literal value
- * - A reference node pointing to another rule
- */
-export type PossibilityNode = ASTNode<'constant' | 'reference'> & {
-	/**
-	 * If the possibility is a reference, this contains a node that evaluates the applicability conditions of the referenced rule.
-	 */
-	notApplicable?: ASTNode<'est non applicable'>
-
-	/**
-	 * String representation of this possibility's value in publicodes syntax, if the possibility is a reference or a string.
-	 * Always wrapped in single quotes, e.g. 'my value' or '123'
-	 */
-	publicodesValue?: `'${string}'`
-}
 
 export type UnePossibilitéNode = {
 	nodeKind: 'une possibilité'
@@ -40,7 +20,7 @@ export type UnePossibilitéNode = {
 	/**
 	 * The list of possibility node, each representing a possible value for the rule.
 	 */
-	explanation: Array<PossibilityNode>
+	explanation: Array<Possibility & ASTNode<'reference' | 'constant'>>
 }
 
 /**
@@ -142,24 +122,17 @@ au niveau supérieur.`,
 
 	if (node.type === 'number') {
 		// Unit conversion before checking for duplicates
-		values = (
-			node.explanation as Array<
-				ASTNode<'constant'> & {
-					type: 'number'
-					nodeValue: number
-				}
-			>
-		).map((currentNode) =>
-			convertUnit(currentNode.unit, node.unit, currentNode.nodeValue),
+		values = node.explanation.map((currentNode) =>
+			convertUnit(currentNode.unit, node.unit, currentNode.nodeValue as number),
 		)
 	} else {
-		values = node.explanation.map((n) => n.publicodesValue as string)
+		values = node.explanation.map((n) => n.publicodesValue)
 	}
 
 	if (new Set(values).size !== values.length) {
 		const doublons = values
 			.map((v, i, a) =>
-				a.indexOf(v) !== i ? node.explanation[i].rawNode : null,
+				a.indexOf(v) !== i ? node.explanation[i].publicodesValue : null,
 			)
 			.filter(Boolean)
 		throw new PublicodesError(
@@ -179,58 +152,43 @@ function parsePossibilités(
 	avec: Record<string, Rule>,
 	context: Context,
 ): UnePossibilitéNode {
-	let referenceNode: ASTNode<'constant' | 'reference'>
+	let referenceNode: Possibility
 
 	const explanation = possibilities.map((possibility) => {
-		const node = parsePossibilité(possibility, avec, context) as PossibilityNode
+		const node = parsePossibilité(possibility, avec, context)
 
 		referenceNode ??= node
 
-		if (node.nodeKind !== referenceNode.nodeKind) {
+		if (node.type !== referenceNode.type) {
 			throw new PublicodesError(
 				'SyntaxError',
-				`Les possibilités doivent être toutes des constantes ou toutes des références à des règles.`,
+				`Les possibilités doivent être toutes du même type.
+${referenceNode.publicodesValue} et ${node.publicodesValue} ne sont pas du même type.`,
 				context,
 			)
 		}
-
-		if (node.nodeKind === 'constant' && referenceNode.nodeKind === 'constant') {
-			if (node.type !== referenceNode.type) {
+		if (
+			referenceNode.type === 'number' &&
+			node.type === 'number' &&
+			referenceNode.unit
+		) {
+			try {
+				convertUnit(node.unit, referenceNode.unit, 0)
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			} catch (e) {
 				throw new PublicodesError(
 					'SyntaxError',
-					`Les possibilités doivent être toutes du même type.
-${referenceNode.rawNode} n'est pas convertible en ${node.type}.`,
-					context,
-				)
-			}
-			if (
-				referenceNode.type === 'number' &&
-				node.type === 'number' &&
-				referenceNode.unit
-			) {
-				try {
-					convertUnit(node.unit, referenceNode.unit, 0)
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				} catch (e) {
-					throw new PublicodesError(
-						'SyntaxError',
-						`Les possibilités doivent être toutes dans la même unité.
+					`Les possibilités doivent être toutes dans la même classe d'unité.
 
 					${serializeUnit(node.unit)} n'est pas convertible en ${serializeUnit(
 						referenceNode.unit,
 					)}.`,
-						context,
-					)
-				}
-				referenceNode = node
+					context,
+				)
 			}
+			referenceNode = node
 		}
-		if (node.nodeKind === 'reference') {
-			node.notApplicable = parseEstNonApplicable(weakCopyObj(node), context)
-			node.publicodesValue = `'${node.rawNode}'`
-		} else if (node.type === 'string') {
-			node.publicodesValue = `'${node.nodeValue}'`
-		}
+
 		return node
 	})
 
@@ -239,10 +197,7 @@ ${referenceNode.rawNode} n'est pas convertible en ${node.type}.`,
 	return {
 		nodeKind: 'une possibilité',
 		...('unit' in referenceNode ? { unit: referenceNode.unit } : {}),
-		type:
-			referenceNode.nodeKind === 'reference' ? 'reference'
-			: referenceNode.type === 'number' ? 'number'
-			: 'string',
+		type: referenceNode.type,
 		explanation,
 	}
 }
@@ -258,7 +213,7 @@ registerEvaluationFunction(
 		}
 
 		const explanation = node.explanation.map((n) => {
-			const notApplicable = this.evaluateNode(n.notApplicable!)
+			const notApplicable = this.evaluateNode(n.notApplicable)
 			return {
 				...n,
 				notApplicable,
@@ -266,10 +221,12 @@ registerEvaluationFunction(
 			}
 		})
 		evalNode.explanation = explanation
-		evalNode.missingVariables = mergeAllMissing(explanation)
+		evalNode.missingVariables = mergeAllMissing(
+			explanation.map((n) => n.notApplicable),
+		)
 
 		const applicableValues = explanation.filter(
-			(n) => n.notApplicable?.nodeValue !== true,
+			(n) => n.notApplicable.nodeValue !== true,
 		)
 
 		// If all values are not applicable, the whole possibility is not applicable
@@ -280,7 +237,7 @@ registerEvaluationFunction(
 
 		// If only one value is applicable, return it
 		if (applicableValues.length === 1) {
-			evalNode.nodeValue = applicableValues[0].rawNode as string
+			evalNode.nodeValue = applicableValues[0].nodeValue
 			return evalNode
 		}
 

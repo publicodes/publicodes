@@ -30,6 +30,8 @@ nombre de joueurs:
   une possibilité:
     - 2 joueurs
     - 4 joueurs
+  par défaut: 2
+
 
 nombre de points en jeu: nombre de joueurs * 10 points/joueurs
 
@@ -87,8 +89,11 @@ contrat:
 De même en JavaScript :
 
 ```ts
-engine.setSituation({ contrat: "'CDI'" }); // ✅ OK
-engine.setSituation({ contrat: 'CDI' }); // ❌ Incorrect, fait référence à la valeur de la règle "CDI" (qui n'existe pas)
+engine.setSituation({ contrat: "'CDI'" });
+// ✅ OK
+
+engine.setSituation({ contrat: 'CDI' });
+// ❌ Incorrect, fait référence à la valeur de la règle "CDI" (qui est non définie)
 ```
 
 </Callout>
@@ -139,27 +144,14 @@ imposition:
 
 ## Utilisation en JavaScript
 
-Les possibilités sont accessible dans la propriété `possibilities` de la règle.
+Les possibilités sont accessible via la fonction [`engine.getPossibilitiesFor`](/docs/api/publicodes/classes/Engine#getpossibilitiesfor).
 
 ```typescript
-const possibilities: ASTNode<'une possibilité'> | undefined =
-    engine.getRule('contrat').possibilities;
+const possibilities: Array<Possibilities> | null =
+    engine.getPossibilitiesFor('contrat');
 ```
 
-Pour évaluer les possibilités non applicable, on peut utiliser la méthode `evaluate` de l'engine.
-
-```typescript
-const applicablePossibilities = engine
-    .evaluate(possibilities)
-    .explanation.filter(
-        (possibility: PossibilityNode) =>
-            possibility.notApplicable?.nodeValue !== true
-    );
-```
-
-Pour en savoir plus, voir le type [`PossibilityNode` dans l'API](/docs/api/publicodes/type-aliases/PossibilityNode).
-
-Pour lever une erreur si la valeur n'est pas dans la liste des possibilités, on peut passer le paramètre `checkPossibleValues` à `true` (voir [l'api Engine](/docs/api/publicodes/classes/Engine)).
+Pour lever une erreur à l'évaluation si une valeur n'est pas dans la liste des possibilités, on peut passer le paramètre `checkPossibleValues` à `true` (voir [l'api Engine](/docs/api/publicodes/classes/Engine)).
 
 ```typescript
 const rules = new Engine(rules, {
@@ -167,4 +159,8 @@ const rules = new Engine(rules, {
 });
 ```
 
-<!-- TODO : caveat, remplace et rend non applicable non implémentés -->
+## Limitations
+
+-   **Remplacements** : La fonctionalité `remplace` est inopérante à l'intérieur de `une possibilité`. Autrement dit, si vous remplacez une règle listée dans une possibilité, ce sera la règle originale qui apparaitra dans `getPossibilitiesFor`.
+
+-   **Pas de vérification de type statique** : Les erreurs de type (comme des comparaisons avec une valeur non listée dans les possibilités) ne sont pas détectées. En revanche les erreurs d'affectation peuvent être détectée dynamiquement en utilisant le paramètre `checkPossibleValues` (voir ci-dessus).

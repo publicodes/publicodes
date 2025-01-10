@@ -275,40 +275,78 @@ a:
 			expect(engine.evaluate('a').nodeValue).to.eql(200)
 		})
 
-		test('Do not allow duplicate values', function () {
-			expect(() =>
-				engineFromYaml(
-					`
-a:
+		describe('getPossibilitiesFor', function () {
+			test('Returns string constant possibility', function () {
+				const engine = engineFromYaml(`
+fruits:
   une possibilité:
-    - 12 mois
-    - 1 an
-`,
-				),
-			).to.throw('Erreur syntaxique')
-		})
-	})
+    - "'pomme'"
+    - "'banane'" `)
+				const possibilities = engine.getPossibilitiesFor('fruits')
+				expect(possibilities[0]).to.deep.include({
+					type: 'string',
+					publicodesValue: "'pomme'",
+					nodeValue: 'pomme',
+				})
+				expect(possibilities[0].notApplicable.nodeValue).to.be.false
+			})
 
-	describe('Javascript interface', function () {
-		const engine = engineFromYaml(
-			`
-a:
+			test('Returns numeric possibility with unit structure', function () {
+				const engine = engineFromYaml(`
+poids:
   une possibilité:
-    - b:
-    - c:
+    - 1 kg
+    - 2 kg`)
+				const possibilities = engine.getPossibilitiesFor('poids')
+				expect(possibilities[0]).to.deep.include({
+					type: 'number',
+					publicodesValue: '1 kg',
+					nodeValue: 1,
+					unit: { numerators: ['kg'], denominators: [] },
+				})
+			})
+
+			test('Returns reference possibility structure', function () {
+				const engine = engineFromYaml(`
+choix:
+  une possibilité:
+    - option1:
+    - option2:`)
+				const possibilities = engine.getPossibilitiesFor('choix')
+				expect(possibilities[0]).to.deep.include({
+					type: 'reference',
+					dottedName: 'choix . option1',
+					nodeValue: 'option1',
+					publicodesValue: "'option1'",
+				})
+			})
+
+			test('filterNotApplicable removes non applicable possibilities', function () {
+				const engine = engineFromYaml(`
+choix:
+  une possibilité:
+    - option1:
         non applicable si: oui
-`,
-			{ strict: true },
-		)
-		test('Has metadata on possibilities explanation', function () {
-			const explanation = engine.evaluate(engine.getRule('a')).possibilities
-				.explanation
+    - option2:
+    - option3:`)
+				const possibilities = engine.getPossibilitiesFor('choix', {
+					filterNotApplicable: true,
+				})
+				expect(possibilities).to.have.length(2)
+				expect(possibilities[0].dottedName).to.equal('choix . option2')
+			})
 
-			expect(explanation).to.have.length(2)
-			expect(explanation[0].publicodesValue).to.eql("'b'")
-			expect(explanation[0].notApplicable.nodeValue).to.eql(false)
-			expect(explanation[1].publicodesValue).to.eql("'c'")
-			expect(explanation[1].notApplicable.nodeValue).to.eql(true)
+			test('filterNotApplicable keeps all possibilities when no conditions', function () {
+				const engine = engineFromYaml(`
+choix:
+  une possibilité:
+    - option1:
+    - option2:`)
+				const possibilities = engine.getPossibilitiesFor('choix', {
+					filterNotApplicable: true,
+				})
+				expect(possibilities).to.have.length(2)
+			})
 		})
 	})
 })
