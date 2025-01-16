@@ -1,4 +1,27 @@
-This library export utilities to create interactive forms and simulators from publicodes rules. It is not tied to any specific framework, and can be used with React, Svelte, Vue, or plain JS.
+This library export utilities to create interactive forms and simulators from publicodes rules.
+
+This library is framework-agnostic and can be used with any state management system:
+
+-   React useState
+-   Redux
+-   Svelte stores
+-   Vue reactive system
+-   etc.
+
+```typescript
+// Initialize form state
+const formState = initFormState({ engine }, 'target . rule')
+
+// Get current page UI elements
+const pageElements = currentPage(formState, { engine })
+
+// Handle user input
+const newState = handleInputChange(formState, 'rule . name', value, { engine })
+
+// Navigate pages
+const nextState = goToNextPage(formState)
+const prevState = goToPreviousPage(formState)
+```
 
 ## Getting started
 

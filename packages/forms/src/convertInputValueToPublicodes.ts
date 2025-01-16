@@ -4,10 +4,12 @@ import type { PublicodesExpression, Situation } from 'publicodes'
 /**
  * Convert input value from DOM change event to publicodes expression that can be used to update the engine situation.
  *
- * This function has no side effect. It will NOT update the engine situation, it will only return the value. @see updateSituationWithFormValue to update the engine situation.
+ * This function has no side effect. It will NOT update the engine situation, it will only return the value.
+ * @see {@link updateSituationWithInputValue} to update the engine situation.
  *
  * @exemple
- * For example, a date input emit an event with a value of '2021-02-01'. We can use this function to convert it to a string in the format '01/02/2021' which is the format used in publicodes.
+ * For example, a date input emit an event with a value of '2021-02-01'.
+ * We can use this function to convert it to a string in the format '01/02/2021' which is the format used in publicodes.
  *
  *
  * @param engine: Engine, necessary to get information about the type of the rule to allow proper conversion.

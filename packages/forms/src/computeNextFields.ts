@@ -1,3 +1,5 @@
+import type Engine from 'publicodes'
+
 /**
  * Computes the next fields that need to be asked next in a form.
  *
@@ -11,8 +13,6 @@
  * @param state.pages - Array of pages, where each page is an array of rule names
  * @returns Array of dotted names representing the next fields to ask, sorted by priority
  */
-import Engine from 'publicodes'
-
 export function computeNextFields<Name extends string>(
 	engine: Engine<Name>,
 	state: { targets: Array<Name>; pages: Array<Array<Name>> },

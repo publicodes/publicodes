@@ -1,24 +1,22 @@
 import { Rule } from 'publicodes'
 
-export { addEvaluation } from './evaluateFormElement'
-export type { EvaluatedFormElement } from './evaluateFormElement'
+export { addEvaluatedProperties } from './addEvaluatedProperties'
+export type { EvaluatedFormElement } from './addEvaluatedProperties'
 
 export { getFormElement } from './formElement'
 export type { FormElement } from './formElement'
 
-export { buildFormPage } from './formPage'
-export type { FormPageElement } from './formPage'
+export { buildFormPage } from './buildFormPage'
+export type { FormElementInPage } from './buildFormPage'
 
-export * from './formState'
-export type { FormState } from './formState'
+export * from './form'
+export type { FormState } from './form'
 
-export { splitByNamespace } from './pageSplitter'
 export { computeNextFields } from './computeNextFields'
-
-export type { PageOptions } from './pageSplitter'
+export { groupByNamespace } from './groupByNamespace'
 
 export { convertInputValueToPublicodes } from './convertInputValueToPublicodes'
-export { updateSituationWithFormValue } from './updateSituationWithFormValue'
+export { updateSituationWithInputValue as updateSituationWithFormValue } from './updateSituationWithFormValue'
 
 /**
  * A Publicodes Rule with additional metadata for form input

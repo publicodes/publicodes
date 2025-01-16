@@ -9,14 +9,11 @@ import {
 	TextareaElement,
 } from './formElement'
 
-type Evaluated<T> =
-	| (T & {
-			applicable: true
-			required: boolean
-	  })
-	| {
-			applicable: false
-	  }
+type Evaluated<T> = T & {
+	applicable: boolean
+	required: boolean
+	answered: boolean
+}
 
 export type EvaluatedOption = Option & {
 	applicable: boolean
@@ -43,16 +40,20 @@ export type EvaluatedNumberInput = InputElement<'number'> &
 export type EvaluatedOptionsGroup = (
 	| Omit<RadioGroupElement, 'options'>
 	| Omit<SelectElement, 'options'>
-) &
-	(
+) & {
+	required: boolean
+	answered: boolean
+	value: string | undefined
+	defaultValue: string | undefined
+} & (
 		| {
 				applicable: true
-				required: boolean
-				value: string | undefined
-				defaultValue: string | undefined
 				options: Array<EvaluatedOption>
 		  }
-		| { applicable: false; options: Array<Option> }
+		| {
+				applicable: false
+				options: Array<Option>
+		  }
 	)
 
 export type EvaluatedTextarea = TextareaElement &
@@ -68,7 +69,7 @@ export type EvaluatedFormElement =
 	| EvaluatedOptionsGroup
 	| EvaluatedTextarea
 
-export function addEvaluation(
+export function addEvaluatedProperties(
 	engine: Engine,
 	formElement: FormElement,
 ): EvaluatedFormElement {
@@ -97,6 +98,8 @@ export function addEvaluation(
 	element.required =
 		dottedName in defaultValue.missingVariables &&
 		defaultValue.nodeValue === undefined
+
+	element.answered = element.id in engine.getSituation()
 
 	const value =
 		dottedName in engine.getSituation() ?

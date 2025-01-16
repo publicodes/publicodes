@@ -1,19 +1,20 @@
 import type Engine from 'publicodes'
-import { convertInputValueToPublicodes } from './convertInputValueToPublicodes'
 import type { Situation } from 'publicodes'
+import { convertInputValueToPublicodes } from './convertInputValueToPublicodes'
 
 /**
- * Update the engine situation with the value of a form element.
+ * Update the engine situation with the value of an associated form input element.
  *
- * This function will update the engine situation with the value issued from a form element. It will convert the value to a publicodes expression that can be used to update the engine situation.
+ * This function will update the engine situation with the value issued from a form element.
+ * It will convert the value to a publicodes expression that can be used to update the engine situation.
  *
  * If the @param inputValue is undefined, the rule will be deleted from the situation.
  *
  * @param engine The engine to update
- * @param dottedName The name of the rule to update
- * @param inputValue The value of the form input to use
+ * @param dottedName The name of the rule to update (or delete)
+ * @param inputValue The value of the form input to use, or undefined to delete the rule from the situation
  */
-export function updateSituationWithFormValue<Name extends string>(
+export function updateSituationWithInputValue<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
 	inputValue: string | number | boolean | undefined,

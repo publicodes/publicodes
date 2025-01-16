@@ -51,8 +51,35 @@ export type FormElement =
 	| RadioGroupElement
 	| TextareaElement
 
-/** @alpha */
-
+/**
+ * Generates a UI form element representation based on a Publicodes rule.
+ *
+ * This function analyzes a rule's metadata and type to determine the most appropriate HTML
+ * form control for modifying the rule value.
+ *
+ * The output describes a form element in a framework-agnostic way, making it suitable for use
+ * in various UI frameworks (React, Vue, Svelte, etc.) or in plain JS to render actual HTML form controls.
+ *
+ * @param engine - The Publicodes engine instance
+ * @param dottedName - The dotted name identifier of the rule to convert into a form element
+ *
+ * @returns A FormElement object describing the UI control properties:
+ * - For boolean rules: checkbox or radio buttons (oui/non)
+ * - For dates: date or month input
+ * - For enumerated values: select dropdown or radio group based on number of options
+ * - For strings: text input or textarea
+ * - For numbers: number input
+ *
+ * @throws {PublicodesError}
+ * - If type information is missing for the rule
+ * - If the rule's data type is not supported
+ *
+ * @example
+ * ```ts
+ * const element = getFormElement(engine, "employee . salary")
+ * // Returns: { element: "input", type: "number", label: "Salary", ... }
+ * ```
+ */
 export function getFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,

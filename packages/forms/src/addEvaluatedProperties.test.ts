@@ -1,12 +1,12 @@
 import Engine from 'publicodes'
 import { describe, expect, it } from 'vitest'
 import {
-	addEvaluation,
+	addEvaluatedProperties,
 	EvaluatedCheckbox,
 	EvaluatedNumberInput,
 	EvaluatedOptionsGroup,
 	EvaluatedTextarea,
-} from './evaluateFormElement'
+} from './addEvaluatedProperties'
 import { FormElement } from './formElement'
 
 describe('evaluateFormElement', () => {
@@ -23,7 +23,10 @@ describe('evaluateFormElement', () => {
 			description: undefined,
 		}
 
-		const result = addEvaluation(engine, formElement) as EvaluatedCheckbox & {
+		const result = addEvaluatedProperties(
+			engine,
+			formElement,
+		) as EvaluatedCheckbox & {
 			applicable: true
 		}
 
@@ -52,7 +55,7 @@ describe('evaluateFormElement', () => {
 			],
 		}
 
-		const result = addEvaluation(
+		const result = addEvaluatedProperties(
 			engine,
 			formElement,
 		) as EvaluatedOptionsGroup & { applicable: true }
@@ -92,7 +95,7 @@ describe('evaluateFormElement', () => {
 			],
 		}
 
-		const result = addEvaluation(
+		const result = addEvaluatedProperties(
 			engine,
 			formElement,
 		) as EvaluatedOptionsGroup & { applicable: true }
@@ -131,7 +134,7 @@ describe('evaluateFormElement', () => {
 			],
 		}
 
-		const result = addEvaluation(
+		const result = addEvaluatedProperties(
 			engine,
 			formElement,
 		) as EvaluatedOptionsGroup & { applicable: true }
@@ -162,7 +165,10 @@ describe('evaluateFormElement', () => {
 			description: undefined,
 		}
 
-		const result = addEvaluation(engine, formElement) as EvaluatedTextarea & {
+		const result = addEvaluatedProperties(
+			engine,
+			formElement,
+		) as EvaluatedTextarea & {
 			applicable: true
 		}
 		expect(result.applicable).toBe(true)
@@ -185,7 +191,7 @@ describe('evaluateFormElement', () => {
 			description: undefined,
 		}
 
-		const result = addEvaluation(
+		const result = addEvaluatedProperties(
 			engine,
 			formElement,
 		) as EvaluatedNumberInput & { applicable: true }
@@ -205,7 +211,10 @@ describe('evaluateFormElement', () => {
 			description: undefined,
 		}
 
-		const result = addEvaluation(engine, formElement) as EvaluatedTextarea & {
+		const result = addEvaluatedProperties(
+			engine,
+			formElement,
+		) as EvaluatedTextarea & {
 			applicable: true
 		}
 		expect(result.required).toBe(true)
@@ -224,7 +233,10 @@ describe('evaluateFormElement', () => {
 			description: undefined,
 		}
 
-		const result = addEvaluation(engine, formElement) as EvaluatedTextarea & {
+		const result = addEvaluatedProperties(
+			engine,
+			formElement,
+		) as EvaluatedTextarea & {
 			applicable: true
 		}
 		expect(result.required).toBe(false)
