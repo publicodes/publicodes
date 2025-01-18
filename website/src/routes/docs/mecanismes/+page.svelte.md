@@ -676,7 +676,7 @@ revenu professionnel:
   unité: €/an
 ```
 
-## Logarithme
+## `logarithme`
 
 Calcule le logarithme.
 
