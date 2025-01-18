@@ -40,7 +40,6 @@ export default function inferNodesTypes(
 			case 'grille':
 			case 'taux progressif':
 			case 'inversion':
-			case 'logarithme':
 			case 'résoudre référence circulaire':
 				return { isNullable: false, type: 'number' }
 			case 'est non défini':
@@ -76,11 +75,15 @@ export default function inferNodesTypes(
 			case 'texte':
 			case 'une possibilité':
 				return { isNullable: false, type: 'string' }
-
 			case 'arrondi':
 				return {
 					type: 'number',
 					isNullable: inferNodeUnitAndCache(node.explanation.valeur).isNullable,
+				}
+			case 'logarithme':
+				return {
+					type: 'number',
+					isNullable: inferNodeUnitAndCache(node.explanation).isNullable,
 				}
 			case 'contexte':
 			case 'rule':

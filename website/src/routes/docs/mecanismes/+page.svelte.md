@@ -675,3 +675,16 @@ revenu professionnel:
   résoudre la référence circulaire: oui
   unité: €/an
 ```
+
+## Logarithme
+
+Calcule le logarithme.
+
+```publicodes title="Exemple"
+ma variable: 12
+
+résultat: 
+  titre: Le log de ma variable
+  logarithme: ma variable
+  arrondi: 2 décimales 
+```
