@@ -41,7 +41,6 @@ import { parseExpression } from './parseExpression'
 import { Context } from './parsePublicodes'
 import parseReference from './reference'
 
-
 export default function parse(rawNode, context: Context): ASTNode {
 	if (rawNode == undefined) {
 		throw new PublicodesError(
@@ -175,7 +174,7 @@ function parseChainedMecanisms(rawNode, context: Context): ASTNode {
 const parseFunctions = {
 	...operations,
 	...chainableMecanisms.reduce((acc, fn) => ({ [fn.nom]: fn, ...acc }), {}),
-	'logarithme': logarithme,
+	logarithme: logarithme,
 	'inversion numérique': mecanismInversion,
 	'le maximum de': parseMaximumDe,
 	'le minimum de': parseMinimumDe,

@@ -351,4 +351,3 @@ const traverseConditionNode: TraverseFunction<'condition'> = (fn, node) => {
 
 	return copy
 }
-

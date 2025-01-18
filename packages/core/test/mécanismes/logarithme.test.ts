@@ -13,21 +13,23 @@ import { describe, it } from 'mocha'
 import { parse } from 'yaml'
 import Engine from '../../src/index'
 
-let engine;
+let engine
 describe(``, () => {
-	before(() => {
+	before(function () {
 		const _dirname = dirname(fileURLToPath(import.meta.url))
-		const rules = fs.readFileSync(join(_dirname, `logarithme.yaml`), 'utf8') 
+		const rules = fs.readFileSync(join(_dirname, `logarithme.yaml`), 'utf8')
 		engine = new Engine(parse(rules))
-		
 	})
+
 	it('logarithme engine ready', () => {
 		expect(engine).not.to.be.undefined
 	})
+
 	it('calculate log de 1 = 0', () => {
 		const result = engine.evaluate(`mon résultat`).nodeValue
 		expect(result).equal(0)
 	})
+
 	it('calculate log de 12 arrondi à 2 décimales', () => {
 		const result = engine.evaluate(`résultat`).nodeValue
 		expect(result).equal(Math.round(Math.log(12) * 100) / 100)

@@ -683,8 +683,8 @@ Calcule le logarithme.
 ```publicodes title="Exemple"
 ma variable: 12
 
-résultat: 
+résultat:
   titre: Le log de ma variable
   logarithme: ma variable
-  arrondi: 2 décimales 
+  arrondi: 2 décimales
 ```
