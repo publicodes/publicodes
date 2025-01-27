@@ -1,0 +1,8 @@
+importer!:
+  depuis:
+    nom: 'my-external-package'
+    source: './my-external-package.model.json'
+  les règles:
+    - root . b
+    - root . c:
+        titre: "Ajout d'un titre"

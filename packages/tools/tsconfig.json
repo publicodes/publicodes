@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": ["src/**/*", "quick-doc"],
+  "exclude": ["./node_modules/", "./dist/", "./jest.config.js", "./test/"],
+  "ts-node": {
+    "esm": true
+  }
+}

@@ -1,0 +1,18 @@
+# Règles d'exemples automatiquement générées.
+# Supprimez ce fichier ou ajoutez vos propres règles.
+
+salaire net: salaire brut - cotisations salariales
+
+salaire brut:
+  titre: Salaire brut mensuel
+  par défaut: 2500 
+  unité: €/mois
+
+cotisations salariales:
+  produit:
+    - salaire brut
+    - taux
+  avec:
+    taux: 21.7%
+
+SMIC mensuel: 1802 €/mois

@@ -1,0 +1,43 @@
+{
+  "root": {
+    "formule": "a * b"
+  },
+  "root . a": {
+    "formule": 10
+  },
+  "root . b": {
+    "formule": "root . c * 2"
+  },
+  "root . c": {
+    "formule": 20
+  },
+  "root 2": {
+    "formule": 20,
+    "résumé": "Résumé root 2"
+  },
+  "complex": {
+    "formule": {
+      "somme": ["d", "root"]
+    }
+  },
+  "d": {
+    "formule": {
+      "variations": [
+        { "si": "root 2 > 10", "alors": 10 },
+        { "sinon": "root 2" }
+      ]
+    }
+  },
+  "e": {
+    "question": "Question ?",
+    "formule": 10
+  },
+  "rule with avec": {
+    "formule": "F1 + F2 + F3",
+    "avec": {
+      "F1": 1,
+      "F2": 2,
+      "F3": 3
+    }
+  }
+}
