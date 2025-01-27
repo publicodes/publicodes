@@ -47,7 +47,8 @@ export function insertDocsearch(container: string | HTMLElement) {
 				noResultsScreen: {
 					noResultsText: 'Aucun résultat pour',
 					suggestedQueryText: 'Essayer avec',
-					reportMissingResultsText: 'Vous pensez qu’il devrait y avoir des résultats ?',
+					reportMissingResultsText:
+						'Vous pensez qu’il devrait y avoir des résultats ?',
 					reportMissingResultsLinkText: 'Faites-le nous savoir'
 				}
 			}

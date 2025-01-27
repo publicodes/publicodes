@@ -4,7 +4,7 @@ import { registerEvaluationFunction } from '../evaluationFunctions'
 import { undefinedNumberNode } from '../evaluationUtils'
 import parse from '../parse'
 import { Context } from '../parsePublicodes'
-import { ReferenceNode } from '../reference'
+import { ReferenceNode } from '../parseReference'
 import uniroot from '../uniroot'
 
 export type InversionNode = {

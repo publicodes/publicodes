@@ -21,7 +21,9 @@ blogPosts.forEach((page) => {
 });
 
 blogPosts.sort((a, b) => {
-	return new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime();
+	return (
+		new Date(b.metadata.date).getTime() - new Date(a.metadata.date).getTime()
+	);
 });
 
 const lastBlogPostDate = new Date(blogPosts[0].metadata.date);

@@ -222,6 +222,7 @@ function Rule({
 								</blockquote>
 							</>
 						)}
+
 						{useSubEngine && (
 							<div
 								style={{
@@ -258,6 +259,8 @@ function Rule({
 							</div>
 						)}
 						<h2>Comment cette donnée est-elle calculée&nbsp;?</h2>
+
+						{rule.possibilities && <Explanation node={rule.possibilities} />}
 						<div id="documentation-rule-explanation">
 							<Explanation node={valeur} />
 						</div>

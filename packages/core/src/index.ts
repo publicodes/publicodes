@@ -39,6 +39,7 @@ export {
 	type StrictOptions,
 }
 
+export type { Possibility } from './parsePossibilité'
 /**
  * A publicodes expression that can be evaluated by the {@link Engine}.
  *

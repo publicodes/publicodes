@@ -7,7 +7,6 @@ import { EstNonDéfiniNode } from '../mecanisms/est'
 import { EstNonApplicableNode } from '../mecanisms/est-non-applicable'
 import { GrilleNode } from '../mecanisms/grille'
 import { InversionNode } from '../mecanisms/inversion'
-import { PossibilityNode } from '../mecanisms/one-possibility'
 import { OperationNode } from '../mecanisms/operation'
 import { RésoudreRéférenceCirculaireNode } from '../mecanisms/resoudre-reference-circulaire'
 import { SimplifierUnitéNode } from '../mecanisms/simplifier-unite'
@@ -16,41 +15,45 @@ import { TexteNode } from '../mecanisms/texte'
 import { UnitéNode } from '../mecanisms/unite'
 import { VariableManquanteNode } from '../mecanisms/variablesManquantes'
 import { VariationNode } from '../mecanisms/variations'
-import { ReferenceNode } from '../reference'
-import { ReplacementRule } from '../replacement'
-import { RuleNode } from '../rule'
+import { UnePossibilitéNode } from '../mecanisms/unePossibilité'
+import { ReferenceNode } from '../parseReference'
+import { ReplacementRule } from '../parseReplacement'
+import { Rule, RuleNode } from '../rule'
 
 export type ConstantNode = {
-	type: 'boolean' | 'number' | 'string' | 'date' | undefined
-	nodeValue: Evaluation
 	nodeKind: 'constant'
 	isNullable?: boolean
 	isDefault?: boolean
 	fullPrecision?: boolean
-}
+	nodeValue: Evaluation
+} & (
+	| { type: 'number'; unit?: Unit }
+	| { type: 'boolean' | 'string' | 'date' | undefined }
+)
+
 type PossibleNodes =
-	| RuleNode
-	| ReferenceNode
 	| ArrondiNode
 	| BarèmeNode
-	| DuréeNode
-	| GrilleNode
-	| EstNonApplicableNode
-	| EstNonDéfiniNode
-	| InversionNode
-	| OperationNode
-	| PossibilityNode
-	| ContextNode
-	| SimplifierUnitéNode
-	| RésoudreRéférenceCirculaireNode
-	| TauxProgressifNode
-	| UnitéNode
-	| VariationNode
 	| ConditionNode
 	| ConstantNode
+	| ContextNode
+	| DuréeNode
+	| EstNonApplicableNode
+	| EstNonDéfiniNode
+	| GrilleNode
+	| InversionNode
+	| OperationNode
+	| ReferenceNode
 	| ReplacementRule
-	| VariableManquanteNode
+	| RésoudreRéférenceCirculaireNode
+	| RuleNode
+	| SimplifierUnitéNode
+	| TauxProgressifNode
 	| TexteNode
+	| UnePossibilitéNode
+	| UnitéNode
+	| VariableManquanteNode
+	| VariationNode
 
 /**@hidden */
 export type NodeKind = PossibleNodes['nodeKind']
@@ -59,6 +62,12 @@ export type NodeKind = PossibleNodes['nodeKind']
  * Represents a node in the Abstract Syntax Tree of a publicodes expression.
  *
  * It can be browsed and transformed using the {@link transformAST}, {@link reduceAST} and {@link traverseASTNode} methods.
+ *
+ *
+ * @warning
+ * The ASTNode types are considered internal implementation details.
+ * They are not covered by semantic versioning guarantees and may undergo breaking changes
+ * without a major version bump. Use them at your own risk.
  *
  * @typeParam N - The kind of node this ASTNode represents (a string literal type).
  *
@@ -74,7 +83,7 @@ export type ASTNode<N extends NodeKind = NodeKind> = PossibleNodes & {
 		mecanismName: string
 		args: Record<string, ASTNode | Array<ASTNode>>
 	}
-	rawNode?: string | Record<string, unknown>
+	rawNode?: string | Rule
 }
 // TODO : separate type for evaluated AST Tree
 

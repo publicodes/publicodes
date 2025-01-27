@@ -82,7 +82,12 @@
 			letter-spacing="0"
 			word-spacing="0"
 			stroke="#fff"
-			><tspan style="line-height:1.25" y="930.8" x="276.6" font-size="21.7" fill="#fff">&gt;</tspan
+			><tspan
+				style="line-height:1.25"
+				y="930.8"
+				x="276.6"
+				font-size="21.7"
+				fill="#fff">&gt;</tspan
 			></text
 		>
 	</g>
