@@ -256,7 +256,7 @@ ${yaml.stringify(secondDef, { indent: 2 })}`,
  *
  * @returns The value without quotes if it is a string, null otherwise.
  */
-export function getValueWithoutQuotes(value: PublicodesExpression) {
+export function getValueWithoutQuotes(value: PublicodesExpression | undefined) {
 	if (
 		typeof value !== 'string' ||
 		!value.startsWith("'") ||

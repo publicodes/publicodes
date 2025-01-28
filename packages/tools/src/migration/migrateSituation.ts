@@ -1,4 +1,4 @@
-import { Evaluation, PublicodesExpression, Situation } from 'publicodes'
+import { PublicodesExpression, Situation } from 'publicodes'
 import { getValueWithoutQuotes, RuleName } from '../commons'
 
 /**
@@ -10,8 +10,8 @@ export type ValueMigration = Record<string, string>
  * Migration instructions. It contains the rules and values to migrate.
  */
 export type Migration = {
-  keysToMigrate: Record<RuleName, RuleName>
-  valuesToMigrate: Record<RuleName, ValueMigration>
+	keysToMigrate: Record<RuleName, RuleName>
+	valuesToMigrate: Record<RuleName, ValueMigration>
 }
 
 /**
@@ -54,33 +54,33 @@ export type Migration = {
  * @note An example of instructions can be found {@link https://github.com/incubateur-ademe/nosgestesclimat/blob/preprod/migration/migration.yaml | here}.
  */
 export function migrateSituation(
-  situation: Situation<RuleName>,
-  instructions: Migration,
+	situation: Situation<RuleName>,
+	instructions: Migration,
 ): Situation<RuleName> {
-  let newSituation = { ...situation }
-  const currentRules = Object.keys(situation)
-  const valueKeysToMigrate = Object.keys(instructions.valuesToMigrate)
+	let newSituation = { ...situation }
+	const currentRules = Object.keys(situation)
+	const valueKeysToMigrate = Object.keys(instructions.valuesToMigrate)
 
-  Object.entries(situation).map(([rule, value]) => {
-    handleSpecialCases(rule, value, newSituation)
+	Object.entries(situation).map(([rule, value]) => {
+		handleSpecialCases(rule, value, newSituation)
 
-    if (currentRules.includes(rule)) {
-      updateKey(rule, value, newSituation, instructions.keysToMigrate[rule])
-    }
+		if (currentRules.includes(rule)) {
+			updateKey(rule, value, newSituation, instructions.keysToMigrate[rule])
+		}
 
-    const formattedValue = getValueWithoutQuotes(value) ?? (value as string)
-    const valuesMigration =
-      instructions.valuesToMigrate[
-        valueKeysToMigrate.find((key) => rule.includes(key))
-      ] ?? {}
-    const oldValuesName = Object.keys(valuesMigration)
+		const formattedValue = getValueWithoutQuotes(value) ?? (value as string)
+		const valuesMigration =
+			instructions.valuesToMigrate[
+				valueKeysToMigrate.find((key) => rule.includes(key)) ?? ''
+			] ?? {}
+		const oldValuesName = Object.keys(valuesMigration)
 
-    if (oldValuesName.includes(formattedValue)) {
-      updateValue(rule, valuesMigration[formattedValue], newSituation)
-    }
-  })
+		if (oldValuesName.includes(formattedValue)) {
+			updateValue(rule, valuesMigration[formattedValue], newSituation)
+		}
+	})
 
-  return newSituation
+	return newSituation
 }
 
 /**
@@ -92,70 +92,70 @@ export function migrateSituation(
  * ```
  */
 function handleSpecialCases(
-  rule: RuleName,
-  oldValue: PublicodesExpression,
-  situation: Situation<RuleName>,
+	rule: RuleName,
+	oldValue: PublicodesExpression | undefined,
+	situation: Situation<RuleName>,
 ): void {
-  // Special case, number store as a string, we have to convert it to a number
-  if (
-    oldValue &&
-    typeof oldValue === 'string' &&
-    !isNaN(parseFloat(oldValue))
-  ) {
-    situation[rule] = parseFloat(oldValue)
-  }
+	// Special case, number store as a string, we have to convert it to a number
+	if (
+		oldValue &&
+		typeof oldValue === 'string' &&
+		!isNaN(parseFloat(oldValue))
+	) {
+		situation[rule] = parseFloat(oldValue)
+	}
 
-  // Special case : wrong value format, legacy from previous publicodes version
-  // handle the case where valeur is a string "2.33"
-  if (oldValue && oldValue['valeur'] !== undefined) {
-    situation[rule] =
-      typeof oldValue['valeur'] === 'string' &&
-      !isNaN(parseFloat(oldValue['valeur']))
-        ? parseFloat(oldValue['valeur'])
-        : (oldValue['valeur'] as number)
-  }
-  // Special case : other wrong value format, legacy from previous publicodes version
-  // handle the case where nodeValue is a string "2.33"
-  if (oldValue && oldValue['nodeValue'] !== undefined) {
-    situation[rule] =
-      typeof oldValue['nodeValue'] === 'string' &&
-      !isNaN(parseFloat(oldValue['nodeValue']))
-        ? parseFloat(oldValue['nodeValue'])
-        : (oldValue['nodeValue'] as number)
-  }
+	// Special case : wrong value format, legacy from previous publicodes version
+	// handle the case where valeur is a string "2.33"
+	const oldValeur = (oldValue as any)?.valeur
+	if (oldValeur !== undefined) {
+		situation[rule] =
+			typeof oldValeur === 'string' && !isNaN(parseFloat(oldValeur)) ?
+				parseFloat(oldValeur)
+			:	(oldValeur as number)
+	}
+	// Special case : other wrong value format, legacy from previous publicodes version
+	// handle the case where nodeValue is a string "2.33"
+	const oldNodeValue = (oldValue as any)?.nodeValue
+	if (oldNodeValue !== undefined) {
+		situation[rule] =
+			typeof oldNodeValue === 'string' && !isNaN(parseFloat(oldNodeValue)) ?
+				parseFloat(oldNodeValue)
+			:	(oldNodeValue as number)
+	}
 }
 
 function updateKey(
-  rule: RuleName,
-  oldValue: PublicodesExpression,
-  situation: Situation<RuleName>,
-  ruleToMigrate: RuleName | undefined,
+	rule: RuleName,
+	oldValue: PublicodesExpression | undefined,
+	situation: Situation<RuleName>,
+	ruleToMigrate: RuleName | undefined,
 ): void {
-  if (ruleToMigrate === undefined) {
-    return
-  }
+	if (ruleToMigrate === undefined) {
+		return
+	}
 
-  delete situation[rule]
+	delete situation[rule]
 
-  if (ruleToMigrate !== '') {
-    situation[ruleToMigrate] =
-      typeof oldValue === 'object' ? (oldValue as any)?.valeur : oldValue
-  }
+	if (ruleToMigrate !== '') {
+		situation[ruleToMigrate] =
+			typeof oldValue === 'object' ? (oldValue as any)?.valeur : oldValue
+	}
 }
 
 function updateValue(
-  rule: RuleName,
-  value: string,
-  situation: Situation<RuleName>,
+	rule: RuleName,
+	value: string,
+	situation: Situation<RuleName>,
 ): void {
-  // The value is not a value to migrate and the key has to be deleted
-  if (value === '') {
-    delete situation[rule]
-  } else {
-    // The value is renamed and needs to be migrated
-    situation[rule] =
-      typeof value === 'string' && value !== 'oui' && value !== 'non'
-        ? `'${value}'`
-        : value
-  }
+	// The value is not a value to migrate and the key has to be deleted
+	if (value === '') {
+		delete situation[rule]
+	} else {
+		// The value is renamed and needs to be migrated
+		situation[rule] =
+			typeof value === 'string' && value !== 'oui' && value !== 'non' ?
+				`'${value}'`
+			:	value
+	}
 }
