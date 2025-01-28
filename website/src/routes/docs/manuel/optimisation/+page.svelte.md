@@ -71,12 +71,12 @@ L'optimisation par _constant folding_ est disponible dans le module
 [`constantFolding`](https://publicodes.github.io/tools/functions/optims.constantFolding.html)
 qui prend en paramètre :
 
--   un moteur Publicodes (instancié avec le jeu de règles à optimiser)
--   un prédicat qui prend en paramètre un couple `(nom de la règle, noeud de la
+- un moteur Publicodes (instancié avec le jeu de règles à optimiser)
+- un prédicat qui prend en paramètre un couple `(nom de la règle, noeud de la
 règle)` et retourne `true` si la règle doit être conservée après optimisation
--   un objet de paramètres :
-    -   `isFoldedAttr` : le nom de l'attribut à utiliser pour marquer une règle
-        comme optimisée (par défaut `optimized`)
+- un objet de paramètres :
+    - `isFoldedAttr` : le nom de l'attribut à utiliser pour marquer une règle
+      comme optimisée (par défaut `optimized`)
 
 #### Exemple
 
@@ -104,10 +104,10 @@ const optimizedRules = constantFolding(
 [Nos Gestes Climat](https://nosgestesclimat.fr) utilise cette optimisation pour
 réduire le temps d'instanciation du moteur dans le client :
 
--   voir le [code
-    source](https://github.com/incubateur-ademe/nosgestesclimat/blob/59b02d4576851bd4d7688a52ea3f54e6a0156840/scripts/modelOptim.mjs#L12-L45)
--   voir la [PR](https://github.com/incubateur-ademe/nosgestesclimat/pull/1697)
-    qui a permis de réduire le temps d'instanciation et d'évaluation de plus de
-    50%.
+- voir le [code
+  source](https://github.com/incubateur-ademe/nosgestesclimat/blob/59b02d4576851bd4d7688a52ea3f54e6a0156840/scripts/modelOptim.mjs#L12-L45)
+- voir la [PR](https://github.com/incubateur-ademe/nosgestesclimat/pull/1697)
+  qui a permis de réduire le temps d'instanciation et d'évaluation de plus de
+  50%.
 
 </Callout>

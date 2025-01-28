@@ -15,14 +15,14 @@ Vous pouvez utiliser le package `@publicodes/codemod` pour migrer vos règles ve
 
 Ce codemod effectue les modifications suivantes :
 
--   Supprime les mécanismes `nom` pour les remplacer par `avec`
--   Transforme les `composantes` en `somme`
--   Change la syntaxe du mécanisme `produit` (qui accepte une liste de valeurs, comme `somme`, dorénavant)
--   Transforme les `unités` et retire les espaces entre la barre oblique
--   Supprime le mot clé inutile `avec` dans `inversion numérique`
--   Remplace `recalcul` par `contexte`
--   Uniformisation des saut de lignes dans la déclaration de règles avec `avec`
--   Simplifie l'écriture lorsque la clé `valeur` est utilisée sans autre mécanisme chainé
+- Supprime les mécanismes `nom` pour les remplacer par `avec`
+- Transforme les `composantes` en `somme`
+- Change la syntaxe du mécanisme `produit` (qui accepte une liste de valeurs, comme `somme`, dorénavant)
+- Transforme les `unités` et retire les espaces entre la barre oblique
+- Supprime le mot clé inutile `avec` dans `inversion numérique`
+- Remplace `recalcul` par `contexte`
+- Uniformisation des saut de lignes dans la déclaration de règles avec `avec`
+- Simplifie l'écriture lorsque la clé `valeur` est utilisée sans autre mécanisme chainé
 
 ### Utilisation
 

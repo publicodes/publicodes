@@ -53,8 +53,8 @@ Nous ne proposons pas de bibliothèque de composants graphiques directement inte
 
 Vous devez donc interfacer votre UI avec le moteur Publicodes :
 
--   Pour lire la valeur courante : `engine.evaluate('age')`
--   Pour modifier la valeur suite à une saisie de l'utilisateur : `engine.setSituation({ age: 17 })`
+- Pour lire la valeur courante : `engine.evaluate('age')`
+- Pour modifier la valeur suite à une saisie de l'utilisateur : `engine.setSituation({ age: 17 })`
 
 À l’avenir, il est possible que nous exportions des fonctions utilitaires pour simplifier ce travail d’interfaçage.
 </Callout>

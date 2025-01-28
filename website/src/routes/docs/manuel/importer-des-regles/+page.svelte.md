@@ -47,13 +47,13 @@ importer!:
 
 Avec :
 
--   `depuis` : les informations sur le modèle à importer
-    -   `nom` : le nom du package NPM du modèle à importer
-    -   `source` : le chemin vers le fichier JSON du modèle à importer (optionnel)
-    -   `url` : l'URL vers la documentation du modèle à importer (optionnel)
--   `dans` : le namespace dans lequel importer les règles (optionnel)
--   `les règles` : la liste des règles à importer. Il est possible de spécifier
-    des attributs à écraser pour chaque règle (optionnel)
+- `depuis` : les informations sur le modèle à importer
+    - `nom` : le nom du package NPM du modèle à importer
+    - `source` : le chemin vers le fichier JSON du modèle à importer (optionnel)
+    - `url` : l'URL vers la documentation du modèle à importer (optionnel)
+- `dans` : le namespace dans lequel importer les règles (optionnel)
+- `les règles` : la liste des règles à importer. Il est possible de spécifier
+  des attributs à écraser pour chaque règle (optionnel)
 
 Par défaut, si aucune `source` n'est spécifiée, le modèle est supposé être
 [compilé](./compilation) dans le fichier `<package_name>.model.json` à la racine
@@ -98,17 +98,17 @@ importer!:
 
 ## Liste des modèles publiés
 
--   [`futureco-data`](https://github.com/laem/futureco-data)
-    -   _modèle de [futur.eco](https://futur.eco)._
--   [`@incubateur-ademe/nosgestesclimat`](https://github.com/incubateur-ademe/nosgestesclimat)
-    -   _modèle de [Nos Gestes Climat](https://nosgestesclimat.fr)._
--   [`@incubateur-ademe/publicodes-impact-livraison`](https://github.com/incubateur-ademe/publicodes-impact-livraison)
-    -   _modèle du simulateur Impact Livraison de [Impact
-        CO2](https://impactco2.fr)._
--   [`@incubateur-ademe/publicodes-negaoctet`](https://github.com/incubateur-ademe/publicodes-negaoctet)
-    -   _modèle publicodes de la base de données de
-        [NegaOctet](https://negaoctet.org/en/home/#Donnees) utilisé par [Impact
-        CO2](https://impactco2.fr)._
--   [`@incubateur-ademe/publicodes-commun`](https://github.com/incubateur-ademe/publicodes-commun)
-    -   _ensemble de règles communes utilisées pour l'implémentation des modèles
-        publicodes de l'incubateur de l'ADEME._
+- [`futureco-data`](https://github.com/laem/futureco-data)
+    - _modèle de [futur.eco](https://futur.eco)._
+- [`@incubateur-ademe/nosgestesclimat`](https://github.com/incubateur-ademe/nosgestesclimat)
+    - _modèle de [Nos Gestes Climat](https://nosgestesclimat.fr)._
+- [`@incubateur-ademe/publicodes-impact-livraison`](https://github.com/incubateur-ademe/publicodes-impact-livraison)
+    - _modèle du simulateur Impact Livraison de [Impact
+      CO2](https://impactco2.fr)._
+- [`@incubateur-ademe/publicodes-negaoctet`](https://github.com/incubateur-ademe/publicodes-negaoctet)
+    - _modèle publicodes de la base de données de
+      [NegaOctet](https://negaoctet.org/en/home/#Donnees) utilisé par [Impact
+      CO2](https://impactco2.fr)._
+- [`@incubateur-ademe/publicodes-commun`](https://github.com/incubateur-ademe/publicodes-commun)
+    - _ensemble de règles communes utilisées pour l'implémentation des modèles
+      publicodes de l'incubateur de l'ADEME._

@@ -18,8 +18,8 @@ couleur:
 
 Les possibilités peuvent être :
 
--   **des constantes** : chaines de caractères (comme dans l'exemple ci-dessus) ou nombres (avec ou sans unité)
--   **des références** à des règles
+- **des constantes** : chaines de caractères (comme dans l'exemple ci-dessus) ou nombres (avec ou sans unité)
+- **des références** à des règles
 
 ## Nombres
 
@@ -161,6 +161,6 @@ const rules = new Engine(rules, {
 
 ## Limitations
 
--   **Remplacements** : La fonctionalité `remplace` est inopérante à l'intérieur de `une possibilité`. Autrement dit, si vous remplacez une règle listée dans une possibilité, ce sera la règle originale qui apparaitra dans `getPossibilitiesFor`.
+- **Remplacements** : La fonctionalité `remplace` est inopérante à l'intérieur de `une possibilité`. Autrement dit, si vous remplacez une règle listée dans une possibilité, ce sera la règle originale qui apparaitra dans `getPossibilitiesFor`.
 
--   **Pas de vérification de type statique** : Les erreurs de type (comme des comparaisons avec une valeur non listée dans les possibilités) ne sont pas détectées. En revanche les erreurs d'affectation peuvent être détectée dynamiquement en utilisant le paramètre `checkPossibleValues` (voir ci-dessus).
+- **Pas de vérification de type statique** : Les erreurs de type (comme des comparaisons avec une valeur non listée dans les possibilités) ne sont pas détectées. En revanche les erreurs d'affectation peuvent être détectée dynamiquement en utilisant le paramètre `checkPossibleValues` (voir ci-dessus).
