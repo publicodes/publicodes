@@ -1,11 +1,12 @@
 import { basename } from 'path'
 import {
-  Rule,
-  Logger,
-  ExprAST,
-  reduceAST,
-  ASTNode,
-  PublicodesExpression,
+	Rule,
+	Logger,
+	ExprAST,
+	reduceAST,
+	ASTNode,
+	PublicodesExpression,
+	BinaryOp,
 } from 'publicodes'
 import yaml from 'yaml'
 
@@ -27,7 +28,7 @@ export type RuleName = string
 export const IMPORT_KEYWORD = 'importer!'
 
 export type RuleImportWithOverridenAttrs = {
-  [key: string]: object
+	[key: string]: object
 }
 
 /**
@@ -46,31 +47,31 @@ export type RuleImportWithOverridenAttrs = {
  *      question: Quelle est la valeur de la règle 2 ?
  */
 export type ImportMacro = {
-  depuis: {
-    // The name of the package to import the rules from.
-    nom: string
-    // The path to the file containing the rules to import. If omitted try to
-    // found the file in the `node_modules` folders.
-    source?: string
-    // The URL of the package, used for the documentation.
-    url?: string
-  }
-  // The namespace where to import the rules.
-  dans?: string
-  // List of rules to import from the package.
-  // They could be specified by their name, or by the name and the list of
-  // properties to override or add.
-  'les règles': (RuleName | RuleImportWithOverridenAttrs)[]
+	depuis: {
+		// The name of the package to import the rules from.
+		nom: string
+		// The path to the file containing the rules to import. If omitted try to
+		// found the file in the `node_modules` folders.
+		source?: string
+		// The URL of the package, used for the documentation.
+		url?: string
+	}
+	// The namespace where to import the rules.
+	dans?: string
+	// List of rules to import from the package.
+	// They could be specified by their name, or by the name and the list of
+	// properties to override or add.
+	'les règles': (RuleName | RuleImportWithOverridenAttrs)[]
 }
 
 /**
  * Represents a non-parsed NGC rule.
  */
 export type RawRule =
-  | Omit<Rule, 'nom'>
-  | ImportMacro
-  | PublicodesExpression
-  | null
+	| Omit<Rule, 'nom'>
+	| ImportMacro
+	| PublicodesExpression
+	| null
 
 /**
  * Represents a non-parsed NGC model.
@@ -80,9 +81,9 @@ export type RawRules = Record<RuleName, RawRule>
 function consumeMsg(_: string): void {}
 
 export const disabledLogger: Logger = {
-  log: consumeMsg,
-  warn: consumeMsg,
-  error: consumeMsg,
+	log: consumeMsg,
+	warn: consumeMsg,
+	error: consumeMsg,
 }
 
 /**
@@ -93,18 +94,22 @@ export const disabledLogger: Logger = {
  * @returns The references.
  */
 export function getAllRefsInNode(node: ASTNode): RuleName[] {
-  return reduceAST<RuleName[]>(
-    (refs: RuleName[], node: ASTNode) => {
-      if (node === undefined) {
-        return refs
-      }
-      if (node.nodeKind === 'reference' && !refs.includes(node.dottedName)) {
-        refs.push(node.dottedName)
-      }
-    },
-    [],
-    node,
-  )
+	return reduceAST<RuleName[]>(
+		(refs: RuleName[], node: ASTNode) => {
+			if (node === undefined) {
+				return refs
+			}
+			if (
+				node.nodeKind === 'reference' &&
+				node.dottedName &&
+				!refs.includes(node.dottedName)
+			) {
+				refs.push(node.dottedName)
+			}
+		},
+		[],
+		node,
+	)
 }
 
 const binaryOps = ['+', '-', '*', '/', '>', '<', '>=', '<=', '=', '!=']
@@ -118,25 +123,23 @@ const binaryOps = ['+', '-', '*', '/', '>', '<', '>=', '<=', '=', '!=']
  * @returns The parsed expression with the function applied to each node.
  */
 export function mapParsedExprAST(
-  parsedExpr: ExprAST,
-  fn: (node: ExprAST) => ExprAST,
+	parsedExpr: ExprAST,
+	fn: (node: ExprAST) => ExprAST,
 ): ExprAST {
-  if ('variable' in parsedExpr || 'constant' in parsedExpr) {
-    return fn(parsedExpr)
-  }
-  if (binaryOps.some((op) => op in parsedExpr)) {
-    for (const key of Object.keys(parsedExpr)) {
-      // @ts-ignore
-      // FIXME: needs to export BinaryOp from publicodes
-      return fn({
-        [key]: [
-          mapParsedExprAST(parsedExpr[key][0], fn),
-          mapParsedExprAST(parsedExpr[key][1], fn),
-        ],
-      })
-    }
-  }
-  return parsedExpr
+	if ('variable' in parsedExpr || 'constant' in parsedExpr) {
+		return fn(parsedExpr)
+	}
+	if (binaryOps.some((op) => op in parsedExpr)) {
+		for (const key of Object.keys(parsedExpr) as (keyof BinaryOp)[]) {
+			return fn({
+				[key]: [
+					mapParsedExprAST(parsedExpr[key][0], fn),
+					mapParsedExprAST(parsedExpr[key][1], fn),
+				],
+			} as BinaryOp)
+		}
+	}
+	return parsedExpr
 }
 
 /**
@@ -160,30 +163,30 @@ export function mapParsedExprAST(
  * ```
  */
 export function serializeParsedExprAST(
-  parsedExpr: ExprAST,
-  needsParens = false,
-): string {
-  if ('variable' in parsedExpr) {
-    return parsedExpr.variable
-  }
-  if ('constant' in parsedExpr) {
-    return (
-      parsedExpr.constant.nodeValue +
-      ('unité' in parsedExpr ? parsedExpr.unité : '')
-    )
-  }
-  if (binaryOps.some((op) => op in parsedExpr)) {
-    for (const key of Object.keys(parsedExpr)) {
-      return (
-        (needsParens ? '(' : '') +
-        `${serializeParsedExprAST(
-          parsedExpr[key][0],
-          true,
-        )} ${key} ${serializeParsedExprAST(parsedExpr[key][1], true)}` +
-        (needsParens ? ')' : '')
-      )
-    }
-  }
+	parsedExpr: ExprAST,
+	needsParens = false,
+): string | undefined {
+	if ('variable' in parsedExpr) {
+		return parsedExpr.variable
+	}
+	if ('constant' in parsedExpr) {
+		return (
+			parsedExpr.constant.nodeValue +
+			('unité' in parsedExpr ? (parsedExpr.unité ?? '') : '')
+		)
+	}
+	if (binaryOps.some((op) => op in parsedExpr)) {
+		for (const key of Object.keys(parsedExpr) as (keyof BinaryOp)[]) {
+			return (
+				(needsParens ? '(' : '') +
+				`${serializeParsedExprAST(
+					parsedExpr[key][0],
+					true,
+				)} ${key} ${serializeParsedExprAST(parsedExpr[key][1], true)}` +
+				(needsParens ? ')' : '')
+			)
+		}
+	}
 }
 
 /**
@@ -208,32 +211,33 @@ export function serializeParsedExprAST(
  *  ```
  */
 export function substituteInParsedExpr(
-  parsedExpr: ExprAST,
-  variableName: RuleName,
-  constValue: string,
+	parsedExpr: ExprAST,
+	variableName: RuleName,
+	constValue: string,
 ): ExprAST {
-  const { type, nodeValue } = !isNaN(Number(constValue))
-    ? { type: 'number', nodeValue: Number.parseFloat(constValue) }
-    : { type: 'string', nodeValue: constValue }
+	const { type, nodeValue } =
+		!isNaN(Number(constValue)) ?
+			{ type: 'number', nodeValue: Number.parseFloat(constValue) }
+		:	{ type: 'string', nodeValue: constValue }
 
-  // @ts-ignore
-  // FIXME: I don't know why this is not working
-  return mapParsedExprAST(parsedExpr, (node: ExprAST) => {
-    if ('variable' in node && node?.variable === variableName) {
-      return { constant: { type, nodeValue } }
-    }
-    return node
-  })
+	// @ts-ignore
+	// FIXME: I don't know why this is not working
+	return mapParsedExprAST(parsedExpr, (node: ExprAST) => {
+		if ('variable' in node && node?.variable === variableName) {
+			return { constant: { type, nodeValue } }
+		}
+		return node
+	})
 }
 
 export function getDoubleDefError(
-  filePath: string,
-  name: string,
-  firstDef: RawRule,
-  secondDef: RawRule,
+	filePath: string,
+	name: string,
+	firstDef: RawRule,
+	secondDef: RawRule,
 ): Error {
-  return new Error(
-    `[${basename(filePath)}] La règle '${name}' est déjà définie
+	return new Error(
+		`[${basename(filePath)}] La règle '${name}' est déjà définie
 
 Essaie de remplacer :
 
@@ -242,7 +246,7 @@ ${yaml.stringify(firstDef, { indent: 2 })}
 Avec :
 
 ${yaml.stringify(secondDef, { indent: 2 })}`,
-  )
+	)
 }
 
 /**
@@ -253,15 +257,15 @@ ${yaml.stringify(secondDef, { indent: 2 })}`,
  * @returns The value without quotes if it is a string, null otherwise.
  */
 export function getValueWithoutQuotes(value: PublicodesExpression) {
-  if (
-    typeof value !== 'string' ||
-    !value.startsWith("'") ||
-    value === 'oui' ||
-    value === 'non'
-  ) {
-    return null
-  }
-  return value.slice(1, -1)
+	if (
+		typeof value !== 'string' ||
+		!value.startsWith("'") ||
+		value === 'oui' ||
+		value === 'non'
+	) {
+		return null
+	}
+	return value.slice(1, -1)
 }
 
 /** Used by the CLI */
