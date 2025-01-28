@@ -6,17 +6,17 @@ import fs from 'fs'
 import path from 'path'
 
 export function callWithEngine<R>(fn: (engine: Engine) => R, rawRules: any): R {
-  const engine = new Engine(rawRules, {
-    logger: disabledLogger,
-    strict: { noOrphanRule: false },
-  })
-  return fn(engine)
+	const engine = new Engine(rawRules, {
+		logger: disabledLogger,
+		strict: { noOrphanRule: false },
+	})
+	return fn(engine)
 }
 
 export function callWithParsedRules<R>(
-  fn: (rules: ParsedRules<RuleName>) => R,
-  rawRules: any,
+	fn: (rules: ParsedRules<RuleName>) => R,
+	rawRules: any,
 ): R {
-  const engine = new Engine(rawRules)
-  return fn(engine.getParsedRules())
+	const engine = new Engine(rawRules)
+	return fn(engine.getParsedRules())
 }

@@ -126,7 +126,7 @@ function getDependencies(
 		explanation: { ...rule.explanation, parents: [] },
 	})
 
-	let deps = Array.from(refsIn ?? []).filter((depRuleName) => {
+	const deps = Array.from(refsIn ?? []).filter((depRuleName) => {
 		return (
 			!depRuleName.endsWith('$SITUATION') &&
 			!acc.find(([accRuleName, _]) => accRuleName === depRuleName)
@@ -251,7 +251,7 @@ export function resolveImports(
 	logger: Logger,
 	verbose = false,
 ): { completeRules: RawRules; neededNamespaces: Set<string> } {
-	let neededNamespaces = new Set<string>()
+	const neededNamespaces = new Set<string>()
 	const resolvedRules = Object.entries(rules).reduce(
 		(acc, [name, value]) => {
 			if (name === IMPORT_KEYWORD) {
@@ -334,7 +334,7 @@ La règle '${ruleName}' n'existe pas dans '${importMacro.depuis.nom}'.
 					}
 				})
 			} else {
-				let doubleDefinition = accFind(acc, name)
+				const doubleDefinition = accFind(acc, name)
 				if (doubleDefinition) {
 					throw getDoubleDefError(filePath, name, doubleDefinition[1], value)
 				}

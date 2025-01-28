@@ -150,7 +150,7 @@ function serializeASTNode(node: ASTNode): SerializedRule {
 					const serializedValeur = serializeASTNode(node.explanation.valeur)
 
 					if (node.replacements.length > 0) {
-						let serializedRemplace: RawRule = {
+						const serializedRemplace: RawRule = {
 							'références à': serializeValue(
 								node.replacements[0].replacedReference,
 							),

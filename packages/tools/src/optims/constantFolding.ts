@@ -434,7 +434,7 @@ export function constantFolding(
 	engine: Engine,
 	params?: FoldingParams,
 ): ParsedRules<RuleName> {
-	let ctx = initFoldingCtx(engine, params)
+	const ctx = initFoldingCtx(engine, params)
 
 	let nbRules = Object.keys(ctx.parsedRules).length
 	let nbRulesBefore = undefined

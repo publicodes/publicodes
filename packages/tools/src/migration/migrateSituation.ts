@@ -57,7 +57,7 @@ export function migrateSituation(
 	situation: Situation<RuleName>,
 	instructions: Migration,
 ): Situation<RuleName> {
-	let newSituation = { ...situation }
+	const newSituation = { ...situation }
 	const currentRules = Object.keys(situation)
 	const valueKeysToMigrate = Object.keys(instructions.valuesToMigrate)
 
