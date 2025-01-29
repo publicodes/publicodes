@@ -7,13 +7,13 @@ import * as p from '@clack/prompts'
 import chalk from 'chalk'
 import { runAsyncWithSpinner } from './utils/cli'
 import tailwindcss from '@tailwindcss/vite'
-import { Situation } from 'publicodes'
+import { RawPublicodes, Situation } from 'publicodes'
 import { parse } from 'yaml'
 import { readFile } from 'fs/promises'
 import { sync } from 'glob'
 import { networkInterfaces } from 'os'
 
-type Options = {
+export type DevServerOptions = {
 	host?: string
 	port?: number
 	open?: boolean
@@ -32,7 +32,9 @@ async function extractSituations(files: string[]): Promise<TestSituation> {
 
 	const paths = sync(normalizeSourcePaths(files))
 	for (const filePath of paths) {
-		const content = parse(await readFile(filePath, 'utf-8'))
+		const content = parse(
+			await readFile(filePath, 'utf-8'),
+		) as RawPublicodes<string>
 
 		// For each rule in the file
 		for (const [ruleName, rule] of Object.entries(content)) {
@@ -49,7 +51,7 @@ export default async function createDevServer(
 	modelFiles: string[],
 	situationFiles: string[],
 	quickDocPath: string,
-	options: Options = {},
+	options: DevServerOptions = {},
 ) {
 	let currentRules: RawRules = {}
 	let currentSituations: TestSituation = {}
@@ -57,7 +59,7 @@ export default async function createDevServer(
 	const vite = await runAsyncWithSpinner(
 		'Starting Publicodes doc server...',
 		'Server ready',
-		async (spinner) => {
+		async () => {
 			const server = await createServer({
 				plugins: [
 					{
@@ -160,7 +162,7 @@ export default async function createDevServer(
 		ignoreInitial: false,
 	})
 
-	situationsWatcher.on('all', async (event, path) => {
+	async function watchSituationsFiles(event: string, path: string) {
 		if (event === 'add' || event === 'change') {
 			const timestamp = new Date().toLocaleTimeString()
 
@@ -195,19 +197,27 @@ export default async function createDevServer(
 				)
 			}
 		}
+	}
+
+	situationsWatcher.on('all', (event, path) => {
+		void watchSituationsFiles(event, path)
 	})
 
 	// Start server
 	await vite.listen()
 	const protocol = 'http'
-	let { host, port } = vite.config.server
+	let { host } = vite.config.server
+	const { port } = vite.config.server
 	const localUrl = `${protocol}://localhost:${port}`
 
 	if (host === '0.0.0.0') {
-		// prettier-ignore
-		const ips = Object.values(networkInterfaces()).reduce((r, list) => r.concat(list.reduce((rr, i) => rr.concat(i.family==='IPv4' && !i.internal && i.address || []), [])), [])
-		if (host === '0.0.0.0' && ips.length > 0) {
-			host = ips[0] as unknown as string
+		// One-liner to get the first network IP address
+		const ip = Object.values(networkInterfaces()).find((list) =>
+			list?.find((i) => i.family === 'IPv4' && !i.internal && i.address),
+		)
+
+		if (host === '0.0.0.0' && typeof ip === 'string') {
+			host = ip
 		}
 	}
 
@@ -221,7 +231,7 @@ export default async function createDevServer(
 		.success(`${chalk.dim(timestamp)} ${chalk.green('✓')} publicodes quick doc server running at:
 
   ${chalk.bold('Local:')}   ${chalk.cyan(localUrl)}
-  ${(!host ? chalk.dim : (x) => x)(chalk.bold('Network:'))} ${networkUrl}
+  ${(!host ? chalk.dim : <T>(x: T) => x)(chalk.bold('Network:'))} ${networkUrl}
 `)
 
 	if (options.open) {

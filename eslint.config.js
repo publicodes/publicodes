@@ -9,11 +9,10 @@ export default tseslint.config(
 		// Allow ESLint to understand TypeScript project references
 		languageOptions: {
 			parserOptions: {
-				// projectService: true,
-				projectService: {
-					allowDefaultProject: ['packages/rest-api/example.ts'],
-					defaultProject: 'tsconfig.json',
-				},
+				projectService: true,
+				// projectService: {
+				// 	defaultProject: 'tsconfig.json',
+				// },
 				tsconfigRootDir: import.meta.dirname,
 			},
 		},

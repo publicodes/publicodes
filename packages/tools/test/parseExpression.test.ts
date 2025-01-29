@@ -6,8 +6,7 @@ describe('substituteInParsedExpr', () => {
 		const parsedExpr = {
 			constant: { type: 'number', nodeValue: 10 },
 		}
-		// @ts-ignore
-		// FIXME: should export all sub types of ExprAST
+		// @ts-expect-error FIXME: should export all sub types of ExprAST
 		expect(substituteInParsedExpr(parsedExpr, 'A', '10')).toStrictEqual(
 			parsedExpr,
 		)
@@ -20,8 +19,7 @@ describe('substituteInParsedExpr', () => {
 		const expected = {
 			'+': [{ constant: { type: 'number', nodeValue: 10 } }, { variable: 'B' }],
 		}
-		// @ts-ignore
-		// FIXME: should export all sub types of ExprAST
+		// @ts-expect-error should export all sub types of ExprAST
 		expect(substituteInParsedExpr(parsedExpr, 'A', '10')).toStrictEqual(
 			expected,
 		)
@@ -35,8 +33,7 @@ describe('substituteInParsedExpr', () => {
 			'+': [{ constant: { type: 'number', nodeValue: 10 } }, { variable: 'B' }],
 		}
 		expect(
-			// @ts-ignore
-			// FIXME: should export all sub types of ExprAST
+			// @ts-expect-error should export all sub types of ExprAST
 			substituteInParsedExpr(parsedExpr, 'A . B . C . D', '10'),
 		).toStrictEqual(expected)
 	})

@@ -7,7 +7,7 @@ const cli = new CLIExecutor()
 
 describe('publicodes compile', () => {
 	it('should compile with no arguments/flags', async () => {
-		runInDir('tmp', async (cwd) => {
+		await runInDir('tmp', async (cwd) => {
 			const { stdout } = await cli.execCommand('compile')
 			expect(stdout).toContain('Compilation done.')
 			expect(fs.existsSync('publicodes-build')).toBe(true)

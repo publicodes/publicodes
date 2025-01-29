@@ -1,4 +1,10 @@
-import Engine, { Logger, Rule, RuleNode, utils } from 'publicodes'
+import Engine, {
+	Logger,
+	RawPublicodes,
+	Rule,
+	RuleNode,
+	utils,
+} from 'publicodes'
 import {
 	RuleName,
 	getAllRefsInNode,
@@ -80,20 +86,11 @@ importer!:
 		:	getPackageModelPath(packageName)
 
 	if (!enginesCache[modelPath]) {
+		let model
 		try {
-			const model = JSON.parse(readFileSync(modelPath, 'utf-8'))
-			const engine = new Engine(model, {
-				logger: {
-					log: (_) => {},
-					warn: (_) => {},
-					error: (s) => logger.error(s),
-				},
-			})
-
-			if (verbose) {
-				logger.log(`📦 ${packageName} loaded`)
-			}
-			enginesCache[modelPath] = engine
+			model = JSON.parse(
+				readFileSync(modelPath, 'utf-8'),
+			) as RawPublicodes<string>
 		} catch (e) {
 			throw new Error(`[ Erreur dans la macro 'importer!' ]
 Le package '${packageName}' n'a pas pu être trouvé. (Le fichier '${modelPath}' est introuvable).
@@ -108,8 +105,22 @@ importer!:
   depuis:
     nom: package-name
     source: ../custom-package/path/package-name.model.json
-      `)
+
+[ Erreur ]
+${e instanceof Error ? e.message : 'unknown error'}`)
 		}
+		const engine = new Engine(model, {
+			logger: {
+				log: () => {},
+				warn: () => {},
+				error: (s) => logger.error(s),
+			},
+		})
+
+		if (verbose) {
+			logger.log(`📦 ${packageName} loaded`)
+		}
+		enginesCache[modelPath] = engine
 	}
 
 	return enginesCache[modelPath]
@@ -129,7 +140,7 @@ function getDependencies(
 	const deps = Array.from(refsIn ?? []).filter((depRuleName) => {
 		return (
 			!depRuleName.endsWith('$SITUATION') &&
-			!acc.find(([accRuleName, _]) => accRuleName === depRuleName)
+			!acc.find(([accRuleName]) => accRuleName === depRuleName)
 		)
 	})
 
@@ -138,7 +149,7 @@ function getDependencies(
 	}
 
 	// FIXME:
-	// @ts-ignore
+	// @ts-expect-error - The type of the rawNode is not the same as the RuleNode type.
 	acc.push(...deps.map((depName) => [depName, engine.getRule(depName).rawNode]))
 	deps.forEach((depName) => {
 		acc = getDependencies(engine, engine.getRule(depName), acc)
@@ -222,7 +233,7 @@ function accFind(
 	acc: [string, Rule][],
 	ruleName: RuleName,
 ): [string, Rule] | undefined {
-	return acc.find(([accRuleName, _]) => accRuleName === ruleName)
+	return acc.find(([accRuleName]) => accRuleName === ruleName)
 }
 
 function getNamespace({ dans, depuis: { nom } }: ImportMacro): string {
@@ -304,7 +315,7 @@ Supprimez une des deux définitions de la règle '${ruleName}' dans la macro 'im
 
 						acc.push(getUpdatedRule(ruleName, ruleWithOverridenAttributes))
 						const ruleDeps = getDependencies(engine, rule)
-							.filter(([ruleDepName, _]) => {
+							.filter(([ruleDepName]) => {
 								// Avoid to overwrite the updatedRawNode
 								return (
 									!accFind(acc, ruleDepName) &&
@@ -321,8 +332,7 @@ Supprimez une des deux définitions de la règle '${ruleName}' dans la macro 'im
 							.map(([ruleName, ruleNode]) => {
 								return getUpdatedRule(ruleName, ruleNode)
 							})
-						// FIXME:
-						// @ts-ignore
+
 						acc.push(...ruleDeps)
 					} catch (e) {
 						throw new Error(`[ Erreur dans la macro 'importer!' ]
@@ -330,7 +340,10 @@ La règle '${ruleName}' n'existe pas dans '${importMacro.depuis.nom}'.
 
 [ Solution ]
 - Vérifiez que le nom de la règle est correct.
-- Assurez-vous que la règle '${ruleName}' existe dans '${importMacro.depuis.nom}'.`)
+- Assurez-vous que la règle '${ruleName}' existe dans '${importMacro.depuis.nom}'.
+
+[ Erreur ]
+${e instanceof Error ? e.message : 'unknown error'}`)
 					}
 				})
 			} else {

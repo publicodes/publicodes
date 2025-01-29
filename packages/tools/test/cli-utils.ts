@@ -50,6 +50,7 @@ export class CLIExecutor {
 					resolve({ code: 0, stdout })
 				} catch (error) {
 					const err = error as ExecError
+					// eslint-disable-next-line no-console
 					console.log(error)
 
 					resolve({
@@ -72,7 +73,7 @@ export class CLIExecutor {
 const TMP_DIR = fs.realpathSync(os.tmpdir())
 
 export async function runInDir(
-	dir: 'tmp' | string,
+	dir: string, // 'tmp' | string
 	fn: (cwd: string) => Promise<void>,
 ): Promise<void> {
 	const baseCwd = process.cwd()

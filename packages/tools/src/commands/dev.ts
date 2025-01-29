@@ -1,7 +1,7 @@
 import * as p from '@clack/prompts'
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import createDevServer from '../create-dev-server'
+import createDevServer, { DevServerOptions } from '../create-dev-server'
 
 export default class Compile extends Command {
 	static override args = {
@@ -67,21 +67,23 @@ It will open a browser window with the documentation. The server will automatica
 		const { argv, flags } = await this.parse(Compile)
 
 		p.intro(chalk.bgHex('#2975d1')(' publicodes dev '))
-		const filesToCompile: string[] =
+		const filesToCompile =
 			argv.length === 0 ?
 				// TODO: test with production package
+
 				(this.config.pjson?.publicodes?.files ?? ['src/'])
-			:	argv
+			:	(argv as string[])
 
 		const situationFiles: string[] =
 			!flags.situations?.length ?
 				// TODO: test with production package
+
 				(this.config.pjson?.publicodes?.test ?? ['test/'])
 			:	flags.situations
 
 		// quickDoc is in the current package (@publicodes/tools) under the folder /quick-doc
 
-		const quickDocPath = import.meta.url
+		const quickDocPath = __dirname
 			.replace('file://', '')
 			.replace('dist/commands/dev.js', 'quick-doc')
 
@@ -89,11 +91,11 @@ It will open a browser window with the documentation. The server will automatica
 			filesToCompile,
 			situationFiles,
 			quickDocPath,
-			flags as any,
+			flags as DevServerOptions,
 		)
 		// Handle process termination
 		let isShuttingDown = false
-		const cleanup = async () => {
+		const cleanup = async (): Promise<void> => {
 			if (isShuttingDown) return
 			isShuttingDown = true
 			p.outro(chalk.bgHex('#2975d1')(' shutting down publicodes dev server '))
@@ -101,9 +103,11 @@ It will open a browser window with the documentation. The server will automatica
 			process.exit(0)
 		}
 
-		process.on('SIGINT', cleanup)
-		process.on('SIGTERM', cleanup)
-
-		await server
+		process.on('SIGINT', () => {
+			void cleanup()
+		})
+		process.on('SIGTERM', () => {
+			void cleanup()
+		})
 	}
 }

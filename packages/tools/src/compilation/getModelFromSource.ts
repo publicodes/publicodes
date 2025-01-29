@@ -54,7 +54,7 @@ export function getModelFromSource(
 		ignore: opts?.ignore,
 	}).reduce(
 		({ jsonModel, namespaces }, filePath: string) => {
-			const rules: RawRules = yaml.parse(readFileSync(filePath, 'utf-8'))
+			const rules = yaml.parse(readFileSync(filePath, 'utf-8')) as RawRules
 			if (rules == null) {
 				logger.warn(`⚠️ ${filePath} is empty, skipping...`)
 				return { jsonModel, namespaces }
@@ -90,7 +90,10 @@ export function normalizeSourcePaths(sourcePaths: string | string[]): string[] {
 				if (statSync(pathOrGlob).isDirectory()) {
 					return pathOrGlob + '/**/*.publicodes'
 				}
-			} catch (e) {}
+			} catch (e) {
+				// eslint-disable-next-line no-console
+				console.error(e)
+			}
 			return pathOrGlob
 		},
 	)

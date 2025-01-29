@@ -21,7 +21,7 @@ export function resolveRuleTypes<RuleName extends string = string>(
 	engine: Engine<RuleName>,
 ): Record<string, RuleType> {
 	const parsedRules = engine.getParsedRules()
-	const ruleTypes: Record<RuleName, RuleType> = {} as any
+	const ruleTypes = {} as Record<RuleName, RuleType>
 
 	for (const ruleName in parsedRules) {
 		const rule = parsedRules[ruleName]

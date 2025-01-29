@@ -72,11 +72,12 @@ the package.json file under the \`publicodes\` key. For example:
 		const { argv, flags } = await this.parse(Compile)
 
 		p.intro(chalk.bgHex('#2975d1')(' publicodes compile '))
-		const filesToCompile: string[] =
+		const filesToCompile =
 			argv.length === 0 ?
 				// TODO: test with production package
+
 				(this.config.pjson?.publicodes?.files ?? ['src/'])
-			:	argv
+			:	(argv as string[])
 
 		const outputDir = path.resolve(
 			flags.output ??
@@ -243,7 +244,7 @@ async function generateBaseFiles(
 	outputDir: string,
 	pkgName: string,
 ): Promise<void> {
-	return runWithSpinner('Emitting files', 'Files emitted.', async (spinner) => {
+	return runWithSpinner('Emitting files', 'Files emitted.', (spinner) => {
 		try {
 			// Extract package name without scope
 			const basePkgName = pkgName.replace(/@.*\//, '')

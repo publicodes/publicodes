@@ -78,7 +78,7 @@ export type RawRule =
  */
 export type RawRules = Record<RuleName, RawRule>
 
-function consumeMsg(_: string): void {}
+function consumeMsg(): void {}
 
 export const disabledLogger: Logger = {
 	log: consumeMsg,
@@ -112,7 +112,7 @@ export function getAllRefsInNode(node: ASTNode): RuleName[] {
 	)
 }
 
-const binaryOps = ['+', '-', '*', '/', '>', '<', '>=', '<=', '=', '!=']
+const binaryOps = ['+', '-', '*', '/', '>', '<', '>=', '<=', '=', '!='] as const
 
 /**
  * Map a parsed expression into another parsed expression.
@@ -182,6 +182,7 @@ export function serializeParsedExprAST(
 				`${serializeParsedExprAST(
 					parsedExpr[key][0],
 					true,
+					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 				)} ${key} ${serializeParsedExprAST(parsedExpr[key][1], true)}` +
 				(needsParens ? ')' : '')
 			)
@@ -220,8 +221,7 @@ export function substituteInParsedExpr(
 			{ type: 'number', nodeValue: Number.parseFloat(constValue) }
 		:	{ type: 'string', nodeValue: constValue }
 
-	// @ts-ignore
-	// FIXME: I don't know why this is not working
+	// @ts-expect-error FIXME: I don't know why this is not working
 	return mapParsedExprAST(parsedExpr, (node: ExprAST) => {
 		if ('variable' in node && node?.variable === variableName) {
 			return { constant: { type, nodeValue } }

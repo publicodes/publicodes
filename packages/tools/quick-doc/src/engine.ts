@@ -1,4 +1,6 @@
 import Engine from 'publicodes'
+import type { RawPublicodes } from 'publicodes'
+declare const __INJECTED_RULES__: RawPublicodes<string>
 
 // Create a custom event for engine updates
 const ENGINE_UPDATED = 'engine-updated'
@@ -18,8 +20,10 @@ export let engine = new Engine()
 try {
 	engine = new Engine(__INJECTED_RULES__, { logger })
 } catch (e) {
-	error = [e.message]
-	engineUpdate.dispatchEvent(new Event(ENGINE_UPDATED))
+	if (e instanceof Error) {
+		error = [e.message]
+		engineUpdate.dispatchEvent(new Event(ENGINE_UPDATED))
+	}
 }
 
 // Helper to subscribe to engine updates
@@ -34,14 +38,16 @@ function clearLogs() {
 }
 
 if (import.meta.hot) {
-	import.meta.hot.on('rules-updated', (newRules) => {
+	import.meta.hot.on('rules-updated', (newRules: RawPublicodes<string>) => {
 		const previousEngine = engine
 		clearLogs()
 		try {
 			engine = new Engine(newRules, { logger })
 			engine.setSituation(previousEngine.getSituation())
 		} catch (e) {
-			error = [e.message]
+			if (e instanceof Error) {
+				error = [e.message]
+			}
 		}
 		// Dispatch event to notify subscribers
 		engineUpdate.dispatchEvent(new Event(ENGINE_UPDATED))

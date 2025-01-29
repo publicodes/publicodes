@@ -107,6 +107,7 @@ function handleSpecialCases(
 
 	// Special case : wrong value format, legacy from previous publicodes version
 	// handle the case where valeur is a string "2.33"
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
 	const oldValeur = (oldValue as any)?.valeur
 	if (oldValeur !== undefined) {
 		situation[rule] =
@@ -116,6 +117,7 @@ function handleSpecialCases(
 	}
 	// Special case : other wrong value format, legacy from previous publicodes version
 	// handle the case where nodeValue is a string "2.33"
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
 	const oldNodeValue = (oldValue as any)?.nodeValue
 	if (oldNodeValue !== undefined) {
 		situation[rule] =
@@ -138,7 +140,9 @@ function updateKey(
 	delete situation[rule]
 
 	if (ruleToMigrate !== '') {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		situation[ruleToMigrate] =
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
 			typeof oldValue === 'object' ? (oldValue as any)?.valeur : oldValue
 	}
 }

@@ -63,7 +63,8 @@ export const basePackageJson: PackageJson = {
 
 export function readPackageJson(): PackageJson | undefined {
 	try {
-		return JSON.parse(fs.readFileSync('package.json', 'utf-8'))
+		return JSON.parse(fs.readFileSync('package.json', 'utf-8')) as PackageJson
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (e) {
 		return undefined
 	}
@@ -74,7 +75,8 @@ function getLastVersion(pkg: string): string {
 		return execSync(`npm show ${pkg} version`, {
 			encoding: 'utf-8',
 		}).trim()
-	} catch (error) {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	} catch (e) {
 		return 'latest'
 	}
 }

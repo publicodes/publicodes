@@ -108,7 +108,7 @@ function initFoldingCtx(
 				isNullable(evaluation)
 			) {
 				unfoldableRules.add(ruleName)
-				ruleNode.explanation.valeur.explanation.contexte.forEach(([ref, _]) => {
+				ruleNode.explanation.valeur.explanation.contexte.forEach(([ref]) => {
 					if (ref.dottedName) {
 						unfoldableRules.add(ref.dottedName)
 					}
@@ -200,7 +200,7 @@ function searchAndReplaceConstantValueInParentRefs(
 
 			if (!ctx.params.toAvoid?.(parentRule)) {
 				const newRule = traverseASTNode(
-					transformAST((node, _) => {
+					transformAST((node) => {
 						if (node.nodeKind === 'reference' && node.dottedName === ruleName) {
 							return constantNode
 						}
@@ -300,7 +300,7 @@ function replaceRuleWithEvaluatedNodeValue(
 	}
 
 	rule.explanation.valeur = traverseASTNode(
-		transformAST((node, _) => {
+		transformAST((node) => {
 			if (node.nodeKind === 'condition') {
 				/* we found the first condition, which wrapped the rule in the form of:
 				 *
@@ -320,26 +320,28 @@ function replaceRuleWithEvaluatedNodeValue(
 }
 
 function isNullable(node: ASTNode): boolean {
-	// @ts-ignore
+	//@ts-expect-error FIXME:
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 	if (node?.explanation?.nullableParent !== undefined) {
 		return true
 	}
 
 	return reduceAST(
-		// @ts-ignore
 		(_, node) => {
 			if (!node) {
 				return false
 			}
 
-			//@ts-ignore
+			//@ts-expect-error FIXME:
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			if (node?.explanation?.nullableParent !== undefined) {
 				return true
 			}
 		},
 		false,
 		// We expect a reference node here
-		// @ts-ignore
+		// @ts-expect-error FIXME:
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
 		node?.explanation?.valeur,
 	)
 }

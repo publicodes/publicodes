@@ -240,6 +240,7 @@ function askPackageManager(): Promise<PackageManager> {
 		try {
 			execSync(`${cmd} -v`, { stdio: 'ignore' })
 			return true
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (error) {
 			return false
 		}
@@ -334,7 +335,10 @@ async function generateBaseFiles(
 					p.log.warn(
 						`Could not initialize a git repository (make sure ${chalk.bold.italic(
 							'git',
-						)} is installed)`,
+						)} is installed)
+						
+						Error: ${error instanceof Error ? error.message : ''}
+						`,
 					)
 				}
 				fs.writeFileSync(

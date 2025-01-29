@@ -1,11 +1,11 @@
-import { RuleName, disabledLogger } from '../src/commons'
+import type { ParsedRules, RawPublicodes } from 'publicodes'
 import Engine from 'publicodes'
-import type { ParsedRules } from 'publicodes'
-import { ChildProcess, exec } from 'child_process'
-import fs from 'fs'
-import path from 'path'
+import { RuleName, disabledLogger } from '../src/commons'
 
-export function callWithEngine<R>(fn: (engine: Engine) => R, rawRules: any): R {
+export function callWithEngine<R>(
+	fn: (engine: Engine) => R,
+	rawRules: RawPublicodes<string>,
+): R {
 	const engine = new Engine(rawRules, {
 		logger: disabledLogger,
 		strict: { noOrphanRule: false },
@@ -15,7 +15,7 @@ export function callWithEngine<R>(fn: (engine: Engine) => R, rawRules: any): R {
 
 export function callWithParsedRules<R>(
 	fn: (rules: ParsedRules<RuleName>) => R,
-	rawRules: any,
+	rawRules: RawPublicodes<string>,
 ): R {
 	const engine = new Engine(rawRules)
 	return fn(engine.getParsedRules())

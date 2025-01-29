@@ -40,13 +40,15 @@ export function runWithSpinner<T>(
 	fn: (spinner: Spinner) => T,
 ): Promise<T> {
 	return runAsyncWithSpinner(startMsg, stopMsg, (s) => {
-		return new Promise(async (resolve, reject) => {
+		return new Promise((resolve, reject) => {
 			try {
 				const res = fn(s)
-				await setTimeout(1)
+				setTimeout(1).then(() => resolve(res), reject)
 				resolve(res)
 			} catch (error) {
-				reject(error)
+				if (error instanceof Error) {
+					reject(error)
+				}
 			}
 		})
 	})
@@ -68,7 +70,7 @@ export async function runAsyncWithSpinner<T>(
 	return res
 }
 
-export function spawnAsync(command, ...args): Promise<void> {
+export function spawnAsync(command: string, ...args: string[]): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const child = spawn(command, args, { stdio: 'ignore' })
 
@@ -78,7 +80,7 @@ export function spawnAsync(command, ...args): Promise<void> {
 			if (code === 0) {
 				resolve()
 			} else {
-				reject(`Command "${command}" failed with code ${code}`)
+				reject(new Error(`Command "${command}" failed with code ${code}`))
 			}
 		})
 	})

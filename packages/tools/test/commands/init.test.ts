@@ -9,7 +9,7 @@ const cli = new CLIExecutor()
 
 describe('publicodes init', () => {
 	it('should update existing package.json', async () => {
-		runInDir('tmp', async (cwd) => {
+		await runInDir('tmp', async (cwd) => {
 			execSync('yarn init -y')
 
 			const { stdout } = await cli.execCommand('init -y -p yarn')
@@ -18,13 +18,15 @@ describe('publicodes init', () => {
 			expect(stdout).toContain('Files generated')
 			expect(stdout).toContain('New to Publicodes?')
 
-			const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf-8'))
+			const packageJson = JSON.parse(
+				fs.readFileSync('package.json', 'utf-8'),
+			) as PackageJson
 			expect(packageJson).toMatchObject<PackageJson>(
-				getExpectedBasePackageJson(cwd, packageJson),
+				getExpectedBasePackageJson(cwd),
 			)
 
 			expect(
-				packageJson.devDependencies['@publicodes/tools'],
+				packageJson.devDependencies?.['@publicodes/tools'],
 			).not.toBeUndefined()
 
 			expect(fs.existsSync('node_modules')).toBe(true)
@@ -36,7 +38,7 @@ describe('publicodes init', () => {
 	})
 
 	it('should update existing package.json but no install', async () => {
-		runInDir('tmp', async (cwd) => {
+		await runInDir('tmp', async (cwd) => {
 			execSync('yarn init -y')
 
 			const { stdout } = await cli.execCommand('init -y --no-install -p yarn')
@@ -44,12 +46,14 @@ describe('publicodes init', () => {
 			expect(stdout).toContain('Files generated')
 			expect(stdout).toContain('New to Publicodes?')
 
-			const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf-8'))
+			const packageJson = JSON.parse(
+				fs.readFileSync('package.json', 'utf-8'),
+			) as PackageJson
 			expect(packageJson).toMatchObject<PackageJson>(
-				getExpectedBasePackageJson(cwd, packageJson),
+				getExpectedBasePackageJson(cwd),
 			)
 			expect(
-				packageJson.devDependencies['@publicodes/tools'],
+				packageJson.devDependencies?.['@publicodes/tools'],
 			).not.toBeUndefined()
 
 			expect(fs.existsSync('node_modules')).toBe(false)
@@ -60,10 +64,7 @@ describe('publicodes init', () => {
 	})
 })
 
-function getExpectedBasePackageJson(
-	cwd: string,
-	packageJson: PackageJson,
-): PackageJson {
+function getExpectedBasePackageJson(cwd: string): PackageJson {
 	return {
 		name: path.basename(cwd),
 		type: 'module',

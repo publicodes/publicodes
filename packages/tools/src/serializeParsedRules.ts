@@ -76,6 +76,7 @@ function serializeValue(node: ASTNode, needParens = false): SerializedRule {
 				 * as
 				 * 'est non défini: <rule> = non'
 				 */
+				// eslint-disable-next-line no-fallthrough
 				case 'est défini':
 				case 'est applicable': {
 					return serializeSourceMap(node)
@@ -84,8 +85,10 @@ function serializeValue(node: ASTNode, needParens = false): SerializedRule {
 				default: {
 					return (
 						(needParens ? '(' : '') +
+						// eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
 						`${serializeValue(node.explanation[0], true)} ${
 							node.operationKind
+							// eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
 						} ${serializeValue(node.explanation[1], true)}` +
 						(needParens ? ')' : '')
 					)
@@ -104,6 +107,7 @@ function serializeValue(node: ASTNode, needParens = false): SerializedRule {
 			// Inlined unit (e.g. '10 €/mois')
 			if (node?.explanation?.nodeKind === 'constant') {
 				return (
+					// eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-base-to-string
 					serializedExplanation + (serializedUnit ? ' ' + serializedUnit : '')
 				)
 			}
@@ -199,7 +203,8 @@ function serializeASTNode(node: ASTNode): SerializedRule {
 				case 'variations': {
 					// If the node is a replacement rule, we need to serialize the original ref
 					if (node?.sourceMap?.mecanismName === 'replacement') {
-						// @ts-ignore
+						// @ts-expect-error	FIXME:
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 						return node.sourceMap.args.originalNode.dottedName
 					}
 					return {
@@ -247,13 +252,14 @@ function serializeASTNode(node: ASTNode): SerializedRule {
 							const res = {}
 
 							for (const key in tranche) {
-								// FIXME:
-								// @ts-ignore
+								// @ts-expect-error	FIXME:
+								// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 								const val = tranche[key]
 								// NOTE: why we dont want to serialize the 'plafond' key?
+								// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 								if (key !== 'plafond' || val.nodeValue !== Infinity) {
-									// FIXME:
-									// @ts-ignore
+									// @ts-expect-error	FIXME:
+									// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 									res[key] = serializeASTNode(tranche[key])
 								}
 							}
@@ -267,8 +273,7 @@ function serializeASTNode(node: ASTNode): SerializedRule {
 					)
 
 					if (serializedMultiplicateur !== 1) {
-						// FIXME:
-						// @ts-ignore
+						// @ts-expect-error	FIXME:
 						serializedNode['multiplicateur'] = serializedMultiplicateur
 					}
 
@@ -306,8 +311,7 @@ function serializeASTNode(node: ASTNode): SerializedRule {
 							 * - sinon: <rule> . $SITUATION
 							 */
 							if (
-								// FIXME:
-								// @ts-ignore
+								// @ts-expect-error FIXME:
 								sourceMap?.args['dans la situation']['title'] === '$SITUATION'
 							) {
 								return serializeASTNode(node.explanation.alors)
@@ -377,7 +381,7 @@ function serializeASTNode(node: ASTNode): SerializedRule {
 							const serializedNode = serializeASTNode(node)
 							if (typeof serializedNode !== 'string') {
 								throw new Error(`[SERIALIZE_AST_NODE > 'texte']: all childs of 'texte' expect to be serializable as string.
-				Got '${serializedNode}'`)
+				Got '${JSON.stringify(serializedNode)}'`)
 							}
 							return currText + '{{ ' + serializedNode + ' }}'
 						},
@@ -390,7 +394,8 @@ function serializeASTNode(node: ASTNode): SerializedRule {
 				case 'une possibilité': {
 					return {
 						'une possibilité': {
-							// @ts-ignore
+							// @ts-expect-error FIXME:
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 							'choix obligatoire': node['choix obligatoire'],
 							possibilités: node.explanation.map(serializeASTNode),
 						},
@@ -470,10 +475,10 @@ export function serializeParsedRules(
 		rawRules[rule] = { ...node.rawNode }
 		syntaxicSugars.forEach((attr) => {
 			// FIXME:
-			// @ts-ignore
+			// @ts-expect-error FIXME:
 			if (rawRules[rule]?.[attr] !== undefined) {
 				// FIXME:
-				// @ts-ignore
+				// @ts-expect-error FIXME:
 				delete rawRules[rule][attr]
 			}
 		})

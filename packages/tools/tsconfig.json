@@ -1,22 +1,8 @@
 {
-	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"target": "esnext",
-		"rootDir": "src",
-		"outDir": "dist",
-		"esModuleInterop": true,
-		"module": "esnext",
-		"moduleResolution": "bundler",
-		"resolveJsonModule": true,
-		"allowJs": true,
-		"sourceMap": true,
-		"types": ["vitest/globals", "node"],
-		"declaration": true,
-		"forceConsistentCasingInFileNames": true,
-		"allowSyntheticDefaultImports": true
+		"allowJs": true
 	},
-	"include": ["src/**/*", "quick-doc"],
-	"exclude": ["./node_modules/", "./dist/", "./jest.config.js", "./test/"],
+	"extends": "../../tsconfig.json",
 	"ts-node": {
 		"esm": true
 	}
