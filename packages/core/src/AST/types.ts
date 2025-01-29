@@ -55,7 +55,7 @@ type PossibleNodes =
 	| UnitéNode
 	| VariableManquanteNode
 	| VariationNode
-  | LogarithmeNode
+	| LogarithmeNode
 
 /**@hidden */
 export type NodeKind = PossibleNodes['nodeKind']
