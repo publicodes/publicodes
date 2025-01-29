@@ -678,7 +678,7 @@ revenu professionnel:
 
 ## `logarithme`
 
-Calcule le logarithme.
+Calcule le logarithme népérien (ou logarithme naturel).
 
 ```publicodes title="Exemple"
 ma variable: 12

@@ -1,8 +1,20 @@
-mon résultat:
-  logarithme: 1
-
-ma variable: 12
-résultat:
-  titre: Le log de ma variable
-  logarithme: ma variable
+variable: 
+test logarithme:
+  logarithme: variable
   arrondi: 2 décimales
+  exemples: 
+    - nom: valeur undefined
+      valeur attendue: undefined
+    - nom: log de 1
+      situation:
+        variable: 1
+      valeur attendue: 0
+   
+    - nom: les unité disparaissent
+      situation: 
+        variable: 4kg
+      unité attendue: ""
+    - nom: calcul le logarithme de 12
+      situation:
+        variable: 12
+      valeur attendue: 2.48
