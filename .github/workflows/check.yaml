@@ -20,6 +20,8 @@ jobs:
         with:
           node-version: 18
       - run: yarn build
+      - name: Continuously Release
+        run: npx pkg-pr-new publish './packages/*'
 
   test:
     name: Test

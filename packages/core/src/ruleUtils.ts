@@ -2,7 +2,7 @@ import { ParsedRules } from '.'
 import { ASTNode } from './AST/types'
 import { PublicodesError } from './error'
 import { ReferencesMaps } from './parsePublicodes'
-import { ReferenceNode } from './reference'
+import { ReferenceNode } from './parseReference'
 import { addToMapSet } from './utils'
 
 export { cyclicDependencies } from './AST/graph'

@@ -253,12 +253,14 @@ Côté JS, nous allons devoir écouter les messages envoyés par le `port`
 `updateSituation` et mettre à jour la situation du moteur Publicodes :
 
 ```typescript
-app.ports.updateSituation.subscribe(([rule, value]: [RuleName, PublicodesExpression]) => {
-    const newSituation = { ...engine.getSituation(), [rule]: value };
-    engine.setSituation(newSituation);
-    // (optionnel) localStorage.setItem('situation', JSON.stringify(newSituation));
-    app.ports.situationUpdated.send(null);
-});
+app.ports.updateSituation.subscribe(
+    ([rule, value]: [RuleName, PublicodesExpression]) => {
+        const newSituation = { ...engine.getSituation(), [rule]: value };
+        engine.setSituation(newSituation);
+        // (optionnel) localStorage.setItem('situation', JSON.stringify(newSituation));
+        app.ports.situationUpdated.send(null);
+    }
+);
 ```
 
 ### Cas n°2 : Évaluer les règles
@@ -352,7 +354,10 @@ Côté JS, nous allons devoir écouter les messages envoyés par le `port`
 
 ```typescript
 app.ports.evaluateAll.subscribe((rules: RuleName[]) => {
-    const results = rules.map((rule) => [rule, engine.evaluate(rule)?.nodeValue ?? null]);
+    const results = rules.map((rule) => [
+        rule,
+        engine.evaluate(rule)?.nodeValue ?? null
+    ]);
     app.ports.evaluatedRules.send(results);
 });
 ```
@@ -375,7 +380,8 @@ app.ports.evaluateAll.subscribe((rules: RuleName[]) => {
         rule,
         {
             nodeValue: engine.evaluate(rule)?.nodeValue ?? null,
-            isApplicable: engine.evaluate({ 'est applicable': rule })?.nodeValue === true
+            isApplicable:
+                engine.evaluate({ 'est applicable': rule })?.nodeValue === true
         }
     ]);
     app.ports.evaluatedRules.send(results);

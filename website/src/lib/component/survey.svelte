@@ -12,9 +12,14 @@
 			class="container mx-auto flex flex-col items-start gap-3 p-2 text-left
     sm:flex-row sm:items-center sm:justify-center sm:text-left"
 		>
-			<MessageCircleHeart class="hidden sm:inline" strokeWidth={1.5} size={28} />
+			<MessageCircleHeart
+				class="hidden sm:inline"
+				strokeWidth={1.5}
+				size={28}
+			/>
 			<span
-				>Aidez-nous à améliorer Publicodes en <span class="font-semibold">5 minutes chrono !</span
+				>Aidez-nous à améliorer Publicodes en <span class="font-semibold"
+					>5 minutes chrono !</span
 				></span
 			>
 			<a
@@ -26,7 +31,11 @@
         font-semibold leading-none text-secondary-600
         duration-100 ease-in-out hover:bg-secondary-900 hover:text-white [&:hover_svg]:translate-x-1"
 				>Participer à l'enquête
-				<ChevronRight class="inline transition-transform" strokeWidth={2} size={22} />
+				<ChevronRight
+					class="inline transition-transform"
+					strokeWidth={2}
+					size={22}
+				/>
 			</a>
 		</div>
 		<button

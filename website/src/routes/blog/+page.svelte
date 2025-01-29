@@ -19,8 +19,14 @@
 			gap-10 px-6 py-20 lg:max-w-5xl lg:py-24 xl:max-w-7xl"
 		>
 			<div class="flex gap-4">
-				<Rss class="hidden md:block" size={iconSize} strokeWidth={iconStrokeWidth} />
-				<h2 class="m-0 text-3xl font-normal md:text-4xl">Les derniers articles</h2>
+				<Rss
+					class="hidden md:block"
+					size={iconSize}
+					strokeWidth={iconStrokeWidth}
+				/>
+				<h2 class="m-0 text-3xl font-normal md:text-4xl">
+					Les derniers articles
+				</h2>
 			</div>
 			<ul class="grid gap-5 lg:grid-cols-2">
 				{#each featuredPosts as { path, metadata: { title, description, date, tags } }}
@@ -35,7 +41,11 @@
 			py-20 md:max-w-3xl md:py-24 lg:max-w-5xl xl:max-w-7xl"
 		>
 			<div class="flex gap-4">
-				<Newspaper class="hidden md:block" size={iconSize} strokeWidth={iconStrokeWidth} />
+				<Newspaper
+					class="hidden md:block"
+					size={iconSize}
+					strokeWidth={iconStrokeWidth}
+				/>
 				<h2 class="m-0 text-3xl font-normal md:text-4xl">Tous les articles</h2>
 			</div>
 			<ul class="not-prose divide-y divide-primary-100">

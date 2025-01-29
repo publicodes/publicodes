@@ -1,13 +1,14 @@
 import {
 	Logger,
 	ParsedRules,
+	Possibility,
 	PublicodesError,
 	PublicodesExpression,
 	RawPublicodes,
 	Situation,
 } from '..'
 import { makeASTVisitor } from '../AST'
-import { type ASTNode, type EvaluatedNode } from '../AST/types'
+import { Evaluation, type ASTNode, type EvaluatedNode } from '../AST/types'
 import { experimentalRuleWarning } from '../error'
 import { evaluationFunctions } from '../evaluationFunctions'
 import parsePublicodes, {
@@ -24,7 +25,7 @@ import {
 } from '../traversedVariables'
 import { getUnitKey } from '../units'
 import { weakCopyObj } from '../utils'
-import { isAValidOption } from './utils'
+import { isAValidOption } from './isAValidOption'
 
 const emptyCache = (): Cache => ({
 	_meta: {
@@ -74,6 +75,19 @@ export type StrictOptions = {
 	 * @default true
 	 */
 	noOrphanRule?: boolean
+
+	/**
+	 * If set to true, the engine will throw when a cycle is detected at runtime
+	 * @default false
+	 */
+	noCycleRuntime?: boolean
+
+	/**
+	 * If set to true, the engine will throw when a rule with 'une possibilité'
+	 * is evaluated to a value that is not in the list.
+	 * @default false
+	 */
+	checkPossibleValues?: boolean
 }
 
 /**
@@ -91,7 +105,6 @@ export type EngineOptions = {
 	 * or whether it should simply record it and continue.
 	 *
 	 * This option can be set globally (true or false) or for specific rules ({@link StrictOptions}).
-	 * @default true
 	 *  */
 	strict?: boolean | StrictOptions
 
@@ -138,7 +151,7 @@ export class Engine<RuleNames extends string = string> {
 		rules: RawPublicodes<RuleNames> | ParsedRules<RuleNames> = {},
 		options: EngineOptions = {},
 	) {
-		const strict = options.strict ?? true
+		const strict = options.strict
 		const initialContext = {
 			dottedName: '' as never,
 			...options,
@@ -147,8 +160,11 @@ export class Engine<RuleNames extends string = string> {
 					{
 						situation: strict,
 						noOrphanRule: options.allowOrphanRules === true ? false : strict,
+						checkPossibleValues: strict,
+						noCycleRuntime: strict,
 					}
-				:	strict,
+				: typeof strict === 'object' ? strict
+				: {},
 		}
 
 		this.baseContext = createContext({
@@ -259,7 +275,6 @@ export class Engine<RuleNames extends string = string> {
 			this.publicSituation,
 			Object.fromEntries(situationRules),
 		)
-
 		Object.keys(this.publicSituation).forEach((nom) => {
 			if (utils.isExperimental(this.context.parsedRules, nom)) {
 				experimentalRuleWarning(this.baseContext.logger, nom)
@@ -328,6 +343,51 @@ export class Engine<RuleNames extends string = string> {
 	getSituation(): Situation<RuleNames> {
 		return this.publicSituation
 	}
+
+	/**
+	 * Retrieves the list of possible values for a given rule.
+	 *
+	 * @param dottedName - The dotted name of the rule to get possibilities for
+	 * @param options - Options object
+	 * @param options.filterNotApplicable - When true, filters out possibilities that are not applicable based on the current situation. Defaults to false.
+	 * @returns Array of possibility nodes if the rule has possibilities defined, null otherwise
+	 *
+	 * @example
+	 * **Publicodes**
+	 * ```yaml
+	 * contrat:
+	 *  une possibilité:
+	 *   - "'CDI'"
+	 *   - "'CDD'"
+	 * ```js
+	 * engine.getPossibilitiesFor('contrat')
+	 *
+	 * ```
+	 */
+	getPossibilitiesFor(
+		dottedName: RuleNames,
+		{
+			filterNotApplicable = false,
+		}: {
+			filterNotApplicable?: boolean
+		} = {},
+	): Array<Possibility> | null {
+		const rule = this.getRule(dottedName)
+		if (!rule.possibilities) {
+			return null
+		}
+		if (filterNotApplicable) {
+			return (
+				this.evaluateNode(rule.possibilities).explanation as Array<
+					Possibility & {
+						notApplicable: { nodeValue: Evaluation }
+					}
+				>
+			).filter((possibility) => possibility.notApplicable?.nodeValue !== true)
+		}
+		return rule.possibilities.explanation
+	}
+
 	/**
 	 * Evaluate a publicodes expression.
 	 *
@@ -459,14 +519,16 @@ export class Engine<RuleNames extends string = string> {
 				dottedName,
 			})
 		}
-
-		if (this.baseContext.parsedRules[dottedName].private) {
+		const rule = this.baseContext.parsedRules[dottedName]
+		if (rule.private) {
 			const errorMessage = `La règle ${dottedName} est une règle privée.`
 			return new PublicodesError('SituationError', errorMessage, { dottedName })
 		}
-
-		if (!isAValidOption(this, dottedName, value)) {
-			const errorMessage = `La valeur ${value} ne fait pas parti des possibilités listées dans la base de règles.`
+		if (
+			rule.possibilities &&
+			!isAValidOption(this, rule.possibilities, this.evaluate(value))
+		) {
+			const errorMessage = `La valeur ${value} ne fait pas parti des possibilités applicables listées pour cette règle.`
 
 			return new PublicodesError('SituationError', errorMessage, {
 				dottedName,

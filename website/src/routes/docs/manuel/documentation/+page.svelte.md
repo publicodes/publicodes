@@ -64,7 +64,7 @@ pesanteur:
 
 <Callout type="info" title="Extension VSCode">
 
-Les métadonnées `title` et `description` sont également affichées au survol de la règle avec l'extension VSCode.
+Les métadonnées `titre` et `description` sont également affichées au survol de la règle avec l'extension VSCode.
 
 </Callout>
 

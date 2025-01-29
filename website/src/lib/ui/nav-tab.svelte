@@ -3,8 +3,11 @@
 	import type { Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
 
-	const { children, href, ...rest }: { href: string; children: Snippet } & HTMLAnchorAttributes =
-		$props();
+	const {
+		children,
+		href,
+		...rest
+	}: { href: string; children: Snippet } & HTMLAnchorAttributes = $props();
 
 	const active = $derived($page.url.pathname.startsWith(href));
 </script>

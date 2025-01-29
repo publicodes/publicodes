@@ -4,7 +4,10 @@
  */
 
 import { produits } from '$data/produits';
-import { publicodesPackages, type PublicodesPackage } from '$data/publicodes-packages';
+import {
+	publicodesPackages,
+	type PublicodesPackage
+} from '$data/publicodes-packages';
 
 export type PublicodesPackageWithMetadata = PublicodesPackage & {
 	name: string;
@@ -16,10 +19,11 @@ export type PublicodesPackageWithMetadata = PublicodesPackage & {
 
 const NPM_REGISTRY_URL = 'https://registry.npmjs.org';
 
-export const publicodesPackagesWithMetadataPromise: Promise<PublicodesPackageWithMetadata[]> =
-	Promise.all(publicodesPackages.map(fetchPackageMetadata)).then((packages) =>
-		packages.sort((a, b) => b.modified.getTime() - a.modified.getTime())
-	);
+export const publicodesPackagesWithMetadataPromise: Promise<
+	PublicodesPackageWithMetadata[]
+> = Promise.all(publicodesPackages.map(fetchPackageMetadata)).then((packages) =>
+	packages.sort((a, b) => b.modified.getTime() - a.modified.getTime())
+);
 
 async function fetchPackageMetadata(
 	pkg: PublicodesPackage

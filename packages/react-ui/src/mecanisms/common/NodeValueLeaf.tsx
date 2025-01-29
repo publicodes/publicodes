@@ -21,7 +21,7 @@ export const NodeValueLeaf = ({ data, unit }: Props) => {
 	)
 }
 
-const StyledNodeValuePointer = styled.span`
+export const StyledNodeValuePointer = styled.span`
 	background: white;
 	border-bottom: 0 !important;
 	font-size: 0.875rem;

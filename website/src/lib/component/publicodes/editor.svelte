@@ -42,7 +42,9 @@
 
 	let copied = $state(false);
 
-	let iconSize = $derived((size === 'md' ? 20 : 26) - (screen.currentBreakpoint === 'sm' ? 4 : 0));
+	let iconSize = $derived(
+		(size === 'md' ? 20 : 26) - (screen.currentBreakpoint === 'sm' ? 4 : 0)
+	);
 	let iconStrokeWidth = 1.5;
 
 	function handleCopy() {
@@ -53,16 +55,23 @@
 		}, 3000);
 	}
 
-	const { in: transitionIn, out: transitionOut } = $derived(getTransition(fullPage));
+	const { in: transitionIn, out: transitionOut } = $derived(
+		getTransition(fullPage)
+	);
 	let { engine, error, warning } = $derived(createEngine(code));
 	const selectedRule: string | undefined = $derived.by(() => {
-		if (engine && !(selectedRuleInDoc && selectedRuleInDoc in engine.getParsedRules())) {
+		if (
+			engine &&
+			!(selectedRuleInDoc && selectedRuleInDoc in engine.getParsedRules())
+		) {
 			return Object.keys(engine.getParsedRules()).at(-1);
 		}
 		return selectedRuleInDoc;
 	});
 
-	const documentationIsBroken = $derived(!engine || !Object.keys(engine.getParsedRules()).length);
+	const documentationIsBroken = $derived(
+		!engine || !Object.keys(engine.getParsedRules()).length
+	);
 	$effect(() => {
 		onchange?.(code, showDoc ? selectedRule : undefined);
 	});
@@ -96,7 +105,8 @@
 			</div>
 		{/if}
 		<span
-			class="flex-1 font-mono font-regular text-primary-500 xl:p-2 xl:text-lg {size === 'lg'
+			class="flex-1 font-mono font-regular text-primary-500 xl:p-2 xl:text-lg {size ===
+			'lg'
 				? 'lg:text-lg xl:text-xl'
 				: 'max-md:text-sm'}"
 			class:p-3={size === 'lg'}
@@ -111,7 +121,9 @@
 				transition:fly
 				class="border-l border-primary-200 text-primary-500"
 				onclick={() => (showDoc = !showDoc)}
-				aria-label={showDoc ? 'Fermer la documentation' : 'Ouvrir la documentation'}
+				aria-label={showDoc
+					? 'Fermer la documentation'
+					: 'Ouvrir la documentation'}
 				class:saturate-0={documentationIsBroken}
 				disabled={documentationIsBroken}
 				class:text-slate-400={documentationIsBroken}
@@ -158,7 +170,10 @@
 				{#each [...warning, ...error] as message}
 					<li class="flex whitespace-pre-line bg-yellow-100" in:fly>
 						<span class="w-14 border-r bg-primary-50"></span>
-						<span class="max-h-40 flex-1 overflow-auto p-2 first-line:font-regular">{message}</span>
+						<span
+							class="max-h-40 flex-1 overflow-auto p-2 first-line:font-regular"
+							>{message}</span
+						>
 					</li>
 				{/each}
 			</ul>

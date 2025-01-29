@@ -29,7 +29,10 @@ if (typeof window !== 'undefined') {
 				),
 				'xl'
 			],
-			[window.matchMedia(`(min-width: ${fullConfig.theme.screens['2xl']})`), '2xl']
+			[
+				window.matchMedia(`(min-width: ${fullConfig.theme.screens['2xl']})`),
+				'2xl'
+			]
 		] as const
 	).forEach(([matchMedia, breakpoint]) => {
 		if (matchMedia.matches) {
