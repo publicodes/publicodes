@@ -108,7 +108,7 @@ export default async function createDevServer(
 
 	let compilationCount = 0
 
-	modelWatcher.on('all', async (event, path) => {
+	modelWatcher.on('all', (event, path) => {
 		if (event === 'add' || event === 'change') {
 			const timestamp = new Date().toLocaleTimeString()
 			compilationCount++
@@ -122,7 +122,7 @@ export default async function createDevServer(
 					)
 				}
 				const startTime = performance.now()
-				const newRules = await getModelFromSource(modelFiles, {
+				const newRules = getModelFromSource(modelFiles, {
 					logger: {
 						log: p.log.info,
 						error: p.log.error,
