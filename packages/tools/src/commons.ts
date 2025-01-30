@@ -270,4 +270,4 @@ export function getValueWithoutQuotes(value: PublicodesExpression | undefined) {
 
 /** Used by the CLI */
 
-export const DEFAULT_BUILD_DIR = 'publicodes-build'
+export const DEFAULT_BUILD_DIR = 'publicodes-dist'

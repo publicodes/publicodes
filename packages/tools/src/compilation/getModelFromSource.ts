@@ -4,6 +4,7 @@ import { Logger } from 'publicodes'
 import yaml from 'yaml'
 import { getDoubleDefError, RawRules, RuleName } from '../commons'
 import { resolveImports } from './resolveImports'
+import { toArray } from '../utils/toArray'
 
 /**
  * Options for the `getModelFromSource` function.
@@ -84,17 +85,15 @@ export function getModelFromSource(
 }
 
 export function normalizeSourcePaths(sourcePaths: string | string[]): string[] {
-	return (Array.isArray(sourcePaths) ? sourcePaths : [sourcePaths]).map(
-		(pathOrGlob) => {
-			try {
-				if (statSync(pathOrGlob).isDirectory()) {
-					return pathOrGlob + '/**/*.publicodes'
-				}
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			} catch (e) {
-				// Ignore error, it's a file glob
+	return toArray(sourcePaths).map((pathOrGlob) => {
+		try {
+			if (statSync(pathOrGlob).isDirectory()) {
+				return pathOrGlob + '/**/*.publicodes'
 			}
-			return pathOrGlob
-		},
-	)
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (e) {
+			// Ignore error, it's a file glob
+		}
+		return pathOrGlob
+	})
 }

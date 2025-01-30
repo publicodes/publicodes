@@ -2,6 +2,8 @@ import * as p from '@clack/prompts'
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import createDevServer, { DevServerOptions } from '../create-dev-server'
+import { PackageJson } from '../utils/pjson'
+import { toArray } from '../utils/toArray'
 
 export default class Compile extends Command {
 	static override args = {
@@ -15,7 +17,21 @@ export default class Compile extends Command {
 	static override description = `
 This command will start a local server to serve the publicodes auto-generated documentation of the model. 
 
-It will open a browser window with the documentation. The server will automatically reload the page when the documentation is updated.
+It will open a browser window with the documentation. The server will automatically reload the page when the documentation is updated. 
+
+You can specify different situations to use in the documentation in separated publicodes files, with the 'contexte' mechanism.
+
+By default, the server will serve the publicodes files in the 'src/' directory and the situations in the 'situations/' directory
+
+To avoid passing arguments and flags every time, you can set their values in the package.json file under the \`publicodes\` key. For example:
+
+	{
+	  // ...
+	  "publicodes": {
+		"files": ["src/"],
+		"situations": ["test/"],
+	  }
+	}
 `
 
 	static override examples = [
@@ -24,9 +40,9 @@ It will open a browser window with the documentation. The server will automatica
 			description: `Launch the publicodes documentation dev server on the default port.`,
 		},
 		{
-			command: '<%= config.bin %> <%= command.id %> -s situations/ model/',
+			command: '<%= config.bin %> <%= command.id %> -s test/ model/',
 			description:
-				'Launch the documentation on publicodes files in the model/ directory, and use the situations in the situations/ directory.',
+				'Launch the documentation for publicodes files in the `model/` directory, and use the situations in the `test/` directory.',
 		},
 
 		{
@@ -59,7 +75,7 @@ It will open a browser window with the documentation. The server will automatica
 			char: 's',
 			multiple: true,
 			summary:
-				'Specify the directory containing the situations files, default is test/',
+				'Specify the directory containing the situations files, default is situations/',
 		}),
 	}
 
@@ -67,18 +83,18 @@ It will open a browser window with the documentation. The server will automatica
 		const { argv, flags } = await this.parse(Compile)
 
 		p.intro(chalk.bgHex('#2975d1')(' publicodes dev '))
+		const pjson: Partial<PackageJson> = this.config.pjson
+
 		const filesToCompile =
 			argv.length === 0 ?
 				// TODO: test with production package
-
-				(this.config.pjson?.publicodes?.files ?? ['src/'])
+				toArray(pjson?.publicodes?.files ?? 'src/')
 			:	(argv as string[])
 
 		const situationFiles: string[] =
 			!flags.situations?.length ?
 				// TODO: test with production package
-
-				(this.config.pjson?.publicodes?.test ?? ['test/'])
+				toArray(pjson?.publicodes?.situations ?? 'situations/')
 			:	flags.situations
 
 		// quickDoc is in the current package (@publicodes/tools) under the folder /quick-doc

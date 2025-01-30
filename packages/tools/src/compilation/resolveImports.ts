@@ -23,7 +23,7 @@ import { dirname, join, basename } from 'path'
  *
  * @returns {string} The path to the package model in the node_modules folder.
  *
- * @note It tries to find the model in the `publicodes-build` folder first otherwise it looks for the model at the root of the package.
+ * @note It tries to find the model in the `publicodes-dist` folder first otherwise it looks for the model at the root of the package.
  */
 function getPackageModelPath(packageName: string): string {
 	if (packageName.startsWith('@')) {

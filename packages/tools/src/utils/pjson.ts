@@ -35,6 +35,7 @@ export type PackageJson = {
 	publicodes?: {
 		files?: string[]
 		output?: string
+		situations?: string[]
 	}
 }
 

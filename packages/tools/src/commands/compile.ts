@@ -10,7 +10,8 @@ import { getModelFromSource, GetModelFromSourceOptions } from '../compilation'
 import { resolveRuleTypes, RuleType } from '../compilation/ruleTypes'
 import { serializeParsedRules } from '../serializeParsedRules'
 import { exitWithError, runWithSpinner } from '../utils/cli'
-import { readPackageJson } from '../utils/pjson'
+import { PackageJson, readPackageJson } from '../utils/pjson'
+import { toArray } from '../utils/toArray'
 
 export default class Compile extends Command {
 	static override args = {
@@ -70,19 +71,16 @@ the package.json file under the \`publicodes\` key. For example:
 
 	public async run(): Promise<void> {
 		const { argv, flags } = await this.parse(Compile)
-
+		const pjson: Partial<PackageJson> = this.config.pjson
 		p.intro(chalk.bgHex('#2975d1')(' publicodes compile '))
 		const filesToCompile =
 			argv.length === 0 ?
 				// TODO: test with production package
-
-				(this.config.pjson?.publicodes?.files ?? ['src/'])
+				toArray(pjson?.publicodes?.files ?? 'src/')
 			:	(argv as string[])
 
 		const outputDir = path.resolve(
-			flags.output ??
-				this.config.pjson?.publicodes?.output ??
-				DEFAULT_BUILD_DIR,
+			flags.output ?? pjson?.publicodes?.output ?? DEFAULT_BUILD_DIR,
 		)
 
 		const rawRules = (await parseFiles(filesToCompile, {

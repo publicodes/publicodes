@@ -38,6 +38,6 @@
 	},
 	"packageManager": "yarn@4.4.1",
 	"engines": {
-		"node": ">=18 <20"
+		"node": ">= 22"
 	}
 }

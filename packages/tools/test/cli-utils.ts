@@ -71,7 +71,6 @@ export class CLIExecutor {
 // On macOS, os.tmpdir() is not a real path:
 // https://github.com/nodejs/node/issues/11422
 const TMP_DIR = fs.realpathSync(os.tmpdir())
-
 export async function runInDir(
 	dir: string, // 'tmp' | string
 	fn: (cwd: string) => Promise<void>,
@@ -93,7 +92,7 @@ export async function runInDir(
 	} finally {
 		process.chdir(baseCwd)
 		if (dir === 'tmp' && fs.existsSync(ctd)) {
-			fs.rmSync(ctd, { recursive: true })
+			// fs.rmSync(ctd, { recursive: true })
 		}
 	}
 }

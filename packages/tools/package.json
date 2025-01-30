@@ -8,7 +8,6 @@
 		"publicodes": "./bin/run.js"
 	},
 	"files": [
-		"publicodes-build",
 		"dist",
 		"bin",
 		"quick-doc"
@@ -53,10 +52,7 @@
 		"build": "tsup",
 		"watch": "tsup --watch",
 		"clean": "rm -rf dist",
-		"test": "VITE_CJS_TRACE=true vitest run --globals",
-		"docs": "typedoc",
-		"format": "prettier --write .",
-		"format:check": "prettier --check ."
+		"test": "VITE_CJS_TRACE=true vitest run --globals"
 	},
 	"engines": {
 		"node": ">=22"
@@ -116,9 +112,5 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447",
-	"types": "publicodes-build/index.d.ts",
-	"peerDependencies": {
-		"publicodes": "^1.6.1"
-	}
+	"packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }

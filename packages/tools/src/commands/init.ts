@@ -150,7 +150,12 @@ installation.`,
 		pkgJSON.version = pkgJSON.version ?? basePackageJson.version
 		pkgJSON.description = pkgJSON.description ?? basePackageJson.description
 		pkgJSON.author = pkgJSON.author ?? basePackageJson.author
-		pkgJSON.files = basePackageJson.files!.concat(pkgJSON.files ?? [])
+		pkgJSON.files = [
+			...new Set([
+				...(basePackageJson?.files ?? []),
+				...(pkgJSON?.files ?? []),
+			]),
+		]
 		pkgJSON.scripts = {
 			...pkgJSON.scripts,
 			...basePackageJson.scripts,
@@ -295,10 +300,10 @@ async function installDeps(pkgManager: PackageManager): Promise<void> {
 			try {
 				await spawnAsync(pkgManager, 'install')
 			} catch (error) {
-				if (typeof error === 'string') {
+				if (error instanceof Error) {
 					exitWithError({
 						ctx: 'An error occurred while installing dependencies',
-						msg: error,
+						msg: error.message,
 						spinner,
 					})
 				}
@@ -352,12 +357,15 @@ async function generateBaseFiles(
 				'*.publicodes linguist-language=YAML\n',
 			)
 
+			if (!fs.existsSync('situations')) {
+				fs.mkdirSync('situations')
+			}
+			fs.writeFileSync('situations/salaire.publicodes', BASE_PUBLICODES_FILE)
+
 			if (!fs.existsSync('test')) {
 				fs.mkdirSync('test')
 			}
-
 			fs.writeFileSync('test/salaire.test.ts', BASE_TEST_FILE)
-			fs.writeFileSync('test/salaire.publicodes', BASE_PUBLICODES_FILE)
 		} catch (error) {
 			if (error instanceof Error) {
 				exitWithError({
