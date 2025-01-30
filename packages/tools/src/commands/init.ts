@@ -484,7 +484,7 @@ const BASE_PUBLICODES_FILE = `
 
 salaire SMIC: 
   contexte:
-    salaire brut: smic mensuel
+    salaire brut: SMIC mensuel
 
 salaire médian cadre:
   contexte:

@@ -106,8 +106,7 @@
 	"oclif": {
 		"bin": "publicodes",
 		"commands": "./dist/commands",
-		"dirname": "publicodes",
-		"topicSeparator": ":"
+		"dirname": "publicodes"
 	},
 	"publishConfig": {
 		"access": "public"
