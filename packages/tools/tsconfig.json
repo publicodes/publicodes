@@ -2,8 +2,5 @@
 	"compilerOptions": {
 		"allowJs": true
 	},
-	"extends": "../../tsconfig.json",
-	"ts-node": {
-		"esm": true
-	}
+	"extends": "../../tsconfig.json"
 }

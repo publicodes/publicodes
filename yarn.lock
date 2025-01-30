@@ -3715,9 +3715,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^4.0.23":
-  version: 4.2.4
-  resolution: "@oclif/core@npm:4.2.4"
+"@oclif/core@npm:^4.2.5":
+  version: 4.2.5
+  resolution: "@oclif/core@npm:4.2.5"
   dependencies:
     ansi-escapes: "npm:^4.3.2"
     ansis: "npm:^3.9.0"
@@ -3737,11 +3737,11 @@ __metadata:
     widest-line: "npm:^3.1.0"
     wordwrap: "npm:^1.0.0"
     wrap-ansi: "npm:^7.0.0"
-  checksum: 10/0d155fc982b45824768e723b540d4d4037135edf9b2532a5b176d3cc1bb5209ad1829bf3269ac83c92055c4623277ffc6ecd9e0eb38b8bd571ec63f14cd31b67
+  checksum: 10/c313648f260f3ec87f82fa16d5963c7784e2336cd64132a4f01fb9825364fc071ba91fabed2a9faec66890a6564200b9fd523a1dcf25dbf654169f8ce98acb03
   languageName: node
   linkType: hard
 
-"@oclif/test@npm:^4.0.9":
+"@oclif/test@npm:^4.1.8":
   version: 4.1.8
   resolution: "@oclif/test@npm:4.1.8"
   dependencies:
@@ -3886,11 +3886,12 @@ __metadata:
   resolution: "@publicodes/tools@workspace:packages/tools"
   dependencies:
     "@clack/prompts": "npm:^0.7.0"
-    "@oclif/core": "npm:^4.0.23"
-    "@oclif/test": "npm:^4.0.9"
+    "@oclif/core": "npm:^4.2.5"
+    "@oclif/test": "npm:^4.1.8"
     "@publicodes/react-ui": "npm:^1.5.4"
     "@tailwindcss/typography": "npm:^0.5.16"
     "@tailwindcss/vite": "npm:^4.0.0"
+    "@types/bun": "npm:^1"
     "@types/jest": "npm:^29.5.13"
     "@types/node": "npm:^18.11.18"
     "@types/react": "npm:^19.0.8"
@@ -3904,7 +3905,6 @@ __metadata:
     react-dom: "npm:^19.0.0"
     react-router-dom: "npm:^7.1.3"
     tailwindcss: "npm:^4.0.0"
-    ts-node: "npm:^10.9.2"
     tsup: "npm:^8.3.5"
     typescript: "npm:^5.6.3"
     vite: "npm:^6.0.11"
@@ -4898,6 +4898,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/bun@npm:^1":
+  version: 1.2.1
+  resolution: "@types/bun@npm:1.2.1"
+  dependencies:
+    bun-types: "npm:1.2.1"
+  checksum: 10/d9a30d041d872b8ba7d28993d184454ce0200a23800524bcdb70442b180c9b34a3a98ca25f7ccbc2da22bcfd2da173815bef4504af785c89e2a6a550069aa39e
+  languageName: node
+  linkType: hard
+
 "@types/chai-subset@npm:^1.3.3":
   version: 1.3.5
   resolution: "@types/chai-subset@npm:1.3.5"
@@ -5640,7 +5649,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:^8.5.5":
+"@types/ws@npm:^8.5.5, @types/ws@npm:~8.5.10":
   version: 8.5.14
   resolution: "@types/ws@npm:8.5.14"
   dependencies:
@@ -7301,6 +7310,16 @@ __metadata:
   version: 3.3.0
   resolution: "builtin-modules@npm:3.3.0"
   checksum: 10/62e063ab40c0c1efccbfa9ffa31873e4f9d57408cb396a2649981a0ecbce56aabc93c28feaccbc5658c95aab2703ad1d11980e62ec2e5e72637404e1eb60f39e
+  languageName: node
+  linkType: hard
+
+"bun-types@npm:1.2.1":
+  version: 1.2.1
+  resolution: "bun-types@npm:1.2.1"
+  dependencies:
+    "@types/node": "npm:*"
+    "@types/ws": "npm:~8.5.10"
+  checksum: 10/c3f002c1567b69df72d00b53512f8188ac919be420217aaa2bd8564af0042357fab89b9c079201f2a86c153ec57478832c6eb521a0bf42583a7c1f04dbcddc4f
   languageName: node
   linkType: hard
 
@@ -19822,7 +19841,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.9.1, ts-node@npm:^10.9.2":
+"ts-node@npm:^10.9.1":
   version: 10.9.2
   resolution: "ts-node@npm:10.9.2"
   dependencies:

@@ -53,17 +53,17 @@
 		"build": "tsup",
 		"watch": "tsup --watch",
 		"clean": "rm -rf dist",
-		"test": "vitest run --globals",
+		"test": "VITE_CJS_TRACE=true vitest run --globals",
 		"docs": "typedoc",
 		"format": "prettier --write .",
 		"format:check": "prettier --check ."
 	},
 	"engines": {
-		"node": ">=17"
+		"node": ">=22"
 	},
 	"dependencies": {
 		"@clack/prompts": "^0.7.0",
-		"@oclif/core": "^4.0.23",
+		"@oclif/core": "^4.2.5",
 		"@publicodes/react-ui": "^1.5.4",
 		"@tailwindcss/typography": "^0.5.16",
 		"@tailwindcss/vite": "^4.0.0",
@@ -80,12 +80,12 @@
 		"yaml": "^2.7.0"
 	},
 	"devDependencies": {
-		"@oclif/test": "^4.0.9",
+		"@oclif/test": "^4.1.8",
+		"@types/bun": "^1",
 		"@types/jest": "^29.5.13",
 		"@types/react": "^19.0.8",
 		"@types/react-dom": "^18.0.11",
 		"publicodes": "workspace:^",
-		"ts-node": "^10.9.2",
 		"tsup": "^8.3.5",
 		"typescript": "^5.6.3",
 		"vitest": "^2.1.2"

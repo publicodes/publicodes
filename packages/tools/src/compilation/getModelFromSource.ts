@@ -90,9 +90,9 @@ export function normalizeSourcePaths(sourcePaths: string | string[]): string[] {
 				if (statSync(pathOrGlob).isDirectory()) {
 					return pathOrGlob + '/**/*.publicodes'
 				}
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			} catch (e) {
-				// eslint-disable-next-line no-console
-				console.error(e)
+				// Ignore error, it's a file glob
 			}
 			return pathOrGlob
 		},

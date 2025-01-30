@@ -73,7 +73,7 @@ function getExpectedBasePackageJson(cwd: string): PackageJson {
 		files: ['publicodes-build'],
 		peerDependencies: basePackageJson.peerDependencies,
 		devDependencies: basePackageJson.devDependencies,
-		version: '1.0.0',
+		version: '0.1.0',
 		description: '',
 		author: '',
 		license: 'MIT',
