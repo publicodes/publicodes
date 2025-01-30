@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/tools",
-	"version": "1.4.0",
+	"version": "1.4.2",
 	"description": "A CLI tool for Publicodes",
 	"type": "module",
 	"main": "dist/index.js",

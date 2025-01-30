@@ -35,7 +35,6 @@ function throwErrorIfDuplicatedRules(
  * with the resolved dependencies.
  *
  * @param sourcePaths - Path to the source files, can be a glob pattern or a directory.
- * @param ignore - Pattern to match the source files to be ignored in the model.
  * @param opts - Options.
  *
  * @returns The model with resolved imports in a single JSON object.

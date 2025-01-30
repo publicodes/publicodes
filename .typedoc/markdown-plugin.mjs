@@ -44,8 +44,8 @@ export function load(app) {
 			.replaceAll('\\<', '&amp;lt;')
 			.replaceAll('\\>', '&amp;gt;')
 
-			.replaceAll('\\{', 'a')
-			.replaceAll('\\}', 'b')
+			.replaceAll('\\{', '&amp;#123;')
+			.replaceAll('\\}', '&amp;#125;')
 
 			.replaceAll(/\\\`(.*)\\\`/g, '`&#96;$1&#96;`')
 
