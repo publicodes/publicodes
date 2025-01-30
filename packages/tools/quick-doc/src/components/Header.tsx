@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { situations } from '../situations'
+import { useSituationList } from '../situations'
 
 export default function Header({
 	setSituation,
@@ -8,6 +8,7 @@ export default function Header({
 	setSituation: (situation: string) => void
 	activeSituation: string
 }) {
+	const situations = useSituationList()
 	return (
 		<header className=" container mx-auto p-4">
 			<div className="flex items-center justify-between  flex-col md:flex-row">

@@ -1,7 +1,6 @@
 import React from 'react'
-import { error } from '../engine'
 
-export function Error() {
+export function Error({ error }: { error: string[] }) {
 	if (error.length === 0) return null
 	return (
 		<>
@@ -10,10 +9,10 @@ export function Error() {
        inset-0  bg-slate-400/50 backdrop-blur-[2px] animate-fade-in "
 			/>
 			<div
-				className="fixed z-[1000]  left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl bg-white  rounded-lg shadow-lg animate-slide-up"
+				className="fixed z-[1000]  left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl animate-slide-up"
 				role="alert"
 			>
-				<div className="p-6">
+				<div className="p-6 bg-white  rounded-lg shadow-lg m-4">
 					<div className="space-y-2 max-h-[70vh] overflow-auto">
 						{error.map((err, index) => {
 							const { type, message, ruleName } = parseError(err)
@@ -37,7 +36,7 @@ export function Error() {
 											{type}
 										</h2>
 									</div>
-									<p className="text-xl font-semibold flex items-baseline">
+									<p className="text-xl font-semibold flex items-baseline flex-wrap">
 										Dans la règle
 										<code className="px-1 ml-2 text-slate-800 bg-gray-100 rounded-md">
 											{ruleName}

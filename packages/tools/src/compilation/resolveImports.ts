@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from 'fs'
+import { basename, dirname, join } from 'path'
 import Engine, {
 	Logger,
 	RawPublicodes,
@@ -6,17 +8,15 @@ import Engine, {
 	utils,
 } from 'publicodes'
 import {
+	DEFAULT_BUILD_DIR,
+	IMPORT_KEYWORD,
+	ImportMacro,
+	RawRules,
+	RuleImportWithOverridenAttrs,
 	RuleName,
 	getAllRefsInNode,
-	RawRules,
-	ImportMacro,
-	RuleImportWithOverridenAttrs,
-	IMPORT_KEYWORD,
 	getDoubleDefError,
-	DEFAULT_BUILD_DIR,
 } from '../commons'
-import { existsSync, readFileSync } from 'fs'
-import { dirname, join, basename } from 'path'
 
 /**
  * @param {string} packageName - The package name.

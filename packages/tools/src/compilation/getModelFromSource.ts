@@ -3,8 +3,8 @@ import { sync } from 'glob'
 import { Logger } from 'publicodes'
 import yaml from 'yaml'
 import { getDoubleDefError, RawRules, RuleName } from '../commons'
-import { resolveImports } from './resolveImports'
 import { toArray } from '../utils/toArray'
+import { resolveImports } from './resolveImports'
 
 /**
  * Options for the `getModelFromSource` function.

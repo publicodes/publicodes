@@ -1,5 +1,6 @@
-import { RulePage } from '@publicodes/react-ui'
-import { useEffect, useState } from 'react'
+import { getDocumentationSiteMap, RulePage } from '@publicodes/react-ui'
+import Engine from 'publicodes'
+import { useState } from 'react'
 import {
 	BrowserRouter,
 	Link,
@@ -8,13 +9,11 @@ import {
 	Routes,
 	useParams,
 } from 'react-router-dom'
-import { engine, onEngineUpdate } from '../engine'
-import { sitemap } from '../sitemap'
-import { onSituationUpdate, situations } from '../situations'
-import Header from './Header'
+import { useEngine } from '../engine'
 import { Error } from './Error'
+import Header from './Header'
 
-function RulePageWrapper() {
+function RulePageWrapper({ engine }: { engine: Engine }) {
 	const { '*': splat } = useParams()
 	return (
 		<RulePage
@@ -30,41 +29,28 @@ function RulePageWrapper() {
 }
 
 export default function App() {
-	const [, forceUpdate] = useState({})
-	useEffect(() => {
-		// Subscribe to engine updates
-		return onEngineUpdate(() => forceUpdate({}))
-	}, [])
 	const [activeSituation, setActiveSituation] = useState('')
-
-	useEffect(() => {
-		return onSituationUpdate(() => {
-			engine.setSituation(situations[activeSituation] ?? {})
-			setActiveSituation(activeSituation in situations ? activeSituation : '')
-			forceUpdate({})
-		})
-	}, [activeSituation])
-
-	function handleSituationChange(situation: string) {
-		setActiveSituation(situation)
-		engine.setSituation(situations[situation] ?? {})
-	}
+	const { engine, error } = useEngine(activeSituation)
+	const sitemap = getDocumentationSiteMap({
+		documentationPath: '',
+		engine,
+	})
 
 	return (
 		<>
 			<BrowserRouter>
 				<Header
-					setSituation={handleSituationChange}
+					setSituation={setActiveSituation}
 					activeSituation={activeSituation}
 				/>
 				<div className="container mx-auto px-4">
-					<Error />
+					<Error error={error} />
 					<Routes>
 						<Route
 							path="/"
 							element={<Navigate to={Object.keys(sitemap)[0]} replace />}
 						/>
-						<Route path="/*" element={<RulePageWrapper />} />
+						<Route path="/*" element={<RulePageWrapper engine={engine} />} />
 					</Routes>
 				</div>
 			</BrowserRouter>

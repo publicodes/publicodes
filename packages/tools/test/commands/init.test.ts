@@ -2,9 +2,9 @@ import { execSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import { describe, expect, it } from 'vitest'
+import { DEFAULT_BUILD_DIR } from '../../src'
 import { basePackageJson, PackageJson } from '../../src/utils/pjson'
 import { CLIExecutor, runInDir } from '../cli-utils'
-import { DEFAULT_BUILD_DIR } from '../../src'
 
 const cli = new CLIExecutor()
 
@@ -17,7 +17,7 @@ describe('publicodes init', () => {
 				fs.readFileSync('package.json', 'utf-8'),
 			) as PackageJson
 
-			const { stdout } = await cli.execCommand('init -y -p pnpm')
+			const { stdout } = await cli.execCommand('init -y')
 
 			expect(stdout).toContain('Dependencies installed')
 			expect(stdout).toContain('Files generated')
@@ -33,7 +33,7 @@ describe('publicodes init', () => {
 				packageJson.devDependencies?.['@publicodes/tools'],
 			).not.toBeUndefined()
 			expect(fs.existsSync('node_modules')).toBe(true)
-			expect(fs.existsSync('pnpm-lock.yaml')).toBe(true)
+			expect(fs.existsSync('package-lock.json')).toBe(true)
 			expect(fs.existsSync('README.md')).toBe(true)
 			expect(fs.existsSync('src/salaire.publicodes')).toBe(true)
 			expect(fs.existsSync('test/salaire.test.ts')).toBe(true)
@@ -48,7 +48,7 @@ describe('publicodes init', () => {
 				fs.readFileSync('package.json', 'utf-8'),
 			) as PackageJson
 
-			const { stdout } = await cli.execCommand('init -y --no-install -p pnpm')
+			const { stdout } = await cli.execCommand('init -y --no-install')
 
 			expect(stdout).toContain('Files generated')
 			expect(stdout).toContain('New to Publicodes?')
@@ -64,7 +64,7 @@ describe('publicodes init', () => {
 			).not.toBeUndefined()
 
 			expect(fs.existsSync('node_modules')).toBe(false)
-			expect(fs.existsSync('pnpm-lock.yaml')).toBe(false)
+			expect(fs.existsSync('package-lock.json')).toBe(false)
 			expect(fs.existsSync('README.md')).toBe(true)
 			expect(fs.existsSync('src/salaire.publicodes')).toBe(true)
 		})
@@ -72,7 +72,7 @@ describe('publicodes init', () => {
 
 	it('should create a new package.json', async () => {
 		await runInDir('tmp', async (cwd) => {
-			const { stdout } = await cli.execCommand('init -y -p pnpm')
+			const { stdout } = await cli.execCommand('init -y')
 
 			expect(stdout).toContain('Dependencies installed')
 			expect(stdout).toContain('Files generated')
@@ -93,7 +93,7 @@ describe('publicodes init', () => {
 				packageJson.devDependencies?.['@publicodes/tools'],
 			).not.toBeUndefined()
 			expect(fs.existsSync('node_modules')).toBe(true)
-			expect(fs.existsSync('pnpm-lock.yaml')).toBe(true)
+			expect(fs.existsSync('package-lock.json')).toBe(true)
 			expect(fs.existsSync('README.md')).toBe(true)
 			expect(fs.existsSync('src/salaire.publicodes')).toBe(true)
 		})

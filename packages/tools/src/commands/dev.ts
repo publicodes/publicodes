@@ -1,7 +1,9 @@
 import * as p from '@clack/prompts'
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
-import createDevServer, { DevServerOptions } from '../create-dev-server'
+import createViteDevServer, {
+	ViteDevServerOptions,
+} from '../devServer/createViteDevServer'
 import { PackageJson } from '../utils/pjson'
 import { toArray } from '../utils/toArray'
 
@@ -99,15 +101,15 @@ To avoid passing arguments and flags every time, you can set their values in the
 
 		// quickDoc is in the current package (@publicodes/tools) under the folder /quick-doc
 
-		const quickDocPath = __dirname
+		const quickDocPath = (import.meta.url ?? __dirname)
 			.replace('file://', '')
 			.replace('dist/commands/dev.js', 'quick-doc')
 
-		const server = await createDevServer(
+		const server = await createViteDevServer(
 			filesToCompile,
 			situationFiles,
 			quickDocPath,
-			flags as DevServerOptions,
+			flags as ViteDevServerOptions,
 		)
 		// Handle process termination
 		let isShuttingDown = false

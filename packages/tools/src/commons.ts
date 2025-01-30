@@ -1,12 +1,12 @@
 import { basename } from 'path'
 import {
-	Rule,
-	Logger,
-	ExprAST,
-	reduceAST,
 	ASTNode,
-	PublicodesExpression,
 	BinaryOp,
+	ExprAST,
+	Logger,
+	PublicodesExpression,
+	reduceAST,
+	Rule,
 } from 'publicodes'
 import yaml from 'yaml'
 
@@ -270,4 +270,4 @@ export function getValueWithoutQuotes(value: PublicodesExpression | undefined) {
 
 /** Used by the CLI */
 
-export const DEFAULT_BUILD_DIR = 'publicodes-dist'
+export const DEFAULT_BUILD_DIR = 'publicodes-build'

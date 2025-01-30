@@ -1,6 +1,6 @@
+import { execSync } from 'child_process'
 import fs from 'fs'
 import { DEFAULT_BUILD_DIR } from '../commons'
-import { execSync } from 'child_process'
 
 export type PackageJson = {
 	name: string
@@ -50,7 +50,6 @@ export const basePackageJson: PackageJson = {
 	license: 'MIT',
 	files: [DEFAULT_BUILD_DIR],
 	peerDependencies: {
-		// TODO: how to get the latest version of publicodes?
 		publicodes: '^' + getLastVersion('publicodes'),
 	},
 	devDependencies: {

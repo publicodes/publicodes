@@ -1,22 +1,26 @@
 import type { Situation } from 'publicodes'
+import { useState } from 'react'
 
-declare const __INJECTED_SITUATIONS__: Situation<string>
+declare const __INJECTED_SITUATIONS__: Record<string, Situation<string>>
 
-export let situations = __INJECTED_SITUATIONS__
-const situationUpdate = new EventTarget()
-const SITUATION_UPDATED = 'situations-updated'
-
-export function onSituationUpdate(callback: () => void) {
-	situationUpdate.addEventListener(SITUATION_UPDATED, callback)
-	return () => situationUpdate.removeEventListener(SITUATION_UPDATED, callback)
+const emptySituation: Situation<string> = {}
+export function useSituation(currentSituation: string) {
+	const situations = useSituationList()
+	return currentSituation in situations ?
+			situations[currentSituation]
+		:	emptySituation
 }
 
-if (import.meta.hot) {
-	import.meta.hot.on(
-		'situations-updated',
-		(newSituations: Situation<string>) => {
-			situations = newSituations
-			situationUpdate.dispatchEvent(new Event(SITUATION_UPDATED))
-		},
-	)
+export function useSituationList() {
+	const [situations, setSituations] = useState(__INJECTED_SITUATIONS__)
+
+	if (import.meta.hot) {
+		import.meta.hot.on(
+			'situations-updated',
+			(newSituations: typeof __INJECTED_SITUATIONS__) => {
+				setSituations(newSituations)
+			},
+		)
+	}
+	return situations
 }
