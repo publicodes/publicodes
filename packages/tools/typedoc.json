@@ -1,16 +1,10 @@
 {
-	"$schema": "https://typedoc.org/schema.json",
-	"name": "@publicodes/tools API",
 	"entryPoints": [
-		"./src",
-		"./src/optims/",
-		"./src/compilation/",
-		"./src/migration/"
+		"./src/index.ts",
+		"./src/optims/index.ts",
+		"./src/compilation/index.ts",
+		"./src/migration/index.ts"
 	],
-	"skipErrorChecking": true,
-	"navigationLinks": {
-		"GitHub": "https://github.com/publicodes/tools"
-	},
-	"plugin": ["typedoc-plugin-export-functions"],
-	"commentStyle": "all"
+
+	"skipErrorChecking": true
 }
