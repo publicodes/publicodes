@@ -32,7 +32,7 @@ async function fetchPackageMetadata(
 	const data = await response.json();
 	const description =
 		data.description.startsWith('<div') || data.description.startsWith('> [!')
-			? pkg.description ?? ''
+			? (pkg.description ?? '')
 			: data.description;
 	const maintener = produits.find((produit) => produit.slug === pkg.maintainer);
 	if (!maintener) {

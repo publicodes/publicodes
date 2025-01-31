@@ -11,8 +11,8 @@ export function computeTraversedVariableBeforeEval(
 		return
 	}
 	if (cachedNode !== undefined) {
-		cachedNode.traversedVariables?.forEach(
-			(name) => traversedVariablesStack[0]?.add(name),
+		cachedNode.traversedVariables?.forEach((name) =>
+			traversedVariablesStack[0]?.add(name),
 		)
 		return
 	}

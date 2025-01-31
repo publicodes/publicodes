@@ -1,0 +1,10 @@
+importer!:
+  depuis:
+    nom: 'my-external-package'
+    source: '../my-external-package.model.json'
+  dans: pkg
+  les règles:
+    - root . b
+
+rule:
+  formule: pkg . root . b * 2

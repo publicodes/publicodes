@@ -41,14 +41,14 @@ La fonction
 [`getModelFromSource`](https://publicodes.github.io/tools/functions/compilation.getModelFromSource.html)
 prend en paramètre :
 
--   un [_glob_](https://www.npmjs.com/package/glob) (ou un chemin vers un dossier)
-    permettant de définir les fichiers à compiler.
+- un [_glob_](https://www.npmjs.com/package/glob) (ou un chemin vers un dossier)
+  permettant de définir les fichiers à compiler.
     > Si le paramètre est un chemin vers un dossier, `<dossier>/**/*.publicodes`
     > est utilisé par défaut.
--   un objet de configuration optionnel :
-    -   `ignore` : un tableau de [_globs_](https://www.npmjs.com/package/glob) à
-        ignorer
-    -   `verbose` : un booléen permettant d'afficher les logs de compilation
+- un objet de configuration optionnel :
+    - `ignore` : un tableau de [_globs_](https://www.npmjs.com/package/glob) à
+      ignorer
+    - `verbose` : un booléen permettant d'afficher les logs de compilation
 
 #### Exemple d'utilisation
 

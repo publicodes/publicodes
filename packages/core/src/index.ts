@@ -14,7 +14,12 @@ export { type Evaluation, type Unit } from './AST/types'
 export { isPublicodesError, PublicodesError } from './error'
 export { capitalise0, formatValue } from './format'
 export { simplifyNodeUnit } from './nodeUnits'
-export { parseExpression, type ExprAST } from './parseExpression'
+export {
+	parseExpression,
+	type ExprAST,
+	type BinaryOp,
+	type UnaryOp,
+} from './parseExpression'
 export { default as serializeEvaluation } from './serializeEvaluation'
 export { parseUnit, serializeUnit } from './units'
 export { parsePublicodes }

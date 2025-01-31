@@ -1,0 +1,14 @@
+importer!:
+  depuis:
+    nom: 'my-external-package'
+    source: './my-external-package.model.json'
+  les règles:
+    - root . a:
+        titre: "Ajout d'un titre"
+    - root . c:
+        description: "Ajout d'une description"
+    - root 2:
+        résumé: "Modification d'un résumé"
+    - e:
+        résumé: Lorem ipsum
+        question:

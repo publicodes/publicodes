@@ -23,12 +23,12 @@ Et il a bien grandi ! En 2024, Publicodes est utilisé dans de nombreux projets,
 
 Voici un petit retour sur les accomplissements de l'année :
 
--   🚀 Le **passage en v1** tant attendu
--   📚 Un **nouveau site** pour la documentation
--   🧑‍💻 Une **extension VSCode** avec coloration syntaxique et autocomplétion
--   ⚡ Des **améliorations de performances** (entre 30% et 50% plus rapide)
--   🗨️ Beaucoup d'échanges dans la **communauté** (Publicodes café, [Github](https://github.com/publicodes/publicodes/discussions) et [Matrix](https://matrix.to/#/#publicodes:matrix.org))
--   📦 Ainsi que de [**nombreuses évolutions du langage**](https://github.com/publicodes/publicodes/blob/master/CHANGELOG.md).
+- 🚀 Le **passage en v1** tant attendu
+- 📚 Un **nouveau site** pour la documentation
+- 🧑‍💻 Une **extension VSCode** avec coloration syntaxique et autocomplétion
+- ⚡ Des **améliorations de performances** (entre 30% et 50% plus rapide)
+- 🗨️ Beaucoup d'échanges dans la **communauté** (Publicodes café, [Github](https://github.com/publicodes/publicodes/discussions) et [Matrix](https://matrix.to/#/#publicodes:matrix.org))
+- 📦 Ainsi que de [**nombreuses évolutions du langage**](https://github.com/publicodes/publicodes/blob/master/CHANGELOG.md).
 
 Cela nous a semblé un bel âge pour prendre le pouls de la communauté sur ce langage un peu particulier. Nous avons donc **lancé un questionnaire** pour en savoir plus sur les usages de Publicodes en 2024.
 
@@ -98,9 +98,9 @@ Cela tombe bien, nous avons **déjà commencé à réfléchir à ces sujets**, e
 
 <Callout type="caution" title="Coming soon ...">
 
--   Faire évoluer `une possibilité` vers un type `enum` [#571](https://github.com/publicodes/publicodes/discussions/571)
--   Utiliser un modèle précompilé pour améliorer les perfomances [#256](https://github.com/publicodes/publicodes/discussions/256)
--   Une nouvelle CLI avec la commande `publicodes compile` [#567](https://github.com/publicodes/publicodes/discussions/567)
+- Faire évoluer `une possibilité` vers un type `enum` [#571](https://github.com/publicodes/publicodes/discussions/571)
+- Utiliser un modèle précompilé pour améliorer les perfomances [#256](https://github.com/publicodes/publicodes/discussions/256)
+- Une nouvelle CLI avec la commande `publicodes compile` [#567](https://github.com/publicodes/publicodes/discussions/567)
 
 </Callout>
 <small>

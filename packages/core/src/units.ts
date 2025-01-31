@@ -1,12 +1,14 @@
 import { BaseUnit, Evaluation, Unit } from './AST/types'
 import { PublicodesError } from './error'
-
+/** @experimental */
 export type getUnitKey = (writtenUnit: string) => string
+/** @experimental */
 export type formatUnit = (unit: string, count: number) => string
 /**
  * Parse a unit string into a Unit object
  *
  * @param string The unit string to parse
+ * @param getUnitKey (@experimental DO NOT USE): A function to normalize the unit string
  *
  * @returns The parsed unit object
  *

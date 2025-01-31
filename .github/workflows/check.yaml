@@ -17,8 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/install
-        with:
-          node-version: 18
       - run: yarn build
       - name: Continuously Release
         run: npx pkg-pr-new publish './packages/*'
@@ -30,8 +28,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/install
-        with:
-          node-version: 18
       - run: yarn test
 
   typecheck:

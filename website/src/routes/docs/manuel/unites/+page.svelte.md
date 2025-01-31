@@ -76,10 +76,10 @@ salaire annuel:
 
 ### Unités de base disponibles pour la conversion
 
--   `jour` / `mois` / `trimestre` / `an`
--   `€` / `k€`
--   `g` / `kg` / `mg`
--   `km` / `m` / `cm` / `mm`
+- `jour` / `mois` / `trimestre` / `an`
+- `€` / `k€`
+- `g` / `kg` / `mg`
+- `km` / `m` / `cm` / `mm`
 
 Si vous souhaitez en ajouter d'autres, n'hésitez pas à proposer une pull request ([voir le code source concerné](https://github.com/publicodes/publicodes/blob/2ffef27378e370f9ee018efee1e383e4e7966746/packages/core/src/units.ts#L183)).
 

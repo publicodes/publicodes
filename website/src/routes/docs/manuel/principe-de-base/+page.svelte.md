@@ -462,8 +462,8 @@ ce soit depuis une autre règle ou lors de l'évaluation.
 
 Si on ne souhaite pas exposer certaines règles internes, il est possible de les marquer comme `privée` :
 
--   soit en ajoutant un attribut `privé: oui` dans le corps de la règle
--   soit en préfixant le nom de la règle par : `[privé]`
+- soit en ajoutant un attribut `privé: oui` dans le corps de la règle
+- soit en préfixant le nom de la règle par : `[privé]`
 
 Les règles privées permettent d'encapsuler des calculs intermédiaires. Elles sont utiles si
 vous exposez votre base de règles à des utilisateurs tiers (via un paquet npm ou l'API REST) car elles
@@ -484,12 +484,12 @@ résultat: cotisation . taux
 
 ### Comportement des règles privées
 
--   Les règles privées peuvent être référencées depuis toutes les règles située dans l'espace de nom parent direct. Par exemple, si la règle `a . b` est privée, elle peut être référencée depuis `a . b . c`, `a . x`, `a`, mais pas par `d` ou `d . c`.
--   Les règles privées ne possèdent pas de page de documentation dédiées
--   L'appel de getRule sur une règle privée jette une erreur
--   Elles ne sont pas listées dans `getParsedRules`
--   On ne peut pas évaluer une référence à une règle privée
--   On ne peut pas modifier une règles privée via la situation
+- Les règles privées peuvent être référencées depuis toutes les règles située dans l'espace de nom parent direct. Par exemple, si la règle `a . b` est privée, elle peut être référencée depuis `a . b . c`, `a . x`, `a`, mais pas par `d` ou `d . c`.
+- Les règles privées ne possèdent pas de page de documentation dédiées
+- L'appel de getRule sur une règle privée jette une erreur
+- Elles ne sont pas listées dans `getParsedRules`
+- On ne peut pas évaluer une référence à une règle privée
+- On ne peut pas modifier une règles privée via la situation
 
 ## Cycle
 

@@ -40,9 +40,13 @@ export function load(app) {
 				`[$1](${page.url.split('/').at(-2) ?? '.'}/$2)`,
 			)
 			.replaceAll('(../', '(')
-			// Fix escaping of < and >
+			// Fix escaping of < , > and { }
 			.replaceAll('\\<', '&amp;lt;')
 			.replaceAll('\\>', '&amp;gt;')
+
+			.replaceAll('\\{', '&amp;#123;')
+			.replaceAll('\\}', '&amp;#125;')
+
 			.replaceAll(/\\\`(.*)\\\`/g, '`&#96;$1&#96;`')
 
 		// .replaceAll(/\\\{(.*)\\\}/g, '{&#39;&#123;$1&#125;&#39;}')

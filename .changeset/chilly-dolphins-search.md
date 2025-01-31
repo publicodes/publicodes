@@ -43,7 +43,7 @@ Slight performance improvement (+5% on the publicodes benchmark)
 
 AST BREAKING CHANGE (AST change are not in semantic versioning) :
 
--   `parseExpression` of number with unit returns a constant node with the unit as a property, instead of a unit node to be parsed:
+- `parseExpression` of number with unit returns a constant node with the unit as a property, instead of a unit node to be parsed:
     ```js
     parseExpression('3 €')
     // Before : { unité: '€', constant: { nodeType: 'constant', value: 3 }

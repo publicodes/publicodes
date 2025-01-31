@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+
+@layer base {
+	h1 {
+		@apply text-4xl font-bold mt-8 mb-6 text-[#10162F];
+	}
+
+	h2 {
+		@apply text-3xl font-semibold mt-6 mb-5 text-[#10162F];
+	}
+
+	h3 {
+		@apply text-2xl font-semibold mt-5 mb-4 text-[#10162F];
+	}
+
+	p {
+		@apply text-base leading-relaxed mb-4 text-[#4B5563];
+	}
+
+	ul {
+		@apply list-disc list-inside mb-4 space-y-2;
+	}
+
+	ol {
+		@apply list-decimal list-inside mb-4 space-y-2;
+	}
+
+	li {
+		@apply text-[#4B5563] leading-relaxed;
+	}
+
+	a {
+		@apply text-[#2975d1] hover:text-[#1a365d] transition-colors underline-offset-2 hover:underline;
+	}
+
+	blockquote {
+		@apply pl-4 border-l-4 border-[#E5E7EB] italic my-4;
+	}
+
+	code {
+		@apply bg-[#F3F4F6] px-2 py-1 rounded text-sm text-[#10162F];
+	}
+
+	pre {
+		@apply bg-[#F3F4F6] p-4 rounded-lg mb-4 overflow-x-auto;
+	}
+	button {
+		@apply bg-slate-100  px-2 py-1 rounded-md hover:bg-slate-50 transition-colors cursor-pointer disabled:opacity-50 text-sm  disabled:cursor-not-allowed border border-slate-600 text-slate-800 ml-2;
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.animate-fade-in {
+	animation: fade-in 0.15s ease-out;
+}

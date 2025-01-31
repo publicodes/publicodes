@@ -17,9 +17,9 @@ OpenFisca est bâti comme le sont beaucoup de serveurs : du code métier (ex. co
 
 Le code métier, comme le moteur d'exécution, est écrit en Python, langage très commun, et en Numpy \*\*. Ces choix historiques entraînent ces limitations importantes :
 
--   les règles (le code représentant la législation) ne sont pas réutilisables en dehors d'OpenFisca (il est très spécifique et surtout difficile à _parser_)
--   en conséquence, le moteur est destiné (et limité) à fournir des résultats purement numériques.
--   il faut être développeur expérimenté, habitué au calcul vectoriel imposé par Numpy, pour lire ou modifier ces règles. En bref, l'outil fait des calculs bien plus rapides, mais les règles et le moteur sont bien plus complexes.
+- les règles (le code représentant la législation) ne sont pas réutilisables en dehors d'OpenFisca (il est très spécifique et surtout difficile à _parser_)
+- en conséquence, le moteur est destiné (et limité) à fournir des résultats purement numériques.
+- il faut être développeur expérimenté, habitué au calcul vectoriel imposé par Numpy, pour lire ou modifier ces règles. En bref, l'outil fait des calculs bien plus rapides, mais les règles et le moteur sont bien plus complexes.
 
 Le développement de toute une gamme d'applications est fortement compliqué par ces limitations. Un simulateur Web devra recopier la liste des lignes d'une fiche de paie, pourtant présente dans le moteur, pour en afficher les valeurs numériques; on ne peut construire une vue pédagogique dans le navigateur qui explique les calculs; le code métier est ouvert (disponible en ligne) mais très complexe, même pour un développeur; les outils d'exploration de la législation sont très coûteux à construire et maintenir; etc.
 
@@ -43,8 +43,8 @@ Pour aller plus loin, un example d'implémentation d'une fonction de calcul dans
 
 G6K : Générateur de simulateurs de calcul utilisé par [service-public.fr](http://service-public.fr/).
 
--   Code du générateur : https://github.com/eureka2/G6K
--   Code généré de plusieurs formulaires de Service-public.fr : https://gitlab.com/pidila/sp-simulateurs-data/tree/master
+- Code du générateur : https://github.com/eureka2/G6K
+- Code généré de plusieurs formulaires de Service-public.fr : https://gitlab.com/pidila/sp-simulateurs-data/tree/master
 
 Outil utilisé par la DILA pour générer plusieurs de ses simulateurs, dont carte grise et gratification minimale d'un stagiaire.
 
@@ -60,8 +60,8 @@ Les règles de G6K sont aujourd'hui éditables directement sur le Web ! Par cont
 
 Ces outils se concentre davantage sur le recueil de données : leur capacité de faire des calculs est limitée ou absente.
 
--   l'outil de GDS : un DSL Ruby qui produit des formulaires (je ne retrouve pas le lien !).
+- l'outil de GDS : un DSL Ruby qui produit des formulaires (je ne retrouve pas le lien !).
 
--   TypeForm ?
+- TypeForm ?
 
--   [Téléprocédures simplifiées, TPS](https://tps.apientreprise.fr/)
+- [Téléprocédures simplifiées, TPS](https://tps.apientreprise.fr/)

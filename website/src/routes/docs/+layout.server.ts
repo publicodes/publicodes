@@ -17,8 +17,9 @@ docPages.forEach((page) => {
 });
 
 export function load({ url }) {
-	const metadata = docPages.find((page) => page.path === url.pathname)
-		?.metadata;
+	const metadata = docPages.find(
+		(page) => page.path === url.pathname
+	)?.metadata;
 	return {
 		menuEntries: docPages.filter((page) => page.path.split('/').length <= 4),
 		...metadata

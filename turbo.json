@@ -66,6 +66,9 @@
 			"dependsOn": ["^build", "doc"],
 			"cache": false,
 			"persistent": true
+		},
+		"@publicodes/tools#test": {
+			"dependsOn": ["build"]
 		}
 	}
 }

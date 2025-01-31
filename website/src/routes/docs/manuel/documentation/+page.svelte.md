@@ -37,12 +37,12 @@ Si vous souhaitez publier une documentation directement sur votre site web, vous
 
 La documentation automatique de publicodes génère une page web par règle. Cette règle contient l'explication des calculs, ainsi que des métadonnées standardisées qui sont définies directement dans le code :
 
--   `titre` : si défini, il est utilisé à la place du nom de la règle dans l'interface utilisateur.
--   `description` : elle est affichée comme paragraphe d'introduction sur la documentation
--   `icônes` : permet d'ajouter des emojis qui sont affichées à côté du titre (mais pas dans l'explication des calculs).
--   `note` : on l'utilise pour ajouter des informations complémentaires à la règle, généralement les détails d'implémentation ou des informations techniques. Elle est affichée en bas de la page de documentation.
--   `question` : utilisée pour la [génération automatique de formulaire](/docs/guides/formulaire). Elle est affichée dans la page de documentation en l'absence de la métadonnée `description`.
--   `références` : utilisée pour ajouter des liens vers des sources externes. Elle est affichée en bas de la page de documentation.
+- `titre` : si défini, il est utilisé à la place du nom de la règle dans l'interface utilisateur.
+- `description` : elle est affichée comme paragraphe d'introduction sur la documentation
+- `icônes` : permet d'ajouter des emojis qui sont affichées à côté du titre (mais pas dans l'explication des calculs).
+- `note` : on l'utilise pour ajouter des informations complémentaires à la règle, généralement les détails d'implémentation ou des informations techniques. Elle est affichée en bas de la page de documentation.
+- `question` : utilisée pour la [génération automatique de formulaire](/docs/guides/formulaire). Elle est affichée dans la page de documentation en l'absence de la métadonnée `description`.
+- `références` : utilisée pour ajouter des liens vers des sources externes. Elle est affichée en bas de la page de documentation.
 
 **Exemple :**
 
@@ -84,8 +84,8 @@ Les mécanismes et les métadonnées étant définis au même niveau d'indentati
 
 Pour éviter ce problème, il est recommandé de :
 
--   Préfixer les métadonnées personnalisées avec `_`
--   Rassembler toutes les métadonnées personnalisées dans le même objet ayant pour clé un nom spécifique à votre domaine.
+- Préfixer les métadonnées personnalisées avec `_`
+- Rassembler toutes les métadonnées personnalisées dans le même objet ayant pour clé un nom spécifique à votre domaine.
 
 **Exemple :**
 

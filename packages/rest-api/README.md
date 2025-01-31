@@ -2,9 +2,9 @@ This package allows you to create a REST API, which follows OpenAPI 3.0 specific
 
 It consists of [Koa](https://github.com/koajs/koa) middleware that adds routes to your router:
 
--   `POST` `/evaluate` Evaluate one or more expressions with a given situation
--   `GET` `/rules` Returns the list of all your rules
--   `GET` `/rules/{rule}` Returns a specific rule
+- `POST` `/evaluate` Evaluate one or more expressions with a given situation
+- `GET` `/rules` Returns the list of all your rules
+- `GET` `/rules/{rule}` Returns a specific rule
 
 ## Getting started
 
@@ -35,5 +35,5 @@ app.use(router.routes()).listen(3000)
 // ...
 ```
 
--   A complete example file is in the sources if needed : [example.ts](https://github.com/publicodes/publicodes/blob/master/packages/rest-api/example.ts).
--   This package is used in production by **[mon-entreprise API](https://mon-entreprise.urssaf.fr/d%C3%A9veloppeur/api)**
+- A complete example file is in the sources if needed : [example.ts](https://github.com/publicodes/publicodes/blob/master/packages/rest-api/example.ts).
+- This package is used in production by **[mon-entreprise API](https://mon-entreprise.urssaf.fr/d%C3%A9veloppeur/api)**

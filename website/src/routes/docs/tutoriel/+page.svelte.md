@@ -19,19 +19,19 @@ npm install publicodes
 
 Voici comment importer publicodes en fonction de l'environnement.
 
--   Si vous utilisez webpack ou une version de node >= `15.0.0`
+- Si vous utilisez webpack ou une version de node >= `15.0.0`
 
     ```js
     import Engine from 'publicodes';
     ```
 
--   Pour les autres versions de node
+- Pour les autres versions de node
 
     ```js
     const Engine = require('publicodes').default;
     ```
 
--   Dans le navigateur
+- Dans le navigateur
 
     ```html
     <script
