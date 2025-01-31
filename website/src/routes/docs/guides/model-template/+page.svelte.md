@@ -3,31 +3,22 @@ sidebar_position: 1
 title: Créer un paquet de règles réutilisable
 ---
 
-Avec le nouveau [système d'import de règles](../manuel/importer-des-regles), il est possible
-d'implémenter son modèle Publicodes dans un dépôt dédié et de le publier sur
-NPM. Cela permet de faciliter la réutilisation des modèles dans différents
-projets.
+Dans ce tutoriel, nous verrons comment créer un paquet de règles Publicodes réutilisable, et l'importer dans une application JS.
 
-## Utiliser le template GitHub
+## 1. Initialiser un projet publicodes
 
-Afin de faciliter le processus, un template est disponible sur Github. Il suffit
-de cliquer sur le bouton _Use this template_ pour créer un nouveau dépôt à partir
-de ce template.
+Pour commencer, nous allons initialiser un projet publicodes. Le plus simple est d'utiliser `npx @publicodes/tools init` :
 
-[➡ Utiliser le template](https://github.com/publicodes/model-template)
+```bash
+mkdir mon-projet-publicodes
+cd mon-projet-publicodes
+npx @publicodes/tools init
+```
 
-La suite des instructions est disponible dans le README du dépôt.
+Cette dernière commande va mettre en place un nouveau projet publicodes, en demandant quelques informations de base (nom du projet, auteur, gestionnaire de paquets, etc.).
 
-### Fonctionnalités
+Ce projet contient :
 
-Ce template permet d'initialiser un dépôt avec les fonctionnalités suivantes :
-
-- 📦 compilation des règles publicodes en un seul fichier JSON
-- 📖 documentation du modèle interactive disponible sur GitHub
-- 🚀 API REST pour utiliser le modèle dans une application
-
-## Exemple de dépôts utilisant ce template
-
-- [`@incubateur-ademe/publicodes-impact-livraison`](https://github.com/incubateur-ademe/publicodes-impact-livraison)
-- [`@incubateur-ademe/publicodes-negaoctet`](https://github.com/incubateur-ademe/publicodes-negaoctet)
-- [`@incubateur-ademe/publicodes-commun`](https://github.com/incubateur-ademe/publicodes-commun)
+- un fichier `package.json` avec les dépendances nécessaires
+- un dossier `src/` contenant les fichiers de règles en `.publicodes`
+- un dossier `test/` avec un exemple de test unitaire (`salaire.test.js`)

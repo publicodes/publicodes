@@ -2,5 +2,6 @@
 	"compilerOptions": {
 		"allowJs": true
 	},
-	"extends": "../../tsconfig.json"
+	"extends": "../../tsconfig.json",
+	"exclude": ["./quick-doc"]
 }

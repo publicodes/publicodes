@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useSituationList } from '../situations'
-
+import React from 'react'
 export default function Header({
 	setSituation,
 	activeSituation,

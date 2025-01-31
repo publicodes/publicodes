@@ -52,6 +52,7 @@
 		"build": "tsup",
 		"watch": "tsup --watch",
 		"clean": "rm -rf dist",
+		"test:type": "tsc --noEmit",
 		"test": "VITE_CJS_TRACE=true vitest run --globals"
 	},
 	"engines": {
