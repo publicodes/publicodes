@@ -5,6 +5,7 @@ import fs from 'fs'
 import { execSync } from 'node:child_process'
 import path from 'path'
 
+import type { OptionFlag } from '@oclif/core/interfaces'
 import { DEFAULT_BUILD_DIR } from '../commons'
 import {
 	exitWithError,
@@ -14,10 +15,9 @@ import {
 	Spinner,
 } from '../utils/cli'
 import { basePackageJson, PackageJson, readPackageJson } from '../utils/pjson'
-import type { OptionFlag } from '@oclif/core/interfaces'
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun'
-type ExtraTool = 'gh-actions' | 'test'
+type ExtraTool = 'test' // | 'gh-actions'
 
 export default class Init extends Command {
 	static override args = {}
@@ -82,18 +82,19 @@ installation.`,
 			process.exit(1)
 		}
 
-		if (extraTools.includes('gh-actions')) {
-			// TODO
-			// setupGithubActions()
-		}
-		if (extraTools.includes('test')) {
-			setupTests(pkgJSON)
-		}
+		// if (extraTools.includes('gh-actions')) {
+		// TODO
+		// setupGithubActions()
+		// }
 
 		const pkgManager = await getPackageManager(flags['pkg-manager'], flags.yes)
 		if (p.isCancel(pkgManager)) {
 			p.cancel('init cancelled')
 			process.exit(1)
+		}
+
+		if (extraTools.includes('test')) {
+			setupTests(pkgJSON, pkgManager)
 		}
 
 		await generateBaseFiles(pkgJSON, pkgManager)
@@ -260,34 +261,34 @@ function askPackageManager(): Promise<PackageManager> {
 
 async function getExtraTools(useDefault: boolean): Promise<ExtraTool[]> {
 	if (useDefault) {
-		return ['gh-actions', 'test']
+		return ['test']
 	}
 	return p.multiselect({
 		message: `Select extra tools (press ${chalk.bold.italic(
 			'space',
 		)} to unselect)`,
 		options: [
-			{
-				value: 'gh-actions',
-				label: 'GitHub Actions',
-				hint: 'automate build, test and publishing',
-			},
+			// 	{
+			// 		value: 'gh-actions',
+			// 		label: 'GitHub Actions',
+			// 		hint: 'automate build, test and publishing',
+			// 	},
 			{ value: 'test', label: 'Unit test', hint: 'Vitest + example' },
 		],
 		required: false,
-		initialValues: ['gh-actions', 'test'],
+		initialValues: ['test'],
 	}) as Promise<ExtraTool[]>
 }
 
-function setupTests(pkgJSON: PackageJson) {
+function setupTests(pkgJSON: PackageJson, pkgManager: PackageManager) {
 	pkgJSON.devDependencies = {
 		...pkgJSON.devDependencies,
 		vitest: '^2.1.2',
-		'@types/jest': '^29.5.13',
 	}
 	pkgJSON.scripts = {
 		...pkgJSON.scripts,
-		test: 'vitest run --globals',
+		pretest: `${pkgManager} run compile`,
+		test: 'vitest run',
 	}
 	return pkgJSON
 }
