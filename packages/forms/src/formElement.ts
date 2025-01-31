@@ -45,6 +45,50 @@ export type TextareaElement = FormMeta & {
 	element: 'textarea'
 }
 
+/**
+ * Represents the different types of form elements that can be generated from Publicodes rules.
+ * This union type combines all possible form control representations.
+ *
+ * @typedef {Object} FormElement
+ *
+ * Can be one of:
+ * - InputElement: Basic HTML input elements (text, number, date, etc.)
+ * - SelectElement: Dropdown menu with predefined options
+ * - RadioGroupElement: Group of radio buttons with different styling options
+ * - TextareaElement: Multiline text input
+ *
+ * Each element type includes common form metadata:
+ * - label: Display text for the form control
+ * - description: Optional help text
+ * - id: Unique identifier (usually the rule's dotted name)
+ *
+ * @example
+ * ```ts
+ * // Input element for a number
+ * const salaryInput: FormElement = {
+ *   element: 'input',
+ *   type: 'number',
+ *   label: 'Salary',
+ *   id: 'employee.salary'
+ * }
+ *
+ * // Radio group for a boolean choice
+ * const activeInput: FormElement = {
+ *   element: 'RadioGroup',
+ *   style: 'button',
+ *   orientation: 'horizontal',
+ *   options: [
+ *     { label: 'Yes', value: true },
+ *     { label: 'No', value: false }
+ *   ],
+ *   label: 'Is active?',
+ *   id: 'employee.active'
+ * }
+ * ```
+ *
+ * @see {@link getFormElement}
+ */
+
 export type FormElement =
 	| InputElement<InputType>
 	| SelectElement

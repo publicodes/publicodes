@@ -1,7 +1,7 @@
 import type Engine from 'publicodes'
 import { serializeUnit } from 'publicodes'
 import {
-	FormElement,
+	getFormElement,
 	InputElement,
 	Option,
 	RadioGroupElement,
@@ -34,6 +34,7 @@ export type EvaluatedNumberInput = InputElement<'number'> &
 	Evaluated<{
 		value: number | undefined
 		unit: string | undefined
+		minValue: number | undefined
 		defaultValue: number | undefined
 	}>
 
@@ -44,6 +45,7 @@ export type EvaluatedOptionsGroup = (
 	required: boolean
 	answered: boolean
 	value: string | undefined
+
 	defaultValue: string | undefined
 } & (
 		| {
@@ -62,6 +64,41 @@ export type EvaluatedTextarea = TextareaElement &
 		defaultValue: string | undefined
 	}>
 
+/**
+ * Represents a form element with additional evaluated properties.
+ * These properties are computed at runtime based on the current state of the Publicodes engine.
+ *
+ * Each evaluated form element includes common properties:
+ * - `applicable`: Whether the field should be shown based on applicability rules
+ * - `required`: Whether user input is required for this field
+ * - `answered`: Whether the field has been answered/filled
+ *
+ * Can be one of:
+ * - `EvaluatedCheckbox`: A checkbox with checked state
+ * - `EvaluatedStringInput`: Text/date input with current value
+ * - `EvaluatedNumberInput`: Number input with value and unit
+ * - `EvaluatedOptionsGroup`: Select/radio with applicable options
+ * - `EvaluatedTextarea`: Multiline text with current value
+ *
+ * @example
+ * ```ts
+ * // Example of an evaluated number input
+ * const evaluatedField: EvaluatedFormElement = {
+ *   element: 'input',
+ *   type: 'number',
+ *   id: 'salary',
+ *   label: 'Monthly salary',
+ *   applicable: true,
+ *   required: true,
+ *   answered: false,
+ *   value: 3000,
+ *   unit: '€',
+ *   defaultValue: 2500
+ * }
+ * ```
+ *
+ * @see {@link addEvaluatedProperties} - Function that computes these evaluated properties
+ */
 export type EvaluatedFormElement =
 	| EvaluatedCheckbox
 	| EvaluatedStringInput
@@ -69,12 +106,11 @@ export type EvaluatedFormElement =
 	| EvaluatedOptionsGroup
 	| EvaluatedTextarea
 
-export function addEvaluatedProperties(
-	engine: Engine,
-	formElement: FormElement,
+export function getEvaluatedFormElement<Name extends string>(
+	engine: Engine<Name>,
+	dottedName: Name,
 ): EvaluatedFormElement {
-	const element: EvaluatedFormElement = formElement as EvaluatedFormElement
-	const dottedName = element.id
+	const element = getFormElement(engine, dottedName) as EvaluatedFormElement
 
 	element.applicable =
 		engine.evaluate({
@@ -99,11 +135,12 @@ export function addEvaluatedProperties(
 		dottedName in defaultValue.missingVariables &&
 		defaultValue.nodeValue === undefined
 
-	element.answered = element.id in engine.getSituation()
+	const situation = engine.getSituation()
+	element.answered = element.id in situation
 
 	const value =
-		dottedName in engine.getSituation() ?
-			engine.evaluate(dottedName).nodeValue
+		dottedName in situation ?
+			engine.evaluate(situation[dottedName]!).nodeValue
 		:	undefined
 
 	if (element.element === 'input' && element.type === 'checkbox') {

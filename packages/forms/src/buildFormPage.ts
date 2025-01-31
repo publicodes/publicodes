@@ -1,9 +1,9 @@
 import type Engine from 'publicodes'
+import { getFormElement } from './formElement'
 import {
 	addEvaluatedProperties,
 	type EvaluatedFormElement,
-} from './addEvaluatedProperties'
-import { getFormElement } from './formElement'
+} from './getEvaluatedFormElement'
 import { UNDEFINED_NODE } from './utils'
 
 export type FormElementInPage = EvaluatedFormElement & {

@@ -1,7 +1,7 @@
 import { Rule } from 'publicodes'
 
-export { addEvaluatedProperties } from './addEvaluatedProperties'
-export type { EvaluatedFormElement } from './addEvaluatedProperties'
+export { getEvaluatedFormElement } from './getEvaluatedFormElement'
+export type { EvaluatedFormElement } from './getEvaluatedFormElement'
 
 export { getFormElement } from './formElement'
 export type { FormElement } from './formElement'

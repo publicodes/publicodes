@@ -1,13 +1,12 @@
 import Engine from 'publicodes'
 import { describe, expect, it } from 'vitest'
 import {
-	addEvaluatedProperties,
 	EvaluatedCheckbox,
 	EvaluatedNumberInput,
 	EvaluatedOptionsGroup,
 	EvaluatedTextarea,
-} from './addEvaluatedProperties'
-import { FormElement } from './formElement'
+	getEvaluatedFormElement,
+} from './getEvaluatedFormElement'
 
 describe('evaluateFormElement', () => {
 	it('should evaluate checkbox', () => {
@@ -15,17 +14,9 @@ describe('evaluateFormElement', () => {
 			'ma checkbox': 'oui',
 		})
 
-		const formElement: FormElement = {
-			element: 'input',
-			type: 'checkbox',
-			id: 'ma checkbox',
-			label: 'Ma checkbox',
-			description: undefined,
-		}
-
-		const result = addEvaluatedProperties(
+		const result = getEvaluatedFormElement(
 			engine,
-			formElement,
+			'ma checkbox',
 		) as EvaluatedCheckbox & {
 			applicable: true
 		}
@@ -42,22 +33,9 @@ describe('evaluateFormElement', () => {
 			},
 		})
 
-		const formElement: FormElement = {
-			element: 'RadioGroup',
-			id: 'mon choix',
-			label: 'Mon choix',
-			description: undefined,
-			style: 'default',
-			orientation: 'vertical',
-			options: [
-				{ value: "'opt1'", label: 'Opt1' },
-				{ value: "'opt2'", label: 'Opt2' },
-			],
-		}
-
-		const result = addEvaluatedProperties(
+		const result = getEvaluatedFormElement(
 			engine,
-			formElement,
+			'mon choix',
 		) as EvaluatedOptionsGroup & { applicable: true }
 		expect(result.applicable).toBe(true)
 		expect(result.value).toBe(undefined)
@@ -82,22 +60,9 @@ describe('evaluateFormElement', () => {
 			'mon choix': 42,
 		})
 
-		const formElement: FormElement = {
-			element: 'RadioGroup',
-			id: 'mon choix',
-			label: 'Mon choix',
-			description: undefined,
-			style: 'default',
-			orientation: 'vertical',
-			options: [
-				{ value: 12, label: '12' },
-				{ value: 42, label: '42' },
-			],
-		}
-
-		const result = addEvaluatedProperties(
+		const result = getEvaluatedFormElement(
 			engine,
-			formElement,
+			'mon choix',
 		) as EvaluatedOptionsGroup & { applicable: true }
 		expect(result.applicable).toBe(true)
 		expect(result.value).toEqual(42)
@@ -120,23 +85,9 @@ describe('evaluateFormElement', () => {
 			},
 		})
 
-		const formElement: FormElement = {
-			element: 'RadioGroup',
-			id: 'mon choix',
-			label: 'Mon choix',
-			description: undefined,
-			style: 'default',
-			orientation: 'vertical',
-			options: [
-				{ value: "'opt1'", label: 'Opt1' },
-				{ value: "'opt2'", label: 'opt2' },
-				{ value: "'opt3'", label: 'opt3' },
-			],
-		}
-
-		const result = addEvaluatedProperties(
+		const result = getEvaluatedFormElement(
 			engine,
-			formElement,
+			'mon choix',
 		) as EvaluatedOptionsGroup & { applicable: true }
 		expect(result.applicable).toBe(true)
 		const options = result.options
@@ -158,16 +109,9 @@ describe('evaluateFormElement', () => {
 			'mon texte': "'Un texte long'",
 		})
 
-		const formElement: FormElement = {
-			element: 'textarea',
-			id: 'mon texte',
-			label: 'Test Textarea',
-			description: undefined,
-		}
-
-		const result = addEvaluatedProperties(
+		const result = getEvaluatedFormElement(
 			engine,
-			formElement,
+			'mon texte',
 		) as EvaluatedTextarea & {
 			applicable: true
 		}
@@ -183,17 +127,9 @@ describe('evaluateFormElement', () => {
 			},
 		})
 
-		const formElement: FormElement = {
-			element: 'input',
-			type: 'number',
-			id: 'ma valeur',
-			label: 'Test Number',
-			description: undefined,
-		}
-
-		const result = addEvaluatedProperties(
+		const result = getEvaluatedFormElement(
 			engine,
-			formElement,
+			'ma valeur',
 		) as EvaluatedNumberInput & { applicable: true }
 		expect(result.value).toEqual(undefined)
 		expect(result.unit).toEqual('€')
@@ -204,16 +140,9 @@ describe('evaluateFormElement', () => {
 			'mon texte': {},
 		})
 
-		const formElement: FormElement = {
-			element: 'textarea',
-			id: 'mon texte',
-			label: 'Test Textarea',
-			description: undefined,
-		}
-
-		const result = addEvaluatedProperties(
+		const result = getEvaluatedFormElement(
 			engine,
-			formElement,
+			'mon texte',
 		) as EvaluatedTextarea & {
 			applicable: true
 		}
@@ -226,16 +155,9 @@ describe('evaluateFormElement', () => {
 			},
 		})
 
-		const formElement: FormElement = {
-			element: 'textarea',
-			id: 'mon texte',
-			label: 'Test Textarea',
-			description: undefined,
-		}
-
-		const result = addEvaluatedProperties(
+		const result = getEvaluatedFormElement(
 			engine,
-			formElement,
+			'mon texte',
 		) as EvaluatedTextarea & {
 			applicable: true
 		}
