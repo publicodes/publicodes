@@ -59,7 +59,7 @@
 		"publicodes": "workspace:^",
 		"ts-node": "^10.9.1",
 		"tsup": "^8.3.5",
-		"typescript": "^5.6.3",
+		"typescript": "^5.7.3",
 		"vite": "^5.4.10",
 		"vitest": "^0.34.5",
 		"wait-on": "^6.0.1",

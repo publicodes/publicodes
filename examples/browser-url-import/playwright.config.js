@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig } from '@playwright/test'
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -25,14 +25,6 @@ const config = defineConfig({
 		command: 'yarn dev',
 		url: 'http://localhost:5173',
 	},
-	projects: [
-		{
-			name: 'chromium',
-			use: {
-				...devices['Desktop Chrome'],
-			},
-		},
-	],
 })
 
 export default config
