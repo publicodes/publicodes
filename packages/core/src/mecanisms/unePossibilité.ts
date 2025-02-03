@@ -21,6 +21,9 @@ export type UnePossibilitéNode = {
 	 * The list of possibility node, each representing a possible value for the rule.
 	 */
 	explanation: Array<Possibility & ASTNode<'reference' | 'constant'>>
+
+	/** @deprecated : explicitely define a rule for the absence of choice (for instance : 'aucun' or 'non applicable' or 'autre' ) */
+	'choix obligatoire'?: 'oui' | 'non'
 }
 
 /**
@@ -58,7 +61,7 @@ export function parseUnePossibilité(
 	avec: Record<string, Rule>,
 ): UnePossibilitéNode | null {
 	let possibilités: RulePossibilités | false = false
-
+	let choixObligatoire: 'oui' | 'non' | undefined
 	if (rawRule.valeur && rawRule.valeur['une possibilité']) {
 		possibilités = rawRule.valeur['une possibilité']
 		warning(
@@ -95,12 +98,35 @@ au niveau supérieur.`,
 	}
 
 	if ('possibilités' in possibilités) {
+		// TODO V2: Remove this block
+		if (possibilités['choix obligatoire']) {
+			warning(
+				context.logger,
+				`Les clés 'choix obligatoire' et 'possibilités' à l'intérieur de 'une possibilité' sont dépréciées. 
+
+Déplacez les possibilités directement à la racine de 'une possibilité' .${
+					possibilités['choix obligatoire'] === 'non' ?
+						`Pour ajouter un choix « aucun », « non applicable » ou « autre » à la liste des possibilité, créer explicitement une règle dédiée. Par exemple : 
+
+\`une possibilité: [${possibilités.possibilités.join(', ')}, aucun]\`
+`
+					:	''
+				}`,
+
+				{ dottedName: context.dottedName },
+			)
+			choixObligatoire = possibilités['choix obligatoire'] as 'oui' | 'non'
+		} else {
+			warning(
+				context.logger,
+				`La clé 'possibilités' à l'intérieur de 'une possibilité' est dépréciée. 
+
+Déplacez les possibilités directement à la racine de 'une possibilité'
+`,
+				{ dottedName: context.dottedName },
+			)
+		}
 		possibilités = possibilités['possibilités']
-		warning(
-			context.logger,
-			`La clé 'possibilités' à l'intérieur de la clé 'une possibilité' est dépréciée. Utilisez directement la clé 'une possibilité' pour lister les possibilités.`,
-			{ dottedName: context.dottedName },
-		)
 	}
 
 	if (!possibilités) {
@@ -116,6 +142,9 @@ au niveau supérieur.`,
 	}
 
 	const node = parsePossibilités(possibilités, avec, context)
+	if (choixObligatoire) {
+		node['choix obligatoire'] = choixObligatoire
+	}
 
 	// Check for duplicates
 	let values: Array<string | number>
