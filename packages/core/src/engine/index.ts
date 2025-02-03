@@ -235,6 +235,7 @@ export class Engine<RuleNames extends string = string> {
 				const error = this.checkSituationRule(
 					dottedName as RuleNames,
 					value as PublicodesExpression | ASTNode,
+					strictMode,
 				)
 				if (!error) return true
 				if (strictMode) {
@@ -510,6 +511,7 @@ export class Engine<RuleNames extends string = string> {
 	private checkSituationRule(
 		dottedName: RuleNames,
 		value: PublicodesExpression | ASTNode,
+		strictMode: boolean,
 	): false | PublicodesError<'SituationError'> {
 		// We check if the dotteName is a rule of the model
 		if (!(dottedName in this.baseContext.parsedRules)) {
@@ -526,6 +528,8 @@ export class Engine<RuleNames extends string = string> {
 		}
 		if (
 			rule.possibilities &&
+			// TODO V2 : only check if checkPossibleValues is true, whatever the strictMode
+			(this.baseContext.strict.checkPossibleValues || !strictMode) &&
 			!isAValidOption(this, rule.possibilities, this.evaluate(value))
 		) {
 			const errorMessage = `La valeur ${value} ne fait pas parti des possibilités applicables listées pour cette règle.`

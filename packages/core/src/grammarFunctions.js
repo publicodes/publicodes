@@ -32,7 +32,7 @@ export const numberWithUnit = (value) => ({
 	constant: {
 		type: 'number',
 		nodeValue: parseFloat(value[0].value),
-		unit: parseUnit(value[2].value),
+		rawUnit: value[2].value,
 	},
 })
 

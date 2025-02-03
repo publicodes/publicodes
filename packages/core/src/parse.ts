@@ -38,6 +38,7 @@ import variations from './mecanisms/variations'
 import { parseExpression } from './parseExpression'
 import { Context } from './parsePublicodes'
 import parseReference from './parseReference'
+import { parseUnit } from './units'
 
 export default function parse(rawNode, context: Context): ASTNode {
 	if (rawNode == undefined) {
@@ -194,7 +195,7 @@ const parseFunctions = {
 	valeur: parse,
 	variable: parseReference,
 	variations,
-	constant: (v) =>
+	constant: (v, context: Context) =>
 		Object.assign(v, {
 			// In the documentation we want to display constants defined in the source
 			// with their full precision. This is especially useful for percentages like
@@ -203,6 +204,9 @@ const parseFunctions = {
 			isNullable: v.nodeValue == null,
 			missingVariables: {},
 			nodeKind: 'constant',
+			...(v.type === 'number' && v.rawUnit ?
+				{ unit: parseUnit(v.rawUnit, context.getUnitKey) }
+			:	{}),
 		}),
 }
 

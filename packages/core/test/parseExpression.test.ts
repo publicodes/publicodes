@@ -55,10 +55,7 @@ describe("Enables external codebases to use publicodes's expression parser", fun
 			constant: {
 				nodeValue: 10,
 				type: 'number',
-				unit: {
-					numerators: ['a', 'b'],
-					denominators: [],
-				},
+				rawUnit: 'a.b',
 			},
 		})
 

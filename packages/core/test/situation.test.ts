@@ -133,27 +133,6 @@ a:
 		expect(filteredSituation).to.deep.equal({})
 	})
 
-	it('should filter wrong situation when `strict` option is set to `false` (with "formule")', function () {
-		const engine = new Engine(
-			parse(`
-a:
-  une possibilité:
-    - b:
-    - c:
-    - d:
-`),
-			{
-				logger: { log: () => {}, warn: () => {}, error: () => {} },
-				strict: {
-					situation: false,
-				},
-			},
-		).setSituation({ 'règle non valide': 10, a: "'valeur non valide'" })
-
-		const filteredSituation = engine.getSituation()
-		expect(filteredSituation).to.deep.equal({})
-	})
-
 	it('should raise an error when rule in situation is absent in base rules', function () {
 		const engine = engineFromYaml(`
 a:
@@ -168,7 +147,8 @@ a:
 	})
 
 	it('should raise an error when situation value is not a possible answer in base rules', function () {
-		const engine = engineFromYaml(`
+		const engine = engineFromYaml(
+			`
 a:
   une possibilité:
       - b
@@ -178,7 +158,13 @@ a:
     b:
     c:
     d:
-`)
+`,
+			{
+				strict: {
+					checkPossibleValues: false,
+				},
+			},
+		)
 		assert.throws(
 			() => engine.setSituation({ a: "'valeur non valide'" }),
 			`[ Erreur lors de la mise à jour de la situation ]
