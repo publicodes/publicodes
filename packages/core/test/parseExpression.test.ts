@@ -63,10 +63,7 @@ describe("Enables external codebases to use publicodes's expression parser", fun
 			constant: {
 				nodeValue: 10,
 				type: 'number',
-				unit: {
-					numerators: ['a', 'b'],
-					denominators: ['c', 'd', 'e'],
-				},
+				rawUnit: 'a.b/c.d.e',
 			},
 		})
 
@@ -74,10 +71,7 @@ describe("Enables external codebases to use publicodes's expression parser", fun
 			constant: {
 				nodeValue: 10,
 				type: 'number',
-				unit: {
-					numerators: [],
-					denominators: ['c', 'd', 'e', 'e'],
-				},
+				rawUnit: '/c/d.e/e',
 			},
 		})
 	})
