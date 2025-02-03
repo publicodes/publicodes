@@ -143,6 +143,7 @@ export const traverseASTNode: TraverseFunction<NodeKind> = (fn, node) => {
 		case 'variable manquante':
 		case 'est non applicable':
 		case 'est non défini':
+		case 'logarithme':
 			return traverseUnaryOperationNode(fn, node)
 		case 'barème':
 		case 'taux progressif':
@@ -236,6 +237,7 @@ const traverseUnaryOperationNode: TraverseFunction<
 	| 'est non applicable'
 	| 'est non défini'
 	| 'variable manquante'
+	| 'logarithme'
 > = (fn, node) => {
 	const copy = weakCopyObj(node)
 

@@ -74,11 +74,15 @@ export default function inferNodesTypes(
 				return { isNullable: false, type: undefined }
 			case 'texte':
 				return { isNullable: false, type: 'string' }
-
 			case 'arrondi':
 				return {
 					type: 'number',
 					isNullable: inferNodeUnitAndCache(node.explanation.valeur).isNullable,
+				}
+			case 'logarithme':
+				return {
+					type: 'number',
+					isNullable: inferNodeUnitAndCache(node.explanation).isNullable,
 				}
 			case 'contexte':
 				return inferNodeUnitAndCache(node.explanation.valeur)
