@@ -132,15 +132,19 @@
 					{#snippet ifTrue()}
 						{#if getTransitionDirection() === 'horizontal'}
 							<PanelRightClose strokeWidth={iconStrokeWidth} size={iconSize} />
-						{:else}
+						{:else if fullPage}
 							<PanelBottomClose strokeWidth={iconStrokeWidth} size={iconSize} />
+						{:else}
+							<PanelBottomOpen strokeWidth={iconStrokeWidth} size={iconSize} />
 						{/if}
 					{/snippet}
 					{#snippet ifFalse()}
 						{#if getTransitionDirection() === 'horizontal'}
 							<PanelRightOpen strokeWidth={iconStrokeWidth} size={iconSize} />
-						{:else}
+						{:else if fullPage}
 							<PanelBottomOpen strokeWidth={iconStrokeWidth} size={iconSize} />
+						{:else}
+							<PanelBottomClose strokeWidth={iconStrokeWidth} size={iconSize} />
 						{/if}
 					{/snippet}
 				</FlyInOutTransition>

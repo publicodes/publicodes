@@ -217,7 +217,9 @@
 							<a href="https://matrix.to/#/#publicodes:matrix.org">Matrix</a>
 						</li>
 						<li>
-							<a href="https://github.com/publicodes" target="_blank">GitHub</a>
+							<a href="https://github.com/publicodes/publicodes" target="_blank"
+								>GitHub</a
+							>
 						</li>
 						<li>
 							<a href="/blog">Blog</a>

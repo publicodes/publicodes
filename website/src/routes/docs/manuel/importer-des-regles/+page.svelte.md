@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 6
 title: Imports de règles
 hide_table_of_contents: false
 ---
@@ -13,11 +13,15 @@ compilé](./compilation). Par défaut, le fichier JSON est recherché dans le
 package NPM du modèle ou bien il est possible de spécifier un chemin vers un
 fichier local.
 
+<Callout type="warning" title="Fonctionnalité en cours de développement">
+
+L'API d'import/export de règles est en cours de réécriture, et va changer de spécification dans une prochaine version de [@publicodes/tools](/docs/api/tools).
+
+</Callout>
+
 <Callout type="caution">
 
-La macro `importer!` est une macro de compilation et est dépendante de
-[`getModelFromSource`](compilation#générer-un-modèle-json-à-partir-des-fichiers-sources)
-pour fonctionner.
+La macro `importer!` est une macro de compilation. Pour qu'elle puisse fonctionner, le modèle doit être compilé avec [@publicodes/tools](./compilation)
 
 </Callout>
 
