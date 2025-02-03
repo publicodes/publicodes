@@ -161,7 +161,7 @@ a:
 `,
 			{
 				strict: {
-					checkPossibleValues: false,
+					checkPossibleValues: true,
 				},
 			},
 		)
