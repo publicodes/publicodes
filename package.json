@@ -38,5 +38,8 @@
 	"packageManager": "yarn@3.8.7",
 	"engines": {
 		"node": ">= 22"
+	},
+	"dependencies": {
+		"@publicodes/forms": "workspace:^"
 	}
 }

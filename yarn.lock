@@ -3843,7 +3843,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@publicodes/forms@workspace:packages/forms":
+"@publicodes/forms@workspace:^, @publicodes/forms@workspace:packages/forms":
   version: 0.0.0-use.local
   resolution: "@publicodes/forms@workspace:packages/forms"
   dependencies:
@@ -17075,6 +17075,7 @@ __metadata:
     "@changesets/changelog-github": "npm:^0.5.0"
     "@changesets/cli": "npm:^2.27.8"
     "@eslint/js": "npm:^9.16.0"
+    "@publicodes/forms": "workspace:^"
     eslint: "npm:^9.16.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-react: "npm:latest"

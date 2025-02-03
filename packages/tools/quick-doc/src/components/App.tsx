@@ -1,4 +1,8 @@
-import { getDocumentationSiteMap, RulePage } from '@publicodes/react-ui'
+import {
+	getDocumentationSiteMap,
+	RulePage,
+	SupportedRenderers,
+} from '@publicodes/react-ui'
 import Engine from 'publicodes'
 import { useState } from 'react'
 import {
@@ -13,6 +17,7 @@ import { useEngine } from '../engine'
 import { Error } from './Error'
 import Header from './Header'
 import React from 'react'
+import RuleForm from './RuleForm'
 
 function RulePageWrapper({ engine }: { engine: Engine }) {
 	const { '*': splat } = useParams()
@@ -20,15 +25,19 @@ function RulePageWrapper({ engine }: { engine: Engine }) {
 		<RulePage
 			engine={engine}
 			documentationPath=""
-			rulePath={splat}
+			rulePath={splat as string}
 			searchBar={true}
 			showDevSection={true}
 			language="fr"
-			renderers={{ Link: Link }}
+			renderers={{ Link: Link as SupportedRenderers['Link'] }}
 		/>
 	)
 }
 
+function RuleFormWrapper({ engine }: { engine: Engine }) {
+	const { '*': splat } = useParams()
+	return <RuleForm engine={engine} targetRule={splat as string} />
+}
 export default function App() {
 	const [activeSituation, setActiveSituation] = useState('')
 	const { engine, error } = useEngine(activeSituation)
@@ -44,6 +53,7 @@ export default function App() {
 					setSituation={setActiveSituation}
 					activeSituation={activeSituation}
 				/>
+
 				<div className="container mx-auto px-4">
 					<Error error={error} />
 					<Routes>
@@ -51,7 +61,14 @@ export default function App() {
 							path="/"
 							element={<Navigate to={Object.keys(sitemap)[0]} replace />}
 						/>
-						<Route path="/*" element={<RulePageWrapper engine={engine} />} />
+						<Route
+							path="/doc/*"
+							element={<RulePageWrapper engine={engine} />}
+						/>
+						<Route
+							path="/form/*"
+							element={<RuleFormWrapper engine={engine} />}
+						/>
 					</Routes>
 				</div>
 			</BrowserRouter>
