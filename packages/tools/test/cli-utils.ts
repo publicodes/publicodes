@@ -92,7 +92,7 @@ export async function runInDir(
 	} finally {
 		process.chdir(baseCwd)
 		if (dir === 'tmp' && fs.existsSync(ctd)) {
-			// fs.rmSync(ctd, { recursive: true })
+			fs.rmSync(ctd, { recursive: true })
 		}
 	}
 }
