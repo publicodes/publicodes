@@ -14,7 +14,7 @@ const compiledGrammar = Grammar.fromCompiled(grammar as CompiledRules)
 const parser = new Parser(compiledGrammar)
 const initialState = parser.save()
 
-type BinaryOp =
+export type BinaryOp =
 	| { '+': [ExprAST, ExprAST] }
 	| { '-': [ExprAST, ExprAST] }
 	| { '*': [ExprAST, ExprAST] }
@@ -26,7 +26,7 @@ type BinaryOp =
 	| { '=': [ExprAST, ExprAST] }
 	| { '!=': [ExprAST, ExprAST] }
 
-type UnaryOp = { '-': [{ value: 0 }, ExprAST] }
+export type UnaryOp = { '-': [{ value: 0 }, ExprAST] }
 
 /** AST of a publicodes expression. */
 export type ExprAST =

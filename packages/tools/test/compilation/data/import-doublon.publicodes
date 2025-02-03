@@ -1,0 +1,10 @@
+ importer!:
+  depuis:
+    nom: 'my-external-package'
+    source: './my-external-package.model.json'
+  les règles:
+     - root . a
+     - root . a:
+       titre: "Ajout d'un titre"
+     - root . a:
+       quote: "Ajout d'un titre"

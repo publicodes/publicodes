@@ -15,36 +15,6 @@ Le paquet est disponible sur npm.
 npm install publicodes
 ```
 
-<Callout type="info" title="Importer">
-
-Voici comment importer publicodes en fonction de l'environnement.
-
--   Si vous utilisez webpack ou une version de node >= `15.0.0`
-
-    ```js
-    import Engine from 'publicodes';
-    ```
-
--   Pour les autres versions de node
-
-    ```js
-    const Engine = require('publicodes').default;
-    ```
-
--   Dans le navigateur
-
-    ```html
-    <script
-        type="module"
-        src="https://unpkg.com/publicodes@next/dist/index.js"
-    ></script>
-    <script type="module">
-        import Engine from 'publicodes';
-    </script>
-    ```
-
-</Callout>
-
 ## Premiers pas
 
 <Callout type="tip" title="Activer l'extension VSCode">
@@ -90,24 +60,28 @@ const parsedRules = parse(rules);
 const engine = new Engine(parsedRules);
 ```
 
-Pourquoi ne pas accepter du YAML en entrée de publicodes, alors que cette syntaxe est effectivement plus agréable que du JSON ?
+<Callout type="info" title="Précompilation du YAML">
 
-Parce que l'étape de parsing du YAML nécessite d'embarquer une lourde bibliothèque.
-Libre ainsi à chaque projet de faire cette étape au moment et à l'endroit le plus adapté, côté serveur ou lors du build de l’application
+Bien que Publicodes soit basé sur la syntaxe YAML, pour des raisons de performances, l'interpréteur (`Engine`) doit être instancié un objet JSON correspondant au YAML compilé.
 
-> Il est donc également tout à fait possible d'initialiser `Engine` avec un objet JSON, il suffit de le parser avec la fonction native `JSON.parse(monJSON)`.
-> Le JSON étant le langage dominant des APIs (on n'échange jamais de YAML par API), c'est un moyen en pratique courant de le faire.
+Cette étape peut être effectuée en amont de l'utilisation de Publicodes, par exemple lors de la compilation de votre application.
 
-La variable `engine` permet en ensuite de calculer la valeur d'une règle avec la
-méthode `evaluate` :
+👉 [En savoir plus sur la compilation de modèle Publicodes](/docs/manuel/compilation)
+
+</Callout>
+
+### Évaluer une règle
+
+L'objet `engine` permet en ensuite de calculer la valeur d’une règle avec la méthode `evaluate` :
 
 ```js
 console.log(engine.evaluate('dépenses primeur'));
 ```
 
-La valeur du nœud est disponible dans la propriété `nodeValue`, son
-unité est disponible dans la propriété `unit`. Mais pour un formattage sans
-effort, on préfèrera utiliser la fonction `formatValue` :
+Cette méthode retourne un objet contenant la valeur de l'expression dans la propriété `nodeValue`, et son
+unité dans la propriété `unit`.
+
+Pour un formatage sans effort, on préfèrera utiliser la fonction `formatValue` :
 
 ```js
 import Engine, { formatValue } from 'publicodes';
@@ -115,6 +89,8 @@ import Engine, { formatValue } from 'publicodes';
 const dépenses = engine.evaluate('dépenses primeur');
 console.log(`J'ai dépensé ${formatValue(dépenses)} chez le primeur.`);
 ```
+
+### Modifier la situation
 
 La méthode `setSituation` permet de forcer la valeur d'une liste de règles. Elle
 est utile pour préciser les paramètres spécifiques à une simulation :
@@ -147,9 +123,9 @@ const depensesParJour = engine.evaluate('dépenses primeur / 7 jours');
 console.log(`J'ai dépensé ${formatValue(depensesParJour)}.`);
 ```
 
-### Conversion d'unité
+**Conversion d'unité**
 
-Publicodes permet de réaliser des conversions d'unités. Pour celà il faut
+Pour faire une conversion d'unité, il faut
 indiquer l'unité désirée via le mécanisme [`unité`](https://publi.codes/documentation/mécanismes#unité) :
 
 ```js
@@ -163,7 +139,7 @@ console.log(`J'ai dépensé ${formatValue(depensesParMois)}.`);
 
 <Callout type="info">
 
-[➡ en savoir plus sur les unités](/docs/manuel#unités)
+[➡ en savoir plus sur les unités](/docs/manuel/unites)
 
 </Callout>
 
@@ -184,13 +160,14 @@ console.log(missingYEngine.evaluate('x').missingVariables);
 
 Cette information est utile pour intégrer Publicodes à votre application.
 
+<!--
 Il est aussi possible d'utiliser des valeurs par défaut. Dans ce cas la règle
 sera calculée avec la valeur par défaut de sa dépendance, mais cette dernière
 apparaîtra tout de même dans les `missingVariables`. Cette fonctionnalité est
 utile pour réaliser des simulateurs où l'on veut proposer un résultat sans
 attendre que l'utilisateur ait répondu à l'intégralité des questions tout en
 utilisant la liste des variables manquantes pour déterminer les questions
-restant à poser.
+restant à poser. -->
 
 Les variables manquantes sont calculées lors de l'évaluation. Si une variable
 apparaît dans la formule de calcul d'une règle elle ne sera rapportée que si

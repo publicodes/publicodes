@@ -59,6 +59,24 @@ const config = {
 		alias: {
 			$data: './src/data',
 			$routes: './src/routes'
+		},
+		prerender: {
+			handleMissingId: ({ path, id, message }) => {
+				if (
+					id === 'getunitkey' &&
+					path === '/docs/api/publicodes/functions/parseUnit'
+				) {
+					return;
+				}
+				if (
+					id === 'formatunit' &&
+					path === '/docs/api/publicodes/functions/serializeUnit'
+				) {
+					return;
+				}
+
+				throw new Error(message);
+			}
 		}
 	},
 	extensions: ['.svelte', '.svelte.md']

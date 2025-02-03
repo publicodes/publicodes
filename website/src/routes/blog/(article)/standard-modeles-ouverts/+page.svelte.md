@@ -12,11 +12,11 @@ Un modèle de calcul est un programme, qui prend des données en entrée (par ex
 
 Aujourd'hui, les équipes de [Betagouv](https://beta.gouv.fr/) développent de nombreux modèles de calcul, dont voici une liste non exhaustive :
 
--   [datagir/nosgestesclimat](https://github.com/datagir/nosgestesclimat)
--   [datagir/aldo](https://github.com/datagir/aldo)
--   [MTES-MCT/ecobalyse](https://github.com/MTES-MCT/ecobalyse)
--   [betagouv/mon-entreprise](https://github.com/betagouv/mon-entreprise)
--   [betagouv/aides-jeunes](https://github.com/betagouv/aides-jeunes)
+- [datagir/nosgestesclimat](https://github.com/datagir/nosgestesclimat)
+- [datagir/aldo](https://github.com/datagir/aldo)
+- [MTES-MCT/ecobalyse](https://github.com/MTES-MCT/ecobalyse)
+- [betagouv/mon-entreprise](https://github.com/betagouv/mon-entreprise)
+- [betagouv/aides-jeunes](https://github.com/betagouv/aides-jeunes)
 
 L'idée ici est de présenter les prérequis pour que l'administration fasse sa révolution, service par service, pour proposer des modèles de calcul modernes qui fassent référence, fiables et qui profitent un maximum aux autres acteurs.
 
@@ -87,9 +87,9 @@ C'est le concept de la **revue par les pairs**, absolument central dans la reche
 
 > Un outil comme github propose des fonctionnalités de collaboration très poussées
 >
-> -   les PR (pull request) permettent de proposer un changement, et c'est d'ailleurs ainsi que les membres coeur de l'équipe itérent
-> -   chaque bout de code peut dans le cadre d'une PR être commenté en un clic (comme sur google docs). Ce commentaire peut être discuté, résolu. Il peut entrainer une autre PR concurrente, mettre de côté un problème dans une issue, etc.
-> -   gérer la responsabilité : les rôles de collaboration peuvent être différents, du simple lecteur, à l'administrateur, en passant par la personne qui peut proposer des changements mais pas les mettre en ligne
+> - les PR (pull request) permettent de proposer un changement, et c'est d'ailleurs ainsi que les membres coeur de l'équipe itérent
+> - chaque bout de code peut dans le cadre d'une PR être commenté en un clic (comme sur google docs). Ce commentaire peut être discuté, résolu. Il peut entrainer une autre PR concurrente, mettre de côté un problème dans une issue, etc.
+> - gérer la responsabilité : les rôles de collaboration peuvent être différents, du simple lecteur, à l'administrateur, en passant par la personne qui peut proposer des changements mais pas les mettre en ligne
 
 Bien sûr, il ne suffit pas de poster sur github un ensemble de lignes de code pour satisfaire ce point : il faut que la contribution soit raisonablement accessible. Cela passe par un fichier README, CONTRIBUTING, un Wiki, des tutoriels, éventuellement des événements de découverte, etc.
 
@@ -141,9 +141,9 @@ Le sujet des tests est vaste. Souvent lorsque l'on créée un modèle, on n'a pa
 
 Mais de nombreuses stratégies de test existent pour autant !
 
--   La production de cas types d'usages et le stockage des résultats de calcul à partir de ces cas type, pour estimer à chaque changement si un écart au résultat est un problème ou pas
--   Le test unitaire des fonctions de calcul : s'assurer que le _framework_ dans lequel est construit mon modèle est correcte. Somme, multiplication, barème, tableaux de facteurs d'émission, ces fonctions doivent être testées
--   L'homogénéité des formules : mon calcul d'empreinte carbone d'une vidéo en streaming, fait à partir de variables typées (heures, heures / jour, kgCO2e/heure) doit _in fine_ produire la bonne unité
--   etc.
+- La production de cas types d'usages et le stockage des résultats de calcul à partir de ces cas type, pour estimer à chaque changement si un écart au résultat est un problème ou pas
+- Le test unitaire des fonctions de calcul : s'assurer que le _framework_ dans lequel est construit mon modèle est correcte. Somme, multiplication, barème, tableaux de facteurs d'émission, ces fonctions doivent être testées
+- L'homogénéité des formules : mon calcul d'empreinte carbone d'une vidéo en streaming, fait à partir de variables typées (heures, heures / jour, kgCO2e/heure) doit _in fine_ produire la bonne unité
+- etc.
 
 <!-- TODO Ajouter un lien vers un futur guide : "Tester un modèle publicodes" -->
