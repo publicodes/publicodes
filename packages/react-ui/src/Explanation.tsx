@@ -23,6 +23,7 @@ import Unité from './mecanisms/Unité'
 import Variations from './mecanisms/Variations'
 import DefaultInlineMecanism from './mecanisms/common/DefaultInlineMecanism'
 import UnePossibilité from './mecanisms/UnePossibilité'
+import Logarithme from './mecanisms/Logarithme'
 
 const UIComponents = {
 	constant: Constant,
@@ -49,6 +50,7 @@ const UIComponents = {
 		<Explanation node={node.explanation} />
 	),
 	variations: Variations,
+	logarithme: Logarithme,
 	'une possibilité': UnePossibilité,
 } as const
 
