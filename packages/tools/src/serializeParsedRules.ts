@@ -394,8 +394,7 @@ function serializeASTNode(node: ASTNode): SerializedRule {
 				case 'une possibilité': {
 					return {
 						'une possibilité': {
-							// @ts-expect-error FIXME:
-							// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+							// FIXME:
 							'choix obligatoire': node['choix obligatoire'],
 							possibilités: node.explanation.map(serializeASTNode),
 						},
