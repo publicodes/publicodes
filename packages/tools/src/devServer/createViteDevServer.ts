@@ -41,21 +41,14 @@ export default async function createViteDevServer(
 							})
 						},
 						transform(code, id) {
-							if (id.includes('engine')) {
+							if (id.includes('app-state')) {
 								return {
-									code: code.replace(
-										'__INJECTED_RULES__',
-										JSON.stringify(currentRules),
-									),
-									map: null,
-								}
-							}
-							if (id.includes('situations')) {
-								return {
-									code: code.replace(
-										'__INJECTED_SITUATIONS__',
-										JSON.stringify(currentSituations),
-									),
+									code: code
+										.replace('__INJECTED_RULES__', JSON.stringify(currentRules))
+										.replace(
+											'__INJECTED_SITUATIONS__',
+											JSON.stringify(currentSituations),
+										),
 									map: null,
 								}
 							}

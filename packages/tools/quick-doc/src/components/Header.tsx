@@ -1,14 +1,12 @@
 import { Link } from 'react-router-dom'
-import { useSituationList } from '../situations'
-import React from 'react'
+import { State } from '../app-state'
 export default function Header({
 	setSituation,
-	activeSituation,
+	state,
 }: {
 	setSituation: (situation: string) => void
-	activeSituation: string
+	state: State
 }) {
-	const situations = useSituationList()
 	return (
 		<header className=" container mx-auto p-4">
 			<div className="flex items-center justify-between  flex-col md:flex-row">
@@ -28,12 +26,12 @@ export default function Header({
 						</label>
 						<select
 							id="situation-select"
-							value={activeSituation}
+							value={state.currentSituation}
 							onChange={(e) => setSituation(e.target.value)}
 							className="block w-full md:w-64 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 						>
 							<option value="">—</option>
-							{Object.keys(situations).map((situationName) => (
+							{Object.keys(state.situationList).map((situationName) => (
 								<option key={situationName} value={situationName}>
 									{situationName}
 								</option>

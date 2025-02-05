@@ -1,6 +1,5 @@
 import { getDocumentationSiteMap, RulePage } from '@publicodes/react-ui'
 import Engine from 'publicodes'
-import { useState } from 'react'
 import {
 	BrowserRouter,
 	Link,
@@ -9,7 +8,7 @@ import {
 	Routes,
 	useParams,
 } from 'react-router-dom'
-import { useEngine } from '../engine'
+import { useAppState } from '../app-state'
 import { Error } from './Error'
 import Header from './Header'
 
@@ -29,27 +28,26 @@ function RulePageWrapper({ engine }: { engine: Engine }) {
 }
 
 export default function App() {
-	const [activeSituation, setActiveSituation] = useState('')
-	const { engine, error } = useEngine(activeSituation)
+	const [state, setCurrentSituation] = useAppState()
 	const sitemap = getDocumentationSiteMap({
 		documentationPath: '',
-		engine,
+		engine: state.engine,
 	})
 	return (
 		<>
 			<BrowserRouter>
-				<Header
-					setSituation={setActiveSituation}
-					activeSituation={activeSituation}
-				/>
+				<Header setSituation={setCurrentSituation} state={state} />
 				<div className="container mx-auto px-4">
-					<Error error={error} />
+					<Error error={state.error} />
 					<Routes>
 						<Route
 							path="/"
 							element={<Navigate to={Object.keys(sitemap)[0]} replace />}
 						/>
-						<Route path="/*" element={<RulePageWrapper engine={engine} />} />
+						<Route
+							path="/*"
+							element={<RulePageWrapper engine={state.engine} />}
+						/>
 					</Routes>
 				</div>
 			</BrowserRouter>
