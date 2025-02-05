@@ -1,10 +1,8 @@
 import Engine, { RawPublicodes } from 'publicodes'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSituation } from './situations'
 
 // Create a custom event for engine updates
-const ENGINE_UPDATED = 'engine-updated'
-const engineUpdate = new EventTarget()
 declare const __INJECTED_RULES__: RawPublicodes<string>
 
 export function useEngine(currentSituation: string) {
@@ -14,27 +12,39 @@ export function useEngine(currentSituation: string) {
 	const [engine, setEngine] = useState<Engine>(new Engine({}))
 	const situation = useSituation(currentSituation)
 
-	const logger = {
-		log: (message: string) => setLog((log) => [...log, message]),
-		warn: (message: string) => setWarning((warning) => [...warning, message]),
-		error: (message: string) => setError((error) => [...error, message]),
-	}
+	console.log(situation)
+
+	const logger = useMemo(
+		() => ({
+			log: (message: string) => setLog((log) => [...log, message]),
+			warn: (message: string) => setWarning((warning) => [...warning, message]),
+			error: (message: string) => setError((error) => [...error, message]),
+		}),
+		[setLog, setWarning, setError],
+	)
+	useEffect(() => {
+		try {
+			setEngine(new Engine(__INJECTED_RULES__, { logger }))
+		} catch (e) {
+			if (e instanceof Error) {
+				setError([e.message])
+			}
+		}
+	}, [])
 
 	function clearLogs() {
 		setLog([])
 		setWarning([])
 		setError([])
 	}
+
 	useEffect(() => {
 		try {
 			clearLogs()
-			setEngine(
-				new Engine(__INJECTED_RULES__, { logger }).setSituation(situation),
-			)
+			engine.setSituation(situation)
 		} catch (e) {
 			if (e instanceof Error) {
 				setError([e.message])
-				engineUpdate.dispatchEvent(new Event(ENGINE_UPDATED))
 			}
 		}
 	}, [situation])
@@ -54,7 +64,6 @@ export function useEngine(currentSituation: string) {
 					}
 				}
 				// Dispatch event to notify subscribers
-				engineUpdate.dispatchEvent(new Event(ENGINE_UPDATED))
 			},
 		)
 	}
