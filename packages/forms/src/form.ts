@@ -96,9 +96,9 @@ export function currentPage<Name extends string>(
 		return []
 	}
 	return buildFormPage(
+		formState.pages[formState.currentPageIndex],
 		engine,
 		formState.targets,
-		formState.pages[formState.currentPageIndex],
 		formState.lastAnswered,
 	)
 }
