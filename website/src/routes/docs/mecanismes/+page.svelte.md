@@ -609,7 +609,6 @@ soient toutes suffisamment proches des objectifs. La tolérance entre le choix e
 a: b + 10
 b:
   inversion numérique:
-    avec:
       - a
     tolérance d'erreur: 1
 ```
@@ -624,7 +623,6 @@ Par exemple, si on sait qu'une valeur est forcément positive, on peut préciser
 a: b + 10
 b:
   inversion numérique:
-    avec:
       - a
     min: 0
     max: 100000
