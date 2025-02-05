@@ -3843,7 +3843,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@publicodes/forms@workspace:^, @publicodes/forms@workspace:packages/forms":
+"@publicodes/forms@npm:^0.1.0, @publicodes/forms@workspace:^, @publicodes/forms@workspace:packages/forms":
   version: 0.0.0-use.local
   resolution: "@publicodes/forms@workspace:packages/forms"
   dependencies:
@@ -3913,6 +3913,7 @@ __metadata:
     "@clack/prompts": "npm:^0.7.0"
     "@oclif/core": "npm:^4.2.5"
     "@oclif/test": "npm:^4.1.8"
+    "@publicodes/forms": "npm:^0.1.0"
     "@publicodes/react-ui": "npm:^1.7.0"
     "@tailwindcss/typography": "npm:^0.5.16"
     "@tailwindcss/vite": "npm:^4.0.0"

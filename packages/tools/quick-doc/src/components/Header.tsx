@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useSituationList } from '../situations'
-import React from 'react'
 export default function Header({
 	setSituation,
 	activeSituation,
@@ -9,13 +8,16 @@ export default function Header({
 	activeSituation: string
 }) {
 	const situations = useSituationList()
+	const { '*': splat } = useParams()
+
 	return (
 		<header className=" container mx-auto p-4">
 			<div className="flex items-center justify-between  flex-col md:flex-row">
 				<h1>
-					<Link to="/" className="text-xl font-bold">
+					<Link to={`/doc/${splat}`} className="mr-4">
 						⚡ Quick-doc
 					</Link>
+					<Link to={`/form/${splat}`}>Quick-form</Link>
 				</h1>
 
 				<nav className="w-full md:w-auto ">

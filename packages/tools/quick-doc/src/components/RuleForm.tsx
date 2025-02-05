@@ -1,12 +1,12 @@
-import Engine, { formatValue } from 'publicodes'
-import { useParams } from 'react-router-dom'
 import {
 	currentPage,
 	goToNextPage,
 	goToPreviousPage,
 	handleInputChange,
 	initFormState,
+	pagination,
 } from '@publicodes/forms'
+import Engine, { formatValue } from 'publicodes'
 import { useCallback, useState } from 'react'
 export default function RuleForm({
 	engine,
@@ -17,7 +17,7 @@ export default function RuleForm({
 }) {
 	const [formState, setState] = useState(initFormState({ engine }, targetRule))
 	const pageElements = currentPage(formState, { engine })
-
+	const { hasNextPage, hasPreviousPage } = pagination(formState)
 	// Handle user input
 	function onInputChange(id: string, value: string) {
 		setState(
@@ -99,8 +99,10 @@ export default function RuleForm({
 						:	<p>Not implemented</p>}
 					</div>
 				))}
-				<button onClick={handleClickOnNext}>Précédent</button>
-				<button onClick={handleClickOnPrev}>Suivant</button>
+				{hasPreviousPage && (
+					<button onClick={handleClickOnPrev}>Précédent</button>
+				)}
+				{hasNextPage && <button onClick={handleClickOnNext}>Suivant</button>}
 			</form>
 		</>
 	)
