@@ -1,6 +1,7 @@
 import * as p from '@clack/prompts'
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
+import { watch } from 'chokidar'
 import fs from 'fs'
 import path from 'path'
 import type { RawPublicodes } from 'publicodes'
@@ -57,11 +58,10 @@ the package.json file under the \`publicodes\` key. For example:
 	]
 
 	static override flags = {
-		// ignore: Flags.string({
-		// 	char: 'i',
-		// 	summary: 'Ignore files matching the specified glob pattern.',
-		// 	multiple: true,
-		// }),
+		watch: Flags.boolean({
+			char: 'w',
+			summary: 'Watch files for changes and recompile.',
+		}),
 
 		output: Flags.string({
 			char: 'o',
@@ -94,15 +94,61 @@ the package.json file under the \`publicodes\` key. For example:
 			fs.mkdirSync(outputDir, { recursive: true })
 		}
 
-		await this.generateDTS(engine, outputDir)
+		let compilationCount = 0
+		const compile = async () => {
+			const startTime = Date.now()
+			compilationCount++
 
-		await generateBaseFiles(
-			serializeParsedRules(engine.getParsedRules()),
-			outputDir,
-			pkgName,
-		)
+			await this.generateDTS(engine, outputDir)
 
-		p.outro('Compilation done.')
+			await generateBaseFiles(
+				serializeParsedRules(engine.getParsedRules()),
+				outputDir,
+				pkgName,
+			)
+
+			const endTime = Date.now()
+			const timestamp = new Date().toLocaleTimeString()
+
+			p.log.success(
+				`${chalk.dim(timestamp)} ${chalk.green('✓')} rules compiled in ${chalk.bold(
+					`${Math.round(endTime - startTime)}ms`,
+				)} ${chalk.dim(`#${compilationCount}`)}`,
+			)
+		}
+
+		await compile()
+
+		if (flags.watch) {
+			const watcher = watch(filesToCompile, {
+				persistent: true,
+				ignoreInitial: true,
+			}).on('all', (event) => {
+				const timestamp = new Date().toLocaleTimeString()
+
+				if (event === 'add' || event === 'change') {
+					p.log.info(
+						`${chalk.dim(timestamp)} ${chalk.green('⚡')} ${chalk.blue('publicodes')} ${
+							event === 'add' ? 'detected new file' : 'recompiling'
+						} ${chalk.dim(path)}`,
+					)
+
+					void compile()
+				}
+			})
+			function cleanup() {
+				void watcher.close()
+				p.outro('Compilation watcher stopped.')
+			}
+			process.on('SIGINT', () => {
+				void cleanup()
+			})
+			process.on('SIGTERM', () => {
+				void cleanup()
+			})
+		} else {
+			p.outro('Compilation done.')
+		}
 	}
 
 	async generateDTS(engine: Engine, outputDir: string): Promise<void> {
