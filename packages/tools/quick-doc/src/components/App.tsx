@@ -11,6 +11,7 @@ import {
 import { useAppState } from '../app-state'
 import { Error } from './Error'
 import Header from './Header'
+import React from 'react';
 
 function RulePageWrapper({ engine }: { engine: Engine }) {
 	const { '*': splat } = useParams()
