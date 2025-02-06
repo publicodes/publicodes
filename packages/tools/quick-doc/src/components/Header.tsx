@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { State } from '../app-state'
-import React from 'react';
+import React from 'react'
 export default function Header({
 	setSituation,
 	state,
