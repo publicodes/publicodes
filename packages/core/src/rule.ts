@@ -372,10 +372,8 @@ export function evaluateDisablingParent(
 	parentMissingVariables: MissingVariables
 	nullableParent?: ASTNode
 } {
-	if (node.private) {
-		// We do not need to check if a private rule is disabled by its parent :
-		// they are accessible only from its sibling or parent
-		// (which would already be disabled)
+	if (node.dottedName.endsWith('$SITUATION')) {
+		// We do not need to check if a situation rule is disabled by its parent
 		return { ruleDisabledByItsParent: false, parentMissingVariables: {} }
 	}
 
