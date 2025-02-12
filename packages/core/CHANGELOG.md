@@ -1,5 +1,11 @@
 # publicodes
 
+## 1.7.2
+
+### Patch Changes
+
+- [#623](https://github.com/publicodes/publicodes/pull/623) [`92e15d2`](https://github.com/publicodes/publicodes/commit/92e15d2bcc778a295908984a2374d07c5d7c1462) Thanks [@johangirod](https://github.com/johangirod)! - Fix replace in private rule disactivated by parent
+
 ## 1.7.0
 
 ### Minor Changes
