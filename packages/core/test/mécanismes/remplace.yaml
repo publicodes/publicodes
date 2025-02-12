@@ -252,3 +252,18 @@ peut remplacer par non:
   formule: a
   exemples:
     - valeur attendue: false
+
+remplace par une règle privée:
+  valeur: b
+  avec:
+    a:
+      valeur: non
+      avec:
+        a:
+          privé: oui
+          valeur: 4
+          remplace: b
+
+    b: 12
+  exemples:
+    valeur attendue: 12
