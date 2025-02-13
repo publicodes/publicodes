@@ -14,7 +14,6 @@ featured: true
    
     const { data } = $props();
     const { topProjets, topAméliorations, nombreRépondants, enProduction, NPSValue } = data;
-
 </script>
 
 **Publicodes a eu 4 ans cette année 🎂**
@@ -31,8 +30,6 @@ Voici un petit retour sur les accomplissements de l'année :
 - 📦 Ainsi que de [**nombreuses évolutions du langage**](https://github.com/publicodes/publicodes/blob/master/CHANGELOG.md).
 
 Cela nous a semblé un bel âge pour prendre le pouls de la communauté sur ce langage un peu particulier. Nous avons donc **lancé un questionnaire** pour en savoir plus sur les usages de Publicodes en 2024.
-
-_Psst, si vous n'avez pas encore répondu, [c'est toujours possible](https://tally.so/r/3yEBlB), les résultats affichés sur cette page sont **mis à jour** en temps réel._
 
 ## Un langage bien installé
 
@@ -86,6 +83,7 @@ Enfin, la génération d'API REST est une fonctionnalité de niche, peu utilisé
 Enfin le cœur du sujet ! Voici le top des améliorations les plus demandées :
 
 <ul>
+
 {#each topAméliorations.slice(0,3) as [amélioration, count], i}
 
 <li>{#if i === 0} 🏅{:else if i === 1} 🥈{:else if i === 2} 🥉 {/if} <strong>{amélioration}</strong> - <small>{count} demandes </small></li>
