@@ -39,5 +39,8 @@
 	"packageManager": "yarn@3.8.7",
 	"engines": {
 		"node": ">= 22"
+	},
+	"dependencies": {
+		"chevrotain": "^11.0.3"
 	}
 }
