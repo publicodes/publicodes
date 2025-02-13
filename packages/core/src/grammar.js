@@ -132,15 +132,6 @@ class PublicodesParser extends CstParser {
 	constructor() {
 		super(token)
 
-		this.RULE('constant', () =>
-			this.OR([
-				{ ALT: () => this.CONSUME(booleanToken) },
-				{ ALT: () => this.CONSUME(stringToken) },
-				{ ALT: () => this.CONSUME(numberToken) },
-				{ ALT: () => this.CONSUME(dateToken) },
-			]),
-		)
-
 		this.RULE('reference', () =>
 			this.AT_LEAST_ONE_SEP({
 				DEF: () => {
@@ -152,15 +143,14 @@ class PublicodesParser extends CstParser {
 
 		this.RULE('expression', () => {
 			return this.OR([
-				{ ALT: () => this.SUBRULE(this.constant) },
-				{ ALT: () => this.SUBRULE(this.reference) },
-				{ ALT: () => this.SUBRULE(this.arExpression) },
-				{ ALT: () => this.SUBRULE(this.boolExpression) },
+				{ ALT: () => this.CONSUME(dateToken) },
+				// { ALT: () => this.CONSUME(numberToken) },
+				{ ALT: () => this.CONSUME(stringToken) },
+				{ ALT: () => this.CONSUME(booleanToken) },
+				// { ALT: () => this.SUBRULE(this.reference) },
+				{ ALT: () => this.SUBRULE(this.additionExpression) },
+				// { ALT: () => this.SUBRULE(this.boolExpression) },
 			])
-		})
-
-		this.RULE('arExpression', () => {
-			return this.SUBRULE(this.additionExpression)
 		})
 
 		this.RULE('additionExpression', () => {
@@ -196,11 +186,11 @@ class PublicodesParser extends CstParser {
 
 		this.RULE('primaryExpression', () => {
 			return this.OR([
-				{ ALT: () => this.SUBRULE(this.arUnaryExpression) },
+				{ ALT: () => this.SUBRULE2(this.arUnaryExpression) },
 				{
 					ALT: () => {
 						this.CONSUME(parenthesisOpenToken)
-						this.SUBRULE(this.arExpression)
+						this.SUBRULE(this.additionExpression)
 						this.CONSUME(parenthesisCloseToken)
 					},
 				},
@@ -211,23 +201,20 @@ class PublicodesParser extends CstParser {
 
 		this.RULE('arUnaryExpression', () => {
 			this.CONSUME(minusToken)
-			this.SUBRULE(this.arExpression)
+			this.SUBRULE(this.primaryExpression)
 		})
 
-		this.RULE('boolExpression', () => {
-			return this.OR([
-				{ ALT: () => this.CONSUME(booleanToken) },
-				// { ALT: () => this.SUBRULE(this.comparison) },
-				{ ALT: () => this.SUBRULE(this.reference) },
-				{
-					ALT: () => {
-						this.CONSUME(parenthesisOpenToken)
-						this.SUBRULE2(this.boolExpression)
-						this.CONSUME(parenthesisCloseToken)
-					},
-				},
-			])
-		})
+		// this.RULE('boolExpression', () => {
+		// 	return this.OR([
+		// 		{
+		// 			ALT: () => {
+		// 				this.CONSUME(parenthesisOpenToken)
+		// 				this.SUBRULE2(this.boolExpression)
+		// 				this.CONSUME(parenthesisCloseToken)
+		// 			},
+		// 		},
+		// 	])
+		// })
 
 		// this.RULE('comparison', () => {
 		// 	this.SUBRULE(this.expression)
