@@ -1,16 +1,38 @@
 import { bench, group, run } from 'mitata'
 import modeleSocial from 'modele-social'
-import Publicodes from '../src/index'
+import modeleNGC from '@incubateur-ademe/nosgestesclimat/public/co2-model.FR-lang.fr.json' assert { type: 'json' }
+import EngineLocal from '../src/index'
+import EngineOld from 'publicodes-old'
+import pjson from '../package.json'
+
+const oldVersion = pjson['devDependencies']['publicodes-old']
+
 const options = {
 	logger: { warn: () => {}, error: () => {}, log: () => {} },
 }
-const engine = new Publicodes(modeleSocial, options)
+const engine = new EngineLocal(modeleSocial, options)
 
-group('Parsing initial des règles', () => {
-	bench('Modele-social', () => {
-		new Publicodes(modeleSocial, options)
+group('Parsing initial des règles (Modele-social)', () => {
+	bench('(local)', () => {
+		new EngineLocal(modeleSocial, options)
+	})
+
+	bench(oldVersion, () => {
+		new EngineOld(modeleSocial, options)
 	})
 })
+
+group('Parsing initial des règles (NGC)', () => {
+	bench('(local)', () => {
+		new EngineLocal(modeleNGC as any, options)
+	})
+
+	bench(oldVersion, () => {
+		new EngineOld(modeleNGC as any, options)
+	})
+})
+
+await run()
 
 group('Evaluation', () => {
 	bench('salaire brut vers net', () => {
@@ -86,8 +108,6 @@ group('setSituation', () => {
 		})
 	})
 })
-
-await run()
 
 // benchmark                               time (avg)             (min … max)       p75       p99      p995
 // -------------------------------------------------------------------------- -----------------------------

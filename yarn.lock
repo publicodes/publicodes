@@ -3030,6 +3030,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@incubateur-ademe/nosgestesclimat@npm:^3.5.3":
+  version: 3.5.3
+  resolution: "@incubateur-ademe/nosgestesclimat@npm:3.5.3"
+  peerDependencies:
+    publicodes: ^1.1.1
+  checksum: 10/e8fb1b8873716c34e287fcc3cf4bf30c9fc54ceeaeb5dc661a1b113d35dd560d24cda810844fc7f63dcdc89caea140c25f58b5829ecb14cadaa1f151cf930423
+  languageName: node
+  linkType: hard
+
 "@internationalized/date@npm:^3.5.0":
   version: 3.7.0
   resolution: "@internationalized/date@npm:3.7.0"
@@ -17088,10 +17097,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"publicodes-old@npm:publicodes@1.5.1":
+  version: 1.5.1
+  resolution: "publicodes@npm:1.5.1"
+  peerDependencies:
+    "@types/mocha": ^9.0.0
+  checksum: 10/cdb61721b8ff635a715f22c069cae918e2d149b522bf4324ac889a3ff24e994d0842d14ef1124ae422529dff61865829eee5e1f01b90914b32063bf0596909dc
+  languageName: node
+  linkType: hard
+
 "publicodes@npm:^1.7.0, publicodes@workspace:^, publicodes@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "publicodes@workspace:packages/core"
   dependencies:
+    "@incubateur-ademe/nosgestesclimat": "npm:^3.5.3"
     "@types/chai": "npm:^4.3.6"
     "@types/eslint-plugin-mocha": "npm:^10"
     "@types/mocha": "npm:^9.1.1"
@@ -17107,6 +17126,7 @@ __metadata:
     modele-social: "npm:^3.0.0"
     moo: "npm:^0.5.2"
     nearley: "npm:^2.20.1"
+    publicodes-old: "npm:publicodes@1.5.1"
     sinon: "npm:^12.0.1"
     sinon-chai: "npm:^3.7.0"
     tsup: "npm:^8.3.5"
