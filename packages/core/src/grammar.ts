@@ -1,4 +1,4 @@
-import { createToken, CstParser } from 'chevrotain'
+import { createToken, CstParser, Lexer } from 'chevrotain'
 
 const boolean = /oui|non/
 const space =
@@ -40,7 +40,11 @@ const unit_identifier = phrase_starting_with(
 
 const booleanToken = createToken({ name: 'boolean', pattern: boolean })
 const stringToken = createToken({ name: 'boolean', pattern: string })
-const spaceToken = createToken({ name: 'space', pattern: space })
+const spaceToken = createToken({
+	name: 'space',
+	pattern: space,
+	group: Lexer.SKIPPED,
+})
 const letterToken = createToken({ name: 'letter', pattern: letter })
 const symbolToken = createToken({ name: 'symbol', pattern: symbol })
 const digitToken = createToken({ name: 'digit', pattern: digit })
@@ -79,27 +83,24 @@ const parenthesisCloseToken = createToken({
 })
 
 const token = [
+	dotToken,
+	parenthesisOpenToken,
+	parenthesisCloseToken,
+	spaceToken,
 	booleanToken,
 	stringToken,
-	spaceToken,
 	letterToken,
 	symbolToken,
-	digitToken,
 	numberToken,
 	dateToken,
 	exposantToken,
-	anyCharToken,
-	anyCharOrSpecialCharToken,
-	ruleNameToken,
-	unitIdentifierToken,
-	dotToken,
 	additionToken,
 	multiplicationToken,
 	exponentiationToken,
 	divisionToken,
 	minusToken,
-	parenthesisOpenToken,
-	parenthesisCloseToken,
+	ruleNameToken,
+	unitIdentifierToken,
 ]
 
 // const token = {
@@ -142,18 +143,14 @@ class PublicodesParser extends CstParser {
 		)
 
 		this.RULE('expression', () => {
-			return this.OR({
-				IGNORE_AMBIGUITIES: true,
-				DEF: [
-					{ ALT: () => this.CONSUME(dateToken) },
-					// { ALT: () => this.CONSUME(numberToken) },
-					{ ALT: () => this.CONSUME(stringToken) },
-					{ ALT: () => this.CONSUME(booleanToken) },
-					// { ALT: () => this.SUBRULE(this.reference) },
-					{ ALT: () => this.SUBRULE(this.additionExpression) },
-					// { ALT: () => this.SUBRULE(this.boolExpression) },
-				],
-			})
+			return this.OR([
+				// { ALT: () => this.CONSUME(dateToken) },
+				{ ALT: () => this.CONSUME(stringToken) },
+				// { ALT: () => this.CONSUME(booleanToken) },
+				// { ALT: () => this.SUBRULE(this.reference) },
+				{ ALT: () => this.SUBRULE(this.additionExpression) },
+				// { ALT: () => this.SUBRULE(this.boolExpression) },
+			])
 		})
 
 		this.RULE('additionExpression', () => {
@@ -204,7 +201,7 @@ class PublicodesParser extends CstParser {
 
 		this.RULE('arUnaryExpression', () => {
 			this.CONSUME(minusToken)
-			this.SUBRULE(this.primaryExpression)
+			this.SUBRULE(this.additionExpression)
 		})
 
 		// this.RULE('boolExpression', () => {
@@ -237,16 +234,19 @@ class PublicodesParser extends CstParser {
 }
 
 const parser = new PublicodesParser()
+const lexer = new Lexer(token, { positionTracking: 'onlyOffset' })
 
 function parseInput(text) {
-	const lexingResult = parser.tokenize(text)
+	const lexingResult = lexer.tokenize(text)
+	console.log('lexingResult', lexingResult.tokens)
 	// "input" is a setter which will reset the parser's state.
 	parser.input = lexingResult.tokens
-	parser.selectStatement()
+	console.log('expr:', JSON.stringify(parser.expression(), null, 2))
+	console.log('err:', parser.errors)
 
 	if (parser.errors.length > 0) {
 		throw new Error('sad sad panda, Parsing errors detected')
 	}
 }
 
-console.log(parseInput('10 + 3'))
+console.log(parseInput('10'))
