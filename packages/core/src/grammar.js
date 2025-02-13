@@ -3,8 +3,8 @@ import { createToken } from 'chevrotain'
 const space =
 	/[\t\u0020\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]/
 const letter = /[a-zA-Z\u00C0-\u017F]/
-const symbol = /[',°€%²$_’"«»]/
-// const symbol = prec(0, /[',°€%²$_’"«»]/) // TODO: add parentheses
+const symbol = /[',°€%²$_'"'«»]/
+// const symbol = prec(0, /[',°€%²$_'"'«»]/) // TODO: add parentheses
 const digit = /\d/
 
 const number = /\d+(\.\d+)?/
@@ -33,7 +33,7 @@ const rule_name = phrase_starting_with(letter)
 
 const unit_symbol = /[°%\p{Sc}]/ // °, %, and all currency symbols (to be completed?)
 const unit_identifier =
-	phrase_starting_with(new RegExp(`${unit_symbol.source}|${letter.source}`)),
+	phrase_starting_with(new RegExp(`${unit_symbol.source}|${letter.source}`))
 
 const token = [
 	createToken({ name: 'space', pattern: space }),
@@ -77,3 +77,116 @@ const token = [
 //   space: { pattern: /[\s]+/ },
 
 // });
+
+class PublicodesParser extends CstParser {
+	constructor() {
+		super(token)
+
+		this.RULE('expression', () => {
+			return this.OR([
+				{ ALT: () => this.SUBRULE(this.constant) },
+				{ ALT: () => this.SUBRULE(this.reference) },
+				{ ALT: () => this.SUBRULE(this.arExpression) },
+				{ ALT: () => this.SUBRULE(this.boolExpression) }
+			])
+		})
+
+		this.RULE('arExpression', () => {
+			return this.SUBRULE(this.additionExpression)
+		})
+
+		this.RULE('additionExpression', () => {
+			this.SUBRULE(this.multiplicationExpression)
+			this.MANY(() => {
+				this.OR([
+					{ ALT: () => this.CONSUME('+') },
+					{ ALT: () => this.CONSUME('-') }
+				])
+				this.SUBRULE2(this.multiplicationExpression)
+			})
+		})
+
+		this.RULE('multiplicationExpression', () => {
+			this.SUBRULE(this.exponentiationExpression)
+			this.MANY(() => {
+				this.OR([
+					{ ALT: () => this.CONSUME('*') },
+					{ ALT: () => this.CONSUME('/') },
+					{ ALT: () => this.CONSUME('//') }
+				])
+				this.SUBRULE2(this.exponentiationExpression)
+			})
+		})
+
+		this.RULE('exponentiationExpression', () => {
+			this.SUBRULE(this.primaryExpression)
+			this.MANY(() => {
+				this.CONSUME('**')
+				this.SUBRULE2(this.primaryExpression)
+			})
+		})
+
+		this.RULE('primaryExpression', () => {
+			return this.OR([
+				{ ALT: () => this.SUBRULE(this.arUnaryExpression) },
+				{ ALT: () => {
+					this.CONSUME('(')
+					this.SUBRULE(this.arExpression)
+					this.CONSUME(')')
+				}},
+				{ ALT: () => this.CONSUME('number') },
+				{ ALT: () => this.SUBRULE(this.reference) }
+			])
+		})
+
+		this.RULE('arUnaryExpression', () => {
+			this.CONSUME('MINUS')
+			this.SUBRULE(this.arExpression)
+		})
+
+		this.RULE('boolExpression', () => {
+			return this.OR([
+				{ ALT: () => this.CONSUME('boolean') },
+				{ ALT: () => this.SUBRULE(this.comparison) },
+				{ ALT: () => this.SUBRULE(this.reference) },
+				{ ALT: () => {
+					this.CONSUME('(')
+					this.SUBRULE2(this.boolExpression)
+					this.CONSUME(')')
+				}}
+			])
+		})
+
+		this.RULE('comparison', () => {
+			this.SUBRULE(this.expression)
+			this.OR([
+				{ ALT: () => this.CONSUME('=') },
+				{ ALT: () => this.CONSUME('!=') },
+				{ ALT: () => this.CONSUME('<') },
+				{ ALT: () => this.CONSUME('<=') },
+				{ ALT: () => this.CONSUME('>') },
+				{ ALT: () => this.CONSUME('>=') }
+			])
+			this.SUBRULE2(this.expression)
+		})
+
+		this.performSelfAnalysis()
+	}
+}
+
+const parser = new PublicodesParser()
+
+
+function parseInput(text) {
+  const lexingResult = parser.tokenize(text);
+  // "input" is a setter which will reset the parser's state.
+  parser.input = lexingResult.tokens;
+  parser.selectStatement();
+
+  if (parser.errors.length > 0) {
+    throw new Error("sad sad panda, Parsing errors detected");
+  }
+}
+
+console.log(parseInput('10 + 3'))
+
