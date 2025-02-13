@@ -142,15 +142,18 @@ class PublicodesParser extends CstParser {
 		)
 
 		this.RULE('expression', () => {
-			return this.OR([
-				{ ALT: () => this.CONSUME(dateToken) },
-				// { ALT: () => this.CONSUME(numberToken) },
-				{ ALT: () => this.CONSUME(stringToken) },
-				{ ALT: () => this.CONSUME(booleanToken) },
-				// { ALT: () => this.SUBRULE(this.reference) },
-				{ ALT: () => this.SUBRULE(this.additionExpression) },
-				// { ALT: () => this.SUBRULE(this.boolExpression) },
-			])
+			return this.OR({
+				IGNORE_AMBIGUITIES: true,
+				DEF: [
+					{ ALT: () => this.CONSUME(dateToken) },
+					// { ALT: () => this.CONSUME(numberToken) },
+					{ ALT: () => this.CONSUME(stringToken) },
+					{ ALT: () => this.CONSUME(booleanToken) },
+					// { ALT: () => this.SUBRULE(this.reference) },
+					{ ALT: () => this.SUBRULE(this.additionExpression) },
+					// { ALT: () => this.SUBRULE(this.boolExpression) },
+				],
+			})
 		})
 
 		this.RULE('additionExpression', () => {
