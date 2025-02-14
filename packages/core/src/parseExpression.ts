@@ -19,6 +19,7 @@ export type BinaryOp =
 	| { '-': [ExprAST, ExprAST] }
 	| { '*': [ExprAST, ExprAST] }
 	| { '/': [ExprAST, ExprAST] }
+	| { '**': [ExprAST, ExprAST] }
 	| { '>': [ExprAST, ExprAST] }
 	| { '<': [ExprAST, ExprAST] }
 	| { '>=': [ExprAST, ExprAST] }
@@ -26,15 +27,18 @@ export type BinaryOp =
 	| { '=': [ExprAST, ExprAST] }
 	| { '!=': [ExprAST, ExprAST] }
 
-export type UnaryOp = { '-': [{ value: 0 }, ExprAST] }
+export type UnaryOp = {
+	'-': [{ constant: { type: 'number'; nodeValue: 0 } }, ExprAST]
+}
 
 /** AST of a publicodes expression. */
 export type ExprAST =
 	| BinaryOp
 	| UnaryOp
 	| { variable: string }
-	| { constant: { type: 'number'; nodeValue: number }; unité?: string }
+	| { constant: { type: 'number'; nodeValue: number; rawUnit?: string } }
 	| { constant: { type: 'boolean'; nodeValue: boolean } }
+	// NOTE: pourquoi ne pas utiliser le type Date directement ?
 	| { constant: { type: 'string' | 'date'; nodeValue: string } }
 
 /**
@@ -57,7 +61,10 @@ export type ExprAST =
  * ```
  * @experimental
  */
-export function parseExpression(rawNode: string, dottedName: string): ExprAST {
+export function parseExpressionOld(
+	rawNode: string,
+	dottedName: string,
+): ExprAST {
 	/* Strings correspond to infix expressions.
 	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
 	 * This function makes them prefixed operations. */
@@ -91,3 +98,325 @@ Un problème est survenu lors du parsing de l'expression \`${singleLineExpressio
 		)
 	}
 }
+
+type Parser = {
+	readonly strExpression: string
+	current: number
+	tree: ExprAST | null
+}
+
+export function parseExpression(
+	rawNode: string,
+	_dottedName?: string,
+): ExprAST {
+	// NOTE: return number directly
+	if (typeof rawNode === 'number') {
+		return numberNode(rawNode)
+	}
+	const singleLineExpression = (rawNode + '').replace(/\s*\n\s*/g, ' ').trim()
+
+	// FIXME: handle dotted_name
+	// if (singleLineExpression.match(dotted_name)) {
+	// 	console.log('dotted_name:', singleLineExpression.match(dotted_name))
+	// 	return { variable: singleLineExpression }
+	// }
+
+	const res = parseComparison({
+		strExpression: singleLineExpression,
+		current: 0,
+		tree: null,
+	})
+
+	if (!isEOL(res)) {
+		throw new Error('Expected end of line, but got ' + peek(res))
+	}
+
+	return res.tree!
+}
+
+// PERF:
+// - muter le parser sur place
+// - stocker uniquement la string slicée pour accélérer les lookAhead
+function parseComparison(parser: Parser): Parser {
+	let left = parseAddition(parser)
+
+	while (!isEOL(left) && isNextRegExp(left, comparisonOperator)) {
+		const op = expectRegExpGroup(left, comparisonOperator)
+		const right = parseAddition(op.parser)
+
+		right.tree = binaryNode(op.value, left.tree!, right.tree!)
+		left = right
+	}
+
+	return left
+}
+
+function parseAddition(parser: Parser): Parser {
+	let left = parseMultiplication(parser)
+
+	while (!isEOL(left) && isNextRegExp(left, additionOperator)) {
+		const op = expectRegExpGroup(left, additionOperator)
+		const right = parseMultiplication(op.parser)
+
+		right.tree = binaryNode(op.value, left.tree!, right.tree!)
+		left = right
+	}
+
+	return left
+}
+
+function parseMultiplication(parser: Parser): Parser {
+	let left = parseExponentiation(parser)
+
+	while (!isEOL(left) && isNextRegExp(left, multiplyOperator)) {
+		const op = expectRegExpGroup(left, multiplyOperator)
+		const right = parseExponentiation(op.parser)
+
+		right.tree = binaryNode(op.value, left.tree!, right.tree!)
+		left = right
+	}
+
+	return left
+}
+
+function parseExponentiation(parser: Parser): Parser {
+	let left = parsePrimary(parser)
+
+	while (!isEOL(left) && isNextRegExp(left, exponentiationOperator)) {
+		const op = expectRegExpGroup(left, exponentiationOperator)
+		const right = parseExponentiation(op.parser)
+
+		right.tree = binaryNode(op.value, left.tree!, right.tree!)
+		left = right
+	}
+
+	return left
+}
+
+// TODO: factoriser en sous-fonctions ?
+function parsePrimary(parser: Parser): Parser {
+	if (peek(parser) === '(') {
+		consume(parser)
+		expectRegExp(parser, spaces)
+		const expr = parseComparison(parser)
+		expectRegExp(expr, spaces)
+		expect(expr, ')')
+		return expr
+	} else if (peek(parser) === '-') {
+		consume(parser)
+		const expr = parsePrimary(parser)
+		return { ...expr, tree: minusNode(expr.tree!) }
+	} else if (isNextRegExp(parser, date)) {
+		const res = expectRegExp(parser, date)
+		return {
+			...res.parser,
+			tree: dateNode(res.value),
+		}
+	} else if (peek(parser).match(number)) {
+		// TODO: gérer les unités
+		const res = expectRegExp(parser, number)
+
+		if (isNextRegExp(res.parser, unit)) {
+			const parsedUnit = expectRegExp(res.parser, unit)
+			return {
+				...parsedUnit.parser,
+				tree: {
+					constant: {
+						type: 'number',
+						nodeValue: parseFloat(res.value),
+						rawUnit: parsedUnit.value.trim(),
+					},
+				},
+			}
+		}
+		return {
+			...res.parser,
+			tree: numberNode(parseFloat(res.value)),
+		}
+	} else if (isNext(parser, "'") || isNext(parser, '"')) {
+		const res = expectRegExp(parser, string)
+		return {
+			...res.parser,
+			tree: { constant: { type: 'string', nodeValue: res.value.slice(1, -1) } },
+		}
+	} else if (peek(parser).match(letter)) {
+		const res = expectRegExp(parser, dotted_name)
+
+		return {
+			...res.parser,
+			tree:
+				res.value === 'oui' || res.value === 'non' ?
+					booleanNode(res.value)
+				:	{ variable: res.value },
+		}
+	}
+	// TODO: meilleure message d'erreur
+	throw new Error(`Unexpected token ${peek(parser)}`)
+}
+
+function peek(parser: Parser, n?: number): string {
+	return n ?
+			parser.strExpression.slice(parser.current, parser.current + n)
+		:	parser.strExpression[parser.current]
+}
+
+// PERF: il faudrait tester d'autre technique que le slice, mais pour l'instant
+// je fais au plus simple.
+function isNext(parser: Parser, toMatch: string): boolean {
+	const slice = parser.strExpression.slice(
+		parser.current,
+		parser.current + toMatch.length,
+	)
+	return slice === toMatch
+}
+
+function isNextRegExp(parser: Parser, regexp: RegExp): boolean {
+	return parser.strExpression.slice(parser.current).match(regexp) != null
+}
+
+function consume(parser: Parser): string {
+	return parser.strExpression[parser.current++]
+}
+
+function expect(parser: Parser, expected: string): void {
+	if (peek(parser) !== expected) {
+		throw new Error(`Expected '${expected}' but got '${peek(parser)}'`)
+	}
+	consume(parser)
+}
+
+// NOTE: effet de bord sur le parser donné en argument (qui est muté) à voir si
+// on souhaite garder cette approche et auquel cas pas besoin de retourner le
+// parser ou bien si on souhaite garder une approche plus fonctionnelle et
+// retourner le parser à chaque fois mais en le clonant pour ne pas muter.
+function expectRegExp(
+	parser: Parser,
+	regexp: RegExp,
+): { parser: Parser; value: string } {
+	// NOTE: est-ce que l'on garderai pas uniquement le slice plutôt que le
+	// current index ?
+	const match = parser.strExpression.slice(parser.current).match(regexp)
+	if (!match) {
+		throw new Error(`Expected '${regexp.source}' but got ${peek(parser)}`)
+	}
+	parser.current += match[0].length
+	return { parser, value: match[0] }
+}
+
+function expectRegExpGroup(
+	parser: Parser,
+	regexp: RegExp,
+): { parser: Parser; value: string } {
+	const match = parser.strExpression.slice(parser.current).match(regexp)
+	if (!match) {
+		throw new Error(`Expected '${regexp.source}' but got ${peek(parser)}`)
+	}
+	parser.current += match[0].length
+	return { parser, value: match[1] }
+}
+
+function isEOL(parser: Parser): boolean {
+	return parser.current >= parser.strExpression.length
+}
+
+function lookAhead(parser: Parser, n: number): string | null {
+	if (parser.current + n >= parser.strExpression.length) {
+		return null
+	}
+	return parser.strExpression[parser.current + n]
+}
+
+function minusNode(expr: ExprAST): UnaryOp {
+	return { '-': [{ constant: { type: 'number', nodeValue: 0 } }, expr] }
+}
+
+function numberNode(value: number): ExprAST {
+	return { constant: { type: 'number', nodeValue: value } }
+}
+
+function booleanNode(value: 'oui' | 'non'): ExprAST {
+	return { constant: { type: 'boolean', nodeValue: value === 'oui' } }
+}
+
+function binaryNode(op: string, left: ExprAST, right: ExprAST): BinaryOp {
+	// @ts-ignore
+	return { [op]: [left, right] as [ExprAST, ExprAST] }
+}
+
+function dateNode(value: string): ExprAST {
+	return { constant: { type: 'date', nodeValue: value } }
+}
+
+// const boolean = /oui|non/
+const space =
+	/[\t\u0020\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]/
+
+const spaces = new RegExp(`^${space.source}*`)
+const atLeastOneSpace = new RegExp(`^${space.source}+`)
+const letter = /[a-zA-Z\u00C0-\u017F$]/
+const symbol = /[',°€$%²_'"'«»]/
+// const symbol = prec(0, /[',°€%²$_'"'«»]/) // TODO: add parentheses
+const digit = /\d/
+// FIXME: manage quotes in constant
+const string = /'.*'|".*"/
+
+const number = /\d+(\.\d+)?/
+const date = /^(?:(?:0?[1-9]|[12][0-9]|3[01])\/)?(?:0?[1-9]|1[012])\/\d{4}/
+// const exposant = /[⁰-⁹]+/
+
+// const any_char = choice(letter, symbol, digit)
+const any_char = new RegExp(
+	`(${letter.source}|${symbol.source}|${digit.source})`,
+)
+// const any_char_or_special_char = choice(any_char, /\-|\+/)
+// NOTE: pourquoi '+' et '-' ici ?
+const any_char_or_special_char = new RegExp(`(${any_char.source}|\\-|\\+|')`)
+// const any_char_or_special_char = new RegExp(`${any_char.source}`)
+
+// const phrase_starting_with = (char) =>
+// 	seq(
+// 		seq(char, repeat(any_char_or_special_char)),
+// 		repeat(seq(space, seq(any_char, repeat(any_char_or_special_char)))),
+// 	)
+
+const phrase_starting_with = (char: RegExp) =>
+	new RegExp(
+		`(${char.source}${any_char_or_special_char.source}*)(${space.source}${any_char.source}${any_char_or_special_char.source}*)*`,
+	)
+
+const rule_name = phrase_starting_with(letter)
+
+// FIXME: dont work
+const dotted_name = new RegExp(`${rule_name.source}( \\. ${rule_name.source})*`)
+
+const unit_symbol = /[°%\p{Sc}€$]/u // °, %, and all currency symbols (to be completed?)
+const unit_identifier = phrase_starting_with(
+	new RegExp(`(${unit_symbol.source}|${letter.source})`),
+)
+
+const unit = new RegExp(
+	`${spaces.source}(\\/)?${unit_identifier.source}((\\.|\\/)${unit_identifier.source})*`,
+)
+
+const oneOfBetweenAtLeastOneSpace = (values: string[]) =>
+	new RegExp(`^${space.source}+(${values.join('|')})${space.source}+`)
+
+const exponentiationOperator = oneOfBetweenAtLeastOneSpace(['\\*\\*'])
+const multiplyOperator = oneOfBetweenAtLeastOneSpace(['\\-', '\\+'])
+const additionOperator = oneOfBetweenAtLeastOneSpace(['\\*', '\\/', '\\/\\/'])
+const comparisonOperator = oneOfBetweenAtLeastOneSpace([
+	'>',
+	'<',
+	'>=',
+	'<=',
+	'=',
+	'!=',
+])
+
+console.log(
+	JSON.stringify(
+		parseExpression('artiste-auteur . cotisations . CSG-CRDS . assiette'),
+		null,
+		2,
+	),
+)
