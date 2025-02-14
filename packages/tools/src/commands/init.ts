@@ -327,6 +327,19 @@ async function generateBaseFiles(
 				fs.writeFileSync('README.md', getReadmeContent(pjson, pkgManager))
 			}
 
+			// Generate prettier config
+			if (!fs.existsSync('.prettierrc.yaml')) {
+				fs.writeFileSync('.prettierrc.yaml', PRETTIER_CONFIG)
+			}
+
+			// Set up .vscode config for language server
+
+			if (!fs.existsSync('.vscode')) {
+				fs.mkdirSync('.vscode')
+			}
+			fs.writeFileSync('.vscode/settings.json', VSCODE_SETTINGS)
+			fs.writeFileSync('.vscode/extensions.json', VSCODE_EXTENSIONS)
+
 			// Generate src directory with a base.publicodes file as an example
 			if (!fs.existsSync('src')) {
 				fs.mkdirSync('src')
@@ -492,3 +505,23 @@ salaire médian cadre:
     salaire brut: 2600 €/mois
     cotisations salariales . taux: 25%
 `
+
+const PRETTIER_CONFIG = `
+bracketSpacing: true
+semi: false
+singleQuote: true
+trailingComma: none
+overrides: [{ 'files': '**/*.publicodes', 'options': { 'parser': 'yaml' } }]
+`
+
+const VSCODE_SETTINGS = `
+{
+  "prettier.documentSelectors": ["**/*.publicodes"]
+}`
+
+const VSCODE_EXTENSIONS = `
+{
+	"recommendations": [
+		"emilerolley.publicodes-language-server"
+	]
+}`
