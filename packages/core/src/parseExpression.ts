@@ -27,14 +27,16 @@ export type BinaryOp =
 	| { '=': [ExprAST, ExprAST] }
 	| { '!=': [ExprAST, ExprAST] }
 
-export type UnaryOp = { '-': [{ value: 0 }, ExprAST] }
+export type UnaryOp = {
+	'-': [{ constant: { type: 'number'; nodeValue: 0 } }, ExprAST]
+}
 
 /** AST of a publicodes expression. */
 export type ExprAST =
 	| BinaryOp
 	| UnaryOp
 	| { variable: string }
-	| { constant: { type: 'number'; nodeValue: number }; unité?: string }
+	| { constant: { type: 'number'; nodeValue: number; rawUnit?: string } }
 	| { constant: { type: 'boolean'; nodeValue: boolean } }
 	// NOTE: pourquoi ne pas utiliser le type Date directement ?
 	| { constant: { type: 'string' | 'date'; nodeValue: string } }
@@ -59,7 +61,10 @@ export type ExprAST =
  * ```
  * @experimental
  */
-export function parseExpression(rawNode: string, dottedName: string): ExprAST {
+export function parseExpressionOld(
+	rawNode: string,
+	dottedName: string,
+): ExprAST {
 	/* Strings correspond to infix expressions.
 	 * Indeed, a subset of expressions like simple arithmetic operations `3 + (quantity * 2)` or like `salary [month]` are more explicit that their prefixed counterparts.
 	 * This function makes them prefixed operations. */
@@ -100,18 +105,28 @@ type Parser = {
 	tree: ExprAST | null
 }
 
-export function parseExpressionNext(
+export function parseExpression(
 	rawNode: string,
 	_dottedName?: string,
 ): ExprAST {
+	// NOTE: return number directly
+	if (typeof rawNode === 'number') {
+		return numberNode(rawNode)
+	}
 	const singleLineExpression = (rawNode + '').replace(/\s*\n\s*/g, ' ').trim()
+
+	// FIXME: handle dotted_name
+	// if (singleLineExpression.match(dotted_name)) {
+	// 	console.log('dotted_name:', singleLineExpression.match(dotted_name))
+	// 	return { variable: singleLineExpression }
+	// }
 
 	const res = parseComparison({
 		strExpression: singleLineExpression,
 		current: 0,
 		tree: null,
 	})
-	console.log(JSON.stringify(res, null, 2))
+
 	if (!isEOL(res)) {
 		throw new Error('Expected end of line, but got ' + peek(res))
 	}
@@ -124,38 +139,12 @@ export function parseExpressionNext(
 // - stocker uniquement la string slicée pour accélérer les lookAhead
 function parseComparison(parser: Parser): Parser {
 	let left = parseAddition(parser)
-	console.log('parseAddition', JSON.stringify(parser, null, 2))
-	if (isEOL(left)) {
-		return left
-	}
-	expectRegExp(parser, atLeastOneSpace)
 
-	while (
-		!isEOL(left) &&
-		(isNext(left, '>') ||
-			isNext(left, '<') ||
-			isNext(left, '>=') ||
-			isNext(left, '<=') ||
-			isNext(left, '=') ||
-			isNext(left, '!='))
-	) {
-		expectRegExp(parser, atLeastOneSpace)
-		const op = consume(left)
-		const op2 = consume(left)
-		if (op2 !== ' ') {
-			expect(left, ' ')
-			expectRegExp(parser, spaces)
-		} else {
-			expectRegExp(parser, atLeastOneSpace)
-		}
+	while (!isEOL(left) && isNextRegExp(left, comparisonOperator)) {
+		const op = expectRegExpGroup(left, comparisonOperator)
+		const right = parseAddition(op.parser)
 
-		const right = parseAddition(left)
-
-		right.tree = binaryNode(
-			op2 === ' ' ? op : op + op2,
-			left.tree!,
-			right.tree!,
-		)
+		right.tree = binaryNode(op.value, left.tree!, right.tree!)
 		left = right
 	}
 
@@ -163,85 +152,54 @@ function parseComparison(parser: Parser): Parser {
 }
 
 function parseAddition(parser: Parser): Parser {
-	let left = parseTerm(parser)
-	console.log('parseTerm', JSON.stringify(parser, null, 2))
+	let left = parseMultiplication(parser)
 
-	if (isEOL(left)) {
-		return left
-	}
-	expectRegExp(parser, atLeastOneSpace)
-	while (!isEOL(left) && (isNext(left, '+') || isNext(left, '-'))) {
-		const operator = consume(left)
-		expectRegExp(parser, atLeastOneSpace)
-		const right = parseTerm(left)
+	while (!isEOL(left) && isNextRegExp(left, additionOperator)) {
+		const op = expectRegExpGroup(left, additionOperator)
+		const right = parseMultiplication(op.parser)
 
-		// NOTE: peut-on faire plus simple ?
-		right.tree = binaryNode(operator, left.tree!, right.tree!)
+		right.tree = binaryNode(op.value, left.tree!, right.tree!)
 		left = right
 	}
 
 	return left
 }
 
-function parseTerm(parser: Parser): Parser {
-	let left = parseFactor(parser)
-	console.log('parseFactor', JSON.stringify(parser, null, 2))
-	if (isEOL(left)) {
-		return left
-	}
-	expectRegExp(parser, atLeastOneSpace)
-	while (
-		!isEOL(left) &&
-		(isNext(left, '*') || isNext(left, '/') || isNext(left, '//'))
-	) {
-		// NOTE: peut-on faire plus simple ?
-		const op = consume(left)
-		const op2 = consume(left)
-		if (op2 !== ' ') {
-			expect(left, ' ')
-			expectRegExp(parser, spaces)
-		} else {
-			expectRegExp(parser, atLeastOneSpace)
-		}
+function parseMultiplication(parser: Parser): Parser {
+	let left = parseExponentiation(parser)
 
-		const right = parseFactor(left)
+	while (!isEOL(left) && isNextRegExp(left, multiplyOperator)) {
+		const op = expectRegExpGroup(left, multiplyOperator)
+		const right = parseExponentiation(op.parser)
 
-		// NOTE: peut-on faire plus simple ?
-		right.tree = binaryNode(
-			op2 === ' ' ? op : op + op2,
-			left.tree!,
-			right.tree!,
-		)
+		right.tree = binaryNode(op.value, left.tree!, right.tree!)
 		left = right
 	}
+
 	return left
 }
 
-function parseFactor(parser: Parser): Parser {
+function parseExponentiation(parser: Parser): Parser {
 	let left = parsePrimary(parser)
-	console.log('parsePrimary', JSON.stringify(parser, null, 2))
-	if (isEOL(left)) {
-		return left
-	}
-	expectRegExp(parser, atLeastOneSpace)
-	while (!isEOL(left) && isNext(left, '**')) {
-		expect(left, '*')
-		expect(left, '*')
-		expectRegExp(parser, atLeastOneSpace)
-		const right = parsePrimary(left)
 
-		right.tree = binaryNode('**', left.tree!, right.tree!)
+	while (!isEOL(left) && isNextRegExp(left, exponentiationOperator)) {
+		const op = expectRegExpGroup(left, exponentiationOperator)
+		const right = parseExponentiation(op.parser)
+
+		right.tree = binaryNode(op.value, left.tree!, right.tree!)
 		left = right
 	}
+
 	return left
 }
 
 // TODO: factoriser en sous-fonctions ?
 function parsePrimary(parser: Parser): Parser {
-	console.log('parsePrimary', JSON.stringify(parser, null, 2))
 	if (peek(parser) === '(') {
 		consume(parser)
+		expectRegExp(parser, spaces)
 		const expr = parseComparison(parser)
+		expectRegExp(expr, spaces)
 		expect(expr, ')')
 		return expr
 	} else if (peek(parser) === '-') {
@@ -263,8 +221,11 @@ function parsePrimary(parser: Parser): Parser {
 			return {
 				...parsedUnit.parser,
 				tree: {
-					constant: { type: 'number', nodeValue: parseFloat(res.value) },
-					unité: parsedUnit.value.trim(),
+					constant: {
+						type: 'number',
+						nodeValue: parseFloat(res.value),
+						rawUnit: parsedUnit.value.trim(),
+					},
 				},
 			}
 		}
@@ -335,12 +296,23 @@ function expectRegExp(
 	// NOTE: est-ce que l'on garderai pas uniquement le slice plutôt que le
 	// current index ?
 	const match = parser.strExpression.slice(parser.current).match(regexp)
-	console.log(match)
 	if (!match) {
 		throw new Error(`Expected '${regexp.source}' but got ${peek(parser)}`)
 	}
 	parser.current += match[0].length
 	return { parser, value: match[0] }
+}
+
+function expectRegExpGroup(
+	parser: Parser,
+	regexp: RegExp,
+): { parser: Parser; value: string } {
+	const match = parser.strExpression.slice(parser.current).match(regexp)
+	if (!match) {
+		throw new Error(`Expected '${regexp.source}' but got ${peek(parser)}`)
+	}
+	parser.current += match[0].length
+	return { parser, value: match[1] }
 }
 
 function isEOL(parser: Parser): boolean {
@@ -355,7 +327,7 @@ function lookAhead(parser: Parser, n: number): string | null {
 }
 
 function minusNode(expr: ExprAST): UnaryOp {
-	return { '-': [{ value: 0 }, expr] }
+	return { '-': [{ constant: { type: 'number', nodeValue: 0 } }, expr] }
 }
 
 function numberNode(value: number): ExprAST {
@@ -381,11 +353,12 @@ const space =
 
 const spaces = new RegExp(`^${space.source}*`)
 const atLeastOneSpace = new RegExp(`^${space.source}+`)
-const letter = /[a-zA-Z\u00C0-\u017F]/
-const symbol = /[',°€%²$_'"'«»]/
+const letter = /[a-zA-Z\u00C0-\u017F$]/
+const symbol = /[',°€$%²_'"'«»]/
 // const symbol = prec(0, /[',°€%²$_'"'«»]/) // TODO: add parentheses
 const digit = /\d/
-const string = /'.*?'|".*?"/
+// FIXME: manage quotes in constant
+const string = /'.*'|".*"/
 
 const number = /\d+(\.\d+)?/
 const date = /^(?:(?:0?[1-9]|[12][0-9]|3[01])\/)?(?:0?[1-9]|1[012])\/\d{4}/
@@ -397,7 +370,7 @@ const any_char = new RegExp(
 )
 // const any_char_or_special_char = choice(any_char, /\-|\+/)
 // NOTE: pourquoi '+' et '-' ici ?
-const any_char_or_special_char = new RegExp(`(${any_char.source}|\\-|\\+)`)
+const any_char_or_special_char = new RegExp(`(${any_char.source}|\\-|\\+|')`)
 // const any_char_or_special_char = new RegExp(`${any_char.source}`)
 
 // const phrase_starting_with = (char) =>
@@ -416,18 +389,33 @@ const rule_name = phrase_starting_with(letter)
 // FIXME: dont work
 const dotted_name = new RegExp(`${rule_name.source}( \\. ${rule_name.source})*`)
 
-const unit_symbol = /[°%\p{Sc}]/ // °, %, and all currency symbols (to be completed?)
+const unit_symbol = /[°%\p{Sc}€$]/u // °, %, and all currency symbols (to be completed?)
 const unit_identifier = phrase_starting_with(
-	new RegExp(`${unit_symbol.source}|${letter.source}`),
+	new RegExp(`(${unit_symbol.source}|${letter.source})`),
 )
 
 const unit = new RegExp(
-	`${spaces.source}(\\/?)${unit_identifier.source}((\\.|\\/)${unit_identifier.source})*`,
+	`${spaces.source}(\\/)?${unit_identifier.source}((\\.|\\/)${unit_identifier.source})*`,
 )
+
+const oneOfBetweenAtLeastOneSpace = (values: string[]) =>
+	new RegExp(`^${space.source}+(${values.join('|')})${space.source}+`)
+
+const exponentiationOperator = oneOfBetweenAtLeastOneSpace(['\\*\\*'])
+const multiplyOperator = oneOfBetweenAtLeastOneSpace(['\\-', '\\+'])
+const additionOperator = oneOfBetweenAtLeastOneSpace(['\\*', '\\/', '\\/\\/'])
+const comparisonOperator = oneOfBetweenAtLeastOneSpace([
+	'>',
+	'<',
+	'>=',
+	'<=',
+	'=',
+	'!=',
+])
 
 console.log(
 	JSON.stringify(
-		parseExpressionNext('équipement * oui ma variable > 02/2024'),
+		parseExpression('artiste-auteur . cotisations . CSG-CRDS . assiette'),
 		null,
 		2,
 	),

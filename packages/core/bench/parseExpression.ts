@@ -1,5 +1,9 @@
 import { bench, group, run } from 'mitata'
-import { parseExpression, parseExpressionNext } from '../src/parseExpression'
+import {
+	parseExpression,
+	parseExpressionNext,
+	parseExpressionOld,
+} from '../src/parseExpression'
 
 let res
 let resNext
@@ -9,27 +13,27 @@ let resNext
 // - Nearley can parse: 10 < oui
 //
 //
-const e = '-1 + (10 + 20) * 30'
-
-group(`Simple expression: ${e}`, () => {
-	bench('Nearley', () => {
-		res = parseExpression(e, '')
-	})
-
-	bench('Hand-written', () => {
-		resNext = parseExpressionNext(e, '')
-	})
-})
+// const e = '-1 + (10 + 20) * 30'
 //
-const e2 = '-1 + (10 + 20) < 30'
+// group(`Simple expression: ${e}`, () => {
+// 	bench('Nearley', () => {
+// 		res = parseExpression(e, '')
+// 	})
+//
+// 	bench('Hand-written', () => {
+// 		resNext = parseExpressionNext(e, '')
+// 	})
+// })
+//
+const e2 = '10 + 20'
 
 group(`Simple expression with comparison: ${e2}`, () => {
 	bench('Nearley', () => {
-		res = parseExpression(e2, '')
+		res = parseExpressionOld(e2, '')
 	})
 
 	bench('Hand-written', () => {
-		resNext = parseExpressionNext(e2, '')
+		resNext = parseExpression(e2, '')
 	})
 })
 

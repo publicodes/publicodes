@@ -10,7 +10,7 @@ const oldVersion = pjson['devDependencies']['publicodes-old']
 const options = {
 	logger: { warn: () => {}, error: () => {}, log: () => {} },
 }
-const engine = new EngineLocal(modeleSocial, options)
+// const engine = new EngineLocal(modeleSocial, options)
 
 group('Parsing initial des règles (Modele-social)', () => {
 	bench('(local)', () => {
@@ -22,15 +22,15 @@ group('Parsing initial des règles (Modele-social)', () => {
 	})
 })
 
-group('Parsing initial des règles (NGC)', () => {
-	bench('(local)', () => {
-		new EngineLocal(modeleNGC as any, options)
-	})
-
-	bench(oldVersion, () => {
-		new EngineOld(modeleNGC as any, options)
-	})
-})
+// group('Parsing initial des règles (NGC)', () => {
+// 	bench('(local)', () => {
+// 		new EngineLocal(modeleNGC as any, options)
+// 	})
+//
+// 	bench(oldVersion, () => {
+// 		new EngineOld(modeleNGC as any, options)
+// 	})
+// })
 
 await run()
 
