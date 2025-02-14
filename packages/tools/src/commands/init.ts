@@ -17,7 +17,7 @@ import {
 import { basePackageJson, PackageJson, readPackageJson } from '../utils/pjson'
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun'
-type ExtraTool = 'test' | 'bench' // | 'gh-actions'
+type ExtraTool = 'test' | 'bench' | 'vscode' // | 'gh-actions'
 
 export default class Init extends Command {
 	static override args = {}
@@ -278,9 +278,14 @@ async function getExtraTools(useDefault: boolean): Promise<ExtraTool[]> {
 			// 	},
 			{ value: 'test', label: 'Unit test', hint: 'Vitest + example' },
 			{ value: 'bench', label: 'Performance test', hint: 'Mitata' },
+			{
+				value: 'vscode',
+				label: 'VSCode settings',
+				hint: 'Optimal set up for vscode',
+			},
 		],
 		required: false,
-		initialValues: ['test', 'bench'],
+		initialValues: ['test', 'bench', 'vscode'],
 	}) as Promise<ExtraTool[]>
 }
 
@@ -353,12 +358,13 @@ async function generateBaseFiles(
 			}
 
 			// Set up .vscode config for language server
-
-			if (!fs.existsSync('.vscode')) {
-				fs.mkdirSync('.vscode')
+			if (extraTools.includes('vscode')) {
+				if (!fs.existsSync('.vscode')) {
+					fs.mkdirSync('.vscode')
+				}
+				fs.writeFileSync('.vscode/settings.json', VSCODE_SETTINGS)
+				fs.writeFileSync('.vscode/extensions.json', VSCODE_EXTENSIONS)
 			}
-			fs.writeFileSync('.vscode/settings.json', VSCODE_SETTINGS)
-			fs.writeFileSync('.vscode/extensions.json', VSCODE_EXTENSIONS)
 
 			// Generate src directory with a base.publicodes file as an example
 			if (!fs.existsSync('src')) {
