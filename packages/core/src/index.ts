@@ -109,6 +109,8 @@ export type RawPublicodes<RuleNames extends string> = Partial<
  *
  * Can be used to set the values of any existing rules with the {@link Engine.setSituation} method.
  *
+ * Note: When strict option on `situation` (see {@link StrictOptions}) is set to the Engine, the situation passed to the engine can be filtered (but retrieved with {@link Engine.getSituation}).
+ *
  * @example
  * ```js
  * const situation = {
