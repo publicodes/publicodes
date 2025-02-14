@@ -9,7 +9,9 @@
 		'open-data': 'bg-primary-400',
 		tech: 'bg-publicodes-green',
 		modelisation: 'bg-publicodes-orange',
-		communauté: 'bg-purple-400'
+		communauté: 'bg-publicodes-green',
+		nouveautés: 'bg-secondary-500',
+		langage: 'bg-primary-400'
 	};
 </script>
 

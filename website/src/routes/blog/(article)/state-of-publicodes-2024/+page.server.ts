@@ -53,7 +53,7 @@ export function load() {
 			const améliorations = Object.entries(item)
 				.filter(
 					([key, value]) =>
-						key.startsWith('Quels chantiers') && value === 'true'
+						key.startsWith('Quels chantiers') && value === 'TRUE'
 				)
 				.map(([key]) =>
 					key

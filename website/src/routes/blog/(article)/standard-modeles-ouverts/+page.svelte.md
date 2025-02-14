@@ -5,7 +5,6 @@ author: 'Mäel Thomas'
 date: '2024-06-14'
 tags: 'modelisation, open-data'
 icon: '🏛️'
-featured: true
 ---
 
 Un modèle de calcul est un programme, qui prend des données en entrée (par exemple le gabarit d'une voiture et son type de moteur), et permet de calculer de nouvelles valeurs sur cette base (par exemple, son empreinte climat en gCO2e/km).
