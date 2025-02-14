@@ -342,7 +342,7 @@ async function generateBaseFiles(
 						`Could not initialize a git repository (make sure ${chalk.bold.italic(
 							'git',
 						)} is installed)
-						
+
 						Error: ${error instanceof Error ? error.message : ''}
 						`,
 					)
@@ -438,7 +438,7 @@ salaire net: salaire brut - cotisations salariales
 
 salaire brut:
   titre: Salaire brut mensuel
-  par défaut: 2500 
+  par défaut: 2500
   unité: €/mois
 
 cotisations salariales:
@@ -480,10 +480,10 @@ describe("Salaire net", () => {
 `
 
 const BASE_PUBLICODES_FILE = `
-# Ce fichier contient des exemples de situations pour tester les règles
+# Ce fichier contient des exemples de situations (à l'image d'un jeu de réponse pour votre modèle de calcul). Elles sont utiles pour les tests notamment.
 # Pour le moment, il est uniquement utilisé par la commande "publicodes dev"
 
-salaire SMIC: 
+salaire SMIC:
   contexte:
     salaire brut: SMIC mensuel
 
