@@ -315,6 +315,7 @@ async function installDeps(pkgManager: PackageManager): Promise<void> {
 async function generateBaseFiles(
 	pjson: PackageJson,
 	pkgManager: PackageManager,
+	extraTools: ExtraTool[] = [],
 ): Promise<void> {
 	return runWithSpinner('Generating files', 'Files generated', (spinner) => {
 		try {
@@ -376,10 +377,12 @@ async function generateBaseFiles(
 			}
 			fs.writeFileSync('situations/salaire.publicodes', BASE_PUBLICODES_FILE)
 
-			if (!fs.existsSync('test')) {
-				fs.mkdirSync('test')
+			if (extraTools.includes('test')) {
+				if (!fs.existsSync('test')) {
+					fs.mkdirSync('test')
+				}
+				fs.writeFileSync('test/salaire.test.ts', BASE_TEST_FILE)
 			}
-			fs.writeFileSync('test/salaire.test.ts', BASE_TEST_FILE)
 		} catch (error) {
 			if (error instanceof Error) {
 				exitWithError({
