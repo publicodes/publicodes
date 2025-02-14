@@ -17,7 +17,7 @@ import {
 import { basePackageJson, PackageJson, readPackageJson } from '../utils/pjson'
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun'
-type ExtraTool = 'test' // | 'gh-actions'
+type ExtraTool = 'test' | 'bench' // | 'gh-actions'
 
 export default class Init extends Command {
 	static override args = {}
@@ -97,7 +97,10 @@ installation.`,
 			setupTests(pkgJSON, pkgManager)
 		}
 
-		await generateBaseFiles(pkgJSON, pkgManager)
+		if (extraTools.includes('bench')) {
+			setupBench(pkgJSON)
+		}
+		await generateBaseFiles(pkgJSON, pkgManager, extraTools)
 
 		const shouldInstall =
 			flags['no-install'] === undefined && !flags.yes ?
@@ -274,9 +277,10 @@ async function getExtraTools(useDefault: boolean): Promise<ExtraTool[]> {
 			// 		hint: 'automate build, test and publishing',
 			// 	},
 			{ value: 'test', label: 'Unit test', hint: 'Vitest + example' },
+			{ value: 'bench', label: 'Performance test', hint: 'Mitata' },
 		],
 		required: false,
-		initialValues: ['test'],
+		initialValues: ['test', 'bench'],
 	}) as Promise<ExtraTool[]>
 }
 
@@ -289,6 +293,21 @@ function setupTests(pkgJSON: PackageJson, pkgManager: PackageManager) {
 		...pkgJSON.scripts,
 		pretest: `${pkgManager} run compile`,
 		test: 'vitest run',
+	}
+	return pkgJSON
+}
+
+function setupBench(pkgJSON: PackageJson) {
+	pkgJSON.devDependencies = {
+		...pkgJSON.devDependencies,
+		mitata: '^0.1.6',
+		tsup: '^8.3.5',
+		typescript: '^5.7.3',
+	}
+	pkgJSON.scripts = {
+		...pkgJSON.scripts,
+		bench:
+			'yarn run compile && tsup --entry.bench ./bench/index.ts --format esm && node ./dist/bench.js',
 	}
 	return pkgJSON
 }
@@ -382,6 +401,13 @@ async function generateBaseFiles(
 					fs.mkdirSync('test')
 				}
 				fs.writeFileSync('test/salaire.test.ts', BASE_TEST_FILE)
+			}
+
+			if (extraTools.includes('bench')) {
+				if (!fs.existsSync('bench')) {
+					fs.mkdirSync('bench')
+				}
+				fs.writeFileSync('bench/index.ts', BASE_BENCH_FILE)
 			}
 		} catch (error) {
 			if (error instanceof Error) {
@@ -507,6 +533,43 @@ salaire médian cadre:
   contexte:
     salaire brut: 2600 €/mois
     cotisations salariales . taux: 25%
+`
+
+const BASE_BENCH_FILE = `
+import { bench, group, run } from 'mitata'
+import Engine from "publicodes";
+import rules from "../${DEFAULT_BUILD_DIR}/index.js"
+
+const options = {
+	logger: { warn: () => {}, error: () => {}, log: () => {} },
+}
+const engine = new Engine(rules, options)
+
+group('Parsing initial des règles', () => {
+	bench('all rules', () => {
+		new Engine(rules, options)
+	})
+})
+
+group('Evaluation', () => {
+	bench('salaire net', () => {
+		engine.setSituation({
+			'salaire brut': 3000,
+		})
+		engine.evaluate('salaire net')
+	})
+})
+
+group('setSituation', () => {
+	bench('situation', () => {
+		engine.setSituation({
+			'salaire brut': '2600 €/mois',
+    		'cotisations salariales . taux': '25%'
+		})
+	})
+})
+
+await run()
 `
 
 const PRETTIER_CONFIG = `
