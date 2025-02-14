@@ -111,7 +111,7 @@ export function parseExpressionNext(
 		current: 0,
 		tree: null,
 	})
-
+	console.log(JSON.stringify(res, null, 2))
 	if (!isEOL(res)) {
 		throw new Error('Expected end of line, but got ' + peek(res))
 	}
@@ -124,26 +124,35 @@ export function parseExpressionNext(
 // - stocker uniquement la string slicée pour accélérer les lookAhead
 function parseComparison(parser: Parser): Parser {
 	let left = parseAddition(parser)
+	console.log('parseAddition', JSON.stringify(parser, null, 2))
+	if (isEOL(left)) {
+		return left
+	}
+	expectRegExp(parser, atLeastOneSpace)
 
 	while (
 		!isEOL(left) &&
-		(isNext(left, ' > ') ||
-			isNext(left, ' < ') ||
-			isNext(left, ' >= ') ||
-			isNext(left, ' <= ') ||
-			isNext(left, ' = ') ||
-			isNext(left, ' != '))
+		(isNext(left, '>') ||
+			isNext(left, '<') ||
+			isNext(left, '>=') ||
+			isNext(left, '<=') ||
+			isNext(left, '=') ||
+			isNext(left, '!='))
 	) {
-		expect(left, ' ')
-		const operator = consume(left)
-		const operator2 = consume(left)
-		if (operator2 !== ' ') {
+		expectRegExp(parser, atLeastOneSpace)
+		const op = consume(left)
+		const op2 = consume(left)
+		if (op2 !== ' ') {
 			expect(left, ' ')
+			expectRegExp(parser, spaces)
+		} else {
+			expectRegExp(parser, atLeastOneSpace)
 		}
+
 		const right = parseAddition(left)
 
 		right.tree = binaryNode(
-			operator2 === ' ' ? operator : operator + operator2,
+			op2 === ' ' ? op : op + op2,
 			left.tree!,
 			right.tree!,
 		)
@@ -155,11 +164,15 @@ function parseComparison(parser: Parser): Parser {
 
 function parseAddition(parser: Parser): Parser {
 	let left = parseTerm(parser)
+	console.log('parseTerm', JSON.stringify(parser, null, 2))
 
-	while (!isEOL(left) && (isNext(left, ' + ') || isNext(left, ' - '))) {
-		expect(left, ' ')
+	if (isEOL(left)) {
+		return left
+	}
+	expectRegExp(parser, atLeastOneSpace)
+	while (!isEOL(left) && (isNext(left, '+') || isNext(left, '-'))) {
 		const operator = consume(left)
-		expect(left, ' ')
+		expectRegExp(parser, atLeastOneSpace)
 		const right = parseTerm(left)
 
 		// NOTE: peut-on faire plus simple ?
@@ -172,18 +185,25 @@ function parseAddition(parser: Parser): Parser {
 
 function parseTerm(parser: Parser): Parser {
 	let left = parseFactor(parser)
-
+	console.log('parseFactor', JSON.stringify(parser, null, 2))
+	if (isEOL(left)) {
+		return left
+	}
+	expectRegExp(parser, atLeastOneSpace)
 	while (
 		!isEOL(left) &&
-		(isNext(left, ' * ') || isNext(left, ' / ') || isNext(left, ' // '))
+		(isNext(left, '*') || isNext(left, '/') || isNext(left, '//'))
 	) {
-		expect(left, ' ')
 		// NOTE: peut-on faire plus simple ?
 		const op = consume(left)
 		const op2 = consume(left)
 		if (op2 !== ' ') {
 			expect(left, ' ')
+			expectRegExp(parser, spaces)
+		} else {
+			expectRegExp(parser, atLeastOneSpace)
 		}
+
 		const right = parseFactor(left)
 
 		// NOTE: peut-on faire plus simple ?
@@ -199,12 +219,15 @@ function parseTerm(parser: Parser): Parser {
 
 function parseFactor(parser: Parser): Parser {
 	let left = parsePrimary(parser)
-
-	while (!isEOL(left) && isNext(left, ' ** ')) {
-		expect(left, ' ')
+	console.log('parsePrimary', JSON.stringify(parser, null, 2))
+	if (isEOL(left)) {
+		return left
+	}
+	expectRegExp(parser, atLeastOneSpace)
+	while (!isEOL(left) && isNext(left, '**')) {
 		expect(left, '*')
 		expect(left, '*')
-		expect(left, ' ')
+		expectRegExp(parser, atLeastOneSpace)
 		const right = parsePrimary(left)
 
 		right.tree = binaryNode('**', left.tree!, right.tree!)
@@ -215,6 +238,7 @@ function parseFactor(parser: Parser): Parser {
 
 // TODO: factoriser en sous-fonctions ?
 function parsePrimary(parser: Parser): Parser {
+	console.log('parsePrimary', JSON.stringify(parser, null, 2))
 	if (peek(parser) === '(') {
 		consume(parser)
 		const expr = parseComparison(parser)
@@ -233,7 +257,16 @@ function parsePrimary(parser: Parser): Parser {
 	} else if (peek(parser).match(number)) {
 		// TODO: gérer les unités
 		const res = expectRegExp(parser, number)
-		if (isNextRegExp(res.parser, unit_identifier)) {
+
+		if (isNextRegExp(res.parser, unit)) {
+			const parsedUnit = expectRegExp(res.parser, unit)
+			return {
+				...parsedUnit.parser,
+				tree: {
+					constant: { type: 'number', nodeValue: parseFloat(res.value) },
+					unité: parsedUnit.value.trim(),
+				},
+			}
 		}
 		return {
 			...res.parser,
@@ -302,8 +335,9 @@ function expectRegExp(
 	// NOTE: est-ce que l'on garderai pas uniquement le slice plutôt que le
 	// current index ?
 	const match = parser.strExpression.slice(parser.current).match(regexp)
-	if (match == null) {
-		throw new Error(`Expected ${regexp} but got ${peek(parser)}`)
+	console.log(match)
+	if (!match) {
+		throw new Error(`Expected '${regexp.source}' but got ${peek(parser)}`)
 	}
 	parser.current += match[0].length
 	return { parser, value: match[0] }
@@ -341,9 +375,12 @@ function dateNode(value: string): ExprAST {
 	return { constant: { type: 'date', nodeValue: value } }
 }
 
-const boolean = /oui|non/
+// const boolean = /oui|non/
 const space =
 	/[\t\u0020\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]/
+
+const spaces = new RegExp(`^${space.source}*`)
+const atLeastOneSpace = new RegExp(`^${space.source}+`)
 const letter = /[a-zA-Z\u00C0-\u017F]/
 const symbol = /[',°€%²$_'"'«»]/
 // const symbol = prec(0, /[',°€%²$_'"'«»]/) // TODO: add parentheses
@@ -352,7 +389,7 @@ const string = /'.*?'|".*?"/
 
 const number = /\d+(\.\d+)?/
 const date = /^(?:(?:0?[1-9]|[12][0-9]|3[01])\/)?(?:0?[1-9]|1[012])\/\d{4}/
-const exposant = /[⁰-⁹]+/
+// const exposant = /[⁰-⁹]+/
 
 // const any_char = choice(letter, symbol, digit)
 const any_char = new RegExp(
@@ -369,7 +406,7 @@ const any_char_or_special_char = new RegExp(`(${any_char.source}|\\-|\\+)`)
 // 		repeat(seq(space, seq(any_char, repeat(any_char_or_special_char)))),
 // 	)
 
-const phrase_starting_with = (char) =>
+const phrase_starting_with = (char: RegExp) =>
 	new RegExp(
 		`(${char.source}${any_char_or_special_char.source}*)(${space.source}${any_char.source}${any_char_or_special_char.source}*)*`,
 	)
@@ -382,6 +419,10 @@ const dotted_name = new RegExp(`${rule_name.source}( \\. ${rule_name.source})*`)
 const unit_symbol = /[°%\p{Sc}]/ // °, %, and all currency symbols (to be completed?)
 const unit_identifier = phrase_starting_with(
 	new RegExp(`${unit_symbol.source}|${letter.source}`),
+)
+
+const unit = new RegExp(
+	`${spaces.source}(\\/?)${unit_identifier.source}((\\.|\\/)${unit_identifier.source})*`,
 )
 
 console.log(
