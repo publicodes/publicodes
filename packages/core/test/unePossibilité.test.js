@@ -1,17 +1,13 @@
-import { expect } from 'chai'
-import { test } from 'mocha'
+import { describe, it, expect, beforeAll } from 'vitest'
 import yaml from 'yaml'
 import Engine from '../src/index'
 import { engineFromYaml } from './utils'
 
-describe('une possibilité', function () {
-	describe('References to rules', function () {
-		/**
-		 * @type {Engine}
-		 */
+describe('une possibilité', () => {
+	describe('References to rules', () => {
 		let engine
 
-		before(function () {
+		beforeAll(() => {
 			engine = engineFromYaml(
 				`
 a: 
@@ -27,18 +23,20 @@ a:
 			)
 		})
 
-		test('Accept reference to defined rules', function () {
-			expect(engine.evaluate('a').nodeValue).to.eql('b')
-		})
-		test('Can be modified with setSituation', function () {
-			engine.setSituation({ a: "'c'" })
-			expect(engine.evaluate('a').nodeValue).to.eql('c')
-		})
-		test('Throw an error if the value is not in the list', function () {
-			expect(() => engine.setSituation({ a: "'d'" })).throws()
+		it('Accept reference to defined rules', () => {
+			expect(engine.evaluate('a').nodeValue).toEqual('b')
 		})
 
-		test('Do not allow a default value wich is not in the list', function () {
+		it('Can be modified with setSituation', () => {
+			engine.setSituation({ a: "'c'" })
+			expect(engine.evaluate('a').nodeValue).toEqual('c')
+		})
+
+		it('Throw an error if the value is not in the list', () => {
+			expect(() => engine.setSituation({ a: "'d'" })).toThrow()
+		})
+
+		it('Do not allow a default value wich is not in the list', () => {
 			// Todo : make this work at compile time
 			const engine = engineFromYaml(
 				`
@@ -55,10 +53,10 @@ a:
 				{ strict: true },
 			)
 
-			expect(() => engine.evaluate('a')).throws()
+			expect(() => engine.evaluate('a')).toThrow()
 		})
 
-		test('Throw if the reference has not been defined', function () {
+		it('Throw if the reference has not been defined', () => {
 			expect(() =>
 				engineFromYaml(
 					`
@@ -70,10 +68,10 @@ a:
 `,
 					{ strict: true },
 				),
-			).to.throw()
+			).toThrow()
 		})
 
-		test('Allows to use a reference to a rule that is not a direct child', function () {
+		it('Allows to use a reference to a rule that is not a direct child', () => {
 			const engine = engineFromYaml(
 				`
 a:
@@ -87,11 +85,11 @@ b . a:
 c:
 `,
 			)
-			expect(() => engine.getRule('a . b . a')).to.throw()
-			expect(engine.evaluate('a').nodeValue).to.eql('b . a')
+			expect(() => engine.getRule('a . b . a')).toThrow()
+			expect(engine.evaluate('a').nodeValue).toEqual('b . a')
 		})
 
-		test('Disambiguates references', function () {
+		it('Disambiguates references', () => {
 			const engine = engineFromYaml(
 				`
 a:
@@ -104,21 +102,21 @@ a . b . a:
 			)
 			expect(
 				engine.getRule('a . a').possibilities.explanation[0].dottedName,
-			).to.eql('a . b . a')
+			).toEqual('a . b . a')
 		})
 
-		test('Throws if empty', function () {
+		it('Throws if empty', () => {
 			expect(() =>
 				engineFromYaml(`
 a:
   une possibilité:
 `),
-			).to.throw('Erreur syntaxique')
+			).toThrow('Erreur syntaxique')
 		})
 	})
 
-	describe('Inlined rules', function () {
-		test('Creates new rules', function () {
+	describe('Inlined rules', () => {
+		it('Creates new rules', () => {
 			const engine = engineFromYaml(
 				`
 a:
@@ -126,10 +124,10 @@ a:
     - b:
 `,
 			)
-			expect(engine.getRule('a . b')).to.be.ok
+			expect(engine.getRule('a . b')).toBeTruthy()
 		})
 
-		test('Throws if the rule is defined twice in possibility', function () {
+		it('Throws if the rule is defined twice in possibility', () => {
 			expect(() =>
 				engineFromYaml(
 					`
@@ -139,10 +137,10 @@ a:
     - b:
 `,
 				),
-			).to.throw('Erreur syntaxique')
+			).toThrow('Erreur syntaxique')
 		})
 
-		test('Throws if the rule is also defined elswhere', function () {
+		it('Throws if the rule is also defined elswhere', () => {
 			expect(() =>
 				engineFromYaml(
 					`
@@ -153,10 +151,10 @@ a:
     b:
 `,
 				),
-			).to.throw('Erreur syntaxique')
+			).toThrow('Erreur syntaxique')
 		})
 
-		test('Ok to mix with references', function () {
+		it('Ok to mix with references', () => {
 			const engine = engineFromYaml(
 				`
 a:
@@ -167,10 +165,10 @@ a:
     b:
 `,
 			)
-			expect(engine.getRule('a . c').title).to.eql('C')
+			expect(engine.getRule('a . c').title).toEqual('C')
 		})
 
-		test('Do not allow mix with string', function () {
+		it('Do not allow mix with string', () => {
 			expect(() =>
 				engineFromYaml(
 					`
@@ -181,10 +179,10 @@ a:
   
 `,
 				),
-			).to.throw('Erreur syntaxique')
+			).toThrow('Erreur syntaxique')
 		})
 
-		test('Do not allow mix with number', function () {
+		it('Do not allow mix with number', () => {
 			expect(() =>
 				engineFromYaml(
 					`
@@ -194,10 +192,10 @@ a:
     - 12
 		`,
 				),
-			).to.throw('Erreur syntaxique')
+			).toThrow('Erreur syntaxique')
 		})
 
-		test('Do not allow ambiguity', function () {
+		it('Do not allow ambiguity', () => {
 			expect(() =>
 				engineFromYaml(
 					`
@@ -208,10 +206,10 @@ a:
     - b
 `,
 				),
-			).to.throw('Erreur syntaxique')
+			).toThrow('Erreur syntaxique')
 		})
 
-		test('Only one rule by possibility', function () {
+		it('Only one rule by possibility', () => {
 			expect(() =>
 				engineFromYaml(
 					`
@@ -221,11 +219,11 @@ a:
       c:
 `,
 				),
-			).to.throw('Erreur syntaxique')
+			).toThrow('Erreur syntaxique')
 		})
 	})
 
-	describe('Number constant', function () {
+	describe('Number constant', () => {
 		const engine = engineFromYaml(
 			`
 a:
@@ -237,20 +235,20 @@ a:
 `,
 			{ strict: true },
 		)
-		test('Accept number constant', function () {
-			expect(engine.evaluate('a').nodeValue).to.eql(4)
+		it('Accept number constant', () => {
+			expect(engine.evaluate('a').nodeValue).toEqual(4)
 		})
-		test('Can be modified with setSituation', function () {
+		it('Can be modified with setSituation', () => {
 			engine.setSituation({ a: '5 pièces' })
-			expect(engine.evaluate('a').nodeValue).to.eql(5)
+			expect(engine.evaluate('a').nodeValue).toEqual(5)
 		})
-		test('Throw an error if the value is not in the list', function () {
-			expect(() => engine.setSituation({ a: 3 })).throws()
+		it('Throw an error if the value is not in the list', () => {
+			expect(() => engine.setSituation({ a: 3 })).toThrow()
 		})
-		test('Throw an error if the unit if wrong', function () {
-			expect(() => engine.setSituation({ a: '5 mètres' })).throws()
+		it('Throw an error if the unit if wrong', () => {
+			expect(() => engine.setSituation({ a: '5 mètres' })).toThrow()
 		})
-		test('Do not allow different units', function () {
+		it('Do not allow different units', () => {
 			const rules = yaml.parse(
 				`
 a:
@@ -259,9 +257,9 @@ a:
     - 5 pièces
   `,
 			)
-			expect(() => new Engine(rules, { strict: true })).throws()
+			expect(() => new Engine(rules, { strict: true })).toThrow()
 		})
-		test('Allows unit conversion', function () {
+		it('Allows unit conversion', () => {
 			const rules = yaml.parse(
 				`
 a:
@@ -272,11 +270,11 @@ a:
 `,
 			)
 			const engine = new Engine(rules, { strict: true })
-			expect(engine.evaluate('a').nodeValue).to.eql(200)
+			expect(engine.evaluate('a').nodeValue).toEqual(200)
 		})
 
-		describe('getPossibilitiesFor', function () {
-			test('Returns string constant possibility', function () {
+		describe('getPossibilitiesFor', () => {
+			it('Returns string constant possibility', () => {
 				const engine = engineFromYaml(`
 fruits:
   une possibilité:
@@ -288,10 +286,10 @@ fruits:
 					publicodesValue: "'pomme'",
 					nodeValue: 'pomme',
 				})
-				expect(possibilities[0].notApplicable.nodeValue).to.be.false
+				expect(possibilities[0].notApplicable.nodeValue).toBe(false)
 			})
 
-			test('Returns numeric possibility with unit structure', function () {
+			it('Returns numeric possibility with unit structure', () => {
 				const engine = engineFromYaml(`
 poids:
   une possibilité:
@@ -306,7 +304,7 @@ poids:
 				})
 			})
 
-			test('Returns reference possibility structure', function () {
+			it('Returns reference possibility structure', () => {
 				const engine = engineFromYaml(`
 choix:
   une possibilité:
@@ -321,7 +319,7 @@ choix:
 				})
 			})
 
-			test('filterNotApplicable removes non applicable possibilities', function () {
+			it('filterNotApplicable removes non applicable possibilities', () => {
 				const engine = engineFromYaml(`
 choix:
   une possibilité:
@@ -332,11 +330,11 @@ choix:
 				const possibilities = engine.getPossibilitiesFor('choix', {
 					filterNotApplicable: true,
 				})
-				expect(possibilities).to.have.length(2)
-				expect(possibilities[0].dottedName).to.equal('choix . option2')
+				expect(possibilities).toHaveLength(2)
+				expect(possibilities[0].dottedName).toEqual('choix . option2')
 			})
 
-			test('filterNotApplicable keeps all possibilities when no conditions', function () {
+			it('filterNotApplicable keeps all possibilities when no conditions', () => {
 				const engine = engineFromYaml(`
 choix:
   une possibilité:
@@ -345,7 +343,7 @@ choix:
 				const possibilities = engine.getPossibilitiesFor('choix', {
 					filterNotApplicable: true,
 				})
-				expect(possibilities).to.have.length(2)
+				expect(possibilities).toHaveLength(2)
 			})
 		})
 	})

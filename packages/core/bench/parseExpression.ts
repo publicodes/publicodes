@@ -1,9 +1,7 @@
 import { bench, group, run } from 'mitata'
-import {
-	parseExpression,
-	parseExpressionNext,
-	parseExpressionOld,
-} from '../src/parseExpression'
+import { parseExpression } from '../src/parseExpression'
+
+import { parseExpression as parseExpressionOld } from 'publicodes-old'
 
 let res
 let resNext

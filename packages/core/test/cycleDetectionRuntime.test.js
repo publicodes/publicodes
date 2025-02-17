@@ -1,24 +1,24 @@
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import { parseYaml } from './utils'
 import Engine from '../src'
 
 // Cycles due to parents dependencies are not handled currently.
-describe('Cycle detection during runtime ', function () {
+describe('Cycle detection during runtime', () => {
 	const strictOptions = {
 		strict: {
 			noCycleRuntime: true,
 		},
 	}
 
-	it('should detect the trivial cycle', function () {
+	it('should detect the trivial cycle', () => {
 		const rules = parseYaml`
 			a: a + 1
 		`
 		const engine = new Engine(rules, strictOptions)
-		expect(() => engine.evaluate('a')).to.throw()
+		expect(() => engine.evaluate('a')).toThrow()
 	})
 
-	it('should detect nested and parallel cycles', function () {
+	it('should detect nested and parallel cycles', () => {
 		const engine = new Engine(
 			parseYaml`
 			a: b + 1
@@ -29,10 +29,10 @@ describe('Cycle detection during runtime ', function () {
 			strictOptions,
 		)
 
-		expect(() => engine.evaluate('a')).to.throw()
+		expect(() => engine.evaluate('a')).toThrow()
 	})
 
-	it('should not detect valeur cycles due to parent dependency', function () {
+	it('should not detect valeur cycles due to parent dependency', () => {
 		const engine = new Engine(
 			parseYaml`
 			a: b + 1
@@ -41,10 +41,10 @@ describe('Cycle detection during runtime ', function () {
 			strictOptions,
 		)
 
-		expect(() => engine.evaluate('a')).to.not.throw()
+		expect(() => engine.evaluate('a')).not.toThrow()
 	})
 
-	it('should not detect valeur cycles due to parent dependency with boolean value', function () {
+	it('should not detect valeur cycles due to parent dependency with boolean value', () => {
 		const engine = new Engine(
 			parseYaml`
 			a: b
@@ -53,10 +53,10 @@ describe('Cycle detection during runtime ', function () {
 			strictOptions,
 		)
 
-		expect(() => engine.evaluate('a')).to.not.throw()
+		expect(() => engine.evaluate('a')).not.toThrow()
 	})
 
-	it('should not detect cycles when résoudre référence circulaire', function () {
+	it('should not detect cycles when résoudre référence circulaire', () => {
 		const engine = new Engine(
 			parseYaml`
 			fx: 200 - x
@@ -67,7 +67,7 @@ describe('Cycle detection during runtime ', function () {
 			strictOptions,
 		)
 
-		expect(() => engine.evaluate('x')).to.not.throw()
+		expect(() => engine.evaluate('x')).not.toThrow()
 		expect(engine.evaluate('x').missingVariables).to.eql({})
 	})
 })

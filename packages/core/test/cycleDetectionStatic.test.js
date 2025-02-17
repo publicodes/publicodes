@@ -1,6 +1,6 @@
-import { expect } from 'chai'
 import { cyclesInDependenciesGraph } from '../src/AST/graph'
 import { parseYaml } from './utils'
+import { describe, it } from 'vitest'
 
 // Cycles due to parents dependencies are not handled currently.
 describe.skip('Cyclic dependencies detectron 3000 ™', function () {

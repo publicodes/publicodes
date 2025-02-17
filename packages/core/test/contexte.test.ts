@@ -1,14 +1,8 @@
-/* eslint-disable no-console */
-import chai, { expect } from 'chai'
-import 'mocha'
-import sinon from 'sinon'
-import sinonChai from 'sinon-chai'
+import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
 import { parse } from 'yaml'
 import Engine from '../src'
 
-chai.use(sinonChai)
-
-describe('When two different contexte are nested', function () {
+describe('When two different contexte are nested', () => {
 	const rulesYaml = parse(`
 a: 1
 b: a * 2
@@ -21,40 +15,39 @@ d:
   contexte:
     a: 100
 `)
-	const sandbox = sinon.createSandbox()
 
-	beforeEach(function () {
-		sandbox.spy(console, 'warn')
+	beforeEach(() => {
+		vi.spyOn(console, 'warn')
 	})
 
-	afterEach(function () {
-		sandbox.restore()
+	afterEach(() => {
+		vi.restoreAllMocks()
 	})
 
-	describe('evaluation of rule on top of the chain', function () {
-		it('evaluates to something', function () {
-			expect(new Engine(rulesYaml).evaluate('d').nodeValue).to.eq(20)
+	describe('evaluation of rule on top of the chain', () => {
+		it('evaluates to something', () => {
+			expect(new Engine(rulesYaml).evaluate('d').nodeValue).toBe(20)
 		})
 
-		it('does not throw any warning', function () {
+		it('does not throw any warning', () => {
 			new Engine(rulesYaml).evaluate('d')
-			expect(console.warn).to.have.not.been.called
+			expect(console.warn).not.toHaveBeenCalled()
 		})
 	})
 
-	describe('evaluation of middle rule', function () {
-		it('evaluates to something', function () {
-			expect(new Engine(rulesYaml).evaluate('c').nodeValue).to.be.not.undefined
+	describe('evaluation of middle rule', () => {
+		it('evaluates to something', () => {
+			expect(new Engine(rulesYaml).evaluate('c').nodeValue).toBeDefined()
 		})
 
-		it('does not throw any warning', function () {
+		it('does not throw any warning', () => {
 			new Engine(rulesYaml).evaluate('c')
-			expect(console.warn).to.have.not.been.called
+			expect(console.warn).not.toHaveBeenCalled()
 		})
 	})
 })
 
-describe('When rule contains itself in the context', function () {
+describe('When rule contains itself in the context', () => {
 	const rules = {
 		a: 100,
 		b: {
@@ -67,24 +60,23 @@ describe('When rule contains itself in the context', function () {
 			},
 		},
 	}
-	const sandbox = sinon.createSandbox()
 
-	beforeEach(function () {
-		sandbox.spy(console, 'warn')
+	beforeEach(() => {
+		vi.spyOn(console, 'warn')
 	})
 
-	afterEach(function () {
-		sandbox.restore()
+	afterEach(() => {
+		vi.restoreAllMocks()
 	})
 
-	describe('evaluation of rule', function () {
-		it('evaluates properly', function () {
-			expect(new Engine(rules).evaluate('b').nodeValue).to.eq(25)
+	describe('evaluation of rule', () => {
+		it('evaluates properly', () => {
+			expect(new Engine(rules).evaluate('b').nodeValue).toBe(25)
 		})
 
-		it('does not throw any warning', function () {
+		it('does not throw any warning', () => {
 			new Engine(rules).evaluate('b')
-			expect(console.warn).to.have.not.been.called
+			expect(console.warn).not.toHaveBeenCalled()
 		})
 	})
 })

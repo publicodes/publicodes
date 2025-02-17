@@ -5,8 +5,7 @@
 	teste idéalement tous ses comportements sans en faire intervenir d'autres.
 */
 
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { describe, expect, it } from 'vitest'
 import { parse } from 'yaml'
 import Engine from '../src/index'
 import { Rule } from '../src/rule'
@@ -49,30 +48,30 @@ testSuites.forEach(([suiteName, suite]) => {
 									engine.setSituation(situation ?? {}).evaluate(name)
 
 								if (exception) {
-									expect(runExample).to.throw(new RegExp(exception, 'i'))
+									expect(runExample).toThrow(new RegExp(exception, 'i'))
 									return
 								}
 								const result = runExample()
 								if (typeof valeur === 'number') {
-									expect(result.nodeValue).to.be.closeTo(valeur, 0.001)
+									expect(result.nodeValue).toBeCloseTo(valeur, 0.001)
 								} else if (valeur !== undefined) {
-									expect(result.nodeValue).to.be.deep.eq(
+									expect(result.nodeValue).toEqual(
 										valeur === 'undefined' ? undefined : valeur,
 									)
 								}
 								if (expectedMissing) {
-									expect(Object.keys(result.missingVariables)).to.eql(
+									expect(Object.keys(result.missingVariables)).toEqual(
 										expectedMissing,
 									)
 								}
 								if (type) {
 									expect(
 										engine.context.nodesTypes.get(engine.getRule(name))!.type,
-									).to.be.equal(type)
+									).toBe(type)
 								}
 								if (unit) {
-									expect(result.unit).not.to.be.equal(undefined)
-									expect(result.unit).to.deep.equal(parseUnit(unit))
+									expect(result.unit).not.toBe(undefined)
+									expect(result.unit).toEqual(parseUnit(unit))
 								}
 							},
 						)
