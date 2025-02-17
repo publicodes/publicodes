@@ -281,7 +281,7 @@ fruits:
     - "'pomme'"
     - "'banane'" `)
 				const possibilities = engine.getPossibilitiesFor('fruits')
-				expect(possibilities[0]).to.deep.include({
+				expect(possibilities[0]).toMatchObject({
 					type: 'string',
 					publicodesValue: "'pomme'",
 					nodeValue: 'pomme',
@@ -296,7 +296,7 @@ poids:
     - 1 kg
     - 2 kg`)
 				const possibilities = engine.getPossibilitiesFor('poids')
-				expect(possibilities[0]).to.deep.include({
+				expect(possibilities[0]).toMatchObject({
 					type: 'number',
 					publicodesValue: '1 kg',
 					nodeValue: 1,
@@ -311,7 +311,7 @@ choix:
     - option1:
     - option2:`)
 				const possibilities = engine.getPossibilitiesFor('choix')
-				expect(possibilities[0]).to.deep.include({
+				expect(possibilities[0]).toMatchObject({
 					type: 'reference',
 					dottedName: 'choix . option1',
 					nodeValue: 'option1',

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
 import { parse } from 'yaml'
 import Engine from '../src'

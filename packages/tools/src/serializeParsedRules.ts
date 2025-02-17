@@ -20,7 +20,7 @@ function serializedRuleToRawRule(serializedRule: SerializedRule): object {
 			}
 }
 
-function serializeValue(node: ASTNode, needParens = false): SerializedRule {
+function serializeValue(node: ASTNode, needsParens = false): SerializedRule {
 	switch (node.nodeKind) {
 		case 'reference': {
 			return node.name
@@ -83,14 +83,17 @@ function serializeValue(node: ASTNode, needParens = false): SerializedRule {
 				}
 
 				default: {
+					const left = serializeValue(node.explanation[0], true) as
+						| string
+						| number
+					const right = serializeValue(node.explanation[1], true) as string
+					const op = node.operationKind
 					return (
-						(needParens ? '(' : '') +
-						// eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
-						`${serializeValue(node.explanation[0], true)} ${
-							node.operationKind
-							// eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
-						} ${serializeValue(node.explanation[1], true)}` +
-						(needParens ? ')' : '')
+						(needsParens ? '(' : '') +
+						(left === 0 && op === '-' ?
+							`-${right}`
+						:	`${left} ${op as string} ${right}`) +
+						(needsParens ? ')' : '')
 					)
 				}
 			}

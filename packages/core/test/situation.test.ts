@@ -28,14 +28,16 @@ describe('setSituation', () => {
 
 	it('should report missing variables depth first', () => {
 		expect(
-			engineFromYaml('a:\nb: a').evaluate('b').missingVariables,
-		).to.have.all.keys('a')
+			Object.keys(engineFromYaml('a:\nb: a').evaluate('b').missingVariables),
+		).toEqual(['a'])
 	})
 
 	it('should not show private missing variables', () => {
 		expect(
-			engineFromYaml('"[privé] a":\nb: a').evaluate('b').missingVariables,
-		).to.have.all.keys('b')
+			Object.keys(
+				engineFromYaml('"[privé] a":\nb: a').evaluate('b').missingVariables,
+			),
+		).toEqual(['b'])
 	})
 
 	it('should let the user reference rules in the situation', () => {
@@ -51,7 +53,7 @@ describe('setSituation', () => {
 		engine.setSituation({
 			'overwrited in situation': 'referenced in situation',
 		})
-		expect(engine.evaluate('result').nodeValue).to.equal(222)
+		expect(engine.evaluate('result').nodeValue).toBe(222)
 	})
 
 	it('should allow to create rules in the situation', () => {
@@ -64,7 +66,7 @@ describe('setSituation', () => {
 				},
 			},
 		})
-		expect(engine.evaluate('a').nodeValue).to.equal(5)
+		expect(engine.evaluate('a').nodeValue).toBe(5)
 	})
 
 	it('should allow to replace rules in the situation', () => {
@@ -75,16 +77,16 @@ describe('setSituation', () => {
 				remplace: 'a',
 			},
 		})
-		expect(engine.evaluate('a').nodeValue).to.equal(10)
+		expect(engine.evaluate('a').nodeValue).toBe(10)
 	})
 
 	it('should allow to keep previous situation', () => {
 		const engine = engineFromYaml('a:\nb:\nc:')
 			.setSituation({ a: 5, c: 3 })
 			.setSituation({ b: 10, c: 'a' }, { keepPreviousSituation: true })
-		expect(engine.evaluate('a').nodeValue).to.equal(5)
-		expect(engine.evaluate('b').nodeValue).to.equal(10)
-		expect(engine.evaluate('c').nodeValue).to.equal(5)
+		expect(engine.evaluate('a').nodeValue).toBe(5)
+		expect(engine.evaluate('b').nodeValue).toBe(10)
+		expect(engine.evaluate('c').nodeValue).toBe(5)
 	})
 
 	it('context rules should not be added in the situation with keepPreviousSituation', () => {
@@ -100,7 +102,7 @@ c: 20
 		).setSituation({ c: 100 }, { keepPreviousSituation: true })
 		engine.evaluate('a')
 		const filteredSituation = engine.getSituation()
-		expect(filteredSituation).to.deep.equal({ c: 100 })
+		expect(filteredSituation).toEqual({ c: 100 })
 	})
 
 	it('should allow to make a rule applicable in the situation', () => {
@@ -109,8 +111,8 @@ a:
   par défaut: non
 a . b: 5
 		`).setSituation({ a: 'oui' })
-		expect(engine.evaluate('a').nodeValue).to.equal(true)
-		expect(engine.evaluate('a . b').nodeValue).to.equal(5)
+		expect(engine.evaluate('a').nodeValue).toBe(true)
+		expect(engine.evaluate('a . b').nodeValue).toBe(5)
 	})
 
 	it('should filter wrong situation when `strict` option is set to `false`', () => {
@@ -131,7 +133,7 @@ a:
 		).setSituation({ 'règle non valide': 10, a: "'valeur non valide'" })
 
 		const filteredSituation = engine.getSituation()
-		expect(filteredSituation).to.deep.equal({})
+		expect(filteredSituation).toEqual({})
 	})
 
 	it('should raise an error when rule in situation is absent in base rules', () => {
@@ -180,8 +182,9 @@ a:
 
 		try {
 			engine.setSituation({ a: 'non valide' })
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (e) {
-			expect(engine.evaluate('a').nodeValue).to.equal(10)
+			expect(engine.evaluate('a').nodeValue).toBe(10)
 		}
 	})
 
@@ -192,6 +195,6 @@ a:
 		engine.setSituation({ a: 10 }, { keepPreviousSituation: true })
 		engine.setSituation({})
 		const missings = engine.evaluate('a').missingVariables
-		expect(missings).to.have.all.keys('a')
+		expect(Object.keys(missings)).toEqual(['a'])
 	})
 })

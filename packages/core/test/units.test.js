@@ -76,7 +76,7 @@ describe('inferUnit', () => {
 		})
 	})
 
-	it('should work with simple use case / ', () => {
+	it('should work with simple use case /', () => {
 		let unit1 = { numerators: ['m'], denominators: ['s'] }
 		let unit2 = { numerators: ['m'], denominators: [] }
 		let unit = inferUnit('/', [unit1, unit2])

@@ -81,8 +81,11 @@ describe('serializeParsedExprAST', () => {
 								'+': [
 									{ variable: 'C' },
 									{
-										constant: { type: 'number', nodeValue: 50.5 },
-										unité: 'km',
+										constant: {
+											type: 'number',
+											nodeValue: 50.5,
+											rawUnit: 'km',
+										},
 									},
 								],
 							},
@@ -91,5 +94,21 @@ describe('serializeParsedExprAST', () => {
 				],
 			}),
 		).toStrictEqual('A + (10 * (C + 50.5km))')
+	})
+
+	it('should use unary writing when applicable', () => {
+		expect(
+			serializeParsedExprAST({
+				'-': [
+					{ constant: { type: 'number', nodeValue: 0 } },
+					{
+						constant: {
+							type: 'number',
+							nodeValue: 10,
+						},
+					},
+				],
+			}),
+		).toStrictEqual('-10')
 	})
 })
