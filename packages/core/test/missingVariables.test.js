@@ -1,9 +1,10 @@
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import yaml from 'yaml'
 import Engine from '../src/index'
+import { assert } from 'chai'
 
-describe('Missing variables', function () {
-	it('should identify missing variables in applicability', function () {
+describe('Missing variables', () => {
+	it('should identify missing variables in applicability', () => {
 		const rawRules = {
 			startHere: {
 				formule: 2,
@@ -13,10 +14,10 @@ describe('Missing variables', function () {
 		}
 		const result = new Engine(rawRules).evaluate('startHere').missingVariables
 
-		expect(Object.keys(result)).to.deep.equal(['ko'])
+		expect(Object.keys(result)).toEqual(['ko'])
 	})
 
-	it('should identify missing variables in formulas', function () {
+	it('should identify missing variables in formulas', () => {
 		const rawRules = {
 			startHere: {
 				formule: '2 + ko',
@@ -25,10 +26,10 @@ describe('Missing variables', function () {
 		}
 		const result = new Engine(rawRules).evaluate('startHere').missingVariables
 
-		expect(Object.keys(result)).to.deep.equal(['ko'])
+		expect(Object.keys(result)).toEqual(['ko'])
 	})
 
-	it('should identify missing variables along the namespace tree', function () {
+	it('should identify missing variables along the namespace tree', () => {
 		const rawRules = {
 			startHere: {
 				formule: 2,
@@ -45,10 +46,10 @@ describe('Missing variables', function () {
 		}
 		const result = new Engine(rawRules).evaluate('startHere').missingVariables
 
-		expect(Object.keys(result)).to.deep.equal(['evt'])
+		expect(Object.keys(result)).toEqual(['evt'])
 	})
 
-	it('should not identify missing variables from static rules', function () {
+	it('should not identify missing variables from static rules', () => {
 		const rawRules = {
 			startHere: {
 				formule: 2,
@@ -64,10 +65,10 @@ describe('Missing variables', function () {
 		}
 		const result = new Engine(rawRules).evaluate('startHere').missingVariables
 
-		expect(Object.keys(result)).to.deep.equal(['evt . welldefined . ko'])
+		expect(Object.keys(result)).toEqual(['evt . welldefined . ko'])
 	})
 
-	it('should identify missing variables mentioned in expressions', function () {
+	it('should identify missing variables mentioned in expressions', () => {
 		const rawRules = {
 			sum: 'oui',
 			'sum . evt': 'oui',
@@ -82,11 +83,11 @@ describe('Missing variables', function () {
 			'sum . startHere',
 		).missingVariables
 
-		expect(Object.keys(result)).to.include('sum . evt . nyet')
-		expect(Object.keys(result)).to.include('sum . evt . nope')
+		expect(Object.keys(result)).toContain('sum . evt . nyet')
+		expect(Object.keys(result)).toContain('sum . evt . nope')
 	})
 
-	it('should ignore missing variables in the formula if not applicable', function () {
+	it('should ignore missing variables in the formula if not applicable', () => {
 		const rawRules = {
 			sum: 'oui',
 			'sum . startHere': {
@@ -99,10 +100,10 @@ describe('Missing variables', function () {
 			'sum . startHere',
 		).missingVariables
 
-		expect(Object.keys(result)).to.be.empty
+		expect(Object.keys(result)).toHaveLength(0)
 	})
 
-	it('should ignore missing variables from the parent', function () {
+	it('should ignore missing variables from the parent', () => {
 		const rawRules = {
 			a: {
 				somme: ['b', 'c'],
@@ -116,10 +117,10 @@ describe('Missing variables', function () {
 			'a . b',
 		).missingVariables
 
-		expect(Object.keys(missingVariables)).to.deep.equal(['a . b'])
+		expect(Object.keys(missingVariables)).toEqual(['a . b'])
 	})
 
-	it('should ignore missing variables from the non nullable parent', function () {
+	it('should ignore missing variables from the non nullable parent', () => {
 		const rawRules = {
 			a: {
 				'applicable si': 'oui',
@@ -134,10 +135,10 @@ describe('Missing variables', function () {
 			'a . b',
 		).missingVariables
 
-		expect(Object.keys(missingVariables)).to.deep.equal(['a . b'])
+		expect(Object.keys(missingVariables)).toEqual(['a . b'])
 	})
 
-	it('should not report missing variables when "one of these" short-circuits', function () {
+	it('should not report missing variables when "one of these" short-circuits', () => {
 		const rawRules = {
 			sum: 'oui',
 			'sum . startHere': {
@@ -152,10 +153,10 @@ describe('Missing variables', function () {
 			'sum . startHere',
 		).missingVariables
 
-		expect(Object.keys(result)).to.be.empty
+		expect(Object.keys(result)).toHaveLength(0)
 	})
 
-	it('should report "une possibilité" as a missing variable even though it has a formula', function () {
+	it('should report "une possibilité" as a missing variable even though it has a formula', () => {
 		const rawRules = {
 			top: 'oui',
 			ko: 'oui',
@@ -168,10 +169,10 @@ describe('Missing variables', function () {
 			'top . startHere',
 		).missingVariables
 
-		expect(Object.keys(result)).to.include('top . trois')
+		expect(Object.keys(result)).toContain('top . trois')
 	})
 
-	it('should not report missing variables when "une possibilité" is inapplicable', function () {
+	it('should not report missing variables when "une possibilité" is inapplicable', () => {
 		const rawRules = {
 			top: 'oui',
 			ko: 'oui',
@@ -185,10 +186,10 @@ describe('Missing variables', function () {
 			'top . startHere',
 		).missingVariables
 
-		expect(Object.keys(result)).to.be.empty
+		expect(Object.keys(result)).toHaveLength(0)
 	})
 
-	it('should not report missing variables when "une possibilité" was answered', function () {
+	it('should not report missing variables when "une possibilité" was answered', () => {
 		const rawRules = {
 			top: 'oui',
 			ko: 'oui',
@@ -203,10 +204,10 @@ describe('Missing variables', function () {
 			.setSituation({ 'top . trois': "'ko'" })
 			.evaluate('top . startHere').missingVariables
 
-		expect(Object.keys(result)).to.be.empty
+		expect(Object.keys(result)).toHaveLength(0)
 	})
 
-	it('should report missing variables in simple variations', function () {
+	it('should report missing variables in simple variations', () => {
 		const rawRules = yaml.parse(`
 
 somme: a + b
@@ -221,11 +222,11 @@ c:
   question: Alors ?`)
 		const result = new Engine(rawRules).evaluate('somme').missingVariables
 
-		expect(Object.keys(result)).to.have.lengthOf(0)
+		expect(Object.keys(result)).toHaveLength(0)
 	})
 
 	// TODO : réparer ce test
-	it('should report missing variables in variations', function () {
+	it('should report missing variables in variations', () => {
 		const rawRules = yaml.parse(`
 startHere:
   formule:
@@ -266,15 +267,15 @@ quatre: {}
       `)
 		const result = new Engine(rawRules).evaluate('startHere').missingVariables
 
-		expect(Object.keys(result)).to.include('dix')
-		expect(Object.keys(result)).to.include('deux')
-		expect(Object.keys(result)).to.include('trois')
-		expect(Object.keys(result)).not.to.include('quatre')
+		expect(Object.keys(result)).toContain('dix')
+		expect(Object.keys(result)).toContain('deux')
+		expect(Object.keys(result)).toContain('trois')
+		expect(Object.keys(result)).not.toContain('quatre')
 	})
 })
 
-describe('nextSteps', function () {
-	it('should generate questions for simple situations', function () {
+describe('nextSteps', () => {
+	it('should generate questions for simple situations', () => {
 		const rawRules = {
 			top: 'oui',
 			'top . sum': { formule: 'deux' },
@@ -289,11 +290,11 @@ describe('nextSteps', function () {
 		}
 		const result = new Engine(rawRules).evaluate('top . sum').missingVariables
 
-		expect(Object.keys(result)).to.have.lengthOf(1)
-		expect(Object.keys(result)[0]).to.equal('top . sum . evt')
+		expect(Object.keys(result)).toHaveLength(1)
+		expect(Object.keys(result)[0]).toBe('top . sum . evt')
 	})
 
-	it('should generate questions', function () {
+	it('should generate questions', () => {
 		const rawRules = {
 			top: 'oui',
 			'top . sum': { formule: 'deux' },
@@ -306,11 +307,11 @@ describe('nextSteps', function () {
 		}
 
 		const result = new Engine(rawRules).evaluate('top . sum').missingVariables
-		expect(Object.keys(result)).to.have.lengthOf(1)
-		expect(Object.keys(result)[0]).to.equal('top . sum . evt')
+		expect(Object.keys(result)).toHaveLength(1)
+		expect(Object.keys(result)[0]).toBe('top . sum . evt')
 	})
 
-	it('should generate questions with more intricate situation', function () {
+	it('should generate questions with more intricate situation', () => {
 		const rawRules = {
 			top: 'oui',
 			'top . sum': { formule: { somme: [2, 'deux'] } },
@@ -328,10 +329,10 @@ describe('nextSteps', function () {
 		}
 		const result = new Engine(rawRules).evaluate('top . sum').missingVariables
 
-		expect(Object.keys(result)).to.eql(['top . sum . evt'])
+		expect(Object.keys(result)).toEqual(['top . sum . evt'])
 	})
 
-	it("Parent's other descendants in sums should not be included as missing variables", function () {
+	it("Parent's other descendants in sums should not be included as missing variables", () => {
 		// See https://github.com/publicodes/publicodes/issues/33
 		const rawRules = yaml.parse(`
 transport:
@@ -365,13 +366,13 @@ transport . avion . usager:
 			'transport . avion',
 		).missingVariables
 
-		expect(Object.keys(result)).deep.to.equal([
+		expect(Object.keys(result)).deep.toEqual([
 			'transport . avion . usager',
 			'transport . avion . km',
 		])
 	})
 
-	it("Parent's other descendants in sums should not be included as missing variables, even when parent evluation is triggered by a comparison", function () {
+	it("Parent's other descendants in sums should not be included as missing variables, even when parent evluation is triggered by a comparison", () => {
 		// See https://github.com/publicodes/publicodes/issues/33
 		const rawRules = yaml.parse(`
 transport:
@@ -413,13 +414,13 @@ transport . avion . usager:
 			'transport . voiture',
 		).missingVariables
 
-		expect(Object.keys(result)).deep.to.equal([
+		expect(Object.keys(result)).deep.toEqual([
 			'transport . voiture . gabarit',
 			'transport . voiture . km',
 		])
 	})
 
-	it("Parent's other descendants in sums should not be included as missing variables - 2", function () {
+	it("Parent's other descendants in sums should not be included as missing variables - 2", () => {
 		// See https://github.com/publicodes/publicodes/issues/33
 		const rawRules = yaml.parse(`
 avion:
@@ -442,10 +443,10 @@ avion . impact . au sol: 5
 			'avion . impact . au sol',
 		).missingVariables
 
-		expect(Object.keys(result)).deep.to.equal(['avion'])
+		expect(Object.keys(result)).deep.toEqual(['avion'])
 	})
 
-	it("Parent's other descendants in sums in applicability should be included as missing variables", function () {
+	it("Parent's other descendants in sums in applicability should be included as missing variables", () => {
 		// See https://github.com/publicodes/publicodes/issues/33
 		const rawRules = yaml.parse(`
 a:
@@ -466,11 +467,11 @@ a . b: 20 + 9
 `)
 		const result = new Engine(rawRules).evaluate('a . b').missingVariables
 
-		expect(Object.keys(result)).deep.to.equal(['e'])
-		expect(Object.keys(result)).to.have.lengthOf(1)
+		expect(Object.keys(result)).deep.toEqual(['e'])
+		expect(Object.keys(result)).toHaveLength(1)
 	})
 
-	it('Should report missing variable from une possibilité', function () {
+	it('Should report missing variable from une possibilité', () => {
 		const rawRules = yaml.parse(`
 contrat:
   une possibilité:
@@ -494,13 +495,11 @@ contrat . temps partiel:
 			'contrat . temps partiel',
 		).missingVariables
 
-		expect(result).to.have.keys('contrat', 'contrat . temps partiel')
-		expect(result['contrat']).to.be.greaterThan(
-			result['contrat . temps partiel'],
-		)
+		assert.hasAllKeys(result, ['contrat', 'contrat . temps partiel'])
+		expect(result['contrat']).toBeGreaterThan(result['contrat . temps partiel'])
 	})
 
-	it('Should report missing variable from parent applicability first', function () {
+	it('Should report missing variable from parent applicability first', () => {
 		const rawRules = yaml.parse(`
 
 a:
@@ -515,11 +514,11 @@ b . d: c + c + c + c
 `)
 		const result = new Engine(rawRules).evaluate('b . d').missingVariables
 
-		expect(result).to.have.keys('a', 'b . c')
-		expect(result['a']).to.be.greaterThan(result['b . c'])
+		assert.hasAllKeys(result, ['a', 'b . c'])
+		expect(result['a']).toBeGreaterThan(result['b . c'])
 	})
 
-	it('Should report missing variable from par défaut with a lesser score', function () {
+	it('Should report missing variable from par défaut with a lesser score', () => {
 		const rawRules = yaml.parse(`
 
 a:
@@ -529,11 +528,11 @@ a . b:
 `)
 		const result = new Engine(rawRules).evaluate('a').missingVariables
 
-		expect(result).to.have.keys('a', 'a . b')
-		expect(result['a']).to.be.greaterThan(result['a . b'])
+		assert.hasAllKeys(result, ['a', 'a . b'])
+		expect(result['a']).toBeGreaterThan(result['a . b'])
 	})
 
-	it('Should report missing variable even if default value is 0', function () {
+	it('Should report missing variable even if default value is 0', () => {
 		const rawRules = yaml.parse(`
 
 
@@ -543,6 +542,6 @@ a . b:
 `)
 		const result = new Engine(rawRules).evaluate('a').missingVariables
 
-		expect(result).to.have.keys('a . b')
+		assert.hasAllKeys(result, ['a . b'])
 	})
 })

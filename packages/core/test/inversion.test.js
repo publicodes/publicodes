@@ -1,13 +1,11 @@
-// TODO: migrate to the 100% yaml test syntax in mecanisms/inversion.yaml
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import Engine from '../src/index'
 import { parseYaml } from './utils'
 
-describe('inversions', function () {
-	it('should handle basic inversion', function () {
+describe('inversions', () => {
+	it('should handle basic inversion', () => {
 		const rules = parseYaml`
         a: b + 10
-
         b:
           inversion numérique:
             avec:
@@ -15,13 +13,12 @@ describe('inversions', function () {
       `
 		const result = new Engine(rules).setSituation({ a: 30 }).evaluate('b')
 
-		expect(result.nodeValue).to.be.closeTo(30 - 10, 0.0001 * 2000)
+		expect(result.nodeValue).toBeCloseTo(30 - 10, 4)
 	})
 
-	it('should handle simple inversion', function () {
+	it('should handle simple inversion', () => {
 		const rules = parseYaml`
         net: brut * 77%
-
         brut:
           formule:
             inversion numérique:
@@ -33,10 +30,10 @@ describe('inversions', function () {
 			.setSituation({ net: '2000 €' })
 			.evaluate('brut')
 
-		expect(result.nodeValue).to.be.closeTo(2000 / (77 / 100), 0.0001 * 2000)
+		expect(result.nodeValue).toBeCloseTo(2000 / (77 / 100), 4)
 	})
 
-	it('should handle inversion with value at 0', function () {
+	it('should handle inversion with value at 0', () => {
 		const rules = parseYaml`
         net: brut * 77%
         brut:
@@ -49,10 +46,10 @@ describe('inversions', function () {
 		const result = new Engine(rules)
 			.setSituation({ net: '0 €' })
 			.evaluate('brut')
-		expect(result.nodeValue).to.be.closeTo(0, 0.0001)
+		expect(result.nodeValue).toBeCloseTo(0, 4)
 	})
 
-	it('should handle inversions with missing variables', function () {
+	it('should handle inversions with missing variables', () => {
 		const rules = parseYaml`
         net:
           produit:
@@ -90,11 +87,11 @@ describe('inversions', function () {
 		const result = new Engine(rules)
 			.setSituation({ net: '2000 €' })
 			.evaluate('brut')
-		expect(result.nodeValue).to.be.undefined
+		expect(result.nodeValue).toBeUndefined()
 		expect(Object.keys(result.missingVariables)).to.include('cadre')
 	})
 
-	it('should reset cache after a failed inversion', function () {
+	it('should reset cache after a failed inversion', () => {
 		const rules = parseYaml`
 			net:
 		      variations:
@@ -109,10 +106,10 @@ describe('inversions', function () {
 		`
 		const engine = new Engine(rules)
 		engine.setSituation({ net: 150 }).evaluate('brut')
-		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
+		expect(engine.evaluate('assiette').nodeValue).toBeUndefined()
 	})
 
-	it("shouldn't report a missing salary if another salary was input", function () {
+	it("shouldn't report a missing salary if another salary was input", () => {
 		const rules = parseYaml`
         net:
           produit:
@@ -141,11 +138,11 @@ describe('inversions', function () {
 		const result = new Engine(rules)
 			.setSituation({ net: '2000 €', cadre: 'oui' })
 			.evaluate('total')
-		expect(result.nodeValue).to.be.closeTo(3750, 1)
-		expect(result.missingVariables).to.be.empty
+		expect(result.nodeValue).toBeCloseTo(3750, 1)
+		expect(result.missingVariables).toEqual({})
 	})
 
-	it('should accept syntax without `avec`', function () {
+	it('should accept syntax without `avec`', () => {
 		const rules = parseYaml`
 			net:
 		      variations:
@@ -158,10 +155,10 @@ describe('inversions', function () {
 		`
 		const engine = new Engine(rules)
 		engine.setSituation({ net: 150 }).evaluate('brut')
-		expect(engine.evaluate('assiette').nodeValue).to.be.undefined
+		expect(engine.evaluate('assiette').nodeValue).toBeUndefined()
 	})
 
-	it('should handle an inversion with min', function () {
+	it('should handle an inversion with min', () => {
 		const rules = parseYaml`
         net: brut * 50%
         brut:
@@ -176,10 +173,10 @@ describe('inversions', function () {
 			.setSituation({ net: 1000 })
 			.evaluate('brut')
 
-		expect(result.nodeValue).to.be.equal(2000)
+		expect(result.nodeValue).toBe(2000)
 	})
 
-	it('should handle an inversion with max', function () {
+	it('should handle an inversion with max', () => {
 		const rules = parseYaml`
         net: brut * 50%
         brut:
@@ -194,10 +191,10 @@ describe('inversions', function () {
 			.setSituation({ net: 1000 })
 			.evaluate('brut')
 
-		expect(result.nodeValue).to.be.equal(2000)
+		expect(result.nodeValue).toBe(2000)
 	})
 
-	it('should not succeed when result are lower than the min', function () {
+	it('should not succeed when result are lower than the min', () => {
 		const rules = parseYaml`
         net: brut * 50%
         brut:
@@ -212,10 +209,10 @@ describe('inversions', function () {
 			.setSituation({ net: 1000 })
 			.evaluate('brut')
 
-		expect(result.nodeValue).to.be.equal(undefined)
+		expect(result.nodeValue).toBeUndefined()
 	})
 
-	it('should not succeed when result are greater than the max', function () {
+	it('should not succeed when result are greater than the max', () => {
 		const rules = parseYaml`
         net: brut * 50%
         brut:
@@ -230,10 +227,10 @@ describe('inversions', function () {
 			.setSituation({ net: 1000 })
 			.evaluate('brut')
 
-		expect(result.nodeValue).to.be.equal(undefined)
+		expect(result.nodeValue).toBeUndefined()
 	})
 
-	it('should handle an inversion with "tolérance d\'erreur"', function () {
+	it('should handle an inversion with "tolérance d\'erreur"', () => {
 		const errorTolerance = 0.1
 		const rules = parseYaml`
         net: brut * 50%
@@ -248,6 +245,6 @@ describe('inversions', function () {
 		const result = new Engine(rules, { inversionMaxIterations: 1 })
 			.setSituation({ net: 1000 })
 			.evaluate('brut')
-		expect(result.nodeValue).to.be.closeTo(1000 * 2, errorTolerance)
+		expect(result.nodeValue).toBeCloseTo(1000 * 2, errorTolerance)
 	})
 })

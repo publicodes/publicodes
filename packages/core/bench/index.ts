@@ -10,29 +10,27 @@ const oldVersion = pjson['devDependencies']['publicodes-old']
 const options = {
 	logger: { warn: () => {}, error: () => {}, log: () => {} },
 }
-// const engine = new EngineLocal(modeleSocial, options)
 
 group('Parsing initial des règles (Modele-social)', () => {
-	bench('(local)', () => {
-		new EngineLocal(modeleSocial, options)
-	})
-
 	bench(oldVersion, () => {
 		new EngineOld(modeleSocial, options)
 	})
+	bench('(local)', () => {
+		new EngineLocal(modeleSocial, options)
+	})
 })
 
-// group('Parsing initial des règles (NGC)', () => {
-// 	bench('(local)', () => {
-// 		new EngineLocal(modeleNGC as any, options)
-// 	})
-//
-// 	bench(oldVersion, () => {
-// 		new EngineOld(modeleNGC as any, options)
-// 	})
-// })
+group('Parsing initial des règles (NGC)', () => {
+	bench(oldVersion, () => {
+		new EngineOld(modeleNGC as any, options)
+	})
+	bench('(local)', () => {
+		new EngineLocal(modeleNGC as any, options)
+	})
+})
 
 await run()
+const engine = new EngineLocal(modeleSocial, options)
 
 group('Evaluation', () => {
 	bench('salaire brut vers net', () => {

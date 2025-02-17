@@ -24,9 +24,9 @@ export function parseUnit(
 	string: string,
 	getUnitKey: getUnitKey = (x) => x,
 ): Unit {
-	if (string.includes(' /') || string.includes('/ ')) {
+	if (string.includes('/ ')) {
 		throw new Error(
-			`L'unité "${string}" ne doit pas contenir d'espace avant et après "/"`,
+			`L'unité "${string}" ne doit pas contenir d'espace après "/"`,
 		)
 	}
 	const [a, ...b] = string.split('/')
@@ -34,6 +34,7 @@ export function parseUnit(
 	const splitUnit = (string: string): string[] =>
 		decomposePower(
 			string
+				.trim()
 				.split('.')
 				.filter(Boolean)
 				.map((unit) => getUnitKey(unit)),
