@@ -38,43 +38,44 @@ testSuites.forEach(([suiteName, suite]) => {
 						},
 						i,
 					) => {
-						it(
+						const testTitle =
 							title +
-								(testName ? ` [${testName}]`
-								: exemples.length > 1 ? ` (${i + 1})`
-								: ''),
-							() => {
-								const runExample = () =>
-									engine.setSituation(situation ?? {}).evaluate(name)
+							(testName ? ` [${testName}]`
+							: exemples.length > 1 ? ` (${i + 1})`
+							: '')
 
-								if (exception) {
-									expect(runExample).toThrow(new RegExp(exception, 'i'))
-									return
-								}
-								const result = runExample()
-								if (typeof valeur === 'number') {
-									expect(result.nodeValue).toBeCloseTo(valeur, 0.001)
-								} else if (valeur !== undefined) {
-									expect(result.nodeValue).toEqual(
-										valeur === 'undefined' ? undefined : valeur,
-									)
-								}
-								if (expectedMissing) {
-									expect(Object.keys(result.missingVariables)).toEqual(
-										expectedMissing,
-									)
-								}
-								if (type) {
-									expect(
-										engine.context.nodesTypes.get(engine.getRule(name))!.type,
-									).toBe(type)
-								}
-								if (unit) {
-									expect(result.unit).not.toBe(undefined)
-									expect(result.unit).toEqual(parseUnit(unit))
-								}
-							},
-						)
+						// eslint-disable-next-line vitest/valid-title
+						it(testTitle, () => {
+							const runExample = () =>
+								engine.setSituation(situation ?? {}).evaluate(name)
+
+							if (exception) {
+								expect(runExample).toThrow(new RegExp(exception, 'i'))
+								return
+							}
+							const result = runExample()
+							if (typeof valeur === 'number') {
+								expect(result.nodeValue).toBeCloseTo(valeur, 0.001)
+							} else if (valeur !== undefined) {
+								expect(result.nodeValue).toEqual(
+									valeur === 'undefined' ? undefined : valeur,
+								)
+							}
+							if (expectedMissing) {
+								expect(Object.keys(result.missingVariables)).toEqual(
+									expectedMissing,
+								)
+							}
+							if (type) {
+								expect(
+									engine.context.nodesTypes.get(engine.getRule(name))!.type,
+								).toBe(type)
+							}
+							if (unit) {
+								expect(result.unit).not.toBe(undefined)
+								expect(result.unit).toEqual(parseUnit(unit))
+							}
+						})
 					},
 				)
 			})

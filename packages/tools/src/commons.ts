@@ -112,7 +112,20 @@ export function getAllRefsInNode(node: ASTNode): RuleName[] {
 	)
 }
 
-const binaryOps = ['+', '-', '*', '/', '>', '<', '>=', '<=', '=', '!='] as const
+const binaryOps = [
+	'+',
+	'-',
+	'*',
+	'/',
+	'>',
+	'<',
+	'>=',
+	'<=',
+	'=',
+	'!=',
+	'**',
+	'//',
+] as const
 
 /**
  * Map a parsed expression into another parsed expression.
@@ -172,18 +185,21 @@ export function serializeParsedExprAST(
 	if ('constant' in parsedExpr) {
 		return (
 			parsedExpr.constant.nodeValue +
-			('unité' in parsedExpr ? (parsedExpr.unité ?? '') : '')
+			(parsedExpr.constant.type === 'number' ?
+				(parsedExpr.constant.rawUnit ?? '')
+			:	'')
 		)
 	}
 	if (binaryOps.some((op) => op in parsedExpr)) {
 		for (const key of Object.keys(parsedExpr) as (keyof BinaryOp)[]) {
+			const [left, right] = (parsedExpr[key] as [ExprAST, ExprAST]).map(
+				(node) => serializeParsedExprAST(node, true),
+			)
 			return (
 				(needsParens ? '(' : '') +
-				`${serializeParsedExprAST(
-					parsedExpr[key][0],
-					true,
-					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-				)} ${key} ${serializeParsedExprAST(parsedExpr[key][1], true)}` +
+				(left === '0' && key === '-' ?
+					`-${right}`
+				:	`${left} ${key as string} ${right}`) +
 				(needsParens ? ')' : '')
 			)
 		}

@@ -37,7 +37,6 @@
 		"yaml": "^2.6.0"
 	},
 	"scripts": {
-		"codegen": "nearleyc ./src/grammar.ne -o ./src/grammar.codegen.js",
 		"build": "tsup",
 		"dev": "tsup --watch",
 		"test:type": "tsc --noEmit",

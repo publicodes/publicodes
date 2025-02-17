@@ -410,4 +410,16 @@ describe('parseExpression', () => {
 			}
 		`)
 	})
+
+	it.skip('TODO should handle expressions with currency units', () => {
+		expect(parseExpression('42 £')).toMatchInlineSnapshot(`
+      {
+        "constant": {
+          "nodeValue": 42,
+          "rawUnit": "£",
+          "type": "number",
+        },
+      }
+    `)
+	})
 })

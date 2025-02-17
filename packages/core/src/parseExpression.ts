@@ -1,18 +1,4 @@
-// import nearley, { CompiledRules } from 'nearley'
-// import { PublicodesError } from './error'
-// import grammar from './grammar.codegen'
-
-// TODO: nearley is currently exported as a CommonJS module which is why we need
-// to destructure the default import instead of directly importing the symbols
-// we need. This is sub-optimal because we our bundler will not tree-shake
-// unused nearley symbols.
-// https://github.com/kach/nearley/issues/535
-// const { Grammar, Parser } = nearley
-
-// const compiledGrammar = Grammar.fromCompiled(grammar as CompiledRules)
-
-// const parser = new Parser(compiledGrammar)
-// const initialState = parser.save()
+import { PublicodesError } from './error'
 
 export type BinaryOp =
 	| { '+': [ExprAST, ExprAST] }
@@ -41,47 +27,124 @@ export type ExprAST =
 	// NOTE: pourquoi ne pas utiliser le type Date directement ?
 	| { constant: { type: 'string' | 'date'; nodeValue: string } }
 
-type Parser = {
-	readonly strExpression: string
+class ParserError extends PublicodesError<'ParserError'> {
+	constructor(
+		expression: string,
+		position: number,
+		expected: string,
+		found: string,
+		dottedName: string,
+	) {
+		const message = formatParserError(expression, position, expected, found)
+		super('ParserError', message, {
+			dottedName,
+			position,
+			expression,
+			expected,
+			found,
+		})
+	}
+}
+function formatParserError(
+	expression: string,
+	position: number,
+	expected: string,
+	found: string,
+): string {
+	const pointer = ' '.repeat(position) + '^'
+
+	return `L'expression suivante n'est pas valide :
+   
+   ${expression}
+   ${pointer}
+   ${expected} est attendu, ${found ? `mais "${found}" a été trouvé` : 'hors l’expression se termine prématurément'}
+`
+}
+
+type ParserState = {
+	strExpression: string
 	current: number
+	dottedName: string
 	tree: ExprAST | null
+}
+
+function createParser(expression: string, dottedName: string): ParserState {
+	return {
+		strExpression: expression,
+		current: 0,
+		dottedName,
+		tree: null,
+	}
+}
+
+function throwParserError(
+	parser: ParserState,
+	expected: string,
+	found: string,
+): never {
+	throw new ParserError(
+		parser.strExpression,
+		parser.current,
+		expected,
+		found,
+		parser.dottedName,
+	)
+}
+
+function consume(parser: ParserState, expected: string): string {
+	if (isEOL(parser)) {
+		throwParserError(parser, `'${expected}'`, '')
+	}
+	return parser.strExpression[parser.current++]
+}
+
+function expect(parser: ParserState, expected: string): void {
+	const char = peek(parser)
+	if (char !== expected) {
+		throwParserError(parser, `'${expected}'`, char)
+	}
+	consume(parser, expected)
+}
+
+function expectRegExp(
+	parser: ParserState,
+	regexp: RegExp,
+	description: string,
+): { parser: ParserState; value: string } {
+	const match = parser.strExpression.slice(parser.current).match(regexp)
+	if (!match) {
+		throwParserError(
+			parser,
+			`${description} (${regexp.source})`,
+			peek(parser, 5),
+		)
+	}
+	parser.current += match[0].length
+	return { parser, value: match[0] }
 }
 
 export function parseExpression(
 	rawNode: string,
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_dottedName?: string,
+	dottedName = '<expression>',
 ): ExprAST {
-	// NOTE: return number directly
 	if (typeof rawNode === 'number') {
 		return numberNode(rawNode)
 	}
+
 	const singleLineExpression = (rawNode + '').replace(/\s*\n\s*/g, ' ').trim()
+	const parser = createParser(singleLineExpression, dottedName)
 
-	// FIXME: handle dotted_name
-	// if (singleLineExpression.match(dotted_name)) {
-	// 	console.log('dotted_name:', singleLineExpression.match(dotted_name))
-	// 	return { variable: singleLineExpression }
-	// }
-
-	const res = parseComparison({
-		strExpression: singleLineExpression,
-		current: 0,
-		tree: null,
-	})
+	const res = parseComparison(parser)
 
 	if (!isEOL(res)) {
-		throw new Error('Expected end of line, but got ' + peek(res))
+		throwParserError(res, 'La fin d’expression', peek(res))
 	}
 
 	return res.tree!
 }
 
-// PERF:
-// - muter le parser sur place
-// - stocker uniquement la string slicée pour accélérer les lookAhead
-function parseComparison(parser: Parser): Parser {
+// Mise à jour des fonctions de parsing pour utiliser le nouveau ParserState
+function parseComparison(parser: ParserState): ParserState {
 	let left = parseAddition(parser)
 
 	while (!isEOL(left) && isNextRegExp(left, comparisonOperator)) {
@@ -95,7 +158,7 @@ function parseComparison(parser: Parser): Parser {
 	return left
 }
 
-function parseAddition(parser: Parser): Parser {
+function parseAddition(parser: ParserState): ParserState {
 	let left = parseMultiplication(parser)
 
 	while (!isEOL(left) && isNextRegExp(left, additionOperator)) {
@@ -109,7 +172,7 @@ function parseAddition(parser: Parser): Parser {
 	return left
 }
 
-function parseMultiplication(parser: Parser): Parser {
+function parseMultiplication(parser: ParserState): ParserState {
 	let left = parseExponentiation(parser)
 
 	while (!isEOL(left) && isNextRegExp(left, multiplyOperator)) {
@@ -123,7 +186,7 @@ function parseMultiplication(parser: Parser): Parser {
 	return left
 }
 
-function parseExponentiation(parser: Parser): Parser {
+function parseExponentiation(parser: ParserState): ParserState {
 	let left = parsePrimary(parser)
 
 	while (!isEOL(left) && isNextRegExp(left, exponentiationOperator)) {
@@ -138,31 +201,31 @@ function parseExponentiation(parser: Parser): Parser {
 }
 
 // TODO: factoriser en sous-fonctions ?
-function parsePrimary(parser: Parser): Parser {
+function parsePrimary(parser: ParserState): ParserState {
 	if (peek(parser) === '(') {
-		consume(parser)
-		expectRegExp(parser, spaces)
+		consume(parser, '(')
+		expectRegExp(parser, spaces, 'Un espace')
 		const expr = parseComparison(parser)
-		expectRegExp(expr, spaces)
+		expectRegExp(expr, spaces, 'Un espace')
 		expect(expr, ')')
 		return expr
 	} else if (peek(parser) === '-') {
-		consume(parser)
-		expectRegExp(parser, spaces)
+		consume(parser, '-')
+		expectRegExp(parser, spaces, 'Un espace')
 		const expr = parsePrimary(parser)
 		return { ...expr, tree: minusNode(expr.tree!) }
 	} else if (isNextRegExp(parser, date)) {
-		const res = expectRegExp(parser, date)
+		const res = expectRegExp(parser, date, 'Une date')
 		return {
 			...res.parser,
 			tree: dateNode(res.value),
 		}
 	} else if (peek(parser).match(number)) {
 		// TODO: gérer les unités
-		const res = expectRegExp(parser, number)
+		const res = expectRegExp(parser, number, 'Un nombre')
 
 		if (isNextRegExp(res.parser, unit)) {
-			const parsedUnit = expectRegExp(res.parser, unit)
+			const parsedUnit = expectRegExp(res.parser, unit, 'Une unité')
 			return {
 				...parsedUnit.parser,
 				tree: {
@@ -179,13 +242,13 @@ function parsePrimary(parser: Parser): Parser {
 			tree: numberNode(parseFloat(res.value)),
 		}
 	} else if (isNext(parser, "'") || isNext(parser, '"')) {
-		const res = expectRegExp(parser, string)
+		const res = expectRegExp(parser, string, 'Une chaîne de caractères')
 		return {
 			...res.parser,
 			tree: { constant: { type: 'string', nodeValue: res.value.slice(1, -1) } },
 		}
 	} else if (peek(parser).match(letter) || peek(parser) === '^') {
-		const res = expectRegExp(parser, dotted_name)
+		const res = expectRegExp(parser, dotted_name, 'Un nom de règle')
 
 		return {
 			...res.parser,
@@ -195,11 +258,10 @@ function parsePrimary(parser: Parser): Parser {
 				:	{ variable: res.value },
 		}
 	}
-	// TODO: meilleure message d'erreur
-	throw new Error(`Unexpected token ${peek(parser)}`)
+	throwParserError(parser, 'Une expression', peek(parser))
 }
 
-function peek(parser: Parser, n?: number): string {
+function peek(parser: ParserState, n?: number): string {
 	return n ?
 			parser.strExpression.slice(parser.current, parser.current + n)
 		:	parser.strExpression[parser.current]
@@ -207,7 +269,7 @@ function peek(parser: Parser, n?: number): string {
 
 // PERF: il faudrait tester d'autre technique que le slice, mais pour l'instant
 // je fais au plus simple.
-function isNext(parser: Parser, toMatch: string): boolean {
+function isNext(parser: ParserState, toMatch: string): boolean {
 	const slice = parser.strExpression.slice(
 		parser.current,
 		parser.current + toMatch.length,
@@ -215,43 +277,14 @@ function isNext(parser: Parser, toMatch: string): boolean {
 	return slice === toMatch
 }
 
-function isNextRegExp(parser: Parser, regexp: RegExp): boolean {
+function isNextRegExp(parser: ParserState, regexp: RegExp): boolean {
 	return parser.strExpression.slice(parser.current).match(regexp) != null
 }
 
-function consume(parser: Parser): string {
-	return parser.strExpression[parser.current++]
-}
-
-function expect(parser: Parser, expected: string): void {
-	if (peek(parser) !== expected) {
-		throw new Error(`Expected '${expected}' but got '${peek(parser)}'`)
-	}
-	consume(parser)
-}
-
-// NOTE: effet de bord sur le parser donné en argument (qui est muté) à voir si
-// on souhaite garder cette approche et auquel cas pas besoin de retourner le
-// parser ou bien si on souhaite garder une approche plus fonctionnelle et
-// retourner le parser à chaque fois mais en le clonant pour ne pas muter.
-function expectRegExp(
-	parser: Parser,
-	regexp: RegExp,
-): { parser: Parser; value: string } {
-	// NOTE: est-ce que l'on garderai pas uniquement le slice plutôt que le
-	// current index ?
-	const match = parser.strExpression.slice(parser.current).match(regexp)
-	if (!match) {
-		throw new Error(`Expected '${regexp.source}' but got ${peek(parser)}`)
-	}
-	parser.current += match[0].length
-	return { parser, value: match[0] }
-}
-
 function expectRegExpGroup(
-	parser: Parser,
+	parser: ParserState,
 	regexp: RegExp,
-): { parser: Parser; value: string } {
+): { parser: ParserState; value: string } {
 	const match = parser.strExpression.slice(parser.current).match(regexp)
 	if (!match) {
 		throw new Error(`Expected '${regexp.source}' but got ${peek(parser)}`)
@@ -260,7 +293,7 @@ function expectRegExpGroup(
 	return { parser, value: match[1] }
 }
 
-function isEOL(parser: Parser): boolean {
+function isEOL(parser: ParserState): boolean {
 	return parser.current >= parser.strExpression.length
 }
 
@@ -284,36 +317,24 @@ function dateNode(value: string): ExprAST {
 	return { constant: { type: 'date', nodeValue: value } }
 }
 
-// const boolean = /oui|non/
 const space =
 	/[\t\u0020\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]/
 
 const spaces = new RegExp(`^${space.source}*`)
 const letter = /[a-zA-Z\u00C0-\u017F$]/
 const symbol = /[',°€$%²_'"'«»]/
-// const symbol = prec(0, /[',°€%²$_'"'«»]/) // TODO: add parentheses
+
 const digit = /\d/
-// FIXME: manage quotes in constant
 const string = /'.*'|".*"/
 
 const number = /\d+(\.\d+)?/
 const date = /^(?:(?:0?[1-9]|[12][0-9]|3[01])\/)?(?:0?[1-9]|1[012])\/\d{4}/
-// const exposant = /[⁰-⁹]+/
 
-// const any_char = choice(letter, symbol, digit)
 const any_char = new RegExp(
 	`(${letter.source}|${symbol.source}|${digit.source})`,
 )
-// const any_char_or_special_char = choice(any_char, /\-|\+/)
-// NOTE: pourquoi '+' et '-' ici ?
-const any_char_or_special_char = new RegExp(`(${any_char.source}|\\-|\\+|')`)
-// const any_char_or_special_char = new RegExp(`${any_char.source}`)
 
-// const phrase_starting_with = (char) =>
-// 	seq(
-// 		seq(char, repeat(any_char_or_special_char)),
-// 		repeat(seq(space, seq(any_char, repeat(any_char_or_special_char)))),
-// 	)
+const any_char_or_special_char = new RegExp(`(${any_char.source}|\\-|\\+|')`)
 
 const phrase_starting_with = (char: RegExp) =>
 	new RegExp(
@@ -348,5 +369,3 @@ const comparisonOperator = oneOfBetweenAtLeastOneSpace([
 	'=',
 	'!=',
 ])
-
-// console.log(JSON.stringify(parseExpression('10% /an'), null, 2))

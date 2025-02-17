@@ -366,7 +366,7 @@ transport . avion . usager:
 			'transport . avion',
 		).missingVariables
 
-		expect(Object.keys(result)).deep.toEqual([
+		expect(Object.keys(result)).toEqual([
 			'transport . avion . usager',
 			'transport . avion . km',
 		])
@@ -414,7 +414,7 @@ transport . avion . usager:
 			'transport . voiture',
 		).missingVariables
 
-		expect(Object.keys(result)).deep.toEqual([
+		expect(Object.keys(result)).toEqual([
 			'transport . voiture . gabarit',
 			'transport . voiture . km',
 		])
@@ -443,7 +443,7 @@ avion . impact . au sol: 5
 			'avion . impact . au sol',
 		).missingVariables
 
-		expect(Object.keys(result)).deep.toEqual(['avion'])
+		expect(Object.keys(result)).toEqual(['avion'])
 	})
 
 	it("Parent's other descendants in sums in applicability should be included as missing variables", () => {
@@ -467,7 +467,7 @@ a . b: 20 + 9
 `)
 		const result = new Engine(rawRules).evaluate('a . b').missingVariables
 
-		expect(Object.keys(result)).deep.toEqual(['e'])
+		expect(Object.keys(result)).toEqual(['e'])
 		expect(Object.keys(result)).toHaveLength(1)
 	})
 
