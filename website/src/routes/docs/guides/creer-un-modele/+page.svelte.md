@@ -24,7 +24,12 @@ Ce projet contient :
 
 - un fichier `package.json` avec les dépendances nécessaires
 - un dossier `src/` contenant les fichiers de règles en `.publicodes` (avec un exemple de règle `salaire.publicodes`)
+
+Et en option :
+
 - un dossier `test/` avec un exemple de test unitaire (`salaire.test.js`)
+- un dosser `bench:` avec un exemple de benchmark
+- un dossier `vscode/` contenant les fichiers de configuration pour le set up du langage server Publicodes pour VSCode
 
 ## 2. Compiler le modèle
 
