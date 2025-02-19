@@ -277,7 +277,7 @@ async function getExtraTools(useDefault: boolean): Promise<ExtraTool[]> {
 			// 		hint: 'automate build, test and publishing',
 			// 	},
 			{ value: 'test', label: 'Unit test', hint: 'Vitest + example' },
-			{ value: 'bench', label: 'Performance test', hint: 'Mitata' },
+			{ value: 'bench', label: 'Performance test', hint: 'Bench with mitata' },
 			{
 				value: 'vscode',
 				label: 'VSCode settings',
@@ -306,13 +306,10 @@ function setupBench(pkgJSON: PackageJson) {
 	pkgJSON.devDependencies = {
 		...pkgJSON.devDependencies,
 		mitata: '^0.1.6',
-		tsup: '^8.3.5',
-		typescript: '^5.7.3',
 	}
 	pkgJSON.scripts = {
 		...pkgJSON.scripts,
-		bench:
-			'yarn run compile && tsup --entry.bench ./bench/index.ts --format esm && node ./dist/bench.js',
+		bench: `node --experimental-strip-types ./bench.index.ts`,
 	}
 	return pkgJSON
 }
