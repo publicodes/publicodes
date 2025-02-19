@@ -40,7 +40,7 @@ Le site public est développé avec [Svelte](https://kit.svelte.dev/) et heberg�
 
 Les mécanismes sont les briques de base du langage publicodes. Il y en existe plusieurs types :
 
-- **Les opération de base**, (addition, soustraction, conditions, etc.) qui sont implémentées directement en JavaScript dans le fichier [`operation.ts`](https://github.com/betagouv/publicodes/blob/master/packages/core/src/mecanisms/operation.ts). Leur syntaxe est définie dans une [grammaire nearley](https://github.com/betagouv/publicodes/blob/master/packages/core/src/grammar.ne)
+- **Les opération de base**, (addition, soustraction, conditions, etc.) qui sont implémentées directement en JavaScript dans le fichier [`operation.ts`](https://github.com/betagouv/publicodes/blob/master/packages/core/src/mecanisms/operation.ts). Leur syntaxe est définie dans le parser [`parseExpression.ts`](https://github.com/betagouv/publicodes/blob/master/packages/core/src/parseExpression.ts)
 - **Les mécanismes de base**, qui sont des mécanismes implémentés directement en JavaScript. Des conditions, ou tout autre mécanisme « complexe » qui ne peut pas être implémenté en publicodes (inversion numérique, contexte, etc.)
     - Exportent une fonction `parse` qui prend en entrée le noeud yaml du mécanisme et retourne un `ASTNode`
     - Exportent une fonction `evaluate` qui prend en entrée l`ASTNode` et l'évalue
