@@ -576,16 +576,42 @@ await run()
 `
 
 const PRETTIER_CONFIG = `
-bracketSpacing: true
-semi: false
-singleQuote: true
-trailingComma: none
 overrides: [{ 'files': '**/*.publicodes', 'options': { 'parser': 'yaml' } }]
 `
 
 const VSCODE_SETTINGS = `
 {
-  "prettier.documentSelectors": ["**/*.publicodes"]
+  "prettier.documentSelectors": ["**/*.publicodes"],
+  "editor.semanticTokenColorCustomizations": {
+    "rules": {
+      "*.readonly:publicodes": {
+        "italic": true,
+      },
+      "*.definition:publicodes": {
+        "bold": true,
+      },
+      "namespace:publicodes": {
+        "foreground": "#4ec99a"
+      },
+      "type:publicodes": {
+        "foreground": "#4EC9B0",
+        "italic": true,
+      },
+      "operator:publicodes": "#c7c7c7ad",
+      "string:publicodes": {
+        "foreground": "#CE9178",
+      },
+      "string.readonly:publicodes": "#569cd6",
+      "number:publicodes": "#e67f7f",
+      "property:publicodes": "#569CD6",
+      "property.static:publicodes": "#9CDCFE",
+      "method:publicodes": "#569CD6",
+      "macro:publicodes": {
+        "foreground": "#9CDCFE",
+        "italic": true
+      }
+    }
+  },
 }`
 
 const VSCODE_EXTENSIONS = `
