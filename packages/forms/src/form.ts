@@ -11,59 +11,59 @@ import { updateSituationWithInputValue } from './updateSituationWithFormValue'
  * This object describes the current state of a form, including the current page, the list of targets, the list of pages and the last answered question.
  * It should be stored in your application, and made reactive (useState, $state, etc.).
  */
-export type FormState<Name extends string> = {
-	targets: Array<Name>
-	pages: Array<Array<Name>>
+export type FormState<RuleName extends string> = {
+	targets: Array<RuleName>
+	pages: Array<Array<RuleName>>
 	currentPageIndex: number
-	nextPages: Array<Array<Name>>
-	lastAnswered: Name | null
+	nextPages: Array<Array<RuleName>>
+	lastAnswered: RuleName | null
 }
 
 /**
- * Dependencies required to for some function used to build a form from a publicodes engine.
- *
- * This type is used to configure the form builder with:
- * - A publicodes engine that handles the business logic and rules
- * - An optional page splitting strategy to organize fields across multiple pages
- *
- * @template Name - String type representing the rule names in the publicodes model
- *
- * @property engine - The publicodes engine instance that contains rules and logic
- * @property pageBuilder - Optional function to group fields into pages
- *                          Takes an array of field names and returns arrays of fields grouped by page
- * 						Defaults to @see {@link groupByNamespace}
- *
+ * Function to group fields into pages
+ * Takes an array of field names and returns arrays of fields
  */
-export type FormBuilderDependencies<Name extends string> = {
-	engine: Engine<Name>
-	pageBuilder?: (fields: Array<Name>) => Array<Array<Name>>
-}
+export type PageBuilder<RuleName> = (
+	fields: Array<RuleName>,
+) => Array<Array<RuleName>>
 
 /**
  * Initializes a form state based on the provided engine and targets.
  *
- * @template Name - The type for target names, must extend string
- * @param  params - The initialization parameters
- * @param  params.engine - The engine instance to compute form fields
- * @param  [params.pageBuilder=groupByNamespace()] - Optional function to split fields into pages, defaults to group by namespace
- * @param  targets - Array of target names to compute fields for
- * @returns The initialized form state with first page computed
+ * @template RuleName - The existing rule names
+ * @param params
+ * @param params.engine - The Publicodes engine instance used to compute form fields
+ * @param [params.pageBuilder=groupByNamespace] - Function to split fields into pages
+ * @param targets - Array of target rule names to compute fields for
+ * @returns A new form state initialized with the first computed page
  *
  * @remarks
  * The function creates an initial form state by:
  * 1. Computing the next fields based on the engine and targets
  * 2. Splitting these fields into pages using the provided pageBuilder
  * 3. Moving to the first page of questions
+ *
+ *  @example
+ * ```typescript
+ * const engine = new Engine(rules)
+ * const formState = initFormState({ engine }, 'rule1', 'rule2')
+ * ```
  */
-export function initFormState<Name extends string>(
-	{ engine, pageBuilder = groupByNamespace }: FormBuilderDependencies<Name>,
-	...targets: Array<Name>
-): FormState<Name> {
+export function initFormState<RuleName extends string>(
+	{
+		engine,
+		pageBuilder = groupByNamespace,
+	}: {
+		engine: Engine<RuleName>
+		pageBuilder?: PageBuilder<RuleName>
+	},
+	...targets: Array<RuleName>
+): FormState<RuleName> {
 	// Todo state with situation and rule, and reconstruct the engine from it
 	// This means that setInputValue should return a situation
 	const nextFields = computeNextFields(engine, { targets, pages: [] })
 	const nextPages = pageBuilder(nextFields)
-	const formState: FormState<Name> = goToNextPage({
+	const formState: FormState<RuleName> = goToNextPage({
 		targets,
 		pages: [],
 		currentPageIndex: -1,
@@ -74,23 +74,27 @@ export function initFormState<Name extends string>(
 }
 
 /**
- * Create a UI representation of the current page of the form.
+ * Creates a UI representation of the current form page.
  *
- * This UI representation will be used by the rendering engine of your choice to display the form.
+ * @template RuleName - The existing rule names
+ * @param params
+ * @param params.formState - The current state of the form
+ * @param params.engine - The Publicodes engine instance
+ * @returns An array of form elements with their UI properties and validation state
  *
- * It should be called each time the form state is updated, to get the current page of the form.
- *
- * @see {@link FormElementInPage} for the description of the UI representation.
- *
- * @param formState - The current state of the form
- * @param object.engine - The engine instance used to process the form logic and rules
- 
- * @returns An array of UI elements representing the current page of the form
+ * @example
+ * ```typescript
+ * const pageElements = currentPage({ formState, engine })
+ * // Returns array of FormElementInPage to be rendered
+ * ```
  */
-export function currentPage<Name extends string>(
-	formState: FormState<Name>,
-	{ engine }: { engine: Engine<Name> },
-): Array<FormElementInPage> {
+export function currentPage<RuleName extends string>({
+	formState,
+	engine,
+}: {
+	formState: FormState<RuleName>
+	engine: Engine<RuleName>
+}): Array<FormElementInPage> {
 	const page = formState.pages[formState.currentPageIndex]
 	if (page === undefined) {
 		return []
@@ -106,21 +110,25 @@ export function currentPage<Name extends string>(
 /**
  * Retrieves pagination information for the current form state.
  *
- * This information can be used to display navigation buttons in the form for instance.
- *
+ * @template RuleName - The existing rule names
  * @param formState - The current state of the form
  * @returns An object containing pagination details:
- *   - `current` - The current page number (1-based index)
+ *   - `current` - Current page number (1-based)
  *   - `pageCount` - Total number of pages
- *   - `hasNextPage` - Boolean indicating if there are more pages after the current one
- *   - `hasPreviousPage` - Boolean indicating if there are pages before the current one
+ *   - `hasNextPage` - Whether there is a next page
+ *   - `hasPreviousPage` - Whether there is a previous page
  *
  * @example
  * ```typescript
- * const paginationInfo = pagination(formState);
+ * const { current, pageCount, hasNextPage } = pagination(formState)
+ * if (hasNextPage) {
+ *   // Show next page button
+ * }
  * ```
  */
-export function pagination<Name extends string>(formState: FormState<Name>) {
+export function pagination<RuleName extends string>(
+	formState: FormState<RuleName>,
+) {
 	const { currentPageIndex, pages, nextPages } = formState
 	const pageCount = pages.length + nextPages.length
 	return {
@@ -134,20 +142,22 @@ export function pagination<Name extends string>(formState: FormState<Name>) {
 /**
  * Advances the form to the next page in the sequence.
  *
- * If there are additional pages in the `nextPages` queue, they will be
- * added to the active pages as the user progresses.
- *
- * @param formState - The current state of the form containing page information
- * @returns A new form state with updated page position
+ * @template RuleName - The existing rule names
+ * @param formState - The current state of the form
+ * @returns A new form state positioned at the next page. If no next page exists,
+ *          returns the original state unchanged
  *
  * @example
- * ```ts
- * const updatedState = goToNextPage(currentFormState);
- * // User is now on the next page of the form
+ * ```typescript
+ * const nextState = goToNextPage(formState)
+ * if (nextState === formState) {
+ *   // We were already at the last page
+ * }
  * ```
  */
-
-export function goToNextPage<Name extends string>(formState: FormState<Name>) {
+export function goToNextPage<RuleName extends string>(
+	formState: FormState<RuleName>,
+) {
 	const { pages, nextPages } = formState
 	if (formState.currentPageIndex < pages.length - 1) {
 		formState.currentPageIndex++
@@ -169,18 +179,23 @@ export function goToNextPage<Name extends string>(formState: FormState<Name>) {
 }
 
 /**
- * Navigates to the previous page.
+ * Navigates to the previous page in the form.
  *
+ * @template RuleName - The existing rule names
  * @param formState - The current state of the form
- * @returns A new form state with the previous page as the current page. If already on the first page, returns the original state unchanged.
+ * @returns A new form state positioned at the previous page. If already on the first page,
+ *          returns the original state unchanged
  *
  * @example
  * ```typescript
- * const newState = goToPreviousPage(currentFormState)
+ * const prevState = goToPreviousPage(formState)
+ * if (prevState === formState) {
+ *   // We were already at the first page
+ * }
  * ```
  */
-export function goToPreviousPage<Name extends string>(
-	formState: FormState<Name>,
+export function goToPreviousPage<RuleName extends string>(
+	formState: FormState<RuleName>,
 ) {
 	const { currentPageIndex } = formState
 	if (currentPageIndex === 0) {
@@ -191,25 +206,41 @@ export function goToPreviousPage<Name extends string>(
 }
 
 /**
- * Updates the form state when a user changes the value of an input field.
+ * Updates the form state when a user changes an input value.
  *
- * @param formState - The current state of the form
- * @param id - The identifier of the field being updated (the rule name)
- * @param value - The new value of the field
- * @param dependencies - The dependencies required to update the form state
- * @returns A new form state with updated values, pages, and last answered field
+ * @template RuleName - The existing rule names
+ * @param params
+ * @param params.id - The rule name identifier of the field being updated
+ * @param params.value - The new value for the field
+ * @param params.formState - The current state of the form
+ * @param params.engine - The Publicodes engine instance
+ * @param [params.pageBuilder=groupByNamespace] - Function to split fields into pages
+ * @returns A new form state with updated values and potentially new pages
  *
  * @example
  * ```typescript
- * const newState = handleInputChange(currentFormState, 'personne . age', 25, { engine })
+ * const newState = handleInputChange({
+ *   id: 'usager . age',
+ *   value: 25,
+ *   formState,
+ *   engine
+ * })
+ * // The engine's situation is updated and new pages may be computed
  * ```
  */
-export function handleInputChange<Name extends string>(
-	formState: FormState<Name>,
-	id: Name,
-	value: string | number | boolean | undefined,
-	{ engine, pageBuilder = groupByNamespace }: FormBuilderDependencies<Name>,
-): FormState<Name> {
+export function handleInputChange<RuleName extends string>({
+	id,
+	value,
+	formState,
+	engine,
+	pageBuilder = groupByNamespace,
+}: {
+	engine: Engine<RuleName>
+	pageBuilder?: PageBuilder<RuleName>
+	id: RuleName
+	value: string | number | boolean | undefined
+	formState: FormState<RuleName>
+}): FormState<RuleName> {
 	formState.lastAnswered = id
 
 	updateSituationWithInputValue(engine, id, value)
