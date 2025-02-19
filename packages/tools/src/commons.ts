@@ -192,9 +192,8 @@ export function serializeParsedExprAST(
 	}
 	if (binaryOps.some((op) => op in parsedExpr)) {
 		for (const key of Object.keys(parsedExpr) as (keyof BinaryOp)[]) {
-			const [left, right] = (parsedExpr[key] as [ExprAST, ExprAST]).map(
-				(node) => serializeParsedExprAST(node, true),
-			)
+			const left = serializeParsedExprAST(parsedExpr[key][0], true)
+			const right = serializeParsedExprAST(parsedExpr[key][1], true)
 			return (
 				(needsParens ? '(' : '') +
 				(left === '0' && key === '-' ?

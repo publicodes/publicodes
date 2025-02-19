@@ -27,52 +27,59 @@ export type ExprAST =
 	// NOTE: pourquoi ne pas utiliser le type Date directement ?
 	| { constant: { type: 'string' | 'date'; nodeValue: string } }
 
-class ParserError extends PublicodesError<'ParserError'> {
-	constructor(
-		expression: string,
-		position: number,
-		expected: string,
-		found: string,
-		dottedName: string,
-	) {
-		const message = formatParserError(expression, position, expected, found)
-		super('ParserError', message, {
-			dottedName,
-			position,
-			expression,
-			expected,
-			found,
-		})
+type ParserErrorDetails = {
+	expression: string
+	position: number
+	expected: string
+	found: string
+	customMessage?: string
+}
+
+class ParserError extends Error {
+	details: ParserErrorDetails
+
+	constructor(details: ParserErrorDetails) {
+		const message = formatParserError(details)
+		super(message)
+		this.details = details
 	}
 }
-function formatParserError(
-	expression: string,
-	position: number,
-	expected: string,
-	found: string,
-): string {
+
+class SyntaxError extends PublicodesError<'SyntaxError'> {
+	constructor(details: ParserErrorDetails & { dottedName: string }) {
+		const message = formatParserError(details)
+		super('SyntaxError', message, details)
+	}
+}
+
+function formatParserError({
+	expression,
+	position,
+	expected,
+	found,
+	customMessage,
+}: ParserErrorDetails): string {
 	const pointer = ' '.repeat(position) + '^'
+	const defaultMessage = `${expected} est attendu, ${found ? `mais "${found}" a été trouvé` : 'hors l’expression se termine prématurément'}`
 
 	return `L'expression suivante n'est pas valide :
    
    ${expression}
    ${pointer}
-   ${expected} est attendu, ${found ? `mais "${found}" a été trouvé` : 'hors l’expression se termine prématurément'}
+   ${customMessage ?? defaultMessage}
 `
 }
 
 type ParserState = {
-	strExpression: string
+	readonly strExpression: string
 	current: number
-	dottedName: string
 	tree: ExprAST | null
 }
 
-function createParser(expression: string, dottedName: string): ParserState {
+function createParser(expression: string): ParserState {
 	return {
 		strExpression: expression,
 		current: 0,
-		dottedName,
 		tree: null,
 	}
 }
@@ -81,14 +88,15 @@ function throwParserError(
 	parser: ParserState,
 	expected: string,
 	found: string,
+	customMessage?: string,
 ): never {
-	throw new ParserError(
-		parser.strExpression,
-		parser.current,
+	throw new ParserError({
+		expression: parser.strExpression,
+		position: parser.current,
 		expected,
 		found,
-		parser.dottedName,
-	)
+		customMessage,
+	})
 }
 
 function consume(parser: ParserState, expected: string): string {
@@ -109,14 +117,16 @@ function expect(parser: ParserState, expected: string): void {
 function expectRegExp(
 	parser: ParserState,
 	regexp: RegExp,
-	description: string,
+	description?: string,
+	errorMessage?: string,
 ): { parser: ParserState; value: string } {
 	const match = parser.strExpression.slice(parser.current).match(regexp)
 	if (!match) {
 		throwParserError(
 			parser,
-			`${description} (${regexp.source})`,
+			description ?? regexp.source,
 			peek(parser, 5),
+			errorMessage,
 		)
 	}
 	parser.current += match[0].length
@@ -132,18 +142,36 @@ export function parseExpression(
 	}
 
 	const singleLineExpression = (rawNode + '').replace(/\s*\n\s*/g, ' ').trim()
-	const parser = createParser(singleLineExpression, dottedName)
 
-	const res = parseComparison(parser)
+	try {
+		const parser = createParser(singleLineExpression)
+		const res = parseComparison(parser)
 
-	if (!isEOL(res)) {
-		throwParserError(res, 'La fin d’expression', peek(res))
+		if (!isEOL(res)) {
+			if (isNextRegExp(res, operators)) {
+				throwParserError(
+					res,
+					'un opérateur entouré d’espaces',
+					peek(res),
+					'Les opérateurs doivent être entourés d’espaces ("2 + 2" et non "2+2")',
+				)
+			}
+
+			throwParserError(res, 'La fin d’expression', peek(res))
+		}
+
+		return res.tree!
+	} catch (error) {
+		if (error instanceof ParserError) {
+			throw new SyntaxError({
+				...error.details,
+				dottedName,
+			})
+		}
+		throw error
 	}
-
-	return res.tree!
 }
 
-// Mise à jour des fonctions de parsing pour utiliser le nouveau ParserState
 function parseComparison(parser: ParserState): ParserState {
 	let left = parseAddition(parser)
 
@@ -204,16 +232,17 @@ function parseExponentiation(parser: ParserState): ParserState {
 function parsePrimary(parser: ParserState): ParserState {
 	if (peek(parser) === '(') {
 		consume(parser, '(')
-		expectRegExp(parser, spaces, 'Un espace')
+		expectRegExp(parser, spaces)
 		const expr = parseComparison(parser)
-		expectRegExp(expr, spaces, 'Un espace')
+		expectRegExp(expr, spaces)
 		expect(expr, ')')
 		return expr
 	} else if (peek(parser) === '-') {
 		consume(parser, '-')
-		expectRegExp(parser, spaces, 'Un espace')
+		expectRegExp(parser, spaces)
 		const expr = parsePrimary(parser)
-		return { ...expr, tree: minusNode(expr.tree!) }
+		expr.tree = minusNode(expr.tree!)
+		return expr
 	} else if (isNextRegExp(parser, date)) {
 		const res = expectRegExp(parser, date, 'Une date')
 		return {
@@ -221,9 +250,7 @@ function parsePrimary(parser: ParserState): ParserState {
 			tree: dateNode(res.value),
 		}
 	} else if (peek(parser).match(number)) {
-		// TODO: gérer les unités
 		const res = expectRegExp(parser, number, 'Un nombre')
-
 		if (isNextRegExp(res.parser, unit)) {
 			const parsedUnit = expectRegExp(res.parser, unit, 'Une unité')
 			return {
@@ -258,7 +285,11 @@ function parsePrimary(parser: ParserState): ParserState {
 				:	{ variable: res.value },
 		}
 	}
-	throwParserError(parser, 'Une expression', peek(parser))
+	throwParserError(
+		parser,
+		'Une constante, une référence ou une expression entre parenthèses',
+		peek(parser),
+	)
 }
 
 function peek(parser: ParserState, n?: number): string {
@@ -360,7 +391,7 @@ const oneOfBetweenAtLeastOneSpace = (values: string[]) =>
 
 const exponentiationOperator = oneOfBetweenAtLeastOneSpace(['\\*\\*'])
 const multiplyOperator = oneOfBetweenAtLeastOneSpace(['\\*', '\\/', '\\/\\/'])
-const additionOperator = oneOfBetweenAtLeastOneSpace(['\\-', '\\+'])
+const additionOperator = oneOfBetweenAtLeastOneSpace(['-', '\\+'])
 const comparisonOperator = oneOfBetweenAtLeastOneSpace([
 	'>',
 	'<',
@@ -369,3 +400,5 @@ const comparisonOperator = oneOfBetweenAtLeastOneSpace([
 	'=',
 	'!=',
 ])
+
+const operators = /(\+|-|\*|\/|\*\*|>|<|>=|<=|=|!=)/
