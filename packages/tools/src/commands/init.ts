@@ -98,7 +98,7 @@ installation.`,
 		}
 
 		if (extraTools.includes('bench')) {
-			setupBench(pkgJSON)
+			setupBench(pkgJSON, pkgManager)
 		}
 		await generateBaseFiles(pkgJSON, pkgManager, extraTools)
 
@@ -285,7 +285,7 @@ async function getExtraTools(useDefault: boolean): Promise<ExtraTool[]> {
 			},
 		],
 		required: false,
-		initialValues: ['test', 'bench', 'vscode'],
+		initialValues: ['test'] as ExtraTool[],
 	}) as Promise<ExtraTool[]>
 }
 
@@ -302,14 +302,14 @@ function setupTests(pkgJSON: PackageJson, pkgManager: PackageManager) {
 	return pkgJSON
 }
 
-function setupBench(pkgJSON: PackageJson) {
+function setupBench(pkgJSON: PackageJson, pkgManager: PackageManager) {
 	pkgJSON.devDependencies = {
 		...pkgJSON.devDependencies,
 		mitata: '^0.1.6',
 	}
 	pkgJSON.scripts = {
 		...pkgJSON.scripts,
-		bench: `node --experimental-strip-types ./bench.index.ts`,
+		bench: `${pkgManager} compile && node --experimental-strip-types ./bench/index.ts`,
 	}
 	return pkgJSON
 }
@@ -541,7 +541,7 @@ salaire médian cadre:
 const BASE_BENCH_FILE = `
 import { bench, group, run } from 'mitata'
 import Engine from "publicodes";
-import rules from "../${DEFAULT_BUILD_DIR}/index.js"
+import rules from '../${DEFAULT_BUILD_DIR}/test-publicodes-init.model.json' with { type: 'json' }
 
 const options = {
 	logger: { warn: () => {}, error: () => {}, log: () => {} },
