@@ -14,12 +14,11 @@ Dans ce tutoriel, nous verrons comment créer un modèle Publicodes, et l'import
 Pour commencer, nous allons initialiser un projet publicodes. Le plus simple est d'utiliser `npx @publicodes/tools init` :
 
 ```bash
-mkdir mon-projet-publicodes
-cd mon-projet-publicodes
+mkdir mon-projet-publicodes && cd "$_"
 npx @publicodes/tools init
 ```
 
-Cette dernière commande va mettre en place un nouveau projet publicodes, en demandant quelques informations de base (nom du projet, auteur, gestionnaire de paquets, etc.).
+Cette dernière commande va mettre en place un nouveau projet publicodes, en demandant quelques informations de base (nom du projet, auteur, gestionnaire de paquets, options de tooling au sein du projet, etc.).
 
 Ce projet contient :
 
