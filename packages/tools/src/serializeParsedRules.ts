@@ -86,7 +86,9 @@ function serializeValue(node: ASTNode, needsParens = false): SerializedRule {
 					const left = serializeValue(node.explanation[0], true) as
 						| string
 						| number
-					const right = serializeValue(node.explanation[1], true) as string
+					const right = serializeValue(node.explanation[1], true) as
+						| string
+						| number
 					const op = node.operationKind
 					return (
 						(needsParens ? '(' : '') +

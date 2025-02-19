@@ -6,13 +6,13 @@ exports[`e2e koa middleware > Test evaluate endpoint with bad expression 2`] = `
     {
       "error": {
         "message": "
-[ ParserError ]
+[ Erreur syntaxique ]
 ➡️  Dans la règle \\"$EVALUATION\\"
 ✖️  L'expression suivante n'est pas valide :
    
    1+1
     ^
-   La fin d’expression est attendu, mais \\"+\\" a été trouvé
+   Les opérateurs doivent être entourés d’espaces (\\"2 + 2\\" et non \\"2+2\\")
 ",
       },
       "warnings": [],
