@@ -4,6 +4,7 @@ import { buildFormPage, FormElementInPage } from './buildFormPage'
 import { computeNextFields } from './computeNextFields'
 import { groupByNamespace } from './groupByNamespace'
 import { updateSituationWithInputValue } from './updateSituationWithFormValue'
+import { FormElementOptions } from './formElement'
 
 /**
  * @typedef {Object} FormState
@@ -15,7 +16,9 @@ export type FormState<RuleName extends string> = {
 	targets: Array<RuleName>
 	pages: Array<Array<RuleName>>
 	currentPageIndex: number
+	currentPageClosestCommonAncestor: string
 	nextPages: Array<Array<RuleName>>
+	nextPagesNames: Array<string>
 	lastAnswered: RuleName | null
 }
 
@@ -23,9 +26,10 @@ export type FormState<RuleName extends string> = {
  * Function to group fields into pages
  * Takes an array of field names and returns arrays of fields
  */
-export type PageBuilder<RuleName> = (
-	fields: Array<RuleName>,
-) => Array<Array<RuleName>>
+export type PageBuilder<RuleName> = (fields: Array<RuleName>) => {
+	pages: Array<Array<RuleName>>
+	pageNames: Array<string>
+}
 
 /**
  * Initializes a form state based on the provided engine and targets.
@@ -62,13 +66,16 @@ export function initFormState<RuleName extends string>(
 	// Todo state with situation and rule, and reconstruct the engine from it
 	// This means that setInputValue should return a situation
 	const nextFields = computeNextFields(engine, { targets, pages: [] })
-	const nextPages = pageBuilder(nextFields)
+	const { pages: nextPages, pageNames: nextPagesNames } =
+		pageBuilder(nextFields)
 	const formState: FormState<RuleName> = goToNextPage({
 		targets,
 		pages: [],
 		currentPageIndex: -1,
+		currentPageClosestCommonAncestor: '',
 		lastAnswered: null,
 		nextPages,
+		nextPagesNames,
 	})
 	return formState
 }
@@ -123,7 +130,7 @@ export function currentPage<RuleName extends string>({
  *
  * @example
  * ```typescript
- * const { current, pageCount, hasNextPage } = pagination(formState)
+ * const { current, pageCount, hasNextPage, hasPreviousPage } = pagination(formState)
  * if (hasNextPage) {
  *   // Show next page button
  * }
@@ -161,9 +168,11 @@ export function pagination<RuleName extends string>(
 export function goToNextPage<RuleName extends string>(
 	formState: FormState<RuleName>,
 ) {
-	const { pages, nextPages } = formState
+	const { pages, nextPages, nextPagesNames } = formState
 	if (formState.currentPageIndex < pages.length - 1) {
 		formState.currentPageIndex++
+		formState.currentPageClosestCommonAncestor =
+			nextPagesNames[formState.currentPageIndex]
 		return Object.assign({}, formState)
 	}
 
@@ -175,6 +184,8 @@ export function goToNextPage<RuleName extends string>(
 	formState.pages.push(nextPage)
 	formState.nextPages = rest
 	formState.currentPageIndex++
+	formState.currentPageClosestCommonAncestor =
+		nextPagesNames[formState.currentPageIndex]
 
 	return Object.assign({}, formState, {
 		pages: [...formState.pages],
@@ -200,11 +211,13 @@ export function goToNextPage<RuleName extends string>(
 export function goToPreviousPage<RuleName extends string>(
 	formState: FormState<RuleName>,
 ) {
-	const { currentPageIndex } = formState
+	const { currentPageIndex, nextPagesNames } = formState
 	if (currentPageIndex === 0) {
 		return formState
 	}
 	formState.currentPageIndex--
+	formState.currentPageClosestCommonAncestor =
+		nextPagesNames[formState.currentPageIndex]
 	return Object.assign({}, formState)
 }
 
@@ -248,6 +261,7 @@ export function handleInputChange<RuleName extends string>({
 
 	updateSituationWithInputValue(engine, id, value)
 
-	formState.nextPages = pageBuilder(computeNextFields(engine, formState))
+	const { pages: nextPages } = pageBuilder(computeNextFields(engine, formState))
+	formState.nextPages = nextPages
 	return Object.assign({}, formState)
 }
