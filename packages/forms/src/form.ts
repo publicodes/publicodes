@@ -91,9 +91,11 @@ export function initFormState<RuleName extends string>(
 export function currentPage<RuleName extends string>({
 	formState,
 	engine,
+	options,
 }: {
 	formState: FormState<RuleName>
 	engine: Engine<RuleName>
+	options?: FormElementOptions
 }): Array<FormElementInPage> {
 	const page = formState.pages[formState.currentPageIndex]
 	if (page === undefined) {
@@ -104,6 +106,7 @@ export function currentPage<RuleName extends string>({
 		engine,
 		formState.targets,
 		formState.lastAnswered,
+		options,
 	)
 }
 

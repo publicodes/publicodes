@@ -45,6 +45,9 @@ export type TextareaElement = FormMeta & {
 	element: 'textarea'
 }
 
+export type FormElementOptions = {
+	selectTreshold?: number
+}
 /**
  * Represents the different types of form elements that can be generated from Publicodes rules.
  * This union type combines all possible form control representations.
@@ -127,6 +130,7 @@ export type FormElement =
 export function getFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
+	options?: FormElementOptions,
 ): FormElement {
 	const rule = engine.getRule(dottedName)
 	const rawRule = rule.rawNode as RuleWithFormMeta
@@ -193,7 +197,7 @@ export function getFormElement<Name extends string>(
 		})
 
 		if (!saisie) {
-			if (choices.length > 5) {
+			if (choices.length > (options?.selectTreshold || 5)) {
 				saisie = 'menu déroulant'
 			} else {
 				saisie = 'boutons radio'

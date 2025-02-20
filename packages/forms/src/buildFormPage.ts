@@ -4,6 +4,7 @@ import {
 	type EvaluatedFormElement,
 } from './getEvaluatedFormElement'
 import { UNDEFINED_NODE } from './utils'
+import { FormElementOptions } from './formElement'
 
 export type FormElementInPage = EvaluatedFormElement & {
 	hidden: boolean
@@ -50,6 +51,7 @@ export function buildFormPage<Name extends string>(
 	engine: Engine<Name>,
 	targets: Array<Name>,
 	lastAnswered: Name | null,
+	options?: FormElementOptions,
 ): Array<FormElementInPage> {
 	const lastAnsweredIndex = page.indexOf(lastAnswered as Name)
 
@@ -57,6 +59,7 @@ export function buildFormPage<Name extends string>(
 		const element = getEvaluatedFormElement(
 			engine,
 			dottedName,
+			options,
 		) as FormElementInPage
 
 		element.autofocus = false
