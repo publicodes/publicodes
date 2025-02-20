@@ -14,18 +14,24 @@ Dans ce tutoriel, nous verrons comment créer un modèle Publicodes, et l'import
 Pour commencer, nous allons initialiser un projet publicodes. Le plus simple est d'utiliser `npx @publicodes/tools init` :
 
 ```bash
-mkdir mon-projet-publicodes
-cd mon-projet-publicodes
+mkdir mon-projet-publicodes && cd "$_"
 npx @publicodes/tools init
 ```
 
-Cette dernière commande va mettre en place un nouveau projet publicodes, en demandant quelques informations de base (nom du projet, auteur, gestionnaire de paquets, etc.).
+Cette dernière commande va mettre en place un nouveau projet publicodes, en demandant quelques informations de base (nom du projet, auteur, gestionnaire de paquets, options de tooling au sein du projet, etc.).
 
 Ce projet contient :
 
 - un fichier `package.json` avec les dépendances nécessaires
 - un dossier `src/` contenant les fichiers de règles en `.publicodes` (avec un exemple de règle `salaire.publicodes`)
+
+Et en option :
+
 - un dossier `test/` avec un exemple de test unitaire (`salaire.test.js`)
+- un dosser `bench:` avec un exemple de benchmark
+- un dossier `vscode/` contenant les fichiers de configuration pour le set up du [langage server](https://github.com/publicodes/language-server) Publicodes pour VSCode
+
+Les commandes `compile` et `dev` sont également également disponibles pour [compiler les règles](#2-compiler-le-modèle) et [lancer la quick-doc](#3-développer-le-modèle-avec-la-quick-doc).
 
 ## 2. Compiler le modèle
 
@@ -39,7 +45,29 @@ Par défaut, cette commande va compiler tous les fichiers `.publicodes` du dossi
 
 > 👉 En savoir plus sur la [compilation des règles](/docs/manuel/compilation)
 
-## 3. Utiliser le modèle dans une application JS
+## 3. Développer le modèle avec la quick-doc
+
+```bash
+npx publicodes dev
+```
+
+Cette commande va lancer un serveur de développement local, qui permet de visualiser les règles compilées, et de calculer leurs valeurs pour différentes situations d'entrée.
+
+<img src={quickdocSrc} alt="Capture d'écran de la quick-doc" />
+
+Pour ajouter une situation, créer une règle publicodes dans le dossier `situations/` en précisant un `contexte` d'évaluation :
+
+```yaml
+salaire élevé:
+    contexte:
+        salaire brut: 70000 €/an
+```
+
+> 👉 En savoir plus sur le [mécanisme `contexte`](/docs/mecanismes#contexte)
+
+Les règles sont recompilées à chaque modification des fichiers `.publicodes`, et les résultats sont actualisés en temps réel, ce qui permet d'itérer rapidement sur le modèle.
+
+## 4. Utiliser le modèle dans une application JS
 
 Pour utiliser le modèle dans une application, il suffit d'importer le fichier `index.js`.
 
@@ -61,28 +89,6 @@ Les types disponibles dans le fichier `index.d.ts` sont :
 - `Situation` : le type de l'objet passé à `engine.setSituation`
 - `RuleValue` : le type de la valeur dans la clé `nodeValue` retourné par [`engine.evaluate`](/docs/api/publicodes/classes/Engine#evaluate)
 - `RuleName` : tous les noms de règles
-
-## 4. Développer le modèle avec la quick-doc
-
-```bash
-npx publicodes dev
-```
-
-Cette commande va lancer un serveur de développement local, qui permet de visualiser les règles compilées, et de calculer leurs valeurs pour différentes situations d'entrée.
-
-<img src={quickdocSrc} alt="Capture d'écran de la quick-doc" />
-
-Pour ajouter une situation, créer une règle publicodes dans le dossier `situations/` en précisant un `contexte` d'évaluation :
-
-```yaml
-salaire élevé:
-    contexte:
-        salaire brut: 70000 €/an
-```
-
-> 👉 En savoir plus sur le [mécanisme `contexte`](/docs/mecanismes#contexte)
-
-Les règles sont recompilées à chaque modification des fichiers `.publicodes`, et les résultats sont actualisés en temps réel, ce qui permet d'itérer rapidement sur le modèle.
 
 <!--
 ## 5. Publier le paquet

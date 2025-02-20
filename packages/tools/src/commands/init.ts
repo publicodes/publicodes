@@ -17,7 +17,7 @@ import {
 import { basePackageJson, PackageJson, readPackageJson } from '../utils/pjson'
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun'
-type ExtraTool = 'test' // | 'gh-actions'
+type ExtraTool = 'test' | 'bench' | 'vscode' // | 'gh-actions'
 
 export default class Init extends Command {
 	static override args = {}
@@ -97,7 +97,10 @@ installation.`,
 			setupTests(pkgJSON, pkgManager)
 		}
 
-		await generateBaseFiles(pkgJSON, pkgManager)
+		if (extraTools.includes('bench')) {
+			setupBench(pkgJSON, pkgManager)
+		}
+		await generateBaseFiles(pkgJSON, pkgManager, extraTools)
 
 		const shouldInstall =
 			flags['no-install'] === undefined && !flags.yes ?
@@ -274,9 +277,15 @@ async function getExtraTools(useDefault: boolean): Promise<ExtraTool[]> {
 			// 		hint: 'automate build, test and publishing',
 			// 	},
 			{ value: 'test', label: 'Unit test', hint: 'Vitest + example' },
+			{ value: 'bench', label: 'Performance test', hint: 'Bench with mitata' },
+			{
+				value: 'vscode',
+				label: 'VSCode settings',
+				hint: 'Optimal set up for vscode',
+			},
 		],
 		required: false,
-		initialValues: ['test'],
+		initialValues: ['test'] as ExtraTool[],
 	}) as Promise<ExtraTool[]>
 }
 
@@ -289,6 +298,18 @@ function setupTests(pkgJSON: PackageJson, pkgManager: PackageManager) {
 		...pkgJSON.scripts,
 		pretest: `${pkgManager} run compile`,
 		test: 'vitest run',
+	}
+	return pkgJSON
+}
+
+function setupBench(pkgJSON: PackageJson, pkgManager: PackageManager) {
+	pkgJSON.devDependencies = {
+		...pkgJSON.devDependencies,
+		mitata: '^0.1.6',
+	}
+	pkgJSON.scripts = {
+		...pkgJSON.scripts,
+		bench: `${pkgManager} compile && node --experimental-strip-types ./bench/index.ts`,
 	}
 	return pkgJSON
 }
@@ -315,6 +336,7 @@ async function installDeps(pkgManager: PackageManager): Promise<void> {
 async function generateBaseFiles(
 	pjson: PackageJson,
 	pkgManager: PackageManager,
+	extraTools: ExtraTool[] = [],
 ): Promise<void> {
 	return runWithSpinner('Generating files', 'Files generated', (spinner) => {
 		try {
@@ -325,6 +347,20 @@ async function generateBaseFiles(
 			// Generate README.md
 			if (!fs.existsSync('README.md')) {
 				fs.writeFileSync('README.md', getReadmeContent(pjson, pkgManager))
+			}
+
+			// Generate prettier config
+			if (!fs.existsSync('.prettierrc.yaml')) {
+				fs.writeFileSync('.prettierrc.yaml', PRETTIER_CONFIG)
+			}
+
+			// Set up .vscode config for language server
+			if (extraTools.includes('vscode')) {
+				if (!fs.existsSync('.vscode')) {
+					fs.mkdirSync('.vscode')
+				}
+				fs.writeFileSync('.vscode/settings.json', VSCODE_SETTINGS)
+				fs.writeFileSync('.vscode/extensions.json', VSCODE_EXTENSIONS)
 			}
 
 			// Generate src directory with a base.publicodes file as an example
@@ -342,7 +378,7 @@ async function generateBaseFiles(
 						`Could not initialize a git repository (make sure ${chalk.bold.italic(
 							'git',
 						)} is installed)
-						
+
 						Error: ${error instanceof Error ? error.message : ''}
 						`,
 					)
@@ -363,10 +399,19 @@ async function generateBaseFiles(
 			}
 			fs.writeFileSync('situations/salaire.publicodes', BASE_PUBLICODES_FILE)
 
-			if (!fs.existsSync('test')) {
-				fs.mkdirSync('test')
+			if (extraTools.includes('test')) {
+				if (!fs.existsSync('test')) {
+					fs.mkdirSync('test')
+				}
+				fs.writeFileSync('test/salaire.test.ts', BASE_TEST_FILE)
 			}
-			fs.writeFileSync('test/salaire.test.ts', BASE_TEST_FILE)
+
+			if (extraTools.includes('bench')) {
+				if (!fs.existsSync('bench')) {
+					fs.mkdirSync('bench')
+				}
+				fs.writeFileSync('bench/index.ts', BASE_BENCH_FILE)
+			}
 		} catch (error) {
 			if (error instanceof Error) {
 				exitWithError({
@@ -438,7 +483,7 @@ salaire net: salaire brut - cotisations salariales
 
 salaire brut:
   titre: Salaire brut mensuel
-  par défaut: 2500 
+  par défaut: 2500
   unité: €/mois
 
 cotisations salariales:
@@ -480,10 +525,10 @@ describe("Salaire net", () => {
 `
 
 const BASE_PUBLICODES_FILE = `
-# Ce fichier contient des exemples de situations pour tester les règles
+# Ce fichier contient des exemples de situations (à l'image d'un jeu de réponse pour votre modèle de calcul). Elles sont utiles pour les tests notamment.
 # Pour le moment, il est uniquement utilisé par la commande "publicodes dev"
 
-salaire SMIC: 
+salaire SMIC:
   contexte:
     salaire brut: SMIC mensuel
 
@@ -492,3 +537,86 @@ salaire médian cadre:
     salaire brut: 2600 €/mois
     cotisations salariales . taux: 25%
 `
+
+const BASE_BENCH_FILE = `
+import { bench, group, run } from 'mitata'
+import Engine from "publicodes";
+import rules from '../${DEFAULT_BUILD_DIR}/test-publicodes-init.model.json' with { type: 'json' }
+
+const options = {
+	logger: { warn: () => {}, error: () => {}, log: () => {} },
+}
+const engine = new Engine(rules, options)
+
+group('Parsing initial des règles', () => {
+	bench('all rules', () => {
+		new Engine(rules, options)
+	})
+})
+
+group('Evaluation', () => {
+	bench('salaire net', () => {
+		engine.setSituation({
+			'salaire brut': 3000,
+		})
+		engine.evaluate('salaire net')
+	})
+})
+
+group('setSituation', () => {
+	bench('situation', () => {
+		engine.setSituation({
+			'salaire brut': '2600 €/mois',
+    		'cotisations salariales . taux': '25%'
+		})
+	})
+})
+
+await run()
+`
+
+const PRETTIER_CONFIG = `
+overrides: [{ 'files': '**/*.publicodes', 'options': { 'parser': 'yaml' } }]
+`
+
+const VSCODE_SETTINGS = `
+{
+  "prettier.documentSelectors": ["**/*.publicodes"],
+  "editor.semanticTokenColorCustomizations": {
+    "rules": {
+      "*.readonly:publicodes": {
+        "italic": true,
+      },
+      "*.definition:publicodes": {
+        "bold": true,
+      },
+      "namespace:publicodes": {
+        "foreground": "#4ec99a"
+      },
+      "type:publicodes": {
+        "foreground": "#4EC9B0",
+        "italic": true,
+      },
+      "operator:publicodes": "#c7c7c7ad",
+      "string:publicodes": {
+        "foreground": "#CE9178",
+      },
+      "string.readonly:publicodes": "#569cd6",
+      "number:publicodes": "#e67f7f",
+      "property:publicodes": "#569CD6",
+      "property.static:publicodes": "#9CDCFE",
+      "method:publicodes": "#569CD6",
+      "macro:publicodes": {
+        "foreground": "#9CDCFE",
+        "italic": true
+      }
+    }
+  },
+}`
+
+const VSCODE_EXTENSIONS = `
+{
+	"recommendations": [
+		"emilerolley.publicodes-language-server"
+	]
+}`
