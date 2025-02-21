@@ -211,6 +211,14 @@ export function parseRules<RuleNames extends string>(
 }
 
 registerEvaluationFunction('rule', function evaluate(node) {
+	if (this.cache._meta.cyclicRuleToSupress === node.dottedName) {
+		return {
+			...node,
+			nodeValue: undefined,
+			missingVariables: {},
+		}
+	}
+
 	const { ruleDisabledByItsParent, nullableParent, parentMissingVariables } =
 		evaluateDisablingParent(this, node)
 
@@ -228,11 +236,7 @@ registerEvaluationFunction('rule', function evaluate(node) {
 		}
 	}
 
-	if (
-		this.cache._meta.evaluationRuleStack.filter(
-			(dottedName) => dottedName === node.dottedName,
-		).length > 1
-	) {
+	if (this.cache._meta.evaluationRuleStack.includes(node.dottedName)) {
 		const cycleIndex = this.cache._meta.evaluationRuleStack.indexOf(
 			node.dottedName,
 		)
@@ -242,11 +246,18 @@ registerEvaluationFunction('rule', function evaluate(node) {
 				.reverse(),
 			node.dottedName,
 		]
+		// We supress the deepest rule in the cycle
+		this.cache._meta.cyclicRuleToSupress = cycle.sort(
+			(a, b) =>
+				b.split(' . ').length - a.split(' . ').length || a.localeCompare(b),
+		)[0]
+
 		const message = `
 Un cycle a été détecté lors de l'évaluation de cette règle:
 ${cycle.join(cycle.length > 5 ? '\n → ' : ' → ')}
 
-Cela vient probablement d'une erreur dans votre modèle.
+Pour calculer ce cycle, le moteur a évalué la règle suivante à "undefined" : 
+${this.cache._meta.cyclicRuleToSupress}
 
 Si le cycle est voulu, vous pouvez indiquer au moteur de résoudre la référence circulaire en trouvant le point fixe de la fonction. Pour cela, ajoutez l'attribut suivant niveau de la règle :
 
@@ -268,13 +279,6 @@ Si le cycle est voulu, vous pouvez indiquer au moteur de résoudre la référenc
 				})
 			}
 			warning(this.context.logger, message, { dottedName: node.dottedName })
-		}
-
-		return {
-			...node,
-			nodeValue: undefined,
-			missingVariables: parentMissingVariables,
-			explanation,
 		}
 	}
 

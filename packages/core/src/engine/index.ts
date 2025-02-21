@@ -42,6 +42,7 @@ type Cache = {
 		evaluationRuleStack: Array<string>
 		parentRuleStack: Array<string>
 		currentContexteSituation?: string
+		cyclicRuleToSupress?: string
 	}
 	/**
 	 * Every time we encounter a reference to a rule in an expression we add it
