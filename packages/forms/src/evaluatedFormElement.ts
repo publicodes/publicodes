@@ -115,12 +115,12 @@ export type EvaluatedFormElement =
 export function getEvaluatedFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
-	options?: FormElementOptions,
+	formOptions?: FormElementOptions,
 ): EvaluatedFormElement {
 	const element = getFormElement(
 		engine,
 		dottedName,
-		options,
+		formOptions,
 	) as EvaluatedFormElement
 
 	element.applicable =

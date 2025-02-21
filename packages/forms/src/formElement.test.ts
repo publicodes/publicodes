@@ -4,12 +4,12 @@ import { FormElement, FormElementOptions, getFormElement } from './formElement'
 
 function inputForRule(
 	rule: Record<string, unknown> | string | number,
-	options?: FormElementOptions,
+	formOptions?: FormElementOptions,
 ) {
 	const engine = new Engine({
 		a: rule,
 	})
-	return getFormElement(engine, 'a', options)
+	return getFormElement(engine, 'a', formOptions)
 }
 
 describe('inputDetails', function () {
