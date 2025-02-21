@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest'
 import {
 	EvaluatedCheckbox,
 	EvaluatedNumberInput,
-	EvaluatedOptionsGroup,
+	EvaluatedRadioGroup,
 	EvaluatedTextarea,
 	getEvaluatedFormElement,
-} from './getEvaluatedFormElement'
+} from './evaluatedFormElement'
 
 describe('evaluateFormElement', () => {
 	it('should evaluate checkbox', () => {
@@ -36,17 +36,13 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'mon choix',
-		) as EvaluatedOptionsGroup & { applicable: true }
+		) as EvaluatedRadioGroup
 		expect(result.applicable).toBe(true)
 		expect(result.value).toBe(undefined)
 		expect(result.defaultValue).toBe(undefined)
 		const options = result.options
 
 		expect(options).toHaveLength(2)
-
-		options.forEach((option) => {
-			expect(option.applicable).toBe(true)
-		})
 	})
 
 	it('should handle default values and situation override', () => {
@@ -63,7 +59,7 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'mon choix',
-		) as EvaluatedOptionsGroup & { applicable: true }
+		) as EvaluatedRadioGroup
 		expect(result.applicable).toBe(true)
 		expect(result.value).toEqual(42)
 		expect(result.defaultValue).toEqual(12)
@@ -88,13 +84,10 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'mon choix',
-		) as EvaluatedOptionsGroup & { applicable: true }
+		) as EvaluatedRadioGroup
 		expect(result.applicable).toBe(true)
 		const options = result.options
-		expect(options).toHaveLength(3)
-		expect(options[0].applicable).toBe(false)
-		expect(options[1].applicable).toBe(true)
-		expect(options[2].applicable).toBe(true)
+		expect(options).toHaveLength(2)
 	})
 
 	it('should evaluate textarea element', () => {
@@ -130,7 +123,7 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'ma valeur',
-		) as EvaluatedNumberInput & { applicable: true }
+		) as EvaluatedNumberInput
 		expect(result.value).toEqual(undefined)
 		expect(result.unit).toEqual('€')
 	})

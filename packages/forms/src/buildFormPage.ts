@@ -2,15 +2,26 @@ import type Engine from 'publicodes'
 import {
 	getEvaluatedFormElement,
 	type EvaluatedFormElement,
-} from './getEvaluatedFormElement'
+} from './evaluatedFormElement'
 import { UNDEFINED_NODE } from './utils'
 import { FormElementOptions } from './formElement'
 
-export type FormElementInPage = EvaluatedFormElement & {
+/**
+ * Properties that control how a form element should be displayed and behave in the UI.
+ *
+ * These properties are computed based on the form's state and progression to create
+ * a dynamic, guided experience through multi-step forms.
+ */
+export type FormPageElementProp = {
+	/** Whether the element should be visually hidden */
 	hidden: boolean
+	/** Whether the element is needed for computing target rules */
 	useful: boolean
+	/** Whether user interaction with the element should be prevented */
 	disabled: boolean
+	/** Whether the element should receive focus when rendered */
 	autofocus: boolean
+	/** Whether the field must be filled before proceeding */
 	required: boolean
 }
 
@@ -51,16 +62,16 @@ export function buildFormPage<Name extends string>(
 	engine: Engine<Name>,
 	targets: Array<Name>,
 	lastAnswered: Name | null,
-	options?: FormElementOptions,
-): Array<FormElementInPage> {
+	formOptions?: FormElementOptions,
+): Array<FormPageElementProp & EvaluatedFormElement> {
 	const lastAnsweredIndex = page.indexOf(lastAnswered as Name)
 
 	const formPage = page.map((dottedName: Name, i) => {
 		const element = getEvaluatedFormElement(
 			engine,
 			dottedName,
-			options,
-		) as FormElementInPage
+			formOptions,
+		) as FormPageElementProp & EvaluatedFormElement
 
 		element.autofocus = false
 		element.useful =

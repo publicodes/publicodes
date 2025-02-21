@@ -1,6 +1,6 @@
-import { expect } from 'chai'
 import { cyclesInDependenciesGraph } from '../src/AST/graph'
 import { parseYaml } from './utils'
+import { describe, expect, it } from 'vitest'
 
 // Cycles due to parents dependencies are not handled currently.
 describe.skip('Cyclic dependencies detectron 3000 ™', function () {
@@ -10,7 +10,7 @@ describe.skip('Cyclic dependencies detectron 3000 ™', function () {
 				formule: a + 1
 		`
 		const cycles = cyclesInDependenciesGraph(rules)
-		expect(cycles).to.deep.equal([['a']])
+		expect(cycles).toEqual([['a']])
 	})
 
 	it('should detect nested and parallel formule cycles', function () {
@@ -25,7 +25,7 @@ describe.skip('Cyclic dependencies detectron 3000 ™', function () {
 				formule: b + 1
 		`
 		const cycles = cyclesInDependenciesGraph(rules)
-		expect(cycles).to.deep.equal([['a', 'b', 'c', 'd']])
+		expect(cycles).toEqual([['a', 'b', 'c', 'd']])
 	})
 
 	it('should not detect formule cycles due to parent dependency', function () {
@@ -36,7 +36,7 @@ describe.skip('Cyclic dependencies detectron 3000 ™', function () {
 				formule: 3
 		`
 		const cycles = cyclesInDependenciesGraph(rules)
-		expect(cycles).to.deep.equal([])
+		expect(cycles).toEqual([])
 	})
 
 	it('should not detect cycles when résoudre référence circulaire', function () {
@@ -48,6 +48,6 @@ describe.skip('Cyclic dependencies detectron 3000 ™', function () {
 				valeur: fx
 		`
 		const cycles = cyclesInDependenciesGraph(rules)
-		expect(cycles).to.deep.equal([])
+		expect(cycles).toEqual([])
 	})
 })

@@ -24,6 +24,13 @@ interface PublicodesErrorTypes {
 	TypeError: {
 		dottedName: string
 	}
+	ParserError: {
+		dottedName: string
+		position: number
+		expression: string
+		expected: string
+		found: string
+	}
 }
 
 /**

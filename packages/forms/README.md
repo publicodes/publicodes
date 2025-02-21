@@ -13,10 +13,15 @@ This library is framework-agnostic and can be used with any state management sys
 const formState = initFormState({ engine }, 'target . rule')
 
 // Get current page UI elements
-const pageElements = currentPage(formState, { engine })
+const pageElements = currentPage({ formState, engine })
 
 // Handle user input
-const newState = handleInputChange(formState, 'rule . name', value, { engine })
+const newState = handleInputChange({
+    formState,
+    engine,
+    id: 'rule . name',
+    value: 'new value',
+})
 
 // Navigate pages
 const nextState = goToNextPage(formState)
