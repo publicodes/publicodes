@@ -1,3 +1,4 @@
+import { normalizeDateString } from './date'
 import { PublicodesError } from './error'
 
 export type BinaryOp =
@@ -60,7 +61,11 @@ function formatParserError({
 	customMessage,
 }: ParserErrorDetails): string {
 	const pointer = ' '.repeat(position) + '^'
-	const defaultMessage = `${expected} est attendu, ${found ? `mais "${found}" a été trouvé` : 'hors l’expression se termine prématurément'}`
+	const defaultMessage = `${expected} est attendu, ${
+		found ?
+			`mais "${found}" a été trouvé`
+		:	'hors l’expression se termine prématurément'
+	}`
 
 	return `L'expression suivante n'est pas valide :
    
@@ -345,7 +350,7 @@ function binaryNode(op: string, left: ExprAST, right: ExprAST): BinaryOp {
 }
 
 function dateNode(value: string): ExprAST {
-	return { constant: { type: 'date', nodeValue: value } }
+	return { constant: { type: 'date', nodeValue: normalizeDateString(value) } }
 }
 
 const space =
