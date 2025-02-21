@@ -2,84 +2,63 @@ import type Engine from 'publicodes'
 import { serializeUnit } from 'publicodes'
 import {
 	getFormElement,
+	getOptionList,
 	InputElement,
-	Option,
 	RadioGroupElement,
 	SelectElement,
 	TextareaElement,
 } from './formElement'
 
-type Evaluated<T> = T & {
+interface Evaluated {
 	applicable: boolean
 	required: boolean
 	answered: boolean
 }
 
-export type EvaluatedOption = Option & {
-	applicable: boolean
+export interface EvaluatedCheckbox extends InputElement<'checkbox'>, Evaluated {
+	checked: boolean | undefined
+	defaultChecked: boolean | undefined
 }
-export type EvaluatedCheckbox = InputElement<'checkbox'> &
-	Evaluated<{
-		checked: boolean | undefined
-		defaultChecked: boolean | undefined
-	}>
 
-export type EvaluatedStringInput = InputElement<'date' | 'month' | 'text'> &
-	Evaluated<{
-		value: string | undefined
-		defaultValue: string | undefined
-	}>
-
-export type EvaluatedNumberInput = InputElement<'number'> &
-	Evaluated<{
-		value: number | undefined
-		unit: string | undefined
-		minValue: number | undefined
-		defaultValue: number | undefined
-	}>
-
-export type EvaluatedOptionsGroup = (
-	| Omit<RadioGroupElement, 'options'>
-	| Omit<SelectElement, 'options'>
-) & {
-	required: boolean
-	answered: boolean
+export interface EvaluatedStringInput
+	extends InputElement<'date' | 'month' | 'text'>,
+		Evaluated {
 	value: string | undefined
-
 	defaultValue: string | undefined
-} & (
-		| {
-				applicable: true
-				options: Array<EvaluatedOption>
-		  }
-		| {
-				applicable: false
-				options: Array<Option>
-		  }
-	)
+}
 
-export type EvaluatedTextarea = TextareaElement &
-	Evaluated<{
-		value: string | undefined
-		defaultValue: string | undefined
-	}>
+export interface EvaluatedNumberInput
+	extends InputElement<'number'>,
+		Evaluated {
+	value: number | undefined
+	unit: string | undefined
+	defaultValue: number | undefined
+}
+
+export interface EvaluatedRadioGroup extends RadioGroupElement, Evaluated {
+	value: string | undefined
+	defaultValue: string | undefined
+}
+
+export interface EvaluatedSelect extends SelectElement, Evaluated {
+	value: string | undefined
+	defaultValue: string | undefined
+}
+
+export interface EvaluatedTextarea extends TextareaElement, Evaluated {
+	value: string | undefined
+	defaultValue: string | undefined
+}
 
 /**
- * Get the form element for a publicodes rule with additional evaluated properties.
- *
- * These properties are computed at runtime based on the current state of the Publicodes engine.
+ * Represents the different types of form elements that can be generated from Publicodes rules.
  *
  * Each evaluated form element includes common properties:
  * - `applicable`: Whether the field should be shown based on applicability rules
  * - `required`: Whether user input is required for this field
  * - `answered`: Whether the field has been answered/filled
- *
- * Can be one of:
- * - `EvaluatedCheckbox`: A checkbox with checked state
- * - `EvaluatedStringInput`: Text/date input with current value
- * - `EvaluatedNumberInput`: Number input with value and unit
- * - `EvaluatedOptionsGroup`: Select/radio with applicable options
- * - `EvaluatedTextarea`: Multiline text with current value
+ * - `value`: The current value of the field (in the situation)
+ * - `defaultValue`: The default value of the field if not answered
  *
  * @example
  * ```ts
@@ -98,15 +77,40 @@ export type EvaluatedTextarea = TextareaElement &
  * }
  * ```
  *
- * @see {@link addEvaluatedProperties} - Function that computes these evaluated properties
+ * @see {@link getEvaluatedFormElement} - Function to retrieve evaluated form elements
+ * @see {@link FormElement} - Type definition for form elements
  */
 export type EvaluatedFormElement =
 	| EvaluatedCheckbox
 	| EvaluatedStringInput
 	| EvaluatedNumberInput
-	| EvaluatedOptionsGroup
+	| EvaluatedRadioGroup
+	| EvaluatedSelect
 	| EvaluatedTextarea
 
+/**
+ * Get the form element for a publicodes rules enriched with runtime information from the engine.
+ *
+ *
+ * The evaluated form element includes additional properties:
+ * - applicable: whether the element should be displayed
+ * - required: whether the element is mandatory
+ * - answered: whether the element has a value in the current situation
+ * - value/checked: the current value of the element
+ * - defaultValue/defaultChecked: the default value of the element
+ * - unit: for number inputs, the unit of measurement
+ * - options: for radio groups and select elements, the list of options with applicability
+ *
+ * see {@link EvaluatedFormElement}
+ *
+ * @param engine - The publicodes engine instance
+ * @param dottedName - The dotted name identifier of the rule to evaluate
+ * @returns The evaluated form element with additional runtime properties
+ *
+ * @throws {Error} Implicitly throws if the engine operations fail
+ *
+ * @template Name - The type of the dotted name string
+ */
 export function getEvaluatedFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
@@ -161,16 +165,10 @@ export function getEvaluatedFormElement<Name extends string>(
 		return element
 	}
 
-	const applicableList = engine
-		.getPossibilitiesFor(dottedName)
-		?.map(
-			(possibility) =>
-				engine.evaluate(possibility.notApplicable).nodeValue !== true,
-		)
-
-	element.options.forEach((option, i) => {
-		option.applicable = applicableList?.[i] ?? true
-	})
+	const possibilities = engine.getPossibilitiesFor(element.id as Name, {
+		filterNotApplicable: true,
+	})!
+	element.options = getOptionList(engine, possibilities)
 
 	return element
 }

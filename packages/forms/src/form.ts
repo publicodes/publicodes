@@ -1,9 +1,11 @@
 import type Engine from 'publicodes'
 
-import { buildFormPage, FormElementInPage } from './buildFormPage'
+import { buildFormPage } from './buildFormPage'
+import type { FormPageElementProp } from './buildFormPage'
 import { computeNextFields } from './computeNextFields'
 import { groupByNamespace } from './groupByNamespace'
 import { updateSituationWithInputValue } from './updateSituationWithFormValue'
+import { EvaluatedFormElement } from '.'
 
 /**
  * @typedef {Object} FormState
@@ -94,7 +96,7 @@ export function currentPage<RuleName extends string>({
 }: {
 	formState: FormState<RuleName>
 	engine: Engine<RuleName>
-}): Array<FormElementInPage> {
+}): Array<EvaluatedFormElement & FormPageElementProp> {
 	const page = formState.pages[formState.currentPageIndex]
 	if (page === undefined) {
 		return []
