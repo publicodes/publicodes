@@ -1,10 +1,10 @@
-import { expect } from 'chai'
+import { describe, it, expect, beforeAll } from 'vitest'
 import Publicodes from '../src/index'
 
-describe('Traversed variables - Basics', function () {
+describe('Traversed variables - Basics', () => {
 	let engine
 
-	before(function () {
+	beforeAll(() => {
 		engine = new Publicodes({
 			a: 1,
 			b: '1 + a',
@@ -19,36 +19,36 @@ describe('Traversed variables - Basics', function () {
 		engine.cache.traversedVariablesStack = []
 	})
 
-	it('should be empty if there are no external references', function () {
-		expect(engine.evaluate('5 + 5').traversedVariables).to.deep.equal([])
+	it('should be empty if there are no external references', () => {
+		expect(engine.evaluate('5 + 5').traversedVariables).toEqual([])
 	})
 
-	it('should countain single rule if it has no dependency', function () {
-		expect(engine.evaluate('a').traversedVariables).to.deep.equal(['a'])
+	it('should countain single rule if it has no dependency', () => {
+		expect(engine.evaluate('a').traversedVariables).toEqual(['a'])
 	})
 
-	it('should not be polluted by previous evaluations', function () {
-		expect(engine.evaluate('a').traversedVariables).to.deep.equal(['a'])
+	it('should not be polluted by previous evaluations', () => {
+		expect(engine.evaluate('a').traversedVariables).toEqual(['a'])
 		engine.evaluate('d')
-		expect(engine.evaluate('d').traversedVariables).to.deep.equal(['d', 'e'])
+		expect(engine.evaluate('d').traversedVariables).toEqual(['d', 'e'])
 	})
 
-	it('should contain simple dependency', function () {
-		expect(engine.evaluate('b').traversedVariables).to.deep.equal(['b', 'a'])
+	it('should contain simple dependency', () => {
+		expect(engine.evaluate('b').traversedVariables).toEqual(['b', 'a'])
 	})
 
-	it('should contain simple dependency without duplication', function () {
-		expect(engine.evaluate('c').traversedVariables).to.deep.equal(['c', 'a'])
+	it('should contain simple dependency without duplication', () => {
+		expect(engine.evaluate('c').traversedVariables).toEqual(['c', 'a'])
 	})
 
-	it('should not be polluted by previous term in an operation', function () {
+	it('should not be polluted by previous term in an operation', () => {
 		engine.evaluate('branches')
-		expect(engine.evaluate('f').traversedVariables).to.deep.equal(['f', 'g'])
+		expect(engine.evaluate('f').traversedVariables).toEqual(['f', 'g'])
 	})
 })
 
-describe('Traversed variables - Inversions', function () {
-	it('should ignore variables traversed only during the inversion search', function () {
+describe('Traversed variables - Inversions', () => {
+	it('should ignore variables traversed only during the inversion search', () => {
 		const engine = new Publicodes({
 			brut: {
 				'inversion numérique': {
@@ -81,8 +81,8 @@ describe('Traversed variables - Inversions', function () {
 
 		engine.setSituation({ net: 1000 })
 		engine.cache.traversedVariablesStack = []
-		expect(engine.evaluate('brut').nodeValue).to.equal(2000)
-		expect(engine.evaluate('brut').traversedVariables).to.deep.equal([
+		expect(engine.evaluate('brut').nodeValue).toEqual(2000)
+		expect(engine.evaluate('brut').traversedVariables).toEqual([
 			'brut',
 			'net',
 			'forfait',

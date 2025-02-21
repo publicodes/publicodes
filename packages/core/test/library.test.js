@@ -1,17 +1,17 @@
-import { expect } from 'chai'
+import { describe, expect, it } from 'vitest'
 import { parse } from 'yaml'
 import Engine from '../src/index'
-
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const co2Yaml = fs.readFileSync(path.resolve(__dirname, './co2.yaml'), 'utf8')
 
-describe('library', function () {
-	it('should let the user define its own rule', function () {
+describe('library', () => {
+	it('should let the user define its own rule', () => {
 		let rules = parse(`
 yo:
   formule: 200
@@ -23,11 +23,11 @@ yi:
 
 		let engine = new Engine(rules)
 
-		expect(engine.evaluate('ya').nodeValue).to.equal(201)
-		expect(engine.evaluate('yi').nodeValue).to.equal(202)
+		expect(engine.evaluate('ya').nodeValue).toBe(201)
+		expect(engine.evaluate('yi').nodeValue).toBe(202)
 	})
 
-	it('should let the user define a simplified revenue tax system', function () {
+	it('should let the user define a simplified revenue tax system', () => {
 		let rules = parse(`
 revenu imposable:
   question: Quel est votre revenu imposable ?
@@ -66,10 +66,10 @@ impôt sur le revenu à payer:
 			'revenu imposable': '48000',
 		})
 		let value = engine.evaluate('impôt sur le revenu à payer')
-		expect(value.nodeValue).to.equal(7253.26)
+		expect(value.nodeValue).toBe(7253.26)
 	})
 
-	it('should let the user define a rule base on a completely different subject', function () {
+	it('should let the user define a rule base on a completely different subject', () => {
 		let engine = new Engine(parse(co2Yaml))
 		engine.setSituation({
 			'douche . nombre': 30,
@@ -77,6 +77,6 @@ impôt sur le revenu à payer:
 			'douche . durée de la douche': 10,
 		})
 		let value = engine.evaluate('douche . impact')
-		expect(value.nodeValue).to.be.within(40, 41)
+		expect(value.nodeValue).toBeCloseTo(40.55, 1)
 	})
 })

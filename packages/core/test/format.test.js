@@ -1,46 +1,42 @@
-import { expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 import { capitalise0, formatValue } from '../src/format'
 import { parseUnit } from '../src/units'
 
-describe('format engine values', function () {
-	it('format currencies', function () {
-		expect(formatValue(12, { displayedUnit: '€' })).to.equal('12 €')
-		expect(formatValue(1200, { displayedUnit: '€' })).to.match(/1[\s]200 €/)
-		expect(formatValue(12, { displayedUnit: '€', language: 'en' })).to.equal(
-			'€12',
-		)
-		expect(formatValue(12.1, { displayedUnit: '€', language: 'en' })).to.equal(
+describe('format engine values', () => {
+	it('format currencies', () => {
+		expect(formatValue(12, { displayedUnit: '€' })).toBe('12 €')
+		expect(formatValue(1200, { displayedUnit: '€' })).toBe('1 200 €')
+		expect(formatValue(12, { displayedUnit: '€', language: 'en' })).toBe('€12')
+		expect(formatValue(12.1, { displayedUnit: '€', language: 'en' })).toBe(
 			'€12.10',
 		)
-		expect(
-			formatValue(12.123, { displayedUnit: '€', language: 'en' }),
-		).to.equal('€12.12')
+		expect(formatValue(12.123, { displayedUnit: '€', language: 'en' })).toBe(
+			'€12.12',
+		)
 	})
 
-	it('format percentages', function () {
-		expect(formatValue(10, { displayedUnit: '%' })).to.equal('10 %')
-		expect(formatValue(100, { displayedUnit: '%' })).to.equal('100 %')
-		expect(formatValue(10.2, { displayedUnit: '%' })).to.equal('10,2 %')
+	it('format percentages', () => {
+		expect(formatValue(10, { displayedUnit: '%' })).toBe('10 %')
+		expect(formatValue(100, { displayedUnit: '%' })).toBe('100 %')
+		expect(formatValue(10.2, { displayedUnit: '%' })).toBe('10,2 %')
 		expect(
 			formatValue({
 				nodeValue: 441,
 				unit: parseUnit('%.kgCO2e'),
 			}),
-		).to.equal('4,41 kgCO2e')
+		).toBe('4,41 kgCO2e')
 	})
 
-	it('format values', function () {
-		expect(formatValue(1200)).to.match(/1[\s]200/)
+	it('format values', () => {
+		expect(formatValue(1200)).toMatch(/1[\s]200/)
 	})
 })
 
-describe('Units handling', function () {
-	it('format displayedUnit', function () {
+describe('Units handling', () => {
+	it('format displayedUnit', () => {
 		const formatUnit = (unit, count) => unit + (count > 1 ? 's' : '')
-		expect(formatValue(1, { displayedUnit: 'jour', formatUnit })).to.equal(
-			'1 jour',
-		)
-		expect(formatValue(2, { displayedUnit: 'jour', formatUnit })).to.equal(
+		expect(formatValue(1, { displayedUnit: 'jour', formatUnit })).toBe('1 jour')
+		expect(formatValue(2, { displayedUnit: 'jour', formatUnit })).toBe(
 			'2 jours',
 		)
 		expect(
@@ -51,12 +47,12 @@ describe('Units handling', function () {
 				},
 				{ formatUnit },
 			),
-		).to.equal('7 jours/semaine')
+		).toBe('7 jours/semaine')
 	})
 })
 
-describe('capitalise0', function () {
-	it('should turn the first character into its capital', function () {
-		expect(capitalise0('salaire')).to.equal('Salaire')
+describe('capitalise0', () => {
+	it('should turn the first character into its capital', () => {
+		expect(capitalise0('salaire')).toBe('Salaire')
 	})
 })
