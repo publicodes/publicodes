@@ -6,6 +6,8 @@ import createViteDevServer, {
 } from '../devServer/createViteDevServer'
 import { PackageJson } from '../utils/pjson'
 import { toArray } from '../utils/toArray'
+import { fileURLToPath } from 'url'
+import path from 'path'
 
 export default class Compile extends Command {
 	static override args = {
@@ -90,20 +92,24 @@ To avoid passing arguments and flags every time, you can set their values in the
 		const filesToCompile =
 			argv.length === 0 ?
 				// TODO: test with production package
-				toArray(pjson?.publicodes?.files ?? 'src/')
+				toArray(pjson?.publicodes?.files ?? 'src')
 			:	(argv as string[])
 
 		const situationFiles: string[] =
 			!flags.situations?.length ?
 				// TODO: test with production package
-				toArray(pjson?.publicodes?.situations ?? 'situations/')
+				toArray(pjson?.publicodes?.situations ?? 'situations')
 			:	flags.situations
 
 		// quickDoc is in the current package (@publicodes/tools) under the folder /quick-doc
 
-		const quickDocPath = (import.meta.url ?? __dirname)
-			.replace('file://', '')
-			.replace('dist/commands/dev.js', 'quick-doc')
+		const quickDocPath = path.join(
+			path.dirname(
+				import.meta.url ? fileURLToPath(import.meta.url) : __filename,
+			),
+			'..',
+			'quick-doc',
+		)
 
 		const server = await createViteDevServer(
 			filesToCompile,
