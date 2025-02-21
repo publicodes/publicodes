@@ -8,7 +8,7 @@ export type Option = {
 	description?: string
 }
 
-type FormMeta = {
+interface FormMeta {
 	label: string
 	description: string | undefined
 	id: string
@@ -24,24 +24,24 @@ type InputType =
 	// | 'tel'
 	| 'text'
 
-export type InputElement<Type extends InputType> = FormMeta & {
+export interface InputElement<Type extends InputType> extends FormMeta {
 	element: 'input'
 	type: Type
 }
 
-export type SelectElement = FormMeta & {
+export interface SelectElement extends FormMeta {
 	element: 'select'
 	options: Array<Option>
 }
 
-export type RadioGroupElement = FormMeta & {
+export interface RadioGroupElement extends FormMeta {
 	element: 'RadioGroup'
 	style: 'button' | 'card' | 'default'
 	orientation: 'horizontal' | 'vertical'
 	options: Array<Option>
 }
 
-export type TextareaElement = FormMeta & {
+export interface TextareaElement extends FormMeta {
 	element: 'textarea'
 }
 
@@ -176,24 +176,10 @@ export function getFormElement<Name extends string>(
 
 	const possibilities = engine.getPossibilitiesFor(rule.dottedName as Name)
 	if (possibilities) {
-		const choices = possibilities.map((choice: Possibility) => {
-			if (choice.type !== 'reference') {
-				return {
-					value: choice.nodeValue,
-					label: formatValue(choice) as string,
-				}
-			}
-
-			const choiceRule = engine.getRule(choice.dottedName as Name)
-			return {
-				value: choice.nodeValue,
-				label: choiceRule.title,
-				description: choiceRule.rawNode.description,
-			}
-		})
+		const options = getOptionList(engine, possibilities)
 
 		if (!saisie) {
-			if (choices.length > 5) {
+			if (options.length > 5) {
 				saisie = 'menu déroulant'
 			} else {
 				saisie = 'boutons radio'
@@ -203,14 +189,14 @@ export function getFormElement<Name extends string>(
 			return {
 				...inputDetails,
 				element: 'select',
-				options: choices,
+				options,
 			}
 		}
 		const style = typeof saisie === 'string' ? saisie : saisie.style
 
 		const orientation =
 			typeof saisie === 'string' ?
-				choices.length > 2 && saisie !== 'cartes' ?
+				options.length > 2 && saisie !== 'cartes' ?
 					'vertical'
 				:	'horizontal'
 			:	saisie.orientation
@@ -223,7 +209,7 @@ export function getFormElement<Name extends string>(
 				: style === 'boutons radio' ? 'button'
 				: 'default',
 			orientation,
-			options: choices,
+			options,
 		}
 	}
 
@@ -240,5 +226,26 @@ export function getFormElement<Name extends string>(
 
 	throw new PublicodesError('InternalError', 'Type de donnée non géré', {
 		dottedName,
+	})
+}
+
+export function getOptionList<Name extends string>(
+	engine: Engine<Name>,
+	possibilities: Possibility[],
+) {
+	return possibilities.map((choice: Possibility) => {
+		if (choice.type !== 'reference') {
+			return {
+				value: choice.nodeValue,
+				label: formatValue(choice) as string,
+			}
+		}
+
+		const choiceRule = engine.getRule(choice.dottedName as Name)
+		return {
+			value: choice.nodeValue,
+			label: choiceRule.title,
+			description: choiceRule.rawNode.description,
+		}
 	})
 }
