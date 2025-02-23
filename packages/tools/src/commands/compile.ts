@@ -76,7 +76,7 @@ the package.json file under the \`publicodes\` key. For example:
 		const filesToCompile =
 			argv.length === 0 ?
 				// TODO: test with production package
-				toArray(pjson?.publicodes?.files ?? 'src/')
+				toArray(pjson?.publicodes?.files ?? 'src')
 			:	(argv as string[])
 
 		const outputDir = path.resolve(
