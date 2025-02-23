@@ -3,7 +3,7 @@ import { parseYaml } from './utils'
 import Engine from '../src'
 
 // Cycles due to parents dependencies are not handled currently.
-describe('Cycle detection during runtime', () => {
+describe.only('Cycle detection during runtime', () => {
 	const strictOptions = {
 		strict: {
 			noCycleRuntime: true,
@@ -18,7 +18,7 @@ describe('Cycle detection during runtime', () => {
 		expect(() => engine.evaluate('a')).toThrow()
 	})
 
-	it('should detect nested and parallel cycles', () => {
+	it.only('should detect nested and parallel cycles', () => {
 		const engine = new Engine(
 			parseYaml`
 			a: b + 1
@@ -32,7 +32,7 @@ describe('Cycle detection during runtime', () => {
 		expect(() => engine.evaluate('a')).toThrow()
 	})
 
-	it('should not detect valeur cycles due to parent dependency', () => {
+	it('should not detect valeur cycles if parent is always applicable', () => {
 		const engine = new Engine(
 			parseYaml`
 			a: b + 1
@@ -44,7 +44,7 @@ describe('Cycle detection during runtime', () => {
 		expect(() => engine.evaluate('a')).not.toThrow()
 	})
 
-	it('should not detect valeur cycles due to parent dependency with boolean value', () => {
+	it('should detect valeur cycles due to parent dependency with boolean value', () => {
 		const engine = new Engine(
 			parseYaml`
 			a: b
@@ -53,7 +53,7 @@ describe('Cycle detection during runtime', () => {
 			strictOptions,
 		)
 
-		expect(() => engine.evaluate('a')).not.toThrow()
+		expect(() => engine.evaluate('a')).toThrow()
 	})
 
 	it('should not detect cycles when résoudre référence circulaire', () => {

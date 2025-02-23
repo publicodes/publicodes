@@ -19,7 +19,7 @@ import { VariationNode } from '../mecanisms/variations'
 import { UnePossibilitéNode } from '../mecanisms/unePossibilité'
 import { ReferenceNode } from '../parseReference'
 import { ReplacementRule } from '../parseReplacement'
-import { Rule, RuleNode } from '../rule'
+import { Rule, RuleNode } from '../parseRule'
 
 export type ConstantNode = {
 	nodeKind: 'constant'

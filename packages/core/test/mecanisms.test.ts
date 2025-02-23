@@ -8,7 +8,7 @@
 import { describe, expect, it } from 'vitest'
 import { parse } from 'yaml'
 import Engine from '../src/index'
-import { Rule } from '../src/rule'
+import { Rule } from '../src/parseRule'
 import { parseUnit } from '../src/units'
 import testSuites from './mécanismes/index'
 

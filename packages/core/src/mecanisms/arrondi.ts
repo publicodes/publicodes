@@ -39,7 +39,7 @@ const evaluate: EvaluationFunction<'arrondi'> = function (node) {
 				`L'unité ${serializeUnit(
 					(arrondi as EvaluatedNode).unit,
 				)} de l'arrondi est inconnu. Vous devez utiliser l'unité “décimales”`,
-				{ dottedName: this.cache._meta.evaluationRuleStack[0] },
+				{ dottedName: this.cache._meta.evaluationRuleStack[0]?.dottedName },
 			)
 		}
 	}

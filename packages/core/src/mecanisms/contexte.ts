@@ -3,6 +3,7 @@ import { ASTNode } from '../AST/types'
 import { registerEvaluationFunction } from '../evaluationFunctions'
 import { notApplicableNode } from '../evaluationUtils'
 import parse from '../parse'
+import { Context } from '../parsePublicodes'
 import { ReferenceNode } from '../parseReference'
 import { serializeUnit } from '../units'
 
@@ -15,7 +16,7 @@ export type ContextNode = {
 	nodeKind: 'contexte'
 }
 
-export default function parseMecanismContexte(v, context) {
+export default function parseMecanismContexte(v, context: Context) {
 	const node = parse(v.valeur, context)
 
 	const contexte = (

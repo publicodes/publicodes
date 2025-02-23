@@ -290,8 +290,7 @@ describe('nextSteps', () => {
 		}
 		const result = new Engine(rawRules).evaluate('top . sum').missingVariables
 
-		expect(Object.keys(result)).toHaveLength(1)
-		expect(Object.keys(result)[0]).toBe('top . sum . evt')
+		expect(Object.keys(result)).toEqual(['top . sum . evt'])
 	})
 
 	it('should generate questions', () => {
@@ -307,8 +306,7 @@ describe('nextSteps', () => {
 		}
 
 		const result = new Engine(rawRules).evaluate('top . sum').missingVariables
-		expect(Object.keys(result)).toHaveLength(1)
-		expect(Object.keys(result)[0]).toBe('top . sum . evt')
+		expect(Object.keys(result)).toEqual(['top . sum . evt'])
 	})
 
 	it('should generate questions with more intricate situation', () => {

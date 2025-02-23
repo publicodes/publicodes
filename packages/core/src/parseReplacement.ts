@@ -5,7 +5,7 @@ import { PublicodesInternalError } from './error'
 import { defaultNode, notApplicableNode } from './evaluationUtils'
 import parse from './parse'
 import { Context, ReferencesMaps, RulesReplacements } from './parsePublicodes'
-import { Rule, RuleNode } from './rule'
+import { Rule, RuleNode } from './parseRule'
 import { updateReferencesMapsFromReferenceNode } from './ruleUtils'
 import { mergeWithArray } from './utils'
 

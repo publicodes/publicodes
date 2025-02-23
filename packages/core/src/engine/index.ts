@@ -16,7 +16,7 @@ import parsePublicodes, {
 	copyContext,
 	createContext,
 } from '../parsePublicodes'
-import { type RuleNode } from '../rule'
+import { type RuleNode } from '../parseRule'
 import * as utils from '../ruleUtils'
 import {
 	computeTraversedVariableAfterEval,
@@ -30,19 +30,25 @@ import { isAValidOption } from './isAValidOption'
 const emptyCache = (): Cache => ({
 	_meta: {
 		evaluationRuleStack: [],
-		parentRuleStack: [],
+		cyclicComponent: new Map(),
+		evaluationSet: new Set(),
 	},
 	traversedVariablesStack: undefined,
 	nodes: new Map(),
+	applicabilityCache: new Map(),
 })
 
 type Cache = {
 	inversionFail?: boolean
 	_meta: {
-		evaluationRuleStack: Array<string>
-		parentRuleStack: Array<string>
+		evaluationRuleStack: Array<{
+			dottedName: string
+			type: 'value' | 'applicability' | 'hasDisablingParent'
+		}>
+		evaluationSet: Set<string>
+
 		currentContexteSituation?: string
-		cyclicRuleToSupress?: string
+		cyclicComponent: Map<string, EvaluatedNode>
 	}
 	/**
 	 * Every time we encounter a reference to a rule in an expression we add it
@@ -57,6 +63,7 @@ type Cache = {
 	 */
 	traversedVariablesStack?: Array<Set<string>>
 	nodes: Map<PublicodesExpression | ASTNode, EvaluatedNode>
+	applicabilityCache: Map<string, RuleNode>
 }
 
 export type StrictOptions = {
@@ -488,6 +495,7 @@ export class Engine<RuleNames extends string = string> {
 		newEngine.baseContext = copyContext(this.baseContext)
 		newEngine.context = copyContext(this.context)
 		newEngine.publicParsedRules = this.publicParsedRules
+
 		newEngine.publicSituation = weakCopyObj(this.publicSituation)
 		newEngine.cache = {
 			...emptyCache(),

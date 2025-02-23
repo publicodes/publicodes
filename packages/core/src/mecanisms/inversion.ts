@@ -37,26 +37,22 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	node,
 ) {
 	const inversionEngine = this.shallowCopy()
-	if (
-		this.cache._meta.evaluationRuleStack
-			.slice(1)
-			.includes(node.explanation.ruleToInverse)
-	) {
-		return {
-			...undefinedNumberNode,
-			...node,
-		}
-	}
-	inversionEngine.cache._meta.parentRuleStack = [
-		...this.cache._meta.parentRuleStack,
-	]
+
 	inversionEngine.cache._meta.evaluationRuleStack = [
-		...this.cache._meta.evaluationRuleStack,
+		...inversionEngine.cache._meta.evaluationRuleStack,
 	]
+	inversionEngine.cache._meta.evaluationSet = new Set(
+		inversionEngine.cache._meta.evaluationSet,
+	)
+	// inversionEngine.cache._meta.cyclicRulesToSupress = [
+	// 	...this.cache._meta.cyclicRulesToSupress,
+	// ]
 	const inversionGoal = node.explanation.inversionCandidates.find(
 		(candidate) => {
 			if (
-				this.cache._meta.evaluationRuleStack.includes(candidate.dottedName!)
+				inversionEngine.cache._meta.evaluationSet.has(
+					candidate.dottedName + 'value',
+				)
 			) {
 				return false
 			}

@@ -19,7 +19,10 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 		if (
 			this.cache._meta.evaluationRuleStack
 				.slice(1)
-				.includes(node.explanation.ruleToSolve)
+				.some(
+					({ dottedName, type }) =>
+						node.explanation.ruleToSolve === dottedName && type === 'value',
+				)
 		) {
 			return {
 				...undefinedNumberNode,
@@ -29,12 +32,13 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 
 		let numberOfIterations = 0
 		const calculationEngine = this.shallowCopy()
-		calculationEngine.cache._meta.parentRuleStack = [
-			...this.cache._meta.parentRuleStack,
-		]
+
 		calculationEngine.cache._meta.evaluationRuleStack = [
 			...this.cache._meta.evaluationRuleStack,
 		]
+		// calculationEngine.cache._meta.cyclicRulesToSupress = [
+		// 	...this.cache._meta.cyclicRulesToSupress,
+		// ]
 		const maxIterations = this.context.inversionMaxIterations ?? 25
 
 		const evaluateWithValue = (n: number) => {

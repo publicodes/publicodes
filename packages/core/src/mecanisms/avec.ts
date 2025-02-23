@@ -1,6 +1,6 @@
 import parse from '../parse'
 import { Context } from '../parsePublicodes'
-import { parseRules } from '../rule'
+import { parseRules } from '../parseRule'
 
 export default function parseAvec(v, context: Context) {
 	parseRules(v.avec, context)
