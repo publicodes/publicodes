@@ -204,6 +204,9 @@ const traverseRuleNode: TraverseFunction<'rule'> = (fn, node) => {
 	for (const key in node.suggestions) {
 		copy.suggestions[key] = fn(node.suggestions[key])
 	}
+	if (copy.possibilities) {
+		copy.possibilities = fn(copy.possibilities) as any
+	}
 	copy.replacements = node.replacements.map(fn) as Array<ReplacementRule>
 	copy.explanation = {
 		ruleDisabledByItsParent: node.explanation.ruleDisabledByItsParent,
@@ -213,9 +216,6 @@ const traverseRuleNode: TraverseFunction<'rule'> = (fn, node) => {
 			:	undefined,
 		parents: node.explanation.parents.map(fn),
 		valeur: fn(node.explanation.valeur),
-	}
-	if (copy.possibilities) {
-		copy.possibilities = fn(copy.possibilities) as any
 	}
 	return copy
 }

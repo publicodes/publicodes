@@ -27,11 +27,14 @@ describe('evaluateFormElement', () => {
 	})
 
 	it('should evaluate radio group', () => {
-		const engine = new Engine({
-			'mon choix': {
-				'une possibilité': ["'opt1'", "'opt2'"],
+		const engine = new Engine(
+			{
+				'mon choix': {
+					'une possibilité': ["'opt1'", "'opt2'"],
+				},
 			},
-		})
+			{ flag: { filterNotApplicablePossibilities: true } },
+		)
 
 		const result = getEvaluatedFormElement(
 			engine,
@@ -46,12 +49,19 @@ describe('evaluateFormElement', () => {
 	})
 
 	it('should handle default values and situation override', () => {
-		const engine = new Engine({
-			'mon choix': {
-				'par défaut': 12,
-				'une possibilité': [12, 42],
+		const engine = new Engine(
+			{
+				'mon choix': {
+					'par défaut': 12,
+					'une possibilité': [12, 42],
+				},
 			},
-		})
+			{
+				flag: {
+					filterNotApplicablePossibilities: true,
+				},
+			},
+		)
 		engine.setSituation({
 			'mon choix': 42,
 		})
@@ -66,20 +76,23 @@ describe('evaluateFormElement', () => {
 	})
 
 	it('should handle non applicable options', () => {
-		const engine = new Engine({
-			'mon choix': {
-				valeur: "'opt2'",
-				'une possibilité': [
-					{
-						opt1: {
-							'applicable si': 'non',
+		const engine = new Engine(
+			{
+				'mon choix': {
+					valeur: "'opt2'",
+					'une possibilité': [
+						{
+							opt1: {
+								'applicable si': 'non',
+							},
 						},
-					},
-					{ opt2: {} },
-					{ opt3: {} },
-				],
+						{ opt2: {} },
+						{ opt3: {} },
+					],
+				},
 			},
-		})
+			{ flag: { filterNotApplicablePossibilities: true } },
+		)
 
 		const result = getEvaluatedFormElement(
 			engine,

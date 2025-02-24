@@ -320,13 +320,20 @@ choix:
 			})
 
 			it('filterNotApplicable removes non applicable possibilities', () => {
-				const engine = engineFromYaml(`
+				const engine = engineFromYaml(
+					`
 choix:
   une possibilité:
     - option1:
         non applicable si: oui
     - option2:
-    - option3:`)
+    - option3:`,
+					{
+						flag: {
+							filterNotApplicablePossibilities: true,
+						},
+					},
+				)
 				const possibilities = engine.getPossibilitiesFor('choix', {
 					filterNotApplicable: true,
 				})
@@ -335,11 +342,19 @@ choix:
 			})
 
 			it('filterNotApplicable keeps all possibilities when no conditions', () => {
-				const engine = engineFromYaml(`
+				const engine = engineFromYaml(
+					`
 choix:
   une possibilité:
     - option1:
-    - option2:`)
+    - option2:`,
+					{
+						flag: {
+							filterNotApplicablePossibilities: true,
+						},
+					},
+				)
+
 				const possibilities = engine.getPossibilitiesFor('choix', {
 					filterNotApplicable: true,
 				})

@@ -117,6 +117,18 @@ En utilisant des références à une règle plutôt que des constantes, vous pou
 
 ### Condition
 
+<Callout type="warning" title="Fonctionalité expérimentale">
+
+Pour des raisons de rétro-compatibilitié, la fonctionnalité suivante doit être activée explicitement avec un paramètre `flag` ([voir la doc](/docs/api/publicodes/type-aliases/EngineOptions)).
+
+```typescript
+const engine = new Engine(rules, {
+    flag: { filterNotApplicablePossibilities: true }
+});
+```
+
+</Callout>
+
 Il est possible de définir des conditions d'applicabilité pour chaque possibilité. Cela permet de restreindre les possibilités en fonction de la situation.
 
 ```publicodes title="Possibilité non applicable" selectedRuleInDoc="contrat"

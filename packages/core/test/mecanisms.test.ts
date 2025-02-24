@@ -15,7 +15,11 @@ import testSuites from './mécanismes/index'
 testSuites.forEach(([suiteName, suite]) => {
 	// if (suiteName !== 'durée') return
 	describe(`Mécanisme ${suiteName}`, () => {
-		const engine = new Engine(parse(suite))
+		const engine = new Engine(parse(suite), {
+			flag: {
+				filterNotApplicablePossibilities: true,
+			},
+		})
 		Object.entries(engine.getParsedRules())
 			.filter(([, rule]) => !!rule.rawNode.exemples)
 			.forEach(([name, test]) => {
