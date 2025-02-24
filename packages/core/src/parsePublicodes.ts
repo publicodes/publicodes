@@ -6,7 +6,7 @@ import Engine, {
 	StrictOptions,
 } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
-import { FlagOptions } from './engine/types'
+import { FlagOptions, WarnOptions } from './engine/types'
 import { PublicodesError } from './error'
 import inferNodeType, { NodesTypes } from './inferNodeType'
 import { ReplacementRule, inlineReplacements } from './parseReplacement'
@@ -33,8 +33,9 @@ export type Context<RuleNames extends string = string> = {
 	 *  */
 	subEngineIncrementingNumber?: number
 
-	strict: StrictOptions
-	flag: FlagOptions
+	strict: Required<StrictOptions>
+	flag: Required<FlagOptions>
+	warn: Required<WarnOptions>
 
 	// The subEngines attribute is used to get an outside reference to the
 	// `contexte` intermediate calculations. The `contexte` mechanism uses
@@ -47,9 +48,17 @@ export type Context<RuleNames extends string = string> = {
 	// https://github.com/publicodes/publicodes/discussions/92
 	subEngines: Map<SituationHash, Engine<RuleNames>>
 	subEngineId: SituationHash | undefined
-
+	evaluatedRule: RuleNames | undefined
 	getUnitKey: getUnitKey
 }
+
+type PartialContext<RuleNames extends string> = Partial<
+	Omit<Context<RuleNames>, 'strict' | 'flag' | 'warn'> & {
+		strict: StrictOptions
+		flag: FlagOptions
+		warn: WarnOptions
+	}
+>
 
 type SituationHash = number
 
@@ -65,9 +74,10 @@ export type ReferencesMaps<Names extends string> = {
 export type RawRule = Omit<Rule, 'nom'> | PublicodesExpression
 
 export function createContext<RuleNames extends string>(
-	partialContext: Partial<Context<RuleNames>>,
+	partialContext: PartialContext<RuleNames>,
 ): Context<RuleNames> {
 	return {
+		evaluatedRule: undefined,
 		dottedName: '',
 		logger: console,
 		getUnitKey: (x) => x,
@@ -77,6 +87,7 @@ export function createContext<RuleNames extends string>(
 		rulesReplacements: {},
 		subEngines: new Map(),
 		subEngineId: undefined,
+		...partialContext,
 		flag: {
 			filterNotApplicablePossibilities: false,
 			...partialContext.flag,
@@ -88,7 +99,13 @@ export function createContext<RuleNames extends string>(
 			checkPossibleValues: false,
 			...partialContext.strict,
 		},
-		...partialContext,
+		warn: {
+			cyclicReferences: true,
+			experimentalRules: true,
+			unitConversion: true,
+			deprecatedSyntax: true,
+			...partialContext.warn,
+		},
 	}
 }
 
@@ -119,7 +136,7 @@ export default function parsePublicodes<
 	NewRulesNames extends string,
 >(
 	rawRules: RawPublicodes<NewRulesNames>,
-	partialContext: Partial<Context<ContextNames>> = createContext({}),
+	partialContext: PartialContext<ContextNames> = createContext({}),
 ): Pick<
 	Context<ContextNames | NewRulesNames>,
 	'parsedRules' | 'nodesTypes' | 'referencesMaps' | 'rulesReplacements'

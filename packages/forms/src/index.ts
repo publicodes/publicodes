@@ -1,13 +1,13 @@
-import { Rule } from 'publicodes'
+import type { Rule } from 'publicodes'
 
-export { getEvaluatedFormElement } from './evaluatedFormElement'
 export type * from './evaluatedFormElement'
+export { getEvaluatedFormElement } from './evaluatedFormElement'
 
-export { getFormElement } from './formElement'
 export type * from './formElement'
+export { getFormElement } from './formElement'
 
-export { buildFormPage } from './buildFormPage'
 export type * from './buildFormPage'
+export { buildFormPage } from './buildFormPage'
 
 export * from './form'
 export type { FormState } from './form'

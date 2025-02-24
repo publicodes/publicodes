@@ -77,11 +77,11 @@ export function evaluatePlafondUntilActiveTranche(
 					throw e
 				}
 				warning(
-					this.context.logger,
+					this.context,
 					`L'unité du plafond de la tranche n°${
 						i + 1
 					}  n'est pas compatible avec celle l'assiette`,
-					{ dottedName: this.cache._meta.evaluationRuleStack[0] },
+					'unitConversion',
 					e,
 				)
 			}
