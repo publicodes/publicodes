@@ -1,7 +1,7 @@
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
 import { Engine, type EngineOptions, type StrictOptions } from './engine'
 import parsePublicodes, { RawRule } from './parsePublicodes'
-import { type Rule, type RuleNode } from './rule'
+import { type Rule, type RuleNode } from './parseRule'
 
 import * as utils from './ruleUtils'
 

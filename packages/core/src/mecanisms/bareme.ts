@@ -78,7 +78,7 @@ const evaluate: EvaluationFunction<'barème'> = function (node) {
 		throw new PublicodesError(
 			'EvaluationError',
 			`Le multiplicateur ne peut pas être nul`,
-			{ dottedName: this.cache._meta.evaluationRuleStack[0] },
+			{ dottedName: this.cache._meta.evaluationRuleStack[0]?.dottedName },
 		)
 	}
 

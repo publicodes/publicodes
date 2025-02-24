@@ -1,6 +1,6 @@
 import { bench, group, run } from 'mitata'
 import modeleSocial from 'modele-social'
-import modeleNGC from '@incubateur-ademe/nosgestesclimat/public/co2-model.FR-lang.fr.json' assert { type: 'json' }
+// import modeleNGC from '@incubateur-ademe/nosgestesclimat/public/co2-model.FR-lang.fr.json' assert { type: 'json' }
 import EngineLocal from '../src/index'
 import EngineOld from 'publicodes-old'
 import pjson from '../package.json'
@@ -11,23 +11,23 @@ const options = {
 	logger: { warn: () => {}, error: () => {}, log: () => {} },
 }
 
-group('Parsing initial des règles (Modele-social)', () => {
-	bench(oldVersion, () => {
-		new EngineOld(modeleSocial, options)
-	})
-	bench('(local)', () => {
-		new EngineLocal(modeleSocial, options)
-	})
-})
+// group('Parsing initial des règles (Modele-social)', () => {
+// 	bench(oldVersion, () => {
+// 		new EngineOld(modeleSocial, options)
+// 	})
+// 	bench('(local)', () => {
+// 		new EngineLocal(modeleSocial, options)
+// 	})
+// })
 
-group('Parsing initial des règles (NGC)', () => {
-	bench(oldVersion, () => {
-		new EngineOld(modeleNGC as any, options)
-	})
-	bench('(local)', () => {
-		new EngineLocal(modeleNGC as any, options)
-	})
-})
+// group('Parsing initial des règles (NGC)', () => {
+// 	bench(oldVersion, () => {
+// 		new EngineOld(modeleNGC as any, options)
+// 	})
+// 	bench('(local)', () => {
+// 		new EngineLocal(modeleNGC as any, options)
+// 	})
+// })
 
 const local = new EngineLocal(modeleSocial, options)
 const old = new EngineOld(modeleSocial, options)

@@ -2,7 +2,7 @@ import { ASTNode, PublicodesError, Unit } from '.'
 import { parseEstNonApplicable } from './mecanisms/est-non-applicable'
 import parse from './parse'
 import { Context } from './parsePublicodes'
-import { Rule } from './rule'
+import { Rule } from './parseRule'
 import { weakCopyObj } from './utils'
 
 /**

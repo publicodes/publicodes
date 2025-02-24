@@ -29,7 +29,7 @@ const evaluate: EvaluationFunction<'logarithme'> = function (node) {
 			'EvaluationError',
 			`Impossible de calculer le logarithme de ${value.nodeValue}`,
 			{
-				dottedName: this.cache._meta.evaluationRuleStack[0],
+				dottedName: this.cache._meta.evaluationRuleStack[0]?.dottedName,
 			},
 		)
 	}

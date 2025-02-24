@@ -1,9 +1,8 @@
 import { EvaluationFunction } from '..'
 import { ASTNode } from '../AST/types'
+import { evaluateRuleApplicability } from '../evaluateRule'
 import { registerEvaluationFunction } from '../evaluationFunctions'
-import { mergeMissing } from '../evaluationUtils'
 import parse from '../parse'
-import { evaluateDisablingParent } from '../rule'
 
 export type EstNonApplicableNode = {
 	explanation: ASTNode
@@ -50,39 +49,7 @@ const evaluateIsNotApplicable: EvaluationFunction<'est non applicable'> =
 
 		switch (valeur.nodeKind) {
 			case 'rule': {
-				const { ruleDisabledByItsParent, parentMissingVariables } =
-					evaluateDisablingParent(this, valeur)
-
-				if (ruleDisabledByItsParent) {
-					return {
-						...node,
-						nodeValue: true,
-						missingVariables: parentMissingVariables,
-					}
-				}
-				const isNotApplicableEvaluation = this.evaluateNode(
-					isNotApplicable(valeur.explanation.valeur),
-				)
-				const missingVariables = mergeMissing(
-					parentMissingVariables,
-					isNotApplicableEvaluation.missingVariables,
-				)
-				// If the rule can be disabled thought the situation, it should be listed inside the missing variables
-				if (
-					isNotApplicableEvaluation.nodeValue === false &&
-					this.context.nodesTypes.get(
-						this.context.parsedRules[`${valeur.dottedName} . $SITUATION`],
-					)?.isNullable &&
-					!Object.keys(isNotApplicableEvaluation.missingVariables).length
-				) {
-					missingVariables[valeur.dottedName] = 1
-				}
-
-				return {
-					...node,
-					nodeValue: isNotApplicableEvaluation.nodeValue,
-					missingVariables,
-				}
+				return evaluateRuleApplicability(this, valeur)
 			}
 			case 'reference':
 				return {

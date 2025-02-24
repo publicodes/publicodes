@@ -23,7 +23,7 @@ const evaluate: EvaluationFunction<'condition'> = function (node) {
 		throw new PublicodesError(
 			'EvaluationError',
 			'La condition doit être de type booléen',
-			{ dottedName: this.cache._meta.evaluationRuleStack[0] },
+			{ dottedName: this.cache._meta.evaluationRuleStack[0]?.dottedName },
 		)
 	}
 	if (condition.nodeValue === true) {
@@ -46,7 +46,7 @@ const evaluate: EvaluationFunction<'condition'> = function (node) {
 		throw new PublicodesError(
 			'EvaluationError',
 			'La condition doit être de type booléen',
-			{ dottedName: this.cache._meta.evaluationRuleStack[0] },
+			{ dottedName: this.cache._meta.evaluationRuleStack[0]?.dottedName },
 		)
 	}
 	const unit = evaluation.unit ?? (alors as any).unit

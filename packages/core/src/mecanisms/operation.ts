@@ -74,7 +74,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 
 	if (node.operationKind === '/' && node2.nodeValue === 0) {
 		throw new PublicodesError('EvaluationError', `Division by zero`, {
-			dottedName: this.cache._meta.evaluationRuleStack[0],
+			dottedName: this.cache._meta.evaluationRuleStack[0]?.dottedName,
 		})
 	}
 
@@ -133,7 +133,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 				)}) n'est pas compatible avec la partie droite (unité: ${serializeUnit(
 					node2.unit,
 				)})`,
-				{ dottedName: this.cache._meta.evaluationRuleStack[0] },
+				{ dottedName: this.cache._meta.evaluationRuleStack[0]?.dottedName },
 				e,
 			)
 		}

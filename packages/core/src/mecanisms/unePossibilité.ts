@@ -5,7 +5,7 @@ import { registerEvaluationFunction } from '../evaluationFunctions'
 import { mergeAllMissing } from '../evaluationUtils'
 import { parsePossibilité, Possibility } from '../parsePossibilité'
 import { Context } from '../parsePublicodes'
-import { Rule } from '../rule'
+import { Rule } from '../parseRule'
 import { convertUnit } from '../units'
 import { weakCopyObj } from '../utils'
 
