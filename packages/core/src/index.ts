@@ -6,6 +6,7 @@ import {
 	type EngineOptions,
 	type StrictOptions,
 	type FlagOptions,
+	type WarnOptions,
 } from './engine/types'
 import * as utils from './ruleUtils'
 
@@ -47,6 +48,7 @@ export {
 	type RuleNode,
 	type StrictOptions,
 	type FlagOptions,
+	type WarnOptions,
 }
 
 export type { Possibility } from './parsePossibilité'

@@ -65,11 +65,13 @@ export class Engine<RuleNames extends string = string> {
 		options: EngineOptions = {},
 	) {
 		const strict = options.strict
+		const warn = options.warn
 		const initialContext = {
 			dottedName: '' as never,
 			...options,
-			flag: options.flag ?? {
-				filterNotApplicablePossibilities: false,
+			flag: {
+				filterNotApplicablePossibilities:
+					options.flag?.filterNotApplicablePossibilities ?? false,
 			},
 			strict:
 				typeof strict === 'boolean' ?
@@ -80,6 +82,15 @@ export class Engine<RuleNames extends string = string> {
 						noCycleRuntime: strict,
 					}
 				: typeof strict === 'object' ? strict
+				: {},
+			warn:
+				typeof warn === 'boolean' ?
+					{
+						cyclicReferences: warn,
+						experimentalRules: warn,
+						unitConversion: warn,
+					}
+				: typeof warn === 'object' ? warn
 				: {},
 		}
 
@@ -192,14 +203,16 @@ export class Engine<RuleNames extends string = string> {
 			this.publicSituation,
 			Object.fromEntries(situationRules),
 		)
-		Object.keys(this.publicSituation).forEach((nom) => {
-			if (utils.isExperimental(this.context.parsedRules, nom)) {
-				experimentalRuleWarning(this.baseContext.logger, nom)
-			}
-			this.checkExperimentalRule(
-				this.context.parsedRules[`${nom} . $SITUATION`],
-			)
-		})
+		if (this.context.warn.experimentalRules) {
+			Object.keys(this.publicSituation).forEach((nom) => {
+				if (utils.isExperimental(this.context.parsedRules, nom)) {
+					experimentalRuleWarning(this.baseContext, nom)
+				}
+				this.checkExperimentalRule(
+					this.context.parsedRules[`${nom} . $SITUATION`],
+				)
+			})
+		}
 
 		return this
 	}
@@ -426,10 +439,7 @@ export class Engine<RuleNames extends string = string> {
 			node.nodeKind === 'reference' &&
 			utils.isExperimental(this.context.parsedRules, node.dottedName as string)
 		) {
-			experimentalRuleWarning(
-				this.baseContext.logger,
-				node.dottedName as string,
-			)
+			experimentalRuleWarning(this.baseContext, node.dottedName as string)
 		}
 		return 'continue'
 	})

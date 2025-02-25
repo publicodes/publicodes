@@ -211,6 +211,12 @@ export function parseRules<RuleNames extends string>(
 }
 
 registerEvaluationFunction('rule', function evaluate(node) {
+	if (
+		!node.dottedName.endsWith('$SITUATION') &&
+		!node.dottedName.includes('$INTERNAL')
+	) {
+		this.context.evaluatedRule = node.dottedName
+	}
 	const { ruleDisabledByItsParent, nullableParent, parentMissingVariables } =
 		evaluateDisablingParent(this, node)
 
@@ -267,7 +273,7 @@ Si le cycle est voulu, vous pouvez indiquer au moteur de résoudre la référenc
 					dottedName: node.dottedName,
 				})
 			}
-			warning(this.context.logger, message, { dottedName: node.dottedName })
+			warning(this.context, message, 'cyclicReferences')
 		}
 
 		return {
@@ -323,6 +329,7 @@ Si le cycle est voulu, vous pouvez indiquer au moteur de résoudre la référenc
 		),
 		parentMissingVariables,
 	)
+
 	return {
 		...valeurEvaluation,
 		...(unit ? { unit } : {}),

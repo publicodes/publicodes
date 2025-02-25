@@ -64,6 +64,29 @@ export type FlagOptions = {
 	filterNotApplicablePossibilities?: boolean
 }
 
+export type WarnOptions = {
+	/**
+	 * Enable warnings for experimental rules
+	 * @default true
+	 */
+	experimentalRules?: boolean
+	/**
+	 * Enable warnings for unit conversion issues
+	 * @default true
+	 */
+	unitConversion?: boolean
+	/**
+	 * Enable warnings for cyclic references in rules
+	 * @default true
+	 */
+	cyclicReferences?: boolean
+	/**
+	 * Enable warnings for deprecated syntax
+	 * @default true
+	 */
+	deprecatedSyntax?: boolean
+}
+
 /**
  * Options for the engine constructor
  */
@@ -98,4 +121,9 @@ export type EngineOptions = {
 	 * flag to enable new experimental features
 	 */
 	flag?: FlagOptions
+
+	/**
+	 * Specify which warnings should be enabled
+	 */
+	warn?: boolean | WarnOptions
 }

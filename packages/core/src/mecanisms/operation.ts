@@ -125,7 +125,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 				throw e
 			}
 			warning(
-				this.context.logger,
+				this.context,
 				`Dans l'expression '${
 					node.operationKind
 				}', la partie gauche (unité: ${serializeUnit(
@@ -133,7 +133,7 @@ const evaluate: EvaluationFunction<'operation'> = function (node) {
 				)}) n'est pas compatible avec la partie droite (unité: ${serializeUnit(
 					node2.unit,
 				)})`,
-				{ dottedName: this.cache._meta.evaluationRuleStack[0] },
+				'unitConversion',
 				e,
 			)
 		}

@@ -1,4 +1,5 @@
-import { Logger } from '.'
+import { WarnOptions } from '.'
+import { Context } from './parsePublicodes'
 
 /**
  * Each error name with corresponding type in info value
@@ -140,18 +141,32 @@ export class UnreachableCaseError extends PublicodesInternalError {
 }
 
 export function warning(
-	logger: Logger,
+	context: Context,
 	message: string,
-	information: { dottedName: string },
+	type: keyof WarnOptions,
 	originalError?: Error,
 ) {
-	logger.warn(
-		buildMessage('Avertissement', message, information, originalError),
+	if (!context.warn[type]) {
+		return
+	}
+
+	context.logger.warn(
+		buildMessage(
+			'Avertissement',
+			message,
+			{
+				dottedName: context.evaluatedRule ?? context.dottedName,
+			},
+			originalError,
+		),
 	)
 }
 
-export function experimentalRuleWarning(logger: Logger, dottedName: string) {
-	logger.warn(
+export function experimentalRuleWarning(context: Context, dottedName: string) {
+	if (!context.warn.experimentalRules) {
+		return
+	}
+	context.logger.warn(
 		buildMessage(
 			'Avertissement',
 			"Cette règle est tagguée comme experimentale. \n\nCela veut dire qu'elle peut être modifiée, renommée, ou supprimée sans qu'il n'y ait de changement de version majeure dans l'API.\n",
