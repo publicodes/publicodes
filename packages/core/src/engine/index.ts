@@ -1,5 +1,4 @@
 import {
-	Logger,
 	ParsedRules,
 	Possibility,
 	PublicodesError,
@@ -23,9 +22,9 @@ import {
 	computeTraversedVariableBeforeEval,
 	isTraversedVariablesBoundary,
 } from '../traversedVariables'
-import { getUnitKey } from '../units'
 import { weakCopyObj } from '../utils'
 import { isAValidOption } from './isAValidOption'
+import { Cache, EngineOptions } from './types'
 
 const emptyCache = (): Cache => ({
 	_meta: {
@@ -35,92 +34,6 @@ const emptyCache = (): Cache => ({
 	traversedVariablesStack: undefined,
 	nodes: new Map(),
 })
-
-type Cache = {
-	inversionFail?: boolean
-	_meta: {
-		evaluationRuleStack: Array<string>
-		parentRuleStack: Array<string>
-		currentContexteSituation?: string
-	}
-	/**
-	 * Every time we encounter a reference to a rule in an expression we add it
-	 * to the current Set of traversed variables. Because we evaluate the
-	 * expression graph “top to bottom” (ie. we start by the high-level goal and
-	 * recursively evaluate its dependencies), we need to handle rule
-	 * “boundaries”, so that when we “enter” in the evaluation of a dependency,
-	 * we start with a clear empty set of traversed variables. Then, when we go
-	 * back to the referencer rule, we need to add all to merge the two sets :
-	 * rules already traversed in the current expression and the one from the
-	 * reference.
-	 */
-	traversedVariablesStack?: Array<Set<string>>
-	nodes: Map<PublicodesExpression | ASTNode, EvaluatedNode>
-}
-
-export type StrictOptions = {
-	/**
-	 * If set to true, the engine will throw when the
-	 * situation contains invalid values
-	 * (rules that don't exists, or values with syntax errors).
-	 *
-	 * If set to false, it will log the error and filter the invalid values from the situation
-	 * @default true
-	 */
-	situation?: boolean
-
-	/**
-	 * If set to true, the engine will throw when parsing a rule whose parent doesn't exist
-	 * This can be set to false to parse partial rule sets (e.g. optimized ones).
-	 * @default true
-	 */
-	noOrphanRule?: boolean
-
-	/**
-	 * If set to true, the engine will throw when a cycle is detected at runtime
-	 * @default false
-	 */
-	noCycleRuntime?: boolean
-
-	/**
-	 * If set to true, the engine will throw when a rule with 'une possibilité'
-	 * is evaluated to a value that is not in the list.
-	 * @default false
-	 */
-	checkPossibleValues?: boolean
-}
-
-/**
- * Options for the engine constructor
- */
-export type EngineOptions = {
-	/**
-	 * Don't throw an error if the parent of a rule is not found.
-	 * This is useful to parse partial rule sets (e.g. optimized ones).
-	 * @deprecated Use the `strict: { parentRule: false }` option instead
-	 */
-	allowOrphanRules?: boolean
-	/**
-	 * Whether the engine should trigger an error when it detects an anomaly,
-	 * or whether it should simply record it and continue.
-	 *
-	 * This option can be set globally (true or false) or for specific rules ({@link StrictOptions}).
-	 *  */
-	strict?: boolean | StrictOptions
-
-	/**
-	 * The logger used to log errors and warnings (default to console).
-	 * @type {Logger}
-	 */
-	logger?: Logger
-
-	/**
-	 * getUnitKey is a function that allows to normalize the unit in the engine.
-	 * @experimental
-	 */
-	getUnitKey?: getUnitKey
-}
-
 /**
  * The engine is used to parse rules and evaluate expressions.
  * It is the main entry point to the publicodes library.
@@ -155,6 +68,9 @@ export class Engine<RuleNames extends string = string> {
 		const initialContext = {
 			dottedName: '' as never,
 			...options,
+			flag: options.flag ?? {
+				filterNotApplicablePossibilities: false,
+			},
 			strict:
 				typeof strict === 'boolean' ?
 					{
@@ -373,6 +289,16 @@ export class Engine<RuleNames extends string = string> {
 			filterNotApplicable?: boolean
 		} = {},
 	): Array<Possibility> | null {
+		if (
+			!this.context.flag?.filterNotApplicablePossibilities &&
+			filterNotApplicable
+		) {
+			throw new PublicodesError(
+				'EngineError',
+				'You must enable `flag.filterNotApplicablePossibilities` in engine instantiation to use the filterNotApplicable option',
+				{},
+			)
+		}
 		const rule = this.getRule(dottedName)
 		if (!rule.possibilities) {
 			return null

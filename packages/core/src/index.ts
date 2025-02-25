@@ -1,8 +1,12 @@
 import { type ASTNode, type EvaluatedNode, type NodeKind } from './AST/types'
-import { Engine, type EngineOptions, type StrictOptions } from './engine'
+import { Engine } from './engine'
 import parsePublicodes, { RawRule } from './parsePublicodes'
 import { type Rule, type RuleNode } from './rule'
-
+import {
+	type EngineOptions,
+	type StrictOptions,
+	type FlagOptions,
+} from './engine/types'
 import * as utils from './ruleUtils'
 
 export {
@@ -42,6 +46,7 @@ export {
 	type Rule,
 	type RuleNode,
 	type StrictOptions,
+	type FlagOptions,
 }
 
 export type { Possibility } from './parsePossibilité'

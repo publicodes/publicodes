@@ -1,9 +1,12 @@
 import { ASTNode, PublicodesError, Unit } from '.'
 import { parseEstNonApplicable } from './mecanisms/est-non-applicable'
+// import { defaultNode } from './evaluationUtils'
+// import { parseEstNonApplicable } from './mecanisms/est-non-applicable'
 import parse from './parse'
 import { Context } from './parsePublicodes'
 import { Rule } from './rule'
 import { weakCopyObj } from './utils'
+// import { weakCopyObj } from './utils'
 
 /**
  * Represents a single possibility value in a "une possibilité" mechanism. It can be a constant value (string or number), or a reference to an existing rule.
@@ -83,7 +86,10 @@ Les choix possibles doivent être des constantes ou des références.`,
 		return {
 			...node,
 			type: 'reference',
-			notApplicable: parseEstNonApplicable(weakCopyObj(node), context),
+			notApplicable:
+				context.flag?.filterNotApplicablePossibilities ?
+					parseEstNonApplicable(weakCopyObj(node), context)
+				:	falseNode,
 			nodeValue: node.name,
 			publicodesValue: `'${node.name}'`,
 		} as Possibility & ASTNode<'reference'>

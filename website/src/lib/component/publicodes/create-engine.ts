@@ -36,6 +36,9 @@ export function createEngine(yamlRules: string): EngineAndErrors {
 					warning.push(message);
 				},
 				log: () => {}
+			},
+			flag: {
+				filterNotApplicablePossibilities: true
 			}
 		});
 		for (const rule of Object.keys(engine.getParsedRules())) {

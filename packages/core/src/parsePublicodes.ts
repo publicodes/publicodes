@@ -6,6 +6,7 @@ import Engine, {
 	StrictOptions,
 } from '.'
 import { makeASTTransformer, traverseParsedRules } from './AST'
+import { FlagOptions } from './engine/types'
 import { PublicodesError } from './error'
 import inferNodeType, { NodesTypes } from './inferNodeType'
 import { ReplacementRule, inlineReplacements } from './parseReplacement'
@@ -24,6 +25,7 @@ export type Context<RuleNames extends string = string> = {
 	referencesMaps: ReferencesMaps<RuleNames>
 	rulesReplacements: RulesReplacements<RuleNames>
 	logger: Logger
+
 	inversionMaxIterations?: number
 
 	/**
@@ -32,6 +34,7 @@ export type Context<RuleNames extends string = string> = {
 	subEngineIncrementingNumber?: number
 
 	strict: StrictOptions
+	flag: FlagOptions
 
 	// The subEngines attribute is used to get an outside reference to the
 	// `contexte` intermediate calculations. The `contexte` mechanism uses
@@ -74,6 +77,10 @@ export function createContext<RuleNames extends string>(
 		rulesReplacements: {},
 		subEngines: new Map(),
 		subEngineId: undefined,
+		flag: {
+			filterNotApplicablePossibilities: false,
+			...partialContext.flag,
+		},
 		strict: {
 			situation: true,
 			noOrphanRule: true,
