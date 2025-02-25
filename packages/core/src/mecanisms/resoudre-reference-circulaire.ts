@@ -29,6 +29,7 @@ export const evaluateRésoudreRéférenceCirculaire: EvaluationFunction<'résoud
 
 		let numberOfIterations = 0
 		const calculationEngine = this.shallowCopy()
+		calculationEngine.context.warn.experimentalRules = false
 		calculationEngine.cache._meta.parentRuleStack = [
 			...this.cache._meta.parentRuleStack,
 		]

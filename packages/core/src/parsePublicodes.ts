@@ -117,6 +117,9 @@ export function copyContext<C extends Context>(context: C): C {
 			rulesThatUse: new Map(context.referencesMaps.rulesThatUse),
 		},
 		subEngines: new Map(),
+		warn: weakCopyObj(context.warn),
+		strict: weakCopyObj(context.strict),
+		flag: weakCopyObj(context.flag),
 	})
 }
 /**

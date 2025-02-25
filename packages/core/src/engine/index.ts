@@ -206,7 +206,7 @@ export class Engine<RuleNames extends string = string> {
 		if (this.context.warn.experimentalRules) {
 			Object.keys(this.publicSituation).forEach((nom) => {
 				if (utils.isExperimental(this.context.parsedRules, nom)) {
-					experimentalRuleWarning(this.baseContext, nom)
+					experimentalRuleWarning(this.context, nom)
 				}
 				this.checkExperimentalRule(
 					this.context.parsedRules[`${nom} . $SITUATION`],
