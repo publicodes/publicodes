@@ -85,11 +85,11 @@ const evaluate: EvaluationFunction<'variations'> = function (node) {
 							throw e
 						}
 						warning(
-							this.context.logger,
+							this.context,
 							`L'unité de la branche n° ${
 								i + 1
 							} du mécanisme 'variations' n'est pas compatible avec celle d'une branche précédente`,
-							{ dottedName: this.cache._meta.evaluationRuleStack[0] },
+							'unitConversion',
 							e,
 						)
 					}

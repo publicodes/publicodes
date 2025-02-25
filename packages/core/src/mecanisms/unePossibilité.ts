@@ -65,19 +65,19 @@ export function parseUnePossibilité(
 	if (rawRule.valeur && rawRule.valeur['une possibilité']) {
 		possibilités = rawRule.valeur['une possibilité']
 		warning(
-			context.logger,
+			context,
 			`La clé 'une possibilité' à l'intérieur de la clé 'valeur' est dépréciée, veuillez la déplacer
 au niveau supérieur.`,
-			{ dottedName: context.dottedName },
+			'deprecatedSyntax',
 		)
 		delete rawRule.valeur['une possibilité']
 	}
 	if (rawRule.formule?.['une possibilité']) {
 		possibilités = rawRule.formule['une possibilité']
 		warning(
-			context.logger,
+			context,
 			`La clé 'une possibilité' à l'intérieur de la clé 'formule' est dépréciée, veuillez la déplacer au niveau supérieur.`,
-			{ dottedName: context.dottedName },
+			'deprecatedSyntax',
 		)
 		delete rawRule.formule['une possibilité']
 	}
@@ -101,7 +101,7 @@ au niveau supérieur.`,
 		// TODO V2: Remove this block
 		if (possibilités['choix obligatoire']) {
 			warning(
-				context.logger,
+				context,
 				`Les clés 'choix obligatoire' et 'possibilités' à l'intérieur de 'une possibilité' sont dépréciées. 
 
 Déplacez les possibilités directement à la racine de 'une possibilité' .${
@@ -112,18 +112,17 @@ Déplacez les possibilités directement à la racine de 'une possibilité' .${
 `
 					:	''
 				}`,
-
-				{ dottedName: context.dottedName },
+				'deprecatedSyntax',
 			)
 			choixObligatoire = possibilités['choix obligatoire'] as 'oui' | 'non'
 		} else {
 			warning(
-				context.logger,
+				context,
 				`La clé 'possibilités' à l'intérieur de 'une possibilité' est dépréciée. 
 
 Déplacez les possibilités directement à la racine de 'une possibilité'
 `,
-				{ dottedName: context.dottedName },
+				'deprecatedSyntax',
 			)
 		}
 		possibilités = possibilités['possibilités']

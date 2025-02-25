@@ -359,8 +359,14 @@ async function generateBaseFiles(
 				if (!fs.existsSync('.vscode')) {
 					fs.mkdirSync('.vscode')
 				}
-				fs.writeFileSync('.vscode/settings.json', VSCODE_SETTINGS)
-				fs.writeFileSync('.vscode/extensions.json', VSCODE_EXTENSIONS)
+				const settingsPath = path.join('.vscode', 'settings.json')
+				if (!fs.existsSync(settingsPath)) {
+					fs.writeFileSync(settingsPath, VSCODE_SETTINGS)
+				}
+				const extensionsPath = path.join('.vscode', 'extensions.json')
+				if (!fs.existsSync(extensionsPath)) {
+					fs.writeFileSync(extensionsPath, VSCODE_EXTENSIONS)
+				}
 			}
 
 			// Generate src directory with a base.publicodes file as an example
@@ -397,20 +403,24 @@ async function generateBaseFiles(
 			if (!fs.existsSync('situations')) {
 				fs.mkdirSync('situations')
 			}
-			fs.writeFileSync('situations/salaire.publicodes', BASE_PUBLICODES_FILE)
+
+			const situationsPath = path.join('situations', 'salaire.publicodes')
+			fs.writeFileSync(situationsPath, BASE_PUBLICODES_FILE)
 
 			if (extraTools.includes('test')) {
 				if (!fs.existsSync('test')) {
 					fs.mkdirSync('test')
 				}
-				fs.writeFileSync('test/salaire.test.ts', BASE_TEST_FILE)
+				const testPath = path.join('test', 'salaire.test.ts')
+				fs.writeFileSync(testPath, BASE_TEST_FILE)
 			}
 
 			if (extraTools.includes('bench')) {
 				if (!fs.existsSync('bench')) {
 					fs.mkdirSync('bench')
 				}
-				fs.writeFileSync('bench/index.ts', BASE_BENCH_FILE)
+				const benchPath = path.join('bench', 'index.ts')
+				fs.writeFileSync(benchPath, BASE_BENCH_FILE)
 			}
 		} catch (error) {
 			if (error instanceof Error) {

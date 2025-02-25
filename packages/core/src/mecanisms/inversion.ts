@@ -37,6 +37,8 @@ export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	node,
 ) {
 	const inversionEngine = this.shallowCopy()
+	inversionEngine.context.warn.experimentalRules = false
+
 	if (
 		this.cache._meta.evaluationRuleStack
 			.slice(1)

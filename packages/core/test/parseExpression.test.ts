@@ -59,7 +59,7 @@ describe('parseExpression', () => {
 			expect(parseExpression('12/2024')).toMatchInlineSnapshot(`
       {
         "constant": {
-          "nodeValue": "12/2024",
+          "nodeValue": "01/12/2024",
           "type": "date",
         },
       }
@@ -399,6 +399,45 @@ describe('parseExpression', () => {
           "nodeValue": "hello' = 'hola",
           "type": "string",
         },
+      }
+    `)
+		})
+
+		it('should parse date comparison', () => {
+			expect(parseExpression('12/2024 > 12/2023')).toMatchInlineSnapshot(`
+      {
+        ">": [
+          {
+            "constant": {
+              "nodeValue": "01/12/2024",
+              "type": "date",
+            },
+          },
+          {
+            "constant": {
+              "nodeValue": "01/12/2023",
+              "type": "date",
+            },
+          },
+        ],
+      }
+    `)
+		})
+
+		it('should parse date comparison with a variable', () => {
+			expect(parseExpression('date >= 01/12/2023')).toMatchInlineSnapshot(`
+      {
+        ">=": [
+          {
+            "variable": "date",
+          },
+          {
+            "constant": {
+              "nodeValue": "01/12/2023",
+              "type": "date",
+            },
+          },
+        ],
       }
     `)
 		})

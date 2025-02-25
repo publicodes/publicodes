@@ -70,6 +70,7 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 		engine = this.context.subEngines.get(node.explanation.subEngineId)
 	} else {
 		engine = this.shallowCopy()
+		engine.context.warn.experimentalRules = false
 		engine.context.subEngineId = node.explanation.subEngineId
 		this.context.subEngines.set(node.explanation.subEngineId, engine)
 
