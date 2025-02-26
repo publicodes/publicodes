@@ -92,6 +92,14 @@ function initFoldingCtx(
 			})
 		}
 
+		if (ruleNode.possibilities) {
+			ruleNode.possibilities?.explanation.map((possibility) => {
+				if (possibility.dottedName) {
+					unfoldableRules.add(possibility.dottedName)
+				}
+			})
+		}
+
 		if (ruleNode.explanation.valeur.nodeKind === 'contexte') {
 			engine.cache.traversedVariablesStack = []
 			const evaluation = engine.evaluate(ruleName)
