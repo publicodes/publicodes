@@ -13,6 +13,7 @@ import { weakCopyObj } from './utils'
  */
 export type Possibility = {
 	type: 'number' | 'string' | 'reference'
+
 	/**
 	 * If the possibility is a reference, this contains a node that evaluates the applicability conditions of the referenced rule.
 	 * Otherwise, it contains a constant node evaluating to false (as constant possibility are always applicable, for now)
@@ -35,15 +36,22 @@ export type Possibility = {
 	 * The value of the possibility, as it appears in the evaluated node.
 	 */
 	nodeValue: string | number
+
 	/**
 	 * The unit of the possibility value, if it is a number
 	 * @see {@link serializeUnit}
 	 */
 	unit?: Unit
+
 	/**
 	 * The dotted name of the referenced rule, if the possibility is a reference.
 	 */
 	dottedName?: string
+
+	/**
+	 * The title of the referenced rule, if the possibility is a reference.
+	 */
+	title?: string
 }
 
 export function parsePossibilité(
