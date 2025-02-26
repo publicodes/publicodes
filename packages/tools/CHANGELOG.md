@@ -1,5 +1,16 @@
 # @publicodes/tools
 
+## 1.5.4
+
+### Patch Changes
+
+- [#635](https://github.com/publicodes/publicodes/pull/635) [`b424ed9`](https://github.com/publicodes/publicodes/commit/b424ed9fb9133933ddf278db4bce1d4c35edfac3) Thanks [@johangirod](https://github.com/johangirod)! - Fix CLI on windows
+
+    Was not working because of incorrect path resolution
+
+- Updated dependencies [[`56e0eea`](https://github.com/publicodes/publicodes/commit/56e0eea731961f8b8c7c1ceb207b89f24188147d), [`3eb89ef`](https://github.com/publicodes/publicodes/commit/3eb89efb2e84e4923aa6cbe61571eece246fbcd9), [`27ad272`](https://github.com/publicodes/publicodes/commit/27ad272639f0d16a2075df8a257852464f896f4f), [`5e17dea`](https://github.com/publicodes/publicodes/commit/5e17deaaf0e0013528226932a7df88c9a26425de)]:
+    - publicodes@1.8.0
+
 ## 1.5.3
 
 ### Patch Changes
