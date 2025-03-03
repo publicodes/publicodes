@@ -1,5 +1,22 @@
 # @publicodes/tools
 
+## 1.5.4
+
+### Patch Changes
+
+- [`366e235`](https://github.com/publicodes/publicodes/commit/366e23545055d66048c09cf703f3f5e305eff54d) - Fix CLI on windows
+
+    Was not working because of incorrect path resolution
+
+- [`322e71c`](https://github.com/publicodes/publicodes/commit/322e71ccc876de629917a6e53f1dc28b5238bed0) Thanks [@Clemog](https://github.com/Clemog)! - improve tools/init and fix optim
+
+    - Add an option to have `prettier` configuration in the generated project
+    - Add VSCode configuration for Publicodes syntax highlighting & LSP integration
+    - Fix `optim` command not working with new `une possibilité` mecanism
+
+- Updated dependencies [[`366e235`](https://github.com/publicodes/publicodes/commit/366e23545055d66048c09cf703f3f5e305eff54d), [`366e235`](https://github.com/publicodes/publicodes/commit/366e23545055d66048c09cf703f3f5e305eff54d), [`366e235`](https://github.com/publicodes/publicodes/commit/366e23545055d66048c09cf703f3f5e305eff54d), [`366e235`](https://github.com/publicodes/publicodes/commit/366e23545055d66048c09cf703f3f5e305eff54d)]:
+    - publicodes@1.8.0
+
 ## 1.5.3
 
 ### Patch Changes

@@ -1,5 +1,54 @@
 # publicodes
 
+## 1.8.0
+
+### Minor Changes
+
+- [`366e235`](https://github.com/publicodes/publicodes/commit/366e23545055d66048c09cf703f3f5e305eff54d) - Add a `warn` option to define which warnings should be displayed
+
+    **Example:**
+
+    ```ts
+    const rules = new Engine(rules, {
+        warn: {
+            experimentalRules: false,
+        },
+    })
+    ```
+
+    See [the documentation](https://publi.codes/docs/api/publicodes/type-aliases/engineoptions) for more information.
+
+### Patch Changes
+
+- [`366e235`](https://github.com/publicodes/publicodes/commit/366e23545055d66048c09cf703f3f5e305eff54d) - Add missing `title` property in the Possibility type
+
+- [`366e235`](https://github.com/publicodes/publicodes/commit/366e23545055d66048c09cf703f3f5e305eff54d) - ⚡ Performance improvements for parsing rules
+
+    Rework parser implementation from Nearley to a hand-written recursive descent parser.
+
+    - 3.5x faster parsing of modele-social rules / 5x faster parsing of nosgestesclimat rules
+    - Zero dependencies for publicodes
+    - Improved error messages for parsing errors
+    - Added tests for the new parser
+
+    Thanks @bjlaa, @Clemog, @EmileRolley, @JalilArfaoui, @johangirod!
+
+- [`366e235`](https://github.com/publicodes/publicodes/commit/366e23545055d66048c09cf703f3f5e305eff54d) - Fix breaking due to applicability evaluation of possibilites
+
+    In the new `une possibilité` mecanism, the engine evaluates the applicability of each possibility, in order to automatically select if there is only one possibility that is applicable.
+
+    This leads to difficult to debug issues rooted in cyclic evaluations not beeing handled well in the current version of the engine.
+
+    This patch fixes this issue by adding a `flag` option to filter out possibilities that are not applicable. This flag is set to `false` by default.
+
+    ```ts
+    const engine = new Engine(rules, {
+        flag: { filterNotApplicablePossibilities: true },
+    })
+    ```
+
+    This is temporary, and will be removed in the future when the engine will be able to handle cyclic evaluations.
+
 ## 1.7.2
 
 ### Patch Changes

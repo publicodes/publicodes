@@ -1,5 +1,20 @@
 # @publicodes/forms
 
+## 0.3.0
+
+### Minor Changes
+
+- [`366e235`](https://github.com/publicodes/publicodes/commit/366e23545055d66048c09cf703f3f5e305eff54d) - Change typescript exports to prevent performance issues
+
+- [`366e235`](https://github.com/publicodes/publicodes/commit/366e23545055d66048c09cf703f3f5e305eff54d) - Change form state manipulation function signature
+
+    Instead of mixing named parameters and classic parameters, we now use a single object parameter. This makes the function easier to use and understand.
+
+    ```diff
+    - function currentPage(formState, { engine }) {
+    + function currentPage({ formState, engine }) {
+    ```
+
 ## 0.2.0
 
 ### Minor Changes
