@@ -4,6 +4,7 @@ import {
 	type EvaluatedFormElement,
 } from './evaluatedFormElement'
 import { UNDEFINED_NODE } from './utils'
+import { FormElementOptions } from './formElement'
 
 /**
  * Properties that control how a form element should be displayed and behave in the UI.
@@ -61,6 +62,7 @@ export function buildFormPage<Name extends string>(
 	engine: Engine<Name>,
 	targets: Array<Name>,
 	lastAnswered: Name | null,
+	formOptions?: FormElementOptions,
 ): Array<FormPageElementProp & EvaluatedFormElement> {
 	const lastAnsweredIndex = page.indexOf(lastAnswered as Name)
 
@@ -68,6 +70,7 @@ export function buildFormPage<Name extends string>(
 		const element = getEvaluatedFormElement(
 			engine,
 			dottedName,
+			formOptions,
 		) as FormPageElementProp & EvaluatedFormElement
 
 		element.autofocus = false
