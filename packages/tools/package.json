@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/tools",
-	"version": "1.5.4",
+	"version": "1.5.3",
 	"description": "A CLI tool for Publicodes",
 	"type": "module",
 	"main": "dist/index.js",
@@ -69,7 +69,7 @@
 		"chokidar": "^4.0.3",
 		"glob": "^10.4.1",
 		"path": "^0.12.7",
-		"publicodes": "^1.8.0",
+		"publicodes": "^1.7.0",
 		"react": "^18.0.0",
 		"react-dom": "^18.0.0",
 		"react-router-dom": "^7.1.3",
