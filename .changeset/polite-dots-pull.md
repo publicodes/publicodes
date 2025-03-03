@@ -8,5 +8,5 @@ Instead of mixing named parameters and classic parameters, we now use a single o
 
 ```diff
 - function currentPage(formState, { engine }) {
-+ function setFormValue({ formState, engine }) {
++ function currentPage({ formState, engine }) {
 ```
