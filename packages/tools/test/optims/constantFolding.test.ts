@@ -1141,4 +1141,41 @@ describe('Constant folding [base]', () => {
 			},
 		})
 	})
+
+	it('should keep rules from [une possibilité] within [avec]', () => {
+		const rawRules = {
+			a: {
+				avec: { b: null, c: null },
+				'une possibilité': ['b', 'c'],
+				'par défaut': "'b'",
+			},
+		}
+		expect(constantFoldingWith(rawRules)).toEqual({
+			a: {
+				'une possibilité': ['b', 'c'],
+				'par défaut': "'b'",
+			},
+			'a . b': null,
+			'a . c': null,
+		})
+	})
+
+	it('should keep rules from [une possibilité] or empty', () => {
+		const rawRules = {
+			a: {
+				'une possibilité': ['b', 'c'],
+				'par défaut': "'b'",
+			},
+			b: {},
+			c: {},
+		}
+		expect(constantFoldingWith(rawRules)).toEqual({
+			a: {
+				'une possibilité': ['b', 'c'],
+				'par défaut': "'b'",
+			},
+			b: null,
+			c: null,
+		})
+	})
 })
