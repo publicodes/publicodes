@@ -1,5 +1,11 @@
 # @publicodes/forms
 
+## 0.3.1
+
+### Patch Changes
+
+- [#643](https://github.com/publicodes/publicodes/pull/643) [`a8cdf32`](https://github.com/publicodes/publicodes/commit/a8cdf327be12fabd85abc36db2a8955cc3c60a30) Thanks [@johangirod](https://github.com/johangirod)! - Fix `getEvaluatedFormElement` for boolean rules with questions
+
 ## 0.3.0
 
 ### Minor Changes
