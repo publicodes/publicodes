@@ -1,9 +1,9 @@
 import Engine from 'publicodes'
 import { describe, expect, it } from 'vitest'
+import { EvaluatedRadioGroup } from '.'
 import {
 	EvaluatedCheckbox,
 	EvaluatedNumberInput,
-	EvaluatedRadioGroup,
 	EvaluatedTextarea,
 	getEvaluatedFormElement,
 } from './evaluatedFormElement'
@@ -46,6 +46,25 @@ describe('evaluateFormElement', () => {
 		const options = result.options
 
 		expect(options).toHaveLength(2)
+	})
+
+	it('should evaluate yes/no', () => {
+		const engine = new Engine(
+			{
+				'question yes no': {
+					question: 'BLA ?',
+				},
+			},
+			{ flag: { filterNotApplicablePossibilities: true } },
+		)
+
+		const result = getEvaluatedFormElement(
+			engine,
+			'question yes no',
+		) as EvaluatedRadioGroup
+
+		expect(result.applicable).toBe(true)
+		expect(result.options).toHaveLength(2)
 	})
 
 	it('should handle default values and situation override', () => {

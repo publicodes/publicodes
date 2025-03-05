@@ -167,8 +167,10 @@ export function getEvaluatedFormElement<Name extends string>(
 
 	const possibilities = engine.getPossibilitiesFor(element.id as Name, {
 		filterNotApplicable: true,
-	})!
-	element.options = getOptionList(engine, possibilities)
+	})
+	if (possibilities) {
+		element.options = getOptionList(engine, possibilities)
+	}
 
 	return element
 }
