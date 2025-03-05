@@ -14,11 +14,17 @@
 </script>
 
 <div
-	class="relative flex flex-1 flex-col rounded-sm bg-white outline outline-1
-    outline-primary-300 hover:outline-primary-400"
+	class="relative flex flex-1 flex-col overflow-hidden rounded-sm bg-white outline
+    outline-1 outline-primary-300 hover:outline-primary-400"
 	{role}
 >
-	<img src={img} alt="" class="flex-2 rounded-t object-cover" />
+	<div class="relative pt-[52.63%]">
+		<img
+			src={img}
+			alt=""
+			class="absolute inset-0 h-full w-full object-contain"
+		/>
+	</div>
 	<div class="flex flex-1 flex-col gap-2 border-t border-primary-300 p-5">
 		<a
 			target="_blank"
