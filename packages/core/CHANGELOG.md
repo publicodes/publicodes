@@ -1,5 +1,11 @@
 # publicodes
 
+## 1.8.1
+
+### Patch Changes
+
+- [#646](https://github.com/publicodes/publicodes/pull/646) [`366b86b`](https://github.com/publicodes/publicodes/commit/366b86b46d6b7c9a523d24aa43e9df1180ab02f9) Thanks [@johangirod](https://github.com/johangirod)! - Improve type signature
+
 ## 1.8.0
 
 ### Minor Changes
