@@ -231,7 +231,7 @@ export class Engine<RuleNames extends string = string> {
 	 *
 	 * @throws PublicodesError if the rule does not exist or is private
 	 */
-	getRule(dottedName: RuleNames): RuleNode {
+	getRule(dottedName: RuleNames): RuleNode<RuleNames> {
 		if (!(dottedName in this.baseContext.parsedRules)) {
 			throw new PublicodesError(
 				'UnknownRule',
@@ -248,7 +248,7 @@ export class Engine<RuleNames extends string = string> {
 			)
 		}
 
-		return this.publicParsedRules[dottedName]
+		return this.publicParsedRules[dottedName] as RuleNode<RuleNames>
 	}
 
 	/**
