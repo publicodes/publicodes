@@ -174,7 +174,7 @@ export function getFormElement<Name extends string>(
 		}
 	}
 
-	const possibilities = engine.getPossibilitiesFor(rule.dottedName as Name)
+	const possibilities = engine.getPossibilitiesFor(rule.dottedName)
 	if (possibilities) {
 		const options = getOptionList(engine, possibilities)
 

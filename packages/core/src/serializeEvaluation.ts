@@ -1,4 +1,3 @@
-import { PublicodesExpression } from './'
 import { EvaluatedNode } from './index'
 import { serializeUnit } from './units'
 
@@ -8,7 +7,7 @@ import { serializeUnit } from './units'
  */
 export default function serializeEvaluation(
 	node: EvaluatedNode,
-): PublicodesExpression | undefined {
+): string | undefined {
 	if (typeof node.nodeValue === 'number') {
 		const serializedUnit = serializeUnit(node.unit)
 		return (
