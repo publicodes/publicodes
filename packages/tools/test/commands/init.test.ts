@@ -17,9 +17,10 @@ describe('publicodes init', () => {
 				fs.readFileSync('package.json', 'utf-8'),
 			) as PackageJson
 
-			const { stdout } = await cli.execCommand('init -y')
+			const { stdout } = await cli.execCommand(
+				'init -y --no-install --template=demo',
+			)
 
-			expect(stdout).toContain('Dependencies installed')
 			expect(stdout).toContain('Files generated')
 			expect(stdout).toContain('New to Publicodes?')
 
@@ -32,8 +33,6 @@ describe('publicodes init', () => {
 			expect(
 				packageJson.devDependencies?.['@publicodes/tools'],
 			).not.toBeUndefined()
-			expect(fs.existsSync('node_modules')).toBe(true)
-			expect(fs.existsSync('package-lock.json')).toBe(true)
 			expect(fs.existsSync('README.md')).toBe(true)
 			expect(fs.existsSync('src/salaire.publicodes')).toBe(true)
 			expect(fs.existsSync('test/salaire.test.ts')).toBe(true)
@@ -66,15 +65,17 @@ describe('publicodes init', () => {
 			expect(fs.existsSync('node_modules')).toBe(false)
 			expect(fs.existsSync('package-lock.json')).toBe(false)
 			expect(fs.existsSync('README.md')).toBe(true)
-			expect(fs.existsSync('src/salaire.publicodes')).toBe(true)
+
+			// use minimal template by default
+			expect(fs.existsSync('src/salaire.publicodes')).toBe(false)
+			expect(fs.existsSync('test/salaire.test.ts')).toBe(false)
 		})
 	})
 
 	it('should create a new package.json', async () => {
 		await runInDir('tmp', async (cwd) => {
-			const { stdout } = await cli.execCommand('init -y')
+			const { stdout } = await cli.execCommand('init -y --no-install')
 
-			expect(stdout).toContain('Dependencies installed')
 			expect(stdout).toContain('Files generated')
 			expect(stdout).toContain('New to Publicodes?')
 
@@ -92,10 +93,11 @@ describe('publicodes init', () => {
 			expect(
 				packageJson.devDependencies?.['@publicodes/tools'],
 			).not.toBeUndefined()
-			expect(fs.existsSync('node_modules')).toBe(true)
-			expect(fs.existsSync('package-lock.json')).toBe(true)
 			expect(fs.existsSync('README.md')).toBe(true)
-			expect(fs.existsSync('src/salaire.publicodes')).toBe(true)
+
+			// use minimal template by default
+			expect(fs.existsSync('src/salaire.publicodes')).toBe(false)
+			expect(fs.existsSync('test/salaire.test.ts')).toBe(false)
 		})
 	})
 })

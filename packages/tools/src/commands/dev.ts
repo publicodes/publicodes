@@ -19,9 +19,9 @@ export default class Compile extends Command {
 	static override summary = 'Launch publicodes documentation dev server'
 
 	static override description = `
-This command will start a local server to serve the publicodes auto-generated documentation of the model. 
+This command will start a local server to serve the publicodes auto-generated documentation of the model.
 
-It will open a browser window with the documentation. The server will automatically reload the page when the documentation is updated. 
+It will open a browser window with the documentation. The server will automatically reload the page when the documentation is updated.
 
 You can specify different situations to use in the documentation in separated publicodes files, with the 'contexte' mechanism.
 
@@ -102,11 +102,11 @@ To avoid passing arguments and flags every time, you can set their values in the
 			:	flags.situations
 
 		// quickDoc is in the current package (@publicodes/tools) under the folder /quick-doc
-
 		const quickDocPath = path.join(
 			path.dirname(
 				import.meta.url ? fileURLToPath(import.meta.url) : __filename,
 			),
+			'..',
 			'..',
 			'quick-doc',
 		)
@@ -117,6 +117,7 @@ To avoid passing arguments and flags every time, you can set their values in the
 			quickDocPath,
 			flags as ViteDevServerOptions,
 		)
+
 		// Handle process termination
 		let isShuttingDown = false
 		const cleanup = async (): Promise<void> => {

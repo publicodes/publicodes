@@ -18,6 +18,7 @@ import { basePackageJson, PackageJson, readPackageJson } from '../utils/pjson'
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun'
 type ExtraTool = 'test' | 'bench' | 'vscode' // | 'gh-actions'
+type Template = 'minimal' | 'demo'
 
 export default class Init extends Command {
 	static override args = {}
@@ -52,6 +53,7 @@ one.
 `,
 			options: ['npm', 'yarn', 'pnpm', 'bun'],
 		}) as OptionFlag<PackageManager>,
+
 		'no-install': Flags.boolean({
 			char: 'n',
 			summary: 'Skip the installation of dependencies.',
@@ -59,10 +61,19 @@ one.
 specified package manager (or the detected one). Use this flag to skip the
 installation.`,
 		}),
+
 		yes: Flags.boolean({
 			char: 'y',
 			summary: 'Skip all prompts and use the default values.',
 		}),
+
+		template: Flags.string({
+			char: 't',
+			options: ['minimal', 'demo'],
+			summary: 'The template to use (default minimal).',
+			description:
+				'The demo template will add some examples of Publicodes rules if you need extra help to start.',
+		}) as OptionFlag<Template>,
 	}
 
 	// TODO: refactor to have a unique project object which is built and passed
@@ -73,6 +84,8 @@ installation.`,
 		const { flags } = await this.parse(Init)
 		const currentDir = path.basename(process.cwd())
 		const pkgJSON = await this.getPackageJson(currentDir, flags.yes)
+
+		const template = await getTemplate(flags.template, flags.yes)
 
 		// TODO: check for existing 'test' directory and '.github/workflows' directory
 		const extraTools = await getExtraTools(flags.yes)
@@ -100,7 +113,7 @@ installation.`,
 		if (extraTools.includes('bench')) {
 			setupBench(pkgJSON, pkgManager)
 		}
-		await generateBaseFiles(pkgJSON, pkgManager, extraTools)
+		await generateBaseFiles(pkgJSON, pkgManager, template, extraTools)
 
 		const shouldInstall =
 			flags['no-install'] === undefined && !flags.yes ?
@@ -254,12 +267,38 @@ function askPackageManager(): Promise<PackageManager> {
 			return false
 		}
 	}
+
 	return p.select({
-		message: 'Choose a package manager',
+		message: 'Select a package manager',
 		options: packageManagers
 			.filter((pm) => checkIfInstalled(pm))
 			.map((pm) => ({ value: pm, label: pm })),
 	}) as Promise<PackageManager>
+}
+
+async function getTemplate(
+	templateFlag: Template | undefined,
+	useDefault: boolean,
+): Promise<Template> {
+	if (templateFlag) {
+		return templateFlag
+	}
+
+	if (useDefault) {
+		return 'minimal'
+	}
+
+	return p.select({
+		message: 'Select a template',
+		options: [
+			{ value: 'minimal', label: 'Minimal' },
+			{
+				value: 'demo',
+				label: 'Small example',
+				hint: 'start with a file example',
+			},
+		],
+	}) as Promise<Template>
 }
 
 async function getExtraTools(useDefault: boolean): Promise<ExtraTool[]> {
@@ -276,7 +315,7 @@ async function getExtraTools(useDefault: boolean): Promise<ExtraTool[]> {
 			// 		label: 'GitHub Actions',
 			// 		hint: 'automate build, test and publishing',
 			// 	},
-			{ value: 'test', label: 'Unit test', hint: 'Vitest + example' },
+			{ value: 'test', label: 'Unit test', hint: 'Vitest' },
 			{ value: 'bench', label: 'Performance test', hint: 'Bench with mitata' },
 			{
 				value: 'vscode',
@@ -336,6 +375,7 @@ async function installDeps(pkgManager: PackageManager): Promise<void> {
 async function generateBaseFiles(
 	pjson: PackageJson,
 	pkgManager: PackageManager,
+	template: Template,
 	extraTools: ExtraTool[] = [],
 ): Promise<void> {
 	return runWithSpinner('Generating files', 'Files generated', (spinner) => {
@@ -373,9 +413,11 @@ async function generateBaseFiles(
 			if (!fs.existsSync('src')) {
 				fs.mkdirSync('src')
 			}
-			if (!fs.existsSync('src/salaire.publicodes')) {
+
+			if (template === 'demo' && !fs.existsSync('src/salaire.publicodes')) {
 				fs.writeFileSync('src/salaire.publicodes', BASE_PUBLICODES)
 			}
+
 			if (!fs.existsSync('.gitignore')) {
 				try {
 					execSync('git init', { stdio: 'ignore' })
@@ -411,8 +453,11 @@ async function generateBaseFiles(
 				if (!fs.existsSync('test')) {
 					fs.mkdirSync('test')
 				}
-				const testPath = path.join('test', 'salaire.test.ts')
-				fs.writeFileSync(testPath, BASE_TEST_FILE)
+
+				if (template === 'demo') {
+					const testPath = path.join('test', 'salaire.test.ts')
+					fs.writeFileSync(testPath, BASE_TEST_FILE)
+				}
 			}
 
 			if (extraTools.includes('bench')) {
