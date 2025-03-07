@@ -28,13 +28,19 @@ import { utils } from 'publicodes'
  */
 export function groupByNamespace<Name extends string>(fields: Array<Name>) {
 	const pages: Array<Array<Name>> = []
+	const pageNames: Array<string> = []
 	while (fields.length > 0) {
 		const tree = createTree(fields)
 		const page = createPage(tree)
 		fields = fields.filter((field) => !page.includes(field))
 		pages.push(page)
+		const pageName =
+			(page.length > 1 ?
+				utils.findCommonAncestor(page[0], page[1])
+			:	utils.ruleParents(page[0])[0]) || 'général'
+		pageNames.push(pageName)
 	}
-	return pages
+	return { pages, pageNames }
 }
 
 type Tree<Name extends string> =
