@@ -1,5 +1,12 @@
 # @publicodes/tools
 
+## 1.6.0
+
+### Minor Changes
+
+- [#648](https://github.com/publicodes/publicodes/pull/648) [`fdabbdd`](https://github.com/publicodes/publicodes/commit/fdabbddbb23e8fafc58e57a123dc508f56b2a797) Thanks [@EmileRolley](https://github.com/EmileRolley)! - Fix the `dev` command to use the correct path to `quick-doc`
+- [#648](https://github.com/publicodes/publicodes/pull/648) [`fdabbdd`](https://github.com/publicodes/publicodes/commit/fdabbddbb23e8fafc58e57a123dc508f56b2a797) Thanks [@EmileRolley](https://github.com/EmileRolley)! - Add a new `--template` flag to the `init` command
+
 ## 1.5.4
 
 ### Patch Changes
