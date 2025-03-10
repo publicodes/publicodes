@@ -126,7 +126,9 @@ describe('evaluateFormElement', () => {
 		const engine = new Engine({
 			'mon texte': {
 				valeur: "'Un long texte'",
-				saisie: 'texte long',
+				form: {
+					saisie: 'texte long',
+				},
 			},
 		})
 

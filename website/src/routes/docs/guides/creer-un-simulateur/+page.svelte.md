@@ -77,14 +77,12 @@ const rulesText = `
 nb jours:
   titre: Nombre de jours facturés par mois
   question: Combien de jours facturez-vous par mois en moyenne ?
-  par défaut: 15
   unité: jour facturé/mois
 
 TJM:
   titre: Tarif journalier moyen
   question: Quel est votre tarif journalier ?
   description: Tarif journalier hors taxe facturé à vos clients
-  par défaut: 500
   unité: €/jour facturé
 
 CA:
@@ -95,7 +93,7 @@ CA:
 charges fixes:
   question: Quelles sont vos charges fixes ?
   description: Incluez tous vos frais fixes - comptabilité, assurances, locaux, etc.
-  par défaut: 500
+  par défaut: 10 % * CA
   unité: €/mois
 
 rémunération brute:
@@ -314,6 +312,7 @@ const rulesText = `
 // ... règles précédentes ...
 
 type de statut:
+
   question: Quel est votre type de statut ?
   possibilités:
     - auto-entrepreneur:
@@ -487,3 +486,25 @@ Vous pouvez maintenant :
 
 - [Ajouter les explications de calculs](/docs/guides/nextjs) - Pour expliquer les résultats aux utilisateurs
 - [Créer un modèle](/docs/guides/creer-un-modele) - Pour des règles métier plus élaborées
+
+### Aller plus loin
+
+#### Personnaliser l'interface utilisateur
+
+Il est possible de personnaliser l'interface utilisateur directement depuis les règles Publicodes. Il est possible de modifier le type de saisie, les labels, ou encore l'ordre des questions.
+
+Pour cela, vous pouvez ajouter des métadonnées avec la clé `form`.
+
+```yaml
+TJM:
+    description: |
+        Tarif journalier hors taxe facturé aux clients. 
+        Généralement entre 300 et 800 €/jour.
+    unité: €/jour facturé
+    form:
+        position: 1
+        label: Tarif journalier
+        description: Indiquez votre tarif journalier hors taxe
+```
+
+> [En savoir plus sur les métadonnées de formulaire](/docs/api/forms/type-aliases/RuleWithFormMeta)
