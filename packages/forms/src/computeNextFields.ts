@@ -1,4 +1,5 @@
 import type Engine from 'publicodes'
+import { RuleWithFormMeta } from '.'
 
 /**
  * Computes the next fields that need to be asked next in a form.
@@ -27,4 +28,19 @@ export function computeNextFields<Name extends string>(
 		})
 		.map(([dottedName]) => dottedName as Name)
 	return sortedRules
+		.map(
+			(name) =>
+				[
+					name,
+					(engine.getRule(name).rawNode as RuleWithFormMeta).form?.position ??
+						0,
+				] as const,
+		)
+		.map(
+			([name, position]) => [name, position != 0 ? 1 / position : 0] as const,
+		)
+		.sort(([, a], [, b]) => {
+			return b - a
+		})
+		.map(([name]) => name)
 }

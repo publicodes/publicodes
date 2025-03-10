@@ -53,7 +53,9 @@ describe('inputDetails', function () {
 			expect(
 				inputForRule({
 					type: 'texte',
-					saisie: 'texte long',
+					form: {
+						saisie: 'texte long',
+					},
 				}),
 			).toMatchObject({
 				element: 'textarea',
@@ -75,7 +77,9 @@ describe('inputDetails', function () {
 			})
 		})
 		test('month input', function () {
-			expect(inputForRule({ type: 'date', saisie: 'mois' })).toMatchObject({
+			expect(
+				inputForRule({ type: 'date', form: { saisie: 'mois' } }),
+			).toMatchObject({
 				element: 'input',
 				type: 'month',
 			})
@@ -145,7 +149,9 @@ describe('inputDetails', function () {
 			test('menu déroulant', function () {
 				const input = inputForRule({
 					'une possibilité': [1, 2],
-					saisie: 'menu déroulant',
+					form: {
+						saisie: 'menu déroulant',
+					},
 				})
 				expect(input.element).toBe('select')
 			})
@@ -153,14 +159,18 @@ describe('inputDetails', function () {
 			test('boutons radio (horizontal if less than two element)', function () {
 				const input = inputForRule({
 					'une possibilité': [1, 2],
-					saisie: 'boutons radio',
+					form: {
+						saisie: 'boutons radio',
+					},
 				}) as InputRadio
 				expect(input.element).toBe('RadioGroup')
 				expect(input.orientation).toBe('horizontal')
 
 				const input2 = inputForRule({
 					'une possibilité': [1, 2, 3],
-					saisie: 'boutons radio',
+					form: {
+						saisie: 'boutons radio',
+					},
 				}) as InputRadio
 				expect(input2.orientation).toBe('vertical')
 			})
@@ -168,7 +178,9 @@ describe('inputDetails', function () {
 			test('carte', function () {
 				const input = inputForRule({
 					'une possibilité': [1, 2, 3, 4],
-					saisie: 'cartes',
+					form: {
+						saisie: 'cartes',
+					},
 				}) as InputRadio
 				expect(input.element).toBe('RadioGroup')
 				expect(input.style).toBe('card')
@@ -178,8 +190,8 @@ describe('inputDetails', function () {
 			test('orientation', function () {
 				const input = inputForRule({
 					'une possibilité': [1, 2],
-					saisie: {
-						style: 'boutons radio',
+					form: {
+						saisie: 'boutons radio',
 						orientation: 'vertical',
 					},
 				}) as InputRadio

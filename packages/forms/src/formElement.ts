@@ -141,11 +141,11 @@ export function getFormElement<Name extends string>(
 		)
 	}
 
-	let saisie = rawRule.saisie
+	let saisie = rawRule.form?.saisie
 
 	const inputDetails = {
-		label: rawRule.question || rule.title,
-		description: rawRule.description,
+		label: rawRule.form?.label ?? rawRule.question ?? rule.title,
+		description: rawRule.form?.description ?? rawRule.description,
 		id: dottedName,
 	}
 
@@ -192,21 +192,23 @@ export function getFormElement<Name extends string>(
 				options,
 			}
 		}
-		const style = typeof saisie === 'string' ? saisie : saisie.style
 
 		const orientation =
-			typeof saisie === 'string' ?
-				options.length > 2 && saisie !== 'cartes' ?
-					'vertical'
-				:	'horizontal'
-			:	saisie.orientation
+			(
+				(rawRule.form &&
+					'orientation' in rawRule.form &&
+					rawRule.form.orientation) ||
+				(options.length > 2 && saisie !== 'cartes')
+			) ?
+				'vertical'
+			:	'horizontal'
 
 		return {
 			...inputDetails,
 			element: 'RadioGroup',
 			style:
-				style === 'cartes' ? 'card'
-				: style === 'boutons radio' ? 'button'
+				saisie === 'cartes' ? 'card'
+				: saisie === 'boutons radio' ? 'button'
 				: 'default',
 			orientation,
 			options,
@@ -242,10 +244,11 @@ export function getOptionList<Name extends string>(
 		}
 
 		const choiceRule = engine.getRule(choice.dottedName as Name)
+		const choiceRawRule = choiceRule.rawNode as RuleWithFormMeta
 		return {
 			value: choice.nodeValue,
-			label: choiceRule.title,
-			description: choiceRule.rawNode.description,
+			label: choiceRawRule.form?.label ?? choiceRule.title,
+			description: choiceRawRule.form?.description ?? choiceRawRule.description,
 		}
 	})
 }
