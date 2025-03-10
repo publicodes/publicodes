@@ -9,8 +9,8 @@ export { getFormElement } from './formElement'
 export type * from './buildFormPage'
 export { buildFormPage } from './buildFormPage'
 
-export * from './form'
-export type { FormState } from './form'
+export * from './formBuilder'
+export type { FormState } from './formBuilder'
 
 export { computeNextFields } from './computeNextFields'
 export { groupByNamespace } from './groupByNamespace'
