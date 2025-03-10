@@ -1,5 +1,11 @@
 # @publicodes/forms
 
+## 0.4.0
+
+### Minor Changes
+
+- [#650](https://github.com/publicodes/publicodes/pull/650) [`daed2e0`](https://github.com/publicodes/publicodes/commit/daed2e0be7f9e8df69ca30d2f7364ebd6379012f) Thanks [@johangirod](https://github.com/johangirod)! - Change form builder API to a class-based API.
+
 ## 0.3.1
 
 ### Patch Changes
