@@ -1,4 +1,4 @@
-This library export utilities to create interactive forms and simulators from publicodes rules.
+This library exports utilities to create interactive forms and simulators from publicodes rules.
 
 This library is framework-agnostic and can be used with any state management system:
 
@@ -8,24 +8,30 @@ This library is framework-agnostic and can be used with any state management sys
 - Vue reactive system
 - etc.
 
+## Usage
+
 ```typescript
+// Create a form builder
+const engine = new Engine(rules)
+const formBuilder = new FormBuilder({ engine })
+
 // Initialize form state
-const formState = initFormState({ engine }, 'target . rule')
+let state = FormBuilder.newState()
+state = formBuilder.start(state, 'target . rule')
 
 // Get current page UI elements
-const pageElements = currentPage({ formState, engine })
+const formElements = formBuilder.currentPage(state)
 
 // Handle user input
-const newState = handleInputChange({
-    formState,
-    engine,
-    id: 'rule . name',
-    value: 'new value',
-})
+state = formBuilder.handleInputChange(state, 'rule . name', 'new value')
 
 // Navigate pages
-const nextState = goToNextPage(formState)
-const prevState = goToPreviousPage(formState)
+state = formBuilder.goToNextPage(state)
+state = formBuilder.goToPreviousPage(state)
+
+// Get pagination information
+const { current, pageCount, hasNextPage, hasPreviousPage } =
+    formBuilder.pagination(state)
 ```
 
 ## Getting started
