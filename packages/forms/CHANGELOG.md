@@ -1,5 +1,19 @@
 # @publicodes/forms
 
+## 0.5.0
+
+### Minor Changes
+
+- [#652](https://github.com/publicodes/publicodes/pull/652) [`7eff8a1`](https://github.com/publicodes/publicodes/commit/7eff8a17addb155749bc3e9b49f74885d35577c9) Thanks [@johangirod](https://github.com/johangirod)! - A new rule key `form` is specified for metadata used in `@publicodes/forms`. This will take the place of the `saisie` key.
+
+    - BREAKING: the `saisie` key is now under the `form` key
+    - BREAKING: the `orientation` key is now under the `form` key for
+      possibilities
+    - It is possible to customize label and description of the input with
+      the `label` and `description` keys
+    - It is possible to customize the order of questions in form with the
+      `position` key
+
 ## 0.4.0
 
 ### Minor Changes
