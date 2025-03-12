@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
-title: Créer un modèle Publicodes
+title: Créer un modèle avec Publicodes
+menu_title: Se lancer
 ---
 
 <script lang="ts">

@@ -1,20 +1,17 @@
 ---
 sidebar_position: 2
-title: Créer un simulateur avec Publicodes
+title: Créer un simulateur
 ---
 
-# Créer un simulateur de TJM avec React
+_Tutoriel en cours de rédaction_
 
-Dans ce tutoriel, nous allons créer un simulateur de TJM (Tarif Journalier Moyen) pour freelances en utilisant Publicodes et React. Ce simulateur interactif permettra de calculer instantanément le chiffre d'affaires et la rémunération nette en fonction du TJM, du nombre de jours travaillés et des charges fixes.
+<div class="prose-xl prose">
 
-Vous découvrirez comment Publicodes simplifie la création d'outils de simulation en gardant une logique métier claire et maintenable.
+Dans ce tutoriel, nous allons créer un **simulateur de TJM (Tarif Journalier Moyen)** pour freelances en utilisant Publicodes et React.
 
-<Callout type="info" title="Objectifs du tutoriel">
-Ce tutoriel vous montrera comment :
-- Créer un formulaire interactif avec la bibliothèque @publicodes/forms
-- Afficher les résultats des calculs en temps réel
-- Gérer des questions conditionnelles
-</Callout>
+Vous découvrirez comment Publicodes simplifie la création d'outils de simulation en gardant une logique métier **claire et maintenable**.
+
+</div>
 
 ## Ce que nous allons construire
 
@@ -115,7 +112,8 @@ const rules = parse(rulesText);
 export default rules;
 ```
 
-<Callout type="tip" title="Développement de règles plus complexes">
+<Callout type="caution" title="Développement de règles plus complexes">
+
 Pour des modèles plus complexes, il est recommandé d'utiliser
 
 ```bash
