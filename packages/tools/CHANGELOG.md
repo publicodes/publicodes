@@ -1,5 +1,11 @@
 # @publicodes/tools
 
+## 1.7.0
+
+### Minor Changes
+
+- [#656](https://github.com/publicodes/publicodes/pull/656) [`dce3353`](https://github.com/publicodes/publicodes/commit/dce33539e53f65deb3b33724639bbbdadde3f0ed) Thanks [@johangirod](https://github.com/johangirod)! - Add --watch option to compile
+
 ## 1.6.0
 
 ### Minor Changes
