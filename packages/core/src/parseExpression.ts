@@ -13,6 +13,8 @@ export type BinaryOp =
 	| { '<=': [ExprAST, ExprAST] }
 	| { '=': [ExprAST, ExprAST] }
 	| { '!=': [ExprAST, ExprAST] }
+	| { et: [ExprAST, ExprAST] }
+	| { ou: [ExprAST, ExprAST] }
 
 export type UnaryOp = {
 	'-': [{ constant: { type: 'number'; nodeValue: 0 } }, ExprAST]
@@ -150,19 +152,19 @@ export function parseExpression(
 
 	try {
 		const parser = createParser(singleLineExpression)
-		const res = parseComparison(parser)
+		const res = parseLogical(parser)
 
 		if (!isEOL(res)) {
 			if (isNextRegExp(res, operators)) {
 				throwParserError(
 					res,
-					'un opérateur entouré d’espaces',
+					"un opérateur entouré d'espaces",
 					peek(res),
-					'Les opérateurs doivent être entourés d’espaces ("2 + 2" et non "2+2")',
+					`Les opérateurs doivent être entourés d'espaces ("2 + 2" et non "2+2")`,
 				)
 			}
 
-			throwParserError(res, 'La fin d’expression', peek(res))
+			throwParserError(res, "La fin d'expression", peek(res))
 		}
 
 		return res.tree!
@@ -175,6 +177,20 @@ export function parseExpression(
 		}
 		throw error
 	}
+}
+
+function parseLogical(parser: ParserState): ParserState {
+	let left = parseComparison(parser)
+
+	while (!isEOL(left) && isNextRegExp(left, logicalOperator)) {
+		const op = expectRegExpGroup(left, logicalOperator)
+		const right = parseComparison(op.parser)
+
+		right.tree = binaryNode(op.value, left.tree!, right.tree!)
+		left = right
+	}
+
+	return left
 }
 
 function parseComparison(parser: ParserState): ParserState {
@@ -238,7 +254,7 @@ function parsePrimary(parser: ParserState): ParserState {
 	if (peek(parser) === '(') {
 		consume(parser, '(')
 		expectRegExp(parser, spaces)
-		const expr = parseComparison(parser)
+		const expr = parseLogical(parser)
 		expectRegExp(expr, spaces)
 		expect(expr, ')')
 		return expr
@@ -346,7 +362,12 @@ function booleanNode(value: 'oui' | 'non'): ExprAST {
 }
 
 function binaryNode(op: string, left: ExprAST, right: ExprAST): BinaryOp {
-	return { [op]: [left, right] } as BinaryOp
+	// Map uppercase logical operators to lowercase versions
+	const mappedOp =
+		op === 'ET' ? 'et'
+		: op === 'OU' ? 'ou'
+		: op
+	return { [mappedOp]: [left, right] } as BinaryOp
 }
 
 function dateNode(value: string): ExprAST {
@@ -377,7 +398,9 @@ const phrase_starting_with = (char: RegExp) =>
 		`(${char.source}${any_char_or_special_char.source}*)(${space.source}${any_char.source}${any_char_or_special_char.source}*)*`,
 	)
 
-const rule_name = phrase_starting_with(letter)
+const rule_name = new RegExp(
+	`${phrase_starting_with(letter).source}(?!${space.source}+(ET|OU)${space.source}+)`,
+)
 
 const dotted_name = new RegExp(
 	`^(${rule_name.source}|\\^)( \\. ${rule_name.source})*`,
@@ -405,5 +428,6 @@ const comparisonOperator = oneOfBetweenAtLeastOneSpace([
 	'=',
 	'!=',
 ])
+const logicalOperator = oneOfBetweenAtLeastOneSpace(['ET', 'OU'])
 
-const operators = /(\+|-|\*|\/|\*\*|>|<|>=|<=|=|!=)/
+const operators = /(\+|-|\*|\/|\*\*|>|<|>=|<=|=|!=|ET|OU)/

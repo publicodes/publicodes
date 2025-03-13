@@ -392,6 +392,66 @@ describe('parseExpression', () => {
     `)
 		})
 
+		it('should parse ET operator', () => {
+			expect(parseExpression('a > 4 ET a < 12')).toMatchInlineSnapshot(`
+      {
+        "et": [
+          {
+            ">": [
+              {
+                "variable": "a",
+              },
+              {
+                "constant": {
+                  "nodeValue": 4,
+                  "type": "number",
+                },
+              },
+            ],
+          },
+          {
+            "<": [
+              {
+                "variable": "a",
+              },
+              {
+                "constant": {
+                  "nodeValue": 12,
+                  "type": "number",
+                },
+              },
+            ],
+          },
+        ],
+      }
+    `)
+		})
+
+		it('should parse OU operator', () => {
+			expect(parseExpression('b = non OU c')).toMatchInlineSnapshot(`
+      {
+        "ou": [
+          {
+            "=": [
+              {
+                "variable": "b",
+              },
+              {
+                "constant": {
+                  "nodeValue": false,
+                  "type": "boolean",
+                },
+              },
+            ],
+          },
+          {
+            "variable": "c",
+          },
+        ],
+      }
+    `)
+		})
+
 		it('should parse strings in a greedy way (v2 breaking ?)', () => {
 			expect(parseExpression("'hello' = 'hola'")).toMatchInlineSnapshot(`
       {

@@ -1,6 +1,6 @@
 {
 	"name": "publicodes",
-	"version": "1.8.1",
+	"version": "1.8.2",
 	"description": "A declarative language for encoding public algorithm",
 	"types": "dist/index.d.ts",
 	"type": "module",
@@ -30,7 +30,7 @@
 		"intl": "^1.2.5",
 		"mitata": "^0.1.6",
 		"modele-social": "^5.0.0",
-		"publicodes-old": "npm:publicodes@1.5.1",
+		"publicodes-old": "npm:publicodes@1.8.1",
 		"tsup": "^8.3.5",
 		"typescript": "^5.7.3",
 		"vitest": "^3.0.8",
