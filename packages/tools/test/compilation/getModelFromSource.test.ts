@@ -1,5 +1,5 @@
 import { join, resolve } from 'path'
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { getModelFromSource } from '../../src/compilation/getModelFromSource'
 
 const testDataDir = resolve('./test/compilation/data/')
