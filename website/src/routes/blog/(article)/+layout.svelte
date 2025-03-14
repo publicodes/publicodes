@@ -9,18 +9,16 @@
 <article class="lg:py-18 flex justify-center px-6 py-14">
 	<div class="flex flex-col lg:grid lg:grid-cols-5">
 		<div
-			class="col-span-1 mb-12 inline-flex max-h-4 justify-start lg:sticky lg:top-32 lg:justify-start"
-		>
+			class="col-span-1 mb-12 inline-flex max-h-4 justify-start lg:sticky lg:top-32 lg:justify-start">
 			<a
 				href="/blog"
-				class="flex items-center gap-2 text-primary-400 hover:text-primary-600"
-			>
+				class="flex items-center gap-2 text-primary-400 hover:text-primary-600">
 				<ArrowLeft size={18} strokeWidth={1.5} />
 				Retour aux articles
 			</a>
 		</div>
 
-		<div class="prose col-span-3 lg:prose-lg xl:max-w-4xl">
+		<div class="prose col-span-3 xl:max-w-3xl">
 			<div class="border-b pb-6">
 				<div class="not-prose mb-4"><Tags {tags} /></div>
 

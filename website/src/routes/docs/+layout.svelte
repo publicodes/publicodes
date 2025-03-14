@@ -41,48 +41,41 @@
 			<div
 				role="dialog"
 				class="fixed z-20 h-full border-r border-primary-300 bg-white will-change-transform"
-				transition:fly={{ x: -100 }}
-			>
+				transition:fly={{ x: -100 }}>
 				{@render MenuLeft()}
 			</div>
 			<div
 				class="fixed inset-0 z-10"
 				aria-hidden="true"
-				onclick={() => (showMobileMenuLeft = false)}
-			></div>
+				onclick={() => (showMobileMenuLeft = false)}>
+			</div>
 		{/if}
 
 		<div
-			class="sticky top-16 max-h-[calc(100vh-4rem)] shrink-0 overflow-auto max-md:hidden"
-		>
+			class="sticky top-16 max-h-[calc(100vh-4rem)] shrink-0 overflow-auto border-l border-r border-primary-100 max-md:hidden">
 			{@render MenuLeft()}
 		</div>
-		<div class="self-stretch border-r border-primary-100"></div>
 		<div
-			class="prose mx-auto flex flex-col px-4 pt-8 transition-all xl:prose-lg max-md:max-w-full md:px-8 2xl:max-w-4xl"
-		>
+			class="prose mx-auto flex flex-col px-4 pt-8 transition-all max-md:max-w-full md:max-w-4xl">
 			<div class="flex justify-between gap-2">
 				<button
 					class="self flex gap-2 rounded-sm border border-primary-300 px-4
 				py-2 text-primary-400 hover:bg-slate-100 md:hidden"
-					onclick={() => (showMobileMenuLeft = true)}
-				>
+					onclick={() => (showMobileMenuLeft = true)}>
 					Menu
 				</button>
 
 				<button
 					class="flex rounded-sm border border-primary-300 px-4 py-2
 				text-primary-400 hover:bg-slate-100 lg:hidden"
-					onclick={() => (showMobileMenuRight = true)}
-				>
+					onclick={() => (showMobileMenuRight = true)}>
 					<span>Sur cette page</span>
 				</button>
 			</div>
 			<article
 				class:blur-sm={showMobileMenuLeft || showMobileMenuRight}
 				class:opacity-50={showMobileMenuLeft || showMobileMenuRight}
-				class=" py-8"
-			>
+				class=" py-8">
 				<h1>{title}</h1>
 				{@render children()}
 			</article>
@@ -92,20 +85,18 @@
 			<div
 				role="dialog"
 				class="fixed right-0 z-20 h-full overflow-auto border-l border-primary-300 bg-white will-change-transform"
-				transition:fly={{ x: 100 }}
-			>
+				transition:fly={{ x: 100 }}>
 				{@render MenuRight()}
 			</div>
 			<div
 				class="fixed inset-0 z-10"
 				aria-hidden="true"
-				onclick={() => (showMobileMenuRight = false)}
-			></div>
+				onclick={() => (showMobileMenuRight = false)}>
+			</div>
 		{/if}
 
 		<div
-			class="sticky top-16 hidden max-h-[calc(100vh-4rem)] w-48 shrink-0 overflow-auto pt-16 text-sm lg:block"
-		>
+			class="sticky top-16 hidden max-h-[calc(100vh-4rem)] w-48 shrink-0 overflow-auto pt-16 text-sm lg:block">
 			{@render MenuRight()}
 		</div>
 	</div>
@@ -124,15 +115,13 @@
 						}
 						showMobileMenuLeft = false;
 					}}
-					isSection={childPages.length > 0}
-				>
+					isSection={childPages.length > 0}>
 					{metadata.menu_title || metadata.title}
 					{#snippet submenu()}
 						{#each childPages as { path: childPath, metadata }}
 							<MenuLink
 								href={childPath}
-								onclick={() => (showMobileMenuLeft = false)}
-							>
+								onclick={() => (showMobileMenuLeft = false)}>
 								{metadata.menu_title || metadata.title}
 							</MenuLink>
 						{/each}
@@ -147,8 +136,7 @@
 	{#if headings?.length}
 		<nav
 			class="mx-2 border-primary-50"
-			class:md:border-l={!showMobileMenuRight}
-		>
+			class:md:border-l={!showMobileMenuRight}>
 			<h2 class="not-prose my-2 p-2 uppercase text-slate-500">
 				Sur cette page
 			</h2>
@@ -158,8 +146,7 @@
 						<a
 							class="font-regular text-slate-700 hover:text-primary-400"
 							href={`#${slug}`}
-							onclick={() => (showMobileMenuRight = false)}>{title}</a
-						>
+							onclick={() => (showMobileMenuRight = false)}>{title}</a>
 					</li>
 				{/each}
 			</ul>

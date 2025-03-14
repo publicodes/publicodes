@@ -10,13 +10,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { insertDocsearch } from '$lib/search/insert-docsearch';
 	import NavTab from '$lib/ui/nav-tab.svelte';
-	import {
-		Github,
-		GithubIcon,
-		LucideGithub,
-		MenuIcon,
-		MessagesSquare
-	} from 'lucide-svelte';
+	import { MenuIcon } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 
 	import {
@@ -62,8 +56,7 @@
 <div
 	class="fixed top-0 z-20 w-screen border-b border-primary-200 bg-white text-cyan-950">
 	<div
-		class="flex h-16 w-full items-center gap-8 px-6 py-2
-		lg:container md:px-8 lg:mx-auto lg:justify-between">
+		class="flex h-16 w-full items-center gap-8 px-6 py-2 lg:container md:px-8 lg:mx-auto lg:justify-between">
 		<div class="inline-flex flex-1 items-center gap-8">
 			<a
 				class="inline-flex shrink-0 items-center gap-2 text-xl font-light hover:text-primary-400"

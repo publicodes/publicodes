@@ -32,8 +32,7 @@
 
 <div
 	role="list"
-	class="grid grid-cols-1 gap-8 pb-16 sm:grid-cols-2 lg:grid-cols-3"
->
+	class="grid grid-cols-1 gap-8 pb-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 	{#each displayedProduit as { img, name, description, url, pkg }}
 		<Card {img} {url} role="listitem">
 			{#snippet title()}
@@ -53,8 +52,7 @@
 										<a
 											href={`https://www.npmjs.com/package/${npm}`}
 											target="_blank"
-											rel="noopener"
-										>
+											rel="noopener">
 											{npm}
 											<ExternalLink class="inline" size={12}></ExternalLink>
 										</a>
@@ -63,8 +61,7 @@
 							</ul>
 						{/snippet}
 						<span
-							class="mb-1 inline-flex items-center gap-1 text-sm text-slate-500"
-						>
+							class="mb-1 inline-flex items-center gap-1 text-sm text-slate-500">
 							<Package size={16} strokeWidth={1} />
 							{pkg.length}
 						</span>
@@ -80,7 +77,6 @@
 		pouvez
 		<a
 			href="https://github.com/publicodes/publicodes/tree/master/website/src/data/produits.ts"
-			>proposer une contribution.</a
-		>
+			>proposer une contribution.</a>
 	</p>
 </div>

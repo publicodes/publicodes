@@ -37,7 +37,6 @@
 		>, vous pouvez
 		<a
 			href="https://github.com/publicodes/publicodes/tree/master/website/src/data/publicodes-packages.ts"
-			>proposer une contribution.</a
-		>
+			>proposer une contribution.</a>
 	</p>
 </div>

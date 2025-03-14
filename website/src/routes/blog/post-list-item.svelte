@@ -18,12 +18,11 @@
 		</div>
 		<a
 			href={url}
-			class="text-xl font-light tracking-tight text-primary-400 hover:text-primary-600 md:text-2xl"
-		>
+			class="text-xl font-light tracking-tight text-primary-400 hover:text-primary-600 md:text-2xl">
 			{title}
 		</a>
 
-		<p class="prose font-light leading-snug md:text-lg">
+		<p class="prose font-light leading-snug">
 			{description}
 		</p>
 	</div>
