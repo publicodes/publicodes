@@ -48,12 +48,7 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
 	{
 		npm: '@betagouv/aides-velo',
 		maintainer: 'jagis',
-		users: ['aides-jeune']
-	},
-	{
-		npm: 'aides-velo',
-		maintainer: 'mes-aides-vélo',
-		users: []
+		users: ['aides-jeune', 'mes-aides-vélo']
 	},
 	{
 		npm: 'exoneration-covid',
