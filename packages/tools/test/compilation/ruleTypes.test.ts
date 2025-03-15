@@ -95,6 +95,22 @@ describe('resolveRuleType > constant rules', () => {
 			},
 		})
 	})
+	it('enum (une possibilité de règles inlined)', () => {
+		const rawRules = {
+			rule: {
+				'une possibilité': [{ 'rule 1': 1 }, { 'rule 2': 2 }],
+			},
+		}
+		expect(getTypes(rawRules)).toEqual({
+			rule: {
+				type: 'enum',
+				options: ['rule 1', 'rule 2'],
+				isNullable: false,
+			},
+			'rule . rule 1': { type: 'number', isNullable: false },
+			'rule . rule 2': { type: 'number', isNullable: false },
+		})
+	})
 })
 
 // TODO: Add tests for the following cases:

@@ -486,6 +486,29 @@ export function serializeParsedRules(
 				delete rawRules[rule][attr]
 			}
 		})
+		type Possibilités = Array<Record<string, RawRule> | string>
+		function mapPossibilités(possibilités: Possibilités) {
+			return possibilités.map((possibility) => {
+				if (!possibility || typeof possibility !== 'object') {
+					return possibility
+				}
+				return Object.keys(possibility)[0]
+			})
+		}
+		if (rawRules[rule]['une possibilité']) {
+			const possibilités = rawRules[rule]['une possibilité']
+			if (Array.isArray(possibilités)) {
+				rawRules[rule]['une possibilité'] = mapPossibilités(
+					possibilités as Possibilités,
+				)
+			} else {
+				rawRules[rule]['une possibilité'] = {
+					...possibilités,
+					// eslint-disable-next-line
+					possibilités: mapPossibilités((possibilités as any).possibilités),
+				}
+			}
+		}
 
 		rawRules[rule] = {
 			...rawRules[rule],

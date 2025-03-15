@@ -931,4 +931,26 @@ describe('More complexe cases', () => {
 		)
 		expect(serializedRules).toStrictEqual(rules)
 	})
+
+	it('should correctly serialize [une possibilité] with a rule as a value', () => {
+		const rules = {
+			'chauffage collectif': {
+				question: 'Votre chauffage est-il collectif ou individuel ?',
+				'par défaut': "'collectif'",
+				'une possibilité': [{ collectif: null }, { individuel: null }],
+			},
+		}
+		const serializedRules = serializeParsedRules(
+			new Engine(rules).getParsedRules(),
+		)
+		expect(serializedRules).toStrictEqual({
+			'chauffage collectif': {
+				question: 'Votre chauffage est-il collectif ou individuel ?',
+				'par défaut': "'collectif'",
+				'une possibilité': ['collectif', 'individuel'],
+			},
+			'chauffage collectif . collectif': null,
+			'chauffage collectif . individuel': null,
+		})
+	})
 })
