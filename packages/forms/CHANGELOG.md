@@ -1,5 +1,11 @@
 # @publicodes/forms
 
+## 0.5.1
+
+### Patch Changes
+
+- [#660](https://github.com/publicodes/publicodes/pull/660) [`91cd564`](https://github.com/publicodes/publicodes/commit/91cd564c70e63f65d2733e45415d1780f8b3926e) Thanks [@johangirod](https://github.com/johangirod)! - Add "evaluate" method to FormBuilder (for enabling reactivity of evaluation in signal-based reactivity framework)
+
 ## 0.5.0
 
 ### Minor Changes
