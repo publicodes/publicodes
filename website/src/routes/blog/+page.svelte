@@ -2,7 +2,6 @@
 	import { Newspaper, Rss } from 'lucide-svelte';
 
 	import PostCard from './post-card.svelte';
-	import PostListItem from './post-list-item.svelte';
 
 	const { data } = $props();
 	const featuredPosts = data.blogPosts.filter((post) => post.metadata.featured);

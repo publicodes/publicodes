@@ -44,15 +44,12 @@
 </script>
 
 <header
-	class="not-prose flex w-full justify-center overflow-hidden bg-primary-50"
->
+	class="not-prose flex w-full justify-center overflow-hidden bg-primary-50">
 	<div
 		class="flex max-w-3xl items-center justify-center px-6 py-20 md:flex-row md:gap-12
-		md:py-48 lg:max-w-5xl xl:max-w-7xl xl:gap-24"
-	>
+		md:py-48 lg:max-w-5xl xl:max-w-7xl xl:gap-24">
 		<div
-			class="hidden justify-center self-center max-sm:scale-75 md:flex xl:scale-125"
-		>
+			class="hidden justify-center self-center max-sm:scale-75 md:flex xl:scale-125">
 			<AnimatedLogo />
 		</div>
 		<div class="flex flex-col gap-8 lg:gap-8">
@@ -76,8 +73,7 @@
 
 <main class="">
 	<section
-		class="mt-20 flex flex-col items-center justify-center gap-8 md:mt-36"
-	>
+		class="mt-20 flex flex-col items-center justify-center gap-8 md:mt-36">
 		<p class="px-6 text-center text-lg font-normal md:max-w-5xl md:text-2xl">
 			Publicodes permet de modéliser des <span class="font-regular"
 				>domaines métiers complexes</span
@@ -90,14 +86,12 @@
 			src={PublicodesSchemaSVG}
 			alt="Schéma de fonctionnement de
 		Publicodes"
-			class="mt-12 hidden w-full md:block md:max-w-3xl lg:max-w-4xl"
-		/>
+			class="mt-12 hidden w-full md:block md:max-w-3xl lg:max-w-4xl" />
 	</section>
 	<section class="mt-20 flex w-full flex-col items-center gap-16 md:mt-32">
 		<div
 			class="flex w-full max-w-3xl flex-col gap-10 rounded-sm px-6 md:max-w-4xl lg:max-w-5xl
-			xl:max-w-7xl xl:border xl:border-primary-300 xl:p-8"
-		>
+			xl:max-w-7xl xl:border xl:border-primary-300 xl:p-8">
 			<Heading level="h2">Du code clair et lisible</Heading>
 			<div class="flex flex-col gap-4">
 				<p class="prose-md prose font-normal text-black md:prose-xl">
@@ -120,14 +114,12 @@ cotisations:
     taux: 21.7%
 
 salaire net: salaire brut - cotisations
-`}
-					></PublicodesEditor>
+`}></PublicodesEditor>
 				</div>
 				{#if showDoc}
 					<div
 						in:fly={{ y: -50, opacity: 0, duration: 100, delay: 500 }}
-						class="will-change-transform md:text-xl"
-					>
+						class="will-change-transform md:text-xl">
 						<Callout type="tip" title="C'était facile, non ?">
 							<p class="py-4 font-normal text-black md:text-xl lg:max-w-7xl">
 								Même sans connaissances en informatique, il est possible de
@@ -144,23 +136,20 @@ salaire net: salaire brut - cotisations
 		</div>
 	</section>
 	<section
-		class="mt-20 flex w-full flex-col items-center gap-16 bg-primary-50 md:mt-32"
-	>
+		class="mt-20 flex w-full flex-col items-center gap-16 bg-primary-50 md:mt-32">
 		<div
 			class="not-prose flex w-full max-w-3xl flex-col justify-center gap-10 px-6 py-20 md:max-w-4xl
-			md:py-32 lg:max-w-5xl xl:max-w-7xl"
-		>
+			md:py-32 lg:max-w-5xl xl:max-w-7xl">
 			<Heading level="h2" icon={Rocket}>Accélérateur d'impact</Heading>
 			<p class="w-full text-lg font-normal text-black md:text-xl">
 				Publicodes est utilisé pour calculer <strong
-					>plusieurs millions de simulations</strong
-				> chaque mois. Découvrez les produits phares qui utilisent cette technologie.
+					>plusieurs millions de simulations</strong> chaque mois. Découvrez les
+				produits phares qui utilisent cette technologie.
 			</p>
 
 			<div
 				role="list"
-				class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
-			>
+				class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{#each displayedProduits.slice(0, 3) as { img, name, description, url }}
 					<Card {img} {url} role="listitem">
 						{#snippet title()}
@@ -181,8 +170,7 @@ salaire net: salaire brut - cotisations
 		<div
 			class="flex w-full max-w-3xl flex-col justify-center gap-10
 			px-6 py-20 md:max-w-4xl md:py-32
-			lg:max-w-5xl xl:max-w-7xl"
-		>
+			lg:max-w-5xl xl:max-w-7xl">
 			<Heading level="h2" icon={LibraryBig}>Créateur de communs</Heading>
 			<p class="text-lg font-normal text-black md:max-w-7xl md:text-xl">
 				Déjà <strong>une dizaine de modèles publiés</strong>. Découvrez les dans
@@ -217,8 +205,7 @@ salaire net: salaire brut - cotisations
 					content:
 						'Développeurs, expert·es : tout le monde parle la même langue. Cela veut dire une communication plus fluide, et moins d’erreurs.'
 				}
-			]}
-		/>
+			]} />
 		<Banner
 			icon={CodeXmlIcon}
 			background=""
@@ -239,8 +226,7 @@ salaire net: salaire brut - cotisations
 					content:
 						'Son interpréteur JavaScript lui permet d’être embarqué dans un navigateur et évite des appels réseux inutiles.'
 				}
-			]}
-		/>
+			]} />
 		<Banner
 			icon={LandmarkIcon}
 			background="bg-primary-50"
@@ -261,8 +247,7 @@ salaire net: salaire brut - cotisations
 					content:
 						'L’explications auto-générée des résultats de calculs permet de vous conformer à l’obligation de transparence des algorithmes publics.'
 				}
-			]}
-		/>
+			]} />
 	</section>
 </main>
 

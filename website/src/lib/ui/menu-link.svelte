@@ -30,16 +30,15 @@
 		class:isParentActive
 		class:isParentActiveWithSubmenu
 		{href}
-		{onclick}
-	>
+		{onclick}>
 		<span class="flex items-center justify-between gap-2">
 			{@render children()}
 			{#if isSection}
 				<ChevronRight
 					size={24}
 					strokeWidth={1}
-					class={'transition-transform ' + (isParentActive ? 'rotate-90' : '')}
-				/>
+					class={'transition-transform ' +
+						(isParentActive ? 'rotate-90' : '')} />
 			{/if}
 		</span>
 	</a>

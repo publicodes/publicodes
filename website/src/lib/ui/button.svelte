@@ -24,8 +24,7 @@
 		class="border-1 flex cursor-pointer justify-center whitespace-nowrap
 	rounded border border-primary-400 px-3 py-1 font-sans text-lg font-regular text-white
 		duration-100 ease-in-out hover:bg-primary-600 md:px-4 md:py-2 md:text-xl"
-		class:background={!light}
-	>
+		class:background={!light}>
 		{#if Icon}
 			<Icon strokeWidth={iconStrokeWidth} />
 		{/if}
@@ -38,8 +37,7 @@
 	whitespace-nowrap rounded border border-primary-400 bg-white px-3 py-1 font-sans
 		text-lg font-regular text-primary-400 transition
 		duration-100 ease-in-out hover:bg-primary-400
-		hover:bg-opacity-5 md:px-4 md:py-2 md:text-xl"
-	>
+		hover:bg-opacity-5 md:px-4 md:py-2 md:text-xl">
 		{#if Icon}
 			<Icon strokeWidth={iconStrokeWidth} />
 		{/if}

@@ -12,14 +12,12 @@
 
 <li
 	class="not-prose relative flex flex-col justify-between gap-6 overflow-hidden rounded-sm border border-primary-300
-	bg-white p-5 hover:border-primary-400"
->
+	bg-white p-5 hover:border-primary-400">
 	<div class="flex flex-col gap-3">
 		<a
 			href={url}
 			class="after:contents-[''] text-xl text-primary-400 after:absolute
-		after:bottom-0 after:left-0 after:right-0 after:top-0 hover:text-primary-600"
-		>
+		after:bottom-0 after:left-0 after:right-0 after:top-0 hover:text-primary-600">
 			<p class="text-xl font-light md:text-2xl">
 				<!-- {icon} -->
 				{title}

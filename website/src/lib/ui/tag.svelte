@@ -16,7 +16,6 @@
 		className}
 	class:px-3={size === 'lg'}
 	class:py-2={size === 'lg'}
-	class:text-sm={size === 'md'}
->
+	class:text-sm={size === 'md'}>
 	{@render children()}
 </span>

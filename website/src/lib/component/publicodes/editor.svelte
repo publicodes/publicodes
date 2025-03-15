@@ -80,18 +80,15 @@
 <div
 	class="editor-container not-prose flex flex-col overflow-hidden
 	border border-primary-100 sm:rounded"
-	class:mb-4={!fullPage}
->
+	class:mb-4={!fullPage}>
 	<div
 		class="editor-header relative flex shrink-0 items-center overflow-hidden
-		border-b border-primary-200 bg-primary-50 text-center"
-	>
+		border-b border-primary-200 bg-primary-50 text-center">
 		<button
 			class="flex items-center justify-center border-r border-primary-200 text-primary-500"
 			title="Copier"
 			onclick={handleCopy}
-			aria-label="Copier le code"
-		>
+			aria-label="Copier le code">
 			<ClipboardCopy strokeWidth={iconStrokeWidth} size={iconSize} />
 		</button>
 
@@ -99,8 +96,7 @@
 			<div
 				in:fly={{ x: -10 }}
 				out:fly={{ duration: 75 }}
-				class="absolute left-16 will-change-transform"
-			>
+				class="absolute left-16 will-change-transform">
 				<Tag {size}>Code copié !</Tag>
 			</div>
 		{/if}
@@ -109,8 +105,7 @@
 			'lg'
 				? 'lg:text-lg xl:text-xl'
 				: 'max-md:text-sm'}"
-			class:p-3={size === 'lg'}
-		>
+			class:p-3={size === 'lg'}>
 			{title}
 		</span>
 		{#if additionnalButton}
@@ -126,8 +121,7 @@
 					: 'Ouvrir la documentation'}
 				class:saturate-0={documentationIsBroken}
 				disabled={documentationIsBroken}
-				class:text-slate-400={documentationIsBroken}
-			>
+				class:text-slate-400={documentationIsBroken}>
 				<FlyInOutTransition condition={showDoc && !documentationIsBroken}>
 					{#snippet ifTrue()}
 						{#if getTransitionDirection() === 'horizontal'}
@@ -154,8 +148,7 @@
 	<div class="editor flex flex-1 flex-col xl:flex-row">
 		<div
 			class="z-10 flex flex-1 flex-col overflow-auto bg-white max-xl:border-b"
-			style="margin-bottom: -1px"
-		>
+			style="margin-bottom: -1px">
 			<CodeMirror
 				bind:value={code}
 				lang={yaml()}
@@ -168,16 +161,14 @@
 					'&': {
 						fontSize: 'inherit'
 					}
-				}}
-			/>
+				}} />
 			<ul class="sticky bottom-0">
 				{#each [...warning, ...error] as message}
 					<li class="flex whitespace-pre-line bg-yellow-100" in:fly>
 						<span class="w-14 border-r bg-primary-50"></span>
 						<span
 							class="max-h-40 flex-1 overflow-auto p-2 first-line:font-regular"
-							>{message}</span
-						>
+							>{message}</span>
 					</li>
 				{/each}
 			</ul>
@@ -188,15 +179,13 @@
 					class="publicodes-documentation"
 					style="margin-top: 1px"
 					in:transitionIn
-					out:transitionOut
-				>
+					out:transitionOut>
 					<doc.default
 						{engine}
 						{selectedRule}
 						onchange={(selectedRule) => {
 							onchange?.(code, selectedRule);
-						}}
-					></doc.default>
+						}}></doc.default>
 				</div>
 			{/if}
 		{/await}

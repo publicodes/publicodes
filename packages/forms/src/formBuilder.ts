@@ -232,6 +232,31 @@ export class FormBuilder<RuleName extends string> {
 	}
 
 	/**
+	 * Wrapper around engine.evaluate that ensures proper reactivity in signal-based systems.
+	 *
+	 * This method ensures the engine's situation is up-to-date before evaluating a rule,
+	 * making it suitable for use in reactive frameworks that track dependencies (like Svelte,
+	 * Vue, Solid.js, or other signal-based systems).
+	 *
+	 * @param formState - The current state of the form
+	 * @param ruleName - The name of the rule to evaluate
+	 * @returns The evaluation result from the engine
+	 *
+	 * @example
+	 * ```typescript
+	 * // In a reactive framework
+	 * const result = formBuilder.evaluate(formState, 'total . amount')
+	 * // The framework will track this dependency and re-run when formState changes
+	 * ```
+	 */
+	evaluate(formState: FormState<RuleName>, ruleName: RuleName) {
+		if (formState.situation !== this.engine.getSituation()) {
+			this.engine.setSituation(formState.situation)
+		}
+		return this.engine.evaluate(ruleName)
+	}
+
+	/**
 	 * Retrieves pagination information for building navigation controls.
 	 *
 	 * This method calculates the current page position and total page count,

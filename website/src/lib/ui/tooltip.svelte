@@ -40,8 +40,7 @@
 	<div
 		use:melt={$content}
 		transition:fade={{ duration: 100 }}
-		class="rounded border border-slate-300 bg-white text-sm shadow"
-	>
+		class="rounded border border-slate-300 bg-white text-sm shadow">
 		<div class="relative z-20 bg-white px-4 py-3">
 			{#if typeof text === 'string'}
 				{text}
