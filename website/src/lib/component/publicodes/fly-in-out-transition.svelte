@@ -18,16 +18,14 @@
 	<div
 		class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center whitespace-nowrap will-change-transform"
 		in:fly={inConf}
-		out:fly={outConf}
-	>
+		out:fly={outConf}>
 		{@render ifTrue()}
 	</div>
 {:else}
 	<div
 		class="top- absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center whitespace-nowrap will-change-transform"
 		in:fly={inConf}
-		out:fly={outConf}
-	>
+		out:fly={outConf}>
 		{@render ifFalse()}
 	</div>
 {/if}

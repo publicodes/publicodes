@@ -54,8 +54,7 @@
 
 <aside
 	class="mb-6 flex flex-col rounded-r border-l-4 p-4 {callouts[type]
-		.borderColor} {callouts[type].bgColor}"
->
+		.borderColor} {callouts[type].bgColor}">
 	<header class="flex items-center gap-2 {callouts[type].textColor}">
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		{@html callouts[type].hint}
