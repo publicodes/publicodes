@@ -2,7 +2,6 @@
 	import { Newspaper, Rss } from 'lucide-svelte';
 
 	import PostCard from './post-card.svelte';
-	import PostListItem from './post-list-item.svelte';
 
 	const { data } = $props();
 	const featuredPosts = data.blogPosts.filter((post) => post.metadata.featured);
@@ -13,7 +12,7 @@
 </script>
 
 <div class="flex w-full flex-col">
-	<section class="flex w-full flex-col items-center gap-16 bg-primary-50">
+	<section class="bg-primary-50 flex w-full flex-col items-center gap-16">
 		<div
 			class="not-prose flex w-full max-w-3xl flex-col justify-center
 			gap-10 px-6 py-20 lg:max-w-5xl lg:py-24 xl:max-w-7xl">
