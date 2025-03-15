@@ -1,5 +1,11 @@
 # @publicodes/tools
 
+## 1.7.1
+
+### Patch Changes
+
+- [#658](https://github.com/publicodes/publicodes/pull/658) [`baf3ec3`](https://github.com/publicodes/publicodes/commit/baf3ec385959a8960ff5297673ee0470f8e70fd2) Thanks [@johangirod](https://github.com/johangirod)! - Fix bug when compiling une possibilité with inlined rule
+
 ## 1.7.0
 
 ### Minor Changes
