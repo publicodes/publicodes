@@ -71,7 +71,7 @@ export type ReferencesMaps<Names extends string> = {
 	rulesThatUse: Map<Names, Set<Names>>
 }
 
-export type RawRule = Omit<Rule, 'nom'> | PublicodesExpression
+export type RawRule = Omit<Rule, 'nom'> | PublicodesExpression | null
 
 export function createContext<RuleNames extends string>(
 	partialContext: PartialContext<RuleNames>,
