@@ -9,7 +9,6 @@ import Engine, { RawPublicodes } from 'publicodes'
 import { createServer } from 'vite'
 import type { RawRules } from '../commons'
 import { getModelFromSource } from '../compilation'
-import { runAsyncWithSpinner } from '../utils/cli'
 import { extractSituations, TestSituation } from './extractSituations'
 
 export type ViteDevServerOptions = {
@@ -17,6 +16,9 @@ export type ViteDevServerOptions = {
 	port?: number
 	open?: boolean
 }
+
+const ruleModuleId = '$RULES$'
+const situationModuleId = '$SITUATIONS$'
 
 export default async function createViteDevServer(
 	modelFiles: string[],
@@ -26,57 +28,54 @@ export default async function createViteDevServer(
 ) {
 	let currentRules: RawRules = {}
 	let currentSituations: TestSituation = {}
-	// Create server with spinner
-	const vite = await runAsyncWithSpinner(
-		'Starting Publicodes doc server...',
-		'Server ready',
-		async () => {
-			const server = await createServer({
-				plugins: [
-					{
-						name: 'publicodes-hot-reload',
-						configureServer(server) {
-							server.ws.on('connection', () => {
-								p.log.info('Client connected to hot reload')
-							})
-						},
-						transform(code, id) {
-							if (id.includes('app-state')) {
-								return {
-									code: code
-										.replace('__INJECTED_RULES__', JSON.stringify(currentRules))
-										.replace(
-											'__INJECTED_SITUATIONS__',
-											JSON.stringify(currentSituations),
-										),
-									map: null,
-								}
-							}
-						},
-					},
-					tailwindcss(),
-				],
-				root: quickDocPath,
-
-				server: {
-					host: options.host,
-					port: options.port,
-				},
-			})
-			return server
-		},
-	)
 	let compilationCount = 0
 
-	compileAndSendModel(true, 'all')
-	void compileAndSendSituation(true, 'all')
+	compileModel(true, 'all')
+	await compileSituation(true, 'all')
+
+	const vite = await createServer({
+		logLevel: 'silent',
+		plugins: [
+			{
+				name: 'publicodes-hot-reload',
+				configureServer(server) {
+					server.ws.on('connection', () => {
+						p.log.info('Client connected to hot reload')
+					})
+				},
+				resolveId(id) {
+					if (id === ruleModuleId || id === situationModuleId) {
+						return id
+					}
+				},
+
+				load(id) {
+					if (id === ruleModuleId) {
+						return `export default ${JSON.stringify(currentRules)}`
+					}
+					if (id === situationModuleId) {
+						return `export default ${JSON.stringify(currentSituations)}`
+					}
+				},
+			},
+			tailwindcss(),
+		],
+		root: quickDocPath,
+
+		server: {
+			host: options.host,
+			port: options.port,
+		},
+	})
 
 	watch(modelFiles, {
 		persistent: true,
 		ignoreInitial: true,
 	}).on('all', (event, path) => {
-		if (event === 'add' || event === 'change') {
-			void compileAndSendModel(false, event, path)
+		void compileModel(false, event, path)
+		const module = vite.moduleGraph.getModuleById('$RULES$')
+		if (module) {
+			void vite.reloadModule(module)
 		}
 	})
 
@@ -84,8 +83,10 @@ export default async function createViteDevServer(
 		persistent: true,
 		ignoreInitial: true,
 	}).on('all', (event, path) => {
-		if (event === 'add' || event === 'change') {
-			void compileAndSendSituation(false, event, path)
+		void compileSituation(false, event, path)
+		const module = vite.moduleGraph.getModuleById('$SITUATIONS$')
+		if (module) {
+			void vite.reloadModule(module)
 		}
 	})
 
@@ -125,7 +126,7 @@ export default async function createViteDevServer(
 		vite.openBrowser()
 	}
 
-	async function compileAndSendSituation(
+	async function compileSituation(
 		initialCompilation: boolean,
 		event: EventName,
 		path?: string,
@@ -144,12 +145,6 @@ export default async function createViteDevServer(
 			const newSituations = await extractSituations(situationFiles)
 			currentSituations = newSituations
 
-			// Notify clients
-			vite.ws.send({
-				type: 'custom',
-				event: 'situations-updated',
-				data: newSituations,
-			})
 			p.log.success(
 				`${chalk.dim(timestamp)} ${chalk.green('✓')} ${initialCompilation ? 'situations compiled' : 'situations reloaded'}`,
 			)
@@ -162,7 +157,7 @@ export default async function createViteDevServer(
 		}
 	}
 
-	function compileAndSendModel(
+	function compileModel(
 		initialCompilation: boolean,
 		event: EventName,
 		path?: string,
@@ -189,13 +184,6 @@ export default async function createViteDevServer(
 			const endTime = performance.now()
 
 			currentRules = newRules
-
-			// Notify clients
-			vite.ws.send({
-				type: 'custom',
-				event: 'rules-updated',
-				data: newRules,
-			})
 
 			// Try to compile the new rules
 			new Engine(newRules as RawPublicodes<string>)
