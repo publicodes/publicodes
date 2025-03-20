@@ -1,5 +1,11 @@
 # publicodes
 
+## 1.8.2
+
+### Patch Changes
+
+- [#662](https://github.com/publicodes/publicodes/pull/662) [`9a49053`](https://github.com/publicodes/publicodes/commit/9a49053cec5c87d6b046e461d2d2aae29c45bce8) Thanks [@Clemog](https://github.com/Clemog)! - Fix typing: RawRule can be `null` now
+
 ## 1.8.1
 
 ### Patch Changes
