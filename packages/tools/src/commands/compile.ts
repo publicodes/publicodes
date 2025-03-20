@@ -83,10 +83,6 @@ the package.json file under the \`publicodes\` key. For example:
 			flags.output ?? pjson?.publicodes?.output ?? DEFAULT_BUILD_DIR,
 		)
 
-		const rawRules = (await parseFiles(filesToCompile, {
-			verbose: false,
-		})) as RawPublicodes<string>
-		const engine = await initEngine(rawRules)
 		const pkgName = readPackageJson()?.name ?? path.basename(process.cwd())
 
 		// Create output directory if it doesn't exist
@@ -96,25 +92,38 @@ the package.json file under the \`publicodes\` key. For example:
 
 		let compilationCount = 0
 		const compile = async () => {
-			const startTime = Date.now()
-			compilationCount++
+			const rawRules = (await parseFiles(filesToCompile, {
+				verbose: false,
+			})) as RawPublicodes<string>
 
-			await this.generateDTS(engine, outputDir)
+			try {
+				const engine = await initEngine(rawRules)
 
-			await generateBaseFiles(
-				serializeParsedRules(engine.getParsedRules()),
-				outputDir,
-				pkgName,
-			)
+				const startTime = Date.now()
+				compilationCount++
 
-			const endTime = Date.now()
-			const timestamp = new Date().toLocaleTimeString()
+				await this.generateDTS(engine, outputDir)
 
-			p.log.success(
-				`${chalk.dim(timestamp)} ${chalk.green('✓')} rules compiled in ${chalk.bold(
-					`${Math.round(endTime - startTime)}ms`,
-				)} ${chalk.dim(`#${compilationCount}`)}`,
-			)
+				await generateBaseFiles(
+					serializeParsedRules(engine.getParsedRules()),
+					outputDir,
+					pkgName,
+				)
+
+				const endTime = Date.now()
+				const timestamp = new Date().toLocaleTimeString()
+
+				p.log.success(
+					`${chalk.dim(timestamp)} ${chalk.green('✓')} rules compiled in ${chalk.bold(
+						`${Math.round(endTime - startTime)}ms`,
+					)} ${chalk.dim(`#${compilationCount}`)}`,
+				)
+			} catch (error) {
+				if (!flags.watch || !(error instanceof Error)) {
+					throw error
+				}
+				p.log.message(chalk.dim(error.message.trim()))
+			}
 		}
 
 		await compile()
@@ -126,15 +135,13 @@ the package.json file under the \`publicodes\` key. For example:
 			}).on('all', (event) => {
 				const timestamp = new Date().toLocaleTimeString()
 
-				if (event === 'add' || event === 'change') {
-					p.log.info(
-						`${chalk.dim(timestamp)} ${chalk.green('⚡')} ${chalk.blue('publicodes')} ${
-							event === 'add' ? 'detected new file' : 'recompiling'
-						} ${chalk.dim(path)}`,
-					)
+				p.log.info(
+					`${chalk.dim(timestamp)} ${chalk.green('⚡')} ${chalk.blue('publicodes')} ${
+						event === 'add' ? 'detected new file' : 'recompiling'
+					}`,
+				)
 
-					void compile()
-				}
+				void compile()
 			})
 			function cleanup() {
 				void watcher.close()
@@ -272,12 +279,9 @@ async function initEngine(rawRules: RawPublicodes<string>): Promise<Engine> {
 		(spinner) => {
 			try {
 				return new Engine(rawRules)
-			} catch (error) {
-				exitWithError({
-					ctx: 'Parsing rules failed:',
-					msg: error instanceof Error ? error.message : '',
-					spinner,
-				})
+			} catch (err) {
+				spinner.stop('Errors found in the rules!:\n', 1)
+				throw err
 			}
 		},
 	)
