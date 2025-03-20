@@ -1,5 +1,16 @@
 # @publicodes/tools
 
+## 1.7.2
+
+### Patch Changes
+
+- [#663](https://github.com/publicodes/publicodes/pull/663) [`9bc6f6c`](https://github.com/publicodes/publicodes/commit/9bc6f6cb0b9edf0f83041efe095f7dbea07cd914) Thanks [@johangirod](https://github.com/johangirod)! - `publicodes dev` : fix hot reload of rules & situations
+
+- [#663](https://github.com/publicodes/publicodes/pull/663) [`9bc6f6c`](https://github.com/publicodes/publicodes/commit/9bc6f6cb0b9edf0f83041efe095f7dbea07cd914) Thanks [@johangirod](https://github.com/johangirod)! - Fix the --watch option on publicodes compile
+
+- Updated dependencies [[`9a49053`](https://github.com/publicodes/publicodes/commit/9a49053cec5c87d6b046e461d2d2aae29c45bce8)]:
+    - publicodes@1.8.2
+
 ## 1.7.1
 
 ### Patch Changes
