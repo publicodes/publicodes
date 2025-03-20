@@ -4118,7 +4118,7 @@ __metadata:
     chokidar: "npm:^4.0.3"
     glob: "npm:^10.4.1"
     path: "npm:^0.12.7"
-    publicodes: "npm:^1.8.0"
+    publicodes: "npm:^1.8.2"
     react: "npm:^18.0.0"
     react-dom: "npm:^18.0.0"
     react-router-dom: "npm:^7.1.3"
@@ -17029,7 +17029,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"publicodes@npm:^1.8.0, publicodes@workspace:^, publicodes@workspace:packages/core":
+"publicodes@npm:^1.8.2, publicodes@workspace:^, publicodes@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "publicodes@workspace:packages/core"
   dependencies:
