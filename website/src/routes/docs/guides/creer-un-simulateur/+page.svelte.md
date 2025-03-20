@@ -3,8 +3,6 @@ sidebar_position: 2
 title: Créer un simulateur
 ---
 
-_Tutoriel en cours de rédaction_
-
 <div class="prose-xl prose">
 
 Dans ce tutoriel, nous allons créer un **simulateur de TJM (Tarif Journalier Moyen)** pour freelances en utilisant Publicodes et React.
@@ -93,17 +91,12 @@ charges fixes:
   par défaut: 10 % * CA
   unité: €/mois
 
-rémunération brute:
-  valeur: CA - charges fixes
-  unité: €/mois
+rémunération brute: CA - charges fixes
 
-cotisations sociales:
-  valeur: rémunération brute * 30%
-  unité: €/mois
+rémunération nette: rémunération brute - cotisations sociales
 
-rémunération nette:
-  valeur: rémunération brute - cotisations sociales
-  unité: €/mois
+cotisations sociales:  rémunération brute * 30%
+
 `;
 
 // Parsing des règles
@@ -137,7 +130,7 @@ Maintenant, utilisons la bibliothèque `@publicodes/forms` pour créer notre for
 Commençons par configurer le moteur Publicodes qui effectuera les calculs. Dans le fichier `src/App.jsx` :
 
 ```jsx
-import { Engine, formatValue } from 'publicodes';
+import Engine, { formatValue } from 'publicodes';
 import rules from './rules';
 
 // Initialiser le moteur Publicodes
@@ -161,10 +154,12 @@ export default function App() {
 
 **À noter :**
 
-- Nous utilisons la fonction `formatValue` pour afficher les résultats de manière lisible avec les unités.
+- L'Engine est initialisé avec les règles définies dans `rules.js` (un simple objet JavaScript) ;
+- Pour calculer la rémunération nette, nous utilisons la méthode `evaluate` ;
+- Nous utilisons la fonction `formatValue` pour afficher les résultats de manière lisible avec les unités ;
 - L'`Engine` et la règle cible (`TARGET`) sont définis en dehors du composant pour éviter de les recréer à chaque rendu.
 
-Pour tester que le calcul fonctionne, vous pouvez modifier la situation de l'Engine en ajoutant des valeurs :
+Pour modifier la situation utilisée pour le calcul, vous pouvez utiliser la méthode `setSituation` :
 
 ```jsx
 // src/App.jsx
@@ -175,7 +170,11 @@ engine.setSituation({
 });
 ```
 
-La valeur affichée dans le simulateur devrait être `rémunération nette: 5 000 €/mois`.
+Testez que la page affiche correctement `rémunération nette: 4 900 €/mois` en lançant le serveur de développement :
+
+```bash
+npm run dev
+```
 
 ### Initialiser l'état du formulaire
 
@@ -183,7 +182,7 @@ Ajoutons maintenant l'état initial du formulaire pour commencer à construire n
 
 ```jsx
 // src/App.jsx
-import { Engine, formatValue } from 'publicodes';
+import Engine, { formatValue } from 'publicodes';
 import { FormBuilder } from '@publicodes/forms';
 import { useState } from 'react';
 import rules from './rules';
@@ -221,7 +220,7 @@ export default function App() {
 
 - FormBuilder analyse automatiquement les règles pour déterminer quelles questions poser
 - L'état du formulaire est géré via React useState
-- Les éléments du formulaire sont générés dynamiquement en fonction des règles Publicodes.
+- `formBuilder.currentPage(formState)` renvoie les éléments à afficher sur la page actuelle (pour l'instant, il n'y a qu'une seule page)
 
 ### Créer un composant pour l'affichage des champs de saisie
 
@@ -233,6 +232,7 @@ export default function Input({ element, onChange }) {
     return (
         <div>
             <label htmlFor={element.id}>{element.label}</label>
+            <br />
             <input
                 id={element.id}
                 type="number"
@@ -245,24 +245,16 @@ export default function Input({ element, onChange }) {
 }
 ```
 
+<Callout type="info" title="Utilisation d'une bibliothèque de composants">
+
+Il est tout à fait possible d'utiliser des composants existants. Dans ce cas, `Input.jsx` fera le pont entre les éléments du formulaire et les composants de votre bibliothèque.
+
+</Callout>
+
 Intégrez ce composant dans le composant principal `App` :
 
 ```jsx
 // src/App.jsx
-import { Engine, formatValue } from 'publicodes';
-import { FormBuilder } from '@publicodes/forms';
-import { useState } from 'react';
-import rules from './rules';
-import Input from './Input';
-
-// Initialiser le moteur Publicodes
-const engine = new Engine(rules);
-// La règle cible pour le calcul
-const TARGET = 'rémunération nette';
-// Form Builder pour gérer le formulaire
-const formBuilder = new FormBuilder({ engine });
-// Initialiser l'état du formulaire
-const initialState = formBuilder.start(FormBuilder.newState(), TARGET);
 
 export default function App() {
     const [formState, setFormState] = useState(initialState);
@@ -304,43 +296,51 @@ Améliorons maintenant notre simulateur en ajoutant des questions conditionnelle
 
 Modifions nos règles pour ajouter cette logique conditionnelle :
 
-```javascript
-// Ajoutez ces règles à votre fichier rules.js
-const rulesText = `
-// ... règles précédentes ...
-
-type de statut:
-
-  question: Quel est votre type de statut ?
-  possibilités:
-    - auto-entrepreneur:
-        applicable si: CA * 12 <= 70000
-    - indépendant
-    - sasu
+```yaml
+# Ajoutez ces règles à votre fichier rules.js
 
 cotisations sociales:
   valeur: rémunération brute * taux
   unité: €/mois
-  note: Les chiffres sont approximatifs
-  taux:
-    variations:
-      - si: type de statut = 'auto-entrepreneur'
-        alors: 24%
-      - si: type de statut = 'indépendant'
-        alors: 30%
-      - si: type de statut = 'sasu'
-        alors: 50%
+  avec:
+    taux:
+      variations:
+        - si: type de statut = 'auto-entrepreneur'
+          alors: 24%
+        - si: type de statut = 'indépendant'
+          alors: 30%
+        - si: type de statut = 'sasu'
+          alors: 50%
+
+type de statut:
+  question: Quel est votre type de statut ?
+  une possibilité:
+    - auto-entrepreneur:
+        applicable si: CA <= 70000 €/an
+    - indépendant:
+    - sasu:
 `;
 ```
 
-Pour gérer les questions de type `possibilités`, nous devons ajouter un composant `RadioGroup` :
+Pour pouvoir utiliser la désactivation de possibilité non applicable, il faut instancier l'engine avec un flag spécifique :
+
+```javascript
+// App.jsx
+const engine = new Engine(rules, {
+    flag: {
+        filterNotApplicablePossibilities: true
+    }
+});
+```
+
+Ensuite, pour gérer les questions de type `possibilités`, nous devons ajouter un composant `RadioGroup` :
 
 ```jsx
 // src/RadioGroup.jsx
 export default function RadioGroup({ element, onChange }) {
     return (
-        <div>
-            <label>{element.label}</label>
+        <fieldset>
+            <legend>{element.label}</legend>
             {element.options.map((option) => (
                 <label key={option.value}>
                     <input
@@ -350,10 +350,10 @@ export default function RadioGroup({ element, onChange }) {
                         checked={element.value === option.value}
                         onChange={() => onChange(element.id, option.value)}
                     />
-                    {option.label || option.value}
+                    {option.label}
                 </label>
             ))}
-        </div>
+        </fieldset>
     );
 }
 ```
@@ -362,14 +362,6 @@ Intégrez ce composant dans le composant principal `App` :
 
 ```jsx
 // src/App.jsx
-import { Engine, formatValue } from 'publicodes';
-import { FormBuilder } from '@publicodes/forms';
-import { useState, useCallback } from 'react';
-import rules from './rules';
-import Input from './Input';
-import RadioGroup from './RadioGroup';
-
-// ... initialisation du moteur et du formBuilder ...
 
 export default function App() {
     const [formState, setFormState] = useState(initialState);
@@ -383,24 +375,13 @@ export default function App() {
         <>
             <h1>Simulateur de TJM pour freelance</h1>
             <form>
-                {formBuilder.currentPage(formState).map((element) => {
-                    if (element.type === 'RadioGroup') {
-                        return (
-                            <RadioGroup
-                                key={element.id}
-                                element={element}
-                                onChange={handleChange}
-                            />
-                        );
-                    }
-                    return (
-                        <Input
-                            key={element.id}
-                            element={element}
-                            onChange={handleChange}
-                        />
-                    );
-                })}
+                {formBuilder.currentPage(formState).map((element) => (
+                    <FormElement
+                        key={element.id}
+                        element={element}
+                        onChange={handleChange}
+                    />
+                ))}
             </form>
             <section>
                 <h2>Résultats</h2>
@@ -409,18 +390,46 @@ export default function App() {
         </>
     );
 }
+
+function FormElement({ element, onChange }) {
+    if (element.element === 'RadioGroup') {
+        return <RadioGroup element={element} onChange={onChange} />;
+    }
+    return <Input element={element} onChange={onChange} />;
+}
 ```
+
+Si vous saisissez un TJM et un nombre de jour élévé (par exemple 15 jours à 500€/jour), vous devriez voir disparaître l'option auto-entrepreneur.
 
 ### Points clés
 
-- Ajout de règles conditionnelles avec la clause `applicable si`
-- Création d'un composant RadioGroup pour gérer les choix multiples
-- Utilisation de variations pour calculer différentes valeurs selon les choix
-- Adaptation dynamique du formulaire en fonction des réponses de l'utilisateur
+- Il est possible de spécifier des règles conditionnelles avec la clause `applicable si`
+- Les règles avec plusieurs possibilités peuvent être saisie avec un élément de formulaire spécial « RadioGroup » pour gérer les choix multiples
+- Le formulaire s'adapte automatiquement aux réponses de l'utilisateur, en fonction de la logique des règles publicodes
 
-### Naviguer entre les pages du formulaire
+## Naviguer entre les pages du formulaire
 
 Pour les formulaires plus complexes, @publicodes/forms gère automatiquement la pagination. Ajoutons cette fonctionnalité à notre simulateur pour améliorer l'expérience utilisateur, particulièrement utile lorsque le nombre de questions augmente.
+
+Pour l'instant toutes les questions sont sur une seule page. En effet, par défaut, `FormBuilder` regroupe les questions en fonction de leur [espace de nom](/docs/manuel/principe-de-base#espace-de-nom).
+
+Nous allons grouper les questions deux par deux pour créer une pagination.
+
+```jsx
+// src/App.jsx
+
+function groupByTwo(array) {
+    return array.reduce(
+        (result, item, index) =>
+            index % 2 === 0 ? [...result, [item, array[index + 1]]] : result,
+        []
+    );
+}
+
+const formBuilder = new FormBuilder({ engine, pageBuilder: groupByTwo });
+```
+
+Nous allons ensuite ajouter des boutons "Suivant" et "Précédent" et un indicateur de page courante :
 
 ```jsx
 // src/App.jsx
@@ -432,33 +441,43 @@ export default function App() {
         setFormState(newState);
     };
 
-    const goToNextPage = () =>
-        setFormState(formBuilder.goToNextPage(formState));
-
-    const goToPreviousPage = () =>
-        setFormState(formBuilder.goToPreviousPage(formState));
-
     const { current, pageCount, hasNextPage, hasPreviousPage } =
         formBuilder.pagination(formState);
 
     return (
         <>
             <h1>Simulateur de TJM pour freelance</h1>
+            <small>
+                Page {current} sur {pageCount}
+            </small>
             <form>
-                {formBuilder.currentPage(formState).map((element) => {
-                    // ... rendu des éléments du formulaire
-                })}
+                {formBuilder.currentPage(formState).map((element) => (
+                    <FormElement
+                        key={element.id}
+                        element={element}
+                        onChange={handleChange}
+                    />
+                ))}
             </form>
             <div>
-                <button onClick={goToPreviousPage} disabled={!hasPreviousPage}>
-                    Précédent
-                </button>
-                <span>
-                    Page {current} sur {pageCount}
-                </span>
-                <button onClick={goToNextPage} disabled={!hasNextPage}>
-                    Suivant
-                </button>
+                {hasPreviousPage && (
+                    <button
+                        onClick={() => {
+                            setFormState(
+                                formBuilder.goToPreviousPage(formState)
+                            );
+                        }}>
+                        Précédent
+                    </button>
+                )}
+                {hasNextPage && (
+                    <button
+                        onClick={() =>
+                            setFormState(formBuilder.goToNextPage(formState))
+                        }>
+                        Suivant
+                    </button>
+                )}
             </div>
             <section>
                 <h2>Résultats</h2>
@@ -471,21 +490,13 @@ export default function App() {
 
 ### Points clés
 
-- Gestion automatique de la pagination pour les formulaires complexes
-- Navigation intuitive entre les différentes pages du formulaire
-- Affichage de la progression (page courante / nombre total de pages)
-- Désactivation intelligente des boutons de navigation quand nécessaire
-
-## Récapitulatif et prochaines étapes
-
-Félicitations ! Vous avez créé un simulateur de TJM interactif avec Publicodes et React. Ce simulateur permet aux freelances de calculer rapidement leur rémunération nette en fonction de différents paramètres.
-
-Vous pouvez maintenant :
-
-- [Ajouter les explications de calculs](/docs/guides/nextjs) - Pour expliquer les résultats aux utilisateurs
-- [Créer un modèle](/docs/guides/creer-un-modele) - Pour des règles métier plus élaborées
+- La pagination est gérée automatiquement par `@publicodes/forms`
+- Les méthodes `goToNextPage` et `goToPreviousPage` permettent de naviguer entre les pages du formulaire
+- Pour personnaliser la pagination, vous pouvez passer une fonction [`pageBuilder`](/docs/api/forms/type-aliases/pagebuilder) à `FormBuilder`
 
 ### Aller plus loin
+
+Félicitations ! Vous avez créé un simulateur de TJM interactif avec Publicodes et React. Vous pouvez maintenant améliorer le style (qui est un peu brut), ou continuer dans une direction plus avancée :
 
 #### Personnaliser l'interface utilisateur
 
@@ -506,3 +517,24 @@ TJM:
 ```
 
 > [En savoir plus sur les métadonnées de formulaire](/docs/api/forms/type-aliases/RuleWithFormMeta)
+
+#### Prendre en compte les propriétés additionnelles
+
+Les éléments de formulaires retournés par `formBuilder.currentPage` contiennent de nombreuses propriétés utiles pour personnaliser l'interface utilisateur. Par exemple, vous pouvez utiliser `element.description` pour afficher des informations supplémentaires.
+
+Par ailleurs, certaines propriétés permettent de fournir une experience utilisateur de meilleure qualité, en cachant ou désactivant des éléments en fonction de la situation.
+
+Pour en savoir plus, consultez la [documentation de l'API](/docs/api/forms/classes/formbuilder#currentpage)
+
+#### Ajouter des pages d'explications
+
+La bibliothèque `@publicodes/react-ui` fournit des composants prêts à l'emploi pour afficher des explications de calculs. Pour savoir comment l'utiliser dans le cadre d'une application React, vous pouvez :
+
+- [Lire le guide NextJS](/docs/guides/nextjs) - Pour expliquer les résultats aux utilisateurs
+- [Consulter l'exemple sur le repo GitHub](https://github.com/publicodes/publicodes/tree/master/examples/create-react-app)
+
+#### Déplacer le modèle dans un paquet séparé
+
+Pour bénéficier de la meilleure expérience de développement, il est recommandé d'utiliser la CLI Publicodes pour gérer les règles et les modèles. Vous pouvez ensuite les publier sur npm pour les réutiliser dans d'autres projets.
+
+[Voir le tutoriel](/docs/guides/creer-un-modele)
