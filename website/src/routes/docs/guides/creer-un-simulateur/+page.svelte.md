@@ -492,7 +492,7 @@ export default function App() {
 
 - La pagination est gérée automatiquement par `@publicodes/forms`
 - Les méthodes `goToNextPage` et `goToPreviousPage` permettent de naviguer entre les pages du formulaire
-- Pour personnaliser la pagination, vous pouvez passer une fonction [`pageBuilder`](/docs/api/forms/type-aliases/pagebuilder) à `FormBuilder`
+- Pour personnaliser la pagination, vous pouvez passer une fonction [`pageBuilder`](/docs/api/forms/type-aliases/PageBuilder) à `FormBuilder`
 
 ### Aller plus loin
 
@@ -524,7 +524,7 @@ Les éléments de formulaires retournés par `formBuilder.currentPage` contienne
 
 Par ailleurs, certaines propriétés permettent de fournir une experience utilisateur de meilleure qualité, en cachant ou désactivant des éléments en fonction de la situation.
 
-Pour en savoir plus, consultez la [documentation de l'API](/docs/api/forms/classes/formbuilder#currentpage)
+Pour en savoir plus, consultez la [documentation de l'API](/docs/api/forms/classes/FormBuilder#currentpage)
 
 #### Ajouter des pages d'explications
 
