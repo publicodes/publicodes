@@ -1,0 +1,6 @@
+(library
+ (inline_tests)
+ (name compiler)
+ (libraries yaml)
+ (preprocess
+  (pps ppx_inline_test)))
