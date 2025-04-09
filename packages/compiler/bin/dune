@@ -1,0 +1,6 @@
+(executable
+ (public_name compiler)
+ (name main)
+ (libraries compiler yaml)
+ (preprocess
+  (pps ppx_inline_test)))

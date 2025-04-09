@@ -49,3 +49,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+packages/compiler/_build
+packages/compiler/_opam
