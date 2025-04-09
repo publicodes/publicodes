@@ -1,8 +1,10 @@
 (lang dune 3.17)
 
-(name compiler)
+(name publicodes)
 
 (generate_opam_files true)
+
+(formatting)
 
 (source
  (github username/reponame))
@@ -16,10 +18,10 @@
 (documentation https://url/to/documentation)
 
 (package
- (name compiler)
+ (name publicodes)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml)
+ (depends ocaml yaml core ppx_inline_test)
  (tags
   ("add topics" "to describe" your project)))
 
