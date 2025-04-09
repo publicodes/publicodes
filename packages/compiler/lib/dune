@@ -1,6 +1,7 @@
 (library
  (inline_tests)
  (name compiler)
- (libraries yaml)
+ (libraries yaml core)
+ (modules :standard)
  (preprocess
   (pps ppx_inline_test)))
