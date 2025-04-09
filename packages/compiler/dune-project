@@ -7,22 +7,26 @@
 (formatting)
 
 (source
- (github username/reponame))
+ (github publicodes/publicodes))
 
-(authors "Author Name <author@example.com>")
+(authors
+	"Johan Girod <dev@johangirod.com>"
+	"Emile Rolley <emile.rolley@tuta.io>")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
+(maintainers
+	"Johan Girod <dev@johangirod.com>"
+	"Emile Rolley <emile.rolley@tuta.io>")
 
-(license LICENSE)
+(license MIT)
 
-(documentation https://url/to/documentation)
+(documentation https://publi.codes)
 
 (package
  (name publicodes)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml yaml core ppx_inline_test)
+ (synopsis "Compiler for the Publicodes language")
+ (description "A compiler for the Publicodes, a programming language for public interest algorithms.")
+ (depends ocaml dune core yaml ppx_show (ppx_inline_test :with-test))
  (tags
-  ("add topics" "to describe" your project)))
+  ("compiler" "publicodes" "public interest" "algorithms" "DSL" "rules as code")))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
