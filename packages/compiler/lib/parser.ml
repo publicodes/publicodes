@@ -6,7 +6,11 @@ let get_key_exn = function
   | `Scalar Yaml.{ value; _ } -> value
   | _ -> raise (Failure "Internat error : Expected an alias or scalrar ")
 
-let parse_mechanism _value = Undefined
+let parse_mechanism : Yaml.yaml -> Ast.rule_value = function
+  | `Scalar Yaml.{ value; _ } ->
+      (* TODO: handle errors from parsing *)
+      Expr (Expressions.Parser.parse value)
+  | _ -> Undefined
 
 let parse : Yaml.yaml -> (program, string) result = function
   | `O { m_members = []; _ } -> Error "Empty file"

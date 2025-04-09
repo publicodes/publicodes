@@ -6,9 +6,13 @@ let () =
       print_endline ("Reading file: " ^ file_path);
       match Yaml_parser.parse_yaml file_path with
       | Ok yaml -> (
-          print_endline "Successfully parsed YAML file";
           match Parser.parse yaml with
-          | Ok program -> Format.printf "program: %a" Ast.pp_program program
+          | Ok program ->
+              Printf.printf "Successfully parsed %d rules\n"
+                (List.length program);
+              List.iter program ~f:(fun rule ->
+                  Format.printf "rule: {\n  name: '%s',\n  value: %a,\n}"
+                    rule.name Ast.pp_rule_value rule.value)
           | Error _err ->
               print_endline "Error printing";
               exit 1)
