@@ -1,5 +1,5 @@
 (executable
- (public_name compiler)
+ (public_name publicodes-compiler)
  (name main)
  (libraries compiler yaml)
  (preprocess
