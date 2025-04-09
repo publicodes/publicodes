@@ -1,5 +1,6 @@
 let parse_yaml file_path =
   let raw_content = Utils.File.read_file file_path in
+  (* let raw_content = Utils.File.read_file file_path in *)
   Yaml.yaml_of_string raw_content
 
 let print_yaml yaml =

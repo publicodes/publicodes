@@ -1,0 +1,6 @@
+(library
+ (name utils)
+ (libraries core ppx_show.runtime)
+ (modules :standard)
+ (preprocess
+  (pps ppx_inline_test ppx_show)))
