@@ -15,7 +15,10 @@ type token =
   | DOT
   | LPAREN
   | RPAREN
-  | DATE_LITERAL of int * int * int
+  | DATE_LITERAL of [ `Day of int * int * int | `Month of int * int ]
+  | NUMBER of float
+  | STRING of string
+  | RULE_NAME of string
 [@@deriving sexp, compare, show]
 
 let token_list : (string * token) list =
