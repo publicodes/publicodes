@@ -16,14 +16,17 @@ let hspace = [%sedlex.regexp? Sub (white_space, Chars "\n\r")]
 
 (* Chars *)
 let digit = [%sedlex.regexp? '0' .. '9']
-let letter = [%sedlex.regexp? 'a' .. 'z' | 'A' .. 'Z' | 0x00C0 .. 0x017F | '$']
+let letter = [%sedlex.regexp? 'a' .. 'z' | 'A' .. 'Z' | 0x00C0 .. 0x017F]
 let symbol = [%sedlex.regexp? Chars ",°$%²_\"«»'" | "€"]
 let char = [%sedlex.regexp? letter | symbol | digit]
 let any_char = [%sedlex.regexp? char | Chars "+-#"]
 
 (* Number *)
 let number = [%sedlex.regexp? Plus digit, Opt ('.', Plus digit)]
-let unit_symbol = [%sedlex.regexp? 0x20A0 .. 0x20CF | Chars "°%"]
+
+let unit_symbol =
+  [%sedlex.regexp?
+    '$' | 0x20A0 .. 0x20CF (* Currencies *) | 0x00A3 (* £ *) | Chars "°%"]
 
 let unit_identifier =
   [%sedlex.regexp?
@@ -47,6 +50,8 @@ let date =
   [%sedlex.regexp?
     Opt (Rep (digit, 2), '/'), Rep (digit, 2), '/', Rep (digit, 4)]
 
+exception Invalid_token of string
+
 let update_acc (lexbuf : lexbuf) : unit =
   let _ = Utf8.lexeme lexbuf in
   ()
@@ -58,13 +63,21 @@ let print x =
   Printf.printf "%s\n" x;
   x
 
-let rec lex (lexbuf : lexbuf) : token =
+(** [lex_one lexbuf] tokenizes the input [lexbuf] and returns the next token.
+    This function recursively processes the input stream, skipping whitespace
+    and recognizing patterns for numbers, strings, operators, keywords, dates,
+    and rule names.
+
+    @param lexbuf The lexing buffer to tokenize
+    @return The next token in the input stream
+    @raise Invalid_token if an unrecognized or malformed token is encountered *)
+let rec lex_one (lexbuf : lexbuf) : token =
   (* let prev_lexeme = Utf8.lexeme lexbuf in
   let prev_pos = lexing_positions lexbuf in *)
   match%sedlex lexbuf with
   | space_plus ->
       update_acc lexbuf;
-      lex lexbuf
+      lex_one lexbuf
   | "+" ->
       update_acc lexbuf;
       ADD
@@ -121,7 +134,7 @@ let rec lex (lexbuf : lexbuf) : token =
       | [ dd; mm; yyyy ] ->
           DATE_LITERAL
             (`Day (int_of_string dd, int_of_string mm, int_of_string yyyy))
-      | _ -> raise (Invalid_argument "Invalid token"))
+      | _ -> raise (Invalid_token "Invalid date format"))
   | number_with_unit ->
       update_acc lexbuf;
       let str = Utf8.lexeme lexbuf in
@@ -147,4 +160,19 @@ let rec lex (lexbuf : lexbuf) : token =
   | rule_name ->
       update_acc lexbuf;
       RULE_NAME (Utf8.lexeme lexbuf)
-  | _ -> raise (Invalid_argument "Invalid token")
+  | eof ->
+      update_acc lexbuf;
+      EOF
+  | _ -> raise (Invalid_token ("Invalid token: " ^ Utf8.lexeme lexbuf))
+
+let lex (publicodes : string) : token list =
+  let lexbuf = Utf8.from_string publicodes in
+  let rec lex_loop acc =
+    try
+      let token = lex_one lexbuf in
+      match token with
+      | EOF -> List.rev (token :: acc)
+      | _ -> lex_loop (token :: acc)
+    with End_of_file -> List.rev acc
+  in
+  lex_loop []

@@ -9,7 +9,7 @@ let get_key_exn = function
 let parse_mechanism : Yaml.yaml -> Ast.rule_value = function
   | `Scalar Yaml.{ value; _ } ->
       (* TODO: handle errors from parsing *)
-      Expr (Expressions.Parser.parse value)
+      Expr (value |> Expressions.Lexer.lex |> Expressions.Parser.parse)
   | _ -> Undefined
 
 let parse : Yaml.yaml -> (program, string) result = function

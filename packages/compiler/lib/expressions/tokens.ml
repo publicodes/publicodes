@@ -15,6 +15,7 @@ type token =
   | DOT
   | LPAREN
   | RPAREN
+  | EOF
   | DATE_LITERAL of [ `Day of int * int * int | `Month of int * int ]
   | NUMBER of float * string option
   | STRING of string
