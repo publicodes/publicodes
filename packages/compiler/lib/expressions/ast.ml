@@ -1,20 +1,22 @@
-open Utils
+open! Utils
+open! Core
 
-type dotted_name = string list [@@deriving show]
-type date = { day : int; year : int; month : int } [@@deriving show]
-type number = Int of int | Decimal of float [@@deriving show]
+type dotted_name = string list [@@deriving sexp, compare, show]
+
+type date =
+  | Day of { day : int; year : int; month : int }
+  | Month of { month : int; year : int }
+[@@deriving sexp, compare, show]
 
 (* NOTE: needed to avoid error with the constant show ppx *)
 [@@@warning "-27"]
 
 type constant =
-  | Number of number * unit option
+  | Number of float * Units.t option
   | Bool of bool
-  | String of
-      (* NOTE: could it be a dotted_name here? *)
-      string
+  | String of string (* NOTE: could it be a dotted_name here? *)
   | Date of date
-[@@deriving show]
+[@@deriving sexp, compare, show]
 
 type binary_op =
   | Add
@@ -28,15 +30,15 @@ type binary_op =
   | LtEq
   | Eq
   | NotEq
-[@@deriving show]
+[@@deriving sexp, compare, show]
 
-type unary_op = Minus [@@deriving show]
+type unary_op = Neg [@@deriving sexp, compare, show]
 
 type naked_t =
   | Const of constant
   | Ref of dotted_name
-  | BinaryOp of binary_op Loc.with_loc * naked_t * naked_t
-  | UnaryOp of unary_op Loc.with_loc * naked_t
-[@@deriving show]
+  | BinaryOp of binary_op * naked_t * naked_t
+  | UnaryOp of unary_op * naked_t
+[@@deriving sexp, compare, show]
 
-type t = naked_t Loc.with_loc [@@deriving show]
+type t = naked_t [@@deriving sexp, compare, show]
