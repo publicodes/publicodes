@@ -1,8 +1,9 @@
 open Core
 open Ast
 
+exception Invalid_rule_name of string
+
 let get_key_exn = function
-  | `Alias str -> str
   | `Scalar Yaml.{ value; _ } -> value
   | _ -> raise (Failure "Internat error : Expected an alias or scalrar ")
 
@@ -12,12 +13,20 @@ let parse_mechanism : Yaml.yaml -> Ast.rule_value = function
       Expr (value |> Expressions.Lexer.lex |> Expressions.Parser.parse)
   | _ -> Undefined
 
+let parse_rule_name : Yaml.yaml -> string list = function
+  | `Scalar Yaml.{ value; _ } -> (
+      let expr = value |> Expressions.Lexer.lex |> Expressions.Parser.parse in
+      match expr with
+      | Ref dotted_name -> dotted_name
+      | _ -> raise (Invalid_rule_name ("Invalid token: " ^ value)))
+  | _ -> raise (Invalid_argument "Expect Yaml Scalar")
+
 let parse : Yaml.yaml -> (program, string) result = function
   | `O { m_members = []; _ } -> Error "Empty file"
   | `O { m_members; _ } ->
       Ok
         (List.map m_members ~f:(fun (key, value) ->
-             { name = get_key_exn key; value = parse_mechanism value }))
+             { name = parse_rule_name key; value = parse_mechanism value }))
   | _ -> failwith "todo"
 
 (*

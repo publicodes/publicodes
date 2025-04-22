@@ -5,7 +5,11 @@ let rec parse (expression : token list) =
   let result, remaining = parse_expression expression in
   match remaining with
   | [] -> result
-  | _ -> failwith "Unexpected tokens remaining after parsing"
+  | EOF :: [] -> result
+  | token :: _ ->
+      failwith
+        ("Unexpected tokens remaining after parsing. Next token: "
+       ^ show_token token)
 
 and parse_expression tokens = parse_equality tokens
 

@@ -11,8 +11,9 @@ let () =
               Printf.printf "Successfully parsed %d rules\n"
                 (List.length program);
               List.iter program ~f:(fun rule ->
-                  Format.printf "rule: {\n  name: '%s',\n  value: %a,\n}"
-                    rule.name Ast.pp_rule_value rule.value)
+                  Format.printf "rule: ";
+                  Ast.pp_rule_def Format.std_formatter rule;
+                  Format.print_newline ())
           | Error _err ->
               print_endline "Error printing";
               exit 1)
