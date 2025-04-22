@@ -4,7 +4,7 @@ type rule_def = {
   name :
     (* FIXME: should be [dotted_name]. The one from [Expressions.Ast] should be
 		 moved into a shared Ast module *)
-    string;
+    string list;
   value : rule_value;
 }
 [@@deriving show]
