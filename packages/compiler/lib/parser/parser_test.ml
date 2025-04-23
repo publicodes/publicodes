@@ -1,6 +1,7 @@
 open Core
 open Ast
 open Expressions.Ast
+open Main
 
 (* Helper to create YAML values for testing *)
 let scalar value =
@@ -28,7 +29,7 @@ let mapping members =
 
 (* Tests for parse_rule_name *)
 let%test_unit "parse: simple rule" =
-  match Parser.parse (mapping [ ("rule", scalar "42") ]) with
+  match parse (mapping [ ("rule", scalar "42") ]) with
   | Ok [ rule_def ] ->
       [%test_eq: string list] rule_def.name [ "rule" ];
       [%test_eq: rule_value] rule_def.value (Expr (Const (Number (42., None))))
@@ -36,7 +37,7 @@ let%test_unit "parse: simple rule" =
 
 let%test_unit "parse: simple rules" =
   match
-    Parser.parse (mapping [ ("rule 1", scalar "42"); ("rule 2", scalar "non") ])
+    parse (mapping [ ("rule 1", scalar "42"); ("rule 2", scalar "non") ])
   with
   | Ok [ rule_def1; rule_def2 ] ->
       [%test_eq: string list] rule_def1.name [ "rule 1" ];
@@ -46,7 +47,7 @@ let%test_unit "parse: simple rules" =
   | _ -> failwith "Expected two rule definitions"
 
 let%test_unit "parse: empty rule" =
-  match Parser.parse (mapping [ ("rule 1", scalar "") ]) with
+  match parse (mapping [ ("rule 1", scalar "") ]) with
   | Ok [ rule_def ] ->
       [%test_eq: string list] rule_def.name [ "rule 1" ];
       [%test_eq: rule_value] rule_def.value Undefined
@@ -54,7 +55,7 @@ let%test_unit "parse: empty rule" =
 
 let%test_unit "parse: rules with title" =
   match
-    Parser.parse
+    parse
       (mapping
          [ ("rule 1 . subrule 2", mapping [ ("titre", scalar "mon titre") ]) ])
   with
@@ -66,7 +67,7 @@ let%test_unit "parse: rules with title" =
 
 let%test_unit "parse: rules with description and valeur" =
   match
-    Parser.parse
+    parse
       (mapping
          [
            ( "rule",
