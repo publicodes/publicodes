@@ -17,3 +17,4 @@ type rule_def = {
 [@@deriving show, sexp, compare]
 
 type program = rule_def list [@@deriving show, sexp, compare]
+type t = program [@@deriving show, sexp, compare]
