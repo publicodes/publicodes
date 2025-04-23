@@ -1,12 +1,12 @@
 let () =
   match Sys.argv with
   | [| _; file_path |] -> (
-      let open Compiler in
+      let open Compiler.Main in
       let open Core in
       print_endline ("Reading file: " ^ file_path);
       match Yaml_parser.parse_yaml file_path with
       | Ok yaml -> (
-          match Parser.parse yaml with
+          match compile yaml with
           | Ok program ->
               Printf.printf "Successfully parsed %d rules\n"
                 (List.length program);
