@@ -1,14 +1,5 @@
 open Core
 
-module RuleName = struct
-  type t = string list [@@deriving sexp, compare]
-end
-
-module RuleNameSet = struct
-  module M = Set.Make (RuleName)
-  include M
-end
-
 let parents rule =
   List.fold
     ~f:(fun (acc, parents) rule ->
@@ -17,7 +8,7 @@ let parents rule =
     ~init:([], []) rule
   |> snd
 
-let disambiguate_ref ~rules ~current (name : string list) =
+let resolve ~rules ~current (name : string list) =
   let parent_paths = parents current @ [ [] ] in
   List.find_map parent_paths ~f:(fun parent ->
       let rule = parent @ name in

@@ -1,3 +1,5 @@
+open Compiler
+
 let () =
   match Sys.argv with
   | [| _; file_path |] -> (
@@ -7,13 +9,7 @@ let () =
       match Yaml_parser.parse_yaml file_path with
       | Ok yaml -> (
           match compile yaml with
-          | Ok program ->
-              Printf.printf "Successfully parsed %d rules\n"
-                (List.length program);
-              List.iter program ~f:(fun rule ->
-                  Format.printf "rule: ";
-                  Ast.pp_rule_def Format.std_formatter rule;
-                  Format.print_newline ())
+          | Ok program -> print_endline (Yojson.Safe.to_string program)
           | Error _err ->
               print_endline "Error printing";
               exit 1)

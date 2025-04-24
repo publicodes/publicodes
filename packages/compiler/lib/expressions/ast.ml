@@ -1,23 +1,20 @@
-open! Utils
-open! Core
-
-type dotted_name = string list [@@deriving sexp, compare, show]
+open Core
+open Common
 
 type date =
   | Day of { day : int; year : int; month : int }
   | Month of { month : int; year : int }
 [@@deriving sexp, compare, show]
 
-(* NOTE: needed to avoid error with the constant show ppx *)
-[@@@warning "-27"]
-
+(* Changed from polymorphic to classic variants *)
 type constant =
   | Number of float * Units.t option
   | Bool of bool
-  | String of string (* NOTE: could it be a dotted_name here? *)
+  | String of string
   | Date of date
 [@@deriving sexp, compare, show]
 
+(* Changed from polymorphic to classic variants *)
 type binary_op =
   | Add
   | Sub
@@ -32,11 +29,12 @@ type binary_op =
   | NotEq
 [@@deriving sexp, compare, show]
 
+(* Changed from polymorphic to classic variants *)
 type unary_op = Neg [@@deriving sexp, compare, show]
 
 type naked_t =
   | Const of constant
-  | Ref of dotted_name
+  | Ref of Dotted_name.t
   | BinaryOp of binary_op * naked_t * naked_t
   | UnaryOp of unary_op * naked_t
 [@@deriving sexp, compare, show]
