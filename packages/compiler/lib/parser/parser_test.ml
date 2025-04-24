@@ -1,6 +1,6 @@
 open Core
 open Ast
-open Expressions.Ast
+open Expr.Ast
 open Main
 
 (* Helper to create YAML values for testing *)

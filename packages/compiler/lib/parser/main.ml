@@ -4,8 +4,7 @@ open Ast
 exception Invalid_rule_name of string
 
 let parse_expression value =
-  value |> Expressions.Lexer.lex |> Expressions.Parser.parse |> fun expr ->
-  Expr expr
+  value |> Expr.Lexer.lex |> Expr.Parser.parse |> fun expr -> Expr expr
 
 let get_str_exn = function
   | `Scalar Yaml.{ value; _ } -> value
@@ -37,7 +36,7 @@ let parse_meta : Yaml.yaml -> Ast.rule_meta list = function
 
 let parse_rule_name : Yaml.yaml -> string list = function
   | `Scalar Yaml.{ value; _ } -> (
-      let expr = value |> Expressions.Lexer.lex |> Expressions.Parser.parse in
+      let expr = value |> Expr.Lexer.lex |> Expr.Parser.parse in
       match expr with
       | Ref dotted_name -> dotted_name
       | _ -> raise (Invalid_rule_name ("Invalid token: " ^ value)))
