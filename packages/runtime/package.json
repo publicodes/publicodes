@@ -1,0 +1,37 @@
+{
+  "name": "@publicodes/runtime",
+  "version": "2.0.0-alpha.1",
+  "description": "A declarative language for encoding public algorithm",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/publicodes/publicodes.git",
+    "directory": "packages/runtime"
+  },
+  "bugs": "https://github.com/publicodes/publicodes/issues",
+  "homepage": "https://publi.codes/",
+  "license": "MIT",
+  "files": [
+    "dist/"
+  ],
+  "devDependencies": {
+    "rolldown": "1.0.0-beta.8",
+    "tsc": "^2.0.4",
+    "vitest": "^3.1.2"
+  },
+  "scripts": {
+    "build": "rolldown -c rolldown.config.js",
+    "test": "vitest",
+    "test:type": "tsc --noEmit"
+  }
+}
