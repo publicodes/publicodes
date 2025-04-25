@@ -1,0 +1,8 @@
+a: 10 + b
+b:
+  titre: "Test"
+  valeur: 5 * 2
+
+b . c: (10 + 5 ** 2) / b
+d: date > 01/2024
+date: 01/05/2025

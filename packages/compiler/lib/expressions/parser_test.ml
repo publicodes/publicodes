@@ -74,3 +74,26 @@ let%test_unit "Parse -(3 * -a)" =
        ( Neg,
          BinaryOp (Mul, Const (Number (3., None)), UnaryOp (Neg, Ref [ "a" ]))
        ))
+
+let%test_unit "Parse (10 + 5 ** 2) / b" =
+  [%test_eq: Ast.t]
+    (Parser.parse
+       [
+         LPAREN;
+         NUMBER (10., None);
+         ADD;
+         NUMBER (5., None);
+         POW;
+         NUMBER (2., None);
+         RPAREN;
+         DIV;
+         RULE_NAME "b";
+       ])
+    (BinaryOp
+       ( Div,
+         BinaryOp
+           ( Add,
+             Const (Number (10., None)),
+             BinaryOp (Pow, Const (Number (5., None)), Const (Number (2., None)))
+           ),
+         Ref [ "b" ] ))
