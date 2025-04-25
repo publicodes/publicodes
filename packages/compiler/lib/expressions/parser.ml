@@ -57,7 +57,7 @@ and parse_additive tokens =
 
 (* Handle multiplication and division *)
 and parse_multiplicative tokens =
-  let left, tokens = parse_primary tokens in
+  let left, tokens = parse_power tokens in
   match tokens with
   | MUL :: rest ->
       let right, rest = parse_multiplicative rest in
@@ -65,6 +65,15 @@ and parse_multiplicative tokens =
   | DIV :: rest ->
       let right, rest = parse_multiplicative rest in
       (BinaryOp (Div, left, right), rest)
+  | _ -> (left, tokens)
+
+(* Handle exponentiation *)
+and parse_power tokens =
+  let left, tokens = parse_primary tokens in
+  match tokens with
+  | POW :: rest ->
+      let right, rest = parse_power rest in
+      (BinaryOp (Pow, left, right), rest)
   | _ -> (left, tokens)
 
 (* Handle primary expressions: constants, parentheses, rule names *)
