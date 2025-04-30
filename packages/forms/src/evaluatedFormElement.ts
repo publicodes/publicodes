@@ -174,9 +174,16 @@ export function getEvaluatedFormElement<Name extends string>(
 		return element
 	}
 
-	const possibilities = engine.getPossibilitiesFor(element.id as Name, {
-		filterNotApplicable: true,
-	})
+	let possibilities: Array<Possibility> | null
+	try {
+		possibilities = engine.getPossibilitiesFor(element.id, {
+			filterNotApplicable: true,
+		})
+	} catch {
+		throw new Error(
+			'You must enable `flag.filterNotApplicablePossibilities` in engine instantiation to use @publicodes/forms as it needs the filterNotApplicable option',
+		)
+	}
 
 	if (possibilities) {
 		element.options = getOptionList(engine, possibilities)
