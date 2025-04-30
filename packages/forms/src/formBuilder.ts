@@ -214,7 +214,7 @@ export class FormBuilder<RuleName extends string> {
 	 */
 	currentPage(
 		formState: FormState<RuleName>,
-	): Array<EvaluatedFormElement & FormPageElementProp> {
+	): Array<EvaluatedFormElement<RuleName> & FormPageElementProp> {
 		if (formState.situation !== this.engine.getSituation()) {
 			this.engine.setSituation(formState.situation)
 		}

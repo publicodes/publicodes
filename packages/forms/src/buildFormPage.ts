@@ -61,14 +61,14 @@ export function buildFormPage<Name extends string>(
 	engine: Engine<Name>,
 	targets: Array<Name>,
 	lastAnswered: Name | null,
-): Array<FormPageElementProp & EvaluatedFormElement> {
+): Array<FormPageElementProp & EvaluatedFormElement<Name>> {
 	const lastAnsweredIndex = page.indexOf(lastAnswered as Name)
 
 	const formPage = page.map((dottedName: Name, i) => {
 		const element = getEvaluatedFormElement(
 			engine,
 			dottedName,
-		) as FormPageElementProp & EvaluatedFormElement
+		) as FormPageElementProp & EvaluatedFormElement<Name>
 
 		element.autofocus = false
 		element.useful =
