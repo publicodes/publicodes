@@ -1,44 +1,27 @@
 open Core
 open Ast
 open Expr.Ast
+open Yaml_parser
 open Parse
 
-(* Helper to create YAML values for testing *)
-let scalar value =
-  `Scalar
-    Yaml.
-      {
-        value;
-        anchor = None;
-        tag = None;
-        plain_implicit = true;
-        quoted_implicit = false;
-        style = `Plain;
-      }
+let scalar (value : string) : scalar =
+  ({ value; style = `Plain }, With_pos.dummy)
 
-let mapping members =
-  `O
-    Yaml.
-      {
-        m_anchor = None;
-        m_tag = None;
-        m_implicit = true;
-        m_members =
-          List.map members ~f:(fun (key, value) -> (scalar key, value));
-      }
+let value v = `Scalar (scalar v)
+
+let obj (members : (string * yaml) list) : yaml =
+  `O (List.map members ~f:(fun (key, value) -> (scalar key, value)))
 
 (* Tests for parse_rule_name *)
 let%test_unit "parse: simple rule" =
-  match parse (mapping [ ("rule", scalar "42") ]) with
+  match parse (obj [ ("rule", value "42") ]) with
   | Ok [ rule_def ] ->
       [%test_eq: string list] rule_def.name [ "rule" ];
       [%test_eq: rule_value] rule_def.value (Expr (Const (Number (42., None))))
   | _ -> failwith "Expected a single rule definition"
 
 let%test_unit "parse: simple rules" =
-  match
-    parse (mapping [ ("rule 1", scalar "42"); ("rule 2", scalar "non") ])
-  with
+  match parse (obj [ ("rule 1", value "42"); ("rule 2", value "non") ]) with
   | Ok [ rule_def1; rule_def2 ] ->
       [%test_eq: string list] rule_def1.name [ "rule 1" ];
       [%test_eq: rule_value] rule_def1.value (Expr (Const (Number (42., None))));
@@ -47,7 +30,7 @@ let%test_unit "parse: simple rules" =
   | _ -> failwith "Expected two rule definitions"
 
 let%test_unit "parse: empty rule" =
-  match parse (mapping [ ("rule 1", scalar "") ]) with
+  match parse (obj [ ("rule 1", value "") ]) with
   | Ok [ rule_def ] ->
       [%test_eq: string list] rule_def.name [ "rule 1" ];
       [%test_eq: rule_value] rule_def.value Undefined
@@ -55,9 +38,7 @@ let%test_unit "parse: empty rule" =
 
 let%test_unit "parse: rules with title" =
   match
-    parse
-      (mapping
-         [ ("rule 1 . subrule 2", mapping [ ("titre", scalar "mon titre") ]) ])
+    parse (obj [ ("rule 1 . subrule 2", obj [ ("titre", value "mon titre") ]) ])
   with
   | Ok [ rule_def ] ->
       [%test_eq: string list] rule_def.name [ "rule 1"; "subrule 2" ];
@@ -68,13 +49,13 @@ let%test_unit "parse: rules with title" =
 let%test_unit "parse: rules with description and valeur" =
   match
     parse
-      (mapping
+      (obj
          [
            ( "rule",
-             mapping
+             obj
                [
-                 ("description", scalar "ma description");
-                 ("valeur", scalar "rule 3");
+                 ("description", value "ma description");
+                 ("valeur", value "rule 3");
                ] );
          ])
   with
