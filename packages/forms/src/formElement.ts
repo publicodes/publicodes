@@ -8,10 +8,10 @@ export type Option = {
 	description?: string
 }
 
-interface FormMeta {
+interface FormMeta<Name> {
 	label: string
 	description: string | undefined
-	id: string
+	id: Name
 }
 
 type InputType =
@@ -24,24 +24,25 @@ type InputType =
 	// | 'tel'
 	| 'text'
 
-export interface InputElement<Type extends InputType> extends FormMeta {
+export interface InputElement<Name, Type extends InputType>
+	extends FormMeta<Name> {
 	element: 'input'
 	type: Type
 }
 
-export interface SelectElement extends FormMeta {
+export interface SelectElement<Name> extends FormMeta<Name> {
 	element: 'select'
 	options: Array<Option>
 }
 
-export interface RadioGroupElement extends FormMeta {
+export interface RadioGroupElement<Name> extends FormMeta<Name> {
 	element: 'RadioGroup'
 	style: 'button' | 'card' | 'default'
 	orientation: 'horizontal' | 'vertical'
 	options: Array<Option>
 }
 
-export interface TextareaElement extends FormMeta {
+export interface TextareaElement<Name> extends FormMeta<Name> {
 	element: 'textarea'
 }
 
@@ -89,11 +90,11 @@ export interface TextareaElement extends FormMeta {
  * @see {@link getFormElement}
  */
 
-export type FormElement =
-	| InputElement<InputType>
-	| SelectElement
-	| RadioGroupElement
-	| TextareaElement
+export type FormElement<Name> =
+	| InputElement<Name, InputType>
+	| SelectElement<Name>
+	| RadioGroupElement<Name>
+	| TextareaElement<Name>
 
 /**
  * Generates a UI form element representation based on a Publicodes rule.
@@ -127,7 +128,7 @@ export type FormElement =
 export function getFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
-): FormElement {
+): FormElement<Name> {
 	const rule = engine.getRule(dottedName)
 	const rawRule = rule.rawNode as RuleWithFormMeta
 	const typeInfo = engine.context.nodesTypes.get(rule)
@@ -174,7 +175,7 @@ export function getFormElement<Name extends string>(
 		}
 	}
 
-	const possibilities = engine.getPossibilitiesFor(rule.dottedName)
+	const possibilities = engine.getPossibilitiesFor(rule.dottedName as Name)
 	if (possibilities) {
 		const options = getOptionList(engine, possibilities)
 
