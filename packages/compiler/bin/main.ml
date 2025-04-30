@@ -1,20 +1,16 @@
 open Compiler
+open Core
 
 let () =
-  match Sys.argv with
+  match Sys.get_argv () with
   | [| _; file_path |] -> (
-      let open Compiler.Main in
-      let open Core in
       print_endline ("Reading file: " ^ file_path);
-      match Yaml_parser.parse_yaml file_path with
-      | Ok yaml -> (
-          match compile yaml with
-          | Ok program -> print_endline (Yojson.Safe.to_string program)
-          | Error _err ->
-              print_endline "Error printing";
-              exit 1)
-      | Error _ ->
-          print_endline "Failed to parse YAML file";
+      let raw_content = Utils.File.read_file file_path in
+
+      match compile raw_content with
+      | Ok program -> print_endline (Yojson.Safe.to_string program)
+      | Error err ->
+          print_endline ("Error compiling: " ^ err);
           exit 1)
   | _ ->
       print_endline "Usage: ./main <file_path>";

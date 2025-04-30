@@ -1,7 +1,7 @@
 open Core
 open Ast
 open Expr.Ast
-open Main
+open Parse
 
 (* Helper to create YAML values for testing *)
 let scalar value =
