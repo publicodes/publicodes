@@ -6,7 +6,6 @@ type date =
   | Month of { month : int; year : int }
 [@@deriving sexp, compare, show]
 
-(* Changed from polymorphic to classic variants *)
 type constant =
   | Number of float * Units.t option
   | Bool of bool
@@ -14,7 +13,6 @@ type constant =
   | Date of date
 [@@deriving sexp, compare, show]
 
-(* Changed from polymorphic to classic variants *)
 type binary_op =
   | Add
   | Sub
@@ -29,14 +27,13 @@ type binary_op =
   | NotEq
 [@@deriving sexp, compare, show]
 
-(* Changed from polymorphic to classic variants *)
 type unary_op = Neg [@@deriving sexp, compare, show]
 
-type naked_t =
+type t = naked_t
+
+and naked_t =
   | Const of constant
   | Ref of Dotted_name.t
-  | BinaryOp of binary_op * naked_t * naked_t
-  | UnaryOp of unary_op * naked_t
+  | BinaryOp of binary_op * t * t
+  | UnaryOp of unary_op * t
 [@@deriving sexp, compare, show]
-
-type t = naked_t [@@deriving sexp, compare, show]
