@@ -211,7 +211,7 @@ describe('FormBuilder', () => {
 
 			state = formBuilder.handleInputChange(state, 'user . age', 25)
 
-			expect(state.situation).toHaveProperty('user . age')
+			expect(state.situation).toHaveProperty(['user . age'])
 			expect(state.lastAnswered).toBe('user . age')
 		})
 
@@ -223,7 +223,7 @@ describe('FormBuilder', () => {
 
 			state = formBuilder.handleInputChange(state, 'user . age', undefined)
 
-			expect(state.situation).not.toHaveProperty('user . age')
+			expect(state.situation).not.toHaveProperty(['user . age'])
 		})
 	})
 
