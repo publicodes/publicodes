@@ -64,6 +64,15 @@ export type PageBuilder<RuleName> = (
 ) => Array<Array<RuleName>>
 
 /**
+ * An object containing options for configuring the form behavior.
+ *
+ * FIXME: deal with selectTreshold doc
+ */
+export type FormOptions = {
+	selectTreshold?: number
+}
+
+/**
  * Creates and manages multi-page forms based on Publicodes rules.
  *
  * FormBuilder provides a complete solution for building dynamic, multi-step forms
@@ -96,16 +105,20 @@ export type PageBuilder<RuleName> = (
 export class FormBuilder<RuleName extends string> {
 	private engine: Engine<RuleName>
 	private pageBuilder: PageBuilder<RuleName>
+	private formOptions: FormOptions
 
 	constructor({
 		engine,
 		pageBuilder = groupByNamespace,
+		formOptions = {},
 	}: {
 		engine: Engine<RuleName>
 		pageBuilder?: PageBuilder<RuleName>
+		formOptions?: FormOptions
 	}) {
 		this.engine = engine
 		this.pageBuilder = pageBuilder
+		this.formOptions = formOptions
 	}
 
 	/**
@@ -228,6 +241,7 @@ export class FormBuilder<RuleName extends string> {
 			this.engine,
 			formState.targets,
 			formState.lastAnswered,
+			this.formOptions,
 		)
 	}
 

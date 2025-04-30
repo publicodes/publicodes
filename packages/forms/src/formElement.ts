@@ -1,6 +1,7 @@
 import type Engine from 'publicodes'
 import { formatValue, Possibility, PublicodesError } from 'publicodes'
 import { RuleWithFormMeta } from '.'
+import { FormOptions } from './formBuilder'
 
 export type Option = {
 	value: string | number | boolean
@@ -128,6 +129,7 @@ export type FormElement<Name> =
 export function getFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
+	formOptions: FormOptions = {},
 ): FormElement<Name> {
 	const rule = engine.getRule(dottedName)
 	const rawRule = rule.rawNode as RuleWithFormMeta
@@ -180,7 +182,7 @@ export function getFormElement<Name extends string>(
 		const options = getOptionList(engine, possibilities)
 
 		if (!saisie) {
-			if (options.length > 5) {
+			if (options.length > (formOptions?.selectTreshold || 5)) {
 				saisie = 'menu déroulant'
 			} else {
 				saisie = 'boutons radio'

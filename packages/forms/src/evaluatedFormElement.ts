@@ -1,3 +1,4 @@
+import { FormOptions } from './formBuilder'
 import type Engine from 'publicodes'
 import { Possibility, serializeUnit } from 'publicodes'
 import {
@@ -120,10 +121,12 @@ export type EvaluatedFormElement<Name> =
 export function getEvaluatedFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
+	formOptions: FormOptions = {},
 ): EvaluatedFormElement<Name> {
 	const element = getFormElement(
 		engine,
 		dottedName,
+		formOptions,
 	) as EvaluatedFormElement<Name>
 
 	element.applicable =
