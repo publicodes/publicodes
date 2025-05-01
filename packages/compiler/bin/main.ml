@@ -7,7 +7,7 @@ let () =
       print_endline ("Reading file: " ^ file_path);
       let raw_content = Utils.File.read_file file_path in
 
-      match compile raw_content with
+      match compile file_path raw_content with
       | Ok program -> print_endline (Yojson.Safe.to_string program)
       | Error err ->
           print_endline ("Error compiling: " ^ err);
