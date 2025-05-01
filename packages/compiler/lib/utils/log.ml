@@ -1,5 +1,7 @@
-type kind = Lex | Syntax | Type
-type level = Error | Warning | Info
+open Core
+
+type kind = Yaml | Lex | Syntax | Type [@@deriving show, sexp, compare]
+type level = Err | Warning | Info [@@deriving show, sexp, compare]
 
 type log = {
   kind : kind;
@@ -7,5 +9,6 @@ type log = {
   message : string;
   hint : string option;
 }
+[@@deriving show, sexp, compare]
 
-type t = log With_pos.t
+type t = log With_pos.t [@@deriving show, sexp, compare]

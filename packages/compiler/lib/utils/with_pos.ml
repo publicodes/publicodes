@@ -5,7 +5,8 @@ type pos = { file : string; start_pos : int * int; end_pos : int * int }
 
 type 'a t = 'a * pos [@@deriving show, sexp, compare]
 
-let dummy_pos = { file = ""; start_pos = (0, 0); end_pos = (0, 0) }
+let dummy = { file = ""; start_pos = (0, 0); end_pos = (0, 0) }
+let beginning_of_file file = { file; start_pos = (1, 1); end_pos = (1, 1) }
 
 (* Map operation *)
 let map ~f (x, pos) = (f x, pos)

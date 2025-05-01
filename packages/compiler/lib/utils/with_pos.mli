@@ -10,7 +10,10 @@ type 'a t = 'a * pos [@@deriving show, sexp, compare]
 (** Type to attach position information to a value. The first element is the
     value and the second element is the position. *)
 
-val dummy_pos : pos
+val beginning_of_file : string -> pos
+(** [beginning_of_file file] returns a position at the beginning of the file. *)
+
+val dummy : pos
 (** A dummy position used when no position information is available. *)
 
 (** {2 Map operation} *)
