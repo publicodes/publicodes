@@ -1,5 +1,5 @@
 open Core
-open! Common
+open Common
 
 type rule_value = Expr of Expr.Ast.t | Undefined
 [@@deriving show, sexp, compare]
