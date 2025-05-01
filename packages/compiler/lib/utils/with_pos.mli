@@ -31,8 +31,8 @@ val ( let+ ) : 'a t -> ('a -> 'b) -> 'b t
 
 (** {2 Utility functions} *)
 
-val without : 'a t -> 'a
-(** [without pos] returns the value without the position information. *)
+val value : 'a t -> 'a
+(** [value val] returns the value without the position information. *)
 
 val mk : pos -> 'a -> 'a t
 (** [mk pos x] creates a new value with the given position [pos] and value [x].

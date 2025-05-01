@@ -1,5 +1,6 @@
 open Core
 open Parser.Ast
+open Utils
 open Expr.Ast
 open Common
 
@@ -26,13 +27,14 @@ let resolve_value names current_rule expr =
 
 let resolve ast =
   let names =
-    Dotted_name.Set.of_list (List.map ast ~f:(fun rule -> rule.name))
+    Dotted_name.Set.of_list
+      (List.map ast ~f:(fun rule -> With_pos.value rule.name))
   in
   let ast =
     List.map ast ~f:(fun rule ->
         {
           name = rule.name;
-          value = resolve_value names rule.name rule.value;
+          value = resolve_value names (With_pos.value rule.name) rule.value;
           meta = rule.meta;
         })
   in

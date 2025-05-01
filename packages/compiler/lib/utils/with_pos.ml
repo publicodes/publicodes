@@ -16,5 +16,5 @@ let ( >>| ) m f = map ~f m
 let ( let+ ) m f = map ~f m
 
 (* Utility functions *)
-let without (x, _) = x
+let value (x, _) = x
 let mk pos x = (x, pos)
