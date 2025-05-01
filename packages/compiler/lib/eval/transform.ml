@@ -1,5 +1,6 @@
 open Ast
 open Core
+open Utils
 open Common
 
 (* Helper function to convert between the two constant types *)
@@ -27,5 +28,7 @@ let transform ast =
     Dotted_name.Hashtbl.create ~size:(List.length ast) ~growth_allowed:false ()
   in
   List.iter ast ~f:(fun Parser.Ast.{ name; value; _ } ->
-      Hashtbl.add evalTree ~key:name ~data:(transform_value value) |> ignore);
+      Hashtbl.add evalTree ~key:(With_pos.value name)
+        ~data:(transform_value value)
+      |> ignore);
   evalTree
