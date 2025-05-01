@@ -29,9 +29,7 @@ type binary_op =
 
 type unary_op = Neg [@@deriving sexp, compare, show]
 
-type t = naked_t
-
-and naked_t =
+type t =
   | Const of constant
   | Ref of Dotted_name.t
   | BinaryOp of binary_op * t * t
