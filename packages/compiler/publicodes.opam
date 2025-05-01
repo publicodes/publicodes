@@ -27,7 +27,11 @@ depends: [
   "core"
   "yaml"
   "ppx_show"
+  "sedlex"
+  "yojson"
   "ppx_inline_test" {with-test}
+  "ppx_assert" {with-test}
+  "ppx_compare" {with-test}
   "odoc" {with-doc}
 ]
 build: [
