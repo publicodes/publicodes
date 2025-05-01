@@ -3,6 +3,7 @@ exception Invalid_rule_name of string
 open Ast
 open Core
 open Yaml_parser
+open Utils
 
 let parse_expression value =
   let expr = value |> Expr.Lexer.lex |> Expr.Parser.parse in
@@ -36,10 +37,10 @@ let parse_meta : yaml -> Ast.rule_meta list = function
   | _ -> failwith "Wrong format"
 
 let parse_rule_name s =
-  let value = get_value s in
+  let { value; _ }, pos = s in
   let expr = value |> Expr.Lexer.lex |> Expr.Parser.parse in
   match expr with
-  | Ref dotted_name -> dotted_name
+  | Ref dotted_name -> With_pos.mk pos dotted_name
   | _ -> raise (Invalid_rule_name ("Invalid token: " ^ value))
 
 let parse : yaml -> (program, string) result = function
