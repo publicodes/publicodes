@@ -52,13 +52,12 @@ let check_orphan_rules rule_names ast =
 
 let resolve ast =
   let names =
-    Dotted_name.Set.of_list
-      (List.map ast ~f:(fun rule -> With_pos.value rule.name))
+    Dotted_name.Set.of_list (List.map ast ~f:(fun rule -> Pos.value rule.name))
   in
   let ast =
     List.map ast ~f:(fun rule ->
         { name= rule.name
-        ; value= resolve_value names (With_pos.value rule.name) rule.value
+        ; value= resolve_value names (Pos.value rule.name) rule.value
         ; meta= rule.meta } )
   in
   return ~logs:(check_orphan_rules names ast) (ast, names)

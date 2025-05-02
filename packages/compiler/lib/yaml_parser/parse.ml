@@ -38,7 +38,7 @@ let message_traduction =
     , ("`:` non valide à cet endroit", None) ) ]
 
 let make_scalar pos (scalar : Yaml.scalar) =
-  With_pos.mk pos Ast.{value= scalar.value; style= scalar.style}
+  Pos.mk pos Ast.{value= scalar.value; style= scalar.style}
 
 let print_token =
   let open Event in
@@ -70,12 +70,12 @@ let parse (filename : string) (content : string) : yaml Output.t =
   let open Output in
   (* Create a parser from the content *)
   let pos_from_mark Event.{start_mark; end_mark} =
-    With_pos.
+    Pos.
       { file= filename
       ; start_pos= (start_mark.line + 1, start_mark.column + 1)
       ; end_pos= (end_mark.line + 1, end_mark.column + 1) }
   in
-  let transform_error ?(pos = With_pos.beginning_of_file filename) result =
+  let transform_error ?(pos = Pos.beginning_of_file filename) result =
     match result with
     | Ok result ->
         Output.return result

@@ -8,12 +8,10 @@ type rule_value = Expr of Expr.Ast.t | Undefined
 type rule_meta = Title of string | Description of string
 [@@deriving show, sexp, compare]
 
-type rule_def = {
-  name : Dotted_name.t With_pos.t;
-  value : rule_value;
-  meta : rule_meta list;
-}
+type rule_def =
+  {name: Dotted_name.t Pos.t; value: rule_value; meta: rule_meta list}
 [@@deriving show, sexp, compare]
 
 type program = rule_def list [@@deriving show, sexp, compare]
+
 type t = program [@@deriving show, sexp, compare]
