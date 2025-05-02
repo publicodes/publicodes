@@ -2,19 +2,13 @@
 
     NOTE: we may want to refactor this module to a more generic way of Mark. *)
 
-type pos = { file : string; start_pos : int * int; end_pos : int * int }
-[@@deriving show, sexp, compare]
 (** Position type containing file name, line and column numbers. *)
+type pos = {file: string; start_pos: int * int; end_pos: int * int}
+[@@deriving show, sexp, compare]
 
-type 'a t = 'a * pos [@@deriving show, sexp, compare]
 (** Type to attach position information to a value. The first element is the
     value and the second element is the position. *)
-
-val beginning_of_file : string -> pos
-(** [beginning_of_file file] returns a position at the beginning of the file. *)
-
-val dummy : pos
-(** A dummy position used when no position information is available. *)
+type 'a t = 'a * pos [@@deriving show, sexp, compare]
 
 (** {2 Map operation} *)
 
@@ -34,6 +28,14 @@ val ( let+ ) : 'a t -> ('a -> 'b) -> 'b t
 val value : 'a t -> 'a
 (** [value val] returns the value without the position information. *)
 
+val pos : 'a t -> pos
+(** [pos val] returns the position information of the value. *)
+
 val mk : pos -> 'a -> 'a t
-(** [mk pos x] creates a new value with the given position [pos] and value [x].
-*)
+(** [mk pos x] creates a new value with the given position [pos] and value [x]. *)
+
+val beginning_of_file : string -> pos
+(** [beginning_of_file file] returns a position at the beginning of the file. *)
+
+val dummy : pos
+(** A dummy position used when no position information is available. *)

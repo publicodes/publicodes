@@ -56,14 +56,14 @@ let parse ~filename yaml : program Output.t =
     let expr = value |> Expr.Lexer.lex |> Expr.Parser.parse in
     match expr with
     | Ref dotted_name ->
-        With_pos.mk pos dotted_name
+        Pos.mk pos dotted_name
     | _ ->
         raise (Invalid_rule_name ("Invalid token: " ^ value))
   in
   match yaml with
   | `O [] ->
       fatal_error
-        ~pos:(With_pos.beginning_of_file filename)
+        ~pos:(Pos.beginning_of_file filename)
         ~kind:`Syntax "Empty file"
   | `O m_members ->
       return
