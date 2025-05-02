@@ -1,0 +1,50 @@
+open Core
+
+type 'a t = 'a option * Log.t list [@@deriving show, sexp, compare]
+
+let return ?(logs = []) x = (Some x, logs)
+
+let result (x, _) = x
+
+let logs (_, logs) = logs
+
+(* Bind operation *)
+let bind (x_opt, logs1) ~f =
+  match x_opt with
+  | Some x ->
+      let y_opt, logs2 = f x in
+      (y_opt, logs1 @ logs2)
+  | None ->
+      (* Propagate None, keep existing logs *)
+      (None, logs1)
+
+(* Map operation *)
+let map ~f (x_opt, logs) =
+  match x_opt with
+  | Some x ->
+      (Some (f x), logs)
+  | None ->
+      (* Propagate None, keep existing logs *)
+      (None, logs)
+
+(* Helper *)
+
+(* Interrupt compilation *)
+let fatal_error ~pos ~kind ?hint message =
+  let log = Log.error ~pos ~kind ?hint message in
+  (None, [log])
+
+(* Monadic operators *)
+let ( >>= ) m f = bind m ~f
+
+let ( >>| ) m f = map ~f m
+
+(* Applicative syntax *)
+let ( let+ ) m f = map ~f m
+
+let ( let* ) m f = bind m ~f
+
+(* Print functions *)
+
+let print_logs (output : 'a t) =
+  output |> logs |> List.iter ~f:(fun log -> Format.printf "%a\n" Log.pp log)
