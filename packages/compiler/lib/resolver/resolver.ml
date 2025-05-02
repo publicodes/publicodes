@@ -29,6 +29,27 @@ let resolve_value names current_rule expr =
   | Expr expr ->
       Expr (disambiguate_expr names current_rule expr)
 
+let check_orphan_rules rule_names ast =
+  let warn_if_orphan {name= name, pos; _} =
+    let parent = Dotted_name.parent name in
+    match parent with
+    | None ->
+        None
+    | Some parent ->
+        if not (Set.mem rule_names parent) then
+          Some
+            (Log.error ~pos ~kind:`Syntax
+               ~hint:
+                 (Format.asprintf {|Créez une règle vide pour le parent:
+
+%a:
+|}
+                    Dotted_name.pp parent )
+               "Le parent de la règle n'existe pas" )
+        else None
+  in
+  List.filter_map ast ~f:warn_if_orphan
+
 let resolve ast =
   let names =
     Dotted_name.Set.of_list
@@ -40,4 +61,4 @@ let resolve ast =
         ; value= resolve_value names (With_pos.value rule.name) rule.value
         ; meta= rule.meta } )
   in
-  return (ast, names)
+  return ~logs:(check_orphan_rules names ast) (ast, names)
