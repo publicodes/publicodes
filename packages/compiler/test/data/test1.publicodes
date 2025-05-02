@@ -2,3 +2,5 @@ a: 10 + b
 b:
   valeur: 5 * 2
   titre: "Test"
+
+x . y: 15
