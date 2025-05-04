@@ -8,8 +8,8 @@ open Common
 let disambiguate_expr rule_names current_rule expr =
   let rec resolve expr =
     match expr with
-    | Ref name ->
-        Ref (Reference.resolve ~rules:rule_names ~current:current_rule name)
+    | Ref (name, pos) ->
+        Ref (Reference.resolve ~rules:rule_names ~current:current_rule name, pos)
     | BinaryOp (operator, left, right) ->
         let left = resolve left in
         let right = resolve right in

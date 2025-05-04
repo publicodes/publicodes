@@ -1,9 +1,10 @@
 open Core
 open Common
+open Utils
 
 type date =
-  | Day of { day : int; year : int; month : int }
-  | Month of { month : int; year : int }
+  | Day of {day: int; year: int; month: int}
+  | Month of {month: int; year: int}
 [@@deriving sexp, compare, show]
 
 type constant =
@@ -29,9 +30,10 @@ type binary_op =
 
 type unary_op = Neg [@@deriving sexp, compare, show]
 
-type t =
-  | Const of constant
-  | Ref of Dotted_name.t
-  | BinaryOp of binary_op * t * t
-  | UnaryOp of unary_op * t
-[@@deriving sexp, compare, show]
+type expr =
+  | Const of constant Pos.t
+  | Ref of Dotted_name.t Pos.t
+  | BinaryOp of binary_op Pos.t * t * t
+  | UnaryOp of unary_op Pos.t * t
+
+and t = expr [@@deriving sexp, compare, show]

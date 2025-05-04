@@ -23,3 +23,6 @@ let mk pos x = (x, pos)
 let beginning_of_file file = {file; start_pos= (1, 1); end_pos= (1, 1)}
 
 let dummy = {file= ""; start_pos= (0, 0); end_pos= (0, 0)}
+
+let add ?(col = 0) ?(line = 0) pos =
+  {pos with end_pos= (fst pos.end_pos + line, snd pos.end_pos + col)}

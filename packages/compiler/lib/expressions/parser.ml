@@ -1,15 +1,20 @@
 open Tokens
 open Ast
+open Utils
 
-let rec parse (expression : token list) =
+exception SyntaxError of Log.t
+
+let rec parse (expression : token Pos.t list) =
   let result, remaining = parse_expression expression in
   match remaining with
-  | [] -> result
-  | EOF :: [] -> result
-  | token :: _ ->
+  | [] ->
+      result
+  | (EOF, _) :: [] ->
+      result
+  | (token, _) :: _ ->
       failwith
-        ("Unexpected tokens remaining after parsing. Next token: "
-       ^ show_token token)
+        ( "Unexpected tokens remaining after parsing. Next token: "
+        ^ show_token token )
 
 and parse_expression tokens = parse_equality tokens
 
@@ -17,90 +22,120 @@ and parse_expression tokens = parse_equality tokens
 and parse_equality tokens =
   let left, tokens = parse_comparison tokens in
   match tokens with
-  | EQ :: rest ->
+  | (EQ, pos) :: rest ->
       let right, rest = parse_equality rest in
-      (BinaryOp (Eq, left, right), rest)
-  | NEQ :: rest ->
+      (BinaryOp (Pos.mk pos Eq, left, right), rest)
+  | (NEQ, pos) :: rest ->
       let right, rest = parse_equality rest in
-      (BinaryOp (NotEq, left, right), rest)
-  | _ -> (left, tokens)
+      (BinaryOp (Pos.mk pos NotEq, left, right), rest)
+  | _ ->
+      (left, tokens)
 
 (* Handle comparison operators (>, <, >=, <=) *)
 and parse_comparison tokens =
   let left, tokens = parse_additive tokens in
   match tokens with
-  | GT :: rest ->
+  | (GT, pos) :: rest ->
       let right, rest = parse_additive rest in
-      (BinaryOp (Gt, left, right), rest)
-  | LT :: rest ->
+      (BinaryOp (Pos.mk pos Gt, left, right), rest)
+  | (LT, pos) :: rest ->
       let right, rest = parse_additive rest in
-      (BinaryOp (Lt, left, right), rest)
-  | GTE :: rest ->
+      (BinaryOp (Pos.mk pos Lt, left, right), rest)
+  | (GTE, pos) :: rest ->
       let right, rest = parse_additive rest in
-      (BinaryOp (GtEq, left, right), rest)
-  | LTE :: rest ->
+      (BinaryOp (Pos.mk pos GtEq, left, right), rest)
+  | (LTE, pos) :: rest ->
       let right, rest = parse_additive rest in
-      (BinaryOp (LtEq, left, right), rest)
-  | _ -> (left, tokens)
+      (BinaryOp (Pos.mk pos LtEq, left, right), rest)
+  | _ ->
+      (left, tokens)
 
 (* Handle addition and subtraction *)
 and parse_additive tokens =
   let left, tokens = parse_multiplicative tokens in
   match tokens with
-  | ADD :: rest ->
+  | (ADD, pos) :: rest ->
       let right, rest = parse_additive rest in
-      (BinaryOp (Add, left, right), rest)
-  | SUB :: rest ->
+      (BinaryOp (Pos.mk pos Add, left, right), rest)
+  | (SUB, pos) :: rest ->
       let right, rest = parse_additive rest in
-      (BinaryOp (Sub, left, right), rest)
-  | _ -> (left, tokens)
+      (BinaryOp (Pos.mk pos Sub, left, right), rest)
+  | _ ->
+      (left, tokens)
 
 (* Handle multiplication and division *)
 and parse_multiplicative tokens =
   let left, tokens = parse_power tokens in
   match tokens with
-  | MUL :: rest ->
+  | (MUL, pos) :: rest ->
       let right, rest = parse_multiplicative rest in
-      (BinaryOp (Mul, left, right), rest)
-  | DIV :: rest ->
+      (BinaryOp (Pos.mk pos Mul, left, right), rest)
+  | (DIV, pos) :: rest ->
       let right, rest = parse_multiplicative rest in
-      (BinaryOp (Div, left, right), rest)
-  | _ -> (left, tokens)
+      (BinaryOp (Pos.mk pos Div, left, right), rest)
+  | _ ->
+      (left, tokens)
 
 (* Handle exponentiation *)
 and parse_power tokens =
   let left, tokens = parse_primary tokens in
   match tokens with
-  | POW :: rest ->
+  | (POW, pos) :: rest ->
       let right, rest = parse_power rest in
-      (BinaryOp (Pow, left, right), rest)
-  | _ -> (left, tokens)
+      let ast = BinaryOp (Pos.mk pos Pow, left, right) in
+      (ast, rest)
+  | _ ->
+      (left, tokens)
 
 (* Handle primary expressions: constants, parentheses, rule names *)
 and parse_primary tokens =
   match tokens with
-  | [] -> failwith "Unexpected end of input"
-  | SUB :: rest ->
+  | [] ->
+      failwith "Unexpected end of input"
+  | (SUB, pos) :: rest ->
       let expr, rest = parse_primary rest in
-      (UnaryOp (Neg, expr), rest)
-  | LPAREN :: rest -> (
+      (UnaryOp (Pos.mk pos Neg, expr), rest)
+  | (LPAREN, _) :: rest -> (
       let expr, rest = parse_expression rest in
       match rest with
-      | RPAREN :: rest -> (expr, rest)
-      | _ -> failwith "Missing closing parenthesis")
-  | NUMBER (n, Some unit) :: rest ->
-      (Const (Number (n, Some (Units.parse_unit unit))), rest)
-  | NUMBER (n, None) :: rest -> (Const (Number (n, None)), rest)
-  | STRING s :: rest -> (Const (String s), rest)
-  | BOOLEAN b :: rest -> (Const (Bool b), rest)
-  | DATE_LITERAL (`Day (d, m, y)) :: rest ->
-      (Const (Date (Day { day = d; month = m; year = y })), rest)
-  | DATE_LITERAL (`Month (m, y)) :: rest ->
-      (Const (Date (Month { month = m; year = y })), rest)
-  | RULE_NAME name :: rest -> parse_rule_name [ name ] rest
-  | token :: _ -> failwith ("Unexpected token: " ^ show_token token)
+      | (RPAREN, _) :: rest ->
+          (expr, rest)
+      | (_, pos) :: _ ->
+          (* Todo add position of the opening parenthesis *)
+          raise
+            (SyntaxError
+               (Log.error ~pos ~kind:`Syntax "Il manque la parenthèse fermante")
+            )
+      | [] ->
+          raise (Invalid_argument "empty token list") )
+  | (NUMBER (n, Some unit), pos) :: rest ->
+      let value = Number (n, Some (Units.parse_unit unit)) in
+      (Const (Pos.mk pos value), rest)
+  | (NUMBER (n, None), pos) :: rest ->
+      let value = Number (n, None) in
+      (Const (Pos.mk pos value), rest)
+  | (STRING s, pos) :: rest ->
+      let value = String s in
+      (Const (Pos.mk pos value), rest)
+  | (BOOLEAN b, pos) :: rest ->
+      let value = Bool b in
+      (Const (Pos.mk pos value), rest)
+  | (DATE_LITERAL (`Day (d, m, y)), pos) :: rest ->
+      let value = Date (Day {day= d; month= m; year= y}) in
+      (Const (Pos.mk pos value), rest)
+  | (DATE_LITERAL (`Month (m, y)), pos) :: rest ->
+      let value = Date (Month {month= m; year= y}) in
+      (Const (Pos.mk pos value), rest)
+  | (RULE_NAME name, pos) :: rest ->
+      let names, remaining = parse_rule_name [name] rest in
+      (Ref (Pos.mk pos names), remaining)
+  | (_, pos) :: _ ->
+      raise
+        (SyntaxError (Log.error ~pos ~kind:`Syntax "Ce caractère est invalide"))
 
 and parse_rule_name names tokens =
   match tokens with
-  | DOT :: RULE_NAME name :: rest -> parse_rule_name (name :: names) rest
-  | tokens -> (Ref (List.rev names), tokens)
+  | (DOT, _) :: (RULE_NAME name, _) :: rest ->
+      parse_rule_name (name :: names) rest
+  | _ ->
+      (List.rev names, tokens)
