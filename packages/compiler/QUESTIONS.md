@@ -1,1 +1,3 @@
 - How to do dependancy injection / reader monad ? Exemple, I want to pass option parameters to each function. Cf lib/parser/parse.ml. For now I use closure. Is there a better way to do it ? Functor ?
+
+- How to map value through tree ? AST visitor ? Map ? Cf lib/resolver/resolver.ml

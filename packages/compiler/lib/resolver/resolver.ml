@@ -1,35 +1,45 @@
 open Core
 open Parser.Ast
 open Utils
-open Utils.Output
 open Expr.Ast
 open Common
+open Utils.Output
 
-let disambiguate_expr rule_names current_rule expr =
+let disambiguate_expr ~rule_names ~current_rule expr =
   let rec resolve expr =
     match expr with
-    | Ref (name, pos) ->
-        Ref (Reference.resolve ~rules:rule_names ~current:current_rule name, pos)
+    | Ref (name, pos) -> (
+        let resolved_ref =
+          Reference.resolve ~rules:rule_names ~current:current_rule name
+        in
+        match resolved_ref with
+        | Some resolved_ref ->
+            return (Ref (Pos.mk pos resolved_ref))
+        | None ->
+            return
+              ~logs:[Log.error ~pos ~kind:`Syntax "La référence n'existe pas"]
+              (Ref (Pos.mk pos [])) )
     | BinaryOp (operator, left, right) ->
-        let left = resolve left in
-        let right = resolve right in
-        BinaryOp (operator, left, right)
+        let* left = resolve left in
+        let* right = resolve right in
+        return (BinaryOp (operator, left, right))
     | UnaryOp (operator, operand) ->
-        let operand = resolve operand in
-        UnaryOp (operator, operand)
+        let* operand = resolve operand in
+        return (UnaryOp (operator, operand))
     | _ ->
-        expr
+        return expr
   in
   resolve expr
 
-let resolve_value names current_rule expr =
+let resolve_value ~rule_names ~current_rule expr =
   match expr with
   | Undefined ->
-      Undefined
+      return Undefined
   | Expr expr ->
-      Expr (disambiguate_expr names current_rule expr)
+      let+ expr = disambiguate_expr ~rule_names ~current_rule expr in
+      Expr expr
 
-let check_orphan_rules rule_names ast =
+let check_orphan_rules ~rule_names ast =
   let warn_if_orphan {name= name, pos; _} =
     let parent = Dotted_name.parent name in
     match parent with
@@ -50,14 +60,20 @@ let check_orphan_rules rule_names ast =
   in
   List.filter_map ast ~f:warn_if_orphan
 
+let resolve_rule ~rule_names rule =
+  let+ value =
+    resolve_value ~rule_names ~current_rule:(Pos.value rule.name) rule.value
+  in
+  {rule with value}
+
 let resolve ast =
-  let names =
+  let rule_names =
     Dotted_name.Set.of_list (List.map ast ~f:(fun rule -> Pos.value rule.name))
   in
-  let ast =
-    List.map ast ~f:(fun rule ->
-        { name= rule.name
-        ; value= resolve_value names (Pos.value rule.name) rule.value
-        ; meta= rule.meta } )
+  let orphan_logs = check_orphan_rules ~rule_names ast in
+  let+ ast =
+    ast
+    |> List.map ~f:(resolve_rule ~rule_names)
+    |> from_list |> add_logs ~logs:orphan_logs
   in
-  return ~logs:(check_orphan_rules names ast) (ast, names)
+  (ast, rule_names)
