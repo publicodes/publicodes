@@ -2,7 +2,7 @@ open Core
 
 type 'a t = 'a option * Log.t list [@@deriving show, sexp, compare]
 
-let return ?(logs = []) x = (Some x, logs)
+let return ?(logs = []) x : 'a t = (Some x, logs)
 
 let result (x, _) = x
 
@@ -34,6 +34,14 @@ let fatal_error ~pos ~kind ?hint message =
   let log = Log.error ~pos ~kind ?hint message in
   (None, [log])
 
+let add_logs ~(logs : Log.t list) ((x_opt, logs1) : 'a t) : 'a t =
+  match x_opt with
+  | Some x ->
+      (Some x, logs @ logs1)
+  | None ->
+      (* Propagate None, keep existing logs *)
+      (None, logs @ logs1)
+
 (* Monadic operators *)
 let ( >>= ) m f = bind m ~f
 
@@ -48,3 +56,18 @@ let ( let* ) m f = bind m ~f
 
 let print_logs (output : 'a t) =
   output |> logs |> List.iter ~f:(fun log -> Format.printf "%a\n" Log.pp log)
+
+let from_list ?default (ts : 'a t list) : 'a list t =
+  match default with
+  | Some default_value ->
+      List.fold ts ~init:(return []) ~f:(fun acc (x, log) ->
+          let* xs = acc in
+          let x = Option.value ~default:default_value x in
+          return ~logs:(logs acc @ log) (x :: xs) )
+      >>| List.rev
+  | None ->
+      List.fold ts ~init:(return []) ~f:(fun acc (x, log) ->
+          let xs = Option.value_exn (result acc) in
+          let xs = match x with Some x -> x :: xs | None -> xs in
+          return ~logs:(logs acc @ log) xs )
+      >>| List.rev
