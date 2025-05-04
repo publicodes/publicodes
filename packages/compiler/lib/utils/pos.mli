@@ -39,3 +39,6 @@ val beginning_of_file : string -> pos
 
 val dummy : pos
 (** A dummy position used when no position information is available. *)
+
+val add : ?col:int -> ?line:int -> pos -> pos
+(** [add ?col ?line pos] adds [col] to the column number and [line] to the end position of [pos]. *)
