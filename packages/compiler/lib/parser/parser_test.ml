@@ -1,9 +1,10 @@
-open Core
-open Ast
-open Expr.Ast
 open Yaml_parser
 open Utils.Output
 open Parse
+open Core
+open Common
+open Shared_ast
+open Ast
 
 let p ?(length = 0) any =
   let open Pos in
@@ -21,7 +22,8 @@ let%test_unit "parse: simple rule" =
   let output = parse ~filename:"test" (obj [("rule", value "42")]) in
   match result output with
   | Some [rule_def] ->
-      [%test_eq: string list] (Pos.value rule_def.name) ["rule"] ;
+      [%test_eq: Rule_name.t] (Pos.value rule_def.name)
+        (Rule_name.create_exn ["rule"]) ;
       [%test_eq: rule_value] rule_def.value
         (Expr (Const (p ~length:2 (Number (42., None)))))
   | _ ->
@@ -35,10 +37,12 @@ let%test_unit "parse: simple rules" =
   in
   match result output with
   | Some [rule_def1; rule_def2] ->
-      [%test_eq: string list] (Pos.value rule_def1.name) ["rule 1"] ;
+      [%test_eq: Rule_name.t] (Pos.value rule_def1.name)
+        (Rule_name.create_exn ["rule 1"]) ;
       [%test_eq: rule_value] rule_def1.value
         (Expr (Const (p ~length:2 (Number (42., None))))) ;
-      [%test_eq: string list] (Pos.value rule_def2.name) ["rule 2"] ;
+      [%test_eq: Rule_name.t] (Pos.value rule_def2.name)
+        (Rule_name.create_exn ["rule 2"]) ;
       [%test_eq: rule_value] rule_def2.value
         (Expr (Const (p ~length:3 (Bool false))))
   | _ ->
@@ -49,7 +53,8 @@ let%test_unit "parse: empty rule" =
   let output = parse ~filename:"test" (obj [("rule 1", value "")]) in
   match result output with
   | Some [rule_def] ->
-      [%test_eq: string list] (Pos.value rule_def.name) ["rule 1"] ;
+      [%test_eq: Rule_name.t] (Pos.value rule_def.name)
+        (Rule_name.create_exn ["rule 1"]) ;
       [%test_eq: rule_value] rule_def.value Undefined
   | _ ->
       print_logs output ;
@@ -62,7 +67,8 @@ let%test_unit "parse: rules with title" =
   in
   match result output with
   | Some [rule_def] ->
-      [%test_eq: string list] (Pos.value rule_def.name) ["rule 1"; "subrule 2"] ;
+      [%test_eq: Rule_name.t] (Pos.value rule_def.name)
+        (Rule_name.create_exn ["rule 1"; "subrule 2"]) ;
       [%test_eq: rule_meta list] rule_def.meta [Title "mon titre"] ;
       [%test_eq: rule_value] rule_def.value Undefined
   | _ ->
@@ -81,6 +87,6 @@ let%test_unit "parse: rules with description and valeur" =
   match result output with
   | Some [{meta; value; _}] ->
       [%test_eq: rule_meta list] meta [Description "ma description"] ;
-      [%test_eq: rule_value] value (Expr (Ref (p ~length:6 ["rule 3"])))
+      [%test_eq: rule_value] value (Expr (Ref (p ~length:6 @@ ["rule 3"])))
   | _ ->
       failwith "Expected no rule definitions"

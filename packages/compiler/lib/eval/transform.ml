@@ -6,37 +6,43 @@ open Common
 (* Helper function to convert between the two constant types *)
 let convert_constant (expr_const, _) =
   match expr_const with
-  | Expr.Ast.Number (n, _) ->
+  | Shared_ast.Number (n, _) ->
       Number n
-  | Expr.Ast.Bool b ->
+  | Shared_ast.Bool b ->
       Bool b
-  | Expr.Ast.String s ->
+  | Shared_ast.String s ->
       String s
-  | Expr.Ast.Date d ->
+  | Shared_ast.Date d ->
       Date d
 
 let rec transform_expr expr =
   match expr with
-  | Expr.Ast.Const value ->
+  | Shared_ast.Const value ->
       Const (convert_constant value)
-  | Expr.Ast.BinaryOp (op, left, right) ->
+  | Shared_ast.BinaryOp (op, left, right) ->
       BinaryOp (Pos.value op, transform_expr left, transform_expr right)
-  | Expr.Ast.UnaryOp (op, expr) ->
+  | Shared_ast.UnaryOp (op, expr) ->
       UnaryOp (Pos.value op, transform_expr expr)
-  | Expr.Ast.Ref name ->
-      Ref (Pos.value name)
+  | Shared_ast.Ref name -> (
+      let name = Pos.value name in
+      match name with
+      (* We replace not found reference with Undefined *)
+      | None ->
+          Const Undefined
+      | Some name ->
+          Ref name )
 
 let transform_value = function
-  | Parser.Ast.Undefined ->
+  | Shared_ast.Undefined ->
       Const Undefined
-  | Parser.Ast.Expr expr ->
+  | Shared_ast.Expr expr ->
       transform_expr expr
 
 let transform ast =
   let evalTree =
-    Dotted_name.Hashtbl.create ~size:(List.length ast) ~growth_allowed:false ()
+    Rule_name.Hashtbl.create ~size:(List.length ast) ~growth_allowed:false ()
   in
-  List.iter ast ~f:(fun Parser.Ast.{name; value; _} ->
+  List.iter ast ~f:(fun Shared_ast.{name; value; _} ->
       Hashtbl.add evalTree ~key:(Pos.value name) ~data:(transform_value value)
       |> ignore ) ;
   evalTree

@@ -1,6 +1,7 @@
 open Tokens
-open Ast
 open Utils
+open Common
+open Common.Shared_ast
 
 exception SyntaxError of Log.t
 
