@@ -1,9 +1,9 @@
-open Common
 open Core
+open Common
+open Ast
 
-let to_json ~(rule_names : Dotted_name.Set.t) (eval_tree : Ast.t) =
+let to_json ~(rule_names : Rule_name.Set.t) (eval_tree : Ast.t) =
   (* Convert a dotted name to string representation *)
-  let dotted_name_to_string name = String.concat ~sep:" . " name in
   (* Recursively convert a computation to JSON *)
   let rec computation_to_json = function
     | Ast.Const c -> (
@@ -23,7 +23,7 @@ let to_json ~(rule_names : Dotted_name.Set.t) (eval_tree : Ast.t) =
       | Null ->
           `Null )
     | Ref name ->
-        `String (dotted_name_to_string name)
+        `String (Rule_name.to_string name)
     | Condition (cond, then_expr, else_expr) ->
         `Assoc
           [ ("if", computation_to_json cond)
@@ -66,7 +66,7 @@ let to_json ~(rule_names : Dotted_name.Set.t) (eval_tree : Ast.t) =
     Set.fold rule_names ~init:[] ~f:(fun acc rule ->
         match Hashtbl.find eval_tree rule with
         | Some computation ->
-            (dotted_name_to_string rule, computation_to_json computation) :: acc
+            (Rule_name.to_string rule, computation_to_json computation) :: acc
         | None ->
             acc )
   in

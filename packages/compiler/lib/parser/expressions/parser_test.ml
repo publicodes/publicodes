@@ -1,11 +1,14 @@
-open Ast
 open Tokens
 open Core
+open Common
 open Utils
+open Common.Shared_ast
 
 let p any = Pos.mk Pos.dummy any
 
 let with_no_pos = List.map ~f:(Pos.mk Pos.dummy)
+
+let rule str_list = Ref (p str_list)
 
 let%test_unit "Parse 12 + 4.5" =
   [%test_eq: Ast.t]
@@ -30,7 +33,7 @@ let%test_unit "Parse 12 + 4.5 / 3" =
 let%test_unit "Parse a . b" =
   [%test_eq: Ast.t]
     (Parser.parse @@ with_no_pos [RULE_NAME "a"; DOT; RULE_NAME "b"])
-    (Ref (p ["a"; "b"]))
+    (rule ["a"; "b"])
 
 let%test_unit "Parse a > 12 != b . c * 2 <= 0" =
   [%test_eq: Ast.t]
@@ -49,10 +52,10 @@ let%test_unit "Parse a > 12 != b . c * 2 <= 0" =
          ; NUMBER (0., None) ] )
     (BinaryOp
        ( p NotEq
-       , BinaryOp (p Gt, Ref (p ["a"]), Const (p (Number (12., None))))
+       , BinaryOp (p Gt, rule ["a"], Const (p (Number (12., None))))
        , BinaryOp
            ( p LtEq
-           , BinaryOp (p Mul, Ref (p ["b"; "c"]), Const (p (Number (2., None))))
+           , BinaryOp (p Mul, rule ["b"; "c"], Const (p (Number (2., None))))
            , Const (p (Number (0., None))) ) ) )
 
 let%test_unit "Parse 12/01/2024 + 3 mois <= contrat salarié . date de démission"
@@ -73,7 +76,7 @@ let%test_unit "Parse 12/01/2024 + 3 mois <= contrat salarié . date de démissio
            ( p Add
            , Const (p (Date (Day {day= 12; month= 1; year= 2024})))
            , Const (p (Number (3., Some (Units.parse_unit "mois")))) )
-       , Ref (p ["contrat salarié"; "date de démission"]) ) )
+       , rule ["contrat salarié"; "date de démission"] ) )
 
 let%test_unit "Parse -(3 * -a)" =
   [%test_eq: Ast.t]
@@ -83,7 +86,7 @@ let%test_unit "Parse -(3 * -a)" =
     (UnaryOp
        ( p Neg
        , BinaryOp
-           (p Mul, Const (p (Number (3., None))), UnaryOp (p Neg, Ref (p ["a"])))
+           (p Mul, Const (p (Number (3., None))), UnaryOp (p Neg, rule ["a"]))
        ) )
 
 let%test_unit "Parse (10 + 5 ** 2) / b" =
@@ -108,4 +111,4 @@ let%test_unit "Parse (10 + 5 ** 2) / b" =
                ( p Pow
                , Const (p (Number (5., None)))
                , Const (p (Number (2., None))) ) )
-       , Ref (p ["b"]) ) )
+       , rule ["b"] ) )

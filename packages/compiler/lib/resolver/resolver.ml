@@ -1,24 +1,24 @@
 open Core
-open Parser.Ast
 open Utils
-open Expr.Ast
 open Common
+open Common.Shared_ast
 open Utils.Output
 
-let disambiguate_expr ~rule_names ~current_rule expr =
+let disambiguate_expr ~rule_names ~context_rule expr =
   let rec resolve expr =
     match expr with
-    | Ref (name, pos) -> (
-        let resolved_ref =
-          Reference.resolve ~rules:rule_names ~current:current_rule name
+    | Ref ref ->
+        let ref =
+          Pos.map ~f:(Rule_name.resolve ~rule_names ~current:context_rule) ref
         in
-        match resolved_ref with
-        | Some resolved_ref ->
-            return (Ref (Pos.mk pos resolved_ref))
-        | None ->
-            return
-              ~logs:[Log.error ~pos ~kind:`Syntax "La référence n'existe pas"]
-              (Ref (Pos.mk pos [])) )
+        let logs =
+          match ref with
+          | None, pos ->
+              [Log.error ~pos ~kind:`Syntax "La référence n'existe pas"]
+          | _ ->
+              []
+        in
+        return ~logs (Ref ref)
     | BinaryOp (operator, left, right) ->
         let* left = resolve left in
         let* right = resolve right in
@@ -26,22 +26,22 @@ let disambiguate_expr ~rule_names ~current_rule expr =
     | UnaryOp (operator, operand) ->
         let* operand = resolve operand in
         return (UnaryOp (operator, operand))
-    | _ ->
-        return expr
+    | Const expr ->
+        return (Const expr)
   in
   resolve expr
 
-let resolve_value ~rule_names ~current_rule expr =
+let resolve_value ~rule_names ~context_rule expr =
   match expr with
   | Undefined ->
       return Undefined
   | Expr expr ->
-      let+ expr = disambiguate_expr ~rule_names ~current_rule expr in
+      let+ expr = disambiguate_expr ~rule_names ~context_rule expr in
       Expr expr
 
 let check_orphan_rules ~rule_names ast =
   let warn_if_orphan {name= name, pos; _} =
-    let parent = Dotted_name.parent name in
+    let parent = Rule_name.parent name in
     match parent with
     | None ->
         None
@@ -54,7 +54,7 @@ let check_orphan_rules ~rule_names ast =
 
 %a:
 |}
-                    Dotted_name.pp parent )
+                    Rule_name.pp parent )
                "Le parent de la règle n'existe pas" )
         else None
   in
@@ -62,13 +62,13 @@ let check_orphan_rules ~rule_names ast =
 
 let resolve_rule ~rule_names rule =
   let+ value =
-    resolve_value ~rule_names ~current_rule:(Pos.value rule.name) rule.value
+    resolve_value ~rule_names ~context_rule:(Pos.value rule.name) rule.value
   in
   {rule with value}
 
-let resolve ast =
+let to_resolved_ast ast =
   let rule_names =
-    Dotted_name.Set.of_list (List.map ast ~f:(fun rule -> Pos.value rule.name))
+    Rule_name.Set.of_list (List.map ast ~f:(fun rule -> Pos.value rule.name))
   in
   let orphan_logs = check_orphan_rules ~rule_names ast in
   let+ ast =
