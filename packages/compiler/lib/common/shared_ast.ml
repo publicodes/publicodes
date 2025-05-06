@@ -49,3 +49,5 @@ type 'a rule_def =
 type 'a program = 'a rule_def list [@@deriving show, sexp, compare]
 
 type 'a t = 'a program [@@deriving show, sexp, compare]
+
+type resolved = Rule_name.t option t [@@deriving show, sexp, compare]

@@ -2,12 +2,14 @@ open Core
 open Common
 open Ast
 
-let to_json ~(rule_names : Rule_name.Set.t) (eval_tree : unit Ast.t) =
+let to_json (eval_tree : Ast.t) =
   (* Convert a dotted name to string representation *)
   (* Recursively convert a computation to JSON *)
-  let rec computation_to_json (eval_tree : unit Ast.computation) =
+  let rec computation_to_json (eval_tree : Ast.computation) =
     match eval_tree with
-    | Ast.Const c -> (
+    | Ref name ->
+        `String (Rule_name.to_string name)
+    | Typed (Ast.Const c, _) -> (
       match c with
       | Number n ->
           `List [`Float n]
@@ -23,14 +25,12 @@ let to_json ~(rule_names : Rule_name.Set.t) (eval_tree : unit Ast.t) =
           `List []
       | Null ->
           `Null )
-    | Ref name ->
-        `String (Rule_name.to_string name)
-    | Condition ((cond, _), (then_expr, _), (else_expr, _)) ->
+    | Typed (Condition (cond, then_expr, else_expr), _) ->
         `Assoc
           [ ("if", computation_to_json cond)
           ; ("then", computation_to_json then_expr)
           ; ("else", computation_to_json else_expr) ]
-    | BinaryOp (op, (left, _), (right, _)) ->
+    | Typed (BinaryOp (op, left, right), _) ->
         let op_str =
           match op with
           | Add ->
@@ -58,17 +58,14 @@ let to_json ~(rule_names : Rule_name.Set.t) (eval_tree : unit Ast.t) =
         in
         `List
           [computation_to_json left; `String op_str; computation_to_json right]
-    | UnaryOp (op, (expr, _)) ->
+    | Typed (UnaryOp (op, expr), _) ->
         let op_str = match op with Neg -> "-" in
         `List [`String op_str; computation_to_json expr]
   in
   (* Build the JSON object by iterating through the rules *)
   let json_assoc =
-    Set.fold rule_names ~init:[] ~f:(fun acc rule ->
-        match Hashtbl.find eval_tree rule with
-        | Some (computation, ()) ->
-            (Rule_name.to_string rule, computation_to_json computation) :: acc
-        | None ->
-            acc )
+    Hashtbl.fold eval_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
+        let computation, _ = data in
+        (Rule_name.to_string rule, computation_to_json computation) :: acc )
   in
   `Assoc json_assoc

@@ -76,4 +76,4 @@ let to_resolved_ast ast =
     |> List.map ~f:(resolve_rule ~rule_names)
     |> from_list |> add_logs ~logs:orphan_logs
   in
-  (ast, rule_names)
+  ast
