@@ -2,4 +2,4 @@ module Ast = struct
   include Ast
 end
 
-let parse = Parse.parse
+let to_ast = Parse.parse

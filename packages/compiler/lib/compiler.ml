@@ -7,14 +7,14 @@ let compile filename string =
   let* ast, rule_names =
     string
     (* Step 1: Parse the YAML string into an AST *)
-    |> Yaml_parser.parse ~filename
+    |> Yaml_parser.to_yaml ~filename
     (* Step 2: Parse the AST into rules *)
-    >>= Parser.parse ~filename
+    >>= Parser.to_ast ~filename
     (* Step 3: Resolve the references *)
-    >>= Resolver.resolve
+    >>= Resolver.to_resolved_ast
   in
   (* Step 4: Transform the AST into an evaluation tree *)
-  let eval_tree = Eval.transform ast in
+  let eval_tree = Eval.from_resolved_ast ast in
   (* Step 5: Serialize the evaluation tree to JSON *)
   let json = Eval.to_json ~rule_names eval_tree in
   return json

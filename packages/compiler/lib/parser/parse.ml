@@ -1,11 +1,12 @@
 exception Invalid_rule_name of string
 
-open Ast
 open Core
-open Yaml_parser
 open Utils.Output
+open Common
+open Common.Shared_ast
+open Yaml_parser
 
-let parse ~filename yaml : program Output.t =
+let parse ~filename yaml : Ast.t Output.t =
   let parse_expression ({value; _}, pos) =
     let expr = Pos.mk pos value |> Expr.Lexer.lex |> Expr.Parser.parse in
     Expr expr
@@ -14,7 +15,7 @@ let parse ~filename yaml : program Output.t =
     match value with `Scalar s -> s | _ -> failwith "Expected scalar"
   in
   let get_value value = (Pos.value value).value in
-  let parse_mechanism : yaml -> Ast.rule_value = function
+  let parse_mechanism = function
     | `Scalar ({value= ""; _}, _) ->
         Undefined
     | `Scalar value ->
@@ -31,7 +32,7 @@ let parse ~filename yaml : program Output.t =
     | _ ->
         failwith "Wrong format"
   in
-  let parse_meta : yaml -> Ast.rule_meta list = function
+  let parse_meta : yaml -> rule_meta list = function
     | `Scalar _ ->
         []
     | `O m_members ->
@@ -52,8 +53,8 @@ let parse ~filename yaml : program Output.t =
     let {value; _}, pos = s in
     let expr = Pos.mk pos value |> Expr.Lexer.lex |> Expr.Parser.parse in
     match expr with
-    | Ref dotted_name ->
-        dotted_name
+    | Ref rule_name ->
+        Pos.map ~f:Rule_name.create_exn rule_name
     | _ ->
         raise (Invalid_rule_name ("Invalid token: " ^ value))
   in

@@ -1,17 +1,7 @@
 open Core
 open Common
-open Utils
 
-type rule_value = Expr of Expr.Ast.t | Undefined
-[@@deriving show, sexp, compare]
+type t = string list Shared_ast.t [@@deriving sexp, compare, show]
 
-type rule_meta = Title of string | Description of string
-[@@deriving show, sexp, compare]
-
-type rule_def =
-  {name: Dotted_name.t Pos.t; value: rule_value; meta: rule_meta list}
-[@@deriving show, sexp, compare]
-
-type program = rule_def list [@@deriving show, sexp, compare]
-
-type t = program [@@deriving show, sexp, compare]
+type rule_value = string list Shared_ast.rule_value
+[@@deriving sexp, compare, show]
