@@ -16,14 +16,16 @@ type binary_op = Shared_ast.binary_op [@@deriving sexp, compare, show]
 
 type unary_op = Shared_ast.unary_op [@@deriving sexp, compare, show]
 
-type computation =
+type 'typ computation =
   | Const of constant
   | Ref of Rule_name.t
-  | Condition of computation * computation * computation
-  | BinaryOp of binary_op * computation * computation
-  | UnaryOp of unary_op * computation
+  | Condition of
+      'typ typed_computation * 'typ typed_computation * 'typ typed_computation
+  | BinaryOp of binary_op * 'typ typed_computation * 'typ typed_computation
+  | UnaryOp of unary_op * 'typ typed_computation
 [@@deriving sexp, compare, show]
 
-type naked_t = computation Rule_name.Hashtbl.t
+and 'typ typed_computation = 'typ computation * 'typ
+[@@deriving sexp, compare, show]
 
-type t = naked_t
+type 'typ t = 'typ typed_computation Rule_name.Hashtbl.t [@@deriving sexp]

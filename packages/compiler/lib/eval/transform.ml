@@ -18,23 +18,23 @@ let convert_constant (expr_const, _) =
 let rec transform_expr expr =
   match expr with
   | Shared_ast.Const value ->
-      Const (convert_constant value)
+      (Const (convert_constant value), ())
   | Shared_ast.BinaryOp (op, left, right) ->
-      BinaryOp (Pos.value op, transform_expr left, transform_expr right)
+      (BinaryOp (Pos.value op, transform_expr left, transform_expr right), ())
   | Shared_ast.UnaryOp (op, expr) ->
-      UnaryOp (Pos.value op, transform_expr expr)
+      (UnaryOp (Pos.value op, transform_expr expr), ())
   | Shared_ast.Ref name -> (
       let name = Pos.value name in
       match name with
       (* We replace not found reference with Undefined *)
       | None ->
-          Const Undefined
+          (Const Undefined, ())
       | Some name ->
-          Ref name )
+          (Ref name, ()) )
 
 let transform_value = function
   | Shared_ast.Undefined ->
-      Const Undefined
+      (Const Undefined, ())
   | Shared_ast.Expr expr ->
       transform_expr expr
 
