@@ -104,6 +104,7 @@ export function createContext<RuleNames extends string>(
 			experimentalRules: true,
 			unitConversion: true,
 			deprecatedSyntax: true,
+			situationIssues: true,
 			...partialContext.warn,
 		},
 	}

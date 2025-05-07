@@ -8,7 +8,7 @@ import {
 } from '..'
 import { makeASTVisitor } from '../AST'
 import { Evaluation, type ASTNode, type EvaluatedNode } from '../AST/types'
-import { experimentalRuleWarning } from '../error'
+import { experimentalRuleWarning, warning } from '../error'
 import { evaluationFunctions } from '../evaluationFunctions'
 import parsePublicodes, {
 	Context,
@@ -154,8 +154,7 @@ export class Engine<RuleNames extends string = string> {
 		this.resetCache()
 
 		const keepPreviousSituation = options.keepPreviousSituation ?? false
-		const strictMode =
-			options.strict ?? this.baseContext.strict.situation ?? true
+		const strictMode = options.strict ?? this.baseContext.strict.situation
 
 		let situationRules = Object.entries(situation).filter(
 			([dottedName, value]) => {
@@ -168,7 +167,7 @@ export class Engine<RuleNames extends string = string> {
 				if (strictMode) {
 					throw error
 				}
-				this.baseContext.logger.error(error.message)
+				warning(this.context, error.message, 'situationIssues')
 				return false
 			},
 		)
@@ -192,9 +191,6 @@ export class Engine<RuleNames extends string = string> {
 			// So we need to parse them one by one
 			situationRules = situationRules.filter((situationRule) => {
 				const error = this.parseSituationRules([situationRule])
-				if (error) {
-					this.baseContext.logger.error(error.message)
-				}
 				return !error
 			})
 		}
@@ -468,7 +464,7 @@ export class Engine<RuleNames extends string = string> {
 			(this.baseContext.strict.checkPossibleValues || !strictMode) &&
 			!isAValidOption(this, rule.possibilities, this.evaluate(value))
 		) {
-			const errorMessage = `La valeur ${value} ne fait pas parti des possibilités applicables listées pour cette règle.`
+			const errorMessage = `La valeur "${this.evaluate(value).nodeValue}" ne fait pas partie des possibilités applicables listées pour cette règle.`
 
 			return new PublicodesError('SituationError', errorMessage, {
 				dottedName,

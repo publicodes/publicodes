@@ -170,7 +170,7 @@ a:
 		expect(() => engine.setSituation({ a: "'valeur non valide'" })).toThrow(
 			`[ Erreur lors de la mise à jour de la situation ]
 ➡️  Dans la règle "a"
-✖️  La valeur 'valeur non valide' ne fait pas parti des possibilités applicables listées pour cette règle.`,
+✖️  La valeur 'valeur non valide' ne fait pas partie des possibilités applicables listées pour cette règle.`,
 		)
 	})
 

@@ -85,6 +85,11 @@ export type WarnOptions = {
 	 * @default true
 	 */
 	deprecatedSyntax?: boolean
+	/**
+	 * Enable warnings for situation issues
+	 * @default true
+	 */
+	situationIssues?: boolean
 }
 
 /**
