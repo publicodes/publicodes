@@ -29,10 +29,10 @@ let parse ~filename yaml : Ast.t Output.t =
               acc
         in
         List.fold ~f:parse_entry ~init:Undefined members
-    | _ ->
-        failwith "Wrong format"
+    | `S _ ->
+        raise (Invalid_argument "should not array")
   in
-  let parse_meta : yaml -> rule_meta list = function
+  let parse_meta = function
     | `Scalar _ ->
         []
     | `O m_members ->
@@ -46,17 +46,27 @@ let parse ~filename yaml : Ast.t Output.t =
               None
         in
         List.filter_map ~f:parse_key m_members
-    | _ ->
-        failwith "Wrong format"
+    | `S _ ->
+        raise (Invalid_argument "should not array")
   in
   let parse_rule_name s =
     let {value; _}, pos = s in
     let expr = Pos.mk pos value |> Expr.Lexer.lex |> Expr.Parser.parse in
     match expr with
-    | Ref rule_name ->
-        Pos.map ~f:Rule_name.create_exn rule_name
+    | Ref rule_name, _ ->
+        return (Pos.mk pos (Rule_name.create_exn rule_name))
     | _ ->
-        raise (Invalid_rule_name ("Invalid token: " ^ value))
+        fatal_error ~pos ~kind:`Syntax "Le nom de la règle est invalide"
+  in
+  let parse_rule = function
+    | name, `S _ ->
+        fatal_error ~pos:(Pos.pos name) ~kind:`Syntax
+          "Une règle ne peut pas être un tableau"
+    | name, raw_rule ->
+        let* name = parse_rule_name name in
+        let value = parse_mechanism raw_rule in
+        let meta = parse_meta raw_rule in
+        return {name; value; meta}
   in
   match yaml with
   | `O [] ->
@@ -64,10 +74,6 @@ let parse ~filename yaml : Ast.t Output.t =
         ~pos:(Pos.beginning_of_file filename)
         ~kind:`Syntax "Empty file"
   | `O m_members ->
-      return
-        (List.map m_members ~f:(fun (key, value) ->
-             { name= parse_rule_name key
-             ; value= parse_mechanism value
-             ; meta= parse_meta value } ) )
+      List.map m_members ~f:parse_rule |> from_list
   | _ ->
       failwith "todo"

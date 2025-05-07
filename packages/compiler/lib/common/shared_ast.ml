@@ -29,12 +29,14 @@ type binary_op =
 
 type unary_op = Neg [@@deriving sexp, compare, show]
 
-type 'a expr =
-  | Const of constant Pos.t
-  | Ref of 'a Pos.t
+type 'a naked_expr =
+  | Const of constant
+  | Ref of 'a
   | BinaryOp of binary_op Pos.t * 'a expr * 'a expr
   | UnaryOp of unary_op Pos.t * 'a expr
 [@@deriving show, sexp, compare]
+
+and 'a expr = 'a naked_expr Pos.t [@@deriving show, sexp, compare]
 
 type 'a rule_value = Expr of 'a expr | Undefined
 [@@deriving show, sexp, compare]

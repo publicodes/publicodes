@@ -1,5 +1,6 @@
 open Core
 open Common
+open Utils
 
 (* Extended version of constant with additional variants *)
 type constant =
@@ -18,14 +19,14 @@ type unary_op = Shared_ast.unary_op [@@deriving sexp, show]
 
 type typed_computation =
   | Const of constant
-  | Condition of computation * computation * computation
-  | BinaryOp of binary_op * computation * computation
-  | UnaryOp of unary_op * computation
+  | Condition of computation Pos.t * computation * computation
+  | BinaryOp of binary_op Pos.t * computation * computation
+  | UnaryOp of unary_op Pos.t * computation
 [@@deriving sexp, show]
 
 and computation =
-  | Typed of (typed_computation * Type_database.id)
-  | Ref of Rule_name.t
+  | Typed of (typed_computation Pos.t * Type_database.id)
+  | Ref of Rule_name.t Pos.t
 [@@deriving sexp, show]
 
 let mk (c : typed_computation) : computation =
