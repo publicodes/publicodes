@@ -23,10 +23,25 @@ type typed_computation =
   | UnaryOp of unary_op * computation
 [@@deriving sexp, show]
 
-and computation = Typed of (typed_computation * Type.id) | Ref of Rule_name.t
-
-type t = (computation * Type.id) Rule_name.Hashtbl.t [@@deriving sexp]
+and computation =
+  | Typed of (typed_computation * Type_database.id)
+  | Ref of Rule_name.t
+[@@deriving sexp, show]
 
 let mk (c : typed_computation) : computation =
-  let id = Type.next_id () in
+  let id = Type_database.next_id () in
   Typed (c, id)
+
+type t = (computation * Type_database.id) Rule_name.Hashtbl.t [@@deriving sexp]
+
+let pp fmt t =
+  let open Format in
+  Hashtbl.iteri t ~f:(fun ~key:rule_name ~data:(comp, _) ->
+      let rule_str = Rule_name.to_string rule_name in
+      (* Print rule name *)
+      fprintf fmt "@[<v 0>%s@\n" rule_str ;
+      (* Underline with dashes *)
+      fprintf fmt "%s@\n" (String.make (String.length rule_str) '-') ;
+      (* Print computation using auto-generated pp_computation *)
+      pp_computation fmt comp ;
+      fprintf fmt "@\n@\n@]" )

@@ -12,5 +12,7 @@ let compile filename string =
   >>= Resolver.to_resolved_ast
   (* Passe 4: Transform the AST into an evaluation tree *)
   >>| Eval.from_resolved_ast
+  (* Passe 5: Typecheck the evaluation tree *)
+  >>| Eval.type_check
   (* Passe 5: Serialize the evaluation tree to JSON *)
   >>| Eval.to_json

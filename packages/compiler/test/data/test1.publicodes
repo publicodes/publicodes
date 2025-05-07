@@ -1,9 +1,4 @@
-a: 10 + b
+a: x > c + b
 b:
-  valeur: 5 * 2
-  titre: "Test"
-
-x . y: 15
-
-z: bouya
-p: dke
+c:
+x:

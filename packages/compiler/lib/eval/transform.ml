@@ -44,7 +44,7 @@ let transform (resolved_ast : Shared_ast.resolved) : Ast.t =
       ~growth_allowed:false ()
   in
   List.iter resolved_ast ~f:(fun Shared_ast.{name; value; _} ->
-      let type_id = Type.next_id () in
+      let type_id = Type_database.next_id () in
       let key = Pos.value name in
       let data = (transform_value value, type_id) in
       Hashtbl.add evalTree ~key ~data |> ignore ) ;
