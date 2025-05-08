@@ -191,6 +191,9 @@ export class Engine<RuleNames extends string = string> {
 			// So we need to parse them one by one
 			situationRules = situationRules.filter((situationRule) => {
 				const error = this.parseSituationRules([situationRule])
+				if (error) {
+					warning(this.context, error.message, 'situationIssues')
+				}
 				return !error
 			})
 		}
