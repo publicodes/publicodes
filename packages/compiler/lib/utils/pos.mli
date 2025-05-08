@@ -42,3 +42,7 @@ val dummy : pos
 
 val add : ?col:int -> ?line:int -> pos -> pos
 (** [add ?col ?line pos] adds [col] to the column number and [line] to the end position of [pos]. *)
+
+val merge : pos -> pos -> pos
+(** [merge pos1 pos2] merges two positions [pos1] and [pos2] into a single position.
+    If the positions are from different files, an exception is raised. *)
