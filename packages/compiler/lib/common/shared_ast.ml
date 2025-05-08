@@ -29,14 +29,16 @@ type binary_op =
 
 type unary_op = Neg [@@deriving sexp, compare, show]
 
-type 'a expr =
-  | Const of constant Pos.t
-  | Ref of 'a Pos.t
+type 'a naked_expr =
+  | Const of constant
+  | Ref of 'a
   | BinaryOp of binary_op Pos.t * 'a expr * 'a expr
   | UnaryOp of unary_op Pos.t * 'a expr
 [@@deriving show, sexp, compare]
 
-type 'a rule_value = Expr of 'a expr | Undefined
+and 'a expr = 'a naked_expr Pos.t [@@deriving show, sexp, compare]
+
+type 'a rule_value = Expr of 'a expr | Undefined of Pos.pos
 [@@deriving show, sexp, compare]
 
 type rule_meta = Title of string | Description of string
@@ -49,3 +51,5 @@ type 'a rule_def =
 type 'a program = 'a rule_def list [@@deriving show, sexp, compare]
 
 type 'a t = 'a program [@@deriving show, sexp, compare]
+
+type resolved = Rule_name.t option t [@@deriving show, sexp, compare]
