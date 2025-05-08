@@ -1,5 +1,11 @@
 # publicodes
 
+## 1.8.3
+
+### Patch Changes
+
+- [#678](https://github.com/publicodes/publicodes/pull/678) [`4746642`](https://github.com/publicodes/publicodes/commit/47466427260ea6f2e382d9537710907a35135390) Thanks [@Clemog](https://github.com/Clemog)! - Use `warning` function for situation issues
+
 ## 1.8.2
 
 ### Patch Changes
