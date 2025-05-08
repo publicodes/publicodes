@@ -10,7 +10,7 @@ let next_id () =
   id
 
 type concrete_type = Number | String | Bool | Date
-[@@deriving sexp, show, compare]
+[@@deriving sexp, compare, show]
 
 type value = Concrete of concrete_type | Link of id | Null
 [@@deriving sexp, show]

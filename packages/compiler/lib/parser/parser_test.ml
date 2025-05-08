@@ -52,7 +52,7 @@ let%test_unit "parse: empty rule" =
   | Some [rule_def] ->
       [%test_eq: Rule_name.t] (Pos.value rule_def.name)
         (Rule_name.create_exn ["rule 1"]) ;
-      [%test_eq: rule_value] rule_def.value Undefined
+      [%test_eq: rule_value] rule_def.value (Undefined Pos.dummy)
   | _ ->
       print_logs output ;
       assert false
@@ -69,7 +69,7 @@ let%test_unit "parse: rules with title" =
       [%test_eq: Rule_name.t] (Pos.value rule_def.name)
         (Rule_name.create_exn ["rule 1"; "subrule 2"]) ;
       [%test_eq: rule_meta list] rule_def.meta [Title "mon titre"] ;
-      [%test_eq: rule_value] rule_def.value Undefined
+      [%test_eq: rule_value] rule_def.value (Undefined Pos.dummy)
   | _ ->
       print_logs output ;
       assert false
