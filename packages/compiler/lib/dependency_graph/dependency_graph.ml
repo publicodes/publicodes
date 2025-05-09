@@ -1,6 +1,4 @@
-module G = Rule_graph_type.G
-
-let mk = Rule_graph_type.mk
+module Rule_graph = Rule_graph.G
 
 let cycle_check = Cycle_check.cycle_check
 

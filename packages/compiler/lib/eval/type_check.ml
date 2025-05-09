@@ -147,7 +147,7 @@ let type_check (ast : Ast.t) =
     |> List.map ~f:(fun (_, rule) -> type_check_rule rule)
     |> Output.from_list
   in
-  Format.printf "Type Database:\n %a \n\n" Type_database.pp database ;
+  (* Format.printf "Type Database:\n %a \n\n" Type_database.pp database ;
   Format.printf "AST :\n=====\n\n" ;
-  Format.printf "%a" Ast.pp ast ;
+  Format.printf "%a" Ast.pp ast ; *)
   return ast

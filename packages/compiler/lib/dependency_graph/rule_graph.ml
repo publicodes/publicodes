@@ -21,7 +21,7 @@ open Eval
  *)
 
 module Rule_vertex = struct
-  type t = Rule_name.t Pos.t [@@deriving compare]
+  type t = Rule_name.t [@@deriving compare]
 
   let equal x y = 0 = compare x y
 
@@ -40,6 +40,7 @@ end
 (* Create the graph module using the functors *)
 module G =
   Graph.Imperative.Digraph.ConcreteBidirectionalLabeled (Rule_vertex) (Ref_edge)
+include G
 
 let mk (ast : Ast.t) : G.t =
   (* Create a new empty graph *)
@@ -64,18 +65,12 @@ let mk (ast : Ast.t) : G.t =
         [name]
   in
   (* Add vertices and edges to the graph *)
-  let add_rule_dependencies (rule_name : Rule_name.t) ((computation, _), pos) =
-    let current_rule = Pos.mk pos rule_name in
+  let add_rule_dependencies (current_rule : Rule_name.t) ((computation, _), _) =
     G.add_vertex graph current_rule ;
     let refs = find_references computation in
     (* Add edges for each reference *)
     List.iter refs ~f:(fun ref_name ->
-        let pos_of_referenced_rule =
-          Pos.pos (Hashtbl.find_exn ast (Pos.value ref_name))
-        in
-        let referenced_rule =
-          Pos.mk pos_of_referenced_rule (Pos.value ref_name)
-        in
+        let referenced_rule = Pos.value ref_name in
         (* Add the referenced rule vertex if it doesn't exist *)
         G.add_vertex graph referenced_rule ;
         (* Add an edge from the rule to the referenced rule, labeled with the reference position *)

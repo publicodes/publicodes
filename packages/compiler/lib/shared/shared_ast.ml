@@ -53,3 +53,9 @@ type 'a program = 'a rule_def list [@@deriving show, sexp, compare]
 type 'a t = 'a program [@@deriving show, sexp, compare]
 
 type resolved = Rule_name.t option t [@@deriving show, sexp, compare]
+
+let has_public_tag rule_def =
+  List.exists ~f:(function Public -> true | _ -> false) rule_def.meta
+
+let has_value rule_def =
+  match rule_def.value with Expr _ -> true | Undefined _ -> false

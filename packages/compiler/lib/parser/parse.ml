@@ -47,7 +47,7 @@ let parse_meta (yaml : yaml) =
             let value = get_scalar_exn value in
             let pos = Pos.pos value in
             let value = get_value value in
-            if not (phys_equal value "oui" || phys_equal value "") then
+            if not (String.equal value "oui" || String.equal value "") then
               fatal_error ~pos ~kind:`Syntax "La valeur doit être 'oui'"
             else return Public
         | _ ->

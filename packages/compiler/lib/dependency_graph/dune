@@ -1,6 +1,6 @@
 (library
  (inline_tests)
- (name rule_graph)
+ (name dependency_graph)
  (libraries core ppx_show.runtime eval ocamlgraph utils shared)
  (modules :standard)
  (preprocess
