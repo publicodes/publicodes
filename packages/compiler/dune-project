@@ -1,0 +1,35 @@
+(lang dune 3.17)
+
+(name publicodes)
+
+(generate_opam_files true)
+
+(formatting)
+
+(source
+ (github publicodes/publicodes))
+
+(authors
+	"Johan Girod <dev@johangirod.com>"
+	"Emile Rolley <emile.rolley@tuta.io>")
+
+(maintainers
+	"Johan Girod <dev@johangirod.com>"
+	"Emile Rolley <emile.rolley@tuta.io>")
+
+(license MIT)
+
+(documentation https://publi.codes)
+
+(package
+ (name publicodes)
+ (synopsis "Compiler for the Publicodes language")
+ (description "A compiler for the Publicodes, a programming language for public interest algorithms.")
+ (depends ocaml dune core yaml ppx_show sedlex yojson
+	  (ppx_inline_test :with-test)
+	  (ppx_assert :with-test)
+	  (ppx_compare :with-test))
+ (tags
+  ("compiler" "publicodes" "public interest" "algorithms" "DSL" "rules as code")))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
