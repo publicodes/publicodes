@@ -1,7 +1,8 @@
 open Core
 open Utils
-open Common
-open Utils.Output
+open Shared
+open Eval
+
 (* This module defines a directed graph for representing rule dependencies.
  *
  * Vertices represent rules, with type Rule_name.t Pos.t, where:
@@ -16,12 +17,10 @@ open Utils.Output
  * The graph allows for:
  *   - Finding all rules referenced by a given rule (outgoing edges)
  *   - Finding all rules that reference a given rule (incoming edges)
- *   - Tracing references to their source positions
  *   - Detecting cycles in the rule dependencies
  *)
 
-(* Module for vertex comparison *)
-module VertexOrd = struct
+module Rule_vertex = struct
   type t = Rule_name.t Pos.t [@@deriving compare]
 
   let equal x y = 0 = compare x y
@@ -30,7 +29,7 @@ module VertexOrd = struct
 end
 
 (* Module for edge labels *)
-module EdgeLabel = struct
+module Ref_edge = struct
   type t = Pos.pos [@@deriving compare]
 
   let hash = Hashtbl.hash
@@ -39,13 +38,12 @@ module EdgeLabel = struct
 end
 
 (* Create the graph module using the functors *)
-module RuleGraph =
-  Graph.Imperative.Digraph.ConcreteBidirectionalLabeled (VertexOrd) (EdgeLabel)
-module Cycle_analysis = Graph.Cycles.Johnson (RuleGraph)
+module G =
+  Graph.Imperative.Digraph.ConcreteBidirectionalLabeled (Rule_vertex) (Ref_edge)
 
-let cycle_check (ast : Ast.t) : Ast.t Output.t =
+let mk (ast : Ast.t) : G.t =
   (* Create a new empty graph *)
-  let graph = RuleGraph.create () in
+  let graph = G.create () in
   (* Helper function to find references to rules in a computation *)
   let rec find_references (computation : Ast.computation) :
       Rule_name.t Pos.t list =
@@ -68,7 +66,7 @@ let cycle_check (ast : Ast.t) : Ast.t Output.t =
   (* Add vertices and edges to the graph *)
   let add_rule_dependencies (rule_name : Rule_name.t) ((computation, _), pos) =
     let current_rule = Pos.mk pos rule_name in
-    RuleGraph.add_vertex graph current_rule ;
+    G.add_vertex graph current_rule ;
     let refs = find_references computation in
     (* Add edges for each reference *)
     List.iter refs ~f:(fun ref_name ->
@@ -79,29 +77,12 @@ let cycle_check (ast : Ast.t) : Ast.t Output.t =
           Pos.mk pos_of_referenced_rule (Pos.value ref_name)
         in
         (* Add the referenced rule vertex if it doesn't exist *)
-        RuleGraph.add_vertex graph referenced_rule ;
+        G.add_vertex graph referenced_rule ;
         (* Add an edge from the rule to the referenced rule, labeled with the reference position *)
         let edge = (current_rule, Pos.pos ref_name, referenced_rule) in
-        RuleGraph.add_edge_e graph edge )
+        G.add_edge_e graph edge )
   in
   (* Process all rules in the AST *)
   Hashtbl.iteri ast ~f:(fun ~key:rule_name ~data:rule_def ->
       add_rule_dependencies rule_name rule_def ) ;
-  let log_cycle cycle acc =
-    let cycle = List.rev cycle in
-    let first_rule = List.hd_exn cycle in
-    let cycle = cycle @ [List.hd_exn cycle] in
-    let log =
-      (* Todo better error message for cycle *)
-      Log.warning ~kind:`Cycle
-        "Un cycle a été detecté pour l'évaluation de cette règle"
-        ~pos:(Pos.pos first_rule)
-        ~hint:
-          (String.concat ~sep:" -> "
-             (List.map cycle ~f:(fun rule ->
-                  Format.asprintf "%a" Rule_name.pp (Pos.value rule) ) ) )
-    in
-    log :: acc
-  in
-  let logs = Cycle_analysis.fold_cycles log_cycle graph [] in
-  return ~logs ast
+  graph

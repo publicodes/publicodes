@@ -1,7 +1,7 @@
 open Ast
 open Core
 open Utils
-open Common
+open Shared
 
 (* Helper function to convert between the two constant types *)
 let convert_constant expr_const =
@@ -37,7 +37,7 @@ let transform_value = function
   | Shared_ast.Expr expr ->
       transform_expr expr
 
-let transform (resolved_ast : Shared_ast.resolved) : Ast.t =
+let transform (resolved_ast : Shared_ast.resolved) : t =
   let evalTree =
     Rule_name.Hashtbl.create ~size:(List.length resolved_ast)
       ~growth_allowed:false ()

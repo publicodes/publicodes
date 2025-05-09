@@ -1,5 +1,4 @@
 open Core
-open Common
 open Ast
 open Utils
 
@@ -9,7 +8,7 @@ let to_json (eval_tree : Ast.t) =
   let rec computation_to_json (eval_tree : Ast.computation) =
     match eval_tree with
     | Ref name ->
-        `String (Rule_name.to_string (Pos.value name))
+        `String (Shared.Rule_name.to_string (Pos.value name))
     | Typed ((Ast.Const c, _), _) -> (
       match c with
       | Number n ->
@@ -67,6 +66,7 @@ let to_json (eval_tree : Ast.t) =
   let json_assoc =
     Hashtbl.fold eval_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
         let computation, _ = Pos.value data in
-        (Rule_name.to_string rule, computation_to_json computation) :: acc )
+        (Shared.Rule_name.to_string rule, computation_to_json computation)
+        :: acc )
   in
   `Assoc json_assoc

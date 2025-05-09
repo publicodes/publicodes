@@ -12,9 +12,11 @@ let compile filename string =
   >>= Resolver.to_resolved_ast
   (* Passe 4: Transform the AST into an evaluation tree *)
   >>| Eval.from_resolved_ast
-  (* Passe 5: Check for cycle *)
-  >>= Eval.cycle_check
-  (* Passe 6: Typecheck the evaluation tree *)
+  (* Passe 5: Typecheck the evaluation tree *)
   >>= Eval.type_check
-  (* Passe 7: Serialize the evaluation tree to JSON *)
+  (* Passe 6: Check for cycle *)
+  >>= Rule_graph.cycle_check
+  (* Passe 7: Extract parameter of the model *)
+  >>= Rule_graph.extract_parameter
+  (* Passe 8: Serialize the evaluation tree to JSON *)
   >>| Eval.to_json

@@ -1,5 +1,5 @@
 open Core
-open Common
+open Shared
 open Utils
 
 (* Extended version of constant with additional variants *)

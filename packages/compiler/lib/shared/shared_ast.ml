@@ -41,7 +41,7 @@ and 'a expr = 'a naked_expr Pos.t [@@deriving show, sexp, compare]
 type 'a rule_value = Expr of 'a expr | Undefined of Pos.pos
 [@@deriving show, sexp, compare]
 
-type rule_meta = Title of string | Description of string
+type rule_meta = Title of string | Description of string | Public
 [@@deriving show, sexp, compare]
 
 type 'a rule_def =
