@@ -1,9 +1,9 @@
-open Ast
-open Common
-open Type_database
 open Utils
 open Core
 open Utils.Output
+open Shared.Shared_ast
+open Ast
+open Type_database
 
 exception Unification_failed of concrete_type * concrete_type
 
@@ -34,7 +34,7 @@ let type_error ~pos (expected : concrete_type) (actual : concrete_type) =
   return ~logs:[Log.error ~pos ~kind:`Type message] ()
 
 let rec resolve_symlink_and_compress ~(database : Type_database.t)
-    (type_id : Type_database.id) : Type_database.id =
+    (type_id : Node_id.t) : Node_id.t =
   match database.(type_id) with
   | Link linked_id ->
       let resolved_id = resolve_symlink_and_compress ~database linked_id in
@@ -43,8 +43,7 @@ let rec resolve_symlink_and_compress ~(database : Type_database.t)
   | _ ->
       type_id
 
-let unify_concrete ~(database : Type_database.t)
-    ((id, pos) : Type_database.id Pos.t)
+let unify_concrete ~(database : Type_database.t) ((id, pos) : Node_id.t Pos.t)
     (concrete_type : Type_database.concrete_type) =
   let id = resolve_symlink_and_compress ~database id in
   match database.(id) with
@@ -86,24 +85,24 @@ let rec unify ~(database : Type_database.t) (id_a, pos_a) (id_b, pos_b) =
 
 let type_check (ast : Ast.t) =
   let database = Type_database.mk () in
-  let get_id_with_pos (computation : Ast.computation) =
+  let get_id_with_pos (computation : computation) =
     match computation with
-    | Ast.Typed ((_, pos), id) ->
+    | Typed ((_, pos), id) ->
         Pos.mk pos id
-    | Ast.Ref (name, pos) ->
+    | Ref (name, pos) ->
         let (_, id), _ = Hashtbl.find_exn ast name in
         Pos.mk pos id
   in
-  let rec type_check_computation (computation : Ast.computation) =
+  let rec type_check_computation (computation : computation) =
     match computation with
-    | Ast.Typed (typed_computation, id) ->
+    | Typed (typed_computation, id) ->
         unify_computation id typed_computation
     | _ ->
         return ()
-  and unify_computation (id : Type_database.id) (computation, pos) =
+  and unify_computation (id : Node_id.t) (computation, pos) =
     let id = Pos.mk pos id in
     match computation with
-    | Ast.Const const -> (
+    | Const const -> (
       match const with
       (* TODO : sort topological order ? *)
       | Number _ ->
@@ -116,30 +115,21 @@ let type_check (ast : Ast.t) =
           unify_concrete ~database id Date
       | _ ->
           return () )
-    | Ast.BinaryOp ((operator, _), left, right) -> (
+    | BinaryOp ((operator, _), left, right) -> (
         let* _ = type_check_computation left in
         let* _ = type_check_computation right in
         match operator with
-        | Shared_ast.Add
-        | Shared_ast.Sub
-        | Shared_ast.Mul
-        | Shared_ast.Div
-        | Shared_ast.Pow ->
+        | Add | Sub | Mul | Div | Pow ->
             let* _ = unify_concrete ~database id Number in
             let* _ = unify_concrete ~database (get_id_with_pos left) Number in
             unify_concrete ~database (get_id_with_pos right) Number
-        | Shared_ast.Gt
-        | Shared_ast.Lt
-        | Shared_ast.LtEq
-        | Shared_ast.GtEq
-        | Shared_ast.Eq
-        | Shared_ast.NotEq ->
+        | Gt | Lt | LtEq | GtEq | Eq | NotEq ->
             let* _ = unify_concrete ~database id Bool in
             unify ~database (get_id_with_pos left) (get_id_with_pos right) )
-    | Ast.UnaryOp ((Shared_ast.Neg, _), value) ->
+    | UnaryOp ((Neg, _), value) ->
         let* _ = unify_concrete ~database id Number in
         unify_concrete ~database (get_id_with_pos value) Number
-    | Ast.Condition (cond, value1, value2) ->
+    | Condition (cond, value1, value2) ->
         let* _ = type_check_computation cond in
         let* _ = type_check_computation value1 in
         let* _ = type_check_computation value2 in
@@ -157,7 +147,7 @@ let type_check (ast : Ast.t) =
     |> List.map ~f:(fun (_, rule) -> type_check_rule rule)
     |> Output.from_list
   in
-  Format.printf "Type Database:\n %a \n\n" Type_database.pp database ;
+  (* Format.printf "Type Database:\n %a \n\n" Type_database.pp database ;
   Format.printf "AST :\n=====\n\n" ;
-  Format.printf "%a" Ast.pp ast ;
+  Format.printf "%a" Ast.pp ast ; *)
   return ast

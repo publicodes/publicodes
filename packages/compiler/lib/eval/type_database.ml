@@ -1,23 +1,14 @@
 open Core
 
-type id = int [@@deriving sexp, show]
-
-let current_id = ref 0
-
-let next_id () =
-  let id = !current_id in
-  current_id := id + 1 ;
-  id
-
 type concrete_type = Number | String | Bool | Date
 [@@deriving sexp, compare, show]
 
-type value = Concrete of concrete_type | Link of id | Null
+type value = Concrete of concrete_type | Link of Node_id.t | Null
 [@@deriving sexp, show]
 
 type t = value array
 
-let mk () = Array.create ~len:!current_id Null
+let mk () = Array.create ~len:!Node_id.current Null
 
 let type_to_string = function
   | Concrete Number ->

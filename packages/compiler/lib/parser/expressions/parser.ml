@@ -1,7 +1,6 @@
 open Tokens
 open Utils
-open Common
-open Common.Shared_ast
+open Shared.Shared_ast
 
 exception SyntaxError of Log.t
 
@@ -125,7 +124,7 @@ and parse_primary tokens =
       | [] ->
           raise (Invalid_argument "empty token list") )
   | (NUMBER (n, Some unit), pos) :: rest ->
-      let value = Number (n, Some (Units.parse_unit unit)) in
+      let value = Number (n, Some (Shared.Units.parse_unit unit)) in
       (Pos.mk pos (Const value), rest)
   | (NUMBER (n, None), pos) :: rest ->
       let value = Number (n, None) in

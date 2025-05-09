@@ -1,8 +1,7 @@
 open Tokens
 open Core
-open Common
 open Utils
-open Common.Shared_ast
+open Shared.Shared_ast
 
 let p any = Pos.mk Pos.dummy any
 
@@ -86,7 +85,9 @@ let%test_unit "Parse 12/01/2024 + 3 mois <= contrat salarié . date de démissio
               (BinaryOp
                  ( p Add
                  , p @@ Const (Date (Day {day= 12; month= 1; year= 2024}))
-                 , p @@ Const (Number (3., Some (Units.parse_unit "mois"))) ) )
+                 , p
+                   @@ Const (Number (3., Some (Shared.Units.parse_unit "mois")))
+                 ) )
           , rule ["contrat salarié"; "date de démission"] ) ) )
 
 let%test_unit "Parse -(3 * -a)" =

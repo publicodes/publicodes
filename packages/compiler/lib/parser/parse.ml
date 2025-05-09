@@ -1,10 +1,9 @@
-exception Invalid_rule_name of string
-
 open Core
 open Utils.Output
-open Common
-open Common.Shared_ast
+open Shared.Shared_ast
 open Yaml_parser
+
+exception Invalid_rule_name of string
 
 let parse_expression ({value; _}, pos) =
   let expr = Pos.mk pos value |> Expr.Lexer.lex |> Expr.Parser.parse in
@@ -36,18 +35,25 @@ let parse_mechanism ~pos (yaml : yaml) =
 let parse_meta (yaml : yaml) =
   match yaml with
   | `Scalar _ ->
-      []
+      return []
   | `O m_members ->
       let parse_key (key, value) =
         match get_value key with
         | "description" ->
-            Some (Description (value |> get_scalar_exn |> get_value))
+            return (Description (value |> get_scalar_exn |> get_value))
         | "titre" ->
-            Some (Title (value |> get_scalar_exn |> get_value))
+            return (Title (value |> get_scalar_exn |> get_value))
+        | "public" ->
+            let value = get_scalar_exn value in
+            let pos = Pos.pos value in
+            let value = get_value value in
+            if not (String.equal value "oui" || String.equal value "") then
+              fatal_error ~pos ~kind:`Syntax "La valeur doit être 'oui'"
+            else return Public
         | _ ->
-            None
+            (None, [])
       in
-      List.filter_map ~f:parse_key m_members
+      List.map ~f:parse_key m_members |> from_list
   | `A _ ->
       raise (Invalid_argument "should not array")
 
@@ -56,7 +62,7 @@ let parse_rule_name s =
   let expr = Pos.mk pos value |> Expr.Lexer.lex |> Expr.Parser.parse in
   match expr with
   | Ref rule_name, _ ->
-      return (Pos.mk pos (Rule_name.create_exn rule_name))
+      return (Pos.mk pos (Shared.Rule_name.create_exn rule_name))
   | _ ->
       fatal_error ~pos ~kind:`Syntax "Le nom de la règle est invalide"
 
@@ -67,7 +73,7 @@ let parse_rule = function
   | name, raw_rule ->
       let* name = parse_rule_name name in
       let value = parse_mechanism ~pos:(Pos.pos name) raw_rule in
-      let meta = parse_meta raw_rule in
+      let* meta = parse_meta raw_rule in
       return {name; value; meta}
 
 let parse ~filename (yaml : yaml) : Ast.t Output.t =

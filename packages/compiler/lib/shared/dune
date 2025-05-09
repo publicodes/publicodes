@@ -1,6 +1,6 @@
 (library
  (inline_tests)
- (name common)
+ (name shared)
  (libraries core utils ppx_show.runtime)
  (modules :standard)
  (preprocess
