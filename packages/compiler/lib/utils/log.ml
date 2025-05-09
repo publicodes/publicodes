@@ -1,6 +1,7 @@
 open Core
 
-type kind = [`Yaml | `Lex | `Syntax | `Type] [@@deriving show, sexp, compare]
+type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle]
+[@@deriving show, sexp, compare]
 
 type level = [`Error | `Warning | `Info] [@@deriving show, sexp, compare]
 

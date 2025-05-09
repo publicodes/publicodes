@@ -34,7 +34,7 @@ let type_error ~pos (expected : concrete_type) (actual : concrete_type) =
   return ~logs:[Log.error ~pos ~kind:`Type message] ()
 
 let rec resolve_symlink_and_compress ~(database : Type_database.t)
-    (type_id : Type_database.id) : Type_database.id =
+    (type_id : Node_id.t) : Node_id.t =
   match database.(type_id) with
   | Link linked_id ->
       let resolved_id = resolve_symlink_and_compress ~database linked_id in
@@ -43,8 +43,7 @@ let rec resolve_symlink_and_compress ~(database : Type_database.t)
   | _ ->
       type_id
 
-let unify_concrete ~(database : Type_database.t)
-    ((id, pos) : Type_database.id Pos.t)
+let unify_concrete ~(database : Type_database.t) ((id, pos) : Node_id.t Pos.t)
     (concrete_type : Type_database.concrete_type) =
   let id = resolve_symlink_and_compress ~database id in
   match database.(id) with
@@ -100,7 +99,7 @@ let type_check (ast : Ast.t) =
         unify_computation id typed_computation
     | _ ->
         return ()
-  and unify_computation (id : Type_database.id) (computation, pos) =
+  and unify_computation (id : Node_id.t) (computation, pos) =
     let id = Pos.mk pos id in
     match computation with
     | Ast.Const const -> (

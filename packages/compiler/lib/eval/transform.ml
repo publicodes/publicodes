@@ -43,7 +43,7 @@ let transform (resolved_ast : Shared_ast.resolved) : Ast.t =
       ~growth_allowed:false ()
   in
   List.iter resolved_ast ~f:(fun Shared_ast.{name; value; _} ->
-      let type_id = Type_database.next_id () in
+      let type_id = Node_id.next () in
       let key = Pos.value name in
       let data = ((transform_value value, type_id), Pos.pos name) in
       Hashtbl.add evalTree ~key ~data |> ignore ) ;
