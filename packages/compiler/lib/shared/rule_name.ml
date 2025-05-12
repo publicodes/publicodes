@@ -1,7 +1,7 @@
 open Core
 
 module T = struct
-  type t = string list [@@deriving sexp, compare]
+  type t = string list [@@deriving sexp, compare, equal]
 
   let pp ppf rule_name =
     Format.fprintf ppf "%s" (String.concat ~sep:" . " rule_name)
