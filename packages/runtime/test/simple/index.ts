@@ -1,5 +1,10 @@
-import { evaluate } from '../../src'
-import rules from './test.json'
+import Engine from '../../src'
+import rules from './test.ts'
 
-const result = evaluate(rules, 'b . c')
-console.log(result)
+const engine = new Engine(rules)
+const result = engine.evaluate('c', {
+  b: 12,
+  e: 5,
+})
+
+const date = engine.evaluate('d')
