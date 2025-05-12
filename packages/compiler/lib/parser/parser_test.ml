@@ -7,7 +7,7 @@ open Ast
 
 let p ?(length = 0) any =
   let open Pos in
-  mk (add ~col:length dummy) any
+  mk ~pos:(add ~col:length dummy) any
 
 let scalar (value : string) : scalar = ({value; style= `Plain}, Pos.dummy)
 

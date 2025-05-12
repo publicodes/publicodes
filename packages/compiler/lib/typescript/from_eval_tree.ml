@@ -1,15 +1,14 @@
 open Core
-open Ast
-open Utils
+open Eval.Tree
 
-let to_json (eval_tree : Ast.t) =
+let to_json (eval_tree : Eval.Tree.t) =
   (* Convert a dotted name to string representation *)
   (* Recursively convert a computation to JSON *)
-  let rec computation_to_json (eval_tree : Ast.computation) =
+  let rec computation_to_json ((eval_tree, _) : computation) =
     match eval_tree with
     | Ref name ->
-        `String (Shared.Rule_name.to_string (Pos.value name))
-    | Typed ((Ast.Const c, _), _) -> (
+        `String (Shared.Rule_name.to_string name)
+    | Const c -> (
       match c with
       | Number n ->
           `List [`Float n]
@@ -25,12 +24,12 @@ let to_json (eval_tree : Ast.t) =
           `List []
       | Null ->
           `Null )
-    | Typed ((Condition (cond, then_expr, else_expr), _), _) ->
+    | Condition (cond, then_expr, else_expr) ->
         `Assoc
           [ ("if", computation_to_json cond)
           ; ("then", computation_to_json then_expr)
           ; ("else", computation_to_json else_expr) ]
-    | Typed ((BinaryOp ((op, _), left, right), _), _) ->
+    | BinaryOp ((op, _), left, right) ->
         let op_str =
           match op with
           | Add ->
@@ -58,15 +57,13 @@ let to_json (eval_tree : Ast.t) =
         in
         `List
           [computation_to_json left; `String op_str; computation_to_json right]
-    | Typed ((UnaryOp ((op, _), expr), _), _) ->
+    | UnaryOp ((op, _), expr) ->
         let op_str = match op with Neg -> "-" in
         `List [`String op_str; computation_to_json expr]
   in
   (* Build the JSON object by iterating through the rules *)
   let json_assoc =
     Hashtbl.fold eval_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
-        let computation, _ = Pos.value data in
-        (Shared.Rule_name.to_string rule, computation_to_json computation)
-        :: acc )
+        (Shared.Rule_name.to_string rule, computation_to_json data) :: acc )
   in
   `Assoc json_assoc

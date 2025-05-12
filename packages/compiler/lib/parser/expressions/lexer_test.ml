@@ -57,7 +57,7 @@ let%test_unit "Lex EOF" = [%test_eq: token] EOF (Pos.value (lexstr ""))
 let%test_unit "Lex Expressions" =
   [%test_eq: token list]
     (List.map ~f:Pos.value
-       (lex @@ Pos.mk Pos.dummy "12 € + 4.5€ * 10 % / règle") )
+       (lex @@ Pos.mk ~pos:Pos.dummy "12 € + 4.5€ * 10 % / règle") )
     [ NUMBER (12., Some "€")
     ; ADD
     ; NUMBER (4.5, Some "€")
@@ -69,7 +69,7 @@ let%test_unit "Lex Expressions" =
 
 let%test_unit "Lex Expressions with" =
   [%test_eq: token list]
-    (List.map ~f:Pos.value (lex @@ Pos.mk Pos.dummy "12 . az . mo / oui"))
+    (List.map ~f:Pos.value (lex @@ Pos.mk ~pos:Pos.dummy "12 . az . mo / oui"))
     [ NUMBER (12., None)
     ; DOT
     ; RULE_NAME "az"

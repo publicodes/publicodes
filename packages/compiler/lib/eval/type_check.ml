@@ -1,11 +1,10 @@
 open Utils
 open Core
 open Utils.Output
+open Concrete_type
 open Shared.Shared_ast
-open Ast
+open Eval_tree.Raw
 open Type_database
-
-exception Unification_failed of concrete_type * concrete_type
 
 (*
 
@@ -16,15 +15,15 @@ Cf : https://docs.google.com/presentation/d/1EkOFQCGFAIuIKG7sJB2ibsWE3Q8eti9UShL
 
 *)
 
-let type_error ~pos (expected : concrete_type) (actual : concrete_type) =
+let type_error ~pos (expected : Concrete_type.t) (actual : Concrete_type.t) =
   let concrete_to_str = function
-    | Number ->
+    | Concrete_type.Number ->
         "un nombre"
-    | String ->
+    | Concrete_type.String ->
         "un texte"
-    | Bool ->
+    | Concrete_type.Bool ->
         "un booléen (oui / non)"
-    | Date ->
+    | Concrete_type.Date ->
         "une date"
   in
   let message =
@@ -33,22 +32,12 @@ let type_error ~pos (expected : concrete_type) (actual : concrete_type) =
   in
   return ~logs:[Log.error ~pos ~kind:`Type message] ()
 
-let rec resolve_symlink_and_compress ~(database : Type_database.t)
-    (type_id : Node_id.t) : Node_id.t =
-  match database.(type_id) with
-  | Link linked_id ->
-      let resolved_id = resolve_symlink_and_compress ~database linked_id in
-      database.(type_id) <- Link resolved_id ;
-      resolved_id
-  | _ ->
-      type_id
-
-let unify_concrete ~(database : Type_database.t) ((id, pos) : Node_id.t Pos.t)
-    (concrete_type : Type_database.concrete_type) =
+let unify_concrete ~(database : Type_database.t) ({id; pos; _} : 'a meta)
+    (concrete_type : Concrete_type.t) =
   let id = resolve_symlink_and_compress ~database id in
   match database.(id) with
   | Concrete concrete_id ->
-      if [%compare.equal: concrete_type] concrete_type concrete_id |> not then
+      if [%compare.equal: Concrete_type.t] concrete_type concrete_id |> not then
         type_error ~pos concrete_type concrete_id
       else return ()
   | Link _ ->
@@ -57,97 +46,83 @@ let unify_concrete ~(database : Type_database.t) ((id, pos) : Node_id.t Pos.t)
       database.(id) <- Concrete concrete_type ;
       return ()
 
-let rec unify ~(database : Type_database.t) (id_a, pos_a) (id_b, pos_b) =
-  let resolved_a_id = resolve_symlink_and_compress ~database id_a in
-  let resolved_b_id = resolve_symlink_and_compress ~database id_b in
-  match (database.(resolved_a_id), database.(resolved_b_id)) with
+let rec unify ~(database : Type_database.t) node_a node_b =
+  let node_a =
+    {node_a with id= resolve_symlink_and_compress ~database node_a.id}
+  in
+  let node_b =
+    {node_b with id= resolve_symlink_and_compress ~database node_b.id}
+  in
+  match (database.(node_a.id), database.(node_b.id)) with
   | Null, value_b ->
-      database.(resolved_a_id) <-
+      database.(node_a.id) <-
         ( match value_b with
         | Null ->
-            Link resolved_b_id
+            Link node_b.id
         | Concrete c ->
             Concrete c
         | Link _ ->
             failwith "Unexpected link after resolving symlinks" ) ;
       return ()
   | _, Null ->
-      unify ~database (resolved_b_id, pos_b) (resolved_a_id, pos_a)
-      (* Swap args *)
+      unify ~database node_b node_a (* Swap args *)
   | Concrete concrete_a, Concrete concrete_b ->
-      if [%compare.equal: concrete_type] concrete_a concrete_b |> not then
+      if [%compare.equal: Concrete_type.t] concrete_a concrete_b |> not then
         (* Todo replace with a unique type_error, with the pos of the different arguments *)
-        let* _ = type_error ~pos:pos_b concrete_a concrete_b in
-        type_error ~pos:pos_b concrete_b concrete_a
+        let* _ = type_error ~pos:node_b.pos concrete_a concrete_b in
+        type_error ~pos:node_a.pos concrete_b concrete_a
       else return ()
   | Link _, _ | _, Link _ ->
       failwith "Unexpected link after resolving symlinks"
 
-let type_check (ast : Ast.t) =
+let type_check (tree : unit Eval_tree.Raw.t) =
   let database = Type_database.mk () in
-  let get_id_with_pos (computation : computation) =
-    match computation with
-    | Typed ((_, pos), id) ->
-        Pos.mk pos id
-    | Ref (name, pos) ->
-        let (_, id), _ = Hashtbl.find_exn ast name in
-        Pos.mk pos id
-  in
-  let rec type_check_computation (computation : computation) =
-    match computation with
-    | Typed (typed_computation, id) ->
-        unify_computation id typed_computation
-    | _ ->
-        return ()
-  and unify_computation (id : Node_id.t) (computation, pos) =
-    let id = Pos.mk pos id in
+  let rec unify_computation (computation, meta) =
     match computation with
     | Const const -> (
       match const with
       (* TODO : sort topological order ? *)
       | Number _ ->
-          unify_concrete ~database id Number
+          unify_concrete ~database meta Number
       | Bool _ ->
-          unify_concrete ~database id Bool
+          unify_concrete ~database meta Bool
       | String _ ->
-          unify_concrete ~database id String
+          unify_concrete ~database meta String
       | Date _ ->
-          unify_concrete ~database id Date
+          unify_concrete ~database meta Date
       | _ ->
           return () )
     | BinaryOp ((operator, _), left, right) -> (
-        let* _ = type_check_computation left in
-        let* _ = type_check_computation right in
+        let* _ = unify_computation left in
+        let* _ = unify_computation right in
         match operator with
         | Add | Sub | Mul | Div | Pow ->
-            let* _ = unify_concrete ~database id Number in
-            let* _ = unify_concrete ~database (get_id_with_pos left) Number in
-            unify_concrete ~database (get_id_with_pos right) Number
+            let* _ = unify_concrete ~database meta Number in
+            let* _ = unify_concrete ~database (snd left) Number in
+            unify_concrete ~database (snd right) Number
         | Gt | Lt | LtEq | GtEq | Eq | NotEq ->
-            let* _ = unify_concrete ~database id Bool in
-            unify ~database (get_id_with_pos left) (get_id_with_pos right) )
+            let* _ = unify_concrete ~database meta Bool in
+            unify ~database (snd left) (snd right) )
     | UnaryOp ((Neg, _), value) ->
-        let* _ = unify_concrete ~database id Number in
-        unify_concrete ~database (get_id_with_pos value) Number
+        let* _ = unify_concrete ~database meta Number in
+        unify_concrete ~database (snd value) Number
     | Condition (cond, value1, value2) ->
-        let* _ = type_check_computation cond in
-        let* _ = type_check_computation value1 in
-        let* _ = type_check_computation value2 in
-        let* _ = unify_concrete ~database id Bool in
-        unify ~database (get_id_with_pos value1) (get_id_with_pos value2)
-  in
-  let type_check_rule ((computation, id), pos) =
-    let id = Pos.mk pos id in
-    let linked_id = get_id_with_pos computation in
-    let* _ = unify ~database linked_id id in
-    type_check_computation computation
+        let* _ = unify_computation cond in
+        let* _ = unify_computation value1 in
+        let* _ = unify_computation value2 in
+        let* _ = unify_concrete meta ~database Bool in
+        unify ~database (snd value1) (snd value2)
+    | Ref name ->
+        let _, ref_meta = Hashtbl.find_exn tree name in
+        unify ~database meta ref_meta
   in
   let* _ =
-    Hashtbl.to_alist ast
-    |> List.map ~f:(fun (_, rule) -> type_check_rule rule)
+    Hashtbl.to_alist tree
+    |> List.map ~f:(fun (_, rule) -> unify_computation rule)
     |> Output.from_list
   in
   (* Format.printf "Type Database:\n %a \n\n" Type_database.pp database ;
   Format.printf "AST :\n=====\n\n" ;
-  Format.printf "%a" Ast.pp ast ; *)
-  return ast
+  Format.printf "%a" Eval_tree
+  .pp ast ; *)
+  return database
