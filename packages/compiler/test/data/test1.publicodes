@@ -1,11 +1,13 @@
-a: 12 + b
+a: 10 + b * e
+
 b:
+
 c:
   public: oui
-  valeur: a * 4
+  valeur: a > 20
+
 d:
   public: oui
+  valeur: 15/06/2024
+
 e:
-  valeur: f > 12/04/2025
-  public: oui
-f:

@@ -1,1 +1,1 @@
-export { evaluate } from './evaluate'
+export { Engine as default } from './engine'
