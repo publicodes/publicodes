@@ -1,5 +1,5 @@
 open Core
-open Common
+open Shared
 open Utils
 
 (* Extended version of constant with additional variants *)
@@ -25,16 +25,15 @@ type typed_computation =
 [@@deriving sexp, show]
 
 and computation =
-  | Typed of (typed_computation Pos.t * Type_database.id)
+  | Typed of (typed_computation Pos.t * Node_id.t)
   | Ref of Rule_name.t Pos.t
 [@@deriving sexp, show]
 
 let mk ~pos (c : typed_computation) : computation =
-  let id = Type_database.next_id () in
+  let id = Node_id.next () in
   Typed (Pos.mk pos c, id)
 
-type t = (computation * Type_database.id) Pos.t Rule_name.Hashtbl.t
-[@@deriving sexp]
+type t = (computation * Node_id.t) Pos.t Rule_name.Hashtbl.t [@@deriving sexp]
 
 let pp fmt t =
   let open Format in
