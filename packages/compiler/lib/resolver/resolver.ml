@@ -1,11 +1,10 @@
 open Core
 open Utils
-open Common
-open Common.Shared_ast
+open Shared
+open Shared.Shared_ast
 open Utils.Output
 
-let rec resolve_expr ~rule_names ~context_rule ((expr, pos) : 'a Shared_ast.expr)
-    =
+let rec resolve_expr ~rule_names ~context_rule ((expr, pos) : 'a expr) =
   let resolve_expr = resolve_expr ~rule_names ~context_rule in
   let* expr =
     match expr with

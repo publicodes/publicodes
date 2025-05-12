@@ -2,8 +2,7 @@ open Yaml_parser
 open Utils.Output
 open Parse
 open Core
-open Common
-open Shared_ast
+open Shared.Shared_ast
 open Ast
 
 let p ?(length = 0) any =
@@ -19,8 +18,8 @@ let%test_unit "parse: simple rule" =
   let output = parse ~filename:"test" (`O [(scalar "rule", value "42")]) in
   match result output with
   | Some [rule_def] ->
-      [%test_eq: Rule_name.t] (Pos.value rule_def.name)
-        (Rule_name.create_exn ["rule"]) ;
+      [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
+        (Shared.Rule_name.create_exn ["rule"]) ;
       [%test_eq: rule_value] rule_def.value
         (Expr (p ~length:2 (Const (Number (42., None)))))
   | _ ->
@@ -34,12 +33,12 @@ let%test_unit "parse: simple rules" =
   in
   match result output with
   | Some [rule_def1; rule_def2] ->
-      [%test_eq: Rule_name.t] (Pos.value rule_def1.name)
-        (Rule_name.create_exn ["rule 1"]) ;
+      [%test_eq: Shared.Rule_name.t] (Pos.value rule_def1.name)
+        (Shared.Rule_name.create_exn ["rule 1"]) ;
       [%test_eq: rule_value] rule_def1.value
         (Expr (p ~length:2 (Const (Number (42., None))))) ;
-      [%test_eq: Rule_name.t] (Pos.value rule_def2.name)
-        (Rule_name.create_exn ["rule 2"]) ;
+      [%test_eq: Shared.Rule_name.t] (Pos.value rule_def2.name)
+        (Shared.Rule_name.create_exn ["rule 2"]) ;
       [%test_eq: rule_value] rule_def2.value
         (Expr (p ~length:3 (Const (Bool false))))
   | _ ->
@@ -50,8 +49,8 @@ let%test_unit "parse: empty rule" =
   let output = parse ~filename:"test" (`O [(scalar "rule 1", value "")]) in
   match result output with
   | Some [rule_def] ->
-      [%test_eq: Rule_name.t] (Pos.value rule_def.name)
-        (Rule_name.create_exn ["rule 1"]) ;
+      [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
+        (Shared.Rule_name.create_exn ["rule 1"]) ;
       [%test_eq: rule_value] rule_def.value (Undefined Pos.dummy)
   | _ ->
       print_logs output ;
@@ -66,8 +65,8 @@ let%test_unit "parse: rules with title" =
   in
   match result output with
   | Some [rule_def] ->
-      [%test_eq: Rule_name.t] (Pos.value rule_def.name)
-        (Rule_name.create_exn ["rule 1"; "subrule 2"]) ;
+      [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
+        (Shared.Rule_name.create_exn ["rule 1"; "subrule 2"]) ;
       [%test_eq: rule_meta list] rule_def.meta [Title "mon titre"] ;
       [%test_eq: rule_value] rule_def.value (Undefined Pos.dummy)
   | _ ->

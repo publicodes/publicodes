@@ -41,7 +41,7 @@ and 'a expr = 'a naked_expr Pos.t [@@deriving show, sexp, compare]
 type 'a rule_value = Expr of 'a expr | Undefined of Pos.pos
 [@@deriving show, sexp, compare]
 
-type rule_meta = Title of string | Description of string
+type rule_meta = Title of string | Description of string | Public
 [@@deriving show, sexp, compare]
 
 type 'a rule_def =
@@ -53,3 +53,9 @@ type 'a program = 'a rule_def list [@@deriving show, sexp, compare]
 type 'a t = 'a program [@@deriving show, sexp, compare]
 
 type resolved = Rule_name.t option t [@@deriving show, sexp, compare]
+
+let has_public_tag rule_def =
+  List.exists ~f:(function Public -> true | _ -> false) rule_def.meta
+
+let has_value rule_def =
+  match rule_def.value with Expr _ -> true | Undefined _ -> false
