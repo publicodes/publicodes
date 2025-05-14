@@ -489,7 +489,7 @@ contrat:
 
 contrat . temps partiel:
   par défaut: oui
-	
+
 `)
 		const result = new Engine(rawRules).evaluate(
 			'contrat . temps partiel',
@@ -503,14 +503,14 @@ contrat . temps partiel:
 		const rawRules = yaml.parse(`
 
 a:
-  
-b: 
+
+b:
   valeur: oui # TODO : this test doesn't pass when we remove this...
   applicable si: a
 
-b . c: 
+b . c:
 b . d: c + c + c + c
-	
+
 `)
 		const result = new Engine(rawRules).evaluate('b . d').missingVariables
 
@@ -523,7 +523,7 @@ b . d: c + c + c + c
 
 a:
     par défaut: b
-a . b: 
+a . b:
     par défaut: 5
 `)
 		const result = new Engine(rawRules).evaluate('a').missingVariables
@@ -543,5 +543,24 @@ a . b:
 		const result = new Engine(rawRules).evaluate('a').missingVariables
 
 		assert.hasAllKeys(result, ['a . b'])
+	})
+
+	it('Should not report missing variable with context even if default value is the same as the value of the context', () => {
+		const rawRules = yaml.parse(`
+a:
+  formule: b + c
+  contexte:
+    b: 10
+    c: 50
+
+b:
+  par défaut: 10
+
+c:
+  par défaut: 20
+`)
+		const result = new Engine(rawRules).evaluate('a').missingVariables
+
+		assert.isEmpty(result)
 	})
 })

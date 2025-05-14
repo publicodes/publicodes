@@ -118,6 +118,12 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 	engine.cache._meta.currentContexteSituation = JSON.stringify(amendedSituation)
 	const evaluatedNode = engine.evaluateNode(node.explanation.valeur)
 
+	const evaluatedMissingVariables = Object.fromEntries(
+		Object.entries(evaluatedNode.missingVariables).filter(([missingVariable]) =>
+			Object.keys(node.explanation.contexte).includes(missingVariable),
+		),
+	) as any
+
 	return {
 		...node,
 		nodeValue: evaluatedNode.nodeValue,
@@ -125,7 +131,7 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 			...node.explanation,
 			valeur: evaluatedNode,
 		},
-		missingVariables: evaluatedNode.missingVariables,
+		missingVariables: evaluatedMissingVariables,
 		...('unit' in evaluatedNode && { unit: evaluatedNode.unit }),
 	}
 }
