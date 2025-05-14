@@ -1,5 +1,4 @@
 open Utils
-open Shared
 open Core
 
 let compile filename string =
@@ -14,23 +13,19 @@ let compile filename string =
     (* Passe 3: Resolve the references *)
     >>= Resolver.to_resolved_ast
   in
-  (* Passe 4: Transform the AST into an evaluation tree *)
-  let eval_ast = Eval.from_resolved_ast ast in
-  (* Passe 5: Typecheck the evaluation tree *)
-  let* _ = Eval.type_check eval_ast in
-  (* Passe 6: Check for cycle *)
-  let* dependency_graph = Dependency_graph.cycle_check ~filename eval_ast in
-  (* Passe 7: Extract parameter of the model *)
-  let parameters = Dependency_graph.extract_parameters ~ast dependency_graph in
-  let parameters =
-    Rule_name.Set.of_list
-      (List.fold ~f:(fun acc a -> acc @ snd a) ~init:[] parameters)
+  let* eval_tree =
+    ast
+    (* Passe 4: Transform the AST into an evaluation tree *)
+    |> Eval.from_resolved_ast
+    (* Passe 5: Typecheck the evaluation tree *)
+    |> Eval.to_typed_tree
   in
-  (* Passe 8: Print parameters *)
-  Format.printf "Parameters: " ;
-  Format.pp_print_list
-    ~pp_sep:(fun fmt () -> Format.fprintf fmt ", ")
-    Rule_name.pp Format.std_formatter (Set.to_list parameters) ;
-  Format.printf "\n" ;
+  let* parameters =
+    eval_tree
+    (* Passe 6: Compute dependencies and check for cycle  *)
+    |> Dependency_graph.cycle_check ~filename
+    (* Passe 7: Extract parameter of the model *)
+    >>= Dependency_graph.extract_parameters ~ast ~eval_tree
+  in
   (* Passe 9: Serialize the evaluation tree to JSON *)
-  return (Eval.to_json eval_ast)
+  return (Typescript.generate ~eval_tree ~parameters)

@@ -18,7 +18,7 @@ let value (x, _) = x
 
 let pos (_, pos) = pos
 
-let mk pos x = (x, pos)
+let mk ~pos x = (x, pos)
 
 let beginning_of_file file = {file; start_pos= (1, 1); end_pos= (1, 1)}
 

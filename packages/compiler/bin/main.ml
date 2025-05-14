@@ -11,7 +11,7 @@ let () =
       print_logs output ;
       match result output with
       | Some program ->
-          print_endline (Yojson.Safe.to_string program)
+          print_endline program
       | None ->
           exit 1 )
   | _ ->

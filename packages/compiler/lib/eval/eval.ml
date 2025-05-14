@@ -1,7 +1,6 @@
-module Ast = Ast
+module Tree = Eval_tree.Typed
+module Concrete_type = Concrete_type
 
-let from_resolved_ast = Transform.transform
+let from_resolved_ast = From_ast.from_ast
 
-let to_json = To_json.to_json
-
-let type_check = Type_check.type_check
+let to_typed_tree = To_typed_tree.to_typed_tree

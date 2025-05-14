@@ -22,14 +22,14 @@ and parse_expression tokens = parse_equality tokens
 and parse_equality tokens =
   let left, tokens = parse_comparison tokens in
   match tokens with
-  | (EQ, op_pos) :: rest ->
+  | (EQ, pos) :: rest ->
       let right, rest = parse_equality rest in
-      let pos = Pos.merge op_pos (Pos.pos right) in
-      (Pos.mk pos (BinaryOp (Pos.mk op_pos Eq, left, right)), rest)
-  | (NEQ, op_pos) :: rest ->
+      let pos = Pos.merge pos (Pos.pos right) in
+      (Pos.mk ~pos (BinaryOp (Pos.mk ~pos Eq, left, right)), rest)
+  | (NEQ, pos) :: rest ->
       let right, rest = parse_equality rest in
-      let pos = Pos.merge op_pos (Pos.pos right) in
-      (Pos.mk pos (BinaryOp (Pos.mk op_pos NotEq, left, right)), rest)
+      let pos = Pos.merge pos (Pos.pos right) in
+      (Pos.mk ~pos (BinaryOp (Pos.mk ~pos NotEq, left, right)), rest)
   | _ ->
       (left, tokens)
 
@@ -37,22 +37,22 @@ and parse_equality tokens =
 and parse_comparison tokens =
   let left, tokens = parse_additive tokens in
   match tokens with
-  | (GT, op_pos) :: rest ->
+  | (GT, pos) :: rest ->
       let right, rest = parse_additive rest in
-      let pos = Pos.merge op_pos (Pos.pos right) in
-      (Pos.mk pos (BinaryOp (Pos.mk op_pos Gt, left, right)), rest)
-  | (LT, op_pos) :: rest ->
+      let pos = Pos.merge pos (Pos.pos right) in
+      (Pos.mk ~pos (BinaryOp (Pos.mk ~pos Gt, left, right)), rest)
+  | (LT, pos) :: rest ->
       let right, rest = parse_additive rest in
-      let pos = Pos.merge op_pos (Pos.pos right) in
-      (Pos.mk pos (BinaryOp (Pos.mk op_pos Lt, left, right)), rest)
-  | (GTE, op_pos) :: rest ->
+      let pos = Pos.merge pos (Pos.pos right) in
+      (Pos.mk ~pos (BinaryOp (Pos.mk ~pos Lt, left, right)), rest)
+  | (GTE, pos) :: rest ->
       let right, rest = parse_additive rest in
-      let pos = Pos.merge op_pos (Pos.pos right) in
-      (Pos.mk pos (BinaryOp (Pos.mk op_pos GtEq, left, right)), rest)
-  | (LTE, op_pos) :: rest ->
+      let pos = Pos.merge pos (Pos.pos right) in
+      (Pos.mk ~pos (BinaryOp (Pos.mk ~pos GtEq, left, right)), rest)
+  | (LTE, pos) :: rest ->
       let right, rest = parse_additive rest in
-      let pos = Pos.merge op_pos (Pos.pos right) in
-      (Pos.mk pos (BinaryOp (Pos.mk op_pos LtEq, left, right)), rest)
+      let pos = Pos.merge pos (Pos.pos right) in
+      (Pos.mk ~pos (BinaryOp (Pos.mk ~pos LtEq, left, right)), rest)
   | _ ->
       (left, tokens)
 
@@ -60,14 +60,14 @@ and parse_comparison tokens =
 and parse_additive tokens =
   let left, tokens = parse_multiplicative tokens in
   match tokens with
-  | (ADD, op_pos) :: rest ->
+  | (ADD, pos) :: rest ->
       let right, rest = parse_additive rest in
-      let pos = Pos.merge op_pos (Pos.pos right) in
-      (Pos.mk pos (BinaryOp (Pos.mk op_pos Add, left, right)), rest)
-  | (SUB, op_pos) :: rest ->
+      let pos = Pos.merge pos (Pos.pos right) in
+      (Pos.mk ~pos (BinaryOp (Pos.mk ~pos Add, left, right)), rest)
+  | (SUB, pos) :: rest ->
       let right, rest = parse_additive rest in
-      let pos = Pos.merge op_pos (Pos.pos right) in
-      (Pos.mk pos (BinaryOp (Pos.mk op_pos Sub, left, right)), rest)
+      let pos = Pos.merge pos (Pos.pos right) in
+      (Pos.mk ~pos (BinaryOp (Pos.mk ~pos Sub, left, right)), rest)
   | _ ->
       (left, tokens)
 
@@ -75,15 +75,15 @@ and parse_additive tokens =
 and parse_multiplicative tokens =
   let left, tokens = parse_power tokens in
   match tokens with
-  | (MUL, op_pos) :: rest ->
+  | (MUL, pos) :: rest ->
       let right, rest = parse_multiplicative rest in
-      let pos = Pos.merge op_pos (Pos.pos right) in
-      let ast = Pos.mk pos (BinaryOp (Pos.mk op_pos Mul, left, right)) in
+      let pos = Pos.merge pos (Pos.pos right) in
+      let ast = Pos.mk ~pos (BinaryOp (Pos.mk ~pos Mul, left, right)) in
       (ast, rest)
-  | (DIV, op_pos) :: rest ->
+  | (DIV, pos) :: rest ->
       let right, rest = parse_multiplicative rest in
-      let pos = Pos.merge op_pos (Pos.pos right) in
-      let ast = Pos.mk pos (BinaryOp (Pos.mk op_pos Div, left, right)) in
+      let pos = Pos.merge pos (Pos.pos right) in
+      let ast = Pos.mk ~pos (BinaryOp (Pos.mk ~pos Div, left, right)) in
       (ast, rest)
   | _ ->
       (left, tokens)
@@ -92,10 +92,10 @@ and parse_multiplicative tokens =
 and parse_power tokens =
   let left, tokens = parse_primary tokens in
   match tokens with
-  | (POW, op_pos) :: rest ->
+  | (POW, pos) :: rest ->
       let right, rest = parse_power rest in
-      let pos = Pos.merge op_pos (Pos.pos right) in
-      let ast = Pos.mk pos (BinaryOp (Pos.mk op_pos Pow, left, right)) in
+      let pos = Pos.merge pos (Pos.pos right) in
+      let ast = Pos.mk ~pos (BinaryOp (Pos.mk ~pos Pow, left, right)) in
       (ast, rest)
   | _ ->
       (left, tokens)
@@ -105,10 +105,10 @@ and parse_primary tokens =
   match tokens with
   | [] ->
       failwith "Unexpected end of input"
-  | (SUB, op_pos) :: rest ->
+  | (SUB, pos) :: rest ->
       let expr, rest = parse_primary rest in
-      let pos = Pos.merge op_pos (Pos.pos expr) in
-      let ast = Pos.mk pos (UnaryOp (Pos.mk op_pos Neg, expr)) in
+      let pos = Pos.merge pos (Pos.pos expr) in
+      let ast = Pos.mk ~pos (UnaryOp (Pos.mk ~pos Neg, expr)) in
       (ast, rest)
   | (LPAREN, _) :: rest -> (
       let expr, rest = parse_expression rest in
@@ -125,22 +125,22 @@ and parse_primary tokens =
           raise (Invalid_argument "empty token list") )
   | (NUMBER (n, Some unit), pos) :: rest ->
       let value = Number (n, Some (Shared.Units.parse_unit unit)) in
-      (Pos.mk pos (Const value), rest)
+      (Pos.mk ~pos (Const value), rest)
   | (NUMBER (n, None), pos) :: rest ->
       let value = Number (n, None) in
-      (Pos.mk pos (Const value), rest)
+      (Pos.mk ~pos (Const value), rest)
   | (STRING s, pos) :: rest ->
       let value = String s in
-      (Pos.mk pos (Const value), rest)
+      (Pos.mk ~pos (Const value), rest)
   | (BOOLEAN b, pos) :: rest ->
       let value = Bool b in
-      (Pos.mk pos (Const value), rest)
+      (Pos.mk ~pos (Const value), rest)
   | (DATE_LITERAL (`Day (d, m, y)), pos) :: rest ->
       let value = Date (Day {day= d; month= m; year= y}) in
-      (Pos.mk pos (Const value), rest)
+      (Pos.mk ~pos (Const value), rest)
   | (DATE_LITERAL (`Month (m, y)), pos) :: rest ->
       let value = Date (Month {month= m; year= y}) in
-      (Pos.mk pos (Const value), rest)
+      (Pos.mk ~pos (Const value), rest)
   | (RULE_NAME name, pos) :: rest ->
       parse_rule_name ~pos [name] rest
   | (_, pos) :: _ ->
@@ -153,4 +153,4 @@ and parse_rule_name ~pos names tokens =
       let pos = Pos.merge pos end_pos in
       parse_rule_name ~pos (name :: names) rest
   | _ ->
-      (Pos.mk pos (Ref (List.rev names)), tokens)
+      (Pos.mk ~pos (Ref (List.rev names)), tokens)

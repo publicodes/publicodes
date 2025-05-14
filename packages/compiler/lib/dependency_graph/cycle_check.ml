@@ -2,11 +2,10 @@ open Core
 open Utils
 open Shared
 open Utils.Output
-open Eval
 module Cycle_analysis = Graph.Cycles.Johnson (Rule_graph)
 
-let cycle_check ~filename (ast : Ast.t) : Rule_graph.t Output.t =
-  let graph = Rule_graph.mk ast in
+let cycle_check ~filename (tree : Eval.Tree.t) : Rule_graph.t Output.t =
+  let graph = Rule_graph.mk tree in
   let log_cycle cycle acc =
     let cycle = List.rev cycle in
     let cycle = cycle @ [List.hd_exn cycle] in

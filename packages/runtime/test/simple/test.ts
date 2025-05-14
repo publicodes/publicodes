@@ -8,20 +8,9 @@ const publicodes = {
     b: [],
     a: [[10.0], '+', ['b', '*', 'e']],
   },
-
-  outputs: ['b', 'c', 'd', 'e'],
-  types: {
-    b: 'number',
-    c: 'boolean',
-    d: 'date',
-    e: 'number',
-  },
-  parameters: {
-    b: ['b'],
-    c: ['b', 'e'],
-    d: [],
-    e: ['e'],
-  },
+  outputs: ['c', 'd', 'b', 'e'],
+  parameters: { c: ['e', 'b'], d: [], b: ['b'], e: ['e'] },
+  types: { c: 'boolean', d: 'date', b: 'number', e: 'number' },
 } as const
 
 export type Output = (typeof publicodes.outputs)[number]

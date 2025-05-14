@@ -6,7 +6,7 @@ open Yaml_parser
 exception Invalid_rule_name of string
 
 let parse_expression ({value; _}, pos) =
-  let expr = Pos.mk pos value |> Expr.Lexer.lex |> Expr.Parser.parse in
+  let expr = Pos.mk ~pos value |> Expr.Lexer.lex |> Expr.Parser.parse in
   Expr expr
 
 let get_scalar_exn (value : yaml) =
@@ -59,10 +59,10 @@ let parse_meta (yaml : yaml) =
 
 let parse_rule_name s =
   let {value; _}, pos = s in
-  let expr = Pos.mk pos value |> Expr.Lexer.lex |> Expr.Parser.parse in
+  let expr = Pos.mk ~pos value |> Expr.Lexer.lex |> Expr.Parser.parse in
   match expr with
   | Ref rule_name, _ ->
-      return (Pos.mk pos (Shared.Rule_name.create_exn rule_name))
+      return (Pos.mk ~pos (Shared.Rule_name.create_exn rule_name))
   | _ ->
       fatal_error ~pos ~kind:`Syntax "Le nom de la règle est invalide"
 
