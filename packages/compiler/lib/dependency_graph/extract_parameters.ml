@@ -3,23 +3,65 @@ open Shared
 open Shared.Shared_ast
 open Utils
 open Rule_graph
+open Utils.Output
 module Oper = Graph.Oper.I (G)
 module Traverse = Graph.Traverse.Dfs (G)
 
-let extract_parameters ~(ast : Shared_ast.resolved) (graph : G.t) =
-  let transitive_dependencies = Oper.transitive_closure ~reflexive:true graph in
-  List.filter_map ast ~f:(fun rule_def ->
+(* TODO : add inputs in parameters, add type, and log if a param is missing  type info  *)
+let extract_parameters ~(ast : Shared_ast.resolved) ~(eval_tree : Eval.Tree.t)
+    (graph : G.t) =
+  let transitive_dependencies =
+    Oper.transitive_closure ~reflexive:false graph
+  in
+  (* Add self-dependencies for rules without value *)
+  List.iter ast ~f:(fun rule_def ->
       let rule_name = Pos.value rule_def.name in
-      if has_public_tag rule_def then
-        Some
-          ( rule_name
-          , List.filter ~f:(fun r ->
-                let rule =
-                  List.find_exn
-                    ~f:(fun rule ->
-                      Rule_name.compare (Pos.value rule.name) r = 0 )
-                    ast
-                in
-                not (Shared_ast.has_value rule) )
-            @@ G.succ transitive_dependencies rule_name )
-      else None )
+      if not (Shared_ast.has_value rule_def) then
+        G.add_edge transitive_dependencies rule_name rule_name ) ;
+  let extract_parameters rule_name =
+    let successor_rules = G.succ transitive_dependencies rule_name in
+    let parameter_rules =
+      List.filter successor_rules ~f:(fun dependent_rule_name ->
+          let rule_definition =
+            List.find_exn
+              ~f:(fun rule ->
+                [%compare.equal: Rule_name.t] (Pos.value rule.name)
+                  dependent_rule_name )
+              ast
+          in
+          not (Shared_ast.has_value rule_definition) )
+    in
+    (rule_name, parameter_rules)
+  in
+  let outputs_with_params =
+    List.filter_map ast ~f:(fun rule_def ->
+        let rule_name = Pos.value rule_def.name in
+        if Shared_ast.has_public_tag rule_def then
+          Some (extract_parameters rule_name)
+        else None )
+  in
+  (* We get the parameter list *)
+  let parameters =
+    Set.to_list @@ Rule_name.Set.of_list
+    @@ List.concat_map ~f:snd outputs_with_params
+  in
+  let outputs =
+    outputs_with_params
+    @
+    (* We add the parameters of the parameters *)
+    List.map parameters ~f:extract_parameters
+  in
+  (* We print warning if an output is without type *)
+  let warnings =
+    List.filter_map outputs ~f:(fun (rule_name, _) ->
+        let meta = Eval.Tree.rule_meta eval_tree rule_name in
+        match meta.typ with
+        | Some _ ->
+            None
+        | None ->
+            Some
+              (Log.error ~pos:meta.pos ~kind:`Type
+                 ~hint:"Vous pouvez l'ajouter avec « type: texte » par exemple"
+                 "Impossible de déterminer le type de la règle" ) )
+  in
+  return ~logs:warnings outputs

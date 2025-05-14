@@ -1,7 +1,9 @@
-open Ast
+open Eval_tree.Raw
 open Core
 open Utils
 open Shared
+
+let mk = Eval_tree.Raw.mk ~typ:()
 
 (* Helper function to convert between the two constant types *)
 let convert_constant expr_const =
@@ -29,7 +31,7 @@ let rec transform_expr (expr, pos) =
     | None ->
         mk ~pos (Const Undefined)
     | Some name ->
-        Ref (Pos.mk pos name) )
+        mk ~pos (Ref name) )
 
 let transform_value = function
   | Shared_ast.Undefined pos ->
@@ -37,14 +39,13 @@ let transform_value = function
   | Shared_ast.Expr expr ->
       transform_expr expr
 
-let transform (resolved_ast : Shared_ast.resolved) : t =
+let from_ast (resolved_ast : Shared_ast.resolved) : unit t =
   let evalTree =
     Rule_name.Hashtbl.create ~size:(List.length resolved_ast)
       ~growth_allowed:false ()
   in
   List.iter resolved_ast ~f:(fun Shared_ast.{name; value; _} ->
-      let type_id = Node_id.next () in
       let key = Pos.value name in
-      let data = ((transform_value value, type_id), Pos.pos name) in
+      let data = transform_value value in
       Hashtbl.add evalTree ~key ~data |> ignore ) ;
   evalTree

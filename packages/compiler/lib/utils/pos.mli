@@ -31,8 +31,8 @@ val value : 'a t -> 'a
 val pos : 'a t -> pos
 (** [pos val] returns the position information of the value. *)
 
-val mk : pos -> 'a -> 'a t
-(** [mk pos x] creates a new value with the given position [pos] and value [x]. *)
+val mk : pos:pos -> 'a -> 'a t
+(** [mk ~pos x] creates a new value with the given position [pos] and value [x]. *)
 
 val beginning_of_file : string -> pos
 (** [beginning_of_file file] returns a position at the beginning of the file. *)

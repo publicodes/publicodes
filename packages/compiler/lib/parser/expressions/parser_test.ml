@@ -3,9 +3,9 @@ open Core
 open Utils
 open Shared.Shared_ast
 
-let p any = Pos.mk Pos.dummy any
+let p any = Pos.mk ~pos:Pos.dummy any
 
-let with_no_pos = List.map ~f:(Pos.mk Pos.dummy)
+let with_no_pos = List.map ~f:(Pos.mk ~pos:Pos.dummy)
 
 let rule str_list = p @@ Ref str_list
 
