@@ -29,3 +29,25 @@ let parse_array ~pos ~parse ~mecanism_name (yaml : yaml) =
       fatal_error ~pos ~kind:`Syntax
         (Format.sprintf "« %s » doit contenir un tableau de valeurs"
            mecanism_name )
+
+let only_one_of ~keys ~error_msg mapping : unit Output.t =
+  let keys =
+    List.filter_map mapping ~f:(fun (key, _) ->
+        let key_value = get_value key in
+        if List.mem ~equal:String.equal keys key_value then
+          Some (key_value, Pos.pos key)
+        else None )
+  in
+  match keys with
+  | [] | [_] ->
+      return ()
+  | (key, _) :: keys ->
+      let logs =
+        List.map
+          ~f:(fun (_, pos) ->
+            Log.error ~kind:`Syntax ~pos
+              ~hint:"Il y a peut-être une erreur d'indentation"
+              (Format.sprintf error_msg key) )
+          keys
+      in
+      (None, logs)
