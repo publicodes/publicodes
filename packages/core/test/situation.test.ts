@@ -115,7 +115,29 @@ a . b: 5
 		expect(engine.evaluate('a . b').nodeValue).toBe(5)
 	})
 
-	it('should filter wrong situation when `strict` option is set to `false`', () => {
+	it('should raise an error when `situation` strict mode option is set to `true`', () => {
+		const engine = new Engine(
+			parse(`
+a:
+  une possibilité:
+    - b:
+    - c:
+    - d:
+`),
+			{
+				strict: {
+					situation: true,
+				},
+			},
+		)
+		expect(() => engine.setSituation({ a: "'valeur non valide'" })).toThrow(
+			`[ Erreur lors de la mise à jour de la situation ]
+➡️  Dans la règle "a"
+✖️  La valeur "valeur non valide" ne fait pas partie des possibilités applicables listées pour cette règle.`,
+		)
+	})
+
+	it('should filter wrong situation when `situation` strict mode option is set to `false`', () => {
 		const engine = new Engine(
 			parse(`
 a:
@@ -163,6 +185,7 @@ a:
 `,
 			{
 				strict: {
+					situation: false,
 					checkPossibleValues: true,
 				},
 			},
@@ -170,7 +193,7 @@ a:
 		expect(() => engine.setSituation({ a: "'valeur non valide'" })).toThrow(
 			`[ Erreur lors de la mise à jour de la situation ]
 ➡️  Dans la règle "a"
-✖️  La valeur 'valeur non valide' ne fait pas partie des possibilités applicables listées pour cette règle.`,
+✖️  La valeur "valeur non valide" ne fait pas partie des possibilités applicables listées pour cette règle.`,
 		)
 	})
 
