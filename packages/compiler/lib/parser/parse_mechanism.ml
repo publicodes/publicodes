@@ -22,6 +22,7 @@ let rec parse_value (yaml : yaml) =
       raise (Invalid_argument "should not array")
 
 and parse_mechanism mapping =
+  let* mapping = remove_double mapping in
   let parse_entry acc (key, value) =
     let* acc = acc in
     let pos = Pos.pos key in
