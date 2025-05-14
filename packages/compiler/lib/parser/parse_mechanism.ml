@@ -5,6 +5,10 @@ open Output
 open Parser_utils
 open Expr
 
+(* Those mecanism cannot appear more than once at the same level *)
+let value_mecanism =
+  ["somme"; "produit"; "une de ces conditions"; "toutes ces conditions"]
+
 let rec parse_value (yaml : yaml) =
   match yaml with
   | `Scalar ({value= ""; _}, pos) ->
@@ -34,6 +38,13 @@ and parse_mechanism mapping =
         parse_all_of ~pos value
     | _ ->
         return acc
+  in
+  (* 1. Check that there is at most one value mechanism *)
+  let* _ =
+    only_one_of ~keys:value_mecanism
+      ~error_msg:
+        "Une valeur a déjà été définie à ce niveau (avec le mécanisme %s)."
+      mapping
   in
   List.fold ~f:parse_entry ~init:(return (Undefined Pos.dummy)) mapping
 
