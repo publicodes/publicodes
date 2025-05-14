@@ -27,5 +27,5 @@ let compile filename string =
     (* Passe 7: Extract parameter of the model *)
     >>= Dependency_graph.extract_parameters ~ast ~eval_tree
   in
-  (* Passe 9: Serialize the evaluation tree to JSON *)
+  (* Passe 8: Serialize the evaluation tree to JSON *)
   return (Typescript.generate ~eval_tree ~parameters)

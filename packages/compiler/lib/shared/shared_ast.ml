@@ -38,14 +38,17 @@ type 'a naked_expr =
 
 and 'a expr = 'a naked_expr Pos.t [@@deriving show, sexp, compare]
 
-type 'a rule_value = Expr of 'a expr | Undefined of Pos.pos
+type 'a value =
+  | Expr of 'a expr
+  | Undefined of Pos.pos
+  | Sum of 'a value list Pos.t
 [@@deriving show, sexp, compare]
 
 type rule_meta = Title of string | Description of string | Public
 [@@deriving show, sexp, compare]
 
 type 'a rule_def =
-  {name: Rule_name.t Pos.t; value: 'a rule_value; meta: rule_meta list}
+  {name: Rule_name.t Pos.t; value: 'a value; meta: rule_meta list}
 [@@deriving show, sexp, compare]
 
 type 'a program = 'a rule_def list [@@deriving show, sexp, compare]
@@ -58,4 +61,4 @@ let has_public_tag rule_def =
   List.exists ~f:(function Public -> true | _ -> false) rule_def.meta
 
 let has_value rule_def =
-  match rule_def.value with Expr _ -> true | Undefined _ -> false
+  match rule_def.value with Undefined _ -> false | _ -> true

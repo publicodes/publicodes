@@ -30,13 +30,18 @@ let rec resolve_expr ~rule_names ~context_rule ((expr, pos) : 'a expr) =
   in
   return (expr, pos)
 
-let resolve_value ~rule_names ~context_rule expr =
+let rec resolve_value ~rule_names ~context_rule expr =
   match expr with
   | Expr expr ->
-      let+ expr = resolve_expr ~rule_names ~context_rule expr in
-      Expr expr
+      let* expr = resolve_expr ~rule_names ~context_rule expr in
+      return (Expr expr)
   | Undefined pos ->
       return (Undefined pos)
+  | Sum (nodes, pos) ->
+      let* nodes =
+        List.map nodes ~f:(resolve_value ~rule_names ~context_rule) |> from_list
+      in
+      return (Sum (nodes, pos))
 
 let check_orphan_rules ~rule_names ast =
   let warn_if_orphan {name= name, pos; _} =
