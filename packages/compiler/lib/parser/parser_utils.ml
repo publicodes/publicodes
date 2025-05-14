@@ -51,3 +51,24 @@ let only_one_of ~keys ~error_msg mapping : unit Output.t =
           keys
       in
       (None, logs)
+
+let remove_double (mapping : mapping) : mapping Output.t =
+  let seen_keys = ref (Set.empty (module String)) in
+  let result_mapping = ref [] in
+  let logs = ref [] in
+  List.iter mapping ~f:(fun (key, value) ->
+      let key_value = get_value key in
+      let key_pos = Pos.pos key in
+      if Set.mem !seen_keys key_value then
+        logs :=
+          Log.error ~pos:key_pos ~kind:`Syntax
+            ~hint:"Vérifiez votre YAML pour les clés en double"
+            (Format.sprintf
+               "Clé dupliquée « %s » détectée. La première occurrence sera \
+                utilisée."
+               key_value )
+          :: !logs
+      else (
+        seen_keys := Set.add !seen_keys key_value ;
+        result_mapping := (key, value) :: !result_mapping ) ) ;
+  return ~logs:!logs (List.rev !result_mapping)

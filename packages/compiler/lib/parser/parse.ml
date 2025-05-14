@@ -7,30 +7,24 @@ open Parse_mechanism
 
 exception Invalid_rule_name of string
 
-let parse_meta yaml =
-  match yaml with
-  | `Scalar _ ->
-      return []
-  | `O m_members ->
-      let parse_key (key, value) =
-        match get_value key with
-        | "description" ->
-            return (Description (value |> get_scalar_exn |> get_value))
-        | "titre" ->
-            return (Title (value |> get_scalar_exn |> get_value))
-        | "public" ->
-            let value = get_scalar_exn value in
-            let pos = Pos.pos value in
-            let value = get_value value in
-            if not (String.equal value "oui" || String.equal value "") then
-              fatal_error ~pos ~kind:`Syntax "La valeur doit être 'oui'"
-            else return Public
-        | _ ->
-            (None, [])
-      in
-      List.map ~f:parse_key m_members |> from_list
-  | `A _ ->
-      raise (Invalid_argument "should not array")
+let parse_meta mapping =
+  let parse_key (key, value) =
+    match get_value key with
+    | "description" ->
+        return (Description (value |> get_scalar_exn |> get_value))
+    | "titre" ->
+        return (Title (value |> get_scalar_exn |> get_value))
+    | "public" ->
+        let value = get_scalar_exn value in
+        let pos = Pos.pos value in
+        let value = get_value value in
+        if not (String.equal value "oui" || String.equal value "") then
+          fatal_error ~pos ~kind:`Syntax "La valeur doit être 'oui'"
+        else return Public
+    | _ ->
+        (None, [])
+  in
+  List.map ~f:parse_key mapping |> from_list
 
 let parse_rule_name s =
   let {value; _}, pos = s in
@@ -53,10 +47,14 @@ let parse_rule (name, yaml) =
                exemple « somme : »)" ]
       in
       return ~logs {name; value= Undefined pos; meta= []}
-  | raw_rule ->
-      let* value = parse_value raw_rule in
+  | `O raw_rule ->
+      let* raw_rule = remove_double raw_rule in
+      let* value = parse_mechanism raw_rule in
       let* meta = parse_meta raw_rule in
       return {name; value; meta}
+  | raw_rule ->
+      let* value = parse_value raw_rule in
+      return {name; value; meta= []}
 
 let parse ~filename (yaml : yaml) : Ast.t Output.t =
   match yaml with
