@@ -25,6 +25,8 @@ type binary_op =
   | LtEq
   | Eq
   | NotEq
+  | And
+  | Or
 [@@deriving sexp, compare, show]
 
 type unary_op = Neg [@@deriving sexp, compare, show]
@@ -42,6 +44,9 @@ type 'a value =
   | Expr of 'a expr
   | Undefined of Pos.pos
   | Sum of 'a value list Pos.t
+  | Product of 'a value list Pos.t
+  | AllOf of 'a value list Pos.t
+  | AnyOf of 'a value list Pos.t
 [@@deriving show, sexp, compare]
 
 type rule_meta = Title of string | Description of string | Public
