@@ -1,7 +1,7 @@
 open Core
 open Utils
 open Shared
-open Eval
+open Eval.Tree
 
 (* This module defines a directed graph for representing rule dependencies.
  *
@@ -42,30 +42,28 @@ module G =
   Graph.Imperative.Digraph.ConcreteBidirectionalLabeled (Rule_vertex) (Ref_edge)
 include G
 
-let mk (ast : Ast.t) : G.t =
+let mk (ast : Eval.Tree.t) : G.t =
   (* Create a new empty graph *)
   let graph = G.create () in
   (* Helper function to find references to rules in a computation *)
-  let rec find_references (computation : Ast.computation) :
+  let rec find_references ((computation, {pos; _}) : computation) :
       Rule_name.t Pos.t list =
     match computation with
-    | Ast.Typed ((typed_computation, _), _) -> (
-      match typed_computation with
-      | Ast.BinaryOp (_, left, right) ->
-          find_references left @ find_references right
-      | Ast.UnaryOp (_, operand) ->
-          find_references operand
-      | Ast.Condition (cond, then_branch, else_branch) ->
-          find_references cond
-          @ find_references then_branch
-          @ find_references else_branch
-      | Ast.Const _ ->
-          [] )
-    | Ast.Ref name ->
-        [name]
+    | BinaryOp (_, left, right) ->
+        find_references left @ find_references right
+    | UnaryOp (_, operand) ->
+        find_references operand
+    | Condition (cond, then_branch, else_branch) ->
+        find_references cond
+        @ find_references then_branch
+        @ find_references else_branch
+    | Const _ ->
+        []
+    | Ref name ->
+        [Pos.mk ~pos name]
   in
   (* Add vertices and edges to the graph *)
-  let add_rule_dependencies (current_rule : Rule_name.t) ((computation, _), _) =
+  let add_rule_dependencies (current_rule : Rule_name.t) computation =
     G.add_vertex graph current_rule ;
     let refs = find_references computation in
     (* Add edges for each reference *)

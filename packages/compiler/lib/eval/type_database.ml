@@ -1,9 +1,6 @@
 open Core
 
-type concrete_type = Number | String | Bool | Date
-[@@deriving sexp, compare, show]
-
-type value = Concrete of concrete_type | Link of Node_id.t | Null
+type value = Concrete of Concrete_type.t | Link of Node_id.t | Null
 [@@deriving sexp, show]
 
 type t = value array
@@ -23,6 +20,16 @@ let type_to_string = function
       Printf.sprintf "db[%s]" (string_of_int id)
   | Null ->
       "null"
+
+let rec resolve_symlink_and_compress ~(database : t) (type_id : Node_id.t) :
+    Node_id.t =
+  match database.(type_id) with
+  | Link linked_id ->
+      let resolved_id = resolve_symlink_and_compress ~database linked_id in
+      database.(type_id) <- Link resolved_id ;
+      resolved_id
+  | _ ->
+      type_id
 
 let pp fmt db =
   let open Format in

@@ -1,5 +1,3 @@
-import { E } from 'vitest/dist/chunks/environment.d.Dmw5ulng.js'
-
 export type Outputs = string
 export type BaseType =
   | 'number'
@@ -8,20 +6,23 @@ export type BaseType =
   | 'null'
   | 'boolean'
   | 'date'
+  | null
 export type Types<O extends Outputs> = Record<O, BaseType>
 
 export type Parameters<O extends Outputs> = {
   readonly [K in O]: ReadonlyArray<O>
 }
 
-export type GetType<T extends BaseType> = {
-  number: number
-  string: string
-  undefined: undefined
-  null: null
-  boolean: boolean
-  date: Date
-}[T]
+export type GetType<T extends BaseType> =
+  T extends null ? unknown
+  : T extends 'number' ? number
+  : T extends 'string' ? string
+  : T extends 'undefined' ? undefined
+  : T extends 'null' ? null
+  : T extends 'boolean' ? boolean
+  : T extends 'date' ? Date
+  : never
+
 export type ValueOf<T extends readonly unknown[]> = T[number]
 
 export type GetContext<
