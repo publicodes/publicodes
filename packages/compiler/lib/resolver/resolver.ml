@@ -42,6 +42,21 @@ let rec resolve_value ~rule_names ~context_rule expr =
         List.map nodes ~f:(resolve_value ~rule_names ~context_rule) |> from_list
       in
       return (Sum (nodes, pos))
+  | Product (nodes, pos) ->
+      let* nodes =
+        List.map nodes ~f:(resolve_value ~rule_names ~context_rule) |> from_list
+      in
+      return (Product (nodes, pos))
+  | AllOf (nodes, pos) ->
+      let* nodes =
+        List.map nodes ~f:(resolve_value ~rule_names ~context_rule) |> from_list
+      in
+      return (AllOf (nodes, pos))
+  | AnyOf (nodes, pos) ->
+      let* nodes =
+        List.map nodes ~f:(resolve_value ~rule_names ~context_rule) |> from_list
+      in
+      return (AnyOf (nodes, pos))
 
 let check_orphan_rules ~rule_names ast =
   let warn_if_orphan {name= name, pos; _} =

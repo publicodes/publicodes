@@ -2,6 +2,7 @@ open Core
 open Utils.Output
 open Shared.Shared_ast
 open Yaml_parser
+open Parser_utils
 open Parse_mechanism
 
 exception Invalid_rule_name of string
