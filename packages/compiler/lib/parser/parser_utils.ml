@@ -14,17 +14,17 @@ let parse_array ~pos ~parse ~mecanism_name (yaml : yaml) =
       let* parsed_nodes =
         seq
         |> List.map ~f:(fun yaml ->
-               let* node_value = parse yaml in
-               match node_value with
-               | Undefined pos ->
+               let* node = parse yaml in
+               match Pos.value node with
+               | Undefined ->
                    fatal_error ~pos ~kind:`Syntax
                      (Format.sprintf "« %s » ne peut pas avoir d'élément vide"
                         mecanism_name )
                | _ ->
-                   return node_value )
-        |> from_list
+                   return node )
+        |> all_keep_logs
       in
-      return (Pos.mk ~pos parsed_nodes)
+      return parsed_nodes
   | _ ->
       fatal_error ~pos ~kind:`Syntax
         (Format.sprintf "« %s » doit contenir un tableau de valeurs"
@@ -72,3 +72,27 @@ let remove_double (mapping : mapping) : mapping Output.t =
         seen_keys := Set.add !seen_keys key_value ;
         result_mapping := (key, value) :: !result_mapping ) ) ;
   return ~logs:!logs (List.rev !result_mapping)
+
+let order_keys ~(first_keys : string list) (mapping : mapping) =
+  let compare a b =
+    let a_idx =
+      List.findi
+        ~f:(fun _ key -> String.equal (get_value (fst a)) key)
+        first_keys
+    in
+    let b_idx =
+      List.findi
+        ~f:(fun _ key -> String.equal (get_value (fst b)) key)
+        first_keys
+    in
+    match (a_idx, b_idx) with
+    | Some a_idx, Some b_idx ->
+        Int.compare (fst a_idx) (fst b_idx)
+    | Some _, None ->
+        -1
+    | None, Some _ ->
+        1
+    | None, None ->
+        0
+  in
+  List.sort ~compare mapping

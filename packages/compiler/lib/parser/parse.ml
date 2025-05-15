@@ -3,7 +3,6 @@ open Utils.Output
 open Shared.Shared_ast
 open Yaml_parser
 open Parser_utils
-open Parse_mechanism
 
 exception Invalid_rule_name of string
 
@@ -24,7 +23,7 @@ let parse_meta mapping =
     | _ ->
         (None, [])
   in
-  List.map ~f:parse_key mapping |> from_list
+  List.map ~f:parse_key mapping |> all_keep_logs
 
 let parse_rule_name s =
   let {value; _}, pos = s in
@@ -37,24 +36,12 @@ let parse_rule_name s =
 
 let parse_rule (name, yaml) =
   let* name = parse_rule_name name in
-  match yaml with
-  | `A _ ->
-      let pos = Pos.pos name in
-      let logs =
-        [ Log.error ~pos ~kind:`Syntax "Une règle ne peut pas être un tableau"
-            ~hint:
-              "Peut-être avez-vous oublié d'ajouter le nom du mécanisme (par \
-               exemple « somme : »)" ]
-      in
-      return ~logs {name; value= Undefined pos; meta= []}
-  | `O raw_rule ->
-      let* raw_rule = remove_double raw_rule in
-      let* value = parse_mechanism raw_rule in
-      let* meta = parse_meta raw_rule in
-      return {name; value; meta}
-  | raw_rule ->
-      let* value = parse_value raw_rule in
-      return {name; value; meta= []}
+  let pos = Pos.pos name in
+  let* value = Parse_value.parse ~pos yaml in
+  let* meta =
+    match yaml with `O mapping -> parse_meta mapping | _ -> return []
+  in
+  return {name; value; meta}
 
 let parse ~filename (yaml : yaml) : Ast.t Output.t =
   match yaml with
@@ -63,6 +50,6 @@ let parse ~filename (yaml : yaml) : Ast.t Output.t =
         ~pos:(Pos.beginning_of_file filename)
         ~kind:`Syntax "Empty file"
   | `O m_members ->
-      List.map m_members ~f:parse_rule |> from_list
+      List.map m_members ~f:parse_rule |> all_keep_logs
   | _ ->
       failwith "todo"

@@ -25,8 +25,8 @@ module Raw = struct
   type 'typ typed_computation =
     | Const of constant
     | Condition of 'typ computation * 'typ computation * 'typ computation
-    | BinaryOp of binary_op Pos.t * 'typ computation * 'typ computation
-    | UnaryOp of unary_op Pos.t * 'typ computation
+    | Binary_op of binary_op Pos.t * 'typ computation * 'typ computation
+    | Unary_op of unary_op Pos.t * 'typ computation
     | Ref of Rule_name.t
   [@@deriving sexp, show]
 
@@ -52,10 +52,10 @@ module Raw = struct
           Const c
       | Condition (c1, c2, c3) ->
           Condition (map_meta f c1, map_meta f c2, map_meta f c3)
-      | BinaryOp (op, c1, c2) ->
-          BinaryOp (op, map_meta f c1, map_meta f c2)
-      | UnaryOp (op, c) ->
-          UnaryOp (op, map_meta f c)
+      | Binary_op (op, c1, c2) ->
+          Binary_op (op, map_meta f c1, map_meta f c2)
+      | Unary_op (op, c) ->
+          Unary_op (op, map_meta f c)
       | Ref r ->
           Ref r
     in
