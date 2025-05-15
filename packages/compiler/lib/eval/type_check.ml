@@ -96,6 +96,10 @@ let type_check (tree : unit Eval_tree.Raw.t) =
         let* _ = unify_computation left in
         let* _ = unify_computation right in
         match operator with
+        | And | Or ->
+            let* _ = unify_concrete ~database meta Bool in
+            let* _ = unify_concrete ~database (snd left) Bool in
+            unify_concrete ~database (snd right) Bool
         | Add | Sub | Mul | Div | Pow ->
             let* _ = unify_concrete ~database meta Number in
             let* _ = unify_concrete ~database (snd left) Number in

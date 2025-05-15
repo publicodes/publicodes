@@ -1,6 +1,7 @@
 open Tokens
 open Core
 open Utils
+open Utils.Output
 open Shared.Shared_ast
 
 let p any = Pos.mk ~pos:Pos.dummy any
@@ -9,9 +10,11 @@ let with_no_pos = List.map ~f:(Pos.mk ~pos:Pos.dummy)
 
 let rule str_list = p @@ Ref str_list
 
+let parse tokens = tokens |> with_no_pos |> Parser.parse |> to_exn
+
 let%test_unit "Parse 12 + 4.5" =
   [%test_eq: Ast.t]
-    (Parser.parse @@ with_no_pos [NUMBER (12., None); ADD; NUMBER (4.5, None)])
+    (parse [NUMBER (12., None); ADD; NUMBER (4.5, None)])
     (p
        (BinaryOp
           (p Add, p (Const (Number (12., None))), p (Const (Number (4.5, None))))
@@ -19,10 +22,8 @@ let%test_unit "Parse 12 + 4.5" =
 
 let%test_unit "Parse 12 + 4.5 / 3" =
   [%test_eq: Ast.t]
-    ( Parser.parse
-    @@ with_no_pos
-         [NUMBER (12., None); ADD; NUMBER (4.5, None); DIV; NUMBER (3., None)]
-    )
+    (parse
+       [NUMBER (12., None); ADD; NUMBER (4.5, None); DIV; NUMBER (3., None)] )
     (p
        (BinaryOp
           ( p Add
@@ -35,24 +36,23 @@ let%test_unit "Parse 12 + 4.5 / 3" =
 
 let%test_unit "Parse a . b" =
   [%test_eq: Ast.t]
-    (Parser.parse @@ with_no_pos [RULE_NAME "a"; DOT; RULE_NAME "b"])
+    (parse [RULE_NAME "a"; DOT; RULE_NAME "b"])
     (rule ["a"; "b"])
 
 let%test_unit "Parse a > 12 != b . c * 2 <= 0" =
   [%test_eq: Ast.t]
-    ( Parser.parse
-    @@ with_no_pos
-         [ RULE_NAME "a"
-         ; GT
-         ; NUMBER (12., None)
-         ; NEQ
-         ; RULE_NAME "b"
-         ; DOT
-         ; RULE_NAME "c"
-         ; MUL
-         ; NUMBER (2., None)
-         ; LTE
-         ; NUMBER (0., None) ] )
+    (parse
+       [ RULE_NAME "a"
+       ; GT
+       ; NUMBER (12., None)
+       ; NEQ
+       ; RULE_NAME "b"
+       ; DOT
+       ; RULE_NAME "c"
+       ; MUL
+       ; NUMBER (2., None)
+       ; LTE
+       ; NUMBER (0., None) ] )
     (p
        (BinaryOp
           ( p NotEq
@@ -69,15 +69,14 @@ let%test_unit "Parse a > 12 != b . c * 2 <= 0" =
 let%test_unit "Parse 12/01/2024 + 3 mois <= contrat salarié . date de démission"
     =
   [%test_eq: Ast.t]
-    ( Parser.parse
-    @@ with_no_pos
-         [ DATE_LITERAL (`Day (12, 1, 2024))
-         ; ADD
-         ; NUMBER (3., Some "mois")
-         ; LTE
-         ; RULE_NAME "contrat salarié"
-         ; DOT
-         ; RULE_NAME "date de démission" ] )
+    (parse
+       [ DATE_LITERAL (`Day (12, 1, 2024))
+       ; ADD
+       ; NUMBER (3., Some "mois")
+       ; LTE
+       ; RULE_NAME "contrat salarié"
+       ; DOT
+       ; RULE_NAME "date de démission" ] )
     (p
        (BinaryOp
           ( p LtEq
@@ -92,9 +91,7 @@ let%test_unit "Parse 12/01/2024 + 3 mois <= contrat salarié . date de démissio
 
 let%test_unit "Parse -(3 * -a)" =
   [%test_eq: Ast.t]
-    ( Parser.parse
-    @@ with_no_pos
-         [SUB; LPAREN; NUMBER (3., None); MUL; SUB; RULE_NAME "a"; RPAREN] )
+    (parse [SUB; LPAREN; NUMBER (3., None); MUL; SUB; RULE_NAME "a"; RPAREN])
     (p
        (UnaryOp
           ( p Neg
@@ -106,17 +103,16 @@ let%test_unit "Parse -(3 * -a)" =
 
 let%test_unit "Parse (10 + 5 ** 2) / b" =
   [%test_eq: Ast.t]
-    ( Parser.parse
-    @@ with_no_pos
-         [ LPAREN
-         ; NUMBER (10., None)
-         ; ADD
-         ; NUMBER (5., None)
-         ; POW
-         ; NUMBER (2., None)
-         ; RPAREN
-         ; DIV
-         ; RULE_NAME "b" ] )
+    (parse
+       [ LPAREN
+       ; NUMBER (10., None)
+       ; ADD
+       ; NUMBER (5., None)
+       ; POW
+       ; NUMBER (2., None)
+       ; RPAREN
+       ; DIV
+       ; RULE_NAME "b" ] )
     (p
        (BinaryOp
           ( p Div

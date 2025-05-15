@@ -2,6 +2,7 @@ open Sedlexing
 open Tokens
 open Core
 open Utils
+open Utils.Output
 
 type lexing_context = Reference | Expression [@@deriving show]
 
@@ -166,23 +167,33 @@ let rec lex_one (lexbuf : lexbuf) : token Pos.t =
   | eof ->
       update_acc lexbuf ; with_pos EOF
   | _ ->
-      raise (Invalid_token ("Invalid token: " ^ Utf8.lexeme lexbuf))
+      raise (Invalid_token (Utf8.lexeme lexbuf))
 
-let lex ((publicodes, pos) : string Pos.t) : token Pos.t list =
+let lex ((publicodes, pos) : string Pos.t) : token Pos.t list Output.t =
   let lexbuf = Utf8.from_string publicodes in
+  let file = pos.Pos.file in
   set_position lexbuf
-    { pos_fname= pos.file
-    ; pos_lnum= fst pos.start_pos
-    ; pos_bol= snd pos.start_pos
+    { pos_fname= file
+    ; pos_lnum= fst pos.Pos.start_pos
+    ; pos_bol= snd pos.Pos.start_pos
     ; pos_cnum= 0 } ;
   let rec lex_loop acc =
     try
       let token = lex_one lexbuf in
       match Pos.value token with
       | EOF ->
-          List.rev (token :: acc)
+          return (List.rev (token :: acc))
       | _ ->
           lex_loop (token :: acc)
-    with End_of_file -> List.rev acc
+    with Invalid_token token_str ->
+      let token_pos =
+        let start_pos, end_pos = lexing_positions lexbuf in
+        Pos.
+          { file
+          ; start_pos= (start_pos.pos_lnum, start_pos.pos_cnum)
+          ; end_pos= (end_pos.pos_lnum, end_pos.pos_cnum) }
+      in
+      fatal_error ~pos:token_pos ~kind:`Lex
+        (Format.sprintf "« %s » : cette expression est invalide" token_str)
   in
   lex_loop []

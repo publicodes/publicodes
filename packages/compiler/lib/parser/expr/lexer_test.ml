@@ -2,6 +2,7 @@ open! Base
 open Core
 open Sedlexing
 open Tokens
+open Utils.Output
 open Lexer
 open Utils
 
@@ -55,9 +56,11 @@ let%test_unit "Lex Boolean" =
 let%test_unit "Lex EOF" = [%test_eq: token] EOF (Pos.value (lexstr ""))
 
 let%test_unit "Lex Expressions" =
+  let tokens =
+    lex (Pos.mk ~pos:Pos.dummy "12 € + 4.5€ * 10 % / règle") |> to_exn
+  in
   [%test_eq: token list]
-    (List.map ~f:Pos.value
-       (lex @@ Pos.mk ~pos:Pos.dummy "12 € + 4.5€ * 10 % / règle") )
+    (List.map ~f:Pos.value tokens)
     [ NUMBER (12., Some "€")
     ; ADD
     ; NUMBER (4.5, Some "€")
@@ -68,8 +71,9 @@ let%test_unit "Lex Expressions" =
     ; EOF ]
 
 let%test_unit "Lex Expressions with" =
+  let tokens = lex (Pos.mk ~pos:Pos.dummy "12 . az . mo / oui") |> to_exn in
   [%test_eq: token list]
-    (List.map ~f:Pos.value (lex @@ Pos.mk ~pos:Pos.dummy "12 . az . mo / oui"))
+    (List.map ~f:Pos.value tokens)
     [ NUMBER (12., None)
     ; DOT
     ; RULE_NAME "az"

@@ -1,20 +1,25 @@
 open Tokens
 open Utils
 open Shared.Shared_ast
+open Utils.Output
 
 exception SyntaxError of Log.t
 
 let rec parse (expression : token Pos.t list) =
-  let result, remaining = parse_expression expression in
-  match remaining with
-  | [] ->
-      result
-  | (EOF, _) :: [] ->
-      result
-  | (token, _) :: _ ->
-      failwith
-        ( "Unexpected tokens remaining after parsing. Next token: "
-        ^ show_token token )
+  try
+    let result, remaining = parse_expression expression in
+    match remaining with
+    | [] ->
+        return result
+    | (EOF, _) :: [] ->
+        return result
+    | (token, pos) :: _ ->
+        raise
+          (SyntaxError
+             (Log.error ~kind:`Syntax ~pos
+                (Format.asprintf "L'élément « %a » est inattendu à cet endroit."
+                   Tokens.pp_token token ) ) )
+  with SyntaxError log -> (None, [log])
 
 and parse_expression tokens = parse_equality tokens
 
@@ -115,14 +120,12 @@ and parse_primary tokens =
       match rest with
       | (RPAREN, _) :: rest ->
           (expr, rest)
-      | (_, pos) :: _ ->
+      | _ ->
           (* Todo add position of the opening parenthesis *)
           raise
             (SyntaxError
-               (Log.error ~pos ~kind:`Syntax "Il manque la parenthèse fermante")
-            )
-      | [] ->
-          raise (Invalid_argument "empty token list") )
+               (Log.error ~pos:(Pos.pos expr) ~kind:`Syntax
+                  "Il manque la parenthèse fermante dans cette expression" ) ) )
   | (NUMBER (n, Some unit), pos) :: rest ->
       let value = Number (n, Some (Shared.Units.parse_unit unit)) in
       (Pos.mk ~pos (Const value), rest)
