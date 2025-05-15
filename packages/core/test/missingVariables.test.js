@@ -553,10 +553,10 @@ a:
     b: 10
     c: 50
 
-b:
+a . b:
   par défaut: 10
 
-c:
+a . c:
   par défaut: 20
 `)
 		const result = new Engine(rawRules).evaluate('a').missingVariables

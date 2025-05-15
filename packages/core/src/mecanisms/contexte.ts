@@ -36,14 +36,14 @@ export default function parseMecanismContexte(v, context) {
 parseMecanismContexte.nom = 'contexte' as const
 
 const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
-	const undefinedContextRules: string[] = []
+	const undefinedContextRules: (string | undefined)[] = []
 	const amendedSituation = Object.fromEntries(
 		node.explanation.contexte
 			.filter(([originRule, replacement]) => {
 				const originRuleEvaluation = this.evaluateNode(originRule)
 				const replacementEvaluation = this.evaluateNode(replacement)
 				if (replacementEvaluation.nodeValue === undefined) {
-					undefinedContextRules.push(originRule.name)
+					undefinedContextRules.push(originRule.dottedName)
 				}
 				return (
 					originRuleEvaluation.nodeValue !== replacementEvaluation.nodeValue ||
@@ -121,11 +121,13 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 	engine.cache._meta.currentContexteSituation = JSON.stringify(amendedSituation)
 	const evaluatedNode = engine.evaluateNode(node.explanation.valeur)
 
-	const contextRules = node.explanation.contexte.map(
-		([originRule]) => originRule.name,
+	const contextRules: (string | undefined)[] = node.explanation.contexte.map(
+		([originRule]) => {
+			return originRule.dottedName
+		},
 	)
 	const contextRulesToKeep = contextRules.filter((rule) =>
-		undefinedContextRules.includes(rule),
+		undefinedContextRules.includes(rule as string),
 	)
 
 	const evaluatedMissingVariables = Object.fromEntries(
