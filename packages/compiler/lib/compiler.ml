@@ -1,13 +1,12 @@
 open Utils
 open Core
 
-let compile filename string =
+let compile_file content ~filename =
   let open Output in
   (* let default_options = Compiler_options.{flags= {orphan_rules= `Error}} in *)
   let* ast =
-    string
     (* Passe 1: Parse the YAML string into an AST *)
-    |> Yaml_parser.to_yaml ~filename
+    Yaml_parser.to_yaml ~filename content
     (* Passe 2: Parse the AST into rules *)
     >>= Parser.to_ast ~filename
     (* Passe 3: Resolve the references *)

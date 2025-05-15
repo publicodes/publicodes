@@ -2,6 +2,8 @@ open Core
 
 type 'a t = 'a option * Log.t list [@@deriving show, sexp, compare]
 
+let empty : 'a t = (None, [])
+
 let return ?(logs = []) x : 'a t = (Some x, logs)
 
 let result (x, _) = x
