@@ -29,6 +29,8 @@ depends: [
   "ppx_show"
   "sedlex"
   "yojson"
+  "ocamlgraph" {>= "2.2.0"}
+  "cmdliner"
   "ppx_inline_test" {with-test}
   "ppx_assert" {with-test}
   "ppx_compare" {with-test}
