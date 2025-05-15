@@ -1,5 +1,13 @@
 # publicodes
 
+## 1.8.5
+
+### Patch Changes
+
+- [#688](https://github.com/publicodes/publicodes/pull/688) [`841ab02`](https://github.com/publicodes/publicodes/commit/841ab022cadf900cdc5318e2cdd115efa51cc95e) Thanks [@Clemog](https://github.com/Clemog)! - fix(core): use dottedName to access ruleName instead of name for context missing variables evaluation
+
+- [#688](https://github.com/publicodes/publicodes/pull/688) [`841ab02`](https://github.com/publicodes/publicodes/commit/841ab022cadf900cdc5318e2cdd115efa51cc95e) Thanks [@Clemog](https://github.com/Clemog)! - fix(core): `contexte` rules can't be missingVariables
+
 ## 1.8.4
 
 ### Patch Changes
