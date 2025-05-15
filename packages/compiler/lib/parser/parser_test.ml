@@ -20,7 +20,7 @@ let%test_unit "parse: simple rule" =
   | Some [rule_def] ->
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
         (Shared.Rule_name.create_exn ["rule"]) ;
-      [%test_eq: rule_value] rule_def.value
+      [%test_eq: value] rule_def.value
         (Expr (p ~length:2 (Const (Number (42., None)))))
   | _ ->
       print_logs output ;
@@ -35,12 +35,11 @@ let%test_unit "parse: simple rules" =
   | Some [rule_def1; rule_def2] ->
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def1.name)
         (Shared.Rule_name.create_exn ["rule 1"]) ;
-      [%test_eq: rule_value] rule_def1.value
+      [%test_eq: value] rule_def1.value
         (Expr (p ~length:2 (Const (Number (42., None))))) ;
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def2.name)
         (Shared.Rule_name.create_exn ["rule 2"]) ;
-      [%test_eq: rule_value] rule_def2.value
-        (Expr (p ~length:3 (Const (Bool false))))
+      [%test_eq: value] rule_def2.value (Expr (p ~length:3 (Const (Bool false))))
   | _ ->
       print_logs output ;
       assert false
@@ -51,7 +50,7 @@ let%test_unit "parse: empty rule" =
   | Some [rule_def] ->
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
         (Shared.Rule_name.create_exn ["rule 1"]) ;
-      [%test_eq: rule_value] rule_def.value (Undefined Pos.dummy)
+      [%test_eq: value] rule_def.value (Undefined Pos.dummy)
   | _ ->
       print_logs output ;
       assert false
@@ -68,7 +67,7 @@ let%test_unit "parse: rules with title" =
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
         (Shared.Rule_name.create_exn ["rule 1"; "subrule 2"]) ;
       [%test_eq: rule_meta list] rule_def.meta [Title "mon titre"] ;
-      [%test_eq: rule_value] rule_def.value (Undefined Pos.dummy)
+      [%test_eq: value] rule_def.value (Undefined Pos.dummy)
   | _ ->
       print_logs output ;
       assert false
@@ -85,6 +84,6 @@ let%test_unit "parse: rules with description and valeur" =
   match result output with
   | Some [{meta; value; _}] ->
       [%test_eq: rule_meta list] meta [Description "ma description"] ;
-      [%test_eq: rule_value] value (Expr (p ~length:6 (Ref ["rule 3"])))
+      [%test_eq: value] value (Expr (p ~length:6 (Ref ["rule 3"])))
   | _ ->
       failwith "Expected no rule definitions"

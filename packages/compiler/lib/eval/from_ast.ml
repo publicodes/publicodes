@@ -33,11 +33,35 @@ let rec transform_expr (expr, pos) =
     | Some name ->
         mk ~pos (Ref name) )
 
-let transform_value = function
+let rec transform_value = function
   | Shared_ast.Undefined pos ->
       mk ~pos (Const Undefined)
   | Shared_ast.Expr expr ->
       transform_expr expr
+  | Shared_ast.Sum sum ->
+      transform_sum sum
+  | Shared_ast.Product product ->
+      transform_product product
+  | Shared_ast.AnyOf any_of ->
+      transform_any_of any_of
+  | Shared_ast.AllOf all_of ->
+      transform_all_of all_of
+
+and transform_sum (nodes, pos) =
+  List.fold_right nodes ~init:(mk ~pos (Const (Number 0.))) ~f:(fun node acc ->
+      mk ~pos (BinaryOp (Pos.mk ~pos Shared_ast.Add, transform_value node, acc)) )
+
+and transform_product (nodes, pos) =
+  List.fold_right nodes ~init:(mk ~pos (Const (Number 1.))) ~f:(fun node acc ->
+      mk ~pos (BinaryOp (Pos.mk ~pos Shared_ast.Mul, transform_value node, acc)) )
+
+and transform_any_of (nodes, pos) =
+  List.fold_right nodes ~init:(mk ~pos (Const (Bool false))) ~f:(fun node acc ->
+      mk ~pos (BinaryOp (Pos.mk ~pos Shared_ast.Or, transform_value node, acc)) )
+
+and transform_all_of (nodes, pos) =
+  List.fold_right nodes ~init:(mk ~pos (Const (Bool true))) ~f:(fun node acc ->
+      mk ~pos (BinaryOp (Pos.mk ~pos Shared_ast.And, transform_value node, acc)) )
 
 let from_ast (resolved_ast : Shared_ast.resolved) : unit t =
   let evalTree =

@@ -57,6 +57,11 @@ let ( let* ) m f = bind m ~f
 let print_logs (output : 'a t) =
   output |> logs |> List.iter ~f:(fun log -> Format.printf "%a\n" Log.pp log)
 
+let sprintf_logs (output : 'a t) =
+  output |> logs
+  |> List.map ~f:(fun log -> Format.asprintf "%a\n" Log.pp log)
+  |> String.concat ~sep:"\n"
+
 let from_list ?default (ts : 'a t list) : 'a list t =
   match default with
   | Some default_value ->
@@ -71,3 +76,6 @@ let from_list ?default (ts : 'a t list) : 'a list t =
           let xs = match x with Some x -> x :: xs | None -> xs in
           return ~logs:(logs acc @ log) xs )
       >>| List.rev
+
+let to_exn (output : 'a t) =
+  match output with Some x, _ -> x | None, _ -> failwith (sprintf_logs output)
