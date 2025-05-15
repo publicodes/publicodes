@@ -12,8 +12,11 @@ let%test_unit "parse scalar" =
       [%test_eq: yaml] yaml
         (`Scalar
            ( {value= "scalar"; style= `Plain}
-           , { start_pos= (1, 1)
-             ; end_pos= (1, 1 + String.length str)
+           , { start_pos= Pos.Point.dummy
+             ; end_pos=
+                 { line= 1
+                 ; column= 1 + String.length str
+                 ; index= String.length str }
              ; file= "test" } ) )
   | None ->
       print_logs output ;
@@ -32,18 +35,26 @@ let%test_unit "parse obj" =
         (`O
            [ (* Key *)
              ( ( {value= "ma règle"; style= `Plain}
-               , {start_pos= (2, 3); end_pos= (2, 11); file= "test"} )
+               , { start_pos= {line= 2; column= 3; index= 3}
+                 ; end_pos= {line= 2; column= 11; index= 11}
+                 ; file= "test" } )
              , (* Value *)
                `Scalar
                  ( {value= ""; style= `Plain}
-                 , {start_pos= (2, 12); end_pos= (2, 12); file= "test"} ) )
+                 , { start_pos= {line= 2; column= 12; index= 12}
+                   ; end_pos= {line= 2; column= 12; index= 12}
+                   ; file= "test" } ) )
            ; (* Key *)
              ( ( {value= "b"; style= `Plain}
-               , {start_pos= (3, 3); end_pos= (3, 4); file= "test"} )
+               , { start_pos= {line= 3; column= 3; index= 15}
+                 ; end_pos= {line= 3; column= 4; index= 16}
+                 ; file= "test" } )
              , (* Value *)
                `Scalar
                  ( {value= "2"; style= `Plain}
-                 , {start_pos= (4, 5); end_pos= (4, 6); file= "test"} ) ) ] )
+                 , { start_pos= {line= 4; column= 5; index= 22}
+                   ; end_pos= {line= 4; column= 6; index= 23}
+                   ; file= "test" } ) ) ] )
   | None ->
       print_logs output ;
       assert false
@@ -57,13 +68,19 @@ let%test_unit "parse array" =
         (`A
            [ `Scalar
                ( {value= "a"; style= `Plain}
-               , {start_pos= (1, 2); end_pos= (1, 3); file= "test"} )
+               , { start_pos= {line= 1; column= 2; index= 1}
+                 ; end_pos= {line= 1; column= 3; index= 2}
+                 ; file= "test" } )
            ; `Scalar
                ( {value= "a . b"; style= `Single_quoted}
-               , {start_pos= (1, 5); end_pos= (1, 12); file= "test"} )
+               , { start_pos= {line= 1; column= 5; index= 4}
+                 ; end_pos= {line= 1; column= 12; index= 11}
+                 ; file= "test" } )
            ; `Scalar
                ( {value= "1.4"; style= `Plain}
-               , {start_pos= (1, 13); end_pos= (1, 16); file= "test"} ) ] )
+               , { start_pos= {line= 1; column= 13; index= 12}
+                 ; end_pos= {line= 1; column= 16; index= 15}
+                 ; file= "test" } ) ] )
   | None ->
       print_logs output ;
       assert false
