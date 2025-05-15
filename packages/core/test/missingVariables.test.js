@@ -563,4 +563,22 @@ c:
 
 		assert.isEmpty(result)
 	})
+
+	it('Should report missing variable with context if not all missing rules are defined', () => {
+		const rawRules = yaml.parse(`
+a:
+  formule: b + c
+  contexte:
+    b: 10
+
+b:
+  par défaut: 10
+
+c:
+  par défaut: 20
+`)
+		const result = new Engine(rawRules).evaluate('a').missingVariables
+
+		assert.hasAllKeys(result, ['c'])
+	})
 })

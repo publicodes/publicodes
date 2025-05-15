@@ -17,7 +17,6 @@ export type ContextNode = {
 
 export default function parseMecanismContexte(v, context) {
 	const node = parse(v.valeur, context)
-
 	const contexte = (
 		Object.keys(v.contexte).map((dottedName) => [
 			parse(dottedName, context),
@@ -37,11 +36,15 @@ export default function parseMecanismContexte(v, context) {
 parseMecanismContexte.nom = 'contexte' as const
 
 const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
+	const undefinedContextRules: string[] = []
 	const amendedSituation = Object.fromEntries(
 		node.explanation.contexte
 			.filter(([originRule, replacement]) => {
 				const originRuleEvaluation = this.evaluateNode(originRule)
 				const replacementEvaluation = this.evaluateNode(replacement)
+				if (replacementEvaluation.nodeValue === undefined) {
+					undefinedContextRules.push(originRule.name)
+				}
 				return (
 					originRuleEvaluation.nodeValue !== replacementEvaluation.nodeValue ||
 					serializeUnit(originRuleEvaluation.unit) !==
@@ -118,9 +121,18 @@ const evaluateContexte: EvaluationFunction<'contexte'> = function (node) {
 	engine.cache._meta.currentContexteSituation = JSON.stringify(amendedSituation)
 	const evaluatedNode = engine.evaluateNode(node.explanation.valeur)
 
+	const contextRules = node.explanation.contexte.map(
+		([originRule]) => originRule.name,
+	)
+	const contextRulesToKeep = contextRules.filter((rule) =>
+		undefinedContextRules.includes(rule),
+	)
+
 	const evaluatedMissingVariables = Object.fromEntries(
-		Object.entries(evaluatedNode.missingVariables).filter(([missingVariable]) =>
-			Object.keys(node.explanation.contexte).includes(missingVariable),
+		Object.entries(evaluatedNode.missingVariables).filter(
+			([missingVariable]) =>
+				!contextRules.includes(missingVariable) ||
+				contextRulesToKeep.includes(missingVariable),
 		),
 	) as any
 
