@@ -1,5 +1,13 @@
 # publicodes
 
+## 1.8.4
+
+### Patch Changes
+
+- [#684](https://github.com/publicodes/publicodes/pull/684) [`c00ddef`](https://github.com/publicodes/publicodes/commit/c00ddefdff5cd2edb970066a7d6d7975fe77eeba) Thanks [@Clemog](https://github.com/Clemog)! - fix(core): `contexte` rules can't be missingVariables
+
+- [#681](https://github.com/publicodes/publicodes/pull/681) [`6aa06de`](https://github.com/publicodes/publicodes/commit/6aa06de353f5a4ae22f311227c812690202dc1ce) Thanks [@Clemog](https://github.com/Clemog)! - fix(core): situation error now throw
+
 ## 1.8.3
 
 ### Patch Changes
