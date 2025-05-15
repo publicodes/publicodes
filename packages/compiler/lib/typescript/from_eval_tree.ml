@@ -54,6 +54,10 @@ let to_json (eval_tree : Eval.Tree.t) =
               "="
           | NotEq ->
               "!="
+          | And ->
+              "&&"
+          | Or ->
+              "||"
         in
         `List
           [computation_to_json left; `String op_str; computation_to_json right]
