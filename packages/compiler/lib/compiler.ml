@@ -22,7 +22,7 @@ let compile_file content ~filename =
   let* parameters =
     eval_tree
     (* Passe 6: Compute dependencies and check for cycle  *)
-    |> Dependency_graph.cycle_check ~filename
+    |> Dependency_graph.cycle_check
     (* Passe 7: Extract parameter of the model *)
     >>= Dependency_graph.extract_parameters ~ast ~eval_tree
   in

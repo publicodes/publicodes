@@ -1,7 +1,7 @@
 (library
  (inline_tests)
  (name eval)
- (libraries core ppx_show.runtime parser expr)
+ (libraries core ppx_show.runtime yojson parser expr)
  (modules :standard)
  (preprocess
  (pps ppx_inline_test ppx_compare ppx_sexp_conv ppx_show sedlex.ppx ppx_assert)))
