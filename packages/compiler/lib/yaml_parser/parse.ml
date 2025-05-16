@@ -72,8 +72,14 @@ let parse (filename : string) (content : string) : yaml Output.t =
   let pos_from_mark Event.{start_mark; end_mark} =
     Pos.
       { file= filename
-      ; start_pos= (start_mark.line + 1, start_mark.column + 1)
-      ; end_pos= (end_mark.line + 1, end_mark.column + 1) }
+      ; start_pos=
+          { index= start_mark.index
+          ; line= start_mark.line + 1
+          ; column= start_mark.column + 1 }
+      ; end_pos=
+          { index= end_mark.index
+          ; line= end_mark.line + 1
+          ; column= end_mark.column + 1 } }
   in
   let transform_error ?(pos = Pos.beginning_of_file filename) result =
     match result with

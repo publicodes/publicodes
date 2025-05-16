@@ -86,8 +86,8 @@ let rec lex_one (lexbuf : lexbuf) : token Pos.t =
     let pos =
       Pos.
         { file= start_pos.pos_fname
-        ; start_pos= (start_pos.pos_lnum, start_pos.pos_cnum)
-        ; end_pos= (end_pos.pos_lnum, end_pos.pos_cnum) }
+        ; start_pos= Pos.Point.of_position start_pos
+        ; end_pos= Pos.Point.of_position end_pos }
     in
     Pos.mk ~pos token
   in
@@ -171,12 +171,8 @@ let rec lex_one (lexbuf : lexbuf) : token Pos.t =
 
 let lex ((publicodes, pos) : string Pos.t) : token Pos.t list Output.t =
   let lexbuf = Utf8.from_string publicodes in
-  let file = pos.Pos.file in
-  set_position lexbuf
-    { pos_fname= file
-    ; pos_lnum= fst pos.Pos.start_pos
-    ; pos_bol= snd pos.Pos.start_pos
-    ; pos_cnum= 0 } ;
+  let file = pos.file in
+  Sedlexing.set_position lexbuf (Pos.Point.to_position ~file pos.start_pos) ;
   let rec lex_loop acc =
     try
       let token = lex_one lexbuf in
@@ -190,8 +186,8 @@ let lex ((publicodes, pos) : string Pos.t) : token Pos.t list Output.t =
         let start_pos, end_pos = lexing_positions lexbuf in
         Pos.
           { file
-          ; start_pos= (start_pos.pos_lnum, start_pos.pos_cnum)
-          ; end_pos= (end_pos.pos_lnum, end_pos.pos_cnum) }
+          ; start_pos= Pos.Point.of_position start_pos
+          ; end_pos= Pos.Point.of_position end_pos }
       in
       fatal_error ~pos:token_pos ~kind:`Lex
         (Format.sprintf "« %s » : cette expression est invalide" token_str)

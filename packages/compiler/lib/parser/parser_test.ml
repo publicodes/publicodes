@@ -5,9 +5,7 @@ open Core
 open Shared.Shared_ast
 open Ast
 
-let p ?(length = 0) any =
-  let open Pos in
-  mk ~pos:(add ~col:length dummy) any
+let p ?(length = 0) any = Pos.(mk ~pos:(add ~len:length dummy)) any
 
 let scalar (value : string) : scalar = ({value; style= `Plain}, Pos.dummy)
 
