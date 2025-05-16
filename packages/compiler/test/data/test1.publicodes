@@ -1,6 +1,7 @@
 a: 10 + b * e
 
 b:
+  applicable si: c
   plafond: 4
 
 c:

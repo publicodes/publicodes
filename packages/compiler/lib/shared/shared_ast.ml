@@ -89,3 +89,5 @@ let has_public_tag rule_def =
 
 let has_value rule_def =
   match rule_def.value.value with Undefined, _ -> false | _ -> true
+
+let merge (p1 : 'a program) (p2 : 'a program) = List.append p1 p2

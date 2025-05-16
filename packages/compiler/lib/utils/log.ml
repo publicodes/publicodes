@@ -1,6 +1,6 @@
 open Core
 
-type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle]
+type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global]
 [@@deriving show, sexp, compare]
 
 type level = [`Error | `Warning | `Info] [@@deriving show, sexp, compare]
@@ -16,7 +16,51 @@ let error ~pos ~kind ?hint message =
 let warning ~pos ~kind ?hint message =
   Pos.mk ~pos {kind; level= `Warning; message; hint}
 
-let info ~pos ~kind ?hint message =
+let info ?(pos = Pos.dummy) ?(kind = `Global) ?hint message =
   Pos.mk ~pos {kind; level= `Info; message; hint}
 
 let message log = (Pos.value log).message
+
+(** Needed to avoid [Grace] raising exceptions when the range have a length of
+    zero. *)
+let normalize_range start stop =
+  if phys_equal start stop then
+    if phys_equal start 0 (* NOTE: need to have the source length maybe? *) then
+      (start, stop + 1)
+    else (start - 1, stop)
+  else (start, stop)
+
+let to_diagnostic log_with_pos =
+  let open Grace in
+  let pos = Pos.pos log_with_pos in
+  let log = Pos.value log_with_pos in
+  let severity =
+    match log.level with
+    | `Error ->
+        Diagnostic.Severity.Error
+    | `Warning ->
+        Diagnostic.Severity.Warning
+    | `Info ->
+        Diagnostic.Severity.Note
+  in
+  if Pos.is_empty_file pos then Diagnostic.(createf severity "%s" log.message)
+  else
+    let content = File.read_file pos.file in
+    let source = `String Source.{name= Some pos.file; content} in
+    let range start stop =
+      let start, stop = normalize_range start stop in
+      Range.create ~source (Byte_index.of_int start) (Byte_index.of_int stop)
+    in
+    let labels =
+      Diagnostic.Label.
+        [ primaryf
+            ~range:(range pos.start_pos.index pos.end_pos.index)
+            "%s" log.message ]
+    in
+    Diagnostic.(
+      createf ~labels ~code:Code_error.Empty_mechanism severity "%s" log.message )
+
+let ansi_renderer =
+  Grace_ansi_renderer.pp_diagnostic ~code_to_string:Code_error.code_to_string ()
+
+let print_ansi log = Format.printf "%a@." ansi_renderer (to_diagnostic log)

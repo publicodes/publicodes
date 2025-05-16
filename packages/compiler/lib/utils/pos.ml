@@ -40,6 +40,8 @@ let beginning_of_file file = {file; start_pos= Point.dummy; end_pos= Point.dummy
 
 let dummy = {file= ""; start_pos= Point.dummy; end_pos= Point.dummy}
 
+let is_empty_file pos = String.is_empty pos.file
+
 let merge pos1 pos2 =
   if String.compare pos1.file pos2.file <> 0 then
     raise @@ Invalid_argument "Cannot merge positions from different files"

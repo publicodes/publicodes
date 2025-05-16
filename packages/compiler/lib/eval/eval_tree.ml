@@ -94,3 +94,7 @@ module Typed = struct
   let rule_meta (eval_tree : t) rule_name =
     snd @@ Hashtbl.find_exn eval_tree rule_name
 end
+
+module Parameters = struct
+  type t = (Shared.Rule_name.t * Shared.Rule_name.t list) list
+end

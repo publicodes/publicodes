@@ -2,6 +2,8 @@ open Core
 
 type 'a t = 'a option * Log.t list [@@deriving show, sexp, compare]
 
+let empty : 'a t = (None, [])
+
 let return ?(logs = []) x : 'a t = (Some x, logs)
 
 let result (x, _) = x
@@ -56,8 +58,7 @@ let ( let* ) m f = bind m ~f
 
 (* Print functions *)
 
-let print_logs (output : 'a t) =
-  output |> logs |> List.iter ~f:(fun log -> Format.printf "%a\n" Log.pp log)
+let print_logs (output : 'a t) = List.iter ~f:Log.print_ansi (logs output)
 
 let sprintf_logs (output : 'a t) =
   output |> logs
