@@ -30,7 +30,6 @@ let parse_meta mapping =
   in
   List.map ~f:parse_key mapping |> all_keep_logs
 
-<<<<<<< HEAD
 let parse_rule_name s =
   let {value; _}, pos = s in
   let expr = Expr.parse_expression ~pos value in
@@ -46,18 +45,6 @@ let parse_rule_name s =
               "un nom de règle doit être de la forme suivante : `mon namespace \
                . ma règle` ou `ma règle`" ]
 
-||||||| parent of be74592 (Add contexte mechanism for local variable overrides)
-let parse_rule_name s =
-  let {value; _}, pos = s in
-  let expr = Expr.parse_expression ~pos value in
-  match expr with
-  | Some (Ref rule_name, _), _ ->
-      return (Pos.mk ~pos (Shared.Rule_name.create_exn rule_name))
-  | _ ->
-      fatal_error ~pos ~kind:`Syntax "Le nom de la règle est invalide"
-
-=======
->>>>>>> be74592 (Add contexte mechanism for local variable overrides)
 let parse_rule (name, yaml) =
   let* name = parse_rule_name name in
   let pos = Pos.pos name in
