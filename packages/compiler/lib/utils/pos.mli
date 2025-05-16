@@ -56,6 +56,9 @@ val beginning_of_file : string -> pos
 val dummy : pos
 (** A dummy position used when no position information is available. *)
 
+val is_empty_file : pos -> bool
+(** [is_empty_file pos] returns true if the file is empty. *)
+
 val add : ?len:int -> ?line:int -> pos -> pos
 (** [add ?len ?line pos] adds [len] to the column number and [line] to the end position of [pos]. *)
 

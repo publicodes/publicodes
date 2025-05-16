@@ -1,8 +1,10 @@
 val exit_err : int
+
+val exit_parsing_err : int
+
 (** Basic error code to exit with if an error occurs. *)
 
 open Cmdliner
-open Cmdliner.Term.Syntax
 
 (** {1 Common arguments} *)
 
