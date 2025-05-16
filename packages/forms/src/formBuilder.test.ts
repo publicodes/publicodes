@@ -84,7 +84,7 @@ describe('FormBuilder', () => {
 
 			const formBuilder = new FormBuilder<RuleName>({
 				engine,
-				pageBuilder: customPageBuilder,
+				formOptions: { pageBuilder: customPageBuilder },
 			})
 
 			let state = FormBuilder.newState<RuleName>()
