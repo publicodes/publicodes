@@ -17,9 +17,18 @@ import { utils } from 'publicodes'
  * const pages = groupByNamespace(fields);
  * // Result:
  * // [
- * //   ['company . name', 'company . address'],
- * //   ['personal . first name', 'personal . last name'],
- * //   ['stock . quantity']
+ * //   {
+ * 			questionsInPage: ['company . name', 'company . address'],
+ * 			title: 'company'
+ * //   },
+ * //   {
+ * 			questionsInPage: ['personal . first name', 'personal . last name'],
+ * 			title: 'personal'
+ * //   },
+ * //   {
+ * 			questionsInPage: ['stock . quantity'],
+ * 			title: 'stock'
+ * //   }
  * // ]
  * ```
  *
@@ -27,12 +36,38 @@ import { utils } from 'publicodes'
  * @returns Array of arrays, where each inner array represents a page containing related fields
  */
 export function groupByNamespace<Name extends string>(fields: Array<Name>) {
-	const pages: Array<Array<Name>> = []
+	const pages: Array<{
+		questionsInPage: Array<Name>
+		title: string
+	}> = []
 	while (fields.length > 0) {
 		const tree = createTree(fields)
-		const page = createPage(tree)
-		fields = fields.filter((field) => !page.includes(field))
-		pages.push(page)
+		const questionsInPage = createPage(tree)
+		fields = fields.filter((field) => !questionsInPage.includes(field))
+		let pageName = ''
+		if (questionsInPage.length <= 1) {
+			pageName = utils.ruleParents(questionsInPage[0])[0] || 'général'
+		} else {
+			pageName = utils.findCommonAncestor(
+				questionsInPage[0],
+				questionsInPage[1],
+			)
+			for (let i = 1; i < questionsInPage.length - 1; i++) {
+				const nextCommonAncestor = utils.findCommonAncestor(
+					questionsInPage[i],
+					questionsInPage[i + 1],
+				)
+				if (nextCommonAncestor !== pageName) {
+					pageName = 'général'
+					break
+				}
+				i++
+			}
+		}
+		pages.push({
+			questionsInPage,
+			title: pageName,
+		})
 	}
 	return pages
 }
