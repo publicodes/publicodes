@@ -68,7 +68,8 @@ export type PageBuilder<RuleName> = (
  *
  * FIXME: deal with selectTreshold doc
  */
-export type FormOptions = {
+export type FormOptions<RuleName> = {
+	pageBuilder: PageBuilder<RuleName>
 	selectTreshold?: number
 }
 
@@ -104,20 +105,18 @@ export type FormOptions = {
  */
 export class FormBuilder<RuleName extends string> {
 	private engine: Engine<RuleName>
-	private pageBuilder: PageBuilder<RuleName>
-	private formOptions: FormOptions
+	private formOptions: FormOptions<RuleName>
 
 	constructor({
 		engine,
-		pageBuilder = groupByNamespace,
-		formOptions = {},
+		formOptions = {
+			pageBuilder: groupByNamespace,
+		},
 	}: {
 		engine: Engine<RuleName>
-		pageBuilder?: PageBuilder<RuleName>
-		formOptions?: FormOptions
+		formOptions?: FormOptions<RuleName>
 	}) {
 		this.engine = engine
-		this.pageBuilder = pageBuilder
 		this.formOptions = formOptions
 	}
 
@@ -192,7 +191,7 @@ export class FormBuilder<RuleName extends string> {
 		}
 		this.engine.setSituation(formState.situation)
 		const nextFields = computeNextFields(this.engine, { targets, pages: [] })
-		formState.nextPages = this.pageBuilder(nextFields)
+		formState.nextPages = this.formOptions.pageBuilder(nextFields)
 		formState.targets = targets
 
 		return this.goToNextPage(formState)
@@ -420,7 +419,7 @@ export class FormBuilder<RuleName extends string> {
 
 		updateSituationWithInputValue(this.engine, id, value)
 
-		formState.nextPages = this.pageBuilder(
+		formState.nextPages = this.formOptions.pageBuilder(
 			computeNextFields(this.engine, formState),
 		)
 		formState.situation = this.engine.getSituation()
