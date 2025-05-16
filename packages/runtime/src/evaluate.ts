@@ -10,13 +10,13 @@ class RuntimeError extends Error {
 export function evaluateNode(
   evalTree: EvaluationTree,
   value: Computation,
-  contexte: unknown,
+  context: unknown = {},
 ): Value {
   if (typeof value === 'string')
     // -----------------------------
     // Reference
     // -----------------------------
-    return evaluateNode(evalTree, evalTree[value], contexte)
+    return evaluateNode(evalTree, evalTree[value], context)
 
   if (value === null) return null
   if (typeof value === 'boolean') return value
@@ -27,18 +27,19 @@ export function evaluateNode(
     // -----------------------------
 
     if ('if' in value) {
-      const condition = evaluateNode(evalTree, value.if, contexte)
+      const condition = evaluateNode(evalTree, value.if, context)
+
       if (condition === null) {
         return null
       } else if (condition === undefined) {
-        evaluateNode(evalTree, value.then, contexte)
-        evaluateNode(evalTree, value.else, contexte)
+        evaluateNode(evalTree, value.then, context)
+        evaluateNode(evalTree, value.else, context)
         return
       } else if (condition === true) {
-        return evaluateNode(evalTree, value.then, contexte)
+        return evaluateNode(evalTree, value.then, context)
       } else {
         // (condition === false)
-        return evaluateNode(evalTree, value.else, contexte)
+        return evaluateNode(evalTree, value.else, context)
       }
     }
 
@@ -47,6 +48,22 @@ export function evaluateNode(
     // -----------------------------
     if ('d' in value) {
       return new Date(value.d).valueOf()
+    }
+    // -----------------------------
+    // Get context
+    // -----------------------------
+    if ('get' in value) {
+      return context[value.get]
+    }
+    // -----------------------------
+    // Set context
+    // -----------------------------
+    if ('context' in value) {
+      const newContext = { ...context }
+      for (const rule in value.context) {
+        newContext[rule] = evaluateNode(evalTree, value.context[rule], context)
+      }
+      return evaluateNode(evalTree, value.value, newContext)
     }
   }
   if (value.length === 0) return undefined
@@ -58,10 +75,13 @@ export function evaluateNode(
   // -----------------------------
 
   if (value.length === 2) {
-    const val = evaluateNode(evalTree, value[1], contexte)
+    const val = evaluateNode(evalTree, value[1], context)
     const op = value[0]
-    if (typeof val !== 'number') return val as null | undefined
+    if (op === '∅') {
+      return val === undefined
+    }
     if (op === '-') {
+      if (typeof val !== 'number') return val as null | undefined
       return -val
     }
   }
@@ -71,7 +91,7 @@ export function evaluateNode(
   // -----------------------------
 
   if (value.length === 3) {
-    const left = evaluateNode(evalTree, value[0], contexte)
+    const left = evaluateNode(evalTree, value[0], context)
     const op = value[1]
 
     // LAZY
@@ -81,14 +101,14 @@ export function evaluateNode(
     if (left === 0 && (op === '*' || op === '/' || op === '**')) {
       return left
     }
-    if (left === false && op === '&&') {
-      return left
+    if ((left === false || left === null) && op === '&&') {
+      return false
     }
     if (left === true && op === '||') {
       return left
     }
 
-    const right = evaluateNode(evalTree, value[2], contexte)
+    const right = evaluateNode(evalTree, value[2], context)
     if (left == undefined) {
       if (right === 0 && op === '*') return 0
       if (right === 0 && op === '**') return 1
@@ -144,15 +164,4 @@ export function evaluateNode(
   }
 }
 
-const LazyNullOps: BinaryOp[] = [
-  '*',
-  '/',
-  '**',
-  '=',
-  '!=',
-  '<',
-  '<=',
-  '>',
-  '>=',
-  '&&',
-]
+const LazyNullOps: BinaryOp[] = ['*', '/', '**', '<', '<=', '>', '>=']

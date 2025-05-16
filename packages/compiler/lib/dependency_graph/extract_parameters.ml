@@ -7,6 +7,9 @@ open Utils.Output
 module Oper = Graph.Oper.I (G)
 module Traverse = Graph.Traverse.Dfs (G)
 
+let remove_duplicates (a : 'a list) : 'a list =
+  Set.to_list @@ Set.Poly.of_list a
+
 (* TODO : add inputs in parameters, add type, and log if a param is missing  type info  *)
 let extract_parameters ~(ast : Shared_ast.resolved) ~(eval_tree : Eval.Tree.t)
     (graph : G.t) =
@@ -42,19 +45,19 @@ let extract_parameters ~(ast : Shared_ast.resolved) ~(eval_tree : Eval.Tree.t)
   in
   (* We get the parameter list *)
   let parameters =
-    Set.to_list @@ Rule_name.Set.of_list
-    @@ List.concat_map ~f:snd outputs_with_params
+    remove_duplicates @@ List.concat_map ~f:snd outputs_with_params
   in
   let outputs =
-    outputs_with_params
-    @
-    (* We add the parameters of the parameters *)
-    List.map parameters ~f:extract_parameters
+    remove_duplicates
+      ( outputs_with_params
+      @
+      (* We add the parameters of the parameters *)
+      List.map parameters ~f:extract_parameters )
   in
   (* We print warning if an output is without type *)
   let warnings =
-    List.filter_map outputs ~f:(fun (rule_name, _) ->
-        let meta = Eval.Tree.rule_meta eval_tree rule_name in
+    List.filter_map outputs ~f:(fun (output_rule_name, _) ->
+        let meta = Eval.Tree.rule_meta eval_tree output_rule_name in
         match meta.typ with
         | Some _ ->
             None

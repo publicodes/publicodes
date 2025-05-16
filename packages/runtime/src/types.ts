@@ -1,53 +1,46 @@
 export type Outputs = string
 export type BaseType =
-  | 'number'
-  | 'string'
-  | 'undefined'
-  | 'null'
-  | 'boolean'
-  | 'date'
+  | { number: null }
+  | { string: null }
+  | { boolean: null }
+  | { date: null }
   | null
-export type Types<O extends Outputs> = Record<O, BaseType>
 
-export type Parameters<O extends Outputs> = {
-  readonly [K in O]: ReadonlyArray<O>
+export type Types = {
+  readonly [P in string]: BaseType
+}
+
+export type Parameters<T extends Types> = {
+  readonly [K in keyof T]: { readonly [K2 in keyof T]?: null }
 }
 
 export type GetType<T extends BaseType> =
   T extends null ? unknown
-  : T extends 'number' ? number
-  : T extends 'string' ? string
-  : T extends 'undefined' ? undefined
-  : T extends 'null' ? null
-  : T extends 'boolean' ? boolean
-  : T extends 'date' ? Date
+  : T extends { number: null } ? number
+  : T extends { string: null } ? string
+  : T extends { boolean: null } ? boolean
+  : T extends { date: null } ? Date
   : never
 
 export type ValueOf<T extends readonly unknown[]> = T[number]
 
 export type GetContext<
-  O extends Outputs,
-  T extends Types<O>,
-  P extends Parameters<O>,
-  R extends O,
-> = Partial<{ readonly [K in ValueOf<P[R]>]: GetType<T[K]> }>
+  T extends Types,
+  P extends Parameters<T>,
+  R extends Extract<keyof T, string>,
+> = Partial<{ readonly [K in keyof P[R] & keyof T]: GetType<T[K]> }>
 
-export interface Publicodes<
-  O extends Outputs,
-  T extends Types<O>,
-  P extends Parameters<O>,
-> {
-  readonly outputs: ReadonlyArray<O>
+export interface Publicodes<T extends Types, P extends Parameters<T>> {
   readonly types: T
   readonly parameters: P
-  readonly evaluationTree: EvaluationTree
+  readonly evaluationTree: unknown
 }
 
 export type EvaluationTree = Record<string, Computation>
 
 export type Value = number | string | boolean | null | undefined | Date
 
-type UnaryOp = '-'
+type UnaryOp = '-' | '∅'
 export type BinaryOp =
   | '+'
   | '-'
@@ -77,6 +70,6 @@ export type Computation =
       then: Computation
       else: Computation
     }
-  | {
-      d: string // Date format like 'YYYY-MM-DD' or 'YYYY-MM'
-    }
+  | { d: string } // Date format like 'YYYY-MM-DD' or 'YYYY-MM'
+  | { get: string } // get value from context
+  | { context: Record<string, Computation>; value: Computation }
