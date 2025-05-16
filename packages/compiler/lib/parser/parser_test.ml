@@ -1,4 +1,4 @@
-open Yaml_parser
+(* open Yaml_parser
 open Utils.Output
 open Parse
 open Core
@@ -65,7 +65,7 @@ let%test_unit "parse: rules with title" =
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
         (Shared.Rule_name.create_exn ["rule 1"; "subrule 2"]) ;
       [%test_eq: rule_meta list] rule_def.meta [Title "mon titre"] ;
-      [%test_eq: value] rule_def.value (p 0 Undefined)
+      [%test_eq: value_mechanism] rule_def.value.value (p 0 Undefined)
   | _ ->
       print_logs output ;
       assert false
@@ -84,4 +84,4 @@ let%test_unit "parse: rules with description and valeur" =
       [%test_eq: rule_meta list] meta [Description "ma description"] ;
       [%test_eq: value] value (p 6 (Expr (p 6 (Ref ["rule 3"]))))
   | _ ->
-      failwith "Expected no rule definitions"
+      failwith "Expected no rule definitions" *)

@@ -37,7 +37,7 @@ let parse_rule_name s =
 let parse_rule (name, yaml) =
   let* name = parse_rule_name name in
   let pos = Pos.pos name in
-  let* value = Parse_value.parse ~pos yaml in
+  let* value = Parse_value.parse ~error_if_undefined:false ~pos yaml in
   let* meta =
     match yaml with `O mapping -> parse_meta mapping | _ -> return []
   in

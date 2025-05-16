@@ -1,6 +1,5 @@
 open Utils.Output
 open Core
-open Shared.Shared_ast
 open Yaml_parser
 
 let get_value value = (Pos.value value).value
@@ -8,27 +7,17 @@ let get_value value = (Pos.value value).value
 let get_scalar_exn (value : yaml) =
   match value with `Scalar s -> s | _ -> failwith "Expected scalar"
 
-let parse_array ~pos ~parse ~mecanism_name (yaml : yaml) =
+let parse_array ~pos
+    ~(parse :
+       ?error_if_undefined:bool -> pos:Pos.pos -> yaml -> Ast.value Output.t )
+    (yaml : yaml) =
   match yaml with
   | `A seq ->
-      let* parsed_nodes =
-        seq
-        |> List.map ~f:(fun yaml ->
-               let* node = parse yaml in
-               match Pos.value node with
-               | Undefined ->
-                   fatal_error ~pos ~kind:`Syntax
-                     (Format.sprintf "« %s » ne peut pas avoir d'élément vide"
-                        mecanism_name )
-               | _ ->
-                   return node )
-        |> all_keep_logs
-      in
+      let* parsed_nodes = seq |> List.map ~f:(parse ~pos) |> all_keep_logs in
       return parsed_nodes
   | _ ->
       fatal_error ~pos ~kind:`Syntax
-        (Format.sprintf "« %s » doit contenir un tableau de valeurs"
-           mecanism_name )
+        "Ce mécanisme doit contenir un tableau de valeurs"
 
 let only_one_of ~keys ~error_msg mapping : unit Output.t =
   let keys =

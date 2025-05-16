@@ -28,7 +28,18 @@ let rec transform_expr (expr, pos) =
   | Shared_ast.Ref name ->
       mk ~pos (Ref name)
 
-let rec transform_value (node, pos) =
+and transform_value ?(undefined = Const Undefined) (node : 'a Shared_ast.value)
+    =
+  let value =
+    match Pos.value node.value with
+    | Shared_ast.Undefined ->
+        mk ~pos:(Pos.pos node.value) undefined
+    | _ ->
+        transform_mecanism_value node.value
+  in
+  unfold_chainable_mecanism ~init:value node.chainable_mechanisms
+
+and transform_mecanism_value (node, pos) =
   match node with
   | Shared_ast.Undefined ->
       mk ~pos (Const Undefined)
@@ -42,14 +53,24 @@ let rec transform_value (node, pos) =
       transform_any_of ~pos any_of
   | Shared_ast.All_of all_of ->
       transform_all_of ~pos all_of
-  | Shared_ast.Applicable_if (applicable_if, value) ->
-      transform_applicable_if ~pos applicable_if value
-  | Shared_ast.Not_applicable_if (not_applicable_if, value) ->
-      transform_not_applicable_if ~pos not_applicable_if value
-  | Shared_ast.Ceiling (ceiling, value) ->
-      transform_ceiling ~pos ceiling value
-  | Shared_ast.Floor (floor, value) ->
-      transform_floor ~pos floor value
+  | Shared_ast.Value value ->
+      transform_value value
+
+and unfold_chainable_mecanism ~init mecanisms =
+  mecanisms
+  |> List.sort ~compare:(fun a b ->
+         [%compare: Rule_name.t Shared_ast.chainable_mechanism] (Pos.value a)
+           (Pos.value b) )
+  |> List.fold ~init ~f:(fun acc (mec, pos) ->
+         match mec with
+         | Shared_ast.Applicable_if applicable_if ->
+             transform_applicable_if ~pos applicable_if acc
+         | Shared_ast.Not_applicable_if not_applicable_if ->
+             transform_not_applicable_if ~pos not_applicable_if acc
+         | Shared_ast.Ceiling ceiling ->
+             transform_ceiling ~pos ceiling acc
+         | Shared_ast.Floor floor ->
+             transform_floor ~pos floor acc )
 
 and transform_sum ~pos nodes =
   List.fold_right nodes ~init:(mk ~pos (Const (Number 0.))) ~f:(fun node acc ->
@@ -70,7 +91,6 @@ and transform_all_of ~pos nodes =
 and transform_applicable_if ~pos condition value =
   let p = mk ~pos in
   let condition = transform_value condition in
-  let value = transform_value value in
   p
     (Condition
        ( p
@@ -91,7 +111,6 @@ and transform_applicable_if ~pos condition value =
 and transform_not_applicable_if ~pos condition value =
   let p = mk ~pos in
   let condition = transform_value condition in
-  let value = transform_value value in
   p
     (Condition
        ( p
@@ -113,7 +132,6 @@ and transform_floor ~pos floor value =
   let p = mk ~pos in
   (* TODO : structural sharing *)
   let floor = transform_value floor in
-  let value = transform_value value in
   p
     (Condition
        ( p
@@ -130,7 +148,6 @@ and transform_ceiling ~pos ceil value =
   let p = mk ~pos in
   (* TODO : structural sharing *)
   let ceil = transform_value ceil in
-  let value = transform_value value in
   p
     (Condition
        ( p
