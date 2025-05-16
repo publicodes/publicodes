@@ -3,7 +3,13 @@ open Cmdliner
 open Cmdliner.Term.Syntax
 open Utils
 
-let files = Arg.(non_empty & pos_all file [] & info [] ~docv:"FILE")
+let input_files =
+  let doc = "$(docv) is the input files. Use $(b,-) for $(b,stdin)." in
+  Arg.(non_empty & pos_all file ["-"] & info [] ~doc ~docv:"FILES")
+
+let output_file =
+  let doc = "$(docv) is the file to write to. Use $(b,-) for $(b,stdout)" in
+  Arg.(value & opt string "-" & info ["o"; "output-file"] ~doc ~docv:"FILE")
 
 (* NOTE: this could be moved in the [Compiler] module. However, logging should
 	 be removed from the function code. *)
@@ -14,15 +20,14 @@ let compile_to_json ast =
   let* eval_tree = Eval.from_resolved_ast ast |> Eval.to_typed_tree in
   Log.print_ansi @@ Log.info "eval tree type checking succeeded" ;
   let* parameters =
-    (* FIXME: to refactor to retrieve filename *)
     Dependency_graph.cycle_check eval_tree
     >>= Dependency_graph.extract_parameters ~ast ~eval_tree
   in
   return (Eval.to_json eval_tree parameters)
 
-let compile files =
+let compile input_files output =
   let unresolved_program =
-    List.fold files
+    List.fold input_files
       ~f:(fun (acc : Parser.Ast.t Output.t) filename ->
         let open Output in
         (* Read the file content *)
@@ -43,8 +48,7 @@ let compile files =
       Output.print_logs json_output ;
       match Output.result json_output with
       | Some json ->
-          Yojson.Safe.pretty_print ~std:true Format.std_formatter json ;
-          (* TODO: to write in the specified output dir/stdout *)
+          File.write_file ~path:output ~content:(Yojson.Safe.to_string json) ;
           Cmd.Exit.ok
       | None ->
           Cmd.Exit.some_error )
@@ -59,5 +63,5 @@ let cmd =
   in
   Cmd.v (Cmd.info "compile" ~doc ~version:"%%VERSION%%" ~exits)
   @@
-  let+ files = files in
-  compile files
+  let+ input_files = input_files and+ output_file = output_file in
+  compile input_files output_file
