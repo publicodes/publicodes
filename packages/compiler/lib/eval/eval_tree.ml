@@ -16,7 +16,7 @@ module Raw = struct
   (* We can reuse these types directly *)
   type binary_op = Shared_ast.binary_op [@@deriving sexp, show]
 
-  type unary_op = Shared_ast.unary_op [@@deriving sexp, show]
+  type unary_op = Neg | Is_undef [@@deriving sexp, show]
 
   (* GADT-based implementation *)
   type 'typ meta = {pos: Pos.pos; id: Node_id.t; typ: 'typ}
@@ -28,6 +28,7 @@ module Raw = struct
     | Binary_op of binary_op Pos.t * 'typ computation * 'typ computation
     | Unary_op of unary_op Pos.t * 'typ computation
     | Ref of Rule_name.t
+    | Get_context of Rule_name.t
   [@@deriving sexp, show]
 
   and 'typ computation = 'typ typed_computation * 'typ meta
@@ -58,6 +59,8 @@ module Raw = struct
           Unary_op (op, map_meta f c)
       | Ref r ->
           Ref r
+      | Get_context name ->
+          Get_context name
     in
     (new_typed_comp, new_meta)
 

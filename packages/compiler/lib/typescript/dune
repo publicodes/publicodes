@@ -1,7 +1,0 @@
-(library
- (inline_tests)
- (name typescript)
- (libraries core ppx_show.runtime eval yojson)
- (modules :standard)
- (preprocess
- (pps ppx_inline_test ppx_compare ppx_sexp_conv ppx_show sedlex.ppx ppx_assert)))

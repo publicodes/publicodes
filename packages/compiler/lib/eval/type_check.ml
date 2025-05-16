@@ -114,8 +114,12 @@ let type_check (tree : unit Eval_tree.Raw.t) =
             let* _ = unify_concrete ~database meta Bool in
             unify ~database (snd left) (snd right) )
     | Unary_op ((Neg, _), value) ->
+        let* _ = unify_computation value in
         let* _ = unify_concrete ~database meta Number in
         unify_concrete ~database (snd value) Number
+    | Unary_op ((Is_undef, _), value) ->
+        let* _ = unify_computation value in
+        unify_concrete ~database meta Bool
     | Condition (cond, value1, value2) ->
         let* _ = unify_computation cond in
         let* _ = unify_computation value1 in
@@ -124,6 +128,9 @@ let type_check (tree : unit Eval_tree.Raw.t) =
         let* _ = unify ~database (snd value1) (snd value2) in
         unify ~database meta (snd value1)
     | Ref name ->
+        let _, ref_meta = Hashtbl.find_exn tree name in
+        unify ~database meta ref_meta
+    | Get_context name ->
         let _, ref_meta = Hashtbl.find_exn tree name in
         unify ~database meta ref_meta
   in
