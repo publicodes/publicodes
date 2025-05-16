@@ -90,9 +90,9 @@ let type_check (tree : unit Eval_tree.Raw.t) =
           unify_concrete ~database meta String
       | Date _ ->
           unify_concrete ~database meta Date
-      | _ ->
+      | Undefined | Null ->
           return () )
-    | BinaryOp ((operator, _), left, right) -> (
+    | Binary_op ((operator, _), left, right) -> (
         let* _ = unify_computation left in
         let* _ = unify_computation right in
         match operator with
@@ -107,15 +107,16 @@ let type_check (tree : unit Eval_tree.Raw.t) =
         | Gt | Lt | LtEq | GtEq | Eq | NotEq ->
             let* _ = unify_concrete ~database meta Bool in
             unify ~database (snd left) (snd right) )
-    | UnaryOp ((Neg, _), value) ->
+    | Unary_op ((Neg, _), value) ->
         let* _ = unify_concrete ~database meta Number in
         unify_concrete ~database (snd value) Number
     | Condition (cond, value1, value2) ->
         let* _ = unify_computation cond in
         let* _ = unify_computation value1 in
         let* _ = unify_computation value2 in
-        let* _ = unify_concrete meta ~database Bool in
-        unify ~database (snd value1) (snd value2)
+        let* _ = unify_concrete (snd cond) ~database Bool in
+        let* _ = unify ~database (snd value1) (snd value2) in
+        unify ~database meta (snd value1)
     | Ref name ->
         let _, ref_meta = Hashtbl.find_exn tree name in
         unify ~database meta ref_meta
@@ -123,7 +124,7 @@ let type_check (tree : unit Eval_tree.Raw.t) =
   let* _ =
     Hashtbl.to_alist tree
     |> List.map ~f:(fun (_, rule) -> unify_computation rule)
-    |> Output.from_list
+    |> Output.all_keep_logs
   in
   (* Format.printf "Type Database:\n %a \n\n" Type_database.pp database ;
   Format.printf "AST :\n=====\n\n" ;

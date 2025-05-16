@@ -16,7 +16,7 @@ let%test_unit "Parse 12 + 4.5" =
   [%test_eq: Ast.t]
     (parse [NUMBER (12., None); ADD; NUMBER (4.5, None)])
     (p
-       (BinaryOp
+       (Binary_op
           (p Add, p (Const (Number (12., None))), p (Const (Number (4.5, None))))
        ) )
 
@@ -25,11 +25,11 @@ let%test_unit "Parse 12 + 4.5 / 3" =
     (parse
        [NUMBER (12., None); ADD; NUMBER (4.5, None); DIV; NUMBER (3., None)] )
     (p
-       (BinaryOp
+       (Binary_op
           ( p Add
           , p (Const (Number (12., None)))
           , p
-              (BinaryOp
+              (Binary_op
                  ( p Div
                  , p (Const (Number (4.5, None)))
                  , p (Const (Number (3., None))) ) ) ) ) )
@@ -54,14 +54,14 @@ let%test_unit "Parse a > 12 != b . c * 2 <= 0" =
        ; LTE
        ; NUMBER (0., None) ] )
     (p
-       (BinaryOp
+       (Binary_op
           ( p NotEq
-          , p (BinaryOp (p Gt, rule ["a"], p @@ Const (Number (12., None))))
+          , p (Binary_op (p Gt, rule ["a"], p @@ Const (Number (12., None))))
           , p
-              (BinaryOp
+              (Binary_op
                  ( p LtEq
                  , p
-                     (BinaryOp
+                     (Binary_op
                         (p Mul, rule ["b"; "c"], p @@ Const (Number (2., None)))
                      )
                  , p @@ Const (Number (0., None)) ) ) ) ) )
@@ -78,10 +78,10 @@ let%test_unit "Parse 12/01/2024 + 3 mois <= contrat salarié . date de démissio
        ; DOT
        ; RULE_NAME "date de démission" ] )
     (p
-       (BinaryOp
+       (Binary_op
           ( p LtEq
           , p
-              (BinaryOp
+              (Binary_op
                  ( p Add
                  , p @@ Const (Date (Day {day= 12; month= 1; year= 2024}))
                  , p
@@ -93,13 +93,13 @@ let%test_unit "Parse -(3 * -a)" =
   [%test_eq: Ast.t]
     (parse [SUB; LPAREN; NUMBER (3., None); MUL; SUB; RULE_NAME "a"; RPAREN])
     (p
-       (UnaryOp
+       (Unary_op
           ( p Neg
           , p
-              (BinaryOp
+              (Binary_op
                  ( p Mul
                  , p @@ Const (Number (3., None))
-                 , p @@ UnaryOp (p Neg, rule ["a"]) ) ) ) ) )
+                 , p @@ Unary_op (p Neg, rule ["a"]) ) ) ) ) )
 
 let%test_unit "Parse (10 + 5 ** 2) / b" =
   [%test_eq: Ast.t]
@@ -114,14 +114,14 @@ let%test_unit "Parse (10 + 5 ** 2) / b" =
        ; DIV
        ; RULE_NAME "b" ] )
     (p
-       (BinaryOp
+       (Binary_op
           ( p Div
           , p
-              (BinaryOp
+              (Binary_op
                  ( p Add
                  , p @@ Const (Number (10., None))
                  , p
-                     (BinaryOp
+                     (Binary_op
                         ( p Pow
                         , p @@ Const (Number (5., None))
                         , p @@ Const (Number (2., None)) ) ) ) )
