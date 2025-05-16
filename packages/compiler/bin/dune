@@ -1,6 +1,6 @@
 (executable
- (public_name publicodes-compiler)
+ (public_name publicodes)
  (name main)
- (libraries compiler yaml yojson)
+ (libraries cmdliner compiler yaml yojson)
  (preprocess
   (pps ppx_inline_test)))

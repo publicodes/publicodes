@@ -45,6 +45,8 @@ let generate ~parameters ~eval_tree =
       ; ("parameters", parameters_json)
       ; ("types", types_json) ]
   in
+  (* NOTE: This generic code could be moved in the typescript interpreter
+		 code instead? *)
   Format.sprintf
     {|
 import { Publicodes } from '../../src/types'
