@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { insertFieldInTree } from './groupByNamespace'
+import { groupByNamespace, insertFieldInTree } from './groupByNamespace'
 
 describe('insertFieldInTree', () => {
 	test('should insert field into empty tree', () => {
@@ -172,5 +172,32 @@ describe('insertFieldInTree', () => {
 				},
 			],
 		})
+	})
+})
+describe('computePages', () => {
+	test('should group by namespace with page titles', () => {
+		const fields = [
+			'company . name',
+			'personal . first name',
+			'stock . quantity',
+			'personal . last name',
+			'company . address',
+		]
+		const pages = groupByNamespace(fields)
+
+		expect(pages).toEqual([
+			{
+				questionsInPage: ['company . name', 'company . address'],
+				title: 'company',
+			},
+			{
+				questionsInPage: ['personal . first name', 'personal . last name'],
+				title: 'personal',
+			},
+			{
+				questionsInPage: ['stock . quantity'],
+				title: 'stock',
+			},
+		])
 	})
 })

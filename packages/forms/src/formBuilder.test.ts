@@ -80,7 +80,9 @@ describe('FormBuilder', () => {
 			const engine = createTestEngine()
 			// Custom page builder that puts each field on its own page
 			const customPageBuilder = (fields: RuleName[]) =>
-				fields.map((field) => [field])
+				fields.map((field) => {
+					return { questionsInPage: [field] }
+				})
 
 			const formBuilder = new FormBuilder<RuleName>({
 				engine,
@@ -91,7 +93,7 @@ describe('FormBuilder', () => {
 			state = formBuilder.start(state, 'eligibility')
 
 			// With our custom page builder, each page should have exactly one field
-			expect(state.pages[0].length).toBe(1)
+			expect(state.pages[0].questionsInPage.length).toBe(1)
 		})
 	})
 
@@ -147,7 +149,7 @@ describe('FormBuilder', () => {
 			const initialPage = state.currentPageIndex
 
 			// Add a second page to nextPages
-			state.nextPages = [['company . name']]
+			state.nextPages = [{ questionsInPage: ['company . name'] }]
 
 			state = formBuilder.goToNextPage(state)
 
@@ -178,7 +180,7 @@ describe('FormBuilder', () => {
 			state = formBuilder.start(state, 'eligibility')
 
 			// Add a second page and navigate to it
-			state.nextPages = [['company . name']]
+			state.nextPages = [{ questionsInPage: ['company . name'] }]
 			state = formBuilder.goToNextPage(state)
 
 			const currentPage = state.currentPageIndex

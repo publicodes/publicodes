@@ -35,9 +35,9 @@ import { updateSituationWithInputValue } from './updateSituationWithFormValue'
 export type FormState<RuleName extends string> = {
 	situation: Situation<RuleName>
 	targets: Array<RuleName>
-	pages: Array<Array<RuleName>>
+	pages: PageBuilderOutput<RuleName>
 	currentPageIndex: number
-	nextPages: Array<Array<RuleName>>
+	nextPages: PageBuilderOutput<RuleName>
 	lastAnswered: RuleName | null
 }
 
@@ -61,8 +61,12 @@ export type FormState<RuleName extends string> = {
  */
 export type PageBuilder<RuleName> = (
 	fields: Array<RuleName>,
-) => Array<Array<RuleName>>
+) => PageBuilderOutput<RuleName>
 
+export type PageBuilderOutput<RuleName> = Array<{
+	questionsInPage: Array<RuleName>
+	title?: string
+}>
 /**
  * An object containing options for configuring the form behavior.
  *
@@ -236,7 +240,7 @@ export class FormBuilder<RuleName extends string> {
 		}
 
 		return buildFormPage(
-			formState.pages[formState.currentPageIndex],
+			formState.pages[formState.currentPageIndex].questionsInPage,
 			this.engine,
 			formState.targets,
 			formState.lastAnswered,
