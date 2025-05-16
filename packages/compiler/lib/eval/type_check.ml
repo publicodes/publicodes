@@ -90,7 +90,7 @@ let type_check (tree : unit Eval_tree.Raw.t) =
           unify_concrete ~database meta String
       | Date _ ->
           unify_concrete ~database meta Date
-      | _ ->
+      | Undefined | Null ->
           return () )
     | Binary_op ((operator, _), left, right) -> (
         let* _ = unify_computation left in
@@ -114,8 +114,9 @@ let type_check (tree : unit Eval_tree.Raw.t) =
         let* _ = unify_computation cond in
         let* _ = unify_computation value1 in
         let* _ = unify_computation value2 in
-        let* _ = unify_concrete meta ~database Bool in
-        unify ~database (snd value1) (snd value2)
+        let* _ = unify_concrete (snd cond) ~database Bool in
+        let* _ = unify ~database (snd value1) (snd value2) in
+        unify ~database meta (snd value1)
     | Ref name ->
         let _, ref_meta = Hashtbl.find_exn tree name in
         unify ~database meta ref_meta
