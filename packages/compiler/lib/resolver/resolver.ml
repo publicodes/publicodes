@@ -4,60 +4,6 @@ open Shared
 open Shared.Shared_ast
 open Utils.Output
 
-let rec resolve_expr ~rule_names ~context_rule ((expr, pos) : 'a expr) =
-  let resolve_expr = resolve_expr ~rule_names ~context_rule in
-  let* expr =
-    match expr with
-    | Ref ref ->
-        let ref = Rule_name.resolve ~rule_names ~current:context_rule ref in
-        let logs =
-          match ref with
-          | None ->
-              [Log.error ~pos ~kind:`Syntax "La référence n'existe pas"]
-          | _ ->
-              []
-        in
-        return ~logs (Ref ref)
-    | BinaryOp (operator, left, right) ->
-        let* left = resolve_expr left in
-        let* right = resolve_expr right in
-        return (BinaryOp (operator, left, right))
-    | UnaryOp (operator, operand) ->
-        let* operand = resolve_expr operand in
-        return (UnaryOp (operator, operand))
-    | Const expr ->
-        return (Const expr)
-  in
-  return (expr, pos)
-
-let rec resolve_value ~rule_names ~context_rule expr =
-  match expr with
-  | Expr expr ->
-      let* expr = resolve_expr ~rule_names ~context_rule expr in
-      return (Expr expr)
-  | Undefined pos ->
-      return (Undefined pos)
-  | Sum (nodes, pos) ->
-      let* nodes =
-        List.map nodes ~f:(resolve_value ~rule_names ~context_rule) |> from_list
-      in
-      return (Sum (nodes, pos))
-  | Product (nodes, pos) ->
-      let* nodes =
-        List.map nodes ~f:(resolve_value ~rule_names ~context_rule) |> from_list
-      in
-      return (Product (nodes, pos))
-  | AllOf (nodes, pos) ->
-      let* nodes =
-        List.map nodes ~f:(resolve_value ~rule_names ~context_rule) |> from_list
-      in
-      return (AllOf (nodes, pos))
-  | AnyOf (nodes, pos) ->
-      let* nodes =
-        List.map nodes ~f:(resolve_value ~rule_names ~context_rule) |> from_list
-      in
-      return (AnyOf (nodes, pos))
-
 let check_orphan_rules ~rule_names ast =
   let warn_if_orphan {name= name, pos; _} =
     let parent = Rule_name.parent name in
@@ -80,10 +26,85 @@ let check_orphan_rules ~rule_names ast =
   List.filter_map ast ~f:warn_if_orphan
 
 let resolve_rule ~rule_names rule =
-  let+ value =
-    resolve_value ~rule_names ~context_rule:(Pos.value rule.name) rule.value
+  let context_rule = Pos.value rule.name in
+  let resolve_ref ~pos ref =
+    let ref = Rule_name.resolve ~rule_names ~current:context_rule ref in
+    match ref with
+    | None ->
+        fatal_error ~pos ~kind:`Syntax "La référence n'existe pas"
+    | Some ref ->
+        return ref
   in
-  {rule with value}
+  let rec map_expr (expr, pos) =
+    let+ expr =
+      match expr with
+      | Binary_op (op, left, right) ->
+          let* mapped_left = map_expr left in
+          let+ mapped_right = map_expr right in
+          Binary_op (op, mapped_left, mapped_right)
+      | Unary_op (op, operand) ->
+          let+ mapped_operand = map_expr operand in
+          Unary_op (op, mapped_operand)
+      | Const c ->
+          return (Const c)
+      | Ref r ->
+          let+ ref_value = resolve_ref ~pos r in
+          Ref ref_value
+    in
+    (expr, pos)
+  and map_chainable_mechanism ((value, pos) : 'a chainable_mechanism Pos.t) =
+    let+ value =
+      match value with
+      | Applicable_if value ->
+          let+ value = map_value value in
+          Applicable_if value
+      | Not_applicable_if value ->
+          let+ value = map_value value in
+          Not_applicable_if value
+      | Ceiling value ->
+          let+ value = map_value value in
+          Ceiling value
+      | Floor value ->
+          let+ value = map_value value in
+          Floor value
+    in
+    (value, pos)
+  and map_value_mechanism ((value, pos) : 'a value_mechanism Pos.t) =
+    let+ value =
+      match value with
+      | Expr expr ->
+          let+ mapped_expr = map_expr expr in
+          Expr mapped_expr
+      | Sum values ->
+          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          Sum mapped_values
+      | Product values ->
+          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          Product mapped_values
+      | All_of values ->
+          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          All_of mapped_values
+      | One_of values ->
+          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          One_of mapped_values
+      | Value value ->
+          let+ value = map_value value in
+          Value value
+      | Undefined ->
+          return Undefined
+    in
+    (value, pos)
+  and map_value (v : 'a value) =
+    let* value = map_value_mechanism v.value in
+    let+ chainable_mechanisms =
+      v.chainable_mechanisms
+      |> List.map ~f:map_chainable_mechanism
+      |> all_keep_logs
+    in
+    {value; chainable_mechanisms}
+  in
+  let* value = map_value rule.value in
+  return {rule with value}
 
 let to_resolved_ast ast =
   let rule_names =
@@ -93,6 +114,6 @@ let to_resolved_ast ast =
   let+ ast =
     ast
     |> List.map ~f:(resolve_rule ~rule_names)
-    |> from_list |> add_logs ~logs:orphan_logs
+    |> all_keep_logs |> add_logs ~logs:orphan_logs
   in
   ast

@@ -29,7 +29,7 @@ let to_json (eval_tree : Eval.Tree.t) =
           [ ("if", computation_to_json cond)
           ; ("then", computation_to_json then_expr)
           ; ("else", computation_to_json else_expr) ]
-    | BinaryOp ((op, _), left, right) ->
+    | Binary_op ((op, _), left, right) ->
         let op_str =
           match op with
           | Add ->
@@ -61,7 +61,7 @@ let to_json (eval_tree : Eval.Tree.t) =
         in
         `List
           [computation_to_json left; `String op_str; computation_to_json right]
-    | UnaryOp ((op, _), expr) ->
+    | Unary_op ((op, _), expr) ->
         let op_str = match op with Neg -> "-" in
         `List [`String op_str; computation_to_json expr]
   in

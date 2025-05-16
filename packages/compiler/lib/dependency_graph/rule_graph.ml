@@ -49,9 +49,9 @@ let mk (ast : Eval.Tree.t) : G.t =
   let rec find_references ((computation, {pos; _}) : computation) :
       Rule_name.t Pos.t list =
     match computation with
-    | BinaryOp (_, left, right) ->
+    | Binary_op (_, left, right) ->
         find_references left @ find_references right
-    | UnaryOp (_, operand) ->
+    | Unary_op (_, operand) ->
         find_references operand
     | Condition (cond, then_branch, else_branch) ->
         find_references cond

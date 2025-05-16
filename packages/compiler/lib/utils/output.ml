@@ -42,6 +42,8 @@ let add_logs ~(logs : Log.t list) ((x_opt, logs1) : 'a t) : 'a t =
       (* Propagate None, keep existing logs *)
       (None, logs @ logs1)
 
+let default_to ~default = function None, logs -> (Some default, logs) | x -> x
+
 (* Monadic operators *)
 let ( >>= ) m f = bind m ~f
 
@@ -62,7 +64,7 @@ let sprintf_logs (output : 'a t) =
   |> List.map ~f:(fun log -> Format.asprintf "%a\n" Log.pp log)
   |> String.concat ~sep:"\n"
 
-let from_list ?default (ts : 'a t list) : 'a list t =
+let all_keep_logs ?default (ts : 'a t list) : 'a list t =
   match default with
   | Some default_value ->
       List.fold ts ~init:(return []) ~f:(fun acc (x, log) ->
