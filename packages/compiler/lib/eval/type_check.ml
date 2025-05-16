@@ -133,6 +133,17 @@ let type_check (tree : unit Eval_tree.Raw.t) =
     | Get_context name ->
         let _, ref_meta = Hashtbl.find_exn tree name in
         unify ~database meta ref_meta
+    | Set_context {context; value} ->
+        let* _ = unify_computation value in
+        let* _ = unify ~database meta (snd value) in
+        let* _ =
+          List.map context ~f:(fun (rule_name, value) ->
+              let* _ = unify_computation value in
+              let _, rule_meta = Hashtbl.find_exn tree (Pos.value rule_name) in
+              unify ~database (snd value) rule_meta )
+          |> all_keep_logs
+        in
+        return ()
   in
   let* _ =
     Hashtbl.to_alist tree

@@ -29,7 +29,12 @@ module Raw = struct
     | Unary_op of unary_op Pos.t * 'typ computation
     | Ref of Rule_name.t
     | Get_context of Rule_name.t
+    | Set_context of 'typ context
   [@@deriving sexp, show]
+
+  and 'typ context =
+    { context: (Rule_name.t Pos.t * 'typ computation) list
+    ; value: 'typ computation }
 
   and 'typ computation = 'typ typed_computation * 'typ meta
   [@@deriving sexp, show]
@@ -61,6 +66,12 @@ module Raw = struct
           Ref r
       | Get_context name ->
           Get_context name
+      | Set_context {context; value} ->
+          Set_context
+            { context=
+                List.map context ~f:(fun (rule_name, value) ->
+                    (rule_name, map_meta f value) )
+            ; value= map_meta f value }
     in
     (new_typed_comp, new_meta)
 

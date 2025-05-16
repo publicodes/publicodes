@@ -72,3 +72,4 @@ export type Computation =
     }
   | { d: string } // Date format like 'YYYY-MM-DD' or 'YYYY-MM'
   | { get: string } // get value from context
+  | { context: Record<string, Computation>; value: Computation }

@@ -38,3 +38,21 @@ let remove_double (mapping : mapping) : mapping Output.t =
         seen_keys := Set.add !seen_keys key_value ;
         result_mapping := (key, value) :: !result_mapping ) ) ;
   return ~logs:!logs (List.rev !result_mapping)
+
+let parse_rule_name s =
+  let {value; _}, pos = s in
+  let expr = Expr.parse_expression ~pos value in
+  match expr with
+  | Some (Ref rule_name, _), _ ->
+      return (Pos.mk ~pos (Shared.Rule_name.create_exn rule_name))
+  | _ ->
+      fatal_error ~pos ~kind:`Syntax "Le nom de la règle est invalide"
+
+let parse_ref s =
+  let {value; _}, pos = s in
+  let expr = Expr.parse_expression ~pos value in
+  match expr with
+  | Some (Ref rule_name, _), _ ->
+      return (Pos.mk ~pos rule_name)
+  | _ ->
+      fatal_error ~pos ~kind:`Syntax "Le nom de la règle est invalide"

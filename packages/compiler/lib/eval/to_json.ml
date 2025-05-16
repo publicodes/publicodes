@@ -1,5 +1,6 @@
 open Core
 open Shared
+open Utils
 
 let json_of_eval_tree (eval_tree : Eval_tree.Typed.t) =
   (* Convert a dotted name to string representation *)
@@ -8,6 +9,14 @@ let json_of_eval_tree (eval_tree : Eval_tree.Typed.t) =
     match eval_tree with
     | Get_context name ->
         `Assoc [("get", `String (Shared.Rule_name.to_string name))]
+    | Set_context {context; value} ->
+        let context =
+          List.map context ~f:(fun (rule_name, value) ->
+              ( Shared.Rule_name.to_string (Pos.value rule_name)
+              , computation_to_json value ) )
+        in
+        let value = computation_to_json value in
+        `Assoc [("value", value); ("context", `Assoc context)]
     | Ref name ->
         `String (Shared.Rule_name.to_string name)
     | Const c -> (

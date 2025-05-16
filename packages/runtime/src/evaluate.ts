@@ -10,7 +10,7 @@ class RuntimeError extends Error {
 export function evaluateNode(
   evalTree: EvaluationTree,
   value: Computation,
-  context: unknown,
+  context: unknown = {},
 ): Value {
   if (typeof value === 'string')
     // -----------------------------
@@ -54,6 +54,16 @@ export function evaluateNode(
     // -----------------------------
     if ('get' in value) {
       return context[value.get]
+    }
+    // -----------------------------
+    // Set context
+    // -----------------------------
+    if ('context' in value) {
+      const newContext = { ...context }
+      for (const rule in value.context) {
+        newContext[rule] = evaluateNode(evalTree, value.context[rule], context)
+      }
+      return evaluateNode(evalTree, value.value, newContext)
     }
   }
   if (value.length === 0) return undefined

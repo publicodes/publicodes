@@ -63,6 +63,9 @@ let mk (ast : Eval.Tree.t) : G.t =
         [Pos.mk ~pos name]
     | Get_context _ ->
         []
+    | Set_context {context; value} ->
+        find_references value
+        @ List.concat_map context ~f:(fun (_, value) -> find_references value)
   in
   (* Add vertices and edges to the graph *)
   let add_rule_dependencies (current_rule : Rule_name.t) computation =

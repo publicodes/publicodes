@@ -70,7 +70,9 @@ and unfold_chainable_mecanism ~init mecanisms =
          | Shared_ast.Ceiling ceiling ->
              transform_ceiling ~pos ceiling acc
          | Shared_ast.Floor floor ->
-             transform_floor ~pos floor acc )
+             transform_floor ~pos floor acc
+         | Shared_ast.Context context ->
+             transform_context ~pos context acc )
 
 and transform_sum ~pos nodes =
   List.fold_right nodes ~init:(mk ~pos (Const (Number 0.))) ~f:(fun node acc ->
@@ -153,6 +155,14 @@ and transform_ceiling ~pos ceil value =
               , p (Binary_op (Pos.mk ~pos Shared_ast.Lt, value, ceil)) ) )
        , ceil
        , value ) )
+
+and transform_context ~pos context value =
+  mk ~pos
+    (Set_context
+       { context=
+           List.map context ~f:(fun (rule_name, value) ->
+               (rule_name, transform_value value) )
+       ; value } )
 
 let from_ast (resolved_ast : Shared_ast.resolved) : unit t =
   let evalTree =
