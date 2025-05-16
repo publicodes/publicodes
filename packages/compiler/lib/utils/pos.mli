@@ -2,8 +2,24 @@
 
     NOTE: we may want to refactor this module to a more generic way of Mark. *)
 
-(** Position type containing file name, line and column numbers. *)
-type pos = {file: string; start_pos: int * int; end_pos: int * int}
+module Point : sig
+  (** [index] is the byte index in the file. [line] and [column] are the line and
+		column numbers in the file. The first line and column are 1.
+
+		@note The [index] is in 0-based index. The [line] and [column] are in
+		1-based index. *)
+  type t = {index: int; line: int; column: int} [@@deriving show, sexp, compare]
+
+  val of_position : Lexing.position -> t
+
+  val to_position : t -> file:string -> Lexing.position
+
+  val dummy : t
+  (** A dummy position used when no position information is available. *)
+end
+
+(** Represents a range in a file. *)
+type pos = {file: string; start_pos: Point.t; end_pos: Point.t}
 [@@deriving show, sexp, compare]
 
 (** Type to attach position information to a value. The first element is the
@@ -40,8 +56,8 @@ val beginning_of_file : string -> pos
 val dummy : pos
 (** A dummy position used when no position information is available. *)
 
-val add : ?col:int -> ?line:int -> pos -> pos
-(** [add ?col ?line pos] adds [col] to the column number and [line] to the end position of [pos]. *)
+val add : ?len:int -> ?line:int -> pos -> pos
+(** [add ?len ?line pos] adds [len] to the column number and [line] to the end position of [pos]. *)
 
 val merge : pos -> pos -> pos
 (** [merge pos1 pos2] merges two positions [pos1] and [pos2] into a single position.

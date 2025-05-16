@@ -1,6 +1,22 @@
 open Core
 
-type pos = {file: string; start_pos: int * int; end_pos: int * int}
+module Point = struct
+  type t = {index: int; line: int; column: int} [@@deriving show, sexp, compare]
+
+  let of_position Lexing.{pos_cnum; pos_bol; pos_lnum; _} =
+    {index= pos_cnum; line= pos_lnum + 1; column= pos_cnum - pos_bol + 1}
+
+  let to_position {index; line; column} ~file =
+    Lexing.
+      { pos_fname= file
+      ; pos_lnum= line - 1
+      ; pos_bol= index - (column - 1)
+      ; pos_cnum= index }
+
+  let dummy = {index= 0; line= 1; column= 1}
+end
+
+type pos = {file: string; start_pos: Point.t; end_pos: Point.t}
 [@@deriving show, sexp, compare]
 
 type 'a t = 'a * pos [@@deriving show, sexp, compare]
@@ -20,14 +36,18 @@ let pos (_, pos) = pos
 
 let mk ~pos x = (x, pos)
 
-let beginning_of_file file = {file; start_pos= (1, 1); end_pos= (1, 1)}
+let beginning_of_file file = {file; start_pos= Point.dummy; end_pos= Point.dummy}
 
-let dummy = {file= ""; start_pos= (0, 0); end_pos= (0, 0)}
+let dummy = {file= ""; start_pos= Point.dummy; end_pos= Point.dummy}
 
 let merge pos1 pos2 =
   if String.compare pos1.file pos2.file <> 0 then
     raise @@ Invalid_argument "Cannot merge positions from different files"
   else {file= pos1.file; start_pos= pos1.start_pos; end_pos= pos2.end_pos}
 
-let add ?(col = 0) ?(line = 0) pos =
-  {pos with end_pos= (fst pos.end_pos + line, snd pos.end_pos + col)}
+let add ?(len = 0) ?(line = 0) pos =
+  { pos with
+    end_pos=
+      { index= pos.end_pos.index + len
+      ; line= pos.end_pos.line + line
+      ; column= pos.end_pos.column + len } }
