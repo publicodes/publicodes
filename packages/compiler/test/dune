@@ -1,5 +1,0 @@
-(test
- (name test_compiler)
- (libraries yaml)
- (preprocess
-  (pps ppx_inline_test)))
