@@ -59,9 +59,11 @@ let extract_parameters ~(ast : Shared_ast.resolved) ~(eval_tree : Eval.Tree.t)
         | Some _ ->
             None
         | None ->
+            let code, message = Err.missing_output_type in
             Some
-              (Log.error ~pos:meta.pos ~kind:`Type
-                 ~hint:"Vous pouvez l'ajouter avec « type: texte » par exemple"
-                 "Impossible de déterminer le type de la règle" ) )
+              (Log.warning ~code ~pos:meta.pos ~kind:`Type
+                 ~hints:
+                   ["Spécifiez le type de la règle. Par exemple : `type: texte`"]
+                 message ) )
   in
   return ~logs:warnings outputs

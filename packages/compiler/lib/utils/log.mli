@@ -5,14 +5,31 @@ type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global]
 
 type level = [`Error | `Warning | `Info] [@@deriving show, sexp, compare]
 
-type log = {kind: kind; level: level; message: string; hint: string option}
-[@@deriving show, sexp, compare]
+val error :
+     code:Err.Code.t
+  -> ?kind:kind
+  -> ?pos:Pos.pos
+  -> ?hints:string list
+  -> ?labels:string Pos.t list
+  -> string
+  -> t
 
-val error : pos:Pos.pos -> kind:kind -> ?hint:string -> string -> t
+val warning :
+     code:Err.Code.t
+  -> ?kind:kind
+  -> ?pos:Pos.pos
+  -> ?hints:string list
+  -> ?labels:string Pos.t list
+  -> string
+  -> t
 
-val warning : pos:Pos.pos -> kind:kind -> ?hint:string -> string -> t
-
-val info : ?pos:Pos.pos -> ?kind:kind -> ?hint:string -> string -> t
+val info :
+     ?kind:kind
+  -> ?pos:Pos.pos
+  -> ?hints:string list
+  -> ?labels:string Pos.t list
+  -> string
+  -> t
 
 val message : t -> string
 
