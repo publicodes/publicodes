@@ -1,11 +1,22 @@
 open Core
 open Shared
+open Utils
 
 let json_of_eval_tree (eval_tree : Eval_tree.Typed.t) =
   (* Convert a dotted name to string representation *)
   (* Recursively convert a computation to JSON *)
   let rec computation_to_json ((eval_tree, _) : Eval_tree.Typed.computation) =
     match eval_tree with
+    | Get_context name ->
+        `Assoc [("get", `String (Shared.Rule_name.to_string name))]
+    | Set_context {context; value} ->
+        let context =
+          List.map context ~f:(fun (rule_name, value) ->
+              ( Shared.Rule_name.to_string (Pos.value rule_name)
+              , computation_to_json value ) )
+        in
+        let value = computation_to_json value in
+        `Assoc [("value", value); ("context", `Assoc context)]
     | Ref name ->
         `String (Shared.Rule_name.to_string name)
     | Const c -> (
@@ -62,7 +73,7 @@ let json_of_eval_tree (eval_tree : Eval_tree.Typed.t) =
         `List
           [computation_to_json left; `String op_str; computation_to_json right]
     | Unary_op ((op, _), expr) ->
-        let op_str = match op with Neg -> "-" in
+        let op_str = match op with Neg -> "-" | Is_undef -> "∅" in
         `List [`String op_str; computation_to_json expr]
   in
   (* Build the JSON object by iterating through the rules *)
@@ -77,15 +88,9 @@ let with_parameters eval_tree params =
     `Assoc
       (List.map params ~f:(fun (key, value) ->
            ( Rule_name.to_string key
-           , `List
+           , `Assoc
                (List.map value ~f:(fun rule ->
-                    `String (Rule_name.to_string rule) ) ) ) ) )
-  in
-  let output_json =
-    `List
-      (List.map
-         ~f:(fun (rule, _) -> `String (Rule_name.to_string rule))
-         params )
+                    (Rule_name.to_string rule, `Null) ) ) ) ) )
   in
   let types_json =
     `Assoc
@@ -93,18 +98,17 @@ let with_parameters eval_tree params =
            ( Rule_name.to_string key
            , match (Eval_tree.Typed.rule_meta eval_tree key).typ with
              | Some Number ->
-                 `String "number"
+                 `Assoc [("number", `Null)]
              | Some String ->
-                 `String "string"
+                 `Assoc [("string", `Null)]
              | Some Bool ->
-                 `String "boolean"
+                 `Assoc [("boolean", `Null)]
              | Some Date ->
-                 `String "date"
+                 `Assoc [("date", `Null)]
              | None ->
                  `Null ) ) )
   in
   `Assoc
     [ ("evaluationTree", json_of_eval_tree eval_tree)
-    ; ("outputs", output_json)
     ; ("parameters", parameters_json)
     ; ("types", types_json) ]
