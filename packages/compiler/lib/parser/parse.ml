@@ -17,8 +17,13 @@ let parse_meta mapping =
         let value = get_scalar_exn value in
         let pos = Pos.pos value in
         let value = get_value value in
+        let code, message = Err.invalid_value in
         if not (String.equal value "oui" || String.equal value "") then
-          fatal_error ~pos ~kind:`Syntax "La valeur doit être 'oui'"
+          fatal_error ~pos ~code ~kind:`Syntax message
+            ~labels:[Pos.mk ~pos "doit valoir `oui` ou être vide"]
+            ~hints:
+              [ Printf.sprintf "Remplacez `%s` par `oui` ou supprimez la clée"
+                  value ]
         else return Public
     | _ ->
         (None, [])
@@ -32,7 +37,13 @@ let parse_rule_name s =
   | Some (Ref rule_name, _), _ ->
       return (Pos.mk ~pos (Shared.Rule_name.create_exn rule_name))
   | _ ->
-      fatal_error ~pos ~kind:`Syntax "Le nom de la règle est invalide"
+      let code, message = Err.invalid_rule_name in
+      fatal_error ~pos ~kind:`Syntax ~code message
+        ~labels:[Pos.mk ~pos "nom invalide"]
+        ~hints:
+          [ Printf.sprintf
+              "un nom de règle doit être de la forme suivante : `mon namespace \
+               . ma règle` ou `ma règle`" ]
 
 let parse_rule (name, yaml) =
   let* name = parse_rule_name name in
@@ -46,9 +57,10 @@ let parse_rule (name, yaml) =
 let parse ~filename (yaml : yaml) : Ast.t Output.t =
   match yaml with
   | `O [] ->
-      fatal_error
+      let code, message = Err.yaml_empty_file in
+      fatal_error ~code
         ~pos:(Pos.beginning_of_file filename)
-        ~kind:`Syntax "Empty file"
+        ~kind:`Syntax message
   | `O m_members ->
       List.map m_members ~f:parse_rule |> all_keep_logs
   | _ ->

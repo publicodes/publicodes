@@ -11,14 +11,14 @@ let cycle_check (tree : Eval.Tree.t) : Rule_graph.t Output.t =
     let first_rule_name = List.hd_exn cycle in
     let cycle = cycle @ [first_rule_name] in
     let pos = (snd (Hashtbl.find_exn tree first_rule_name)).pos in
+    let code, message = Err.cycle_detected in
     let log =
-      (* Todo better error message for cycle *)
-      Log.warning ~kind:`Cycle
-        "Un cycle a été detecté dans l'évaluation de cette règle" ~pos
-        ~hint:
-          (String.concat ~sep:" -> "
-             (List.map cycle ~f:(fun rule ->
-                  Format.asprintf "%a" Rule_name.pp rule ) ) )
+      (* TODO: better error message for cycle *)
+      Log.warning message ~code ~kind:`Cycle ~pos
+        ~hints:
+          [ String.concat ~sep:" -> "
+              (List.map cycle ~f:(fun rule ->
+                   Format.asprintf "%a" Rule_name.pp rule ) ) ]
     in
     log :: acc
   in

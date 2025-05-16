@@ -67,10 +67,12 @@ let chainable_mecanisms =
 let rec parse ?(error_if_undefined = true) ~pos (yaml : yaml) :
     Ast.value Output.t =
   match yaml with
-  | `Scalar ({value= ""; _}, pos) ->
+  | `Scalar ({value= ""; _}, value_pos) ->
       let logs =
         if error_if_undefined then
-          [Log.error ~pos ~kind:`Syntax "Cette valeur est vide"]
+          let code, message = Err.parsing_empty_value in
+          [ Log.error ~pos ~code ~kind:`Syntax message
+              ~labels:[Pos.mk ~pos:value_pos "valeur attendue ici"] ]
         else []
       in
       return ~logs {value= Pos.mk ~pos Undefined; chainable_mechanisms= []}
@@ -83,20 +85,21 @@ let rec parse ?(error_if_undefined = true) ~pos (yaml : yaml) :
       let* chainable_mechanisms = parse_chainable_mecanisms ~pos mapping in
       let logs =
         if error_if_undefined then
-          [ Log.error ~pos ~kind:`Syntax
-              "Aucune valeur n'est définie à cet endroit"
-              ~hint:
-                "Ajoutez un mecanisme de valeur, comme par exemple : « valeur \
-                 », « somme » ou « une de ces conditions »." ]
+          let code, message = Err.parsing_empty_value in
+          [ Log.error ~pos ~code ~kind:`Syntax message
+              ~hints:
+                [ "Ajoutez un mecanisme de valeur, comme par exemple : « \
+                   valeur », « somme » ou « une de ces conditions »." ] ]
         else []
       in
       return ~logs {value; chainable_mechanisms}
   | `A _ ->
       let logs =
-        [ Log.error ~pos ~kind:`Syntax "Une valeur ne peut pas être un tableau"
-            ~hint:
-              "Peut-être avez-vous oublié d'ajouter le nom du mécanisme (par \
-               exemple « somme : »)" ]
+        let code, message = Err.parsing_should_be_array in
+        [ Log.error ~pos ~code ~kind:`Syntax message
+            ~hints:
+              [ "Peut-être avez-vous oublié d'ajouter le nom du mécanisme (par \
+                 exemple « somme : »)" ] ]
       in
       return ~logs {value= Pos.mk ~pos Undefined; chainable_mechanisms= []}
 

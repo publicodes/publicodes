@@ -12,15 +12,12 @@ let check_orphan_rules ~rule_names ast =
         None
     | Some parent ->
         if not (Set.mem rule_names parent) then
+          let code, message = Err.missing_parent_rule in
           Some
-            (Log.error ~pos ~kind:`Syntax
-               ~hint:
-                 (Format.asprintf {|Créez une règle vide pour le parent:
-
-%a:
-|}
-                    Rule_name.pp parent )
-               "Le parent de la règle n'existe pas" )
+            (Log.error message ~code ~pos ~kind:`Syntax
+               ~hints:
+                 [ Format.asprintf "Ajoutez la règle parente `%a` manquante"
+                     Rule_name.pp parent ] )
         else None
   in
   List.filter_map ast ~f:warn_if_orphan
@@ -28,10 +25,19 @@ let check_orphan_rules ~rule_names ast =
 let resolve_rule ~rule_names rule =
   let context_rule = Pos.value rule.name in
   let resolve_ref ~pos ref =
-    let ref = Rule_name.resolve ~rule_names ~current:context_rule ref in
-    match ref with
+    let resolved_ref =
+      Rule_name.resolve ~rule_names ~current:context_rule ref
+    in
+    match resolved_ref with
     | None ->
-        fatal_error ~pos ~kind:`Syntax "La référence n'existe pas"
+        let code, message = Err.missing_rule in
+        let missing_rule_name = Rule_name.create_exn ref in
+        (* TODO: add to suggest closest rule name *)
+        fatal_error ~pos ~kind:`Syntax ~code message
+          ~hints:
+            [ Format.asprintf "Ajoutez la règle `%a` manquante" Rule_name.pp
+                missing_rule_name
+            ; "Vérifiez les erreurs de typos dans le nom de la règle" ]
     | Some ref ->
         return ref
   in

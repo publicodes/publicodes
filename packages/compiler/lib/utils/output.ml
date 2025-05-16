@@ -32,8 +32,8 @@ let map ~f (x_opt, logs) =
 (* Helper *)
 
 (* Interrupt compilation *)
-let fatal_error ~pos ~kind ?hint message =
-  let log = Log.error ~pos ~kind ?hint message in
+let fatal_error ~pos ~kind ~code ?(hints = []) ?(labels = []) message =
+  let log = Log.error ~pos ~kind ~hints ~code ~labels message in
   (None, [log])
 
 let add_logs ~(logs : Log.t list) ((x_opt, logs1) : 'a t) : 'a t =

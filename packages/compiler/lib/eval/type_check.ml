@@ -26,11 +26,17 @@ let type_error ~pos (expected : Concrete_type.t) (actual : Concrete_type.t) =
     | Concrete_type.Date ->
         "une date"
   in
-  let message =
-    Format.sprintf "Le type attendu était %s, mais %s a été trouvé à la place"
-      (concrete_to_str expected) (concrete_to_str actual)
-  in
-  return ~logs:[Log.error ~pos ~kind:`Type message] ()
+  let code, message = Err.invalid_type in
+  (* TODO: add position of the different arguments *)
+  return
+    ~logs:
+      [ Log.error ~pos ~kind:`Type ~code
+          ~labels:
+            [ Pos.mk ~pos
+                (Format.sprintf "attendu : %s, trouvé : %s"
+                   (concrete_to_str expected) (concrete_to_str actual) ) ]
+          message ]
+    ()
 
 let unify_concrete ~(database : Type_database.t) ({id; pos; _} : 'a meta)
     (concrete_type : Concrete_type.t) =

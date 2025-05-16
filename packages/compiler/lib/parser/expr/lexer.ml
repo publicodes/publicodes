@@ -181,7 +181,7 @@ let lex ((publicodes, pos) : string Pos.t) : token Pos.t list Output.t =
           return (List.rev (token :: acc))
       | _ ->
           lex_loop (token :: acc)
-    with Invalid_token token_str ->
+    with Invalid_token _ ->
       let token_pos =
         let start_pos, end_pos = lexing_positions lexbuf in
         Pos.
@@ -189,7 +189,7 @@ let lex ((publicodes, pos) : string Pos.t) : token Pos.t list Output.t =
           ; start_pos= Pos.Point.of_position start_pos
           ; end_pos= Pos.Point.of_position end_pos }
       in
-      fatal_error ~pos:token_pos ~kind:`Lex
-        (Format.sprintf "« %s » : cette expression est invalide" token_str)
+      let code, message = Err.expr_lex_invalid_expression in
+      fatal_error ~pos:token_pos ~kind:`Lex ~code message
   in
   lex_loop []

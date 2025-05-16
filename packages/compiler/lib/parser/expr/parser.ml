@@ -5,6 +5,9 @@ open Utils.Output
 
 exception SyntaxError of Log.t
 
+let raise_syntax_error ~pos ~code message =
+  raise (SyntaxError (Log.error ~kind:`Syntax ~code ~pos message))
+
 let rec parse (expression : token Pos.t list) =
   try
     let result, remaining = parse_expression expression in
@@ -14,11 +17,8 @@ let rec parse (expression : token Pos.t list) =
     | (EOF, _) :: [] ->
         return result
     | (token, pos) :: _ ->
-        raise
-          (SyntaxError
-             (Log.error ~kind:`Syntax ~pos
-                (Format.asprintf "L'élément « %a » est inattendu à cet endroit."
-                   Tokens.pp_token token ) ) )
+        let code, message = Err.unexpected_token (Tokens.show_token token) in
+        raise_syntax_error ~pos ~code message
   with SyntaxError log -> (None, [log])
 
 and parse_expression tokens = parse_equality tokens
@@ -121,11 +121,9 @@ and parse_primary tokens =
       | (RPAREN, _) :: rest ->
           (expr, rest)
       | _ ->
-          (* Todo add position of the opening parenthesis *)
-          raise
-            (SyntaxError
-               (Log.error ~pos:(Pos.pos expr) ~kind:`Syntax
-                  "Il manque la parenthèse fermante dans cette expression" ) ) )
+          let code, message = Err.missing_closing_paren in
+          (* TODO: add labels to better error message *)
+          raise_syntax_error ~pos:(Pos.pos expr) ~code message )
   | (NUMBER (n, Some unit), pos) :: rest ->
       let value = Number (n, Some (Shared.Units.parse_unit unit)) in
       (Pos.mk ~pos (Const value), rest)
@@ -147,8 +145,8 @@ and parse_primary tokens =
   | (RULE_NAME name, pos) :: rest ->
       parse_rule_name ~pos [name] rest
   | (_, pos) :: _ ->
-      raise
-        (SyntaxError (Log.error ~pos ~kind:`Syntax "Ce caractère est invalide"))
+      let code, message = Err.invalid_char in
+      raise (SyntaxError (Log.error ~pos ~kind:`Syntax ~code message))
 
 and parse_rule_name ~pos names tokens =
   match tokens with
