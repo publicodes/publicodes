@@ -22,13 +22,13 @@ let compile files =
       ~init:(Utils.Output.return [])
   in
   match unresolved_program with
-  | Some p, [] ->
+  | Some _, [] ->
       Printf.printf "Parsing ok\n" ;
-      Printf.printf "program: %s\n" (Parser.Ast.show p) ;
+      (* Printf.printf "program: %s\n" (Parser.Ast.show p) ; *)
       Cmd.Exit.ok
-  | Some p, _ ->
+  | Some _, _ ->
       Printf.printf "Parsing ok, but with errors:\n" ;
-      Printf.printf "program: %s\n" (Parser.Ast.show p) ;
+      (* Printf.printf "program: %s\n" (Parser.Ast.show p) ; *)
       Utils.Output.print_logs unresolved_program ;
       Cmd.Exit.some_error
   | None, _ ->

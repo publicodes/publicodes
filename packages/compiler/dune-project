@@ -26,7 +26,7 @@
  (synopsis "Compiler for the Publicodes language")
  (description "A compiler for the Publicodes, a programming language for public interest algorithms.")
  (depends ocaml dune core yaml ppx_show sedlex yojson (ocamlgraph (>= 2.2.0))
-	  cmdliner
+	  cmdliner grace
 	  (ppx_inline_test :with-test)
 	  (ppx_assert :with-test)
 	  (ppx_compare :with-test))
