@@ -39,5 +39,8 @@
 	"packageManager": "yarn@3.8.7",
 	"engines": {
 		"node": ">= 22"
+	},
+	"dependencies": {
+		"changeset": "^0.2.6"
 	}
 }

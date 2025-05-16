@@ -7807,6 +7807,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"changeset@npm:^0.2.6":
+  version: 0.2.6
+  resolution: "changeset@npm:0.2.6"
+  dependencies:
+    udc: "npm:^1.0.0"
+    underscore: "npm:^1.8.3"
+  checksum: 10/6308661aa546580c8f968f2eb0b2cf160053b9dbcedcb2a90b6a6e1c66194d0b576ca0e9d37318f482ec9fa4d68fa7625f5df7a73182265109cb00060b5d1bbd
+  languageName: node
+  linkType: hard
+
 "char-regex@npm:^1.0.2":
   version: 1.0.2
   resolution: "char-regex@npm:1.0.2"
@@ -17007,6 +17017,7 @@ __metadata:
     "@changesets/changelog-github": "npm:^0.5.0"
     "@changesets/cli": "npm:^2.27.8"
     "@eslint/js": "npm:^9.16.0"
+    changeset: "npm:^0.2.6"
     eslint: "npm:^9.16.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-react: "npm:latest"
@@ -20268,6 +20279,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"udc@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "udc@npm:1.0.1"
+  checksum: 10/fc6a8cfc2925adfadf43470c0a36ccf63bf55a5534803dc88e6c6b980c00bfeae4a43979fd8a8b17f3fc4a966cab5b0ce0cc9debfefc27afea3c855b6cac2605
+  languageName: node
+  linkType: hard
+
 "ufo@npm:^1.5.4":
   version: 1.5.4
   resolution: "ufo@npm:1.5.4"
@@ -20298,6 +20316,13 @@ __metadata:
   version: 1.12.1
   resolution: "underscore@npm:1.12.1"
   checksum: 10/c3bb50c61ef7dea4b9add6d48f98316f65de1075801dc8cd01ecd82122b99eb17ce0f068f00f6cc10245d5cf75c443ce96f8efc5458d7773b44af9bd7c2ccc56
+  languageName: node
+  linkType: hard
+
+"underscore@npm:^1.8.3":
+  version: 1.13.7
+  resolution: "underscore@npm:1.13.7"
+  checksum: 10/1ce3368dbe73d1e99678fa5d341a9682bd27316032ad2de7883901918f0f5d50e80320ccc543f53c1862ab057a818abc560462b5f83578afe2dd8dd7f779766c
   languageName: node
   linkType: hard
 

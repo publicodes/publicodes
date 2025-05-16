@@ -146,7 +146,7 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		- we need to run remplacements (which works on references in the ASTs
 		  which is why we insert these “virtual” references)
 		- we need to infer unit of the rules
-		
+
 		An alternative implementation would be possible that would colocate the
 		code related to branch desactivation (ie find the first nullable parent
 		statically after rules parsing)
@@ -315,7 +315,7 @@ Si le cycle est voulu, vous pouvez indiquer au moteur de résoudre la référenc
 	) {
 		throw new PublicodesError(
 			'EvaluationError',
-			`La valeur de la règle ${node.dottedName} n'est pas une des possibilités attendues`,
+			`La valeur "${valeurEvaluation.nodeValue}" de la règle ${node.dottedName} n'est pas une des possibilités attendues`,
 			{
 				dottedName: node.dottedName,
 			},
