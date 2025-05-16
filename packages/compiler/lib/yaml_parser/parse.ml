@@ -22,20 +22,18 @@ Cf https://ocaml.org/p/yaml/3.2.0/doc/Yaml/Stream/Event/index.html
 (* Better error message *)
 let message_traduction =
   [ ( "error calling parser: mapping values are not allowed in this context"
-    , ("Impossible de déclarer un objet à cet endroit", None) )
+    , ("Impossible de déclarer un objet à cet endroit", []) )
   ; ( "error calling parser: did not find expected ',' or ']'"
     , ( "Le tableau n'est pas fermé"
-      , Some "il manque  `]` pour le fermer, ou `,` pour ajouter un élément" )
-    )
+      , ["il manque  `]` pour le fermer, ou `,` pour ajouter un élément"] ) )
   ; ( "error calling parser: did not find expected ',' or '}'"
     , ( "L'objet n'est pas fermé"
-      , Some "il manque  `}` pour le fermer, ou `,` pour ajouter un élément" )
-    )
+      , ["il manque  `}` pour le fermer, ou `,` pour ajouter un élément"] ) )
   ; ( "error calling parser: found unexpected end of stream character"
     , ( "Fin de fichier inattendue : il manque un caractère"
-      , Some "Par exemple, `\"`, `\'`, ou `]`" ) )
+      , ["Par exemple, `\"`, `\'`, ou `]`"] ) )
   ; ( "error calling parser: found unexpected ':'"
-    , ("`:` non valide à cet endroit", None) ) ]
+    , ("`:` non valide à cet endroit", []) ) ]
 
 let make_scalar pos (scalar : Yaml.scalar) =
   Pos.mk ~pos Ast.{value= scalar.value; style= scalar.style}
@@ -86,27 +84,23 @@ let parse (filename : string) (content : string) : yaml Output.t =
     | Ok result ->
         Output.return result
     | Error (`Msg err) ->
-        let message, hint =
+        let message, hints =
           List.find_map message_traduction ~f:(fun (prefix, value) ->
               if starts_with ~prefix err then Some value else None )
-          |> Option.value ~default:(err, None)
+          |> Option.value ~default:(err, [])
         in
-        fatal_error ~pos ~kind:`Yaml ?hint message
+        fatal_error ~pos ~kind:`Yaml ~code:Err.Code.Yaml_parsing ~hints message
   in
   let* parser = parser content |> transform_error in
   let* first_token = do_parse parser |> transform_error in
   let current_token = ref first_token in
   (* Create an error message based on the position of the last parsed token *)
-  let error message =
+  let error (code, message) =
     let _, mark = !current_token in
-    fatal_error ~pos:(pos_from_mark mark) ~kind:`Yaml message
+    fatal_error ~pos:(pos_from_mark mark) ~kind:`Yaml message ~code
   in
   let unexpected_token_error token expected =
-    let message =
-      Format.sprintf "[Internal error] Unexpected token : %s. Was expecting %s."
-        (print_token token) expected
-    in
-    error message
+    error @@ Err.yaml_unexpected_token ~actual:(print_token token) ~expected
   in
   (* Advance to the next token *)
   let next () =
@@ -155,9 +149,9 @@ let parse (filename : string) (content : string) : yaml Output.t =
     | Event.Mapping_start _ ->
         parse_mapping []
     | Event.Alias _ ->
-        error "Il n'est pas possible d'utiliser un alias avec Publicodes"
+        error Err.yaml_alias_not_supported
     | Event.Nothing ->
-        error "Le fichier est vide"
+        error Err.yaml_empty_file
     | _ ->
         failwith "Internal error"
   and parse_sequence (seq : sequence) =

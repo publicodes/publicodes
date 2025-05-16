@@ -16,8 +16,8 @@ let parse_array ~pos
       let* parsed_nodes = seq |> List.map ~f:(parse ~pos) |> all_keep_logs in
       return parsed_nodes
   | _ ->
-      fatal_error ~pos ~kind:`Syntax
-        "Ce mécanisme doit contenir un tableau de valeurs"
+      let code, message = Err.parsing_should_be_array in
+      fatal_error ~pos ~kind:`Syntax ~code message
 
 let remove_double (mapping : mapping) : mapping Output.t =
   let seen_keys = ref (Set.empty (module String)) in
@@ -27,13 +27,12 @@ let remove_double (mapping : mapping) : mapping Output.t =
       let key_value = get_value key in
       let key_pos = Pos.pos key in
       if Set.mem !seen_keys key_value then
+        let code, message = Err.yaml_duplicate_key in
+        (* TODO: show the two keys in labels *)
         logs :=
-          Log.error ~pos:key_pos ~kind:`Syntax
-            ~hint:"Vérifiez votre YAML pour les clés en double"
-            (Format.sprintf
-               "Clé dupliquée « %s » détectée. La première occurrence sera \
-                utilisée."
-               key_value )
+          Log.error ~code ~pos:key_pos ~kind:`Syntax
+            ~hints:["Vérifiez votre YAML pour les clés en double"]
+            message
           :: !logs
       else (
         seen_keys := Set.add !seen_keys key_value ;

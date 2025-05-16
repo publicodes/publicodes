@@ -5,19 +5,26 @@ type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global]
 
 type level = [`Error | `Warning | `Info] [@@deriving show, sexp, compare]
 
-type log = {kind: kind; level: level; message: string; hint: string option}
+type log =
+  { kind: kind
+  ; level: level
+  ; message: string
+  ; labels: string Pos.t list
+  ; hints: string list
+  ; code: Err.Code.t option }
 [@@deriving show, sexp, compare]
 
 type t = log Pos.t [@@deriving show, sexp, compare]
 
-let error ~pos ~kind ?hint message =
-  Pos.mk ~pos {kind; level= `Error; message; hint}
+let mk ~level ?(kind = `Global) ?(pos = Pos.dummy) ?(hints = []) ?(labels = [])
+    ?(code = None) message =
+  Pos.mk ~pos {kind; level; message; hints; labels; code}
 
-let warning ~pos ~kind ?hint message =
-  Pos.mk ~pos {kind; level= `Warning; message; hint}
+let error ~code = mk ~level:`Error ~code:(Some code)
 
-let info ?(pos = Pos.dummy) ?(kind = `Global) ?hint message =
-  Pos.mk ~pos {kind; level= `Info; message; hint}
+let warning ~code = mk ~level:`Warning ~code:(Some code)
+
+let info = mk ~level:`Info ~code:None
 
 let message log = (Pos.value log).message
 
@@ -52,15 +59,18 @@ let to_diagnostic log_with_pos =
       Range.create ~source (Byte_index.of_int start) (Byte_index.of_int stop)
     in
     let labels =
-      Diagnostic.Label.
-        [ primaryf
+      let open Diagnostic.Label in
+      List.mapi log.labels ~f:(fun i label ->
+          let pos = Pos.pos label in
+          let message = Pos.value label in
+          (if phys_equal i 0 then primaryf else secondaryf)
             ~range:(range pos.start_pos.index pos.end_pos.index)
-            "%s" log.message ]
+            "%s" message )
     in
-    Diagnostic.(
-      createf ~labels ~code:Code_error.Empty_mechanism severity "%s" log.message )
+    let notes = List.map log.hints ~f:Diagnostic.Message.create in
+    Diagnostic.(createf ~labels ?code:log.code ~notes severity "%s" log.message)
 
 let ansi_renderer =
-  Grace_ansi_renderer.pp_diagnostic ~code_to_string:Code_error.code_to_string ()
+  Grace_ansi_renderer.pp_diagnostic ~code_to_string:Err.Code.code_to_string ()
 
 let print_ansi log = Format.printf "%a@." ansi_renderer (to_diagnostic log)
