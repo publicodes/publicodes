@@ -67,13 +67,20 @@ export type PageBuilderOutput<RuleName> = Array<{
 	questionsInPage: Array<RuleName>
 	title?: string
 }>
+
 /**
- * An object containing options for configuring the form behavior.
+ * Options for configuring a form.
  *
- * FIXME: deal with selectTreshold doc
+ * @template RuleName - The type representing the rule names used in the form.
+ *
+ * @property pageBuilder - An optional function or object responsible for building pages
+ * within the form. It allows customization of how the form pages are structured.
+ *
+ * @property selectTreshold - An optional number that specifies the threshold to make input rather radio options or select.
  */
+
 export type FormOptions<RuleName> = {
-	pageBuilder: PageBuilder<RuleName>
+	pageBuilder?: PageBuilder<RuleName>
 	selectTreshold?: number
 }
 
@@ -109,19 +116,25 @@ export type FormOptions<RuleName> = {
  */
 export class FormBuilder<RuleName extends string> {
 	private engine: Engine<RuleName>
-	private formOptions: FormOptions<RuleName>
+	private formOptions: {
+		pageBuilder: PageBuilder<RuleName>
+		selectTreshold?: number
+	}
 
 	constructor({
 		engine,
-		formOptions = {
-			pageBuilder: groupByNamespace,
-		},
+		formOptions,
 	}: {
 		engine: Engine<RuleName>
 		formOptions?: FormOptions<RuleName>
 	}) {
 		this.engine = engine
-		this.formOptions = formOptions
+		this.formOptions = {
+			...formOptions,
+			...{
+				pageBuilder: formOptions?.pageBuilder ?? groupByNamespace,
+			},
+		}
 	}
 
 	/**
