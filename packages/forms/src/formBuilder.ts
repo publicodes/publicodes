@@ -114,6 +114,12 @@ export type FormOptions<RuleName> = {
  * state = formBuilder.goToNextPage(state)
  * ```
  */
+
+export type CurrentPageElements<RuleName> = {
+	titre?: string
+	elements: Array<EvaluatedFormElement<RuleName> & FormPageElementProp>
+}
+
 export class FormBuilder<RuleName extends string> {
 	private engine: Engine<RuleName>
 	private formOptions: {
@@ -241,24 +247,28 @@ export class FormBuilder<RuleName extends string> {
 	 * )
 	 * ```
 	 */
-	currentPage(
-		formState: FormState<RuleName>,
-	): Array<EvaluatedFormElement<RuleName> & FormPageElementProp> {
+	currentPage(formState: FormState<RuleName>): CurrentPageElements<RuleName> {
 		if (formState.situation !== this.engine.getSituation()) {
 			this.engine.setSituation(formState.situation)
 		}
 		const page = formState.pages[formState.currentPageIndex]
+
 		if (page === undefined) {
-			return []
+			return { elements: [] }
 		}
 
-		return buildFormPage(
-			formState.pages[formState.currentPageIndex].questionsInPage,
-			this.engine,
-			formState.targets,
-			formState.lastAnswered,
-			this.formOptions,
-		)
+		const title = page.title ?? ''
+
+		return {
+			titre: title,
+			elements: buildFormPage(
+				formState.pages[formState.currentPageIndex].questionsInPage,
+				this.engine,
+				formState.targets,
+				formState.lastAnswered,
+				this.formOptions,
+			),
+		}
 	}
 
 	/**

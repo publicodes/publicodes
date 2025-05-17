@@ -105,7 +105,7 @@ describe('FormBuilder', () => {
 
 			const result = formBuilder.currentPage(state)
 
-			expect(result).toEqual([])
+			expect(result).toEqual({ elements: [] })
 		})
 
 		it('should return form elements for current page', () => {
@@ -114,12 +114,12 @@ describe('FormBuilder', () => {
 			let state = FormBuilder.newState<RuleName>()
 			state = formBuilder.start(state, 'eligibility')
 
-			const currentPage = formBuilder.currentPage(state)
+			const currentPageElements = formBuilder.currentPage(state).elements
 
-			expect(currentPage.length).toBeGreaterThan(0)
-			expect(currentPage[0]).toHaveProperty('id')
-			expect(currentPage[0]).toHaveProperty('label')
-			expect(currentPage[0]).toHaveProperty('element')
+			expect(currentPageElements.length).toBeGreaterThan(0)
+			expect(currentPageElements[0]).toHaveProperty('id')
+			expect(currentPageElements[0]).toHaveProperty('label')
+			expect(currentPageElements[0]).toHaveProperty('element')
 		})
 	})
 
