@@ -2,11 +2,14 @@ import Engine, { PublicodesError } from 'publicodes'
 import { describe, expect, test } from 'vitest'
 import { FormElement, getFormElement } from './formElement'
 
-function inputForRule(rule: Record<string, unknown> | string | number) {
+function inputForRule(
+	rule: Record<string, unknown> | string | number,
+	selectTreshold?: number,
+) {
 	const engine = new Engine({
 		a: rule,
 	})
-	return getFormElement(engine, 'a')
+	return getFormElement(engine, 'a', selectTreshold)
 }
 
 describe('inputDetails', function () {
@@ -87,7 +90,9 @@ describe('inputDetails', function () {
 	})
 
 	describe('for "une possibilité" rules', function () {
-		type InputWithOptions = FormElement & { options: NonNullable<unknown> }
+		type InputWithOptions = FormElement<string> & {
+			options: NonNullable<unknown>
+		}
 
 		test('should be "RadioGroup" by default', function () {
 			const input = inputForRule({ 'une possibilité': ["'a'", "'b'"] })
@@ -99,6 +104,17 @@ describe('inputDetails', function () {
 			const input = inputForRule({
 				'une possibilité': [1, 2, 3, 4, 5, 6],
 			})
+
+			expect(input.element).toBe('select')
+		})
+
+		test('or another treshold if specify', function () {
+			const input = inputForRule(
+				{
+					'une possibilité': [1, 2, 3, 4],
+				},
+				3,
+			)
 
 			expect(input.element).toBe('select')
 		})
@@ -155,7 +171,7 @@ describe('inputDetails', function () {
 				})
 				expect(input.element).toBe('select')
 			})
-			type InputRadio = FormElement & { element: 'RadioGroup' }
+			type InputRadio = FormElement<string> & { element: 'RadioGroup' }
 			test('boutons radio (horizontal if less than two element)', function () {
 				const input = inputForRule({
 					'une possibilité': [1, 2],

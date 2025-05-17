@@ -35,9 +35,9 @@ import { updateSituationWithInputValue } from './updateSituationWithFormValue'
 export type FormState<RuleName extends string> = {
 	situation: Situation<RuleName>
 	targets: Array<RuleName>
-	pages: Array<Array<RuleName>>
+	pages: PageBuilderOutput<RuleName>
 	currentPageIndex: number
-	nextPages: Array<Array<RuleName>>
+	nextPages: PageBuilderOutput<RuleName>
 	lastAnswered: RuleName | null
 }
 
@@ -61,7 +61,28 @@ export type FormState<RuleName extends string> = {
  */
 export type PageBuilder<RuleName> = (
 	fields: Array<RuleName>,
-) => Array<Array<RuleName>>
+) => PageBuilderOutput<RuleName>
+
+export type PageBuilderOutput<RuleName> = Array<{
+	questionsInPage: Array<RuleName>
+	title?: string
+}>
+
+/**
+ * Options for configuring a form.
+ *
+ * @template RuleName - The type representing the rule names used in the form.
+ *
+ * @property pageBuilder - An optional function or object responsible for building pages
+ * within the form. It allows customization of how the form pages are structured.
+ *
+ * @property selectTreshold - An optional number that specifies the threshold to make input rather radio options or select.
+ */
+
+export type FormOptions<RuleName> = {
+	pageBuilder?: PageBuilder<RuleName>
+	selectTreshold?: number
+}
 
 /**
  * Creates and manages multi-page forms based on Publicodes rules.
@@ -93,19 +114,33 @@ export type PageBuilder<RuleName> = (
  * state = formBuilder.goToNextPage(state)
  * ```
  */
+
+export type CurrentPageElements<RuleName> = {
+	titre?: string
+	elements: Array<EvaluatedFormElement<RuleName> & FormPageElementProp>
+}
+
 export class FormBuilder<RuleName extends string> {
 	private engine: Engine<RuleName>
-	private pageBuilder: PageBuilder<RuleName>
+	private formOptions: {
+		pageBuilder: PageBuilder<RuleName>
+		selectTreshold?: number
+	}
 
 	constructor({
 		engine,
-		pageBuilder = groupByNamespace,
+		formOptions,
 	}: {
 		engine: Engine<RuleName>
-		pageBuilder?: PageBuilder<RuleName>
+		formOptions?: FormOptions<RuleName>
 	}) {
 		this.engine = engine
-		this.pageBuilder = pageBuilder
+		this.formOptions = {
+			...formOptions,
+			...{
+				pageBuilder: formOptions?.pageBuilder ?? groupByNamespace,
+			},
+		}
 	}
 
 	/**
@@ -179,7 +214,7 @@ export class FormBuilder<RuleName extends string> {
 		}
 		this.engine.setSituation(formState.situation)
 		const nextFields = computeNextFields(this.engine, { targets, pages: [] })
-		formState.nextPages = this.pageBuilder(nextFields)
+		formState.nextPages = this.formOptions.pageBuilder(nextFields)
 		formState.targets = targets
 
 		return this.goToNextPage(formState)
@@ -212,23 +247,28 @@ export class FormBuilder<RuleName extends string> {
 	 * )
 	 * ```
 	 */
-	currentPage(
-		formState: FormState<RuleName>,
-	): Array<EvaluatedFormElement & FormPageElementProp> {
+	currentPage(formState: FormState<RuleName>): CurrentPageElements<RuleName> {
 		if (formState.situation !== this.engine.getSituation()) {
 			this.engine.setSituation(formState.situation)
 		}
 		const page = formState.pages[formState.currentPageIndex]
+
 		if (page === undefined) {
-			return []
+			return { elements: [] }
 		}
 
-		return buildFormPage(
-			formState.pages[formState.currentPageIndex],
-			this.engine,
-			formState.targets,
-			formState.lastAnswered,
-		)
+		const title = page.title ?? ''
+
+		return {
+			titre: title,
+			elements: buildFormPage(
+				formState.pages[formState.currentPageIndex].questionsInPage,
+				this.engine,
+				formState.targets,
+				formState.lastAnswered,
+				this.formOptions,
+			),
+		}
 	}
 
 	/**
@@ -406,7 +446,7 @@ export class FormBuilder<RuleName extends string> {
 
 		updateSituationWithInputValue(this.engine, id, value)
 
-		formState.nextPages = this.pageBuilder(
+		formState.nextPages = this.formOptions.pageBuilder(
 			computeNextFields(this.engine, formState),
 		)
 		formState.situation = this.engine.getSituation()
