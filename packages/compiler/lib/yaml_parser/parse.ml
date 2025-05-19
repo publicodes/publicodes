@@ -22,18 +22,18 @@ Cf https://ocaml.org/p/yaml/3.2.0/doc/Yaml/Stream/Event/index.html
 (* Better error message *)
 let message_traduction =
   [ ( "error calling parser: mapping values are not allowed in this context"
-    , ("Impossible de déclarer un objet à cet endroit", []) )
+    , ("impossible de déclarer un objet à cet endroit", []) )
   ; ( "error calling parser: did not find expected ',' or ']'"
-    , ( "Le tableau n'est pas fermé"
+    , ( "le tableau n'est pas fermé"
       , ["il manque  `]` pour le fermer, ou `,` pour ajouter un élément"] ) )
   ; ( "error calling parser: did not find expected ',' or '}'"
-    , ( "L'objet n'est pas fermé"
+    , ( "l'objet n'est pas fermé"
       , ["il manque  `}` pour le fermer, ou `,` pour ajouter un élément"] ) )
   ; ( "error calling parser: found unexpected end of stream character"
-    , ( "Fin de fichier inattendue : il manque un caractère"
+    , ( "fin de fichier inattendue : il manque un caractère"
       , ["Par exemple, `\"`, `\'`, ou `]`"] ) )
   ; ( "error calling parser: found unexpected ':'"
-    , ("`:` non valide à cet endroit", []) ) ]
+    , ("caractère `:` non valide à cet endroit", []) ) ]
 
 let make_scalar pos (scalar : Yaml.scalar) =
   Pos.mk ~pos Ast.{value= scalar.value; style= scalar.style}
@@ -89,23 +89,24 @@ let parse (filename : string) (content : string) : yaml Output.t =
               if starts_with ~prefix err then Some value else None )
           |> Option.value ~default:(err, [])
         in
-        fatal_error ~pos ~kind:`Yaml ~code:Err.Code.Yaml_parsing ~hints message
+        fatal_error message ~pos ~kind:`Yaml ~code:Err.Code.Yaml_parsing ~hints
   in
-  let* parser = parser content |> transform_error in
-  let* first_token = do_parse parser |> transform_error in
+  let* parser = Yaml.Stream.parser content |> transform_error in
+  let* first_token = Yaml.Stream.do_parse parser |> transform_error in
   let current_token = ref first_token in
   (* Create an error message based on the position of the last parsed token *)
-  let error (code, message) =
+  let fatal_error_from_current_token (code, message) =
     let _, mark = !current_token in
     fatal_error ~pos:(pos_from_mark mark) ~kind:`Yaml message ~code
   in
   let unexpected_token_error token expected =
-    error @@ Err.yaml_unexpected_token ~actual:(print_token token) ~expected
+    fatal_error_from_current_token
+    @@ Err.yaml_unexpected_token ~actual:(print_token token) ~expected
   in
   (* Advance to the next token *)
   let next () =
     let* token =
-      do_parse parser
+      Yaml.Stream.do_parse parser
       |> transform_error ~pos:(pos_from_mark (snd !current_token))
     in
     current_token := token ;
@@ -149,9 +150,9 @@ let parse (filename : string) (content : string) : yaml Output.t =
     | Event.Mapping_start _ ->
         parse_mapping []
     | Event.Alias _ ->
-        error Err.yaml_alias_not_supported
+        fatal_error_from_current_token Err.yaml_alias_not_supported
     | Event.Nothing ->
-        error Err.yaml_empty_file
+        fatal_error_from_current_token Err.yaml_empty_file
     | _ ->
         failwith "Internal error"
   and parse_sequence (seq : sequence) =
