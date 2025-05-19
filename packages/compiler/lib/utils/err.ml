@@ -119,7 +119,7 @@ let cycle_detected = (Code.Cycle_detected, "cycle de dépendance détecté")
 let missing_parent_rule =
   (Code.Resolver_missing_parent_rule, "règle parente manquante")
 
-let missing_rule = (Code.Resolver_missing_rule, "règle référencée inexistante")
+let missing_rule = (Code.Resolver_missing_rule, "cette règle n'existe pas")
 
 let malformed_expression =
   (Code.Parsing_missing_closing_paren, "expression malformée")

@@ -63,6 +63,9 @@ let resolve ~rule_names ~current (name : string list) =
       Some x
   (* If no matching, we check if the current rule is a match *)
   | None ->
-      if List.equal String.equal (List.slice current (-List.length name) 0) name
-      then Some current
+      (* Debug: *)
+      (* Printf.printf "Debug: current rule = %s\n" (to_string current) ;
+      Printf.printf "Debug: name = %s\n" (to_string name) ;
+      Printf.printf "Debug: list length = %i\n" (List.length name) ; *)
+      if String.equal (to_string current) (to_string name) then Some current
       else None
