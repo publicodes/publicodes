@@ -4,21 +4,23 @@ import {
   Types,
   Parameters,
   GetContext,
-  GetType,
+  Evaluation,
+  RuleName,
   EvaluationTree,
 } from './types'
 
 export class Engine<T extends Types, P extends Parameters<T>> {
   constructor(private publicodes: Publicodes<T, P>) {}
-  evaluate<R extends Extract<keyof T, string>>(
+
+  evaluate<R extends RuleName<T>>(
     rule: R,
     context: GetContext<T, P, R> = {},
-  ): GetType<T[R]> {
+  ): Evaluation<T, P, R> {
     const evaluationTree = this.publicodes.evaluationTree as EvaluationTree
     return evaluateNode(
       evaluationTree,
       evaluationTree[rule],
       context,
-    ) as GetType<T[R]>
+    ) as unknown as Evaluation<T, P, R>
   }
 }

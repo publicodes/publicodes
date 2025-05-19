@@ -6,7 +6,7 @@ open Utils.Output
 open Parser_utils
 open Expr
 
-(* Those mecanism cannot appear more than once at the same level *)
+(* Those mechanism cannot appear more than once at the same level *)
 type 'a parse_fn =
      pos:Pos.pos
   -> parse:
@@ -14,7 +14,7 @@ type 'a parse_fn =
   -> yaml
   -> 'a Output.t
 
-let value_mecanisms =
+let value_mechanisms =
   Hashtbl.of_alist_exn
     (module String)
     [ ( ( "valeur"
@@ -43,7 +43,7 @@ let value_mecanisms =
      *)
     ]
 
-let chainable_mecanisms =
+let chainable_mechanisms =
   Hashtbl.of_alist_exn
     (module String)
     [ ( ( "applicable si"
@@ -63,7 +63,7 @@ let chainable_mecanisms =
       , fun ~pos ~parse value ->
           let+ value = parse ~pos value in
           Floor value )
-    ; ("contexte", Meca_contexte.parse) ]
+    ; ("contexte", Mecha_contexte.parse) ]
 
 let rec parse ?(error_if_undefined = true) ~pos (yaml : yaml) :
     Ast.value Output.t =
@@ -85,13 +85,15 @@ let rec parse ?(error_if_undefined = true) ~pos (yaml : yaml) :
       let* value = parse_value_mechanism ~pos mapping in
       let* chainable_mechanisms = parse_chainable_mecanisms ~pos mapping in
       let logs =
-        if error_if_undefined then
-          let code, message = Err.parsing_empty_value in
-          [ Log.error ~pos ~code ~kind:`Syntax message
-              ~hints:
-                [ "Ajoutez un mecanisme de valeur, comme par exemple : « \
-                   valeur », « somme » ou « une de ces conditions »." ] ]
-        else []
+        match (error_if_undefined, value) with
+        | true, (Undefined, pos) ->
+            let code, message = Err.parsing_empty_value in
+            [ Log.error ~pos ~code ~kind:`Syntax message
+                ~hints:
+                  [ "Ajoutez un mecanisme de valeur, comme par exemple : « \
+                     valeur », « somme » ou « une de ces conditions »." ] ]
+        | _ ->
+            []
       in
       return ~logs {value; chainable_mechanisms}
   | `A _ ->
@@ -108,27 +110,27 @@ and parse_value_mechanism ~pos mapping : 'a value_mechanism Pos.t Output.t =
   (* 1. Check that there is at most one value mechanism *)
   let mecanism =
     List.find mapping ~f:(fun (key, _) ->
-        Hashtbl.mem value_mecanisms (get_value key) )
+        Hashtbl.mem value_mechanisms (get_value key) )
   in
   match mecanism with
   | None ->
       return (Pos.mk ~pos Undefined)
   | Some (key, value) ->
       let mecanism_name = get_value key in
-      let mecanism_fn = Hashtbl.find_exn value_mecanisms mecanism_name in
-      let+ result = mecanism_fn ~pos ~parse value in
+      let mecanism_fn = Hashtbl.find_exn value_mechanisms mecanism_name in
+      let+ result = mecanism_fn ~pos:(Pos.pos key) ~parse value in
       Pos.mk ~pos result
 
 and parse_chainable_mecanisms ~pos mapping :
     'a chainable_mechanism Pos.t list Output.t =
   let chainable_mecanism_entries =
     List.filter mapping ~f:(fun (key, _) ->
-        Hashtbl.mem chainable_mecanisms (get_value key) )
+        Hashtbl.mem chainable_mechanisms (get_value key) )
   in
   List.map
     ~f:(fun (key, value) ->
       let mecanism_name = get_value key in
-      let mecanism_fn = Hashtbl.find_exn chainable_mecanisms mecanism_name in
+      let mecanism_fn = Hashtbl.find_exn chainable_mechanisms mecanism_name in
       let+ value = mecanism_fn ~pos ~parse value in
       Pos.mk ~pos value )
     chainable_mecanism_entries

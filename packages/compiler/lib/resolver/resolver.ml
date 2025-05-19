@@ -82,6 +82,9 @@ let resolve_rule ~rule_names rule =
             |> all_keep_logs
           in
           Context context
+      | Default value ->
+          let+ value = map_value value in
+          Default value
     in
     (value, pos)
   and map_value_mechanism ((value, pos) : 'a value_mechanism Pos.t) =

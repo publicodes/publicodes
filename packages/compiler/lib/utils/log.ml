@@ -97,4 +97,8 @@ let to_diagnostic log_with_pos =
 let ansi_renderer =
   Grace_ansi_renderer.pp_diagnostic ~code_to_string:Err.Code.code_to_string ()
 
-let print_ansi log = Format.printf "%a@." ansi_renderer (to_diagnostic log)
+let print_raw log = Format.printf "%a@." pp log
+
+let print_ansi log =
+  try Format.printf "%a@." ansi_renderer (to_diagnostic log)
+  with _ -> print_raw log

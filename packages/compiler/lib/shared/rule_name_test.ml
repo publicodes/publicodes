@@ -57,3 +57,35 @@ let%test_unit "disambiguate current rule last" =
   let current = mk ["a"; "a"] in
   let ref = ["a"] in
   [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ["a"]))
+
+let%test_unit "disambiguate current rule last" =
+  let rule_names = Rule_name.Set.of_list [mk ["a"]; mk ["a"; "a"]] in
+  let current = mk ["a"; "a"] in
+  let ref = ["a"] in
+  [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ["a"]))
+
+let%test_unit "disambiguate reference with shared parts in complex rules" =
+  let current =
+    mk
+      [ "dirigeant"
+      ; "auto-entrepreneur"
+      ; "Acre"
+      ; "taux vente restauration hébergement" ]
+  in
+  let resolved_rule =
+    mk
+      [ "dirigeant"
+      ; "auto-entrepreneur"
+      ; "cotisations et contributions"
+      ; "cotisations"
+      ; "vente restauration hébergement"
+      ; "taux" ]
+  in
+  let rule_names = Rule_name.Set.of_list [current; resolved_rule] in
+  let ref =
+    [ "cotisations et contributions"
+    ; "cotisations"
+    ; "vente restauration hébergement"
+    ; "taux" ]
+  in
+  [%test_eq: t option] (resolve ~rule_names ~current ref) (Some resolved_rule)

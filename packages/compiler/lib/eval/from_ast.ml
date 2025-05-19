@@ -72,7 +72,9 @@ and unfold_chainable_mecanism ~init mecanisms =
          | Shared_ast.Floor floor ->
              transform_floor ~pos floor acc
          | Shared_ast.Context context ->
-             transform_context ~pos context acc )
+             transform_context ~pos context acc
+         | Shared_ast.Default default ->
+             transform_default ~pos default acc )
 
 and transform_sum ~pos nodes =
   List.fold_right nodes ~init:(mk ~pos (Const (Number 0.))) ~f:(fun node acc ->
@@ -163,6 +165,14 @@ and transform_context ~pos context value =
            List.map context ~f:(fun (rule_name, value) ->
                (rule_name, transform_value value) )
        ; value } )
+
+and transform_default ~pos default value =
+  let p = mk ~pos in
+  p
+    (Condition
+       ( p (Unary_op (Pos.mk ~pos Is_undef, value))
+       , transform_value default
+       , value ) )
 
 let from_ast (resolved_ast : Shared_ast.resolved) : unit t =
   let evalTree =

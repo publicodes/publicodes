@@ -48,3 +48,7 @@ let parse_ref s =
   | _ ->
       let code, message = Err.invalid_rule_name in
       fatal_error ~pos ~kind:`Syntax ~code message
+        ~hints:
+          [ Printf.sprintf
+              "un nom de règle doit être de la forme suivante : `mon namespace \
+               . ma règle` ou `ma règle`" ]

@@ -1,4 +1,3 @@
-export type Outputs = string
 export type BaseType =
   | { number: null }
   | { string: null }
@@ -10,25 +9,24 @@ export type Types = {
   readonly [P in string]: BaseType
 }
 
+export type GetType<T extends Types, R extends keyof T> =
+  T[R] extends null ? unknown
+  : T[R] extends { number: null } ? number
+  : T[R] extends { string: null } ? string
+  : T[R] extends { boolean: null } ? boolean
+  : T[R] extends { date: null } ? Date
+  : never
+
 export type Parameters<T extends Types> = {
   readonly [K in keyof T]: { readonly [K2 in keyof T]?: null }
 }
-
-export type GetType<T extends BaseType> =
-  T extends null ? unknown
-  : T extends { number: null } ? number
-  : T extends { string: null } ? string
-  : T extends { boolean: null } ? boolean
-  : T extends { date: null } ? Date
-  : never
-
-export type ValueOf<T extends readonly unknown[]> = T[number]
+export type RuleName<T extends Types> = Extract<keyof T, string>
 
 export type GetContext<
   T extends Types,
   P extends Parameters<T>,
-  R extends Extract<keyof T, string>,
-> = Partial<{ readonly [K in keyof P[R] & keyof T]: GetType<T[K]> }>
+  R extends RuleName<T>,
+> = Partial<{ readonly [K in keyof P[R] & keyof T]: GetType<T, K> }>
 
 export interface Publicodes<T extends Types, P extends Parameters<T>> {
   readonly types: T
@@ -38,7 +36,14 @@ export interface Publicodes<T extends Types, P extends Parameters<T>> {
 
 export type EvaluationTree = Record<string, Computation>
 
-export type Value = number | string | boolean | null | undefined | Date
+export type Evaluation<
+  T extends Types,
+  P extends Parameters<T>,
+  R extends RuleName<T>,
+> = {
+  value: GetType<T, R> | undefined | null
+  inputs: keyof GetContext<T, P, R>
+}
 
 type UnaryOp = '-' | '∅'
 export type BinaryOp =
