@@ -120,3 +120,6 @@ let missing_parent_rule =
   (Code.Resolver_missing_parent_rule, "règle parente manquante")
 
 let missing_rule = (Code.Resolver_missing_rule, "règle référencée inexistante")
+
+let malformed_expression =
+  (Code.Parsing_missing_closing_paren, "expression malformée")
