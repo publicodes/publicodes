@@ -1,6 +1,6 @@
 import Engine from '../../src'
-import rules from './test.ts'
+import rules from './rules.json'
 
 const engine = new Engine(rules)
 
-const value = engine.evaluate('d')
+console.log('a', engine.evaluate('a'))

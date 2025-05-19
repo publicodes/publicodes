@@ -73,6 +73,15 @@ let resolve_rule ~rule_names rule =
       | Floor value ->
           let+ value = map_value value in
           Floor value
+      | Context context ->
+          let+ context =
+            List.map context ~f:(fun ((ref, pos), value) ->
+                let* rule = resolve_ref ~pos ref in
+                let+ value = map_value value in
+                ((rule, pos), value) )
+            |> all_keep_logs
+          in
+          Context context
     in
     (value, pos)
   and map_value_mechanism ((value, pos) : 'a value_mechanism Pos.t) =
