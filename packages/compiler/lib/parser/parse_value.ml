@@ -62,7 +62,8 @@ let chainable_mecanisms =
     ; ( "plancher"
       , fun ~pos ~parse value ->
           let+ value = parse ~pos value in
-          Floor value ) ]
+          Floor value )
+    ; ("contexte", Meca_contexte.parse) ]
 
 let rec parse ?(error_if_undefined = true) ~pos (yaml : yaml) :
     Ast.value Output.t =
