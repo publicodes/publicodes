@@ -77,15 +77,17 @@ let to_diagnostic log_with_pos =
     in
     let labels =
       let open Diagnostic.Label in
-      primaryf
-        ~range:(range pos.start_pos.index pos.end_pos.index)
-        "%s" log.message
-      :: List.map log.labels ~f:(fun label ->
-             let pos = Pos.pos label in
-             let message = Pos.value label in
-             secondaryf
-               ~range:(range pos.start_pos.index pos.end_pos.index)
-               "%s" message )
+      if List.is_empty log.labels then
+        [ primaryf
+            ~range:(range pos.start_pos.index pos.end_pos.index)
+            "%s" log.message ]
+      else
+        List.mapi log.labels ~f:(fun i label ->
+            let pos = Pos.pos label in
+            let message = Pos.value label in
+            (if phys_equal i 0 then primaryf else secondaryf)
+              ~range:(range pos.start_pos.index pos.end_pos.index)
+              "%s" message )
     in
     let notes = List.map log.hints ~f:Diagnostic.Message.create in
     Diagnostic.(
