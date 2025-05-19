@@ -58,7 +58,10 @@ let ( let* ) m f = bind m ~f
 
 (* Print functions *)
 
-let print_logs (output : 'a t) = List.iter ~f:Log.print_ansi (logs output)
+let print_logs (output : 'a t) =
+  List.iter
+    ~f:(fun log -> Log.print_ansi log ; Printf.printf "\n")
+    (logs output)
 
 let sprintf_logs (output : 'a t) =
   output |> logs
