@@ -146,7 +146,7 @@ and parse_primary tokens =
       parse_rule_name ~pos [name] rest
   | (_, pos) :: _ ->
       let code, message = Err.invalid_char in
-      raise (SyntaxError (Log.error ~pos ~kind:`Syntax ~code message))
+      raise (SyntaxError (Log.error ~pos ~kind:`Syntax ~code ~hints:[] message))
 
 and parse_rule_name ~pos names tokens =
   match tokens with

@@ -79,10 +79,8 @@ let print x = Printf.printf "%s\n" x ; x
     @return The next token in the input stream
     @raise Invalid_token if an unrecognized or malformed token is encountered *)
 let rec lex_one (lexbuf : lexbuf) : token Pos.t =
-  (* let prev_lexeme = Utf8.lexeme lexbuf in
-  let prev_pos = lexing_positions lexbuf in *)
   let with_pos token =
-    let start_pos, end_pos = lexing_positions lexbuf in
+    let start_pos, end_pos = Sedlexing.lexing_positions lexbuf in
     let pos =
       Pos.
         { file= start_pos.pos_fname
@@ -173,6 +171,7 @@ let lex ((publicodes, pos) : string Pos.t) : token Pos.t list Output.t =
   let lexbuf = Utf8.from_string publicodes in
   let file = pos.file in
   Sedlexing.set_position lexbuf (Pos.Point.to_position ~file pos.start_pos) ;
+  Sedlexing.set_filename lexbuf file ;
   let rec lex_loop acc =
     try
       let token = lex_one lexbuf in

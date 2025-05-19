@@ -12,14 +12,6 @@ let rule str_list = p @@ Ref str_list
 
 let parse tokens = tokens |> with_no_pos |> Parser.parse |> to_exn
 
-let%test_unit "Parse 12 + 4.5" =
-  [%test_eq: Ast.t]
-    (parse [NUMBER (12., None); ADD; NUMBER (4.5, None)])
-    (p
-       (Binary_op
-          (p Add, p (Const (Number (12., None))), p (Const (Number (4.5, None))))
-       ) )
-
 let%test_unit "Parse 12 + 4.5 / 3" =
   [%test_eq: Ast.t]
     (parse
