@@ -33,4 +33,6 @@ val info :
 
 val message : t -> string
 
+val level : t -> level
+
 val print_ansi : t -> unit
