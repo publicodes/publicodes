@@ -78,7 +78,7 @@ let print x = Printf.printf "%s\n" x ; x
     @param lexbuf The lexing buffer to tokenize
     @return The next token in the input stream
     @raise Invalid_token if an unrecognized or malformed token is encountered *)
-let rec lex_one (lexbuf : lexbuf) : token Pos.t =
+let rec lex_one (lexbuf : lexbuf) : Tokens.t Pos.t =
   let with_pos token =
     let start_pos, end_pos = Sedlexing.lexing_positions lexbuf in
     let pos =
@@ -167,7 +167,7 @@ let rec lex_one (lexbuf : lexbuf) : token Pos.t =
   | _ ->
       raise (Invalid_token (Utf8.lexeme lexbuf))
 
-let lex ((publicodes, pos) : string Pos.t) : token Pos.t list Output.t =
+let lex ((publicodes, pos) : string Pos.t) : Tokens.t Pos.t list Output.t =
   let lexbuf = Utf8.from_string publicodes in
   let file = pos.file in
   Sedlexing.set_position lexbuf (Pos.Point.to_position ~file pos.start_pos) ;

@@ -21,7 +21,7 @@ let cmd_exit (logs : Log.t list) : Cmd.Exit.code =
     List.exists logs ~f:(fun log ->
         match Log.level log with `Error -> true | _ -> false )
   in
-  if contains_error logs then Cmd.Exit.some_error else Cmd.Exit.ok
+  if contains_error logs then Cli.exit_err else Cmd.Exit.ok
 
 (* NOTE: this could be moved in the [Compiler] module. However, logging should
 	 be removed from the function code. *)
@@ -72,6 +72,7 @@ let cmd =
   let doc = "Compile a Publicodes program from file or stdin." in
   let exits =
     Cmd.Exit.info Cli.exit_parsing_err ~doc:"on parsing error"
+    :: Cmd.Exit.info Cli.exit_err ~doc:"on compilation error"
     :: Cmd.Exit.defaults
   in
   Cmd.v (Cmd.info "compile" ~doc ~version:"%%VERSION%%" ~exits)
