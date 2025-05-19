@@ -40,7 +40,7 @@ let rec parse_rule ?(current_rule_name = []) (name, yaml) =
   let+ with_ =
     match yaml with
     | `O mapping ->
-        parse_with ~current_rule_name:(current_rule_name @ name) mapping
+        parse_with ~current_rule_name:name mapping
     | _ ->
         return []
   in

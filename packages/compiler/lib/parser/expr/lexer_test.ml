@@ -27,9 +27,10 @@ let%test_unit "Lex Number" =
   [%test_eq: Tokens.t] (NUMBER (12.098, None)) (Pos.value (lexstr "12.098")) ;
   [%test_eq: Tokens.t] (NUMBER (12.8, Some "€")) (Pos.value (lexstr "12.80€")) ;
   [%test_eq: Tokens.t] (NUMBER (42., Some "£")) (Pos.value (lexstr "42 £")) ;
+  [%test_eq: Tokens.t] (NUMBER (0.4, Some "%")) (Pos.value (lexstr "0.4%")) ;
   [%test_eq: Tokens.t]
     (NUMBER (42., Some "% /an"))
-    (Pos.value (lexstr "42% /an")) ;
+    (Pos.value (lexstr "42 % /an")) ;
   [%test_eq: Tokens.t]
     (NUMBER (312., Some "€/an"))
     (Pos.value (lexstr "312 €/an")) ;
