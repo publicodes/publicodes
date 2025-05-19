@@ -1,0 +1,24 @@
+dirigeant:
+régime social:
+
+entreprise:
+entreprise . chiffre d'affaires:
+entreprise . chiffre d'affaires . service BNC:
+entreprise . chiffre d'affaires . service BIC:
+entreprise . chiffre d'affaires . vente restauration hébergement:
+
+établissement:
+établissement . commune:
+établissement . commune . département:
+établissement . commune . département . outre-mer:
+
+impôt:
+impôt . foyer fiscal:
+impôt . foyer fiscal . revenu fiscal de référence:
+
+entreprise . imposition :
+entreprise . imposition . régime :
+entreprise . imposition . régime . micro-entreprise :
+entreprise . imposition . régime . micro-entreprise . revenu abattu:
+
+Cipav:
