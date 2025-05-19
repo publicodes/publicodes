@@ -23,8 +23,8 @@ let rec transform_expr (expr, pos) =
       mk ~pos (Const (convert_constant value))
   | Shared_ast.Binary_op (op, left, right) ->
       mk ~pos (Binary_op (op, transform_expr left, transform_expr right))
-  | Shared_ast.Unary_op (op, expr) ->
-      mk ~pos (Unary_op (op, transform_expr expr))
+  | Shared_ast.(Unary_op ((Neg, pos), expr)) ->
+      mk ~pos (Unary_op (Pos.mk ~pos Neg, transform_expr expr))
   | Shared_ast.Ref name ->
       mk ~pos (Ref name)
 
@@ -61,7 +61,7 @@ and unfold_chainable_mecanism ~init mecanisms =
   |> List.sort ~compare:(fun a b ->
          [%compare: Rule_name.t Shared_ast.chainable_mechanism] (Pos.value a)
            (Pos.value b) )
-  |> List.fold ~init ~f:(fun acc (mec, pos) ->
+  |> List.fold_right ~init ~f:(fun (mec, pos) acc ->
          match mec with
          | Shared_ast.Applicable_if applicable_if ->
              transform_applicable_if ~pos applicable_if acc
@@ -70,7 +70,9 @@ and unfold_chainable_mecanism ~init mecanisms =
          | Shared_ast.Ceiling ceiling ->
              transform_ceiling ~pos ceiling acc
          | Shared_ast.Floor floor ->
-             transform_floor ~pos floor acc )
+             transform_floor ~pos floor acc
+         | Shared_ast.Context context ->
+             transform_context ~pos context acc )
 
 and transform_sum ~pos nodes =
   List.fold_right nodes ~init:(mk ~pos (Const (Number 0.))) ~f:(fun node acc ->
@@ -101,10 +103,7 @@ and transform_applicable_if ~pos condition value =
                      ( Pos.mk ~pos Shared_ast.Eq
                      , condition
                      , p (Const (Bool false)) ) )
-              , p
-                  (Binary_op
-                     (Pos.mk ~pos Shared_ast.Eq, condition, p (Const Undefined))
-                  ) ) )
+              , p (Unary_op (Pos.mk ~pos Is_undef, condition)) ) )
        , p (Const Null)
        , value ) )
 
@@ -121,10 +120,7 @@ and transform_not_applicable_if ~pos condition value =
                      ( Pos.mk ~pos Shared_ast.Eq
                      , condition
                      , p (Const (Bool false)) ) )
-              , p
-                  (Binary_op
-                     (Pos.mk ~pos Shared_ast.Eq, condition, p (Const Undefined))
-                  ) ) )
+              , p (Unary_op (Pos.mk ~pos Is_undef, condition)) ) )
        , value
        , p (Const Null) ) )
 
@@ -160,6 +156,14 @@ and transform_ceiling ~pos ceil value =
        , ceil
        , value ) )
 
+and transform_context ~pos context value =
+  mk ~pos
+    (Set_context
+       { context=
+           List.map context ~f:(fun (rule_name, value) ->
+               (rule_name, transform_value value) )
+       ; value } )
+
 let from_ast (resolved_ast : Shared_ast.resolved) : unit t =
   let evalTree =
     Rule_name.Hashtbl.create ~size:(List.length resolved_ast)
@@ -167,6 +171,6 @@ let from_ast (resolved_ast : Shared_ast.resolved) : unit t =
   in
   List.iter resolved_ast ~f:(fun Shared_ast.{name; value; _} ->
       let key = Pos.value name in
-      let data = transform_value value in
+      let data = transform_value ~undefined:(Get_context key) value in
       Hashtbl.add evalTree ~key ~data |> ignore ) ;
   evalTree
