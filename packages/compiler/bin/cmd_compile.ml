@@ -7,18 +7,30 @@ let input_files =
   let doc = "$(docv) is the input files. Use $(b,-) for $(b,stdin)." in
   Arg.(non_empty & pos_all file ["-"] & info [] ~doc ~docv:"FILES")
 
+let default_output_file = "model.publicodes.json"
+
 let output_file =
-  let doc = "$(docv) is the file to write to. Use $(b,-) for $(b,stdout)" in
-  Arg.(value & opt string "-" & info ["o"; "output-file"] ~doc ~docv:"FILE")
+  let doc = "$(docv) is the file to write to. Use $(b,-) for $(b,stdout)." in
+  Arg.(
+    value
+    & opt string default_output_file
+    & info ["o"; "output-file"] ~doc ~docv:"FILE" )
+
+let cmd_exit (logs : Log.t list) : Cmd.Exit.code =
+  let contains_error logs =
+    List.exists logs ~f:(fun log ->
+        match Log.level log with `Error -> true | _ -> false )
+  in
+  if contains_error logs then Cmd.Exit.some_error else Cmd.Exit.ok
 
 (* NOTE: this could be moved in the [Compiler] module. However, logging should
 	 be removed from the function code. *)
 let compile_to_json ast =
   let open Output in
   let* ast = Resolver.to_resolved_ast ast in
-  Log.print_ansi @@ Log.info "name resolution succeeded" ;
+  (* Log.print_ansi @@ Log.info "name resolution succeeded" ; *)
   let* eval_tree = Eval.from_resolved_ast ast |> Eval.to_typed_tree in
-  Log.print_ansi @@ Log.info "eval tree type checking succeeded" ;
+  (* Log.print_ansi @@ Log.info "eval tree type checking succeeded" ; *)
   let* parameters =
     Dependency_graph.cycle_check eval_tree
     >>= Dependency_graph.extract_parameters ~ast ~eval_tree
@@ -43,13 +55,14 @@ let compile input_files output =
   Output.print_logs unresolved_program ;
   match Output.result unresolved_program with
   | Some program -> (
-      Log.print_ansi @@ Log.info "parsing succeeded" ;
+      (* Log.print_ansi @@ Log.info "parsing succeeded" ; *)
       let json_output = compile_to_json program in
       Output.print_logs json_output ;
       match Output.result json_output with
       | Some json ->
-          File.write_file ~path:output ~content:(Yojson.Safe.to_string json) ;
-          Cmd.Exit.ok
+          File.write_file ~path:output
+            ~content:(Yojson.Safe.pretty_to_string json) ;
+          cmd_exit (Output.logs json_output @ Output.logs unresolved_program)
       | None ->
           Cmd.Exit.some_error )
   | None ->

@@ -28,6 +28,8 @@ let info = mk ~level:`Info ~code:None
 
 let message log = (Pos.value log).message
 
+let level log = (Pos.value log).level
+
 (** Needed to avoid [Grace] raising exceptions when the range have a length of
     zero. *)
 let normalize_range start stop =
