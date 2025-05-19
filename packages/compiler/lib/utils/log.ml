@@ -50,6 +50,21 @@ let to_diagnostic log_with_pos =
     | `Info ->
         Diagnostic.Severity.Note
   in
+  let err_kind =
+    match log.kind with
+    | `Yaml ->
+        "yaml"
+    | `Lex ->
+        "lexical"
+    | `Syntax ->
+        "syntaxe"
+    | `Type ->
+        "type"
+    | `Cycle ->
+        "cycle"
+    | `Global ->
+        "global"
+  in
   if Pos.is_empty_file pos then Diagnostic.(createf severity "%s" log.message)
   else
     let content = File.read_file pos.file in
@@ -60,15 +75,20 @@ let to_diagnostic log_with_pos =
     in
     let labels =
       let open Diagnostic.Label in
-      List.mapi log.labels ~f:(fun i label ->
-          let pos = Pos.pos label in
-          let message = Pos.value label in
-          (if phys_equal i 0 then primaryf else secondaryf)
-            ~range:(range pos.start_pos.index pos.end_pos.index)
-            "%s" message )
+      primaryf
+        ~range:(range pos.start_pos.index pos.end_pos.index)
+        "%s" log.message
+      :: List.map log.labels ~f:(fun label ->
+             let pos = Pos.pos label in
+             let message = Pos.value label in
+             secondaryf
+               ~range:(range pos.start_pos.index pos.end_pos.index)
+               "%s" message )
     in
     let notes = List.map log.hints ~f:Diagnostic.Message.create in
-    Diagnostic.(createf ~labels ?code:log.code ~notes severity "%s" log.message)
+    Diagnostic.(
+      createf ~labels ?code:log.code ~notes severity "%s (%s)" log.message
+        err_kind )
 
 let ansi_renderer =
   Grace_ansi_renderer.pp_diagnostic ~code_to_string:Err.Code.code_to_string ()
