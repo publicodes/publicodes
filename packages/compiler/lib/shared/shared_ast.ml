@@ -43,17 +43,21 @@ and 'a expr = 'a naked_expr Pos.t [@@deriving show, sexp, compare]
 type 'a value_mechanism =
   | Expr of 'a expr
   | Value of 'a value
+  | Is_applicable of 'a value
+  | Is_not_applicable of 'a value
   | Sum of 'a value list
   | Product of 'a value list
   | All_of of 'a value list
   | One_of of 'a value list
   | Undefined
-(* | Variations of
+  | Variations of
       (* If-then list *)
       ( 'a variation list
       * (* followed by an optional `else` case *)
       'a value option )
-      Pos.t *)
+[@@deriving show, sexp, compare]
+
+and 'a variation = {if_: 'a value; then_: 'a value}
 [@@deriving show, sexp, compare]
 
 and 'a chainable_mechanism =
@@ -69,8 +73,6 @@ and 'a value =
   { value: 'a value_mechanism Pos.t
   ; chainable_mechanisms: 'a chainable_mechanism Pos.t list }
 [@@deriving show, sexp, compare]
-
-(* and 'a variation = {if_: 'a value; then_: 'a value} *)
 
 type rule_meta = Title of string | Description of string | Public
 [@@deriving show, sexp, compare]

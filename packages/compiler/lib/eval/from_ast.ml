@@ -55,6 +55,12 @@ and transform_mecanism_value (node, pos) =
       transform_all_of ~pos all_of
   | Shared_ast.Value value ->
       transform_value value
+  | Shared_ast.Variations variations ->
+      transform_variations ~pos variations
+  | Shared_ast.Is_applicable value ->
+      transform_is_applicable ~pos value
+  | Shared_ast.Is_not_applicable value ->
+      transform_is_not_applicable ~pos value
 
 and unfold_chainable_mecanism ~init mecanisms =
   mecanisms
@@ -173,6 +179,39 @@ and transform_default ~pos default value =
        ( p (Unary_op (Pos.mk ~pos Is_undef, value))
        , transform_value default
        , value ) )
+
+and transform_variations ~pos (variations, else_) =
+  let p = mk ~pos in
+  let else_ =
+    Option.value_map ~default:(p (Const Null)) ~f:transform_value else_
+  in
+  List.fold_right variations ~init:else_ ~f:(fun {if_; then_} acc ->
+      let if_ = transform_value if_ in
+      let then_ = transform_value then_ in
+      p
+        (Condition
+           ( p
+               (Binary_op
+                  ( Pos.mk ~pos Shared_ast.Or
+                  , p
+                      (Binary_op (Pos.mk ~pos Shared_ast.Eq, if_, p (Const Null))
+                      )
+                  , p
+                      (Binary_op
+                         (Pos.mk ~pos Shared_ast.Eq, if_, p (Const (Bool false)))
+                      ) ) )
+           , acc
+           , then_ ) ) )
+
+and transform_is_not_applicable ~pos value =
+  let p = mk ~pos in
+  let value = transform_value value in
+  p (Binary_op (Pos.mk ~pos Shared_ast.Eq, value, p (Const Null)))
+
+and transform_is_applicable ~pos value =
+  let p = mk ~pos in
+  let value = transform_value value in
+  p (Binary_op (Pos.mk ~pos Shared_ast.NotEq, value, p (Const Null)))
 
 let from_ast (resolved_ast : Shared_ast.resolved) : unit t =
   let evalTree =

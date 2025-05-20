@@ -14,29 +14,15 @@ Type-Inferring Compiler » online course
 Cf : https://docs.google.com/presentation/d/1EkOFQCGFAIuIKG7sJB2ibsWE3Q8eti9UShLgo_z0rwo/
 
 *)
-
-let type_error ~pos (expected : Concrete_type.t) (actual : Concrete_type.t) =
-  let concrete_to_str = function
-    | Concrete_type.Number ->
-        "un nombre"
-    | Concrete_type.String ->
-        "un texte"
-    | Concrete_type.Bool ->
-        "un booléen (oui / non)"
-    | Concrete_type.Date ->
-        "une date"
-  in
-  let code, message = Err.invalid_type in
-  (* TODO: add position of the different arguments *)
-  return
-    ~logs:
-      [ Log.error ~pos ~kind:`Type ~code
-          ~labels:
-            [ Pos.mk ~pos
-                (Format.sprintf "attendu : %s, trouvé : %s"
-                   (concrete_to_str expected) (concrete_to_str actual) ) ]
-          message ]
-    ()
+let concrete_to_str = function
+  | Concrete_type.Number ->
+      "un nombre"
+  | Concrete_type.String ->
+      "un texte"
+  | Concrete_type.Bool ->
+      "un booléen (oui / non)"
+  | Concrete_type.Date ->
+      "une date"
 
 let unify_concrete ~(database : Type_database.t) ({id; pos; _} : 'a meta)
     (concrete_type : Concrete_type.t) =
@@ -44,15 +30,26 @@ let unify_concrete ~(database : Type_database.t) ({id; pos; _} : 'a meta)
   match database.(id) with
   | Concrete concrete_id ->
       if [%compare.equal: Concrete_type.t] concrete_type concrete_id |> not then
-        type_error ~pos concrete_type concrete_id
+        let code, message = Err.type_invalid_type in
+        (* TODO: add position of the different arguments *)
+        return
+          ~logs:
+            [ Log.error ~pos ~kind:`Type ~code
+                ~labels:
+                  [ Pos.mk ~pos
+                      (Format.sprintf "%s était attendu (%s a été trouvé)"
+                         (concrete_to_str concrete_type)
+                         (concrete_to_str concrete_id) ) ]
+                message ]
+          ()
       else return ()
-  | Link _ ->
-      failwith "Unexpected link after resolving symlinks"
   | Null ->
       database.(id) <- Concrete concrete_type ;
       return ()
+  | Link _ ->
+      return ()
 
-let rec unify ~(database : Type_database.t) node_a node_b =
+let unify ~(database : Type_database.t) node_a node_b =
   let node_a =
     {node_a with id= resolve_symlink_and_compress ~database node_a.id}
   in
@@ -60,26 +57,33 @@ let rec unify ~(database : Type_database.t) node_a node_b =
     {node_b with id= resolve_symlink_and_compress ~database node_b.id}
   in
   match (database.(node_a.id), database.(node_b.id)) with
-  | Null, value_b ->
-      database.(node_a.id) <-
-        ( match value_b with
-        | Null ->
-            Link node_b.id
-        | Concrete c ->
-            Concrete c
-        | Link _ ->
-            failwith "Unexpected link after resolving symlinks" ) ;
+  | Null, Null ->
+      database.(node_a.id) <- Link node_b.id ;
       return ()
-  | _, Null ->
-      unify ~database node_b node_a (* Swap args *)
+  | Null, Concrete c ->
+      database.(node_a.id) <- Concrete c ;
+      return ()
+  | Concrete c, Null ->
+      database.(node_b.id) <- Concrete c ;
+      return ()
   | Concrete concrete_a, Concrete concrete_b ->
       if [%compare.equal: Concrete_type.t] concrete_a concrete_b |> not then
         (* Todo replace with a unique type_error, with the pos of the different arguments *)
-        let* _ = type_error ~pos:node_b.pos concrete_a concrete_b in
-        type_error ~pos:node_a.pos concrete_b concrete_a
+        let code, message = Err.type_incoherence in
+        return
+          ~logs:
+            [ Log.error ~pos:node_a.pos ~kind:`Type ~code
+                ~labels:
+                  [ Pos.mk ~pos:node_a.pos
+                      (Format.sprintf "est %s" (concrete_to_str concrete_a))
+                  ; Pos.mk ~pos:node_b.pos
+                      (Format.sprintf "est %s" (concrete_to_str concrete_b)) ]
+                message ]
+          ()
       else return ()
-  | Link _, _ | _, Link _ ->
-      failwith "Unexpected link after resolving symlinks"
+  | _, _ ->
+      return ()
+(* failwith "Unexpected link after resolving symlinks" *)
 
 let type_check (tree : unit Eval_tree.Raw.t) =
   let database = Type_database.mk () in
@@ -128,11 +132,13 @@ let type_check (tree : unit Eval_tree.Raw.t) =
         let* _ = unify ~database (snd value1) (snd value2) in
         unify ~database meta (snd value1)
     | Ref name ->
+        (* return () *)
         let _, ref_meta = Hashtbl.find_exn tree name in
         unify ~database meta ref_meta
-    | Get_context name ->
-        let _, ref_meta = Hashtbl.find_exn tree name in
-        unify ~database meta ref_meta
+    | Get_context _ ->
+        return ()
+        (* let _, ref_meta = Hashtbl.find_exn tree name in
+        unify ~database meta ref_meta *)
     | Set_context {context; value} ->
         let* _ = unify_computation value in
         let* _ = unify ~database meta (snd value) in
@@ -150,8 +156,4 @@ let type_check (tree : unit Eval_tree.Raw.t) =
     |> List.map ~f:(fun (_, rule) -> unify_computation rule)
     |> Output.all_keep_logs
   in
-  (* Format.printf "Type Database:\n %a \n\n" Type_database.pp database ;
-  Format.printf "AST :\n=====\n\n" ;
-  Format.printf "%a" Eval_tree
-  .pp ast ; *)
   return database

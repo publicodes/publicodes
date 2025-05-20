@@ -2,6 +2,7 @@ open Eval_tree.Raw
 open Type_database
 open Type_check
 open Utils.Output
+open Core
 
 let to_typed_tree tree =
   let* database = type_check tree in
@@ -12,10 +13,21 @@ let to_typed_tree tree =
       | Null ->
           None
       | Link _ ->
-          failwith "Unexpected link after resolving symlinks"
+          None
       | Concrete typ ->
           Some typ
     in
     {meta with typ}
   in
-  return (map_meta_tree add_type tree)
+  let tree_with_type = map_meta_tree add_type tree in
+  (* let computation =
+    Hashtbl.find_exn tree_with_type
+      (Shared.Rule_name.create_exn
+         [ "dirigeant"
+         ; "auto-entrepreneur"
+         ; "cotisations et contributions"
+         ; "cotisations"
+         ; "service BNC" ] )
+  in
+  Format.printf "%a" Eval_tree.Typed.pp_computation computation ; *)
+  return tree_with_type

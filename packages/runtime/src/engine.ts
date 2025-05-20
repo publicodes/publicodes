@@ -1,4 +1,4 @@
-import { evaluateNode } from './evaluate'
+import { evaluateNode, debug } from './evaluate'
 import {
   Publicodes,
   Types,
@@ -17,10 +17,22 @@ export class Engine<T extends Types, P extends Parameters<T>> {
     context: GetContext<T, P, R> = {},
   ): Evaluation<T, P, R> {
     const evaluationTree = this.publicodes.evaluationTree as EvaluationTree
-    return evaluateNode(
+    // Todo : convert date in / out
+    debug.reset()
+    let { value, inputs } = evaluateNode(
       evaluationTree,
       evaluationTree[rule],
       context,
     ) as unknown as Evaluation<T, P, R>
+    debug.log()
+
+    inputs = new Set(inputs)
+    const contextRules = new Set(Object.keys(context))
+
+    return {
+      value,
+      inputs: [...inputs],
+      missingVariables: [...inputs.difference(contextRules)],
+    }
   }
 }

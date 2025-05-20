@@ -21,21 +21,17 @@ let type_to_string = function
   | Null ->
       "null"
 
-let rec resolve_symlink_and_compress ~(database : t)
-    ?(start_id : Node_id.t option = None) (type_id : Node_id.t) : Node_id.t =
-  let actual_start_id = match start_id with Some id -> id | None -> type_id in
+let rec resolve_symlink_and_compress ~(database : t) ?start_id
+    (type_id : Node_id.t) : Node_id.t =
   match database.(type_id) with
   | Link linked_id ->
       (* Check for cycles by comparing with the start_id *)
-      if Int.equal linked_id actual_start_id then (
+      let start_id = match start_id with Some id -> id | None -> type_id in
+      if Int.equal linked_id start_id then
         (* Cycle detected, return current id without following the link *)
-        database.(type_id) <- Null ;
-        type_id )
+        type_id
       else
-        let resolved_id =
-          resolve_symlink_and_compress ~database
-            ~start_id:(Some actual_start_id) linked_id
-        in
+        let resolved_id = resolve_symlink_and_compress ~database linked_id in
         database.(type_id) <- Link resolved_id ;
         resolved_id
   | _ ->

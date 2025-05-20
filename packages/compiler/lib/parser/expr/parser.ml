@@ -172,8 +172,8 @@ and parse_primary tokens ctx =
           Option.map (Pos.value ctx) ~f:(fun ctx ->
               [ Pos.mk ~pos:op_pos
                   (Printf.sprintf
-                     "une valeur (nombre, booléean, date) ou une référence est \
-                      attendue APRÈS l'opérateur `%s`"
+                     "une valeur ou une référence sont attendues après \
+                      l'opérateur `%s`"
                      (Tokens.to_string ctx) ) ] )
           |> Option.value ~default:[]
         else if Tokens.is_operator token then
