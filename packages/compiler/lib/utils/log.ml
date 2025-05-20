@@ -73,7 +73,7 @@ let to_diagnostic log_with_pos =
     let source = `String Source.{name= Some pos.file; content} in
     let range start stop =
       let start, stop = normalize_range start stop in
-      Range.create ~source (Byte_index.of_int start) (Byte_index.of_int stop)
+      Range.create ~source Byte_index.(of_int start) (Byte_index.of_int stop)
     in
     let labels =
       let open Diagnostic.Label in
@@ -95,7 +95,8 @@ let to_diagnostic log_with_pos =
         err_kind )
 
 let ansi_renderer =
-  Grace_ansi_renderer.pp_diagnostic ~code_to_string:Err.Code.code_to_string ()
+  let code_to_string = Err.Code.to_string in
+  Grace_ansi_renderer.pp_diagnostic ~code_to_string ()
 
 let print_raw log = Format.printf "%a@." pp log
 

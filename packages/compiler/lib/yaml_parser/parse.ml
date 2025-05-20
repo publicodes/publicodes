@@ -143,7 +143,10 @@ let parse (filename : string) (content : string) : yaml Output.t =
     let event, pos = !current_token in
     match event with
     | Event.Scalar scalar ->
+        Printf.printf "parse_scalar:\n" ;
         let pos = pos_from_mark pos in
+        Printf.printf "scalar: %s\n" scalar.value ;
+        Printf.printf "pos: %s\n" (Pos.show_pos pos) ;
         return (`Scalar (make_scalar pos scalar))
     | Event.Sequence_start _ ->
         parse_sequence []

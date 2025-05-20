@@ -29,7 +29,7 @@ module Code = struct
     | Cycle_detected
   [@@deriving show, sexp, compare]
 
-  let code_to_string = function
+  let to_string = function
     | Yaml_parsing ->
         "E001"
     | Yaml_unexpected_token ->
