@@ -66,7 +66,8 @@ let extract_parameters ~(ast : Shared_ast.resolved) ~(eval_tree : Eval.Tree.t)
             Some
               (Log.warning ~code ~pos:meta.pos ~kind:`Type
                  ~hints:
-                   ["Spécifiez le type de la règle. Par exemple : `type: texte`"]
+                   [ "Spécifiez le type de la règle. Par exemple : `type: texte`"
+                   ; Format.asprintf "%a" Rule_name.pp output_rule_name ]
                  message ) )
   in
   return ~logs:warnings outputs

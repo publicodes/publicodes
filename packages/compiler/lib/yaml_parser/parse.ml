@@ -30,7 +30,7 @@ let message_traduction =
     , ( "l'objet n'est pas fermé"
       , ["il manque  `}` pour le fermer, ou `,` pour ajouter un élément"] ) )
   ; ( "error calling parser: found unexpected end of stream character"
-    , ( "fin de fichier inattendue : il manque un caractère"
+    , ( "fin de fichier inattendue (il manque un caractère)"
       , ["Par exemple, `\"`, `\'`, ou `]`"] ) )
   ; ( "error calling parser: found unexpected ':'"
     , ("caractère `:` non valide à cet endroit", []) ) ]

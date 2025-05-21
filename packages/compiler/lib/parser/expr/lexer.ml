@@ -182,7 +182,7 @@ let lex ((publicodes, pos) : string Pos.t) : Tokens.t Pos.t list Output.t =
           lex_loop (token :: acc)
     with Invalid_token _ ->
       let token_pos =
-        let start_pos, end_pos = lexing_positions lexbuf in
+        let start_pos, end_pos = Sedlexing.lexing_positions lexbuf in
         Pos.
           { file
           ; start_pos= Pos.Point.of_position start_pos

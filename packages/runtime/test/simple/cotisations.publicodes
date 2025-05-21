@@ -298,7 +298,8 @@ dirigeant . auto-entrepreneur . cotisations et contributions . cotisations:
     service BNC:
       description: Cotisations pour la part du chiffre d’affaires en prestation de
         service BNC
-      non applicable si: service BNC Cipav
+      non applicable si:
+        est applicable: service BNC Cipav
       produit:
         - entreprise . chiffre d'affaires . service BNC
         - taux

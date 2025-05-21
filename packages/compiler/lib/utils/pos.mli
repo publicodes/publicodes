@@ -65,3 +65,6 @@ val add : ?len:int -> ?line:int -> pos -> pos
 val merge : pos -> pos -> pos
 (** [merge pos1 pos2] merges two positions [pos1] and [pos2] into a single position.
     If the positions are from different files, an exception is raised. *)
+
+val to_loc : pos -> Stdune.Loc.t
+(** Convert a position to a Stdune location. *)

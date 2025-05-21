@@ -95,13 +95,13 @@ end
 
 module Typed = struct
   (* Specialized type aliases where the type parameter is fixed to concrete_type option *)
-  type typ = Concrete_type.t option
+  type typ = Concrete_type.t option [@@deriving sexp, show]
 
   type meta = typ Raw.meta
 
   type typed_computation = typ Raw.typed_computation
 
-  type computation = typ Raw.computation
+  type computation = typ Raw.computation [@@deriving sexp, show]
 
   type t = typ Raw.t
 

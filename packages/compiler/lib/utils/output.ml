@@ -60,7 +60,7 @@ let ( let* ) m f = bind m ~f
 
 let print_logs (output : 'a t) =
   List.iter
-    ~f:(fun log -> Log.print_ansi log ; Printf.printf "\n")
+    ~f:(fun log -> Log_formatter.print log ; Printf.printf "\n")
     (logs output)
 
 let sprintf_logs (output : 'a t) =

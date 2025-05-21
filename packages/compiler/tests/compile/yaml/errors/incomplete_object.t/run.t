@@ -10,19 +10,22 @@ quelles sont acceptables.
 Objet incomplet #1
 
   $ publicodes compile input.publicodes
-  error[E001]: caractère `:` non valide à cet endroit (yaml)
-      ┌─ input.publicodes:1:1
-    1 │  {a:, b}
-      │  ^ caractère `:` non valide à cet endroit
+  E001 caractère `:` non valide à cet endroit [yaml
+  error]
+       ╒══  input.publicodes:1:1 ══
+     1 │ {a:, b}
+       │ ˘
+  
+  
   [2]
 
 Objet incomplet #2
 
   $ publicodes compile input2.publicodes
-  error[E001]: l'objet n'est pas fermé (yaml)
-      ┌─ input2.publicodes:2:5
-    2 │  - 14
-      │      ^ l'objet n'est pas fermé
-    3 │  
-      = il manque  `}` pour le fermer, ou `,` pour ajouter un élément
+  E001 l'objet n'est pas fermé [yaml error]
+       ╒══  input2.publicodes:3:1 ══
+     2 │ - 14
+   Hint: il manque  `}` pour le fermer, ou `,` pour
+         ajouter un élément
+  
   [2]
