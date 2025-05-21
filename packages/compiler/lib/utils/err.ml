@@ -15,6 +15,7 @@ module Code = struct
     | Parsing_empty_value
     | Parsing_invalid_value
     | Parsing_invalid_rule_name
+    | Parsing_invalid_mechanism
     (* Expression errors *)
     | Expr_lex_invalid_expression
     (* Name resolution errors *)
@@ -24,12 +25,13 @@ module Code = struct
     | Array_mechanism_with_empty_value
     (* Type errors *)
     | Type_invalid_type
+    | Type_incoherence
     | Type_missing_output_type
     (* Cycle detection errors *)
     | Cycle_detected
   [@@deriving show, sexp, compare]
 
-  let code_to_string = function
+  let to_string = function
     | Yaml_parsing ->
         "E001"
     | Yaml_unexpected_token ->
@@ -62,14 +64,18 @@ module Code = struct
         "E014"
     | Type_invalid_type ->
         "E015"
-    | Type_missing_output_type ->
+    | Type_incoherence ->
         "E016"
-    | Cycle_detected ->
+    | Type_missing_output_type ->
         "E017"
-    | Resolver_missing_parent_rule ->
+    | Cycle_detected ->
         "E018"
-    | Resolver_missing_rule ->
+    | Resolver_missing_parent_rule ->
         "E019"
+    | Resolver_missing_rule ->
+        "E020"
+    | Parsing_invalid_mechanism ->
+        "E021"
 end
 
 type t = Code.t * string
@@ -109,10 +115,12 @@ let invalid_value = (Code.Parsing_invalid_value, "mauvaise valeure")
 
 let invalid_rule_name = (Code.Parsing_invalid_rule_name, "nom de règle invalide")
 
-let invalid_type = (Code.Type_invalid_type, "divergence de type")
+let type_invalid_type = (Code.Type_invalid_type, "type invalide détécté")
+
+let type_incoherence = (Code.Type_incoherence, "types non cohérents entre eux")
 
 let missing_output_type =
-  (Code.Type_missing_output_type, "type de sortie manquant")
+  (Code.Type_missing_output_type, "information de type manquante")
 
 let cycle_detected = (Code.Cycle_detected, "cycle de dépendance détecté")
 
@@ -123,3 +131,6 @@ let missing_rule = (Code.Resolver_missing_rule, "cette règle n'existe pas")
 
 let malformed_expression =
   (Code.Parsing_missing_closing_paren, "expression malformée")
+
+let parsing_invalid_mechanism =
+  (Code.Parsing_invalid_mechanism, "mécanisme invalide")

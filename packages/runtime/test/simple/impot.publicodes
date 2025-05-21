@@ -1,6 +1,6 @@
 dirigeant . auto-entrepreneur . impôt: oui
 
-dirigeant . auto-entrepreneur . impôt . revenu imposable: entreprise . imposition . régime . micro-entreprise . revenu abattu
+
 
 dirigeant . auto-entrepreneur . impôt . versement libératoire:
   rend non applicable: revenu imposable

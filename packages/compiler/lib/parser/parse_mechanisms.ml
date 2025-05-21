@@ -38,10 +38,15 @@ let value_mechanisms =
       , fun ~pos ~parse value ->
           let+ nodes = parse_array ~pos ~parse value in
           All_of nodes )
-      (* ; ( "variations"
-      , fun value _pos _mecanism_name _parse -> parse_variations value )
-     *)
-    ]
+    ; ("variations", Mecha_variations.parse)
+    ; ( "est applicable"
+      , fun ~pos ~parse value ->
+          let+ value = parse ~pos value in
+          Is_applicable value )
+    ; ( "est non applicable"
+      , fun ~pos ~parse value ->
+          let+ value = parse ~pos value in
+          Is_not_applicable value ) ]
 
 let chainable_mechanisms =
   Hashtbl.of_alist_exn
@@ -63,6 +68,10 @@ let chainable_mechanisms =
       , fun ~pos ~parse value ->
           let+ value = parse ~pos value in
           Floor value )
+    ; ( "par défaut"
+      , fun ~pos ~parse value ->
+          let+ value = parse ~pos value in
+          Default value )
     ; ("contexte", Mecha_contexte.parse) ]
 
 let rec parse ?(error_if_undefined = true) ~pos (yaml : yaml) :
@@ -83,7 +92,7 @@ let rec parse ?(error_if_undefined = true) ~pos (yaml : yaml) :
   | `O mapping ->
       let* mapping = remove_double mapping in
       let* value = parse_value_mechanism ~pos mapping in
-      let* chainable_mechanisms = parse_chainable_mecanisms ~pos mapping in
+      let* chainable_mechanisms = parse_chainable_mecanisms mapping in
       let logs =
         match (error_if_undefined, value) with
         | true, (Undefined, pos) ->
@@ -121,7 +130,7 @@ and parse_value_mechanism ~pos mapping : 'a value_mechanism Pos.t Output.t =
       let+ result = mecanism_fn ~pos:(Pos.pos key) ~parse value in
       Pos.mk ~pos result
 
-and parse_chainable_mecanisms ~pos mapping :
+and parse_chainable_mecanisms mapping :
     'a chainable_mechanism Pos.t list Output.t =
   let chainable_mecanism_entries =
     List.filter mapping ~f:(fun (key, _) ->
@@ -131,6 +140,7 @@ and parse_chainable_mecanisms ~pos mapping :
     ~f:(fun (key, value) ->
       let mecanism_name = get_value key in
       let mecanism_fn = Hashtbl.find_exn chainable_mechanisms mecanism_name in
+      let pos = Pos.pos key in
       let+ value = mecanism_fn ~pos ~parse value in
       Pos.mk ~pos value )
     chainable_mecanism_entries
