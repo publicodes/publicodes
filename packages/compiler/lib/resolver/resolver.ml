@@ -90,9 +90,13 @@ let resolve_rule ~rule_names rule =
   and map_value_mechanism ((value, pos) : 'a value_mechanism Pos.t) =
     let+ value =
       match value with
-      | Expr expr ->
-          let+ mapped_expr = map_expr expr in
-          Expr mapped_expr
+      | Expr expr -> (
+          let mapped_expr = map_expr expr in
+          match Output.result mapped_expr with
+          | Some expr ->
+              return (Expr expr)
+          | None ->
+              return Undefined )
       | Sum values ->
           let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
           Sum mapped_values
@@ -108,8 +112,33 @@ let resolve_rule ~rule_names rule =
       | Value value ->
           let+ value = map_value value in
           Value value
+      | Is_applicable value ->
+          let+ value = map_value value in
+          Is_applicable value
+      | Is_not_applicable value ->
+          let+ value = map_value value in
+          Is_not_applicable value
       | Undefined ->
           return Undefined
+      | Variations (variations, else_) ->
+          let* variations =
+            List.map
+              ~f:(fun {if_; then_} ->
+                let* if_ = map_value if_ in
+                let+ then_ = map_value then_ in
+                {if_; then_} )
+              variations
+            |> all_keep_logs
+          in
+          let+ else_ =
+            match else_ with
+            | Some else_ ->
+                let+ else_ = map_value else_ in
+                Some else_
+            | None ->
+                return None
+          in
+          Variations (variations, else_)
     in
     (value, pos)
   and map_value (v : 'a value) =

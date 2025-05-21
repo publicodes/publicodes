@@ -1,4 +1,4 @@
-import { BinaryOp, EvaluationTree, Computation, Value } from './types'
+import { BinaryOp, EvaluationTree, Computation } from './types'
 
 class RuntimeError extends Error {
   constructor(message: string) {
@@ -7,20 +7,35 @@ class RuntimeError extends Error {
   }
 }
 
-export type Value = {
+type Value = {
   value: number | string | boolean | null | undefined | Date
   inputs: Array<string>
 }
+
+let rules = {}
+export const debug = {
+  log() {
+    console.table(rules)
+  },
+  reset() {
+    rules = {}
+  },
+}
+
 export function evaluateNode(
   evalTree: EvaluationTree,
   c: Computation,
   context: unknown = {},
 ): Value {
-  if (typeof c === 'string')
+  // console.log('evaluate', c)
+  if (typeof c === 'string') {
     // -----------------------------
     // Reference
     // -----------------------------
-    return evaluateNode(evalTree, evalTree[c], context)
+    const result = evaluateNode(evalTree, evalTree[c], context)
+    rules[c] = result.value
+    return result
+  }
 
   if (c === null) return { value: null, inputs: [] }
   if (typeof c === 'boolean') return { value: c, inputs: [] }
@@ -66,13 +81,13 @@ export function evaluateNode(
     // -----------------------------
     if ('context' in c) {
       const newContext = { ...context }
-      let inputs = []
+      const inputs = []
       for (const rule in c.context) {
-        let val = evaluateNode(evalTree, val.context[rule], context)
+        const val = evaluateNode(evalTree, val.context[rule], context)
         newContext[rule] = val.value
         inputs.push(...val.inputs)
       }
-      let value = evaluateNode(evalTree, c.value, newContext)
+      const value = evaluateNode(evalTree, c.value, newContext)
       value.inputs.push(...inputs)
       return value
     }
@@ -132,7 +147,7 @@ export function evaluateNode(
 
     // LAZY (Second operand)
     const right = evaluateNode(evalTree, c[2], context)
-    if (left.value == undefined) {
+    if (left.value === undefined) {
       if (right.value === 0 && op === '*')
         return { value: 0, inputs: right.inputs }
       if (right.value === 0 && op === '**')
@@ -143,11 +158,12 @@ export function evaluateNode(
         return { value: false, inputs: right.inputs }
       if (right.value === true && op === '||')
         return { value: true, inputs: right.inputs }
-      return { value: undefined, inputs: right.inputs }
+      return { value: undefined, inputs: left.inputs.concat(right.inputs) }
     }
-    if (right == undefined) return right
     let v
-    if (op === '+') {
+    if (right.value === undefined) {
+      v = undefined
+    } else if (op === '+') {
       v = left.value + right.value
     } else if (op === '-') {
       v = left.value - right.value
@@ -178,6 +194,7 @@ export function evaluateNode(
     }
     return { value: v, inputs: left.inputs.concat(right.inputs) }
   }
+  throw new RuntimeError('Internal error : Invalid computation')
 }
 
 const LazyNullOps: BinaryOp[] = ['*', '/', '**', '<', '<=', '>', '>=']
