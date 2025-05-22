@@ -1,0 +1,41 @@
+{
+  "evaluationTree": {
+    "cotisations": [ [ 0.15 ], "*", "chiffre d'affaires" ],
+    "date": { "get": "date" },
+    "auto-entrepreneur": {
+      "if": [ "∅", { "get": "auto-entrepreneur" } ],
+      "then": false,
+      "else": { "get": "auto-entrepreneur" }
+    },
+    "cotisations . taux": {
+      "if": [
+        [ [ "date", ">", { "d": "2025-01" } ], "=", null ],
+        "||",
+        [ [ "date", ">", { "d": "2025-01" } ], "=", false ]
+      ],
+      "then": [ 0.15 ],
+      "else": [ 0.2 ]
+    },
+    "revenu net": [
+      "chiffre d'affaires",
+      "+",
+      [ [ "-", "cotisations" ], "+", [ [ "-", "charges" ], "+", [ 0.0 ] ] ]
+    ],
+    "chiffre d'affaires": { "get": "chiffre d'affaires" },
+    "charges": {
+      "if": [
+        [ "auto-entrepreneur", "=", false ],
+        "||",
+        [ "∅", "auto-entrepreneur" ]
+      ],
+      "then": {
+        "if": [ "∅", { "get": "charges" } ],
+        "then": [ [ 0.1 ], "*", "chiffre d'affaires" ],
+        "else": { "get": "charges" }
+      },
+      "else": null
+    }
+  },
+  "parameters": {},
+  "types": {}
+}

@@ -15,16 +15,22 @@ export class Engine<T extends Types, P extends Parameters<T>> {
   evaluate<R extends RuleName<T>>(
     rule: R,
     context: GetContext<T, P, R> = {},
+    debug = false,
   ): Evaluation<T, P, R> {
     const evaluationTree = this.publicodes.evaluationTree as EvaluationTree
     // Todo : convert date in / out
-    debug.reset()
+    if (debug) {
+      debug.activate()
+    }
     let { value, inputs } = evaluateNode(
       evaluationTree,
       evaluationTree[rule],
       context,
     ) as unknown as Evaluation<T, P, R>
-    debug.log()
+
+    if (debug) {
+      debug.log()
+    }
 
     inputs = new Set(inputs)
     const contextRules = new Set(Object.keys(context))

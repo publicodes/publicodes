@@ -32,6 +32,7 @@ depends: [
   "ocamlgraph" {>= "2.2.0"}
   "cmdliner"
   "unionFind"
+  "inotify"
   "ppx_inline_test" {with-test}
   "ppx_assert" {with-test}
   "ppx_compare" {with-test}
