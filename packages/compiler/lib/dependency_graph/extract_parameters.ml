@@ -56,18 +56,19 @@ let extract_parameters ~(ast : Shared_ast.resolved) ~(eval_tree : Eval.Tree.t)
   in
   (* We print warning if an output is without type *)
   let warnings =
-    List.filter_map outputs ~f:(fun (output_rule_name, _) ->
-        let meta = Eval.Tree.rule_meta eval_tree output_rule_name in
-        match meta.typ with
-        | Some _ ->
+    List.filter_map outputs ~f:(fun (rule_name, _) ->
+        let typ = Eval.Tree.get_type eval_tree rule_name in
+        match typ with
+        | Concrete _ ->
             None
-        | None ->
+        | _ ->
             let code, message = Err.missing_output_type in
+            let pos = Eval.Tree.get_pos eval_tree rule_name in
             Some
-              (Log.warning ~code ~pos:meta.pos ~kind:`Type
+              (Log.warning ~code ~pos ~kind:`Type
                  ~hints:
                    [ "Spécifiez le type de la règle. Par exemple : `type: texte`"
-                   ; Format.asprintf "%a" Rule_name.pp output_rule_name ]
+                   ; Format.asprintf "%a" Rule_name.pp rule_name ]
                  message ) )
   in
   return ~logs:warnings outputs

@@ -29,7 +29,7 @@ let compile_to_json ast =
   let open Output in
   let* ast = Resolver.to_resolved_ast ast in
   (* Log.print_ansi @@ Log.info "name resolution succeeded" ; *)
-  let* eval_tree = Eval.from_resolved_ast ast |> Eval.to_typed_tree in
+  let* eval_tree = Eval.from_resolved_ast ast |> Eval.type_check in
   (* Log.print_ansi @@ Log.info "eval tree type checking succeeded" ; *)
   let* parameters =
     Dependency_graph.cycle_check eval_tree
