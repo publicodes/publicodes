@@ -6,8 +6,14 @@ open Shared
 (* Helper function to convert between the two constant types *)
 let convert_constant expr_const =
   match expr_const with
-  | Shared_ast.Number (n, _) ->
+  | Shared_ast.Number (n, None) ->
       Number n
+  | Shared_ast.Number (n, Some unit) ->
+      if Units.equal unit (Units.parse_unit "%") then
+        let result = n /. 100. in
+        let rounded = Float.round_decimal result ~decimal_digits:15 in
+        Number rounded
+      else Number n
   | Shared_ast.Bool b ->
       Bool b
   | Shared_ast.String s ->
