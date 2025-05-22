@@ -1,13 +1,16 @@
 type t = string [@@deriving show]
 
 let read_file file_path =
-  let read ic = In_channel.input_all ic in
-  let binary_stdin () = In_channel.set_binary_mode In_channel.stdin true in
+  let read ic = Core.In_channel.input_all ic in
+  Format.print_flush () ;
+  let binary_stdin () =
+    Core.In_channel.set_binary_mode Core.In_channel.stdin true
+  in
   match file_path with
   | "-" ->
-      binary_stdin () ; read In_channel.stdin
+      binary_stdin () ; read Core.In_channel.stdin
   | file ->
-      In_channel.with_open_bin file read
+      Core.In_channel.with_file file ~f:read ~binary:true
 
 let write_file ~path ~content =
   let write s oc = Out_channel.output_string oc s in

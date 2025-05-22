@@ -90,13 +90,9 @@ let resolve_rule ~rule_names rule =
   and map_value_mechanism ((value, pos) : 'a value_mechanism Pos.t) =
     let+ value =
       match value with
-      | Expr expr -> (
-          let mapped_expr = map_expr expr in
-          match Output.result mapped_expr with
-          | Some expr ->
-              return (Expr expr)
-          | None ->
-              return Undefined )
+      | Expr expr ->
+          let mapped_expr = map_expr expr >>| fun e -> Expr e in
+          Output.default_to ~default:Undefined mapped_expr
       | Sum values ->
           let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
           Sum mapped_values

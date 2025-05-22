@@ -12,13 +12,13 @@ type Value = {
   inputs: Array<string>
 }
 
-let rules = {}
+let debug_values = false
 export const debug = {
   log() {
-    console.table(rules)
+    console.table(debug_values)
   },
-  reset() {
-    rules = {}
+  activate() {
+    debug_values = {}
   },
 }
 
@@ -33,7 +33,9 @@ export function evaluateNode(
     // Reference
     // -----------------------------
     const result = evaluateNode(evalTree, evalTree[c], context)
-    rules[c] = result.value
+    if (debug_values) {
+      debug_values[c] = result.value
+    }
     return result
   }
 

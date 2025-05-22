@@ -29,10 +29,11 @@ let parse_unit (unit : string) : t =
   let unit_blk = unit |> String.split ~on:'/' |> List.map ~f:trim in
   let num, denoms =
     match unit_blk with
-    | [] -> raise (Invalid_argument "Unit cannot be empty")
-    | num :: denom -> (num, denom)
+    | [] ->
+        raise (Invalid_argument "Unit cannot be empty")
+    | num :: denom ->
+        (num, denom)
   in
-
   let num = num |> String.split ~on:'.' |> List.map ~f:trim in
   let denom =
     denoms |> List.concat_map ~f:(String.split ~on:'.') |> List.map ~f:trim
@@ -44,3 +45,5 @@ let parse_unit (unit : string) : t =
   List.fold ~init:acc
     ~f:(Map.update ~f:(function Some n -> n - 1 | None -> -1))
     denom
+
+let equal (unit1 : t) (unit2 : t) : bool = Map.equal Int.equal unit1 unit2
