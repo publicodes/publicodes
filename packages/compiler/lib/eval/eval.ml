@@ -1,9 +1,8 @@
-module Tree = Eval_tree.Typed
-module Concrete_type = Concrete_type
+module Tree = Eval_tree
 module Parameters = Eval_tree.Parameters
 
 let from_resolved_ast = From_ast.from_ast
 
-let to_typed_tree = To_typed_tree.to_typed_tree
+let type_check = Type_check.type_check
 
 let to_json = To_json.with_parameters

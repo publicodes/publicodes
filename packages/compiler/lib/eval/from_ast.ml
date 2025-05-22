@@ -1,9 +1,7 @@
-open Eval_tree.Raw
+open Eval_tree
 open Core
 open Utils
 open Shared
-
-let mk = Eval_tree.Raw.mk ~typ:()
 
 (* Helper function to convert between the two constant types *)
 let convert_constant expr_const =
@@ -213,7 +211,7 @@ and transform_is_applicable ~pos value =
   let value = transform_value value in
   p (Binary_op (Pos.mk ~pos Shared_ast.NotEq, value, p (Const Null)))
 
-let from_ast (resolved_ast : Shared_ast.resolved) : unit t =
+let from_ast (resolved_ast : Shared_ast.resolved) : t =
   let evalTree =
     Rule_name.Hashtbl.create ~size:(List.length resolved_ast)
       ~growth_allowed:false ()

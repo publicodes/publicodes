@@ -732,7 +732,11 @@
       "else": [ 44.85 ]
     },
     "dirigeant . auto-entrepreneur . Cipav": [
-      "entreprise . activité . nature . libérale . réglementée",
+      [
+        "entreprise . activité . nature . libérale . réglementée",
+        "+",
+        [ 4.0 ]
+      ],
       "||",
       [
         [
@@ -1307,7 +1311,7 @@
     "dirigeant . auto-entrepreneur . revenu net": { "number": null },
     "entreprise . activité . nature": { "string": null },
     "entreprise . activité . nature . libérale . réglementée": {
-      "boolean": null
+      "number": null
     },
     "entreprise . chiffre d'affaires": { "number": null },
     "entreprise . chiffre d'affaires . BIC": { "number": null },

@@ -1,12 +1,13 @@
 open Core
 open Shared
+open Eval_tree
 open Utils
 
-let json_of_eval_tree (eval_tree : Eval_tree.Typed.t) =
+let json_of_eval_tree (eval_tree : Eval_tree.t) =
   (* Convert a dotted name to string representation *)
   (* Recursively convert a computation to JSON *)
-  let rec computation_to_json ((eval_tree, _) : Eval_tree.Typed.computation) =
-    match eval_tree with
+  let rec computation_to_json (eval_tree : Eval_tree.typ_computation) =
+    match eval_tree.value with
     | Get_context name ->
         `Assoc [("get", `String (Shared.Rule_name.to_string name))]
     | Set_context {context; value} ->
@@ -96,16 +97,16 @@ let with_parameters eval_tree params =
     `Assoc
       (List.map params ~f:(fun (key, _) ->
            ( Rule_name.to_string key
-           , match (Eval_tree.Typed.rule_meta eval_tree key).typ with
-             | Some Number ->
+           , match get_type eval_tree key with
+             | Concrete Number ->
                  `Assoc [("number", `Null)]
-             | Some String ->
+             | Concrete String ->
                  `Assoc [("string", `Null)]
-             | Some Bool ->
+             | Concrete Bool ->
                  `Assoc [("boolean", `Null)]
-             | Some Date ->
+             | Concrete Date ->
                  `Assoc [("date", `Null)]
-             | None ->
+             | _ ->
                  `Null ) ) )
   in
   `Assoc

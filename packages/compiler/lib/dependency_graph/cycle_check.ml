@@ -10,7 +10,7 @@ let cycle_check (tree : Eval.Tree.t) : Rule_graph.t Output.t =
     let cycle = List.rev cycle in
     let first_rule_name = List.hd_exn cycle in
     let cycle = cycle @ [first_rule_name] in
-    let pos = (snd (Hashtbl.find_exn tree first_rule_name)).pos in
+    let pos = Eval.Tree.get_pos tree first_rule_name in
     let code, message = Err.cycle_detected in
     let log =
       (* TODO: better error message for cycle *)
