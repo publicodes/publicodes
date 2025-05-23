@@ -6,5 +6,4 @@ Affiche une erreur si le fichier est vide :
   [yaml error]
        ╒══  empty.publicodes:1:1 ══
   
-  
   [2]

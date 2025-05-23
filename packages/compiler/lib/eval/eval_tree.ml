@@ -4,7 +4,7 @@ open Utils
 
 (* Extended version of constant with additional variants *)
 type constant =
-  | Number of float
+  | Number of float * Units.t option
   | Bool of bool
   | String of string
   | Date of Shared_ast.date
