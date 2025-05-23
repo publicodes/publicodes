@@ -181,7 +181,7 @@ export function getFormElement<Name extends string>(
 		const options = getOptionList(engine, possibilities)
 
 		if (!saisie) {
-			if (options.length > (selectTreshold || 5)) {
+			if (options.length > (selectTreshold ?? 5)) {
 				saisie = 'menu déroulant'
 			} else {
 				saisie = 'boutons radio'
