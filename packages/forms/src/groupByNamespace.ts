@@ -37,36 +37,25 @@ import { utils } from 'publicodes'
  */
 export function groupByNamespace<Name extends string>(fields: Array<Name>) {
 	const pages: Array<{
-		questionsInPage: Array<Name>
-		title: string
+		elements: Array<Name>
+		title: Name | undefined
 	}> = []
 	while (fields.length > 0) {
 		const tree = createTree(fields)
-		const questionsInPage = createPage(tree)
-		fields = fields.filter((field) => !questionsInPage.includes(field))
-		let pageName = ''
-		if (questionsInPage.length <= 1) {
-			pageName = utils.ruleParents(questionsInPage[0])[0] || 'général'
-		} else {
-			pageName = utils.findCommonAncestor(
-				questionsInPage[0],
-				questionsInPage[1],
-			)
-			for (let i = 1; i < questionsInPage.length - 1; i++) {
-				const nextCommonAncestor = utils.findCommonAncestor(
-					questionsInPage[i],
-					questionsInPage[i + 1],
+		const elements = createPage(tree)
+		fields = fields.filter((field) => !elements.includes(field))
+
+		const title =
+			elements.length === 0 ? undefined
+			: elements.length === 1 ? elements[0]
+			: elements.reduce(
+					(acc, element) => utils.findCommonAncestor(acc, element) as Name,
+					elements[0],
 				)
-				if (nextCommonAncestor !== pageName) {
-					pageName = 'général'
-					break
-				}
-				i++
-			}
-		}
+
 		pages.push({
-			questionsInPage,
-			title: pageName,
+			elements,
+			title,
 		})
 	}
 	return pages

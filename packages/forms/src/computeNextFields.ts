@@ -26,7 +26,7 @@ export function computeNextFields<Name extends string>(
 		.filter(
 			([dottedName]) =>
 				!state.pages
-					.map((page) => page.questionsInPage)
+					.map((page) => page.elements)
 					.flat()
 					.includes(dottedName as Name),
 		)
