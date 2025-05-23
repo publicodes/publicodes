@@ -1,4 +1,4 @@
-import { FormOptions } from './formBuilder'
+import { formElementOptions } from './formElement'
 import type Engine from 'publicodes'
 import {
 	getEvaluatedFormElement,
@@ -62,7 +62,7 @@ export function buildFormPage<Name extends string>(
 	engine: Engine<Name>,
 	targets: Array<Name>,
 	lastAnswered: Name | null,
-	formOptions: FormOptions,
+	formElementOptions: formElementOptions,
 ): Array<FormPageElementProp & EvaluatedFormElement<Name>> {
 	const lastAnsweredIndex = page.indexOf(lastAnswered as Name)
 
@@ -70,7 +70,7 @@ export function buildFormPage<Name extends string>(
 		const element = getEvaluatedFormElement(
 			engine,
 			dottedName,
-			formOptions,
+			formElementOptions,
 		) as FormPageElementProp & EvaluatedFormElement<Name>
 
 		element.autofocus = false
