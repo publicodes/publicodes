@@ -90,6 +90,7 @@ export function createContext<RuleNames extends string>(
 		...partialContext,
 		flag: {
 			filterNotApplicablePossibilities: false,
+			automaticNamespaceDisabling: true,
 			...partialContext.flag,
 		},
 		strict: {
