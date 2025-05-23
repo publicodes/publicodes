@@ -15,21 +15,21 @@ interface Evaluated {
 	answered: boolean
 }
 
-export interface EvaluatedCheckbox<Name>
+export interface EvaluatedCheckbox<Name extends string = string>
 	extends InputElement<Name, 'checkbox'>,
 		Evaluated {
 	checked: boolean | undefined
 	defaultChecked: boolean | undefined
 }
 
-export interface EvaluatedStringInput<Name>
+export interface EvaluatedStringInput<Name extends string = string>
 	extends InputElement<Name, 'date' | 'month' | 'text'>,
 		Evaluated {
 	value: string | undefined
 	defaultValue: string | undefined
 }
 
-export interface EvaluatedNumberInput<Name>
+export interface EvaluatedNumberInput<Name extends string = string>
 	extends InputElement<Name, 'number'>,
 		Evaluated {
 	value: number | undefined
@@ -37,19 +37,21 @@ export interface EvaluatedNumberInput<Name>
 	defaultValue: number | undefined
 }
 
-export interface EvaluatedRadioGroup<Name>
+export interface EvaluatedRadioGroup<Name extends string = string>
 	extends RadioGroupElement<Name>,
 		Evaluated {
 	value: string | undefined
 	defaultValue: string | undefined
 }
 
-export interface EvaluatedSelect<Name> extends SelectElement<Name>, Evaluated {
+export interface EvaluatedSelect<Name extends string = string>
+	extends SelectElement<Name>,
+		Evaluated {
 	value: string | undefined
 	defaultValue: string | undefined
 }
 
-export interface EvaluatedTextarea<Name>
+export interface EvaluatedTextarea<Name extends string = string>
 	extends TextareaElement<Name>,
 		Evaluated {
 	value: string | undefined
@@ -86,7 +88,7 @@ export interface EvaluatedTextarea<Name>
  * @see {@link getEvaluatedFormElement} - Function to retrieve evaluated form elements
  * @see {@link FormElement} - Type definition for form elements
  */
-export type EvaluatedFormElement<Name> =
+export type EvaluatedFormElement<Name extends string = string> =
 	| EvaluatedCheckbox<Name>
 	| EvaluatedStringInput<Name>
 	| EvaluatedNumberInput<Name>

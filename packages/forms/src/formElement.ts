@@ -8,7 +8,7 @@ export type Option = {
 	description?: string
 }
 
-interface FormMeta<Name> {
+interface FormMeta<Name extends string = string> {
 	label: string
 	description: string | undefined
 	id: Name
@@ -24,25 +24,25 @@ type InputType =
 	// | 'tel'
 	| 'text'
 
-export interface InputElement<Name, Type extends InputType>
+export interface InputElement<Name extends string, Type extends InputType>
 	extends FormMeta<Name> {
 	element: 'input'
 	type: Type
 }
 
-export interface SelectElement<Name> extends FormMeta<Name> {
+export interface SelectElement<Name extends string> extends FormMeta<Name> {
 	element: 'select'
 	options: Array<Option>
 }
 
-export interface RadioGroupElement<Name> extends FormMeta<Name> {
+export interface RadioGroupElement<Name extends string> extends FormMeta<Name> {
 	element: 'RadioGroup'
 	style: 'button' | 'card' | 'default'
 	orientation: 'horizontal' | 'vertical'
 	options: Array<Option>
 }
 
-export interface TextareaElement<Name> extends FormMeta<Name> {
+export interface TextareaElement<Name extends string> extends FormMeta<Name> {
 	element: 'textarea'
 }
 
@@ -90,7 +90,7 @@ export interface TextareaElement<Name> extends FormMeta<Name> {
  * @see {@link getFormElement}
  */
 
-export type FormElement<Name> =
+export type FormElement<Name extends string = string> =
 	| InputElement<Name, InputType>
 	| SelectElement<Name>
 	| RadioGroupElement<Name>

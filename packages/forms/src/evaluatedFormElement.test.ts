@@ -17,7 +17,7 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'ma checkbox',
-		) as EvaluatedCheckbox<string> & {
+		) as EvaluatedCheckbox & {
 			applicable: true
 		}
 
@@ -39,7 +39,7 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'mon choix',
-		) as EvaluatedRadioGroup<string>
+		) as EvaluatedRadioGroup
 		expect(result.applicable).toBe(true)
 		expect(result.value).toBe(undefined)
 		expect(result.defaultValue).toBe(undefined)
@@ -61,7 +61,7 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'question yes no',
-		) as EvaluatedRadioGroup<string>
+		) as EvaluatedRadioGroup
 
 		expect(result.applicable).toBe(true)
 		expect(result.options).toHaveLength(2)
@@ -88,7 +88,7 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'mon choix',
-		) as EvaluatedRadioGroup<string>
+		) as EvaluatedRadioGroup
 		expect(result.applicable).toBe(true)
 		expect(result.value).toEqual(42)
 		expect(result.defaultValue).toEqual(12)
@@ -116,7 +116,7 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'mon choix',
-		) as EvaluatedRadioGroup<string>
+		) as EvaluatedRadioGroup
 		expect(result.applicable).toBe(true)
 		const options = result.options
 		expect(options).toHaveLength(2)
@@ -139,7 +139,7 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'mon texte',
-		) as EvaluatedTextarea<string> & {
+		) as EvaluatedTextarea & {
 			applicable: true
 		}
 		expect(result.applicable).toBe(true)
@@ -157,7 +157,7 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'ma valeur',
-		) as EvaluatedNumberInput<string>
+		) as EvaluatedNumberInput
 		expect(result.value).toEqual(undefined)
 		expect(result.unit).toEqual('€')
 	})
@@ -172,7 +172,7 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'mon texte',
-		) as EvaluatedTextarea<string> & {
+		) as EvaluatedTextarea & {
 			applicable: true
 		}
 		expect(result.required).toBe(true)
@@ -187,7 +187,7 @@ describe('evaluateFormElement', () => {
 		const result = getEvaluatedFormElement(
 			engine,
 			'mon texte',
-		) as EvaluatedTextarea<string> & {
+		) as EvaluatedTextarea & {
 			applicable: true
 		}
 		expect(result.required).toBe(false)
