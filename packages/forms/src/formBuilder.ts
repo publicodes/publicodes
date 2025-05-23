@@ -115,8 +115,8 @@ export type FormOptions<RuleName> = {
  * ```
  */
 
-export type CurrentPageElements<RuleName> = {
-	titre?: string
+export type CurrentPageElements<RuleName extends string> = {
+	title?: string
 	elements: Array<EvaluatedFormElement<RuleName> & FormPageElementProp>
 }
 
@@ -260,7 +260,7 @@ export class FormBuilder<RuleName extends string> {
 		const title = page.title ?? ''
 
 		return {
-			titre: title,
+			title: title,
 			elements: buildFormPage(
 				formState.pages[formState.currentPageIndex].questionsInPage,
 				this.engine,
