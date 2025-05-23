@@ -79,8 +79,7 @@ export type PageBuilderOutput<RuleName> = Array<{
  * @property selectTreshold - An optional number that specifies the threshold to make input rather radio options or select.
  */
 
-export type FormOptions<RuleName> = {
-	pageBuilder?: PageBuilder<RuleName>
+export type FormOptions = {
 	selectTreshold?: number
 }
 
@@ -122,25 +121,21 @@ export type CurrentPageElements<RuleName extends string> = {
 
 export class FormBuilder<RuleName extends string> {
 	private engine: Engine<RuleName>
-	private formOptions: {
-		pageBuilder: PageBuilder<RuleName>
-		selectTreshold?: number
-	}
+	private pageBuilder: PageBuilder<RuleName>
+	private formOptions: FormOptions
 
 	constructor({
 		engine,
-		formOptions,
+		pageBuilder = groupByNamespace,
+		formOptions = {},
 	}: {
 		engine: Engine<RuleName>
-		formOptions?: FormOptions<RuleName>
+		pageBuilder?: PageBuilder<RuleName>
+		formOptions?: FormOptions
 	}) {
 		this.engine = engine
-		this.formOptions = {
-			...formOptions,
-			...{
-				pageBuilder: formOptions?.pageBuilder ?? groupByNamespace,
-			},
-		}
+		this.pageBuilder = pageBuilder
+		this.formOptions = formOptions
 	}
 
 	/**
@@ -214,7 +209,7 @@ export class FormBuilder<RuleName extends string> {
 		}
 		this.engine.setSituation(formState.situation)
 		const nextFields = computeNextFields(this.engine, { targets, pages: [] })
-		formState.nextPages = this.formOptions.pageBuilder(nextFields)
+		formState.nextPages = this.pageBuilder(nextFields)
 		formState.targets = targets
 
 		return this.goToNextPage(formState)
@@ -446,7 +441,7 @@ export class FormBuilder<RuleName extends string> {
 
 		updateSituationWithInputValue(this.engine, id, value)
 
-		formState.nextPages = this.formOptions.pageBuilder(
+		formState.nextPages = this.pageBuilder(
 			computeNextFields(this.engine, formState),
 		)
 		formState.situation = this.engine.getSituation()

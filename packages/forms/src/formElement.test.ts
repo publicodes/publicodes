@@ -1,15 +1,16 @@
+import { FormOptions } from './formBuilder'
 import Engine, { PublicodesError } from 'publicodes'
 import { describe, expect, test } from 'vitest'
 import { FormElement, getFormElement } from './formElement'
 
 function inputForRule(
 	rule: Record<string, unknown> | string | number,
-	selectTreshold?: number,
+	formOptions?: FormOptions,
 ) {
 	const engine = new Engine({
 		a: rule,
 	})
-	return getFormElement(engine, 'a', selectTreshold)
+	return getFormElement(engine, 'a', formOptions)
 }
 
 describe('inputDetails', function () {
@@ -113,7 +114,9 @@ describe('inputDetails', function () {
 				{
 					'une possibilité': [1, 2, 3, 4],
 				},
-				3,
+				{
+					selectTreshold: 3,
+				},
 			)
 
 			expect(input.element).toBe('select')

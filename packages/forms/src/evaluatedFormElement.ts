@@ -8,6 +8,7 @@ import {
 	SelectElement,
 	TextareaElement,
 } from './formElement'
+import { FormOptions } from './formBuilder'
 
 interface Evaluated {
 	applicable: boolean
@@ -122,12 +123,12 @@ export type EvaluatedFormElement<Name extends string = string> =
 export function getEvaluatedFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
-	selectTreshold?: number,
+	formOptions?: FormOptions,
 ): EvaluatedFormElement<Name> {
 	const element = getFormElement(
 		engine,
 		dottedName,
-		selectTreshold,
+		formOptions,
 	) as EvaluatedFormElement<Name>
 
 	element.applicable =
