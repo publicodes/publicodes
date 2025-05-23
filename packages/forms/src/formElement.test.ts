@@ -90,7 +90,7 @@ describe('inputDetails', function () {
 	})
 
 	describe('for "une possibilité" rules', function () {
-		type InputWithOptions = FormElement<string> & {
+		type InputWithOptions = FormElement & {
 			options: NonNullable<unknown>
 		}
 
@@ -171,7 +171,7 @@ describe('inputDetails', function () {
 				})
 				expect(input.element).toBe('select')
 			})
-			type InputRadio = FormElement<string> & { element: 'RadioGroup' }
+			type InputRadio = FormElement & { element: 'RadioGroup' }
 			test('boutons radio (horizontal if less than two element)', function () {
 				const input = inputForRule({
 					'une possibilité': [1, 2],
