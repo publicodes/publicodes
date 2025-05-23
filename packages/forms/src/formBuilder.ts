@@ -64,7 +64,7 @@ export type PageBuilder<RuleName> = (
 ) => PageBuilderOutput<RuleName>
 
 export type PageBuilderOutput<RuleName> = Array<{
-	questionsInPage: Array<RuleName>
+	elements: Array<RuleName>
 	title?: string
 }>
 
@@ -262,7 +262,7 @@ export class FormBuilder<RuleName extends string> {
 		return {
 			title: title,
 			elements: buildFormPage(
-				formState.pages[formState.currentPageIndex].questionsInPage,
+				formState.pages[formState.currentPageIndex].elements,
 				this.engine,
 				formState.targets,
 				formState.lastAnswered,

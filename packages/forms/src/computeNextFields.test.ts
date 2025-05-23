@@ -11,7 +11,7 @@ describe('computeNextFields', () => {
 			d: {},
 		})
 		const targets = ['a']
-		const pages = [{ questionsInPage: ['c'] }]
+		const pages = [{ elements: ['c'] }]
 		const result = computeNextFields(engine, { targets, pages })
 		expect(result).toEqual(['d'])
 	})
