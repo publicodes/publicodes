@@ -47,3 +47,15 @@ let parse_unit (unit : string) : t =
     denom
 
 let equal (unit1 : t) (unit2 : t) : bool = Map.equal Int.equal unit1 unit2
+
+let mul (t1 : t) (t2 : t) : t =
+  let new_map =
+    Map.fold t2 ~init:t1 ~f:(fun ~key ~data acc ->
+        Map.update acc key ~f:(function Some n -> n + data | None -> data) )
+  in
+  (* Step to remove 0 *)
+  Map.filter new_map ~f:(fun power -> power <> 0)
+
+let inv (t1 : t) : t = Map.map t1 ~f:(fun power -> -power)
+
+let empty = StrMap.empty

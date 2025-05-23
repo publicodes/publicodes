@@ -1,0 +1,7 @@
+a: 5€
+b: a + 4kg
+
+x: z * 4€/mois
+y: z + 3 mois
+z:
+test: x + 9 mois

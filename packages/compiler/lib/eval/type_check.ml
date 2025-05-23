@@ -1,35 +1,31 @@
 open Utils
 open Core
 open Utils.Output
+open Shared
 open Shared.Shared_ast
 open Eval_tree
 open Types
 
-(*
-
-This module implements the type checking algorithm described by Richard Feldman in « Building a Static
-Type-Inferring Compiler » online course
-
-Cf : https://docs.google.com/presentation/d/1EkOFQCGFAIuIKG7sJB2ibsWE3Q8eti9UShLgo_z0rwo/
-
-*)
 let type_check (tree : Eval_tree.t) =
   let rec unify_computation {typ; pos; value} =
     match value with
     | Const const -> (
       match const with
       (* TODO : sort topological order ? *)
-      | Number _ ->
-          let+ _ = unify typ (concrete ~pos Number) in
+      | Number (_, None) ->
+          let+ _ = unify typ (any_number ~pos ()) in
+          ()
+      | Number (_, Some units) ->
+          let+ _ = unify typ (number_with_unit ~pos units) in
           ()
       | Bool _ ->
-          let+ _ = unify typ (concrete ~pos Bool) in
+          let+ _ = unify typ (literal ~pos Bool) in
           ()
       | String _ ->
-          let+ _ = unify typ (concrete ~pos String) in
+          let+ _ = unify typ (literal ~pos String) in
           ()
       | Date _ ->
-          let+ _ = unify typ (concrete ~pos Date) in
+          let+ _ = unify typ (literal ~pos Date) in
           ()
       | Undefined | Null ->
           return () )
@@ -38,35 +34,52 @@ let type_check (tree : Eval_tree.t) =
         let* _ = unify_computation right in
         match operator with
         | And | Or ->
-            let* _ = unify typ (concrete ~pos Bool) in
-            let* _ = unify left.typ (concrete ~pos Bool) in
-            let+ _ = unify right.typ (concrete ~pos Bool) in
+            let* _ = unify typ (literal ~pos Bool) in
+            let* _ = unify left.typ (literal ~pos Bool) in
+            let+ _ = unify right.typ (literal ~pos Bool) in
             ()
-        | Add | Sub | Mul | Div | Pow ->
-            let* _ = unify typ (concrete ~pos Number) in
-            let* _ = unify left.typ (concrete ~pos Number) in
-            let+ _ = unify right.typ (concrete ~pos Number) in
+        | Add | Sub ->
+            let* _ = unify left.typ (any_number ~pos ()) in
+            let* _ = unify right.typ (any_number ~pos ()) in
+            let* _ = unify right.typ left.typ in
+            let+ _ = unify typ left.typ in
+            ()
+        | Mul ->
+            let* _ = unify left.typ (any_number ~pos ()) in
+            let* _ = unify right.typ (any_number ~pos ()) in
+            let+ _ = unify typ (multiply ~pos right.typ left.typ) in
+            ()
+        | Div ->
+            let* _ = unify left.typ (any_number ~pos ()) in
+            let* _ = unify right.typ (any_number ~pos ()) in
+            let+ _ = unify typ (divide ~pos left.typ right.typ) in
+            ()
+        | Pow ->
+            (* Todo : allow unit in the left op ? *)
+            let* _ = unify typ (number_with_unit ~pos Units.empty) in
+            let* _ = unify left.typ (number_with_unit ~pos Units.empty) in
+            let+ _ = unify right.typ (number_with_unit ~pos Units.empty) in
             ()
         | Gt | Lt | LtEq | GtEq | Eq | NotEq ->
-            let* _ = unify typ (concrete ~pos Bool) in
+            let* _ = unify typ (literal ~pos Bool) in
             let+ _ = unify left.typ right.typ in
             () )
     | Unary_op ((op, _), expr) -> (
       match op with
       | Neg ->
           let* _ = unify_computation expr in
-          let* _ = unify typ (concrete ~pos Number) in
-          let+ _ = unify expr.typ (concrete ~pos Number) in
+          let* _ = unify expr.typ (any_number ~pos ()) in
+          let+ _ = unify typ expr.typ in
           ()
       | Is_undef ->
           let* _ = unify_computation expr in
-          let+ _ = unify typ (concrete ~pos Bool) in
+          let+ _ = unify typ (literal ~pos Bool) in
           () )
     | Condition (cond_expr, then_expr, else_expr) ->
         let* _ = unify_computation cond_expr in
         let* _ = unify_computation then_expr in
         let* _ = unify_computation else_expr in
-        let* _ = unify cond_expr.typ (concrete ~pos Bool) in
+        let* _ = unify cond_expr.typ (literal ~pos Bool) in
         let* _ = unify then_expr.typ else_expr.typ in
         let+ _ = unify typ then_expr.typ in
         ()

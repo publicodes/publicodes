@@ -27,6 +27,7 @@ module Code = struct
     | Type_invalid_type
     | Type_incoherence
     | Type_missing_output_type
+    | Type_incompatible_units
     (* Cycle detection errors *)
     | Cycle_detected
   [@@deriving show, sexp, compare]
@@ -66,16 +67,18 @@ module Code = struct
         "E015"
     | Type_incoherence ->
         "E016"
-    | Type_missing_output_type ->
+    | Type_incompatible_units ->
         "E017"
-    | Cycle_detected ->
+    | Type_missing_output_type ->
         "E018"
-    | Resolver_missing_parent_rule ->
+    | Cycle_detected ->
         "E019"
-    | Resolver_missing_rule ->
+    | Resolver_missing_parent_rule ->
         "E020"
-    | Parsing_invalid_mechanism ->
+    | Resolver_missing_rule ->
         "E021"
+    | Parsing_invalid_mechanism ->
+        "E022"
 end
 
 type t = Code.t * string
@@ -118,6 +121,9 @@ let invalid_rule_name = (Code.Parsing_invalid_rule_name, "nom de règle invalide
 let type_invalid_type = (Code.Type_invalid_type, "type invalide détécté")
 
 let type_incoherence = (Code.Type_incoherence, "types non cohérents entre eux")
+
+let type_unit_incoherence =
+  (Code.Type_incompatible_units, "unités non compatibles")
 
 let missing_output_type =
   (Code.Type_missing_output_type, "information de type manquante")

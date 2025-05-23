@@ -22,7 +22,7 @@ let json_of_eval_tree (eval_tree : Eval_tree.t) =
         `String (Shared.Rule_name.to_string name)
     | Const c -> (
       match c with
-      | Number n ->
+      | Number (n, _) ->
           `List [`Float n]
       | Bool b ->
           `Bool b
@@ -98,13 +98,20 @@ let with_parameters eval_tree params =
       (List.map params ~f:(fun (key, _) ->
            ( Rule_name.to_string key
            , match get_type eval_tree key with
-             | Concrete Number ->
-                 `Assoc [("number", `Null)]
-             | Concrete String ->
+             | Number unit -> (
+               match Types.Unit.normalize unit with
+               | {concrete; elem= []; inv= []} ->
+                   `Assoc
+                     [ ("number", `Null)
+                     ; ("unit", `String (Format.asprintf "%a" Units.pp concrete))
+                     ]
+               | _ ->
+                   `Assoc [("number", `Null)] )
+             | Literal String ->
                  `Assoc [("string", `Null)]
-             | Concrete Bool ->
+             | Literal Bool ->
                  `Assoc [("boolean", `Null)]
-             | Concrete Date ->
+             | Literal Date ->
                  `Assoc [("date", `Null)]
              | _ ->
                  `Null ) ) )
