@@ -1,3 +1,4 @@
+import { formElementOptions } from './formElement'
 import type Engine from 'publicodes'
 
 import { Situation } from 'publicodes'
@@ -79,8 +80,10 @@ export type PageBuilderOutput<RuleName> = Array<{
  * @property selectTreshold - An optional number that specifies the threshold to make input rather radio options or select.
  */
 
-export type FormOptions = {
-	selectTreshold?: number
+export type FormBuilderOption<RuleName extends string> = {
+	engine: Engine<RuleName>
+	pageBuilder?: PageBuilder<RuleName>
+	formElementOptions?: formElementOptions
 }
 
 /**
@@ -122,20 +125,16 @@ export type CurrentPageElements<RuleName extends string> = {
 export class FormBuilder<RuleName extends string> {
 	private engine: Engine<RuleName>
 	private pageBuilder: PageBuilder<RuleName>
-	private formOptions: FormOptions
+	private formElementOptions: formElementOptions
 
 	constructor({
 		engine,
 		pageBuilder = groupByNamespace,
-		formOptions = {},
-	}: {
-		engine: Engine<RuleName>
-		pageBuilder?: PageBuilder<RuleName>
-		formOptions?: FormOptions
-	}) {
+		formElementOptions = {},
+	}: FormBuilderOption<RuleName>) {
 		this.engine = engine
 		this.pageBuilder = pageBuilder
-		this.formOptions = formOptions
+		this.formElementOptions = formElementOptions
 	}
 
 	/**
@@ -261,7 +260,7 @@ export class FormBuilder<RuleName extends string> {
 				this.engine,
 				formState.targets,
 				formState.lastAnswered,
-				this.formOptions,
+				this.formElementOptions,
 			),
 		}
 	}

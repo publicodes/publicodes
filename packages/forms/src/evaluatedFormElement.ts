@@ -1,6 +1,7 @@
 import type Engine from 'publicodes'
 import { Possibility, serializeUnit } from 'publicodes'
 import {
+	formElementOptions,
 	getFormElement,
 	getOptionList,
 	InputElement,
@@ -8,7 +9,6 @@ import {
 	SelectElement,
 	TextareaElement,
 } from './formElement'
-import { FormOptions } from './formBuilder'
 
 interface Evaluated {
 	applicable: boolean
@@ -123,12 +123,12 @@ export type EvaluatedFormElement<Name extends string = string> =
 export function getEvaluatedFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
-	formOptions?: FormOptions,
+	formElementOptions?: formElementOptions,
 ): EvaluatedFormElement<Name> {
 	const element = getFormElement(
 		engine,
 		dottedName,
-		formOptions,
+		formElementOptions,
 	) as EvaluatedFormElement<Name>
 
 	element.applicable =

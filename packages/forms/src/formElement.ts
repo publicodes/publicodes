@@ -1,4 +1,3 @@
-import { FormOptions } from './formBuilder'
 import type Engine from 'publicodes'
 import { formatValue, Possibility, PublicodesError } from 'publicodes'
 import { RuleWithFormMeta } from '.'
@@ -45,6 +44,10 @@ export interface RadioGroupElement<Name extends string> extends FormMeta<Name> {
 
 export interface TextareaElement<Name extends string> extends FormMeta<Name> {
 	element: 'textarea'
+}
+
+export type formElementOptions = {
+	selectTreshold?: number
 }
 
 /**
@@ -129,7 +132,7 @@ export type FormElement<Name extends string = string> =
 export function getFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
-	formOptions?: FormOptions,
+	formElementOptions?: formElementOptions,
 ): FormElement<Name> {
 	const rule = engine.getRule(dottedName)
 	const rawRule = rule.rawNode as RuleWithFormMeta
@@ -182,7 +185,7 @@ export function getFormElement<Name extends string>(
 		const options = getOptionList(engine, possibilities)
 
 		if (!saisie) {
-			if (options.length > (formOptions?.selectTreshold ?? 5)) {
+			if (options.length > (formElementOptions?.selectTreshold ?? 5)) {
 				saisie = 'menu déroulant'
 			} else {
 				saisie = 'boutons radio'
