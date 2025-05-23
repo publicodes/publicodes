@@ -17,9 +17,18 @@ import { utils } from 'publicodes'
  * const pages = groupByNamespace(fields);
  * // Result:
  * // [
- * //   ['company . name', 'company . address'],
- * //   ['personal . first name', 'personal . last name'],
- * //   ['stock . quantity']
+ * //   {
+ * 			questionsInPage: ['company . name', 'company . address'],
+ * 			title: 'company'
+ * //   },
+ * //   {
+ * 			questionsInPage: ['personal . first name', 'personal . last name'],
+ * 			title: 'personal'
+ * //   },
+ * //   {
+ * 			questionsInPage: ['stock . quantity'],
+ * 			title: 'stock'
+ * //   }
  * // ]
  * ```
  *
@@ -27,12 +36,27 @@ import { utils } from 'publicodes'
  * @returns Array of arrays, where each inner array represents a page containing related fields
  */
 export function groupByNamespace<Name extends string>(fields: Array<Name>) {
-	const pages: Array<Array<Name>> = []
+	const pages: Array<{
+		elements: Array<Name>
+		title: Name | undefined
+	}> = []
 	while (fields.length > 0) {
 		const tree = createTree(fields)
-		const page = createPage(tree)
-		fields = fields.filter((field) => !page.includes(field))
-		pages.push(page)
+		const elements = createPage(tree)
+		fields = fields.filter((field) => !elements.includes(field))
+
+		const title =
+			elements.length === 0 ? undefined
+			: elements.length === 1 ? elements[0]
+			: elements.reduce(
+					(acc, element) => utils.findCommonAncestor(acc, element) as Name,
+					elements[0],
+				)
+
+		pages.push({
+			elements,
+			title,
+		})
 	}
 	return pages
 }
