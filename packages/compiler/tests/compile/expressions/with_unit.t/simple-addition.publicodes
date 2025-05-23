@@ -1,0 +1,8 @@
+simple expression: 12€ + 5$
+
+rule 2:
+  somme:
+    - 4 €
+    - -(4 kg/m)
+
+b: 5€ + 9

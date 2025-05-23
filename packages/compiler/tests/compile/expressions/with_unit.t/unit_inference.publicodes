@@ -1,0 +1,12 @@
+a: 5€
+b: a + 4kg
+
+total:
+  valeur: c + d + e
+  public: oui
+c: x * y + 4€
+d: x * z + 5€
+e: y * z + 2 mois
+x:
+y:
+z:

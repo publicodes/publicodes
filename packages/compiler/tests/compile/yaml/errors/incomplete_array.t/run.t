@@ -9,5 +9,4 @@ Tableau non fermé
        │ ˘˘
    Hint: il manque  `]` pour le fermer, ou `,` pour
          ajouter un élément
-  
   [2]
