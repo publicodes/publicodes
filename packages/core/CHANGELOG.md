@@ -1,5 +1,14 @@
 # publicodes
 
+## 1.9.0
+
+### Minor Changes
+
+- [#702](https://github.com/publicodes/publicodes/pull/702) [`c1b8205`](https://github.com/publicodes/publicodes/commit/c1b8205fba1a12abfa0118e02249501fed550337) Thanks [@johangirod](https://github.com/johangirod)! - Add flag `automaticNamespaceDisabling` to control automatic namespace disabling
+
+    By default, all the children of a rule that evaluate to "false" or "not applicable" are not applicable.
+    This new flag allow to remove this behavior.
+
 ## 1.8.5
 
 ### Patch Changes
