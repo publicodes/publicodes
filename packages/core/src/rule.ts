@@ -150,15 +150,20 @@ function parseRule(nom: string, rawRule: Rule, context: Context): RuleNode {
 		An alternative implementation would be possible that would colocate the
 		code related to branch desactivation (ie find the first nullable parent
 		statically after rules parsing)
+
+		Note this option can be disabled by setting the `automaticNamespaceDisabling` flag to false.
 		*/
-		parents: ruleParents(dottedName).map(
-			(parent) =>
-				({
-					dottedName: parent,
-					nodeKind: 'reference',
-					contextDottedName: context.dottedName,
-				}) as ASTNode<'reference'>,
-		),
+		parents:
+			context.flag.automaticNamespaceDisabling ?
+				ruleParents(dottedName).map(
+					(parent) =>
+						({
+							dottedName: parent,
+							nodeKind: 'reference',
+							contextDottedName: context.dottedName,
+						}) as ASTNode<'reference'>,
+				)
+			:	[],
 	}
 
 	const suggestions = {} as Record<string, ASTNode>

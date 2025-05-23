@@ -72,6 +72,8 @@ export class Engine<RuleNames extends string = string> {
 			flag: {
 				filterNotApplicablePossibilities:
 					options.flag?.filterNotApplicablePossibilities ?? false,
+				automaticNamespaceDisabling:
+					options.flag?.automaticNamespaceDisabling ?? true,
 			},
 			strict:
 				typeof strict === 'boolean' ?

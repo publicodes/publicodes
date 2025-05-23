@@ -62,6 +62,12 @@ export type FlagOptions = {
 	 * @default false
 	 */
 	filterNotApplicablePossibilities?: boolean
+
+	/**
+	 * If true, a non applicable or false rule will automatically make all its children non applicable
+	 * @default true
+	 */
+	automaticNamespaceDisabling?: boolean
 }
 
 export type WarnOptions = {
