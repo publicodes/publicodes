@@ -62,7 +62,7 @@ export function buildFormPage<Name extends string>(
 	engine: Engine<Name>,
 	targets: Array<Name>,
 	lastAnswered: Name | null,
-	formOptions: FormOptions<Name>,
+	formOptions: FormOptions,
 ): Array<FormPageElementProp & EvaluatedFormElement<Name>> {
 	const lastAnsweredIndex = page.indexOf(lastAnswered as Name)
 
@@ -70,7 +70,7 @@ export function buildFormPage<Name extends string>(
 		const element = getEvaluatedFormElement(
 			engine,
 			dottedName,
-			formOptions.selectTreshold,
+			formOptions,
 		) as FormPageElementProp & EvaluatedFormElement<Name>
 
 		element.autofocus = false
