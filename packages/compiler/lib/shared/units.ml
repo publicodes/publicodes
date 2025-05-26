@@ -14,14 +14,30 @@ let pp formatter unit =
     Map.to_alist map
     |> List.sort ~compare:(fun (_, a) (_, b) -> Int.compare b a)
   in
-  let to_string (unit_name, power) =
-    if power = 1 then unit_name
-    else if power > 1 then unit_name ^ "^" ^ Int.to_string power
-    else if power = -1 then "/" ^ unit_name
-    else "/" ^ unit_name ^ "^" ^ Int.to_string (abs power)
+  let positive_units, negative_units =
+    unit |> map_to_list |> List.partition_tf ~f:(fun (_, power) -> power > 0)
+  in
+  let format_unit (unit_name, power) =
+    let abs_power = abs power in
+    if abs_power = 1 then unit_name
+    else unit_name ^ "^" ^ Int.to_string abs_power
+  in
+  let positive_str =
+    positive_units |> List.map ~f:format_unit |> String.concat ~sep:"."
+  in
+  let negative_str =
+    negative_units |> List.map ~f:format_unit |> String.concat ~sep:"."
   in
   let units_str =
-    unit |> map_to_list |> List.map ~f:to_string |> String.concat ~sep:"."
+    match (positive_str, negative_str) with
+    | "", "" ->
+        ""
+    | pos, "" ->
+        pos
+    | "", neg ->
+        "/" ^ neg
+    | pos, neg ->
+        pos ^ "/" ^ neg
   in
   Format.fprintf formatter "%s" units_str
 
@@ -48,6 +64,12 @@ let parse_unit (unit : string) : t =
 
 let equal (unit1 : t) (unit2 : t) : bool = Map.equal Int.equal unit1 unit2
 
+let same_class (unit1 : t) (unit2 : t) : bool =
+  (* Remove '%' unit in both and compare *)
+  let unit1 = Map.remove unit1 "%" in
+  let unit2 = Map.remove unit2 "%" in
+  equal unit1 unit2
+
 let mul (t1 : t) (t2 : t) : t =
   let new_map =
     Map.fold t2 ~init:t1 ~f:(fun ~key ~data acc ->
@@ -59,3 +81,19 @@ let mul (t1 : t) (t2 : t) : t =
 let inv (t1 : t) : t = Map.map t1 ~f:(fun power -> -power)
 
 let empty = StrMap.empty
+
+(** Simplify unit *)
+let simplify number_unit =
+  let percent_pow = Map.find number_unit "%" |> Option.value ~default:0 in
+  let percent_is_only_unit_in_numerator =
+    Map.existsi number_unit ~f:(fun ~key ~data ->
+        String.( <> ) key "%" && data > 0 )
+    |> not
+  in
+  match (percent_pow, percent_is_only_unit_in_numerator) with
+  | 0, _ ->
+      number_unit
+  | n, true when n > 0 ->
+      Map.set number_unit ~key:"%" ~data:1
+  | _ ->
+      Map.remove number_unit "%"

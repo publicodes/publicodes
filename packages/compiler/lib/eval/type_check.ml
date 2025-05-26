@@ -4,7 +4,7 @@ open Utils.Output
 open Shared
 open Shared.Shared_ast
 open Eval_tree
-open Types
+open Typ
 
 let type_check (tree : Eval_tree.t) =
   let rec unify_computation {typ; pos; value} =
