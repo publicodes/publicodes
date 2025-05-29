@@ -1,4 +1,4 @@
-import { formElementOptions } from './formElement'
+import { FormElementOptions } from './formElement'
 import type Engine from 'publicodes'
 
 import { Situation } from 'publicodes'
@@ -83,8 +83,7 @@ export type PageBuilderOutput<RuleName> = Array<{
 export type FormBuilderOption<RuleName extends string> = {
 	engine: Engine<RuleName>
 	pageBuilder?: PageBuilder<RuleName>
-	formElementOptions?: formElementOptions
-}
+} & FormElementOptions
 
 /**
  * Creates and manages multi-page forms based on Publicodes rules.
@@ -125,16 +124,18 @@ export type CurrentPageElements<RuleName extends string> = {
 export class FormBuilder<RuleName extends string> {
 	private engine: Engine<RuleName>
 	private pageBuilder: PageBuilder<RuleName>
-	private formElementOptions: formElementOptions
+	private formElementOptions: FormElementOptions
 
 	constructor({
 		engine,
 		pageBuilder = groupByNamespace,
-		formElementOptions = {},
+		selectTreshold,
 	}: FormBuilderOption<RuleName>) {
 		this.engine = engine
 		this.pageBuilder = pageBuilder
-		this.formElementOptions = formElementOptions
+		this.formElementOptions = {
+			selectTreshold,
+		}
 	}
 
 	/**

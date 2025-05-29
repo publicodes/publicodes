@@ -1,4 +1,4 @@
-import { formElementOptions } from './formElement'
+import { FormElementOptions } from './formElement'
 import type Engine from 'publicodes'
 import {
 	getEvaluatedFormElement,
@@ -62,7 +62,7 @@ export function buildFormPage<Name extends string>(
 	engine: Engine<Name>,
 	targets: Array<Name>,
 	lastAnswered: Name | null,
-	formElementOptions: formElementOptions,
+	formElementOptions: FormElementOptions,
 ): Array<FormPageElementProp & EvaluatedFormElement<Name>> {
 	const lastAnsweredIndex = page.indexOf(lastAnswered as Name)
 

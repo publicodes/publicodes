@@ -46,7 +46,7 @@ export interface TextareaElement<Name extends string> extends FormMeta<Name> {
 	element: 'textarea'
 }
 
-export type formElementOptions = {
+export type FormElementOptions = {
 	selectTreshold?: number
 }
 
@@ -132,8 +132,10 @@ export type FormElement<Name extends string = string> =
 export function getFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
-	formElementOptions?: formElementOptions,
+	options: FormElementOptions = {},
 ): FormElement<Name> {
+	const selectTreshold = options.selectTreshold ?? 5
+
 	const rule = engine.getRule(dottedName)
 	const rawRule = rule.rawNode as RuleWithFormMeta
 	const typeInfo = engine.context.nodesTypes.get(rule)
@@ -185,7 +187,7 @@ export function getFormElement<Name extends string>(
 		const options = getOptionList(engine, possibilities)
 
 		if (!saisie) {
-			if (options.length > (formElementOptions?.selectTreshold ?? 5)) {
+			if (options.length > selectTreshold) {
 				saisie = 'menu déroulant'
 			} else {
 				saisie = 'boutons radio'

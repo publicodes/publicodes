@@ -1,15 +1,15 @@
 import Engine, { PublicodesError } from 'publicodes'
 import { describe, expect, test } from 'vitest'
-import { FormElement, formElementOptions, getFormElement } from './formElement'
+import { FormElement, getFormElement, FormElementOptions } from './formElement'
 
 function inputForRule(
 	rule: Record<string, unknown> | string | number,
-	formElementOptions?: formElementOptions,
+	options?: FormElementOptions,
 ) {
 	const engine = new Engine({
 		a: rule,
 	})
-	return getFormElement(engine, 'a', formElementOptions)
+	return getFormElement(engine, 'a', options)
 }
 
 describe('inputDetails', function () {
