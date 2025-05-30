@@ -6,7 +6,7 @@
       "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base . taux de répartition"
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base . taux de répartition": [
-      0.418
+      41.8
     ],
     "entreprise . activité": { "get": "entreprise . activité" },
     "dirigeant . auto-entrepreneur . DROM": {
@@ -44,11 +44,11 @@
             [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
           ],
           "then": [ 0.0 ],
-          "else": [ 0.0785 ]
+          "else": [ 7.85 ]
         },
-        "else": [ 0.13 ]
+        "else": [ 13.0 ]
       },
-      "else": [ 0.177 ]
+      "else": [ 17.7 ]
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions . taux de répartition": {
       "if": [
@@ -68,12 +68,12 @@
             "||",
             [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
           ],
-          "then": [ 0.365 ],
-          "else": [ 0.341 ]
+          "then": [ 36.5 ],
+          "else": [ 34.1 ]
         },
-        "else": [ 0.325 ]
+        "else": [ 32.5 ]
       },
-      "else": [ 0.312 ]
+      "else": [ 31.2 ]
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . invalidité-décès": [
       "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès",
@@ -106,7 +106,7 @@
     },
     "établissement . commune": { "get": "établissement . commune" },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire . taux de répartition": [
-      0.165
+      16.5
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . CFP": [
       [
@@ -127,8 +127,8 @@
                 false
               ]
             ],
-            "then": [ 0.001 ],
-            "else": [ 0.003 ]
+            "then": [ 0.1 ],
+            "else": [ 0.3 ]
           },
           "*",
           [ 1.0 ]
@@ -170,8 +170,8 @@
                   false
                 ]
               ],
-              "then": [ 0.002 ],
-              "else": [ 0.001 ]
+              "then": [ 0.2 ],
+              "else": [ 0.1 ]
             },
             "*",
             [ 1.0 ]
@@ -182,7 +182,7 @@
       ]
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité . taux de répartition": [
-      0.089
+      8.9
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès": [
       "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC",
@@ -213,7 +213,7 @@
       "get": "dirigeant . exonérations . ACRE"
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions . taux de répartition": [
-      0.297
+      29.7
     ],
     "impôt . foyer fiscal . revenu fiscal de référence": {
       "get": "impôt . foyer fiscal . revenu fiscal de référence"
@@ -224,8 +224,8 @@
         "||",
         [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
       ],
-      "then": [ 0.363 ],
-      "else": [ 0.34 ]
+      "then": [ 36.3 ],
+      "else": [ 34.0 ]
     },
     "rémunération . impôt": { "get": "rémunération . impôt" },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions": [
@@ -234,7 +234,7 @@
       "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions . taux de répartition"
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux service": [
-      0.0048
+      0.48
     ],
     "établissement": { "get": "établissement" },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . taux": {
@@ -243,8 +243,8 @@
         "||",
         [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
       ],
-      "then": [ 0.212 ],
-      "else": [ 0.232 ]
+      "then": [ 21.2 ],
+      "else": [ 23.2 ]
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès . taux de répartition": {
       "if": [
@@ -264,12 +264,12 @@
             "||",
             [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
           ],
-          "then": [ 0.041 ],
-          "else": [ 0.037 ]
+          "then": [ 4.1 ],
+          "else": [ 3.7 ]
         },
-        "else": [ 0.035 ]
+        "else": [ 3.5 ]
       },
-      "else": [ 0.0325 ]
+      "else": [ 3.25 ]
     },
     "rémunération": { "get": "rémunération" },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement": [
@@ -323,12 +323,12 @@
                 "||",
                 [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
               ],
-              "then": [ 0.141 ],
-              "else": [ 0.154 ]
+              "then": [ 14.1 ],
+              "else": [ 15.4 ]
             },
-            "else": [ 0.164 ]
+            "else": [ 16.4 ]
           },
-          "else": [ 0.174 ]
+          "else": [ 17.4 ]
         },
         "else": {
           "if": [
@@ -348,12 +348,12 @@
                 "||",
                 [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
               ],
-              "then": [ 0.106 ],
-              "else": [ 0.116 ]
+              "then": [ 10.6 ],
+              "else": [ 11.6 ]
             },
-            "else": [ 0.123 ]
+            "else": [ 12.3 ]
           },
-          "else": [ 0.131 ]
+          "else": [ 13.1 ]
         }
       },
       "else": {
@@ -374,17 +374,17 @@
               "||",
               [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
             ],
-            "then": [ 0.036 ],
-            "else": [ 0.039 ]
+            "then": [ 3.6 ],
+            "else": [ 3.9 ]
           },
-          "else": [ 0.041 ]
+          "else": [ 4.1 ]
         },
-        "else": [ 0.044 ]
+        "else": [ 4.4 ]
       }
     },
     "entreprise": { "get": "entreprise" },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès . taux de répartition": [
-      0.031
+      3.1
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès": [
       "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement",
@@ -424,7 +424,7 @@
       ]
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux service": [
-      0.0083
+      0.83
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . maladie-maternité": [
       "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité",
@@ -447,27 +447,27 @@
       "get": "établissement . commune . département"
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux service": [
-      0.0065
+      0.65
     ],
     "dirigeant . auto-entrepreneur . impôt . versement libératoire . montant": [
       [
         "entreprise . chiffre d'affaires . vente restauration hébergement",
         "*",
-        [ [ 0.01 ], "*", [ 1.0 ] ]
+        [ [ 1.0 ], "*", [ 1.0 ] ]
       ],
       "+",
       [
         [
           "entreprise . chiffre d'affaires . service BIC",
           "*",
-          [ [ 0.017 ], "*", [ 1.0 ] ]
+          [ [ 1.7 ], "*", [ 1.0 ] ]
         ],
         "+",
         [
           [
             "entreprise . chiffre d'affaires . service BNC",
             "*",
-            [ [ 0.022 ], "*", [ 1.0 ] ]
+            [ [ 2.2 ], "*", [ 1.0 ] ]
           ],
           "+",
           [ 0.0 ]
@@ -502,7 +502,7 @@
       ]
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux vente": [
-      0.0037
+      0.37
     ],
     "dirigeant . auto-entrepreneur . DROM . seconde période": [],
     "dirigeant . auto-entrepreneur . Cipav . retraite complémentaire": "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire",
@@ -537,7 +537,7 @@
       "else": null
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité . taux de répartition": [
-      0.089
+      8.9
     ],
     "dirigeant . auto-entrepreneur . Acre . taux service BIC": [
       "dirigeant . auto-entrepreneur . Acre . taux Acre", "*",
@@ -561,18 +561,18 @@
             "||",
             [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
           ],
-          "then": [ 0.039 ],
-          "else": [ 0.036 ]
+          "then": [ 3.9 ],
+          "else": [ 3.6 ]
         },
-        "else": [ 0.034 ]
+        "else": [ 3.4 ]
       },
-      "else": [ 0.03 ]
+      "else": [ 3.0 ]
     },
     "entreprise . durée d'activité": {
       "get": "entreprise . durée d'activité"
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions . taux de répartition": [
-      0.297
+      29.7
     ],
     "dirigeant . auto-entrepreneur . revenu net . après impôt": [
       "dirigeant . auto-entrepreneur . revenu net", "-",
@@ -597,8 +597,8 @@
         "||",
         [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
       ],
-      "then": [ 0.0905 ],
-      "else": [ 0.102 ]
+      "then": [ 9.050000000000001 ],
+      "else": [ 10.2 ]
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . autres contributions": [
       "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions",
@@ -671,8 +671,8 @@
         "||",
         [ [ "date", ">=", { "d": "2022-10" } ], "=", false ]
       ],
-      "then": [ 0.128 ],
-      "else": [ 0.123 ]
+      "then": [ 12.8 ],
+      "else": [ 12.3 ]
     },
     "entreprise . date de création": {
       "get": "entreprise . date de création"
@@ -701,10 +701,10 @@
             false
           ]
         ],
-        "then": [ 0.142 ],
-        "else": [ 0.106 ]
+        "then": [ 14.2 ],
+        "else": [ 10.6 ]
       },
-      "else": [ 0.07099999999999999 ]
+      "else": [ 7.1 ]
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base . taux de répartition": {
       "if": [
@@ -724,12 +724,12 @@
             "||",
             [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
           ],
-          "then": [ 0.555 ],
-          "else": [ 0.5075 ]
+          "then": [ 55.5 ],
+          "else": [ 50.75 ]
         },
-        "else": [ 0.476 ]
+        "else": [ 47.6 ]
       },
-      "else": [ 0.4485 ]
+      "else": [ 44.85 ]
     },
     "dirigeant . auto-entrepreneur . Cipav": [
       "entreprise . activité . nature . libérale . réglementée",
@@ -799,14 +799,14 @@
             ]
           ],
           "then": null,
-          "else": [ 0.5 ]
+          "else": [ 50.0 ]
         },
-        "else": [ 0.75 ]
+        "else": [ 75.0 ]
       },
-      "else": [ 0.5 ]
+      "else": [ 50.0 ]
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux vente": [
-      0.0022
+      0.22
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle": {
       "if": [
@@ -835,8 +835,8 @@
         "||",
         [ [ "date", ">=", { "d": "2022-10" } ], "=", false ]
       ],
-      "then": [ 0.22 ],
-      "else": [ 0.212 ]
+      "then": [ 22.0 ],
+      "else": [ 21.2 ]
     },
     "dirigeant . auto-entrepreneur . DROM . première période": [],
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité": [
@@ -909,8 +909,8 @@
             "||",
             [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
           ],
-          "then": [ 0.121 ],
-          "else": [ 0.139 ]
+          "then": [ 12.1 ],
+          "else": [ 13.9 ]
         }
       }
     },
@@ -943,14 +943,14 @@
               "||",
               [ [ "date", ">=", { "d": "2022-10" } ], "=", false ]
             ],
-            "then": [ 0.22 ],
-            "else": [ 0.211 ]
+            "then": [ 22.0 ],
+            "else": [ 21.1 ]
           },
-          "else": [ 0.231 ]
+          "else": [ 23.1 ]
         },
-        "else": [ 0.246 ]
+        "else": [ 24.6 ]
       },
-      "else": [ 0.261 ]
+      "else": [ 26.1 ]
     },
     "impôt . foyer fiscal": { "get": "impôt . foyer fiscal" },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav": {
@@ -971,7 +971,7 @@
       ]
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux vente": [
-      0.0029
+      0.29
     ],
     "dirigeant . auto-entrepreneur . Acre": {
       "if": [
@@ -994,8 +994,8 @@
         "||",
         [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
       ],
-      "then": [ 0.026 ],
-      "else": [ 0.014 ]
+      "then": [ 2.6 ],
+      "else": [ 1.4 ]
     },
     "régime social": { "get": "régime social" },
     "entreprise . chiffre d'affaires . BIC": {
@@ -1007,8 +1007,8 @@
         "||",
         [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
       ],
-      "then": [ 0.313 ],
-      "else": [ 0.288 ]
+      "then": [ 31.3 ],
+      "else": [ 28.8 ]
     },
     "dirigeant . auto-entrepreneur . affiliation CIPAV": "dirigeant . auto-entrepreneur . Cipav",
     "dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement": {
@@ -1035,17 +1035,17 @@
             false
           ]
         ],
-        "then": [ 0.082 ],
-        "else": [ 0.062 ]
+        "then": [ 8.199999999999999 ],
+        "else": [ 6.2 ]
       },
-      "else": [ 0.021 ]
+      "else": [ 2.1 ]
     },
     "établissement . commune . département . outre-mer": {
       "get": "établissement . commune . département . outre-mer"
     },
     "impôt": { "get": "impôt" },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire . taux de répartition": [
-      0.165
+      16.5
     ],
     "dirigeant . auto-entrepreneur . chiffre d'affaires": {
       "get": "dirigeant . auto-entrepreneur . chiffre d'affaires"
@@ -1074,10 +1074,10 @@
             false
           ]
         ],
-        "then": [ 0.142 ],
-        "else": [ 0.106 ]
+        "then": [ 14.2 ],
+        "else": [ 10.6 ]
       },
-      "else": [ 0.036 ]
+      "else": [ 3.6 ]
     },
     "entreprise . activité . nature . libérale . réglementée": {
       "get": "entreprise . activité . nature . libérale . réglementée"
@@ -1141,14 +1141,14 @@
         [
           "entreprise . chiffre d'affaires . service BIC",
           "*",
-          [ [ 0.00044 ], "*", [ 1.0 ] ]
+          [ [ 0.044 ], "*", [ 1.0 ] ]
         ],
         "+",
         [
           [
             "entreprise . chiffre d'affaires . vente restauration hébergement",
             "*",
-            [ [ 0.00015 ], "*", [ 1.0 ] ]
+            [ [ 0.015 ], "*", [ 1.0 ] ]
           ],
           "+",
           [ 0.0 ]
@@ -1161,8 +1161,8 @@
         "||",
         [ [ "date", ">=", { "d": "2024-07" } ], "=", false ]
       ],
-      "then": [ 0.2075 ],
-      "else": [ 0.256 ]
+      "then": [ 20.75 ],
+      "else": [ 25.6 ]
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base": [
       "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC",
@@ -1175,7 +1175,7 @@
       "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base . taux de répartition"
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès . taux de répartition": [
-      0.031
+      3.1
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition": {
       "get": "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition"
@@ -1213,7 +1213,7 @@
       "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . taux"
     ],
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base . taux de répartition": [
-      0.418
+      41.8
     ],
     "entreprise . activité . nature . libérale": {
       "get": "entreprise . activité . nature . libérale"
