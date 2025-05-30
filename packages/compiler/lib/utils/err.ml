@@ -12,6 +12,7 @@ module Code = struct
     | Parsing_invalid_char
     | Parsing_should_be_array
     | Parsing_should_be_object
+    | Parsing_should_be_scalar
     | Parsing_empty_value
     | Parsing_invalid_value
     | Parsing_invalid_rule_name
@@ -55,6 +56,8 @@ module Code = struct
         "E010"
     | Parsing_should_be_object ->
         "E020"
+    | Parsing_should_be_scalar ->
+        "E023"
     | Yaml_duplicate_key ->
         "E011"
     | Parsing_empty_value ->
@@ -109,6 +112,9 @@ let expr_lex_invalid_expression =
 let parsing_should_be_array = (Code.Parsing_should_be_array, "tableau manquant")
 
 let parsing_should_be_object = (Code.Parsing_should_be_object, "objet attendu")
+
+let parsing_should_be_scalar =
+  (Code.Parsing_should_be_scalar, "valeur simple attendue")
 
 let yaml_duplicate_key = (Code.Yaml_duplicate_key, "clé dupliquée dans le YAML")
 

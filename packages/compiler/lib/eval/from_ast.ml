@@ -78,7 +78,9 @@ and unfold_chainable_mecanism ~init mecanisms =
          | Shared_ast.Context context ->
              transform_context ~pos context acc
          | Shared_ast.Default default ->
-             transform_default ~pos default acc )
+             transform_default ~pos default acc
+         | Shared_ast.Type t ->
+             transform_typ t acc )
 
 and transform_sum ~pos nodes =
   List.fold_right nodes
@@ -214,6 +216,19 @@ and transform_is_applicable ~pos value =
   let p = mk ~pos in
   let value = transform_value value in
   p (Binary_op (Pos.mk ~pos Shared_ast.NotEq, value, p (Const Null)))
+
+and transform_typ t value =
+  let pos = Pos.pos t in
+  let typ =
+    match Pos.value t with
+    | Shared_typ.Number None ->
+        Typ.any_number ~pos ()
+    | Shared_typ.Number (Some unit) ->
+        Typ.number_with_unit ~pos unit
+    | Shared_typ.Literal l ->
+        Typ.literal ~pos l
+  in
+  {value with typ}
 
 let from_ast (resolved_ast : Shared_ast.resolved) : t =
   let evalTree =

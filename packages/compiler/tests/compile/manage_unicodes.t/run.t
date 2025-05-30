@@ -1,14 +1,14 @@
 The compiler should correctly manage unicodes in the source code.
 
   $ publicodes compile input.publicodes -o -
-  E020 cette règle n'existe pas [syntax error]
+  E021 cette règle n'existe pas [syntax error]
        ╒══  input.publicodes:1:7 ══
      1 │ test: réééégime
        │       ˘˘˘˘˘˘˘˘˘
    Hint: Ajoutez la règle `réééégime` manquante
    Hint: Vérifiez les erreurs de typos dans le nom de la
          règle
-  E020 cette règle n'existe pas [syntax error]
+  E021 cette règle n'existe pas [syntax error]
        ╒══  input.publicodes:3:7 ══
      2 │ 
      3 │ test: regime

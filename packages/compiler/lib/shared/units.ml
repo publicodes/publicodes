@@ -10,36 +10,38 @@ end
 type t = int StrMap.t [@@deriving sexp, compare]
 
 let pp formatter unit =
-  let map_to_list map =
-    Map.to_alist map
-    |> List.sort ~compare:(fun (_, a) (_, b) -> Int.compare b a)
-  in
-  let positive_units, negative_units =
-    unit |> map_to_list |> List.partition_tf ~f:(fun (_, power) -> power > 0)
-  in
-  let format_unit (unit_name, power) =
-    let abs_power = abs power in
-    if abs_power = 1 then unit_name
-    else unit_name ^ "^" ^ Int.to_string abs_power
-  in
-  let positive_str =
-    positive_units |> List.map ~f:format_unit |> String.concat ~sep:"."
-  in
-  let negative_str =
-    negative_units |> List.map ~f:format_unit |> String.concat ~sep:"."
-  in
-  let units_str =
-    match (positive_str, negative_str) with
-    | "", "" ->
-        ""
-    | pos, "" ->
-        pos
-    | "", neg ->
-        "/" ^ neg
-    | pos, neg ->
-        pos ^ "/" ^ neg
-  in
-  Format.fprintf formatter "%s" units_str
+  if Map.is_empty unit then Format.fprintf formatter "aucune"
+  else
+    let map_to_list map =
+      Map.to_alist map
+      |> List.sort ~compare:(fun (_, a) (_, b) -> Int.compare b a)
+    in
+    let positive_units, negative_units =
+      unit |> map_to_list |> List.partition_tf ~f:(fun (_, power) -> power > 0)
+    in
+    let format_unit (unit_name, power) =
+      let abs_power = abs power in
+      if abs_power = 1 then unit_name
+      else unit_name ^ "^" ^ Int.to_string abs_power
+    in
+    let positive_str =
+      positive_units |> List.map ~f:format_unit |> String.concat ~sep:"."
+    in
+    let negative_str =
+      negative_units |> List.map ~f:format_unit |> String.concat ~sep:"."
+    in
+    let units_str =
+      match (positive_str, negative_str) with
+      | "", "" ->
+          ""
+      | pos, "" ->
+          pos
+      | "", neg ->
+          "/" ^ neg
+      | pos, neg ->
+          pos ^ "/" ^ neg
+    in
+    Format.fprintf formatter "%s" units_str
 
 let parse_unit (unit : string) : t =
   let unit_blk = unit |> String.split ~on:'/' |> List.map ~f:trim in

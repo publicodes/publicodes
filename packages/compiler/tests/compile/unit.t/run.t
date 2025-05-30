@@ -1,6 +1,12 @@
 Simple addition unit with unit :
 
   $ publicodes compile simple-addition.publicodes -o -
+  E023 valeur simple attendue [syntax error]
+       ╒══  simple-addition.publicodes:4:3 ══
+     3 │ rule 2:
+     4 │   somme:
+       │   ˘˘˘˘˘˘
+  
   E017 unités non compatibles [type error]
        ╒══  simple-addition.publicodes:1:26 ══
      1 │ simple expression: 12€ + 5$
@@ -58,8 +64,8 @@ Unit inference :
   E017 unités non compatibles [type error]
        ╒══  unit_inference.publicodes:7:9 ══
      6 │ z:
-     7 │ test: x + 9 mois
-       │         ˘˘˘˘˘˘˘˘ unité: mois
+     7 │ test: x + 9 mois # KO car z est inféré à "mois" et x à "€"
+       │         ˘˘˘˘˘˘˘˘˘ unité: mois
        ╒══  unit_inference.publicodes:4:6 ══
      3 │ 
      4 │ x: z * 4€/mois
@@ -68,8 +74,8 @@ Unit inference :
   E017 unités non compatibles [type error]
        ╒══  unit_inference.publicodes:2:6 ══
      1 │ a: 5€
-     2 │ b: a + 4kg
-       │      ˘˘˘˘˘ unité: kg
+     2 │ b: a + 4kg # KO
+       │      ˘˘˘˘˘˘ unité: kg
        ╒══  unit_inference.publicodes:1:4 ══
      1 │ a: 5€
        │    ˘˘ unité: €
@@ -109,6 +115,66 @@ Unit with percent :
       "e": [ [ 5.0 ], "+", [ 4.0 ] ],
       "b": [ [ [ 10.0 ], "*", [ 50.0 ] ], "*", [ [ 100.0 ], "**", [ -1.0 ] ] ],
       "a": [ [ 5.0 ], "*", [ 15.0 ] ]
+    },
+    "parameters": {},
+    "types": {}
+  }
+  [123]
+
+Add unit information with `unité` mechanism :
+
+  $ publicodes compile mechanism.publicodes -o -
+  E017 unités non compatibles [type error]
+       ╒══  mechanism.publicodes:13:13 ══
+    12 │ 
+    13 │ test b: b + 4 € # KO
+       │             ˘˘˘˘ unité: €
+       ╒══  mechanism.publicodes:11:9 ══
+    10 │   valeur: 5
+    11 │   unité:
+       │          unité: aucune
+  
+  E017 unités non compatibles [type error]
+       ╒══  mechanism.publicodes:4:10 ══
+     3 │   valeur: 5
+     4 │   unité: '%'
+       │          ˘˘˘ unité: %
+       ╒══  mechanism.publicodes:6:13 ══
+     5 │ 
+     6 │ test a: a > 4 € # KO
+       │             ˘˘˘˘ unité: €
+  
+  E017 unités non compatibles [type error]
+       ╒══  mechanism.publicodes:30:10 ══
+    29 │   valeur: d
+    30 │   unité: kg # KO
+       │          ˘˘˘ unité: kg
+       ╒══  mechanism.publicodes:27:10 ══
+    26 │   valeur: d
+    27 │   unité: €
+       │          ˘ unité: €
+  
+  E017 unités non compatibles [type error]
+       ╒══  mechanism.publicodes:20:10 ══
+    19 │   valeur: c
+    20 │   unité: kg # KO
+       │          ˘˘˘ unité: kg
+       ╒══  mechanism.publicodes:17:4 ══
+    16 │ # Incompatible unit
+    17 │ c: 12 €
+       │    ˘˘˘˘ unité: €
+  
+  {
+    "evaluationTree": {
+      "test b": [ "b", "+", [ 4.0 ] ],
+      "b": [ 5.0 ],
+      "d 2": "d",
+      "c": [ 12.0 ],
+      "test a": [ "a", ">", [ 4.0 ] ],
+      "d": [ 12.0 ],
+      "test d": "d",
+      "test c": "c",
+      "a": [ 5.0 ]
     },
     "parameters": {},
     "types": {}

@@ -60,10 +60,12 @@ type 'a value_mechanism =
 and 'a variation = {if_: 'a value; then_: 'a value}
 [@@deriving show, sexp, compare]
 
+(* In the order they are unfolded *)
 and 'a chainable_mechanism =
   | Context of ('a Pos.t * 'a value) list
   | Applicable_if of 'a value
   | Not_applicable_if of 'a value
+  | Type of Shared_typ.t Pos.t
   | Default of 'a value
   | Ceiling of 'a value
   | Floor of 'a value

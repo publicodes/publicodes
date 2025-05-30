@@ -1,11 +1,13 @@
 open Core
 open Utils
 open Utils.Output
+open Shared
 module Any = Utils.Uid.Make ()
 
-type literal = String | Bool | Date [@@deriving sexp, compare, show]
-
-type naked_t = Literal of literal | Number of Number_unit.t | Any of Any.t
+type naked_t =
+  | Literal of Shared_typ.literal
+  | Number of Number_unit.t
+  | Any of Any.t
 
 and t = naked_t Pos.t UnionFind.elem
 
@@ -15,7 +17,7 @@ let any ~pos () : t = mk ~pos (Any (Any.mk ()))
 
 let literal ~pos typ : t = mk ~pos (Literal typ)
 
-let number_with_unit ~pos (unit : Shared.Units.t) : t =
+let number_with_unit ~pos (unit : Units.t) : t =
   mk ~pos (Number (Number_unit.concrete unit))
 
 let any_number ~pos () : t = mk ~pos (Number (Number_unit.any ()))
@@ -54,7 +56,7 @@ let unify (t1 : t) (t2 : t) =
   | _, Any _ ->
       return (UnionFind.merge (fun a _ -> a) t1 t2)
   | Literal l1, Literal l2 ->
-      if [%compare.equal: literal] l1 l2 |> not then
+      if [%compare.equal: Shared_typ.literal] l1 l2 |> not then
         (* Todo replace with a unique type_error, with the pos of the different arguments *)
         error_typ_mismatch ()
       else return t1

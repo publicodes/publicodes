@@ -85,6 +85,8 @@ let resolve_rule ~rule_names rule =
       | Default value ->
           let+ value = map_value value in
           Default value
+      | Type t ->
+          return (Type t)
     in
     (value, pos)
   and map_value_mechanism ((value, pos) : 'a value_mechanism Pos.t) =
