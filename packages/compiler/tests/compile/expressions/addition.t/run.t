@@ -16,7 +16,6 @@ Missing term :
        │                       ˘˘ une valeur ou une référence sont attendues après l'opérateur `**`
    Hint: supprimez l'opérateur `**` ou bien ajoutez une
          expression
-  
   E006 expression malformée [syntax error]
        ╒══  missing_term.publicodes:2:14 ══
      1 │ missing last term: 12 **
@@ -24,7 +23,6 @@ Missing term :
        │              ˘ une valeur ou une référence sont attendues après l'opérateur `+`
    Hint: supprimez l'opérateur `+` ou bien ajoutez une
          expression
-  
   E006 expression malformée [syntax error]
        ╒══  missing_term.publicodes:4:20 ══
      3 │ 
@@ -32,6 +30,5 @@ Missing term :
        │                    ˘˘ une valeur (nombre, booléean, date) ou une référence est attendue AVANT l'opérateur `/`
    Hint: supprimez l'opérateur `/` ou bien ajoutez une
          expression
-  
   [123]
 

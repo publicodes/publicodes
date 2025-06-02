@@ -150,6 +150,7 @@ and parse_primary tokens ctx =
   | (RULE_NAME name, pos) :: rest ->
       parse_rule_name ~pos [name] rest
   | (token, pos) :: _ ->
+      (* Code for nice error printing *)
       let after_op =
         Pos.value ctx
         |> Option.map ~f:Tokens.is_operator
