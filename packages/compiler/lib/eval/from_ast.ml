@@ -6,14 +6,8 @@ open Shared
 (* Helper function to convert between the two constant types *)
 let convert_constant expr_const =
   match expr_const with
-  | Shared_ast.Number (n, None) ->
-      Number n
-  | Shared_ast.Number (n, Some unit) ->
-      if Units.equal unit (Units.parse_unit "%") then
-        let result = n /. 100. in
-        let rounded = Float.round_decimal result ~decimal_digits:15 in
-        Number rounded
-      else Number n
+  | Shared_ast.Number (n, unit) ->
+      Number (n, unit)
   | Shared_ast.Bool b ->
       Bool b
   | Shared_ast.String s ->
@@ -84,14 +78,20 @@ and unfold_chainable_mecanism ~init mecanisms =
          | Shared_ast.Context context ->
              transform_context ~pos context acc
          | Shared_ast.Default default ->
-             transform_default ~pos default acc )
+             transform_default ~pos default acc
+         | Shared_ast.Type t ->
+             transform_typ t acc )
 
 and transform_sum ~pos nodes =
-  List.fold_right nodes ~init:(mk ~pos (Const (Number 0.))) ~f:(fun node acc ->
+  List.fold_right nodes
+    ~init:(mk ~pos (Const (Number (0., None))))
+    ~f:(fun node acc ->
       mk ~pos (Binary_op (Pos.mk ~pos Shared_ast.Add, transform_value node, acc)) )
 
 and transform_product ~pos nodes =
-  List.fold_right nodes ~init:(mk ~pos (Const (Number 1.))) ~f:(fun node acc ->
+  List.fold_right nodes
+    ~init:(mk ~pos (Const (Number (1., None))))
+    ~f:(fun node acc ->
       mk ~pos (Binary_op (Pos.mk ~pos Shared_ast.Mul, transform_value node, acc)) )
 
 and transform_any_of ~pos nodes =
@@ -216,6 +216,19 @@ and transform_is_applicable ~pos value =
   let p = mk ~pos in
   let value = transform_value value in
   p (Binary_op (Pos.mk ~pos Shared_ast.NotEq, value, p (Const Null)))
+
+and transform_typ t value =
+  let pos = Pos.pos t in
+  let typ =
+    match Pos.value t with
+    | Shared_typ.Number None ->
+        Typ.any_number ~pos ()
+    | Shared_typ.Number (Some unit) ->
+        Typ.number_with_unit ~pos unit
+    | Shared_typ.Literal l ->
+        Typ.literal ~pos l
+  in
+  {value with typ}
 
 let from_ast (resolved_ast : Shared_ast.resolved) : t =
   let evalTree =

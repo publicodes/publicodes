@@ -8,13 +8,13 @@ exception Invalid_rule_name of string
 
 let parse_meta mapping =
   let parse_key (key, value) =
+    let* value = get_scalar ~pos:(Pos.pos key) value in
     match get_value key with
     | "description" ->
-        return (Description (value |> get_scalar_exn |> get_value))
+        return (Description (get_value value))
     | "titre" ->
-        return (Title (value |> get_scalar_exn |> get_value))
+        return (Title (get_value value))
     | "public" ->
-        let value = get_scalar_exn value in
         let pos = Pos.pos value in
         let value = get_value value in
         let code, message = Err.invalid_value in

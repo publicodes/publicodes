@@ -1,41 +1,32 @@
 chiffre d'affaires:
-  par défaut: 
-    valeur: 1000
-    inversion avec: revenu net
 
-auto-entrepreneur: 
+
+auto-entrepreneur:
   par défaut: non
 
-date:
-  par défaut: 01/2025
+date: 01/2025
 
 cotisations:
   valeur:
     taux * chiffre d'affaires
   avec:
-    taux: 
-      variations: 
-        - si: date >= 01/2025 
+    taux:
+      variations:
+        - si: date >= 01/2025
           alors: 20%
         - sinon: 15%
 
 charges:
   applicable si:  auto-entrepreneur
+  par défaut:
+    valeur: 10% * chiffre d'affaires
+    plancher: 100€
 
-  
-  par défaut: 
-    10% * chiffre d'affaires 
-
-charges . x: oui
 
 revenu net:
   public: oui
-  par défaut: 
+  par défaut:
     somme:
       - chiffre d'affaires
       - (- cotisations)
       - (- charges)
-
-toto: 
-  public: oui
-  valeur: revenu net

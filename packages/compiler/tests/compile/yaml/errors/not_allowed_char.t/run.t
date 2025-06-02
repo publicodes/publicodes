@@ -7,5 +7,4 @@ Caractère non valide
      1 │ '
        │ ˘
    Hint: Par exemple, `"`, `'`, ou `]`
-  
   [2]

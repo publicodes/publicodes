@@ -72,7 +72,9 @@ let chainable_mechanisms =
       , fun ~pos ~parse value ->
           let+ value = parse ~pos value in
           Default value )
-    ; ("contexte", Mecha_contexte.parse) ]
+    ; ("contexte", Mecha_contexte.parse)
+    ; ("type", Mecha_type.parse_type)
+    ; ("unité", Mecha_type.parse_units) ]
 
 let rec parse ?(error_if_undefined = true) ~pos (yaml : yaml) :
     Ast.value Output.t =
