@@ -22,7 +22,7 @@ export class Engine<T extends Types, P extends Parameters<T>> {
     if (debug) {
       debug.activate()
     }
-    let { value, inputs } = evaluateNode(
+    const { p, v } = evaluateNode(
       evaluationTree,
       evaluationTree[rule],
       context,
@@ -32,13 +32,13 @@ export class Engine<T extends Types, P extends Parameters<T>> {
       debug.log()
     }
 
-    inputs = new Set(inputs)
-    const contextRules = new Set(Object.keys(context))
+    const neededParameters = new Set(p)
+    const parametersInContext = new Set(Object.keys(context))
 
     return {
-      value,
-      inputs: [...inputs],
-      missingVariables: [...inputs.difference(contextRules)],
+      value: v,
+      neededParameters: [...neededParameters],
+      missingParameters: [...neededParameters.difference(parametersInContext)],
     }
   }
 }

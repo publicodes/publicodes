@@ -42,7 +42,8 @@ export type Evaluation<
   R extends RuleName<T>,
 > = {
   value: GetType<T, R> | undefined | null
-  inputs: keyof GetContext<T, P, R>
+  neededParameters: Array<keyof GetContext<T, P, R>>
+  missingParameters: Array<keyof GetContext<T, P, R>>
 }
 
 type UnaryOp = '-' | '∅'

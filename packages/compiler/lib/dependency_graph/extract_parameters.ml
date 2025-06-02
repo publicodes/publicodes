@@ -11,8 +11,8 @@ let remove_duplicates (a : 'a list) : 'a list =
   Set.to_list @@ Set.Poly.of_list a
 
 (* TODO : add inputs in parameters, add type, and log if a param is missing  type info  *)
-let extract_parameters ~(ast : Shared_ast.resolved) ~(eval_tree : Eval.Tree.t)
-    (graph : G.t) =
+let extract_parameters ~(ast : Shared_ast.resolved)
+    ~(eval_tree : Eval.Typed_tree.t) (graph : G.t) =
   let transitive_dependencies =
     Oper.transitive_closure ~reflexive:false graph
   in
@@ -57,7 +57,7 @@ let extract_parameters ~(ast : Shared_ast.resolved) ~(eval_tree : Eval.Tree.t)
   (* We print warning if an output is without type *)
   let warnings =
     List.filter_map outputs ~f:(fun (rule_name, _) ->
-        let typ = Eval.Tree.get_type eval_tree rule_name in
+        let typ = Eval.Typed_tree.get_meta eval_tree rule_name in
         match typ with
         | Literal _ | Number _ ->
             None

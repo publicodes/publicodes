@@ -2,6 +2,7 @@ open Eval_tree
 open Core
 open Utils
 open Shared
+open Typed_tree
 
 (* Helper function to convert between the two constant types *)
 let convert_constant expr_const =
@@ -228,7 +229,7 @@ and transform_typ t value =
     | Shared_typ.Literal l ->
         Typ.literal ~pos l
   in
-  {value with typ}
+  {value with meta= typ}
 
 let from_ast (resolved_ast : Shared_ast.resolved) : t =
   let evalTree =

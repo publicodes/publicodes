@@ -8,8 +8,8 @@ class RuntimeError extends Error {
 }
 
 type Value = {
-  value: number | string | boolean | null | undefined | Date
-  inputs: Array<string>
+  v: number | string | boolean | null | undefined | Date
+  p: Array<string>
 }
 
 let debug_values = false
@@ -34,13 +34,13 @@ export function evaluateNode(
     // -----------------------------
     const result = evaluateNode(evalTree, evalTree[c], context)
     if (debug_values) {
-      debug_values[c] = result.value
+      debug_values[c] = result.v
     }
     return result
   }
 
-  if (c === null) return { value: null, inputs: [] }
-  if (typeof c === 'boolean') return { value: c, inputs: [] }
+  if (c === null) return { v: null, p: [] }
+  if (typeof c === 'boolean') return { v: c, p: [] }
 
   if (!('length' in c)) {
     // -----------------------------
@@ -50,19 +50,15 @@ export function evaluateNode(
     if ('if' in c) {
       const condition = evaluateNode(evalTree, c.if, context)
 
-      if (condition.value === null || condition.value === undefined) {
+      if (condition.v === null || condition.v === undefined) {
         return condition
       }
 
-      const val = evaluateNode(
-        evalTree,
-        condition.value ? c.then : c.else,
-        context,
-      )
+      const val = evaluateNode(evalTree, condition.v ? c.then : c.else, context)
 
       return {
-        value: val.value,
-        inputs: condition.inputs.concat(val.inputs),
+        v: val.v,
+        p: condition.p.concat(val.p),
       }
     }
 
@@ -70,40 +66,40 @@ export function evaluateNode(
     // Date
     // -----------------------------
     if ('d' in c) {
-      return { value: new Date(c.d).valueOf(), inputs: [] }
+      return { v: new Date(c.d).valueOf(), p: [] }
     }
     // -----------------------------
     // Get context
     // -----------------------------
     if ('get' in c) {
-      return { value: context[c.get], inputs: [c.get] }
+      return { v: context[c.get], p: [c.get] }
     }
     // -----------------------------
     // Set context
     // -----------------------------
     if ('context' in c) {
       const newContext = { ...context }
-      const inputs = []
+      const neededParameters = []
       for (const rule in c.context) {
-        const val = evaluateNode(evalTree, val.context[rule], context)
-        newContext[rule] = val.value
-        inputs.push(...val.inputs)
+        const val = evaluateNode(evalTree, c.context[rule], context)
+        newContext[rule] = val.v
+        neededParameters.push(...val.p)
       }
       const value = evaluateNode(evalTree, c.value, newContext)
-      value.inputs.push(...inputs)
+      value.p.push(...neededParameters)
       return value
     }
   }
   if (c.length === 0)
     return {
-      value: undefined,
-      inputs: [],
+      v: undefined,
+      p: [],
     }
 
   if (c.length === 1)
     return {
-      value: c[0],
-      inputs: [],
+      v: c[0],
+      p: [],
     }
 
   // -----------------------------
@@ -115,13 +111,13 @@ export function evaluateNode(
     const op = c[0]
     if (op === '∅') {
       return {
-        value: val.value === undefined,
-        inputs: val.inputs,
+        v: val.v === undefined,
+        p: val.p,
       }
     }
     if (op === '-') {
-      if (typeof val.value !== 'number') return val
-      return { value: -val.value, inputs: val.inputs }
+      if (typeof val.v !== 'number') return val
+      return { v: -val.v, p: val.p }
     }
   }
 
@@ -134,67 +130,69 @@ export function evaluateNode(
     const op = c[1]
 
     // LAZY (First operand)
-    if (left.value === null && LazyNullOps.includes(op)) {
+    if (left.v === null && LazyNullOps.includes(op)) {
       return left
     }
-    if (left.value === 0 && (op === '*' || op === '/' || op === '**')) {
+    if (left.v === 0 && (op === '*' || op === '/' || op === '**')) {
       return left
     }
-    if ((left.value === false || left.value === null) && op === '&&') {
-      return { value: false, inputs: left.inputs }
+    if ((left.v === false || left.v === null) && op === '&&') {
+      return { v: false, p: left.p }
     }
-    if (left.value === true && op === '||') {
+    if (left.v === true && op === '||') {
       return left
     }
 
     // LAZY (Second operand)
     const right = evaluateNode(evalTree, c[2], context)
-    if (left.value === undefined) {
-      if (right.value === 0 && op === '*')
-        return { value: 0, inputs: right.inputs }
-      if (right.value === 0 && op === '**')
-        return { value: 1, inputs: right.inputs }
-      if (right.value === 0 && op === '/')
+    if (left.v === undefined) {
+      if (right.v === 0 && op === '*') return { v: 0, p: right.p }
+      if (right.v === 0 && op === '**') return { v: 1, p: right.p }
+      if (right.v === 0 && op === '/')
         throw new RuntimeError('Division by zero')
-      if (right.value === false && op === '&&')
-        return { value: false, inputs: right.inputs }
-      if (right.value === true && op === '||')
-        return { value: true, inputs: right.inputs }
-      return { value: undefined, inputs: left.inputs.concat(right.inputs) }
+      if (right.v === false && op === '&&') return { v: false, p: right.p }
+      if (right.v === true && op === '||') return { v: true, p: right.p }
+      return {
+        v: undefined,
+        p: left.p.concat(right.p),
+      }
     }
     let v
-    if (right.value === undefined) {
+    if (right.v === undefined) {
       v = undefined
     } else if (op === '+') {
-      v = left.value + right.value
+      v = left.v + right.v
     } else if (op === '-') {
-      v = left.value - right.value
+      v = left.v - right.v
     } else if (op === '*') {
-      v = left.value * right.value
+      v = left.v * right.v
     } else if (op === '/') {
-      v = left.value / right.value
+      v = left.v / right.v
     } else if (op === '**') {
-      v = left.value ** right.value
+      v = left.v ** right.v
     } else if (op === '!=') {
-      v = left.value !== right.value
+      v = left.v !== right.v
     } else if (op === '<') {
-      v = left.value < right.value
+      v = left.v < right.v
     } else if (op === '<=') {
-      v = left.value <= right.value
+      v = left.v <= right.v
     } else if (op === '>') {
-      v = left.value > right.value
+      v = left.v > right.v
     } else if (op === '>=') {
-      v = left.value >= right.value
+      v = left.v >= right.v
     } else if (op === '=') {
-      v = left.value === right.value
+      v = left.v === right.v
     } else if (op === '&&') {
-      v = left.value && right.value
+      v = left.v && right.v
     } else if (op === '||') {
-      v = left.value || right.value
+      v = left.v || right.v
     } else {
       throw new RuntimeError('Internal error : Invalid operation')
     }
-    return { value: v, inputs: left.inputs.concat(right.inputs) }
+    return {
+      v,
+      p: left.p.concat(right.p),
+    }
   }
   throw new RuntimeError('Internal error : Invalid computation')
 }

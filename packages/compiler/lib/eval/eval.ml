@@ -1,5 +1,6 @@
 open Utils.Output
 module Tree = Eval_tree
+module Typed_tree = Typed_tree
 module Parameters = Eval_tree.Parameters
 
 let from_resolved_ast = From_ast.from_ast
