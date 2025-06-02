@@ -46,6 +46,8 @@ let add_logs ~(logs : Log.t list) ((x_opt, logs1) : 'a t) : 'a t =
 
 let default_to ~default = function None, logs -> (Some default, logs) | x -> x
 
+let value ~default = function None, _ -> default | Some x, _ -> x
+
 (* Monadic operators *)
 let ( >>= ) m f = bind m ~f
 

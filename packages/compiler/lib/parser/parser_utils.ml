@@ -1,11 +1,16 @@
-open Utils.Output
 open Core
+open Utils.Output
 open Yaml_parser
 
 let get_value value = (Pos.value value).value
 
-let get_scalar_exn (value : yaml) =
-  match value with `Scalar s -> s | _ -> failwith "Expected scalar"
+let get_scalar ~pos (value : yaml) =
+  match value with
+  | `Scalar s ->
+      return s
+  | _ ->
+      let code, message = Err.parsing_should_be_scalar in
+      fatal_error ~pos ~kind:`Syntax ~code message
 
 let parse_array ~pos
     ~(parse :

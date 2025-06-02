@@ -59,7 +59,7 @@ let extract_parameters ~(ast : Shared_ast.resolved) ~(eval_tree : Eval.Tree.t)
     List.filter_map outputs ~f:(fun (rule_name, _) ->
         let typ = Eval.Tree.get_type eval_tree rule_name in
         match typ with
-        | Concrete _ ->
+        | Literal _ | Number _ ->
             None
         | _ ->
             let code, message = Err.missing_output_type in

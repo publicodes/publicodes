@@ -16,7 +16,6 @@ Objet incomplet #1
      1 │ {a:, b}
        │ ˘
   
-  
   [2]
 
 Objet incomplet #2
@@ -27,5 +26,4 @@ Objet incomplet #2
      2 │ - 14
    Hint: il manque  `}` pour le fermer, ou `,` pour
          ajouter un élément
-  
   [2]
