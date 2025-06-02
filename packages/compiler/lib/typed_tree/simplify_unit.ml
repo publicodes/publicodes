@@ -1,17 +1,14 @@
 open Core
+open Typ
 open Shared
 open Utils
 open Output
-open Typ
-open Typed_tree
 
 let convert ~pos expr from_unit to_unit =
   let percent_pow_from = Map.find from_unit "%" |> Option.value ~default:0 in
   let percent_pow_to = Map.find to_unit "%" |> Option.value ~default:0 in
-  let mk node =
-    Typed_tree.mk ~pos ~typ:(number_with_unit ~pos Units.empty) node
-  in
-  Typed_tree.mk ~pos
+  let mk node = Tree.mk ~pos ~typ:(number_with_unit ~pos Units.empty) node in
+  Tree.mk ~pos
     ~typ:(number_with_unit ~pos to_unit)
     (Binary_op
        ( Pos.mk ~pos Shared_ast.Mul
@@ -42,7 +39,7 @@ Note : this will not work if the user assign a unit to a one that would have bee
 @TODO : we shouldn't allow user to specify unit that are not simplified (for instance %.% or €/% )
 *)
 
-let simplify_value (Eval_tree.{pos; meta= typ; value} as expr) =
+let simplify_value ({pos; meta= typ; value} as expr : Tree.value) : Tree.value =
   match value with
   | Binary_op (((Shared_ast.Mul as op), _), right, left)
   | Binary_op (((Shared_ast.Div as op), _), right, left) ->
@@ -68,4 +65,5 @@ let simplify_value (Eval_tree.{pos; meta= typ; value} as expr) =
   | _ ->
       expr
 
-let simplify (tree : Typed_tree.t) = Hashtbl.map tree ~f:(map ~f:simplify_value)
+let simplify (tree : Tree.t) =
+  Hashtbl.map tree ~f:(Eval_tree.map ~f:simplify_value)

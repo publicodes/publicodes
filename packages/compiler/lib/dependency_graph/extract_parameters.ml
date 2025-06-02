@@ -11,8 +11,8 @@ let remove_duplicates (a : 'a list) : 'a list =
   Set.to_list @@ Set.Poly.of_list a
 
 (* TODO : add inputs in parameters, add type, and log if a param is missing  type info  *)
-let extract_parameters ~(ast : Shared_ast.resolved)
-    ~(eval_tree : Eval.Typed_tree.t) (graph : G.t) =
+let extract_parameters ~(ast : Shared_ast.resolved) ~(tree : Hashed_tree.t)
+    (graph : G.t) =
   let transitive_dependencies =
     Oper.transitive_closure ~reflexive:false graph
   in
@@ -57,18 +57,27 @@ let extract_parameters ~(ast : Shared_ast.resolved)
   (* We print warning if an output is without type *)
   let warnings =
     List.filter_map outputs ~f:(fun (rule_name, _) ->
-        let typ = Eval.Typed_tree.get_meta eval_tree rule_name in
+        let typ = (Eval_tree.get_meta tree rule_name).typ in
         match typ with
-        | Literal _ | Number _ ->
-            None
-        | _ ->
+        | None ->
             let code, message = Err.missing_output_type in
-            let pos = Eval.Tree.get_pos eval_tree rule_name in
+            let pos = Eval_tree.get_pos tree rule_name in
             Some
               (Log.warning ~code ~pos ~kind:`Type
                  ~hints:
                    [ "Spécifiez le type de la règle. Par exemple : `type: texte`"
                    ; Format.asprintf "%a" Rule_name.pp rule_name ]
-                 message ) )
+                 message )
+        | Some (Number None) ->
+            let code, message = Err.missing_output_type in
+            let pos = Eval_tree.get_pos tree rule_name in
+            Some
+              (Log.warning ~code ~pos ~kind:`Type
+                 ~hints:
+                   [ "Spécifiez l'unité de la règle. Par exemple : `unité: €`"
+                   ; Format.asprintf "%a" Rule_name.pp rule_name ]
+                 message )
+        | Some _ ->
+            None )
   in
   return ~logs:warnings outputs

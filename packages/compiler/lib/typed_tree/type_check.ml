@@ -1,12 +1,12 @@
 open Utils
 open Core
 open Utils.Output
+open Typ
 open Shared
 open Shared.Shared_ast
-open Eval_tree
-open Typ
+open Shared.Eval_tree
 
-let type_check (tree : Typed_tree.t) =
+let type_check (tree : Tree.t) =
   let rec unify_value {meta= typ; pos; value} =
     match value with
     | Const const -> (

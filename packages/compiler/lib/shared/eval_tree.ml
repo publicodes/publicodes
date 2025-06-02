@@ -1,5 +1,4 @@
 open Core
-open Shared
 open Utils
 
 type constant =
@@ -31,12 +30,7 @@ and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.pos}
 
 type 'meta t = 'meta value Rule_name.Hashtbl.t
 
-module Parameters = struct
-  type t = (Shared.Rule_name.t * Shared.Rule_name.t list) list
-end
-
-let get_meta eval_tree rule_name =
-  (Hashtbl.find_exn eval_tree rule_name).meta |> UnionFind.get |> Pos.value
+let get_meta eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).meta
 
 let get_pos eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).pos
 

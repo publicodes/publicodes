@@ -65,7 +65,7 @@ and 'a chainable_mechanism =
   | Context of ('a Pos.t * 'a value) list
   | Applicable_if of 'a value
   | Not_applicable_if of 'a value
-  | Type of Shared_typ.t Pos.t
+  | Type of Typ.t Pos.t
   | Default of 'a value
   | Ceiling of 'a value
   | Floor of 'a value

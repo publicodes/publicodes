@@ -1,6 +1,6 @@
 open Shared
 open Utils.Output
-open Shared.Shared_typ
+open Shared.Typ
 open Yaml_parser
 
 let parse_type ~pos ~parse:_ value =
