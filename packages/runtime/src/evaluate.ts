@@ -1,4 +1,4 @@
-import { BinaryOp, EvaluationTree, Computation } from './types'
+import { BinaryOp, Computation } from './types'
 
 class RuntimeError extends Error {
   constructor(message: string) {
@@ -12,21 +12,8 @@ type Value = {
   p: Array<string>
 }
 
-let debug_values = false
-export const debug = {
-  log() {
-    console.table(debug_values)
-  },
-  activate() {
-    debug_values = {}
-  },
-}
-// if (debug_values) {
-//   debug_values[c] = result.v
-// }
-// return result
 export function evaluateNode(
-  evalTree: EvaluationTree,
+  evalTree: readonly Computation[],
   c: Computation,
   context: unknown = {},
 ): Value {
@@ -187,7 +174,9 @@ export function evaluateNode(
       newContext[rule] = val.v
       neededParameters.push(...val.p)
     }
-    const value = evaluateNode(evalTree, c.value, newContext)
+    const value = evaluateNode(evalTree, evalTree[c.value], newContext)
+    // Remove neededParameters that are set in the context
+    value.p = value.p.filter((param) => !(param in c.context))
     value.p.push(...neededParameters)
     return value
   }

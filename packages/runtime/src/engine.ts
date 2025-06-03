@@ -1,5 +1,12 @@
-import { evaluateNode, debug } from './evaluate'
-import { Publicodes, Outputs, GetContext, Evaluation, RuleName } from './types'
+import { evaluateNode } from './evaluate'
+import {
+  Publicodes,
+  Outputs,
+  GetContext,
+  Evaluation,
+  RuleName,
+  Computation,
+} from './types'
 
 export class Engine<O extends Outputs> {
   constructor(private publicodes: Publicodes<O>) {}
@@ -9,21 +16,24 @@ export class Engine<O extends Outputs> {
     context: GetContext<O, R> = {},
     debug = false,
   ): Evaluation<O, R> {
-    const evalTree = this.publicodes.evaluation
+    const evalTree = this.publicodes.evaluation as readonly Computation[]
     const output = this.publicodes.outputs[rule]
     // Todo : convert date in / out
-    // if (debug) {
-    //   debug.activate()
-    // }
+
     const { p, v } = evaluateNode(
       evalTree,
-      evalTree[output.nodeIndex],
+      evalTree[output.nodeIndex!],
       context,
-    ) as unknown as Evaluation<O, R>
+    )
 
-    // if (debug) {
-    //   debug.log()
-    // }
+    if (debug) {
+      const evaluations = evalTree.map((node) => ({
+        value: evaluateNode(evalTree, node, context).v,
+        formula: node,
+      }))
+      // eslint-disable-next-line no-console
+      console.table(evaluations)
+    }
 
     const neededParameters = new Set(p)
     const parametersInContext = new Set(Object.keys(context))
@@ -32,6 +42,6 @@ export class Engine<O extends Outputs> {
       value: v,
       neededParameters: [...neededParameters],
       missingParameters: [...neededParameters.difference(parametersInContext)],
-    }
+    } as Evaluation<O, R>
   }
 }

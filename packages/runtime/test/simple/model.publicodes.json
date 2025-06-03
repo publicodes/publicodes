@@ -23,25 +23,26 @@
     { "get": "chiffre d'affaires" },
     [ "**", 15, 22 ],
     -1.0,
-    [ 24, 26, 25 ],
-    [ "∅", 25 ],
-    { "get": "revenu net" },
-    [ "+", 20, 27 ],
-    [ "+", 28, 39 ],
-    [ "-", 29 ],
-    [ "*", 30, 21 ],
-    [ "*", 31, 20 ],
-    [ 32, 37, 38 ],
-    [ "||", 33, 36 ],
-    [ "=", 34, 8 ],
-    [ ">=", 35, 35 ],
+    [ 24, 29, 30 ],
+    [ "||", 25, 28 ],
+    [ "=", 26, 8 ],
+    [ ">=", 27, 27 ],
     { "date": "2025-01" },
-    [ "=", 34, 6 ],
+    [ "=", 26, 6 ],
     15.0,
     20.0,
-    [ "+", 40, 41 ],
+    { "get": "exemples" },
+    [ "+", 20, 33 ],
+    [ "+", 34, 37 ],
+    [ "-", 35 ],
+    [ "*", 36, 21 ],
+    [ "*", 23, 20 ],
+    [ "+", 38, 39 ],
     [ "-", 0 ],
-    0.0
+    0.0,
+    { "value": 32, "context": { "chiffre d'affaires": 41, "charges": 42 } },
+    100000.0,
+    8000.0
   ],
   "outputs": {
     "auto-entrepreneur": {
@@ -63,15 +64,23 @@
       "type": { "number": null, "unit": "€" },
       "nodeIndex": 20
     },
+    "exemples . CA élevé": {
+      "parameters": {
+        "auto-entrepreneur": null,
+        "charges": null,
+        "chiffre d'affaires": null
+      },
+      "type": { "number": null, "unit": "€" },
+      "nodeIndex": 40
+    },
     "revenu net": {
       "parameters": {
         "auto-entrepreneur": null,
         "charges": null,
-        "chiffre d'affaires": null,
-        "revenu net": null
+        "chiffre d'affaires": null
       },
       "type": { "number": null, "unit": "€" },
-      "nodeIndex": 23
+      "nodeIndex": 32
     }
   }
 }

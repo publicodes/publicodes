@@ -22,13 +22,16 @@ type 'meta naked_value =
   | Ref of Rule_name.t
   | Get_context of Rule_name.t
   | Set_context of 'meta context
+[@@deriving show, sexp]
 
 and 'meta context =
   {context: (Rule_name.t Pos.t * 'meta value) list; value: 'meta value}
+[@@deriving show, sexp]
 
 and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.pos}
+[@@deriving show, sexp]
 
-type 'meta t = 'meta value Rule_name.Hashtbl.t
+type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving sexp, show]
 
 let get_meta eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).meta
 
