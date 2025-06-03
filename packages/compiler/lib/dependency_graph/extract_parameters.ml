@@ -74,8 +74,7 @@ let extract_parameters ~(ast : Shared_ast.resolved) ~(tree : Hashed_tree.t)
             Some
               (Log.warning ~code ~pos ~kind:`Type
                  ~hints:
-                   [ "Spécifiez l'unité de la règle. Par exemple : `unité: €`"
-                   ; Format.asprintf "%a" Rule_name.pp rule_name ]
+                   ["Spécifiez l'unité de la règle. Par exemple : `unité: €`"]
                  message )
         | Some _ ->
             None )

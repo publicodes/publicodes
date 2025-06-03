@@ -164,9 +164,8 @@ dirigeant . auto-entrepreneur . Acre:
         - sinon: taux Acre * cotisations et contributions . cotisations . service BNC Cipav . taux
 
 dirigeant . auto-entrepreneur . Acre . notification calcul ACRE annuel:
-  experimental: oui
-  formule: dirigeant . exonérations . ACRE
-  type: notification
+  public: oui
+  valeur: dirigeant . exonérations . ACRE
   description: |
     Le taux Acre utilisé est celui correspondant au mois courant. Le
     simulateur ne prend pas encore en compte le chevauchement de deux périodes

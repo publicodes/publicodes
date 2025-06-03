@@ -10,10 +10,18 @@ entreprise:
 entreprise . date de création:
 
 entreprise . chiffre d'affaires:
+  unité: €/mois
+  somme:
+    - BIC
+    - service BIC
+    - service BNC
+    - vente restauration hébergement
+
 entreprise . chiffre d'affaires . BIC:
 entreprise . chiffre d'affaires . service BIC:
 entreprise . chiffre d'affaires . service BNC:
 entreprise . chiffre d'affaires . vente restauration hébergement:
+
 
 entreprise . activité:
 entreprise . activité . nature:
@@ -22,8 +30,8 @@ entreprise . activité . nature . libérale . réglementée:
 
 entreprise . durée d'activité:
 entreprise . durée d'activité . en début d'année:
-# entreprise . durée d'activité . années civiles:
-# entreprise . durée d'activité . trimestres civils:
+entreprise . durée d'activité . années civiles:
+entreprise . durée d'activité . trimestres civils:
 
 établissement:
 établissement . commune:

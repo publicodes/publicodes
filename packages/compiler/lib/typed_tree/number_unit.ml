@@ -96,6 +96,13 @@ let unify ~pos1 ~pos2 (u1 : t) (u2 : t) =
             (UnionFind.make (Concrete elem_unit))
         in
         return ()
-  | _, _ ->
+  | {concrete= a; elem= [elem1]; inv= []}, {concrete= b; elem= [elem2]; inv= []}
+  | {concrete= a; elem= []; inv= [elem1]}, {concrete= b; elem= []; inv= [elem2]}
+    ->
+      if Units.equal a b then
+        let _ = UnionFind.union elem1 elem2 in
+        return ()
+      else return ()
+  | _ ->
       (* We could handle additional case for a better unit inference system, but this one is good enough right now *)
       return ()

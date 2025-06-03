@@ -10,6 +10,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions:
     Les cotisations et contributions sociales: https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#cout-durant-vie-auto-entreprise
 
 dirigeant . auto-entrepreneur . cotisations et contributions . TFC:
+  public: oui
   titre: Taxes pour frais de chambre
   note: |
     Nous n’avons pas intégré les exceptions suivantes :
@@ -96,6 +97,8 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . 
       valeur: 0.37%
 
 dirigeant . auto-entrepreneur . cotisations et contributions . CFP:
+  public: oui
+
   titre: Contribution à la formation professionnelle
   acronyme: CFP
   description: |
@@ -130,6 +133,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . CFP:
     shine.fr: https://www.shine.fr/blog/formation-professionnelle-auto-entrepreneur/
 
 dirigeant . auto-entrepreneur . cotisations et contributions . cotisations:
+
   description: |
     Les cotisations sociales donnent à l’auto-entrepreneur accès à une
     protection sociale minimale : une retraite, des soins de santé, des
@@ -258,6 +262,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . cotisations:
           valeur: dirigeant . auto-entrepreneur . cotisations et contributions . CFP
 
     service BIC:
+      public: oui
       description: Cotisations pour la part du chiffre d’affaires en prestation de
         service BIC
       produit:
@@ -267,6 +272,8 @@ dirigeant . auto-entrepreneur . cotisations et contributions . cotisations:
 
       avec:
         taux:
+          public: oui
+
           variations:
             - si: date >= 10/2022
               alors: 21.2%
