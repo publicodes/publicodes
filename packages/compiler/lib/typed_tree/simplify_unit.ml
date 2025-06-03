@@ -14,14 +14,10 @@ let convert ~pos expr from_unit to_unit =
        ( Pos.mk ~pos Shared_ast.Mul
        , expr
        , mk
-           (Binary_op
-              ( Pos.mk ~pos Shared_ast.Pow
-              , mk (Const (Number (100., None)))
-              , mk
-                  (Const
-                     (Number (float (percent_pow_to - percent_pow_from), None))
-                  ) ) ) ) )
-
+           (Const
+              (Number
+                 (100. ** Float.of_int (percent_pow_to - percent_pow_from), None)
+              ) ) ) )
 (* TODO : step 1 - normalize every unit. If some are undetermined, default to empty, and print a warning *)
 
 (**Simplify percentage units at the right place in the tree
@@ -57,8 +53,7 @@ let simplify_value ({pos; meta= typ; value} as expr : Tree.value) : Tree.value =
           | _ ->
               failwith "Unexpected operator"
         in
-        if not (equal op_unit unit) then
-          return (convert ~pos expr right_unit left_unit)
+        if not (equal op_unit unit) then return (convert ~pos expr op_unit unit)
         else return expr
       in
       new_expr |> Output.value ~default:expr

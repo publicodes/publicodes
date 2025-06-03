@@ -104,5 +104,5 @@ let unify ~pos1 ~pos2 (u1 : t) (u2 : t) =
         return ()
       else return ()
   | _ ->
-      (* We could handle additional case for a better unit inference system, but this one is good enough right now *)
+      (* We could maybe handle additional case for a better unit inference system, but this one is good enough right now *)
       return ()

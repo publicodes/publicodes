@@ -92,7 +92,7 @@ and transform_sum ~pos nodes =
 
 and transform_product ~pos nodes =
   List.fold_right nodes
-    ~init:(mk ~pos (Const (Number (1., None))))
+    ~init:(mk ~pos (Const (Number (1., Some Units.empty))))
     ~f:(fun node acc ->
       mk ~pos (Binary_op (Pos.mk ~pos Shared_ast.Mul, transform_value node, acc)) )
 

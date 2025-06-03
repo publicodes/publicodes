@@ -14,7 +14,6 @@ open Shared.Eval_tree
 
 let rec transform_to_hash_and_type ({value; meta= typ; pos} : Typed_tree.value)
     : Tree.value =
-  let typ_concrete = Typed_tree.Typ.to_concrete typ in
   let transform_naked_value = function
     | Eval_tree.Const const ->
         let hash = of_constant const in
@@ -70,6 +69,7 @@ let rec transform_to_hash_and_type ({value; meta= typ; pos} : Typed_tree.value)
         (Eval_tree.Set_context {context= context'; value= value'}, hash)
   in
   let new_value, hash = transform_naked_value value in
+  let typ_concrete = Typed_tree.Typ.to_concrete typ in
   {value= new_value; meta= {typ= typ_concrete; hash}; pos}
 
 let from_typed_tree (tree : Typed_tree.t) : Tree.t =

@@ -26,10 +26,10 @@ type 'meta naked_value =
 
 and 'meta context =
   {context: (Rule_name.t Pos.t * 'meta value) list; value: 'meta value}
-[@@deriving show, sexp]
+[@@deriving sexp, show]
 
 and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.pos}
-[@@deriving show, sexp]
+[@@deriving sexp, show]
 
 type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving sexp, show]
 
