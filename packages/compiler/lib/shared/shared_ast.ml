@@ -89,6 +89,21 @@ type 'a t = 'a program [@@deriving show, sexp, compare]
 
 type resolved = Rule_name.t t [@@deriving show, sexp, compare]
 
+let binary_op_to_string = function
+  | Add -> "+"
+  | Sub -> "-"
+  | Mul -> "*"
+  | Div -> "/"
+  | Pow -> "**"
+  | Gt -> ">"
+  | Lt -> "<"
+  | GtEq -> ">="
+  | LtEq -> "<="
+  | Eq -> "="
+  | NotEq -> "!="
+  | And -> "&&"
+  | Or -> "||"
+
 (** Map expression *)
 let has_public_tag rule_def =
   List.exists ~f:(function Public -> true | _ -> false) rule_def.meta

@@ -8,17 +8,20 @@ exception Invalid_rule_name of string
 
 let parse_meta mapping =
   let parse_key (key, value) =
-    let* value = get_scalar ~pos:(Pos.pos key) value in
+    let scalar_value () = get_scalar ~pos:(Pos.pos key) value in
     match get_value key with
     | "description" ->
+        let* value = scalar_value () in
         return (Description (get_value value))
     | "titre" ->
+        let* value = scalar_value () in
         return (Title (get_value value))
     | "public" ->
+        let* value = scalar_value () in
         let pos = Pos.pos value in
         let value = get_value value in
-        let code, message = Err.invalid_value in
         if not (String.equal value "oui" || String.equal value "") then
+          let code, message = Err.invalid_value in
           fatal_error ~pos ~code ~kind:`Syntax message
             ~labels:[Pos.mk ~pos "doit valoir `oui` ou être vide"]
             ~hints:

@@ -34,7 +34,7 @@ let extract_parameters ~(ast : Shared_ast.resolved) ~(tree : Hashed_tree.t)
           in
           not (Shared_ast.has_value rule_definition) )
     in
-    (rule_name, parameter_rules)
+    (rule_name, remove_duplicates parameter_rules)
   in
   let outputs_with_params =
     List.filter_map ast ~f:(fun rule_def ->

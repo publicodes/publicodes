@@ -1,36 +1,29 @@
 import { evaluateNode, debug } from './evaluate'
-import {
-  Publicodes,
-  Types,
-  Parameters,
-  GetContext,
-  Evaluation,
-  RuleName,
-  EvaluationTree,
-} from './types'
+import { Publicodes, Outputs, GetContext, Evaluation, RuleName } from './types'
 
-export class Engine<T extends Types, P extends Parameters<T>> {
-  constructor(private publicodes: Publicodes<T, P>) {}
+export class Engine<O extends Outputs> {
+  constructor(private publicodes: Publicodes<O>) {}
 
-  evaluate<R extends RuleName<T>>(
+  evaluate<R extends RuleName<O>>(
     rule: R,
-    context: GetContext<T, P, R> = {},
+    context: GetContext<O, R> = {},
     debug = false,
-  ): Evaluation<T, P, R> {
-    const evaluationTree = this.publicodes.evaluationTree as EvaluationTree
+  ): Evaluation<O, R> {
+    const evalTree = this.publicodes.evaluation
+    const output = this.publicodes.outputs[rule]
     // Todo : convert date in / out
-    if (debug) {
-      debug.activate()
-    }
+    // if (debug) {
+    //   debug.activate()
+    // }
     const { p, v } = evaluateNode(
-      evaluationTree,
-      evaluationTree[rule],
+      evalTree,
+      evalTree[output.nodeIndex],
       context,
-    ) as unknown as Evaluation<T, P, R>
+    ) as unknown as Evaluation<O, R>
 
-    if (debug) {
-      debug.log()
-    }
+    // if (debug) {
+    //   debug.log()
+    // }
 
     const neededParameters = new Set(p)
     const parametersInContext = new Set(Object.keys(context))

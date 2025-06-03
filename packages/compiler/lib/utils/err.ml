@@ -107,14 +107,14 @@ let missing_closing_paren =
 let invalid_char = (Code.Parsing_invalid_char, "caractère invalide")
 
 let expr_lex_invalid_expression =
-  (Code.Expr_lex_invalid_expression, "expression est invalide")
+  (Code.Expr_lex_invalid_expression, "expression invalide")
 
 let parsing_should_be_array = (Code.Parsing_should_be_array, "tableau manquant")
 
 let parsing_should_be_object = (Code.Parsing_should_be_object, "objet attendu")
 
 let parsing_should_be_scalar =
-  (Code.Parsing_should_be_scalar, "valeur simple attendue")
+  (Code.Parsing_should_be_scalar, "objet ou un tableau impossible")
 
 let yaml_duplicate_key = (Code.Yaml_duplicate_key, "clé dupliquée dans le YAML")
 

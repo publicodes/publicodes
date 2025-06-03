@@ -1,89 +1,77 @@
 {
-  "evaluationTree": {
-    "cotisations": [
-      [ "cotisations . taux", "*", "chiffre d'affaires" ],
-      "*",
-      [ [ 100.0 ], "**", [ -1.0 ] ]
-    ],
-    "date": { "d": "2025-01" },
+  "evaluation": [
+    [ 1, 8, 9 ],
+    [ "||", 2, 7 ],
+    [ "=", 3, 6 ],
+    [ 4, 6, 5 ],
+    [ "∅", 5 ],
+    { "get": "auto-entrepreneur" },
+    false,
+    [ "∅", 3 ],
+    null,
+    [ 10, 12, 11 ],
+    [ "∅", 11 ],
+    { "get": "charges" },
+    [ 13, 15, 17 ],
+    [ "&&", 14, 16 ],
+    [ "!=", 15, 8 ],
+    100.0,
+    [ ">", 17, 15 ],
+    [ "*", 18, 21 ],
+    [ "*", 19, 20 ],
+    10.0,
+    { "get": "chiffre d'affaires" },
+    [ "**", 15, 22 ],
+    -1.0,
+    [ 24, 26, 25 ],
+    [ "∅", 25 ],
+    { "get": "revenu net" },
+    [ "+", 20, 27 ],
+    [ "+", 28, 39 ],
+    [ "-", 29 ],
+    [ "*", 30, 21 ],
+    [ "*", 31, 20 ],
+    [ 32, 37, 38 ],
+    [ "||", 33, 36 ],
+    [ "=", 34, 8 ],
+    [ ">=", 35, 35 ],
+    { "date": "2025-01" },
+    [ "=", 34, 6 ],
+    15.0,
+    20.0,
+    [ "+", 40, 41 ],
+    [ "-", 0 ],
+    0.0
+  ],
+  "outputs": {
     "auto-entrepreneur": {
-      "if": [ "∅", { "get": "auto-entrepreneur" } ],
-      "then": false,
-      "else": { "get": "auto-entrepreneur" }
+      "parameters": { "auto-entrepreneur": null },
+      "type": { "boolean": null },
+      "nodeIndex": 3
     },
-    "cotisations . taux": {
-      "if": [
-        [ [ "date", ">=", { "d": "2025-01" } ], "=", null ],
-        "||",
-        [ [ "date", ">=", { "d": "2025-01" } ], "=", false ]
-      ],
-      "then": [ 15.0 ],
-      "else": [ 20.0 ]
+    "charges": {
+      "parameters": {
+        "auto-entrepreneur": null,
+        "charges": null,
+        "chiffre d'affaires": null
+      },
+      "type": { "number": null, "unit": "€" },
+      "nodeIndex": 0
+    },
+    "chiffre d'affaires": {
+      "parameters": { "chiffre d'affaires": null },
+      "type": { "number": null, "unit": "€" },
+      "nodeIndex": 20
     },
     "revenu net": {
-      "if": [ "∅", { "get": "revenu net" } ],
-      "then": [
-        "chiffre d'affaires",
-        "+",
-        [ [ "-", "cotisations" ], "+", [ [ "-", "charges" ], "+", [ 0.0 ] ] ]
-      ],
-      "else": { "get": "revenu net" }
-    },
-    "chiffre d'affaires": { "get": "chiffre d'affaires" },
-    "charges": {
-      "if": [
-        [ "auto-entrepreneur", "=", false ],
-        "||",
-        [ "∅", "auto-entrepreneur" ]
-      ],
-      "then": null,
-      "else": {
-        "if": [ "∅", { "get": "charges" } ],
-        "then": {
-          "if": [
-            [ [ 100.0 ], "!=", null ],
-            "&&",
-            [
-              [
-                [ [ 10.0 ], "*", "chiffre d'affaires" ],
-                "*",
-                [ [ 100.0 ], "**", [ -1.0 ] ]
-              ],
-              ">",
-              [ 100.0 ]
-            ]
-          ],
-          "then": [ 100.0 ],
-          "else": [
-            [ [ 10.0 ], "*", "chiffre d'affaires" ],
-            "*",
-            [ [ 100.0 ], "**", [ -1.0 ] ]
-          ]
-        },
-        "else": { "get": "charges" }
-      }
+      "parameters": {
+        "auto-entrepreneur": null,
+        "charges": null,
+        "chiffre d'affaires": null,
+        "revenu net": null
+      },
+      "type": { "number": null, "unit": "€" },
+      "nodeIndex": 23
     }
-  },
-  "parameters": {
-    "auto-entrepreneur": { "auto-entrepreneur": null },
-    "charges": {
-      "chiffre d'affaires": null,
-      "charges": null,
-      "auto-entrepreneur": null
-    },
-    "chiffre d'affaires": { "chiffre d'affaires": null },
-    "revenu net": {
-      "revenu net": null,
-      "chiffre d'affaires": null,
-      "chiffre d'affaires": null,
-      "charges": null,
-      "auto-entrepreneur": null
-    }
-  },
-  "types": {
-    "auto-entrepreneur": { "boolean": null },
-    "charges": { "number": null, "unit": "€" },
-    "chiffre d'affaires": { "number": null, "unit": "€" },
-    "revenu net": { "number": null, "unit": "€" }
   }
 }

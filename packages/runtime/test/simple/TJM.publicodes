@@ -1,6 +1,5 @@
 chiffre d'affaires:
-
-
+  unité: €
 auto-entrepreneur:
   par défaut: non
 
@@ -30,3 +29,11 @@ revenu net:
       - chiffre d'affaires
       - (- cotisations)
       - (- charges)
+
+# exemples:
+# exemples . CA élevé:
+#   public: oui
+#   valeur: revenu net
+  # contexte:
+  #   chiffre d'affaires: 100000€
+  #   charges: 8000€
