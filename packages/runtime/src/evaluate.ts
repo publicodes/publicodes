@@ -7,12 +7,12 @@ class RuntimeError extends Error {
   }
 }
 
-type Value = {
+export type Value = {
   v: number | string | boolean | null | undefined | Date
   p: Array<string>
 }
 
-export function evaluateNode(
+function evaluateNode(
   evalTree: readonly Computation[],
   c: Computation,
   context: unknown = {},
@@ -184,3 +184,5 @@ export function evaluateNode(
 }
 
 const LazyNullOps: BinaryOp[] = ['*', '/', '**', '<', '<=', '>', '>=']
+
+export default evaluateNode

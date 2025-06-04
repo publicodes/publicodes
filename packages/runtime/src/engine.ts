@@ -1,4 +1,5 @@
-import { evaluateNode } from './evaluate'
+import evaluateNode, { Value } from './evaluate'
+import { Memoizer } from './memoize'
 import {
   Publicodes,
   Outputs,
@@ -8,32 +9,48 @@ import {
   Computation,
 } from './types'
 
+type EngineOptions = {
+  cache?: boolean
+}
+
 export class Engine<O extends Outputs> {
-  constructor(private publicodes: Publicodes<O>) {}
+  private memo?: Memoizer<Computation, unknown, Value>
+  private evaluation: readonly Computation[]
+  private outputs: O
+  private evaluateNode: (c: Computation, context: unknown) => Value
+
+  constructor(publicodes: Publicodes<O>, options: EngineOptions = {}) {
+    const { cache = false } = options
+    this.evaluation = publicodes.evaluation as readonly Computation[]
+    this.outputs = publicodes.outputs
+    this.evaluateNode = evaluateNode.bind(null, this.evaluation)
+
+    if (cache) {
+      this.memo = new Memoizer(evaluateNode.bind(null, this.evaluation))
+      this.evaluateNode = this.memo.call.bind(this.memo)
+    }
+  }
 
   evaluate<R extends RuleName<O>>(
     rule: R,
     context: GetContext<O, R> = {},
     debug = false,
   ): Evaluation<O, R> {
-    const output = this.publicodes.outputs[rule]
+    const output = this.outputs[rule]
     if (output === undefined) {
       throw new Error(`Rule "${rule}" does't exists as an output of the model`)
     }
 
-    const evalTree = this.publicodes.evaluation as readonly Computation[]
-
     // Todo : convert date in / out
 
-    const { p, v } = evaluateNode(
-      evalTree,
-      evalTree[output.nodeIndex!],
+    const { p, v } = this.evaluateNode(
+      this.evaluation[output.nodeIndex!],
       context,
     )
 
     if (debug) {
-      const evaluations = evalTree.map((node) => ({
-        value: evaluateNode(evalTree, node, context).v,
+      const evaluations = this.evaluation.map((node: Computation) => ({
+        value: evaluateNode(this.evaluation, node, context).v,
         formula: node,
       }))
       // eslint-disable-next-line no-console
@@ -48,5 +65,9 @@ export class Engine<O extends Outputs> {
       neededParameters: [...neededParameters],
       missingParameters: [...neededParameters.difference(parametersInContext)],
     } as Evaluation<O, R>
+  }
+
+  resetCache() {
+    this.memo?.reset()
   }
 }

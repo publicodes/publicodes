@@ -41,26 +41,45 @@ summary(() => {
   const legacyEngineAE = new LegacyEngine(autoEntrepreneurLegacyRules)
 
   // Auto-entrepreneur model evaluations
-  bench('New Engine - Auto-entrepreneur evaluation', () => {
+  bench('New Engine - evaluation without cache', () => {
+    newEngineAE.resetCache()
     return newEngineAE.evaluate(
       'dirigeant . auto-entrepreneur . revenu net',
       contexte,
     )
   })
 
-  bench('Legacy Engine - Auto-entrepreneur evaluation - without cache', () => {
+  bench('Legacy Engine - evaluation without cache', () => {
     legacyEngineAE.setSituation(situation)
+    return legacyEngineAE.evaluate('dirigeant . auto-entrepreneur . revenu net')
+  })
+})
+
+summary(() => {
+  const newEngineAE = new NewEngine(autoEntrepreneurNewRules, { cache: true })
+  const legacyEngineAE = new LegacyEngine(autoEntrepreneurLegacyRules)
+
+  // Auto-entrepreneur model evaluations
+  bench('New Engine - evaluation with cache', () => {
+    return newEngineAE.evaluate(
+      'dirigeant . auto-entrepreneur . revenu net',
+      contexte,
+    )
+  })
+
+  legacyEngineAE.setSituation(situation)
+  bench('Legacy Engine - evaluation with cache', () => {
     return legacyEngineAE.evaluate('dirigeant . auto-entrepreneur . revenu net')
   })
 })
 
 // Complex scenario benchmarks for auto-entrepreneur
 summary(() => {
-  const newEngineAE = new NewEngine(autoEntrepreneurNewRules)
+  const newEngineAE = new NewEngine(autoEntrepreneurNewRules, { cache: true })
   const legacyEngineAE = new LegacyEngine(autoEntrepreneurLegacyRules)
 
   // Multiple evaluations scenario
-  bench('New Engine - Multiple evaluations (Auto-entrepreneur)', () => {
+  bench('New Engine - Multiple evaluations with cache', () => {
     const results = []
     results.push(
       newEngineAE.evaluate(
@@ -77,7 +96,7 @@ summary(() => {
     return results
   })
 
-  bench('Legacy Engine - Multiple evaluations (Auto-entrepreneur)', () => {
+  bench('Legacy Engine - Multiple evaluations with cache', () => {
     legacyEngineAE.setSituation(situation)
     const results = []
     results.push(
