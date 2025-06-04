@@ -27,6 +27,9 @@ entreprise . activité:
 entreprise . activité . nature:
 entreprise . activité . nature . libérale:
 entreprise . activité . nature . libérale . réglementée:
+entreprise . activités:
+entreprise . activités . revenus mixtes:
+revenu imposable:
 
 entreprise . durée d'activité:
 entreprise . durée d'activité . en début d'année:

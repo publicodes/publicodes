@@ -1,5 +1,36 @@
 # publicodes
 
+## 1.9.0
+
+### Minor Changes
+
+- [#702](https://github.com/publicodes/publicodes/pull/702) [`c1b8205`](https://github.com/publicodes/publicodes/commit/c1b8205fba1a12abfa0118e02249501fed550337) Thanks [@johangirod](https://github.com/johangirod)! - Add flag `automaticNamespaceDisabling` to control automatic namespace disabling
+
+    By default, all the children of a rule that evaluate to "false" or "not applicable" are not applicable.
+    This new flag allow to remove this behavior.
+
+## 1.8.5
+
+### Patch Changes
+
+- [#688](https://github.com/publicodes/publicodes/pull/688) [`841ab02`](https://github.com/publicodes/publicodes/commit/841ab022cadf900cdc5318e2cdd115efa51cc95e) Thanks [@Clemog](https://github.com/Clemog)! - fix(core): use dottedName to access ruleName instead of name for context missing variables evaluation
+
+- [#688](https://github.com/publicodes/publicodes/pull/688) [`841ab02`](https://github.com/publicodes/publicodes/commit/841ab022cadf900cdc5318e2cdd115efa51cc95e) Thanks [@Clemog](https://github.com/Clemog)! - fix(core): `contexte` rules can't be missingVariables
+
+## 1.8.4
+
+### Patch Changes
+
+- [#684](https://github.com/publicodes/publicodes/pull/684) [`c00ddef`](https://github.com/publicodes/publicodes/commit/c00ddefdff5cd2edb970066a7d6d7975fe77eeba) Thanks [@Clemog](https://github.com/Clemog)! - fix(core): `contexte` rules can't be missingVariables
+
+- [#681](https://github.com/publicodes/publicodes/pull/681) [`6aa06de`](https://github.com/publicodes/publicodes/commit/6aa06de353f5a4ae22f311227c812690202dc1ce) Thanks [@Clemog](https://github.com/Clemog)! - fix(core): situation error now throw
+
+## 1.8.3
+
+### Patch Changes
+
+- [#678](https://github.com/publicodes/publicodes/pull/678) [`4746642`](https://github.com/publicodes/publicodes/commit/47466427260ea6f2e382d9537710907a35135390) Thanks [@Clemog](https://github.com/Clemog)! - Use `warning` function for situation issues
+
 ## 1.8.2
 
 ### Patch Changes

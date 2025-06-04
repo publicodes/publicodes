@@ -1,5 +1,6 @@
 dirigeant . auto-entrepreneur . cotisations et contributions:
   unité: €/mois
+  public: oui
   somme:
     - cotisations
     - TFC
@@ -73,11 +74,11 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . 
 
   avec:
     taux service:
-      remplace: taux service
+      # remplace: taux service
       valeur: 0.65%
 
     taux vente:
-      remplace: taux vente
+      # remplace: taux vente
       valeur: 0.29%
 
 dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle:
@@ -89,11 +90,11 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . 
 
   avec:
     taux service:
-      remplace: taux service
+      # remplace: taux service
       valeur: 0.83%
 
     taux vente:
-      remplace: taux vente
+      # remplace: taux vente
       valeur: 0.37%
 
 dirigeant . auto-entrepreneur . cotisations et contributions . CFP:

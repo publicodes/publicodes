@@ -25,13 +25,21 @@
     "dist/"
   ],
   "devDependencies": {
+    "@publicodes/tools": "workspace:^",
     "rolldown": "1.0.0-beta.8",
     "tsc": "^2.0.4",
     "vitest": "^3.1.2"
   },
   "scripts": {
     "build": "rolldown -c rolldown.config.js",
+    "test:compile-legacy:auto-entrepreneur": "cd ./test/auto-entrepreneur; publicodes compile -o legacy-build './*.publicodes'",
+    "test:compile-legacy:simple": "cd ./test/simple; publicodes compile -o legacy-build './*.publicodes'",
+    "benchmark:prepare": "run test:compile-legacy:auto-entrepreneur && run test:compile-legacy:simple && run build",
+    "benchmark": "bun ./benchmark/simple.js; bun ./benchmark/auto-entrepreneur.js",
     "test": "vitest",
     "test:type": "tsc --noEmit"
+  },
+  "dependencies": {
+    "mitata": "^1.0.34"
   }
 }

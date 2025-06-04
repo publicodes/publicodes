@@ -62,6 +62,12 @@ export type FlagOptions = {
 	 * @default false
 	 */
 	filterNotApplicablePossibilities?: boolean
+
+	/**
+	 * If true, a non applicable or false rule will automatically make all its children non applicable
+	 * @default true
+	 */
+	automaticNamespaceDisabling?: boolean
 }
 
 export type WarnOptions = {
@@ -85,6 +91,11 @@ export type WarnOptions = {
 	 * @default true
 	 */
 	deprecatedSyntax?: boolean
+	/**
+	 * Enable warnings for situation issues. Warnings can be raised when the situation contains rules that are not in the base rules or when a value we try to set is not valid (it doesn't exist in the list of possible values for a given rule).
+	 * @default true
+	 */
+	situationIssues?: boolean
 }
 
 /**

@@ -16,8 +16,13 @@ export class Engine<O extends Outputs> {
     context: GetContext<O, R> = {},
     debug = false,
   ): Evaluation<O, R> {
-    const evalTree = this.publicodes.evaluation as readonly Computation[]
     const output = this.publicodes.outputs[rule]
+    if (output === undefined) {
+      throw new Error(`Rule "${rule}" does't exists as an output of the model`)
+    }
+
+    const evalTree = this.publicodes.evaluation as readonly Computation[]
+
     // Todo : convert date in / out
 
     const { p, v } = evaluateNode(
