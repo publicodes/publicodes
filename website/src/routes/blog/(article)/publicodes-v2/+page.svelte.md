@@ -1,25 +1,25 @@
 ---
-title: 'Publicodes v2'
+title: 'Publicodes V2'
 description: 'Après cinq ans à faire évoluer Publicodes de façon organique, nous franchissons une étape majeure : nous travaillons depuis un mois sur une nouvelle version entièrement repensée...'
 author: Johan Girod
 date: 2025-06-06
-tags: nouveautés, langage, v2
+tags: nouveautés, langage, V2
 icon: 🌱
 featured: true
 ---
 
-## Publicodes v2 : un compilateur pour fiabiliser et accélérer vos calculs
+## Publicodes V2 : un compilateur pour fiabiliser et accélérer vos calculs
 
 Après cinq ans à faire évoluer Publicodes de façon organique, nous franchissons une **étape majeure** : nous travaillons depuis un mois sur une **nouvelle version entièrement repensée**. Les premiers résultats sont très encourageants et nous confortent dans cette direction ambitieuse.
 
-## Pourquoi une v2 ?
+## Pourquoi une V2 ?
 
 Publicodes a grandi rapidement. A présent, il est utilisé par de **nombreuses équipes** dans des cas d'usage toujours plus variés… Cette adoption révèle aussi les limites du système actuel :
 
 - **Performance** : sur des bases de règles importantes, les temps de calcul deviennent problématiques
 - **Fiabilité** : le système d'évaluation actuel manque de spécifications claires, ce qui génère des comportements imprévisibles
 - **Usabilité** : pensé pour le domaine du calcul de cotisation sociale, il se retrouve aujourd'hui utilisé pour modéliser des domaines beaucoup plus varié
-  Résoudre ces problèmes en profondeur nécessite de repenser l'architecture. D'où cette v2, dont le développement a été financé jusque là par mon-entreprise (Urssaf).
+  Résoudre ces problèmes en profondeur nécessite de repenser l'architecture. D'où cette V2, dont le développement a été financé jusque là par mon-entreprise (Urssaf).
 
 ### Faciliter la modélisation
 
@@ -45,7 +45,7 @@ Le flot d’exécution des programmes doivent être plus explicite possible et n
 
 #### De nouveaux concepts
 
-La v2 introduit de nouveaux éléments :
+La V2 introduit de nouveaux éléments :
 
 - Un attribut **« public »** pour spécifier les règles à exporter dans le modèle
 - Le concept de **« missingVariable »** a été repensé, au profit d'un concept de « parameters »
@@ -53,7 +53,7 @@ La v2 introduit de nouveaux éléments :
 
 ## Une nouvelle architecture
 
-Le choix technique fort de cette v2 : passer d'un langage interprété en TypeScript à un langage compilé. Concrètement :
+Le choix technique fort de cette V2 : passer d'un langage interprété en TypeScript à un langage compilé. Concrètement :
 
 1. Un **compilateur en OCaml** analyse et transforme vos règles Publicodes
 2. Il génère un **arbre d'évaluation minimal** prêt à être exécuté
@@ -67,7 +67,7 @@ Après un mois de développement, le prototype dépasse déjà nos attentes.
 
 ## On a besoin de vous !
 
-Cette v2 est l'occasion de construire ensemble le futur de Publicodes. De nombreuses décisions de design restent à prendre :
+Cette V2 est l'occasion de construire ensemble le futur de Publicodes. De nombreuses décisions de design restent à prendre :
 
 - Quelle syntaxe pour la désactivation de branche ?
 - Comment traiter les cycles détectés ?
@@ -79,8 +79,10 @@ Et sûrement plein d'autres sujets que vous souhaitez remonter !
 
 ## Rejoignez les cafés Publicodes !
 
-Pour discuter de tout cela, nous orienterons les prochains cafés sur la V2 :
-📅 Premier rendez-vous : jeudi 12 juin à 14h
+Pour discuter de tout cela, nous orienterons les prochains cafés sur la V2.
+
+**📅 Premier rendez-vous : jeudi 12 juin à 14h**
+
 Au programme :
 
 - **Démo du prototype actuel**, et des gains de performance.
@@ -89,6 +91,6 @@ Au programme :
 
 👉 [Inscrivez-vous sur Matrix](https://matrix.to/#/!YRcQoqdiDpEfylLMDr:matrix.org) pour recevoir le lien de connexion
 
-Cette v2 est une opportunité unique de repenser Publicodes avec toute l'expérience accumulée. Votre expertise et vos retours sont essentiels pour faire les bons choix.
+Cette V2 est une opportunité unique de repenser Publicodes avec toute l'expérience accumulée. Votre expertise et vos retours sont essentiels pour faire les bons choix.
 
 À très bientôt pour construire ensemble le futur de Publicodes !
