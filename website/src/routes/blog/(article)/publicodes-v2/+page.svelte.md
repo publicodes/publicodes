@@ -1,6 +1,6 @@
 ---
 title: 'Publicodes v2'
-description: 'Après cinq ans à faire évoluer Publicodes de façon organique, nous franchissons une étape majeure : nous travaillons depuis un mois sur une nouvelle version entièrement repensée. Les premiers résultats sont très encourageants et nous confortent dans cette direction ambitieuse.'
+description: 'Après cinq ans à faire évoluer Publicodes de façon organique, nous franchissons une étape majeure : nous travaillons depuis un mois sur une nouvelle version entièrement repensée...'
 author: Johan Girod
 date: 2025-06-06
 tags: nouveautés, langage, v2
