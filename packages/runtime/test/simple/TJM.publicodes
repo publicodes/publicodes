@@ -1,0 +1,32 @@
+chiffre d'affaires:
+
+
+auto-entrepreneur:
+  par défaut: non
+
+date: 01/2025
+
+cotisations:
+  valeur:
+    taux * chiffre d'affaires
+  avec:
+    taux:
+      variations:
+        - si: date >= 01/2025
+          alors: 20%
+        - sinon: 15%
+
+charges:
+  applicable si:  auto-entrepreneur
+  par défaut:
+    valeur: 10% * chiffre d'affaires
+    plancher: 100€
+
+
+revenu net:
+  public: oui
+  par défaut:
+    somme:
+      - chiffre d'affaires
+      - (- cotisations)
+      - (- charges)
