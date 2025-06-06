@@ -80,7 +80,9 @@ describe('FormBuilder', () => {
 			const engine = createTestEngine()
 			// Custom page builder that puts each field on its own page
 			const customPageBuilder = (fields: RuleName[]) =>
-				fields.map((field) => [field])
+				fields.map((field) => {
+					return { elements: [field] }
+				})
 
 			const formBuilder = new FormBuilder<RuleName>({
 				engine,
@@ -91,7 +93,7 @@ describe('FormBuilder', () => {
 			state = formBuilder.start(state, 'eligibility')
 
 			// With our custom page builder, each page should have exactly one field
-			expect(state.pages[0].length).toBe(1)
+			expect(state.pages[0].elements.length).toBe(1)
 		})
 	})
 
@@ -103,7 +105,7 @@ describe('FormBuilder', () => {
 
 			const result = formBuilder.currentPage(state)
 
-			expect(result).toEqual([])
+			expect(result).toEqual({ elements: [] })
 		})
 
 		it('should return form elements for current page', () => {
@@ -112,12 +114,12 @@ describe('FormBuilder', () => {
 			let state = FormBuilder.newState<RuleName>()
 			state = formBuilder.start(state, 'eligibility')
 
-			const currentPage = formBuilder.currentPage(state)
+			const currentPageElements = formBuilder.currentPage(state).elements
 
-			expect(currentPage.length).toBeGreaterThan(0)
-			expect(currentPage[0]).toHaveProperty('id')
-			expect(currentPage[0]).toHaveProperty('label')
-			expect(currentPage[0]).toHaveProperty('element')
+			expect(currentPageElements.length).toBeGreaterThan(0)
+			expect(currentPageElements[0]).toHaveProperty('id')
+			expect(currentPageElements[0]).toHaveProperty('label')
+			expect(currentPageElements[0]).toHaveProperty('element')
 		})
 	})
 
@@ -147,7 +149,7 @@ describe('FormBuilder', () => {
 			const initialPage = state.currentPageIndex
 
 			// Add a second page to nextPages
-			state.nextPages = [['company . name']]
+			state.nextPages = [{ elements: ['company . name'] }]
 
 			state = formBuilder.goToNextPage(state)
 
@@ -178,7 +180,7 @@ describe('FormBuilder', () => {
 			state = formBuilder.start(state, 'eligibility')
 
 			// Add a second page and navigate to it
-			state.nextPages = [['company . name']]
+			state.nextPages = [{ elements: ['company . name'] }]
 			state = formBuilder.goToNextPage(state)
 
 			const currentPage = state.currentPageIndex
@@ -211,7 +213,7 @@ describe('FormBuilder', () => {
 
 			state = formBuilder.handleInputChange(state, 'user . age', 25)
 
-			expect(state.situation).toHaveProperty('user . age')
+			expect(state.situation).toHaveProperty(['user . age'])
 			expect(state.lastAnswered).toBe('user . age')
 		})
 
@@ -223,7 +225,7 @@ describe('FormBuilder', () => {
 
 			state = formBuilder.handleInputChange(state, 'user . age', undefined)
 
-			expect(state.situation).not.toHaveProperty('user . age')
+			expect(state.situation).not.toHaveProperty(['user . age'])
 		})
 	})
 
