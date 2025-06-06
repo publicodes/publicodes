@@ -2,27 +2,34 @@
  * Optimized memoization for functions with 3 arguments where only the last two change
  */
 
-export class Memoizer<T1, T2, R> {
-  private cache = new Map<T1, Map<T2, R>>()
-  constructor(private fn: (arg1: T1, arg2: T2) => R) {}
+import evaluateNode, { Value, Context } from './evaluate'
+import { Computation, Outputs, Publicodes } from './types'
 
-  call(arg1: T1, arg2: T2): R {
-    let level1Cache = this.cache.get(arg1)
-    if (!level1Cache) {
-      level1Cache = new Map<T2, R>()
-      this.cache.set(arg1, level1Cache)
-    }
-
-    if (level1Cache.has(arg2)) {
-      return level1Cache.get(arg2)!
-    }
-
-    const result = this.fn(arg1, arg2)
-    level1Cache.set(arg2, result)
-    return result
+export class Memoizer<O extends Outputs> {
+  private cache: Record<number, WeakMap<Context, Value>>
+  private evaluation: readonly Computation[]
+  constructor(publicodes: Publicodes<O>) {
+    this.cache = {}
+    this.evaluation = publicodes.evaluation as readonly Computation[]
+    Object.values(publicodes.outputs).forEach(
+      (o) => (this.cache[o.nodeIndex!] = new WeakMap<Context, Value>()),
+    )
   }
 
-  reset() {
-    this.cache.clear()
+  evaluateNode(id: number, context: Context): Value {
+    if (!(id in this.cache)) {
+      return evaluateNode(this.evaluation, id, context)
+    }
+
+    const cache = this.cache[id]
+
+    let result = cache.get(context)
+    if (result) {
+      return result
+    }
+
+    result = evaluateNode(this.evaluation, id, context)
+    cache.set(context, result)
+    return result
   }
 }

@@ -42,7 +42,6 @@ summary(() => {
 
   // Auto-entrepreneur model evaluations
   bench('New Engine - evaluation without cache', () => {
-    newEngineAE.resetCache()
     return newEngineAE.evaluate(
       'dirigeant . auto-entrepreneur . revenu net',
       contexte,
@@ -96,8 +95,8 @@ summary(() => {
     return results
   })
 
+  legacyEngineAE.setSituation(situation)
   bench('Legacy Engine - Multiple evaluations with cache', () => {
-    legacyEngineAE.setSituation(situation)
     const results = []
     results.push(
       legacyEngineAE.evaluate(

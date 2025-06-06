@@ -27,18 +27,14 @@ summary(() => {
   const legacyEngineSimple = new LegacyEngine(simpleLegacyRules)
 
   // Simple model evaluations
-  bench('New Engine - Evaluation', () => {
+  bench('New Engine - Evaluation without cache', () => {
     return newEngineSimple.evaluate('exemples . CA élevé')
   })
 
-  bench('Legacy Engine - Evaluation (without cache)', () => {
+  bench('Legacy Engine - Evaluation without cache', () => {
     legacyEngineSimple.resetCache()
     return legacyEngineSimple.evaluate('exemples . CA élevé')
   })
-
-  // bench('Legacy Engine - Evaluation (with cache)', () => {
-  //   return legacyEngineSimple.evaluate('revenu net')
-  // })
 })
 
 // Test situations
@@ -49,27 +45,22 @@ const simpleSituation = {
 
 summary(() => {
   // Pre-instantiate engines for evaluation benchmarks
-  const newEngineSimple = new NewEngine(simpleNewRules)
+  const newEngineSimple = new NewEngine(simpleNewRules, { cache: true })
   const legacyEngineSimple = new LegacyEngine(simpleLegacyRules)
-
+  // console.log(newEngineSimple.value, legacyEngineSimple.nodeValue)
   // Simple model evaluations
-  bench('New Engine - Evaluation with situation', () => {
-    return newEngineSimple.evaluate('revenu net', simpleSituation)
-  })
-
-  bench('Legacy Engine - Evaluation with situation (without cache)', () => {
-    legacyEngineSimple.setSituation(simpleSituation)
-    return legacyEngineSimple.evaluate('revenu net')
-  })
 
   legacyEngineSimple.setSituation(simpleSituation)
-  bench('Legacy Engine - Evaluation (with cache)', () => {
+  bench('Legacy Engine - Evaluation with cache', () => {
     return legacyEngineSimple.evaluate('revenu net')
+  })
+  bench('New Engine - Evaluation with cache', () => {
+    return newEngineSimple.evaluate('revenu net', simpleSituation)
   })
 })
 // Memory pressure test with simple model
 summary(() => {
-  bench('New Engine - High frequency instantiation (Simple)', function* () {
+  bench('New Engine - High frequency instantiation', function* () {
     yield () => {
       const engines = []
       for (let i = 0; i < 100; i++) {
@@ -79,7 +70,7 @@ summary(() => {
     }
   }).gc('inner')
 
-  bench('Legacy Engine - High frequency instantiation (Simple)', function* () {
+  bench('Legacy Engine - High frequency instantiation', function* () {
     yield () => {
       const engines = []
       for (let i = 0; i < 100; i++) {

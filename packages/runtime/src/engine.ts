@@ -1,4 +1,4 @@
-import evaluateNode, { Value } from './evaluate'
+import evaluateNode, { Context } from './evaluate'
 import { Memoizer } from './memoize'
 import {
   Publicodes,
@@ -12,62 +12,63 @@ import {
 type EngineOptions = {
   cache?: boolean
 }
-
 export class Engine<O extends Outputs> {
-  private memo?: Memoizer<Computation, unknown, Value>
-  private evaluation: readonly Computation[]
-  private outputs: O
-  private evaluateNode: (c: Computation, context: unknown) => Value
+  private cache: Memoizer<O> | null = null
 
-  constructor(publicodes: Publicodes<O>, options: EngineOptions = {}) {
+  constructor(
+    private publicodes: Publicodes<O>,
+    options: EngineOptions = {},
+  ) {
     const { cache = false } = options
-    this.evaluation = publicodes.evaluation as readonly Computation[]
-    this.outputs = publicodes.outputs
-    this.evaluateNode = evaluateNode.bind(null, this.evaluation)
 
     if (cache) {
-      this.memo = new Memoizer(evaluateNode.bind(null, this.evaluation))
-      this.evaluateNode = this.memo.call.bind(this.memo)
+      this.cache = new Memoizer(publicodes)
     }
   }
 
   evaluate<R extends RuleName<O>>(
     rule: R,
-    context: GetContext<O, R> = {},
+    context: GetContext<O, R> = emptyContext,
     debug = false,
   ): Evaluation<O, R> {
-    const output = this.outputs[rule]
+    const output = this.publicodes.outputs[rule]
     if (output === undefined) {
-      throw new Error(`Rule "${rule}" does't exists as an output of the model`)
+      throw new Error(`Rule "${rule}" doesn't exist as an output of the model`)
     }
+    const evaluation = this.publicodes.evaluation as readonly Computation[]
+    // const evaluate = (id: number) => {
+    //   if (this.cache) {
+    //     return this.cache.evaluateNode(id, context as Context)
+    //   }
+    //   return evaluateNode(evaluation, id, context as Context)
+    // }
 
     // Todo : convert date in / out
+    const { p, v } =
+      this.cache ?
+        this.cache.evaluateNode(output.nodeIndex!, context as Context)
+      : evaluateNode(evaluation, output.nodeIndex!, context as Context)
 
-    const { p, v } = this.evaluateNode(
-      this.evaluation[output.nodeIndex!],
-      context,
-    )
+    // if (debug) {
+    //   const evaluations = evaluation.map((node: Computation, i: number) => ({
+    //     value: evaluate(i),
+    //     formula: node,
+    //   }))
+    //   // eslint-disable-next-line no-console
+    //   console.table(evaluations)
+    // }
 
-    if (debug) {
-      const evaluations = this.evaluation.map((node: Computation) => ({
-        value: evaluateNode(this.evaluation, node, context).v,
-        formula: node,
-      }))
-      // eslint-disable-next-line no-console
-      console.table(evaluations)
-    }
-
-    const neededParameters = new Set(p)
-    const parametersInContext = new Set(Object.keys(context))
+    // const neededParameters = new Set(p)
+    // const parametersInContext = new Set(Object.keys(context))
 
     return {
       value: v,
-      neededParameters: [...neededParameters],
-      missingParameters: [...neededParameters.difference(parametersInContext)],
+      // neededParameters: [...neededParameters],
+      // missingParameters: [...neededParameters].filter(
+      //   (param) => !parametersInContext.has(param),
+      // ),
     } as Evaluation<O, R>
   }
-
-  resetCache() {
-    this.memo?.reset()
-  }
 }
+
+const emptyContext = {}

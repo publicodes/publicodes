@@ -11,12 +11,14 @@ export type Value = {
   v: number | string | boolean | null | undefined | Date
   p: Array<string>
 }
+export type Context = Record<string, number | null | undefined | string>
 
 function evaluateNode(
   evalTree: readonly Computation[],
-  c: Computation,
-  context: unknown = {},
+  i: number,
+  context: Context,
 ): Value {
+  const c = evalTree[i]
   if (c === null) return { v: null, p: [] }
   if (
     c === null ||
@@ -37,7 +39,7 @@ function evaluateNode(
     // -----------------------------
 
     if (c.length === 2) {
-      const val = evaluateNode(evalTree, evalTree[c[1]], context)
+      const val = evaluateNode(evalTree, c[1], context)
       const op = c[0]
       if (op === '∅') {
         return {
@@ -57,7 +59,7 @@ function evaluateNode(
 
     if (c.length === 3 && typeof c[0] === 'string') {
       const op = c[0]
-      const left = evaluateNode(evalTree, evalTree[c[1]], context)
+      const left = evaluateNode(evalTree, c[1], context)
 
       // TODO : should be lazy only if no missings in the computed value ?
 
@@ -76,7 +78,7 @@ function evaluateNode(
       }
 
       // LAZY (Second operand)
-      const right = evaluateNode(evalTree, evalTree[c[2]], context)
+      const right = evaluateNode(evalTree, c[2], context)
       if (left.v === undefined) {
         if (right.v === 0 && op === '*') return { v: 0, p: right.p }
         if (right.v === 0 && op === '**') return { v: 1, p: right.p }
@@ -132,17 +134,13 @@ function evaluateNode(
     // Conditional (ternary)
     // -----------------------------
     if (c.length === 3) {
-      const condition = evaluateNode(evalTree, evalTree[c[0]], context)
+      const condition = evaluateNode(evalTree, c[0], context)
 
       if (condition.v === null || condition.v === undefined) {
         return condition
       }
 
-      const val = evaluateNode(
-        evalTree,
-        condition.v ? evalTree[c[1]] : evalTree[c[2]],
-        context,
-      )
+      const val = evaluateNode(evalTree, condition.v ? c[1] : c[2], context)
 
       return {
         v: val.v,
@@ -170,11 +168,11 @@ function evaluateNode(
     const newContext = { ...context }
     const neededParameters = []
     for (const rule in c.context) {
-      const val = evaluateNode(evalTree, evalTree[c.context[rule]], context)
+      const val = evaluateNode(evalTree, c.context[rule], context)
       newContext[rule] = val.v
       neededParameters.push(...val.p)
     }
-    const value = evaluateNode(evalTree, evalTree[c.value], newContext)
+    const value = evaluateNode(evalTree, c.value, newContext)
     // Remove neededParameters that are set in the context
     value.p = value.p.filter((param) => !(param in c.context))
     value.p.push(...neededParameters)
