@@ -14,7 +14,7 @@ Après cinq ans à faire évoluer Publicodes de façon organique, nous franchiss
 
 ## Pourquoi une v2 ?
 
-Publicodes a grandi rapidement. A présent, il est utilisé par de **nombreuses équipes** dans des cas d'usage toujours plus variés : mon-entreprise, aides-entreprises, nosgestesclimat… Cette adoption révèle aussi les limites du système actuel :
+Publicodes a grandi rapidement. A présent, il est utilisé par de **nombreuses équipes** dans des cas d'usage toujours plus variés… Cette adoption révèle aussi les limites du système actuel :
 
 - **Performance** : sur des bases de règles importantes, les temps de calcul deviennent problématiques
 - **Fiabilité** : le système d'évaluation actuel manque de spécifications claires, ce qui génère des comportements imprévisibles
