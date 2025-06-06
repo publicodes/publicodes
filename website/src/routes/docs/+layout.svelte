@@ -29,7 +29,7 @@
 </script>
 
 <svelte:head>
-	<title>{title} - Publicodes</title>
+	<title>{title} | Publicodes Docs</title>
 	{#if description}
 		<meta name="description" content={description} />
 	{/if}

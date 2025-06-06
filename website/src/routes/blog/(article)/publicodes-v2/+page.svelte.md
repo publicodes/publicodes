@@ -6,6 +6,7 @@ date: 2025-06-06
 tags: nouveautés, langage, V2
 icon: 🌱
 featured: true
+image: /og-images/publicodes-v2.png
 ---
 
 Après cinq ans d'évolution organique, Publicodes franchit une **étape

@@ -5,6 +5,7 @@ author: Johan Girod
 date: 2025-02-13
 tags: nouveautés, langage
 icon: 🎡
+image: /og-images/une-possibilite-ameliore.png
 ---
 
 Bonne nouvelle ! Avec la [`v1.7`](https://github.com/publicodes/publicodes/releases/tag/publicodes%401.7.0), Publicodes solidifie son type `enum` en le rendant **plus robuste et cohérent**. `une possibilité` prend sa place en tant que fonctionalité clé du langage !
@@ -13,24 +14,24 @@ Il est maintenant possible de :
 
 - Déclarer directement des règles dans le mécanisme :
 
-  ```publicodes
-  contrat:
-    une possibilité:
-      - CDD:
-          titre: Contrat à durée déterminée
-      - CDI:
-  ```
+    ```publicodes
+    contrat:
+      une possibilité:
+        - CDD:
+            titre: Contrat à durée déterminée
+        - CDI:
+    ```
 
 - Utiliser des constantes (nombres ou textes) :
 
-  ```publicodes
-  tva:
-    une possibilité:
-      - 0%
-      - 5.5%
-      - 10%
-      - 20%
-  ```
+    ```publicodes
+    tva:
+      une possibilité:
+        - 0%
+        - 5.5%
+        - 10%
+        - 20%
+    ```
 
 > [👉 Voir toutes les nouveautés dans la page de documentation dédiée](/docs/manuel/une-possibilite)
 

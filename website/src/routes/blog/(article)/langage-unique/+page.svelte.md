@@ -5,6 +5,7 @@ author: Maël Thomas
 date: 2019-04-02
 tags: open-data
 icon: 👀
+image: /og-images/langage-unique.png
 ---
 
 ## X = Moteurs de calcul numérique, comme OpenFisca
