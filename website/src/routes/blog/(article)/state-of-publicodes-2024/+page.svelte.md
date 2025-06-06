@@ -5,7 +5,6 @@ author: Johan Girod
 date: 2024-11-07
 tags: communauté
 icon: 📊
-featured: true
 ---
 
 <script>
