@@ -1,16 +1,21 @@
 <script lang="ts">
 	import Heading from '$lib/component/heading.svelte';
 	import PublicodesPackages from '$lib/component/publicode-packages.svelte';
+	import Seo from '$lib/component/seo.svelte';
 	import { Package } from 'lucide-svelte';
 
 	const { data } = $props();
 	const packages = data.packages;
 </script>
 
+<Seo
+	title="Bibliothèque"
+	description="Découvrez l'ensemble des paquets Publicodes disponibles sur npm." />
+
 <div class="prose pb-10 lg:max-w-screen-md">
 	<Heading level="h1" icon={Package}>Bibliothèque des modèles publiés</Heading>
 	<p class="text-xl">
-		Découvrez l'ensemble des paquets publicodes disponibles sur npm.
+		Découvrez l'ensemble des paquets Publicodes disponibles sur npm.
 	</p>
 </div>
 

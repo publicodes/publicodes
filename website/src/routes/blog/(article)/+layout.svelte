@@ -2,25 +2,14 @@
 	import { ArrowLeft } from 'lucide-svelte';
 	import Time from 'svelte-time/Time.svelte';
 	import Tags from '../tags.svelte';
-	import { page } from '$app/state';
+	import Seo from '$lib/component/seo.svelte';
 
 	const { children, data } = $props();
 
 	const { title, description, author, date, tags, image } = $derived(data);
 </script>
 
-<svelte:head>
-	<title>{title} | Publicodes Blog</title>
-	<meta name="description" content={description} />
-	<meta property="og:title" content={`${title} | Publicodes Blog`} />
-	<meta property="og:description" content={description} />
-	<meta property="og:type" content="article" />
-	{#if image}
-		<meta property="og:image" content={image} />
-	{/if}
-	<meta property="og:image:alt" content={title} />
-	<meta property="og:url" content={page.url.href} />
-</svelte:head>
+<Seo type="article" {title} subTitle="Blog" {description} {image} />
 
 <article class="lg:py-18 flex justify-center px-6 py-14">
 	<div class="flex flex-col lg:grid lg:grid-cols-5">
