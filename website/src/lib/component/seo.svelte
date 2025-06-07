@@ -16,6 +16,7 @@
 		title !== undefined
 			? `${title} | ${subTitle !== undefined ? subTitle + ' Publicodes' : 'Publicodes'}`
 			: 'Publicodes';
+
 	description =
 		description !== undefined
 			? description + publicodesTagline

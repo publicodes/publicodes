@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './$types';
 
 export const prerender = true;
 
-export const load: LayoutServerLoad = ({}) => {
+export const load: LayoutServerLoad = () => {
 	return {
 		lastBlogPostDate
 	};

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
-	import { page } from '$app/state';
 	import Seo from '$lib/component/seo.svelte';
 	import MenuLink from '$lib/ui/menu-link.svelte';
 	import { fly } from 'svelte/transition';
@@ -9,7 +8,7 @@
 	const { title, headings, menuEntries } = $derived(data);
 
 	const description = $derived(
-		data.description ?? 'Documentation de Publicodes.'
+		data.description ?? 'Documentation de Publicodes'
 	);
 
 	function getChildPage(path: string) {
