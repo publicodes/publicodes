@@ -20,6 +20,7 @@
 	import Callout from '$lib/ui/callout.svelte';
 	import Card from '$lib/ui/card.svelte';
 	import { fly } from 'svelte/transition';
+	import Seo from '$lib/component/seo.svelte';
 
 	const { data } = $props();
 	const packages = data.packages;
@@ -42,6 +43,8 @@
 		}
 	}
 </script>
+
+<Seo />
 
 <header
 	class="not-prose flex w-full justify-center overflow-hidden bg-primary-50">

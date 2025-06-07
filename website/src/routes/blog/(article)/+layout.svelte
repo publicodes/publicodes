@@ -2,9 +2,14 @@
 	import { ArrowLeft } from 'lucide-svelte';
 	import Time from 'svelte-time/Time.svelte';
 	import Tags from '../tags.svelte';
+	import Seo from '$lib/component/seo.svelte';
+
 	const { children, data } = $props();
-	const { author, date, title, tags } = $derived(data);
+
+	const { title, description, author, date, tags, image } = $derived(data);
 </script>
+
+<Seo type="article" {title} subTitle="Blog" {description} {image} />
 
 <article class="lg:py-18 flex justify-center px-6 py-14">
 	<div class="flex flex-col lg:grid lg:grid-cols-5">

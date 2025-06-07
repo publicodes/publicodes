@@ -2,6 +2,7 @@
 	import { produits, type Produit } from '$data/produits';
 	import { publicodesPackages } from '$data/publicodes-packages';
 	import Heading from '$lib/component/heading.svelte';
+	import Seo from '$lib/component/seo.svelte';
 
 	import Card from '$lib/ui/card.svelte';
 	import Tooltip from '$lib/ui/tooltip.svelte';
@@ -23,10 +24,14 @@
 		});
 </script>
 
+<Seo
+	title="Réalisations"
+	description="Découvrez les produits qui utilisent Publicodes au quotidien" />
+
 <div class="prose pb-10 lg:max-w-screen-md">
 	<Heading level="h1" icon={Rocket}>Propulsé par Publicodes</Heading>
 	<p class="text-xl">
-		Découvrez les produits qui utilisent publicodes au quotidien.
+		Découvrez les produits qui utilisent Publicodes au quotidien.
 	</p>
 </div>
 

@@ -42,13 +42,6 @@
 </script>
 
 <svelte:head>
-	<title>Publicodes ⋅ Langage pour expert·es et développeur·euses</title>
-
-	<meta
-		name="description"
-		content="Publicodes permet de modéliser des domaines métiers complexes,
-		en les décomposant en règles élémentaires simples qui soient
-		lisibles par tout le monde." />
 	<link rel="icon" type="image/png" href={favicon} />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
 </svelte:head>
@@ -69,9 +62,6 @@
 			</div>
 		</div>
 		<div id="search" class="flex justify-center"></div>
-		<!-- <div -->
-		<!-- 	class="self-stretch border-b border-primary-100 sm:border-r sm:max-lg:hidden"> -->
-		<!-- </div> -->
 		<ul
 			class="flex flex-row items-start justify-center gap-3
 			max-lg:hidden sm:items-center">
@@ -226,18 +216,22 @@
 					<p class="font-light text-slate-500">Communauté</p>
 					<ul class="flex flex-col gap-1 font-light">
 						<li>
-							<a href="https://matrix.to/#/#publicodes:matrix.org">Matrix</a>
+							<a href="/blog">Blog</a>
 						</li>
 						<li>
 							<a href="https://github.com/publicodes/publicodes" target="_blank"
 								>GitHub</a>
 						</li>
 						<li>
-							<a href="/blog">Blog</a>
+							<a href="https://matrix.to/#/#publicodes:matrix.org">Matrix</a>
 						</li>
 						<li>
 							<a href="https://bsky.app/profile/publicodes.bsky.social"
 								>Bluesky</a>
+						</li>
+						<li>
+							<a href="https://opencollective.com/publicodes"
+								>Open collective</a>
 						</li>
 					</ul>
 				</div>

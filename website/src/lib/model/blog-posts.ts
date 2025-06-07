@@ -7,6 +7,7 @@ export type Metadata = {
 	date: string;
 	tags: string;
 	icon: string;
+	image?: string;
 	draft?: boolean;
 	featured?: boolean;
 };

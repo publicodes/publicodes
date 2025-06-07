@@ -2,6 +2,7 @@
 	import { Newspaper, Rss } from 'lucide-svelte';
 
 	import PostCard from './post-card.svelte';
+	import Seo from '$lib/component/seo.svelte';
 
 	const { data } = $props();
 	const featuredPosts = data.blogPosts.filter((post) => post.metadata.featured);
@@ -10,6 +11,11 @@
 	const iconSize = 36;
 	const iconStrokeWidth = 1;
 </script>
+
+<Seo
+	title="Accueil"
+	subTitle="Blog"
+	description="Découvrez les derniers articles du blog de Publicodes" />
 
 <div class="flex w-full flex-col">
 	<section class="flex w-full flex-col items-center gap-16 bg-primary-50">
