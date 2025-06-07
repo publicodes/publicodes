@@ -1,10 +1,16 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
+	import { page } from '$app/state';
 	import MenuLink from '$lib/ui/menu-link.svelte';
 	import { fly } from 'svelte/transition';
 
 	const { children, data } = $props();
-	const { title, description, headings, menuEntries } = $derived(data);
+	const { title, headings, menuEntries } = $derived(data);
+
+	const description = $derived(
+		data.description ?? 'Documentation de Publicodes.'
+	);
+
 	function getChildPage(path: string) {
 		return menuEntries
 			.filter((page) => {
@@ -23,17 +29,23 @@
 	const entryPages = getChildPage('/docs');
 	let showMobileMenuLeft = $state(false);
 	let showMobileMenuRight = $state(false);
+
 	afterNavigate(() => {
 		showMobileMenuRight = false;
 	});
 </script>
 
 <svelte:head>
-	<title>{title} - Publicodes</title>
-	{#if description}
-		<meta name="description" content={description} />
-	{/if}
+	<title>{title} | Publicodes Docs</title>
+	<meta name="description" content={description} />
+	<meta property="og:title" content={`${title} | Publicodes Docs`} />
+	<meta property="og:description" content={description} />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content={page.url.href} />
+	<meta property="og:image" content="/og-images/index.png" />
+	<meta property="og:image:alt" content={title} />
 </svelte:head>
+
 <div class="flex items-start lg:justify-center">
 	<div class="flex lg:container">
 		<!-- MOBILE NAV -->

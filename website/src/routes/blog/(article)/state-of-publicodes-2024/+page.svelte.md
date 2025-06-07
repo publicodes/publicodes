@@ -5,6 +5,7 @@ author: Johan Girod
 date: 2024-11-07
 tags: communauté
 icon: 📊
+image: /og-images/state-of-publicodes-2024.png
 ---
 
 <script>
