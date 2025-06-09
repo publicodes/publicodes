@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 
 	const publicodesTagline =
-		', un langage pour l’écriture d’algorithmes d’intérêt général grâce à des règles ouvertes et compréhensibles.';
+		'Publicodes est un langage pour l’écriture d’algorithmes d’intérêt général grâce à des règles ouvertes et compréhensibles.';
 
 	let {
 		title = undefined,
@@ -10,6 +10,12 @@
 		description = undefined,
 		image = '/og-images/index.png',
 		type = 'website'
+	}: {
+		title?: string;
+		subTitle?: string;
+		description?: string;
+		image?: string;
+		type?: 'website' | 'article';
 	} = $props();
 
 	title =
@@ -19,8 +25,8 @@
 
 	description =
 		description !== undefined
-			? description + publicodesTagline
-			: 'Publicodes' + publicodesTagline;
+			? `${description}${description.endsWith('.') ? '' : '.'} ${publicodesTagline}`
+			: publicodesTagline;
 </script>
 
 <svelte:head>
