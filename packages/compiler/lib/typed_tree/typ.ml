@@ -4,10 +4,7 @@ open Utils.Output
 open Shared
 module Any = Utils.Uid.Make ()
 
-type naked_t =
-  | Literal of Shared_typ.literal
-  | Number of Number_unit.t
-  | Any of Any.t
+type naked_t = Literal of Typ.literal | Number of Number_unit.t | Any of Any.t
 
 and t = naked_t Pos.t UnionFind.elem
 
@@ -56,7 +53,7 @@ let unify (t1 : t) (t2 : t) =
   | _, Any _ ->
       return (UnionFind.merge (fun a _ -> a) t1 t2)
   | Literal l1, Literal l2 ->
-      if [%compare.equal: Shared_typ.literal] l1 l2 |> not then
+      if [%compare.equal: Typ.literal] l1 l2 |> not then
         (* Todo replace with a unique type_error, with the pos of the different arguments *)
         error_typ_mismatch ()
       else return t1
@@ -92,3 +89,15 @@ let get_unit typ =
       if not (Number_unit.is_concrete unit) then empty else return unit.concrete
   | _ ->
       empty
+
+let to_concrete typ =
+  match typ |> UnionFind.get |> Pos.value with
+  | Number unit ->
+      let unit = Number_unit.normalize unit in
+      if Number_unit.is_concrete unit then
+        Some (Shared.Typ.Number (Some unit.concrete))
+      else Some (Shared.Typ.Number None)
+  | Literal l ->
+      Some (Shared.Typ.Literal l)
+  | Any _ ->
+      None

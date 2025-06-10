@@ -26,6 +26,8 @@ end
 (** Hashtable implementation for rule names *)
 module Hashtbl : sig
   include Hashtbl.S with type key = t
+
+  val pp : (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a t -> unit
 end
 
 val create_exn : string list -> t

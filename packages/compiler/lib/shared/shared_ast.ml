@@ -65,7 +65,7 @@ and 'a chainable_mechanism =
   | Context of ('a Pos.t * 'a value) list
   | Applicable_if of 'a value
   | Not_applicable_if of 'a value
-  | Type of Shared_typ.t Pos.t
+  | Type of Typ.t Pos.t
   | Default of 'a value
   | Ceiling of 'a value
   | Floor of 'a value
@@ -88,6 +88,21 @@ type 'a program = 'a rule_def list [@@deriving show, sexp, compare]
 type 'a t = 'a program [@@deriving show, sexp, compare]
 
 type resolved = Rule_name.t t [@@deriving show, sexp, compare]
+
+let binary_op_to_string = function
+  | Add -> "+"
+  | Sub -> "-"
+  | Mul -> "*"
+  | Div -> "/"
+  | Pow -> "**"
+  | Gt -> ">"
+  | Lt -> "<"
+  | GtEq -> ">="
+  | LtEq -> "<="
+  | Eq -> "="
+  | NotEq -> "!="
+  | And -> "&&"
+  | Or -> "||"
 
 (** Map expression *)
 let has_public_tag rule_def =
