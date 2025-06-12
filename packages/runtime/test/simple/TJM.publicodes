@@ -1,12 +1,12 @@
 chiffre d'affaires:
-
-
+  unité: €
 auto-entrepreneur:
   par défaut: non
 
 date: 01/2025
 
 cotisations:
+  public: oui
   valeur:
     taux * chiffre d'affaires
   avec:
@@ -25,8 +25,15 @@ charges:
 
 revenu net:
   public: oui
-  par défaut:
-    somme:
-      - chiffre d'affaires
-      - (- cotisations)
-      - (- charges)
+  somme:
+    - chiffre d'affaires
+    - (- cotisations)
+    - (- charges)
+
+exemples:
+exemples . CA élevé:
+  public: oui
+  valeur: revenu net
+  contexte:
+    chiffre d'affaires: 100000€
+    charges: 8000€

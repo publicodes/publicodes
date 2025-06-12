@@ -1,8 +1,6 @@
 open Core
-open Shared
 open Utils
 
-(* Extended version of constant with additional variants *)
 type constant =
   | Number of float * Units.t option
   | Bool of bool
@@ -12,42 +10,34 @@ type constant =
   | Null
 [@@deriving sexp, show]
 
-(* We can reuse these types directly *)
 type binary_op = Shared_ast.binary_op [@@deriving sexp, show]
 
 type unary_op = Neg | Is_undef [@@deriving sexp, show]
 
-(* GADT-based implementation *)
-
-type computation =
+type 'meta naked_value =
   | Const of constant
-  | Condition of typ_computation * typ_computation * typ_computation
-  | Binary_op of binary_op Pos.t * typ_computation * typ_computation
-  | Unary_op of unary_op Pos.t * typ_computation
+  | Condition of 'meta value * 'meta value * 'meta value
+  | Binary_op of binary_op Pos.t * 'meta value * 'meta value
+  | Unary_op of unary_op Pos.t * 'meta value
   | Ref of Rule_name.t
   | Get_context of Rule_name.t
-  | Set_context of context
+  | Set_context of 'meta context
+[@@deriving show, sexp]
 
-and context =
-  {context: (Rule_name.t Pos.t * typ_computation) list; value: typ_computation}
+and 'meta context =
+  {context: (Rule_name.t Pos.t * 'meta value) list; value: 'meta value}
+[@@deriving sexp, show]
 
-and typ_computation = {pos: Pos.pos; typ: Typ.t; value: computation}
+and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.pos}
+[@@deriving sexp, show]
 
-type t = typ_computation Rule_name.Hashtbl.t
+type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving sexp, show]
 
-let mk ~pos ?(typ = Typ.any ~pos ()) value = {pos; typ; value}
-
-module Parameters = struct
-  type t = (Shared.Rule_name.t * Shared.Rule_name.t list) list
-end
-
-let get_type eval_tree rule_name =
-  (Hashtbl.find_exn eval_tree rule_name).typ |> UnionFind.get |> Pos.value
+let get_meta eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).meta
 
 let get_pos eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).pos
 
-let rec map ~(f : typ_computation -> typ_computation) (c : typ_computation) :
-    typ_computation =
+let rec map ~(f : 'a value -> 'b value) (c : 'a value) : 'b value =
   let new_value =
     match c.value with
     | Condition (cond, then_comp, else_comp) ->

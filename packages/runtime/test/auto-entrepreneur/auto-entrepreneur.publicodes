@@ -1,7 +1,5 @@
 
 dirigeant . auto-entrepreneur:
-  valeur: régime social = 'auto-entrepreneur'
-  par défaut: non
   icônes: 🚶
   description: |
     L’auto-entreprise est une entreprise individuelle simplifiée. À l’origine connu
@@ -13,7 +11,7 @@ dirigeant . auto-entrepreneur:
 dirigeant . auto-entrepreneur . revenu net:
   public: oui
   arrondi: oui
-  unité: €/an
+  unité: €/mois
   identifiant court: auto-entrepreneur-net
   résumé: Avant impôt
   question: Quel revenu avant impôt voulez-vous toucher ?
@@ -24,7 +22,7 @@ dirigeant . auto-entrepreneur . revenu net:
 dirigeant . auto-entrepreneur . revenu net . après impôt:
   identifiant court: auto-entrepreneur-net-apres-impot
   résumé: Avant déduction des dépenses liées à l’activité
-  unité: €/an
+  unité: €/mois
   arrondi: oui
   question: Quel est le revenu net après impôt souhaité ?
   description: >-
@@ -50,9 +48,10 @@ dirigeant . auto-entrepreneur . revenu net . après impôt:
 dirigeant . auto-entrepreneur . chiffre d'affaires:
   question: Quel est votre chiffre d’affaires ?
   résumé: Montant total des recettes (hors taxe)
-  inversion numérique:
-    - revenu net
-    - revenu net . après impôt
+  valeur: entreprise . chiffre d'affaires
+  # inversion numérique:
+  #   - revenu net
+  #   - revenu net . après impôt
 
 dirigeant . auto-entrepreneur . affiliation CIPAV:
   déprécié: oui

@@ -81,23 +81,28 @@ let unify ~pos1 ~pos2 (u1 : t) (u2 : t) =
           message
       else return ()
   | {concrete= a; elem= [elem]; inv= []}, {concrete= b; elem= []; inv= []}
-  | {concrete= b; elem= []; inv= []}, {concrete= a; elem= [elem]; inv= []} ->
-      let _ =
-        UnionFind.merge
-          (fun _ b_val -> b_val)
-          elem
-          (UnionFind.make (Concrete (Units.mul b (Units.inv a))))
-      in
-      return ()
-  | {concrete= a; elem= []; inv= [elem]}, {concrete= b; elem= []; inv= []}
-  | {concrete= b; elem= []; inv= []}, {concrete= a; elem= []; inv= [elem]} ->
-      let _ =
-        UnionFind.merge
-          (fun _ b_val -> b_val)
-          elem
-          (UnionFind.make (Concrete (Units.mul a (Units.inv b))))
-      in
-      return ()
-  | _, _ ->
-      (* We could handle additional case for a better unit inference system, but this one is good enough right now *)
+  | {concrete= b; elem= []; inv= []}, {concrete= a; elem= [elem]; inv= []}
+  | {concrete= b; elem= []; inv= [elem]}, {concrete= a; elem= []; inv= []}
+  | {concrete= a; elem= []; inv= []}, {concrete= b; elem= []; inv= [elem]} ->
+      let elem_unit = Units.mul b (Units.inv a) in
+      if Units.equal elem_unit Units.empty then
+        (* We cannot do anything, as an infered empty unit might still be a percentage *)
+        return ()
+      else
+        let _ =
+          UnionFind.merge
+            (fun _ b_val -> b_val)
+            elem
+            (UnionFind.make (Concrete elem_unit))
+        in
+        return ()
+  | {concrete= a; elem= [elem1]; inv= []}, {concrete= b; elem= [elem2]; inv= []}
+  | {concrete= a; elem= []; inv= [elem1]}, {concrete= b; elem= []; inv= [elem2]}
+    ->
+      if Units.equal a b then
+        let _ = UnionFind.union elem1 elem2 in
+        return ()
+      else return ()
+  | _ ->
+      (* We could maybe handle additional case for a better unit inference system, but this one is good enough right now *)
       return ()

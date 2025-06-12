@@ -1,44 +1,71 @@
-import { evaluateNode, debug } from './evaluate'
+import evaluateNode, { Context } from './evaluate'
+import { Memoizer } from './memoize'
 import {
   Publicodes,
-  Types,
-  Parameters,
+  Outputs,
   GetContext,
   Evaluation,
   RuleName,
-  EvaluationTree,
+  Computation,
 } from './types'
 
-export class Engine<T extends Types, P extends Parameters<T>> {
-  constructor(private publicodes: Publicodes<T, P>) {}
+type EngineOptions = {
+  cache?: boolean
+}
+export class Engine<O extends Outputs> {
+  private cache: Memoizer<O> | null = null
 
-  evaluate<R extends RuleName<T>>(
-    rule: R,
-    context: GetContext<T, P, R> = {},
-    debug = false,
-  ): Evaluation<T, P, R> {
-    const evaluationTree = this.publicodes.evaluationTree as EvaluationTree
-    // Todo : convert date in / out
-    if (debug) {
-      debug.activate()
-    }
-    let { value, inputs } = evaluateNode(
-      evaluationTree,
-      evaluationTree[rule],
-      context,
-    ) as unknown as Evaluation<T, P, R>
+  constructor(
+    private publicodes: Publicodes<O>,
+    options: EngineOptions = {},
+  ) {
+    const { cache = false } = options
 
-    if (debug) {
-      debug.log()
-    }
-
-    inputs = new Set(inputs)
-    const contextRules = new Set(Object.keys(context))
-
-    return {
-      value,
-      inputs: [...inputs],
-      missingVariables: [...inputs.difference(contextRules)],
+    if (cache) {
+      this.cache = new Memoizer(publicodes)
     }
   }
+
+  evaluate<R extends RuleName<O>>(
+    rule: R,
+    context: GetContext<O, R> = emptyContext,
+    debug = false,
+  ): Evaluation<O, R> {
+    const output = this.publicodes.outputs[rule]
+    if (output === undefined) {
+      throw new Error(`Rule "${rule}" doesn't exist as an output of the model`)
+    }
+    const evaluation = this.publicodes.evaluation as readonly Computation[]
+    const evaluate = (id: number) => {
+      if (this.cache) {
+        return this.cache.evaluateNode(id, context as Context)
+      }
+      return evaluateNode(evaluation, id, context as Context)
+    }
+
+    // Todo : convert date in / out
+    const { p, v } = evaluate(output.nodeIndex!)
+
+    if (debug) {
+      const evaluations = evaluation.map((node: Computation, i: number) => ({
+        value: evaluate(i),
+        formula: node,
+      }))
+      // eslint-disable-next-line no-console
+      console.table(evaluations)
+    }
+
+    const neededParameters = Object.keys(p)
+    const missingParameters = neededParameters.filter(
+      (param) => !context[param],
+    )
+
+    return {
+      value: v,
+      neededParameters,
+      missingParameters,
+    } as Evaluation<O, R>
+  }
 }
+
+const emptyContext = {}

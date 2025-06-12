@@ -1,11 +1,7 @@
 Simple addition/soustraction expression :
 
   $ publicodes compile simple.publicodes -o -
-  {
-    "evaluationTree": { "simple expression": [ [ 12.0 ], "+", [ 4.5 ] ] },
-    "parameters": {},
-    "types": {}
-  }
+  { "evaluation": [ [ "+", 1, 2 ], 12.0, 4.5 ], "outputs": {} }
 
 Missing term :
 
@@ -31,4 +27,3 @@ Missing term :
    Hint: supprimez l'opérateur `/` ou bien ajoutez une
          expression
   [123]
-

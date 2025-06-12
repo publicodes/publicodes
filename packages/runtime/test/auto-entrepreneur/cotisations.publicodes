@@ -1,5 +1,6 @@
 dirigeant . auto-entrepreneur . cotisations et contributions:
   unité: €/mois
+  public: oui
   somme:
     - cotisations
     - TFC
@@ -10,6 +11,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions:
     Les cotisations et contributions sociales: https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#cout-durant-vie-auto-entreprise
 
 dirigeant . auto-entrepreneur . cotisations et contributions . TFC:
+  public: oui
   titre: Taxes pour frais de chambre
   note: |
     Nous n’avons pas intégré les exceptions suivantes :
@@ -72,11 +74,11 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . 
 
   avec:
     taux service:
-      remplace: taux service
+      # remplace: taux service
       valeur: 0.65%
 
     taux vente:
-      remplace: taux vente
+      # remplace: taux vente
       valeur: 0.29%
 
 dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle:
@@ -88,14 +90,16 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . 
 
   avec:
     taux service:
-      remplace: taux service
+      # remplace: taux service
       valeur: 0.83%
 
     taux vente:
-      remplace: taux vente
+      # remplace: taux vente
       valeur: 0.37%
 
 dirigeant . auto-entrepreneur . cotisations et contributions . CFP:
+  public: oui
+
   titre: Contribution à la formation professionnelle
   acronyme: CFP
   description: |
@@ -130,6 +134,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . CFP:
     shine.fr: https://www.shine.fr/blog/formation-professionnelle-auto-entrepreneur/
 
 dirigeant . auto-entrepreneur . cotisations et contributions . cotisations:
+  public: oui
   description: |
     Les cotisations sociales donnent à l’auto-entrepreneur accès à une
     protection sociale minimale : une retraite, des soins de santé, des
@@ -267,6 +272,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . cotisations:
 
       avec:
         taux:
+
           variations:
             - si: date >= 10/2022
               alors: 21.2%

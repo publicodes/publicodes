@@ -5,46 +5,42 @@ export type BaseType =
   | { date: null }
   | null
 
-export type Types = {
-  readonly [P in string]: BaseType
+export type Outputs = {
+  readonly [outputName: string]: {
+    readonly parameters: { readonly [paramName: string]: null }
+    readonly type: BaseType
+    readonly nodeIndex: NodeIndex | null
+  }
 }
 
-export type GetType<T extends Types, R extends keyof T> =
-  T[R] extends null ? unknown
-  : T[R] extends { number: null } ? number
-  : T[R] extends { string: null } ? string
-  : T[R] extends { boolean: null } ? boolean
-  : T[R] extends { date: null } ? Date
+export type GetType<O extends Outputs, R extends keyof O> =
+  O[R]['type'] extends null ? unknown
+  : O[R]['type'] extends { number: null } ? number
+  : O[R]['type'] extends { string: null } ? string
+  : O[R]['type'] extends { boolean: null } ? boolean
+  : O[R]['type'] extends { date: null } ? Date
   : never
 
-export type Parameters<T extends Types> = {
-  readonly [K in keyof T]: { readonly [K2 in keyof T]?: null }
+export type Parameters<O extends Outputs> = {
+  readonly [K in keyof O]: O[K]['parameters']
 }
-export type RuleName<T extends Types> = Extract<keyof T, string>
+export type RuleName<O extends Outputs> = Extract<keyof O, string>
 
-export type GetContext<
-  T extends Types,
-  P extends Parameters<T>,
-  R extends RuleName<T>,
-> = Partial<{ readonly [K in keyof P[R] & keyof T]: GetType<T, K> }>
+export type GetContext<O extends Outputs, R extends RuleName<O>> = Partial<{
+  readonly [K in keyof O[R]['parameters'] & keyof O]: GetType<O, K>
+}>
 
-export interface Publicodes<T extends Types, P extends Parameters<T>> {
-  readonly types: T
-  readonly parameters: P
-  readonly evaluationTree: unknown
+export interface Publicodes<O extends Outputs> {
+  readonly evaluation: unknown
+  readonly outputs: O
 }
 
-export type EvaluationTree = Record<string, Computation>
-
-export type Evaluation<
-  T extends Types,
-  P extends Parameters<T>,
-  R extends RuleName<T>,
-> = {
-  value: GetType<T, R> | undefined | null
-  inputs: keyof GetContext<T, P, R>
+export type Evaluation<O extends Outputs, R extends RuleName<O>> = {
+  value: GetType<O, R> | undefined | null
+  neededParameters: Array<keyof GetContext<O, R>>
+  missingParameters: Array<keyof GetContext<O, R>>
 }
-
+type NodeIndex = number
 type UnaryOp = '-' | '∅'
 export type BinaryOp =
   | '+'
@@ -62,19 +58,14 @@ export type BinaryOp =
   | '||'
 
 export type Computation =
-  | [Computation, BinaryOp, Computation]
-  | [UnaryOp, Computation]
-  | string // Reference
+  | [BinaryOp, NodeIndex, NodeIndex]
+  | [UnaryOp, NodeIndex]
+  | [NodeIndex, NodeIndex, NodeIndex] // Conditional
+  | string
   | null
   | boolean
+  | number
   | [] // Undefined
-  | [number]
-  | [string]
-  | {
-      if: Computation
-      then: Computation
-      else: Computation
-    }
-  | { d: string } // Date format like 'YYYY-MM-DD' or 'YYYY-MM'
+  | { date: string } // Date format like 'YYYY-MM-DD' or 'YYYY-MM'
   | { get: string } // get value from context
-  | { context: Record<string, Computation>; value: Computation }
+  | { context: Record<string, Computation>; value: NodeIndex }

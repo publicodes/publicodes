@@ -11,6 +11,10 @@ let get_scalar ~pos (value : yaml) =
   | _ ->
       let code, message = Err.parsing_should_be_scalar in
       fatal_error ~pos ~kind:`Syntax ~code message
+        ~hints:
+          [ "Une chaine de caractères simple est attendue, mais un objet ou un \
+             tableau a été trouvé."
+          ; "Vérifiez l'indentation." ]
 
 let parse_array ~pos
     ~(parse :
