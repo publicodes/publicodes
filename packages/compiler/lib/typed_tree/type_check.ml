@@ -99,7 +99,7 @@ let type_check (tree : Tree.t) =
           List.map ctx ~f:(fun (rule_name, value) ->
               let* _ = unify_value value in
               let rule = Hashtbl.find_exn tree (Pos.value rule_name) in
-              let+ _ = unify value.meta rule.meta in
+              let+ _ = unify rule.meta value.meta in
               () )
           |> all_keep_logs
         in
