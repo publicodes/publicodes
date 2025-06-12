@@ -5,26 +5,26 @@ import LegacyEngine from 'publicodes'
 import NewEngine from '../dist/index.js'
 
 // Test data imports
-import simpleNewRules from '../test/simple/model.publicodes.json' assert { type: 'json' }
-import simpleLegacyRules from '../test/simple/legacy-build/index.js'
+import newRules from '../test/simple-TJM/model.publicodes.json' assert { type: 'json' }
+import legacyRules from '../test/simple-TJM/legacy-build/index.js'
 
-console.log('🚀 Publicodes Engine Benchmark - Simple model\n')
+console.log('🚀 Publicodes Engine Benchmark - Simple TJM model\n')
 
 // Simple Model Benchmarks
 summary(() => {
   bench('[Instanciation] Publicodes 2', () => {
-    return do_not_optimize(new NewEngine(simpleNewRules))
+    return do_not_optimize(new NewEngine(newRules))
   })
 
   bench('[Instanciation] Publicodes 1', () => {
-    return new LegacyEngine(simpleLegacyRules)
+    return new LegacyEngine(legacyRules)
   })
 })
 
 summary(() => {
   // Pre-instantiate engines for evaluation benchmarks
-  const newEngineSimple = new NewEngine(simpleNewRules)
-  const legacyEngineSimple = new LegacyEngine(simpleLegacyRules)
+  const newEngineSimple = new NewEngine(newRules)
+  const legacyEngineSimple = new LegacyEngine(legacyRules)
 
   // Simple model evaluations
   bench('[Evaluation without cache] Publicodes 2', () => {
@@ -39,13 +39,13 @@ summary(() => {
 
 // Test situations
 const simpleSituation = {
-  "chiffre d'affaires": 10000,
+  "chiffre d'affaires . TJM": 10000,
   charges: 100,
 }
 
 summary(() => {
   // Pre-instantiate engines for evaluation benchmarks
-  const legacyEngineSimple = new LegacyEngine(simpleLegacyRules)
+  const legacyEngineSimple = new LegacyEngine(legacyRules)
   bench('[Multiple rules evaluation] Publicodes 1', () => {
     legacyEngineSimple.setSituation(simpleSituation)
     const result = []
@@ -58,7 +58,7 @@ summary(() => {
   })
 
   bench('[Multiple rules evaluation] Publicodes 2', () => {
-    const newEngineSimple = new NewEngine(simpleNewRules, { cache: true })
+    const newEngineSimple = new NewEngine(newRules, { cache: true })
 
     const result = []
     result.push(newEngineSimple.evaluate('revenu net', simpleSituation))

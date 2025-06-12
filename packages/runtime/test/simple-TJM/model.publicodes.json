@@ -72,6 +72,15 @@
       "type": { "number": null, "unit": "jour" },
       "nodeIndex": 23
     },
+    "cotisations": {
+      "parameters": {
+        "auto-entrepreneur": null,
+        "chiffre d'affaires . TJM": null,
+        "chiffre d'affaires . nombre de jour": null
+      },
+      "type": { "number": null, "unit": "€" },
+      "nodeIndex": 38
+    },
     "exemples . CA élevé": {
       "parameters": {
         "auto-entrepreneur": null,

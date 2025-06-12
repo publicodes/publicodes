@@ -12,31 +12,30 @@ auto-entrepreneur:
   par défaut: non
 
 cotisations:
-  valeur: 0.4 * chiffre d'affaires
+  valeur: taux * chiffre d'affaires
   avec:
     taux:
       variations:
         - si: auto-entrepreneur
-          alors: 0.30
-        - sinon: 0.45
+          alors: 30%
+        - sinon: 45%
 
-# charges:
-#   non applicable si: auto-entrepreneur
-#   par défaut:
-#     valeur: 10% * chiffre d'affaires
-#     plancher: 100€
+charges:
+  non applicable si: auto-entrepreneur
+  par défaut:
+    valeur: 10% * chiffre d'affaires
+    plancher: 100€
 
 revenu net:
   public: oui
   somme:
     - chiffre d'affaires
-    # - (- cotisations)
-    # - (- charges)
-
+    - (- cotisations)
+    - (- charges)
 
 exemples:
 exemples . CA élevé:
   public: oui
   valeur: chiffre d'affaires
   contexte:
-    chiffre d'affaires . TJM: 600 €
+    chiffre d'affaires . TJM: 600 € # KO : should be €/jour

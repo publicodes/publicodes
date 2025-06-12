@@ -4,7 +4,7 @@ import rules from './model.publicodes.json'
 const engine = new Engine(rules)
 
 const revenuNet = engine.evaluate('revenu net', {
-  "chiffre d'affaires . TJM": 1500,
+  "chiffre d'affaires . TJM": 450,
   'auto-entrepreneur': true,
 })
 
