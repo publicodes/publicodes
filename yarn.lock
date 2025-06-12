@@ -4149,13 +4149,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@publicodes/runtime@workspace:packages/runtime"
   dependencies:
+    "@publicodes/tools": "workspace:^"
+    mitata: "npm:^1.0.34"
     rolldown: "npm:1.0.0-beta.8"
     tsc: "npm:^2.0.4"
     vitest: "npm:^3.1.2"
   languageName: unknown
   linkType: soft
 
-"@publicodes/tools@workspace:packages/tools":
+"@publicodes/tools@workspace:^, @publicodes/tools@workspace:packages/tools":
   version: 0.0.0-use.local
   resolution: "@publicodes/tools@workspace:packages/tools"
   dependencies:
@@ -15068,6 +15070,13 @@ __metadata:
   version: 0.1.14
   resolution: "mitata@npm:0.1.14"
   checksum: 10/0e5b66484b9b9f22f1249998944930d8cd09cc862451dd1715b7181159f80618be61c3c612eac4c6150562c5a5b57c1549fd213dce40b5fb2b9faac6ebf9dfdc
+  languageName: node
+  linkType: hard
+
+"mitata@npm:^1.0.34":
+  version: 1.0.34
+  resolution: "mitata@npm:1.0.34"
+  checksum: 10/537198b1f16e063f918a9202259431d1416903acb437ef77712fbfa89ef22cbed5e8c9a988cde242e6773e30008c2438fb08f4aa6a6a4d3e0892647b7d2783c9
   languageName: node
   linkType: hard
 

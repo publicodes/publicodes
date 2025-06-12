@@ -28,7 +28,7 @@ dirigeant . auto-entrepreneur . impôt . versement libératoire:
   par défaut: non
 
 dirigeant . auto-entrepreneur . impôt . versement libératoire . seuil dépassé:
-  type: notification
+  public: oui
   valeur: impôt . foyer fiscal . revenu fiscal de référence > 27519 €/an
   description: |
     Le versement libératoire n’est pas disponible si le revenu fiscal de

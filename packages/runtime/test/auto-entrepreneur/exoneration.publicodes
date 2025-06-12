@@ -23,16 +23,14 @@ dirigeant . auto-entrepreneur . DROM:
   avec:
     première période:
       titre: Jusqu’à la fin du 8ème trimestre d’activité
-      privé: oui
       valeur: entreprise . durée d'activité . trimestres civils <= 8
     seconde période:
       titre: Entre le 9ème trimestre civil et la fin de la 3ème année civile
         d’activité
-      privé: oui
       valeur: entreprise . durée d'activité . années civiles <= 3
 
     taux service BIC:
-      remplace: cotisations et contributions . cotisations . service BIC . taux
+      # remplace: cotisations et contributions . cotisations . service BIC . taux
       variations:
         - si: première période
           alors: 3.60%
@@ -41,7 +39,7 @@ dirigeant . auto-entrepreneur . DROM:
         - sinon: 14.20%
 
     taux service BNC:
-      remplace: cotisations et contributions . cotisations . service BNC . taux
+      # remplace: cotisations et contributions . cotisations . service BNC . taux
       variations:
         - si: première période
           alors:
@@ -74,7 +72,7 @@ dirigeant . auto-entrepreneur . DROM:
               - sinon: 14.10%
 
     taux vente restauration hébergement:
-      remplace: cotisations et contributions . cotisations . vente restauration hébergement . taux
+      # remplace: cotisations et contributions . cotisations . vente restauration hébergement . taux
       variations:
         - si: première période
           alors: 2.10%
@@ -83,7 +81,7 @@ dirigeant . auto-entrepreneur . DROM:
         - sinon: 8.20%
 
     taux CIPAV:
-      remplace: cotisations et contributions . cotisations . service BNC Cipav . taux
+      # remplace: cotisations et contributions . cotisations . service BNC Cipav . taux
       variations:
         - si: première période
           alors: 7.10%
@@ -133,12 +131,12 @@ dirigeant . auto-entrepreneur . Acre:
         Aide à la création ou à la reprise d'une entreprise (Acre) - Service-public.fr: https://entreprendre.service-public.fr/vosdroits/F11677
 
     taux service BIC:
-      remplace: cotisations et contributions . cotisations . service BIC . taux
+      # remplace: cotisations et contributions . cotisations . service BIC . taux
       valeur: taux Acre * cotisations et contributions . cotisations . service BIC . taux
       arrondi: 1 décimale
 
     taux service BNC:
-      remplace: cotisations et contributions . cotisations . service BNC . taux
+      # remplace: cotisations et contributions . cotisations . service BNC . taux
       valeur: taux Acre * cotisations et contributions . cotisations . service BNC . taux
       arrondi:
         variations:
@@ -147,13 +145,13 @@ dirigeant . auto-entrepreneur . Acre:
           - sinon: 1 décimale
 
     taux vente restauration hébergement:
-      remplace: cotisations et contributions . cotisations . vente restauration hébergement . taux
+      # remplace: cotisations et contributions . cotisations . vente restauration hébergement . taux
       valeur: taux Acre * cotisations et contributions . cotisations . vente restauration hébergement . taux
       arrondi: 1 décimale
 
     taux CIPAV:
       applicable si: Cipav
-      remplace: cotisations et contributions . cotisations . service BNC Cipav . taux
+      # remplace: cotisations et contributions . cotisations . service BNC Cipav . taux
       variations:
         - si: entreprise . date de création >= 01/04/2020
           alors:
@@ -164,9 +162,8 @@ dirigeant . auto-entrepreneur . Acre:
         - sinon: taux Acre * cotisations et contributions . cotisations . service BNC Cipav . taux
 
 dirigeant . auto-entrepreneur . Acre . notification calcul ACRE annuel:
-  experimental: oui
-  formule: dirigeant . exonérations . ACRE
-  type: notification
+  public: oui
+  valeur: dirigeant . exonérations . ACRE
   description: |
     Le taux Acre utilisé est celui correspondant au mois courant. Le
     simulateur ne prend pas encore en compte le chevauchement de deux périodes

@@ -19,6 +19,17 @@ end
 module Hashtbl = struct
   module M = Hashtbl.Make (T)
   include M
+
+  let pp pp_val ppf tbl =
+    Format.fprintf ppf "@[<hv>@[<hv 2>{" ;
+    let first = ref true in
+    Core.Hashtbl.iteri tbl ~f:(fun ~key ~data ->
+        if not !first then Format.fprintf ppf ";@ " else first := false ;
+        Format.fprintf ppf "@[<hv 2>%a :@ %a@]"
+          (fun ppf rule_name ->
+            Format.fprintf ppf "%s" (String.concat ~sep:" . " rule_name) )
+          key pp_val data ) ;
+    Format.fprintf ppf "@]@ }@]"
 end
 
 let create_exn (ref : string list) : t =

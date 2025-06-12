@@ -1,12 +1,6 @@
 Simple addition unit with unit :
 
-  $ publicodes compile simple-addition.publicodes -o -
-  E023 valeur simple attendue [syntax error]
-       ╒══  simple-addition.publicodes:4:3 ══
-     3 │ rule 2:
-     4 │   somme:
-       │   ˘˘˘˘˘˘
-  
+  $ publicodes compile simple-addition.publicodes
   E017 unités non compatibles [type error]
        ╒══  simple-addition.publicodes:1:26 ══
      1 │ simple expression: 12€ + 5$
@@ -25,20 +19,11 @@ Simple addition unit with unit :
      5 │     - 4 €
        │       ˘˘˘ unité: €
   
-  {
-    "evaluationTree": {
-      "simple expression": [ [ 12.0 ], "+", [ 5.0 ] ],
-      "rule 2": [ [ 4.0 ], "+", [ [ "-", [ 4.0 ] ], "+", [ 0.0 ] ] ],
-      "b": [ [ 5.0 ], "+", [ 9.0 ] ]
-    },
-    "parameters": {},
-    "types": {}
-  }
   [123]
 
 Simple multiplication with unit :
 
-  $ publicodes compile simple-multiplication.publicodes -o -
+  $ publicodes compile simple-multiplication.publicodes
   E017 unités non compatibles [type error]
        ╒══  simple-multiplication.publicodes:1:29 ══
      1 │ simple expression ko:  (5kg * 5€/kg) = 12$
@@ -47,20 +32,11 @@ Simple multiplication with unit :
      1 │ simple expression ko:  (5kg * 5€/kg) = 12$
        │                                        ˘˘˘ unité: $
   
-  {
-    "evaluationTree": {
-      "simple expression ko": [ [ [ 5.0 ], "*", [ 5.0 ] ], "=", [ 12.0 ] ],
-      "simple expression ok": [ [ [ 5.0 ], "*", [ 5.0 ] ], "=", [ 12.0 ] ],
-      "a": [ [ [ 4.0 ], "/", [ 5.0 ] ], "=", [ 7.0 ] ]
-    },
-    "parameters": {},
-    "types": {}
-  }
   [123]
 
 Unit inference :
 
-  $ publicodes compile unit_inference.publicodes -o -
+  $ publicodes compile unit_inference.publicodes
   E017 unités non compatibles [type error]
        ╒══  unit_inference.publicodes:7:9 ══
      6 │ z:
@@ -80,23 +56,11 @@ Unit inference :
      1 │ a: 5€
        │    ˘˘ unité: €
   
-  {
-    "evaluationTree": {
-      "z": { "get": "z" },
-      "test": [ "x", "+", [ 9.0 ] ],
-      "y": [ "z", "+", [ 3.0 ] ],
-      "x": [ [ "z", "*", [ 4.0 ] ], "*", [ [ 100.0 ], "**", [ 0.0 ] ] ],
-      "b": [ "a", "+", [ 4.0 ] ],
-      "a": [ 5.0 ]
-    },
-    "parameters": {},
-    "types": {}
-  }
   [123]
 
 Unit with percent :
 
-  $ publicodes compile percent.publicodes -o -
+  $ publicodes compile percent.publicodes
   E017 unités non compatibles [type error]
        ╒══  percent.publicodes:14:12 ══
     13 │ # should have error
@@ -107,23 +71,11 @@ Unit with percent :
     14 │ e: 5%/an + 4€/an
        │    ˘˘˘˘˘˘ unité: %/an
   
-  {
-    "evaluationTree": {
-      "c": [ [ 5.0 ], "*", [ 5.0 ] ],
-      "f": [ [ [ 5.0 ], "*", [ 4.0 ] ], "*", [ [ 100.0 ], "**", [ -1.0 ] ] ],
-      "d": [ [ [ 4.0 ], "/", [ 85.0 ] ], "*", [ [ 100.0 ], "**", [ 1.0 ] ] ],
-      "e": [ [ 5.0 ], "+", [ 4.0 ] ],
-      "b": [ [ [ 10.0 ], "*", [ 50.0 ] ], "*", [ [ 100.0 ], "**", [ -1.0 ] ] ],
-      "a": [ [ 5.0 ], "*", [ 15.0 ] ]
-    },
-    "parameters": {},
-    "types": {}
-  }
   [123]
 
 Add unit information with `unité` mechanism :
 
-  $ publicodes compile mechanism.publicodes -o -
+  $ publicodes compile mechanism.publicodes
   E017 unités non compatibles [type error]
        ╒══  mechanism.publicodes:13:13 ══
     12 │ 
@@ -164,19 +116,4 @@ Add unit information with `unité` mechanism :
     17 │ c: 12 €
        │    ˘˘˘˘ unité: €
   
-  {
-    "evaluationTree": {
-      "test b": [ "b", "+", [ 4.0 ] ],
-      "b": [ 5.0 ],
-      "d 2": "d",
-      "c": [ 12.0 ],
-      "test a": [ "a", ">", [ 4.0 ] ],
-      "d": [ 12.0 ],
-      "test d": "d",
-      "test c": "c",
-      "a": [ 5.0 ]
-    },
-    "parameters": {},
-    "types": {}
-  }
   [123]

@@ -1,10 +1,9 @@
 import Engine from '../../src'
-import rules from './rules.json'
+import rules from './model.publicodes.json'
 
 const engine = new Engine(rules)
 
 const context = {
-  "entreprise . chiffre d'affaires": 10000,
   "entreprise . chiffre d'affaires . BIC": 0,
   "entreprise . chiffre d'affaires . service BIC": 10000,
   "entreprise . chiffre d'affaires . service BNC": 0,
@@ -18,4 +17,12 @@ const context = {
 console.log(
   'revenu net',
   engine.evaluate('dirigeant . auto-entrepreneur . revenu net', context),
+)
+
+console.log(
+  'cotisations',
+  engine.evaluate(
+    'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations',
+    context,
+  ),
 )
