@@ -1,7 +1,6 @@
 open Core
 open Utils
 open Shared
-open Eval.Tree
 
 (* This module defines a directed graph for representing rule dependencies.
  *
@@ -42,11 +41,10 @@ module G =
   Graph.Imperative.Digraph.ConcreteBidirectionalLabeled (Rule_vertex) (Ref_edge)
 include G
 
-let mk (ast : Eval.Tree.t) : G.t =
+let mk (ast : 'a Eval_tree.t) : G.t =
   (* Create a new empty graph *)
   let graph = G.create () in
-  (* Helper function to find references to rules in a computation *)
-  let rec find_references ({pos; value; _} : typ_computation) :
+  let rec find_references ({pos; value; _} : 'a Eval_tree.value) :
       Rule_name.t Pos.t list =
     match value with
     | Binary_op (_, left, right) ->

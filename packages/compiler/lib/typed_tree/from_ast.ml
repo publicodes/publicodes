@@ -1,7 +1,9 @@
-open Eval_tree
+open Typ
+open Shared
+open Shared.Eval_tree
 open Core
 open Utils
-open Shared
+open Tree
 
 (* Helper function to convert between the two constant types *)
 let convert_constant expr_const =
@@ -90,7 +92,7 @@ and transform_sum ~pos nodes =
 
 and transform_product ~pos nodes =
   List.fold_right nodes
-    ~init:(mk ~pos (Const (Number (1., None))))
+    ~init:(mk ~pos (Const (Number (1., Some Units.empty))))
     ~f:(fun node acc ->
       mk ~pos (Binary_op (Pos.mk ~pos Shared_ast.Mul, transform_value node, acc)) )
 
@@ -221,14 +223,14 @@ and transform_typ t value =
   let pos = Pos.pos t in
   let typ =
     match Pos.value t with
-    | Shared_typ.Number None ->
-        Typ.any_number ~pos ()
-    | Shared_typ.Number (Some unit) ->
-        Typ.number_with_unit ~pos unit
-    | Shared_typ.Literal l ->
-        Typ.literal ~pos l
+    | Shared.Typ.Number None ->
+        any_number ~pos ()
+    | Shared.Typ.Number (Some unit) ->
+        number_with_unit ~pos unit
+    | Shared.Typ.Literal l ->
+        literal ~pos l
   in
-  {value with typ}
+  {value with meta= typ}
 
 let from_ast (resolved_ast : Shared_ast.resolved) : t =
   let evalTree =

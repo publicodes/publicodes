@@ -33,12 +33,13 @@ let cmd_exit (logs : Log.t list) : Cmd.Exit.code =
 let compile_to_json ast =
   let open Output in
   let* ast = Resolver.to_resolved_ast ast in
-  let* eval_tree = Eval.from_resolved_ast ast |> Eval.type_check in
+  let* eval_tree = Typed_tree.from_resolved_ast ast |> Typed_tree.type_check in
+  let hashed_tree = Hashed_tree.from_typed_tree eval_tree in
   let* parameters =
     Dependency_graph.cycle_check eval_tree
-    >>= Dependency_graph.extract_parameters ~ast ~eval_tree
+    >>= Dependency_graph.extract_parameters ~ast ~tree:hashed_tree
   in
-  return (Eval.to_json eval_tree parameters)
+  return (Hashed_tree.to_json hashed_tree parameters)
 
 let compile input_files output =
   let unresolved_program =
