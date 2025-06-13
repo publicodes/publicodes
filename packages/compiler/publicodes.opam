@@ -33,6 +33,11 @@ depends: [
   "cmdliner"
   "unionFind"
   "inotify"
+  "stdune"
+  "core_unix"
+  "pp"
+  "ocaml-lsp-server" {with-dev}
+  "ocamlformat" {with-dev}
   "ppx_inline_test" {with-test}
   "ppx_assert" {with-test}
   "ppx_compare" {with-test}
