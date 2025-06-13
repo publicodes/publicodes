@@ -8,7 +8,7 @@ let input_files =
   let doc = "$(docv) is the input files. Use $(b,-) for $(b,stdin)." in
   Arg.(non_empty & pos_all file ["-"] & info [] ~doc ~docv:"FILES")
 
-let default_output_file = "model.publicodes.json"
+let default_output_file = "model.publicodes.js"
 
 let output_file =
   let doc = "$(docv) is the file to write to. Use $(b,-) for $(b,stdout)." in
@@ -39,7 +39,8 @@ let compile_to_json ast =
     Dependency_graph.cycle_check eval_tree
     >>= Dependency_graph.extract_parameters ~ast ~tree:hashed_tree
   in
-  return (Hashed_tree.to_json hashed_tree parameters)
+  return (Hashed_tree.to_js eval_tree parameters)
+(* return (Hashed_tree.to_json hashed_tree parameters) *)
 
 let compile input_files output =
   let unresolved_program =
@@ -62,9 +63,8 @@ let compile input_files output =
       let json_output = compile_to_json program in
       Output.print_logs json_output ;
       match Output.result json_output with
-      | Some json ->
-          File.write_file ~path:output
-            ~content:(Yojson.Safe.pretty_to_string json) ;
+      | Some js_content ->
+          File.write_file ~path:output ~content:js_content ;
           cmd_exit (Output.logs json_output @ Output.logs unresolved_program)
       | None ->
           Cmd.Exit.some_error )
