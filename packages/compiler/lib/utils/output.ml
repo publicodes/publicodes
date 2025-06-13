@@ -36,6 +36,8 @@ let fatal_error ~pos ~kind ~code ?(hints = []) ?(labels = []) message =
   let log = Log.error ~pos ~kind ~hints ~code ~labels message in
   (None, [log])
 
+let ignore_logs (x_opt, _) = (x_opt, [])
+
 let add_logs ~(logs : Log.t list) ((x_opt, logs1) : 'a t) : 'a t =
   match x_opt with
   | Some x ->

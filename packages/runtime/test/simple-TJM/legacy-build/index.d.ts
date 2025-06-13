@@ -28,8 +28,9 @@ export type PString = `'${string}'`
  */
 export type Situation = Partial<{
   "chiffre d'affaires": number,
+  "chiffre d'affaires . TJM": number,
+  "chiffre d'affaires . nombre de jour": number,
   "auto-entrepreneur": PBoolean,
-  "date": PDate,
   "cotisations": number,
   "cotisations . taux": number,
   "charges": number | null,
@@ -44,8 +45,9 @@ export type Situation = Partial<{
  */
 export type RuleValue = Partial<{
   "chiffre d'affaires": number,
+  "chiffre d'affaires . TJM": number,
+  "chiffre d'affaires . nombre de jour": number,
   "auto-entrepreneur": boolean,
-  "date": string,
   "cotisations": number,
   "cotisations . taux": number,
   "charges": number | null,

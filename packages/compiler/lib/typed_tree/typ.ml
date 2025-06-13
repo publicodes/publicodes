@@ -8,6 +8,20 @@ type naked_t = Literal of Typ.literal | Number of Number_unit.t | Any of Any.t
 
 and t = naked_t Pos.t UnionFind.elem
 
+let to_string t =
+  UnionFind.get t |> Pos.value
+  |> function
+  | Number u ->
+      "num " ^ Number_unit.to_string u
+  | Literal String ->
+      "text"
+  | Literal Bool ->
+      "bool"
+  | Literal Date ->
+      "date"
+  | _ ->
+      "?"
+
 let mk ~pos (typ : naked_t) : t = Pos.mk typ ~pos |> UnionFind.make
 
 let any ~pos () : t = mk ~pos (Any (Any.mk ()))
@@ -19,24 +33,24 @@ let number_with_unit ~pos (unit : Units.t) : t =
 
 let any_number ~pos () : t = mk ~pos (Number (Number_unit.any ()))
 
-let to_str = function
-  | Number _ ->
-      "un nombre "
-  | Literal String ->
-      "un texte"
-  | Literal Bool ->
-      "un booléen (oui / non)"
-  | Literal Date ->
-      "une date"
-  | _ ->
-      "whatev"
-
 let unify (t1 : t) (t2 : t) =
   let typ1 = t1 |> UnionFind.get in
   let typ2 = t2 |> UnionFind.get in
   let pos1 = Pos.pos typ1 in
   let pos2 = Pos.pos typ2 in
   let error_typ_mismatch () =
+    let to_str = function
+      | Number _ ->
+          "un nombre "
+      | Literal String ->
+          "un texte"
+      | Literal Bool ->
+          "un booléen (oui / non)"
+      | Literal Date ->
+          "une date"
+      | _ ->
+          failwith "Impossible"
+    in
     let code, message = Err.type_incoherence in
     fatal_error ~pos:pos1 ~kind:`Type ~code
       ~labels:
