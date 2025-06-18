@@ -1,27 +1,30 @@
 chiffre d'affaires:
   unité: €
+  produit:
+    - TJM
+    - nombre de jour
+  avec:
+    TJM:
+    nombre de jour:
+      par défaut: 16 jour
+
 auto-entrepreneur:
   par défaut: non
 
-date: 01/2025
-
 cotisations:
-  public: oui
-  valeur:
-    taux * chiffre d'affaires
+  valeur: taux * chiffre d'affaires
   avec:
     taux:
       variations:
-        - si: date >= 01/2025
-          alors: 20%
-        - sinon: 15%
+        - si: auto-entrepreneur
+          alors: 30%
+        - sinon: 45%
 
 charges:
-  applicable si:  auto-entrepreneur
+  non applicable si: auto-entrepreneur
   par défaut:
     valeur: 10% * chiffre d'affaires
     plancher: 100€
-
 
 revenu net:
   public: oui
@@ -33,7 +36,6 @@ revenu net:
 exemples:
 exemples . CA élevé:
   public: oui
-  valeur: revenu net
+  valeur: chiffre d'affaires
   contexte:
-    chiffre d'affaires: 100000€
-    charges: 8000€
+    chiffre d'affaires . TJM: 600 € # KO : should be €/jour
