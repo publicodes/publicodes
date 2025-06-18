@@ -63,8 +63,11 @@ let compile input_files output =
       let json_output = compile_to_json program in
       Output.print_logs json_output ;
       match Output.result json_output with
-      | Some js_content ->
-          File.write_file ~path:output ~content:js_content ;
+      | Some (index_js, index_d_ts) ->
+          let js_path = Filename.chop_extension output ^ ".js" in
+          let d_ts_path = Filename.chop_extension output ^ ".d.ts" in
+          File.write_file ~path:js_path ~content:index_js ;
+          File.write_file ~path:d_ts_path ~content:index_d_ts ;
           cmd_exit (Output.logs json_output @ Output.logs unresolved_program)
       | None ->
           Cmd.Exit.some_error )

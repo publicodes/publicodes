@@ -52,3 +52,6 @@ dist-ssr
 packages/compiler/_build
 packages/compiler/_opam
 packages/compiler/**/model.publicodes.json
+packages/compiler/engine.d.ts
+packages/compiler/engine.js
+packages/compiler/only-rules-w-optim.js
