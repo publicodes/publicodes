@@ -88,6 +88,12 @@ let rec parse ?(error_if_undefined = true) ~pos (yaml : yaml) :
         else []
       in
       return ~logs {value= Pos.mk ~pos Undefined; chainable_mechanisms= []}
+  | `Scalar ({value; style= `Single_quoted}, value_pos)
+  | `Scalar ({value; style= `Double_quoted}, value_pos) ->
+      return
+        { value=
+            Pos.mk ~pos (Expr (Pos.mk ~pos:value_pos (Const (String value))))
+        ; chainable_mechanisms= [] }
   | `Scalar ({value; _}, pos) ->
       let* expr = parse_expression ~pos value in
       return {value= Pos.mk ~pos (Expr expr); chainable_mechanisms= []}
