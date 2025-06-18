@@ -119,8 +119,10 @@ let to_json tree params =
         let rule_str = to_string output_rule in
         let node_index =
           match List.Assoc.find rule_to_index rule_str ~equal:String.equal with
-          | Some index -> `Int index
-          | None -> `Null
+          | Some index ->
+              `Int index
+          | None ->
+              `Null
         in
         let parameters =
           `Assoc (List.map param_rules ~f:(fun rule -> (to_string rule, `Null)))
@@ -131,8 +133,8 @@ let to_json tree params =
           | Some (Number (Some unit)) ->
               `Assoc
                 [ ("number", `Null)
-                ; ( "unit"
-                  , `String (Format.asprintf "%a" Shared.Units.pp unit) ) ]
+                ; ("unit", `String (Format.asprintf "%a" Shared.Units.pp unit))
+                ]
           | Some (Number None) ->
               `Assoc [("number", `Null)]
           | Some (Literal String) ->
