@@ -1,0 +1,6 @@
+[38;5;244mE014[0m [1;31mnom de règle invalide[0m [syntax error]
+[38;5;244m     ╒══  [0m[1;34m../../../../incubateur-ademe/nosgestesclimat/data/commun.publicodes:1:1[0m[38;5;244m ══[0m
+[38;5;244m   1 │ [0mimporter!:
+[38;5;244m     │ [0m[1;31m˘˘˘˘˘˘˘˘˘˘[0m
+[38;5;244m Hint: [0m[3;2mun nom de règle doit être de la forme suivante
+       : `mon namespace . ma règle` ou `ma règle`[0m
