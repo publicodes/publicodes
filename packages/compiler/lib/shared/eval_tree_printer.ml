@@ -47,6 +47,16 @@ let handle_tag formatter tag content =
       (* red *)
       to_fmt formatter content ;
       pp_print_string formatter "\027[0m"
+  | `Meta_key ->
+      pp_print_string formatter "\027[2;90m" ;
+      (* very dim dark gray - extremely subtle *)
+      to_fmt formatter content ;
+      pp_print_string formatter "\027[0m"
+  | `Meta ->
+      pp_print_string formatter "\027[2;37m" ;
+      (* dim white/gray - subtle but more visible than key *)
+      to_fmt formatter content ;
+      pp_print_string formatter "\027[0m"
   | _ ->
       to_fmt formatter content
 
@@ -118,7 +128,7 @@ let format_rule_name_heading rule_name =
   tag `Rule_name_heading (text (Rule_name.to_string rule_name))
 
 (* Main recursive formatter for values *)
-let rec format_value ?(show_pos = false) value =
+let rec format_value ?(show_pos = false) ?meta_to_string value =
   let format_naked_value = function
     | Const c ->
         format_constant c
@@ -129,19 +139,19 @@ let rec format_value ?(show_pos = false) value =
                  (concat
                     [ tag `Keyword (text "if")
                     ; space
-                    ; format_value ~show_pos cond ] )
+                    ; format_value ~show_pos ?meta_to_string cond ] )
              ; cut
              ; box ~indent:2
                  (concat
                     [ tag `Keyword (text "then")
                     ; space
-                    ; format_value ~show_pos then_val ] )
+                    ; format_value ~show_pos ?meta_to_string then_val ] )
              ; cut
              ; box ~indent:2
                  (concat
                     [ tag `Keyword (text "else")
                     ; space
-                    ; format_value ~show_pos else_val ] ) ] )
+                    ; format_value ~show_pos ?meta_to_string else_val ] ) ] )
     | Binary_op (op, left, right) ->
         let needs_parens v =
           match v.value with Binary_op _ | Unary_op _ -> true | _ -> false
@@ -151,9 +161,9 @@ let rec format_value ?(show_pos = false) value =
             hbox
               (concat
                  [ tag `Structure (text "(")
-                 ; format_value ~show_pos v
+                 ; format_value ~show_pos ?meta_to_string v
                  ; tag `Structure (text ")") ] )
-          else format_value ~show_pos v
+          else format_value ~show_pos ?meta_to_string v
         in
         hbox
           (concat
@@ -167,12 +177,9 @@ let rec format_value ?(show_pos = false) value =
           (concat
              [ format_unary_op (Pos.value op)
              ; space
-             ; format_value ~show_pos operand ] )
+             ; format_value ~show_pos ?meta_to_string operand ] )
     | Ref rule_name ->
-        hbox
-          (concat
-             [ tag `Reference (text "@")
-             ; format_rule_name rule_name ] )
+        hbox (concat [tag `Reference (text "@"); format_rule_name rule_name])
     | Get_context rule_name ->
         hbox
           (concat
@@ -181,13 +188,40 @@ let rec format_value ?(show_pos = false) value =
              ; format_rule_name rule_name
              ; tag `Structure (text ")") ] )
     | Set_context ctx ->
-        format_context ~show_pos ctx
+        format_context ~show_pos ?meta_to_string ctx
   in
   let main_doc = format_naked_value value.value in
-  main_doc
+  let meta_doc =
+    match meta_to_string with
+    | None ->
+        nop
+    | Some to_string ->
+        let meta_pairs = to_string value.meta in
+        if List.is_empty meta_pairs then nop
+        else
+          let format_pair (key, value) =
+            hbox
+              (concat
+                 [ tag `Meta_key (text key)
+                 ; tag `Meta_key (text ":")
+                 ; tag `Meta (text value) ] )
+          in
+          let pairs_doc =
+            concat
+              ~sep:(tag `Meta_key (text " "))
+              (List.map meta_pairs ~f:format_pair)
+          in
+          hbox
+            (concat
+               [ space
+               ; tag `Meta_key (text "[")
+               ; pairs_doc
+               ; tag `Meta_key (text "]") ] )
+  in
+  hbox (concat [main_doc; meta_doc])
 
 (* Format context *)
-and format_context ?(show_pos = false) {context; value} =
+and format_context ?(show_pos = false) ?meta_to_string {context; value} =
   let format_binding (rule_name, val_expr) =
     hbox
       (concat
@@ -195,7 +229,7 @@ and format_context ?(show_pos = false) {context; value} =
          ; space
          ; tag `Structure (text "=")
          ; space
-         ; format_value ~show_pos val_expr ] )
+         ; format_value ~show_pos ?meta_to_string val_expr ] )
   in
   let bindings_doc =
     match context with
@@ -223,10 +257,10 @@ and format_context ?(show_pos = false) {context; value} =
        [ bindings_doc
        ; tag `Keyword (text "in")
        ; cut
-       ; box ~indent:2 (format_value ~show_pos value) ] )
+       ; box ~indent:2 (format_value ~show_pos ?meta_to_string value) ] )
 
 (* Format the entire evaluation tree *)
-let format_eval_tree ?(show_pos = false) eval_tree =
+let format_eval_tree ?(show_pos = false) ?meta_to_string eval_tree =
   let rules = Hashtbl.to_alist eval_tree in
   let sorted_rules =
     List.sort rules ~compare:(fun (a, _) (b, _) -> Rule_name.compare a b)
@@ -236,35 +270,37 @@ let format_eval_tree ?(show_pos = false) eval_tree =
       (concat
          [ hbox
              (concat
-                [format_rule_name_heading rule_name; space; tag `Structure (text ":")] )
+                [ format_rule_name_heading rule_name
+                ; space
+                ; tag `Structure (text ":") ] )
          ; cut
-         ; box ~indent:4 (format_value ~show_pos value)
+         ; box ~indent:4 (format_value ~show_pos ?meta_to_string value)
          ; cut ] )
   in
   let rule_docs = List.map sorted_rules ~f:format_rule in
   vbox (concat ~sep:cut rule_docs)
 
 (* Print functions *)
-let print_value ?(show_pos = false) value =
-  let doc = format_value ~show_pos value in
+let print_value ?(show_pos = false) ?meta_to_string value =
+  let doc = format_value ~show_pos ?meta_to_string value in
   to_fmt_with_tags (Format.get_std_formatter ()) doc ~tag_handler:handle_tag ;
   Format.print_flush ()
 
-let print_eval_tree ?(show_pos = false) eval_tree =
-  let doc = format_eval_tree ~show_pos eval_tree in
+let print_eval_tree ?(show_pos = false) ?meta_to_string eval_tree =
+  let doc = format_eval_tree ~show_pos ?meta_to_string eval_tree in
   to_fmt_with_tags (Format.get_std_formatter ()) doc ~tag_handler:handle_tag ;
   Format.print_flush ()
 
-let to_string_value ?(show_pos = false) value =
-  let doc = format_value ~show_pos value in
+let to_string_value ?(show_pos = false) ?meta_to_string value =
+  let doc = format_value ~show_pos ?meta_to_string value in
   let buffer = Buffer.create 256 in
   let formatter = Format.formatter_of_buffer buffer in
   to_fmt_with_tags formatter doc ~tag_handler:handle_tag ;
   Format.pp_print_flush formatter () ;
   Buffer.contents buffer
 
-let to_string_eval_tree ?(show_pos = false) eval_tree =
-  let doc = format_eval_tree ~show_pos eval_tree in
+let to_string_eval_tree ?(show_pos = false) ?meta_to_string eval_tree =
+  let doc = format_eval_tree ~show_pos ?meta_to_string eval_tree in
   let buffer = Buffer.create 1024 in
   let formatter = Format.formatter_of_buffer buffer in
   to_fmt_with_tags formatter doc ~tag_handler:handle_tag ;
