@@ -4,10 +4,10 @@ import LegacyEngine from 'publicodes'
 // New engine
 import NewEngine from '../dist/index.js'
 
-import NewEngineJS from '../test/auto-entrepreneur/js-output/simple-engine-wrapper.js'
-import NewEngineJSWithCache from '../test/auto-entrepreneur/js-output/engine-with-cache.js'
-import { rules as jsRules } from '../test/auto-entrepreneur/js-output/only-rules.js'
-import { rules as jsRulesOptim } from '../test/auto-entrepreneur/js-output/only-rules-w-optim.js'
+import NewEngineJS from '../test/auto-entrepreneur/js-output/engine.js'
+// import NewEngineJSWithCache from '../test/auto-entrepreneur/js-output/engine-with-cache.js'
+// import { rules as jsRules } from '../test/auto-entrepreneur/js-output/only-rules.js'
+// import { rules as jsRulesOptim } from '../test/auto-entrepreneur/js-output/only-rules-w-optim.js'
 
 // Test data imports
 import autoEntrepreneurNewRules from '../test/auto-entrepreneur/model.publicodes.json' assert { type: 'json' }
@@ -25,26 +25,23 @@ summary(() => {
 		return do_not_optimize(new NewEngine(autoEntrepreneurNewRules))
 	})
 
-	bench(
-		'[Auto-entrepreneur instantiation] Publicodes 2 JS (only-rules)',
-		() => {
-			return jsRules
-		},
-	)
+	// bench(
+	// 	'[Auto-entrepreneur instantiation] Publicodes 2 JS (only-rules)',
+	// 	() => {
+	// 		return jsRules
+	// 	},
+	// )
 
-	bench(
-		'[Auto-entrepreneur instantiation] Publicodes 2 JS (simple wrapper)',
-		() => {
-			return do_not_optimize(new NewEngineJS())
-		},
-	)
+	bench('[Auto-entrepreneur instantiation] Publicodes 2 (JS)', () => {
+		return do_not_optimize(new NewEngineJS())
+	})
 
-	bench(
-		'[Auto-entrepreneur instantiation] Publicodes 2 JS (with cache)',
-		() => {
-			return do_not_optimize(new NewEngineJSWithCache())
-		},
-	)
+	// bench(
+	// 	'[Auto-entrepreneur instantiation] Publicodes 2 JS (with cache)',
+	// 	() => {
+	// 		return do_not_optimize(new NewEngineJSWithCache())
+	// 	},
+	// )
 })
 
 const situationBuilder = ({ legacy }) => ({
@@ -66,7 +63,7 @@ summary(() => {
 	const newEngineAE = new NewEngine(autoEntrepreneurNewRules)
 	const legacyEngineAE = new LegacyEngine(autoEntrepreneurLegacyRules)
 	const newEngineJs = new NewEngineJS()
-	const newEngineJsWithCache = new NewEngineJSWithCache(undefined)
+	// const newEngineJsWithCache = new NewEngineJSWithCache(undefined)
 
 	bench('[Evaluation cache reset] Publicodes 1', () => {
 		legacyEngineAE.setSituation(situation)
@@ -81,23 +78,23 @@ summary(() => {
 		)
 	})
 
-	bench('[Evaluation without cache] Publicodes 2 JS (only-rules)', () => {
-		return jsRules['dirigeant . auto-entrepreneur . revenu net'](contexte)
-	})
+	// bench('[Evaluation without cache] Publicodes 2 JS (only-rules)', () => {
+	// 	return jsRules['dirigeant . auto-entrepreneur . revenu net'](contexte)
+	// })
 
-	bench('[Evaluation without cache] Publicodes 2 JS (simple wrapper)', () => {
+	bench('[Evaluation without cache] Publicodes 2 (JS)', () => {
 		return newEngineJs.evaluate(
 			'dirigeant . auto-entrepreneur . revenu net',
 			contexte,
 		)
 	})
 
-	bench('[Evaluation without cache] Publicodes 2 JS (with cache)', () => {
-		return newEngineJsWithCache.evaluate(
-			'dirigeant . auto-entrepreneur . revenu net',
-			contexte,
-		)
-	})
+	// bench('[Evaluation without cache] Publicodes 2 JS (with cache)', () => {
+	// 	return newEngineJsWithCache.evaluate(
+	// 		'dirigeant . auto-entrepreneur . revenu net',
+	// 		contexte,
+	// 	)
+	// })
 })
 
 summary(() => {
@@ -106,7 +103,7 @@ summary(() => {
 		cache: false,
 	})
 	const legacyEngineAE = new LegacyEngine(autoEntrepreneurLegacyRules)
-	const newEngineJsWithCache = new NewEngineJSWithCache()
+	// const newEngineJsWithCache = new NewEngineJSWithCache()
 	const newEngineJs = new NewEngineJS()
 
 	legacyEngineAE.setSituation(situation)
@@ -130,23 +127,23 @@ summary(() => {
 		)
 	})
 
-	bench('[Same evaluation repeated] Publicodes 2 JS (only-rules)', () => {
-		return jsRules['dirigeant . auto-entrepreneur . revenu net'](contexte)
-	})
+	// bench('[Same evaluation repeated] Publicodes 2 JS (only-rules)', () => {
+	// 	return jsRules['dirigeant . auto-entrepreneur . revenu net'](contexte)
+	// })
 
-	bench('[Same evaluation repeated] Publicodes 2 JS (simple wrapper)', () => {
+	bench('[Same evaluation repeated] Publicodes 2 (JS)', () => {
 		return newEngineJs.evaluate(
 			'dirigeant . auto-entrepreneur . revenu net',
 			contexte,
 		)
 	})
 
-	bench('[Same evaluation repeated] Publicodes 2 JS (with cache)', () => {
-		return newEngineJsWithCache.evaluate(
-			'dirigeant . auto-entrepreneur . revenu net',
-			contexte,
-		)
-	})
+	// bench('[Same evaluation repeated] Publicodes 2 JS (with cache)', () => {
+	// 	return newEngineJsWithCache.evaluate(
+	// 		'dirigeant . auto-entrepreneur . revenu net',
+	// 		contexte,
+	// 	)
+	// })
 })
 
 const rules = [
@@ -198,57 +195,54 @@ summary(() => {
 		return results
 	})
 
-	bench(
-		'[Multiple rules evaluated first eval] Publicodes 2 JS (only-rules)',
-		() => {
-			const results = []
-			const newContexte = Object.assign({}, contexte)
-			rules.forEach((rule) => {
-				results.push(jsRules[rule](newContexte))
-			})
-			return results
-		},
-	)
+	// bench(
+	// 	'[Multiple rules evaluated first eval] Publicodes 2 JS (only-rules)',
+	// 	() => {
+	// 		const results = []
+	// 		const newContexte = Object.assign({}, contexte)
+	// 		rules.forEach((rule) => {
+	// 			results.push(jsRules[rule](newContexte))
+	// 		})
+	// 		return results
+	// 	},
+	// )
 
-	bench(
-		'[Multiple rules evaluated first eval] Publicodes 2 JS (only-rules optim)',
-		() => {
-			const results = []
-			const newContexte = Object.assign({}, contexte)
-			rules.forEach((rule) => {
-				results.push(jsRulesOptim[rule](newContexte))
-			})
-			return results
-		},
-	)
+	// bench(
+	// 	'[Multiple rules evaluated first eval] Publicodes 2 JS (only-rules optim)',
+	// 	() => {
+	// 		const results = []
+	// 		const newContexte = Object.assign({}, contexte)
+	// 		rules.forEach((rule) => {
+	// 			results.push(jsRulesOptim[rule](newContexte))
+	// 		})
+	// 		return results
+	// 	},
+	// )
 
 	const newEngineJs = new NewEngineJS()
 
-	bench(
-		'[Multiple rules evaluated first eval] Publicodes 2 JS (simple wrapper)',
-		() => {
-			const results = []
-			const newContexte = Object.assign({}, contexte)
-			rules.forEach((rule) => {
-				results.push(newEngineJs.evaluate(rule, newContexte))
-			})
-			return results
-		},
-	)
+	bench('[Multiple rules evaluated first eval] Publicodes 2 (JS)', () => {
+		const results = []
+		const newContexte = Object.assign({}, contexte)
+		rules.forEach((rule) => {
+			results.push(newEngineJs.evaluate(rule, newContexte))
+		})
+		return results
+	})
 
-	const newEngineJsWithCache = new NewEngineJSWithCache()
+	// const newEngineJsWithCache = new NewEngineJSWithCache()
 
-	bench(
-		'[Multiple rules evaluated first eval] Publicodes 2 JS (with cache)',
-		() => {
-			const results = []
-			const newContexte = Object.assign({}, contexte)
-			rules.forEach((rule) => {
-				results.push(newEngineJsWithCache.evaluate(rule, newContexte))
-			})
-			return results
-		},
-	)
+	// bench(
+	// 	'[Multiple rules evaluated first eval] Publicodes 2 JS (with cache)',
+	// 	() => {
+	// 		const results = []
+	// 		const newContexte = Object.assign({}, contexte)
+	// 		rules.forEach((rule) => {
+	// 			results.push(newEngineJsWithCache.evaluate(rule, newContexte))
+	// 		})
+	// 		return results
+	// 	},
+	// )
 })
 
 // Complex scenario benchmarks for auto-entrepreneur
@@ -301,36 +295,36 @@ summary(() => {
 		return results
 	})
 
-	bench('[Multiple engine comparison] Publicodes 2 JS (only-rules)', () => {
-		const results = []
-		const c1 = Object.assign({}, contexte)
-		const c2 = Object.assign({}, contexte, changes)
-		;[c1, c2].forEach((c) =>
-			rules.forEach((rule) => {
-				results.push(jsRules[rule](c))
-			}),
-		)
-		return results
-	})
+	// bench('[Multiple engine comparison] Publicodes 2 JS (only-rules)', () => {
+	// 	const results = []
+	// 	const c1 = Object.assign({}, contexte)
+	// 	const c2 = Object.assign({}, contexte, changes)
+	// 	;[c1, c2].forEach((c) =>
+	// 		rules.forEach((rule) => {
+	// 			results.push(jsRules[rule](c))
+	// 		}),
+	// 	)
+	// 	return results
+	// })
 
-	bench(
-		'[Multiple engine comparison] Publicodes 2 JS (only-rules optim)',
-		() => {
-			const results = []
-			const c1 = Object.assign({}, contexte)
-			const c2 = Object.assign({}, contexte, changes)
-			;[c1, c2].forEach((c) =>
-				rules.forEach((rule) => {
-					results.push(jsRulesOptim[rule](c))
-				}),
-			)
-			return results
-		},
-	)
+	// bench(
+	// 	'[Multiple engine comparison] Publicodes 2 JS (only-rules optim)',
+	// 	() => {
+	// 		const results = []
+	// 		const c1 = Object.assign({}, contexte)
+	// 		const c2 = Object.assign({}, contexte, changes)
+	// 		;[c1, c2].forEach((c) =>
+	// 			rules.forEach((rule) => {
+	// 				results.push(jsRulesOptim[rule](c))
+	// 			}),
+	// 		)
+	// 		return results
+	// 	},
+	// )
 
 	const newEngineJs = new NewEngineJS()
 
-	bench('[Multiple engine comparison] Publicodes 2 JS (simple wrapper)', () => {
+	bench('[Multiple engine comparison] Publicodes 2 (JS)', () => {
 		const results = []
 		const c1 = Object.assign({}, contexte)
 		const c2 = Object.assign({}, contexte, changes)
@@ -342,23 +336,23 @@ summary(() => {
 		return results
 	})
 
-	const newEngineJsWithCache = new NewEngineJSWithCache()
+	// const newEngineJsWithCache = new NewEngineJSWithCache()
 
-	bench('[Multiple engine comparison] Publicodes 2 JS (with cache)', () => {
-		const results = []
-		const c1 = Object.assign({}, contexte)
-		const c2 = Object.assign({}, contexte, changes)
-		;[c1, c2].forEach((c) =>
-			rules.forEach((rule) => {
-				results.push(newEngineJsWithCache.evaluate(rule, c))
-			}),
-		)
-		return results
-	})
+	// bench('[Multiple engine comparison] Publicodes 2 JS (with cache)', () => {
+	// 	const results = []
+	// 	const c1 = Object.assign({}, contexte)
+	// 	const c2 = Object.assign({}, contexte, changes)
+	// 	;[c1, c2].forEach((c) =>
+	// 		rules.forEach((rule) => {
+	// 			results.push(newEngineJsWithCache.evaluate(rule, c))
+	// 		}),
+	// 	)
+	// 	return results
+	// })
 })
 
 await run({
 	format: 'mitata',
 	throw: true,
-	filter: /.(Multiple rules evaluated first eval|Multiple engine comparison).*/,
+	// filter: /.(Multiple rules evaluated first eval|Multiple engine comparison).*/,
 })

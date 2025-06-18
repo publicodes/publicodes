@@ -102,9 +102,10 @@ let rec value_to_js ({value; _} : Typed_tree.value) : string =
   | Eval_tree.Unary_op ((Eval_tree.Is_undef, _), comp) ->
       Printf.sprintf "(%s === undefined)" (value_to_js comp)
   | Eval_tree.Ref rule_name ->
-      Printf.sprintf "rules[\"%s\"](ctx)" (Rule_name.to_string rule_name)
+      Printf.sprintf "this.ref(\"%s\", ctx)" (Rule_name.to_string rule_name)
   | Eval_tree.Get_context rule_name ->
-      Printf.sprintf "ctx[\"%s\"]" (Shared.Rule_name.to_string rule_name)
+      Printf.sprintf "this.get(\"%s\", ctx)"
+        (Shared.Rule_name.to_string rule_name)
   | Eval_tree.Set_context {context; value} ->
       let context_str =
         String.concat ~sep:", "
@@ -113,25 +114,8 @@ let rec value_to_js ({value; _} : Typed_tree.value) : string =
                  (Shared.Rule_name.to_string rule_name)
                  (value_to_js value) ) )
       in
-      Printf.sprintf "rules[\"%s\"]({ ...ctx, %s })" (value_to_js value)
+      Printf.sprintf "this.ref(\"%s\", { ...ctx, %s })" (value_to_js value)
         context_str
-
-let _params_to_js (rule_name : string) (params : Shared.Parameters.t) : string =
-  let params =
-    List.find params ~f:(fun (name, _) ->
-        String.equal (Shared.Rule_name.to_string name) rule_name )
-  in
-  match params with
-  | None ->
-      ""
-  | Some (_, params) ->
-      let params_str =
-        String.concat ~sep:", "
-          (List.map params ~f:(fun rule_name ->
-               Printf.sprintf "\"%s\": any"
-                 (Shared.Rule_name.to_string rule_name) ) )
-      in
-      Printf.sprintf "ctx: { %s }" params_str
 
 let rule_is_constant (_params : Shared.Parameters.t) _name rule =
   let rec rule_contains_ref {value; _} =
@@ -155,6 +139,39 @@ let rule_is_constant (_params : Shared.Parameters.t) _name rule =
   | _ ->
       not (rule_contains_ref rule)
 
+let params_to_d_ts (tree : Typed_tree.t) (params : Shared.Parameters.t) : string
+    =
+  List.map params ~f:(fun (output_rule, param_rules) ->
+      let rule_str = Rule_name.to_string output_rule in
+      let parameters =
+        List.map param_rules ~f:(fun rule ->
+            Printf.sprintf "\"%s\": null" (Rule_name.to_string rule) )
+        |> String.concat ~sep:", "
+      in
+      let type_info =
+        let open Shared.Typ in
+        let concrete_typ =
+          Eval_tree.get_meta tree output_rule |> Typed_tree.Typ.to_concrete
+        in
+        match concrete_typ with
+        | Some (Number (Some unit)) ->
+            Printf.sprintf "{ type: number, unit: \"%s\" }"
+              (Format.asprintf "%a" Shared.Units.pp unit)
+        | Some (Number None) ->
+            "{ type: number }"
+        | Some (Literal String) ->
+            "{ type: string }"
+        | Some (Literal Bool) ->
+            "{ type: boolean }"
+        | Some (Literal Date) ->
+            "{ type: Date }"
+        | None ->
+            "{ type = null}"
+      in
+      Printf.sprintf "\"%s\": { value: %s, parameters: { %s } }" rule_str
+        type_info parameters )
+  |> String.concat ~sep:",\n"
+
 let to_js tree params =
   (* let constants =  *)
   let rules =
@@ -173,8 +190,67 @@ let to_js tree params =
            (* let params_str = params_to_js rule_name params in *)
            Printf.sprintf "\"%s\": %s" rule_name (* params_str *) rule_data ) )
   in
-  Printf.sprintf {|
-export const rules = {
+  let index_js =
+    Printf.sprintf
+      {|
+export default class Engine {
+	traversedParameters = new Set()
+
+	evaluate(ruleName, ctx) {
+		this.traversedParameters = new Set()
+
+		const value = this.rules[ruleName](ctx)
+		const traversedParameters = Array.from(this.traversedParameters)
+		const missingParameters = traversedParameters.filter(
+			(param) => !(param in ctx),
+		)
+
+		return {
+			value,
+			traversedParameters,
+			missingParameters,
+		}
+	}
+
+	get(rule, ctx) {
+		this.traversedParameters.add(rule)
+		return ctx[rule]
+	}
+
+	ref(rule, ctx) {
+		return this.rules[rule](ctx)
+	}
+
+	rules = {
 %s
+	}}
+|}
+      rules_str
+  in
+  let index_d_ts =
+    Printf.sprintf
+      {|
+export default class Engine {
+	evaluate<R extends Inputs>(
+		rule: R,
+		context: Partial<{
+			[K in keyof Context[R]['parameters'] &
+				Inputs]: Context[K]['value']['type']
+		}>,
+	): Evaluation<R>
 }
-|} rules_str
+
+export type Inputs = keyof Context
+
+export type Parameters<R extends Inputs> = keyof Context[R]['parameters']
+
+export type Evaluation<R extends Inputs> = {
+	value: Context[R]['value']['type'] | undefined | null
+	traversedParameters: Parameters<R>[]
+	missingParameters: Parameters<R>[]
+}
+
+export type Context = { %s }|}
+      (params_to_d_ts tree params)
+  in
+  (index_js, index_d_ts)
