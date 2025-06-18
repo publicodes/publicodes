@@ -106,3 +106,31 @@ let unify ~pos1 ~pos2 (u1 : t) (u2 : t) =
   | _ ->
       (* We could maybe handle additional case for a better unit inference system, but this one is good enough right now *)
       return ()
+
+let to_string t =
+  let get_variable_name elem =
+    match UnionFind.get elem with Variable v -> "u" ^ Any.show v | _ -> "?"
+  in
+  match normalize t with
+  | {concrete; elem= []; inv= []} ->
+      Format.asprintf "%a" Units.pp concrete
+  | {concrete; elem; inv} -> (
+      let parts = [] in
+      let parts =
+        if not (Units.equal concrete Units.empty) then
+          Format.asprintf "%a" Units.pp concrete :: parts
+        else parts
+      in
+      let parts =
+        List.fold elem ~init:parts ~f:(fun acc elem ->
+            get_variable_name elem :: acc )
+      in
+      let parts =
+        List.fold inv ~init:parts ~f:(fun acc elem ->
+            ("/" ^ get_variable_name elem) :: acc )
+      in
+      match List.rev parts with
+      | [] ->
+          "1"
+      | parts ->
+          String.concat ~sep:"." parts )

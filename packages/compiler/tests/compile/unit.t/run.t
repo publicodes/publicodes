@@ -117,3 +117,18 @@ Add unit information with `unité` mechanism :
        │    ˘˘˘˘ unité: €
   
   [123]
+
+
+Infer composed `unit` with contexte :
+
+  $ publicodes compile unit-inference-with-contexte.publicodes
+  E017 unités non compatibles [type error]
+       ╒══  unit-inference-with-contexte.publicodes:2:10 ══
+     1 │ chiffre d'affaires:
+     2 │   unité: €
+       │          ˘ unité: €
+       ╒══  unit-inference-with-contexte.publicodes:1:1 ══
+     1 │ chiffre d'affaires:
+       │ ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ unité: jour.€
+  
+  [123]
