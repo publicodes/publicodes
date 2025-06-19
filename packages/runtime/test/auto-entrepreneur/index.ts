@@ -4,6 +4,7 @@ import JsEngine from './js-output/engine.js'
 
 const engine = new Engine(rules)
 const jsEngine = new JsEngine()
+const jsEngineWithCache = new JsEngine(true)
 
 const context = {
 	"entreprise . chiffre d'affaires . BIC": 0,
@@ -32,16 +33,33 @@ console.log(
 )
 console.timeEnd('New engine')
 
-console.time('JS engine')
+console.time('JS engine (cache)')
 console.log(
 	'revenu net',
-	jsEngine.evaluate('dirigeant . auto-entrepreneur . revenu net', context),
+	jsEngineWithCache.evaluate(
+		'dirigeant . auto-entrepreneur . revenu net',
+		context,
+	),
 )
 console.log(
 	'cotisations',
-	jsEngine.evaluate(
+	jsEngineWithCache.evaluate(
 		'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations',
 		context,
 	),
 )
-console.timeEnd('JS engine')
+console.timeEnd('JS engine (cache)')
+
+// console.time('JS engine')
+// console.log(
+// 	'revenu net',
+// 	jsEngine.evaluate('dirigeant . auto-entrepreneur . revenu net', context),
+// )
+// console.log(
+// 	'cotisations',
+// 	jsEngine.evaluate(
+// 		'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations',
+// 		context,
+// 	),
+// )
+// console.timeEnd('JS engine')

@@ -103,8 +103,8 @@ summary(() => {
 		cache: false,
 	})
 	const legacyEngineAE = new LegacyEngine(autoEntrepreneurLegacyRules)
-	// const newEngineJsWithCache = new NewEngineJSWithCache()
 	const newEngineJs = new NewEngineJS()
+	const newEngineJsWithCache = new NewEngineJS(true)
 
 	legacyEngineAE.setSituation(situation)
 	bench('[Same evaluation repeated] Publicodes 1', () => {
@@ -138,12 +138,12 @@ summary(() => {
 		)
 	})
 
-	// bench('[Same evaluation repeated] Publicodes 2 JS (with cache)', () => {
-	// 	return newEngineJsWithCache.evaluate(
-	// 		'dirigeant . auto-entrepreneur . revenu net',
-	// 		contexte,
-	// 	)
-	// })
+	bench('[Same evaluation repeated] Publicodes 2 JS (with cache)', () => {
+		return newEngineJsWithCache.evaluate(
+			'dirigeant . auto-entrepreneur . revenu net',
+			contexte,
+		)
+	})
 })
 
 const rules = [
@@ -230,19 +230,19 @@ summary(() => {
 		return results
 	})
 
-	// const newEngineJsWithCache = new NewEngineJSWithCache()
+	const newEngineJsWithCache = new NewEngineJS(true)
 
-	// bench(
-	// 	'[Multiple rules evaluated first eval] Publicodes 2 JS (with cache)',
-	// 	() => {
-	// 		const results = []
-	// 		const newContexte = Object.assign({}, contexte)
-	// 		rules.forEach((rule) => {
-	// 			results.push(newEngineJsWithCache.evaluate(rule, newContexte))
-	// 		})
-	// 		return results
-	// 	},
-	// )
+	bench(
+		'[Multiple rules evaluated first eval] Publicodes 2 JS (with cache)',
+		() => {
+			const results = []
+			const newContexte = Object.assign({}, contexte)
+			rules.forEach((rule) => {
+				results.push(newEngineJsWithCache.evaluate(rule, newContexte))
+			})
+			return results
+		},
+	)
 })
 
 // Complex scenario benchmarks for auto-entrepreneur
@@ -254,6 +254,7 @@ summary(() => {
 		"entreprise . chiffre d'affaires . service BNC": 10000,
 		"entreprise . chiffre d'affaires . service BIC": 10000,
 	}
+
 	bench('[Multiple engine comparison] Publicodes 2 (cache)', () => {
 		const results = []
 		const c1 = Object.assign({}, contexte)
@@ -284,9 +285,9 @@ summary(() => {
 	})
 
 	bench('[Multiple engine comparison] Publicodes 2 (no cache)', () => {
-		const results = []
-		const c1 = Object.assign({}, contexte)
-		const c2 = Object.assign({}, contexte, changes)
+		let results = []
+		let c1 = Object.assign({}, contexte)
+		let c2 = Object.assign({}, contexte, changes)
 		;[c1, c2].forEach((c) =>
 			rules.forEach((rule) => {
 				results.push(newEngineAEWithoutCache.evaluate(rule, c))
@@ -336,19 +337,19 @@ summary(() => {
 		return results
 	})
 
-	// const newEngineJsWithCache = new NewEngineJSWithCache()
+	const newEngineJsWithCache = new NewEngineJS(true)
 
-	// bench('[Multiple engine comparison] Publicodes 2 JS (with cache)', () => {
-	// 	const results = []
-	// 	const c1 = Object.assign({}, contexte)
-	// 	const c2 = Object.assign({}, contexte, changes)
-	// 	;[c1, c2].forEach((c) =>
-	// 		rules.forEach((rule) => {
-	// 			results.push(newEngineJsWithCache.evaluate(rule, c))
-	// 		}),
-	// 	)
-	// 	return results
-	// })
+	bench('[Multiple engine comparison] Publicodes 2 JS (with cache)', () => {
+		const results = []
+		const c1 = Object.assign({}, contexte)
+		const c2 = Object.assign({}, contexte, changes)
+		;[c1, c2].forEach((c) =>
+			rules.forEach((rule) => {
+				results.push(newEngineJsWithCache.evaluate(rule, c))
+			}),
+		)
+		return results
+	})
 })
 
 await run({
