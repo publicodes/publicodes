@@ -223,7 +223,8 @@ export default class Engine {
 
 	rules = {
 %s
-	}}
+	}
+}
 |}
       rules_str
   in
