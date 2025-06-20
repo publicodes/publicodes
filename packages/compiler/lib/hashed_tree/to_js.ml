@@ -82,6 +82,8 @@ let rec value_to_js ({value; _} : Typed_tree.value) : string =
   | Eval_tree.Const (Eval_tree.Number (n, _)) ->
       Printf.sprintf "%f" n
   | Eval_tree.Const (Eval_tree.String s) ->
+      (* FIXME: should be consistant *)
+      let s = String.strip ~drop:(Char.equal '\'') s in
       Printf.sprintf "'%s'" s
   | Eval_tree.Const (Eval_tree.Bool b) ->
       Printf.sprintf "%b" b
@@ -110,11 +112,11 @@ let rec value_to_js ({value; _} : Typed_tree.value) : string =
       let context_str =
         String.concat ~sep:", "
           (List.map context ~f:(fun ((rule_name, _), value) ->
-               Printf.sprintf "'%s': %s"
+               Printf.sprintf "\"%s\": %s"
                  (Shared.Rule_name.to_string rule_name)
                  (value_to_js value) ) )
       in
-      Printf.sprintf "this.ref(\"%s\", { ...ctx, %s })" (value_to_js value)
+      Printf.sprintf "((ctx) => %s)({ ...ctx, %s })" (value_to_js value)
         context_str
 
 let rule_is_constant (_params : Shared.Parameters.t) _name rule =
@@ -193,6 +195,8 @@ let to_js tree params =
   let index_js =
     Printf.sprintf
       {|
+import { add, eq, gte, lt, lte, mul, or, sub, neg, and } from './runtime.js'
+
 export default class Engine {
 	traversedParameters = new Set()
 	cache
@@ -222,20 +226,35 @@ export default class Engine {
 		return ctx[rule]
 	}
 
-	ref(rule, ctx) {
+	get(rule, ctx) {
+		this.traversedParameters.add(rule)
+		return ctx[rule]
+	}
+
+	ref(rule, ctx = {}) {
+		if (rule in ctx) {
+			return ctx[rule]
+		}
+
+		const f = this.rules[rule]
+		if (typeof f !== 'function') {
+			return f
+		}
+
 		if (this.cache) {
 			const cache = this.cache[rule] ?? new WeakMap()
 
 			if (cache.has(ctx)) {
 				return cache.get(ctx)
 			}
-			const value = this.rules[rule](ctx)
+			const value = f(ctx)
 			cache.set(ctx, value)
 			this.cache[rule] = cache
+			console.log(rule, ', value = ', value)
 			return value
 		}
 
-		return this.rules[rule](ctx)
+		return f(ctx)
 	}
 
 	rules = {
