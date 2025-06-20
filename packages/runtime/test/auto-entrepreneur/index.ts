@@ -1,10 +1,11 @@
 import Engine from '../../src/index.ts'
 import rules from './model.publicodes.json' with { type: 'json' }
 import JsEngine from './js-output/engine.js'
+import JsEngine2 from './js-output/engine-runtime.js'
 
 const engine = new Engine(rules)
-const jsEngine = new JsEngine()
 const jsEngineWithCache = new JsEngine(true)
+const jsEngineWithRuntime = new JsEngine2(true)
 
 const context = {
 	"entreprise . chiffre d'affaires . BIC": 0,
@@ -50,16 +51,19 @@ console.log(
 )
 console.timeEnd('JS engine (cache)')
 
-// console.time('JS engine')
-// console.log(
-// 	'revenu net',
-// 	jsEngine.evaluate('dirigeant . auto-entrepreneur . revenu net', context),
-// )
-// console.log(
-// 	'cotisations',
-// 	jsEngine.evaluate(
-// 		'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations',
-// 		context,
-// 	),
-// )
-// console.timeEnd('JS engine')
+console.time('JS engine with runtime (cache)')
+console.log(
+	'revenu net',
+	jsEngineWithRuntime.evaluate(
+		'dirigeant . auto-entrepreneur . revenu net',
+		context,
+	),
+)
+console.log(
+	'cotisations',
+	jsEngineWithRuntime.evaluate(
+		'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations',
+		context,
+	),
+)
+console.timeEnd('JS engine with runtime (cache)')

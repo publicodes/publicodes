@@ -4,31 +4,31 @@ open Shared.Eval_tree
 
 let binary_op_to_js : Shared.Shared_ast.binary_op -> string = function
   | Shared.Shared_ast.Add ->
-      "+"
+      "add"
   | Shared.Shared_ast.Sub ->
-      "-"
+      "sub"
   | Shared.Shared_ast.Mul ->
-      "*"
+      "mul"
   | Shared.Shared_ast.Div ->
-      "/"
-  | Shared.Shared_ast.Eq ->
-      "==="
-  | Shared.Shared_ast.Lt ->
-      "<"
-  | Shared.Shared_ast.Gt ->
-      ">"
-  | Shared_ast.GtEq ->
-      ">="
-  | Shared_ast.LtEq ->
-      "<="
-  | Shared_ast.NotEq ->
-      "!=="
-  | Shared.Shared_ast.And ->
-      "&&"
-  | Shared.Shared_ast.Or ->
-      "||"
+      "div"
   | Shared_ast.Pow ->
-      "**"
+      "pow"
+  | Shared.Shared_ast.Eq ->
+      "eq"
+  | Shared_ast.NotEq ->
+      "neg"
+  | Shared.Shared_ast.Lt ->
+      "lt"
+  | Shared.Shared_ast.Gt ->
+      "gt"
+  | Shared_ast.GtEq ->
+      "gte"
+  | Shared_ast.LtEq ->
+      "lte"
+  | Shared.Shared_ast.And ->
+      "and"
+  | Shared.Shared_ast.Or ->
+      "or"
 
 let date_to_js = function
   | Eval_tree.Date (Day {day; month; year}) ->
@@ -95,7 +95,7 @@ let rec value_to_js ({value; _} : Typed_tree.value) : string =
       Printf.sprintf "(%s ? %s : %s)" (value_to_js cond) (value_to_js then_comp)
         (value_to_js else_comp)
   | Eval_tree.Binary_op ((op, _), left, right) ->
-      Printf.sprintf "(%s %s %s)" (value_to_js left) (binary_op_to_js op)
+      Printf.sprintf "%s(%s, () => %s)" (binary_op_to_js op) (value_to_js left)
         (value_to_js right)
   | Eval_tree.Unary_op ((Eval_tree.Neg, _), comp) ->
       Printf.sprintf "(- %s)" (value_to_js comp)
@@ -195,11 +195,16 @@ let to_js tree params =
       {|
 export default class Engine {
 	traversedParameters = new Set()
+	cache
+
+	constructor(cache = false) {
+		this.cache = cache ? {} : null
+	}
 
 	evaluate(ruleName, ctx) {
 		this.traversedParameters = new Set()
 
-		const value = this.rules[ruleName](ctx)
+		const value = this.ref(ruleName, ctx)
 		const traversedParameters = Array.from(this.traversedParameters)
 		const missingParameters = traversedParameters.filter(
 			(param) => !(param in ctx),
@@ -218,6 +223,18 @@ export default class Engine {
 	}
 
 	ref(rule, ctx) {
+		if (this.cache) {
+			const cache = this.cache[rule] ?? new WeakMap()
+
+			if (cache.has(ctx)) {
+				return cache.get(ctx)
+			}
+			const value = this.rules[rule](ctx)
+			cache.set(ctx, value)
+			this.cache[rule] = cache
+			return value
+		}
+
 		return this.rules[rule](ctx)
 	}
 
@@ -232,6 +249,7 @@ export default class Engine {
     Printf.sprintf
       {|
 export default class Engine {
+	constructor(cache?: boolean)
 	evaluate<R extends Inputs>(
 		rule: R,
 		context: Partial<{
