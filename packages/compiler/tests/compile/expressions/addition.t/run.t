@@ -1,6 +1,6 @@
 Simple addition/soustraction expression :
 
-  $ publicodes compile simple.publicodes -o -
+  $ publicodes compile simple.publicodes -t debug_eval_tree -o -
   { "evaluation": [ [ "+", 1, 2 ], 12.0, 4.5 ], "outputs": {} }
 
 Missing term :
@@ -21,7 +21,7 @@ Missing term :
          expression
   E006 expression malformée [syntax error]
        ╒══  missing_term.publicodes:4:20 ══
-     3 │ 
+     3 │
      4 │ missing left term: / 2
        │                    ˘˘ une valeur (nombre, booléean, date) ou une référence est attendue AVANT l'opérateur `/`
    Hint: supprimez l'opérateur `/` ou bien ajoutez une
