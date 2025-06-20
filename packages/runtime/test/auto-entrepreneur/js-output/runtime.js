@@ -1,6 +1,10 @@
 /**
- * @typedef {() => number | undefined | null} LazyNumber
- * @typedef {() => date | number | string | undefined | null} LazyComparable
+ * @typedef {date | number | string | null | undefined} Value
+ * @typedef {number | null | undefined} Number
+ * @typedef {boolean | null | undefined} Boolean
+ * @typedef {() => Number} LazyNumber
+ * @typedef {() => Boolean} LazyBoolean
+ * @typedef {() => Value} LazyValue
  */
 
 /**
@@ -8,6 +12,11 @@
  * - Test with an eager value for the left operand.
  * - How to provide better information about the error (eg. rule name,
  *   operation, etc...)?
+ * - Some function are factorizable, do we want to?
+ * - How do we want to handle non boolean values in OR and AND operations? By
+ *   checking if they are defined or not?
+ * - Do we want to accept other types than numbers for the negation operation?
+ * - Don't use lazy values if it's a constant value?
  *
  * NOTE:
  * - for multiplication, if the value is null (i.e not applicable), does it make
@@ -18,6 +27,9 @@
  * - `null` as `0` even in power, multiplication, and division?
  * - do we want to directly use `undefined` and `null` or use dedicated values?
  *   (linked to the second point)
+ * - for now, dates are compared using the JS polymorphic variant of the
+ *   operator. However, if we choose to continue with the JS approach,
+ *   we should use https://github.com/CatalaLang/dates-calc.
  *
  * FIXME:
  * - In the current `evaluateNode` implementation, the `null` value in the right
@@ -43,15 +55,7 @@ class RuntimeError extends Error {
 /** Basic numeric operations */
 
 /**
- * @param {number | null | undefined} value
- * @returns {boolean}
- */
-function isZero(value) {
-	return value === 0 || value === null
-}
-
-/**
- * @param {LazyNumber} left
+ * @param {Number} left
  * @param {LazyNumber} right
  * @returns {number | undefined}
  *
@@ -59,10 +63,10 @@ function isZero(value) {
  * The addition operation is defined as follows by order of precedence:
  * 1. ∀ x. add(undefined, x) = add(x, undefined) = undefined
  * 2. ∀ x. add(x, null) = add(null, x) = x
- * 3. ∀ x, y. add(x, y) = x + y
+ * 3. ∀ x. add(null, null) = 0
+ * 4. ∀ x, y. add(x, y) = x + y
  */
-function add(left, right) {
-	const l = left()
+function add(l, right) {
 	if (l === undefined) {
 		return undefined
 	}
@@ -72,23 +76,23 @@ function add(left, right) {
 		return undefined
 	}
 
-	return l ?? 0 + r ?? 0
+	return (l ?? 0) + (r ?? 0)
 }
 
 /**
- * @param {LazyNumber} left
+ * @param {Number} left
  * @param {LazyNumber} right
  * @returns {number | undefined}
  *
  * @specification
  * The subtraction operation is defined as follows by order of precedence:
  * 1. ∀ x. sub(undefined, x) = sub(x, undefined) = undefined
- * 2. ∀ x. sub(x, null) = x
- * 3. ∀ x. sub(null, x) = -x
- * 4. ∀ x, y. sub(x, y) = x - y
+ * 2. ∀ x. sub(null, null) = 0
+ * 3. ∀ x. sub(x, null) = x
+ * 4. ∀ x. sub(null, x) = -x
+ * 5. ∀ x, y. sub(x, y) = x - y
  */
-function sub(left, right) {
-	const l = left()
+function sub(l, right) {
 	if (l === undefined) {
 		return undefined
 	}
@@ -98,100 +102,108 @@ function sub(left, right) {
 		return undefined
 	}
 
-	return l ?? 0 - r ?? 0
+	return (l ?? 0) - (r ?? 0)
 }
 
 /**
- * @param {LazyNumber} left
+ * @param {Number} left
  * @param {LazyNumber} right
- * @returns {number | undefined}
+ * @returns {number | null | undefined}
  *
  * @specification
  * The multiplication operation is defined as follows by order of precedence:
  * 1. ∀ x. mul(0, x) = mul(x, 0) = 0
- * 2. ∀ x. mul(null, x) = mul(x, null) = null
- * 3. ∀ x. mul(undefined, x) = mul(x, undefined) = undefined
- *
- * TODO: how to define the precedence over the null and zero values?
+ * 2. ∀ x. mul(undefined, x) = mul(x, undefined) = undefined
+ * 3. ∀ x. mul(null, x) = mul(x, null) = null
  */
-function mul(left, right) {
-	const l = left()
-	if (l === null || l === 0) {
-		return l
+function mul(l, right) {
+	if (l === 0) {
+		return 0
 	}
 
 	const r = right()
 	if (l === undefined) {
-		return isZero(r) ? 0 : undefined
+		return r === 0 ? 0 : undefined
 	}
 
-	return r === undefined ? undefined : (l * r ?? 0)
+	return (
+		r === undefined ? undefined
+		: l === null || r === null ? null
+		: l * r
+	)
 }
 
 /**
- * @param {LazyNumber} left
+ * @param {Number} left
  * @param {LazyNumber} right
- * @returns {number | undefined}
+ * @returns {number | null | undefined}
  *
  * @throws {RuntimeError} if the right operand is evaluated to zero.
  *
  * @specification
  * The division operation is defined as follows by order of precedence:
  * 1. ∀ x. div(0, x) = 0
- * 1. ∀ x. div(null, x) = null
- * 1. ∀ x. div(x, 0) = div(x, null) = throw RuntimeError('Division by zero')
- * 2. ∀ x. div(undefined, x) = div(x, undefined) = undefined
- * 3. ∀ x, y. div(x, y) = x / y
+ * 2. ∀ x. div(x, 0) = throw RuntimeError('Division by zero')
+ * 3. ∀ x. div(undefined, x) = div(x, undefined) = undefined
+ * 4. ∀ x. div(null, x) = div(x, null) = null
+ * 5. ∀ x, y. div(x, y) = x / y
  */
-function div(left, right) {
-	const l = left()
-	if (isZero(l)) {
+function div(l, right) {
+	if (l === 0) {
 		return 0
 	}
 
 	const r = right()
 	if (l === undefined) {
-		if (isZero(r)) {
+		if (r === 0) {
 			// TODO: improve information provided in the error
 			throw new RuntimeError('Division by zero')
 		}
 		return undefined
 	}
 
-	return r === undefined ? undefined : (l / r ?? 0)
+	return (
+		r === undefined ? undefined
+		: l === null || r === null ? null
+		: l / r
+	)
 }
 
 /**
- * @param {LazyNumber} left
+ * @param {Number} left
  * @param {LazyNumber} right
  * @returns {number | undefined}
  *
  * @specification
  * The power operation is defined as follows by order of precedence:
- * 1. ∀ x. pow(0, y) = pow(null, y) = 0
- * 2. ∀ x. pow(x, 0) = pow(x, null) = 1
+ * 1. ∀ x. pow(0, x) = 0
+ * 2. ∀ x. pow(x, 0) = 1
  * 3. ∀ x. pow(undefined, y) = pow(x, undefined) = undefined
- * 4. ∀ x, y. pow(x, y) = x ** y
+ * 4. ∀ x. pow(x, null) = pow(null, x) = null
+ * 5. ∀ x, y. pow(x, y) = x ** y
  */
-function pow(left, right) {
-	const l = left()
-	if (isZero(l)) {
+function pow(l, right) {
+	if (l === 0) {
 		return 0
 	}
 
 	const r = right()
 	if (l === undefined) {
-		return isZero(r) ? 1 : undefined
+		return r === 0 ? 1 : undefined
 	}
 
-	return r === undefined ? undefined : (l ** r ?? 0)
+	return (
+		r === undefined ? undefined
+		: l === null || r === null ? null
+		: l ** r
+	)
 }
 
 /** Basic boolean operations */
 
 /**
- * @param {LazyComparable} left
- * @param {LazyComparable} right
+ * @param {Value} left
+ * @param {LazyValue} right
  * @returns {boolean | undefined}
  *
  * @specification
@@ -199,8 +211,7 @@ function pow(left, right) {
  * 1. ∀ x. eq(undefined, x) = eq(x, undefined) = undefined
  * 2. ∀ x, y. eq(x, y) = x === y
  */
-function eq(left, right) {
-	const l = left()
+function eq(l, right) {
 	if (l === undefined) {
 		return undefined
 	}
@@ -214,8 +225,8 @@ function eq(left, right) {
 }
 
 /**
- * @param {LazyComparable} left
- * @param {LazyComparable} right
+ * @param {Value} left
+ * @param {LazyValue} right
  * @returns {boolean | undefined}
  *
  * @specification
@@ -223,8 +234,7 @@ function eq(left, right) {
  * 1. ∀ x. neq(undefined, x) = neq(x, undefined) = undefined
  * 2. ∀ x, y. neq(x, y) = x !== y
  */
-function neq(left, right) {
-	const l = left()
+function neq(l, right) {
 	if (l === undefined) {
 		return undefined
 	}
@@ -238,18 +248,17 @@ function neq(left, right) {
 }
 
 /**
- * @param {LazyComparable} left
- * @param {LazyComparable} right
- * @returns {boolean | undefined}
+ * @param {Value} left
+ * @param {LazyValue} right
+ * @returns {boolean | null | undefined}
  *
  * @specification
  * The less than operation is defined as follows by order of precedence:
  * 1. ∀ x. lt(undefined, x) = lt(x, undefined) = undefined
- * 1. ∀ x. lt(null, x) = lt(x, null) = undefined
- * 2. ∀ x, y. lt(x, y) = x < y
+ * 2. ∀ x. lt(null, x) = lt(x, null) = null
+ * 3. ∀ x, y. lt(x, y) = x < y
  */
-function lt(left, right) {
-	const l = left()
+function lt(l, right) {
 	if (l === undefined) {
 		return undefined
 	}
@@ -259,5 +268,171 @@ function lt(left, right) {
 		return undefined
 	}
 
-	return l < r
+	return l === null || r === null ? null : l < r
+}
+
+/**
+ * @param {Value} left
+ * @param {LazyValue} right
+ * @returns {boolean | null | undefined}
+ *
+ * @specification
+ * The greater than operation is defined as follows by order of precedence:
+ * 1. ∀ x. gt(undefined, x) = gt(x, undefined) = undefined
+ * 2. ∀ x. gt(null, x) = gt(x, null) = null
+ * 3. ∀ x, y. lt(x, y) = x > y
+ */
+function gt(l, right) {
+	if (l === undefined) {
+		return undefined
+	}
+
+	const r = right()
+	if (r === undefined) {
+		return undefined
+	}
+
+	return l === null || r === null ? null : l > r
+}
+
+/**
+ * @param {Value} left
+ * @param {LazyValue} right
+ * @returns {boolean | null | undefined}
+ *
+ * @specification
+ * The less than or equal is defined as follows by order of precedence:
+ * 1. ∀ x. lte(undefined, x) = lte(x, undefined) = undefined
+ * 2. ∀ x. lte(null, x) = lte(x, null) = null
+ * 3. ∀ x, y. lte(x, y) = x <= y
+ */
+function lte(l, right) {
+	if (l === undefined) {
+		return undefined
+	}
+
+	const r = right()
+	if (r === undefined) {
+		return undefined
+	}
+
+	return l === null || r === null ? null : l <= r
+}
+
+/**
+ * @param {Value} left
+ * @param {LazyValue} right
+ * @returns {boolean | null | undefined}
+ *
+ * @specification
+ * The greater than or equal is defined as follows by order of precedence:
+ * 1. ∀ x. gte(undefined, x) = gte(x, undefined) = undefined
+ * 2. ∀ x. gte(null, x) = gte(x, null) = null
+ * 3. ∀ x, y. gte(x, y) = x <= y
+ */
+function gte(l, right) {
+	if (l === undefined) {
+		return undefined
+	}
+
+	const r = right()
+	if (r === undefined) {
+		return undefined
+	}
+
+	return l === null || r === null ? null : l >= r
+}
+
+/**
+ * @param {Boolean} left
+ * @param {LazyBoolean} right
+ * @returns {boolean | undefined}
+ *
+ * @specification
+ * The logical AND operation is defined as follows by order of precedence:
+ * 1. ∀ x. and(undefined, x) = and(x, undefined) = undefined
+ * 2. ∀ x. and(null, x) = and(x, null) = false
+ * 3. ∀ x, y. and(x, y) = x && y
+ */
+function and(l, right) {
+	if (l === undefined) {
+		return undefined
+	}
+
+	if (l === null || l === false) {
+		return false
+	}
+
+	const r = right()
+	if (r === undefined) {
+		return undefined
+	}
+
+	return l === null || r === null ? false : l && r
+}
+
+/**
+ * @param {Boolean} left
+ * @param {LazyBoolean} right
+ * @returns {boolean | undefined}
+ *
+ * @specification
+ * The logical OR operation is defined as follows by order of precedence:
+ * 1. ∀ x. or(undefined, x) = or(x, undefined) = undefined
+ * 2. ∀ x. or(null, null) = false
+ * 3. ∀ x. or(null, x) = or(x, null) = x
+ * 4. ∀ x, y. or(x, y) = x || y
+ */
+function or(l, right) {
+	if (l === undefined) {
+		return undefined
+	}
+
+	if (l === true) {
+		return true
+	}
+
+	const r = right()
+	if (r === undefined) {
+		return undefined
+	}
+
+	return l || r
+}
+
+/** Unary operations */
+
+/**
+ * @param {number | null | undefined} operand
+ * @returns {number | undefined}
+ * @specification
+ * The unary negation operation is defined as follows by order of precedence:
+ * 1. ∀ x. neg(undefined) = undefined
+ * 2. ∀ x. neg(null) = 0
+ * 3. ∀ x. neg(x) = -x
+ */
+function neg(val) {
+	if (val === undefined) {
+		return undefined
+	}
+
+	return val === null ? 0 : -val
+}
+
+export {
+	add,
+	sub,
+	mul,
+	div,
+	pow,
+	eq,
+	neq,
+	lt,
+	gt,
+	lte,
+	gte,
+	and,
+	or,
+	neg,
+	RuntimeError,
 }

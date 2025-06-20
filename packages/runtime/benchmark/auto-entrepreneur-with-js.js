@@ -5,6 +5,7 @@ import LegacyEngine from 'publicodes'
 import NewEngine from '../dist/index.js'
 
 import NewEngineJS from '../test/auto-entrepreneur/js-output/engine.js'
+import NewEngineJSRuntime from '../test/auto-entrepreneur/js-output/engine-runtime.js'
 // import NewEngineJSWithCache from '../test/auto-entrepreneur/js-output/engine-with-cache.js'
 // import { rules as jsRules } from '../test/auto-entrepreneur/js-output/only-rules.js'
 // import { rules as jsRulesOptim } from '../test/auto-entrepreneur/js-output/only-rules-w-optim.js'
@@ -32,8 +33,12 @@ summary(() => {
 	// 	},
 	// )
 
-	bench('[Auto-entrepreneur instantiation] Publicodes 2 (JS)', () => {
+	bench('[Auto-entrepreneur instantiation] Publicodes 2 JS', () => {
 		return do_not_optimize(new NewEngineJS())
+	})
+
+	bench('[Auto-entrepreneur instantiation] Publicodes 2 JS + runtime', () => {
+		return do_not_optimize(new NewEngineJSRuntime())
 	})
 
 	// bench(
@@ -63,6 +68,7 @@ summary(() => {
 	const newEngineAE = new NewEngine(autoEntrepreneurNewRules)
 	const legacyEngineAE = new LegacyEngine(autoEntrepreneurLegacyRules)
 	const newEngineJs = new NewEngineJS()
+	const newEngineJsRuntime = new NewEngineJSRuntime()
 	// const newEngineJsWithCache = new NewEngineJSWithCache(undefined)
 
 	bench('[Evaluation cache reset] Publicodes 1', () => {
@@ -89,6 +95,13 @@ summary(() => {
 		)
 	})
 
+	bench('[Evaluation without cache] Publicodes 2 (JS + runtime)', () => {
+		return newEngineJsRuntime.evaluate(
+			'dirigeant . auto-entrepreneur . revenu net',
+			contexte,
+		)
+	})
+
 	// bench('[Evaluation without cache] Publicodes 2 JS (with cache)', () => {
 	// 	return newEngineJsWithCache.evaluate(
 	// 		'dirigeant . auto-entrepreneur . revenu net',
@@ -105,6 +118,7 @@ summary(() => {
 	const legacyEngineAE = new LegacyEngine(autoEntrepreneurLegacyRules)
 	const newEngineJs = new NewEngineJS()
 	const newEngineJsWithCache = new NewEngineJS(true)
+	const newEngineJsRuntime = new NewEngineJSRuntime(true)
 
 	legacyEngineAE.setSituation(situation)
 	bench('[Same evaluation repeated] Publicodes 1', () => {
@@ -144,6 +158,16 @@ summary(() => {
 			contexte,
 		)
 	})
+
+	bench(
+		'[Same evaluation repeated] Publicodes 2 JS + runtime (with cache)',
+		() => {
+			return newEngineJsWithCache.evaluate(
+				'dirigeant . auto-entrepreneur . revenu net',
+				contexte,
+			)
+		},
+	)
 })
 
 const rules = [
@@ -220,7 +244,6 @@ summary(() => {
 	// )
 
 	const newEngineJs = new NewEngineJS()
-
 	bench('[Multiple rules evaluated first eval] Publicodes 2 (JS)', () => {
 		const results = []
 		const newContexte = Object.assign({}, contexte)
@@ -231,7 +254,6 @@ summary(() => {
 	})
 
 	const newEngineJsWithCache = new NewEngineJS(true)
-
 	bench(
 		'[Multiple rules evaluated first eval] Publicodes 2 JS (with cache)',
 		() => {
@@ -239,6 +261,19 @@ summary(() => {
 			const newContexte = Object.assign({}, contexte)
 			rules.forEach((rule) => {
 				results.push(newEngineJsWithCache.evaluate(rule, newContexte))
+			})
+			return results
+		},
+	)
+
+	const newEngineJsRuntime = new NewEngineJSRuntime(true)
+	bench(
+		'[Multiple rules evaluated first eval] Publicodes 2 JS + runtime (with cache)',
+		() => {
+			const results = []
+			const newContexte = Object.assign({}, contexte)
+			rules.forEach((rule) => {
+				results.push(newEngineJsRuntime.evaluate(rule, newContexte))
 			})
 			return results
 		},
@@ -324,7 +359,6 @@ summary(() => {
 	// )
 
 	const newEngineJs = new NewEngineJS()
-
 	bench('[Multiple engine comparison] Publicodes 2 (JS)', () => {
 		const results = []
 		const c1 = Object.assign({}, contexte)
@@ -338,7 +372,6 @@ summary(() => {
 	})
 
 	const newEngineJsWithCache = new NewEngineJS(true)
-
 	bench('[Multiple engine comparison] Publicodes 2 JS (with cache)', () => {
 		const results = []
 		const c1 = Object.assign({}, contexte)
@@ -350,6 +383,22 @@ summary(() => {
 		)
 		return results
 	})
+
+	const newEngineJsRuntime = new NewEngineJSRuntime(true)
+	bench(
+		'[Multiple engine comparison] Publicodes 2 JS + runtime (with cache)',
+		() => {
+			const results = []
+			const c1 = Object.assign({}, contexte)
+			const c2 = Object.assign({}, contexte, changes)
+			;[c1, c2].forEach((c) =>
+				rules.forEach((rule) => {
+					results.push(newEngineJsRuntime.evaluate(rule, c))
+				}),
+			)
+			return results
+		},
+	)
 })
 
 await run({
