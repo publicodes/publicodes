@@ -1,6 +1,6 @@
 import type Engine from 'publicodes'
 import { RuleWithFormMeta } from '.'
-import { PageBuilderOutput } from './formBuilder'
+import { FormPages } from './formBuilder'
 
 /**
  * Computes the next fields that need to be asked next in a form.
@@ -17,7 +17,7 @@ import { PageBuilderOutput } from './formBuilder'
  */
 export function computeNextFields<Name extends string>(
 	engine: Engine<Name>,
-	state: { targets: Array<Name>; pages: PageBuilderOutput<Name> },
+	state: { targets: Array<Name>; pages: FormPages<Name> },
 ) {
 	const missings = engine.evaluate({
 		somme: state.targets,

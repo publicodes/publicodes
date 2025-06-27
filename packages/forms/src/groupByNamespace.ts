@@ -1,4 +1,5 @@
 import { utils } from 'publicodes'
+import { FormPages } from './formBuilder'
 
 /**
  * Groups fields into pages based on their namespace hierarchy, ensuring related fields stay together.
@@ -18,15 +19,15 @@ import { utils } from 'publicodes'
  * // Result:
  * // [
  * //   {
- * 			questionsInPage: ['company . name', 'company . address'],
+ * 			elements: ['company . name', 'company . address'],
  * 			title: 'company'
  * //   },
  * //   {
- * 			questionsInPage: ['personal . first name', 'personal . last name'],
+ * 			elements: ['personal . first name', 'personal . last name'],
  * 			title: 'personal'
  * //   },
  * //   {
- * 			questionsInPage: ['stock . quantity'],
+ * 			elements: ['stock . quantity'],
  * 			title: 'stock'
  * //   }
  * // ]
@@ -35,11 +36,10 @@ import { utils } from 'publicodes'
  * @param fields - Array of field names with dot-notation namespaces
  * @returns Array of arrays, where each inner array represents a page containing related fields
  */
-export function groupByNamespace<Name extends string>(fields: Array<Name>) {
-	const pages: Array<{
-		elements: Array<Name>
-		title: Name | undefined
-	}> = []
+export function groupByNamespace<Name extends string>(
+	fields: Array<Name>,
+): FormPages<Name> {
+	const pages: FormPages<Name> = []
 	while (fields.length > 0) {
 		const tree = createTree(fields)
 		const elements = createPage(tree)

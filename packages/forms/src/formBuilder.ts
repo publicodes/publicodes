@@ -36,9 +36,9 @@ import { updateSituationWithInputValue } from './updateSituationWithFormValue'
 export type FormState<RuleName extends string> = {
 	situation: Situation<RuleName>
 	targets: Array<RuleName>
-	pages: PageBuilderOutput<RuleName>
+	pages: FormPages<RuleName>
 	currentPageIndex: number
-	nextPages: PageBuilderOutput<RuleName>
+	nextPages: FormPages<RuleName>
 	lastAnswered: RuleName | null
 }
 
@@ -50,7 +50,7 @@ export type FormState<RuleName extends string> = {
  * @returns A two-dimensional array where each inner array represents a page of fields
  *
  * @remarks
- * The default implementation groups fields by their namespace (first part of the dotted name).
+ * The default implementation (`groupByNamespace` function) groups fields by their namespace (first part of the dotted name).
  * You can provide a custom implementation to create your own page organization logic.
  *
  * @example
@@ -62,9 +62,19 @@ export type FormState<RuleName extends string> = {
  */
 export type PageBuilder<RuleName> = (
 	fields: Array<RuleName>,
-) => PageBuilderOutput<RuleName>
+) => FormPages<RuleName>
 
-export type PageBuilderOutput<RuleName> = Array<{
+/**
+ * Represents all pages in a multi-page form. It is the output of PageBuilder.
+ *
+ * @template RuleName - The type of rule names used in the form
+ *
+ * @remarks
+ * Each page contains an array of elements that should be displayed together.
+ * The `title` property is optional and can be used to provide a header for the page.
+ */
+
+export type FormPages<RuleName> = Array<{
 	elements: Array<RuleName>
 	title?: string
 }>
