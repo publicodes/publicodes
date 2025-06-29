@@ -1,0 +1,9 @@
+test:
+  applicable si:
+    toutes ces conditions:
+      - est défini: utilisateur
+			- une de ces conditions:
+          - utilisateur = 'propriétaire'
+          - utilisateur = 'régulier non propriétaire'
+      - motorisation = 'électrique'
+r: 10
