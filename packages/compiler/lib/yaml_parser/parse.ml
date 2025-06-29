@@ -22,18 +22,23 @@ Cf https://ocaml.org/p/yaml/3.2.0/doc/Yaml/Stream/Event/index.html
 (* Better error message *)
 let message_traduction =
   [ ( "error calling parser: mapping values are not allowed in this context"
-    , ("impossible de déclarer un objet à cet endroit", []) )
+    , ("Définition d'objet invalide à cet endroit.", []) )
   ; ( "error calling parser: did not find expected ',' or ']'"
-    , ( "le tableau n'est pas fermé"
-      , ["il manque  `]` pour le fermer, ou `,` pour ajouter un élément"] ) )
+    , ( "Le tableau n'est pas fermé."
+      , ["Ajoutez  `]` pour le fermer, ou `,` pour ajouter un élément."] ) )
   ; ( "error calling parser: did not find expected ',' or '}'"
-    , ( "l'objet n'est pas fermé"
-      , ["il manque  `}` pour le fermer, ou `,` pour ajouter un élément"] ) )
+    , ( "L'objet n'est pas fermé."
+      , ["Ajoutez  `}` pour le fermer, ou `,` pour ajouter un élément."] ) )
   ; ( "error calling parser: found unexpected end of stream character"
-    , ( "fin de fichier inattendue (il manque un caractère)"
-      , ["Par exemple, `\"`, `\'`, ou `]`"] ) )
+    , ( "Donnée manquante à la fin du fichier. Cela provient probablement \
+         d'une expression malformée."
+      , ["Vérifiez qu'il ne manque pas un `\"` à la fin."] ) )
   ; ( "error calling parser: found unexpected ':'"
-    , ("caractère `:` non valide à cet endroit", []) ) ]
+    , ("Un caractère `:` non attendu a été trouvé.", ["Vérifiez la syntaxe."])
+    )
+  ; ( "error calling parser: found a tab character that violates indentation"
+    , ( "Une mauvaise indentation (`\\t`) rencontrée au début de la ligne."
+      , ["Les espaces sont requis pour l'indentation ici."] ) ) ]
 
 let make_scalar pos (scalar : Yaml.scalar) =
   Pos.mk ~pos Ast.{value= scalar.value; style= scalar.style}

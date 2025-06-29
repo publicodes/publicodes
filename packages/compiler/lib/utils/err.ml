@@ -126,7 +126,8 @@ let invalid_rule_name = (Code.Parsing_invalid_rule_name, "nom de règle invalide
 
 let type_invalid_type = (Code.Type_invalid_type, "type invalide détécté")
 
-let type_incoherence = (Code.Type_incoherence, "types non cohérents entre eux")
+let type_incoherence =
+  (Code.Type_incoherence, "Une incohérence entre deux types a été détectée.")
 
 let type_unit_incoherence =
   (Code.Type_incompatible_units, "unités non compatibles")

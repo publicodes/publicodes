@@ -1,6 +1,6 @@
 (executable
  (public_name publicodes)
  (name main)
- (libraries unix cmdliner compiler yaml inotify yojson core_unix)
+ (libraries unix cmdliner compiler yaml inotify yojson core_unix pplumbing.log)
  (preprocess
   (pps ppx_inline_test)))

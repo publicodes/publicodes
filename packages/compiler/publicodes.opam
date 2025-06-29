@@ -36,6 +36,7 @@ depends: [
   "stdune"
   "core_unix"
   "pp"
+  "pplumbing"
   "ocaml-lsp-server" {with-dev}
   "ocamlformat" {with-dev}
   "ppx_inline_test" {with-test}

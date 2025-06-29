@@ -7,31 +7,39 @@ open Shared.Shared_ast
 open Shared.Eval_tree
 
 let type_check (tree : Tree.t) =
-  let rec unify_value {meta= typ; pos; value} =
+  let rec unify_value ?ctx_pos {meta= typ; pos; value} =
+    Printf.printf "\nUnifying value at %s \n" (Pos.show_pos pos) ;
     match value with
     | Const const -> (
-      match const with
-      (* TODO : sort topological order ? *)
-      | Number (_, None) ->
-          let+ _ = unify typ (any_number ~pos ()) in
-          ()
-      | Number (_, Some units) ->
-          let+ _ = unify typ (number_with_unit ~pos units) in
-          ()
-      | Bool _ ->
-          let+ _ = unify typ (literal ~pos Bool) in
-          ()
-      | String _ ->
-          let+ _ = unify typ (literal ~pos String) in
-          ()
-      | Date _ ->
-          let+ _ = unify typ (literal ~pos Date) in
-          ()
-      | Undefined | Null ->
-          return () )
+        let unify = unify ?pos:ctx_pos in
+        Printf.printf "\n1. Const ctx:%s,\npos%s\n"
+          (Pos.show_pos (Option.value ctx_pos ~default:Pos.dummy))
+          (Pos.show_pos pos) ;
+        match const with
+        (* TODO : sort topological order ? *)
+        | Number (_, None) ->
+            let+ _ = unify typ (any_number ~pos ()) in
+            ()
+        | Number (_, Some units) ->
+            let+ _ = unify typ (number_with_unit ~pos units) in
+            ()
+        | Bool _ ->
+            let+ _ = unify typ (literal ~pos Bool) in
+            ()
+        | String _ ->
+            let+ _ = unify typ (literal ~pos String) in
+            ()
+        | Date _ ->
+            let+ _ = unify typ (literal ~pos Date) in
+            ()
+        | Undefined | Null ->
+            return () )
     | Binary_op ((operator, _), left, right) -> (
-        let* _ = unify_value left in
-        let* _ = unify_value right in
+        Printf.printf "\nUnifying  with operator %s at %s\n"
+          (Eval_tree.show_binary_op operator)
+          (Pos.show_pos pos) ;
+        let* _ = unify_value ~ctx_pos:pos left in
+        let* _ = unify_value ~ctx_pos:pos right in
         match operator with
         | And | Or ->
             let* _ = unify typ (literal ~pos Bool) in
@@ -61,8 +69,10 @@ let type_check (tree : Tree.t) =
             let+ _ = unify right.meta (number_with_unit ~pos Units.empty) in
             ()
         | Gt | Lt | LtEq | GtEq | Eq | NotEq ->
-            let* _ = unify typ (literal ~pos Bool) in
-            let+ _ = unify left.meta right.meta in
+            Printf.printf "Gt.1\n" ;
+            let* _ = unify ~pos typ (literal ~pos Bool) in
+            Printf.printf "Gt.2\n" ;
+            let+ _ = unify ~pos left.meta right.meta in
             () )
     | Unary_op ((op, _), expr) -> (
       match op with
@@ -86,7 +96,7 @@ let type_check (tree : Tree.t) =
     | Ref ref_name ->
         (* return () *)
         let rule = Hashtbl.find_exn tree ref_name in
-        let+ _ = unify typ rule.meta in
+        let+ _ = unify typ rule.meta ?pos:ctx_pos in
         ()
     | Get_context _ ->
         return ()

@@ -33,9 +33,12 @@ let number_with_unit ~pos (unit : Units.t) : t =
 
 let any_number ~pos () : t = mk ~pos (Number (Number_unit.any ()))
 
-let unify (t1 : t) (t2 : t) =
-  let typ1 = t1 |> UnionFind.get in
-  let typ2 = t2 |> UnionFind.get in
+let unify ?pos (t1 : t) (t2 : t) =
+  Printf.printf "\nin unify (%s)\n\tl:%s\n\tr:%s\n"
+    (Pos.show_pos (Option.value pos ~default:Pos.dummy))
+    (to_string t1) (to_string t2) ;
+  let typ1 = UnionFind.get t1 in
+  let typ2 = UnionFind.get t2 in
   let pos1 = Pos.pos typ1 in
   let pos2 = Pos.pos typ2 in
   let error_typ_mismatch () =
@@ -52,7 +55,9 @@ let unify (t1 : t) (t2 : t) =
           failwith "Impossible"
     in
     let code, message = Err.type_incoherence in
-    fatal_error ~pos:pos1 ~kind:`Type ~code
+    let pos = Option.value pos ~default:pos2 in
+    Printf.printf "Type mismatch at %s\n" (Pos.show_pos pos) ;
+    fatal_error ~pos ~kind:`Type ~code
       ~labels:
         [ Pos.mk ~pos:pos1 (Format.sprintf "est %s" (to_str (Pos.value typ1)))
         ; Pos.mk ~pos:pos2 (Format.sprintf "est %s" (to_str (Pos.value typ2)))

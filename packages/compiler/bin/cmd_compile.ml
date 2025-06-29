@@ -21,12 +21,30 @@ let watch =
   let doc = "Watch input files for changes and recompile automatically." in
   Arg.(value & flag & info ["w"; "watch"] ~doc)
 
+(* TODO: move this to a separate module *)
+let print_logs = List.iter ~f:Log_formatter.print
+
 let cmd_exit (logs : Log.t list) : Cmd.Exit.code =
-  let contains_error logs =
-    List.exists logs ~f:(fun log ->
-        match Log.level log with `Error -> true | _ -> false )
+  print_logs logs ;
+  (* Print the logs to the console *)
+  let nb_errors =
+    List.count logs ~f:(fun msg ->
+        match Log.level msg with `Error -> true | _ -> false )
   in
-  if contains_error logs then Cmd.Exit.some_error else Cmd.Exit.ok
+  if nb_errors > 0 then (
+    print_newline () ;
+    Cli_log.error
+      [ Pp.hovbox
+        @@ Pp.concat ~sep:Pp.space
+             [ Pp.text "la compilation a échoué avec"
+             ; Pp_tty.tag Pp_tty.Style.Error (Pp.text (Int.to_string nb_errors))
+             ; Pp.text ("erreur" ^ (if nb_errors > 1 then "s" else "") ^ ".") ]
+      ] ;
+    Format.print_flush () ;
+    Cmd.Exit.some_error )
+  else (
+    Cli_log.ok [Pp.text "la compilation a réussie."] ;
+    Cmd.Exit.ok )
 
 (* NOTE: this could be moved in the [Compiler] module. However, logging should
 	 be removed from the function code. *)
@@ -56,20 +74,22 @@ let compile input_files output =
         Parser.Ast.merge current_program new_program )
       ~init:(Output.return [])
   in
-  Output.print_logs unresolved_program ;
   match Output.result unresolved_program with
   | Some program -> (
       let json_output = compile_to_json program in
-      Output.print_logs json_output ;
       match Output.result json_output with
       | Some json ->
+          let exit =
+            cmd_exit (Output.logs json_output @ Output.logs unresolved_program)
+          in
+          (* FIXME: manage errors in the output *)
           File.write_file ~path:output
             ~content:(Yojson.Safe.pretty_to_string json) ;
-          cmd_exit (Output.logs json_output @ Output.logs unresolved_program)
+          exit
       | None ->
           Cmd.Exit.some_error )
   | None ->
-      Cli.exit_parsing_err
+      cmd_exit (Output.logs unresolved_program)
 
 let watch_compile input_files output =
   (* Filter out stdin if present in input files for watching *)
@@ -77,6 +97,7 @@ let watch_compile input_files output =
     List.filter input_files ~f:(fun f -> not (String.equal f "-"))
   in
   let recompile () =
+    Cli_log.info [Pp.text "Fichier(s) modifié(s), recompilation en cours..."] ;
     printf "\nFile change detected. Recompiling...\n" ;
     printf "\027[2J\027[H" ;
     (* ANSI escape code to clear screen and move cursor to top *)
