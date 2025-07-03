@@ -1,24 +1,52 @@
 Simple base type (bool, number, date) :
 
-  $ publicodes compile base.publicodes -o -
-  {
-    "evaluation": [
-      12.0, true, { "date": "2025-08" }, { "date": "2024-06-11" }, false
-    ],
-    "outputs": {}
-  }
+  $ publicodes compile base.publicodes  -t debug_eval_tree -o -
+  a :
+  12.
+  
+  b :
+  true
+  
+  c :
+  false
+  
+  d :
+  Shared_ast.Day ({ day = 11; year = 2024; month = 6 })
+  
+  e :
+  Shared_ast.Month ({ month = 8; year = 2025 })
 
 
 String :
 
-  $ publicodes compile string.publicodes -o -
-  {
-    "evaluation": [ "bla", "ouaha ouhah", "'foo'bar'", "No : \"foo\"" ],
-    "outputs": {}
-  }
+  $ publicodes compile string.publicodes  -t debug_eval_tree -o -
+  a :
+  "bla"
+  
+  b :
+  "ouaha ouhah"
+  
+  c :
+  "'foo'bar'"
+  
+  d :
+  "No : "foo""
 
 
 Number with unit :
 
-  $ publicodes compile number_with_unit.publicodes -o -
-  { "evaluation": [ 12.0, 3.5, 64465.55, 5.0, 4.0 ], "outputs": {} }
+  $ publicodes compile number_with_unit.publicodes  -t debug_eval_tree -o -
+  a :
+  12. €
+  
+  b :
+  3.5 €
+  
+  c :
+  4. kgCO2e/an
+  
+  d :
+  5. %/an
+  
+  e :
+  64465.55 h.kW/maison
