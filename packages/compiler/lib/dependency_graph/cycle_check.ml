@@ -5,7 +5,7 @@ open Utils.Output
 open Shared.Eval_tree
 module Cycle_analysis = Graph.Cycles.Johnson (Rule_graph)
 
-let cycle_check (tree : Typed_tree.t) : Rule_graph.t Output.t =
+let cycle_check (tree : 'a Eval_tree.t) : Rule_graph.t Output.t =
   let graph = Rule_graph.mk tree in
   let log_cycle cycle acc =
     let cycle = List.rev cycle in
