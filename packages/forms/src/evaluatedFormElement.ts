@@ -1,6 +1,7 @@
 import type Engine from 'publicodes'
-import { serializeUnit } from 'publicodes'
+import { Possibility, serializeUnit } from 'publicodes'
 import {
+	FormElementOptions,
 	getFormElement,
 	getOptionList,
 	InputElement,
@@ -15,37 +16,45 @@ interface Evaluated {
 	answered: boolean
 }
 
-export interface EvaluatedCheckbox extends InputElement<'checkbox'>, Evaluated {
+export interface EvaluatedCheckbox<Name extends string = string>
+	extends InputElement<Name, 'checkbox'>,
+		Evaluated {
 	checked: boolean | undefined
 	defaultChecked: boolean | undefined
 }
 
-export interface EvaluatedStringInput
-	extends InputElement<'date' | 'month' | 'text'>,
+export interface EvaluatedStringInput<Name extends string = string>
+	extends InputElement<Name, 'date' | 'month' | 'text'>,
 		Evaluated {
 	value: string | undefined
 	defaultValue: string | undefined
 }
 
-export interface EvaluatedNumberInput
-	extends InputElement<'number'>,
+export interface EvaluatedNumberInput<Name extends string = string>
+	extends InputElement<Name, 'number'>,
 		Evaluated {
 	value: number | undefined
 	unit: string | undefined
 	defaultValue: number | undefined
 }
 
-export interface EvaluatedRadioGroup extends RadioGroupElement, Evaluated {
+export interface EvaluatedRadioGroup<Name extends string = string>
+	extends RadioGroupElement<Name>,
+		Evaluated {
 	value: string | undefined
 	defaultValue: string | undefined
 }
 
-export interface EvaluatedSelect extends SelectElement, Evaluated {
+export interface EvaluatedSelect<Name extends string = string>
+	extends SelectElement<Name>,
+		Evaluated {
 	value: string | undefined
 	defaultValue: string | undefined
 }
 
-export interface EvaluatedTextarea extends TextareaElement, Evaluated {
+export interface EvaluatedTextarea<Name extends string = string>
+	extends TextareaElement<Name>,
+		Evaluated {
 	value: string | undefined
 	defaultValue: string | undefined
 }
@@ -80,13 +89,13 @@ export interface EvaluatedTextarea extends TextareaElement, Evaluated {
  * @see {@link getEvaluatedFormElement} - Function to retrieve evaluated form elements
  * @see {@link FormElement} - Type definition for form elements
  */
-export type EvaluatedFormElement =
-	| EvaluatedCheckbox
-	| EvaluatedStringInput
-	| EvaluatedNumberInput
-	| EvaluatedRadioGroup
-	| EvaluatedSelect
-	| EvaluatedTextarea
+export type EvaluatedFormElement<Name extends string = string> =
+	| EvaluatedCheckbox<Name>
+	| EvaluatedStringInput<Name>
+	| EvaluatedNumberInput<Name>
+	| EvaluatedRadioGroup<Name>
+	| EvaluatedSelect<Name>
+	| EvaluatedTextarea<Name>
 
 /**
  * Get the form element for a publicodes rules enriched with runtime information from the engine.
@@ -114,8 +123,13 @@ export type EvaluatedFormElement =
 export function getEvaluatedFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
-): EvaluatedFormElement {
-	const element = getFormElement(engine, dottedName) as EvaluatedFormElement
+	options?: FormElementOptions,
+): EvaluatedFormElement<Name> {
+	const element = getFormElement(
+		engine,
+		dottedName,
+		options,
+	) as EvaluatedFormElement<Name>
 
 	element.applicable =
 		engine.evaluate({
@@ -165,9 +179,17 @@ export function getEvaluatedFormElement<Name extends string>(
 		return element
 	}
 
-	const possibilities = engine.getPossibilitiesFor(element.id as Name, {
-		filterNotApplicable: true,
-	})
+	let possibilities: Array<Possibility> | null
+	try {
+		possibilities = engine.getPossibilitiesFor(element.id, {
+			filterNotApplicable: true,
+		})
+	} catch {
+		throw new Error(
+			'You must enable `flag.filterNotApplicablePossibilities` in engine instantiation to use @publicodes/forms as it needs the filterNotApplicable option',
+		)
+	}
+
 	if (possibilities) {
 		element.options = getOptionList(engine, possibilities)
 	}

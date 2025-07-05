@@ -1,5 +1,6 @@
 import type Engine from 'publicodes'
 import { RuleWithFormMeta } from '.'
+import { FormPages } from './formBuilder'
 
 /**
  * Computes the next fields that need to be asked next in a form.
@@ -16,13 +17,19 @@ import { RuleWithFormMeta } from '.'
  */
 export function computeNextFields<Name extends string>(
 	engine: Engine<Name>,
-	state: { targets: Array<Name>; pages: Array<Array<Name>> },
+	state: { targets: Array<Name>; pages: FormPages<Name> },
 ) {
 	const missings = engine.evaluate({
 		somme: state.targets,
 	}).missingVariables
 	const sortedRules = Object.entries(missings)
-		.filter(([dottedName]) => !state.pages.flat().includes(dottedName as Name))
+		.filter(
+			([dottedName]) =>
+				!state.pages
+					.map((page) => page.elements)
+					.flat()
+					.includes(dottedName as Name),
+		)
 		.sort(([, score1], [, score2]) => {
 			return score2 - score1
 		})

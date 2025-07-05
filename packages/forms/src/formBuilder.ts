@@ -1,3 +1,4 @@
+import { FormElementOptions } from './formElement'
 import type Engine from 'publicodes'
 
 import { Situation } from 'publicodes'
@@ -35,9 +36,9 @@ import { updateSituationWithInputValue } from './updateSituationWithFormValue'
 export type FormState<RuleName extends string> = {
 	situation: Situation<RuleName>
 	targets: Array<RuleName>
-	pages: Array<Array<RuleName>>
+	pages: FormPages<RuleName>
 	currentPageIndex: number
-	nextPages: Array<Array<RuleName>>
+	nextPages: FormPages<RuleName>
 	lastAnswered: RuleName | null
 }
 
@@ -49,7 +50,7 @@ export type FormState<RuleName extends string> = {
  * @returns A two-dimensional array where each inner array represents a page of fields
  *
  * @remarks
- * The default implementation groups fields by their namespace (first part of the dotted name).
+ * The default implementation (`groupByNamespace` function) groups fields by their namespace (first part of the dotted name).
  * You can provide a custom implementation to create your own page organization logic.
  *
  * @example
@@ -61,7 +62,38 @@ export type FormState<RuleName extends string> = {
  */
 export type PageBuilder<RuleName> = (
 	fields: Array<RuleName>,
-) => Array<Array<RuleName>>
+) => FormPages<RuleName>
+
+/**
+ * Represents all pages in a multi-page form. It is the output of PageBuilder.
+ *
+ * @template RuleName - The type of rule names used in the form
+ *
+ * @remarks
+ * Each page contains an array of elements that should be displayed together.
+ * The `title` property is optional and can be used to provide a header for the page.
+ */
+
+export type FormPages<RuleName> = Array<{
+	elements: Array<RuleName>
+	title?: string
+}>
+
+/**
+ * Options for configuring a form.
+ *
+ * @template RuleName - The type representing the rule names used in the form.
+ *
+ * @property pageBuilder - An optional function or object responsible for building pages
+ * within the form. It allows customization of how the form pages are structured.
+ *
+ * @property selectTreshold - An optional number that specifies the threshold to make input rather radio options or select.
+ */
+
+export type FormBuilderOption<RuleName extends string> = {
+	engine: Engine<RuleName>
+	pageBuilder?: PageBuilder<RuleName>
+} & FormElementOptions
 
 /**
  * Creates and manages multi-page forms based on Publicodes rules.
@@ -93,19 +125,27 @@ export type PageBuilder<RuleName> = (
  * state = formBuilder.goToNextPage(state)
  * ```
  */
+
+export type CurrentPageElements<RuleName extends string> = {
+	title?: string
+	elements: Array<EvaluatedFormElement<RuleName> & FormPageElementProp>
+}
+
 export class FormBuilder<RuleName extends string> {
 	private engine: Engine<RuleName>
 	private pageBuilder: PageBuilder<RuleName>
+	private formElementOptions: FormElementOptions
 
 	constructor({
 		engine,
 		pageBuilder = groupByNamespace,
-	}: {
-		engine: Engine<RuleName>
-		pageBuilder?: PageBuilder<RuleName>
-	}) {
+		selectTreshold,
+	}: FormBuilderOption<RuleName>) {
 		this.engine = engine
 		this.pageBuilder = pageBuilder
+		this.formElementOptions = {
+			selectTreshold,
+		}
 	}
 
 	/**
@@ -212,23 +252,28 @@ export class FormBuilder<RuleName extends string> {
 	 * )
 	 * ```
 	 */
-	currentPage(
-		formState: FormState<RuleName>,
-	): Array<EvaluatedFormElement & FormPageElementProp> {
+	currentPage(formState: FormState<RuleName>): CurrentPageElements<RuleName> {
 		if (formState.situation !== this.engine.getSituation()) {
 			this.engine.setSituation(formState.situation)
 		}
 		const page = formState.pages[formState.currentPageIndex]
+
 		if (page === undefined) {
-			return []
+			return { elements: [] }
 		}
 
-		return buildFormPage(
-			formState.pages[formState.currentPageIndex],
-			this.engine,
-			formState.targets,
-			formState.lastAnswered,
-		)
+		const title = page.title ?? ''
+
+		return {
+			title: title,
+			elements: buildFormPage(
+				formState.pages[formState.currentPageIndex].elements,
+				this.engine,
+				formState.targets,
+				formState.lastAnswered,
+				this.formElementOptions,
+			),
+		}
 	}
 
 	/**

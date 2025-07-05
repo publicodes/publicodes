@@ -8,10 +8,10 @@ export type Option = {
 	description?: string
 }
 
-interface FormMeta {
+interface FormMeta<Name extends string = string> {
 	label: string
 	description: string | undefined
-	id: string
+	id: Name
 }
 
 type InputType =
@@ -24,25 +24,30 @@ type InputType =
 	// | 'tel'
 	| 'text'
 
-export interface InputElement<Type extends InputType> extends FormMeta {
+export interface InputElement<Name extends string, Type extends InputType>
+	extends FormMeta<Name> {
 	element: 'input'
 	type: Type
 }
 
-export interface SelectElement extends FormMeta {
+export interface SelectElement<Name extends string> extends FormMeta<Name> {
 	element: 'select'
 	options: Array<Option>
 }
 
-export interface RadioGroupElement extends FormMeta {
+export interface RadioGroupElement<Name extends string> extends FormMeta<Name> {
 	element: 'RadioGroup'
 	style: 'button' | 'card' | 'default'
 	orientation: 'horizontal' | 'vertical'
 	options: Array<Option>
 }
 
-export interface TextareaElement extends FormMeta {
+export interface TextareaElement<Name extends string> extends FormMeta<Name> {
 	element: 'textarea'
+}
+
+export type FormElementOptions = {
+	selectTreshold?: number
 }
 
 /**
@@ -89,11 +94,11 @@ export interface TextareaElement extends FormMeta {
  * @see {@link getFormElement}
  */
 
-export type FormElement =
-	| InputElement<InputType>
-	| SelectElement
-	| RadioGroupElement
-	| TextareaElement
+export type FormElement<Name extends string = string> =
+	| InputElement<Name, InputType>
+	| SelectElement<Name>
+	| RadioGroupElement<Name>
+	| TextareaElement<Name>
 
 /**
  * Generates a UI form element representation based on a Publicodes rule.
@@ -127,7 +132,10 @@ export type FormElement =
 export function getFormElement<Name extends string>(
 	engine: Engine<Name>,
 	dottedName: Name,
-): FormElement {
+	options: FormElementOptions = {},
+): FormElement<Name> {
+	const selectTreshold = options.selectTreshold ?? 5
+
 	const rule = engine.getRule(dottedName)
 	const rawRule = rule.rawNode as RuleWithFormMeta
 	const typeInfo = engine.context.nodesTypes.get(rule)
@@ -179,7 +187,7 @@ export function getFormElement<Name extends string>(
 		const options = getOptionList(engine, possibilities)
 
 		if (!saisie) {
-			if (options.length > 5) {
+			if (options.length > selectTreshold) {
 				saisie = 'menu déroulant'
 			} else {
 				saisie = 'boutons radio'

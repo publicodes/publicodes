@@ -1,4 +1,5 @@
 import { utils } from 'publicodes'
+import { FormPages } from './formBuilder'
 
 /**
  * Groups fields into pages based on their namespace hierarchy, ensuring related fields stay together.
@@ -17,22 +18,45 @@ import { utils } from 'publicodes'
  * const pages = groupByNamespace(fields);
  * // Result:
  * // [
- * //   ['company . name', 'company . address'],
- * //   ['personal . first name', 'personal . last name'],
- * //   ['stock . quantity']
+ * //   {
+ * 			elements: ['company . name', 'company . address'],
+ * 			title: 'company'
+ * //   },
+ * //   {
+ * 			elements: ['personal . first name', 'personal . last name'],
+ * 			title: 'personal'
+ * //   },
+ * //   {
+ * 			elements: ['stock . quantity'],
+ * 			title: 'stock'
+ * //   }
  * // ]
  * ```
  *
  * @param fields - Array of field names with dot-notation namespaces
  * @returns Array of arrays, where each inner array represents a page containing related fields
  */
-export function groupByNamespace<Name extends string>(fields: Array<Name>) {
-	const pages: Array<Array<Name>> = []
+export function groupByNamespace<Name extends string>(
+	fields: Array<Name>,
+): FormPages<Name> {
+	const pages: FormPages<Name> = []
 	while (fields.length > 0) {
 		const tree = createTree(fields)
-		const page = createPage(tree)
-		fields = fields.filter((field) => !page.includes(field))
-		pages.push(page)
+		const elements = createPage(tree)
+		fields = fields.filter((field) => !elements.includes(field))
+
+		const title =
+			elements.length === 0 ? undefined
+			: elements.length === 1 ? elements[0]
+			: elements.reduce(
+					(acc, element) => utils.findCommonAncestor(acc, element) as Name,
+					elements[0],
+				)
+
+		pages.push({
+			elements,
+			title,
+		})
 	}
 	return pages
 }
