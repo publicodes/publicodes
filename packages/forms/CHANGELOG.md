@@ -1,5 +1,14 @@
 # @publicodes/forms
 
+## 0.6.0
+
+### Minor Changes
+
+- [#673](https://github.com/publicodes/publicodes/pull/673) [`8ce4b59`](https://github.com/publicodes/publicodes/commit/8ce4b596d8530c5bcee65e426e3d001a8d346309) Thanks [@Clemog](https://github.com/Clemog)! - - type of `element.id` is now RuleName
+    - show better error message for missing flag
+    - add options possibilty for formBuilder. First one is `selectTreshold` which allows to set a threshold to define when a select should be displayed instead of radio buttons for `possibilités`.
+    - add `title` optionnal property to `PageBuilder` to define title for each page of multi-page forms.
+
 ## 0.5.1
 
 ### Patch Changes
