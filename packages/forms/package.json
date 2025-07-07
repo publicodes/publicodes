@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/forms",
-	"version": "0.5.1",
+	"version": "0.6.0",
 	"description": "Utilities to convert publicodes rules in interactive forms",
 	"type": "module",
 	"types": "dist/index.d.ts",
