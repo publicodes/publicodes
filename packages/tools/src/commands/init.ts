@@ -23,7 +23,7 @@ type Template = 'minimal' | 'demo'
 export default class Init extends Command {
 	static override args = {}
 
-	static override summary = 'Initialize a new project.'
+	static override summary = 'Initialize a new project'
 
 	static override description = `
 If no package.json file is found in the current directory, this command will

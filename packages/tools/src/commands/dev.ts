@@ -11,7 +11,7 @@ import path from 'path'
 
 export default class Compile extends Command {
 	static override args = {
-		files: Args.file({ description: 'Files to compile.' }),
+		files: Args.file({ description: 'Files to compile' }),
 	}
 
 	static override strict = false

@@ -6,10 +6,15 @@ import { toArray } from '../utils/toArray'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import buildDoc, { ViteBuildOptions } from '../buildQuickDoc'
+import {
+	DEFAULT_QUICKDOC_BUILD_DIR,
+	DEFAULT_QUICKDOC_SITUATION_PATH,
+	DEFAULT_RULES_PATH,
+} from '../commons'
 
-export default class Build extends Command {
+export default class BuildDoc extends Command {
 	static override args = {
-		files: Args.file({ description: 'Files to compile.' }),
+		files: Args.file({ description: 'Files to compile' }),
 	}
 
 	static override strict = false
@@ -28,8 +33,8 @@ To avoid passing arguments and flags every time, you can set their values in the
 	{
 	  // ...
 	  "publicodes": {
-		"files": ["src/"],
-		"situations": ["test/"],
+			"files": ["src/"],
+			"situations": ["test/"],
 	  }
 	}
 `
@@ -49,7 +54,7 @@ To avoid passing arguments and flags every time, you can set their values in the
 	static override flags = {
 		outDir: Flags.string({
 			char: 'd',
-			summary: 'Output directory for the static build (default: dist/)',
+			summary: 'Output directory for the static build',
 		}),
 		situations: Flags.string({
 			char: 's',
@@ -60,19 +65,21 @@ To avoid passing arguments and flags every time, you can set their values in the
 	}
 
 	public async run(): Promise<void> {
-		const { argv, flags } = await this.parse(Build)
+		const { argv, flags } = await this.parse(BuildDoc)
 
-		p.intro(chalk.bgHex('#2975d1')(' publicodes build '))
+		p.intro(chalk.bgHex('#2975d1')(' publicodes build-doc '))
 		const pjson: Partial<PackageJson> = this.config.pjson
 
 		const filesToCompile =
 			argv.length === 0 ?
-				toArray(pjson?.publicodes?.files ?? 'src')
+				toArray(pjson?.publicodes?.files ?? DEFAULT_RULES_PATH)
 			:	(argv as string[])
 
 		const situationFiles: string[] =
 			!flags.situations?.length ?
-				toArray(pjson?.publicodes?.situations ?? 'situations')
+				toArray(
+					pjson?.publicodes?.situations ?? DEFAULT_QUICKDOC_SITUATION_PATH,
+				)
 			:	flags.situations
 
 		const quickDocPath = path.join(
@@ -84,7 +91,7 @@ To avoid passing arguments and flags every time, you can set their values in the
 			'quick-doc',
 		)
 
-		const outDir = path.resolve(flags.outDir ?? 'dist')
+		const outDir = path.resolve(flags.outDir ?? DEFAULT_QUICKDOC_BUILD_DIR)
 
 		const buildOptions: ViteBuildOptions = {
 			outDir,
