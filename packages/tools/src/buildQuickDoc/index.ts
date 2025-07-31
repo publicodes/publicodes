@@ -10,8 +10,8 @@ export type ViteBuildOptions = {
 	outDir: string
 }
 
-const ruleModuleId = '$RULES$'
-const situationModuleId = '$SITUATIONS$'
+const ruleModuleId = '\0publicodes-rules'
+const situationModuleId = '\0publicodes-situations'
 
 export default async function buildDoc(
 	modelFiles: string[],
@@ -27,12 +27,13 @@ export default async function buildDoc(
 		build: {
 			outDir: options.outDir,
 		},
+		base: process.env.VITE_BASE_PATH || './',
 		plugins: [
 			{
 				name: 'publicodes-compile',
 				resolveId(id) {
-					if (id === ruleModuleId) return id
-					if (id === situationModuleId) return id
+					if (id === '$RULES$') return ruleModuleId
+					if (id === '$SITUATIONS$') return situationModuleId
 				},
 				load(id) {
 					if (id === ruleModuleId)

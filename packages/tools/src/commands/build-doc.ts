@@ -24,6 +24,8 @@ export default class BuildDoc extends Command {
 	static override description = `
 This command will generate a static build of the publicodes auto-generated documentation.
 
+> Note: Use env VITE_BASE_PATH=/your-sub-path/ if you are serving the documentation from a sub-path, with GitHub Pages for example.
+
 You can specify different situations to use in the documentation in separated publicodes files, with the 'contexte' mechanism.
 
 By default, the build will use the publicodes files in the 'src/' directory and the situations in the 'situations/' directory.
