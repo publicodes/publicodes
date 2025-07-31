@@ -5,6 +5,7 @@ import Explanation from '../Explanation'
 import { RuleLinkWithContext } from '../RuleLink'
 import { EngineContext } from '../contexts'
 import { NodeValueLeaf } from './common/NodeValueLeaf'
+import { useHideValue } from '../hooks'
 
 // Un élément du graphe de calcul qui a une valeur interprétée (à afficher)
 export default function Reference(
@@ -15,6 +16,9 @@ export default function Reference(
 	const engine = useContext(EngineContext)
 	const { dottedName, nodeValue, unit } = node
 	const rule = engine?.context.parsedRules[node.dottedName]
+
+	const hideValue = useHideValue(dottedName)
+
 	if (!rule) {
 		throw new Error(`Unknown rule: ${dottedName}`)
 	}
@@ -28,6 +32,7 @@ export default function Reference(
 	) {
 		return <Explanation node={engine?.evaluate(rule)} />
 	}
+
 	return (
 		<div
 			style={{
@@ -76,7 +81,7 @@ export default function Reference(
 					)}
 
 					{nodeValue !== undefined && (
-						<NodeValueLeaf data={nodeValue} unit={unit} />
+						<NodeValueLeaf data={nodeValue} unit={unit} hideValue={hideValue} />
 					)}
 				</div>
 			</div>{' '}

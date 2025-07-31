@@ -81,3 +81,7 @@ export const DottedNameContext = createContext<string | undefined>(undefined)
 export const EngineContext = createContext<Engine<string> | undefined>(
 	undefined,
 )
+
+export const RulesToHideContext = createContext<Array<string> | undefined>(
+	undefined,
+)

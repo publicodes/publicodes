@@ -5,9 +5,10 @@ type Props = {
 	data: Evaluation
 	unit: Unit | undefined
 	fullPrecision?: boolean
+	hideValue?: boolean
 }
 
-export const NodeValueLeaf = ({ data, unit }: Props) => {
+export const NodeValueLeaf = ({ data, unit, hideValue }: Props) => {
 	return (
 		<StyledNodeValuePointer
 			className="node-value-pointer"
@@ -16,6 +17,8 @@ export const NodeValueLeaf = ({ data, unit }: Props) => {
 		>
 			{data === null ?
 				<span aria-hidden>-</span>
+			: hideValue ?
+				"masquée par l'intégrateur"
 			:	formatValue({ nodeValue: data, unit })}
 		</StyledNodeValuePointer>
 	)
