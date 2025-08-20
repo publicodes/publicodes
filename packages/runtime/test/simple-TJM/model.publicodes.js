@@ -46,9 +46,12 @@ export default class Engine {
   }
 
   ref(rule, ctx = {}) {
-    if (rule in ctx) {
-      return ctx[rule]
-    }
+    // if (rule in ctx) {
+    //   return ctx[rule]
+    // }
+    // We cannot do that as it is not correct:
+    // - The rule won't appear in missingParameters
+    // - The value of the context can change with some mecanisms (e.g. plafond, arrondi, unité)
 
     const f = this.rules[rule]
     if (typeof f !== 'function') {

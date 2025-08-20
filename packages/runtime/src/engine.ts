@@ -44,7 +44,7 @@ export class Engine<O extends Outputs> {
     }
 
     // Todo : convert date in / out
-    const { p, v } = evaluate(output.nodeIndex!)
+    const v = evaluate(output.nodeIndex!)
 
     if (debug) {
       const evaluations = evaluation.map((node: Computation, i: number) => ({
@@ -55,10 +55,8 @@ export class Engine<O extends Outputs> {
       console.table(evaluations)
     }
 
-    const neededParameters = Object.keys(p)
-    const missingParameters = neededParameters.filter(
-      (param) => !(param in context),
-    )
+    const neededParameters = [] as const
+    const missingParameters = [] as const
 
     return {
       value: v,
