@@ -17,28 +17,33 @@ let to_unresolved_ast ~input_files =
     ~f:(fun acc program -> Parser.Ast.merge acc program)
     ~init:[] unresolved_programs
 
-let to_eval_tree ~ast =
-  let* ast = Resolver.to_resolved_ast ast in
-  let+ eval_tree = Typed_tree.from_resolved_ast ast |> Typed_tree.type_check in
-  Hashed_tree.from_typed_tree eval_tree
+let to_typed_tree ~ast =
+  let* resolved_ast = Resolver.to_resolved_ast ast in
+  let typed_tree = Typed_tree.from_resolved_ast resolved_ast in
+  let* typed_tree_checked = Typed_tree.type_check typed_tree in
+  return typed_tree_checked
 
-let to_json ~ast ~eval_tree =
-  let* parameters =
-    Dependency_graph.cycle_check eval_tree
-    >>= Dependency_graph.extract_parameters ~ast ~tree:eval_tree
-  in
-  return (Hashed_tree.to_json eval_tree parameters)
+let get_parameters ~ast ~eval_tree =
+  Dependency_graph.cycle_check eval_tree
+  >>= Dependency_graph.extract_parameters ~ast ~tree:eval_tree
 
 let compile ~input_files ~output_type =
   let open Output in
   let* ast = to_unresolved_ast ~input_files in
-  let* eval_tree = to_eval_tree ~ast in
+  let* typed_tree = to_typed_tree ~ast in
+  let eval_tree = Hashed_tree.from_typed_tree typed_tree in
+  let* parameters = get_parameters ~ast ~eval_tree in
   let+ result_string =
     match output_type with
     | `Json ->
-        let* json = to_json ~ast ~eval_tree in
-        return (Yojson.Safe.pretty_to_string json)
+        let json = Hashed_tree.to_json eval_tree parameters in
+        return (`Json json)
     | `Debug_eval_tree ->
-        return (Shared.Eval_tree_printer.to_string_eval_tree eval_tree)
+        return
+          (`Debug_eval_tree
+             (Shared.Eval_tree_printer.to_string_eval_tree eval_tree) )
+    | `JS ->
+        let output = Hashed_tree.to_js typed_tree parameters in
+        return (`JS output)
   in
   result_string

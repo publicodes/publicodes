@@ -6,7 +6,7 @@ let input_files =
   let doc = "$(docv) is the input files. Use $(b,-) for $(b,stdin)." in
   Arg.(non_empty & pos_all file ["-"] & info [] ~doc ~docv:"FILES")
 
-let default_output_file = "model.publicodes.json"
+let default_output_file = "model.publicodes.js"
 
 let output_file =
   let doc = "$(docv) is the file to write to. Use $(b,-) for $(b,stdout)." in
@@ -23,7 +23,12 @@ let output_type =
   let doc = "$(docv) is the output type." in
   Arg.(
     value
-    & opt (enum [("json", `Json); ("debug_eval_tree", `Debug_eval_tree)]) `Json
+    & opt
+        (enum
+           [ ("json", `Json)
+           ; ("debug_eval_tree", `Debug_eval_tree)
+           ; ("JavaScript", `JS) ] )
+        `Json
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
 
 let cmd =
