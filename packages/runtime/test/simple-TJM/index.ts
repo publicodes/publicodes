@@ -1,11 +1,16 @@
 import Engine from '../../src'
+import JSEngine from './model.publicodes.js'
 import rules from './model.publicodes.json'
 
 const engine = new Engine(rules)
+const jsEngine = new JSEngine()
 
-const revenuNet = engine.evaluate('revenu net', {
+const context = {
   "chiffre d'affaires . TJM": 450,
   'auto-entrepreneur': true,
-})
-
-console.log('revenu net: ', revenuNet)
+}
+const revenuNet = console.log(
+  'exemples . CA élevé: ',
+  engine.evaluate('exemples . CA élevé', context),
+  jsEngine.evaluate('exemples . CA élevé', context),
+)

@@ -106,8 +106,7 @@ let rec value_to_js ({value; _} : Typed_tree.value) : string =
   | Eval_tree.Ref rule_name ->
       Printf.sprintf "this.ref(\"%s\", ctx)" (Rule_name.to_string rule_name)
   | Eval_tree.Get_context rule_name ->
-      Printf.sprintf "this.get(\"%s\", ctx)"
-        (Shared.Rule_name.to_string rule_name)
+      Printf.sprintf "ctx[\"%s\"]" (Shared.Rule_name.to_string rule_name)
   | Eval_tree.Set_context {context; value} ->
       let context_str =
         String.concat ~sep:", "
@@ -221,20 +220,14 @@ export default class Engine {
 		}
 	}
 
-	get(rule, ctx) {
-		this.traversedParameters.add(rule)
-		return ctx[rule]
-	}
-
-	get(rule, ctx) {
-		this.traversedParameters.add(rule)
-		return ctx[rule]
-	}
-
 	ref(rule, ctx = {}) {
-		if (rule in ctx) {
-			return ctx[rule]
-		}
+
+    // if (rule in ctx) {
+    //   return ctx[rule]
+    // }
+	  // We cannot do that as it is not correct:
+    // - The rule won't appear in missingParameters
+    // - The value of the context can change with some mecanisms (e.g. plafond, arrondi, unité)
 
 		const f = this.rules[rule]
 		if (typeof f !== 'function') {
