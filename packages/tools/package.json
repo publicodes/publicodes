@@ -61,7 +61,7 @@
 	"dependencies": {
 		"@clack/prompts": "^0.7.0",
 		"@oclif/core": "^4.2.5",
-		"@publicodes/react-ui": "^1.10.0",
+		"@publicodes/react-ui": "^1.8.0",
 		"@tailwindcss/typography": "^0.5.16",
 		"@tailwindcss/vite": "^4.0.0",
 		"@types/node": "^18.11.18",
