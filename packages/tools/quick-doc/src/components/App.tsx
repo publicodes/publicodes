@@ -36,7 +36,7 @@ export default function App() {
 	})
 	return (
 		<>
-			<BrowserRouter>
+			<BrowserRouter basename={import.meta.env.BASE_URL}>
 				<Header setSituation={setCurrentSituation} state={state} />
 				<div className="container mx-auto px-4">
 					<Error error={state.error} />

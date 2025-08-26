@@ -16,12 +16,12 @@ import { toArray } from '../utils/toArray'
 
 export default class Compile extends Command {
 	static override args = {
-		files: Args.file({ description: 'Files to compile.' }),
+		files: Args.file({ description: 'Files to compile' }),
 	}
 
 	static override strict = false
 
-	static override summary = 'Compile publicodes files.'
+	static override summary = 'Compile publicodes files'
 
 	static override description = `
 This command will compile all the specified publicodes files into standalone
@@ -202,7 +202,7 @@ export type PString = \`'\${string}'\`
 
 /**
  * Corresponding Publicodes situation with types inferred for each rule.
- *  
+ *
  * @note
  * This represents the situation as needed by the 'setSituation' method of the
  * {@link Engine} class with raw values (i.e. string constants are enclosed in
