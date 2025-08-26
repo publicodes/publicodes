@@ -14,10 +14,11 @@ import {
 	DottedNameContext,
 	EngineContext,
 	RenderersContext,
+	RulesToHideContext,
 	SupportedRenderers,
 } from '../contexts'
 import Explanation from '../Explanation'
-import { useEngine } from '../hooks'
+import { useEngine, useHideValue } from '../hooks'
 import { RuleLinkWithContext } from '../RuleLink'
 import { getPrecision } from '../utils'
 import { DeveloperAccordion } from './DeveloperAccordion'
@@ -46,6 +47,7 @@ export default function RulePage({
 	mobileMenuPortalId,
 	openNavButtonPortalId,
 	showDevSection = true,
+	rulesToHide,
 }: {
 	/**
 	 * The base path on which the documentation will be mounted. For example, if it is /documentation, the URL of the rule remuneration.primes will be /documentation/remuneration/primes.
@@ -97,6 +99,10 @@ export default function RulePage({
 	 * @default true
 	 */
 	showDevSection?: boolean
+	/**
+	 * The dotted name we want the value to be hidden.
+	 */
+	rulesToHide?: Array<string>
 }) {
 	const currentEngineId =
 		typeof window !== 'undefined' &&
@@ -113,20 +119,22 @@ export default function RulePage({
 		<EngineContext.Provider value={engine}>
 			<BasepathContext.Provider value={documentationPath}>
 				<RenderersContext.Provider value={defaultRenderers(renderers)}>
-					<Rule
-						dottedName={utils.decodeRuleName(rulePath)}
-						subEngineId={
-							currentEngineId ? parseInt(currentEngineId, 10) : undefined
-						}
-						language={language}
-						apiDocumentationUrl={apiDocumentationUrl}
-						apiEvaluateUrl={apiEvaluateUrl}
-						npmPackage={npmPackage}
-						mobileMenuPortalId={mobileMenuPortalId}
-						openNavButtonPortalId={openNavButtonPortalId}
-						showDevSection={showDevSection}
-						searchBar={searchBar}
-					/>
+					<RulesToHideContext.Provider value={rulesToHide}>
+						<Rule
+							dottedName={utils.decodeRuleName(rulePath)}
+							subEngineId={
+								currentEngineId ? parseInt(currentEngineId, 10) : undefined
+							}
+							language={language}
+							apiDocumentationUrl={apiDocumentationUrl}
+							apiEvaluateUrl={apiEvaluateUrl}
+							npmPackage={npmPackage}
+							mobileMenuPortalId={mobileMenuPortalId}
+							openNavButtonPortalId={openNavButtonPortalId}
+							showDevSection={showDevSection}
+							searchBar={searchBar}
+						/>
+					</RulesToHideContext.Provider>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
 		</EngineContext.Provider>
@@ -186,6 +194,9 @@ function Rule({
 		references: rule.rawNode.références,
 		dottedName: rule.dottedName,
 	})
+
+	const hideValue = useHideValue(dottedName)
+
 	return (
 		<EngineContext.Provider value={engine}>
 			<Container id="documentation-rule-root">
@@ -204,7 +215,9 @@ function Rule({
 
 						<p style={{ fontSize: '1.25rem', lineHeight: '2rem' }}>
 							Valeur :{' '}
-							{formatValue(rule, { language, precision: getPrecision(rule) })}
+							{hideValue ?
+								"masquée par l'intégrateur"
+							:	formatValue(rule, { language, precision: getPrecision(rule) })}
 							{rule.nodeValue === undefined && rule.unit && (
 								<>
 									<br />
@@ -215,6 +228,7 @@ function Rule({
 
 						{ruleDisabledByItsParent && nullableParent && (
 							<>
+								@
 								<blockquote>
 									Cette règle est <strong>non applicable</strong> car elle
 									appartient à l’espace de nom :{' '}
