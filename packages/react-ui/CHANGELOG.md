@@ -1,5 +1,11 @@
 # @publicodes/react-ui
 
+## 1.8.0
+
+### Minor Changes
+
+- [#754](https://github.com/publicodes/publicodes/pull/754) [`7d1716c`](https://github.com/publicodes/publicodes/commit/7d1716c2b276e17f9f246fdf367f8aee64856ed9) Thanks [@Clemog](https://github.com/Clemog)! - Add ui option for documentation to hide confidential values
+
 ## 1.7.1
 
 ### Patch Changes
