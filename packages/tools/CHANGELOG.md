@@ -1,5 +1,16 @@
 # @publicodes/tools
 
+## 1.8.0
+
+### Minor Changes
+
+- [#750](https://github.com/publicodes/publicodes/pull/750) [`c692b25`](https://github.com/publicodes/publicodes/commit/c692b25b719890c6101c247385dca5f56a0e128b) Thanks [@Clemog](https://github.com/Clemog)! - Set up build command for quick doc
+
+### Patch Changes
+
+- Updated dependencies [[`7d1716c`](https://github.com/publicodes/publicodes/commit/7d1716c2b276e17f9f246fdf367f8aee64856ed9)]:
+    - @publicodes/react-ui@1.10.0
+
 ## 1.7.2
 
 ### Patch Changes
