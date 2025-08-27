@@ -1,10 +1,10 @@
 import { Evaluation, Unit, formatValue } from 'publicodes'
 import { styled } from 'styled-components'
+import { rulesToHideWording } from '../../constants/rulesToHide'
 
 type Props = {
 	data: Evaluation
 	unit: Unit | undefined
-	fullPrecision?: boolean
 	hideValue?: boolean
 }
 
@@ -18,7 +18,7 @@ export const NodeValueLeaf = ({ data, unit, hideValue }: Props) => {
 			{data === null ?
 				<span aria-hidden>-</span>
 			: hideValue ?
-				"masquée par l'intégrateur"
+				<span>{rulesToHideWording}</span>
 			:	formatValue({ nodeValue: data, unit })}
 		</StyledNodeValuePointer>
 	)
