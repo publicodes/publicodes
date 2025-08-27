@@ -1,5 +1,11 @@
 # @publicodes/react-ui
 
+## 1.9.1
+
+### Patch Changes
+
+- [#756](https://github.com/publicodes/publicodes/pull/756) [`e545ca9`](https://github.com/publicodes/publicodes/commit/e545ca9506fca86f52c1ea2ccf7dca125f1aeed2) Thanks [@Clemog](https://github.com/Clemog)! - Fully hide `rulesToHide` rules in documentation
+
 ## 1.8.0
 
 ### Minor Changes
