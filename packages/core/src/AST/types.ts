@@ -26,6 +26,7 @@ export type ConstantNode = {
 	isNullable?: boolean
 	isDefault?: boolean
 	fullPrecision?: boolean
+	dottedName?: string
 	nodeValue: Evaluation
 } & (
 	| { type: 'number'; unit?: Unit }

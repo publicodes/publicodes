@@ -24,6 +24,7 @@ import { getPrecision } from '../utils'
 import { DeveloperAccordion } from './DeveloperAccordion'
 import RuleHeader from './Header'
 import { breakpointsWidth, RulesNav } from './RulesNav'
+import { rulesToHideWording } from '../constants/rulesToHide'
 
 /**
  * Display the documentation page of a given rule
@@ -216,7 +217,7 @@ function Rule({
 						<p style={{ fontSize: '1.25rem', lineHeight: '2rem' }}>
 							Valeur :{' '}
 							{hideValue ?
-								"masquée par l'intégrateur"
+								<span>{rulesToHideWording}</span>
 							:	formatValue(rule, { language, precision: getPrecision(rule) })}
 							{rule.nodeValue === undefined && rule.unit && (
 								<>

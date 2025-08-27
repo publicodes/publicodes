@@ -206,6 +206,7 @@ const parseFunctions = {
 			isNullable: v.nodeValue == null,
 			missingVariables: {},
 			nodeKind: 'constant',
+			dottedName: context.dottedName,
 			...(v.type === 'number' && v.rawUnit ?
 				{ unit: parseUnit(v.rawUnit, context.getUnitKey) }
 			:	{}),
