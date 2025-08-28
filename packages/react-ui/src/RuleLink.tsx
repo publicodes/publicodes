@@ -22,7 +22,7 @@ export function RuleLink<Name extends string>({
 	engine,
 	currentEngineId,
 	documentationPath,
-	displayIcon = false,
+	displayIcon,
 	linkComponent,
 	children,
 	...propsRest
