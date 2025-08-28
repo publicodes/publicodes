@@ -49,6 +49,7 @@ export default function RulePage({
 	openNavButtonPortalId,
 	showDevSection = true,
 	rulesToHide,
+	displayIcon = true,
 }: {
 	/**
 	 * The base path on which the documentation will be mounted. For example, if it is /documentation, the URL of the rule remuneration.primes will be /documentation/remuneration/primes.
@@ -104,6 +105,10 @@ export default function RulePage({
 	 * The dotted name we want the value to be hidden.
 	 */
 	rulesToHide?: Array<string>
+	/**
+	 * Whether to display an icon next to the rule links.
+	 */
+	displayIcon?: boolean
 }) {
 	const currentEngineId =
 		typeof window !== 'undefined' &&
@@ -134,6 +139,7 @@ export default function RulePage({
 							openNavButtonPortalId={openNavButtonPortalId}
 							showDevSection={showDevSection}
 							searchBar={searchBar}
+							displayIcon={displayIcon}
 						/>
 					</RulesToHideContext.Provider>
 				</RenderersContext.Provider>
@@ -155,6 +161,7 @@ type RuleProps = {
 	| 'openNavButtonPortalId'
 	| 'showDevSection'
 	| 'searchBar'
+	| 'displayIcon'
 >
 
 function Rule({
@@ -168,6 +175,7 @@ function Rule({
 	mobileMenuPortalId,
 	openNavButtonPortalId,
 	showDevSection,
+	displayIcon,
 }: RuleProps) {
 	const baseEngine = useEngine()
 	const { References, Text } = useContext(RenderersContext)
@@ -206,6 +214,7 @@ function Rule({
 					mobileMenuPortalId={mobileMenuPortalId}
 					openNavButtonPortalId={openNavButtonPortalId}
 					searchBar={searchBar}
+					displayIcon={displayIcon}
 				/>
 				<Article>
 					<DottedNameContext.Provider value={dottedName}>

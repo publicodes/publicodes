@@ -22,7 +22,7 @@ export function RuleLink<Name extends string>({
 	engine,
 	currentEngineId,
 	documentationPath,
-	displayIcon = false,
+	displayIcon,
 	linkComponent,
 	children,
 	...propsRest
@@ -114,7 +114,9 @@ export function RuleLink<Name extends string>({
 			}
 		>
 			{children || contextTitle || rule.dottedName.split(' . ').slice(-1)[0]}{' '}
-			{displayIcon && rule.rawNode.icônes && <span>{rule.rawNode.icônes}</span>}
+			{displayIcon && rule.rawNode.icônes && (
+				<span aria-hidden>{rule.rawNode.icônes}</span>
+			)}
 		</Link>
 	)
 }

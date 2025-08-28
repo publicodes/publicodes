@@ -22,13 +22,16 @@ export default function RuleHeader({ dottedName }: { dottedName: string }) {
 					.reverse()
 					.map((parentDottedName) => (
 						<span key={parentDottedName}>
-							<RuleLinkWithContext dottedName={parentDottedName} displayIcon />
+							<RuleLinkWithContext
+								dottedName={parentDottedName}
+								displayIcon={true}
+							/>
 							<span aria-hidden>{' › '}</span>
 						</span>
 					))}
 			</div>
 			<h1>
-				<RuleLinkWithContext dottedName={dottedName} displayIcon />
+				<RuleLinkWithContext dottedName={dottedName} displayIcon={true} />
 			</h1>
 		</header>
 	)
