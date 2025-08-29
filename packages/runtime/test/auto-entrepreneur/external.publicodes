@@ -1,0 +1,57 @@
+date:
+
+dirigeant:
+dirigeant . exonérations:
+dirigeant . exonérations . ACRE:
+
+
+entreprise:
+entreprise . date de création:
+
+entreprise . chiffre d'affaires:
+  public: oui
+  somme:
+    - BIC
+    - service BIC
+    - service BNC
+    - vente restauration hébergement
+
+entreprise . chiffre d'affaires . BIC:
+  unité: €/mois
+
+entreprise . chiffre d'affaires . service BIC:
+  unité: €/mois
+
+entreprise . chiffre d'affaires . service BNC:
+  unité: €/mois
+
+entreprise . chiffre d'affaires . vente restauration hébergement:
+  unité: €/mois
+
+
+entreprise . activité:
+entreprise . activité . nature:
+entreprise . activité . nature . libérale:
+entreprise . activité . nature . libérale . réglementée:
+entreprise . activités:
+entreprise . activités . revenus mixtes:
+revenu imposable:
+
+entreprise . durée d'activité:
+entreprise . durée d'activité . en début d'année:
+entreprise . durée d'activité . années civiles:
+entreprise . durée d'activité . trimestres civils:
+
+établissement:
+établissement . commune:
+établissement . commune . département:
+établissement . commune . département . outre-mer:
+
+impôt:
+impôt . foyer fiscal:
+impôt . foyer fiscal . revenu fiscal de référence:
+
+
+
+rémunération:
+rémunération . impôt:
