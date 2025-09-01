@@ -1,0 +1,20 @@
+
+
+a:
+  arrondi: oui
+
+c:
+  arrondi au supérieur: 4 unité
+
+b:
+  valeur: 43 €
+  arrondi à l'inférieur: 5 €
+
+
+d:
+  valeur: 4.65 €
+  arrondi:
+    applicable si: est arrondi
+    valeur: 0.1
+
+est arrondi:

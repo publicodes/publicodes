@@ -11,6 +11,6 @@ let type_check tree =
   (* The first time, we create unit type for each number and unify what can be unify. *)
   let* tree = tree |> Type_check.type_check |> ignore_logs in
   (* The second time, everything that can be infered has been infered, so we can check for type inconsistency *)
-  let* tree = tree |> Type_check.type_check in
+  let* tree = tree |> Type_check.type_check ~snd_pass:true in
   (* TODO : the simplest and more efficient way to do it would be have topological sort before type checking *)
   return (Simplify_unit.simplify tree)
