@@ -57,7 +57,7 @@ export class Engine<O extends Outputs> {
 
     const neededParameters = Object.keys(p)
     const missingParameters = neededParameters.filter(
-      (param) => !context[param],
+      (param) => !(param in context),
     )
 
     return {
