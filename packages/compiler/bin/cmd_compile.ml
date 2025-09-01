@@ -30,6 +30,12 @@ let output_type =
     & opt (enum [("json", `Json); ("debug_eval_tree", `Debug_eval_tree)]) `Json
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
 
+let default_to_public =
+  let doc =
+    "Compile every rule as `public`, which means that they are all exported."
+  in
+  Arg.(value & flag & info ["default-to-public"] ~doc)
+
 let cmd =
   let doc = "Compile a Publicodes program from file or stdin." in
   let exits =
@@ -42,7 +48,10 @@ let cmd =
   and+ output_file = output_file
   and+ input_stdin = input_stdin
   and+ watch_mode = watch
+  and+ default_to_public = default_to_public
   and+ output_type = output_type in
   let input_files = if input_stdin then ["-"] else input_files in
-  if watch_mode then Watch.watch_compile ~input_files ~output_file ~output_type
-  else Compile.compile ~input_files ~output_file ~output_type
+  if watch_mode then
+    Watch.watch_compile ~input_files ~output_file ~output_type
+      ~default_to_public
+  else Compile.compile ~input_files ~output_file ~output_type ~default_to_public
