@@ -85,6 +85,9 @@ let resolve_rule ~rule_names rule =
       | Default value ->
           let+ value = map_value value in
           Default value
+      | Round (rounding, precision) ->
+          let+ precision = map_value precision in
+          Round (rounding, precision)
       | Type t ->
           return (Type t)
     in

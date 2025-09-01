@@ -31,6 +31,8 @@ type binary_op =
 
 type unary_op = Neg [@@deriving sexp, compare, show]
 
+type rounding = Up | Down | Nearest [@@deriving sexp, compare, show]
+
 type 'a naked_expr =
   | Const of constant
   | Ref of 'a
@@ -60,7 +62,7 @@ type 'a value_mechanism =
 and 'a variation = {if_: 'a value; then_: 'a value}
 [@@deriving show, sexp, compare]
 
-(* In the order they are unfolded *)
+(* The order of chainable mechanisms matters here: it is used to determine the precedence of the mechanisms (first ones are applied first) *)
 and 'a chainable_mechanism =
   | Context of ('a Pos.t * 'a value) list
   | Applicable_if of 'a value
@@ -69,6 +71,7 @@ and 'a chainable_mechanism =
   | Default of 'a value
   | Ceiling of 'a value
   | Floor of 'a value
+  | Round of (rounding * 'a value)
 [@@deriving show, sexp, compare]
 
 and 'a value =
@@ -90,19 +93,32 @@ type 'a t = 'a program [@@deriving show, sexp, compare]
 type resolved = Rule_name.t t [@@deriving show, sexp, compare]
 
 let binary_op_to_string = function
-  | Add -> "+"
-  | Sub -> "-"
-  | Mul -> "*"
-  | Div -> "/"
-  | Pow -> "**"
-  | Gt -> ">"
-  | Lt -> "<"
-  | GtEq -> ">="
-  | LtEq -> "<="
-  | Eq -> "="
-  | NotEq -> "!="
-  | And -> "&&"
-  | Or -> "||"
+  | Add ->
+      "+"
+  | Sub ->
+      "-"
+  | Mul ->
+      "*"
+  | Div ->
+      "/"
+  | Pow ->
+      "**"
+  | Gt ->
+      ">"
+  | Lt ->
+      "<"
+  | GtEq ->
+      ">="
+  | LtEq ->
+      "<="
+  | Eq ->
+      "="
+  | NotEq ->
+      "!="
+  | And ->
+      "&&"
+  | Or ->
+      "||"
 
 (** Map expression *)
 let has_public_tag rule_def =
