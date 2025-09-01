@@ -4,7 +4,11 @@ open Cmdliner.Term.Syntax
 
 let input_files =
   let doc = "$(docv) is the input files. Use $(b,-) for $(b,stdin)." in
-  Arg.(non_empty & pos_all file ["-"] & info [] ~doc ~docv:"FILES")
+  Arg.(value & pos_all file ["-"] & info [] ~doc ~docv:"FILES")
+
+let input_stdin =
+  let doc = "Use stdin as input to compile." in
+  Arg.(value & flag & info ["i"; "input"] ~doc)
 
 let default_output_file = "model.publicodes.json"
 
@@ -36,7 +40,9 @@ let cmd =
   @@
   let+ input_files = input_files
   and+ output_file = output_file
+  and+ input_stdin = input_stdin
   and+ watch_mode = watch
   and+ output_type = output_type in
+  let input_files = if input_stdin then ["-"] else input_files in
   if watch_mode then Watch.watch_compile ~input_files ~output_file ~output_type
   else Compile.compile ~input_files ~output_file ~output_type
