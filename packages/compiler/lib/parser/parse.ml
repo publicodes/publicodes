@@ -36,7 +36,7 @@ let parse_meta mapping =
 let rec parse_rule ?(current_rule_name = []) (name, yaml) =
   let* name, pos = parse_ref name in
   let name = current_rule_name @ name in
-  let* value = Parse_mechanisms.parse ~error_if_undefined:false ~pos yaml in
+  let* value = Parse_value.parse_value ~error_if_undefined:false ~pos yaml in
   let* meta =
     match yaml with `O mapping -> parse_meta mapping | _ -> return []
   in
