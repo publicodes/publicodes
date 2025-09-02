@@ -27,8 +27,7 @@
   "devDependencies": {
     "@publicodes/tools": "workspace:^",
     "rolldown": "1.0.0-beta.8",
-    "tsc": "^2.0.4",
-    "vitest": "^3.1.2"
+    "tsc": "^2.0.4"
   },
   "scripts": {
     "build": "rolldown -c rolldown.config.js",
@@ -38,7 +37,7 @@
     "benchmark:simple-TJM": "bun ./benchmark/simple-TJM.js",
     "benchmark:auto-entrepreneur": "bun ./benchmark/auto-entrepreneur.js",
     "benchmark": "run benchmark:simple-TJM && run benchmark:auto-entrepreneur",
-    "test": "vitest",
+    "test": "bun test",
     "test:type": "tsc --noEmit"
   },
   "dependencies": {
