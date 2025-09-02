@@ -16,18 +16,19 @@ export class Engine<O extends Outputs> {
   private cache: Memoizer<O> | null = null
 
   constructor(
-    private _publicodes: Publicodes<O>,
+    private publicodes: Publicodes<O>,
     options: EngineOptions = {},
   ) {
+    // console.log(publicodes)
     const { cache = false } = options
 
     if (cache) {
-      this.cache = new Memoizer(_publicodes)
+      this.cache = new Memoizer(publicodes)
     }
   }
 
-  public get publicodes(): Publicodes<O> {
-    return this._publicodes
+  public get outputs(): O {
+    return this.publicodes.outputs
   }
 
   evaluate<R extends RuleName<O>>(

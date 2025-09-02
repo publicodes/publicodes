@@ -82,7 +82,9 @@ and unfold_chainable_mechanism ~init mechanisms =
          | Shared_ast.Default default ->
              transform_default ~pos default acc
          | Shared_ast.Type t ->
-             transform_typ t acc )
+             transform_typ t acc
+         | Shared_ast.Round round ->
+             transform_round ~pos round acc )
 
 and transform_sum ~pos nodes =
   List.fold_right nodes
@@ -231,6 +233,11 @@ and transform_typ t value =
         literal ~pos l
   in
   {value with meta= typ}
+
+and transform_round ~pos round value =
+  let p = mk ~pos in
+  let rounding, precision = round in
+  p (Round (rounding, transform_value precision, value))
 
 let from_ast (resolved_ast : Shared_ast.resolved) : t =
   let evalTree =

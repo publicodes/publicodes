@@ -83,6 +83,23 @@ let json_of_eval_tree_flat (tree : Tree.t) =
               let expr_index = resolve_and_get_index expr in
               let op_str = match op with Neg -> "-" | Is_undef -> "∅" in
               `List [`String op_str; `Int expr_index]
+          | Round (rounding, precision, expr) ->
+              let expr_index = resolve_and_get_index expr in
+              let precision_index = precision |> resolve_and_get_index in
+              let rounding =
+                match rounding with
+                | Up ->
+                    "up"
+                | Down ->
+                    "down"
+                | Nearest ->
+                    "~"
+              in
+              `List
+                [ `String "round"
+                ; `String rounding
+                ; `Int precision_index
+                ; `Int expr_index ]
           | Ref _ ->
               (* TODO : handle the case where rule directly reference another rule *)
               failwith "Ref case should be handled by resolve_and_get_index"
@@ -132,7 +149,7 @@ let to_json tree params =
           match (get_meta tree output_rule).typ with
           | Some (Number (Some unit)) ->
               `Assoc
-                [ ("number", `Null)
+                [ ("number", `Bool true)
                 ; ("unit", `String (Format.asprintf "%a" Shared.Units.pp unit))
                 ]
           | Some (Number None) ->

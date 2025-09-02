@@ -22,6 +22,7 @@ type 'meta naked_value =
   | Ref of Rule_name.t
   | Get_context of Rule_name.t
   | Set_context of 'meta context
+  | Round of (Shared_ast.rounding * 'meta value * 'meta value)
 [@@deriving show, sexp]
 
 and 'meta context =

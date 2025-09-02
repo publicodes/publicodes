@@ -9,7 +9,7 @@ décimal: 5.4
 describe('Expressions > constantes', () => {
   it('entier', async () => {
     expect(engine.evaluate('entier').value).toEqual(5)
-    expect(engine.publicodes.outputs['entier'].type).toHaveProperty('number')
+    expect(engine.outputs['entier'].type).toHaveProperty('number')
   })
 
   it('nombre décimal', async () => {

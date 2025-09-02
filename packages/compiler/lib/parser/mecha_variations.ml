@@ -5,12 +5,6 @@ open Utils.Output
 open Parser_utils
 open Parse_types
 
-let find_value key mapping =
-  List.find_map mapping ~f:(fun (k, value) ->
-      if String.equal (get_value k) key then
-        Some (Pos.mk ~pos:(Pos.pos k) value)
-      else None )
-
 let parse_variation ~pos ~(parse : parse_value_fn) yaml =
   match yaml with
   | `O mapping -> (
