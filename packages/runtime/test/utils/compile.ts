@@ -1,6 +1,5 @@
 import { $ } from 'bun'
 import { Engine } from '../../src/engine'
-import { Outputs } from '../../src/types'
 /**
  * Compiles publicodes YAML to JSON using the publicodes compiler
  * @param yaml The publicodes YAML string to compile
@@ -14,7 +13,6 @@ export async function compilePublicodes(yaml: string): Promise<any> {
   //   throw new Error('publicodes compiler is not installed')
   // }
 
-  const stderr = Buffer.alloc(2 ** 10)
   try {
     const { stdout, stderr } =
       await $`publicodes compile --default-to-public -o -  < ${Buffer.from(yaml)}  `.quiet()
@@ -47,7 +45,7 @@ export async function yaml(
   return new Engine(rules)
 }
 
-function dedent(string) {
+function dedent(string: string) {
   const lines = string.split('\n')
   const minIndent = lines
     .filter((line) => line.trim())

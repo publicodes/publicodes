@@ -1,8 +1,8 @@
 export type BaseType =
-  | { number: null }
-  | { string: null }
-  | { boolean: null }
-  | { date: null }
+  | { number: true }
+  | { string: true }
+  | { boolean: true }
+  | { date: true }
   | null
 
 export type Outputs = {

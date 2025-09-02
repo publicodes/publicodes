@@ -6,7 +6,7 @@ open Parser_utils
 
 exception Invalid_rule_name of string
 
-let parse_meta ~default_to_public mapping =
+let parse_meta mapping =
   let parse_key (key, value) =
     let scalar_value () = get_scalar ~pos:(Pos.pos key) value in
     match get_value key with
@@ -32,21 +32,16 @@ let parse_meta ~default_to_public mapping =
     | _ ->
         empty
   in
-  (if default_to_public then return Public else empty)
-  :: List.map ~f:parse_key mapping
-  |> all_keep_logs
+  List.map ~f:parse_key mapping |> all_keep_logs
 
 let rec parse_rule ~default_to_public ?(current_rule_name = []) (name, yaml) =
   let* name, pos = parse_ref name in
   let name = current_rule_name @ name in
   let* value = Parse_value.parse_value ~error_if_undefined:false ~pos yaml in
   let* meta =
-    match yaml with
-    | `O mapping ->
-        parse_meta ~default_to_public mapping
-    | _ ->
-        return []
+    match yaml with `O mapping -> parse_meta mapping | _ -> return []
   in
+  let meta = if default_to_public then Public :: meta else meta in
   let+ with_ =
     match yaml with
     | `O mapping ->
