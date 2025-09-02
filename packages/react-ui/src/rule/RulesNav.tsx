@@ -6,6 +6,7 @@ import {
 	RefObject,
 	Suspense,
 	useCallback,
+	useContext,
 	useEffect,
 	useMemo,
 	useRef,
@@ -17,24 +18,22 @@ import { RuleLinkWithContext } from '../RuleLink'
 import { Arrow } from '../component/icons/Arrow'
 import { Close } from '../component/icons/Close'
 import { useEngine } from '../hooks'
+import { DisplayOptionsContext } from '../contexts'
 
 const RulesSearch = lazy(() => import('./RulesSearch'))
 
 interface Props {
 	dottedName: string
-	searchBar: boolean
 	mobileMenuPortalId?: string
 	openNavButtonPortalId?: string
-	displayIcon?: boolean
 }
 
 export const RulesNav = ({
 	dottedName,
-	searchBar,
 	mobileMenuPortalId,
 	openNavButtonPortalId,
-	displayIcon,
 }: Props) => {
+	const { searchBar } = useContext(DisplayOptionsContext)
 	const baseEngine = useEngine()
 	const parsedRules = baseEngine.getParsedRules()
 	const parsedRulesNames = useMemo(
@@ -182,7 +181,6 @@ export const RulesNav = ({
 						navRef={navRef}
 						toggleDropdown={toggleDropdown}
 						dottedName={dottedName}
-						displayIcon={displayIcon}
 						parentName=""
 					/>
 				</nav>
@@ -220,7 +218,6 @@ type NavUlProps = {
 	toggleDropdown: (name: string) => void
 	dottedName: string
 	parentName: string
-	displayIcon?: boolean
 }
 const NavUl = ({
 	rules,
@@ -230,7 +227,6 @@ const NavUl = ({
 	toggleDropdown,
 	dottedName,
 	parentName,
-	displayIcon,
 }: NavUlProps) => {
 	return (
 		<ul>
@@ -250,7 +246,6 @@ const NavUl = ({
 						active={dottedName === ruleDottedName}
 						onClickDropdown={toggleDropdown}
 						navRef={navRef}
-						displayIcon={displayIcon}
 					>
 						{level[ruleDottedName] && (
 							<NavUl
@@ -261,7 +256,6 @@ const NavUl = ({
 								toggleDropdown={toggleDropdown}
 								dottedName={dottedName}
 								parentName={ruleDottedName}
-								displayIcon={displayIcon}
 							/>
 						)}
 					</MemoNavLi>
@@ -278,7 +272,6 @@ type NavLiProps = {
 	onClick: () => void
 	onClickDropdown: (ruleDottedName: string) => void
 	navRef: RefObject<HTMLDivElement>
-	displayIcon?: boolean
 	children?: ReactNode
 }
 const NavLi = ({
@@ -288,7 +281,6 @@ const NavLi = ({
 	onClick,
 	onClickDropdown,
 	navRef,
-	displayIcon,
 	children,
 }: NavLiProps) => {
 	const baseEngine = useEngine()
@@ -325,11 +317,7 @@ const NavLi = ({
 			className={childrenCount > 0 ? 'dropdown ' : ''}
 		>
 			<span className={`content ${active ? 'active ' : ''}`}>
-				<RuleLinkWithContext
-					dottedName={ruleDottedName}
-					displayIcon={displayIcon}
-					onClick={onClick}
-				/>
+				<RuleLinkWithContext dottedName={ruleDottedName} onClick={onClick} />
 				{childrenCount > 0 && (
 					<DropdownButton
 						aria-label={open ? 'Replier le sous-menu' : 'Déplier le sous-menu'}

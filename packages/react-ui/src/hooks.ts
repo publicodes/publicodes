@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { EngineContext, RulesToHideContext } from './contexts'
+import { DisplayOptionsContext, EngineContext } from './contexts'
 
 export const useEngine = () => {
 	const engine = useContext(EngineContext)
@@ -14,7 +14,8 @@ export const useHideValue = (dottedName: string | undefined) => {
 	if (!dottedName) {
 		return false
 	}
-	const rulesToHide = useContext(RulesToHideContext)
+	const { rulesToHide } = useContext(DisplayOptionsContext)
+
 	if (!rulesToHide) {
 		return false
 	}
