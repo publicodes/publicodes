@@ -110,6 +110,12 @@ let resolve_rule ~rule_names rule =
       | One_of values ->
           let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
           One_of mapped_values
+      | Max_of values ->
+          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          Max_of mapped_values
+      | Min_of values ->
+          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          Min_of mapped_values
       | Value value ->
           let+ value = map_value value in
           Value value
