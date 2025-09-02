@@ -149,7 +149,7 @@ let to_json tree params =
           match (get_meta tree output_rule).typ with
           | Some (Number (Some unit)) ->
               `Assoc
-                [ ("number", `Null)
+                [ ("number", `Bool true)
                 ; ("unit", `String (Format.asprintf "%a" Shared.Units.pp unit))
                 ]
           | Some (Number None) ->

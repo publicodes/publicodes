@@ -8,3 +8,12 @@ b:
 c:
   valeur: 4 $
   arrondi: 0.1 €
+
+d:
+  valeur: 5€
+  arrondi:
+
+x:
+e:
+  valeur: 5€
+  arrondi: x

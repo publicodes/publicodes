@@ -11,7 +11,7 @@ paramètre:
 describe('Expressions > booléens', () => {
   it('constante', async () => {
     expect(engine.evaluate('a').value).toEqual(true)
-    expect(engine.publicodes.outputs['a'].type).toHaveProperty('boolean')
+    expect(engine.outputs['a'].type).toHaveProperty('boolean')
   })
 
   it('paramètre', async () => {
@@ -25,6 +25,6 @@ describe('Expressions > booléens', () => {
 
   it('négation', async () => {
     expect(engine.evaluate('négation').value).toEqual(false)
-    expect(engine.publicodes.outputs['négation'].type).toHaveProperty('boolean')
+    expect(engine.outputs['négation'].type).toHaveProperty('boolean')
   })
 })

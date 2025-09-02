@@ -4,7 +4,6 @@ open Tree
 open To_hash
 open Utils
 open Shared.Eval_tree
-open Pre_hash_transform
 
 (*
   We do type retrival and add hash to the node in one pass as :
@@ -14,7 +13,6 @@ open Pre_hash_transform
 *)
 
 let rec transform_to_hash_and_type (value : Typed_tree.value) : Tree.value =
-  let value = pre_hash_transform value in
   let {value; meta= typ; pos} = value in
   let transform_naked_value = function
     | Eval_tree.Const const ->

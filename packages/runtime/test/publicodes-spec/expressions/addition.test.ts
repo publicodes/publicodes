@@ -8,7 +8,7 @@ describe('Expressions > addition', () => {
 addition: 28 + 1.1
 `
     expect(engine.evaluate('addition').value).toEqual(29.1)
-    expect(engine.publicodes.outputs['addition'].type).toHaveProperty('number')
+    expect(engine.outputs['addition'].type).toHaveProperty('number')
   })
 
   it('addition non applicable', async () => {
@@ -36,7 +36,7 @@ addition: salaire de base + primes
         primes: 500,
       }).value,
     ).toEqual(2500)
-    expect(engine.publicodes.outputs['addition'].type).toMatchObject({
+    expect(engine.outputs['addition'].type).toMatchObject({
       number: true,
       unit: '€',
     })

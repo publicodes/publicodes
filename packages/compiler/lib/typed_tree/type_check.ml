@@ -104,39 +104,8 @@ let type_check ?(snd_pass = false) (tree : Tree.t) =
           |> all_keep_logs
         in
         return ()
-    | Round (_, precision, value) ->
-        let* _ = unify_value value in
-        let* _ = unify value.meta (any_number ~pos ()) in
-        let* _ = unify_value precision in
-        let* _ = unify typ value.meta in
-        (*
-          We do not unify the precision, because it is polymorphic (boolean, integer with unit `décimales`, or any other unit)
-          But we type_check it once we know its type (second pass)
-        *)
-        if snd_pass then
-          let typ, pos = UnionFind.get precision.meta in
-          match typ with
-          | Any _ | Literal String | Literal Date ->
-              let code, message = Err.type_invalid_type in
-              fatal_error ~kind:`Type
-                ~hints:["arrondi doit être un nombre ou un booléen"]
-                ~pos ~code message
-          | Literal Bool ->
-              return ()
-          | Number unit ->
-              if
-                (* If unit is « décimales », then everything is good *)
-                let open Number_unit in
-                let normalized_unit = normalize unit in
-                is_concrete normalized_unit
-                && Units.equal normalized_unit.concrete
-                     (Units.parse_unit "décimales")
-              then return ()
-              else
-                (* Otherwise, we check if the unit is compatible with the value *)
-                let* _ = unify value.meta precision.meta in
-                return ()
-        else return ()
+    | Round value ->
+        Mecha_rounding.typecheck ~unify_value ~pos ~snd_pass ~typ value
   in
   let* _ =
     Hashtbl.to_alist tree

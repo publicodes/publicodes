@@ -54,7 +54,7 @@ calcul: 10% * (- salaire de base)
     expect(
       engine.evaluate('calcul', { 'salaire de base': 3000 }).value,
     ).toEqual(-300)
-    expect(engine.publicodes.outputs['calcul'].type.unit).toBe('€')
+    expect(engine.outputs['calcul'].type.unit).toBe('€')
   })
 
   it('puissance précède multiplication', async () => {
@@ -83,7 +83,7 @@ calcul: (3 * 2) ** 2
     const engine = await yaml`
 calcul: 100 * ( 1 + 2% ) ** 3
 `
-    expect(engine.evaluate('calcul').value).toBeCloseTo(106.12, 2)
+    expect(engine.evaluate('calcul').value).toBe(106.12)
   })
 
   it.skip('division entière', async () => {

@@ -30,6 +30,7 @@ module Code = struct
     | Type_incoherence
     | Type_missing_output_type
     | Type_incompatible_units
+    | Type_missing_in_mechanism
     (* Cycle detection errors *)
     | Cycle_detected
   [@@deriving show, sexp, compare]
@@ -83,8 +84,10 @@ module Code = struct
         "E023"
     | Type_incompatible_units ->
         "E024"
-    | Cycle_detected ->
+    | Type_missing_in_mechanism ->
         "E025"
+    | Cycle_detected ->
+        "E026"
 end
 
 type t = Code.t * string
@@ -138,7 +141,11 @@ let type_unit_incoherence =
   (Code.Type_incompatible_units, "unités non compatibles")
 
 let missing_output_type =
-  (Code.Type_missing_output_type, "information de type manquante")
+  (Code.Type_missing_output_type, "information de type manquante pour ce résultat")
+
+let type_missing_in_mechanism =
+  (Code.Type_missing_in_mechanism, "information de type manquante pour ce paramètre de mécanisme")
+
 
 let cycle_detected = (Code.Cycle_detected, "cycle de dépendance détecté")
 
