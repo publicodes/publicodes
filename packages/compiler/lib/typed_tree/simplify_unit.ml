@@ -59,6 +59,3 @@ let simplify_value ({pos; meta= typ; value} as expr : Tree.value) : Tree.value =
       new_expr |> Output.value ~default:expr
   | _ ->
       expr
-
-let simplify (tree : Tree.t) =
-  Hashtbl.map tree ~f:(Eval_tree.map ~f:simplify_value)

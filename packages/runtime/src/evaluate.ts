@@ -6,6 +6,8 @@ class RuntimeError extends Error {
     this.name = 'RuntimeError'
   }
 }
+// Use 15 precision for floating number in JS https://stackoverflow.com/a/3644302
+const MAX_FLOAT_PRECISION = 15
 
 export type Value = {
   v: number | string | boolean | null | undefined | Date
@@ -167,13 +169,16 @@ function evaluateNode(
         return { v: val.v, p }
       }
       if (precision.v === 0) {
-        throw new RuntimeError('Rounding error : precision cannot be 0')
+        throw new RuntimeError('Rounding error: precision cannot be 0')
       }
 
-      const v =
-        c[1] === 'up' ? Math.ceil(val.v * precision.v) / precision.v
-        : c[1] === 'down' ? Math.floor(val.v * precision.v) / precision.v
-        : Math.round(val.v * precision.v) / precision.v
+      const r = (num: number) => +num.toPrecision(MAX_FLOAT_PRECISION)
+      const v = r(
+        c[1] === 'up' ? Math.ceil(r(val.v / precision.v)) * precision.v
+        : c[1] === 'down' ? Math.floor(r(val.v / precision.v)) * precision.v
+        : Math.round(r(val.v / precision.v)) * precision.v,
+      )
+
       return {
         v,
         p,

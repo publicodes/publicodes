@@ -14,6 +14,6 @@ produit:
     expect(
       engine.evaluate('produit', { 'salaire de base': 1000 }).value,
     ).toEqual(3000)
-    expect(engine.publicodes.outputs['produit'].type.unit).toBe('$')
+    expect(engine.outputs['produit'].type.unit).toBe('$')
   })
 })

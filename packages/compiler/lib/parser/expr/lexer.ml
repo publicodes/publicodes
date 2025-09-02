@@ -27,7 +27,7 @@ let symbol = [%sedlex.regexp? Chars ",°$%²_\"«»'" | "€"]
 
 let char = [%sedlex.regexp? letter | symbol | digit]
 
-let any_char = [%sedlex.regexp? char | Chars "+-#"]
+let any_char = [%sedlex.regexp? char | Chars "+-#.,"]
 
 (* Number *)
 let number = [%sedlex.regexp? Plus digit, Opt ('.', Plus digit)]

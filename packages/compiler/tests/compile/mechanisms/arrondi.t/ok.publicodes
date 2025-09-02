@@ -4,7 +4,7 @@ a:
   arrondi: oui
 
 c:
-  arrondi au supérieur: 4 unité
+  arrondi au supérieur: 4 décimales
 
 b:
   valeur: 43 €
@@ -18,3 +18,8 @@ d:
     valeur: 0.1
 
 est arrondi:
+
+
+arrondi à la dizaine:
+  valeur: 33.4167
+  arrondi: 10

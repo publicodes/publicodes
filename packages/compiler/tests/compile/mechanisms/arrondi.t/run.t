@@ -1,5 +1,11 @@
 Bad types for arrondi :
   $ publicodes compile type_error.publicodes -t debug_eval_tree -o -
+  E013 valeur manquante [syntax error]
+       ╒══  type_error.publicodes:14:11 ══
+    13 │   valeur: 5€
+    14 │   arrondi:
+       │            valeur attendue ici
+  
   E024 unités non compatibles [type error]
        ╒══  type_error.publicodes:9:11 ══
      8 │ c:
@@ -10,6 +16,18 @@ Bad types for arrondi :
     10 │   arrondi: 0.1 €
        │            ˘˘˘˘˘ unité: €
   
+  E021 type invalide détécté [type error]
+       ╒══  type_error.publicodes:14:3 ══
+    13 │   valeur: 5€
+    14 │   arrondi:
+       │   ˘˘˘˘˘˘˘˘
+   Hint: arrondi doit être un nombre ou un booléen
+  E021 type invalide détécté [type error]
+       ╒══  type_error.publicodes:19:12 ══
+    18 │   valeur: 5€
+    19 │   arrondi: x
+       │            ˘
+   Hint: arrondi doit être un nombre ou un booléen
   E021 type invalide détécté [type error]
        ╒══  type_error.publicodes:6:12 ══
      5 │ b:
@@ -35,12 +53,17 @@ Ok arrondi :
   else null
   get_context(a)
   
+  arrondi à la dizaine :
+  round to: 10.
+  33.4167
+  
   b :
   round down to: 5. €
   43. €
   
   c :
-  round up to: 4. unité
+  round up to:
+  10. ** (- 4. décimales)
   get_context(c)
   
   d :
