@@ -1,0 +1,23 @@
+a:
+  le maximum de: non
+
+
+b:
+  le maximum de:
+    - 5 €
+    - 4 tomates
+
+c:
+  le maximum de:
+    -
+    - 4
+
+d:
+  le maximum de:
+    - 5
+    - 4
+    - 4
+    - -5
+
+e:
+  le maximum de: []

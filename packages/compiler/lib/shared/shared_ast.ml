@@ -27,6 +27,8 @@ type binary_op =
   | NotEq
   | And
   | Or
+  | Max
+  | Min
 [@@deriving sexp, compare, show]
 
 type unary_op = Neg [@@deriving sexp, compare, show]
@@ -50,6 +52,8 @@ type 'a value_mechanism =
   | Sum of 'a value list
   | Product of 'a value list
   | All_of of 'a value list
+  | Min_of of 'a value list
+  | Max_of of 'a value list
   | One_of of 'a value list
   | Undefined
   | Variations of
@@ -119,6 +123,10 @@ let binary_op_to_string = function
       "&&"
   | Or ->
       "||"
+  | Max ->
+      "max"
+  | Min ->
+      "min"
 
 (** Map expression *)
 let has_public_tag rule_def =

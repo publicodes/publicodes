@@ -38,7 +38,7 @@ let type_check ?(snd_pass = false) (tree : Tree.t) =
             let* _ = unify left.meta (literal ~pos Bool) in
             let+ _ = unify right.meta (literal ~pos Bool) in
             ()
-        | Add | Sub ->
+        | Add | Sub | Max | Min ->
             let* _ = unify left.meta (any_number ~pos ()) in
             let* _ = unify right.meta (any_number ~pos ()) in
             let* _ = unify right.meta left.meta in
