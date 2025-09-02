@@ -111,6 +111,10 @@ let format_binary_op = function
       tag `Operator (text "&&")
   | Shared_ast.Or ->
       tag `Operator (text "||")
+  | Shared_ast.Max ->
+      tag `Operator (text "max")
+  | Shared_ast.Min ->
+      tag `Operator (text "min")
 
 (* Format unary operators *)
 let format_unary_op = function
