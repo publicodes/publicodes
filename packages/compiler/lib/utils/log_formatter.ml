@@ -239,5 +239,5 @@ let print (log : Log.t) =
   (* Create the complete document *)
   let doc = vbox (concat [header; cut; code_excerpt; cut; hints_doc; cut]) in
   (* Print the document to stdout with styled tags *)
-  to_fmt_with_tags (Format.get_std_formatter ()) doc ~tag_handler:handle_tag ;
+  to_fmt_with_tags (Format.get_err_formatter ()) doc ~tag_handler:handle_tag ;
   Format.print_flush ()

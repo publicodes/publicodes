@@ -50,3 +50,12 @@ Number with unit :
   
   e :
   64465.55 h.kW/maison
+  
+  kg par m² :
+  3. kg/m^2
+  
+  pound :
+  4. £
+  
+  yen :
+  5. ¥

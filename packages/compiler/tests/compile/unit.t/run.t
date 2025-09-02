@@ -1,7 +1,19 @@
+
+Simple multiplication without unit :
+  $ publicodes compile -o - -t debug_eval_tree simple-multiplication-without-unit.publicodes
+  a :
+  5. €
+  
+  b :
+  3. * @a
+  
+  c :
+  @b + 4. $
+
 Simple addition unit with unit :
 
   $ publicodes compile simple-addition.publicodes
-  E017 unités non compatibles [type error]
+  E024 unités non compatibles [type error]
        ╒══  simple-addition.publicodes:1:26 ══
      1 │ simple expression: 12€ + 5$
        │                          ˘˘ unité: $
@@ -9,7 +21,7 @@ Simple addition unit with unit :
      1 │ simple expression: 12€ + 5$
        │                    ˘˘˘˘ unité: €
   
-  E017 unités non compatibles [type error]
+  E024 unités non compatibles [type error]
        ╒══  simple-addition.publicodes:6:9 ══
      5 │     - 4 €
      6 │     - -(4 kg/m)
@@ -24,7 +36,7 @@ Simple addition unit with unit :
 Simple multiplication with unit :
 
   $ publicodes compile simple-multiplication.publicodes
-  E017 unités non compatibles [type error]
+  E024 unités non compatibles [type error]
        ╒══  simple-multiplication.publicodes:1:29 ══
      1 │ simple expression ko:  (5kg * 5€/kg) = 12$
        │                             ˘˘˘˘˘˘˘˘ unité: €
@@ -37,7 +49,7 @@ Simple multiplication with unit :
 Unit inference :
 
   $ publicodes compile unit_inference.publicodes
-  E017 unités non compatibles [type error]
+  E024 unités non compatibles [type error]
        ╒══  unit_inference.publicodes:7:9 ══
      6 │ z:
      7 │ test: x + 9 mois # KO car z est inféré à "mois" et x à "€"
@@ -47,7 +59,7 @@ Unit inference :
      4 │ x: z * 4€/mois
        │      ˘˘˘˘˘˘˘˘˘ unité: €
   
-  E017 unités non compatibles [type error]
+  E024 unités non compatibles [type error]
        ╒══  unit_inference.publicodes:2:6 ══
      1 │ a: 5€
      2 │ b: a + 4kg # KO
@@ -61,7 +73,7 @@ Unit inference :
 Unit with percent :
 
   $ publicodes compile percent.publicodes
-  E017 unités non compatibles [type error]
+  E024 unités non compatibles [type error]
        ╒══  percent.publicodes:14:12 ══
     13 │ # should have error
     14 │ e: 5%/an + 4€/an
@@ -76,7 +88,7 @@ Unit with percent :
 Add unit information with `unité` mechanism :
 
   $ publicodes compile mechanism.publicodes
-  E017 unités non compatibles [type error]
+  E024 unités non compatibles [type error]
        ╒══  mechanism.publicodes:13:13 ══
     12 │ 
     13 │ test b: b + 4 € # KO
@@ -86,7 +98,7 @@ Add unit information with `unité` mechanism :
     11 │   unité:
        │          unité: aucune
   
-  E017 unités non compatibles [type error]
+  E024 unités non compatibles [type error]
        ╒══  mechanism.publicodes:4:10 ══
      3 │   valeur: 5
      4 │   unité: '%'
@@ -96,7 +108,7 @@ Add unit information with `unité` mechanism :
      6 │ test a: a > 4 € # KO
        │             ˘˘˘˘ unité: €
   
-  E017 unités non compatibles [type error]
+  E024 unités non compatibles [type error]
        ╒══  mechanism.publicodes:30:10 ══
     29 │   valeur: d
     30 │   unité: kg # KO
@@ -106,7 +118,7 @@ Add unit information with `unité` mechanism :
     27 │   unité: €
        │          ˘ unité: €
   
-  E017 unités non compatibles [type error]
+  E024 unités non compatibles [type error]
        ╒══  mechanism.publicodes:20:10 ══
     19 │   valeur: c
     20 │   unité: kg # KO
@@ -122,7 +134,7 @@ Add unit information with `unité` mechanism :
 Infer composed `unit` with contexte :
 
   $ publicodes compile unit-inference-with-contexte.publicodes
-  E017 unités non compatibles [type error]
+  E024 unités non compatibles [type error]
        ╒══  unit-inference-with-contexte.publicodes:2:10 ══
      1 │ chiffre d'affaires:
      2 │   unité: €
