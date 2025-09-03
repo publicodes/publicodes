@@ -2,6 +2,7 @@ import Engine, { utils } from 'publicodes'
 import { ComponentProps, useContext } from 'react'
 import {
 	BasepathContext,
+	DisplayOptionsContext,
 	DottedNameContext,
 	RenderersContext,
 	SupportedRenderers,
@@ -22,7 +23,6 @@ export function RuleLink<Name extends string>({
 	engine,
 	currentEngineId,
 	documentationPath,
-	displayIcon = false,
 	linkComponent,
 	children,
 	...propsRest
@@ -39,10 +39,6 @@ export function RuleLink<Name extends string>({
 	 * The base path for the documentation.
 	 */
 	documentationPath: string
-	/**
-	 * Whether to display an icon next to the link.
-	 */
-	displayIcon?: boolean
 	/**
 	 * The current engine ID, if applicable.
 	 */
@@ -78,6 +74,7 @@ export function RuleLink<Name extends string>({
 	onClick?: () => void
 }) {
 	const renderers = useContext(RenderersContext)
+	const { displayIcon } = useContext(DisplayOptionsContext)
 	const dottedNameContext = utils.findCommonAncestor(
 		useContext(DottedNameContext) ?? dottedName,
 		dottedName,
@@ -114,7 +111,9 @@ export function RuleLink<Name extends string>({
 			}
 		>
 			{children || contextTitle || rule.dottedName.split(' . ').slice(-1)[0]}{' '}
-			{displayIcon && rule.rawNode.icônes && <span>{rule.rawNode.icônes}</span>}
+			{displayIcon && rule.rawNode.icônes && (
+				<span aria-hidden>{rule.rawNode.icônes}</span>
+			)}
 		</Link>
 	)
 }

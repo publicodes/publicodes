@@ -11,10 +11,10 @@ import { styled } from 'styled-components'
 import {
 	BasepathContext,
 	defaultRenderers,
+	DisplayOptionsContext,
 	DottedNameContext,
 	EngineContext,
 	RenderersContext,
-	RulesToHideContext,
 	SupportedRenderers,
 } from '../contexts'
 import Explanation from '../Explanation'
@@ -49,6 +49,7 @@ export default function RulePage({
 	openNavButtonPortalId,
 	showDevSection = true,
 	rulesToHide,
+	displayIcon = true,
 }: {
 	/**
 	 * The base path on which the documentation will be mounted. For example, if it is /documentation, the URL of the rule remuneration.primes will be /documentation/remuneration/primes.
@@ -104,6 +105,10 @@ export default function RulePage({
 	 * The dotted name we want the value to be hidden.
 	 */
 	rulesToHide?: Array<string>
+	/**
+	 * Whether to display an icon next to the rule links.
+	 */
+	displayIcon?: boolean
 }) {
 	const currentEngineId =
 		typeof window !== 'undefined' &&
@@ -120,7 +125,14 @@ export default function RulePage({
 		<EngineContext.Provider value={engine}>
 			<BasepathContext.Provider value={documentationPath}>
 				<RenderersContext.Provider value={defaultRenderers(renderers)}>
-					<RulesToHideContext.Provider value={rulesToHide}>
+					<DisplayOptionsContext.Provider
+						value={{
+							rulesToHide,
+							displayIcon,
+							showDevSection,
+							searchBar,
+						}}
+					>
 						<Rule
 							dottedName={utils.decodeRuleName(rulePath)}
 							subEngineId={
@@ -132,10 +144,8 @@ export default function RulePage({
 							npmPackage={npmPackage}
 							mobileMenuPortalId={mobileMenuPortalId}
 							openNavButtonPortalId={openNavButtonPortalId}
-							showDevSection={showDevSection}
-							searchBar={searchBar}
 						/>
-					</RulesToHideContext.Provider>
+					</DisplayOptionsContext.Provider>
 				</RenderersContext.Provider>
 			</BasepathContext.Provider>
 		</EngineContext.Provider>
@@ -153,23 +163,21 @@ type RuleProps = {
 	| 'npmPackage'
 	| 'mobileMenuPortalId'
 	| 'openNavButtonPortalId'
-	| 'showDevSection'
-	| 'searchBar'
 >
 
 function Rule({
 	dottedName,
 	language,
 	subEngineId,
-	searchBar = false,
 	apiDocumentationUrl,
 	apiEvaluateUrl,
 	npmPackage,
 	mobileMenuPortalId,
 	openNavButtonPortalId,
-	showDevSection,
 }: RuleProps) {
 	const baseEngine = useEngine()
+	const hideValue = useHideValue(dottedName)
+	const { showDevSection } = useContext(DisplayOptionsContext)
 	const { References, Text } = useContext(RenderersContext)
 	const subEngines = baseEngine.context.subEngines
 	const useSubEngine = subEngineId && subEngines.has(subEngineId)
@@ -196,8 +204,6 @@ function Rule({
 		dottedName: rule.dottedName,
 	})
 
-	const hideValue = useHideValue(dottedName)
-
 	return (
 		<EngineContext.Provider value={engine}>
 			<Container id="documentation-rule-root">
@@ -205,7 +211,6 @@ function Rule({
 					dottedName={dottedName}
 					mobileMenuPortalId={mobileMenuPortalId}
 					openNavButtonPortalId={openNavButtonPortalId}
-					searchBar={searchBar}
 				/>
 				<Article>
 					<DottedNameContext.Provider value={dottedName}>

@@ -6,6 +6,7 @@ import {
 	RefObject,
 	Suspense,
 	useCallback,
+	useContext,
 	useEffect,
 	useMemo,
 	useRef,
@@ -17,22 +18,22 @@ import { RuleLinkWithContext } from '../RuleLink'
 import { Arrow } from '../component/icons/Arrow'
 import { Close } from '../component/icons/Close'
 import { useEngine } from '../hooks'
+import { DisplayOptionsContext } from '../contexts'
 
 const RulesSearch = lazy(() => import('./RulesSearch'))
 
 interface Props {
 	dottedName: string
-	searchBar: boolean
 	mobileMenuPortalId?: string
 	openNavButtonPortalId?: string
 }
 
 export const RulesNav = ({
 	dottedName,
-	searchBar,
 	mobileMenuPortalId,
 	openNavButtonPortalId,
 }: Props) => {
+	const { searchBar } = useContext(DisplayOptionsContext)
 	const baseEngine = useEngine()
 	const parsedRules = baseEngine.getParsedRules()
 	const parsedRulesNames = useMemo(
@@ -316,11 +317,7 @@ const NavLi = ({
 			className={childrenCount > 0 ? 'dropdown ' : ''}
 		>
 			<span className={`content ${active ? 'active ' : ''}`}>
-				<RuleLinkWithContext
-					dottedName={ruleDottedName}
-					displayIcon
-					onClick={onClick}
-				/>
+				<RuleLinkWithContext dottedName={ruleDottedName} onClick={onClick} />
 				{childrenCount > 0 && (
 					<DropdownButton
 						aria-label={open ? 'Replier le sous-menu' : 'Déplier le sous-menu'}

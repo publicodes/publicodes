@@ -82,6 +82,14 @@ export const EngineContext = createContext<Engine<string> | undefined>(
 	undefined,
 )
 
-export const RulesToHideContext = createContext<Array<string> | undefined>(
-	undefined,
-)
+export const DisplayOptionsContext = createContext<{
+	rulesToHide: Array<string> | undefined
+	displayIcon: boolean
+	showDevSection: boolean
+	searchBar?: boolean
+}>({
+	rulesToHide: undefined,
+	displayIcon: true,
+	showDevSection: true,
+	searchBar: false,
+})
