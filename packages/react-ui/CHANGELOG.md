@@ -1,5 +1,11 @@
 # @publicodes/react-ui
 
+## 1.10.0
+
+### Minor Changes
+
+- [#758](https://github.com/publicodes/publicodes/pull/758) [`9f93973`](https://github.com/publicodes/publicodes/commit/9f939738ad7062ba3891bc11ab407d0230d95d68) Thanks [@Clemog](https://github.com/Clemog)! - Add displayIcon option and fix accessibility
+
 ## 1.9.1
 
 ### Patch Changes
