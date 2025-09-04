@@ -86,8 +86,18 @@ and 'a value =
 type rule_meta = Title of string | Description of string | Public
 [@@deriving show, sexp, compare]
 
+type 'a replace =
+  { references: 'a Pos.t list
+  ; only_in: 'a Pos.t list
+  ; except_in: 'a Pos.t list
+  ; priority: int }
+[@@deriving show, sexp, compare]
+
 type 'a rule_def =
-  {name: Rule_name.t Pos.t; value: 'a value; meta: rule_meta list}
+  { name: Rule_name.t Pos.t
+  ; value: 'a value
+  ; meta: rule_meta list
+  ; replace: 'a replace list }
 [@@deriving show, sexp, compare]
 
 type 'a program = 'a rule_def list [@@deriving show, sexp, compare]

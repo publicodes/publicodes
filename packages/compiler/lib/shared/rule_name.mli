@@ -18,6 +18,9 @@ val t_of_sexp : Sexplib.Sexp.t -> t
 val compare : t -> t -> int
 (** Compare two rule names *)
 
+val equal : t -> t -> bool
+(** Test equality of two rule names *)
+
 (** Set implementation for rule names *)
 module Set : sig
   include Set.S with type Elt.t = t

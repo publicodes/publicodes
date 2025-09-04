@@ -11,6 +11,7 @@ module Code = struct
     | Parsing_missing_closing_paren
     | Parsing_invalid_char
     | Parsing_should_not_be_array
+    | Parsing_should_not_be_object
     | Parsing_should_be_array
     | Parsing_should_be_object
     | Parsing_should_be_scalar
@@ -33,6 +34,9 @@ module Code = struct
     | Type_missing_in_mechanism
     (* Cycle detection errors *)
     | Cycle_detected
+    (* Replacement errors *)
+    | Replace_multiple
+    | Replace_cycle
   [@@deriving show, sexp, compare]
 
   let to_string = function
@@ -54,40 +58,46 @@ module Code = struct
         "E008"
     | Parsing_should_not_be_array ->
         "E009"
-    | Parsing_should_be_array ->
+    | Parsing_should_not_be_object ->
         "E010"
-    | Parsing_should_be_object ->
+    | Parsing_should_be_array ->
         "E011"
-    | Parsing_should_be_scalar ->
+    | Parsing_should_be_object ->
         "E012"
-    | Parsing_empty_value ->
+    | Parsing_should_be_scalar ->
         "E013"
-    | Parsing_invalid_value ->
+    | Parsing_empty_value ->
         "E014"
-    | Parsing_invalid_rule_name ->
+    | Parsing_invalid_value ->
         "E015"
-    | Parsing_invalid_mechanism ->
+    | Parsing_invalid_rule_name ->
         "E016"
-    | Expr_lex_invalid_expression ->
+    | Parsing_invalid_mechanism ->
         "E017"
-    | Resolver_missing_parent_rule ->
+    | Expr_lex_invalid_expression ->
         "E018"
-    | Resolver_missing_rule ->
+    | Resolver_missing_parent_rule ->
         "E019"
-    | Array_mechanism_with_empty_value ->
+    | Resolver_missing_rule ->
         "E020"
-    | Type_invalid_type ->
+    | Array_mechanism_with_empty_value ->
         "E021"
-    | Type_incoherence ->
+    | Type_invalid_type ->
         "E022"
-    | Type_missing_output_type ->
+    | Type_incoherence ->
         "E023"
-    | Type_incompatible_units ->
+    | Type_missing_output_type ->
         "E024"
-    | Type_missing_in_mechanism ->
+    | Type_incompatible_units ->
         "E025"
-    | Cycle_detected ->
+    | Type_missing_in_mechanism ->
         "E026"
+    | Cycle_detected ->
+        "E027"
+    | Replace_multiple ->
+        "E028"
+    | Replace_cycle ->
+        "E029"
 end
 
 type t = Code.t * string
@@ -120,6 +130,9 @@ let parsing_should_be_array = (Code.Parsing_should_be_array, "tableau attendu")
 let parsing_should_not_be_array =
   (Code.Parsing_should_be_array, "tableau impossible")
 
+let parsing_should_not_be_object =
+  (Code.Parsing_should_not_be_object, "objet impossible")
+
 let parsing_should_be_object = (Code.Parsing_should_be_object, "objet attendu")
 
 let parsing_should_be_scalar =
@@ -141,11 +154,12 @@ let type_unit_incoherence =
   (Code.Type_incompatible_units, "unités non compatibles")
 
 let missing_output_type =
-  (Code.Type_missing_output_type, "information de type manquante pour ce résultat")
+  ( Code.Type_missing_output_type
+  , "information de type manquante pour ce résultat" )
 
 let type_missing_in_mechanism =
-  (Code.Type_missing_in_mechanism, "information de type manquante pour ce paramètre de mécanisme")
-
+  ( Code.Type_missing_in_mechanism
+  , "information de type manquante pour ce paramètre de mécanisme" )
 
 let cycle_detected = (Code.Cycle_detected, "cycle de dépendance détecté")
 
@@ -159,3 +173,7 @@ let malformed_expression =
 
 let parsing_invalid_mechanism =
   (Code.Parsing_invalid_mechanism, "mécanisme invalide")
+
+let replace_multiple = (Code.Replace_multiple, "remplacement multiples")
+
+let replace_cycle = (Code.Replace_cycle, "cycle de remplacement détecté")
