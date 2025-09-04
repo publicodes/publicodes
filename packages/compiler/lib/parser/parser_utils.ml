@@ -62,6 +62,11 @@ let parse_ref s =
               "un nom de règle doit être de la forme suivante : `mon namespace \
                . ma règle` ou `ma règle`" ]
 
+let parse_refs ~pos yaml =
+  let* scalars = yaml |> List.map ~f:(get_scalar ~pos) |> all_keep_logs in
+  let* refs = List.map ~f:parse_ref scalars |> all_keep_logs in
+  return refs
+
 let find_value key mapping =
   List.find_map mapping ~f:(fun (k, value) ->
       if String.equal (get_value k) key then

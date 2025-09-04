@@ -30,6 +30,34 @@ let map ~f (x_opt, logs) =
       (None, logs)
 
 (* Helper *)
+let combine a b =
+  let a, log_a = a in
+  let b, log_b = b in
+  let logs = log_a @ log_b in
+  match (a, b) with Some a, Some b -> (Some (a, b), logs) | _ -> (None, logs)
+
+let combine_3 a b c =
+  let a, log_a = a in
+  let b, log_b = b in
+  let c, log_c = c in
+  let logs = log_a @ log_b @ log_c in
+  match (a, b, c) with
+  | Some a, Some b, Some c ->
+      (Some (a, b, c), logs)
+  | _ ->
+      (None, logs)
+
+let combine_4 a b c d =
+  let a, log_a = a in
+  let b, log_b = b in
+  let c, log_c = c in
+  let d, log_d = d in
+  let logs = log_a @ log_b @ log_c @ log_d in
+  match (a, b, c, d) with
+  | Some a, Some b, Some c, Some d ->
+      (Some (a, b, c, d), logs)
+  | _ ->
+      (None, logs)
 
 (* Interrupt compilation *)
 let fatal_error ~pos ~kind ~code ?(hints = []) ?(labels = []) message =

@@ -148,6 +148,21 @@ let resolve_rule ~rule_names rule =
           Variations (variations, else_)
     in
     (value, pos)
+  and map_replace (replace : 'a replace) =
+    let resolve_ref v =
+      let pos = Pos.pos v in
+      let+ ref = resolve_ref ~pos (Pos.value v) in
+      Pos.mk ~pos ref
+    in
+    let references_o =
+      List.map replace.references ~f:resolve_ref |> all_keep_logs
+    in
+    let in_o = List.map replace.in_ ~f:resolve_ref |> all_keep_logs in
+    let except_in_o =
+      List.map replace.except_in ~f:resolve_ref |> all_keep_logs
+    in
+    let+ references, in_, except_in = combine_3 references_o in_o except_in_o in
+    {references; in_; except_in; priority= replace.priority}
   and map_value (v : 'a value) =
     let* value = map_value_mechanism v.value in
     let+ chainable_mechanisms =
@@ -158,7 +173,8 @@ let resolve_rule ~rule_names rule =
     {value; chainable_mechanisms}
   in
   let* value = map_value rule.value in
-  return {rule with value}
+  let* replace = List.map ~f:map_replace rule.replace |> all_keep_logs in
+  return {rule with value; replace}
 
 let to_resolved_ast ast =
   let rule_names =
