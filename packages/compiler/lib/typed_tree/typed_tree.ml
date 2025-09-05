@@ -4,7 +4,11 @@ include Tree
 
 let from_resolved_ast ast =
   let tree = From_ast.from_ast ast in
-  tree
+  let* tree_with_inlined_replacement =
+    ast |> Replacements.gather |> Replacements.check_cycle
+    >>= Replacements.apply ~tree
+  in
+  return tree_with_inlined_replacement
 
 let type_check tree =
   (*

@@ -88,7 +88,7 @@ type rule_meta = Title of string | Description of string | Public
 
 type 'a replace =
   { references: 'a Pos.t list
-  ; in_: 'a Pos.t list
+  ; only_in: 'a Pos.t list
   ; except_in: 'a Pos.t list
   ; priority: int }
 [@@deriving show, sexp, compare]

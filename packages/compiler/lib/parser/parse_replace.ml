@@ -6,15 +6,10 @@ open Shared.Shared_ast
 
 exception Invalid_rule_name of string
 
-let parse_references ~pos mapping =
-  match find_value "references" mapping with
+let parse_references ~key ?(if_key_not_found = empty) mapping =
+  match find_value key mapping with
   | None ->
-      let code, message = Err.parsing_invalid_mechanism in
-      fatal_error ~pos ~kind:`Syntax ~code
-        ~hints:
-          [ "Il manque la règle à remplacer"
-          ; "Précisez-la avec « références à: ... »" ]
-        message
+      if_key_not_found
   | Some (`Scalar ref, _) ->
       let+ ref = parse_ref ref in
       [ref]
@@ -52,26 +47,37 @@ let parse_priority mapping =
           fatal_error ~pos ~kind:`Syntax ~code ~hints:["doit être un nombre"]
             message )
 
+let no_reference_error ~pos =
+  let code, message = Err.parsing_invalid_mechanism in
+  fatal_error ~pos ~kind:`Syntax ~code
+    ~hints:
+      [ "Il manque la règle à remplacer"
+      ; "Précisez-la avec « références à: ... »" ]
+    message
+
 let parse_replace ~pos yaml =
   match yaml with
   | `Scalar s ->
       let+ reference = parse_ref s in
-      {references= [reference]; in_= []; except_in= []; priority= 0}
+      {references= [reference]; only_in= []; except_in= []; priority= 0}
   | `O mapping ->
-      let references = parse_references ~pos mapping in
-      let in_ = parse_refs "dans" mapping in
-      let except_in = parse_refs "sauf_dans" mapping in
-      let priority = parse_priority mapping in
-      let+ references, in_, except_in, priority =
-        combine_4 references in_ except_in priority
+      let references =
+        parse_references ~key:"references à"
+          ~if_key_not_found:(no_reference_error ~pos) mapping
       in
-      {references; in_; except_in; priority}
+      let only_in = parse_references ~key:"dans" mapping in
+      let except_in = parse_references ~key:"sauf dans" mapping in
+      let priority = parse_priority mapping in
+      let+ references, only_in, except_in, priority =
+        combine_4 references only_in except_in priority
+      in
+      {references; only_in; except_in; priority}
 
 let parse_replaces ~pos yaml =
   match yaml with
   | `Scalar s ->
       let+ reference = parse_ref s in
-      [{references= [reference]; in_= []; except_in= []; priority= 0}]
+      [{references= [reference]; only_in= []; except_in= []; priority= 0}]
   | `A yaml ->
       List.map ~f:(parse_replace ~pos) yaml |> all_keep_logs
   | _ ->

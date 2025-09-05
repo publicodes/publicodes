@@ -34,6 +34,8 @@ module Code = struct
     | Type_missing_in_mechanism
     (* Cycle detection errors *)
     | Cycle_detected
+    (* Replacement errors *)
+    | Replace_multiple
   [@@deriving show, sexp, compare]
 
   let to_string = function
@@ -91,6 +93,8 @@ module Code = struct
         "E026"
     | Cycle_detected ->
         "E027"
+    | Replace_multiple ->
+        "E028"
 end
 
 type t = Code.t * string
@@ -166,3 +170,5 @@ let malformed_expression =
 
 let parsing_invalid_mechanism =
   (Code.Parsing_invalid_mechanism, "mécanisme invalide")
+
+let replace_multiple = (Code.Replace_multiple, "remplacement multiples")

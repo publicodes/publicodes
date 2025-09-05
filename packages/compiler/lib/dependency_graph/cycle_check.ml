@@ -1,9 +1,8 @@
 open Core
-open Utils
 open Shared
-open Utils.Output
+open Utils
 open Shared.Eval_tree
-module Cycle_analysis = Graph.Cycles.Johnson (Rule_graph)
+open Utils.Output
 
 let cycle_check (tree : 'a Eval_tree.t) : Rule_graph.t Output.t =
   let graph = Rule_graph.mk tree in
@@ -14,7 +13,6 @@ let cycle_check (tree : 'a Eval_tree.t) : Rule_graph.t Output.t =
     let pos = get_pos tree first_rule_name in
     let code, message = Err.cycle_detected in
     let log =
-      (* TODO: better error message for cycle *)
       Log.warning message ~code ~kind:`Cycle ~pos
         ~hints:
           [ String.concat ~sep:" -> "
@@ -23,5 +21,5 @@ let cycle_check (tree : 'a Eval_tree.t) : Rule_graph.t Output.t =
     in
     log :: acc
   in
-  let logs = Cycle_analysis.fold_cycles log_cycle graph [] in
-  return ~logs graph
+  let logs = CycleAnalysis.fold_cycles log_cycle graph [] in
+  if List.is_empty logs then return ~logs graph else (None, logs)
