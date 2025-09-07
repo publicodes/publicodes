@@ -48,6 +48,11 @@ let parse_replace ~pos yaml =
       let+ reference = parse_ref s in
       {references= [reference]; only_in= []; except_in= []; priority= 0}
   | `O mapping ->
+      let* _ =
+        check_authorized_keys
+          ~keys:["références à"; "dans"; "sauf dans"; "priorité"]
+          mapping
+      in
       let references =
         parse_references ~key:"références à"
           ~if_key_not_found:(no_reference_error ~pos) mapping

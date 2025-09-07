@@ -5,7 +5,8 @@ open Core
 (** Metadata for rule replacements, including priority and scope limitations *)
 type replace_meta =
   { priority: int
-  ; only_in: Rule_name.t Pos.t list  (** Rules where this replacement applies *)
+  ; only_in: Rule_name.t Pos.t list
+        (** Rules where this replacement applies. If empty, applies to all rules *)
   ; except_in: Rule_name.t Pos.t list
         (** Rules where this replacement doesn't apply *) }
 [@@deriving show]
