@@ -11,6 +11,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions:
     Les cotisations et contributions sociales: https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#cout-durant-vie-auto-entreprise
 
 dirigeant . auto-entrepreneur . cotisations et contributions . TFC:
+  public: oui
   titre: Taxes pour frais de chambre
   note: |
     Nous n’avons pas intégré les exceptions suivantes :

@@ -23,12 +23,10 @@ dirigeant . auto-entrepreneur . DROM:
   avec:
     première période:
       titre: Jusqu’à la fin du 8ème trimestre d’activité
-      privé: oui
       valeur: entreprise . durée d'activité . trimestres civils <= 8
     seconde période:
       titre: Entre le 9ème trimestre civil et la fin de la 3ème année civile
         d’activité
-      privé: oui
       valeur: entreprise . durée d'activité . années civiles <= 3
 
     taux service BIC:

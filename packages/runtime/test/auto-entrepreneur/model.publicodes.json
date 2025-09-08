@@ -466,6 +466,15 @@
       "type": { "number": true, "unit": "€/an" },
       "nodeIndex": 94
     },
+    "dirigeant . auto-entrepreneur . cotisations et contributions . TFC": {
+      "parameters": {
+        "entreprise . activité . nature": null,
+        "entreprise . chiffre d'affaires . service BIC": null,
+        "entreprise . chiffre d'affaires . vente restauration hébergement": null
+      },
+      "type": { "number": true, "unit": "€/an" },
+      "nodeIndex": 95
+    },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations": {
       "parameters": {
         "date": null,

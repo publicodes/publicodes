@@ -6,7 +6,10 @@ open Utils.Output
 open Replacements_types
 
 (** Build a replacement graph from the AST *)
-let build_graph (ast : Shared_ast.resolved) : t =
+let build_graph
+    ~(get_replacement_rules :
+       'a Shared_ast.rule_def -> 'a Shared_ast.replace list )
+    (ast : Shared_ast.resolved) : ReplacementGraph.t =
   let graph = ReplacementGraph.create () in
   (* Add a replacement edge to the graph *)
   let add_replacement ~rule ~replace_meta ~replaced_by =
@@ -16,7 +19,7 @@ let build_graph (ast : Shared_ast.resolved) : t =
   in
   (* Process a single rule definition *)
   let process_rule_def rule_def =
-    List.iter rule_def.replace ~f:(fun replace ->
+    List.iter (get_replacement_rules rule_def) ~f:(fun replace ->
         List.iter replace.references ~f:(fun replaced_rule ->
             let replace_meta =
               Pos.mk ~pos:(Pos.pos replaced_rule)
@@ -34,7 +37,7 @@ let build_graph (ast : Shared_ast.resolved) : t =
 module CycleAnalysis = Graph.Cycles.Johnson (ReplacementGraph)
 
 (** Detect cycles in the replacement graph *)
-let detect_cycles (graph : t) : t Output.t =
+let detect_cycles (graph : ReplacementGraph.t) : ReplacementGraph.t Output.t =
   let log_cycle cycle acc =
     let first_rule_name = List.hd_exn cycle in
     let cycle = cycle @ [first_rule_name] in
@@ -68,7 +71,7 @@ let is_replacement_applicable ~(rule : Rule_name.t)
     in
     (not is_blacklisted) && is_whitelisted
 
-let find_replacements ~(rule : Rule_name.t) (graph : t) =
+let find_replacements ~(rule : Rule_name.t) (graph : ReplacementGraph.t) =
   if ReplacementGraph.mem_vertex graph rule then
     ReplacementGraph.fold_succ_e
       (fun e acc ->

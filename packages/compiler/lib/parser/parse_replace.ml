@@ -68,10 +68,27 @@ let parse_replace ~pos yaml =
       let code, message = Err.parsing_should_not_be_array in
       fatal_error ~pos ~kind:`Syntax ~code message
 
-let parse_replaces ~pos yaml =
+let parse_make_not_applicable ~pos yaml =
   match yaml with
-  | `A yaml ->
-      List.map ~f:(parse_replace ~pos) yaml |> all_keep_logs
-  | _ ->
-      let+ replace = parse_replace ~pos yaml in
-      [replace]
+  | `Scalar s ->
+      let+ reference = parse_ref s in
+      {references= [reference]; only_in= []; except_in= []; priority= 0}
+  | `O mapping ->
+      let* _ =
+        check_authorized_keys
+          ~keys:["références à"; "dans"; "sauf dans"]
+          mapping
+      in
+      let references =
+        parse_references ~key:"références à"
+          ~if_key_not_found:(no_reference_error ~pos) mapping
+      in
+      let only_in = parse_references ~key:"dans" mapping in
+      let except_in = parse_references ~key:"sauf dans" mapping in
+      let+ references, only_in, except_in =
+        combine_3 references only_in except_in
+      in
+      {references; only_in; except_in; priority= 0}
+  | `A _ ->
+      let code, message = Err.parsing_should_not_be_array in
+      fatal_error ~pos ~kind:`Syntax ~code message

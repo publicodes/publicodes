@@ -91,3 +91,11 @@ let check_authorized_keys ~keys mapping =
             None )
   in
   return ~logs ()
+
+let parse_one_or_many ~f yaml =
+  match yaml with
+  | `A yaml ->
+      List.map ~f yaml |> all_keep_logs
+  | _ ->
+      let+ value = f yaml in
+      [value]

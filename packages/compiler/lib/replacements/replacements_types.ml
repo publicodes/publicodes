@@ -38,5 +38,4 @@ end
 module ReplacementGraph =
   Graph.Imperative.Digraph.ConcreteLabeled (RuleVertex) (ReplacementEdge)
 
-(** Type alias for the rule replacement graph *)
-type t = ReplacementGraph.t
+type t = {replace: ReplacementGraph.t; make_not_applicable: ReplacementGraph.t}

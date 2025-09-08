@@ -42,7 +42,8 @@ let rec parse_rule ~default_to_public ?(current_rule_name = []) (name, yaml) =
     { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
     ; value
     ; meta= default_meta
-    ; replace= [] }
+    ; replace= []
+    ; make_not_applicable= [] }
   in
   match yaml with
   | `Scalar _ ->
@@ -52,11 +53,13 @@ let rec parse_rule ~default_to_public ?(current_rule_name = []) (name, yaml) =
       let meta = default_meta @ meta in
       let* with_ = parse_with ~default_to_public ~current_rule_name:name yaml in
       let* replace = parse_replace yaml in
+      let* make_not_applicable = parse_make_not_applicable yaml in
       return
         ( { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
           ; value
           ; meta
-          ; replace }
+          ; replace
+          ; make_not_applicable }
         :: with_ )
   | `A _ ->
       (* Should not happen because already checked by parse_value*)
@@ -76,7 +79,17 @@ and parse_replace mapping =
   | None ->
       return []
   | Some (replace, pos) ->
-      Parse_replace.parse_replaces ~pos replace
+      parse_one_or_many ~f:(Parse_replace.parse_replace ~pos) replace
+
+and parse_make_not_applicable mapping =
+  let make_not_applicable = find_value "rend non applicable" mapping in
+  match make_not_applicable with
+  | None ->
+      return []
+  | Some (make_not_applicable, pos) ->
+      parse_one_or_many
+        ~f:(Parse_replace.parse_make_not_applicable ~pos)
+        make_not_applicable
 
 and parse_rules ~default_to_public ~pos ?(current_rule_name = []) yaml =
   match yaml with
