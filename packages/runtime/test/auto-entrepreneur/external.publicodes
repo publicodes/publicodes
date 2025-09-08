@@ -4,6 +4,7 @@ dirigeant:
 dirigeant . exonérations:
 dirigeant . exonérations . ACRE:
 
+dirigeant . régime social: "auto-entrepreneur"
 
 entreprise:
 entreprise . date de création:
@@ -17,17 +18,21 @@ entreprise . chiffre d'affaires:
     - vente restauration hébergement
 
 entreprise . chiffre d'affaires . BIC:
-  unité: €/mois
+  unité: €/an
 
 entreprise . chiffre d'affaires . service BIC:
-  unité: €/mois
+  unité: €/an
 
 entreprise . chiffre d'affaires . service BNC:
-  unité: €/mois
+  unité: €/an
 
 entreprise . chiffre d'affaires . vente restauration hébergement:
-  unité: €/mois
+  unité: €/an
 
+entreprise . imposition:
+entreprise . imposition . régime:
+entreprise . imposition . régime . micro-entreprise:
+entreprise . imposition . régime . micro-entreprise . revenu abattu: 60 % * entreprise . chiffre d'affaires
 
 entreprise . activité:
 entreprise . activité . nature:

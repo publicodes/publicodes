@@ -42,7 +42,7 @@ let find_applicable_replacements ~pos ~rule ~reference graph =
   let replacements =
     find_replacements ~rule:reference graph
     (* Filter replacements based on only_in and except_in *)
-    |> List.filter ~f:(fun (_, meta) -> is_replacement_applicable ~rule ~meta)
+    |> List.filter ~f:(is_replacement_applicable ~rule)
   in
   (* Check for replacements with duplicate priorities *)
   let logs = check_priority_duplicates ~pos replacements in
