@@ -1,4 +1,4 @@
-import type { ProduitSlug } from './produits';
+import type { ProduitSlug } from './produits'
 
 export const publicodesPackages: readonly PublicodesPackage[] = [
 	{
@@ -63,13 +63,13 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
 	{
 		npm: 'mesaidesreno',
 		maintainer: 'mes-aides-reno',
-		description: "Aides et coût d'une rénovation thermique en 2024"
+		description: "Aides et coût d'une rénovation thermique"
 	}
-];
+]
 
 export type PublicodesPackage = {
-	npm: string;
-	maintainer: string;
-	description?: string;
-	users?: ProduitSlug[];
-};
+	npm: string
+	maintainer: string
+	description?: string
+	users?: ProduitSlug[]
+}
