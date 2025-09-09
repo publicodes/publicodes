@@ -53,6 +53,10 @@ and transform_mechanism_value (node, pos) =
       transform_any_of ~pos any_of
   | Shared_ast.All_of all_of ->
       transform_all_of ~pos all_of
+  | Shared_ast.Min_of all_of ->
+      transform_min_of ~pos all_of
+  | Shared_ast.Max_of all_of ->
+      transform_max_of ~pos all_of
   | Shared_ast.Value value ->
       transform_value value
   | Shared_ast.Variations variations ->
@@ -87,24 +91,76 @@ and unfold_chainable_mechanism ~init mechanisms =
              transform_round ~pos round acc )
 
 and transform_sum ~pos nodes =
-  List.fold_right nodes
-    ~init:(mk ~pos (Const (Number (0., None))))
-    ~f:(fun node acc ->
-      mk ~pos (Binary_op (Pos.mk ~pos Shared_ast.Add, transform_value node, acc)) )
+  let typ = any_number () ~pos in
+  match nodes with
+  | [] ->
+      mk ~pos ~typ (Const Null)
+  | n :: nodes ->
+      let value = transform_value n in
+      let init = {value with meta= typ} in
+      List.fold_right nodes ~init ~f:(fun node acc ->
+          mk ~pos
+            (Binary_op (Pos.mk ~pos Shared_ast.Add, transform_value node, acc)) )
 
 and transform_product ~pos nodes =
-  List.fold_right nodes
-    ~init:(mk ~pos (Const (Number (1., Some Units.empty))))
-    ~f:(fun node acc ->
-      mk ~pos (Binary_op (Pos.mk ~pos Shared_ast.Mul, transform_value node, acc)) )
+  let typ = any_number () ~pos in
+  match nodes with
+  | [] ->
+      mk ~pos ~typ (Const Null)
+  | n :: nodes ->
+      let value = transform_value n in
+      let init = {value with meta= typ} in
+      List.fold_right nodes ~init ~f:(fun node acc ->
+          mk ~pos
+            (Binary_op (Pos.mk ~pos Shared_ast.Mul, transform_value node, acc)) )
 
 and transform_any_of ~pos nodes =
-  List.fold_right nodes ~init:(mk ~pos (Const (Bool false))) ~f:(fun node acc ->
-      mk ~pos (Binary_op (Pos.mk ~pos Shared_ast.Or, transform_value node, acc)) )
+  let typ = literal ~pos Bool in
+  match nodes with
+  | [] ->
+      mk ~pos ~typ (Const Null)
+  | n :: nodes ->
+      let value = transform_value n in
+      let init = {value with meta= typ} in
+      List.fold_right nodes ~init ~f:(fun node acc ->
+          mk ~pos
+            (Binary_op (Pos.mk ~pos Shared_ast.Or, transform_value node, acc)) )
 
 and transform_all_of ~pos nodes =
-  List.fold_right nodes ~init:(mk ~pos (Const (Bool true))) ~f:(fun node acc ->
-      mk ~pos (Binary_op (Pos.mk ~pos Shared_ast.And, transform_value node, acc)) )
+  let typ = literal ~pos Bool in
+  match nodes with
+  | [] ->
+      mk ~pos ~typ (Const Null)
+  | n :: nodes ->
+      let value = transform_value n in
+      let init = {value with meta= typ} in
+      List.fold_right nodes ~init ~f:(fun node acc ->
+          mk ~pos
+            (Binary_op (Pos.mk ~pos Shared_ast.And, transform_value node, acc)) )
+
+and transform_max_of ~pos nodes =
+  let typ = any_number ~pos () in
+  match nodes with
+  | [] ->
+      mk ~pos ~typ (Const Null)
+  | n :: nodes ->
+      let value = transform_value n in
+      let init = {value with meta= typ} in
+      List.fold_right nodes ~init ~f:(fun node acc ->
+          mk ~pos
+            (Binary_op (Pos.mk ~pos Shared_ast.Max, transform_value node, acc)) )
+
+and transform_min_of ~pos nodes =
+  let typ = any_number ~pos () in
+  match nodes with
+  | [] ->
+      mk ~pos ~typ (Const Null)
+  | n :: nodes ->
+      let value = transform_value n in
+      let init = {value with meta= typ} in
+      List.fold_right nodes ~init ~f:(fun node acc ->
+          mk ~pos
+            (Binary_op (Pos.mk ~pos Shared_ast.Min, transform_value node, acc)) )
 
 and transform_applicable_if ~pos condition value =
   let p = mk ~pos in
