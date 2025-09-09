@@ -3,7 +3,7 @@ open Core
 
 let mk = create_exn
 
-type t = Rule_name.t [@@deriving sexp, compare]
+type t = Rule_name.t [@@deriving ord]
 
 let%test_unit "parent of dotted name" =
   (* Test single element *)

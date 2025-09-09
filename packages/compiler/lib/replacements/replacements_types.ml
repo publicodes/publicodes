@@ -16,7 +16,7 @@ let compare_replace_meta a b = Int.compare a.priority b.priority
 
 (** Module for rule vertices in the replacement graph *)
 module RuleVertex = struct
-  type t = Rule_name.t [@@deriving compare, equal]
+  type t = Rule_name.t [@@deriving ord, eq]
 
   let hash = Hashtbl.hash
 end

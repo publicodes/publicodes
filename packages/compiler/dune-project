@@ -20,12 +20,12 @@
 (license MIT)
 
 (documentation https://publi.codes)
-
+(version 2.0.0-alpha.1)
 (package
  (name publicodes)
  (synopsis "Compiler for the Publicodes language")
  (description "A compiler for the Publicodes, a programming language for public interest algorithms.")
- (depends ocaml dune core yaml ppx_show sedlex yojson (ocamlgraph (>= 2.2.0) )
+ (depends ocaml dune core yaml ppx_deriving sedlex yojson (ocamlgraph (>= 2.2.0) )
 	  cmdliner unionFind inotify stdune core_unix pp
 	  (ocaml-lsp-server :with-dev)
 	  (ocamlformat :with-dev)
@@ -34,5 +34,6 @@
 	  (ppx_compare :with-test))
  (tags
   ("compiler" "publicodes" "public interest" "algorithms" "DSL" "rules as code")))
+
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html

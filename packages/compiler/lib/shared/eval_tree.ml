@@ -8,11 +8,11 @@ type constant =
   | Date of Shared_ast.date
   | Undefined
   | Null
-[@@deriving sexp, show]
+[@@deriving show]
 
-type binary_op = Shared_ast.binary_op [@@deriving sexp, show]
+type binary_op = Shared_ast.binary_op [@@deriving show]
 
-type unary_op = Neg | Is_undef [@@deriving sexp, show]
+type unary_op = Neg | Is_undef [@@deriving show]
 
 type 'meta naked_value =
   | Const of constant
@@ -23,18 +23,18 @@ type 'meta naked_value =
   | Get_context of Rule_name.t
   | Set_context of 'meta context
   | Round of (Shared_ast.rounding * 'meta value * 'meta value)
-[@@deriving show, sexp]
+
 
 and 'meta context =
   {context: (Rule_name.t Pos.t * 'meta value) list; value: 'meta value}
-[@@deriving sexp, show]
+[@@deriving show]
 
 and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.pos}
-[@@deriving sexp, show]
+[@@deriving show]
 
 type 'meta mk_value_fn = pos:Pos.pos -> 'meta naked_value -> 'meta value
 
-type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving sexp, show]
+type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving show]
 
 let get_meta eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).meta
 

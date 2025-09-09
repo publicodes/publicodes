@@ -1,7 +1,7 @@
 open Core
 open Shared
 
-type t = string [@@deriving sexp, show, compare]
+type t = string [@@deriving show, ord]
 
 let hash_string s = s |> Md5.digest_string |> Md5.to_hex
 

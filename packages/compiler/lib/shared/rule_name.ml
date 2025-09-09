@@ -1,10 +1,12 @@
 open Core
 
 module T = struct
-  type t = string list [@@deriving sexp, compare, equal]
+  type t = string list [@@deriving ord, eq, sexp]
+
+  let show = String.concat ~sep:" . "
 
   let pp ppf rule_name =
-    Format.fprintf ppf "%s" (String.concat ~sep:" . " rule_name)
+    Format.fprintf ppf "%s" (show rule_name)
 
   let hash = Hashtbl.hash
 end

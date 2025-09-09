@@ -7,7 +7,7 @@ module StrMap = struct
   include M
 end
 
-type t = int StrMap.t [@@deriving sexp, compare]
+type t = int StrMap.t [@@deriving eq, sexp, ord]
 
 let pp formatter unit =
   if Map.is_empty unit then Format.fprintf formatter "aucune"

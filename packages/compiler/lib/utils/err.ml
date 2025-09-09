@@ -37,9 +37,9 @@ module Code = struct
     (* Replacement errors *)
     | Replace_multiple
     | Replace_cycle
-  [@@deriving show, sexp, compare]
+  [@@deriving eq]
 
-  let to_string = function
+  let show = function
     | Yaml_parsing ->
         "E001"
     | Yaml_unexpected_token ->
@@ -98,7 +98,12 @@ module Code = struct
         "E028"
     | Replace_cycle ->
         "E029"
+
+  let pp fmt err =
+  Format.fprintf fmt "%s" (show err)
+
 end
+
 
 type t = Code.t * string
 

@@ -1,7 +1,8 @@
 open Core
 
 module Make () = struct
-  type t = int [@@deriving sexp, show, compare]
+  type t = int [@@deriving eq, show]
+
 
   let current = ref 0
 

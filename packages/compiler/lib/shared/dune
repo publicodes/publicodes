@@ -1,7 +1,7 @@
 (library
  (inline_tests)
  (name shared)
- (libraries core utils ppx_show.runtime pp)
+ (libraries core utils pp)
  (modules :standard)
  (preprocess
- (pps ppx_inline_test ppx_compare ppx_sexp_conv ppx_show sedlex.ppx ppx_assert)))
+ (pps ppx_inline_test ppx_sexp_conv ppx_deriving.show ppx_deriving.eq ppx_deriving.ord sedlex.ppx ppx_assert)))

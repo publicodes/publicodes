@@ -1,4 +1,6 @@
-type t = string [@@deriving show]
+type t = string
+
+let pp = Format.pp_print_string
 
 let read_file file_path =
   let read ic = Core.In_channel.input_all ic in

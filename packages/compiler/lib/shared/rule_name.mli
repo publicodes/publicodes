@@ -1,25 +1,10 @@
 open Core
 
 (** The rule name type *)
-type t
-
-val pp : Format.formatter -> t -> unit
-(** Pretty print a rule name with dot separators *)
+type t [@@deriving eq, ord, show, sexp]
 
 val hash : t -> int
 (** Hash function for rule names *)
-
-val sexp_of_t : t -> Sexplib.Sexp.t
-(** Convert a rule name to an S-expression *)
-
-val t_of_sexp : Sexplib.Sexp.t -> t
-(** Convert an S-expression to a rule name *)
-
-val compare : t -> t -> int
-(** Compare two rule names *)
-
-val equal : t -> t -> bool
-(** Test equality of two rule names *)
 
 (** Set implementation for rule names *)
 module Set : sig

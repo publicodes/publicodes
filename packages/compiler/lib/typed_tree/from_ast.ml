@@ -69,7 +69,7 @@ and transform_mechanism_value (node, pos) =
 and unfold_chainable_mechanism ~init mechanisms =
   mechanisms
   |> List.sort ~compare:(fun a b ->
-         [%compare: Rule_name.t Shared_ast.chainable_mechanism] (Pos.value a)
+         Shared_ast.compare_chainable_mechanism Rule_name.compare (Pos.value a)
            (Pos.value b) )
   |> List.fold_right ~init ~f:(fun (mec, pos) acc ->
          match mec with

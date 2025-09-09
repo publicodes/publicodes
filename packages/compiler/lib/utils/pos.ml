@@ -1,7 +1,7 @@
 open Core
 
 module Point = struct
-  type t = {index: int; line: int; column: int} [@@deriving show, sexp, compare]
+  type t = {index: int; line: int; column: int} [@@deriving eq, ord, sexp]
 
   let pp ppf {index; line; column} =
     Format.fprintf ppf "line %d, column %d, (i %d)" line column index
@@ -19,10 +19,9 @@ module Point = struct
   let dummy = {index= 0; line= 1; column= 1}
 end
 
-type pos = {file: string; start_pos: Point.t; end_pos: Point.t}
-[@@deriving show, sexp, compare]
+type pos = {file: string; start_pos: Point.t; end_pos: Point.t} [@@deriving eq, show, ord, sexp]
 
-type 'a t = 'a * pos [@@deriving show, sexp, compare]
+type 'a t = 'a * pos [@@deriving eq, show, ord, sexp]
 
 (* Map operation *)
 let map ~f (x, pos) = (f x, pos)

@@ -186,7 +186,7 @@ let format_error_code code =
   | None ->
       nop
   | Some code ->
-      tag `Decoration @@ concat [text (Err.Code.to_string code)]
+      tag `Decoration @@ concat [text (Err.Code.show code)]
 
 (* Format hints *)
 let format_hints hints =

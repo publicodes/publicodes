@@ -1,9 +1,7 @@
-open Core
 
-type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global | `Replace]
-[@@deriving show, sexp, compare]
+type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global | `Replace] [@@deriving eq, show]
 
-type level = [`Error | `Warning | `Debug] [@@deriving show, sexp, compare]
+type level = [`Error | `Warning | `Debug] [@@deriving eq, show]
 
 type log =
   { kind: kind
@@ -12,9 +10,9 @@ type log =
   ; hints: string list
   ; labels: string Pos.t list
   ; code: Err.Code.t option }
-[@@deriving show, sexp, compare]
+[@@deriving eq, show ]
 
-type t = log Pos.t [@@deriving show, sexp, compare]
+type t = log Pos.t [@@deriving eq]
 
 let mk ~level ?(kind = `Global) ?(pos = Pos.dummy) ?(hints = []) ?(labels = [])
     ?(code = None) message =

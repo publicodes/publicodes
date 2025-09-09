@@ -67,7 +67,7 @@ let unify (t1 : t) (t2 : t) =
   | _, Any _ ->
       return (UnionFind.merge (fun a _ -> a) t1 t2)
   | Literal l1, Literal l2 ->
-      if [%compare.equal: Typ.literal] l1 l2 |> not then
+      if Typ.equal_literal l1 l2 |> not then
         (* Todo replace with a unique type_error, with the pos of the different arguments *)
         error_typ_mismatch ()
       else return t1

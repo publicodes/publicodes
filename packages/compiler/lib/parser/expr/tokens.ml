@@ -21,7 +21,7 @@ type t =
   | STRING of string
   | RULE_NAME of string
   | BOOLEAN of bool
-[@@deriving sexp, compare, show]
+[@@deriving eq, show, sexp, ord]
 
 let to_string = function
   | ADD ->

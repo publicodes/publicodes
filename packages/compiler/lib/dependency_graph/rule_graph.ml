@@ -20,16 +20,14 @@ open Shared
  *)
 
 module Rule_vertex = struct
-  type t = Rule_name.t [@@deriving compare]
-
-  let equal x y = 0 = compare x y
+  type t = Rule_name.t [@@deriving ord, eq]
 
   let hash = Hashtbl.hash
 end
 
 (* Module for edge labels *)
 module Ref_edge = struct
-  type t = Pos.pos [@@deriving compare]
+  type t = Pos.pos [@@deriving ord]
 
   let hash = Hashtbl.hash
 

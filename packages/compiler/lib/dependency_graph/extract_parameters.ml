@@ -28,7 +28,7 @@ let extract_parameters ~(ast : 'a Shared_ast.t) ~(tree : Hashed_tree.t)
           let rule_definition =
             List.find_exn
               ~f:(fun rule ->
-                [%compare.equal: Rule_name.t] (Pos.value rule.name)
+                Rule_name.equal (Pos.value rule.name)
                   dependent_rule_name )
               ast
           in

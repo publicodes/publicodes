@@ -23,16 +23,18 @@ let digit = [%sedlex.regexp? '0' .. '9']
 
 let letter = [%sedlex.regexp? 'a' .. 'z' | 'A' .. 'Z' | 0x00C0 .. 0x017F]
 
-let symbol = [%sedlex.regexp? Chars ",°$%²_\"«»'" | "€"]
+(* a ,°$%²_\ *)
+
+let symbol = [%sedlex.regexp? Utf8 (Chars ",°$%²_\"«»'" | Chars "€") ]
 
 let char = [%sedlex.regexp? letter | symbol | digit]
 
-let any_char = [%sedlex.regexp? char | Chars "+-#.,"]
+let any_char = [%sedlex.regexp? Utf8 (char | Chars "+-#.,")]
 
 (* Number *)
 let number = [%sedlex.regexp? Plus digit, Opt ('.', Plus digit)]
 
-let unit_symbol = [%sedlex.regexp? '$' | sc (* Currencies *) | Chars "°%"]
+let unit_symbol = [%sedlex.regexp? Utf8 ('$' | sc (* Currencies *) | Chars "°%")]
 
 let unit_identifier =
   [%sedlex.regexp?
