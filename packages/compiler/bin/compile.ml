@@ -10,8 +10,8 @@ let cmd_exit (logs : Log.t list) : Cmd.Exit.code =
   in
   if contains_error logs then Cmd.Exit.some_error else Cmd.Exit.ok
 
-let compile ~input_files ~output_type ~output_file =
-  let output = Compiler.compile ~input_files ~output_type in
+let compile ~input_files ~output_type ~output_file ~default_to_public =
+  let output = Compiler.compile ~input_files ~output_type ~default_to_public in
   print_logs output ;
   match result output with
   | Some content ->

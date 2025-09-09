@@ -32,9 +32,7 @@ let any_char = [%sedlex.regexp? char | Chars "+-#"]
 (* Number *)
 let number = [%sedlex.regexp? Plus digit, Opt ('.', Plus digit)]
 
-let unit_symbol =
-  [%sedlex.regexp?
-    '$' | 0x20A0 .. 0x20CF (* Currencies *) | 0x00A3 (* £ *) | Chars "°%"]
+let unit_symbol = [%sedlex.regexp? '$' | sc (* Currencies *) | Chars "°%"]
 
 let unit_identifier =
   [%sedlex.regexp?

@@ -108,9 +108,8 @@ let to_concrete typ =
   match typ |> UnionFind.get |> Pos.value with
   | Number unit ->
       let unit = Number_unit.normalize unit in
-      if Number_unit.is_concrete unit then
-        Some (Shared.Typ.Number (Some unit.concrete))
-      else Some (Shared.Typ.Number None)
+      Some (Shared.Typ.Number (Some unit.concrete))
+      (* else Some (Shared.Typ.Number None) *)
   | Literal l ->
       Some (Shared.Typ.Literal l)
   | Any _ ->

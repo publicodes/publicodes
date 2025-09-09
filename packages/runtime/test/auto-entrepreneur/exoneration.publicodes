@@ -133,7 +133,7 @@ dirigeant . auto-entrepreneur . Acre:
     taux service BIC:
       # remplace: cotisations et contributions . cotisations . service BIC . taux
       valeur: taux Acre * cotisations et contributions . cotisations . service BIC . taux
-      arrondi: 1 décimale
+      arrondi: 1 décimales
 
     taux service BNC:
       # remplace: cotisations et contributions . cotisations . service BNC . taux
@@ -142,12 +142,12 @@ dirigeant . auto-entrepreneur . Acre:
         variations:
           - si: date >= 01/2026
             alors: 2 décimales
-          - sinon: 1 décimale
+          - sinon: 1 décimales
 
     taux vente restauration hébergement:
       # remplace: cotisations et contributions . cotisations . vente restauration hébergement . taux
       valeur: taux Acre * cotisations et contributions . cotisations . vente restauration hébergement . taux
-      arrondi: 1 décimale
+      arrondi: 1 décimales
 
     taux CIPAV:
       applicable si: Cipav
