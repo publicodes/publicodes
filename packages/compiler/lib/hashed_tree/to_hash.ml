@@ -25,4 +25,7 @@ let of_binary_op op =
 let of_unary_op op =
   Format.asprintf "%a" Eval_tree.pp_unary_op op |> hash_string
 
+let of_rounding rounding =
+  Format.asprintf "%a" Shared_ast.pp_rounding rounding |> hash_string
+
 let of_rule_name rule_name = Rule_name.to_string rule_name |> hash_string

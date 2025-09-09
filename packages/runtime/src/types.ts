@@ -58,9 +58,9 @@ export type BinaryOp =
   | '||'
 
 export type Computation =
-  | [BinaryOp, NodeIndex, NodeIndex]
+  | [BinaryOp, left: NodeIndex, right: NodeIndex]
   | [UnaryOp, NodeIndex]
-  | [NodeIndex, NodeIndex, NodeIndex] // Conditional
+  | [if_: NodeIndex, then_: NodeIndex, else_: NodeIndex] // Conditional
   | string
   | null
   | boolean
@@ -69,3 +69,4 @@ export type Computation =
   | { date: string } // Date format like 'YYYY-MM-DD' or 'YYYY-MM'
   | { get: string } // get value from context
   | { context: Record<string, Computation>; value: NodeIndex }
+  | ['round', 'up' | 'down' | '~', precision: NodeIndex, value: NodeIndex]

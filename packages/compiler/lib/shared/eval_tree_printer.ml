@@ -189,6 +189,27 @@ let rec format_value ?(show_pos = false) ?meta_to_string value =
              ; tag `Structure (text ")") ] )
     | Set_context ctx ->
         format_context ~show_pos ?meta_to_string ctx
+    | Round (rounding, precision, value) ->
+        let rounding_str =
+          match rounding with
+          | Shared_ast.Up ->
+              "round up"
+          | Shared_ast.Down ->
+              "round down"
+          | Shared_ast.Nearest ->
+              "round"
+        in
+        vbox
+          (concat
+             [ box
+                 (concat
+                    [ tag `Keyword (text rounding_str)
+                    ; space
+                    ; tag `Keyword (text "to:")
+                    ; space
+                    ; format_value ~show_pos ?meta_to_string precision ] )
+             ; cut
+             ; box ~indent:2 (format_value ~show_pos ?meta_to_string value) ] )
   in
   let main_doc = format_naked_value value.value in
   let meta_doc =

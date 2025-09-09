@@ -61,6 +61,8 @@ let mk (ast : 'a Eval_tree.t) : G.t =
         [Pos.mk ~pos name]
     | Get_context _ ->
         []
+    | Round (_, precision, value) ->
+        find_references precision @ find_references value
     | Set_context {context; value} ->
         find_references value
         @ List.concat_map context ~f:(fun (_, value) -> find_references value)

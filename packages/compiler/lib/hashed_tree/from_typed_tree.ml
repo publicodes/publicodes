@@ -12,8 +12,8 @@ open Shared.Eval_tree
   - We want to avoid traversing the tree twice
 *)
 
-let rec transform_to_hash_and_type ({value; meta= typ; pos} : Typed_tree.value)
-    : Tree.value =
+let rec transform_to_hash_and_type (value : Typed_tree.value) : Tree.value =
+  let {value; meta= typ; pos} = value in
   let transform_naked_value = function
     | Eval_tree.Const const ->
         let hash = of_constant const in
@@ -67,6 +67,17 @@ let rec transform_to_hash_and_type ({value; meta= typ; pos} : Typed_tree.value)
             ([hash_string "set_context"; value'.meta.hash] @ context_hashes)
         in
         (Eval_tree.Set_context {context= context'; value= value'}, hash)
+    | Eval_tree.Round (rounding, precision, expr) ->
+        let precision' = transform_to_hash_and_type precision in
+        let expr' = transform_to_hash_and_type expr in
+        let hash =
+          combine
+            [ hash_string "round"
+            ; of_rounding rounding
+            ; precision'.meta.hash
+            ; expr'.meta.hash ]
+        in
+        (Eval_tree.Round (rounding, precision', expr'), hash)
   in
   let new_value, hash = transform_naked_value value in
   let typ_concrete = Typed_tree.Typ.to_concrete typ in

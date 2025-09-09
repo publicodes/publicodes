@@ -10,6 +10,7 @@ module Code = struct
     | Parsing_unexpected_token
     | Parsing_missing_closing_paren
     | Parsing_invalid_char
+    | Parsing_should_not_be_array
     | Parsing_should_be_array
     | Parsing_should_be_object
     | Parsing_should_be_scalar
@@ -29,6 +30,7 @@ module Code = struct
     | Type_incoherence
     | Type_missing_output_type
     | Type_incompatible_units
+    | Type_missing_in_mechanism
     (* Cycle detection errors *)
     | Cycle_detected
   [@@deriving show, sexp, compare]
@@ -42,46 +44,50 @@ module Code = struct
         "E003"
     | Yaml_empty_file ->
         "E004"
-    | Parsing_unexpected_token ->
+    | Yaml_duplicate_key ->
         "E005"
-    | Parsing_missing_closing_paren ->
+    | Parsing_unexpected_token ->
         "E006"
-    | Parsing_invalid_char ->
+    | Parsing_missing_closing_paren ->
         "E007"
-    | Expr_lex_invalid_expression ->
+    | Parsing_invalid_char ->
         "E008"
-    | Array_mechanism_with_empty_value ->
+    | Parsing_should_not_be_array ->
         "E009"
     | Parsing_should_be_array ->
         "E010"
     | Parsing_should_be_object ->
-        "E020"
-    | Parsing_should_be_scalar ->
-        "E023"
-    | Yaml_duplicate_key ->
         "E011"
-    | Parsing_empty_value ->
+    | Parsing_should_be_scalar ->
         "E012"
-    | Parsing_invalid_value ->
+    | Parsing_empty_value ->
         "E013"
-    | Parsing_invalid_rule_name ->
+    | Parsing_invalid_value ->
         "E014"
-    | Type_invalid_type ->
+    | Parsing_invalid_rule_name ->
         "E015"
-    | Type_incoherence ->
-        "E016"
-    | Type_incompatible_units ->
-        "E017"
-    | Type_missing_output_type ->
-        "E018"
-    | Cycle_detected ->
-        "E019"
-    | Resolver_missing_parent_rule ->
-        "E020"
-    | Resolver_missing_rule ->
-        "E021"
     | Parsing_invalid_mechanism ->
+        "E016"
+    | Expr_lex_invalid_expression ->
+        "E017"
+    | Resolver_missing_parent_rule ->
+        "E018"
+    | Resolver_missing_rule ->
+        "E019"
+    | Array_mechanism_with_empty_value ->
+        "E020"
+    | Type_invalid_type ->
+        "E021"
+    | Type_incoherence ->
         "E022"
+    | Type_missing_output_type ->
+        "E023"
+    | Type_incompatible_units ->
+        "E024"
+    | Type_missing_in_mechanism ->
+        "E025"
+    | Cycle_detected ->
+        "E026"
 end
 
 type t = Code.t * string
@@ -109,12 +115,15 @@ let invalid_char = (Code.Parsing_invalid_char, "caractère invalide")
 let expr_lex_invalid_expression =
   (Code.Expr_lex_invalid_expression, "expression invalide")
 
-let parsing_should_be_array = (Code.Parsing_should_be_array, "tableau manquant")
+let parsing_should_be_array = (Code.Parsing_should_be_array, "tableau attendu")
+
+let parsing_should_not_be_array =
+  (Code.Parsing_should_be_array, "tableau impossible")
 
 let parsing_should_be_object = (Code.Parsing_should_be_object, "objet attendu")
 
 let parsing_should_be_scalar =
-  (Code.Parsing_should_be_scalar, "objet ou un tableau impossible")
+  (Code.Parsing_should_be_scalar, "objet ou tableau impossible")
 
 let yaml_duplicate_key = (Code.Yaml_duplicate_key, "clé dupliquée dans le YAML")
 
@@ -132,7 +141,11 @@ let type_unit_incoherence =
   (Code.Type_incompatible_units, "unités non compatibles")
 
 let missing_output_type =
-  (Code.Type_missing_output_type, "information de type manquante")
+  (Code.Type_missing_output_type, "information de type manquante pour ce résultat")
+
+let type_missing_in_mechanism =
+  (Code.Type_missing_in_mechanism, "information de type manquante pour ce paramètre de mécanisme")
+
 
 let cycle_detected = (Code.Cycle_detected, "cycle de dépendance détecté")
 
