@@ -35,11 +35,11 @@ and transform_value ?(undefined = Const Undefined) (node : 'a Shared_ast.value)
     | Shared_ast.Undefined ->
         mk ~pos:(Pos.pos node.value) undefined
     | _ ->
-        transform_mecanism_value node.value
+        transform_mechanism_value node.value
   in
-  unfold_chainable_mecanism ~init:value node.chainable_mechanisms
+  unfold_chainable_mechanism ~init:value node.chainable_mechanisms
 
-and transform_mecanism_value (node, pos) =
+and transform_mechanism_value (node, pos) =
   match node with
   | Shared_ast.Undefined ->
       mk ~pos (Const Undefined)
@@ -62,8 +62,8 @@ and transform_mecanism_value (node, pos) =
   | Shared_ast.Is_not_applicable value ->
       transform_is_not_applicable ~pos value
 
-and unfold_chainable_mecanism ~init mecanisms =
-  mecanisms
+and unfold_chainable_mechanism ~init mechanisms =
+  mechanisms
   |> List.sort ~compare:(fun a b ->
          [%compare: Rule_name.t Shared_ast.chainable_mechanism] (Pos.value a)
            (Pos.value b) )

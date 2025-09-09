@@ -3,6 +3,7 @@ open Shared.Shared_ast
 open Yaml_parser
 open Utils.Output
 open Parser_utils
+open Parse_types
 
 let find_value key mapping =
   List.find_map mapping ~f:(fun (k, value) ->
@@ -10,10 +11,7 @@ let find_value key mapping =
         Some (Pos.mk ~pos:(Pos.pos k) value)
       else None )
 
-let parse_variation ~pos
-    ~(parse :
-       ?error_if_undefined:bool -> pos:Pos.pos -> yaml -> Ast.value Output.t )
-    yaml =
+let parse_variation ~pos ~(parse : parse_value_fn) yaml =
   match yaml with
   | `O mapping -> (
       let if_ = find_value "si" mapping in
@@ -32,10 +30,7 @@ let parse_variation ~pos
       let code, message = Err.parsing_should_be_object in
       fatal_error ~pos ~kind:`Syntax ~code message
 
-let parse_else_clause
-    ~(parse :
-       ?error_if_undefined:bool -> pos:Pos.pos -> yaml -> Ast.value Output.t )
-    (yaml : yaml) =
+let parse_else_clause ~(parse : parse_value_fn) (yaml : yaml) =
   match yaml with
   | `O mapping -> (
       let else_ = find_value "sinon" mapping in
@@ -48,10 +43,7 @@ let parse_else_clause
   | _ ->
       failwith "Internal error: not an object"
 
-let parse ~pos
-    ~(parse :
-       ?error_if_undefined:bool -> pos:Pos.pos -> yaml -> Ast.value Output.t )
-    (yaml : yaml) =
+let parse ~pos ~(parse : parse_value_fn) (yaml : yaml) =
   match yaml with
   | `O _ | `Scalar _ ->
       let code, message = Err.parsing_should_be_array in

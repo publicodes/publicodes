@@ -3,11 +3,9 @@ open Shared.Shared_ast
 open Yaml_parser
 open Utils.Output
 open Parser_utils
+open Parse_types
 
-let parse ~pos
-    ~(parse :
-       ?error_if_undefined:bool -> pos:Pos.pos -> yaml -> Ast.value Output.t )
-    (yaml : yaml) =
+let parse ~pos ~(parse : parse_value_fn) (yaml : yaml) =
   match yaml with
   | `A _ | `Scalar _ ->
       let code, message = Err.parsing_should_be_object in
