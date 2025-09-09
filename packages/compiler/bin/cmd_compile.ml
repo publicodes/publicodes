@@ -4,7 +4,11 @@ open Cmdliner.Term.Syntax
 
 let input_files =
   let doc = "$(docv) is the input files. Use $(b,-) for $(b,stdin)." in
-  Arg.(non_empty & pos_all file ["-"] & info [] ~doc ~docv:"FILES")
+  Arg.(value & pos_all file ["-"] & info [] ~doc ~docv:"FILES")
+
+let input_stdin =
+  let doc = "Use stdin as input to compile." in
+  Arg.(value & flag & info ["i"; "input"] ~doc)
 
 let default_output_file = "model.publicodes.json"
 
@@ -26,6 +30,12 @@ let output_type =
     & opt (enum [("json", `Json); ("debug_eval_tree", `Debug_eval_tree)]) `Json
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
 
+let default_to_public =
+  let doc =
+    "Compile every rule as `public`, which means that they are all exported."
+  in
+  Arg.(value & flag & info ["default-to-public"] ~doc)
+
 let cmd =
   let doc = "Compile a Publicodes program from file or stdin." in
   let exits =
@@ -36,7 +46,12 @@ let cmd =
   @@
   let+ input_files = input_files
   and+ output_file = output_file
+  and+ input_stdin = input_stdin
   and+ watch_mode = watch
+  and+ default_to_public = default_to_public
   and+ output_type = output_type in
-  if watch_mode then Watch.watch_compile ~input_files ~output_file ~output_type
-  else Compile.compile ~input_files ~output_file ~output_type
+  let input_files = if input_stdin then ["-"] else input_files in
+  if watch_mode then
+    Watch.watch_compile ~input_files ~output_file ~output_type
+      ~default_to_public
+  else Compile.compile ~input_files ~output_file ~output_type ~default_to_public

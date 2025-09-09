@@ -16,14 +16,18 @@ export class Engine<O extends Outputs> {
   private cache: Memoizer<O> | null = null
 
   constructor(
-    private publicodes: Publicodes<O>,
+    private _publicodes: Publicodes<O>,
     options: EngineOptions = {},
   ) {
     const { cache = false } = options
 
     if (cache) {
-      this.cache = new Memoizer(publicodes)
+      this.cache = new Memoizer(_publicodes)
     }
+  }
+
+  public get publicodes(): Publicodes<O> {
+    return this._publicodes
   }
 
   evaluate<R extends RuleName<O>>(
@@ -57,7 +61,7 @@ export class Engine<O extends Outputs> {
 
     const neededParameters = Object.keys(p)
     const missingParameters = neededParameters.filter(
-      (param) => !context[param],
+      (param) => !(param in context),
     )
 
     return {

@@ -2,7 +2,7 @@ open Core
 open Cmdliner
 open Format
 
-let watch_compile ~input_files ~output_file ~output_type =
+let watch_compile ~input_files ~output_file ~output_type ~default_to_public =
   (* Filter out stdin if present in input files for watching *)
   let watchable_files =
     List.filter input_files ~f:(fun f -> not (String.equal f "-"))
@@ -12,7 +12,9 @@ let watch_compile ~input_files ~output_file ~output_type =
     printf "\027[2J\027[H" ;
     (* ANSI escape code to clear screen and move cursor to top *)
     Format.print_flush () ;
-    let code = Compile.compile ~input_files ~output_file ~output_type in
+    let code =
+      Compile.compile ~input_files ~output_file ~output_type ~default_to_public
+    in
     Format.print_flush () ;
     (* I want to remove all text from stdinput here, to clear the terminal *)
     if code = Cmd.Exit.ok then printf "\027[1;32mCompilation succeeded\027[0m"
