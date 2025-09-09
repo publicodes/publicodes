@@ -30,6 +30,14 @@ let value_mechanisms =
       , fun ~pos ~parse value ->
           let+ nodes = parse_array ~pos ~parse value in
           All_of nodes )
+    ; ( "le maximum de"
+      , fun ~pos ~parse value ->
+          let+ nodes = parse_array ~pos ~parse value in
+          Max_of nodes )
+    ; ( "le minimum de"
+      , fun ~pos ~parse value ->
+          let+ nodes = parse_array ~pos ~parse value in
+          Min_of nodes )
     ; ("variations", Mecha_variations.parse)
     ; ( "est applicable"
       , fun ~pos ~parse value ->
