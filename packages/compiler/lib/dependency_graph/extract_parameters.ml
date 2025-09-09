@@ -1,4 +1,4 @@
-open Core
+open Base
 open Shared
 open Shared.Shared_ast
 open Utils
@@ -66,7 +66,7 @@ let extract_parameters ~(ast : 'a Shared_ast.t) ~(tree : Hashed_tree.t)
               (Log.warning ~code ~pos ~kind:`Type
                  ~hints:
                    [ "Spécifiez le type de la règle. Par exemple : `type: texte`"
-                   ; Format.asprintf "%a" Rule_name.pp rule_name ]
+                   ; Stdlib.Format.asprintf "%a" Rule_name.pp rule_name ]
                  message )
         | Some (Number None) ->
             let code, message = Err.missing_output_type in

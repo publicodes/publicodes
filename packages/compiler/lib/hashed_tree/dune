@@ -1,7 +1,7 @@
 (library
  (inline_tests)
  (name hashed_tree)
- (libraries core yojson typed_tree shared)
+ (libraries base  yojson typed_tree shared)
  (modules :standard)
  (preprocess
- (pps ppx_inline_test ppx_deriving.show ppx_deriving.eq ppx_deriving.ord sedlex.ppx ppx_assert)))
+ (pps ppx_inline_test ppx_sexp_conv ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

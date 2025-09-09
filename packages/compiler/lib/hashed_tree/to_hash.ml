@@ -1,9 +1,11 @@
-open Core
+open Base
 open Shared
 
-type t = string [@@deriving show, ord]
+type t = string [@@deriving equal, compare, show, sexp]
 
-let hash_string s = s |> Md5.digest_string |> Md5.to_hex
+let hash = String.hash
+
+let hash_string s = s |> Stdlib.Digest.string |> Stdlib.Digest.to_hex
 
 let hash_float f = Float.to_string f |> hash_string
 
@@ -17,15 +19,15 @@ let of_constant const =
       (* We remove unit *)
       hash_float n
   | _ ->
-      Format.asprintf "%a" Eval_tree.pp_constant const |> hash_string
+      Stdlib.Format.asprintf "%a" Eval_tree.pp_constant const |> hash_string
 
 let of_binary_op op =
-  Format.asprintf "%a" Shared_ast.pp_binary_op op |> hash_string
+  Stdlib.Format.asprintf "%a" Shared_ast.pp_binary_op op |> hash_string
 
 let of_unary_op op =
-  Format.asprintf "%a" Eval_tree.pp_unary_op op |> hash_string
+  Stdlib.Format.asprintf "%a" Eval_tree.pp_unary_op op |> hash_string
 
 let of_rounding rounding =
-  Format.asprintf "%a" Shared_ast.pp_rounding rounding |> hash_string
+  Stdlib.Format.asprintf "%a" Shared_ast.pp_rounding rounding |> hash_string
 
 let of_rule_name rule_name = Rule_name.to_string rule_name |> hash_string

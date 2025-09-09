@@ -1,0 +1,58 @@
+name: Build ocaml compiler
+
+on:
+  pull_request:
+    paths:
+      - packages/compiler/**/*
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            exec_name: linux
+            extension: ''
+          - os: macos-latest
+            exec_name: macos
+            extension: ''
+          - os: windows-latest
+            exec_name: windows
+            extension: '.exe'
+
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./packages/compiler
+
+    steps:
+      - name: Checkout tree
+        uses: actions/checkout@v5
+
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 5
+          dune-cache: true
+
+      - run: opam install . --deps-only --with-test
+      - run: opam exec -- dune build
+
+      - run: opam exec -- dune runtest
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: packages/compiler/_build/install/default/bin/publicodes${{ matrix.extension }}
+
+      - name: Upload the build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: publicodes-${{ matrix.exec_name }}${{ matrix.extension }}
+          path: packages/compiler/_build/install/default/bin/publicodes${{ matrix.extension }}

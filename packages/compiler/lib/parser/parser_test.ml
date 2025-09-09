@@ -1,7 +1,7 @@
 open Yaml_parser
 open Utils.Output
 open Parse
-open Core
+open Base
 open Ast
 
 let p length any = Pos.(mk ~pos:(add ~len:length dummy)) any

@@ -1,7 +1,7 @@
+open Base
+type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global | `Replace] [@@deriving equal, show]
 
-type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global | `Replace] [@@deriving eq, show]
-
-type level = [`Error | `Warning | `Debug] [@@deriving eq, show]
+type level = [`Error | `Warning | `Debug] [@@deriving equal, show]
 
 type log =
   { kind: kind
@@ -10,9 +10,9 @@ type log =
   ; hints: string list
   ; labels: string Pos.t list
   ; code: Err.Code.t option }
-[@@deriving eq, show ]
+[@@deriving equal, show ]
 
-type t = log Pos.t [@@deriving eq]
+type t = log Pos.t [@@deriving equal]
 
 let mk ~level ?(kind = `Global) ?(pos = Pos.dummy) ?(hints = []) ?(labels = [])
     ?(code = None) message =

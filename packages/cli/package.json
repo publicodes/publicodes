@@ -1,0 +1,24 @@
+{
+  "name": "@publicodes/cli",
+  "version": "2.0.0-alpha.1",
+  "description": "A CLI tool for Publicodes",
+  "type": "module",
+  "bin": {
+    "publicodes": "./bin/publicodes.js"
+  },
+  "scripts": {
+    "clean": "rm -rf bin",
+    "build:compiler": "sh ./scripts/build-compiler.sh",
+    "codegen:dev": "run build:compiler",
+    "build": "rolldown -c",
+    "dev": "rolldown -c -w"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "quick-doc"
+  ],
+  "devDependencies": {
+    "rolldown": "1.0.0-beta.36"
+  }
+}

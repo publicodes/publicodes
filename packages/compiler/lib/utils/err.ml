@@ -37,7 +37,7 @@ module Code = struct
     (* Replacement errors *)
     | Replace_multiple
     | Replace_cycle
-  [@@deriving eq]
+  [@@deriving equal]
 
   let show = function
     | Yaml_parsing ->
@@ -100,7 +100,7 @@ module Code = struct
         "E029"
 
   let pp fmt err =
-  Format.fprintf fmt "%s" (show err)
+  Stdlib.Format.fprintf fmt "%s" (show err)
 
 end
 
@@ -109,7 +109,7 @@ type t = Code.t * string
 
 let yaml_unexpected_token ~actual ~expected =
   let message =
-    Format.sprintf "mot clé inattendu : %s (attendu : %s)" actual expected
+    Stdlib.Format.sprintf "mot clé inattendu : %s (attendu : %s)" actual expected
   in
   (Code.Yaml_unexpected_token, message)
 
@@ -119,7 +119,7 @@ let yaml_alias_not_supported =
 let yaml_empty_file = (Code.Yaml_empty_file, "fichier est vide")
 
 let unexpected_token token =
-  let message = Format.sprintf "mot clé inattendu : %s" token in
+  let message = Stdlib.Format.sprintf "mot clé inattendu : %s" token in
   (Code.Yaml_unexpected_token, message)
 
 let missing_closing_paren =
@@ -160,11 +160,11 @@ let type_unit_incoherence =
 
 let missing_output_type =
   ( Code.Type_missing_output_type
-  , "information de type manquante pour ce résultat" )
+  , "inStdlib.Formation de type manquante pour ce résultat" )
 
 let type_missing_in_mechanism =
   ( Code.Type_missing_in_mechanism
-  , "information de type manquante pour ce paramètre de mécanisme" )
+  , "inStdlib.Formation de type manquante pour ce paramètre de mécanisme" )
 
 let cycle_detected = (Code.Cycle_detected, "cycle de dépendance détecté")
 

@@ -1,17 +1,17 @@
-open Core
+open Base
 open Utils
 
 type date =
   | Day of {day: int; year: int; month: int}
   | Month of {month: int; year: int}
-[@@deriving eq, ord, show, sexp]
+[@@deriving equal, compare, show, sexp]
 
 type constant =
   | Number of float * Units.t option
   | Bool of bool
   | String of string
   | Date of date
-[@@deriving eq, ord, show, sexp]
+[@@deriving equal, compare, show, sexp]
 
 type binary_op =
   | Add
@@ -29,20 +29,20 @@ type binary_op =
   | Or
   | Max
   | Min
-[@@deriving eq, ord, show, sexp]
+[@@deriving equal, compare, show, sexp]
 
-type unary_op = Neg [@@deriving eq, ord, show, sexp]
+type unary_op = Neg [@@deriving equal, compare, show, sexp]
 
-type rounding = Up | Down | Nearest [@@deriving eq, ord, show, sexp]
+type rounding = Up | Down | Nearest [@@deriving equal, compare, show, sexp]
 
 type 'a naked_expr =
   | Const of constant
   | Ref of 'a
   | Binary_op of binary_op Pos.t * 'a expr * 'a expr
   | Unary_op of unary_op Pos.t * 'a expr
-[@@deriving eq, ord, show, sexp]
+[@@deriving equal, compare, show, sexp]
 
-and 'a expr = 'a naked_expr Pos.t [@@deriving eq, ord, show, sexp]
+and 'a expr = 'a naked_expr Pos.t [@@deriving equal, compare, show, sexp]
 
 type 'a value_mechanism =
   | Expr of 'a expr
@@ -61,10 +61,10 @@ type 'a value_mechanism =
       ( 'a variation list
       * (* followed by an optional `else` case *)
       'a value option )
-[@@deriving eq, ord, show, sexp]
+[@@deriving equal, compare, show, sexp]
 
 and 'a variation = {if_: 'a value; then_: 'a value}
-[@@deriving eq, ord, show, sexp]
+[@@deriving equal, compare, show, sexp]
 
 (* The order of chainable mechanisms matters here: it is used to determine the precedence of the mechanisms (first ones are applied first) *)
 and 'a chainable_mechanism =
@@ -76,22 +76,22 @@ and 'a chainable_mechanism =
   | Ceiling of 'a value
   | Floor of 'a value
   | Round of (rounding * 'a value)
-[@@deriving eq, ord, show, sexp]
+[@@deriving equal, compare, show, sexp]
 
 and 'a value =
   { value: 'a value_mechanism Pos.t
   ; chainable_mechanisms: 'a chainable_mechanism Pos.t list }
-[@@deriving eq, show, sexp]
+[@@deriving equal, show, sexp]
 
 type rule_meta = Title of string | Description of string | Public
-[@@deriving eq, ord, show, sexp]
+[@@deriving equal, compare, show, sexp]
 
 type 'a replace =
   { references: 'a Pos.t list
   ; only_in: 'a Pos.t list
   ; except_in: 'a Pos.t list
   ; priority: int }
-[@@deriving eq, show, sexp]
+[@@deriving equal, show, sexp]
 
 type 'a rule_def =
   { name: Rule_name.t Pos.t
@@ -99,13 +99,13 @@ type 'a rule_def =
   ; meta: rule_meta list
   ; replace: 'a replace list
   ; make_not_applicable: 'a replace list }
-[@@deriving eq, show, sexp]
+[@@deriving equal, show, sexp]
 
-type 'a program = 'a rule_def list [@@deriving eq, show, sexp]
+type 'a program = 'a rule_def list [@@deriving equal, show, sexp]
 
-type 'a t = 'a program [@@deriving eq, show, sexp]
+type 'a t = 'a program [@@deriving equal, show, sexp]
 
-type resolved = Rule_name.t t [@@deriving eq, show, sexp]
+type resolved = Rule_name.t t [@@deriving equal, show, sexp]
 
 let binary_op_to_string = function
   | Add ->

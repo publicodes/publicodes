@@ -1,5 +1,5 @@
-open Core
-type literal = String | Bool | Date [@@deriving eq, ord, show, sexp]
+open Base
+type literal = String | Bool | Date [@@deriving equal, compare, show, sexp]
 
 type t = Literal of literal | Number of Units.t option
-[@@deriving eq, ord, show, sexp]
+[@@deriving equal, compare, show, sexp]

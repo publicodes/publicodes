@@ -1,115 +1,43 @@
 {
-	"name": "@publicodes/tools",
-	"version": "1.7.2",
-	"description": "A CLI tool for Publicodes",
-	"type": "module",
-	"main": "dist/index.js",
-	"bin": {
-		"publicodes": "./bin/run.js"
-	},
-	"files": [
-		"dist",
-		"bin",
-		"quick-doc"
-	],
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
-			"require": "./dist/index.cjs"
-		},
-		"./optims": {
-			"types": "./dist/optims/index.d.ts",
-			"import": "./dist/optims/index.js",
-			"require": "./dist/optims/index.cjs"
-		},
-		"./compilation": {
-			"types": "./dist/compilation/index.d.ts",
-			"import": "./dist/compilation/index.js",
-			"require": "./dist/compilation/index.cjs"
-		},
-		"./migration": {
-			"types": "./dist/migration/index.d.ts",
-			"import": "./dist/migration/index.js",
-			"require": "./dist/migration/index.cjs"
-		}
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+ssh://git@github.com/publicodes/tools.git"
-	},
-	"bugs": "https://github.com/publicodes/tools/issues",
-	"keywords": [
-		"compilation",
-		"optimization",
-		"publicodes",
-		"scripting",
-		"tooling"
-	],
-	"author": "Emile Rolley <emile.rolley@tuta.io>",
-	"license": "MIT",
-	"scripts": {
-		"build": "tsup",
-		"watch": "tsup --watch",
-		"clean": "rm -rf dist",
-		"test:type": "tsc --noEmit",
-		"test": "VITE_CJS_TRACE=true vitest run --globals"
-	},
-	"engines": {
-		"node": ">=22"
-	},
-	"dependencies": {
-		"@clack/prompts": "^0.7.0",
-		"@oclif/core": "^4.2.5",
-		"@publicodes/react-ui": "^1.7.0",
-		"@tailwindcss/typography": "^0.5.16",
-		"@tailwindcss/vite": "^4.0.0",
-		"@types/node": "^18.11.18",
-		"chalk": "^5.3.0",
-		"chokidar": "^4.0.3",
-		"glob": "^10.4.1",
-		"path": "^0.12.7",
-		"publicodes": "^1.8.2",
-		"react": "^18.0.0",
-		"react-dom": "^18.0.0",
-		"react-router-dom": "^7.1.3",
-		"tailwindcss": "^4.0.0",
-		"vite": "^6.0.11",
-		"yaml": "^2.7.0"
-	},
-	"devDependencies": {
-		"@oclif/test": "^4.1.8",
-		"@types/bun": "^1",
-		"@types/jest": "^29.5.13",
-		"@types/react": "^18.0.8",
-		"@types/react-dom": "^18.0.11",
-		"tsup": "^8.3.5",
-		"typescript": "^5.6.3",
-		"vitest": "^3.0.8"
-	},
-	"tsup": {
-		"entry": [
-			"src/index.ts",
-			"src/optims/index.ts",
-			"src/compilation/index.ts",
-			"src/migration/index.ts",
-			"src/commands"
-		],
-		"format": [
-			"cjs",
-			"esm"
-		],
-		"sourceMap": true,
-		"dts": true,
-		"clean": true,
-		"cjsInterop": true
-	},
-	"oclif": {
-		"bin": "publicodes",
-		"commands": "./dist/commands",
-		"dirname": "publicodes"
-	},
-	"publishConfig": {
-		"access": "public"
-	}
+  "name": "@publicodes/tools",
+  "version": "1.7.2",
+  "description": "A CLI tool for Publicodes",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "publicodes": "./bin/run.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "quick-doc"
+  ],
+  "author": "Johan Girod <johan@calinou.coop>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "clean": "rm -rf dist",
+    "test:type": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  },
+  "tsup": {
+    "entry": "src/index.ts",
+    "format": [
+      "esm"
+    ],
+    "sourceMap": true,
+    "dts": true,
+    "clean": true,
+    "cjsInterop": true
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

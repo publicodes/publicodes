@@ -1,37 +1,42 @@
-open Core
+open Base
 
-module T = struct
-  type t = string list [@@deriving ord, eq, sexp]
+module Rule_name = struct
+	module T = struct
+	  type t = string list [@@deriving equal, compare, sexp]
 
-  let show = String.concat ~sep:" . "
+	  let show = String.concat ~sep:" . "
 
-  let pp ppf rule_name =
-    Format.fprintf ppf "%s" (show rule_name)
+	  let pp ppf rule_name =
+	    Stdlib.Format.fprintf ppf "%s" (show rule_name)
 
-  let hash = Hashtbl.hash
+	  let hash = Base.Hashtbl.hash
+	end
+	include T
+	include Comparable.Make(T)
 end
 
-include T
+
+include Rule_name
 
 module Set = struct
-  module M = Set.Make (T)
-  include M
+	module M = Set.M(Rule_name)
+	include M
 end
 
 module Hashtbl = struct
-  module M = Hashtbl.Make (T)
+  module M = Hashtbl.M(Rule_name)
   include M
 
   let pp pp_val ppf tbl =
-    Format.fprintf ppf "@[<hv>@[<hv 2>{" ;
+    Stdlib.Format.fprintf ppf "@[<hv>@[<hv 2>{" ;
     let first = ref true in
-    Core.Hashtbl.iteri tbl ~f:(fun ~key ~data ->
-        if not !first then Format.fprintf ppf ";@ " else first := false ;
-        Format.fprintf ppf "@[<hv 2>%a :@ %a@]"
+    Base.Hashtbl.iteri tbl ~f:(fun ~key ~data ->
+        if not !first then Stdlib.Format.fprintf ppf ";@ " else first := false ;
+        Stdlib.Format.fprintf ppf "@[<hv 2>%a :@ %a@]"
           (fun ppf rule_name ->
-            Format.fprintf ppf "%s" (String.concat ~sep:" . " rule_name) )
+            Stdlib.Format.fprintf ppf "%s" (String.concat ~sep:" . " rule_name) )
           key pp_val data ) ;
-    Format.fprintf ppf "@]@ }@]"
+    Stdlib.Format.fprintf ppf "@]@ }@]"
 end
 
 let create_exn (ref : string list) : t =
@@ -68,7 +73,7 @@ let resolve ~rule_names ~current (name : string list) =
         let rule = parent @ name in
         (* We dont want to match the current rule if there is a matching parent rule *)
         if List.equal String.equal rule current then None
-        else if Core.Set.mem rule_names rule then Some rule
+        else if Base.Set.mem rule_names rule then Some rule
         else None )
   in
   match matched_rule with

@@ -1,10 +1,10 @@
-open Core
+open Base
 
 module Point = struct
-  type t = {index: int; line: int; column: int} [@@deriving eq, ord, sexp]
+  type t = {index: int; line: int; column: int} [@@deriving equal, compare, sexp]
 
   let pp ppf {index; line; column} =
-    Format.fprintf ppf "line %d, column %d, (i %d)" line column index
+    Stdlib.Format.fprintf ppf "line %d, column %d, (i %d)" line column index
 
   let of_position Lexing.{pos_cnum; pos_bol; pos_lnum; _} =
     {index= pos_cnum; line= pos_lnum + 1; column= pos_cnum - pos_bol + 1}
@@ -19,9 +19,9 @@ module Point = struct
   let dummy = {index= 0; line= 1; column= 1}
 end
 
-type pos = {file: string; start_pos: Point.t; end_pos: Point.t} [@@deriving eq, show, ord, sexp]
+type pos = {file: string; start_pos: Point.t; end_pos: Point.t} [@@deriving equal, compare, show, sexp]
 
-type 'a t = 'a * pos [@@deriving eq, show, ord, sexp]
+type 'a t = 'a * pos [@@deriving equal, compare, show, sexp]
 
 (* Map operation *)
 let map ~f (x, pos) = (f x, pos)

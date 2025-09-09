@@ -15,7 +15,7 @@ export async function compilePublicodes(yaml: string): Promise<any> {
 
   try {
     const { stdout, stderr } =
-      await $`publicodes compile --default-to-public -o -  < ${Buffer.from(yaml)}  `.quiet()
+      await $`publicodes compile -i --default-to-public -o -  < ${Buffer.from(yaml)}  `.quiet()
     console.warn(stderr.toString())
     return JSON.parse(stdout.toString())
   } catch (error) {

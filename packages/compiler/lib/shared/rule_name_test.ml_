@@ -1,9 +1,8 @@
+open Base
 open Rule_name
-open Core
 
 let mk = create_exn
 
-type t = Rule_name.t [@@deriving ord]
 
 let%test_unit "parent of dotted name" =
   (* Test single element *)
@@ -14,21 +13,21 @@ let%test_unit "parent of dotted name" =
   [%test_eq: t option] (parent @@ mk ["a"; "b"; "c"]) (Some (mk ["a"; "b"]))
 
 let%test_unit "do not disambiguate complete reference" =
-  let rule_names = Rule_name.Set.of_list [mk ["rule 1"]; mk ["rule 2"]] in
+  let rule_names = Set.of_list (module Rule_name) [mk ["rule 1"]; mk ["rule 2"]] in
   let current = mk ["rule 1"] in
   let ref = ["rule 2"] in
   [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ref)) ;
-  let rule_names = Rule_name.Set.of_list [mk ["a"]; mk ["a"; "b"]] in
+  let rule_names = Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "b"]] in
   let current = mk ["a"] in
   let ref = ["a"; "b"] in
   [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ref))
 
 let%test_unit "disambiguate child rule" =
-  let rule_names = Rule_name.Set.of_list [mk ["a"]; mk ["a"; "b"]] in
+  let rule_names = Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "b"]] in
   let current = mk ["a"] in
   let ref = ["b"] in
   [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ["a"; "b"])) ;
-  let rule_names = Rule_name.Set.of_list [mk ["a"]; mk ["a"; "b"; "c"]] in
+  let rule_names = Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "b"; "c"]] in
   let current = mk ["a"] in
   [%test_eq: t option]
     (resolve ~rule_names ~current ["b"; "c"])
@@ -36,7 +35,7 @@ let%test_unit "disambiguate child rule" =
 
 let%test_unit "disambiguate parent rule" =
   let rule_names =
-    Rule_name.Set.of_list [mk ["a"]; mk ["a"; "b"]; mk ["a"; "b"; "c"]]
+    Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "b"]; mk ["a"; "b"; "c"]]
   in
   let current = mk ["a"; "b"; "c"] in
   let ref = ["b"] in
@@ -44,7 +43,7 @@ let%test_unit "disambiguate parent rule" =
 
 let%test_unit "disambiguate child rule first" =
   let rule_names =
-    Rule_name.Set.of_list [mk ["a"]; mk ["a"; "a"]; mk ["a"; "a"; "a"]]
+    Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "a"]; mk ["a"; "a"; "a"]]
   in
   let current = mk ["a"; "a"] in
   let ref = ["a"] in
@@ -53,13 +52,13 @@ let%test_unit "disambiguate child rule first" =
     (Some (mk ["a"; "a"; "a"]))
 
 let%test_unit "disambiguate current rule last" =
-  let rule_names = Rule_name.Set.of_list [mk ["a"]; mk ["a"; "a"]] in
+  let rule_names = Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "a"]] in
   let current = mk ["a"; "a"] in
   let ref = ["a"] in
   [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ["a"]))
 
 let%test_unit "disambiguate current rule last" =
-  let rule_names = Rule_name.Set.of_list [mk ["a"]; mk ["a"; "a"]] in
+  let rule_names = Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "a"]] in
   let current = mk ["a"; "a"] in
   let ref = ["a"] in
   [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ["a"]))
@@ -81,7 +80,7 @@ let%test_unit "disambiguate reference with shared parts in complex rules" =
       ; "vente restauration hébergement"
       ; "taux" ]
   in
-  let rule_names = Rule_name.Set.of_list [current; resolved_rule] in
+  let rule_names = Set.of_list (module Rule_name) [current; resolved_rule] in
   let ref =
     [ "cotisations et contributions"
     ; "cotisations"

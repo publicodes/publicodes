@@ -1,4 +1,4 @@
-open Core
+open Base
 open Utils
 open Utils.Output
 open Shared
@@ -75,8 +75,8 @@ let unify ~pos1 ~pos2 (u1 : t) (u2 : t) =
         let code, message = Err.type_unit_incoherence in
         fatal_error ~pos:pos1 ~kind:`Type ~code
           ~labels:
-            [ Pos.mk ~pos:pos1 (Format.asprintf "unité: %a" Units.pp concrete1)
-            ; Pos.mk ~pos:pos2 (Format.asprintf "unité: %a" Units.pp concrete2)
+            [ Pos.mk ~pos:pos1 (Stdlib.Format.asprintf "unité: %a" Units.pp concrete1)
+            ; Pos.mk ~pos:pos2 (Stdlib.Format.asprintf "unité: %a" Units.pp concrete2)
             ]
           message
       else return ()
@@ -113,12 +113,12 @@ let to_string t =
   in
   match normalize t with
   | {concrete; elem= []; inv= []} ->
-      Format.asprintf "%a" Units.pp concrete
+      Stdlib.Format.asprintf "%a" Units.pp concrete
   | {concrete; elem; inv} -> (
       let parts = [] in
       let parts =
         if not (Units.equal concrete Units.empty) then
-          Format.asprintf "%a" Units.pp concrete :: parts
+          Stdlib.Format.asprintf "%a" Units.pp concrete :: parts
         else parts
       in
       let parts =

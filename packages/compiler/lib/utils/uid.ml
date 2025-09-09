@@ -1,7 +1,7 @@
-open Core
+open Base
 
 module Make () = struct
-  type t = int [@@deriving eq, show]
+  type t = int [@@deriving equal, show]
 
 
   let current = ref 0

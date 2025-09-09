@@ -1,7 +1,7 @@
 open Typ
 open Shared
 open Shared.Eval_tree
-open Core
+open Base
 open Utils
 open Tree
 
@@ -297,8 +297,8 @@ and transform_round ~pos round value =
 
 let from_ast (resolved_ast : Shared_ast.resolved) : t =
   let evalTree =
-    Rule_name.Hashtbl.create ~size:(List.length resolved_ast)
-      ~growth_allowed:false ()
+    Hashtbl.create (module Rule_name) ~size:(List.length resolved_ast)
+      ~growth_allowed:false
   in
   List.iter resolved_ast ~f:(fun Shared_ast.{name; value; _} ->
       let key = Pos.value name in

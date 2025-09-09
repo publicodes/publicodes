@@ -1,4 +1,4 @@
-open Core
+open Base
 open Utils
 open Shared
 open Shared.Shared_ast
@@ -16,7 +16,7 @@ let check_orphan_rules ~rule_names ast =
           Some
             (Log.error message ~code ~pos ~kind:`Syntax
                ~hints:
-                 [ Format.asprintf "Ajoutez la règle parente `%a` manquante"
+                 [ Stdlib.Format.asprintf "Ajoutez la règle parente `%a` manquante"
                      Rule_name.pp parent ] )
         else None
   in
@@ -35,7 +35,7 @@ let resolve_rule ~rule_names rule =
         (* TODO: add to suggest closest rule name *)
         fatal_error ~pos ~kind:`Syntax ~code message
           ~hints:
-            [ Format.asprintf "Ajoutez la règle `%a` manquante" Rule_name.pp
+            [ Stdlib.Format.asprintf "Ajoutez la règle `%a` manquante" Rule_name.pp
                 missing_rule_name
             ; "Vérifiez les erreurs de typos dans le nom de la règle" ]
     | Some ref ->
@@ -183,7 +183,7 @@ let resolve_rule ~rule_names rule =
 
 let to_resolved_ast ast =
   let rule_names =
-    Rule_name.Set.of_list (List.map ast ~f:(fun rule -> Pos.value rule.name))
+    Set.of_list (module Rule_name) (List.map ast ~f:(fun rule -> Pos.value rule.name))
   in
   let orphan_logs = check_orphan_rules ~rule_names ast in
   let+ ast =

@@ -1,6 +1,6 @@
-open Core
+open Base
 
-type 'a t = 'a option * Log.t list [@@deriving eq]
+type 'a t = 'a option * Log.t list [@@deriving equal]
 
 let empty : 'a t = (None, [])
 
@@ -95,7 +95,7 @@ let print_logs (output : 'a t) =
 
 let sprintf_logs (output : 'a t) =
   output |> logs
-  |> List.map ~f:(fun log -> Format.asprintf "%s\n" (Pos.value log).Log.message)
+  |> List.map ~f:(fun log -> Stdlib.Format.asprintf "%s\n" (Pos.value log).Log.message)
   |> String.concat ~sep:"\n"
 
 let all_keep_logs ?default (ts : 'a t list) : 'a list t =

@@ -1,21 +1,24 @@
-open Core
+open Base
 
-(** The rule name type *)
-type t [@@deriving eq, ord, show, sexp]
-
-val hash : t -> int
-(** Hash function for rule names *)
 
 (** Set implementation for rule names *)
-module Set : sig
-  include Set.S with type Elt.t = t
+module Rule_name : sig
+  module T : sig
+    type t [@@deriving equal, compare, show, sexp]
+    val hash : t -> int
+  end
+  include module type of T
+  include module type of Comparable.Make(T)
 end
+
+include module type of Rule_name.T
+
+module Set : module type of Set.M (Rule_name)
 
 (** Hashtable implementation for rule names *)
 module Hashtbl : sig
-  include Hashtbl.S with type key = t
-
-  val pp : (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a t -> unit
+	include module type of Hashtbl.M (Rule_name)
+  val pp : (Stdlib.Format.formatter -> 'a -> unit) -> Stdlib.Format.formatter -> 'a t -> unit
 end
 
 val create_exn : string list -> t

@@ -8,7 +8,7 @@ module Point : sig
 
 		@note The [index] is in 0-based index. The [line] and [column] are in
 		1-based index. *)
-  type t = {index: int; line: int; column: int} [@@deriving eq]
+  type t = {index: int; line: int; column: int} [@@deriving equal]
 
   val pp : Format.formatter -> t -> unit
 
@@ -22,11 +22,11 @@ end
 
 (** Represents a range in a file. *)
 type pos = {file: string; start_pos: Point.t; end_pos: Point.t}
-[@@deriving eq, ord, show, sexp]
+[@@deriving equal, compare, show, sexp]
 
 (** Type to attach position information to a value. The first element is the
     value and the second element is the position. *)
-type 'a t = 'a * pos [@@deriving eq, ord, show, sexp]
+type 'a t = 'a * pos [@@deriving equal, compare, show, sexp]
 
 
 (** {2 Map operation} *)
