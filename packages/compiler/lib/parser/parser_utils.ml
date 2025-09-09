@@ -61,3 +61,9 @@ let parse_ref s =
           [ Printf.sprintf
               "un nom de règle doit être de la forme suivante : `mon namespace \
                . ma règle` ou `ma règle`" ]
+
+let find_value key mapping =
+  List.find_map mapping ~f:(fun (k, value) ->
+      if String.equal (get_value k) key then
+        Some (Pos.mk ~pos:(Pos.pos k) value)
+      else None )

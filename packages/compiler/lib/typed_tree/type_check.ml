@@ -6,7 +6,7 @@ open Shared
 open Shared.Shared_ast
 open Shared.Eval_tree
 
-let type_check (tree : Tree.t) =
+let type_check ?(snd_pass = false) (tree : Tree.t) =
   let rec unify_value {meta= typ; pos; value} =
     match value with
     | Const const -> (
@@ -104,6 +104,8 @@ let type_check (tree : Tree.t) =
           |> all_keep_logs
         in
         return ()
+    | Round value ->
+        Mecha_rounding.typecheck ~unify_value ~pos ~snd_pass ~typ value
   in
   let* _ =
     Hashtbl.to_alist tree
