@@ -124,6 +124,15 @@ function evaluateNode(
         v = left.v && right.v
       } else if (op === '||') {
         v = left.v || right.v
+      } else if (op === 'max' || op === 'min') {
+        if (left.v === null) {
+          v = right.v
+        } else if (right.v === null) {
+          v = left.v
+        } else {
+          v =
+            op === 'max' ? Math.max(left.v, right.v) : Math.min(left.v, right.v)
+        }
       } else {
         throw new RuntimeError('Internal error : Invalid operation')
       }
