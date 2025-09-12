@@ -4,6 +4,6 @@ export default defineConfig({
   input: 'src/bin/index.ts',
   platform: 'node',
   output: {
-    file: 'dist/bin/publicodes.js',
+    file: 'bin/publicodes.js',
   },
 })

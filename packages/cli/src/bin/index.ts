@@ -11,15 +11,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const binPath = join(__dirname, 'compiler', getPublicodesBinName())
 
-
-
 // Check if the binary exists before trying to spawn it
 if (!existsSync(binPath)) {
   console.error(`Error: Could not find the publicodes binary at ${binPath}`)
   if (process.env.NODE_ENV === 'development') {
     console.error(
-    'Please make sure the compiler is built with "yarn run build:compiler" first',
-  )
+      'Please make sure the compiler is built with "yarn run build:compiler" first',
+    )
+  }
   process.exit(1)
 }
 

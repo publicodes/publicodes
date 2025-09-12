@@ -1,10 +1,12 @@
 import { $ } from 'bun'
 import { Engine } from '../../src/engine'
+
 /**
  * Compiles publicodes YAML to JSON using the publicodes compiler
  * @param yaml The publicodes YAML string to compile
  * @returns The compiled JSON object
  */
+
 export async function compilePublicodes(yaml: string): Promise<any> {
   // First, test if publicodes is installed
   // const isInstalled =
@@ -15,7 +17,7 @@ export async function compilePublicodes(yaml: string): Promise<any> {
 
   try {
     const { stdout, stderr } =
-      await $`publicodes compile -i --default-to-public -o -  < ${Buffer.from(yaml)}  `.quiet()
+      await $`publicodes2 compile -i --default-to-public -o -  < ${Buffer.from(yaml)}  `.quiet()
     console.warn(stderr.toString())
     return JSON.parse(stdout.toString())
   } catch (error) {
@@ -44,6 +46,8 @@ export async function yaml(
   const rules = await compilePublicodes(dedent(yaml))
   return new Engine(rules)
 }
+
+export type TestPublicodes = Awaited<ReturnType<typeof yaml>>
 
 function dedent(string: string) {
   const lines = string.split('\n')
