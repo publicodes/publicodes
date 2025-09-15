@@ -1,4 +1,4 @@
-import ekofestLogo from './logos/ekofest-logo.webp';
+import ekofestLogo from './logos/ekofest-banner.png';
 import karburanProImg from './logos/karburan-pro.webp';
 import mesAidesVeloImg from './logos/mes-aides-velo.webp';
 import mesAidesRenoImg from './logos/mes-aides-reno.webp';
@@ -46,7 +46,7 @@ const rawProduits = [
 		slug: 'mes-aides-vélo',
 		url: 'https://mesaidesvelo.fr/',
 		github: 'https://github.com/mquandalle/mesaidesvelo',
-		name: 'MesAidesVélo',
+		name: 'Mes Aides Vélo',
 		img: mesAidesVeloImg,
 		description:
 			"Découvrez l'ensemble des aides à l'achat ou la localisation de vélo proposées par votre ville, département, région et par l'État."
