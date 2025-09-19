@@ -1,4 +1,4 @@
-open Core
+open Base
 open Utils
 open Output
 open Parser_utils
@@ -25,7 +25,7 @@ let parse_priority mapping =
       return 0
   | Some (yaml, pos) -> (
       let* scalar = get_scalar ~pos yaml in
-      let priority = scalar |> get_value |> int_of_string_opt in
+      let priority = scalar |> get_value |> Stdlib.int_of_string_opt in
       match priority with
       | Some priority ->
           return priority

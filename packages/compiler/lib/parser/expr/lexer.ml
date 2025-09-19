@@ -1,6 +1,6 @@
 open Sedlexing
+open Base
 open Tokens
-open Core
 open Utils
 open Utils.Output
 
@@ -23,16 +23,18 @@ let digit = [%sedlex.regexp? '0' .. '9']
 
 let letter = [%sedlex.regexp? 'a' .. 'z' | 'A' .. 'Z' | 0x00C0 .. 0x017F]
 
-let symbol = [%sedlex.regexp? Chars ",°$%²_\"«»'" | "€"]
+(* a ,°$%²_\ *)
+
+let symbol = [%sedlex.regexp? Utf8 (Chars ",°$%²_\"«»'" | Chars "€") ]
 
 let char = [%sedlex.regexp? letter | symbol | digit]
 
-let any_char = [%sedlex.regexp? char | Chars "+-#.,"]
+let any_char = [%sedlex.regexp? Utf8 (char | Chars "+-#.,")]
 
 (* Number *)
 let number = [%sedlex.regexp? Plus digit, Opt ('.', Plus digit)]
 
-let unit_symbol = [%sedlex.regexp? '$' | sc (* Currencies *) | Chars "°%"]
+let unit_symbol = [%sedlex.regexp? Utf8 ('$' | sc (* Currencies *) | Chars "°%")]
 
 let unit_identifier =
   [%sedlex.regexp?
@@ -65,8 +67,6 @@ let update_acc (lexbuf : lexbuf) : unit =
 (* match !code_buffer with
   | None -> failwith "Lexer update outside of a lexing context"
   | Some buf -> Buffer.add_string buf (Utf8.lexeme lexbuf) *)
-
-let print x = Printf.printf "%s\n" x ; x
 
 (** [lex_one lexbuf] tokenizes the input [lexbuf] and returns the next token.
     This function recursively processes the input stream, skipping whitespace
@@ -127,35 +127,33 @@ let rec lex_one (lexbuf : lexbuf) : Tokens.t Pos.t =
       lexbuf |> Utf8.lexeme |> String.split ~on:'/'
       |> function
       | [mm; yyyy] ->
-          with_pos (DATE_LITERAL (`Month (int_of_string mm, int_of_string yyyy)))
+          with_pos (DATE_LITERAL (`Month (Int.of_string mm, Int.of_string yyyy)))
       | [dd; mm; yyyy] ->
           with_pos
             (DATE_LITERAL
-               (`Day (int_of_string dd, int_of_string mm, int_of_string yyyy))
+               (`Day (Int.of_string dd, Int.of_string mm, Int.of_string yyyy))
             )
       | _ ->
-          raise (Invalid_token "Invalid date format") )
+          raise (Invalid_token "Invalid date Stdlib.Format") )
   | number_with_unit ->
       update_acc lexbuf ;
       let str = Utf8.lexeme lexbuf in
-      let number_part =
-        String.take_while ~f:(fun c -> Char.is_digit c || Char.equal c '.') str
-      in
+      let number_part = str |> String.to_list |> List.take_while ~f:(fun c -> Char.is_digit c || Char.equal c '.') |> String.of_list in
       let unit_part =
         let with_space = String.drop_prefix str (String.length number_part) in
         if String.is_prefix with_space ~prefix:" " then
           String.drop_prefix with_space 1
         else with_space
       in
-      let number = float_of_string number_part in
+      let number = Float.of_string number_part in
       with_pos (NUMBER (number, Some unit_part))
   | number ->
       update_acc lexbuf ;
-      let number = lexbuf |> Utf8.lexeme |> float_of_string in
+      let number = lexbuf |> Utf8.lexeme |> Float.of_string in
       with_pos (NUMBER (number, None))
   | string ->
       update_acc lexbuf ;
-      let str = String.slice (Utf8.lexeme lexbuf) 1 (-1) in
+      let str = String.drop_suffix (String.drop_prefix (Utf8.lexeme lexbuf) 1) 1 in
       with_pos (STRING str)
   | rule_name ->
       update_acc lexbuf ;

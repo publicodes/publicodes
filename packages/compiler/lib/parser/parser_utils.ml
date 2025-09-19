@@ -1,4 +1,4 @@
-open Core
+open Base
 open Utils.Output
 open Yaml_parser
 
@@ -85,7 +85,7 @@ let check_authorized_keys ~keys mapping =
             Some
               (Log.error ~code ~pos:(Pos.pos k) ~kind:`Syntax
                  ~hints:
-                   [Format.asprintf "La clé `%s` n'est pas valide" (get_value k)]
+                   [Stdlib.Format.asprintf "La clé `%s` n'est pas valide" (get_value k)]
                  message )
         | Some _ ->
             None )

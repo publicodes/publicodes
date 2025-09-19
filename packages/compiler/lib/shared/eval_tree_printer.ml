@@ -1,11 +1,11 @@
-open Core
+open Base
 open Eval_tree
 open Pp
 open Utils
 
 (* Tag handler for terminal styling *)
 let handle_tag formatter tag content =
-  let open Format in
+  let open Stdlib.Format in
   match tag with
   | `Constant ->
       pp_print_string formatter "\027[32m" ;
@@ -67,7 +67,7 @@ let format_constant = function
       let units_str =
         match units with
         | Some u ->
-            " " ^ Format.asprintf "%a" Units.pp u
+            " " ^ Stdlib.Format.asprintf "%a" Units.pp u
         | None ->
             ""
       in
@@ -307,27 +307,31 @@ let format_eval_tree ?(show_pos = false) ?meta_to_string eval_tree =
 
 (* Print functions *)
 let print_value ?(show_pos = false) ?meta_to_string value =
+  let open Stdlib.Format in
   let doc = format_value ~show_pos ?meta_to_string value in
-  to_fmt_with_tags (Format.get_std_formatter ()) doc ~tag_handler:handle_tag ;
-  Format.print_flush ()
+  to_fmt_with_tags (get_std_formatter ()) doc ~tag_handler:handle_tag ;
+  print_flush ()
 
 let print_eval_tree ?(show_pos = false) ?meta_to_string eval_tree =
+  let open Stdlib.Format in
   let doc = format_eval_tree ~show_pos ?meta_to_string eval_tree in
-  to_fmt_with_tags (Format.get_std_formatter ()) doc ~tag_handler:handle_tag ;
-  Format.print_flush ()
+  to_fmt_with_tags (get_std_formatter ()) doc ~tag_handler:handle_tag ;
+  print_flush ()
 
 let to_string_value ?(show_pos = false) ?meta_to_string value =
+  let open Stdlib.Format in
   let doc = format_value ~show_pos ?meta_to_string value in
   let buffer = Buffer.create 256 in
-  let formatter = Format.formatter_of_buffer buffer in
+  let formatter = formatter_of_buffer buffer in
   to_fmt_with_tags formatter doc ~tag_handler:handle_tag ;
-  Format.pp_print_flush formatter () ;
+  pp_print_flush formatter () ;
   Buffer.contents buffer
 
 let to_string_eval_tree ?(show_pos = false) ?meta_to_string eval_tree =
+  let open Stdlib.Format in
   let doc = format_eval_tree ~show_pos ?meta_to_string eval_tree in
   let buffer = Buffer.create 1024 in
-  let formatter = Format.formatter_of_buffer buffer in
+  let formatter = formatter_of_buffer buffer in
   to_fmt_with_tags formatter doc ~tag_handler:handle_tag ;
-  Format.pp_print_flush formatter () ;
+  pp_print_flush formatter () ;
   Buffer.contents buffer

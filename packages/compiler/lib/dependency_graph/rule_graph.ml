@@ -1,4 +1,4 @@
-open Core
+open Base
 open Utils
 open Shared
 
@@ -20,9 +20,7 @@ open Shared
  *)
 
 module Rule_vertex = struct
-  type t = Rule_name.t [@@deriving compare]
-
-  let equal x y = 0 = compare x y
+  type t = Rule_name.t [@@deriving equal, compare]
 
   let hash = Hashtbl.hash
 end

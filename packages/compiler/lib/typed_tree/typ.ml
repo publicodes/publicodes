@@ -1,4 +1,4 @@
-open Core
+open Base
 open Utils
 open Utils.Output
 open Shared
@@ -54,8 +54,8 @@ let unify (t1 : t) (t2 : t) =
     let code, message = Err.type_incoherence in
     fatal_error ~pos:pos1 ~kind:`Type ~code
       ~labels:
-        [ Pos.mk ~pos:pos1 (Format.sprintf "est %s" (to_str (Pos.value typ1)))
-        ; Pos.mk ~pos:pos2 (Format.sprintf "est %s" (to_str (Pos.value typ2)))
+        [ Pos.mk ~pos:pos1 (Stdlib.Format.sprintf "est %s" (to_str (Pos.value typ1)))
+        ; Pos.mk ~pos:pos2 (Stdlib.Format.sprintf "est %s" (to_str (Pos.value typ2)))
         ]
       message
   in
@@ -67,7 +67,7 @@ let unify (t1 : t) (t2 : t) =
   | _, Any _ ->
       return (UnionFind.merge (fun a _ -> a) t1 t2)
   | Literal l1, Literal l2 ->
-      if [%compare.equal: Typ.literal] l1 l2 |> not then
+      if Typ.equal_literal l1 l2 |> not then
         (* Todo replace with a unique type_error, with the pos of the different arguments *)
         error_typ_mismatch ()
       else return t1

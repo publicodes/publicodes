@@ -2,12 +2,12 @@ open Yaml.Stream
 
 let starts_with = String.starts_with
 
-open Core
+open Base
 open Ast
 open Utils
 
 (*
-This module will parse YAML content and produce YAML AST with position information.
+This module will parse YAML content and produce YAML AST with position inStdlib.Formation.
 
 We are parsing the following grammar:
   stream ::= STREAM-START document* STREAM-END

@@ -1,8 +1,10 @@
-import { describe, it, expect } from 'bun:test'
-import { yaml } from '../../utils/compile'
+import { describe, it, expect, beforeAll } from 'bun:test'
+import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Mécanisme > arrondi au supérieur', async () => {
-  const engine = await yaml`
+  let engine: TestPublicodes
+  beforeAll(async () => {
+    engine = await yaml`
 à l'unité:
   valeur: 38.4167
   arrondi au supérieur: oui
@@ -23,6 +25,7 @@ describe('Mécanisme > arrondi au supérieur', async () => {
   valeur: 38.4167
   arrondi au supérieur: 5 décimales
 `
+  })
   it("à l'unité", async () => {
     const result = engine.evaluate("à l'unité")
     expect(result.value).toBe(39)

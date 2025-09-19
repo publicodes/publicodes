@@ -1,4 +1,4 @@
-open Core
+open Base
 open Shared.Shared_ast
 open Yaml_parser
 open Utils.Output
@@ -54,7 +54,7 @@ let parse ~pos ~(parse : parse_value_fn) (yaml : yaml) =
             false
       in
       let variations =
-        if has_else_clause then List.slice sequence 0 (-1) else sequence
+        if has_else_clause then List.drop_last_exn sequence else sequence
       in
       let* variations =
         match variations with

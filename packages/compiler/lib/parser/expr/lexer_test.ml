@@ -1,5 +1,5 @@
 open! Base
-open Core
+open Base
 open Sedlexing
 open Tokens
 open Utils.Output

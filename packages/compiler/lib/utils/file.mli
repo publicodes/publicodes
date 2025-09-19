@@ -1,4 +1,6 @@
-type t = string [@@deriving show]
+type t = string
+
+val pp : Format.formatter -> t -> unit
 
 val read_file : t -> string
 (** [read_file path] reads the content of the file at [path]. *)

@@ -1,4 +1,4 @@
-open Core
+open Base
 open Utils
 open Shared
 open Utils.Output
@@ -19,7 +19,7 @@ let cycle_check (tree : 'a Eval_tree.t) : Rule_graph.t Output.t =
         ~hints:
           [ String.concat ~sep:" -> "
               (List.map cycle ~f:(fun rule ->
-                   Format.asprintf "%a" Rule_name.pp rule ) ) ]
+                   Stdlib.Format.asprintf "%a" Rule_name.pp rule ) ) ]
     in
     log :: acc
   in

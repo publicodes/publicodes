@@ -11,10 +11,10 @@ Simple base type (bool, number, date) :
   false
   
   d :
-  Shared_ast.Day ({ day = 11; year = 2024; month = 6 })
+  Shared_ast.Day {day = 11; year = 2024; month = 6}
   
   e :
-  Shared_ast.Month ({ month = 8; year = 2025 })
+  Shared_ast.Month {month = 8; year = 2025}
 
 
 String :

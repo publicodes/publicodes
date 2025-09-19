@@ -1,13 +1,16 @@
-import { describe, it, expect } from 'bun:test'
-import { yaml } from '../../utils/compile'
+import { describe, it, expect, beforeAll } from 'bun:test'
+import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Expressions > booléens', async () => {
-  const engine = await yaml`
+  let engine: TestPublicodes
+  beforeAll(async () => {
+    engine = await yaml`
 a: oui
 négation: a != oui
 paramètre:
   type: booléen
 `
+  })
 
   it('constante', async () => {
     expect(engine.evaluate('a').value).toEqual(true)

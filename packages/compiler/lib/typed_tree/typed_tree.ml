@@ -27,7 +27,7 @@ let type_check tree =
   ----------------------
 
   Normalization and implementations that depend on the type inferred.
-  These transformations must occur after type checking.
+  These transStdlib.Formations must occur after type checking.
 
 	Note: Ideally, we would use a different AST representation, but this
 	would complicate the codebase. If it appears that the ASTs are too
@@ -37,6 +37,6 @@ let type_check tree =
     value |> Simplify_unit.simplify_value |> Mecha_rounding.normalize_value
   in
   let normalized_tree =
-    Core.Hashtbl.map ~f:(Shared.Eval_tree.map ~f:post_transform) tree
+    Base.Hashtbl.map ~f:(Shared.Eval_tree.map ~f:post_transform) tree
   in
   return normalized_tree

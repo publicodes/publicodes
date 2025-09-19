@@ -1,10 +1,10 @@
-open Core
+open Base
 open Cmdliner
 open Cmdliner.Term.Syntax
 
 let input_files =
   let doc = "$(docv) is the input files. Use $(b,-) for $(b,stdin)." in
-  Arg.(value & pos_all file ["-"] & info [] ~doc ~docv:"FILES")
+  Arg.(value & pos_all file [] & info [] ~doc ~docv:"FILES")
 
 let input_stdin =
   let doc = "Use stdin as input to compile." in
@@ -51,7 +51,13 @@ let cmd =
   and+ default_to_public = default_to_public
   and+ output_type = output_type in
   let input_files = if input_stdin then ["-"] else input_files in
-  if watch_mode then
+  if Base.List.length input_files = 0 then (
+    Stdlib.Format.eprintf
+      "No input publicodes file provided.\n\
+       Try `publicodes compile --help` for more information.\n\
+       %!" ;
+    Cmd.Exit.cli_error )
+  else if watch_mode then
     Watch.watch_compile ~input_files ~output_file ~output_type
       ~default_to_public
   else Compile.compile ~input_files ~output_file ~output_type ~default_to_public

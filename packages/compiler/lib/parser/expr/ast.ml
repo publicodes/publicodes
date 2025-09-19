@@ -1,4 +1,4 @@
 open Shared
-open Core
+open Base
 
-type t = string list Shared_ast.expr [@@deriving sexp, compare, show]
+type t = string list Shared_ast.expr [@@deriving equal, compare, show, sexp]

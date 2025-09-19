@@ -19,7 +19,7 @@ type t =
   | STRING of string
   | RULE_NAME of string
   | BOOLEAN of bool
-[@@deriving sexp, compare, show]
+[@@deriving equal, compare, show, sexp]
 
 val to_string : t -> string
 
