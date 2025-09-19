@@ -1,1 +1,2 @@
-export { Engine as default } from './engine'
+export { Engine } from './engine'
+export type { Publicodes, Outputs } from './types'

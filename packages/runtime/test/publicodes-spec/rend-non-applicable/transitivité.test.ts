@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'bun:test'
 import { yaml } from '../../utils/compile'
 
-describe('Rend non applicable > transitivité', async () => {
+describe('Rend non applicable > transitivité', () => {
 	it('simple', async () => {
 		const engine = await yaml`
     a:

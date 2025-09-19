@@ -1,5 +1,7 @@
+/* eslint-disable no-console */
 import { $ } from 'bun'
-import { Engine } from '../../src/engine'
+import { Engine } from '../../src'
+import type { Publicodes, Outputs } from '../../src'
 
 /**
  * Compiles publicodes YAML to JSON using the publicodes compiler
@@ -7,23 +9,24 @@ import { Engine } from '../../src/engine'
  * @returns The compiled JSON object
  */
 
-export async function compilePublicodes(yaml: string): Promise<any> {
-	// First, test if publicodes is installed
-	// const isInstalled =
-	//   await $`if hash publicodes 2>/dev/null; then echo "true" else echo "false" fi;`.json()
-	// if (!isInstalled) {
-	//   throw new Error('publicodes compiler is not installed')
-	// }
-
+export async function compilePublicodes(
+	yaml: string,
+): Promise<Publicodes<Outputs>> {
 	try {
 		const { stdout, stderr } =
 			await $`publicodes2 compile -i --default-to-public -o -  < ${Buffer.from(yaml)}  `.quiet()
-		console.warn(stderr.toString())
-		return JSON.parse(stdout.toString())
+		if (stderr.toString()) {
+			console.warn(stderr.toString())
+		}
+		return JSON.parse(stdout.toString()) as Publicodes<Outputs>
 	} catch (error) {
 		if (error instanceof Error && 'exitCode' in error) {
 			// Shell error with exit code
-			const shellError = error as any
+			const shellError = error as {
+				exitCode: number
+				stdout?: Buffer
+				stderr?: Buffer
+			}
 			throw new Error(
 				`Compilation failed with exit code ${shellError.exitCode}:\n` +
 					`stdout: ${shellError.stdout?.toString() || ''}\n` +
@@ -38,13 +41,15 @@ export async function compilePublicodes(yaml: string): Promise<any> {
 // Nammed "yaml" so that prettier will pick it and format the template string as such.
 export async function yaml(
 	strings: TemplateStringsArray,
-	...values: any[]
+	...values: Array<{ toString(): string }>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<Engine<any>> {
 	const yaml = strings.reduce((acc, str, i) => {
-		return acc + str + (values[i] ?? '')
+		return acc + str + (i < values.length ? String(values[i]) : '')
 	}, '')
 	const rules = await compilePublicodes(dedent(yaml))
-	return new Engine(rules)
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return new Engine(rules as Publicodes<any>)
 }
 
 export type TestPublicodes = Awaited<ReturnType<typeof yaml>>

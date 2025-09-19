@@ -5,8 +5,8 @@ import LegacyEngine from 'publicodes'
 import NewEngine from '../dist/index.js'
 
 // Test data imports
-import autoEntrepreneurNewRules from '../test/auto-entrepreneur/model.publicodes.json' assert { type: 'json' }
-import autoEntrepreneurLegacyRules from '../test/auto-entrepreneur/legacy-build/index.js'
+import autoEntrepreneurNewRules from '../examples/auto-entrepreneur/model.publicodes.json' assert { type: 'json' }
+import autoEntrepreneurLegacyRules from '../examples/auto-entrepreneur/build/index.js'
 
 console.log('🚀 Publicodes Engine Benchmark - auto-entrepreneur modèle \n')
 

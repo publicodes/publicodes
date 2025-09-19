@@ -1,4 +1,4 @@
-import Engine from '../../src'
+import { Engine } from '../../src'
 import rules from './model.publicodes.json'
 
 const engine = new Engine(rules)

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
-describe('Expressions > booléens', async () => {
+describe('Expressions > booléens', () => {
 	let engine: TestPublicodes
 	beforeAll(async () => {
 		engine = await yaml`
@@ -12,12 +12,12 @@ paramètre:
 `
 	})
 
-	it('constante', async () => {
+	it('constante', () => {
 		expect(engine.evaluate('a').value).toEqual(true)
 		expect(engine.outputs['a'].type).toHaveProperty('boolean')
 	})
 
-	it('paramètre', async () => {
+	it('paramètre', () => {
 		expect(engine.evaluate('paramètre', { paramètre: true }).value).toEqual(
 			true,
 		)
@@ -26,7 +26,7 @@ paramètre:
 		)
 	})
 
-	it('négation', async () => {
+	it('négation', () => {
 		expect(engine.evaluate('négation').value).toEqual(false)
 		expect(engine.outputs['négation'].type).toHaveProperty('boolean')
 	})

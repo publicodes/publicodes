@@ -1,8 +1,8 @@
 export type BaseType =
-	| { number: true }
-	| { string: true }
-	| { boolean: true }
-	| { date: true }
+	| { number: boolean }
+	| { string: boolean }
+	| { boolean: boolean }
+	| { date: boolean }
 	| null
 
 export type Outputs = {
@@ -15,10 +15,10 @@ export type Outputs = {
 
 export type GetType<O extends Outputs, R extends keyof O> =
 	O[R]['type'] extends null ? unknown
-	: O[R]['type'] extends { number: null } ? number
-	: O[R]['type'] extends { string: null } ? string
-	: O[R]['type'] extends { boolean: null } ? boolean
-	: O[R]['type'] extends { date: null } ? Date
+	: O[R]['type'] extends { number: boolean } ? number
+	: O[R]['type'] extends { string: boolean } ? string
+	: O[R]['type'] extends { boolean: boolean } ? boolean
+	: O[R]['type'] extends { date: boolean } ? Date
 	: never
 
 export type Parameters<O extends Outputs> = {
@@ -68,5 +68,5 @@ export type Computation =
 	| [] // Undefined
 	| { date: string } // Date format like 'YYYY-MM-DD' or 'YYYY-MM'
 	| { get: string } // get value from context
-	| { context: Record<string, Computation>; value: NodeIndex }
+	| { context: Record<string, NodeIndex>; value: NodeIndex }
 	| ['round', 'up' | 'down' | '~', precision: NodeIndex, value: NodeIndex]

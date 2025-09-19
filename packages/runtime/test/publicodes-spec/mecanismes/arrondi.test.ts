@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Mécanisme > arrondi', () => {
-	describe('arrondi simple', async () => {
+	describe('arrondi simple', () => {
 		let engine: TestPublicodes
 		beforeAll(async () => {
 			engine = await yaml`
@@ -44,8 +44,11 @@ arrondi à 0.5 près:
 		})
 	})
 
-	describe('arrondi avec valeur dynamique en décimales', async () => {
-		const engine = await yaml`
+	describe('arrondi avec valeur dynamique en décimales', () => {
+		let engine: TestPublicodes
+
+		beforeAll(async () => {
+			engine = await yaml`
 a:
   valeur: 12.458 %
   arrondi: b
@@ -53,6 +56,8 @@ a:
 b:
   unité: décimales
 `
+		})
+
 		it('arrondi à 0 décimales', () => {
 			expect(engine.evaluate('a', { b: 0 }).value).toEqual(12)
 		})
@@ -66,8 +71,11 @@ b:
 			expect(engine.evaluate('a', { b: -1 }).value).toEqual(10)
 		})
 	})
-	describe('arrondi avec valeur dynamique sans unité', async () => {
-		const engine = await yaml`
+
+	describe('arrondi avec valeur dynamique sans unité', () => {
+		let engine: TestPublicodes
+		beforeAll(async () => {
+			engine = await yaml`
 a:
   valeur: 13.458 %
   arrondi: b
@@ -76,6 +84,8 @@ b:
   type: nombre
 
 `
+		})
+
 		it('arrondi à 0 (erreur)', () => {
 			expect(() => engine.evaluate('a', { b: 0 })).toThrowError(
 				'Rounding error',
@@ -106,7 +116,7 @@ a:
 			expect(engine.evaluate('a').value).toBe(35.465729905)
 		})
 
-		it('sans unité (erreur)', async () => {
+		it('sans unité (erreur)', () => {
 			expect(yaml`
 a:
   arrondi: b
