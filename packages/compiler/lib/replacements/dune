@@ -1,7 +1,7 @@
 (library
  (inline_tests)
- (name typed_tree)
- (libraries core ppx_show.runtime yojson parser unionFind ocamlgraph)
+ (name replacements)
+ (libraries core ppx_show.runtime parser ocamlgraph)
  (modules :standard)
  (preprocess
  (pps ppx_inline_test ppx_compare ppx_sexp_conv ppx_show sedlex.ppx ppx_assert )))
