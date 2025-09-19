@@ -10,4 +10,4 @@ Objet YAML malformé
      3 │   b: 5
        │ ˘˘˘˘
   
-  [2]
+  [123]

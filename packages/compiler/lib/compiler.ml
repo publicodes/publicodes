@@ -20,8 +20,13 @@ let to_unresolved_ast ~input_files ~default_to_public =
 
 let to_eval_tree ~ast =
   let* ast = Resolver.to_resolved_ast ast in
-  let+ eval_tree = Typed_tree.from_resolved_ast ast |> Typed_tree.type_check in
-  Hashed_tree.from_typed_tree eval_tree
+  let eval_tree = Typed_tree.from_resolved_ast ast in
+  let* replacements = Replacements.from_resolved_ast ast in
+  let* eval_tree_with_replacements =
+    Replacements.apply_replacements ~mk:Typed_tree.mk ~replacements eval_tree
+  in
+  let+ typed_tree = Typed_tree.type_check eval_tree_with_replacements in
+  Hashed_tree.from_typed_tree typed_tree
 
 let to_json ~ast ~eval_tree =
   let* parameters =

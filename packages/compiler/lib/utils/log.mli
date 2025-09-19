@@ -9,8 +9,9 @@
     - [`Syntax]: Syntax/parsing errors
     - [`Type]: Type checking errors
     - [`Cycle]: Cycle detection errors
-    - [`Global]: General/global errors *)
-type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global]
+    - [`Global]: General/global errors
+    - [`Replace]: Replacement errors *)
+type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global | `Replace]
 [@@deriving show, sexp, compare]
 
 (** The severity level of the log message:

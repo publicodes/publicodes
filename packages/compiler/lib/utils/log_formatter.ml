@@ -175,6 +175,8 @@ let format_kind kind =
         "cycle"
     | `Global ->
         "global"
+    | `Replace ->
+        "replace"
   in
   text kind_str
 
