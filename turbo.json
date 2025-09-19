@@ -17,7 +17,9 @@
 				".docusaurus/**",
 				".netlify/**",
 				"build/**",
-				"public/**"
+				"public/**",
+				"publicodes-build/**",
+				"model.publicodes.json"
 			]
 		},
 		"prepack": {
@@ -32,6 +34,9 @@
 		"format": {
 			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"],
 			"outputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"]
+		},
+		"benchmark": {
+			"dependsOn": ["build"]
 		},
 		"lint": {
 			"dependsOn": ["^build", "codegen"],

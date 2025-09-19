@@ -30,7 +30,9 @@ dirigeant . auto-entrepreneur . DROM:
       valeur: entreprise . durée d'activité . années civiles <= 3
 
     taux service BIC:
-      remplace: cotisations et contributions . cotisations . service BIC . taux
+      remplace:
+       références à: cotisations et contributions . cotisations . service BIC . taux
+       priorité: 1
       variations:
         - si: première période
           alors: 3.60%
@@ -39,7 +41,9 @@ dirigeant . auto-entrepreneur . DROM:
         - sinon: 14.20%
 
     taux service BNC:
-      remplace: cotisations et contributions . cotisations . service BNC . taux
+      remplace:
+       références à: cotisations et contributions . cotisations . service BNC . taux
+       priorité: 1
       variations:
         - si: première période
           alors:
@@ -72,7 +76,9 @@ dirigeant . auto-entrepreneur . DROM:
               - sinon: 14.10%
 
     taux vente restauration hébergement:
-      remplace: cotisations et contributions . cotisations . vente restauration hébergement . taux
+      remplace:
+        références à: cotisations et contributions . cotisations . vente restauration hébergement . taux
+        priorité: 1
       variations:
         - si: première période
           alors: 2.10%
@@ -81,7 +87,9 @@ dirigeant . auto-entrepreneur . DROM:
         - sinon: 8.20%
 
     taux CIPAV:
-      remplace: cotisations et contributions . cotisations . service BNC Cipav . taux
+      remplace:
+        références à: cotisations et contributions . cotisations . service BNC Cipav . taux
+        priorité: 1
       variations:
         - si: première période
           alors: 7.10%

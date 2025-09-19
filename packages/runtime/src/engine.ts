@@ -48,8 +48,10 @@ export class Engine<O extends Outputs> {
 			return evaluateNode(evaluation, id, context as Context)
 		}
 
-		// eslint-disable-next-line prefer-const
-		let { p, v } = evaluate(output.nodeIndex!)
+		const { p, v } = evaluate(output.nodeIndex!)
+
+		type Value = Evaluation<O, R>['value']
+		let value = v as Value
 
 		if (debug) {
 			const evaluations = evaluation.map((node: Computation, i: number) => ({
@@ -65,10 +67,10 @@ export class Engine<O extends Outputs> {
 			(param) => !(param in context),
 		)
 		if (output.type && 'date' in output.type) {
-			v = new Date(v as number)
+			value = new Date(v as number) as Value
 		}
 		return {
-			value: v,
+			value,
 			neededParameters,
 			missingParameters,
 		} as Evaluation<O, R>

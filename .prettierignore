@@ -8,3 +8,4 @@ yarn.lock
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 packages/react-ui/CHANGELOG.md
+model.publicodes.json

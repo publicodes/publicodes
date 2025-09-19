@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'bun:test'
-import { yaml } from '../../utils/compile'
+import { TestPublicodes, yaml } from '../../utils/compile'
 
-describe('Rend non applicable > multiple', async () => {
-	const engine = await yaml`
-  a:
+describe('Rend non applicable > multiple', () => {
+	let engine: TestPublicodes
+	beforeAll(async () => {
+		engine = await yaml`
+	  a:
     rend non applicable: c
 
   b:
@@ -11,7 +13,8 @@ describe('Rend non applicable > multiple', async () => {
   c:
   x: c
 `
-	it('tous applicable', async () => {
+	})
+	it('tous applicable', () => {
 		expect(
 			engine.evaluate('x', {
 				a: true,
@@ -20,12 +23,12 @@ describe('Rend non applicable > multiple', async () => {
 		).toBe(null)
 	})
 
-	it('un seul applicable', async () => {
+	it('un seul applicable', () => {
 		expect(engine.evaluate('x', { a: true }).value).toBe(null)
 		expect(engine.evaluate('x', { b: true }).value).toBe(null)
 	})
 
-	it('aucun applicable', async () => {
+	it('aucun applicable', () => {
 		expect(engine.evaluate('x', { a: false, b: false }).value).toBe(undefined)
 	})
 })

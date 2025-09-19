@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'bun:test'
 import { yaml } from '../../utils/compile'
 
-describe('Rend non applicable > avec remplace', async () => {
+describe('Rend non applicable > avec remplace', () => {
 	it('rend non applicable take precedence over remplace', async () => {
 		const engine = await yaml`
     a:

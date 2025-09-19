@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'bun:test'
 import { yaml } from '../../utils/compile'
 
-describe('Remplace > priorité', async () => {
+describe('Remplace > priorité', () => {
 	it('simple', async () => {
 		const engine = await yaml`
     a:

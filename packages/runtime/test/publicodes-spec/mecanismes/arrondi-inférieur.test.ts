@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
-describe("Mécanisme > arrondi à l'inférieur", async () => {
+describe("Mécanisme > arrondi à l'inférieur", () => {
 	let engine: TestPublicodes
 	beforeAll(async () => {
 		engine = await yaml`
@@ -27,27 +27,27 @@ describe("Mécanisme > arrondi à l'inférieur", async () => {
 		`
 	})
 
-	it("à l'unité", async () => {
+	it("à l'unité", () => {
 		const result = engine.evaluate("à l'unité")
 		expect(result.value).toBe(38)
 	})
 
-	it('à 2 décimales', async () => {
+	it('à 2 décimales', () => {
 		const result = engine.evaluate('à 2 décimales')
 		expect(result.value).toBe(38.41)
 	})
 
-	it('à la dizaine', async () => {
+	it('à la dizaine', () => {
 		const result = engine.evaluate('à la dizaine')
 		expect(result.value).toBe(30)
 	})
 
-	it('à 0.5 près', async () => {
+	it('à 0.5 près', () => {
 		const result = engine.evaluate('à 0.5 près')
 		expect(result.value).toBe(38.0)
 	})
 
-	it('à 5 décimales', async () => {
+	it('à 5 décimales', () => {
 		const result = engine.evaluate('à 5 décimales')
 		expect(result.value).toBe(38.4167)
 	})

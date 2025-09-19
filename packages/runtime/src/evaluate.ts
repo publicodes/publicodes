@@ -10,11 +10,14 @@ class RuntimeError extends Error {
 const MAX_FLOAT_PRECISION = 15
 
 export type Value = {
-	v: number | string | boolean | null | undefined | Date
+	v: number | string | boolean | null | undefined
 	p: Record<string, true>
 }
 
-export type Context = Record<string, number | null | undefined | string>
+export type Context = Record<
+	string,
+	number | null | undefined | string | boolean
+>
 
 function evaluateNode(
 	evalTree: readonly Computation[],
@@ -96,42 +99,43 @@ function evaluateNode(
 			}
 
 			let v
+			const leftv = left.v as number
+			const rightv = right.v as number
 			if (right.v === undefined) {
 				v = undefined
 			} else if (op === '+') {
-				v = left.v + right.v
+				v = leftv + rightv
 			} else if (op === '-') {
-				v = left.v - right.v
+				v = leftv - rightv
 			} else if (op === '*') {
-				v = left.v * right.v
+				v = leftv * rightv
 			} else if (op === '/') {
-				v = left.v / right.v
+				v = leftv / rightv
 			} else if (op === '**') {
-				v = left.v ** right.v
+				v = leftv ** rightv
 			} else if (op === '!=') {
-				v = left.v !== right.v
+				v = leftv !== rightv
 			} else if (op === '<') {
-				v = left.v < right.v
+				v = leftv < rightv
 			} else if (op === '<=') {
-				v = left.v <= right.v
+				v = leftv <= rightv
 			} else if (op === '>') {
-				v = left.v > right.v
+				v = leftv > rightv
 			} else if (op === '>=') {
-				v = left.v >= right.v
+				v = leftv >= rightv
 			} else if (op === '=') {
-				v = left.v === right.v
+				v = leftv === rightv
 			} else if (op === '&&') {
-				v = left.v && right.v
+				v = leftv && rightv
 			} else if (op === '||') {
-				v = left.v || right.v
+				v = leftv || rightv
 			} else if (op === 'max' || op === 'min') {
-				if (left.v === null) {
-					v = right.v
-				} else if (right.v === null) {
-					v = left.v
+				if (leftv === null) {
+					v = rightv
+				} else if (rightv === null) {
+					v = leftv
 				} else {
-					v =
-						op === 'max' ? Math.max(left.v, right.v) : Math.min(left.v, right.v)
+					v = op === 'max' ? Math.max(leftv, rightv) : Math.min(leftv, rightv)
 				}
 			} else {
 				throw new RuntimeError('Internal error : Invalid operation')
@@ -182,10 +186,12 @@ function evaluateNode(
 			}
 
 			const r = (num: number) => +num.toPrecision(MAX_FLOAT_PRECISION)
+			const valv = val.v as number
+			const precv = precision.v as number
 			const v = r(
-				c[1] === 'up' ? Math.ceil(r(val.v / precision.v)) * precision.v
-				: c[1] === 'down' ? Math.floor(r(val.v / precision.v)) * precision.v
-				: Math.round(r(val.v / precision.v)) * precision.v,
+				c[1] === 'up' ? Math.ceil(r(valv / precv)) * precv
+				: c[1] === 'down' ? Math.floor(r(valv / precv)) * precv
+				: Math.round(r(valv / precv)) * precv,
 			)
 
 			return {

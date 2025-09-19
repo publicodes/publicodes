@@ -90,11 +90,15 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . 
 
   avec:
     taux service:
-      remplace: taux service
+      remplace:
+        références à: taux service
+        priorité: 1
       valeur: 0.83%
 
     taux vente:
-      remplace: taux vente
+      remplace:
+        références à: taux vente
+        priorité: 1
       valeur: 0.37%
 
 dirigeant . auto-entrepreneur . cotisations et contributions . CFP:
