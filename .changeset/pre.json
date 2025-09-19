@@ -1,0 +1,16 @@
+{
+	"mode": "pre",
+	"tag": "alpha",
+	"initialVersions": {
+		"@publicodes/cli": "2.0.0-alpha.0",
+		"@publicodes/codemod": "1.1.0",
+		"publicodes": "1.9.1",
+		"@publicodes/forms": "0.6.0",
+		"@publicodes/react-ui": "1.9.1",
+		"@publicodes/rest-api": "1.5.3",
+		"@publicodes/runtime": "2.0.0-alpha.0",
+		"@publicodes/tools": "1.8.0",
+		"website": "1.2.0"
+	},
+	"changesets": []
+}
