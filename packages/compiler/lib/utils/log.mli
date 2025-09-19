@@ -12,13 +12,13 @@
     - [`Global]: General/global errors
     - [`Replace]: Replacement errors *)
 type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global | `Replace]
-[@@deriving show, sexp, compare]
+[@@deriving equal]
 
 (** The severity level of the log message:
     - [`Error]: Fatal errors that prevent compilation
     - [`Warning]: Non-fatal issues that should be addressed
     - [`Debug]: Informational messages for debugging purposes *)
-type level = [`Error | `Warning | `Debug] [@@deriving show, sexp, compare]
+type level = [`Error | `Warning | `Debug] [@@deriving equal]
 
 type log =
   { kind: kind
@@ -27,9 +27,9 @@ type log =
   ; hints: string list
   ; labels: string Pos.t list
   ; code: Err.Code.t option }
-[@@deriving show, sexp, compare]
+[@@deriving equal]
 
-type t = log Pos.t [@@deriving show, sexp, compare]
+type t = log Pos.t [@@deriving equal]
 
 val error :
      code:Err.Code.t

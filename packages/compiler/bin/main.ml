@@ -1,5 +1,5 @@
 (* open Compiler *)
-open Core
+open Base
 
 (* open Utils.Output *)
 open Cmdliner
@@ -14,7 +14,7 @@ let publicodes =
 
 let main () = Cmd.eval' publicodes
 
-let () = if !Sys.interactive then () else exit (main ())
+let () = if !Sys.interactive then () else Stdlib.exit (main ())
 (* let () = *)
 (*   match Sys.get_argv () with *)
 (*   | [|_; file_path|] -> ( *)

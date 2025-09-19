@@ -2444,6 +2444,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@emnapi/core@npm:^1.4.5":
+  version: 1.5.0
+  resolution: "@emnapi/core@npm:1.5.0"
+  dependencies:
+    "@emnapi/wasi-threads": "npm:1.1.0"
+    tslib: "npm:^2.4.0"
+  checksum: 10/b500a69df001580731b0d355298b58832d44ab176937c0db7d10073a396f7a801ebcca10581f125a1cd88af4e6ecd6fbb04b78629cc703a424218b3a36d7bf50
+  languageName: node
+  linkType: hard
+
 "@emnapi/runtime@npm:^1.4.0":
   version: 1.4.3
   resolution: "@emnapi/runtime@npm:1.4.3"
@@ -2453,12 +2463,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@emnapi/runtime@npm:^1.4.5":
+  version: 1.5.0
+  resolution: "@emnapi/runtime@npm:1.5.0"
+  dependencies:
+    tslib: "npm:^2.4.0"
+  checksum: 10/5311ce854306babc77f4bd94c2f973722714a0fab93c126239104ad52dea16a147bfed4c4cff3ca1eb32709607221c25d2f747ae8524cbeb9088058f02ff962b
+  languageName: node
+  linkType: hard
+
 "@emnapi/wasi-threads@npm:1.0.2":
   version: 1.0.2
   resolution: "@emnapi/wasi-threads@npm:1.0.2"
   dependencies:
     tslib: "npm:^2.4.0"
   checksum: 10/e82941776665eb958c2084728191d6b15a94383449975c4621b67a1c8217e1c0ec11056a693906c76863cb96f782f8be500510ecec6874e3f5da35a8e7968cfd
+  languageName: node
+  linkType: hard
+
+"@emnapi/wasi-threads@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@emnapi/wasi-threads@npm:1.1.0"
+  dependencies:
+    tslib: "npm:^2.4.0"
+  checksum: 10/0d557e75262d2f4c95cb2a456ba0785ef61f919ce488c1d76e5e3acfd26e00c753ef928cd80068363e0c166ba8cc0141305daf0f81aad5afcd421f38f11e0f4e
   languageName: node
   linkType: hard
 
@@ -3814,6 +3842,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@napi-rs/wasm-runtime@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@napi-rs/wasm-runtime@npm:1.0.3"
+  dependencies:
+    "@emnapi/core": "npm:^1.4.5"
+    "@emnapi/runtime": "npm:^1.4.5"
+    "@tybys/wasm-util": "npm:^0.10.0"
+  checksum: 10/4af90cfe43205591cdcfb86eb6ba41a625f35cca26c372c58dac7b99e85e2a2bf9d3f8b3fd71106d167a7efaca60fef69aa614fbc8c22103b3c81f0225ea8275
+  languageName: node
+  linkType: hard
+
 "@next/env@npm:13.4.19":
   version: 13.4.19
   resolution: "@next/env@npm:13.4.19"
@@ -4003,10 +4042,101 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@oven/bun-darwin-aarch64@npm:1.2.22":
+  version: 1.2.22
+  resolution: "@oven/bun-darwin-aarch64@npm:1.2.22"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@oven/bun-darwin-x64-baseline@npm:1.2.22":
+  version: 1.2.22
+  resolution: "@oven/bun-darwin-x64-baseline@npm:1.2.22"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@oven/bun-darwin-x64@npm:1.2.22":
+  version: 1.2.22
+  resolution: "@oven/bun-darwin-x64@npm:1.2.22"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@oven/bun-linux-aarch64-musl@npm:1.2.22":
+  version: 1.2.22
+  resolution: "@oven/bun-linux-aarch64-musl@npm:1.2.22"
+  conditions: os=linux & cpu=aarch64
+  languageName: node
+  linkType: hard
+
+"@oven/bun-linux-aarch64@npm:1.2.22":
+  version: 1.2.22
+  resolution: "@oven/bun-linux-aarch64@npm:1.2.22"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@oven/bun-linux-x64-baseline@npm:1.2.22":
+  version: 1.2.22
+  resolution: "@oven/bun-linux-x64-baseline@npm:1.2.22"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@oven/bun-linux-x64-musl-baseline@npm:1.2.22":
+  version: 1.2.22
+  resolution: "@oven/bun-linux-x64-musl-baseline@npm:1.2.22"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@oven/bun-linux-x64-musl@npm:1.2.22":
+  version: 1.2.22
+  resolution: "@oven/bun-linux-x64-musl@npm:1.2.22"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@oven/bun-linux-x64@npm:1.2.22":
+  version: 1.2.22
+  resolution: "@oven/bun-linux-x64@npm:1.2.22"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@oven/bun-windows-x64-baseline@npm:1.2.22":
+  version: 1.2.22
+  resolution: "@oven/bun-windows-x64-baseline@npm:1.2.22"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@oven/bun-windows-x64@npm:1.2.22":
+  version: 1.2.22
+  resolution: "@oven/bun-windows-x64@npm:1.2.22"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@oxc-project/runtime@npm:=0.87.0":
+  version: 0.87.0
+  resolution: "@oxc-project/runtime@npm:0.87.0"
+  checksum: 10/dceb1ae1803490905c37ba2d8a84dc4c2db48d9e66e68f30b89b91d5c41468eaf9020fc93291bcfec7f6f8e0ef7e2e0a37f75a3f22061463d110b13278d19c59
+  languageName: node
+  linkType: hard
+
 "@oxc-project/types@npm:0.65.0":
   version: 0.65.0
   resolution: "@oxc-project/types@npm:0.65.0"
   checksum: 10/2d14be9910f7ebdd0848a2a3d364f5e390307b577aa4a95e9b3f57ab7574a6da4a9e6e5adc62a7b944bd3069e06817d1d553594c63106a66be84cb2387387b45
+  languageName: node
+  linkType: hard
+
+"@oxc-project/types@npm:=0.87.0":
+  version: 0.87.0
+  resolution: "@oxc-project/types@npm:0.87.0"
+  checksum: 10/4353b388e8ebd098cbdcd6827ddf2f4783341ad8b70f6df4ed385b009334179f430c19bbab4a35f51b65ac7ed8679197b8d059a802246b513a3b433d96a764f9
   languageName: node
   linkType: hard
 
@@ -4071,6 +4201,18 @@ __metadata:
   checksum: 10/7402aaf1de781d0eb0870d50cbcd394f949aee11b38a267a5c3b4e3cfee117e920693e6e93ce24c87ae2d477a59634f39d9edde8e86471cae756839b07c79af7
   languageName: node
   linkType: hard
+
+"@publicodes/cli@workspace:^, @publicodes/cli@workspace:packages/cli":
+  version: 0.0.0-use.local
+  resolution: "@publicodes/cli@workspace:packages/cli"
+  dependencies:
+    "@types/bun": "npm:^1"
+    bun: "npm:^1.2.22"
+    rolldown: "npm:1.0.0-beta.36"
+  bin:
+    publicodes2: ./bin/publicodes.js
+  languageName: unknown
+  linkType: soft
 
 "@publicodes/codemod@workspace:packages/codemod":
   version: 0.0.0-use.local
@@ -4149,10 +4291,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@publicodes/runtime@workspace:packages/runtime"
   dependencies:
+    "@publicodes/cli": "workspace:^"
     "@publicodes/tools": "workspace:^"
     mitata: "npm:^1.0.34"
     rolldown: "npm:1.0.0-beta.8"
-    tsc: "npm:^2.0.4"
+    typescript: "npm:^5.9.2"
   languageName: unknown
   linkType: soft
 
@@ -4190,10 +4333,31 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@rolldown/binding-android-arm64@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-android-arm64@npm:1.0.0-beta.36"
+  conditions: os=android & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@rolldown/binding-darwin-arm64@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-darwin-arm64@npm:1.0.0-beta.36"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@rolldown/binding-darwin-arm64@npm:1.0.0-beta.8":
   version: 1.0.0-beta.8
   resolution: "@rolldown/binding-darwin-arm64@npm:1.0.0-beta.8"
   conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@rolldown/binding-darwin-x64@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-darwin-x64@npm:1.0.0-beta.36"
+  conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
@@ -4204,10 +4368,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rolldown/binding-freebsd-x64@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-freebsd-x64@npm:1.0.0-beta.36"
+  conditions: os=freebsd & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@rolldown/binding-freebsd-x64@npm:1.0.0-beta.8":
   version: 1.0.0-beta.8
   resolution: "@rolldown/binding-freebsd-x64@npm:1.0.0-beta.8"
   conditions: os=freebsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rolldown/binding-linux-arm-gnueabihf@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-linux-arm-gnueabihf@npm:1.0.0-beta.36"
+  conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
@@ -4218,10 +4396,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rolldown/binding-linux-arm64-gnu@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-linux-arm64-gnu@npm:1.0.0-beta.36"
+  conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
 "@rolldown/binding-linux-arm64-gnu@npm:1.0.0-beta.8":
   version: 1.0.0-beta.8
   resolution: "@rolldown/binding-linux-arm64-gnu@npm:1.0.0-beta.8"
   conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@rolldown/binding-linux-arm64-musl@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-linux-arm64-musl@npm:1.0.0-beta.36"
+  conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
@@ -4232,6 +4424,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rolldown/binding-linux-x64-gnu@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-linux-x64-gnu@npm:1.0.0-beta.36"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
 "@rolldown/binding-linux-x64-gnu@npm:1.0.0-beta.8":
   version: 1.0.0-beta.8
   resolution: "@rolldown/binding-linux-x64-gnu@npm:1.0.0-beta.8"
@@ -4239,10 +4438,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rolldown/binding-linux-x64-musl@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-linux-x64-musl@npm:1.0.0-beta.36"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
 "@rolldown/binding-linux-x64-musl@npm:1.0.0-beta.8":
   version: 1.0.0-beta.8
   resolution: "@rolldown/binding-linux-x64-musl@npm:1.0.0-beta.8"
   conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@rolldown/binding-openharmony-arm64@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-openharmony-arm64@npm:1.0.0-beta.36"
+  conditions: os=openharmony & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@rolldown/binding-wasm32-wasi@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-wasm32-wasi@npm:1.0.0-beta.36"
+  dependencies:
+    "@napi-rs/wasm-runtime": "npm:^1.0.3"
+  conditions: cpu=wasm32
   languageName: node
   linkType: hard
 
@@ -4255,10 +4477,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rolldown/binding-win32-arm64-msvc@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-win32-arm64-msvc@npm:1.0.0-beta.36"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@rolldown/binding-win32-arm64-msvc@npm:1.0.0-beta.8":
   version: 1.0.0-beta.8
   resolution: "@rolldown/binding-win32-arm64-msvc@npm:1.0.0-beta.8"
   conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@rolldown/binding-win32-ia32-msvc@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-win32-ia32-msvc@npm:1.0.0-beta.36"
+  conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
@@ -4269,10 +4505,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rolldown/binding-win32-x64-msvc@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/binding-win32-x64-msvc@npm:1.0.0-beta.36"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@rolldown/binding-win32-x64-msvc@npm:1.0.0-beta.8":
   version: 1.0.0-beta.8
   resolution: "@rolldown/binding-win32-x64-msvc@npm:1.0.0-beta.8"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rolldown/pluginutils@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "@rolldown/pluginutils@npm:1.0.0-beta.36"
+  checksum: 10/bcd409b3f08e62c4a736ca23eef8b9d1e7d8ba1abacfc82e047094001da51f9c8f61f525a8bec9cae05937871811eb6851cd4240a1c2dc3ffc3ec99138e20b4b
   languageName: node
   linkType: hard
 
@@ -5142,6 +5392,15 @@ __metadata:
   version: 1.0.4
   resolution: "@tsconfig/node16@npm:1.0.4"
   checksum: 10/202319785901f942a6e1e476b872d421baec20cf09f4b266a1854060efbf78cde16a4d256e8bc949d31e6cd9a90f1e8ef8fb06af96a65e98338a2b6b0de0a0ff
+  languageName: node
+  linkType: hard
+
+"@tybys/wasm-util@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@tybys/wasm-util@npm:0.10.0"
+  dependencies:
+    tslib: "npm:^2.4.0"
+  checksum: 10/779d047a77e8a619b6e26b6fe556f413316d846e9a35438668a15510a4d6e7294388c998f65911f6f1a13838745575d7793cb1d27182752f6f95991725b15d45
   languageName: node
   linkType: hard
 
@@ -6984,6 +7243,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ansis@npm:^4.0.0":
+  version: 4.1.0
+  resolution: "ansis@npm:4.1.0"
+  checksum: 10/e2658367807edb461a4c772bdba50cef85c7b3e5f19d4d67d7a406e97b9ba222cfd4dc300fee1b05619207d4e17c809f32e97ac47429f8b4b1a6709dc6ac35ac
+  languageName: node
+  linkType: hard
+
 "any-promise@npm:^1.0.0":
   version: 1.3.0
   resolution: "any-promise@npm:1.3.0"
@@ -7716,6 +7982,52 @@ __metadata:
     "@types/node": "npm:*"
     "@types/ws": "npm:~8.5.10"
   checksum: 10/a139c8f78c923c527d17e7e4e5c81c6654800c3aaf33d297402b2866e1db3ccb5f1e5925af68227ffd26126b28053dbfb4b898afa1caebeb6ed1a9e40295fb7e
+  languageName: node
+  linkType: hard
+
+"bun@npm:^1.2.22":
+  version: 1.2.22
+  resolution: "bun@npm:1.2.22"
+  dependencies:
+    "@oven/bun-darwin-aarch64": "npm:1.2.22"
+    "@oven/bun-darwin-x64": "npm:1.2.22"
+    "@oven/bun-darwin-x64-baseline": "npm:1.2.22"
+    "@oven/bun-linux-aarch64": "npm:1.2.22"
+    "@oven/bun-linux-aarch64-musl": "npm:1.2.22"
+    "@oven/bun-linux-x64": "npm:1.2.22"
+    "@oven/bun-linux-x64-baseline": "npm:1.2.22"
+    "@oven/bun-linux-x64-musl": "npm:1.2.22"
+    "@oven/bun-linux-x64-musl-baseline": "npm:1.2.22"
+    "@oven/bun-windows-x64": "npm:1.2.22"
+    "@oven/bun-windows-x64-baseline": "npm:1.2.22"
+  dependenciesMeta:
+    "@oven/bun-darwin-aarch64":
+      optional: true
+    "@oven/bun-darwin-x64":
+      optional: true
+    "@oven/bun-darwin-x64-baseline":
+      optional: true
+    "@oven/bun-linux-aarch64":
+      optional: true
+    "@oven/bun-linux-aarch64-musl":
+      optional: true
+    "@oven/bun-linux-x64":
+      optional: true
+    "@oven/bun-linux-x64-baseline":
+      optional: true
+    "@oven/bun-linux-x64-musl":
+      optional: true
+    "@oven/bun-linux-x64-musl-baseline":
+      optional: true
+    "@oven/bun-windows-x64":
+      optional: true
+    "@oven/bun-windows-x64-baseline":
+      optional: true
+  bin:
+    bun: bin/bun.exe
+    bunx: bin/bunx.exe
+  checksum: 10/aeb1045d90fde999e32c478503449dab5e5ac6de518e0f8b9a25630bd86731ec3245c3fc80b80253a02108492edae9313fad207ab7c8d6784c3bd2f2c4dc8113
+  conditions: (os=darwin | os=linux | os=win32) & (cpu=arm64 | cpu=x64 | cpu=aarch64)
   languageName: node
   linkType: hard
 
@@ -18141,6 +18453,63 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rolldown@npm:1.0.0-beta.36":
+  version: 1.0.0-beta.36
+  resolution: "rolldown@npm:1.0.0-beta.36"
+  dependencies:
+    "@oxc-project/runtime": "npm:=0.87.0"
+    "@oxc-project/types": "npm:=0.87.0"
+    "@rolldown/binding-android-arm64": "npm:1.0.0-beta.36"
+    "@rolldown/binding-darwin-arm64": "npm:1.0.0-beta.36"
+    "@rolldown/binding-darwin-x64": "npm:1.0.0-beta.36"
+    "@rolldown/binding-freebsd-x64": "npm:1.0.0-beta.36"
+    "@rolldown/binding-linux-arm-gnueabihf": "npm:1.0.0-beta.36"
+    "@rolldown/binding-linux-arm64-gnu": "npm:1.0.0-beta.36"
+    "@rolldown/binding-linux-arm64-musl": "npm:1.0.0-beta.36"
+    "@rolldown/binding-linux-x64-gnu": "npm:1.0.0-beta.36"
+    "@rolldown/binding-linux-x64-musl": "npm:1.0.0-beta.36"
+    "@rolldown/binding-openharmony-arm64": "npm:1.0.0-beta.36"
+    "@rolldown/binding-wasm32-wasi": "npm:1.0.0-beta.36"
+    "@rolldown/binding-win32-arm64-msvc": "npm:1.0.0-beta.36"
+    "@rolldown/binding-win32-ia32-msvc": "npm:1.0.0-beta.36"
+    "@rolldown/binding-win32-x64-msvc": "npm:1.0.0-beta.36"
+    "@rolldown/pluginutils": "npm:1.0.0-beta.36"
+    ansis: "npm:^4.0.0"
+  dependenciesMeta:
+    "@rolldown/binding-android-arm64":
+      optional: true
+    "@rolldown/binding-darwin-arm64":
+      optional: true
+    "@rolldown/binding-darwin-x64":
+      optional: true
+    "@rolldown/binding-freebsd-x64":
+      optional: true
+    "@rolldown/binding-linux-arm-gnueabihf":
+      optional: true
+    "@rolldown/binding-linux-arm64-gnu":
+      optional: true
+    "@rolldown/binding-linux-arm64-musl":
+      optional: true
+    "@rolldown/binding-linux-x64-gnu":
+      optional: true
+    "@rolldown/binding-linux-x64-musl":
+      optional: true
+    "@rolldown/binding-openharmony-arm64":
+      optional: true
+    "@rolldown/binding-wasm32-wasi":
+      optional: true
+    "@rolldown/binding-win32-arm64-msvc":
+      optional: true
+    "@rolldown/binding-win32-ia32-msvc":
+      optional: true
+    "@rolldown/binding-win32-x64-msvc":
+      optional: true
+  bin:
+    rolldown: bin/cli.mjs
+  checksum: 10/a6a523c97dc6d06b941d29b6c35886ab8a45a6519a337c1d11dd39ab4d6b5ebf528200decfa2ce442f1c6503cd2e3e68b7f6061bd90847838ee9052d4992a3e9
+  languageName: node
+  linkType: hard
+
 "rolldown@npm:1.0.0-beta.8":
   version: 1.0.0-beta.8
   resolution: "rolldown@npm:1.0.0-beta.8"
@@ -19748,7 +20117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:4.0.6, tailwindcss@npm:^4.0.0":
+"tailwindcss@npm:4.0.6":
   version: 4.0.6
   resolution: "tailwindcss@npm:4.0.6"
   checksum: 10/b1141d98730b89164a38dab2c6fe0150a0910ab4ab45865d345b1fbf9eb9c0893f8cbe1392b7bcf59e52eb9f2e9750970b1d912f2ac4458e4b9e4cabe4518798
@@ -19785,6 +20154,13 @@ __metadata:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
   checksum: 10/b0e00533ae3800223b5b71af9cb1dd9bfea5ef5ffa01300f1ced99de9511487aa41e03106173e4168c56c8f6600ee21c98c1d75a5def23cddf9b39b4ad71210d
+  languageName: node
+  linkType: hard
+
+"tailwindcss@npm:^4.0.0":
+  version: 4.1.13
+  resolution: "tailwindcss@npm:4.1.13"
+  checksum: 10/0ebba982abc5cc479da0a21c343df557286847752b80276ec38a8633a13414557ae11bf44574c5f0924a9edfb843afcc3ddf32f7e4ee101a527e8e690261b2c1
   languageName: node
   linkType: hard
 
@@ -20232,15 +20608,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsc@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "tsc@npm:2.0.4"
-  bin:
-    tsc: bin/tsc
-  checksum: 10/50b10240887424c66454687f0fca4e319713b35cb44f0dab228719eb4dd757251f83c3d79e60d29dfbe90c2d6f1272f793b83e75a9fca2c622b4213ad3eb8cb1
-  languageName: node
-  linkType: hard
-
 "tsconfig-paths@npm:^3.15.0":
   version: 3.15.0
   resolution: "tsconfig-paths@npm:3.15.0"
@@ -20624,6 +20991,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^5.9.2":
+  version: 5.9.2
+  resolution: "typescript@npm:5.9.2"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10/cc2fe6c822819de5d453fa25aa9f32096bf70dde215d481faa1ad84a283dfb264e33988ed8f6d36bc803dd0b16dbe943efa311a798ef76d5b3892a05dfbfd628
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@npm%3A^5.0.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.6.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.7.3#optional!builtin<compat/typescript>":
   version: 5.7.3
   resolution: "typescript@patch:typescript@npm%3A5.7.3#optional!builtin<compat/typescript>::version=5.7.3&hash=8c6c40"
@@ -20631,6 +21008,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10/3ac7b7e3e899273d2fbdce6e24b93d4d53a705ad7a7e4cc83b4c57bcb6d25948abcd2a21994f6b9c73ab03960f395aae95f0458de292a66ce0134233261714c3
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A^5.9.2#optional!builtin<compat/typescript>":
+  version: 5.9.2
+  resolution: "typescript@patch:typescript@npm%3A5.9.2#optional!builtin<compat/typescript>::version=5.9.2&hash=8c6c40"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10/a8606016982f2f46ed085e9b4b84d8a5251b42ff0560c995c20f3c3ab9543e37c1015d92ab2f1cc7b2af2b499d12bac57e11789da271fb3225af8ec0b24e5b64
   languageName: node
   linkType: hard
 

@@ -15,7 +15,7 @@ let rec normalize_value (value : Tree.value) : Tree.value =
 
 (* Normalize rounding precision parameter.
 This function normalizes
-   different precision representations into a standard format where precision is a number.
+   different precision representations into a standard Stdlib.Format where precision is a number.
 
    Supported precision types:
    - Boolean: true becomes 1, false becomes null

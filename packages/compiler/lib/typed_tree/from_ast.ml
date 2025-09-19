@@ -1,7 +1,7 @@
 open Typ
 open Shared
 open Shared.Eval_tree
-open Core
+open Base
 open Utils
 open Tree
 
@@ -69,7 +69,7 @@ and transform_mechanism_value (node, pos) =
 and unfold_chainable_mechanism ~init mechanisms =
   mechanisms
   |> List.sort ~compare:(fun a b ->
-         [%compare: Rule_name.t Shared_ast.chainable_mechanism] (Pos.value a)
+         Shared_ast.compare_chainable_mechanism Rule_name.compare (Pos.value a)
            (Pos.value b) )
   |> List.fold_right ~init ~f:(fun (mec, pos) acc ->
          match mec with
@@ -297,8 +297,8 @@ and transform_round ~pos round value =
 
 let from_ast (resolved_ast : Shared_ast.resolved) : t =
   let evalTree =
-    Rule_name.Hashtbl.create ~size:(List.length resolved_ast)
-      ~growth_allowed:false ()
+    Hashtbl.create (module Rule_name) ~size:(List.length resolved_ast)
+      ~growth_allowed:false
   in
   List.iter resolved_ast ~f:(fun Shared_ast.{name; value; _} ->
       let key = Pos.value name in

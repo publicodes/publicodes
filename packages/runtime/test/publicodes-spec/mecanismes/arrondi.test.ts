@@ -1,9 +1,11 @@
-import { describe, it, expect } from 'bun:test'
-import { yaml } from '../../utils/compile'
+import { describe, it, expect, beforeAll } from 'bun:test'
+import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Mécanisme > arrondi', () => {
   describe('arrondi simple', async () => {
-    const engine = await yaml`
+    let engine: TestPublicodes
+    beforeAll(async () => {
+      engine = await yaml`
 arrondi à l'unité:
   valeur: 33.4167
   arrondi: oui
@@ -20,6 +22,7 @@ arrondi à 0.5 près:
   valeur: 33.4167
   arrondi: 0.5
 `
+    })
     it("arrondi à l'unité", () => {
       const result = engine.evaluate("arrondi à l'unité")
       expect(result.value).toEqual(33)

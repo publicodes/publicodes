@@ -1,4 +1,4 @@
-open Core
+open Base
 open Typ
 open Shared
 open Utils
@@ -16,7 +16,7 @@ let convert ~pos expr from_unit to_unit =
        , mk
            (Const
               (Number
-                 (100. ** Float.of_int (percent_pow_to - percent_pow_from), None)
+                 (100. **. Float.of_int (percent_pow_to - percent_pow_from), None)
               ) ) ) )
 (* TODO : step 1 - normalize every unit. If some are undetermined, default to empty, and print a warning *)
 

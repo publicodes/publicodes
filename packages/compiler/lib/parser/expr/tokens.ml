@@ -1,4 +1,4 @@
-open Core
+open Base
 
 type t =
   | ADD
@@ -21,7 +21,7 @@ type t =
   | STRING of string
   | RULE_NAME of string
   | BOOLEAN of bool
-[@@deriving sexp, compare, show]
+[@@deriving equal, compare, show, sexp]
 
 let to_string = function
   | ADD ->

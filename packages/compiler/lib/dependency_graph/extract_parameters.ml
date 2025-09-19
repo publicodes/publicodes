@@ -1,4 +1,4 @@
-open Core
+open Base
 open Shared
 open Shared.Shared_ast
 open Utils
@@ -28,7 +28,7 @@ let extract_parameters ~(ast : 'a Shared_ast.t) ~(tree : Hashed_tree.t)
           let rule_definition =
             List.find_exn
               ~f:(fun rule ->
-                [%compare.equal: Rule_name.t] (Pos.value rule.name)
+                Rule_name.equal (Pos.value rule.name)
                   dependent_rule_name )
               ast
           in
@@ -66,7 +66,7 @@ let extract_parameters ~(ast : 'a Shared_ast.t) ~(tree : Hashed_tree.t)
               (Log.warning ~code ~pos ~kind:`Type
                  ~hints:
                    [ "Spécifiez le type de la règle. Par exemple : `type: texte`"
-                   ; Format.asprintf "%a" Rule_name.pp rule_name ]
+                   ; Stdlib.Format.asprintf "%a" Rule_name.pp rule_name ]
                  message )
         | Some (Number None) ->
             let code, message = Err.missing_output_type in

@@ -1,16 +1,17 @@
 let trim = String.trim
 
-open Core
+open Base
 
-module StrMap = struct
-  module M = Map.Make (String)
-  include M
-end
+module Unit = String
 
-type t = int StrMap.t [@@deriving sexp, compare]
+type t = int Map.M(Unit).t [@@deriving equal, compare, sexp]
+
+let empty = Map.empty (module Unit)
+
 
 let pp formatter unit =
-  if Map.is_empty unit then Format.fprintf formatter "aucune"
+  let open Stdlib.Format in
+  if Map.is_empty unit then fprintf formatter "aucune"
   else
     let map_to_list map =
       Map.to_alist map
@@ -41,7 +42,7 @@ let pp formatter unit =
       | pos, neg ->
           pos ^ "/" ^ neg
     in
-    Format.fprintf formatter "%s" units_str
+    fprintf formatter "%s" units_str
 
 let parse_unit (unit : string) : t =
   let unit_blk = unit |> String.split ~on:'/' |> List.map ~f:trim in
@@ -57,7 +58,7 @@ let parse_unit (unit : string) : t =
     denoms |> List.concat_map ~f:(String.split ~on:'.') |> List.map ~f:trim
   in
   num
-  |> List.fold ~init:StrMap.empty
+  |> List.fold ~init:(empty)
        ~f:(Map.update ~f:(function Some n -> n + 1 | None -> 1))
   |> fun acc ->
   List.fold ~init:acc
@@ -82,7 +83,6 @@ let mul (t1 : t) (t2 : t) : t =
 
 let inv (t1 : t) : t = Map.map t1 ~f:(fun power -> -power)
 
-let empty = StrMap.empty
 
 (** Simplify unit *)
 let simplify number_unit =

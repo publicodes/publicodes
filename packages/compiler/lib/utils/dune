@@ -1,6 +1,6 @@
 (library
  (name utils)
- (libraries core stdune ppx_show.runtime)
+ (libraries base stdune ppx_deriving)
  (modules :standard)
  (preprocess
-  (pps ppx_inline_test ppx_show ppx_compare ppx_sexp_conv ppx_show sedlex.ppx ppx_assert)))
+  (pps ppx_sexp_conv ppx_deriving.show ppx_compare )))

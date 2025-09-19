@@ -1,4 +1,4 @@
-open Core
+open Base
 open Utils
 open Shared.Eval_tree
 open Shared.Rule_name
@@ -14,11 +14,11 @@ open Tree
 
 type indexing_state =
   { mutable counter: int
-  ; hash_to_index: (To_hash.t, int) Core.Hashtbl.t
+  ; hash_to_index: int Base.Hashtbl.M(To_hash).t
   ; mutable nodes: (int * Yojson.Safe.t) list }
 
 let create_indexing_state () =
-  {counter= 0; hash_to_index= Core.Hashtbl.create (module String); nodes= []}
+  {counter= 0; hash_to_index= Base.Hashtbl.create (module To_hash); nodes= []}
 
 let json_of_eval_tree_flat (tree : Tree.t) =
   let state = create_indexing_state () in
@@ -26,13 +26,13 @@ let json_of_eval_tree_flat (tree : Tree.t) =
    * Returns existing index if hash seen before, else creates new node. *)
   let rec get_or_create_index (value : value) =
     let hash = value.meta.hash in
-    match Core.Hashtbl.find state.hash_to_index hash with
+    match Base.Hashtbl.find state.hash_to_index hash with
     | Some index ->
         index
     | None ->
         let current_index = state.counter in
         state.counter <- state.counter + 1 ;
-        Core.Hashtbl.set state.hash_to_index ~key:hash ~data:current_index ;
+        Base.Hashtbl.set state.hash_to_index ~key:hash ~data:current_index ;
         let json_content =
           match value.value with
           | Get_context name ->
@@ -112,14 +112,14 @@ let json_of_eval_tree_flat (tree : Tree.t) =
     match value.value with
     | Ref name ->
         (* Look up the referenced rule and get its value *)
-        let referenced_value = Core.Hashtbl.find_exn tree name in
+        let referenced_value = Base.Hashtbl.find_exn tree name in
         get_or_create_index referenced_value
     | _ ->
         (* For non-ref values, process normally *)
         get_or_create_index value
   in
   let rule_to_index =
-    Core.Hashtbl.fold tree ~init:[] ~f:(fun ~key:rule ~data acc_rules ->
+    Base.Hashtbl.fold tree ~init:[] ~f:(fun ~key:rule ~data acc_rules ->
         let index = resolve_and_get_index data in
         (to_string rule, index) :: acc_rules )
   in
@@ -150,7 +150,7 @@ let to_json tree params =
           | Some (Number (Some unit)) ->
               `Assoc
                 [ ("number", `Bool true)
-                ; ("unit", `String (Format.asprintf "%a" Shared.Units.pp unit))
+                ; ("unit", `String (Stdlib.Format.asprintf "%a" Shared.Units.pp unit))
                 ]
           | Some (Number None) ->
               `Assoc [("number", `Bool true)]

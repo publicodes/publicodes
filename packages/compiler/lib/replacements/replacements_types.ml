@@ -1,6 +1,6 @@
 open Shared
 open Utils
-open Core
+open Base
 
 (** Metadata for rule replacements, including priority and scope limitations *)
 type replace_meta =
@@ -16,7 +16,7 @@ let compare_replace_meta a b = Int.compare a.priority b.priority
 
 (** Module for rule vertices in the replacement graph *)
 module RuleVertex = struct
-  type t = Rule_name.t [@@deriving compare, equal]
+  type t = Rule_name.t [@@deriving equal, compare]
 
   let hash = Hashtbl.hash
 end

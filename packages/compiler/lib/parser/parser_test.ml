@@ -1,8 +1,7 @@
 open Yaml_parser
 open Utils.Output
 open Parse
-open Core
-open Shared.Shared_ast
+open Base
 open Ast
 
 let p length any = Pos.(mk ~pos:(add ~len:length dummy)) any
@@ -18,7 +17,7 @@ let%test_unit "parse: simple rule" =
   | Some [rule_def] ->
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
         (Shared.Rule_name.create_exn ["rule"]) ;
-      [%test_eq: value] rule_def.value
+      [%test_eq: string list Shared.Shared_ast.value] rule_def.value
         { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
         ; chainable_mechanisms= [] }
   | _ ->
@@ -34,12 +33,12 @@ let%test_unit "parse: simple rules" =
   | Some [rule_def1; rule_def2] ->
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def1.name)
         (Shared.Rule_name.create_exn ["rule 1"]) ;
-      [%test_eq: value] rule_def1.value
+      [%test_eq: string list Shared.Shared_ast.value] rule_def1.value
         { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
         ; chainable_mechanisms= [] } ;
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def2.name)
         (Shared.Rule_name.create_exn ["rule 2"]) ;
-      [%test_eq: value] rule_def2.value
+      [%test_eq: string list Shared.Shared_ast.value] rule_def2.value
         {value= p 0 (Expr (p 3 (Const (Bool false)))); chainable_mechanisms= []}
   | _ ->
       print_logs output ;
@@ -51,7 +50,7 @@ let%test_unit "parse: empty rule" =
   | Some [rule_def] ->
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
         (Shared.Rule_name.create_exn ["rule 1"]) ;
-      [%test_eq: value] rule_def.value
+      [%test_eq: string list Shared.Shared_ast.value] rule_def.value
         {value= p 0 Undefined; chainable_mechanisms= []}
   | _ ->
       print_logs output ;
@@ -69,7 +68,7 @@ let%test_unit "parse: rules with title" =
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
         (Shared.Rule_name.create_exn ["rule 1"; "subrule 2"]) ;
       [%test_eq: rule_meta list] rule_def.meta [Title "mon titre"] ;
-      [%test_eq: value] rule_def.value
+      [%test_eq: string list Shared.Shared_ast.value] rule_def.value
         {value= p 0 Undefined; chainable_mechanisms= []}
   | _ ->
       print_logs output ;
@@ -87,7 +86,7 @@ let%test_unit "parse: rules with description and valeur" =
   match result output with
   | Some [{meta; value; _}] ->
       [%test_eq: rule_meta list] meta [Description "ma description"] ;
-      [%test_eq: value] value
+      [%test_eq: string list Shared.Shared_ast.value] value
         { value=
             p 0
               (Value
@@ -109,7 +108,7 @@ let%test_unit "parse: non applicable si" =
   in
   match result output with
   | Some [{value; _}] ->
-      [%test_eq: value] value
+      [%test_eq: string list Shared.Shared_ast.value] value
         { value=
             p 0
               (Value
@@ -134,7 +133,7 @@ let%test_unit "parse: plafond" =
   in
   match result output with
   | Some [{value; _}] ->
-      [%test_eq: value] value
+      [%test_eq: string list Shared.Shared_ast.value] value
         { value=
             p 0
               (Value
@@ -162,7 +161,7 @@ let%test_unit "parse: multiple chainable mechanisms" =
   in
   match result output with
   | Some [{value; _}] ->
-      [%test_eq: value] value
+      [%test_eq: string list Shared.Shared_ast.value] value
         { value=
             p 0
               (Value

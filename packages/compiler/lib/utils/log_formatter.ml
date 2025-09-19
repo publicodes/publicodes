@@ -1,9 +1,9 @@
-open Core
+open Base
 open Pp
 
 (* Tag handler for terminal styling *)
 let handle_tag formatter tag content =
-  let open Format in
+  let open Stdlib.Format in
   match tag with
   | `Error ->
       pp_print_string formatter "\027[1;31m" ;
@@ -46,12 +46,10 @@ let handle_tag formatter tag content =
 (* Helper function to read file content *)
 let read_file_lines filename =
   try
-    let ic = In_channel.create filename in
-    let lines = In_channel.input_lines ic in
-    In_channel.close ic ; Some lines
+    In_channel.with_open_text filename In_channel.input_lines |> fun lines -> Some lines
   with _ -> None
 
-(* Format a position as "filename:line:column" for IDE clickability *)
+(* Stdlib.Format a position as "filename:line:column" for IDE clickability *)
 let format_position (pos : Pos.pos) =
   if Pos.is_empty_file pos then text "<unknown>"
   else
@@ -62,7 +60,7 @@ let format_position (pos : Pos.pos) =
     let end_col = pos.end_pos.column in *)
     textf "%s:%d:%d" file start_line start_col
 
-(* Format code excerpt with the problematic part tagged based on level *)
+(* Stdlib.Format code excerpt with the problematic part tagged based on level *)
 let format_code_excerpt ?message ~(pos : Pos.pos) level =
   if Pos.is_empty_file pos then text "<no source available>"
   else
@@ -149,7 +147,7 @@ let format_code_excerpt ?message ~(pos : Pos.pos) level =
         (* Combine all line documents *)
         vbox @@ concat ~sep:cut (location :: line_docs)
 
-(* Format the level with appropriate styling *)
+(* Stdlib.Format the level with appropriate styling *)
 let format_level level =
   match level with
   | `Error ->
@@ -159,7 +157,7 @@ let format_level level =
   | `Debug ->
       text "debug"
 
-(* Format the kind with appropriate styling *)
+(* Stdlib.Format the kind with appropriate styling *)
 let format_kind kind =
   let kind_str =
     match kind with
@@ -180,15 +178,15 @@ let format_kind kind =
   in
   text kind_str
 
-(* Format error code if present *)
+(* Stdlib.Format error code if present *)
 let format_error_code code =
   match code with
   | None ->
       nop
   | Some code ->
-      tag `Decoration @@ concat [text (Err.Code.to_string code)]
+      tag `Decoration @@ concat [text (Err.Code.show code)]
 
-(* Format hints *)
+(* Stdlib.Format hints *)
 let format_hints hints =
   if List.is_empty hints then nop
   else
@@ -199,7 +197,7 @@ let format_hints hints =
     in
     vbox (concat ~sep:cut hint_docs)
 
-(* Main function to format a log message *)
+(* Main function to Stdlib.Format a log message *)
 let print (log : Log.t) =
   let position = Pos.pos log in
   let Log.{kind; level; message; hints; code; labels} = Pos.value log in
@@ -241,5 +239,5 @@ let print (log : Log.t) =
   (* Create the complete document *)
   let doc = vbox (concat [header; cut; code_excerpt; cut; hints_doc; cut]) in
   (* Print the document to stdout with styled tags *)
-  to_fmt_with_tags (Format.get_err_formatter ()) doc ~tag_handler:handle_tag ;
-  Format.print_flush ()
+  to_fmt_with_tags (Stdlib.Format.get_err_formatter ()) doc ~tag_handler:handle_tag ;
+  Stdlib.Format.print_flush ()
