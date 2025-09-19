@@ -2,8 +2,8 @@ import { describe, it, expect } from 'bun:test'
 import { yaml } from '../../utils/compile'
 
 describe('Rend non applicable > transitivité', async () => {
-  it('simple', async () => {
-    let engine = await yaml`
+	it('simple', async () => {
+		const engine = await yaml`
     a:
       valeur: oui
       rend non applicable: b
@@ -14,11 +14,11 @@ describe('Rend non applicable > transitivité', async () => {
     c: oui
     x: c
   `
-    expect(engine.evaluate('x').value).toBe(true)
-  })
+		expect(engine.evaluate('x').value).toBe(true)
+	})
 
-  it('simple', async () => {
-    let engine = await yaml`
+	it('simple', async () => {
+		const engine = await yaml`
     a:
       valeur: oui
       rend non applicable: b
@@ -32,6 +32,6 @@ describe('Rend non applicable > transitivité', async () => {
     d: oui
     x: d
   `
-    expect(engine.evaluate('x').value).toBe(null)
-  })
+		expect(engine.evaluate('x').value).toBe(null)
+	})
 })

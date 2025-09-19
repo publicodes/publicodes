@@ -20,301 +20,363 @@ export type PString = `'${string}'`
 
 /**
  * Corresponding Publicodes situation with types inferred for each rule.
- *  
+ *
  * @note
  * This represents the situation as needed by the 'setSituation' method of the
  * {@link Engine} class with raw values (i.e. string constants are enclosed in
  * "''" and boolean values are 'oui' or 'non').
  */
 export type Situation = Partial<{
-  "dirigeant . auto-entrepreneur . impôt": PBoolean,
-  "dirigeant . auto-entrepreneur . impôt . revenu imposable": number,
-  "dirigeant . auto-entrepreneur . impôt . versement libératoire": PBoolean,
-  "dirigeant . auto-entrepreneur . impôt . versement libératoire . seuil dépassé": PBoolean,
-  "dirigeant . auto-entrepreneur . impôt . versement libératoire . montant": number,
-  "date": PBoolean,
-  "dirigeant": PBoolean,
-  "dirigeant . exonérations": PBoolean,
-  "dirigeant . exonérations . ACRE": PBoolean,
-  "dirigeant . régime social": PBoolean,
-  "entreprise": PBoolean,
-  "entreprise . date de création": PBoolean,
-  "entreprise . chiffre d'affaires": number,
-  "entreprise . chiffre d'affaires . BIC": number,
-  "entreprise . chiffre d'affaires . service BIC": number,
-  "entreprise . chiffre d'affaires . service BNC": number,
-  "entreprise . chiffre d'affaires . vente restauration hébergement": number,
-  "entreprise . imposition": PBoolean,
-  "entreprise . imposition . régime": PBoolean,
-  "entreprise . imposition . régime . micro-entreprise": PBoolean,
-  "entreprise . imposition . régime . micro-entreprise . revenu abattu": number,
-  "entreprise . activité": PBoolean,
-  "entreprise . activité . nature": PBoolean,
-  "entreprise . activité . nature . libérale": PBoolean,
-  "entreprise . activité . nature . libérale . réglementée": PBoolean,
-  "entreprise . activités": PBoolean,
-  "entreprise . activités . revenus mixtes": PBoolean,
-  "revenu imposable": PBoolean,
-  "entreprise . durée d'activité": PBoolean,
-  "entreprise . durée d'activité . en début d'année": PBoolean,
-  "entreprise . durée d'activité . années civiles": PBoolean,
-  "entreprise . durée d'activité . trimestres civils": PBoolean,
-  "établissement": PBoolean,
-  "établissement . commune": PBoolean,
-  "établissement . commune . département": PBoolean,
-  "établissement . commune . département . outre-mer": PBoolean,
-  "impôt": PBoolean,
-  "impôt . foyer fiscal": PBoolean,
-  "impôt . foyer fiscal . revenu fiscal de référence": PBoolean,
-  "rémunération": PBoolean,
-  "rémunération . impôt": PBoolean,
-  "dirigeant . auto-entrepreneur . DROM": PBoolean | null,
-  "dirigeant . auto-entrepreneur . DROM . première période": PBoolean,
-  "dirigeant . auto-entrepreneur . DROM . seconde période": PBoolean,
-  "dirigeant . auto-entrepreneur . DROM . taux service BIC": number,
-  "dirigeant . auto-entrepreneur . DROM . taux service BNC": number,
-  "dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement": number,
-  "dirigeant . auto-entrepreneur . DROM . taux CIPAV": number,
-  "dirigeant . auto-entrepreneur . Acre": PBoolean | null,
-  "dirigeant . auto-entrepreneur . Acre . taux Acre": number,
-  "dirigeant . auto-entrepreneur . Acre . taux service BIC": number,
-  "dirigeant . auto-entrepreneur . Acre . taux service BNC": number,
-  "dirigeant . auto-entrepreneur . Acre . taux vente restauration hébergement": number,
-  "dirigeant . auto-entrepreneur . Acre . taux CIPAV": number | null,
-  "dirigeant . auto-entrepreneur . Acre . notification calcul ACRE annuel": PBoolean | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . commerce": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux service": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux vente": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace": PBoolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux service": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux vente": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle": PBoolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux service": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux vente": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . CFP": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition": PBoolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . maladie-maternité": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . invalidité-décès": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite de base": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite complémentaire": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . autres contributions": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . formation professionnelle": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . taux": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition": PBoolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . taux": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition": PBoolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . taux": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition": PBoolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . taux": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition": PBoolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions . taux de répartition": number,
-  "dirigeant . auto-entrepreneur": PBoolean,
-  "dirigeant . auto-entrepreneur . revenu net": number,
-  "dirigeant . auto-entrepreneur . revenu net . après impôt": number,
-  "dirigeant . auto-entrepreneur . chiffre d'affaires": number,
-  "dirigeant . auto-entrepreneur . affiliation CIPAV": PBoolean,
-  "dirigeant . auto-entrepreneur . Cipav": PBoolean,
-  "dirigeant . auto-entrepreneur . Cipav . adhérent": PBoolean,
-  "dirigeant . auto-entrepreneur . Cipav . retraite complémentaire": number | null,
-  "dirigeant . auto-entrepreneur . éligible à l'ACRE": PBoolean | null
+	'dirigeant . auto-entrepreneur . impôt': PBoolean
+	'dirigeant . auto-entrepreneur . impôt . revenu imposable': number
+	'dirigeant . auto-entrepreneur . impôt . versement libératoire': PBoolean
+	'dirigeant . auto-entrepreneur . impôt . versement libératoire . seuil dépassé': PBoolean
+	'dirigeant . auto-entrepreneur . impôt . versement libératoire . montant': number
+	date: PBoolean
+	dirigeant: PBoolean
+	'dirigeant . exonérations': PBoolean
+	'dirigeant . exonérations . ACRE': PBoolean
+	'dirigeant . régime social': PBoolean
+	entreprise: PBoolean
+	'entreprise . date de création': PBoolean
+	"entreprise . chiffre d'affaires": number
+	"entreprise . chiffre d'affaires . BIC": number
+	"entreprise . chiffre d'affaires . service BIC": number
+	"entreprise . chiffre d'affaires . service BNC": number
+	"entreprise . chiffre d'affaires . vente restauration hébergement": number
+	'entreprise . imposition': PBoolean
+	'entreprise . imposition . régime': PBoolean
+	'entreprise . imposition . régime . micro-entreprise': PBoolean
+	'entreprise . imposition . régime . micro-entreprise . revenu abattu': number
+	'entreprise . activité': PBoolean
+	'entreprise . activité . nature': PBoolean
+	'entreprise . activité . nature . libérale': PBoolean
+	'entreprise . activité . nature . libérale . réglementée': PBoolean
+	'entreprise . activités': PBoolean
+	'entreprise . activités . revenus mixtes': PBoolean
+	'revenu imposable': PBoolean
+	"entreprise . durée d'activité": PBoolean
+	"entreprise . durée d'activité . en début d'année": PBoolean
+	"entreprise . durée d'activité . années civiles": PBoolean
+	"entreprise . durée d'activité . trimestres civils": PBoolean
+	établissement: PBoolean
+	'établissement . commune': PBoolean
+	'établissement . commune . département': PBoolean
+	'établissement . commune . département . outre-mer': PBoolean
+	impôt: PBoolean
+	'impôt . foyer fiscal': PBoolean
+	'impôt . foyer fiscal . revenu fiscal de référence': PBoolean
+	rémunération: PBoolean
+	'rémunération . impôt': PBoolean
+	'dirigeant . auto-entrepreneur . DROM': PBoolean | null
+	'dirigeant . auto-entrepreneur . DROM . première période': PBoolean
+	'dirigeant . auto-entrepreneur . DROM . seconde période': PBoolean
+	'dirigeant . auto-entrepreneur . DROM . taux service BIC': number
+	'dirigeant . auto-entrepreneur . DROM . taux service BNC': number
+	'dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement': number
+	'dirigeant . auto-entrepreneur . DROM . taux CIPAV': number
+	'dirigeant . auto-entrepreneur . Acre': PBoolean | null
+	'dirigeant . auto-entrepreneur . Acre . taux Acre': number
+	'dirigeant . auto-entrepreneur . Acre . taux service BIC': number
+	'dirigeant . auto-entrepreneur . Acre . taux service BNC': number
+	'dirigeant . auto-entrepreneur . Acre . taux vente restauration hébergement': number
+	'dirigeant . auto-entrepreneur . Acre . taux CIPAV': number | null
+	'dirigeant . auto-entrepreneur . Acre . notification calcul ACRE annuel': PBoolean | null
+	'dirigeant . auto-entrepreneur . cotisations et contributions': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . commerce':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux service': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux vente': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace': PBoolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux service': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux vente': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle': PBoolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux service': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux vente': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . CFP': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition': PBoolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . maladie-maternité': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . invalidité-décès': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite de base': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite complémentaire': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . autres contributions': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . formation professionnelle': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . taux': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition': PBoolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . taux': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition': PBoolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . taux': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition': PBoolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . taux': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition': PBoolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions . taux de répartition': number
+	'dirigeant . auto-entrepreneur': PBoolean
+	'dirigeant . auto-entrepreneur . revenu net': number
+	'dirigeant . auto-entrepreneur . revenu net . après impôt': number
+	"dirigeant . auto-entrepreneur . chiffre d'affaires": number
+	'dirigeant . auto-entrepreneur . affiliation CIPAV': PBoolean
+	'dirigeant . auto-entrepreneur . Cipav': PBoolean
+	'dirigeant . auto-entrepreneur . Cipav . adhérent': PBoolean
+	'dirigeant . auto-entrepreneur . Cipav . retraite complémentaire':
+		| number
+		| null
+	"dirigeant . auto-entrepreneur . éligible à l'ACRE": PBoolean | null
 }>
 
 /**
  * Associates for each rule name its corresponding value type (in JavaScript
-* form) that will be returned by the {@link Engine.evaluate} method.
+ * form) that will be returned by the {@link Engine.evaluate} method.
  */
 export type RuleValue = Partial<{
-  "dirigeant . auto-entrepreneur . impôt": boolean,
-  "dirigeant . auto-entrepreneur . impôt . revenu imposable": number,
-  "dirigeant . auto-entrepreneur . impôt . versement libératoire": boolean,
-  "dirigeant . auto-entrepreneur . impôt . versement libératoire . seuil dépassé": boolean,
-  /** versement libératoire auto-entrepreneur */
-  "dirigeant . auto-entrepreneur . impôt . versement libératoire . montant": number,
-  "date": boolean,
-  "dirigeant": boolean,
-  "dirigeant . exonérations": boolean,
-  "dirigeant . exonérations . ACRE": boolean,
-  "dirigeant . régime social": boolean,
-  "entreprise": boolean,
-  "entreprise . date de création": boolean,
-  "entreprise . chiffre d'affaires": number,
-  "entreprise . chiffre d'affaires . BIC": number,
-  "entreprise . chiffre d'affaires . service BIC": number,
-  "entreprise . chiffre d'affaires . service BNC": number,
-  "entreprise . chiffre d'affaires . vente restauration hébergement": number,
-  "entreprise . imposition": boolean,
-  "entreprise . imposition . régime": boolean,
-  "entreprise . imposition . régime . micro-entreprise": boolean,
-  "entreprise . imposition . régime . micro-entreprise . revenu abattu": number,
-  "entreprise . activité": boolean,
-  "entreprise . activité . nature": boolean,
-  "entreprise . activité . nature . libérale": boolean,
-  "entreprise . activité . nature . libérale . réglementée": boolean,
-  "entreprise . activités": boolean,
-  "entreprise . activités . revenus mixtes": boolean,
-  "revenu imposable": boolean,
-  "entreprise . durée d'activité": boolean,
-  "entreprise . durée d'activité . en début d'année": boolean,
-  "entreprise . durée d'activité . années civiles": boolean,
-  "entreprise . durée d'activité . trimestres civils": boolean,
-  "établissement": boolean,
-  "établissement . commune": boolean,
-  "établissement . commune . département": boolean,
-  "établissement . commune . département . outre-mer": boolean,
-  "impôt": boolean,
-  "impôt . foyer fiscal": boolean,
-  "impôt . foyer fiscal . revenu fiscal de référence": boolean,
-  "rémunération": boolean,
-  "rémunération . impôt": boolean,
-  "dirigeant . auto-entrepreneur . DROM": boolean | null,
-  /** Jusqu’à la fin du 8ème trimestre d’activité */
-  "dirigeant . auto-entrepreneur . DROM . première période": boolean,
-  /** Entre le 9ème trimestre civil et la fin de la 3ème année civile d’activité */
-  "dirigeant . auto-entrepreneur . DROM . seconde période": boolean,
-  "dirigeant . auto-entrepreneur . DROM . taux service BIC": number,
-  "dirigeant . auto-entrepreneur . DROM . taux service BNC": number,
-  "dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement": number,
-  "dirigeant . auto-entrepreneur . DROM . taux CIPAV": number,
-  "dirigeant . auto-entrepreneur . Acre": boolean | null,
-  "dirigeant . auto-entrepreneur . Acre . taux Acre": number,
-  "dirigeant . auto-entrepreneur . Acre . taux service BIC": number,
-  "dirigeant . auto-entrepreneur . Acre . taux service BNC": number,
-  "dirigeant . auto-entrepreneur . Acre . taux vente restauration hébergement": number,
-  "dirigeant . auto-entrepreneur . Acre . taux CIPAV": number | null,
-  "dirigeant . auto-entrepreneur . Acre . notification calcul ACRE annuel": boolean | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions": number,
-  /** Taxes pour frais de chambre */
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . commerce": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux service": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux vente": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace": boolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux service": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux vente": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle": boolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux service": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux vente": number,
-  /** Contribution à la formation professionnelle */
-  "dirigeant . auto-entrepreneur . cotisations et contributions . CFP": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition": boolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . maladie-maternité": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . invalidité-décès": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite de base": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite complémentaire": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . autres contributions": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . formation professionnelle": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . taux": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition": boolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . taux": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition": boolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . taux": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition": boolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . taux": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition": boolean,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire . taux de répartition": number,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions": number | null,
-  "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions . taux de répartition": number,
-  "dirigeant . auto-entrepreneur": boolean,
-  "dirigeant . auto-entrepreneur . revenu net": number,
-  "dirigeant . auto-entrepreneur . revenu net . après impôt": number,
-  "dirigeant . auto-entrepreneur . chiffre d'affaires": number,
-  "dirigeant . auto-entrepreneur . affiliation CIPAV": boolean,
-  "dirigeant . auto-entrepreneur . Cipav": boolean,
-  "dirigeant . auto-entrepreneur . Cipav . adhérent": boolean,
-  "dirigeant . auto-entrepreneur . Cipav . retraite complémentaire": number | null,
-  "dirigeant . auto-entrepreneur . éligible à l'ACRE": boolean | null
+	'dirigeant . auto-entrepreneur . impôt': boolean
+	'dirigeant . auto-entrepreneur . impôt . revenu imposable': number
+	'dirigeant . auto-entrepreneur . impôt . versement libératoire': boolean
+	'dirigeant . auto-entrepreneur . impôt . versement libératoire . seuil dépassé': boolean
+	/** versement libératoire auto-entrepreneur */
+	'dirigeant . auto-entrepreneur . impôt . versement libératoire . montant': number
+	date: boolean
+	dirigeant: boolean
+	'dirigeant . exonérations': boolean
+	'dirigeant . exonérations . ACRE': boolean
+	'dirigeant . régime social': boolean
+	entreprise: boolean
+	'entreprise . date de création': boolean
+	"entreprise . chiffre d'affaires": number
+	"entreprise . chiffre d'affaires . BIC": number
+	"entreprise . chiffre d'affaires . service BIC": number
+	"entreprise . chiffre d'affaires . service BNC": number
+	"entreprise . chiffre d'affaires . vente restauration hébergement": number
+	'entreprise . imposition': boolean
+	'entreprise . imposition . régime': boolean
+	'entreprise . imposition . régime . micro-entreprise': boolean
+	'entreprise . imposition . régime . micro-entreprise . revenu abattu': number
+	'entreprise . activité': boolean
+	'entreprise . activité . nature': boolean
+	'entreprise . activité . nature . libérale': boolean
+	'entreprise . activité . nature . libérale . réglementée': boolean
+	'entreprise . activités': boolean
+	'entreprise . activités . revenus mixtes': boolean
+	'revenu imposable': boolean
+	"entreprise . durée d'activité": boolean
+	"entreprise . durée d'activité . en début d'année": boolean
+	"entreprise . durée d'activité . années civiles": boolean
+	"entreprise . durée d'activité . trimestres civils": boolean
+	établissement: boolean
+	'établissement . commune': boolean
+	'établissement . commune . département': boolean
+	'établissement . commune . département . outre-mer': boolean
+	impôt: boolean
+	'impôt . foyer fiscal': boolean
+	'impôt . foyer fiscal . revenu fiscal de référence': boolean
+	rémunération: boolean
+	'rémunération . impôt': boolean
+	'dirigeant . auto-entrepreneur . DROM': boolean | null
+	/** Jusqu’à la fin du 8ème trimestre d’activité */
+	'dirigeant . auto-entrepreneur . DROM . première période': boolean
+	/** Entre le 9ème trimestre civil et la fin de la 3ème année civile d’activité */
+	'dirigeant . auto-entrepreneur . DROM . seconde période': boolean
+	'dirigeant . auto-entrepreneur . DROM . taux service BIC': number
+	'dirigeant . auto-entrepreneur . DROM . taux service BNC': number
+	'dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement': number
+	'dirigeant . auto-entrepreneur . DROM . taux CIPAV': number
+	'dirigeant . auto-entrepreneur . Acre': boolean | null
+	'dirigeant . auto-entrepreneur . Acre . taux Acre': number
+	'dirigeant . auto-entrepreneur . Acre . taux service BIC': number
+	'dirigeant . auto-entrepreneur . Acre . taux service BNC': number
+	'dirigeant . auto-entrepreneur . Acre . taux vente restauration hébergement': number
+	'dirigeant . auto-entrepreneur . Acre . taux CIPAV': number | null
+	'dirigeant . auto-entrepreneur . Acre . notification calcul ACRE annuel':
+		| boolean
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions': number
+	/** Taxes pour frais de chambre */
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . commerce':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux service': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux vente': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace': boolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux service': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux vente': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle': boolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux service': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux vente': number
+	/** Contribution à la formation professionnelle */
+	'dirigeant . auto-entrepreneur . cotisations et contributions . CFP': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition': boolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . maladie-maternité': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . invalidité-décès': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite de base': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite complémentaire': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . autres contributions': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . formation professionnelle': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . taux': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition': boolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . taux': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition': boolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . taux': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition': boolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . taux': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition': boolean
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire . taux de répartition': number
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions':
+		| number
+		| null
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions . taux de répartition': number
+	'dirigeant . auto-entrepreneur': boolean
+	'dirigeant . auto-entrepreneur . revenu net': number
+	'dirigeant . auto-entrepreneur . revenu net . après impôt': number
+	"dirigeant . auto-entrepreneur . chiffre d'affaires": number
+	'dirigeant . auto-entrepreneur . affiliation CIPAV': boolean
+	'dirigeant . auto-entrepreneur . Cipav': boolean
+	'dirigeant . auto-entrepreneur . Cipav . adhérent': boolean
+	'dirigeant . auto-entrepreneur . Cipav . retraite complémentaire':
+		| number
+		| null
+	"dirigeant . auto-entrepreneur . éligible à l'ACRE": boolean | null
 }>
 
 /**
@@ -327,12 +389,12 @@ export type RuleValue = Partial<{
  * enclosed in '' and boolean values are 'true' or 'false').
  */
 export type Questions = Partial<{
-  "dirigeant . auto-entrepreneur . impôt . versement libératoire": boolean,
-  "dirigeant . auto-entrepreneur . revenu net": number,
-  "dirigeant . auto-entrepreneur . revenu net . après impôt": number,
-  "dirigeant . auto-entrepreneur . chiffre d'affaires": number,
-  "dirigeant . auto-entrepreneur . Cipav . adhérent": boolean,
-  "dirigeant . auto-entrepreneur . éligible à l'ACRE": boolean | null
+	'dirigeant . auto-entrepreneur . impôt . versement libératoire': boolean
+	'dirigeant . auto-entrepreneur . revenu net': number
+	'dirigeant . auto-entrepreneur . revenu net . après impôt': number
+	"dirigeant . auto-entrepreneur . chiffre d'affaires": number
+	'dirigeant . auto-entrepreneur . Cipav . adhérent': boolean
+	"dirigeant . auto-entrepreneur . éligible à l'ACRE": boolean | null
 }>
 
 /**
