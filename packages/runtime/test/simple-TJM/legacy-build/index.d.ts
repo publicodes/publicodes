@@ -20,40 +20,40 @@ export type PString = `'${string}'`
 
 /**
  * Corresponding Publicodes situation with types inferred for each rule.
- *  
+ *
  * @note
  * This represents the situation as needed by the 'setSituation' method of the
  * {@link Engine} class with raw values (i.e. string constants are enclosed in
  * "''" and boolean values are 'oui' or 'non').
  */
 export type Situation = Partial<{
-  "chiffre d'affaires": number,
-  "chiffre d'affaires . TJM": number,
-  "chiffre d'affaires . nombre de jour": number,
-  "auto-entrepreneur": PBoolean,
-  "cotisations": number,
-  "cotisations . taux": number,
-  "charges": number | null,
-  "revenu net": number,
-  "exemples": PBoolean,
-  "exemples . CA élevé": number
+	"chiffre d'affaires": number
+	"chiffre d'affaires . TJM": number
+	"chiffre d'affaires . nombre de jour": number
+	'auto-entrepreneur': PBoolean
+	cotisations: number
+	'cotisations . taux': number
+	charges: number | null
+	'revenu net': number
+	exemples: PBoolean
+	'exemples . CA élevé': number
 }>
 
 /**
  * Associates for each rule name its corresponding value type (in JavaScript
-* form) that will be returned by the {@link Engine.evaluate} method.
+ * form) that will be returned by the {@link Engine.evaluate} method.
  */
 export type RuleValue = Partial<{
-  "chiffre d'affaires": number,
-  "chiffre d'affaires . TJM": number,
-  "chiffre d'affaires . nombre de jour": number,
-  "auto-entrepreneur": boolean,
-  "cotisations": number,
-  "cotisations . taux": number,
-  "charges": number | null,
-  "revenu net": number,
-  "exemples": boolean,
-  "exemples . CA élevé": number
+	"chiffre d'affaires": number
+	"chiffre d'affaires . TJM": number
+	"chiffre d'affaires . nombre de jour": number
+	'auto-entrepreneur': boolean
+	cotisations: number
+	'cotisations . taux': number
+	charges: number | null
+	'revenu net': number
+	exemples: boolean
+	'exemples . CA élevé': number
 }>
 
 /**
@@ -65,9 +65,7 @@ export type RuleValue = Partial<{
  * Therefore the values are in their JavaScript form (i.e. string constants are
  * enclosed in '' and boolean values are 'true' or 'false').
  */
-export type Questions = Partial<{
-
-}>
+export type Questions = Partial<{}>
 
 /**
  * All rule names available in the model.

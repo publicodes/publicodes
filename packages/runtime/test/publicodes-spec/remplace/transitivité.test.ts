@@ -2,8 +2,8 @@ import { describe, it, expect } from 'bun:test'
 import { yaml } from '../../utils/compile'
 
 describe('Remplace > transitivité', async () => {
-  it('simple', async () => {
-    let engine = await yaml`
+	it('simple', async () => {
+		const engine = await yaml`
     a:
       remplace: b
       valeur: 1
@@ -13,11 +13,11 @@ describe('Remplace > transitivité', async () => {
     c: 3
     x: c
   `
-    expect(engine.evaluate('x').value).toBe(1)
-  })
+		expect(engine.evaluate('x').value).toBe(1)
+	})
 
-  it('non applicable', async () => {
-    let engine = await yaml`
+	it('non applicable', async () => {
+		const engine = await yaml`
     a:
       applicable si: non
       remplace: b
@@ -31,6 +31,6 @@ describe('Remplace > transitivité', async () => {
     d: 4
     x: d
   `
-    expect(engine.evaluate('x').value).toBe(2)
-  })
+		expect(engine.evaluate('x').value).toBe(2)
+	})
 })

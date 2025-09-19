@@ -2,8 +2,8 @@ import { describe, it, expect } from 'bun:test'
 import { yaml } from '../../utils/compile'
 
 describe('Rend non applicable > avec remplace', async () => {
-  it('rend non applicable take precedence over remplace', async () => {
-    let engine = await yaml`
+	it('rend non applicable take precedence over remplace', async () => {
+		const engine = await yaml`
     a:
       remplace: c
       valeur: oui
@@ -14,11 +14,11 @@ describe('Rend non applicable > avec remplace', async () => {
     c:
     x: c
   `
-    expect(engine.evaluate('x').value).toBe(null)
-  })
+		expect(engine.evaluate('x').value).toBe(null)
+	})
 
-  it('remplace «rend non applicable»', async () => {
-    let engine = await yaml`
+	it('remplace «rend non applicable»', async () => {
+		const engine = await yaml`
     a:
       valeur: oui
       remplace: b
@@ -30,6 +30,6 @@ describe('Rend non applicable > avec remplace', async () => {
 
     x: c
   `
-    expect(engine.evaluate('x').value).toBe(null)
-  })
+		expect(engine.evaluate('x').value).toBe(null)
+	})
 })

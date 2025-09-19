@@ -1,1 +1,27 @@
-{"chiffre d'affaires":{"unité":"€","produit":["TJM","nombre de jour"]},"chiffre d'affaires . TJM":{"unité":"€/jour"},"chiffre d'affaires . nombre de jour":{"par défaut":"16 jour"},"auto-entrepreneur":{"par défaut":"non"},"cotisations":{"public":"oui","valeur":"taux * chiffre d'affaires"},"cotisations . taux":{"variations":[{"si":"auto-entrepreneur","alors":"30 %"},{"sinon":"45 %"}]},"charges":{"non applicable si":"auto-entrepreneur","par défaut":{"valeur":"10 % * chiffre d'affaires","plancher":"100 €"}},"revenu net":{"public":"oui","somme":["chiffre d'affaires","-cotisations","-charges"]},"exemples":null,"exemples . CA élevé":{"public":"oui","valeur":"revenu net","contexte":{"chiffre d'affaires . TJM":"600 €/jour"}}}
+{
+	"chiffre d'affaires": { "unité": "€", "produit": ["TJM", "nombre de jour"] },
+	"chiffre d'affaires . TJM": { "unité": "€/jour" },
+	"chiffre d'affaires . nombre de jour": { "par défaut": "16 jour" },
+	"auto-entrepreneur": { "par défaut": "non" },
+	"cotisations": { "public": "oui", "valeur": "taux * chiffre d'affaires" },
+	"cotisations . taux": {
+		"variations": [
+			{ "si": "auto-entrepreneur", "alors": "30 %" },
+			{ "sinon": "45 %" }
+		]
+	},
+	"charges": {
+		"non applicable si": "auto-entrepreneur",
+		"par défaut": { "valeur": "10 % * chiffre d'affaires", "plancher": "100 €" }
+	},
+	"revenu net": {
+		"public": "oui",
+		"somme": ["chiffre d'affaires", "-cotisations", "-charges"]
+	},
+	"exemples": null,
+	"exemples . CA élevé": {
+		"public": "oui",
+		"valeur": "revenu net",
+		"contexte": { "chiffre d'affaires . TJM": "600 €/jour" }
+	}
+}

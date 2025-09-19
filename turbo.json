@@ -1,74 +1,74 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "ui": "tui",
-  "tasks": {
-    "codegen:validate": {},
-    "codegen": {
-      "outputs": ["**/*.codegen.*"],
-      "dependsOn": ["codegen:validate"]
-    },
-    "build": {
-      "dependsOn": ["^build", "codegen"],
-      "outputs": [
-        "dist/**",
-        ".svelte-kit/**",
-        ".next/**",
-        "!.next/cache/**",
-        ".docusaurus/**",
-        ".netlify/**",
-        "build/**",
-        "public/**"
-      ]
-    },
-    "prepack": {
-      "dependsOn": ["build"]
-    },
-    "test:type": {
-      "dependsOn": ["^build", "codegen"]
-    },
-    "test": {
-      "dependsOn": ["^build", "codegen"]
-    },
-    "format": {
-      "inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"],
-      "outputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"]
-    },
-    "lint": {
-      "dependsOn": ["^build", "codegen"],
-      "inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"]
-    },
-    "dev": {
-      "dependsOn": ["^build", "codegen"],
-      "cache": false,
-      "persistent": true
-    },
-    "test:watch": {
-      "dependsOn": ["^build", "codegen"],
-      "cache": false,
-      "persistent": true
-    },
-    "clean": {
-      "cache": false
-    },
-    "website#doc": {
-      "dependsOn": ["^build", "@publicodes/rest-api#build"],
-      "inputs": [
-        "../packages/**/*.{ts,tsx}",
-        "../typedoc.json",
-        "../.typedoc/markdown-plugin.mjs"
-      ],
-      "outputs": ["./website/src/routes/docs/api"]
-    },
-    "website#build": {
-      "dependsOn": ["^build", "doc"]
-    },
-    "website#dev": {
-      "dependsOn": ["^build", "doc"],
-      "cache": false,
-      "persistent": true
-    },
-    "@publicodes/tools#test": {
-      "dependsOn": ["build"]
-    }
-  }
+	"$schema": "https://turbo.build/schema.json",
+	"ui": "tui",
+	"tasks": {
+		"codegen:validate": {},
+		"codegen": {
+			"outputs": ["**/*.codegen.*"],
+			"dependsOn": ["codegen:validate"]
+		},
+		"build": {
+			"dependsOn": ["^build", "codegen"],
+			"outputs": [
+				"dist/**",
+				".svelte-kit/**",
+				".next/**",
+				"!.next/cache/**",
+				".docusaurus/**",
+				".netlify/**",
+				"build/**",
+				"public/**"
+			]
+		},
+		"prepack": {
+			"dependsOn": ["build"]
+		},
+		"test:type": {
+			"dependsOn": ["^build", "codegen"]
+		},
+		"test": {
+			"dependsOn": ["^build", "codegen"]
+		},
+		"format": {
+			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"],
+			"outputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"]
+		},
+		"lint": {
+			"dependsOn": ["^build", "codegen"],
+			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"]
+		},
+		"dev": {
+			"dependsOn": ["^build", "codegen"],
+			"cache": false,
+			"persistent": true
+		},
+		"test:watch": {
+			"dependsOn": ["^build", "codegen"],
+			"cache": false,
+			"persistent": true
+		},
+		"clean": {
+			"cache": false
+		},
+		"website#doc": {
+			"dependsOn": ["^build", "@publicodes/rest-api#build"],
+			"inputs": [
+				"../packages/**/*.{ts,tsx}",
+				"../typedoc.json",
+				"../.typedoc/markdown-plugin.mjs"
+			],
+			"outputs": ["./website/src/routes/docs/api"]
+		},
+		"website#build": {
+			"dependsOn": ["^build", "doc"]
+		},
+		"website#dev": {
+			"dependsOn": ["^build", "doc"],
+			"cache": false,
+			"persistent": true
+		},
+		"@publicodes/tools#test": {
+			"dependsOn": ["build"]
+		}
+	}
 }

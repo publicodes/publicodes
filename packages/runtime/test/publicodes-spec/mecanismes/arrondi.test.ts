@@ -2,10 +2,10 @@ import { describe, it, expect, beforeAll } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Mécanisme > arrondi', () => {
-  describe('arrondi simple', async () => {
-    let engine: TestPublicodes
-    beforeAll(async () => {
-      engine = await yaml`
+	describe('arrondi simple', async () => {
+		let engine: TestPublicodes
+		beforeAll(async () => {
+			engine = await yaml`
 arrondi à l'unité:
   valeur: 33.4167
   arrondi: oui
@@ -22,30 +22,30 @@ arrondi à 0.5 près:
   valeur: 33.4167
   arrondi: 0.5
 `
-    })
-    it("arrondi à l'unité", () => {
-      const result = engine.evaluate("arrondi à l'unité")
-      expect(result.value).toEqual(33)
-    })
+		})
+		it("arrondi à l'unité", () => {
+			const result = engine.evaluate("arrondi à l'unité")
+			expect(result.value).toEqual(33)
+		})
 
-    it('arrondi à 2 décimales', () => {
-      const result = engine.evaluate('arrondi à 2 décimales')
-      expect(result.value).toEqual(33.42)
-    })
+		it('arrondi à 2 décimales', () => {
+			const result = engine.evaluate('arrondi à 2 décimales')
+			expect(result.value).toEqual(33.42)
+		})
 
-    it('arrondi à la dizaine', () => {
-      const result = engine.evaluate('arrondi à la dizaine')
-      expect(result.value).toEqual(30)
-    })
+		it('arrondi à la dizaine', () => {
+			const result = engine.evaluate('arrondi à la dizaine')
+			expect(result.value).toEqual(30)
+		})
 
-    it('arrondi à 0.5 près', () => {
-      const result = engine.evaluate('arrondi à 0.5 près')
-      expect(result.value).toEqual(33.5)
-    })
-  })
+		it('arrondi à 0.5 près', () => {
+			const result = engine.evaluate('arrondi à 0.5 près')
+			expect(result.value).toEqual(33.5)
+		})
+	})
 
-  describe('arrondi avec valeur dynamique en décimales', async () => {
-    const engine = await yaml`
+	describe('arrondi avec valeur dynamique en décimales', async () => {
+		const engine = await yaml`
 a:
   valeur: 12.458 %
   arrondi: b
@@ -53,21 +53,21 @@ a:
 b:
   unité: décimales
 `
-    it('arrondi à 0 décimales', () => {
-      expect(engine.evaluate('a', { b: 0 }).value).toEqual(12)
-    })
+		it('arrondi à 0 décimales', () => {
+			expect(engine.evaluate('a', { b: 0 }).value).toEqual(12)
+		})
 
-    it('arrondi à 5 décimales', () => {
-      expect(engine.evaluate('a', { b: 5 }).value).toEqual(12.458)
-      expect(engine.outputs.a.type.unit).toBe('%')
-    })
+		it('arrondi à 5 décimales', () => {
+			expect(engine.evaluate('a', { b: 5 }).value).toEqual(12.458)
+			expect(engine.outputs.a.type.unit).toBe('%')
+		})
 
-    it('arrondi à -1 décimales', () => {
-      expect(engine.evaluate('a', { b: -1 }).value).toEqual(10)
-    })
-  })
-  describe('arrondi avec valeur dynamique sans unité', async () => {
-    const engine = await yaml`
+		it('arrondi à -1 décimales', () => {
+			expect(engine.evaluate('a', { b: -1 }).value).toEqual(10)
+		})
+	})
+	describe('arrondi avec valeur dynamique sans unité', async () => {
+		const engine = await yaml`
 a:
   valeur: 13.458 %
   arrondi: b
@@ -76,46 +76,46 @@ b:
   type: nombre
 
 `
-    it('arrondi à 0 (erreur)', () => {
-      expect(() => engine.evaluate('a', { b: 0 })).toThrowError(
-        'Rounding error',
-      )
-    })
+		it('arrondi à 0 (erreur)', () => {
+			expect(() => engine.evaluate('a', { b: 0 })).toThrowError(
+				'Rounding error',
+			)
+		})
 
-    it('arrondi à 5 près', () => {
-      expect(engine.evaluate('a', { b: 5 }).value).toEqual(15)
-    })
+		it('arrondi à 5 près', () => {
+			expect(engine.evaluate('a', { b: 5 }).value).toEqual(15)
+		})
 
-    it('arrondi à 10 près', () => {
-      expect(engine.evaluate('a', { b: 10 }).value).toEqual(10)
-    })
+		it('arrondi à 10 près', () => {
+			expect(engine.evaluate('a', { b: 10 }).value).toEqual(10)
+		})
 
-    it('arrondi à 0.005 près', () => {
-      expect(engine.evaluate('a', { b: 0.005 }).value).toEqual(13.46)
-    })
-  })
+		it('arrondi à 0.005 près', () => {
+			expect(engine.evaluate('a', { b: 0.005 }).value).toEqual(13.46)
+		})
+	})
 
-  describe('cas spéciaux', () => {
-    it('arrondi avec beaucoup de précision', async () => {
-      const engine = await yaml`
+	describe('cas spéciaux', () => {
+		it('arrondi avec beaucoup de précision', async () => {
+			const engine = await yaml`
 a:
   valeur: 35.465729905
   arrondi: 15 décimales
 
 `
-      expect(engine.evaluate('a').value).toBe(35.465729905)
-    })
+			expect(engine.evaluate('a').value).toBe(35.465729905)
+		})
 
-    it('sans unité (erreur)', async () => {
-      expect(yaml`
+		it('sans unité (erreur)', async () => {
+			expect(yaml`
 a:
   arrondi: b
 b:
 `).rejects.toThrowError('type invalide détécté')
-    })
+		})
 
-    it('non applicable', async () => {
-      const engine = await yaml`
+		it('non applicable', async () => {
+			const engine = await yaml`
 règle non applicable:
   applicable si: non
 
@@ -127,32 +127,32 @@ arrondi non applicable:
   valeur: 13.45
   arrondi: règle non applicable
 `
-      expect(
-        engine.evaluate("arrondi d'une valeur non applicable").value,
-      ).toBeNull()
+			expect(
+				engine.evaluate("arrondi d'une valeur non applicable").value,
+			).toBeNull()
 
-      expect(engine.evaluate('arrondi non applicable').value).toEqual(13.45)
-    })
+			expect(engine.evaluate('arrondi non applicable').value).toEqual(13.45)
+		})
 
-    it('non défini', async () => {
-      const engine = await yaml`
+		it('non défini', async () => {
+			const engine = await yaml`
 test arrondi:
   arrondi: oui
 `
-      const result = engine.evaluate('test arrondi')
-      expect(result.value).toBeUndefined()
-    })
-  })
+			const result = engine.evaluate('test arrondi')
+			expect(result.value).toBeUndefined()
+		})
+	})
 
-  it.skip("arrondi avec conversion d'unités", async () => {
-    const engine = await yaml`
+	it.skip("arrondi avec conversion d'unités", async () => {
+		const engine = await yaml`
 montant:
   valeur: 12.5 €/mois
   unité: €/an
   arrondi: oui
 `
-    const result = engine.evaluate('montant')
-    expect(result.value).toEqual(150)
-    // expect(result.unit).toBe('€/an')
-  })
+		const result = engine.evaluate('montant')
+		expect(result.value).toEqual(150)
+		// expect(result.unit).toBe('€/an')
+	})
 })
