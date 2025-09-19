@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'bun:test'
 import { yaml } from '../../utils/compile'
 
-const engine = await yaml`
+describe('Expressions > booléens', async () => {
+  const engine = await yaml`
 a: oui
 négation: a != oui
 paramètre:
   type: booléen
 `
 
-describe('Expressions > booléens', () => {
   it('constante', async () => {
     expect(engine.evaluate('a').value).toEqual(true)
     expect(engine.outputs['a'].type).toHaveProperty('boolean')

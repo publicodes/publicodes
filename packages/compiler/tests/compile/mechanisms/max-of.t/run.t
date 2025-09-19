@@ -1,18 +1,18 @@
 Bad types for arrondi :
   $ publicodes compile type_error.publicodes -t debug_eval_tree -o -
-  E010 tableau attendu [syntax error]
+  E011 tableau attendu [syntax error]
        ╒══  type_error.publicodes:2:3 ══
      1 │ a:
      2 │   le maximum de: non
        │   ˘˘˘˘˘˘˘˘˘˘˘˘˘˘
   
-  E013 valeur manquante [syntax error]
+  E014 valeur manquante [syntax error]
        ╒══  type_error.publicodes:12:6 ══
     11 │   le maximum de:
     12 │     -
        │       valeur attendue ici
   
-  E024 unités non compatibles [type error]
+  E025 unités non compatibles [type error]
        ╒══  type_error.publicodes:5:1 ══
      4 │ 
      5 │ b:

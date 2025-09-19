@@ -32,6 +32,8 @@ and 'meta context =
 and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.pos}
 [@@deriving sexp, show]
 
+type 'meta mk_value_fn = pos:Pos.pos -> 'meta naked_value -> 'meta value
+
 type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving sexp, show]
 
 let get_meta eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).meta

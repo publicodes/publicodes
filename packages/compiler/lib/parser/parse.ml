@@ -17,7 +17,6 @@ let parse_meta mapping =
         let* value = scalar_value () in
         return (Title (get_value value))
     | "public" ->
-        (* @TODO : put a warning if default_to_public is true, and do not add it *)
         let* value = scalar_value () in
         let pos = Pos.pos value in
         let value = get_value value in
@@ -38,31 +37,46 @@ let rec parse_rule ~default_to_public ?(current_rule_name = []) (name, yaml) =
   let* name, pos = parse_ref name in
   let name = current_rule_name @ name in
   let* value = Parse_value.parse_value ~error_if_undefined:false ~pos yaml in
-  let* meta =
-    match yaml with `O mapping -> parse_meta mapping | _ -> return []
+  let default_meta = if default_to_public then [Public] else [] in
+  let parsed_rule =
+    { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
+    ; value
+    ; meta= default_meta
+    ; replace= [] }
   in
-  let meta = if default_to_public then Public :: meta else meta in
-  let+ with_ =
-    match yaml with
-    | `O mapping ->
-        parse_with ~default_to_public ~current_rule_name:name mapping
-    | _ ->
-        return []
-  in
-  {name= Pos.mk ~pos (Shared.Rule_name.create_exn name); value; meta} :: with_
+  match yaml with
+  | `Scalar _ ->
+      return [parsed_rule]
+  | `O yaml ->
+      let* meta = parse_meta yaml in
+      let meta = default_meta @ meta in
+      let* with_ = parse_with ~default_to_public ~current_rule_name:name yaml in
+      let* replace = parse_replace yaml in
+      return
+        ( { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
+          ; value
+          ; meta
+          ; replace }
+        :: with_ )
+  | `A _ ->
+      (* Should not happen because already checked by parse_value*)
+      empty
 
 and parse_with ~default_to_public ?(current_rule_name = []) mapping =
-  let rules =
-    List.find_map mapping ~f:(fun (key, value) ->
-        if String.equal (get_value key) "avec" then
-          Some (Pos.mk ~pos:(Pos.pos key) value)
-        else None )
-  in
+  let rules = find_value "avec" mapping in
   match rules with
   | None ->
       return []
   | Some (rules, pos) ->
       parse_rules ~default_to_public ~pos ~current_rule_name rules
+
+and parse_replace mapping =
+  let replace = find_value "remplace" mapping in
+  match replace with
+  | None ->
+      return []
+  | Some (replace, pos) ->
+      Parse_replace.parse_replaces ~pos replace
 
 and parse_rules ~default_to_public ~pos ?(current_rule_name = []) yaml =
   match yaml with

@@ -48,8 +48,8 @@ export class Engine<O extends Outputs> {
       return evaluateNode(evaluation, id, context as Context)
     }
 
-    // Todo : convert date in / out
-    const { p, v } = evaluate(output.nodeIndex!)
+    // eslint-disable-next-line prefer-const
+    let { p, v } = evaluate(output.nodeIndex!)
 
     if (debug) {
       const evaluations = evaluation.map((node: Computation, i: number) => ({
@@ -64,7 +64,9 @@ export class Engine<O extends Outputs> {
     const missingParameters = neededParameters.filter(
       (param) => !(param in context),
     )
-
+    if (output.type && 'date' in output.type) {
+      v = new Date(v as number)
+    }
     return {
       value: v,
       neededParameters,

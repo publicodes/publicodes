@@ -18,7 +18,7 @@ let parse_variation ~pos ~(parse : parse_value_fn) yaml =
       | _ ->
           let code, message = Err.parsing_invalid_mechanism in
           fatal_error ~pos ~kind:`Syntax ~code
-            ~hints:["Variation should have 'si' and 'alors' keys"]
+            ~hints:["Une variation doit contenir « si: » et « alors: »"]
             message )
   | _ ->
       let code, message = Err.parsing_should_be_object in
