@@ -42,7 +42,7 @@ let find_applicable_replacements ~pos ~rule ~reference graph =
   let replacements =
     find_replacements ~rule:reference graph
     (* Filter replacements based on only_in and except_in *)
-    |> List.filter ~f:(fun (_, meta) -> is_replacement_applicable ~rule ~meta)
+    |> List.filter ~f:(is_replacement_applicable ~rule)
   in
   (* Check for replacements with duplicate priorities *)
   let logs = check_priority_duplicates ~pos replacements in
@@ -58,44 +58,86 @@ let find_applicable_replacements ~pos ~rule ~reference graph =
   in
   (List.map sorted_replacements ~f:fst, logs)
 
+let find_applicable_make_not_applicable ~rule ~reference replacements =
+  find_replacements ~rule:reference replacements
+  (* Filter replacements based on only_in and except_in *)
+  |> List.filter ~f:(is_replacement_applicable ~rule)
+  |> List.map ~f:fst
+
+let create_make_not_applicable_node ~mk ~pos ~condition_node ~node =
+  let p = mk ~pos in
+  let o = Pos.mk ~pos in
+  (* if (condition_node = null || is_undef condition_node || condition_node = false) then node else null *)
+  p
+    (Condition
+       ( p
+           (Binary_op
+              ( o Or
+              , p (Binary_op (o Eq, condition_node, p (Const Null)))
+              , p
+                  (Binary_op
+                     ( o Or
+                     , p (Unary_op (Pos.mk ~pos Is_undef, condition_node))
+                     , p
+                         (Binary_op
+                            (o Eq, condition_node, p (Const (Bool false))) ) )
+                  ) ) )
+       , node
+       , p (Const Null) ) )
+
+let create_replace_node ~mk ~pos ~replacing_node ~node =
+  let p = mk ~pos in
+  let o = Pos.mk ~pos in
+  (* if replacement != null then replacement else node *)
+  p
+    (Condition
+       ( p (Binary_op (o NotEq, replacing_node, p (Const Null)))
+       , replacing_node
+       , node ) )
+
 (** Apply rule replacements to a tree *)
 let apply_replacements ~(replacements : t) ~(mk : 'a mk_value_fn)
     (tree : 'a Eval_tree.t) : 'a Eval_tree.t Output.t =
   let logs = ref [] in
   (* Apply rule replacements to an evaluation tree *)
-  let rec apply_replacement_to_node ~(rule : Rule_name.t)
-      (node : 'a Eval_tree.value) : 'a Eval_tree.value =
+  let rec apply_to_node ~(rule : Rule_name.t) (node : 'a Eval_tree.value) :
+      'a Eval_tree.value =
     let pos = node.pos in
     match node.value with
     | Ref reference ->
-        let replacements, log =
-          find_applicable_replacements ~pos ~rule ~reference replacements
+        let replacement_list, log =
+          find_applicable_replacements ~pos ~rule ~reference
+            replacements.replace
         in
         logs := log @ !logs ;
-        let result_node =
-          List.fold replacements ~init:node ~f:(fun acc replacement ->
-              let p = mk ~pos in
+        let node =
+          List.fold replacement_list ~init:node ~f:(fun node_acc replacement ->
               (* Apply replacements recursively to the replacing node *)
               let replacing_node =
-                apply_replacement_to_node ~rule (p (Ref replacement))
+                apply_to_node ~rule (mk ~pos (Ref replacement))
               in
-              (* if replacement != null then replacement else node *)
-              p
-                (Condition
-                   ( p
-                       (Binary_op
-                          ( Pos.mk ~pos:node.pos NotEq
-                          , replacing_node
-                          , p (Const Null) ) )
-                   , replacing_node
-                   , acc ) ) )
+              create_replace_node ~mk ~pos ~replacing_node ~node:node_acc )
         in
-        result_node
+        let make_not_applicable_list =
+          find_applicable_make_not_applicable ~rule ~reference
+            replacements.make_not_applicable
+        in
+        let node =
+          List.fold make_not_applicable_list ~init:node
+            ~f:(fun node_acc condition_rule ->
+              (* Apply make not applicable recursively (to handle transitivity) *)
+              let condition_node =
+                apply_to_node ~rule (mk ~pos (Ref condition_rule))
+              in
+              create_make_not_applicable_node ~mk ~pos ~condition_node
+                ~node:node_acc )
+        in
+        node
     | _ ->
         node
   in
   let updated_tree =
     Hashtbl.mapi tree ~f:(fun ~key:rule ~data:value ->
-        Eval_tree.map value ~f:(apply_replacement_to_node ~rule) )
+        Eval_tree.map value ~f:(apply_to_node ~rule) )
   in
   return ~logs:!logs updated_tree

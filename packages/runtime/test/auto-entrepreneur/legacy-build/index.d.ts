@@ -28,6 +28,7 @@ export type PString = `'${string}'`
  */
 export type Situation = Partial<{
   "dirigeant . auto-entrepreneur . impôt": PBoolean,
+  "dirigeant . auto-entrepreneur . impôt . revenu imposable": number,
   "dirigeant . auto-entrepreneur . impôt . versement libératoire": PBoolean,
   "dirigeant . auto-entrepreneur . impôt . versement libératoire . seuil dépassé": PBoolean,
   "dirigeant . auto-entrepreneur . impôt . versement libératoire . montant": number,
@@ -35,6 +36,7 @@ export type Situation = Partial<{
   "dirigeant": PBoolean,
   "dirigeant . exonérations": PBoolean,
   "dirigeant . exonérations . ACRE": PBoolean,
+  "dirigeant . régime social": PBoolean,
   "entreprise": PBoolean,
   "entreprise . date de création": PBoolean,
   "entreprise . chiffre d'affaires": number,
@@ -42,6 +44,10 @@ export type Situation = Partial<{
   "entreprise . chiffre d'affaires . service BIC": number,
   "entreprise . chiffre d'affaires . service BNC": number,
   "entreprise . chiffre d'affaires . vente restauration hébergement": number,
+  "entreprise . imposition": PBoolean,
+  "entreprise . imposition . régime": PBoolean,
+  "entreprise . imposition . régime . micro-entreprise": PBoolean,
+  "entreprise . imposition . régime . micro-entreprise . revenu abattu": number,
   "entreprise . activité": PBoolean,
   "entreprise . activité . nature": PBoolean,
   "entreprise . activité . nature . libérale": PBoolean,
@@ -167,6 +173,7 @@ export type Situation = Partial<{
  */
 export type RuleValue = Partial<{
   "dirigeant . auto-entrepreneur . impôt": boolean,
+  "dirigeant . auto-entrepreneur . impôt . revenu imposable": number,
   "dirigeant . auto-entrepreneur . impôt . versement libératoire": boolean,
   "dirigeant . auto-entrepreneur . impôt . versement libératoire . seuil dépassé": boolean,
   /** versement libératoire auto-entrepreneur */
@@ -175,6 +182,7 @@ export type RuleValue = Partial<{
   "dirigeant": boolean,
   "dirigeant . exonérations": boolean,
   "dirigeant . exonérations . ACRE": boolean,
+  "dirigeant . régime social": boolean,
   "entreprise": boolean,
   "entreprise . date de création": boolean,
   "entreprise . chiffre d'affaires": number,
@@ -182,6 +190,10 @@ export type RuleValue = Partial<{
   "entreprise . chiffre d'affaires . service BIC": number,
   "entreprise . chiffre d'affaires . service BNC": number,
   "entreprise . chiffre d'affaires . vente restauration hébergement": number,
+  "entreprise . imposition": boolean,
+  "entreprise . imposition . régime": boolean,
+  "entreprise . imposition . régime . micro-entreprise": boolean,
+  "entreprise . imposition . régime . micro-entreprise . revenu abattu": number,
   "entreprise . activité": boolean,
   "entreprise . activité . nature": boolean,
   "entreprise . activité . nature . libérale": boolean,

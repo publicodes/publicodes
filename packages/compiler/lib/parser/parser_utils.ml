@@ -72,3 +72,30 @@ let find_value key mapping =
       if String.equal (get_value k) key then
         Some (Pos.mk ~pos:(Pos.pos k) value)
       else None )
+
+let check_authorized_keys ~keys mapping =
+  let logs =
+    List.filter_map mapping ~f:(fun (k, _) ->
+        let unexpected_key =
+          List.find ~f:(fun str -> not (String.equal (get_value k) str)) keys
+        in
+        let code, message = Err.parsing_invalid_mechanism in
+        match unexpected_key with
+        | None ->
+            Some
+              (Log.error ~code ~pos:(Pos.pos k) ~kind:`Syntax
+                 ~hints:
+                   [Format.asprintf "La clé `%s` n'est pas valide" (get_value k)]
+                 message )
+        | Some _ ->
+            None )
+  in
+  return ~logs ()
+
+let parse_one_or_many ~f yaml =
+  match yaml with
+  | `A yaml ->
+      List.map ~f yaml |> all_keep_logs
+  | _ ->
+      let+ value = f yaml in
+      [value]

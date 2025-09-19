@@ -56,7 +56,9 @@ let rec map ~(f : 'a value -> 'b value) (c : 'a value) : 'b value =
         in
         let value = map ~f value in
         Set_context {context; value}
-    | v ->
-        v
+    | Round (rounding, precision, value) ->
+        Round (rounding, map ~f precision, map ~f value)
+    | Ref _ | Const _ | Get_context _ ->
+        c.value
   in
   f {c with value= new_value}

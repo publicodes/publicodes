@@ -24,6 +24,7 @@ valid simple replacement :
   else @d
 
 
+
 same priority warning :
 
   $ publicodes compile same_priority.publicodes  -t debug_eval_tree -o -
