@@ -97,7 +97,8 @@ type 'a rule_def =
   { name: Rule_name.t Pos.t
   ; value: 'a value
   ; meta: rule_meta list
-  ; replace: 'a replace list }
+  ; replace: 'a replace list
+  ; make_not_applicable: 'a replace list }
 [@@deriving show, sexp, compare]
 
 type 'a program = 'a rule_def list [@@deriving show, sexp, compare]

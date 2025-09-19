@@ -8,6 +8,7 @@ open Parse_types
 let parse_variation ~pos ~(parse : parse_value_fn) yaml =
   match yaml with
   | `O mapping -> (
+      let* _ = check_authorized_keys ~keys:["si"; "alors"] mapping in
       let if_ = find_value "si" mapping in
       let then_ = find_value "alors" mapping in
       match (if_, then_) with
@@ -27,6 +28,7 @@ let parse_variation ~pos ~(parse : parse_value_fn) yaml =
 let parse_else_clause ~(parse : parse_value_fn) (yaml : yaml) =
   match yaml with
   | `O mapping -> (
+      (* let* _ = check_authorized_keys ~keys:["sinon"] mapping in *)
       let else_ = find_value "sinon" mapping in
       match else_ with
       | Some (else_, pos_else) ->

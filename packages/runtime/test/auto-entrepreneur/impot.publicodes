@@ -1,6 +1,6 @@
 dirigeant . auto-entrepreneur . impôt: oui
 
-
+dirigeant . auto-entrepreneur . impôt . revenu imposable: entreprise . imposition . régime . micro-entreprise . revenu abattu
 
 dirigeant . auto-entrepreneur . impôt . versement libératoire:
   rend non applicable: revenu imposable
@@ -28,7 +28,6 @@ dirigeant . auto-entrepreneur . impôt . versement libératoire:
   par défaut: non
 
 dirigeant . auto-entrepreneur . impôt . versement libératoire . seuil dépassé:
-  public: oui
   valeur: impôt . foyer fiscal . revenu fiscal de référence > 27519 €/an
   description: |
     Le versement libératoire n’est pas disponible si le revenu fiscal de

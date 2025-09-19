@@ -46,7 +46,7 @@ const simpleSituation = {
 summary(() => {
   // Pre-instantiate engines for evaluation benchmarks
   const legacyEngineSimple = new LegacyEngine(legacyRules)
-  bench('[Multiple rules evaluation] Publicodes 1', () => {
+  bench('[Multiple rules evaluation - with cache] Publicodes 1', () => {
     legacyEngineSimple.setSituation(simpleSituation)
     const result = []
 
@@ -57,7 +57,7 @@ summary(() => {
     return result
   })
 
-  bench('[Multiple rules evaluation] Publicodes 2', () => {
+  bench('[Multiple rules evaluation - with cache] Publicodes 2', () => {
     const newEngineSimple = new NewEngine(newRules, { cache: true })
 
     const result = []
