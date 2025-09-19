@@ -176,7 +176,10 @@ let resolve_rule ~rule_names rule =
   in
   let* value = map_value rule.value in
   let* replace = List.map ~f:map_replace rule.replace |> all_keep_logs in
-  return {rule with value; replace}
+  let* make_not_applicable =
+    List.map ~f:map_replace rule.make_not_applicable |> all_keep_logs
+  in
+  return {rule with value; replace; make_not_applicable}
 
 let to_resolved_ast ast =
   let rule_names =

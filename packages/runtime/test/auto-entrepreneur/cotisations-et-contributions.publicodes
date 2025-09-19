@@ -1,6 +1,6 @@
 dirigeant . auto-entrepreneur . cotisations et contributions:
-  unité: €/mois
   public: oui
+  unité: €/an
   somme:
     - cotisations
     - TFC
@@ -16,7 +16,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC:
   note: |
     Nous n’avons pas intégré les exceptions suivantes :
     - Artisans en double immatriculation CCI-CMA
-  unité: €/mois
+  unité: €/an
   somme:
     - commerce
     - métiers
@@ -30,30 +30,30 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . commerce:
     - produit:
         - entreprise . chiffre d'affaires . service BIC
         - 0.044%
-      unité: €/mois
+      unité: €/an
       arrondi: oui
     - produit:
         - entreprise . chiffre d'affaires . vente restauration hébergement
         - 0.015%
-      unité: €/mois
+      unité: €/an
       arrondi: oui
 
   références:
     service-public.fr: https://www.service-public.fr/professionnels-entreprises/vosdroits/F32847
 
 dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers:
-  unité: €/mois
+  unité: €/an
   applicable si: entreprise . activité . nature = 'artisanale'
   somme:
     - produit:
         - entreprise . chiffre d'affaires . service BIC
         - taux service
-      unité: €/mois
+      unité: €/an
       arrondi: oui
     - produit:
         - entreprise . chiffre d'affaires . vente restauration hébergement
         - taux vente
-      unité: €/mois
+      unité: €/an
       arrondi: oui
 
   références:
@@ -74,11 +74,11 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . 
 
   avec:
     taux service:
-      # remplace: taux service
+      remplace: taux service
       valeur: 0.65%
 
     taux vente:
-      # remplace: taux vente
+      remplace: taux vente
       valeur: 0.29%
 
 dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle:
@@ -90,16 +90,14 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . 
 
   avec:
     taux service:
-      # remplace: taux service
+      remplace: taux service
       valeur: 0.83%
 
     taux vente:
-      # remplace: taux vente
+      remplace: taux vente
       valeur: 0.37%
 
 dirigeant . auto-entrepreneur . cotisations et contributions . CFP:
-  public: oui
-
   titre: Contribution à la formation professionnelle
   acronyme: CFP
   description: |
@@ -108,7 +106,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . CFP:
     droit à la formation professionnelle (à condition d’avoir déclaré un chiffre
     d’affaires positif au cours des 12 derniers mois).
   note: Les taux implémentés sont ceux prélevés par l’Urssaf.
-  unité: €/mois
+  unité: €/an
   somme:
     - produit:
         - entreprise . chiffre d'affaires . BIC
@@ -268,11 +266,10 @@ dirigeant . auto-entrepreneur . cotisations et contributions . cotisations:
       produit:
         - entreprise . chiffre d'affaires . service BIC
         - taux
-      unité: €/mois
+      unité: €/an
 
       avec:
         taux:
-
           variations:
             - si: date >= 10/2022
               alors: 21.2%
@@ -304,12 +301,11 @@ dirigeant . auto-entrepreneur . cotisations et contributions . cotisations:
     service BNC:
       description: Cotisations pour la part du chiffre d’affaires en prestation de
         service BNC
-      non applicable si:
-        est applicable: service BNC Cipav
+      non applicable si: service BNC Cipav > 0
       produit:
         - entreprise . chiffre d'affaires . service BNC
         - taux
-      unité: €/mois
+      unité: €/an
 
       avec:
         taux:
@@ -393,7 +389,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . cotisations:
       produit:
         - entreprise . chiffre d'affaires . vente restauration hébergement
         - taux
-      unité: €/mois
+      unité: €/an
 
       avec:
         taux:
@@ -432,7 +428,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . cotisations:
       produit:
         - entreprise . chiffre d'affaires . service BNC
         - taux
-      unité: €/mois
+      unité: €/an
 
       avec:
         taux:
