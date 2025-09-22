@@ -18,6 +18,7 @@
 				".netlify/**",
 				"build/**",
 				"public/**",
+				"bin/**",
 				"publicodes-build/**",
 				"model.publicodes.json"
 			]
