@@ -1,17 +1,17 @@
-import { describe, it, expect } from 'bun:test'
+import { describe, it, expect, beforeAll } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Rend non applicable > multiple', () => {
 	let engine: TestPublicodes
 	beforeAll(async () => {
 		engine = await yaml`
-	  a:
-    rend non applicable: c
+a:
+  rend non applicable: c
 
-  b:
-    rend non applicable: c
-  c:
-  x: c
+b:
+  rend non applicable: c
+c:
+x: c
 `
 	})
 	it('tous applicable', () => {
