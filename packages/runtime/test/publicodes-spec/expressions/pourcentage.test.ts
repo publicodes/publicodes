@@ -69,4 +69,22 @@ multiplication:
 		expect(engine.evaluate('d').value).toEqual(100)
 		expect(engine.outputs['d'].type.unit).toBe('%')
 	})
+
+	it.skip('addition with percentage', async () => {
+		// When no unit is specified with a percentage, it should be considered as empty unit, not percentage
+		const engine = await yaml`
+a: 1 + 5%
+b: 5 - 1%
+`
+		// @TODO
+	})
+
+	it.skip('addition with percentage', async () => {
+		// When no unit is specified with a percentage, it should be considered as empty unit, not percentage
+		expect(yaml`
+a: 5% + 4
+b: 2% + c
+c: 4
+`).toThrow()
+	})
 })

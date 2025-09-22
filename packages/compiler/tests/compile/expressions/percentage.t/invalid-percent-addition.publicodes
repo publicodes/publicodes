@@ -1,0 +1,6 @@
+a: 5% + 4 # Should error because 4 is ambigous, is it 4% or 400% ?
+b: 2% + c # Should error because c is ambigous too
+c: 4
+
+d: 5% + 4%/mois # Should error because different units
+e: 40%/mois + 40% # Should error to detect invalid unit
