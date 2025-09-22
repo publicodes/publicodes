@@ -7,14 +7,14 @@
 		"publicodes2": "./bin/publicodes.js"
 	},
 	"scripts": {
-		"clean": "rm -rf bin",
+		"clean": "rm -rf bin dist",
 		"build:compiler": "bun ./scripts/build-compiler.ts",
 		"codegen:dev": "run build:compiler",
 		"build": "rolldown -c",
-		"dev": "rolldown -c -w"
+		"dev": "rolldown -c -w",
+		"postinstall": "[ -d ./bin/compiler ] && chmod +x ./bin/compiler/* || true"
 	},
 	"files": [
-		"dist",
 		"bin"
 	],
 	"devDependencies": {
