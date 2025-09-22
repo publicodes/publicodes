@@ -27,7 +27,9 @@ const DEST_BINARY = path.join(
 
 // 1. Run dune build in the compiler package
 console.log('Building compiler with dune...')
-execSync('cd ' + COMPILER_DIR + ' && dune build', { stdio: 'inherit' })
+execSync('cd ' + COMPILER_DIR + ' && opam exec -- dune build', {
+	stdio: 'inherit',
+})
 console.log('Done.')
 
 // 2. Ensure destination directory exists and has the correct permissions
