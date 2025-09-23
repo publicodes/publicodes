@@ -129,29 +129,24 @@ let json_of_eval_tree_flat (tree : Tree.t) =
   let nodes_array = Array.of_list (List.map sorted_nodes ~f:snd) in
   (nodes_array, rule_to_index)
 
-let to_json tree params =
-  let nodes_array, rule_to_index = json_of_eval_tree_flat tree in
+let to_json ~eval_tree ~outputs =
+  let nodes_array, rule_to_index = json_of_eval_tree_flat eval_tree in
   let outputs =
-    List.map params ~f:(fun (output_rule, param_rules) ->
-        let rule_str = to_string output_rule in
-        let node_index =
-          match List.Assoc.find rule_to_index rule_str ~equal:String.equal with
-          | Some index ->
-              `Int index
-          | None ->
-              `Null
-        in
+    List.map outputs ~f:(fun (Shared.Model_outputs.{rule_name; typ; parameters; meta}) ->
+        let rule_str = to_string rule_name in
+        let node_index = `Int (List.Assoc.find_exn rule_to_index rule_str ~equal:String.equal) in
         let parameters =
-          `Assoc (List.map param_rules ~f:(fun rule -> (to_string rule, `Null)))
+          `Assoc (List.map parameters ~f:(fun rule -> (to_string rule, `Null)))
         in
         let type_info =
           let open Shared.Typ in
-          match (get_meta tree output_rule).typ with
+          match typ with
           | Some (Number (Some unit)) ->
               `Assoc
                 [ ("number", `Bool true)
-                ; ("unit", `String (Stdlib.Format.asprintf "%a" Shared.Units.pp unit))
-                ]
+                ; ( "unit"
+                  , `String (Stdlib.Format.asprintf "%a" Shared.Units.pp unit)
+                  ) ]
           | Some (Number None) ->
               `Assoc [("number", `Bool true)]
           | Some (Literal String) ->
@@ -163,11 +158,17 @@ let to_json tree params =
           | None ->
               `Null
         in
+        let meta =
+          `Assoc (List.filter_map ~f:(function  | Description desc -> Some ("description", `String desc) | Title title -> Some ("title", `String title) | Note note -> Some ("note", `String note) | Public -> None)
+           meta)
+
+        in
         ( rule_str
         , `Assoc
             [ ("parameters", parameters)
             ; ("type", type_info)
-            ; ("nodeIndex", node_index) ] ) )
+            ; ("nodeIndex", node_index)
+            ; ("meta", meta) ] ) )
   in
   `Assoc
     [ ("evaluation", `List (Array.to_list nodes_array))

@@ -16,6 +16,9 @@ let parse_meta mapping =
     | "titre" ->
         let* value = scalar_value () in
         return (Title (get_value value))
+    | "note" ->
+        let* value = scalar_value () in
+        return (Note (get_value value))
     | "public" ->
         let* value = scalar_value () in
         let pos = Pos.pos value in

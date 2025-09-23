@@ -1,6 +1,6 @@
 open Base
 open Utils
-(* A simpler YAML tree with position inStdlib.Formation *)
+(* A simpler YAML tree with position information *)
 
 type scalar_style =
   [`Any | `Plain | `Single_quoted | `Double_quoted | `Literal | `Folded]

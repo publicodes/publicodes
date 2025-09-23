@@ -83,7 +83,7 @@ and 'a value =
   ; chainable_mechanisms: 'a chainable_mechanism Pos.t list }
 [@@deriving equal, show, sexp]
 
-type rule_meta = Title of string | Description of string | Public
+type rule_meta = Title of string | Description of string | Note of string | Public
 [@@deriving equal, compare, show, sexp]
 
 type 'a replace =
@@ -147,3 +147,5 @@ let has_value rule_def =
   match rule_def.value.value with Undefined, _ -> false | _ -> true
 
 let merge (p1 : 'a program) (p2 : 'a program) = List.append p1 p2
+
+let find rule_name = List.find_exn ~f:(fun {name; _} -> Rule_name.equal (Pos.value name) rule_name )

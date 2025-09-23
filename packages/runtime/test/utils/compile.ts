@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { $ } from 'bun'
-import { Engine } from '../../src'
+import { PublicodesEngine } from '../../src'
 import type { Publicodes, Outputs } from '../../src'
 
 /**
@@ -43,13 +43,13 @@ export async function yaml(
 	strings: TemplateStringsArray,
 	...values: Array<{ toString(): string }>
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<Engine<any>> {
+): Promise<PublicodesEngine<any>> {
 	const yaml = strings.reduce((acc, str, i) => {
 		return acc + str + (i < values.length ? String(values[i]) : '')
 	}, '')
 	const rules = await compilePublicodes(dedent(yaml))
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	return new Engine(rules as Publicodes<any>)
+	return new PublicodesEngine(rules as Publicodes<any>)
 }
 
 export type TestPublicodes = Awaited<ReturnType<typeof yaml>>

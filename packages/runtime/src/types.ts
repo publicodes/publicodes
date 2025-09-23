@@ -10,6 +10,11 @@ export type Outputs = {
 		readonly parameters: { readonly [paramName: string]: null }
 		readonly type: BaseType
 		readonly nodeIndex: NodeIndex | null
+		readonly meta: {
+			readonly notes: string | null
+			readonly description: string | null
+			readonly source: string | null
+		}
 	}
 }
 
@@ -24,11 +29,13 @@ export type GetType<O extends Outputs, R extends keyof O> =
 export type Parameters<O extends Outputs> = {
 	readonly [K in keyof O]: O[K]['parameters']
 }
-export type RuleName<O extends Outputs> = Extract<keyof O, string>
 
+export type RuleName<O extends Outputs> = Extract<keyof O, string>
 export type GetContext<O extends Outputs, R extends RuleName<O>> = Partial<{
 	readonly [K in keyof O[R]['parameters'] & keyof O]: GetType<O, K>
 }>
+
+export type GetMeta<O extends Outputs, R extends RuleName<O>> = O[R]['meta']
 
 export interface Publicodes<O extends Outputs> {
 	readonly evaluation: unknown

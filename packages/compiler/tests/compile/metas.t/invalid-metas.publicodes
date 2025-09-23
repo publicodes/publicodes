@@ -1,0 +1,10 @@
+
+a:
+  public: oui
+  références:  # Invalid, put in a meta tag
+    - Ma référence
+
+b:
+  public: oui
+  meta:
+    titre: bla # Invalid, put at the root of the rule

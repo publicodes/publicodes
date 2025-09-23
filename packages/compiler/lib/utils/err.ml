@@ -160,11 +160,11 @@ let type_unit_incoherence =
 
 let missing_output_type =
   ( Code.Type_missing_output_type
-  , "inStdlib.Formation de type manquante pour ce résultat" )
+  , "information de type manquante pour ce résultat" )
 
 let type_missing_in_mechanism =
   ( Code.Type_missing_in_mechanism
-  , "inStdlib.Formation de type manquante pour ce paramètre de mécanisme" )
+  , "information de type manquante pour ce paramètre de mécanisme" )
 
 let cycle_detected = (Code.Cycle_detected, "cycle de dépendance détecté")
 
