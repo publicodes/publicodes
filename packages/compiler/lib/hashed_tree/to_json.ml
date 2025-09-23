@@ -129,6 +129,7 @@ let json_of_eval_tree_flat (tree : Tree.t) =
   let nodes_array = Array.of_list (List.map sorted_nodes ~f:snd) in
   (nodes_array, rule_to_index)
 
+
 let to_json ~eval_tree ~outputs =
   let nodes_array, rule_to_index = json_of_eval_tree_flat eval_tree in
   let outputs =
@@ -159,9 +160,15 @@ let to_json ~eval_tree ~outputs =
               `Null
         in
         let meta =
-          `Assoc (List.filter_map ~f:(function  | Description desc -> Some ("description", `String desc) | Title title -> Some ("title", `String title) | Note note -> Some ("note", `String note) | Public -> None)
-           meta)
-
+          let open Shared.Shared_ast in
+          `Assoc (meta |> List.filter_map ~f:(function
+              | Description desc -> Some [("description", `String desc)]
+              | Title title -> Some [("title", `String title)]
+              | Note note -> Some [("note", `String note)]
+              | Custom_meta `Assoc m -> Some m
+              | Custom_meta _ -> None
+              | Public -> None)
+            |> List.concat)
         in
         ( rule_str
         , `Assoc

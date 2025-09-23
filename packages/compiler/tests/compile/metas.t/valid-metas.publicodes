@@ -6,10 +6,12 @@ a:
   description: "Voici une description."
   note: |
     Attention, cette règle est importante.
+  valeur: 5
 
 b:
   public: oui
   valeur: 5 €
+  titre: bla
   meta:
     custom field: true
     nested field:

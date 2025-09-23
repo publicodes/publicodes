@@ -37,6 +37,7 @@ module Code = struct
     (* Replacement errors *)
     | Replace_multiple
     | Replace_cycle
+    | Parsing_invalid_meta
   [@@deriving equal]
 
   let show = function
@@ -98,18 +99,18 @@ module Code = struct
         "E028"
     | Replace_cycle ->
         "E029"
+    | Parsing_invalid_meta ->
+        "E030"
 
-  let pp fmt err =
-  Stdlib.Format.fprintf fmt "%s" (show err)
-
+  let pp fmt err = Stdlib.Format.fprintf fmt "%s" (show err)
 end
-
 
 type t = Code.t * string
 
 let yaml_unexpected_token ~actual ~expected =
   let message =
-    Stdlib.Format.sprintf "mot clé inattendu : %s (attendu : %s)" actual expected
+    Stdlib.Format.sprintf "mot clé inattendu : %s (attendu : %s)" actual
+      expected
   in
   (Code.Yaml_unexpected_token, message)
 
@@ -148,6 +149,8 @@ let yaml_duplicate_key = (Code.Yaml_duplicate_key, "clé dupliquée dans le YAML
 let parsing_empty_value = (Code.Parsing_empty_value, "valeur manquante")
 
 let invalid_value = (Code.Parsing_invalid_value, "mauvaise valeure")
+
+let invalid_meta = (Code.Parsing_invalid_meta, "meta invalide")
 
 let invalid_rule_name = (Code.Parsing_invalid_rule_name, "nom de règle invalide")
 

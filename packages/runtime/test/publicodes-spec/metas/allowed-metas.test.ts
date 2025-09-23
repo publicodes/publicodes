@@ -11,6 +11,13 @@ a:
   note: |
     mes notes
   valeur: 5
+  meta:
+    references:
+      - https://calinou.coop
+    ui:
+      question: Quel est votre couleur préférée ?
+      tooltip: |
+        Petite aide contextuelle
 `
 	})
 
@@ -24,5 +31,13 @@ a:
 
 	it('note', () => {
 		expect(engine.meta('a').note).toEqual('mes notes\n')
+	})
+
+	it('meta object', () => {
+		expect(engine.meta('a').references).toEqual(['https://calinou.coop'])
+		expect(engine.meta('a').ui).toEqual({
+			question: 'Quel est votre couleur préférée ?',
+			tooltip: 'Petite aide contextuelle\n',
+		})
 	})
 })

@@ -18,4 +18,6 @@ and sequence = yaml list [@@deriving equal, compare, sexp]
 
 and mapping = (scalar * yaml) list [@@deriving equal, compare, sexp]
 
+type t = yaml [@@deriving equal, compare, sexp]
+
 let get_value : scalar -> string = fun ({value; _}, _) -> value
