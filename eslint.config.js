@@ -31,7 +31,8 @@ export default tseslint.config(
 			'**/eslint.config.js',
 			'.yarn',
 			'.typedoc/',
-			'packages/codemod/update-v1.js',
+			'**/rolldown.config.js',
+			'packages/*/bin/',
 		],
 	},
 )

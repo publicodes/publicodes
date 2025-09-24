@@ -9,6 +9,23 @@ let authorized_keys =
   @ Hashtbl.keys Parse_mechanisms.chainable_mechanisms
   @ Hashtbl.keys Parse_mechanisms.value_mechanisms
   @ ["remplace"; "avec"; "rend non applicable"]
+  (* To implement *)
+  @ [ "barème"
+    ; "grille"
+    ; "inversion numérique"
+    ; "moyenne"
+    ; "est défini"
+    ; "est applicable"
+    ; "est non applicable"
+    ; "est non défini"
+    ; "taux progressif"
+    ; "durée"
+    ; "texte"
+    ; "résoudre la référence circulaire"
+    ; "une possibilité"
+    ; "formule"
+    ; "privé"
+    ; "logarithme" ]
 
 let rec parse_rule ~default_to_public ?(current_rule_name = []) (name, yaml) =
   let* name, pos = parse_ref name in

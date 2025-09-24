@@ -10,11 +10,7 @@ export type Outputs = {
 		readonly parameters: { readonly [paramName: string]: null }
 		readonly type: BaseType
 		readonly nodeIndex: NodeIndex | null
-		readonly meta: {
-			readonly notes: string | null
-			readonly description: string | null
-			readonly source: string | null
-		}
+		readonly meta: Record<string, unknown>
 	}
 }
 
