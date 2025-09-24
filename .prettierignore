@@ -8,3 +8,4 @@ yarn.lock
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 model.publicodes.json
+publicodes-build

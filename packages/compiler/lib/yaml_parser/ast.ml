@@ -1,6 +1,6 @@
 open Base
 open Utils
-(* A simpler YAML tree with position inStdlib.Formation *)
+(* A simpler YAML tree with position information *)
 
 type scalar_style =
   [`Any | `Plain | `Single_quoted | `Double_quoted | `Literal | `Folded]
@@ -17,5 +17,7 @@ and scalar = naked_scalar Pos.t [@@deriving equal, compare, sexp]
 and sequence = yaml list [@@deriving equal, compare, sexp]
 
 and mapping = (scalar * yaml) list [@@deriving equal, compare, sexp]
+
+type t = yaml [@@deriving equal, compare, sexp]
 
 let get_value : scalar -> string = fun ({value; _}, _) -> value

@@ -4,34 +4,28 @@ open Shared.Shared_ast
 open Yaml_parser
 open Parser_utils
 
-exception Invalid_rule_name of string
-
-let parse_meta mapping =
-  let parse_key (key, value) =
-    let scalar_value () = get_scalar ~pos:(Pos.pos key) value in
-    match get_value key with
-    | "description" ->
-        let* value = scalar_value () in
-        return (Description (get_value value))
-    | "titre" ->
-        let* value = scalar_value () in
-        return (Title (get_value value))
-    | "public" ->
-        let* value = scalar_value () in
-        let pos = Pos.pos value in
-        let value = get_value value in
-        if not (String.equal value "oui" || String.equal value "") then
-          let code, message = Err.invalid_value in
-          fatal_error ~pos ~code ~kind:`Syntax message
-            ~labels:[Pos.mk ~pos "doit valoir `oui` ou être vide"]
-            ~hints:
-              [ Printf.sprintf "Remplacez `%s` par `oui` ou supprimez la clée"
-                  value ]
-        else return Public
-    | _ ->
-        empty
-  in
-  List.map ~f:parse_key mapping |> all_keep_logs
+let authorized_keys =
+  Parse_meta.reserved_meta
+  @ Hashtbl.keys Parse_mechanisms.chainable_mechanisms
+  @ Hashtbl.keys Parse_mechanisms.value_mechanisms
+  @ ["remplace"; "avec"; "rend non applicable"]
+  (* To implement *)
+  @ [ "barème"
+    ; "grille"
+    ; "inversion numérique"
+    ; "moyenne"
+    ; "est défini"
+    ; "est applicable"
+    ; "est non applicable"
+    ; "est non défini"
+    ; "taux progressif"
+    ; "durée"
+    ; "texte"
+    ; "résoudre la référence circulaire"
+    ; "une possibilité"
+    ; "formule"
+    ; "privé"
+    ; "logarithme" ]
 
 let rec parse_rule ~default_to_public ?(current_rule_name = []) (name, yaml) =
   let* name, pos = parse_ref name in
@@ -49,7 +43,14 @@ let rec parse_rule ~default_to_public ?(current_rule_name = []) (name, yaml) =
   | `Scalar _ ->
       return [parsed_rule]
   | `O yaml ->
-      let* meta = parse_meta yaml in
+      let* _ =
+        Parser_utils.check_authorized_keys ~keys:authorized_keys
+          ~hints:
+            [ "Utilisez la clé 'meta' pour ajouter des propriétés \
+               personnalisées à une règle" ]
+          yaml
+      in
+      let* meta = Parse_meta.parse yaml in
       let meta = default_meta @ meta in
       let* with_ = parse_with ~default_to_public ~current_rule_name:name yaml in
       let* replace = parse_replace yaml in

@@ -4,15 +4,26 @@ open Shared.Shared_ast
 open Utils
 open Rule_graph
 open Utils.Output
+open Model_outputs
+
 module Oper = Graph.Oper.I (G)
 module Traverse = Graph.Traverse.Dfs (G)
+
 
 let remove_duplicates (a : 'a list) : 'a list =
   Set.to_list @@ Set.Poly.of_list a
 
-(* TODO : add inputs in parameters, add type, and log if a param is missing  type info  *)
-let extract_parameters ~(ast : 'a Shared_ast.t) ~(tree : Hashed_tree.t)
-    (graph : G.t) =
+(** Extracts the public outputs of a model from its AST and dependency graph.
+
+    This function identifies all rules marked as public in the AST and computes their
+    dependencies (parameters). It also adds metadata and type information to each output.
+
+    @param ast The abstract syntax tree of the model
+    @param eval_tree The evaluation tree containing metadata and positions
+    @param graph The dependency graph of the model
+    @return A list of model outputs with their metadata and dependencies, wrapped in an Output.t *)
+let extract_outputs ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t)
+    (graph : G.t) : Model_outputs.t Output.t =
   let transitive_dependencies =
     Oper.transitive_closure ~reflexive:false graph
   in
@@ -21,6 +32,10 @@ let extract_parameters ~(ast : 'a Shared_ast.t) ~(tree : Hashed_tree.t)
       let rule_name = Pos.value rule_def.name in
       if not (Shared_ast.has_value rule_def) then
         G.add_edge transitive_dependencies rule_name rule_name ) ;
+  (** Extracts the parameters (rules without values) that a given rule depends on.
+
+      @param rule_name The name of the rule to extract parameters for
+      @return A tuple containing the rule name and its list of parameter dependencies *)
   let extract_parameters rule_name =
     let successor_rules = G.succ transitive_dependencies rule_name in
     let parameter_rules =
@@ -36,32 +51,40 @@ let extract_parameters ~(ast : 'a Shared_ast.t) ~(tree : Hashed_tree.t)
     in
     (rule_name, remove_duplicates parameter_rules)
   in
-  let outputs_with_params =
+  (* Extract the parameter list for each output rule *)
+  let outputs =
     List.filter_map ast ~f:(fun rule_def ->
         let rule_name = Pos.value rule_def.name in
         if Shared_ast.has_public_tag rule_def then
           Some (extract_parameters rule_name)
         else None )
   in
-  (* We get the parameter list *)
+  (* Parameters are also outputs of the model as they can be evaluated independently *)
   let parameters =
-    remove_duplicates @@ List.concat_map ~f:snd outputs_with_params
+    remove_duplicates @@ List.concat_map ~f:snd outputs
   in
   let outputs =
     remove_duplicates
-      ( outputs_with_params
+      ( outputs
       @
-      (* We add the parameters of the parameters *)
       List.map parameters ~f:extract_parameters )
   in
-  (* We print warning if an output is without type *)
+  (* Add metadata to outputs *)
+  let outputs: t = List.map ~f:(fun (rule_name, parameters) -> {
+    rule_name;
+    parameters;
+    typ= (Eval_tree.get_meta eval_tree rule_name).typ;
+    meta= (Shared_ast.find rule_name ast).meta;
+  }) outputs
+  in
+
+  (* Generate warnings for outputs missing type information *)
   let warnings =
-    List.filter_map outputs ~f:(fun (rule_name, _) ->
-        let typ = (Eval_tree.get_meta tree rule_name).typ in
+    List.filter_map outputs ~f:(fun ({rule_name; typ; _}) ->
         match typ with
         | None ->
             let code, message = Err.missing_output_type in
-            let pos = Eval_tree.get_pos tree rule_name in
+            let pos = Eval_tree.get_pos eval_tree rule_name in
             Some
               (Log.warning ~code ~pos ~kind:`Type
                  ~hints:
@@ -70,7 +93,7 @@ let extract_parameters ~(ast : 'a Shared_ast.t) ~(tree : Hashed_tree.t)
                  message )
         | Some (Number None) ->
             let code, message = Err.missing_output_type in
-            let pos = Eval_tree.get_pos tree rule_name in
+            let pos = Eval_tree.get_pos eval_tree rule_name in
             Some
               (Log.warning ~code ~pos ~kind:`Type
                  ~hints:

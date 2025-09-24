@@ -29,11 +29,11 @@ let to_eval_tree ~ast =
   Hashed_tree.from_typed_tree typed_tree
 
 let to_json ~ast ~eval_tree =
-  let* parameters =
+  let* outputs =
     Dependency_graph.cycle_check eval_tree
-    >>= Dependency_graph.extract_parameters ~ast ~tree:eval_tree
+    >>= Dependency_graph.extract_outputs ~ast ~eval_tree
   in
-  return (Hashed_tree.to_json eval_tree parameters)
+  return (Hashed_tree.to_json ~eval_tree ~outputs )
 
 let compile ~input_files ~output_type ~default_to_public =
   let open Output in

@@ -46,7 +46,8 @@
     "auto-entrepreneur": {
       "parameters": { "auto-entrepreneur": null },
       "type": { "boolean": true },
-      "nodeIndex": 3
+      "nodeIndex": 3,
+      "meta": {}
     },
     "charges": {
       "parameters": {
@@ -56,17 +57,20 @@
         "chiffre d'affaires . nombre de jour": null
       },
       "type": { "number": true, "unit": "€" },
-      "nodeIndex": 0
+      "nodeIndex": 0,
+      "meta": {}
     },
     "chiffre d'affaires . TJM": {
       "parameters": { "chiffre d'affaires . TJM": null },
       "type": { "number": true, "unit": "€/jour" },
-      "nodeIndex": 25
+      "nodeIndex": 25,
+      "meta": {}
     },
     "chiffre d'affaires . nombre de jour": {
       "parameters": { "chiffre d'affaires . nombre de jour": null },
       "type": { "number": true, "unit": "jour" },
-      "nodeIndex": 21
+      "nodeIndex": 21,
+      "meta": {}
     },
     "cotisations": {
       "parameters": {
@@ -75,7 +79,8 @@
         "chiffre d'affaires . nombre de jour": null
       },
       "type": { "number": true, "unit": "€" },
-      "nodeIndex": 35
+      "nodeIndex": 35,
+      "meta": {}
     },
     "exemples . CA élevé": {
       "parameters": {
@@ -85,7 +90,8 @@
         "chiffre d'affaires . nombre de jour": null
       },
       "type": { "number": true, "unit": "€" },
-      "nodeIndex": 39
+      "nodeIndex": 39,
+      "meta": {}
     },
     "revenu net": {
       "parameters": {
@@ -95,7 +101,8 @@
         "chiffre d'affaires . nombre de jour": null
       },
       "type": { "number": true, "unit": "€" },
-      "nodeIndex": 33
+      "nodeIndex": 33,
+      "meta": {}
     }
   }
 }

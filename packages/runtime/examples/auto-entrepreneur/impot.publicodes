@@ -17,15 +17,20 @@ dirigeant . auto-entrepreneur . impôt . versement libératoire:
 
     Pour vérifier si cette option est adaptée à votre situation personnelle,
     vous devez effectuer des simulations sur le site des impôts.
-  références:
-    Le versement libératoire: https://www.impots.gouv.fr/professionnel/le-versement-liberatoire
-    Quand et comment puis-je opter pour le versement libératoire de l’impôt ?: https://www.autoentrepreneur.urssaf.fr/portail/accueil/une-question/questions-frequentes.html#quand-et-comment-puis-je-opter-p
-    Lexique de l’Urssaf: https://www.autoentrepreneur.urssaf.fr/portail/accueil/lexique.html?lettre=V#versement-liberatoire-de-limpot2
-    En tant que micro-entrepreneur, sous quelles conditions puis-je opter pour le versement libératoire de l’impôt ?: https://www.impots.gouv.fr/professionnel/questions/en-tant-que-micro-entrepreneur-sous-quelles-conditions-puis-je-opter-pour-l
-    'Micro-entreprise : comment fonctionne le versement libératoire de l’impôt sur le revenu ?': https://www.economie.gouv.fr/entreprises/micro-entreprise-auto-entreprise-versement-liberatoire-impot-revenu
-    Devenir auto-entrepreneur, combien ça coûte ? Durant la vie de votre auto-entreprise: https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#cout-durant-vie-auto-entreprise
-  question: Bénéficiez-vous du versement libératoire de l’impôt sur le revenu ?
   par défaut: non
+  meta:
+    références:
+      Le versement libératoire: https://www.impots.gouv.fr/professionnel/le-versement-liberatoire
+      Quand et comment puis-je opter pour le versement libératoire de l’impôt ?:
+        https://www.autoentrepreneur.urssaf.fr/portail/accueil/une-question/questions-frequentes.html#quand-et-comment-puis-je-opter-p
+      Lexique de l’Urssaf: https://www.autoentrepreneur.urssaf.fr/portail/accueil/lexique.html?lettre=V#versement-liberatoire-de-limpot2
+      En tant que micro-entrepreneur, sous quelles conditions puis-je opter pour le versement libératoire de l’impôt ?:
+        https://www.impots.gouv.fr/professionnel/questions/en-tant-que-micro-entrepreneur-sous-quelles-conditions-puis-je-opter-pour-l
+      'Micro-entreprise : comment fonctionne le versement libératoire de l’impôt sur le revenu ?':
+        https://www.economie.gouv.fr/entreprises/micro-entreprise-auto-entreprise-versement-liberatoire-impot-revenu
+      Devenir auto-entrepreneur, combien ça coûte ? Durant la vie de votre auto-entreprise:
+        https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#cout-durant-vie-auto-entreprise
+    question: Bénéficiez-vous du versement libératoire de l’impôt sur le revenu ?
 
 dirigeant . auto-entrepreneur . impôt . versement libératoire . seuil dépassé:
   valeur: impôt . foyer fiscal . revenu fiscal de référence > 27519 €/an

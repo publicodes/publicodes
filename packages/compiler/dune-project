@@ -2,8 +2,8 @@
 
 (name publicodes)
 
-; (generate_opam_files true)
-; remove this cause we want to add condition on os for installed package, which cannot be done in dune-project
+(generate_opam_files true)
+
 
 (formatting)
 
