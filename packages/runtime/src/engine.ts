@@ -7,6 +7,7 @@ import {
 	Evaluation,
 	RuleName,
 	Computation,
+	GetMeta,
 } from './types'
 
 type EngineOptions = {
@@ -74,6 +75,10 @@ export class Engine<O extends Outputs> {
 			neededParameters,
 			missingParameters,
 		} as Evaluation<O, R>
+	}
+
+	meta<R extends RuleName<O>>(rule: R): GetMeta<O, R> {
+		return this.publicodes.outputs[rule].meta
 	}
 }
 

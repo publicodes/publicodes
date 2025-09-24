@@ -1,5 +1,4 @@
 dirigeant . auto-entrepreneur . DROM:
-  experimental: oui
   description: |
     En tant qu’auto-entrepreneur en début d’activité, vous bénéficiez d’une
     exonération qui se traduit par l’application de taux réduits de cotisations sur
@@ -12,14 +11,11 @@ dirigeant . auto-entrepreneur . DROM:
       - 1/2 des taux pleins de métropole que vous soyez artisan, commerçant ou
       professionnel libéral, pour la période qui court entre la fin du 8ème trimestre
       d’activité jusqu’à la fin de la 3ème année civile d’activité,
-  note : Les taux DOM sont définis comme un pourcentage des taux métropole, mais les
-    règles d’arrondi ne sont pas claires
+  note: Les taux DOM sont définis comme un pourcentage des taux métropole, mais
+    les règles d’arrondi ne sont pas claires
   applicable si: établissement . commune . département . outre-mer
   valeur: oui
   rend non applicable: exonérations . ACRE
-  références:
-    Vous êtes auto-entrepreneur dans les Drom ?: https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#vous-etes-auto-entrepreneur-dans
-    Taux auto-entrepreneur dans les Drom (PDF): https://www.autoentrepreneur.urssaf.fr/portail/files/Guides/Urssaf-AutoEntrepreneur-Drom.pdf#page=13
   avec:
     première période:
       titre: Jusqu’à la fin du 8ème trimestre d’activité
@@ -31,8 +27,8 @@ dirigeant . auto-entrepreneur . DROM:
 
     taux service BIC:
       remplace:
-       références à: cotisations et contributions . cotisations . service BIC . taux
-       priorité: 1
+        références à: cotisations et contributions . cotisations . service BIC . taux
+        priorité: 1
       variations:
         - si: première période
           alors: 3.60%
@@ -42,8 +38,8 @@ dirigeant . auto-entrepreneur . DROM:
 
     taux service BNC:
       remplace:
-       références à: cotisations et contributions . cotisations . service BNC . taux
-       priorité: 1
+        références à: cotisations et contributions . cotisations . service BNC . taux
+        priorité: 1
       variations:
         - si: première période
           alors:
@@ -77,7 +73,8 @@ dirigeant . auto-entrepreneur . DROM:
 
     taux vente restauration hébergement:
       remplace:
-        références à: cotisations et contributions . cotisations . vente restauration hébergement . taux
+        références à: cotisations et contributions . cotisations . vente restauration
+          hébergement . taux
         priorité: 1
       variations:
         - si: première période
@@ -96,6 +93,11 @@ dirigeant . auto-entrepreneur . DROM:
         - si: seconde période
           alors: 10.60%
         - sinon: 14.20%
+  meta:
+    experimental: oui
+    références:
+      Vous êtes auto-entrepreneur dans les Drom ?: https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#vous-etes-auto-entrepreneur-dans
+      Taux auto-entrepreneur dans les Drom (PDF): https://www.autoentrepreneur.urssaf.fr/portail/files/Guides/Urssaf-AutoEntrepreneur-Drom.pdf#page=13
 
 dirigeant . auto-entrepreneur . Acre:
   applicable si: dirigeant . exonérations . ACRE
@@ -135,19 +137,22 @@ dirigeant . auto-entrepreneur . Acre:
             #       plafond: 3 ans
         - si: entreprise . durée d'activité < 1 an
           alors: 50%
-
-      références:
-        FAQ auto-entrepreneur - Urssaf: https://www.autoentrepreneur.urssaf.fr/portail/accueil/une-question/questions-frequentes.html
-        Aide à la création ou à la reprise d'une entreprise (Acre) - Service-public.fr: https://entreprendre.service-public.fr/vosdroits/F11677
+      meta:
+        
+        références:
+          FAQ auto-entrepreneur - Urssaf: https://www.autoentrepreneur.urssaf.fr/portail/accueil/une-question/questions-frequentes.html
+          Aide à la création ou à la reprise d'une entreprise (Acre) - Service-public.fr: https://entreprendre.service-public.fr/vosdroits/F11677
 
     taux service BIC:
       remplace: cotisations et contributions . cotisations . service BIC . taux
-      valeur: taux Acre * cotisations et contributions . cotisations . service BIC . taux
+      valeur: taux Acre * cotisations et contributions . cotisations . service BIC .
+        taux
       arrondi: 1 décimales
 
     taux service BNC:
       remplace: cotisations et contributions . cotisations . service BNC . taux
-      valeur: taux Acre * cotisations et contributions . cotisations . service BNC . taux
+      valeur: taux Acre * cotisations et contributions . cotisations . service BNC .
+        taux
       arrondi:
         variations:
           - si: date >= 01/2026
@@ -155,8 +160,10 @@ dirigeant . auto-entrepreneur . Acre:
           - sinon: 1 décimales
 
     taux vente restauration hébergement:
-      remplace: cotisations et contributions . cotisations . vente restauration hébergement . taux
-      valeur: taux Acre * cotisations et contributions . cotisations . vente restauration hébergement . taux
+      remplace: cotisations et contributions . cotisations . vente restauration
+        hébergement . taux
+      valeur: taux Acre * cotisations et contributions . cotisations . vente
+        restauration hébergement . taux
       arrondi: 1 décimales
 
     taux CIPAV:
@@ -169,12 +176,14 @@ dirigeant . auto-entrepreneur . Acre:
               - si: date >= 07/2024
                 alors: 13.90%
               - sinon: 12.10%
-        - sinon: taux Acre * cotisations et contributions . cotisations . service BNC Cipav . taux
+        - sinon: taux Acre * cotisations et contributions . cotisations . service BNC
+            Cipav . taux
 
 dirigeant . auto-entrepreneur . Acre . notification calcul ACRE annuel:
-  experimental: oui
   formule: dirigeant . exonérations . ACRE
   description: |
     Le taux Acre utilisé est celui correspondant au mois courant. Le
     simulateur ne prend pas encore en compte le chevauchement de deux périodes
     d’Acre sur une même année.
+  meta:
+    experimental: oui

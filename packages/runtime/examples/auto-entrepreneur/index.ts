@@ -1,7 +1,7 @@
-import { Engine } from '../../src'
+import { PublicodesEngine } from '../../src'
 import rules from './model.publicodes.json'
 
-const engine = new Engine(rules)
+const engine = new PublicodesEngine(rules)
 
 const context = {
 	"entreprise . chiffre d'affaires . BIC": 0,
@@ -19,6 +19,11 @@ console.log(
 	engine.evaluate('dirigeant . auto-entrepreneur . revenu net', context),
 )
 
+console.log(
+	engine.meta(
+		'dirigeant . auto-entrepreneur . cotisations et contributions . TFC',
+	).title,
+)
 console.log(
 	'cotisations',
 	engine.evaluate(

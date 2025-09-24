@@ -7,7 +7,7 @@ open Ast
 open Utils
 
 (*
-This module will parse YAML content and produce YAML AST with position inStdlib.Formation.
+This module will parse YAML content and produce YAML AST with position information.
 
 We are parsing the following grammar:
   stream ::= STREAM-START document* STREAM-END

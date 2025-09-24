@@ -27,6 +27,7 @@ depends: [
   "dune" {>= "3.17"}
   "base"
   "yaml"
+  "ppx_deriving"
   "sedlex"
   "yojson"
   "ocamlgraph" {>= "2.2.0"}
@@ -34,8 +35,8 @@ depends: [
   "unionFind"
   "stdune"
   "pp"
+  "inotify"
   "ppx_deriving"
-  "inotify" {os = "linux"}
   "config"
   "ocaml-lsp-server" {with-dev}
   "ocamlformat" {with-dev}

@@ -476,14 +476,22 @@
     "date": {
       "parameters": { "date": null },
       "type": { "date": true },
-      "nodeIndex": 85
+      "nodeIndex": 85,
+      "meta": {}
     },
     "dirigeant . auto-entrepreneur . Cipav . adhérent": {
       "parameters": {
         "dirigeant . auto-entrepreneur . Cipav . adhérent": null
       },
       "type": { "boolean": true },
-      "nodeIndex": 16
+      "nodeIndex": 16,
+      "meta": {
+        "description": "Depuis le 1er janvier 2018, les auto-entreprises d’activité libérale non\nréglementée sont affiliées à la Sécurité sociale pour les indépendants (SSI).\n\nLes auto-entreprises d’activité libérale non réglementée créées avant le 1er\njanvier 2018, qui étaient adhérentes à la Cipav, demeurent à la Cipav.\n\nLes auto-entrepreneurs concernés disposent toutefois d’un droit d’option\ndurant cinq ans afin de rejoindre la Sécurité sociale pour les indépendants\n(SSI).\n",
+        "question": "Êtes-vous adhérent à la Cipav ?",
+        "références": {
+          "Qui est assuré à la Cipav ?": "https://www.lacipav.fr/qui-est-assure-cipav"
+        }
+      }
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions": {
       "parameters": {
@@ -501,7 +509,13 @@
         "entreprise . durée d'activité . trimestres civils": null
       },
       "type": { "number": true, "unit": "€/an" },
-      "nodeIndex": 198
+      "nodeIndex": 198,
+      "meta": {
+        "références": {
+          "Imposition du micro-entrepreneur (régime micro-fiscal et social)": "https://www.service-public.fr/professionnels-entreprises/vosdroits/F23267",
+          "Les cotisations et contributions sociales": "https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#cout-durant-vie-auto-entreprise"
+        }
+      }
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . TFC": {
       "parameters": {
@@ -510,7 +524,14 @@
         "entreprise . chiffre d'affaires . vente restauration hébergement": null
       },
       "type": { "number": true, "unit": "€/an" },
-      "nodeIndex": 199
+      "nodeIndex": 199,
+      "meta": {
+        "title": "Taxes pour frais de chambre",
+        "note": "Nous n’avons pas intégré les exceptions suivantes :\n- Artisans en double immatriculation CCI-CMA\n",
+        "références": {
+          "Fiche service-public.fr": "https://www.service-public.fr/professionnels-entreprises/vosdroits/F32847"
+        }
+      }
     },
     "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations": {
       "parameters": {
@@ -527,7 +548,15 @@
         "entreprise . durée d'activité . trimestres civils": null
       },
       "type": { "number": true, "unit": "€/an" },
-      "nodeIndex": 264
+      "nodeIndex": 264,
+      "meta": {
+        "description": "Les cotisations sociales donnent à l’auto-entrepreneur accès à une\nprotection sociale minimale : une retraite, des soins de santé, des\nallocations familiales, etc.\n\nL’auto-entreprise est un régime simplifié : plutôt qu’une fiche de paie\ncomplexe, toutes les cotisations sont regroupées dans un *forfait* dont le\ntaux dépend de la catégorie d’activité.\n",
+        "références": {
+          "Les cotisations et contributions sociales": "https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#cout-durant-vie-auto-entreprise",
+          "Cotisations et contributions sociales : montant et déclaration": "https://entreprendre.service-public.fr/vosdroits/F36232#fiche-item-aria-2",
+          "Droit à la retraite des travailleurs indépendants relevant du dispositif micro-social": "https://legislation.lassuranceretraite.fr/Pdf/circulaire_cnav_2024_23_16072024.pdf"
+        }
+      }
     },
     "dirigeant . auto-entrepreneur . revenu net": {
       "parameters": {
@@ -545,19 +574,27 @@
         "entreprise . durée d'activité . trimestres civils": null
       },
       "type": { "number": true, "unit": "€/an" },
-      "nodeIndex": 392
+      "nodeIndex": 392,
+      "meta": {
+        "description": "Il s’agit du revenu après déductions des cotisations, avant le paiement de l’impôt sur le revenu.",
+        "identifiant court": "auto-entrepreneur-net",
+        "résumé": "Avant impôt",
+        "question": "Quel revenu avant impôt voulez-vous toucher ?"
+      }
     },
     "entreprise . activité . nature": {
       "parameters": { "entreprise . activité . nature": null },
       "type": { "string": true },
-      "nodeIndex": 22
+      "nodeIndex": 22,
+      "meta": {}
     },
     "entreprise . activité . nature . libérale . réglementée": {
       "parameters": {
         "entreprise . activité . nature . libérale . réglementée": null
       },
       "type": { "boolean": true },
-      "nodeIndex": 24
+      "nodeIndex": 24,
+      "meta": {}
     },
     "entreprise . chiffre d'affaires": {
       "parameters": {
@@ -567,53 +604,62 @@
         "entreprise . chiffre d'affaires . vente restauration hébergement": null
       },
       "type": { "number": true, "unit": "€/an" },
-      "nodeIndex": 363
+      "nodeIndex": 363,
+      "meta": {}
     },
     "entreprise . chiffre d'affaires . BIC": {
       "parameters": { "entreprise . chiffre d'affaires . BIC": null },
       "type": { "number": true, "unit": "€/an" },
-      "nodeIndex": 263
+      "nodeIndex": 263,
+      "meta": {}
     },
     "entreprise . chiffre d'affaires . service BIC": {
       "parameters": { "entreprise . chiffre d'affaires . service BIC": null },
       "type": { "number": true, "unit": "€/an" },
-      "nodeIndex": 228
+      "nodeIndex": 228,
+      "meta": {}
     },
     "entreprise . chiffre d'affaires . service BNC": {
       "parameters": { "entreprise . chiffre d'affaires . service BNC": null },
       "type": { "number": true, "unit": "€/an" },
-      "nodeIndex": 94
+      "nodeIndex": 94,
+      "meta": {}
     },
     "entreprise . chiffre d'affaires . vente restauration hébergement": {
       "parameters": {
         "entreprise . chiffre d'affaires . vente restauration hébergement": null
       },
       "type": { "number": true, "unit": "€/an" },
-      "nodeIndex": 196
+      "nodeIndex": 196,
+      "meta": {}
     },
     "entreprise . date de création": {
       "parameters": { "entreprise . date de création": null },
       "type": { "date": true },
-      "nodeIndex": 12
+      "nodeIndex": 12,
+      "meta": {}
     },
     "entreprise . durée d'activité": {
       "parameters": { "entreprise . durée d'activité": null },
       "type": { "number": true, "unit": "an" },
-      "nodeIndex": 74
+      "nodeIndex": 74,
+      "meta": {}
     },
     "entreprise . durée d'activité . années civiles": {
       "parameters": {
         "entreprise . durée d'activité . années civiles": null
       },
       "type": { "number": true, "unit": "aucune" },
-      "nodeIndex": 42
+      "nodeIndex": 42,
+      "meta": {}
     },
     "entreprise . durée d'activité . trimestres civils": {
       "parameters": {
         "entreprise . durée d'activité . trimestres civils": null
       },
       "type": { "number": true, "unit": "aucune" },
-      "nodeIndex": 35
+      "nodeIndex": 35,
+      "meta": {}
     }
   }
 }

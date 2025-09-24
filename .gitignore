@@ -51,4 +51,3 @@ dist-ssr
 *.sw?
 packages/compiler/_build
 packages/compiler/_opam
-packages/compiler/**/model.publicodes.json

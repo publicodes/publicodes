@@ -7,7 +7,7 @@
 		"publicodes2": "./bin/publicodes.js"
 	},
 	"scripts": {
-		"clean": "rm -rf bin dist",
+		"clean": "rm -rf bin",
 		"build:compiler": "bun ./scripts/build-compiler.ts",
 		"codegen:dev": "run build:compiler",
 		"build": "rolldown -c",

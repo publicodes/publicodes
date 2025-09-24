@@ -2,7 +2,7 @@ open Base
 open Utils.Output
 open Yaml_parser
 
-let get_value value = (Pos.value value).value
+let get_value = Yaml_parser.get_value
 
 let get_scalar ~pos (value : yaml) =
   match value with
@@ -73,22 +73,20 @@ let find_value key mapping =
         Some (Pos.mk ~pos:(Pos.pos k) value)
       else None )
 
-let check_authorized_keys ~keys mapping =
+let check_authorized_keys ~keys ?(hints = []) mapping =
   let logs =
     List.filter_map mapping ~f:(fun (k, _) ->
-        let unexpected_key =
-          List.find ~f:(fun str -> not (String.equal (get_value k) str)) keys
-        in
+        let is_allowed = List.exists ~f:(String.equal (get_value k)) keys in
         let code, message = Err.parsing_invalid_mechanism in
-        match unexpected_key with
-        | None ->
-            Some
-              (Log.error ~code ~pos:(Pos.pos k) ~kind:`Syntax
-                 ~hints:
-                   [Stdlib.Format.asprintf "La clé `%s` n'est pas valide" (get_value k)]
-                 message )
-        | Some _ ->
-            None )
+        if not is_allowed then
+          Some
+            (Log.error ~code ~pos:(Pos.pos k) ~kind:`Syntax
+               ~hints:
+                 ( Stdlib.Format.asprintf "La clé `%s` n'est pas valide"
+                     (get_value k)
+                 :: hints )
+               message )
+        else None )
   in
   return ~logs ()
 
