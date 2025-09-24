@@ -142,17 +142,22 @@ export const RulesNav = ({
 			{/* Portal in Header */}
 			{openNavButtonPortalElement &&
 				ReactDOM.createPortal(
-					<OpenNavButton
-						ref={openNavButtonRef}
-						onClick={() => {
-							setNavOpen(true)
-							if (navRef.current) {
-								navRef.current.focus()
-							}
-						}}
+					<nav
+						role="navigation"
+						aria-label="Menu de navigation sur les règles de la documentation"
 					>
-						Toutes les règles
-					</OpenNavButton>,
+						<OpenNavButton
+							ref={openNavButtonRef}
+							onClick={() => {
+								setNavOpen(true)
+								if (navRef.current) {
+									navRef.current.focus()
+								}
+							}}
+						>
+							Toutes les règles
+						</OpenNavButton>
+					</nav>,
 					openNavButtonPortalElement,
 				)}
 			<NavContainer
@@ -286,6 +291,7 @@ const NavLi = ({
 	const baseEngine = useEngine()
 
 	const parsedRules = baseEngine.getParsedRules()
+
 	const childrenCount = Object.keys(parsedRules).reduce(
 		(acc, ruleDot) =>
 			(
@@ -307,6 +313,9 @@ const NavLi = ({
 			navRef.current.scrollTop = activeLi.current?.offsetTop
 		}
 	}, [active])
+
+	const buttonTitle = `${open ? 'Replier le sous-menu' : 'Déplier le sous-menu'} pour ${parsedRules[ruleDottedName].title}`
+
 	return (
 		<li
 			key={ruleDottedName}
@@ -320,7 +329,8 @@ const NavLi = ({
 				<RuleLinkWithContext dottedName={ruleDottedName} onClick={onClick} />
 				{childrenCount > 0 && (
 					<DropdownButton
-						aria-label={open ? 'Replier le sous-menu' : 'Déplier le sous-menu'}
+						aria-label={buttonTitle}
+						title={buttonTitle}
 						aria-expanded={open}
 						onClick={() => onClickDropdown(ruleDottedName)}
 					>

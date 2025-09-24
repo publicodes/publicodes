@@ -33,6 +33,10 @@ export default function Reference(
 		return <Explanation node={engine?.evaluate(rule)} />
 	}
 
+	const buttonTitle = `${
+		folded ? 'Déplier, afficher le détail' : 'Replier, afficher le détail'
+	} pour ${dottedName}`
+
 	return (
 		<div
 			style={{
@@ -68,11 +72,8 @@ export default function Reference(
 								onClick={() => setFolded(!folded)}
 								aria-expanded={!folded}
 								className="publicodes_btn-small"
-								aria-label={
-									folded ?
-										'Déplier, afficher le détail'
-									:	'Replier, afficher le détail'
-								}
+								aria-label={buttonTitle}
+								title={buttonTitle}
 							>
 								{folded ? 'Déplier' : 'Replier'}
 							</UnfoldButton>
