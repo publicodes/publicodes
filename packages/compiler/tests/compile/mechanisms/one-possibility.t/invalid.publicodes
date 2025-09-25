@@ -1,0 +1,111 @@
+#
+# Proposition : une possibilité behave like polymorphic variant in Ocaml.
+# Meaning that they are inferred at compile time.
+#
+# Enlever le type « string »
+
+x:
+  variations:
+    - si: a = 'grand'
+      alors: 32
+    - si: a = 'petit'
+      alors: 12
+
+# // a:  une possibilité : ['grand', 'petit']
+y: a = 'moyen'
+
+# // a:  une possibilité : ['grand', 'petit', 'moyen'] -> warn about partial case match
+
+# Remplace ?
+# Inféré pareil
+x:
+  remplace: b
+
+
+# Same for rule name. It's just that it checks that they exists somewhere
+contrat:
+  une possibilité:
+    - CDI
+    - CDD
+  avec:
+    CDI:
+      titre: Contrat à durée indéterminée (CDI)
+    CDD:
+      titre: Contrat à durée déterminée (CDD)
+
+CDI . préavis:
+  valeur: 4
+
+CDD . préavis:
+  valeur: 8
+
+contrat . durée préavis: <contrat> . préavis
+
+cotisations:
+  variations:
+  - si: contrat = 'CDI'
+    alors: 12 %
+  - si: contrat = 'CDD'
+    alors: 14%
+
+# Big question, what about replace and possibility ?
+contrat alsace:
+  remplace: contrat
+  une possibilité:
+    - contrat . CDI
+    - contrat . CDD
+    - droit local
+
+# This is messy, I cannot see how to make it work, it means static program flow analysis to check the possible values...
+contrat alsace . cotisations:
+  remplace: cotisations
+  valeur:
+    - si: contrat alsace = 'droit local'
+      alors: 10%
+    - sinon: cotisations
+
+## An option would be to list all the case in the variation, but this is against the principle of remplace.
+
+
+# This is messy, I cannot see how to make it work... To be continued
+
+
+
+
+
+a:
+  # Type de a: 'a' | 'b'
+  une possibilité:
+    - 'a'
+    - 'b'
+  valeur: 'a'
+
+b:
+  # Type de a: 'a' | 'b'
+  une possibilité:
+    - 12
+    - 14
+  type: nombre # Not necessary
+
+c:
+  une possibilité
+
+
+b:
+  remplace: a
+
+
+c:
+  remplace: a
+  une possibilité:
+    - 'a'
+    - 'b'
+    - 'c'
+
+
+x:
+  match:
+    valeur: a
+    avec:
+      a: 12
+      b: 16
