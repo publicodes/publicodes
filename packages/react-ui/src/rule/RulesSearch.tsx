@@ -64,11 +64,11 @@ export default function RulesSearch() {
 				autoComplete="on"
 			/>
 			{searchQuery.length > 0 && (
-				<div aria-live="polite" aria-atomic="true" className="sr-only">
+				<SROnlyDiv aria-live="polite" aria-atomic="true">
 					{searchResults.length > 0 ?
 						`${searchResults.length} résultat${searchResults.length > 1 ? 's' : ''} trouvé${searchResults.length > 1 ? 's' : ''}`
 					:	'Aucun résultat trouvé'}
-				</div>
+				</SROnlyDiv>
 			)}
 			{!isEmpty ?
 				<SearchResults
@@ -189,4 +189,16 @@ const ItemName = styled.span`
 
 const ItemTitle = styled.span`
 	color: #666;
+`
+
+const SROnlyDiv = styled.p`
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
 `

@@ -50,6 +50,7 @@ export default function RulePage({
 	showDevSection = true,
 	rulesToHide,
 	displayIcon = true,
+	mainContentId,
 }: {
 	/**
 	 * The base path on which the documentation will be mounted. For example, if it is /documentation, the URL of the rule remuneration.primes will be /documentation/remuneration/primes.
@@ -109,6 +110,11 @@ export default function RulePage({
 	 * Whether to display an icon next to the rule links.
 	 */
 	displayIcon?: boolean
+	/**
+	 * Define a custom id for the main content in order to be able to focus
+	 * it with a skip link i.e.
+	 */
+	mainContentId?: string
 }) {
 	const currentEngineId =
 		typeof window !== 'undefined' &&
@@ -144,6 +150,7 @@ export default function RulePage({
 							npmPackage={npmPackage}
 							mobileMenuPortalId={mobileMenuPortalId}
 							openNavButtonPortalId={openNavButtonPortalId}
+							mainContentId={mainContentId}
 						/>
 					</DisplayOptionsContext.Provider>
 				</RenderersContext.Provider>
@@ -155,6 +162,7 @@ export default function RulePage({
 type RuleProps = {
 	dottedName: string
 	subEngineId?: number
+	mainContentId?: string
 } & Pick<
 	ComponentProps<typeof RulePage>,
 	| 'language'
@@ -174,6 +182,7 @@ function Rule({
 	npmPackage,
 	mobileMenuPortalId,
 	openNavButtonPortalId,
+	mainContentId,
 }: RuleProps) {
 	const baseEngine = useEngine()
 	const hideValue = useHideValue(dottedName)
@@ -212,7 +221,11 @@ function Rule({
 					mobileMenuPortalId={mobileMenuPortalId}
 					openNavButtonPortalId={openNavButtonPortalId}
 				/>
-				<Article>
+				<Article
+					id={mainContentId}
+					tabIndex={mainContentId ? -1 : undefined}
+					role={mainContentId ? 'main' : undefined}
+				>
 					<DottedNameContext.Provider value={dottedName}>
 						<RuleHeader dottedName={dottedName} />
 						<section>
