@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { css, styled } from 'styled-components'
 import { AccordionItem } from '../contexts'
 import { Arrow } from './icons/Arrow'
 
-const AccordionContainer = styled.div`
+const AccordionContainer = styled.section`
 	overflow: hidden;
 	border-radius: 6px;
 	border: 1px solid #bbb;
@@ -70,28 +70,57 @@ export interface AccordionProps {
 export const Accordion = ({ items }: AccordionProps) => {
 	const [open, setOpen] = useState<boolean[]>([])
 
-	const toggleAccordion = (i: number) => () =>
+	const toggleAccordion = useCallback((i: number) => {
 		setOpen((arr) => {
-			arr[i] = !arr[i]
-
-			return [...arr]
+			const newArr = [...arr]
+			newArr[i] = !newArr[i]
+			return newArr
 		})
+	}, [])
+
+	const handleKeyDown = useCallback(
+		(event: React.KeyboardEvent, i: number) => {
+			if (event.key === 'Enter' || event.key === ' ') {
+				event.preventDefault()
+				toggleAccordion(i)
+			}
+		},
+		[toggleAccordion],
+	)
 
 	return (
-		<AccordionContainer>
-			{items.map(({ id, title, children }, i) => (
-				<AccordionWrapper id={id} key={id} i={i}>
-					<H4>
-						<button onClick={toggleAccordion(i)}>
-							<span>{title}</span>
-							<StyledArrow $isOpen={open[i]} />
-						</button>
-					</H4>
-					<div>
-						<Child open={!!open[i]}>{children}</Child>
-					</div>
-				</AccordionWrapper>
-			))}
+		<AccordionContainer role="region" aria-label="Accordion">
+			{items.map(({ id, title, children }, i) => {
+				const isOpen = !!open[i]
+				const buttonId = `accordion-button-${id}`
+				const contentId = `accordion-content-${id}`
+
+				return (
+					<AccordionWrapper key={id} i={i}>
+						<H4>
+							<button
+								id={buttonId}
+								type="button"
+								aria-expanded={isOpen}
+								aria-controls={contentId}
+								onClick={() => toggleAccordion(i)}
+								onKeyDown={(e) => handleKeyDown(e, i)}
+							>
+								<span>{title}</span>
+								<StyledArrow $isOpen={isOpen} aria-hidden="true" />
+							</button>
+						</H4>
+						<div
+							id={contentId}
+							role="region"
+							aria-labelledby={buttonId}
+							aria-hidden={!isOpen}
+						>
+							<Child open={isOpen}>{children}</Child>
+						</div>
+					</AccordionWrapper>
+				)
+			})}
 		</AccordionContainer>
 	)
 }
