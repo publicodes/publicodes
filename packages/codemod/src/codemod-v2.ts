@@ -48,7 +48,6 @@ const authorizedKeys = [
 	'texte',
 	'résoudre la référence circulaire',
 	'une possibilité',
-	'formule',
 	'privé',
 	'logarithme',
 ]
@@ -64,6 +63,7 @@ for (const yamlFile of yamlFiles) {
 	const doc = yaml.parseDocument(yamlInput, { keepSourceTokens: true })
 	// Apply modifications
 	removeDoubleQuotes(doc)
+	renameFormuleToValeur(doc)
 	moveNonAuthorizedKeysToMeta(doc)
 	// Convert modified data back to YAML
 	const yamlOutput = yaml.stringify(doc, { keepSourceTokens: true })
@@ -95,6 +95,29 @@ function removeDoubleQuotes(doc: yaml.Document) {
 					(firstChar === '"' && lastChar === '"')
 				) {
 					node.value = value.slice(1, -1)
+				}
+			}
+		},
+	})
+}
+
+/**
+ * Renames 'formule' fields to 'valeur'
+ */
+function renameFormuleToValeur(doc: yaml.Document) {
+	yaml.visit(doc, {
+		Map(_, map) {
+			if (isMap(map)) {
+				const formuleItem = map.items.find(
+					(item) => (item.key as Scalar).value === 'formule',
+				)
+				if (formuleItem) {
+					// Create new key node
+					const valeurKey = new Scalar('valeur')
+					// Add the new key-value pair
+					map.add({ key: valeurKey, value: formuleItem.value })
+					// Remove the old key-value pair
+					map.delete('formule')
 				}
 			}
 		},
