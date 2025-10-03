@@ -26,8 +26,20 @@
  (name publicodes)
  (synopsis "Compiler for the Publicodes language")
  (description "A compiler for the Publicodes, a programming language for public interest algorithms.")
- (depends ocaml dune base yaml ppx_deriving sedlex yojson (ocamlgraph (>= 2.2.0) )
-	  cmdliner unionFind stdune pp inotify
+ (depends
+ 		ocaml
+   	dune
+    base
+    yaml
+    ppx_deriving
+    (sedlex (= 3.6) )
+    yojson
+    (ocamlgraph (>= 2.2.0) )
+	  (cmdliner (= 1.3.0) )
+		unionFind
+		stdune
+		pp
+		inotify
 	  ppx_deriving
 		config
 	  (ocaml-lsp-server :with-dev)
