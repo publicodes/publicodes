@@ -23,10 +23,10 @@ describe('Remplace > simple', () => {
 		expect(
 			engine.evaluate('test', { 'restaurant . client gourmand': true }).value,
 		).toBe(15)
+	})
 
-		it('condition non définie', () => {
-			expect(engine.evaluate('test').value).toBe(10)
-		})
+	it('condition non définie', () => {
+		expect(engine.evaluate('test').value).toBe(10)
 	})
 	it('remplace non défini', async () => {
 		const engine = await yaml`
