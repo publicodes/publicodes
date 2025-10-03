@@ -16,7 +16,7 @@ let binary_op_to_js : Shared.Shared_ast.binary_op -> string = function
   | Eq ->
       "eq"
   | NotEq ->
-      "neg"
+      "neq"
   | Lt ->
       "lt"
   | Gt ->
@@ -72,8 +72,9 @@ let rec value_to_js ({value; _} : Tree.value) : string =
       Printf.sprintf "round(%s, %s, () => %s)" rounding_mode (value_to_js value)
         (value_to_js precision)
   | Condition (cond, then_comp, else_comp) ->
-      Printf.sprintf "(%s ? %s : %s)" (value_to_js cond) (value_to_js then_comp)
-        (value_to_js else_comp)
+      (* FIXME: test aren't iso with the interpreter*)
+      Printf.sprintf "cond(%s, () => %s, () => %s)" (value_to_js cond)
+        (value_to_js then_comp) (value_to_js else_comp)
   | Binary_op ((op, _), left, right) ->
       Printf.sprintf "%s(%s, () => %s)" (binary_op_to_js op) (value_to_js left)
         (value_to_js right)
@@ -675,6 +676,31 @@ function max(left, right) {
 	}
 
 	return left > r ? left : r
+}
+
+/**
+ * @param {Boolean} c
+ * @param {LazyValue} ifTrue
+ * @param {LazyValue} ifFalse
+ * @returns {Value | undefined}
+ *
+ * @specification
+ * The conditional operation is defined as follows by order of precedence:
+ * - ∀ x, y. cond(undefined, x, y) = undefined
+ * - ∀ x, y. cond(null, x, y) = null
+ * - ∀ x, y. cond(true, x, y) = x
+ * - ∀ x, y. cond(false, x, y) = y
+ */
+function cond(c, ifTrue, ifFalse) {
+	if (c === undefined) {
+		return undefined
+	}
+
+	if (c === null) {
+		return null
+	}
+
+	return c ? ifTrue() : ifFalse()
 }
 
 export default class Engine {
