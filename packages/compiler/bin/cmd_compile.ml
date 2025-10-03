@@ -27,7 +27,10 @@ let output_type =
   let doc = "$(docv) is the output type." in
   Arg.(
     value
-    & opt (enum [("json", `Json); ("debug_eval_tree", `Debug_eval_tree)]) `Json
+    & opt
+        (enum
+           [("json", `Json); ("js", `Js); ("debug_eval_tree", `Debug_eval_tree)] )
+        `Json
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
 
 let default_to_public =
@@ -51,6 +54,19 @@ let cmd =
   and+ default_to_public = default_to_public
   and+ output_type = output_type in
   let input_files = if input_stdin then ["-"] else input_files in
+  let output_file =
+    if String.equal output_file "" then
+      "model.publicodes"
+      ^
+      match output_type with
+      | `Json ->
+          ".json"
+      | `Debug_eval_tree ->
+          ".eval_tree.debug"
+      | `Js ->
+          ".js"
+    else output_file
+  in
   if Base.List.length input_files = 0 then (
     Stdlib.Format.eprintf
       "No input publicodes file provided.\n\
