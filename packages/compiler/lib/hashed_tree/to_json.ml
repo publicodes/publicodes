@@ -85,7 +85,7 @@ let json_of_eval_tree_flat (tree : Tree.t) =
               `List [`String op_str; `Int expr_index]
           | Round (rounding, precision, expr) ->
               let expr_index = resolve_and_get_index expr in
-              let precision_index = precision |> resolve_and_get_index in
+              let precision_index = resolve_and_get_index precision in
               let rounding =
                 match rounding with
                 | Up ->
@@ -101,7 +101,6 @@ let json_of_eval_tree_flat (tree : Tree.t) =
                 ; `Int precision_index
                 ; `Int expr_index ]
           | Ref _ ->
-              (* TODO : handle the case where rule directly reference another rule *)
               failwith "Ref case should be handled by resolve_and_get_index"
         in
         state.nodes <- (current_index, json_content) :: state.nodes ;
@@ -113,7 +112,7 @@ let json_of_eval_tree_flat (tree : Tree.t) =
     | Ref name ->
         (* Look up the referenced rule and get its value *)
         let referenced_value = Base.Hashtbl.find_exn tree name in
-        get_or_create_index referenced_value
+        resolve_and_get_index referenced_value
     | _ ->
         (* For non-ref values, process normally *)
         get_or_create_index value
@@ -129,13 +128,15 @@ let json_of_eval_tree_flat (tree : Tree.t) =
   let nodes_array = Array.of_list (List.map sorted_nodes ~f:snd) in
   (nodes_array, rule_to_index)
 
-
 let to_json ~eval_tree ~outputs =
   let nodes_array, rule_to_index = json_of_eval_tree_flat eval_tree in
   let outputs =
-    List.map outputs ~f:(fun (Shared.Model_outputs.{rule_name; typ; parameters; meta}) ->
+    List.map outputs
+      ~f:(fun Shared.Model_outputs.{rule_name; typ; parameters; meta} ->
         let rule_str = to_string rule_name in
-        let node_index = `Int (List.Assoc.find_exn rule_to_index rule_str ~equal:String.equal) in
+        let node_index =
+          `Int (List.Assoc.find_exn rule_to_index rule_str ~equal:String.equal)
+        in
         let parameters =
           `Assoc (List.map parameters ~f:(fun rule -> (to_string rule, `Null)))
         in
@@ -161,14 +162,22 @@ let to_json ~eval_tree ~outputs =
         in
         let meta =
           let open Shared.Shared_ast in
-          `Assoc (meta |> List.filter_map ~f:(function
-              | Description desc -> Some [("description", `String desc)]
-              | Title title -> Some [("title", `String title)]
-              | Note note -> Some [("note", `String note)]
-              | Custom_meta `Assoc m -> Some m
-              | Custom_meta _ -> None
-              | Public -> None)
-            |> List.concat)
+          `Assoc
+            ( meta
+            |> List.filter_map ~f:(function
+                 | Description desc ->
+                     Some [("description", `String desc)]
+                 | Title title ->
+                     Some [("title", `String title)]
+                 | Note note ->
+                     Some [("note", `String note)]
+                 | Custom_meta (`Assoc m) ->
+                     Some m
+                 | Custom_meta _ ->
+                     None
+                 | Public ->
+                     None )
+            |> List.concat )
         in
         ( rule_str
         , `Assoc
