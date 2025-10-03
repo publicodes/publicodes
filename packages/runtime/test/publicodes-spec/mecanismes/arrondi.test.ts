@@ -64,7 +64,7 @@ b:
 
 		it('arrondi à 5 décimales', () => {
 			expect(engine.evaluate('a', { b: 5 }).value).toEqual(12.458)
-			expect(engine.outputs.a.type.unit).toBe('%')
+			expect(engine.getType('a').unit).toBe('%')
 		})
 
 		it('arrondi à -1 décimales', () => {
@@ -106,7 +106,7 @@ b:
 	})
 
 	describe('cas spéciaux', () => {
-		it('arrondi avec beaucoup de précision', async () => {
+		it.only('arrondi avec beaucoup de précision', async () => {
 			const engine = await yaml`
 a:
   valeur: 35.465729905

@@ -28,10 +28,6 @@ export class Engine<O extends Outputs> {
 		}
 	}
 
-	public get outputs(): O {
-		return this.publicodes.outputs
-	}
-
 	evaluate<R extends RuleName<O>>(
 		rule: R,
 		context: GetContext<O, R> = emptyContext,
@@ -77,8 +73,12 @@ export class Engine<O extends Outputs> {
 		} as Evaluation<O, R>
 	}
 
-	meta<R extends RuleName<O>>(rule: R): GetMeta<O, R> {
+	public getMeta<R extends RuleName<O>>(rule: R): GetMeta<O, R> {
 		return this.publicodes.outputs[rule].meta
+	}
+
+	public getType<R extends RuleName<O>>(rule: R): O[R]['type'] {
+		return this.publicodes.outputs[rule].type
 	}
 }
 

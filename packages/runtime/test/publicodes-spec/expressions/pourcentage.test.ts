@@ -9,7 +9,7 @@ constante:
   valeur: 38.1%
     `
 		expect(engine.evaluate('constante').value).toEqual(38.1)
-		expect(engine.outputs['constante'].type.unit).toBe('%')
+		expect(engine.getType('constante').unit).toBe('%')
 	})
 
 	it('soustraction', async () => {
@@ -25,7 +25,7 @@ soustraction:
 				taux: 89,
 			}).value,
 		).toEqual(11)
-		expect(engine.outputs['soustraction'].type.unit).toBe('%')
+		expect(engine.getType('soustraction').unit).toBe('%')
 	})
 
 	it('simplification dans les multiplications', async () => {
@@ -40,7 +40,7 @@ multiplication:  38.1% * salaire
 				salaire: 1000,
 			}).value,
 		).toEqual(381)
-		expect(engine.outputs['multiplication'].type.unit).toBe('€')
+		expect(engine.getType('multiplication').unit).toBe('€')
 	})
 	it('inférence  dans les multiplications', async () => {
 		const engine = await yaml`
@@ -50,7 +50,7 @@ multiplication:
   unité: €
   valeur: 38.1% * salaire
 `
-		expect(engine.outputs['salaire'].type.unit).toBe('€')
+		expect(engine.getType('salaire').unit).toBe('€')
 	})
 
 	it('simplification dans les multiplications - 2', async () => {
@@ -61,12 +61,12 @@ multiplication:
     d: 20 * 5% #100%
     `
 		expect(engine.evaluate('a').value).toEqual(25)
-		expect(engine.outputs['a'].type.unit).toBe('W')
+		expect(engine.getType('a').unit).toBe('W')
 		expect(engine.evaluate('b').value).toEqual(50)
-		expect(engine.outputs['b'].type.unit).toBe('%')
+		expect(engine.getType('b').unit).toBe('%')
 		expect(engine.evaluate('c').value).toEqual(20)
-		expect(engine.outputs['c'].type.unit).toBe('kg')
+		expect(engine.getType('c').unit).toBe('kg')
 		expect(engine.evaluate('d').value).toEqual(100)
-		expect(engine.outputs['d'].type.unit).toBe('%')
+		expect(engine.getType('d').unit).toBe('%')
 	})
 })
