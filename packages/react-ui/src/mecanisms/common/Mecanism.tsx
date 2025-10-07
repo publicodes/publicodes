@@ -21,11 +21,13 @@ export function Mecanism({
 	docUrl,
 }: Props) {
 	return (
-		<StyledMecanism $mecanismName={name}>
+		<StyledMecanism as="article" $mecanismName={name}>
 			{displayName && (
-				<MecanismName name={name} href={docUrl}>
-					{name}
-				</MecanismName>
+				<h1>
+					<MecanismName name={name} href={docUrl}>
+						{name}
+					</MecanismName>
+				</h1>
 			)}
 			<div>
 				{children}

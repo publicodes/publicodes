@@ -188,6 +188,7 @@ function Rule({
 	const hideValue = useHideValue(dottedName)
 	const { showDevSection } = useContext(DisplayOptionsContext)
 	const { References, Text } = useContext(RenderersContext)
+
 	const subEngines = baseEngine.context.subEngines
 	const useSubEngine = subEngineId && subEngines.has(subEngineId)
 	const engine =
@@ -300,7 +301,7 @@ function Rule({
 
 						{rule.rawNode.note && (
 							<>
-								<h3>Note</h3>
+								<h2>Note</h2>
 								<div>
 									<Text>{rule.rawNode.note}</Text>
 								</div>
@@ -309,7 +310,7 @@ function Rule({
 
 						{references && (
 							<>
-								<h3>Références</h3>
+								<h2>Références</h2>
 								{references}
 							</>
 						)}
@@ -317,11 +318,11 @@ function Rule({
 
 						{showDevSection && (
 							<>
-								<h3>Informations techniques</h3>
+								<h2>Informations techniques</h2>
 								<Text>
 									Si vous êtes développeur/euse vous trouverez ci-dessous des
-									informations techniques utiles pour l’intégration de cette
-									règle dans votre application.
+									informations techniques utiles pour l&apos;intégration de
+									cette règle dans votre application.
 								</Text>
 								<DeveloperAccordion
 									engine={engine}

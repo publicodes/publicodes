@@ -54,14 +54,13 @@ export default function Reference(
 					justifyContent: 'space-between',
 				}}
 			>
-				<span style={{ paddingRight: '0.2rem' }}>
+				<h2 style={{ paddingRight: '0.2rem', margin: 0, display: 'inline' }}>
 					<RuleLinkWithContext dottedName={dottedName} />
-				</span>
+				</h2>
 
 				<div
 					style={{
 						flex: 1,
-
 						display: 'flex',
 						alignItems: 'baseline',
 					}}
