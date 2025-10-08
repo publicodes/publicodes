@@ -38,7 +38,7 @@ const H4 = styled.h4`
 `
 
 const AccordionWrapper = styled.div<{ i: number }>`
-	border: 0 solid #bbb;
+	border: 0 solid #1a1a1a;
 	${({ i }) =>
 		i > 0 &&
 		css`
