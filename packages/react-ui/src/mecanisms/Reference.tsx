@@ -34,7 +34,7 @@ export default function Reference(
 	}
 
 	const buttonTitle = `${
-		folded ? 'Déplier, afficher le détail' : 'Replier, afficher le détail'
+		folded ? 'Déplier, afficher le détail' : 'Replier, cacher le détail'
 	} pour ${dottedName}`
 
 	return (
