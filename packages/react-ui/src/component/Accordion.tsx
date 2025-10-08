@@ -89,7 +89,7 @@ export const Accordion = ({ items }: AccordionProps) => {
 	)
 
 	return (
-		<AccordionContainer role="region" aria-label="Accordion">
+		<AccordionContainer role="region">
 			{items.map(({ id, title, children }, i) => {
 				const isOpen = !!open[i]
 				const buttonId = `accordion-button-${id}`
