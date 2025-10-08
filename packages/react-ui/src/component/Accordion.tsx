@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { css, styled } from 'styled-components'
 import { AccordionItem } from '../contexts'
 import { Arrow } from './icons/Arrow'
@@ -70,23 +70,20 @@ export interface AccordionProps {
 export const Accordion = ({ items }: AccordionProps) => {
 	const [open, setOpen] = useState<boolean[]>([])
 
-	const toggleAccordion = useCallback((i: number) => {
+	const toggleAccordion = (i: number) => {
 		setOpen((arr) => {
 			const newArr = [...arr]
 			newArr[i] = !newArr[i]
 			return newArr
 		})
-	}, [])
+	}
 
-	const handleKeyDown = useCallback(
-		(event: React.KeyboardEvent, i: number) => {
-			if (event.key === 'Enter' || event.key === ' ') {
-				event.preventDefault()
-				toggleAccordion(i)
-			}
-		},
-		[toggleAccordion],
-	)
+	const handleKeyDown = (event: React.KeyboardEvent, i: number) => {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault()
+			toggleAccordion(i)
+		}
+	}
 
 	return (
 		<AccordionContainer role="region">
