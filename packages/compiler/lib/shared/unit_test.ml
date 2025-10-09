@@ -8,12 +8,16 @@ let%test_unit "€/an" =
 let%test_unit "kW.h/personne" =
   [%test_eq: Units.t]
     (parse_unit "kW.h/personne")
-    (Map.of_alist_exn (module Units.Unit) [("kW", 1); ("h", 1); ("personne", -1)])
+    (Map.of_alist_exn
+       (module Units.Unit)
+       [("kW", 1); ("h", 1); ("personne", -1)] )
 
 let%test_unit "kW.h/panneau/m.m" =
   [%test_eq: Units.t]
     (parse_unit "kW.h/panneau/m.m")
-    (Map.of_alist_exn (module Units.Unit) [("kW", 1); ("h", 1); ("panneau", -1); ("m", -2)])
+    (Map.of_alist_exn
+       (module Units.Unit)
+       [("kW", 1); ("h", 1); ("panneau", -1); ("m", -2)] )
 
 let%test_unit "equal %" =
   [%test_result: bool]

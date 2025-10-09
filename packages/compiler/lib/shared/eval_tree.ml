@@ -24,7 +24,6 @@ type 'meta naked_value =
   | Set_context of 'meta context
   | Round of (Shared_ast.rounding * 'meta value * 'meta value)
 
-
 and 'meta context =
   {context: (Rule_name.t Pos.t * 'meta value) list; value: 'meta value}
 [@@deriving show]

@@ -2,6 +2,7 @@
 
 module Make () : sig
   type t [@@deriving equal, show]
+
   val mk : unit -> t
   (** [mk ()] returns a new unique integer and increments the counter. *)
 end

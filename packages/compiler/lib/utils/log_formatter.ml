@@ -46,7 +46,8 @@ let handle_tag formatter tag content =
 (* Helper function to read file content *)
 let read_file_lines filename =
   try
-    In_channel.with_open_text filename In_channel.input_lines |> fun lines -> Some lines
+    In_channel.with_open_text filename In_channel.input_lines
+    |> fun lines -> Some lines
   with _ -> None
 
 (* Stdlib.Format a position as "filename:line:column" for IDE clickability *)
@@ -239,5 +240,7 @@ let print (log : Log.t) =
   (* Create the complete document *)
   let doc = vbox (concat [header; cut; code_excerpt; cut; hints_doc; cut]) in
   (* Print the document to stdout with styled tags *)
-  to_fmt_with_tags (Stdlib.Format.get_err_formatter ()) doc ~tag_handler:handle_tag ;
+  to_fmt_with_tags
+    (Stdlib.Format.get_err_formatter ())
+    doc ~tag_handler:handle_tag ;
   Stdlib.Format.print_flush ()

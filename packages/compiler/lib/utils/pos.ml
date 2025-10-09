@@ -1,7 +1,8 @@
 open Base
 
 module Point = struct
-  type t = {index: int; line: int; column: int} [@@deriving equal, compare, sexp]
+  type t = {index: int; line: int; column: int}
+  [@@deriving equal, compare, sexp]
 
   let pp ppf {index; line; column} =
     Stdlib.Format.fprintf ppf "line %d, column %d, (i %d)" line column index
@@ -19,7 +20,8 @@ module Point = struct
   let dummy = {index= 0; line= 1; column= 1}
 end
 
-type pos = {file: string; start_pos: Point.t; end_pos: Point.t} [@@deriving equal, compare, show, sexp]
+type pos = {file: string; start_pos: Point.t; end_pos: Point.t}
+[@@deriving equal, compare, show, sexp]
 
 type 'a t = 'a * pos [@@deriving equal, compare, show, sexp]
 

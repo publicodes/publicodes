@@ -1,13 +1,11 @@
 let trim = String.trim
 
 open Base
-
 module Unit = String
 
 type t = int Map.M(Unit).t [@@deriving equal, compare, sexp]
 
 let empty = Map.empty (module Unit)
-
 
 let pp formatter unit =
   let open Stdlib.Format in
@@ -58,7 +56,7 @@ let parse_unit (unit : string) : t =
     denoms |> List.concat_map ~f:(String.split ~on:'.') |> List.map ~f:trim
   in
   num
-  |> List.fold ~init:(empty)
+  |> List.fold ~init:empty
        ~f:(Map.update ~f:(function Some n -> n + 1 | None -> 1))
   |> fun acc ->
   List.fold ~init:acc
@@ -82,7 +80,6 @@ let mul (t1 : t) (t2 : t) : t =
   Map.filter new_map ~f:(fun power -> power <> 0)
 
 let inv (t1 : t) : t = Map.map t1 ~f:(fun power -> -power)
-
 
 (** Simplify unit *)
 let simplify number_unit =

@@ -22,7 +22,8 @@ let check_priority_duplicates ~pos replacements =
   else
     let labels =
       List.map duplicates ~f:(fun meta ->
-          Pos.map meta ~f:(fun r -> Stdlib.Format.asprintf "Priorité %d" r.priority) )
+          Pos.map meta ~f:(fun r ->
+              Stdlib.Format.asprintf "Priorité %d" r.priority ) )
     in
     let code, message = Err.replace_multiple in
     let error =

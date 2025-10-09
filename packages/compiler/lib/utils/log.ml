@@ -1,5 +1,7 @@
 open Base
-type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global | `Replace] [@@deriving equal, show]
+
+type kind = [`Yaml | `Lex | `Syntax | `Type | `Cycle | `Global | `Replace]
+[@@deriving equal, show]
 
 type level = [`Error | `Warning | `Debug] [@@deriving equal, show]
 
@@ -10,7 +12,7 @@ type log =
   ; hints: string list
   ; labels: string Pos.t list
   ; code: Err.Code.t option }
-[@@deriving equal, show ]
+[@@deriving equal, show]
 
 type t = log Pos.t [@@deriving equal]
 

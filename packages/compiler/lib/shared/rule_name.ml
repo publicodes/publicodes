@@ -1,30 +1,29 @@
 open Base
 
 module Rule_name = struct
-	module T = struct
-	  type t = string list [@@deriving equal, compare, sexp]
+  module T = struct
+    type t = string list [@@deriving equal, compare, sexp]
 
-	  let show = String.concat ~sep:" . "
+    let show = String.concat ~sep:" . "
 
-	  let pp ppf rule_name =
-	    Stdlib.Format.fprintf ppf "%s" (show rule_name)
+    let pp ppf rule_name = Stdlib.Format.fprintf ppf "%s" (show rule_name)
 
-	  let hash = Base.Hashtbl.hash
-	end
-	include T
-	include Comparable.Make(T)
+    let hash = Base.Hashtbl.hash
+  end
+
+  include T
+  include Comparable.Make (T)
 end
-
 
 include Rule_name
 
 module Set = struct
-	module M = Set.M(Rule_name)
-	include M
+  module M = Set.M (Rule_name)
+  include M
 end
 
 module Hashtbl = struct
-  module M = Hashtbl.M(Rule_name)
+  module M = Hashtbl.M (Rule_name)
   include M
 
   let pp pp_val ppf tbl =

@@ -18,6 +18,7 @@ let parse_type ~pos ~parse:_ value =
       let code, message = Err.parsing_empty_value in
       fatal_error ~pos ~kind:`Syntax ~code message
   | _ ->
+      (* FIXME: should be an invalid_type error *)
       let code, message = Err.invalid_value in
       fatal_error ~pos ~kind:`Syntax ~code message
         ~labels:

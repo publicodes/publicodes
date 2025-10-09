@@ -28,7 +28,6 @@ type pos = {file: string; start_pos: Point.t; end_pos: Point.t}
     value and the second element is the position. *)
 type 'a t = 'a * pos [@@deriving equal, compare, show, sexp]
 
-
 (** {2 Map operation} *)
 
 val map : f:('a -> 'b) -> 'a t -> 'b t

@@ -9,7 +9,6 @@ let watch_compile ~input_files:_ ~output_file:_ ~output_type:_
 
 let watch_compile ~input_files ~output_file ~output_type ~default_to_public =
   let open Stdlib in
-
   (* Filter out stdin if present in input files for watching *)
   let watchable_files =
     Base.List.filter input_files ~f:(fun f -> not (String.equal f "-"))

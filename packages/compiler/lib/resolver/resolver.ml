@@ -16,8 +16,9 @@ let check_orphan_rules ~rule_names ast =
           Some
             (Log.error message ~code ~pos ~kind:`Syntax
                ~hints:
-                 [ Stdlib.Format.asprintf "Ajoutez la règle parente `%a` manquante"
-                     Rule_name.pp parent ] )
+                 [ Stdlib.Format.asprintf
+                     "Ajoutez la règle parente `%a` manquante" Rule_name.pp
+                     parent ] )
         else None
   in
   List.filter_map ast ~f:warn_if_orphan
@@ -35,8 +36,8 @@ let resolve_rule ~rule_names rule =
         (* TODO: add to suggest closest rule name *)
         fatal_error ~pos ~kind:`Syntax ~code message
           ~hints:
-            [ Stdlib.Format.asprintf "Ajoutez la règle `%a` manquante" Rule_name.pp
-                missing_rule_name
+            [ Stdlib.Format.asprintf "Ajoutez la règle `%a` manquante"
+                Rule_name.pp missing_rule_name
             ; "Vérifiez les erreurs de typos dans le nom de la règle" ]
     | Some ref ->
         return ref
@@ -183,7 +184,9 @@ let resolve_rule ~rule_names rule =
 
 let to_resolved_ast ast =
   let rule_names =
-    Set.of_list (module Rule_name) (List.map ast ~f:(fun rule -> Pos.value rule.name))
+    Set.of_list
+      (module Rule_name)
+      (List.map ast ~f:(fun rule -> Pos.value rule.name))
   in
   let orphan_logs = check_orphan_rules ~rule_names ast in
   let+ ast =

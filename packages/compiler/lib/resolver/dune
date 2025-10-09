@@ -4,4 +4,4 @@
  (libraries base parser expr shared)
  (modules :standard)
  (preprocess
- (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))
+  (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))
