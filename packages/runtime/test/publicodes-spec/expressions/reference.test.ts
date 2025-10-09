@@ -8,7 +8,7 @@ a: 4
 b: a
 `
 		expect(engine.evaluate('b').value).toEqual(4)
-		expect(engine.outputs['b'].type).toHaveProperty('number')
+		expect(engine.getType('b')).toHaveProperty('number')
 	})
 
 	it('should resolve to child first', async () => {
