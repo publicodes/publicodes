@@ -206,7 +206,7 @@ export default class Engine {
 
 		return {
 			value,
-			traversedParameters,
+			neededParameters: traversedParameters,
 			missingParameters,
 		}
 	}
@@ -218,7 +218,7 @@ export default class Engine {
 
 	ref(rule, ctx = {}) {
 		if (rule in ctx) {
-			return ctx[rule]
+			return this.get(rule, ctx)
 		}
 
 		const f = this.rules[rule]
