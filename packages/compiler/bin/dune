@@ -1,15 +1,18 @@
 (executable
  (public_name publicodes)
- (enabled_if (= %{system} "linux"))
+ (enabled_if
+  (= %{system} "linux"))
  (name main)
  (libraries unix cmdliner compiler yaml yojson inotify)
  (preprocess
   (pps config.ppx)))
 
 (executable
-  (public_name publicodes)
-  (name main)
-  (enabled_if (not(= %{system} "linux")))
-  (libraries unix cmdliner compiler yaml yojson)
-  (preprocess
+ (public_name publicodes)
+ (name main)
+ (enabled_if
+  (not
+   (= %{system} "linux")))
+ (libraries unix cmdliner compiler yaml yojson)
+ (preprocess
   (pps config.ppx)))

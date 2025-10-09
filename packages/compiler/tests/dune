@@ -1,2 +1,2 @@
 (cram
-	(deps %{bin:publicodes}))
+ (deps %{bin:publicodes}))

@@ -83,7 +83,12 @@ and 'a value =
   ; chainable_mechanisms: 'a chainable_mechanism Pos.t list }
 [@@deriving equal, show, sexp]
 
-type rule_meta = Title of string | Description of string | Note of string | Public | Custom_meta of Yojson.Safe.t
+type rule_meta =
+  | Title of string
+  | Description of string
+  | Note of string
+  | Public
+  | Custom_meta of Yojson.Safe.t
 [@@deriving equal, show]
 
 type 'a replace =
@@ -148,4 +153,5 @@ let has_value rule_def =
 
 let merge (p1 : 'a program) (p2 : 'a program) = List.append p1 p2
 
-let find rule_name = List.find_exn ~f:(fun {name; _} -> Rule_name.equal (Pos.value name) rule_name )
+let find rule_name =
+  List.find_exn ~f:(fun {name; _} -> Rule_name.equal (Pos.value name) rule_name)

@@ -4,4 +4,4 @@
  (libraries base yojson parser unionFind ocamlgraph)
  (modules :standard)
  (preprocess
- (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert )))
+  (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

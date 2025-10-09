@@ -25,7 +25,7 @@ let letter = [%sedlex.regexp? 'a' .. 'z' | 'A' .. 'Z' | 0x00C0 .. 0x017F]
 
 (* a ,°$%²_\ *)
 
-let symbol = [%sedlex.regexp? Utf8 (Chars ",°$%²_\"«»'" | Chars "€") ]
+let symbol = [%sedlex.regexp? Utf8 (Chars ",°$%²_\"«»'" | Chars "€")]
 
 let char = [%sedlex.regexp? letter | symbol | digit]
 
@@ -34,7 +34,8 @@ let any_char = [%sedlex.regexp? Utf8 (char | Chars "+-#.,")]
 (* Number *)
 let number = [%sedlex.regexp? Plus digit, Opt ('.', Plus digit)]
 
-let unit_symbol = [%sedlex.regexp? Utf8 ('$' | sc (* Currencies *) | Chars "°%")]
+let unit_symbol =
+  [%sedlex.regexp? Utf8 ('$' | sc (* Currencies *) | Chars "°%")]
 
 let unit_identifier =
   [%sedlex.regexp?
@@ -138,7 +139,11 @@ let rec lex_one (lexbuf : lexbuf) : Tokens.t Pos.t =
   | number_with_unit ->
       update_acc lexbuf ;
       let str = Utf8.lexeme lexbuf in
-      let number_part = str |> String.to_list |> List.take_while ~f:(fun c -> Char.is_digit c || Char.equal c '.') |> String.of_list in
+      let number_part =
+        str |> String.to_list
+        |> List.take_while ~f:(fun c -> Char.is_digit c || Char.equal c '.')
+        |> String.of_list
+      in
       let unit_part =
         let with_space = String.drop_prefix str (String.length number_part) in
         if String.is_prefix with_space ~prefix:" " then
@@ -153,7 +158,9 @@ let rec lex_one (lexbuf : lexbuf) : Tokens.t Pos.t =
       with_pos (NUMBER (number, None))
   | string ->
       update_acc lexbuf ;
-      let str = String.drop_suffix (String.drop_prefix (Utf8.lexeme lexbuf) 1) 1 in
+      let str =
+        String.drop_suffix (String.drop_prefix (Utf8.lexeme lexbuf) 1) 1
+      in
       with_pos (STRING str)
   | rule_name ->
       update_acc lexbuf ;

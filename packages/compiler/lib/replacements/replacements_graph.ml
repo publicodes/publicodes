@@ -45,7 +45,8 @@ let detect_cycles (graph : ReplacementGraph.t) : ReplacementGraph.t Output.t =
     let code, message = Err.cycle_detected in
     let cycle_path =
       String.concat ~sep:" -> "
-        (List.map cycle ~f:(fun rule -> Stdlib.Format.asprintf "%a" Rule_name.pp rule))
+        (List.map cycle ~f:(fun rule ->
+             Stdlib.Format.asprintf "%a" Rule_name.pp rule ) )
     in
     let log = Log.warning message ~code ~kind:`Cycle ~pos ~hints:[cycle_path] in
     log :: acc

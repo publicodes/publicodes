@@ -67,7 +67,6 @@ let%test_unit "parse: rules with title" =
   | Some [rule_def] ->
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
         (Shared.Rule_name.create_exn ["rule 1"; "subrule 2"]) ;
-
       [%test_eq: string list Shared.Shared_ast.value] rule_def.value
         {value= p 0 Undefined; chainable_mechanisms= []}
   | _ ->
@@ -84,7 +83,7 @@ let%test_unit "parse: rules with description and valeur" =
                ; (scalar "valeur", value "rule 3") ] ) ] )
   in
   match result output with
-  | Some [{ value; _}] ->
+  | Some [{value; _}] ->
       [%test_eq: string list Shared.Shared_ast.value] value
         { value=
             p 0

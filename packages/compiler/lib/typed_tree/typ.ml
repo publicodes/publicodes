@@ -54,9 +54,10 @@ let unify (t1 : t) (t2 : t) =
     let code, message = Err.type_incoherence in
     fatal_error ~pos:pos1 ~kind:`Type ~code
       ~labels:
-        [ Pos.mk ~pos:pos1 (Stdlib.Format.sprintf "est %s" (to_str (Pos.value typ1)))
-        ; Pos.mk ~pos:pos2 (Stdlib.Format.sprintf "est %s" (to_str (Pos.value typ2)))
-        ]
+        [ Pos.mk ~pos:pos1
+            (Stdlib.Format.sprintf "est %s" (to_str (Pos.value typ1)))
+        ; Pos.mk ~pos:pos2
+            (Stdlib.Format.sprintf "est %s" (to_str (Pos.value typ2))) ]
       message
   in
   match (Pos.value typ1, Pos.value typ2) with
