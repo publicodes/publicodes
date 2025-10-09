@@ -100,6 +100,12 @@ export const UnfoldIsEnabledContext = createContext<boolean>(false)
 
 const UnfoldButton = styled.button`
 	text-transform: none !important;
+	border: solid 1px black;
+	border-radius: 4px;
+	padding: 2px 4px;
+	margin-left: 4px;
+	font-size: 14px;
+	cursor: pointer;
 `
 const StyledGuide = styled.div`
 	@media (max-width: 500px) {
