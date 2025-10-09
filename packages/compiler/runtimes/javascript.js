@@ -440,11 +440,8 @@ function neg(val) {
  *    - if mode = 'nearest', round to the nearest multiple of p
  */
 function round(mode, val, precision) {
-	if (val === undefined) {
-		return undefined
-	}
-	if (val === null) {
-		return null
+	if (val === undefined || val === null) {
+		return val
 	}
 
 	const p = precision()
@@ -456,17 +453,22 @@ function round(mode, val, precision) {
 		return val
 	}
 
-	if (p <= 0 || !Number.isInteger(p)) {
-		throw new RuntimeError('p must be a positive integer')
+	if (p <= 0) {
+		throw new RuntimeError(
+			'Rounding error: precision must be a positive number, got: ' + p,
+		)
 	}
-	const toPrecision = (num) =>
-		// Use 15 precision for floating number in JS https://stackoverflow.com/a/3644302
-		Number(num.toPrecision(15))
 
-	return (
-		mode === 'up' ? toPrecision(Math.ceil(val / p) * p)
-		: mode === 'down' ? toPrecision(Math.floor(val / p) * p)
-		: toPrecision(Math.round(val / p) * p)
+	const toPrecision = (num) =>
+		// NOTE: Use 15 precision for floating number in JS https://stackoverflow.com/a/3644302
+		// NOTE: the unary plus is used to remove trailing zeros and convert back
+		// the string representation to a number.
+		+num.toPrecision(15)
+
+	return toPrecision(
+		mode === 'up' ? Math.ceil(toPrecision(val / p)) * p
+		: mode === 'down' ? Math.floor(toPrecision(val / p)) * p
+		: Math.round(toPrecision(val / p)) * p,
 	)
 }
 
