@@ -10,13 +10,12 @@ let input_stdin =
   let doc = "Use stdin as input to compile." in
   Arg.(value & flag & info ["i"; "input"] ~doc)
 
-let default_output_file = "model.publicodes.js"
-
 let output_file =
   let doc = "$(docv) is the file to write to. Use $(b,-) for $(b,stdout)." in
   Arg.(
     value
-    & opt string default_output_file
+    (* With an empty string, the extension is match according the output type. *)
+    & opt string ""
     & info ["o"; "output-file"] ~doc ~docv:"FILE" )
 
 let watch =
