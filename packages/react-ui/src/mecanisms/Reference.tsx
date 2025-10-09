@@ -6,6 +6,7 @@ import { RuleLinkWithContext } from '../RuleLink'
 import { EngineContext } from '../contexts'
 import { NodeValueLeaf } from './common/NodeValueLeaf'
 import { useHideValue } from '../hooks'
+import { Arrow } from '../component/icons/Arrow'
 
 // Un élément du graphe de calcul qui a une valeur interprétée (à afficher)
 export default function Reference(
@@ -74,7 +75,7 @@ export default function Reference(
 								aria-label={buttonTitle}
 								title={buttonTitle}
 							>
-								{folded ? 'Déplier' : 'Replier'}
+								{folded ? 'Déplier' : 'Replier'} <StyledArrow $open={!folded} />
 							</UnfoldButton>
 							<StyledGuide />
 						</>
@@ -106,6 +107,8 @@ const UnfoldButton = styled.button`
 	margin-left: 4px;
 	font-size: 14px;
 	cursor: pointer;
+	display: flex;
+	align-items: center;
 `
 const StyledGuide = styled.div`
 	@media (max-width: 500px) {
@@ -114,4 +117,12 @@ const StyledGuide = styled.div`
 	margin: 0.5rem;
 	flex: 1;
 	border-bottom: 2px dotted lightgray;
+`
+
+const StyledArrow = styled(Arrow)<{ $open: boolean }>`
+	width: 12px;
+	height: 12px;
+	transition: transform 0.1s;
+	margin-left: 4px;
+	transform: rotate(${({ $open }) => ($open ? '-180deg' : '0deg')});
 `
