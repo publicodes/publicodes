@@ -20,7 +20,6 @@ export class Engine<O extends Outputs> {
 		private publicodes: Publicodes<O>,
 		options: EngineOptions = {},
 	) {
-		// console.log(publicodes)
 		const { cache = false } = options
 
 		if (cache) {

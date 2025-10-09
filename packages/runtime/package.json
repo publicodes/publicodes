@@ -28,12 +28,12 @@
 	},
 	"scripts": {
 		"build": "rolldown -c rolldown.config.js",
-		"examples:auto-entrepreneur:compile": "cd ./examples/auto-entrepreneur; publicodes compile  './*.publicodes'; publicodes2 compile *.publicodes",
+		"examples:auto-entrepreneur:compile": "cd ./examples/auto-entrepreneur && bun run build && publicodes compile  './*.publicodes' && bunx publicodes2 compile *.publicodes && bunx publicodes2 compile -t js *.publicodes",
 		"examples:simple-TJM:compile": "cd ./examples/simple-TJM; publicodes compile  './*.publicodes'; publicodes2 compile *.publicodes",
 		"examples:compile": "run examples:auto-entrepreneur:compile && run examples:simple-TJM:compile",
-		"benchmark:simple-TJM": "bun ./benchmark/simple-TJM.js",
-		"benchmark:auto-entrepreneur": "bun ./benchmark/auto-entrepreneur.js",
-		"benchmark": "run benchmark:simple-TJM && run benchmark:auto-entrepreneur",
+		"benchmark:simple-TJM": "bun run examples:simple-TJM:compile && bun ./benchmark/simple-TJM.js",
+		"benchmark:auto-entrepreneur": "bun run examples:auto-entrepreneur:compile && bun ./benchmark/auto-entrepreneur.js",
+		"benchmark": "bun run benchmark:simple-TJM && bun run benchmark:auto-entrepreneur",
 		"test": "bun test",
 		"test:type": "tsc --noEmit"
 	}
