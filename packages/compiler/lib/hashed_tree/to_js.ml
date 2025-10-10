@@ -178,30 +178,32 @@ let to_js ~(eval_tree : Tree.t) ~outputs =
 /** End embedded runtime */
 
 export default class Engine {
-	traversedParameters = new Set();
-	cache;
+	traversedParameters = new Set()
+	parameters = {}
+	cache
 
-	static outputs = %s;
+	static outputs = %s
 
 	constructor(cache = false) {
 		this.cache = cache ? {} : null
 	}
 
 	getMeta(ruleName) {
-			return Engine.outputs[ruleName]?.meta
+		return Engine.outputs[ruleName]?.meta
 	}
 
 	getType(ruleName) {
-			return Engine.outputs[ruleName]?.type
+		return Engine.outputs[ruleName]?.type
 	}
 
 	evaluate(ruleName, ctx = {}) {
 		this.traversedParameters = new Set()
+		this.parameters = ctx
 
-		const value = this.ref(ruleName, ctx)
+    const value = this.ref(ruleName, {})
 		const traversedParameters = Array.from(this.traversedParameters)
 		const missingParameters = traversedParameters.filter(
-			(param) =>  !(param in ctx),
+			(param) => !(param in this.parameters),
 		)
 
 		return {
@@ -212,12 +214,16 @@ export default class Engine {
 	}
 
 	get(rule, ctx) {
+		if (rule in ctx) {
+			return ctx[rule]
+		}
+
 		this.traversedParameters.add(rule)
-		return ctx[rule]
+		return this.parameters[rule]
 	}
 
 	ref(rule, ctx = {}) {
-		if (rule in ctx) {
+		if (rule in this.parameters || rule in ctx) {
 			return this.get(rule, ctx)
 		}
 

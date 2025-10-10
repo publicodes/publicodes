@@ -58,10 +58,10 @@ class RuntimeError extends Error {
  *
  * @specification
  * The addition operation is defined as follows by order of precedence:
- * 1. ∀ x. add(undefined, x) = add(x, undefined) = undefined
- * 2. ∀ x. add(x, null) = add(null, x) = x
- * 3. ∀ x. add(null, null) = 0
- * 4. ∀ x, y. add(x, y) = x + y
+ * - ∀ x. add(undefined, x) = add(x, undefined) = undefined
+ * - ∀ x. add(x, null) = add(null, x) = x
+ * - ∀ x. add(null, null) = 0
+ * - ∀ x, y. add(x, y) = x + y
  */
 function add(l, right) {
 	if (l === undefined) {
