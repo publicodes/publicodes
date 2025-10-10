@@ -49,8 +49,12 @@ let rec value_to_js ({value; _} : Tree.value) : string =
       Printf.sprintf "%.16g" n
   | Const (String s) ->
       (* FIXME: should be consistant *)
-      let s = String.strip ~drop:(Char.equal '\'') s in
-      Printf.sprintf "'%s'" s
+      let s =
+        s
+        |> String.strip ~drop:(Char.equal '\'')
+        |> String.substr_replace_all ~pattern:"\"" ~with_:"\\\""
+      in
+      Printf.sprintf "\"%s\"" s
   | Const (Bool b) ->
       Printf.sprintf "%b" b
   | Const (Date d) ->
