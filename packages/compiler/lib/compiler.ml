@@ -35,6 +35,14 @@ let to_json ~ast ~eval_tree =
   in
   return (Hashed_tree.to_json ~eval_tree ~outputs)
 
+(** FIXME: to factorize *)
+let to_js ~ast ~eval_tree =
+  let* outputs =
+    Dependency_graph.cycle_check eval_tree
+    >>= Dependency_graph.extract_outputs ~ast ~eval_tree
+  in
+  return (Hashed_tree.to_js ~eval_tree ~outputs)
+
 let compile ~input_files ~output_type ~default_to_public =
   let open Output in
   let* ast = to_unresolved_ast ~input_files ~default_to_public in
@@ -46,5 +54,9 @@ let compile ~input_files ~output_type ~default_to_public =
         return (Yojson.Safe.pretty_to_string json)
     | `Debug_eval_tree ->
         return (Shared.Eval_tree_printer.to_string_eval_tree eval_tree)
+    | `Js ->
+        (* TODO: handle d.ts files generation here too *)
+        let* js, _ = to_js ~ast ~eval_tree in
+        return js
   in
   result_string

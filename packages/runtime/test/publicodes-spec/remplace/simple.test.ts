@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'bun:test'
+import { describe, test, expect } from 'bun:test'
 import { yaml } from '../../utils/compile'
+
 const engine = await yaml`
 restaurant:
   avec:
@@ -14,21 +15,23 @@ test: restaurant . prix du repas
 `
 
 describe('Remplace > simple', () => {
-	it('non applicable', () => {
+	test('non applicable', () => {
 		expect(
 			engine.evaluate('test', { 'restaurant . client gourmand': false }).value,
 		).toBe(10)
 	})
-	it('applicable', () => {
+
+	test('applicable', () => {
 		expect(
 			engine.evaluate('test', { 'restaurant . client gourmand': true }).value,
 		).toBe(15)
 	})
 
-	it('condition non définie', () => {
+	test('condition non définie', () => {
 		expect(engine.evaluate('test').value).toBe(10)
 	})
-	it('remplace non défini', async () => {
+
+	test('remplace non défini', async () => {
 		const engine = await yaml`
 a:
   remplace: b

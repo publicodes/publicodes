@@ -14,7 +14,7 @@ paramètre:
 
 	it('constante', () => {
 		expect(engine.evaluate('a').value).toEqual(true)
-		expect(engine.outputs['a'].type).toHaveProperty('boolean')
+		expect(engine.getType('a')).toHaveProperty('boolean')
 	})
 
 	it('paramètre', () => {
@@ -28,6 +28,6 @@ paramètre:
 
 	it('négation', () => {
 		expect(engine.evaluate('négation').value).toEqual(false)
-		expect(engine.outputs['négation'].type).toHaveProperty('boolean')
+		expect(engine.getType('négation')).toHaveProperty('boolean')
 	})
 })

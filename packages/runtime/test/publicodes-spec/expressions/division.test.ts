@@ -14,7 +14,7 @@ produit:
 		expect(
 			engine.evaluate('produit', { 'salaire de base': 3000 }).value,
 		).toEqual(1000)
-		expect(engine.outputs['produit'].type.unit).toBe('¥')
+		expect(engine.getType('produit').unit).toBe('¥')
 	})
 
 	it('division inverse', async () => {
@@ -29,6 +29,6 @@ produit:
 		expect(
 			engine.evaluate('produit', { 'salaire de base': 3000 }).value,
 		).toEqual(0.001)
-		expect(engine.outputs['produit'].type.unit).toBe('/¥')
+		expect(engine.getType('produit').unit).toBe('/¥')
 	})
 })

@@ -4,7 +4,6 @@
 
 (generate_opam_files true)
 
-
 (formatting)
 
 (source
@@ -12,11 +11,11 @@
 
 (authors
 	"Johan Girod <dev@johangirod.com>"
-	"Emile Rolley <emile.rolley@tuta.io>")
+	"Emile Rolley <emile@calinou.coop>")
 
 (maintainers
 	"Johan Girod <dev@johangirod.com>"
-	"Emile Rolley <emile.rolley@tuta.io>")
+	"Emile Rolley <emile@calinou.coop>")
 
 (license MIT)
 
@@ -27,21 +26,19 @@
  (synopsis "Compiler for the Publicodes language")
  (description "A compiler for the Publicodes, a programming language for public interest algorithms.")
  (depends
- 		ocaml
-   	dune
     base
-    yaml
-    ppx_deriving
-    (sedlex (= 3.6) )
-    yojson
-    (ocamlgraph (>= 2.2.0) )
-	  (cmdliner (= 1.3.0) )
-		unionFind
-		stdune
-		pp
-		inotify
+	  (cmdliner (= 1.3.0))
+    config
+    inotify
+    ocaml
+    (ocamlgraph (>= 2.2.0))
+    pp
 	  ppx_deriving
-		config
+    (sedlex (= 3.6))
+    stdune
+    unionFind
+    yaml
+    yojson
 	  (ocaml-lsp-server :with-dev)
 	  (ocamlformat :with-dev)
 	  (ppx_inline_test :with-test)

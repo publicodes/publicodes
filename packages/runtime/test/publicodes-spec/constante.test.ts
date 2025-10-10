@@ -17,7 +17,7 @@ chaine: "Salut le monde"
 
 	it('entier', () => {
 		expect(engine.evaluate('entier').value).toEqual(5)
-		expect(engine.outputs['entier'].type).toHaveProperty('number')
+		expect(engine.getType('entier')).toHaveProperty('number')
 	})
 
 	it('nombre décimal', () => {

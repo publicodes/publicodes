@@ -54,7 +54,7 @@ calcul: 10% * (- salaire de base)
 		expect(
 			engine.evaluate('calcul', { 'salaire de base': 3000 }).value,
 		).toEqual(-300)
-		expect(engine.outputs['calcul'].type.unit).toBe('€')
+		expect(engine.getType('calcul').unit).toBe('€')
 	})
 
 	it('puissance précède multiplication', async () => {

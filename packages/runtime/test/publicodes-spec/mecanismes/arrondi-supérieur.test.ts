@@ -1,10 +1,8 @@
-import { describe, it, expect, beforeAll } from 'bun:test'
+import { describe, test, expect } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
-describe('Mécanisme > arrondi au supérieur', () => {
-	let engine: TestPublicodes
-	beforeAll(async () => {
-		engine = await yaml`
+describe('Mécanisme > arrondi au supérieur', async () => {
+	let engine: TestPublicodes = await yaml`
 à l'unité:
   valeur: 38.4167
   arrondi au supérieur: oui
@@ -25,29 +23,15 @@ describe('Mécanisme > arrondi au supérieur', () => {
   valeur: 38.4167
   arrondi au supérieur: 5 décimales
 `
-	})
-	it("à l'unité", () => {
-		const result = engine.evaluate("à l'unité")
-		expect(result.value).toBe(39)
-	})
 
-	it('à 2 décimales', () => {
-		const result = engine.evaluate('à 2 décimales')
-		expect(result.value).toBe(38.42)
-	})
-
-	it('à la dizaine', () => {
-		const result = engine.evaluate('à la dizaine')
-		expect(result.value).toBe(40)
-	})
-
-	it('à 0.5 près', () => {
-		const result = engine.evaluate('à 0.05 près')
-		expect(result.value).toBe(38.45)
-	})
-
-	it('à 5 décimales', () => {
-		const result = engine.evaluate('à 5 décimales')
-		expect(result.value).toBe(38.4167)
+	test.each([
+		["à l'unité", 39],
+		['à 2 décimales', 38.42],
+		['à la dizaine', 40],
+		['à 0.05 près', 38.45],
+		['à 5 décimales', 38.4167],
+	])('%s', (name, expected) => {
+		const result = engine.evaluate(name)
+		expect(result.value).toBe(expected)
 	})
 })

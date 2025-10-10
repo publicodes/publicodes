@@ -42,6 +42,6 @@ describe('Rend non applicable > simple', () => {
         rend non applicable: impôt
       `
 		expect(engine.evaluate('à payer').value).toBe(1000)
-		expect(engine.outputs['exilé fiscal'].type).toEqual({ boolean: true })
+		expect(engine.getType('exilé fiscal')).toEqual({ boolean: true })
 	})
 })

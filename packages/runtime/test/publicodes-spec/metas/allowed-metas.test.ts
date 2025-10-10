@@ -22,20 +22,20 @@ a:
 	})
 
 	it('title', () => {
-		expect(engine.meta('a').title).toEqual('ma règle')
+		expect(engine.getMeta('a').title).toEqual('ma règle')
 	})
 
 	it('description', () => {
-		expect(engine.meta('a').description).toEqual('ma description')
+		expect(engine.getMeta('a').description).toEqual('ma description')
 	})
 
 	it('note', () => {
-		expect(engine.meta('a').note).toEqual('mes notes\n')
+		expect(engine.getMeta('a').note).toEqual('mes notes\n')
 	})
 
 	it('meta object', () => {
-		expect(engine.meta('a').references).toEqual(['https://calinou.coop'])
-		expect(engine.meta('a').ui).toEqual({
+		expect(engine.getMeta('a').references).toEqual(['https://calinou.coop'])
+		expect(engine.getMeta('a').ui).toEqual({
 			question: 'Quel est votre couleur préférée ?',
 			tooltip: 'Petite aide contextuelle\n',
 		})

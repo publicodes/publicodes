@@ -32,7 +32,7 @@ a:
 b:
 `
 		expect(engine.evaluate('a').value).toEqual(undefined)
-		expect(engine.outputs.b.type.unit).toEqual('€')
+		expect(engine.getType('b').unit).toEqual('€')
 	})
 
 	it('valeur non applicable', async () => {

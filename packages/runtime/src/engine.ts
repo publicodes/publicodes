@@ -20,16 +20,11 @@ export class Engine<O extends Outputs> {
 		private publicodes: Publicodes<O>,
 		options: EngineOptions = {},
 	) {
-		// console.log(publicodes)
 		const { cache = false } = options
 
 		if (cache) {
 			this.cache = new Memoizer(publicodes)
 		}
-	}
-
-	public get outputs(): O {
-		return this.publicodes.outputs
 	}
 
 	evaluate<R extends RuleName<O>>(
@@ -77,8 +72,12 @@ export class Engine<O extends Outputs> {
 		} as Evaluation<O, R>
 	}
 
-	meta<R extends RuleName<O>>(rule: R): GetMeta<O, R> {
+	public getMeta<R extends RuleName<O>>(rule: R): GetMeta<O, R> {
 		return this.publicodes.outputs[rule].meta
+	}
+
+	public getType<R extends RuleName<O>>(rule: R): O[R]['type'] {
+		return this.publicodes.outputs[rule].type
 	}
 }
 

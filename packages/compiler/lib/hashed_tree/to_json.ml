@@ -131,60 +131,18 @@ let json_of_eval_tree_flat (tree : Tree.t) =
 let to_json ~eval_tree ~outputs =
   let nodes_array, rule_to_index = json_of_eval_tree_flat eval_tree in
   let outputs =
-    List.map outputs
-      ~f:(fun Shared.Model_outputs.{rule_name; typ; parameters; meta} ->
-        let rule_str = to_string rule_name in
-        let node_index =
-          `Int (List.Assoc.find_exn rule_to_index rule_str ~equal:String.equal)
-        in
-        let parameters =
-          `Assoc (List.map parameters ~f:(fun rule -> (to_string rule, `Null)))
-        in
-        let type_info =
-          let open Shared.Typ in
-          match typ with
-          | Some (Number (Some unit)) ->
-              `Assoc
-                [ ("number", `Bool true)
-                ; ( "unit"
-                  , `String (Stdlib.Format.asprintf "%a" Shared.Units.pp unit)
-                  ) ]
-          | Some (Number None) ->
-              `Assoc [("number", `Bool true)]
-          | Some (Literal String) ->
-              `Assoc [("string", `Bool true)]
-          | Some (Literal Bool) ->
-              `Assoc [("boolean", `Bool true)]
-          | Some (Literal Date) ->
-              `Assoc [("date", `Bool true)]
-          | None ->
-              `Null
-        in
-        let meta =
-          let open Shared.Shared_ast in
-          `Assoc
-            ( meta
-            |> List.filter_map ~f:(function
-                 | Description desc ->
-                     Some [("description", `String desc)]
-                 | Title title ->
-                     Some [("title", `String title)]
-                 | Note note ->
-                     Some [("note", `String note)]
-                 | Custom_meta (`Assoc m) ->
-                     Some m
-                 | Custom_meta _ ->
-                     None
-                 | Public ->
-                     None )
-            |> List.concat )
-        in
-        ( rule_str
-        , `Assoc
-            [ ("parameters", parameters)
-            ; ("type", type_info)
-            ; ("nodeIndex", node_index)
-            ; ("meta", meta) ] ) )
+    Outputs_to_json.outputs_to_json outputs
+    |> List.map ~f:(fun (rule_str, assoc) ->
+           let node_index =
+             `Int
+               (List.Assoc.find_exn rule_to_index rule_str ~equal:String.equal)
+           in
+           match assoc with
+           | `Assoc lst ->
+               (rule_str, `Assoc (("nodeIndex", node_index) :: lst))
+           | _ ->
+               failwith "Expected assoc in output"
+           (* Add node index to output metadata *) )
   in
   `Assoc
     [ ("evaluation", `List (Array.to_list nodes_array))
