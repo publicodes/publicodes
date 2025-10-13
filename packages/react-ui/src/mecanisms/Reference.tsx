@@ -56,8 +56,8 @@ export default function Reference(
 				}}
 			>
 				<span
-					role="heading"
-					aria-level={2}
+					role={isFoldEnabled ? 'heading' : undefined}
+					aria-level={isFoldEnabled ? 2 : undefined}
 					style={{ paddingRight: '0.2rem', margin: 0, display: 'inline' }}
 				>
 					<RuleLinkWithContext dottedName={dottedName} />
