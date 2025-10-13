@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useRef } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useEngine } from '../hooks'
 import { styled } from 'styled-components'
 import Fuse from 'fuse.js'
@@ -12,9 +12,9 @@ type SearchableRule = {
 
 export default function RulesSearch() {
 	const engine = useEngine()
+
 	const dottedName = useContext(DottedNameContext)
-	const inputRef = useRef<HTMLInputElement>(null)
-	const resultsRef = useRef<HTMLDivElement>(null)
+
 	const [selectedIndex, setSelectedIndex] = useState(-1)
 
 	const rules: SearchableRule[] = Object.entries(engine.getParsedRules()).map(
@@ -47,7 +47,6 @@ export default function RulesSearch() {
 			<SearchLabel htmlFor={inputId}>Rechercher une règle</SearchLabel>
 			<SearchInput
 				id={inputId}
-				ref={inputRef}
 				type="text"
 				placeholder="Chercher une règle"
 				value={searchQuery}
@@ -73,7 +72,6 @@ export default function RulesSearch() {
 			{!isEmpty ?
 				<SearchResults
 					id={resultsId}
-					ref={resultsRef}
 					role="listbox"
 					aria-label="Résultats de recherche"
 				>

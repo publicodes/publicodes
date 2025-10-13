@@ -23,11 +23,11 @@ export function Mecanism({
 	return (
 		<StyledMecanism as="article" $mecanismName={name}>
 			{displayName && (
-				<h1>
+				<div role="heading" aria-level={1}>
 					<MecanismName name={name} href={docUrl}>
 						{name}
 					</MecanismName>
-				</h1>
+				</div>
 			)}
 			<div>
 				{children}

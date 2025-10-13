@@ -55,9 +55,13 @@ export default function Reference(
 					justifyContent: 'space-between',
 				}}
 			>
-				<h2 style={{ paddingRight: '0.2rem', margin: 0, display: 'inline' }}>
+				<span
+					role="heading"
+					aria-level={2}
+					style={{ paddingRight: '0.2rem', margin: 0, display: 'inline' }}
+				>
 					<RuleLinkWithContext dottedName={dottedName} />
-				</h2>
+				</span>
 
 				<div
 					style={{
