@@ -6,7 +6,7 @@ import { Arrow } from './icons/Arrow'
 const AccordionContainer = styled.section`
 	overflow: hidden;
 	border-radius: 6px;
-	border: 1px solid #bbb;
+	border: 1px solid #1a1a1a;
 `
 
 const H4 = styled.h4`
