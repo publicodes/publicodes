@@ -8,12 +8,26 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
+  build-compiler:
+    name: Ocaml compiler
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [linux, macos, windows]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test the ocaml compiler
+        uses: ./.github/actions/build-compiler
+        with:
+          platform: ${{ matrix.platform }}
+
   release:
+    needs: build-compiler
     name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install node
         uses: actions/setup-node@v4
@@ -23,6 +37,12 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --immutable
+
+      - name: Download ocaml build
+        uses: actions/download-artifact@v5
+        with:
+          path: ./packages/cli/bin/compiler
+          merge-multiple: true
 
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v1

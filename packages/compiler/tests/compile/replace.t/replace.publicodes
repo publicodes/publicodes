@@ -1,0 +1,14 @@
+a:
+  valeur: 4
+  remplace: b
+
+b: 5
+
+x: b
+
+c:
+  remplace: d
+
+d:
+
+y: d
