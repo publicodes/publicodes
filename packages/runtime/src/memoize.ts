@@ -27,9 +27,9 @@ export class Memoizer<O extends Outputs> {
 		})
 	}
 
-	evaluateNode(id: number, context: Context): Value {
+	evaluateNode(id: number, context: Context, params: string[]): Value {
 		if (!(id in this.cache)) {
-			return evaluateNode(this.evaluation, id, context)
+			return evaluateNode(this.evaluation, id, context, params)
 		}
 
 		const cache = this.cache[id]
@@ -39,7 +39,7 @@ export class Memoizer<O extends Outputs> {
 			return result
 		}
 
-		result = evaluateNode(this.evaluation, id, context)
+		result = evaluateNode(this.evaluation, id, context, params)
 		cache.set(context, result)
 		return result
 	}

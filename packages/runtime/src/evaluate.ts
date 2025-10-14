@@ -9,35 +9,38 @@ class RuntimeError extends Error {
 // Use 15 precision for floating number in JS https://stackoverflow.com/a/3644302
 const MAX_FLOAT_PRECISION = 15
 
-export type Value = {
-	v: number | string | boolean | null | undefined
-	p: Record<string, true>
-}
+export type Value = number | string | boolean | null | undefined
 
 export type Context = Record<
 	string,
 	number | null | undefined | string | boolean
->
+> & { _global: Record<string, number | null | undefined | string | boolean> }
 
 function evaluateNode(
 	evalTree: readonly Computation[],
 	i: number,
 	context: Context,
+	params: String[],
 ): Value {
 	const c = evalTree[i]
-	if (c === null) return { v: null, p: {} }
+
+	if (c === null) {
+		return null
+	}
+
 	if (
-		c === null ||
+		// FIXME: why?
+		// c === null ||
 		typeof c === 'boolean' ||
 		typeof c === 'number' ||
 		typeof c === 'string'
 	) {
-		return { v: c, p: {} }
+		return c
 	}
 
 	if (Array.isArray(c)) {
 		if (c.length === 0) {
-			return { v: undefined, p: {} }
+			return undefined
 		}
 
 		// -----------------------------
@@ -45,17 +48,15 @@ function evaluateNode(
 		// -----------------------------
 
 		if (c.length === 2) {
-			const val = evaluateNode(evalTree, c[1], context)
+			const val = evaluateNode(evalTree, c[1], context, params)
 			const op = c[0]
+
 			if (op === '∅') {
-				return {
-					v: val.v === undefined,
-					p: val.p,
-				}
+				return val === undefined
 			}
 			if (op === '-') {
-				if (typeof val.v !== 'number') return val
-				return { v: -val.v, p: val.p }
+				if (typeof val !== 'number') return val
+				return -val
 			}
 		}
 
@@ -65,43 +66,41 @@ function evaluateNode(
 
 		if (c.length === 3 && typeof c[0] === 'string') {
 			const op = c[0]
-			const left = evaluateNode(evalTree, c[1], context)
+			const left = evaluateNode(evalTree, c[1], context, params)
 
 			// TODO : should be lazy only if no missings in the computed value ?
 
 			// LAZY (First operand)
-			if (left.v === null && LazyNullOps.includes(op)) {
+			if (left === null && LazyNullOps.includes(op)) {
 				return left
 			}
-			if (left.v === 0 && (op === '*' || op === '/' || op === '**')) {
+			if (left === 0 && (op === '*' || op === '/' || op === '**')) {
 				return left
 			}
-			if ((left.v === false || left.v === null) && op === '&&') {
-				return { v: false, p: left.p }
+			if ((left === false || left === null) && op === '&&') {
+				return left
 			}
-			if (left.v === true && op === '||') {
+			if (left === true && op === '||') {
 				return left
 			}
 
 			// LAZY (Second operand)
-			const right = evaluateNode(evalTree, c[2], context)
-			if (left.v === undefined) {
-				if (right.v === 0 && op === '*') return { v: 0, p: right.p }
-				if (right.v === 0 && op === '**') return { v: 1, p: right.p }
-				if (right.v === 0 && op === '/')
+			const right = evaluateNode(evalTree, c[2], context, params)
+			if (left === undefined) {
+				if (right === 0 && op === '*') return 0
+				if (right === 0 && op === '**') return 1
+				if (right === 0 && op === '/')
 					throw new RuntimeError('Division by zero')
-				if (right.v === false && op === '&&') return { v: false, p: right.p }
-				if (right.v === true && op === '||') return { v: true, p: right.p }
-				return {
-					v: undefined,
-					p: { ...left.p, ...right.p },
-				}
+				if (right === false && op === '&&') return false
+				if (right === true && op === '||') return true
+
+				return undefined
 			}
 
 			let v
-			const leftv = left.v as number
-			const rightv = right.v as number
-			if (right.v === undefined) {
+			const leftv = left as number
+			const rightv = right as number
+			if (right === undefined) {
 				v = undefined
 			} else if (op === '+') {
 				v = leftv + rightv
@@ -140,64 +139,53 @@ function evaluateNode(
 			} else {
 				throw new RuntimeError('Internal error : Invalid operation')
 			}
-			return {
-				v,
-				p: { ...left.p, ...right.p },
-			}
+
+			return v
 		}
 
 		// -----------------------------
 		// Conditional (ternary)
 		// -----------------------------
 		if (c.length === 3) {
-			const condition = evaluateNode(evalTree, c[0], context)
+			const condition = evaluateNode(evalTree, c[0], context, params)
 
-			if (condition.v === null || condition.v === undefined) {
+			if (condition === null || condition === undefined) {
 				return condition
 			}
 
-			const val = evaluateNode(evalTree, condition.v ? c[1] : c[2], context)
-
-			return {
-				v: val.v,
-				p: { ...condition.p, ...val.p },
-			}
+			return evaluateNode(evalTree, condition ? c[1] : c[2], context, params)
 		}
 
 		// -----------------------------
 		// Rounding
 		// -----------------------------
 		if (c.length === 4 && c[0] === 'round') {
-			const val = evaluateNode(evalTree, c[3], context)
-			if (val.v === null || val.v === undefined) {
+			const val = evaluateNode(evalTree, c[3], context, params)
+			if (val === null || val === undefined) {
 				return val
 			}
-			const precision = evaluateNode(evalTree, c[2], context)
-			const p = { ...val.p, ...precision.p }
+			const precision = evaluateNode(evalTree, c[2], context, params)
+			if (precision === undefined) {
+				return undefined
+			}
+			if (precision === null) {
+				return val
+			}
 
-			if (precision.v === undefined) {
-				return { v: undefined, p }
-			}
-			if (precision.v === null) {
-				return { v: val.v, p }
-			}
-			if (precision.v === 0) {
+			if (precision === 0) {
 				throw new RuntimeError('Rounding error: precision cannot be 0')
 			}
 
 			const r = (num: number) => +num.toPrecision(MAX_FLOAT_PRECISION)
-			const valv = val.v as number
-			const precv = precision.v as number
+			const valv = val as number
+			const precv = precision as number
 			const v = r(
 				c[1] === 'up' ? Math.ceil(r(valv / precv)) * precv
 				: c[1] === 'down' ? Math.floor(r(valv / precv)) * precv
 				: Math.round(r(valv / precv)) * precv,
 			)
 
-			return {
-				v,
-				p,
-			}
+			return v
 		}
 	}
 
@@ -205,32 +193,40 @@ function evaluateNode(
 	// Date
 	// -----------------------------
 	if ('date' in c) {
-		return { v: new Date(c.date).valueOf(), p: {} }
+		return new Date(c.date).valueOf()
 	}
 	// -----------------------------
 	// Get context
 	// -----------------------------
 	if ('get' in c) {
-		return { v: context[c.get], p: { [c.get]: true } }
+		if (c.get in context) {
+			return context[c.get]
+		}
+
+		params.push(c.get)
+		return context._global[c.get]
 	}
 	// -----------------------------
 	// Set context
 	// -----------------------------
 	if ('context' in c) {
 		const newContext = { ...context }
-		const neededParameters: Record<string, true> = {}
+
 		for (const rule in c.context) {
-			const val = evaluateNode(evalTree, c.context[rule], context)
-			newContext[rule] = val.v
-			Object.assign(neededParameters, val.p)
+			if (rule !== '_global') {
+				newContext[rule] = evaluateNode(
+					evalTree,
+					c.context[rule],
+					context,
+					params,
+				)
+			}
 		}
-		const value = evaluateNode(evalTree, c.value, newContext)
-		// Remove neededParameters that are set in the context
-		for (const param in c.context) {
-			delete value.p[param]
-		}
-		Object.assign(value.p, neededParameters)
-		return value
+
+		console.log('context')
+		console.dir(newContext, { depth: null })
+
+		return evaluateNode(evalTree, c.value, newContext, params)
 	}
 	throw new RuntimeError('Internal error : Invalid computation')
 }

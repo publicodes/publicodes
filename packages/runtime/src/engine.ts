@@ -29,22 +29,27 @@ export class Engine<O extends Outputs> {
 
 	evaluate<R extends RuleName<O>>(
 		rule: R,
-		context: GetContext<O, R> = emptyContext,
+		params: GetContext<O, R> = emptyContext,
 		debug = false,
 	): Evaluation<O, R> {
 		const output = this.publicodes.outputs[rule]
 		if (output === undefined) {
 			throw new Error(`Rule "${rule}" doesn't exist as an output of the model`)
 		}
+
 		const evaluation = this.publicodes.evaluation as readonly Computation[]
+		const context = {
+			_global: params,
+		}
+		const p: string[] = []
 		const evaluate = (id: number) => {
 			if (this.cache) {
-				return this.cache.evaluateNode(id, context as Context)
+				return this.cache.evaluateNode(id, context as any, p)
 			}
-			return evaluateNode(evaluation, id, context as Context)
+			return evaluateNode(evaluation, id, context as any, p)
 		}
 
-		const { p, v } = evaluate(output.nodeIndex!)
+		const v = evaluate(output.nodeIndex!)
 
 		type Value = Evaluation<O, R>['value']
 		let value = v as Value
@@ -58,9 +63,9 @@ export class Engine<O extends Outputs> {
 			console.table(evaluations)
 		}
 
-		const neededParameters = Object.keys(p)
+		const neededParameters = Array.from(new Set(p))
 		const missingParameters = neededParameters.filter(
-			(param) => !(param in context),
+			(param) => !(param in params),
 		)
 		if (output.type && 'date' in output.type) {
 			value = new Date(v as number) as Value
