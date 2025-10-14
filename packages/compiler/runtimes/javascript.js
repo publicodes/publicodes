@@ -363,10 +363,6 @@ function and(l, right) {
  * - ∀ x, y. or(x, y) = x || y
  */
 function or(l, right) {
-	if (env.NODE_ENV !== 'production' && typeof trace !== 'undefined')
-	trace.add('or', { l, right })
-}
-
 	if (l === true) {
 		return true
 	}
@@ -536,4 +532,22 @@ function cond(c, ifTrue, ifFalse) {
 	}
 
 	return c ? ifTrue() : ifFalse()
+}
+
+function get(rule, ctx, params) {
+	if (rule in ctx) {
+		return ctx[rule]
+	}
+
+	params.push(rule)
+	return ctx._global[rule]
+}
+
+function evaluate(fn, _global) {
+	const params = []
+	const value = fn({ _global }, params)
+	const needed = Array.from(new Set(params))
+	const missing = needed.filter((p) => !(p in _global))
+
+	return { value, parameters: { needed, missing } }
 }
