@@ -208,7 +208,7 @@ and transform_floor ~pos floor value =
               , p
                   (Binary_op
                      (Pos.mk ~pos Shared_ast.NotEq, floor, p (Const Null)) )
-              , p (Binary_op (Pos.mk ~pos Shared_ast.Gt, value, floor)) ) )
+              , p (Binary_op (Pos.mk ~pos Shared_ast.Lt, value, floor)) ) )
        , floor
        , value ) )
 
@@ -224,7 +224,7 @@ and transform_ceiling ~pos ceil value =
               , p
                   (Binary_op (Pos.mk ~pos Shared_ast.NotEq, ceil, p (Const Null))
                   )
-              , p (Binary_op (Pos.mk ~pos Shared_ast.Lt, value, ceil)) ) )
+              , p (Binary_op (Pos.mk ~pos Shared_ast.Gt, value, ceil)) ) )
        , ceil
        , value ) )
 
