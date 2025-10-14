@@ -4090,6 +4090,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mitata/counters@npm:^0.0.8":
+  version: 0.0.8
+  resolution: "@mitata/counters@npm:0.0.8"
+  checksum: 10/4540c56a44cc16d80d2f4945cdd0161d7f07b7abc8d1224488bd40dbfeab4ff7ef24e6a7d5eb171d3058a9bddc91792c3c295b26c2a2585c64b3a06fa697aee9
+  languageName: node
+  linkType: hard
+
 "@mswjs/cookies@npm:^0.1.4":
   version: 0.1.7
   resolution: "@mswjs/cookies@npm:0.1.7"
@@ -4661,6 +4668,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@publicodes/runtime@workspace:packages/runtime"
   dependencies:
+    "@mitata/counters": "npm:^0.0.8"
     "@publicodes/cli": "workspace:^"
     "@publicodes/tools": "workspace:^"
     "@types/bun": "npm:^1.2.23"

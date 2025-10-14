@@ -41,6 +41,13 @@ with embeded context:
       - valeur: params a needed
         contexte:
           params . a: 4
+
+with constant:
+  valeur: constant + 2
+  contexte:
+    constant: 4
+  avec:
+   constant: 10
 `
 
 	test('no parameters needed', () => {
@@ -59,11 +66,7 @@ with embeded context:
 		expect(resultWithA.missingParameters).toEqual([])
 	})
 
-	// NOTE: this is not working with the JS compiled engine because the all
-	// binary operations are lazy, so if the first parameter is missing (i.e.
-	// `undefined`), the second one is not evaluated at all and the value is
-	// `undefined`. Do we want to keep this behavior?
-	test.skipIf(env.OUTPUT_TYPE === 'js')('params a and b needed', () => {
+	test('params a and b needed', () => {
 		const result = engine.evaluate('params a and b needed')
 		expect(result.neededParameters).toEqual(['params . a', 'params . b'])
 		expect(result.missingParameters).toEqual(['params . a', 'params . b'])
@@ -108,6 +111,14 @@ with embeded context:
 			missingParameters: [],
 			neededParameters: ['params . a'],
 			value: 17,
+		})
+	})
+
+	test('with embeded context', () => {
+		expect(engine.evaluate('with constant')).toEqual({
+			missingParameters: [],
+			neededParameters: [],
+			value: 6,
 		})
 	})
 })

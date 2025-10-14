@@ -17,6 +17,7 @@
 		"dist/"
 	],
 	"devDependencies": {
+		"@mitata/counters": "^0.0.8",
 		"@publicodes/cli": "workspace:^",
 		"@publicodes/tools": "workspace:^",
 		"@types/bun": "^1.2.23",

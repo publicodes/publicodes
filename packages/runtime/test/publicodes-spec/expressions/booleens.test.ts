@@ -3,6 +3,7 @@ import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Expressions > booléens', () => {
 	let engine: TestPublicodes
+
 	beforeAll(async () => {
 		engine = await yaml`
 a: oui
