@@ -42,6 +42,12 @@ let date_to_js = function
   | _ ->
       failwith "Unsupported date format in JS conversion"
 
+let is_lazy : Shared_ast.binary_op -> bool = function
+  | And | Or | Lt | Gt | GtEq | LtEq | Pow | Div | Mul ->
+      true
+  | Add | Sub | Eq | NotEq | Min | Max ->
+      false
+
 let rec value_to_js ({value; _} : Tree.value) : string =
   match value with
   | Eval_tree.Const (Eval_tree.Number (n, _)) ->
@@ -80,7 +86,8 @@ let rec value_to_js ({value; _} : Tree.value) : string =
       Printf.sprintf "cond(%s, () => %s, () => %s)" (value_to_js cond)
         (value_to_js then_comp) (value_to_js else_comp)
   | Binary_op ((op, _), left, right) ->
-      Printf.sprintf "%s(%s, () => %s)" (binary_op_to_js op) (value_to_js left)
+      Printf.sprintf "%s(%s, %s %s)" (binary_op_to_js op) (value_to_js left)
+        (if is_lazy op then "() => " else "")
         (value_to_js right)
   | Unary_op ((Neg, _), comp) ->
       Printf.sprintf "(- %s)" (value_to_js comp)

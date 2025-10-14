@@ -53,7 +53,7 @@ class RuntimeError extends Error {
 
 /**
  * @param {Number} left
- * @param {LazyNumber} right
+ * @param {Number} right
  * @returns {number | undefined}
  *
  * @specification
@@ -63,13 +63,8 @@ class RuntimeError extends Error {
  * - ∀ x. add(null, null) = 0
  * - ∀ x, y. add(x, y) = x + y
  */
-function add(l, right) {
-	if (l === undefined) {
-		return undefined
-	}
-
-	const r = right()
-	if (r === undefined) {
+function add(l, r) {
+	if (l === undefined || r === undefined) {
 		return undefined
 	}
 
@@ -78,24 +73,19 @@ function add(l, right) {
 
 /**
  * @param {Number} left
- * @param {LazyNumber} right
+ * @param {Number} right
  * @returns {number | undefined}
  *
  * @specification
  * The subtraction operation is defined as follows by order of precedence:
- * 1. ∀ x. sub(undefined, x) = sub(x, undefined) = undefined
- * 2. ∀ x. sub(null, null) = 0
- * 3. ∀ x. sub(x, null) = x
- * 4. ∀ x. sub(null, x) = -x
- * 5. ∀ x, y. sub(x, y) = x - y
+ * - ∀ x. sub(undefined, x) = sub(x, undefined) = undefined
+ * - ∀ x. sub(null, null) = 0
+ * - ∀ x. sub(x, null) = x
+ * - ∀ x. sub(null, x) = -x
+ * - ∀ x, y. sub(x, y) = x - y
  */
-function sub(l, right) {
-	if (l === undefined) {
-		return undefined
-	}
-
-	const r = right()
-	if (r === undefined) {
+function sub(l, r) {
+	if (l === undefined || r === undefined) {
 		return undefined
 	}
 
@@ -109,9 +99,9 @@ function sub(l, right) {
  *
  * @specification
  * The multiplication operation is defined as follows by order of precedence:
- * 1. ∀ x. mul(0, x) = mul(x, 0) = 0
- * 2. ∀ x. mul(undefined, x) = mul(x, undefined) = undefined
- * 3. ∀ x. mul(null, x) = mul(x, null) = null
+ * - ∀ x. mul(0, x) = mul(x, 0) = 0
+ * - ∀ x. mul(undefined, x) = mul(x, undefined) = undefined
+ * - ∀ x. mul(null, x) = mul(x, null) = null
  */
 function mul(l, right) {
 	if (l === 0) {
@@ -139,11 +129,11 @@ function mul(l, right) {
  *
  * @specification
  * The division operation is defined as follows by order of precedence:
- * 1. ∀ x. div(0, x) = 0
- * 2. ∀ x. div(x, 0) = throw RuntimeError('Division by zero')
- * 3. ∀ x. div(undefined, x) = div(x, undefined) = undefined
- * 4. ∀ x. div(null, x) = div(x, null) = null
- * 5. ∀ x, y. div(x, y) = x / y
+ * - ∀ x. div(0, x) = 0
+ * - ∀ x. div(x, 0) = throw RuntimeError('Division by zero')
+ * - ∀ x. div(undefined, x) = div(x, undefined) = undefined
+ * - ∀ x. div(null, x) = div(x, null) = null
+ * - ∀ x, y. div(x, y) = x / y
  */
 function div(l, right) {
 	if (l === 0) {
@@ -173,11 +163,11 @@ function div(l, right) {
  *
  * @specification
  * The power operation is defined as follows by order of precedence:
- * 1. ∀ x. pow(0, x) = 0
- * 2. ∀ x. pow(x, 0) = 1
- * 3. ∀ x. pow(undefined, y) = pow(x, undefined) = undefined
- * 4. ∀ x. pow(x, null) = pow(null, x) = null
- * 5. ∀ x, y. pow(x, y) = x ** y
+ * - ∀ x. pow(0, x) = 0
+ * - ∀ x. pow(x, 0) = 1
+ * - ∀ x. pow(undefined, y) = pow(x, undefined) = undefined
+ * - ∀ x. pow(x, null) = pow(null, x) = null
+ * - ∀ x, y. pow(x, y) = x ** y
  */
 function pow(l, right) {
 	if (l === 0) {
@@ -200,21 +190,16 @@ function pow(l, right) {
 
 /**
  * @param {Value} left
- * @param {LazyValue} right
+ * @param {Value} right
  * @returns {boolean | undefined}
  *
  * @specification
  * The equality operation is defined as follows by order of precedence:
- * 1. ∀ x. eq(undefined, x) = eq(x, undefined) = undefined
- * 2. ∀ x, y. eq(x, y) = x === y
+ * - ∀ x. eq(undefined, x) = eq(x, undefined) = undefined
+ * - ∀ x, y. eq(x, y) = x === y
  */
-function eq(l, right) {
-	if (l === undefined) {
-		return undefined
-	}
-
-	const r = right()
-	if (r === undefined) {
+function eq(l, r) {
+	if (l === undefined || r === undefined) {
 		return undefined
 	}
 
@@ -223,21 +208,16 @@ function eq(l, right) {
 
 /**
  * @param {Value} left
- * @param {LazyValue} right
+ * @param {Value} right
  * @returns {boolean | undefined}
  *
  * @specification
  * The inequality operation is defined as follows by order of precedence:
- * 1. ∀ x. neq(undefined, x) = neq(x, undefined) = undefined
- * 2. ∀ x, y. neq(x, y) = x !== y
+ * - ∀ x. neq(undefined, x) = neq(x, undefined) = undefined
+ * - ∀ x, y. neq(x, y) = x !== y
  */
-function neq(l, right) {
-	if (l === undefined) {
-		return undefined
-	}
-
-	const r = right()
-	if (r === undefined) {
+function neq(l, r) {
+	if (l === undefined || r === undefined) {
 		return undefined
 	}
 
@@ -251,21 +231,21 @@ function neq(l, right) {
  *
  * @specification
  * The less than operation is defined as follows by order of precedence:
- * 1. ∀ x. lt(undefined, x) = lt(x, undefined) = undefined
- * 2. ∀ x. lt(null, x) = lt(x, null) = null
- * 3. ∀ x, y. lt(x, y) = x < y
+ * - ∀ x. lt(null, x) = lt(x, null) = null
+ * - ∀ x. lt(undefined, x) = lt(x, undefined) = undefined
+ * - ∀ x, y. lt(x, y) = x < y
  */
 function lt(l, right) {
-	if (l === undefined) {
-		return undefined
+	if (l === null) {
+		return null
 	}
 
 	const r = right()
-	if (r === undefined) {
-		return undefined
+	if (r === null) {
+		return null
 	}
 
-	return l === null || r === null ? null : l < r
+	return l === undefined || r === undefined ? undefined : l < r
 }
 
 /**
@@ -275,21 +255,21 @@ function lt(l, right) {
  *
  * @specification
  * The greater than operation is defined as follows by order of precedence:
- * 1. ∀ x. gt(undefined, x) = gt(x, undefined) = undefined
- * 2. ∀ x. gt(null, x) = gt(x, null) = null
- * 3. ∀ x, y. lt(x, y) = x > y
+ * - ∀ x. gt(null, x) = gt(x, null) = null
+ * - ∀ x. gt(undefined, x) = gt(x, undefined) = undefined
+ * - ∀ x, y. lt(x, y) = x > y
  */
 function gt(l, right) {
-	if (l === undefined) {
-		return undefined
+	if (l === null) {
+		return null
 	}
 
 	const r = right()
-	if (r === undefined) {
-		return undefined
+	if (r === null) {
+		return null
 	}
 
-	return l === null || r === null ? null : l > r
+	return l === undefined || r === undefined ? undefined : l > r
 }
 
 /**
@@ -299,21 +279,21 @@ function gt(l, right) {
  *
  * @specification
  * The less than or equal is defined as follows by order of precedence:
- * 1. ∀ x. lte(undefined, x) = lte(x, undefined) = undefined
- * 2. ∀ x. lte(null, x) = lte(x, null) = null
- * 3. ∀ x, y. lte(x, y) = x <= y
+ * - ∀ x. lte(null, x) = lte(x, null) = null
+ * - ∀ x. lte(undefined, x) = lte(x, undefined) = undefined
+ * - ∀ x, y. lte(x, y) = x <= y
  */
 function lte(l, right) {
-	if (l === undefined) {
-		return undefined
+	if (l === null) {
+		return null
 	}
 
 	const r = right()
-	if (r === undefined) {
-		return undefined
+	if (r === null) {
+		return null
 	}
 
-	return l === null || r === null ? null : l <= r
+	return l === undefined || r === undefined ? undefined : l <= r
 }
 
 /**
@@ -323,21 +303,21 @@ function lte(l, right) {
  *
  * @specification
  * The greater than or equal is defined as follows by order of precedence:
- * 1. ∀ x. gte(undefined, x) = gte(x, undefined) = undefined
- * 2. ∀ x. gte(null, x) = gte(x, null) = null
- * 3. ∀ x, y. gte(x, y) = x <= y
+ * - ∀ x. gte(null, x) = gte(x, null) = null
+ * - ∀ x. gte(undefined, x) = gte(x, undefined) = undefined
+ * - ∀ x, y. gte(x, y) = x <= y
  */
 function gte(l, right) {
-	if (l === undefined) {
-		return undefined
+	if (l === null) {
+		return null
 	}
 
 	const r = right()
-	if (r === undefined) {
-		return undefined
+	if (r === null) {
+		return null
 	}
 
-	return l === null || r === null ? null : l >= r
+	return l === undefined || r === undefined ? undefined : l >= r
 }
 
 /**
@@ -358,9 +338,8 @@ function and(l, right) {
 	}
 
 	const r = right()
-
 	if (l === undefined) {
-		return r === true ? true : undefined
+		return r === false ? false : undefined
 	}
 
 	if (r === undefined) {
@@ -384,12 +363,15 @@ function and(l, right) {
  * - ∀ x, y. or(x, y) = x || y
  */
 function or(l, right) {
+	if (env.NODE_ENV !== 'production' && typeof trace !== 'undefined')
+	trace.add('or', { l, right })
+}
+
 	if (l === true) {
 		return true
 	}
 
 	const r = right()
-
 	if (l === undefined) {
 		return r === true ? true : undefined
 	}
@@ -398,7 +380,12 @@ function or(l, right) {
 		return undefined
 	}
 
-	return l || r
+	return (
+		l === null && r === null ? false
+		: l === null ? r
+		: r === null ? l
+		: l || r
+	)
 }
 
 /** Unary operations */
@@ -430,8 +417,8 @@ function neg(val) {
  *
  * @specification
  * The rounding operation is defined as follows by order of precedence:
- * - ∀ x. round(mode, undefined, precision) = undefined
  * - ∀ x. round(mode, null, precision) = null
+ * - ∀ x. round(mode, undefined, precision) = undefined
  * - ∀ x. round(mode, x, undefined) = undefined
  * - ∀ x. round(mode, x, null) = x
  * - ∀ x, p. round(mode, x, p) = rounded value of x with the given mode and precision p
@@ -440,12 +427,12 @@ function neg(val) {
  *    - if mode = 'nearest', round to the nearest multiple of p
  */
 function round(mode, val, precision) {
-	if (val === undefined || val === null) {
+	if (val === null) {
 		return val
 	}
 
 	const p = precision()
-	if (p === undefined) {
+	if (val === undefined || p === undefined) {
 		return undefined
 	}
 
@@ -472,38 +459,58 @@ function round(mode, val, precision) {
 	)
 }
 
+/**
+ * @param {Number} left
+ * @param {Number} right
+ * @returns {number | undefined}
+ *
+ * @specification
+ * The rounding operation is defined as follows by order of precedence:
+ * - ∀ x. min(x, undefined) = min(undefined, x) = undefined
+ * - ∀ x. min(x, null) = min(null, x) = x
+ * - ∀ x, y. min(x, y) = the minimum value between x and y
+ */
 function min(left, right) {
 	if (left === undefined) {
 		return undefined
 	}
 
-	const r = right()
-	if (r === undefined) {
+	if (right === undefined) {
 		return undefined
 	}
 
-	if (left === null || r === null) {
-		return left === null ? r : left
+	if (left === null || right === null) {
+		return left === null ? right : left
 	}
 
-	return left < r ? left : r
+	return left < right ? left : right
 }
 
+/**
+ * @param {Number} left
+ * @param {Number} right
+ * @returns {number | undefined}
+ *
+ * @specification
+ * The rounding operation is defined as follows by order of precedence:
+ * - ∀ x. max(x, undefined) = max(undefined, x) = undefined
+ * - ∀ x. max(x, null) = max(null, x) = x
+ * - ∀ x, y. max(x, y) = the max value between x and y
+ */
 function max(left, right) {
 	if (left === undefined) {
 		return undefined
 	}
 
-	const r = right()
-	if (r === undefined) {
+	if (right === undefined) {
 		return undefined
 	}
 
-	if (left === null || r === null) {
-		return left === null ? r : left
+	if (left === null || right === null) {
+		return left === null ? right : left
 	}
 
-	return left > r ? left : r
+	return left > right ? left : right
 }
 
 /**
