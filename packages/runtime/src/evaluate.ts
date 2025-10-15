@@ -87,10 +87,10 @@ function evaluateNode(
 				return left
 			}
 			if ((left === false || left === null) && op === '&&') {
-				return left
+				return false
 			}
 			if (left === true && op === '||') {
-				return left
+				return true
 			}
 
 			// LAZY (Second operand)

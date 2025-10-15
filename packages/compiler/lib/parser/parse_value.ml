@@ -30,6 +30,8 @@ let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
   | `O mapping ->
       let* mapping = remove_double mapping in
       let* value =
+        (* NOTE: pourquoi avoir la fonction parse comme arguement si c'est
+				 toujours la même ? *)
         Parse_mechanisms.parse_value_mechanism ~pos ~parse:parse_value mapping
       in
       let* chainable_mechanisms =

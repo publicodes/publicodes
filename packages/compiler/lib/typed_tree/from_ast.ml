@@ -90,6 +90,7 @@ and unfold_chainable_mechanism ~init mechanisms =
          | Shared_ast.Round round ->
              transform_round ~pos round acc )
 
+(* TODO: a lot of factorisation possible here! *)
 and transform_sum ~pos nodes =
   let typ = any_number () ~pos in
   match nodes with
@@ -131,9 +132,8 @@ and transform_all_of ~pos nodes =
   match nodes with
   | [] ->
       mk ~pos ~typ (Const Null)
-  | n :: nodes ->
-      let value = transform_value n in
-      let init = {value with meta= typ} in
+  | nodes ->
+      let init = mk ~pos ~typ (Const (Bool true)) in
       List.fold_right nodes ~init ~f:(fun node acc ->
           mk ~pos
             (Binary_op (Pos.mk ~pos Shared_ast.And, transform_value node, acc)) )
