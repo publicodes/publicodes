@@ -240,9 +240,6 @@ function evaluateNode(
 			}
 		}
 
-		console.log('context')
-		console.dir(newContext, { depth: null })
-
 		return evaluateNode(evalTree, c.value, newContext, params)
 	}
 	throw new RuntimeError('Internal error : Invalid computation')
