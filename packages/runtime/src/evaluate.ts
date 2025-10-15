@@ -16,11 +16,20 @@ export type Context = Record<
 	number | null | undefined | string | boolean
 > & { _global: Record<string, number | null | undefined | string | boolean> }
 
+function get(context: Context, rule: string, params: string[]): Value {
+	if (rule in context) {
+		return context[rule]
+	}
+
+	params.push(rule)
+	return context._global[rule]
+}
+
 function evaluateNode(
 	evalTree: readonly Computation[],
 	i: number,
 	context: Context,
-	params: String[],
+	params: string[],
 ): Value {
 	const c = evalTree[i]
 
@@ -195,17 +204,25 @@ function evaluateNode(
 	if ('date' in c) {
 		return new Date(c.date).valueOf()
 	}
+
+	// -----------------------------
+	// Ref
+	// -----------------------------
+	if ('ref' in c) {
+		if (c.ref in context || c.ref in context._global) {
+			return get(context, c.ref, params)
+		} else {
+			return evaluateNode(evalTree, c.node, context, params)
+		}
+	}
+
 	// -----------------------------
 	// Get context
 	// -----------------------------
 	if ('get' in c) {
-		if (c.get in context) {
-			return context[c.get]
-		}
-
-		params.push(c.get)
-		return context._global[c.get]
+		return get(context, c.get, params)
 	}
+
 	// -----------------------------
 	// Set context
 	// -----------------------------

@@ -69,6 +69,7 @@ export type Computation =
 	| boolean
 	| number
 	| [] // Undefined
+	| { ref: string; node: NodeIndex } // Reference to another rule
 	| { date: string } // Date format like 'YYYY-MM-DD' or 'YYYY-MM'
 	| { get: string } // get value from context
 	| { context: Record<string, NodeIndex>; value: NodeIndex }

@@ -1,7 +1,6 @@
 open Base
 open Utils
-open Shared.Eval_tree
-open Shared.Rule_name
+open Shared
 open Tree
 
 (*
@@ -36,14 +35,14 @@ let json_of_eval_tree_flat (tree : Tree.t) =
         let json_content =
           match value.value with
           | Get_context name ->
-              `Assoc [("get", `String (to_string name))]
+              `Assoc [("get", `String (Rule_name.to_string name))]
           | Set_context {context; value} ->
-              let value_index = resolve_and_get_index value in
+              let value_index = get_or_create_index value in
               let context_indices =
                 List.fold context ~init:[]
                   ~f:(fun acc_context (rule_name, value) ->
-                    let value_index = resolve_and_get_index value in
-                    (to_string (Pos.value rule_name), `Int value_index)
+                    let value_index = get_or_create_index value in
+                    (Rule_name.to_string (Pos.value rule_name), `Int value_index)
                     :: acc_context )
               in
               `Assoc
@@ -70,22 +69,22 @@ let json_of_eval_tree_flat (tree : Tree.t) =
             | Null ->
                 `Null )
           | Condition (cond, then_expr, else_expr) ->
-              let cond_index = resolve_and_get_index cond in
-              let then_index = resolve_and_get_index then_expr in
-              let else_index = resolve_and_get_index else_expr in
+              let cond_index = get_or_create_index cond in
+              let then_index = get_or_create_index then_expr in
+              let else_index = get_or_create_index else_expr in
               `List [`Int cond_index; `Int then_index; `Int else_index]
           | Binary_op ((op, _), left, right) ->
-              let left_index = resolve_and_get_index left in
-              let right_index = resolve_and_get_index right in
+              let left_index = get_or_create_index left in
+              let right_index = get_or_create_index right in
               let op_str = Shared.Shared_ast.binary_op_to_string op in
               `List [`String op_str; `Int left_index; `Int right_index]
           | Unary_op ((op, _), expr) ->
-              let expr_index = resolve_and_get_index expr in
+              let expr_index = get_or_create_index expr in
               let op_str = match op with Neg -> "-" | Is_undef -> "∅" in
               `List [`String op_str; `Int expr_index]
           | Round (rounding, precision, expr) ->
-              let expr_index = resolve_and_get_index expr in
-              let precision_index = resolve_and_get_index precision in
+              let expr_index = get_or_create_index expr in
+              let precision_index = get_or_create_index precision in
               let rounding =
                 match rounding with
                 | Up ->
@@ -100,27 +99,21 @@ let json_of_eval_tree_flat (tree : Tree.t) =
                 ; `String rounding
                 ; `Int precision_index
                 ; `Int expr_index ]
-          | Ref _ ->
-              failwith "Ref case should be handled by resolve_and_get_index"
+          | Ref rule ->
+              let ref_rule_index =
+                get_or_create_index (Base.Hashtbl.find_exn tree rule)
+              in
+              `Assoc
+                [ ("ref", `String (Rule_name.to_string rule))
+                ; ("node", `Int ref_rule_index) ]
         in
         state.nodes <- (current_index, json_content) :: state.nodes ;
         current_index
-  (* Ref inlining: resolve Ref nodes to direct indices of referenced values.
-   * No separate ref nodes in output - parents directly reference children. *)
-  and resolve_and_get_index (value : value) : int =
-    match value.value with
-    | Ref name ->
-        (* Look up the referenced rule and get its value *)
-        let referenced_value = Base.Hashtbl.find_exn tree name in
-        resolve_and_get_index referenced_value
-    | _ ->
-        (* For non-ref values, process normally *)
-        get_or_create_index value
   in
   let rule_to_index =
     Base.Hashtbl.fold tree ~init:[] ~f:(fun ~key:rule ~data acc_rules ->
-        let index = resolve_and_get_index data in
-        (to_string rule, index) :: acc_rules )
+        let index = get_or_create_index data in
+        (Rule_name.to_string rule, index) :: acc_rules )
   in
   let sorted_nodes =
     List.sort state.nodes ~compare:(fun (i1, _) (i2, _) -> Int.compare i1 i2)
