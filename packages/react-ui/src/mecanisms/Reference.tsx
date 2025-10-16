@@ -6,6 +6,7 @@ import { RuleLinkWithContext } from '../RuleLink'
 import { EngineContext } from '../contexts'
 import { NodeValueLeaf } from './common/NodeValueLeaf'
 import { useHideValue } from '../hooks'
+import { Arrow } from '../component/icons/Arrow'
 
 // Un élément du graphe de calcul qui a une valeur interprétée (à afficher)
 export default function Reference(
@@ -33,6 +34,10 @@ export default function Reference(
 		return <Explanation node={engine?.evaluate(rule)} />
 	}
 
+	const buttonTitle = `${
+		folded ? 'Déplier, afficher le détail' : 'Replier, cacher le détail'
+	} pour ${dottedName}`
+
 	return (
 		<div
 			style={{
@@ -50,14 +55,17 @@ export default function Reference(
 					justifyContent: 'space-between',
 				}}
 			>
-				<span style={{ paddingRight: '0.2rem' }}>
+				<span
+					role={isFoldEnabled ? 'heading' : undefined}
+					aria-level={isFoldEnabled ? 2 : undefined}
+					style={{ paddingRight: '0.2rem', margin: 0, display: 'inline' }}
+				>
 					<RuleLinkWithContext dottedName={dottedName} />
 				</span>
 
 				<div
 					style={{
 						flex: 1,
-
 						display: 'flex',
 						alignItems: 'baseline',
 					}}
@@ -68,13 +76,10 @@ export default function Reference(
 								onClick={() => setFolded(!folded)}
 								aria-expanded={!folded}
 								className="publicodes_btn-small"
-								aria-label={
-									folded ?
-										'Déplier, afficher le détail'
-									:	'Replier, afficher le détail'
-								}
+								aria-label={buttonTitle}
+								title={buttonTitle}
 							>
-								{folded ? 'Déplier' : 'Replier'}
+								{folded ? 'Déplier' : 'Replier'} <StyledArrow $open={!folded} />
 							</UnfoldButton>
 							<StyledGuide />
 						</>
@@ -100,6 +105,14 @@ export const UnfoldIsEnabledContext = createContext<boolean>(false)
 
 const UnfoldButton = styled.button`
 	text-transform: none !important;
+	border: solid 1px black;
+	border-radius: 4px;
+	padding: 2px 4px;
+	margin-left: 4px;
+	font-size: 14px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
 `
 const StyledGuide = styled.div`
 	@media (max-width: 500px) {
@@ -108,4 +121,12 @@ const StyledGuide = styled.div`
 	margin: 0.5rem;
 	flex: 1;
 	border-bottom: 2px dotted lightgray;
+`
+
+const StyledArrow = styled(Arrow)<{ $open: boolean }>`
+	width: 12px;
+	height: 12px;
+	transition: transform 0.1s;
+	margin-left: 4px;
+	transform: rotate(${({ $open }) => ($open ? '-180deg' : '0deg')});
 `

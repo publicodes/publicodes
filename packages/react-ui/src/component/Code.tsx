@@ -50,13 +50,13 @@ export const Code = ({ tabs }: CodeProps) => {
 		<PreWrapper>
 			<Bar>
 				{typeof navigator !== 'undefined' && navigator.clipboard && (
-					<button
+					<CopyButton
 						onClick={() => {
 							void navigator.clipboard.writeText(tabs[activeTab])
 						}}
 					>
-						copier
-					</button>
+						Copier
+					</CopyButton>
 				)}
 				{tabKeys.length > 1 &&
 					tabKeys
@@ -73,3 +73,8 @@ export const Code = ({ tabs }: CodeProps) => {
 		</PreWrapper>
 	)
 }
+
+const CopyButton = styled.button`
+	color: white;
+	margin-right: 8px;
+`

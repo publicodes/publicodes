@@ -50,6 +50,7 @@ export default function RulePage({
 	showDevSection = true,
 	rulesToHide,
 	displayIcon = true,
+	mainContentId,
 }: {
 	/**
 	 * The base path on which the documentation will be mounted. For example, if it is /documentation, the URL of the rule remuneration.primes will be /documentation/remuneration/primes.
@@ -109,6 +110,11 @@ export default function RulePage({
 	 * Whether to display an icon next to the rule links.
 	 */
 	displayIcon?: boolean
+	/**
+	 * Define a custom id for the main content in order to be able to focus
+	 * it with a skip link i.e.
+	 */
+	mainContentId?: string
 }) {
 	const currentEngineId =
 		typeof window !== 'undefined' &&
@@ -144,6 +150,7 @@ export default function RulePage({
 							npmPackage={npmPackage}
 							mobileMenuPortalId={mobileMenuPortalId}
 							openNavButtonPortalId={openNavButtonPortalId}
+							mainContentId={mainContentId}
 						/>
 					</DisplayOptionsContext.Provider>
 				</RenderersContext.Provider>
@@ -155,6 +162,7 @@ export default function RulePage({
 type RuleProps = {
 	dottedName: string
 	subEngineId?: number
+	mainContentId?: string
 } & Pick<
 	ComponentProps<typeof RulePage>,
 	| 'language'
@@ -174,11 +182,13 @@ function Rule({
 	npmPackage,
 	mobileMenuPortalId,
 	openNavButtonPortalId,
+	mainContentId,
 }: RuleProps) {
 	const baseEngine = useEngine()
 	const hideValue = useHideValue(dottedName)
 	const { showDevSection } = useContext(DisplayOptionsContext)
 	const { References, Text } = useContext(RenderersContext)
+
 	const subEngines = baseEngine.context.subEngines
 	const useSubEngine = subEngineId && subEngines.has(subEngineId)
 	const engine =
@@ -212,7 +222,11 @@ function Rule({
 					mobileMenuPortalId={mobileMenuPortalId}
 					openNavButtonPortalId={openNavButtonPortalId}
 				/>
-				<Article>
+				<Article
+					id={mainContentId}
+					tabIndex={mainContentId ? -1 : undefined}
+					role={mainContentId ? 'main' : undefined}
+				>
 					<DottedNameContext.Provider value={dottedName}>
 						<RuleHeader dottedName={dottedName} />
 						<section>
@@ -287,7 +301,7 @@ function Rule({
 
 						{rule.rawNode.note && (
 							<>
-								<h3>Note</h3>
+								<h2>Note</h2>
 								<div>
 									<Text>{rule.rawNode.note}</Text>
 								</div>
@@ -296,7 +310,7 @@ function Rule({
 
 						{references && (
 							<>
-								<h3>Références</h3>
+								<h2>Références</h2>
 								{references}
 							</>
 						)}
@@ -304,11 +318,11 @@ function Rule({
 
 						{showDevSection && (
 							<>
-								<h3>Informations techniques</h3>
+								<h2>Informations techniques</h2>
 								<Text>
 									Si vous êtes développeur/euse vous trouverez ci-dessous des
-									informations techniques utiles pour l’intégration de cette
-									règle dans votre application.
+									informations techniques utiles pour l&apos;intégration de
+									cette règle dans votre application.
 								</Text>
 								<DeveloperAccordion
 									engine={engine}
