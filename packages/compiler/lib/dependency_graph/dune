@@ -1,0 +1,7 @@
+(library
+ (inline_tests)
+ (name dependency_graph)
+ (libraries base hashed_tree ocamlgraph utils shared)
+ (modules :standard)
+ (preprocess
+  (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

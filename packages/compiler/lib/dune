@@ -1,0 +1,17 @@
+(library
+ (inline_tests)
+ (name compiler)
+ (libraries
+  yaml
+  base
+  utils
+  parser
+  resolver
+  typed_tree
+  hashed_tree
+  yaml_parser
+  dependency_graph
+  replacements)
+ (modules :standard)
+ (preprocess
+  (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

@@ -1,0 +1,10 @@
+debug:
+  contexte:
+    "entreprise . chiffre d'affaires . BIC": 0
+    "entreprise . chiffre d'affaires . service BIC": 10000
+    "entreprise . chiffre d'affaires . service BNC": 0
+    "entreprise . chiffre d'affaires . vente restauration hébergement": 0
+    "entreprise . activité . nature": "libérale"
+    "entreprise . activité . nature . libérale . réglementée": "non"
+    date: "20/05/2025"
+    "dirigeant . auto-entrepreneur . Cipav . adhérent": "non"

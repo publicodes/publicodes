@@ -1,0 +1,84 @@
+# .github/actions/build_compiler/action.yaml
+#
+# Needs to be run with :
+#
+#   permissions:
+#     contents: read
+#     id-token: write
+#     attestations: write
+
+name: 'Build Compiler'
+description: 'Builds the OCaml compiler for multiple platforms'
+inputs:
+  compiler-path:
+    description: 'Compiler directory'
+    required: true
+    default: 'packages/compiler'
+  platform:
+    description: 'The name of the platform to compile to'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Restore cached build
+      id: cache-build-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ inputs.compiler-path }}/_build
+        key: ${{ inputs.platform }}-${{ hashFiles(
+          format('{0}/**/*',  inputs.compiler-path),
+          format('!{0}/_build/**/*',  inputs.compiler-path)
+          ) }}-build
+
+    - name: Set-up OCaml
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
+      uses: ocaml/setup-ocaml@v3
+      with:
+        ocaml-compiler: 5
+        dune-cache: true
+
+    - name: Install dependencies
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
+      run: opam install . --deps-only --with-test
+      shell: bash
+      working-directory: ${{ inputs.compiler-path }}
+
+    - name: Build
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
+      run: opam exec -- dune build
+      shell: bash
+      working-directory: ${{ inputs.compiler-path }}
+
+    - name: Run tests
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
+      run: |
+        opam exec -- dune runtest ;
+        opam exec -- dune test
+      shell: bash
+      working-directory: ${{ inputs.compiler-path }}
+
+    - name: Rename executable
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
+      run: |
+        mv  ./_build/install/default/bin/publicodes  ./_build/install/default/bin/publicodes-${{ inputs.platform }}${{ inputs.platform == 'windows' && '.exe' || '' }}
+      shell: bash
+      working-directory: ${{ inputs.compiler-path }}
+
+    - name: Save cached build
+      id: cache-build-save
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ inputs.compiler-path }}/_build
+        key: ${{ steps.cache-build-restore.outputs.cache-primary-key }}
+
+    - name: Generate artifact attestation
+      uses: actions/attest-build-provenance@v3
+      with:
+        subject-path: ${{ inputs.compiler-path }}/_build/install/default/bin/
+
+    - name: Upload the build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: publicodes-${{ inputs.platform }}
+        path: ${{ inputs.compiler-path }}/_build/install/default/bin/
