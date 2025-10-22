@@ -63,7 +63,7 @@ class RuntimeError extends Error {
  * - ∀ x. add(null, null) = 0
  * - ∀ x, y. add(x, y) = x + y
  */
-function add(l, r) {
+function $add(l, r) {
 	if (l === undefined || r === undefined) {
 		return undefined
 	}
@@ -84,7 +84,7 @@ function add(l, r) {
  * - ∀ x. sub(null, x) = -x
  * - ∀ x, y. sub(x, y) = x - y
  */
-function sub(l, r) {
+function $sub(l, r) {
 	if (l === undefined || r === undefined) {
 		return undefined
 	}
@@ -103,7 +103,7 @@ function sub(l, r) {
  * - ∀ x. mul(undefined, x) = mul(x, undefined) = undefined
  * - ∀ x. mul(null, x) = mul(x, null) = null
  */
-function mul(l, right) {
+function $mul(l, right) {
 	if (l === 0) {
 		return 0
 	}
@@ -135,7 +135,7 @@ function mul(l, right) {
  * - ∀ x. div(null, x) = div(x, null) = null
  * - ∀ x, y. div(x, y) = x / y
  */
-function div(l, right) {
+function $div(l, right) {
 	if (l === 0) {
 		return 0
 	}
@@ -169,7 +169,7 @@ function div(l, right) {
  * - ∀ x. pow(x, null) = pow(null, x) = null
  * - ∀ x, y. pow(x, y) = x ** y
  */
-function pow(l, right) {
+function $pow(l, right) {
 	if (l === 0) {
 		return 0
 	}
@@ -198,7 +198,7 @@ function pow(l, right) {
  * - ∀ x. eq(undefined, x) = eq(x, undefined) = undefined
  * - ∀ x, y. eq(x, y) = x === y
  */
-function eq(l, r) {
+function $eq(l, r) {
 	if (l === undefined || r === undefined) {
 		return undefined
 	}
@@ -216,7 +216,7 @@ function eq(l, r) {
  * - ∀ x. neq(undefined, x) = neq(x, undefined) = undefined
  * - ∀ x, y. neq(x, y) = x !== y
  */
-function neq(l, r) {
+function $neq(l, r) {
 	if (l === undefined || r === undefined) {
 		return undefined
 	}
@@ -235,7 +235,7 @@ function neq(l, r) {
  * - ∀ x. lt(undefined, x) = lt(x, undefined) = undefined
  * - ∀ x, y. lt(x, y) = x < y
  */
-function lt(l, right) {
+function $lt(l, right) {
 	if (l === null) {
 		return null
 	}
@@ -259,7 +259,7 @@ function lt(l, right) {
  * - ∀ x. gt(undefined, x) = gt(x, undefined) = undefined
  * - ∀ x, y. lt(x, y) = x > y
  */
-function gt(l, right) {
+function $gt(l, right) {
 	if (l === null) {
 		return null
 	}
@@ -283,7 +283,7 @@ function gt(l, right) {
  * - ∀ x. lte(undefined, x) = lte(x, undefined) = undefined
  * - ∀ x, y. lte(x, y) = x <= y
  */
-function lte(l, right) {
+function $lte(l, right) {
 	if (l === null) {
 		return null
 	}
@@ -307,7 +307,7 @@ function lte(l, right) {
  * - ∀ x. gte(undefined, x) = gte(x, undefined) = undefined
  * - ∀ x, y. gte(x, y) = x <= y
  */
-function gte(l, right) {
+function $gte(l, right) {
 	if (l === null) {
 		return null
 	}
@@ -332,7 +332,7 @@ function gte(l, right) {
  * - ∀ x. and(null, x) = and(x, null) = false
  * - ∀ x, y. and(x, y) = x && y
  */
-function and(l, right) {
+function $and(l, right) {
 	if (l === null || l === false) {
 		return false
 	}
@@ -362,7 +362,7 @@ function and(l, right) {
  * - ∀ x. or(null, x) = or(x, null) = x
  * - ∀ x, y. or(x, y) = x || y
  */
-function or(l, right) {
+function $or(l, right) {
 	if (l === true) {
 		return true
 	}
@@ -395,7 +395,7 @@ function or(l, right) {
  * 2. ∀ x. neg(null) = 0
  * 3. ∀ x. neg(x) = -x
  */
-function neg(val) {
+function $neg(val) {
 	if (val === undefined) {
 		return undefined
 	}
@@ -422,7 +422,7 @@ function neg(val) {
  *    - if mode = 'down', round towards the nearest multiple of p less than or equal to x
  *    - if mode = 'nearest', round to the nearest multiple of p
  */
-function round(mode, val, precision) {
+function $round(mode, val, precision) {
 	if (val === null) {
 		return val
 	}
@@ -466,7 +466,7 @@ function round(mode, val, precision) {
  * - ∀ x. min(x, null) = min(null, x) = x
  * - ∀ x, y. min(x, y) = the minimum value between x and y
  */
-function min(left, right) {
+function $min(left, right) {
 	if (left === undefined) {
 		return undefined
 	}
@@ -493,7 +493,7 @@ function min(left, right) {
  * - ∀ x. max(x, null) = max(null, x) = x
  * - ∀ x, y. max(x, y) = the max value between x and y
  */
-function max(left, right) {
+function $max(left, right) {
 	if (left === undefined) {
 		return undefined
 	}
@@ -522,7 +522,7 @@ function max(left, right) {
  * - ∀ x, y. cond(true, x, y) = x
  * - ∀ x, y. cond(false, x, y) = y
  */
-function cond(c, ifTrue, ifFalse) {
+function $cond(c, ifTrue, ifFalse) {
 	if (c === undefined) {
 		return undefined
 	}
@@ -534,7 +534,7 @@ function cond(c, ifTrue, ifFalse) {
 	return c ? ifTrue() : ifFalse()
 }
 
-function get(rule, ctx, params) {
+function $get(rule, ctx, params) {
 	if (rule in ctx) {
 		return ctx[rule]
 	}
@@ -543,7 +543,15 @@ function get(rule, ctx, params) {
 	return ctx._global[rule]
 }
 
-function evaluate(fn, _global) {
+function $ref(rule, fn, ctx, params) {
+	if (rule in ctx || rule in ctx._global) {
+		return $get(rule, ctx, params)
+	}
+
+	return fn(ctx, params)
+}
+
+function $evaluate(fn, _global) {
 	const params = []
 	const value = fn({ _global }, params)
 	const needed = Array.from(new Set(params))

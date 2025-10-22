@@ -2,37 +2,55 @@ open Base
 open Shared
 open Shared.Eval_tree
 
+(* Convert a Publicodes rule name to a valid snake_case JavaScript identifier *)
+let rulename_to_snakecase (rule_name : Rule_name.t) : string =
+  Rule_name.to_string rule_name
+  |> String.substr_replace_all ~pattern:" " ~with_:"_"
+  |> String.substr_replace_all ~pattern:"." ~with_:"_"
+  |> String.substr_replace_all ~pattern:"'" ~with_:"_"
+  |> String.substr_replace_all ~pattern:"’" ~with_:"_"
+  |> String.substr_replace_all ~pattern:"-" ~with_:"_"
+  |> String.substr_replace_all ~pattern:"«" ~with_:"_"
+  |> String.substr_replace_all ~pattern:"»" ~with_:"_"
+  |> String.substr_replace_all ~pattern:"\"" ~with_:"_"
+  |> String.substr_replace_all ~pattern:"°" ~with_:"_deg"
+  |> String.substr_replace_all ~pattern:"€" ~with_:"_euro"
+  |> String.substr_replace_all ~pattern:"%" ~with_:"_pct"
+  |> String.substr_replace_all ~pattern:"²" ~with_:"_sq"
+  |> String.substr_replace_all ~pattern:"$" ~with_:"_dollar"
+  |> String.uncapitalize
+
 let binary_op_to_js : Shared.Shared_ast.binary_op -> string = function
   | Shared.Shared_ast.Add ->
-      "add"
+      "$add"
   | Sub ->
-      "sub"
+      "$sub"
   | Mul ->
-      "mul"
+      "$mul"
   | Div ->
-      "div"
+      "$div"
   | Pow ->
-      "pow"
+      "$pow"
   | Eq ->
-      "eq"
+      "$eq"
   | NotEq ->
-      "neq"
+      "$neq"
   | Lt ->
-      "lt"
+      "$lt"
   | Gt ->
-      "gt"
+      "$gt"
   | GtEq ->
-      "gte"
+      "$gte"
   | LtEq ->
-      "lte"
+      "$lte"
   | And ->
-      "and"
+      "$and"
   | Or ->
-      "or"
+      "$or"
   | Min ->
-      "min"
+      "$min"
   | Max ->
-      "max"
+      "$max"
 
 let date_to_js = function
   | Eval_tree.Date (Day {day; month; year}) ->
@@ -79,11 +97,11 @@ let rec value_to_js ({value; _} : Tree.value) : string =
         | Down ->
             "'down'"
       in
-      Printf.sprintf "round(%s, %s, () => %s)" rounding_mode (value_to_js value)
-        (value_to_js precision)
+      Printf.sprintf "$round(%s, %s, () => %s)" rounding_mode
+        (value_to_js value) (value_to_js precision)
   | Condition (cond, then_comp, else_comp) ->
       (* FIXME: test aren't iso with the interpreter*)
-      Printf.sprintf "cond(%s, () => %s, () => %s)" (value_to_js cond)
+      Printf.sprintf "$cond(%s, () => %s, () => %s)" (value_to_js cond)
         (value_to_js then_comp) (value_to_js else_comp)
   | Binary_op ((op, _), left, right) ->
       Printf.sprintf "%s(%s, %s %s)" (binary_op_to_js op) (value_to_js left)
@@ -94,9 +112,11 @@ let rec value_to_js ({value; _} : Tree.value) : string =
   | Unary_op ((Is_undef, _), comp) ->
       Printf.sprintf "(%s === undefined)" (value_to_js comp)
   | Ref rule_name ->
-      Printf.sprintf "this.ref(\"%s\", ctx)" (Rule_name.to_string rule_name)
+      Printf.sprintf "$ref(\"%s\", _%s, ctx, params)"
+        (Rule_name.to_string rule_name)
+        (rulename_to_snakecase rule_name)
   | Get_context rule_name ->
-      Printf.sprintf "this.get(\"%s\", ctx)"
+      Printf.sprintf "$get(\"%s\", ctx, params)"
         (Shared.Rule_name.to_string rule_name)
   | Set_context {context; value} ->
       let context_str =
@@ -109,7 +129,7 @@ let rec value_to_js ({value; _} : Tree.value) : string =
       Printf.sprintf "((ctx) => %s)({ ...ctx, %s })" (value_to_js value)
         context_str
 
-let rule_is_constant (_params : Shared.Model_outputs.t) _name rule =
+let _rule_is_constant (_params : Shared.Model_outputs.t) _name rule =
   let rec needs_ctx {value; _} =
     match value with
     | Eval_tree.Ref _ | Get_context _ | Set_context _ ->
@@ -157,26 +177,36 @@ let params_to_d_ts (tree : Tree.t) (outputs : Shared.Model_outputs.t) : string =
         type_info parameters )
   |> String.concat ~sep:",\n"
 
-let to_js ~(eval_tree : Tree.t) ~outputs =
+let to_js ~(hashed_tree : Tree.t) ~outputs =
+  let hashed_tree = Optim_exprfacto.compress hashed_tree in
   let rules =
-    Base.Hashtbl.fold eval_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
-        let rule_name = Shared.Rule_name.to_string rule in
+    Base.Hashtbl.fold hashed_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
+        let rule_name = rulename_to_snakecase rule in
         let rule_data =
-          ( if rule_is_constant outputs rule data then Printf.sprintf "%s"
-            else Printf.sprintf "(ctx) => %s" )
-            (value_to_js data)
+          (* ( if rule_is_constant outputs rule data then Printf.sprintf "%s" *)
+          (*   else Printf.sprintf "(ctx) => %s" ) *)
+          value_to_js data
         in
         (rule_name, rule_data) :: acc )
   in
   let rules_str =
-    String.concat ~sep:",\n"
+    String.concat ~sep:"\n\n"
       (List.map rules ~f:(fun (rule_name, rule_data) ->
            (* let params_str = params_to_js rule_name params in *)
-           Printf.sprintf "\"%s\": %s" rule_name (* params_str *) rule_data ) )
+           Printf.sprintf "function _%s(ctx, params) {\n  return %s \n}"
+             rule_name (* params_str *) rule_data ) )
   in
+  (* let _outputs_str = *)
+  (*   `Assoc (Outputs_to_json.outputs_to_json outputs) *)
+  (*   |> Yojson.Safe.pretty_to_string *)
+  (* in *)
   let outputs_str =
-    `Assoc (Outputs_to_json.outputs_to_json outputs)
-    |> Yojson.Safe.pretty_to_string
+    String.concat ~sep:"\n\n"
+      (List.map outputs ~f:(fun Model_outputs.{rule_name; _} ->
+           let rule_js_name = rulename_to_snakecase rule_name in
+           Printf.sprintf
+             "export function %s(params = {}) { return evaluate(_%s, params); }"
+             rule_js_name rule_js_name ) )
   in
   let index_js =
     Printf.sprintf
@@ -188,82 +218,15 @@ let to_js ~(eval_tree : Tree.t) ~outputs =
 
 /** End embedded runtime */
 
-export default class Engine {
-	traversedParameters = new Set()
-	parameters = {}
-	cache
+/** Compiled Publicodes rules */
 
-	static outputs = %s
-
-	constructor(cache = false) {
-		this.cache = cache ? {} : null
-	}
-
-	getMeta(ruleName) {
-		return Engine.outputs[ruleName]?.meta
-	}
-
-	getType(ruleName) {
-		return Engine.outputs[ruleName]?.type
-	}
-
-	evaluate(ruleName, ctx = {}) {
-		this.traversedParameters = new Set()
-		this.parameters = ctx
-
-    const value = this.ref(ruleName, {})
-		const traversedParameters = Array.from(this.traversedParameters)
-		const missingParameters = traversedParameters.filter(
-			(param) => !(param in this.parameters),
-		)
-
-		return {
-			value,
-			neededParameters: traversedParameters,
-			missingParameters,
-		}
-	}
-
-	get(rule, ctx) {
-		if (rule in ctx) {
-			return ctx[rule]
-		}
-
-		this.traversedParameters.add(rule)
-		return this.parameters[rule]
-	}
-
-	ref(rule, ctx = {}) {
-		if (rule in this.parameters || rule in ctx) {
-			return this.get(rule, ctx)
-		}
-
-		const f = this.rules[rule]
-		if (typeof f !== 'function') {
-			return f
-		}
-
-		if (this.cache) {
-			const cache = this.cache[rule] ?? new WeakMap()
-
-			if (cache.has(ctx)) {
-				return cache.get(ctx)
-			}
-			const value = f(ctx)
-			cache.set(ctx, value)
-			this.cache[rule] = cache
-			return value
-		}
-
-		return f(ctx)
-	}
-
-	rules = {
 %s
-	}
-}
+
+/** Exported functions */
+
+%s
 |}
-      Js_runtime.runtime outputs_str rules_str
+      Js_runtime.runtime rules_str outputs_str
   in
   let index_d_ts =
     Printf.sprintf
@@ -290,6 +253,6 @@ export type Evaluation<R extends Inputs> = {
 }
 
 export type Context = { %s }|}
-      (params_to_d_ts eval_tree outputs)
+      (params_to_d_ts hashed_tree outputs)
   in
   (index_js, index_d_ts)
