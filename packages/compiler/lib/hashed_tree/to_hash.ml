@@ -1,6 +1,8 @@
 open Base
 open Shared
 
+(** FIXME: it's strange to have a [t] type here where the module name implies a
+		transformation. Maybe rename the module to [Hash]? *)
 type t = string [@@deriving equal, compare, show, sexp]
 
 let hash = String.hash

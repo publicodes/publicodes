@@ -1,14 +1,18 @@
-open Base
+(** FIXME: not working *)
 
+open Base
 
 (** Set implementation for rule names *)
 module Rule_name : sig
   module T : sig
     type t [@@deriving equal, compare, show, sexp]
+
     val hash : t -> int
   end
+
   include module type of T
-  include module type of Comparable.Make(T)
+
+  include module type of Comparable.Make (T)
 end
 
 include module type of Rule_name.T
@@ -17,8 +21,13 @@ module Set : module type of Set.M (Rule_name)
 
 (** Hashtable implementation for rule names *)
 module Hashtbl : sig
-	include module type of Hashtbl.M (Rule_name)
-  val pp : (Stdlib.Format.formatter -> 'a -> unit) -> Stdlib.Format.formatter -> 'a t -> unit
+  include module type of Hashtbl.M (Rule_name)
+
+  val pp :
+       (Stdlib.Format.formatter -> 'a -> unit)
+    -> Stdlib.Format.formatter
+    -> 'a t
+    -> unit
 end
 
 val create_exn : string list -> t
@@ -36,3 +45,8 @@ val to_string : t -> string
 
 val resolve : rule_names:Set.t -> current:t -> string list -> t option
 (** Resolve a rule name relative to the current rule name *)
+
+val make_reserved : string -> t
+(** [make_reserved name] creates a reserved rule name from [name]. Reserved
+		rule names are only used for internal representation and should not collide
+		with user-defined rule names. *)

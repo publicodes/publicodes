@@ -188,6 +188,8 @@ let to_js ~(hashed_tree : Tree.t) ~outputs =
           value_to_js data
         in
         (rule_name, rule_data) :: acc )
+    |> List.sort ~compare:(fun (name1, _) (name2, _) ->
+           String.compare name1 name2 )
   in
   let rules_str =
     String.concat ~sep:"\n\n"
@@ -201,12 +203,12 @@ let to_js ~(hashed_tree : Tree.t) ~outputs =
   (*   |> Yojson.Safe.pretty_to_string *)
   (* in *)
   let outputs_str =
-    String.concat ~sep:"\n\n"
+    String.concat ~sep:",\n"
       (List.map outputs ~f:(fun Model_outputs.{rule_name; _} ->
            let rule_js_name = rulename_to_snakecase rule_name in
-           Printf.sprintf
-             "export function %s(params = {}) { return evaluate(_%s, params); }"
-             rule_js_name rule_js_name ) )
+           Printf.sprintf "\"%s\": (params = {}) => $evaluate(_%s, params)"
+             (Rule_name.to_string rule_name)
+             rule_js_name ) )
   in
   let index_js =
     Printf.sprintf
@@ -224,7 +226,9 @@ let to_js ~(hashed_tree : Tree.t) ~outputs =
 
 /** Exported functions */
 
+export const rules = {
 %s
+}
 |}
       Js_runtime.runtime rules_str outputs_str
   in
