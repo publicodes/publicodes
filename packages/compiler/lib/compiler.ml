@@ -41,7 +41,7 @@ let to_js ~ast ~eval_tree =
     Dependency_graph.cycle_check eval_tree
     >>= Dependency_graph.extract_outputs ~ast ~eval_tree
   in
-  return (Hashed_tree.to_js ~eval_tree ~outputs)
+  return (Hashed_tree.to_js ~hashed_tree:eval_tree ~outputs)
 
 let compile ~input_files ~output_type ~default_to_public =
   let open Output in
