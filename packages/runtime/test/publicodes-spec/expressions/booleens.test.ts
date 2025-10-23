@@ -7,7 +7,7 @@ describe('Expressions > booléens', () => {
 	beforeAll(async () => {
 		engine = await yaml`
 a: oui
-négation: a != oui
+négation: a = non
 paramètre:
   type: booléen
 `
