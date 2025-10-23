@@ -178,7 +178,7 @@ let params_to_d_ts (tree : Tree.t) (outputs : Shared.Model_outputs.t) : string =
   |> String.concat ~sep:",\n"
 
 let to_js ~(hashed_tree : Tree.t) ~outputs =
-  let hashed_tree = Optim_exprfacto.compress hashed_tree in
+  (* let hashed_tree = Optim_exprfacto.compress hashed_tree in *)
   let rules =
     Base.Hashtbl.fold hashed_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
         let rule_name = rulename_to_snakecase rule in
@@ -206,7 +206,8 @@ let to_js ~(hashed_tree : Tree.t) ~outputs =
     String.concat ~sep:",\n"
       (List.map outputs ~f:(fun Model_outputs.{rule_name; _} ->
            let rule_js_name = rulename_to_snakecase rule_name in
-           Printf.sprintf "\"%s\": (params = {}) => $evaluate(_%s, params)"
+           Printf.sprintf
+             {|"%s": (params = {}, cache = false) => $evaluate(_%s, params, cache)|}
              (Rule_name.to_string rule_name)
              rule_js_name ) )
   in

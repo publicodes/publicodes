@@ -548,12 +548,24 @@ function $ref(rule, fn, ctx, params) {
 		return $get(rule, ctx, params)
 	}
 
+	if (ctx._cache) {
+		const cache = ctx._cache[rule] ?? new WeakMap()
+
+		if (cache.has(ctx)) {
+			return cache.get(ctx)
+		}
+		const value = fn(ctx, params)
+		cache.set(ctx, value)
+		ctx._cache[rule] = cache
+		return value
+	}
+
 	return fn(ctx, params)
 }
 
-function $evaluate(fn, _global) {
+function $evaluate(fn, _global, cache) {
 	const params = []
-	const value = fn({ _global }, params)
+	const value = fn({ _global, ...(cache ? { _cache: {} } : {}) }, params)
 	const needed = Array.from(new Set(params))
 	const missing = needed.filter((p) => !(p in _global))
 
