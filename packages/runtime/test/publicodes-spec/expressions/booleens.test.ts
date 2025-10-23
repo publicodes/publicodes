@@ -2,10 +2,10 @@ import { describe, it, expect, beforeAll } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Expressions > booléens', () => {
-	let engine: TestPublicodes
+	let rules: TestPublicodes
 
 	beforeAll(async () => {
-		engine = await yaml`
+		rules = await yaml`
 a: oui
 négation: a = non
 paramètre:
@@ -14,21 +14,17 @@ paramètre:
 	})
 
 	it('constante', () => {
-		expect(engine.evaluate('a').value).toEqual(true)
-		expect(engine.getType('a')).toHaveProperty('boolean')
+		expect(rules.a.evaluate()).toEqual(true)
+		expect(rules.a.type).toBe('boolean')
 	})
 
 	it('paramètre', () => {
-		expect(engine.evaluate('paramètre', { paramètre: true }).value).toEqual(
-			true,
-		)
-		expect(engine.evaluate('paramètre', { paramètre: false }).value).toEqual(
-			false,
-		)
+		expect(rules.paramètre.evaluate({ paramètre: true })).toBe(true)
+		expect(rules.paramètre.evaluate({ paramètre: false })).toBe(false)
 	})
 
 	it('négation', () => {
-		expect(engine.evaluate('négation').value).toEqual(false)
-		expect(engine.getType('négation')).toHaveProperty('boolean')
+		expect(rules.négation.evaluate()).toBe(false)
+		expect(rules.négation.type).toBe('boolean')
 	})
 })

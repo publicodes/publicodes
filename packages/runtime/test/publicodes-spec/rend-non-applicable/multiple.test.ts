@@ -2,9 +2,10 @@ import { describe, it, expect, beforeAll } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Rend non applicable > multiple', () => {
-	let engine: TestPublicodes
+	let x: TestPublicodes[string]
 	beforeAll(async () => {
-		engine = await yaml`
+		x = (
+			await yaml`
 a:
   rend non applicable: c
 
@@ -13,22 +14,18 @@ b:
 c:
 x: c
 `
+		).x
 	})
 	it('tous applicable', () => {
-		expect(
-			engine.evaluate('x', {
-				a: true,
-				b: true,
-			}).value,
-		).toBe(null)
+		expect(x.evaluate({ a: true, b: true })).toBe(null)
 	})
 
 	it('un seul applicable', () => {
-		expect(engine.evaluate('x', { a: true }).value).toBe(null)
-		expect(engine.evaluate('x', { b: true }).value).toBe(null)
+		expect(x.evaluate({ a: true })).toBe(null)
+		expect(x.evaluate({ b: true })).toBe(null)
 	})
 
 	it('aucun applicable', () => {
-		expect(engine.evaluate('x', { a: false, b: false }).value).toBe(undefined)
+		expect(x.evaluate({ a: false, b: false })).toBe(undefined)
 	})
 })

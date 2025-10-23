@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'bun:test'
+import { describe, test, expect, beforeAll } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe("Mécanisme > arrondi à l'inférieur", () => {
@@ -24,7 +24,7 @@ describe("Mécanisme > arrondi à l'inférieur", () => {
 à 5 décimales:
   valeur: 38.4167
   arrondi à l'inférieur: 5 décimales
-		`
+`
 	})
 
 	test.each([
@@ -34,16 +34,14 @@ describe("Mécanisme > arrondi à l'inférieur", () => {
 		['à 0.5 près', 38.0],
 		['à 5 décimales', 38.4167],
 	])('%s', (name, expected) => {
-		const result = engine.evaluate(name)
-		expect(result.value).toBe(expected)
+		expect(engine[name].evaluate()).toBe(expected)
 	})
 
 	test("s'applique au contexte", async () => {
-		const engine = await yaml`
+		const { a } = await yaml`
 a:
   arrondi à l'inférieur: oui
 `
-		const result = engine.evaluate('a', { a: 1.7 })
-		expect(result.value).toEqual(1)
+		expect(a.evaluate({ a: 1.7 })).toEqual(1)
 	})
 })

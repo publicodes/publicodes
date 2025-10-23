@@ -23,32 +23,23 @@ arrondi à 0.5 près:
   arrondi: 0.5
 `
 		})
-		test("arrondi à l'unité", () => {
-			const result = engine.evaluate("arrondi à l'unité")
-			expect(result.value).toEqual(33)
-		})
 
-		test('arrondi à 2 décimales', () => {
-			const result = engine.evaluate('arrondi à 2 décimales')
-			expect(result.value).toEqual(33.42)
-		})
-
-		test('arrondi à la dizaine', () => {
-			const result = engine.evaluate('arrondi à la dizaine')
-			expect(result.value).toEqual(30)
-		})
-
-		test('arrondi à 0.5 près', () => {
-			const result = engine.evaluate('arrondi à 0.5 près')
-			expect(result.value).toEqual(33.5)
+		test.each([
+			["arrondi à l'unité", 33],
+			['arrondi à 2 décimales', 33.42],
+			['arrondi à la dizaine', 30],
+			['arrondi à 0.5 près', 33.5],
+		])('%s', (name, expected) => {
+			expect(engine[name].evaluate()).toBe(expected)
 		})
 	})
 
 	describe('arrondi avec valeur dynamique en décimales', () => {
-		let engine: TestPublicodes
+		let a: TestPublicodes[string]
 
 		beforeAll(async () => {
-			engine = await yaml`
+			a = (
+				await yaml`
 a:
   valeur: 12.458 %
   arrondi: b
@@ -56,26 +47,27 @@ a:
 b:
   unité: décimales
 `
+			).a
 		})
 
 		test('arrondi à 0 décimales', () => {
-			expect(engine.evaluate('a', { b: 0 }).value).toEqual(12)
+			expect(a.evaluate({ b: 0 })).toBe(12)
 		})
 
 		test('arrondi à 5 décimales', () => {
-			expect(engine.evaluate('a', { b: 5 }).value).toEqual(12.458)
-			expect(engine.getType('a').unit).toBe('%')
+			expect(a.evaluate({ b: 5 })).toBe(12.458)
+			expect(a.unit).toBe('%')
 		})
 
 		test('arrondi à -1 décimales', () => {
-			expect(engine.evaluate('a', { b: -1 }).value).toEqual(10)
+			expect(a.evaluate({ b: -1 })).toBe(10)
 		})
 	})
 
 	describe('arrondi avec valeur dynamique sans unité', () => {
-		let engine: TestPublicodes
+		let rules: TestPublicodes
 		beforeAll(async () => {
-			engine = await yaml`
+			rules = await yaml`
 a:
   valeur: 13.458 %
   arrondi: b
@@ -87,33 +79,31 @@ b:
 		})
 
 		test('arrondi à 0 (erreur)', () => {
-			expect(() => engine.evaluate('a', { b: 0 })).toThrowError(
-				'Rounding error',
-			)
+			expect(() => rules.a.evaluate({ b: 0 })).toThrowError('Rounding error')
 		})
 
 		test('arrondi à 5 près', () => {
-			expect(engine.evaluate('a', { b: 5 }).value).toEqual(15)
+			expect(rules.a.evaluate({ b: 5 })).toBe(15)
 		})
 
 		test('arrondi à 10 près', () => {
-			expect(engine.evaluate('a', { b: 10 }).value).toEqual(10)
+			expect(rules.a.evaluate({ b: 10 })).toBe(10)
 		})
 
 		test('arrondi à 0.005 près', () => {
-			expect(engine.evaluate('a', { b: 0.005 }).value).toEqual(13.46)
+			expect(rules.a.evaluate({ b: 0.005 })).toBe(13.46)
 		})
 	})
 
 	describe('cas spéciaux', () => {
 		test('arrondi avec beaucoup de précision', async () => {
-			const engine = await yaml`
+			const rules = await yaml`
 a:
   valeur: 35.465729905
   arrondi: 15 décimales
 
 `
-			expect(engine.evaluate('a').value).toBe(35.465729905)
+			expect(rules.a.evaluate()).toBe(35.465729905)
 		})
 
 		test('sans unité (erreur)', () => {
@@ -138,10 +128,10 @@ arrondi non applicable:
   arrondi: règle non applicable
 `
 			expect(
-				engine.evaluate("arrondi d'une valeur non applicable").value,
+				engine["arrondi d'une valeur non applicable"].evaluate(),
 			).toBeNull()
 
-			expect(engine.evaluate('arrondi non applicable').value).toEqual(13.45)
+			expect(engine['arrondi non applicable'].evaluate()).toBe(13.45)
 		})
 
 		test('non défini', async () => {
@@ -149,28 +139,28 @@ arrondi non applicable:
 test arrondi:
   arrondi: oui
 `
-			const result = engine.evaluate('test arrondi')
-			expect(result.value).toBeUndefined()
+			const result = engine['test arrondi'].evaluate()
+			expect(result).toBeUndefined()
 		})
 	})
 
 	test.skip("arrondi avec conversion d'unités", async () => {
-		const engine = await yaml`
+		const { montant } = await yaml`
 montant:
   valeur: 12.5 €/mois
   unité: €/an
   arrondi: oui
 `
-		const result = engine.evaluate('montant')
-		expect(result.value).toEqual(150)
+
+		expect(montant.evaluate()).toBe(150)
 	})
 
 	test("s'applique au contexte", async () => {
-		const engine = await yaml`
+		const { a } = await yaml`
 a:
   arrondi: oui
 `
-		const result = engine.evaluate('a', { a: 1.4 })
-		expect(result.value).toEqual(1)
+
+		expect(a.evaluate({ a: 1.4 })).toBe(1)
 	})
 })

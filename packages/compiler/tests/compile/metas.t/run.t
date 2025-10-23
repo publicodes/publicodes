@@ -5,9 +5,9 @@ Valid metas :
     "evaluation": [ 5.0 ],
     "outputs": {
       "a": {
+        "nodeIndex": 0,
         "parameters": {},
         "type": { "number": true, "unit": "aucune" },
-        "nodeIndex": 0,
         "meta": {
           "title": "Mon titre",
           "description": "Voici une description.",
@@ -15,9 +15,9 @@ Valid metas :
         }
       },
       "b": {
+        "nodeIndex": 0,
         "parameters": {},
         "type": { "number": true, "unit": "€" },
-        "nodeIndex": 0,
         "meta": {
           "title": "bla",
           "custom field": "true",

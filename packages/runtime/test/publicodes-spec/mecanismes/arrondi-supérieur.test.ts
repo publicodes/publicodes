@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'bun:test'
+import { describe, test, expect, beforeAll } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Mécanisme > arrondi au supérieur', () => {
@@ -34,16 +34,14 @@ describe('Mécanisme > arrondi au supérieur', () => {
 		['à 0.05 près', 38.45],
 		['à 5 décimales', 38.4167],
 	])('%s', (name, expected) => {
-		const result = engine.evaluate(name)
-		expect(result.value).toBe(expected)
+		expect(engine[name].evaluate()).toBe(expected)
 	})
 
 	test("s'applique au contexte", async () => {
-		const engine = await yaml`
+		const { a } = await yaml`
 a:
   arrondi au supérieur: oui
 `
-		const result = engine.evaluate('a', { a: 1.4 })
-		expect(result.value).toEqual(2)
+		expect(a.evaluate({ a: 1.4 })).toEqual(2)
 	})
 })

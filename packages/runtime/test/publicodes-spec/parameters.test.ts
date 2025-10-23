@@ -1,9 +1,10 @@
-import { describe, test, expect } from 'bun:test'
+import { describe, test, expect, beforeAll } from 'bun:test'
 import { TestPublicodes, yaml } from '../utils/compile'
-import { env } from 'bun'
 
-describe('Needed parameters', async () => {
-	let engine: TestPublicodes = await yaml`
+describe('Needed parameters', () => {
+	let r: TestPublicodes
+	beforeAll(async () => {
+		r = await yaml`
 params:
   avec:
     a:
@@ -49,75 +50,78 @@ with constant:
   avec:
    constant: 10
 `
+	})
 
 	test('no parameters needed', () => {
-		const result = engine.evaluate('no parameters needed')
-		expect(result.neededParameters).toEqual([])
-		expect(result.missingParameters).toEqual([])
+		const result = r['no parameters needed'].evaluateParams()
+		expect(result.needed).toEqual([])
+		expect(result.missing).toEqual([])
 	})
 
 	test('params a needed', () => {
-		const result = engine.evaluate('params a needed')
-		expect(result.neededParameters).toEqual(['params . a'])
-		expect(result.missingParameters).toEqual(['params . a'])
+		const result = r['params a needed'].evaluateParams()
+		expect(result.needed).toEqual(['params . a'])
+		expect(result.missing).toEqual(['params . a'])
 
-		const resultWithA = engine.evaluate('params a needed', { 'params . a': 3 })
-		expect(resultWithA.neededParameters).toEqual(['params . a'])
-		expect(resultWithA.missingParameters).toEqual([])
+		const resultWithA = r['params a needed'].evaluateParams({
+			'params . a': 3,
+		})
+		expect(resultWithA.needed).toEqual(['params . a'])
+		expect(resultWithA.missing).toEqual([])
 	})
 
 	test('params a and b needed', () => {
-		const result = engine.evaluate('params a and b needed')
-		expect(result.neededParameters).toEqual(['params . a', 'params . b'])
-		expect(result.missingParameters).toEqual(['params . a', 'params . b'])
+		const result = r['params a and b needed'].evaluateParams()
+		expect(result.needed).toEqual(['params . a', 'params . b'])
+		expect(result.missing).toEqual(['params . a', 'params . b'])
 
-		const resultWithA = engine.evaluate('params a and b needed', {
+		const resultWithA = r['params a and b needed'].evaluateParams({
 			'params . a': 3,
 		})
-		expect(resultWithA.neededParameters).toEqual(['params . a', 'params . b'])
-		expect(resultWithA.missingParameters).toEqual(['params . b'])
+		expect(resultWithA.needed).toEqual(['params . a', 'params . b'])
+		expect(resultWithA.missing).toEqual(['params . b'])
 	})
 
 	test('conditionnal', () => {
-		const result = engine.evaluate('conditionnal')
-		expect(result.neededParameters).toEqual(['params . c', 'params . a'])
-		expect(result.missingParameters).toEqual(['params . c', 'params . a'])
+		const result = r.conditionnal.evaluateParams()
+		expect(result.needed).toEqual(['params . c', 'params . a'])
+		expect(result.missing).toEqual(['params . c', 'params . a'])
 
-		const resultWithA = engine.evaluate('conditionnal', {
+		const resultWithA = r.conditionnal.evaluateParams({
 			'params . c': false,
 		})
-		expect(resultWithA.neededParameters).toEqual(['params . c', 'params . b'])
-		expect(resultWithA.missingParameters).toEqual(['params . b'])
+		expect(resultWithA.needed).toEqual(['params . c', 'params . b'])
+		expect(resultWithA.missing).toEqual(['params . b'])
 	})
 
 	test('with context', () => {
-		expect(engine.evaluate('with context')).toEqual({
-			missingParameters: [],
-			neededParameters: [],
+		expect(r['with context'].evaluateParams()).toEqual({
+			missing: [],
+			needed: [],
 			value: 9,
 		})
 	})
 
 	test('with embeded context', () => {
-		expect(engine.evaluate('with embeded context')).toEqual({
-			missingParameters: ['params . a'],
-			neededParameters: ['params . a'],
+		expect(r['with embeded context'].evaluateParams()).toEqual({
+			missing: ['params . a'],
+			needed: ['params . a'],
 			value: undefined,
 		})
 
 		expect(
-			engine.evaluate('with embeded context', { 'params . a': 4 }),
+			r['with embeded context'].evaluateParams({ 'params . a': 4 }),
 		).toEqual({
-			missingParameters: [],
-			neededParameters: ['params . a'],
+			missing: [],
+			needed: ['params . a'],
 			value: 17,
 		})
 	})
 
 	test('with embeded context', () => {
-		expect(engine.evaluate('with constant')).toEqual({
-			missingParameters: [],
-			neededParameters: [],
+		expect(r['with constant'].evaluateParams()).toEqual({
+			missing: [],
+			needed: [],
 			value: 6,
 		})
 	})

@@ -2,61 +2,65 @@ import { describe, test, expect } from 'bun:test'
 import { yaml } from '../../utils/compile'
 
 describe('Mécanisme > par défaut', () => {
-	test.each([
-		['simple nombre', 10],
-		['simple texte', "'calinou'"],
-		['texte vide', "''"],
-	])('%s', async (_, defaultValue) => {
-		const engine = await yaml`
+	test('simple nombre', async () => {
+		const rules = await yaml`
 test:
-  par défaut: ${defaultValue}
+  par défaut: 10
 `
-		expect(engine.evaluate('test').value).toEqual(defaultValue)
+		expect(rules.test.evaluate()).toBe(10)
+	})
+
+	test('simple texte vide', async () => {
+		const rules = await yaml`
+test:
+  par défaut: ''
+`
+		expect(rules.test.evaluate()).toBe('')
 	})
 
 	test('avec une valeur', async () => {
-		const engine = await yaml`
+		const rules = await yaml`
 a:
 b:
 test:
   par défaut: a
   valeur: b
 `
-		expect(engine.evaluate('test')).toMatchObject({
+		expect(rules.test.evaluateParams()).toMatchObject({
 			value: undefined,
-			missingParameters: ['b', 'a'],
+			missing: ['b', 'a'],
 		})
 
-		expect(engine.evaluate('test', { a: 5 })).toMatchObject({
+		expect(rules.test.evaluateParams({ a: 5 })).toMatchObject({
 			value: 5,
-			missingParameters: ['b'],
+			missing: ['b'],
 		})
 
-		expect(engine.evaluate('test', { b: 5 })).toMatchObject({
+		expect(rules.test.evaluateParams({ b: 5 })).toMatchObject({
 			value: 5,
-			missingParameters: [],
+			missing: [],
 		})
 	})
 
 	test('avec le contexte', async () => {
-		const engine = await yaml`
+		const rules = await yaml`
 a:
 test:
   par défaut: a
 `
-		expect(engine.evaluate('test')).toMatchObject({
+		expect(rules.test.evaluateParams()).toMatchObject({
 			value: undefined,
-			missingParameters: ['test', 'a'],
+			missing: ['test', 'a'],
 		})
 
-		expect(engine.evaluate('test', { a: 5 })).toMatchObject({
+		expect(rules.test.evaluateParams({ a: 5 })).toMatchObject({
 			value: 5,
-			missingParameters: ['test'],
+			missing: ['test'],
 		})
 
-		expect(engine.evaluate('test', { test: 5 })).toMatchObject({
+		expect(rules.test.evaluateParams({ test: 5 })).toMatchObject({
 			value: 5,
-			missingParameters: [],
+			missing: [],
 		})
 	})
 

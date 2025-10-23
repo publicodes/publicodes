@@ -1,13 +1,14 @@
-import { describe, it, expect, beforeAll } from 'bun:test'
+import { describe, expect, beforeAll, test } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Metas > allowed metas', () => {
-	let engine: TestPublicodes
+	let a: TestPublicodes[string]
 	beforeAll(async () => {
-		engine = await yaml`
+		a = (
+			await yaml`
 a:
-  titre: ma règle
-  description: ma description
+  titre: ma règle avec l'apostrophe
+  description: ma description "avec guillemets"
   note: |
     mes notes
   valeur: 5
@@ -19,23 +20,24 @@ a:
       tooltip: |
         Petite aide contextuelle
 `
+		).a
 	})
 
-	it('title', () => {
-		expect(engine.getMeta('a').title).toEqual('ma règle')
+	test('title', () => {
+		expect(a.title).toBe("ma règle avec l'apostrophe")
 	})
 
-	it('description', () => {
-		expect(engine.getMeta('a').description).toEqual('ma description')
+	test('description', () => {
+		expect(a.description).toBe('ma description "avec guillemets"')
 	})
 
-	it('note', () => {
-		expect(engine.getMeta('a').note).toEqual('mes notes\n')
+	test('note', () => {
+		expect(a.note).toBe('mes notes\n')
 	})
 
-	it('meta object', () => {
-		expect(engine.getMeta('a').references).toEqual(['https://calinou.coop'])
-		expect(engine.getMeta('a').ui).toEqual({
+	test('meta object', () => {
+		expect(a.meta.references).toEqual(['https://calinou.coop'])
+		expect(a.meta.ui).toEqual({
 			question: 'Quel est votre couleur préférée ?',
 			tooltip: 'Petite aide contextuelle\n',
 		})

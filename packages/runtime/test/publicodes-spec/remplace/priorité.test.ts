@@ -3,7 +3,7 @@ import { yaml } from '../../utils/compile'
 
 describe('Remplace > priorité', () => {
 	it('simple', async () => {
-		const engine = await yaml`
+		const { x } = await yaml`
     a:
       remplace:
         références à: c
@@ -15,11 +15,11 @@ describe('Remplace > priorité', () => {
     c:
     x: c
   `
-		expect(engine.evaluate('x').value).toBe(1)
+		expect(x.evaluate()).toBe(1)
 	})
 
 	it('non applicable', async () => {
-		const engine = await yaml`
+		const { x } = await yaml`
     a:
       non applicable si: oui
       remplace:
@@ -32,6 +32,6 @@ describe('Remplace > priorité', () => {
     c:
     x: c
   `
-		expect(engine.evaluate('x').value).toBe(2)
+		expect(x.evaluate()).toBe(2)
 	})
 })

@@ -3,7 +3,7 @@ import { yaml } from '../../utils/compile'
 
 describe('Rend non applicable > avec remplace', () => {
 	it('rend non applicable take precedence over remplace', async () => {
-		const engine = await yaml`
+		const { x } = await yaml`
     a:
       remplace: c
       valeur: oui
@@ -14,11 +14,11 @@ describe('Rend non applicable > avec remplace', () => {
     c:
     x: c
   `
-		expect(engine.evaluate('x').value).toBe(null)
+		expect(x.evaluate()).toBe(null)
 	})
 
 	it('remplace «rend non applicable»', async () => {
-		const engine = await yaml`
+		const { x } = await yaml`
     a:
       valeur: oui
       remplace: b
@@ -30,6 +30,6 @@ describe('Rend non applicable > avec remplace', () => {
 
     x: c
   `
-		expect(engine.evaluate('x').value).toBe(null)
+		expect(x.evaluate()).toBe(null)
 	})
 })

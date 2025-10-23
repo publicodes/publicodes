@@ -12,20 +12,12 @@ plafond:
 `
 	})
 	test.each([
-		[
-			'inférieur (applicable)',
-			{ plafond: 5 },
-			{ value: 5, missingParameters: [] },
-		],
-		[
-			'supérieur (non applicable)',
-			{ plafond: 15 },
-			{ value: 10, missingParameters: [] },
-		],
-		['non défini', {}, { value: undefined, missingParameters: ['plafond'] }],
-		['non applicable', { plafond: null }, { value: 10, missingParameters: [] }],
+		['inférieur (applicable)', { plafond: 5 }, { value: 5, missing: [] }],
+		['supérieur (non applicable)', { plafond: 15 }, { value: 10, missing: [] }],
+		['non défini', {}, { value: undefined, missing: ['plafond'] }],
+		['non applicable', { plafond: null }, { value: 10, missing: [] }],
 	])('%s', (_, context, expected) => {
-		expect(engine.evaluate('test', context)).toMatchObject(expected)
+		expect(engine.test.evaluateParams(context)).toMatchObject(expected)
 	})
 
 	test("s'applique au contexte", async () => {
@@ -33,6 +25,6 @@ plafond:
 test:
   plafond: 10
 `
-		expect(engine.evaluate('test', { test: 15 }).value).toBe(10)
+		expect(engine.test.evaluate({ test: 15 })).toBe(10)
 	})
 })

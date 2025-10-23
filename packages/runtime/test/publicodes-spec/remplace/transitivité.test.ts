@@ -3,7 +3,7 @@ import { yaml } from '../../utils/compile'
 
 describe('Remplace > transitivité', () => {
 	it('simple', async () => {
-		const engine = await yaml`
+		const { x } = await yaml`
     a:
       remplace: b
       valeur: 1
@@ -13,11 +13,11 @@ describe('Remplace > transitivité', () => {
     c: 3
     x: c
   `
-		expect(engine.evaluate('x').value).toBe(1)
+		expect(x.evaluate()).toBe(1)
 	})
 
 	it('non applicable', async () => {
-		const engine = await yaml`
+		const { x } = await yaml`
     a:
       applicable si: non
       remplace: b
@@ -31,6 +31,6 @@ describe('Remplace > transitivité', () => {
     d: 4
     x: d
   `
-		expect(engine.evaluate('x').value).toBe(2)
+		expect(x.evaluate()).toBe(2)
 	})
 })

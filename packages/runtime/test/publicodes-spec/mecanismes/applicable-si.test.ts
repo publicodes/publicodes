@@ -24,7 +24,10 @@ condition:
 			{ value: null, missingParameters: ['condition'] },
 		],
 	])('%s', (_, context, expected) => {
-		expect(engine.evaluate('test', context)).toMatchObject(expected)
+		expect(engine.test.evaluate(context)).toBe(expected.value)
+		expect(engine.test.evaluateParams(context).missing).toEqual(
+			expected.missingParameters,
+		)
 	})
 
 	test("s'applique au contexte", async () => {
@@ -33,6 +36,6 @@ test:
   applicable si: non
 condition:
 `
-		expect(engine.evaluate('test', { test: 10 }).value).toBe(null)
+		expect(engine.test.evaluate({ test: 10 })).toBe(null)
 	})
 })

@@ -3,7 +3,7 @@ import { yaml } from '../../utils/compile'
 
 describe('Rend non applicable > transitivité', () => {
 	it('simple', async () => {
-		const engine = await yaml`
+		const { x } = await yaml`
     a:
       valeur: oui
       rend non applicable: b
@@ -14,11 +14,11 @@ describe('Rend non applicable > transitivité', () => {
     c: oui
     x: c
   `
-		expect(engine.evaluate('x').value).toBe(true)
+		expect(x.evaluate()).toBe(true)
 	})
 
 	it('simple', async () => {
-		const engine = await yaml`
+		const { x } = await yaml`
     a:
       valeur: oui
       rend non applicable: b
@@ -32,6 +32,6 @@ describe('Rend non applicable > transitivité', () => {
     d: oui
     x: d
   `
-		expect(engine.evaluate('x').value).toBe(null)
+		expect(x.evaluate()).toBe(null)
 	})
 })
