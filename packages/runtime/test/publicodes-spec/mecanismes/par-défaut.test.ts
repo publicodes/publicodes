@@ -2,39 +2,65 @@ import { describe, test, expect } from 'bun:test'
 import { yaml } from '../../utils/compile'
 
 describe('Mécanisme > par défaut', () => {
-	test('simple nombre', async () => {
+	test.each([
+		['simple nombre', 10],
+		['simple texte', "'calinou'"],
+		['texte vide', "''"],
+	])('%s', async (_, defaultValue) => {
 		const engine = await yaml`
 test:
-  par défaut: 10
+  par défaut: ${defaultValue}
 `
-		expect(engine.evaluate('test').value).toEqual(10)
+		expect(engine.evaluate('test').value).toEqual(defaultValue)
 	})
 
-	test('simple texte', async () => {
+	test('avec une valeur', async () => {
 		const engine = await yaml`
+a:
+b:
 test:
-  par défaut: "calinou"
+  par défaut: a
+  valeur: b
 `
-		expect(engine.evaluate('test').value).toEqual('calinou')
+		expect(engine.evaluate('test')).toMatchObject({
+			value: undefined,
+			missingParameters: ['b', 'a'],
+		})
+
+		expect(engine.evaluate('test', { a: 5 })).toMatchObject({
+			value: 5,
+			missingParameters: ['b'],
+		})
+
+		expect(engine.evaluate('test', { b: 5 })).toMatchObject({
+			value: 5,
+			missingParameters: [],
+		})
 	})
 
-	test('texte vide', async () => {
+	test('avec le contexte', async () => {
 		const engine = await yaml`
-test:
-  par défaut: ""
-`
-		expect(engine.evaluate('test').value).toEqual('')
-	})
-
-	test('avec une reference', async () => {
-		const engine = await yaml`
-a: 5
+a:
 test:
   par défaut: a
 `
-		expect(engine.evaluate('test').value).toEqual(5)
+		expect(engine.evaluate('test')).toMatchObject({
+			value: undefined,
+			missingParameters: ['test', 'a'],
+		})
+
+		expect(engine.evaluate('test', { a: 5 })).toMatchObject({
+			value: 5,
+			missingParameters: ['test'],
+		})
+
+		expect(engine.evaluate('test', { test: 5 })).toMatchObject({
+			value: 5,
+			missingParameters: [],
+		})
 	})
 
+	// TODO move this to cram test
 	test('avec une valeur différente du type attendu', async () => {
 		try {
 			await yaml`
@@ -49,6 +75,7 @@ test:
 		expect.assertions(2)
 	})
 
+	// TODO move this to cram test
 	test('valeur manquante', async () => {
 		try {
 			await yaml`
