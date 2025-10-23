@@ -163,6 +163,14 @@ montant:
 `
 		const result = engine.evaluate('montant')
 		expect(result.value).toEqual(150)
-		// expect(result.unit).toBe('€/an')
+	})
+
+	test('opère sur le contexte', async () => {
+		const engine = await yaml`
+a:
+  arrondi: oui
+`
+		const result = engine.evaluate('a', { a: 1.4 })
+		expect(result.value).toEqual(1)
 	})
 })
