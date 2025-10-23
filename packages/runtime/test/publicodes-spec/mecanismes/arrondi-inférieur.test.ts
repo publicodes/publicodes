@@ -38,7 +38,7 @@ describe("Mécanisme > arrondi à l'inférieur", () => {
 		expect(result.value).toBe(expected)
 	})
 
-	test('opère sur le contexte', async () => {
+	test("s'applique au contexte", async () => {
 		const engine = await yaml`
 a:
   arrondi à l'inférieur: oui

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'bun:test'
 import { yaml } from '../../utils/compile'
 
-describe('Contexte', () => {
+describe('Mécanisme > contexte', () => {
 	beforeAll(async () => {})
 	test('simple', async () => {
 		const engine = await yaml`

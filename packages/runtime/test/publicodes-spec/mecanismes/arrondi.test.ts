@@ -165,7 +165,7 @@ montant:
 		expect(result.value).toEqual(150)
 	})
 
-	test('opère sur le contexte', async () => {
+	test("s'applique au contexte", async () => {
 		const engine = await yaml`
 a:
   arrondi: oui
