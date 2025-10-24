@@ -26,10 +26,7 @@ let output_type =
   let doc = "$(docv) is the output type." in
   Arg.(
     value
-    & opt
-        (enum
-           [("json", `Json); ("js", `Js); ("debug_eval_tree", `Debug_eval_tree)] )
-        `Json
+    & opt (enum [("js", `Js); ("debug_eval_tree", `Debug_eval_tree)]) `Js
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
 
 let default_to_public =
@@ -58,8 +55,6 @@ let cmd =
       "model.publicodes"
       ^
       match output_type with
-      | `Json ->
-          ".json"
       | `Debug_eval_tree ->
           ".eval_tree.debug"
       | `Js ->

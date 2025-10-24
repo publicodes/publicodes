@@ -182,41 +182,43 @@ let parameters_to_jsdoc (tree : Tree.t) (parameters : Rule_name.t list) : string
 	*/|}
     parameters_type
 
-let to_js ~(hashed_tree : Tree.t) ~outputs =
-  (*
-		 NOTE: for now, we are ignoring optim because it has not yet shown its benefits.
-		 let hashed_tree = Optim_exprfacto.compress hashed_tree in
-	*)
-  let rules_str =
-    Base.Hashtbl.fold hashed_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
-        let rule_type = get_rule_type hashed_tree rule in
-        let rule_name = rulename_to_snakecase rule in
-        let rule_data = value_to_js data in
-        (rule_type, rule_name, rule_data) :: acc )
-    |> List.sort ~compare:(fun (_, name1, _) (_, name2, _) ->
-           String.compare name1 name2 )
-    |> List.map ~f:(fun (rule_type, rule_name, rule_data) ->
-           Printf.sprintf
-             {|
+let rules_to_js_functions hashed_tree =
+  Base.Hashtbl.fold hashed_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
+      let rule_type = get_rule_type hashed_tree rule in
+      let rule_name = rulename_to_snakecase rule in
+      let rule_data = value_to_js data in
+      (rule_type, rule_name, rule_data) :: acc )
+  |> List.sort ~compare:(fun (_, name1, _) (_, name2, _) ->
+         String.compare name1 name2 )
+  |> List.map ~f:(fun (rule_type, rule_name, rule_data) ->
+         Printf.sprintf
+           {|
 	/** @type {Fn<%s>}*/
 	function _%s(ctx, params) {
 		return /** @type {Value<%s>} */ (%s)
 	}|}
-             rule_type rule_name rule_type rule_data )
-    |> String.concat ~sep:"\n"
-  in
-  let outputs_str =
-    String.concat ~sep:","
-      (List.map outputs ~f:(fun Model_outputs.{rule_name; parameters; _} ->
-           let rule_name_str = Rule_name.to_string rule_name in
-           let rule_name_js = rulename_to_snakecase rule_name in
-           let jsdoc = parameters_to_jsdoc hashed_tree parameters in
-           Printf.sprintf
-             {|
+           rule_type rule_name rule_type rule_data )
+  |> String.concat ~sep:"\n"
+
+let outputs_to_js_rules hashed_tree outputs =
+  List.map outputs ~f:(fun Model_outputs.{rule_name; parameters; _} ->
+      let rule_name_str = Rule_name.to_string rule_name in
+      let rule_name_js = rulename_to_snakecase rule_name in
+      let jsdoc = parameters_to_jsdoc hashed_tree parameters in
+      Printf.sprintf
+        {|
 	%s
 	"%s": (params = {}, cache = false) => $evaluate(_%s, params, cache)|}
-             jsdoc rule_name_str rule_name_js ) )
-  in
+        jsdoc rule_name_str rule_name_js )
+  |> String.concat ~sep:","
+
+let to_js ~hashed_tree ~outputs =
+  (*
+		 NOTE: for now, we are ignoring optim because it has not yet shown its benefits.
+		 let hashed_tree = Optim_exprfacto.compress hashed_tree in
+	*)
+  let rules_str = rules_to_js_functions hashed_tree in
+  let outputs_str = outputs_to_js_rules hashed_tree outputs in
   let index_js =
     Printf.sprintf
       {|/** Start embedded runtime */
