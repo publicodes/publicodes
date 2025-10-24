@@ -1,4 +1,8 @@
 /**
+ * @typedef {string} RuleName
+ * @typedef {Record<RuleName, Value>} Situation
+ * @typedef {Record<RuleName, WeakMap<Situation, Value>>} PCache
+ * @typedef {Situation & { _global: Situation, _cache: PCache }} Context
  * @typedef {date | number | string | null | undefined} Value
  * @typedef {number | null | undefined} Number
  * @typedef {boolean | null | undefined} Boolean
@@ -534,6 +538,16 @@ function $cond(c, ifTrue, ifFalse) {
 	return c ? ifTrue() : ifFalse()
 }
 
+/**
+ * @param {RuleName} rule
+ * @param {Context} ctx
+ * @param {RuleName[]} params
+ * @returns {Value}
+ *
+ * Try to retrieve the rule value specified in local context (set by a
+ * [contexte] mechanism) or in [_global] parameters, in this case the traversed
+ * [params] are updated with the [rule].
+ */
 function $get(rule, ctx, params) {
 	if (rule in ctx) {
 		return ctx[rule]
@@ -543,6 +557,13 @@ function $get(rule, ctx, params) {
 	return ctx._global[rule]
 }
 
+/**
+ * @param {RuleName} rule
+ * @param {(ctx: Context, params: RuleName[]) => Value} fn
+ * @param {Context} ctx
+ * @param {RuleName[]} params
+ * @return {Value}
+ */
 function $ref(rule, fn, ctx, params) {
 	if (rule in ctx || rule in ctx._global) {
 		return $get(rule, ctx, params)
@@ -563,6 +584,12 @@ function $ref(rule, fn, ctx, params) {
 	return fn(ctx, params)
 }
 
+/**
+ * @param {(ctx: Context, params: RuleName[]) => Value} fn
+ * @param {Situation} _global
+ * @param {boolean} cache
+ * @returns {{value: Value, parameters: {needed: RuleName[], missing: RuleName[]}}
+ */
 function $evaluate(fn, _global, cache) {
 	const params = []
 	const value = fn({ _global, ...(cache ? { _cache: {} } : {}) }, params)
