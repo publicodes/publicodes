@@ -71,9 +71,9 @@ let compute_depth_and_freq hashed_tree =
       update_depth node node_depth ) ;
   freq_depth_table
 
-let depth_threshold = 3
+let depth_threshold = 2
 
-let frequency_threshold = 8
+let frequency_threshold = 2
 
 let compress hashed_tree =
   let module Id = Utils.Uid.Make () in
@@ -122,7 +122,7 @@ let compress hashed_tree =
           in
           (None, {node with value= new_rule_value})
     in
-    if frequency > frequency_threshold && max_depth > depth_threshold then
+    if frequency >= frequency_threshold && max_depth >= depth_threshold then
       (* Node is frequent and deep enough to be factored out. I.e.
 				 replaced by a reference to a new private rule. *)
       let new_rule_name =
