@@ -56,7 +56,7 @@ let compile ~input_files ~output_type ~default_to_public =
         return (Shared.Eval_tree_printer.to_string_eval_tree eval_tree)
     | `Js ->
         (* TODO: handle d.ts files generation here too *)
-        let* js, _ = to_js ~ast ~eval_tree in
+        let* js = to_js ~ast ~eval_tree in
         return js
   in
   result_string

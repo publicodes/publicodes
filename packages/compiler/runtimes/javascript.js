@@ -1,14 +1,29 @@
 /**
+ * @template T
+ * @typedef {T | null | undefined} Value<T>
+ */
+
+/**
+ * @template V
+ * @typedef {() => V} Lazy<V>
+ */
+
+/**
+ * @template T
+ * @typedef {(ctx: Context, params: RuleName[]) => Value<T>} Fn
+ */
+
+/**
  * @typedef {string} RuleName
- * @typedef {Record<RuleName, Value>} Situation
- * @typedef {Record<RuleName, WeakMap<Situation, Value>>} PCache
- * @typedef {Situation & { _global: Situation, _cache: PCache }} Context
- * @typedef {date | number | string | null | undefined} Value
- * @typedef {number | null | undefined} Number
- * @typedef {boolean | null | undefined} Boolean
- * @typedef {() => Number} LazyNumber
- * @typedef {() => Boolean} LazyBoolean
- * @typedef {() => Value} LazyValue
+ * @typedef {Record<RuleName, PValue>} Situation
+ * @typedef {Record<RuleName, WeakMap<Situation, PValue>>} PCache
+ * @typedef {Situation & { _global: Situation, _cache?: PCache }} Context
+ * @typedef {Value<Date | number | string | boolean>} PValue
+ * @typedef {Value<number>} PNumber
+ * @typedef {Value<boolean>} PBoolean
+ * @typedef {() => PNumber} LazyNumber
+ * @typedef {() => PBoolean} LazyBoolean
+ * @typedef {() => PValue} LazyValue
  */
 
 /**
@@ -56,8 +71,8 @@ class RuntimeError extends Error {
 /** Basic numeric operations */
 
 /**
- * @param {Number} left
- * @param {Number} right
+ * @param {Number} l
+ * @param {Number} r
  * @returns {number | undefined}
  *
  * @specification
@@ -76,8 +91,8 @@ function $add(l, r) {
 }
 
 /**
- * @param {Number} left
- * @param {Number} right
+ * @param {Number} l
+ * @param {Number} r
  * @returns {number | undefined}
  *
  * @specification
@@ -97,7 +112,7 @@ function $sub(l, r) {
 }
 
 /**
- * @param {Number} left
+ * @param {Number} l
  * @param {LazyNumber} right
  * @returns {number | null | undefined}
  *
@@ -125,7 +140,7 @@ function $mul(l, right) {
 }
 
 /**
- * @param {Number} left
+ * @param {Number} l
  * @param {LazyNumber} right
  * @returns {number | null | undefined}
  *
@@ -161,9 +176,9 @@ function $div(l, right) {
 }
 
 /**
- * @param {Number} left
+ * @param {Number} l
  * @param {LazyNumber} right
- * @returns {number | undefined}
+ * @returns {number | null | undefined}
  *
  * @specification
  * The power operation is defined as follows by order of precedence:
@@ -193,8 +208,8 @@ function $pow(l, right) {
 /** Basic boolean operations */
 
 /**
- * @param {Value} left
- * @param {Value} right
+ * @param {PValue} l
+ * @param {PValue} r
  * @returns {boolean | undefined}
  *
  * @specification
@@ -211,8 +226,8 @@ function $eq(l, r) {
 }
 
 /**
- * @param {Value} left
- * @param {Value} right
+ * @param {PValue} l
+ * @param {PValue} r
  * @returns {boolean | undefined}
  *
  * @specification
@@ -229,7 +244,7 @@ function $neq(l, r) {
 }
 
 /**
- * @param {Value} left
+ * @param {PValue} l
  * @param {LazyValue} right
  * @returns {boolean | null | undefined}
  *
@@ -253,7 +268,7 @@ function $lt(l, right) {
 }
 
 /**
- * @param {Value} left
+ * @param {PValue} l
  * @param {LazyValue} right
  * @returns {boolean | null | undefined}
  *
@@ -277,7 +292,7 @@ function $gt(l, right) {
 }
 
 /**
- * @param {Value} left
+ * @param {PValue} l
  * @param {LazyValue} right
  * @returns {boolean | null | undefined}
  *
@@ -301,7 +316,7 @@ function $lte(l, right) {
 }
 
 /**
- * @param {Value} left
+ * @param {PValue} l
  * @param {LazyValue} right
  * @returns {boolean | null | undefined}
  *
@@ -325,7 +340,7 @@ function $gte(l, right) {
 }
 
 /**
- * @param {Boolean} left
+ * @param {PBoolean} l
  * @param {LazyBoolean} right
  * @returns {boolean | undefined}
  *
@@ -354,7 +369,7 @@ function $and(l, right) {
 }
 
 /**
- * @param {Boolean} left
+ * @param {PBoolean} l
  * @param {LazyBoolean} right
  * @returns {boolean | undefined}
  *
@@ -381,8 +396,10 @@ function $or(l, right) {
 	}
 
 	return (
-		l === null && r === null ? false
-		: l === null ? r
+		l === null ?
+			r === null ?
+				false
+			:	r
 		: r === null ? l
 		: l || r
 	)
@@ -391,7 +408,7 @@ function $or(l, right) {
 /** Unary operations */
 
 /**
- * @param {number | null | undefined} operand
+ * @param {PNumber} val
  * @returns {number | undefined}
  * @specification
  * The unary negation operation is defined as follows by order of precedence:
@@ -409,7 +426,7 @@ function $neg(val) {
 
 /**
  * @param {'up' | 'down' | 'nearest'} mode
- * @param {Number} val
+ * @param {PNumber} val
  * @param {LazyNumber} precision
  * @returns {number | null | undefined}
  *
@@ -446,11 +463,13 @@ function $round(mode, val, precision) {
 		)
 	}
 
-	const toPrecision = (num) =>
-		// NOTE: Use 15 precision for floating number in JS https://stackoverflow.com/a/3644302
-		// NOTE: the unary plus is used to remove trailing zeros and convert back
-		// the string representation to a number.
-		+num.toPrecision(15)
+	const toPrecision =
+		/** @param {number} num */
+		(num) =>
+			// NOTE: Use 15 precision for floating number in JS https://stackoverflow.com/a/3644302
+			// NOTE: the unary plus is used to remove trailing zeros and convert back
+			// the string representation to a number.
+			+num.toPrecision(15)
 
 	return toPrecision(
 		mode === 'up' ? Math.ceil(toPrecision(val / p)) * p
@@ -514,10 +533,11 @@ function $max(left, right) {
 }
 
 /**
- * @param {Boolean} c
- * @param {LazyValue} ifTrue
- * @param {LazyValue} ifFalse
- * @returns {Value | undefined}
+ * @template {PValue} T
+ * @param {PBoolean} c
+ * @param {() => T} ifTrue
+ * @param {() => T} ifFalse
+ * @returns {T | null | undefined}
  *
  * @specification
  * The conditional operation is defined as follows by order of precedence:
@@ -542,7 +562,7 @@ function $cond(c, ifTrue, ifFalse) {
  * @param {RuleName} rule
  * @param {Context} ctx
  * @param {RuleName[]} params
- * @returns {Value}
+ * @returns {PValue}
  *
  * Try to retrieve the rule value specified in local context (set by a
  * [contexte] mechanism) or in [_global] parameters, in this case the traversed
@@ -558,14 +578,16 @@ function $get(rule, ctx, params) {
 }
 
 /**
+ * @template {PValue} T
  * @param {RuleName} rule
- * @param {(ctx: Context, params: RuleName[]) => Value} fn
+ * @param {(ctx: Context, params: RuleName[]) => T } fn
  * @param {Context} ctx
  * @param {RuleName[]} params
- * @return {Value}
+ * @return {T}
  */
 function $ref(rule, fn, ctx, params) {
 	if (rule in ctx || rule in ctx._global) {
+		/** @ts-ignore */
 		return $get(rule, ctx, params)
 	}
 
@@ -573,6 +595,7 @@ function $ref(rule, fn, ctx, params) {
 		const cache = ctx._cache[rule] ?? new WeakMap()
 
 		if (cache.has(ctx)) {
+			/** @ts-ignore */
 			return cache.get(ctx)
 		}
 		const value = fn(ctx, params)
@@ -585,13 +608,16 @@ function $ref(rule, fn, ctx, params) {
 }
 
 /**
- * @param {(ctx: Context, params: RuleName[]) => Value} fn
+ * @template {PValue} T
+ * @param {(ctx: Context, params: RuleName[]) => T} fn
  * @param {Situation} _global
  * @param {boolean} cache
- * @returns {{value: Value, parameters: {needed: RuleName[], missing: RuleName[]}}
+ * @returns {{value: T, parameters: {needed: RuleName[], missing: RuleName[]}}}
  */
 function $evaluate(fn, _global, cache) {
+	/** @type {RuleName[]} */
 	const params = []
+	/** @ts-ignore */
 	const value = fn({ _global, ...(cache ? { _cache: {} } : {}) }, params)
 	const needed = Array.from(new Set(params))
 	const missing = needed.filter((p) => !(p in _global))

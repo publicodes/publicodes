@@ -72,7 +72,6 @@ let rec value_to_js ({value; _} : Tree.value) : string =
       (* NOTE: maybe we should use the same logic used in [Yojson] to convert floats to strings *)
       Printf.sprintf "%.16g" n
   | Const (String s) ->
-      (* FIXME: should be consistant *)
       let s =
         s
         |> String.strip ~drop:(Char.equal '\'')
@@ -147,117 +146,93 @@ let _rule_is_constant (_params : Shared.Model_outputs.t) _name rule =
   in
   match rule.value with Eval_tree.Const _ -> true | _ -> not (needs_ctx rule)
 
-let params_to_d_ts (tree : Tree.t) (outputs : Shared.Model_outputs.t) : string =
-  List.map outputs ~f:(fun {rule_name; parameters; _} ->
-      let rule_str = Rule_name.to_string rule_name in
-      let parameters =
-        List.map parameters ~f:(fun rule ->
-            Printf.sprintf "\"%s\": null" (Rule_name.to_string rule) )
-        |> String.concat ~sep:", "
-      in
-      let type_info =
-        let open Shared.Typ in
-        let Tree.{typ; _} = Eval_tree.get_meta tree rule_name in
-        match typ with
-        | Some (Number (Some unit)) ->
-            Printf.sprintf "{ type: number, unit: \"%s\" }"
-              (Stdlib.Format.asprintf "%a" Shared.Units.pp unit)
-        | Some (Number None) ->
-            "{ type: number }"
-        | Some (Literal String) ->
-            "{ type: string }"
-        | Some (Literal Bool) ->
-            "{ type: boolean }"
-        | Some (Literal Date) ->
-            "{ type: Date }"
-        | None ->
-            "{ type = null}"
-      in
-      Printf.sprintf "\"%s\": { value: %s, parameters: { %s } }" rule_str
-        type_info parameters )
-  |> String.concat ~sep:",\n"
+let get_rule_type (tree : Tree.t) (rule_name : Rule_name.t) : string =
+  let open Shared.Typ in
+  let Tree.{typ; _} = Eval_tree.get_meta tree rule_name in
+  match typ with
+  | Some (Number (Some _)) ->
+      (* TODO: manage units *)
+      Printf.sprintf "number"
+      (* (Stdlib.Format.asprintf "%a" Shared.Units.pp unit) *)
+  | Some (Number None) ->
+      "number"
+  | Some (Literal String) ->
+      "string"
+  | Some (Literal Bool) ->
+      "boolean"
+  | Some (Literal Date) ->
+      "Date"
+  | None ->
+      "null"
+
+let parameters_to_jsdoc (tree : Tree.t) (parameters : Rule_name.t list) : string
+    =
+  let parameters_type =
+    List.map parameters ~f:(fun rule ->
+        let rule_name_str = Rule_name.to_string rule in
+        let rule_type = get_rule_type tree rule in
+        Printf.sprintf "\"%s\"?: Value<%s>" rule_name_str rule_type )
+    |> String.concat ~sep:", "
+  in
+  Printf.sprintf
+    {|
+	/**
+		@param {{%s}} [params={}]
+		@param {boolean} [cache=false]
+	*/|}
+    parameters_type
 
 let to_js ~(hashed_tree : Tree.t) ~outputs =
-  (* let hashed_tree = Optim_exprfacto.compress hashed_tree in *)
-  let rules =
-    Base.Hashtbl.fold hashed_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
-        let rule_name = rulename_to_snakecase rule in
-        let rule_data =
-          (* ( if rule_is_constant outputs rule data then Printf.sprintf "%s" *)
-          (*   else Printf.sprintf "(ctx) => %s" ) *)
-          value_to_js data
-        in
-        (rule_name, rule_data) :: acc )
-    |> List.sort ~compare:(fun (name1, _) (name2, _) ->
-           String.compare name1 name2 )
-  in
+  (*
+		 NOTE: for now, we are ignoring optim because it has not yet shown its benefits.
+		 let hashed_tree = Optim_exprfacto.compress hashed_tree in
+	*)
   let rules_str =
-    String.concat ~sep:"\n\n"
-      (List.map rules ~f:(fun (rule_name, rule_data) ->
-           (* let params_str = params_to_js rule_name params in *)
-           Printf.sprintf "function _%s(ctx, params) {\n  return %s \n}"
-             rule_name (* params_str *) rule_data ) )
-  in
-  (* let _outputs_str = *)
-  (*   `Assoc (Outputs_to_json.outputs_to_json outputs) *)
-  (*   |> Yojson.Safe.pretty_to_string *)
-  (* in *)
-  let outputs_str =
-    String.concat ~sep:",\n"
-      (List.map outputs ~f:(fun Model_outputs.{rule_name; _} ->
-           let rule_js_name = rulename_to_snakecase rule_name in
+    Base.Hashtbl.fold hashed_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
+        let rule_type = get_rule_type hashed_tree rule in
+        let rule_name = rulename_to_snakecase rule in
+        let rule_data = value_to_js data in
+        (rule_type, rule_name, rule_data) :: acc )
+    |> List.sort ~compare:(fun (_, name1, _) (_, name2, _) ->
+           String.compare name1 name2 )
+    |> List.map ~f:(fun (rule_type, rule_name, rule_data) ->
            Printf.sprintf
-             {|"%s": (params = {}, cache = false) => $evaluate(_%s, params, cache)|}
-             (Rule_name.to_string rule_name)
-             rule_js_name ) )
+             {|
+	/** @type {Fn<%s>}*/
+	function _%s(ctx, params) {
+		return /** @type {Value<%s>} */ (%s)
+	}|}
+             rule_type rule_name rule_type rule_data )
+    |> String.concat ~sep:"\n"
+  in
+  let outputs_str =
+    String.concat ~sep:","
+      (List.map outputs ~f:(fun Model_outputs.{rule_name; parameters; _} ->
+           let rule_name_str = Rule_name.to_string rule_name in
+           let rule_name_js = rulename_to_snakecase rule_name in
+           let jsdoc = parameters_to_jsdoc hashed_tree parameters in
+           Printf.sprintf
+             {|
+	%s
+	"%s": (params = {}, cache = false) => $evaluate(_%s, params, cache)|}
+             jsdoc rule_name_str rule_name_js ) )
   in
   let index_js =
     Printf.sprintf
-      {|
-
-/** Start embedded runtime */
-
+      {|/** Start embedded runtime */
 %s
 
 /** End embedded runtime */
 
-/** Compiled Publicodes rules */
+/** Compiled private Publicodes rules */
 
 %s
 
-/** Exported functions */
+/** Exported outputs/inputs */
 
 export const rules = {
 %s
-}
-|}
+}|}
       Js_runtime.runtime rules_str outputs_str
   in
-  let index_d_ts =
-    Printf.sprintf
-      {|
-export default class Engine {
-	constructor(cache?: boolean)
-	evaluate<R extends Inputs>(
-		rule: R,
-		context: Partial<{
-			[K in keyof Context[R]['parameters'] &
-				Inputs]: Context[K]['value']['type']
-		}>,
-	): Evaluation<R>
-}
-
-export type Inputs = keyof Context
-
-export type Parameters<R extends Inputs> = keyof Context[R]['parameters']
-
-export type Evaluation<R extends Inputs> = {
-	value: Context[R]['value']['type'] | undefined | null
-	traversedParameters: Parameters<R>[]
-	missingParameters: Parameters<R>[]
-}
-
-export type Context = { %s }|}
-      (params_to_d_ts hashed_tree outputs)
-  in
-  (index_js, index_d_ts)
+  index_js
