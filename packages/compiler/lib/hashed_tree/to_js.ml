@@ -212,13 +212,13 @@ let outputs_to_js_rules hashed_tree outputs =
         jsdoc rule_name_str rule_name_js )
   |> String.concat ~sep:","
 
-let to_js ~hashed_tree ~outputs =
+let to_js tree outputs =
   (*
 		 NOTE: for now, we are ignoring optim because it has not yet shown its benefits.
 		 let hashed_tree = Optim_exprfacto.compress hashed_tree in
 	*)
-  let rules_str = rules_to_js_functions hashed_tree in
-  let outputs_str = outputs_to_js_rules hashed_tree outputs in
+  let rules_str = rules_to_js_functions tree in
+  let outputs_str = outputs_to_js_rules tree outputs in
   let index_js =
     Printf.sprintf
       {|/** Start embedded runtime */

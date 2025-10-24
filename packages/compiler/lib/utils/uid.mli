@@ -1,6 +1,6 @@
 (** A module that generates unique integers, starting from 0. *)
 
-module Make () : sig
+module type S = sig
   type t [@@deriving equal, show]
 
   val mk : unit -> t
@@ -9,3 +9,5 @@ module Make () : sig
   val to_string : t -> string
   (** [to_string id] converts the unique integer [id] to its string representation. *)
 end
+
+module Make : functor () -> S

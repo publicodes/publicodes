@@ -5,8 +5,8 @@ open Shared.Eval_tree
 (* [compute_depth_and_freq] computes, for each hashed node, the number of
 	 its occurrence in the tree as well as its depth. *)
 let compute_depth_and_freq hashed_tree =
-  let freq_depth_table : (To_hash.t, int * int) Hashtbl.t =
-    Hashtbl.create (module To_hash)
+  let freq_depth_table : (Tree.Hash.t, int * int) Hashtbl.t =
+    Hashtbl.create (module Tree.Hash)
   in
   let update_depth (node : Tree.value) depth =
     Hashtbl.update freq_depth_table node.meta.hash ~f:(function
@@ -57,16 +57,16 @@ let compute_depth_and_freq hashed_tree =
     in
     let hash = node.meta.hash in
     let count, max_depth =
-      match Base.Hashtbl.find freq_depth_table hash with
+      match Hashtbl.find freq_depth_table hash with
       | Some (c, d) ->
           (c + 1, Int.max d depth)
       | None ->
           (1, depth)
     in
-    Base.Hashtbl.set freq_depth_table ~key:hash ~data:(count, max_depth) ;
+    Hashtbl.set freq_depth_table ~key:hash ~data:(count, max_depth) ;
     max_depth
   in
-  Base.Hashtbl.iter hashed_tree ~f:(fun node ->
+  Hashtbl.iter hashed_tree ~f:(fun node ->
       let node_depth = loop node in
       update_depth node node_depth ) ;
   freq_depth_table
@@ -79,13 +79,13 @@ let compress hashed_tree =
   let module Id = Utils.Uid.Make () in
   let freq_depth_table = compute_depth_and_freq hashed_tree in
   let resolved_compress_hashed_tree = Hashtbl.copy hashed_tree in
-  let hash_to_new_rule : (To_hash.t, Rule_name.t * Tree.value) Hashtbl.t =
-    Base.Hashtbl.create (module To_hash)
+  let hash_to_new_rule : (Tree.Hash.t, Rule_name.t * Tree.value) Hashtbl.t =
+    Hashtbl.create (module Tree.Hash)
   in
   let rec compress_node (node : Tree.value) : Tree.value =
     let hash = node.meta.hash in
     let frequency, max_depth =
-      match Base.Hashtbl.find freq_depth_table hash with
+      match Hashtbl.find freq_depth_table hash with
       | Some (c, d) ->
           (c, d)
       | None ->
@@ -132,10 +132,9 @@ let compress hashed_tree =
         | None ->
             let new_id = Id.to_string (Id.mk ()) in
             let rule_name = Rule_name.make_reserved ("f" ^ new_id) in
-            Base.Hashtbl.set hash_to_new_rule ~key:hash
-              ~data:(rule_name, new_rule) ;
+            Hashtbl.set hash_to_new_rule ~key:hash ~data:(rule_name, new_rule) ;
             (* Insert the new rule into the hashed tree. *)
-            Base.Hashtbl.set resolved_compress_hashed_tree ~key:rule_name
+            Hashtbl.set resolved_compress_hashed_tree ~key:rule_name
               ~data:new_rule ;
             rule_name
       in
@@ -144,7 +143,7 @@ let compress hashed_tree =
     else new_rule
   in
   (* Compress all nodes in the hashed tree. *)
-  Base.Hashtbl.iteri hashed_tree ~f:(fun ~key ~data ->
+  Hashtbl.iteri hashed_tree ~f:(fun ~key ~data ->
       let compressed_node = compress_node data in
-      Base.Hashtbl.set resolved_compress_hashed_tree ~key ~data:compressed_node ) ;
+      Hashtbl.set resolved_compress_hashed_tree ~key ~data:compressed_node ) ;
   resolved_compress_hashed_tree

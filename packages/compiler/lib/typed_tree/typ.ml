@@ -22,18 +22,17 @@ let to_string t =
   | _ ->
       "?"
 
-let mk ~pos (typ : naked_t) : t = Pos.mk typ ~pos |> UnionFind.make
+let mk ~pos typ = Pos.mk typ ~pos |> UnionFind.make
 
-let any ~pos () : t = mk ~pos (Any (Any.mk ()))
+let any ~pos () = mk ~pos (Any (Any.mk ()))
 
-let literal ~pos typ : t = mk ~pos (Literal typ)
+let literal ~pos typ = mk ~pos (Literal typ)
 
-let number_with_unit ~pos (unit : Units.t) : t =
-  mk ~pos (Number (Number_unit.concrete unit))
+let number_with_unit ~pos unit = mk ~pos (Number (Number_unit.concrete unit))
 
-let any_number ~pos () : t = mk ~pos (Number (Number_unit.any ()))
+let any_number ~pos () = mk ~pos (Number (Number_unit.any ()))
 
-let unify (t1 : t) (t2 : t) =
+let unify t1 t2 =
   let typ1 = t1 |> UnionFind.get in
   let typ2 = t2 |> UnionFind.get in
   let pos1 = Pos.pos typ1 in

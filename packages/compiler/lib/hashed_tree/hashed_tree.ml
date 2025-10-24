@@ -1,6 +1,4 @@
-include Tree
-
-let to_json = To_json.to_json
+type t = Tree.t
 
 let to_js = To_js.to_js
 
