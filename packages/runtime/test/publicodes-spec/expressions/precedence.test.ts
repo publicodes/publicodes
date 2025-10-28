@@ -76,7 +76,7 @@ calcul: (3 * 2) ** 2
 		expect(calcul.evaluate()).toBe(36)
 	})
 
-	// @TODO
+	// @TODO - addition of percentage
 	it.skip('intérêts composés', async () => {
 		const { calcul } = await yaml`
 calcul: 100 * ( 1 + 2% ) ** 3

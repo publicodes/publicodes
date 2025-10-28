@@ -5,12 +5,13 @@ open Shared.Eval_tree
 (* -------------------- Helper functions for names and types -------------------- *)
 
 (* Convert a Publicodes rule name to a valid snake_case JavaScript identifier *)
+(* @TODO : handle conflicts (e.g « a'a » and « a a » ) *)
 let rulename_to_snakecase (rule_name : Rule_name.t) : string =
   Rule_name.to_string rule_name
   |> String.substr_replace_all ~pattern:" " ~with_:"_"
   |> String.substr_replace_all ~pattern:"." ~with_:"_"
   |> String.substr_replace_all ~pattern:"'" ~with_:"_"
-  |> String.substr_replace_all ~pattern:"'" ~with_:"_"
+  |> String.substr_replace_all ~pattern:"’" ~with_:"_"
   |> String.substr_replace_all ~pattern:"-" ~with_:"_"
   |> String.substr_replace_all ~pattern:"«" ~with_:"_"
   |> String.substr_replace_all ~pattern:"»" ~with_:"_"

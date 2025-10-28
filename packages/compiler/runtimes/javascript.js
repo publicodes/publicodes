@@ -203,6 +203,10 @@ function $eq(l, r) {
 		return undefined
 	}
 
+	if (l instanceof Date && r instanceof Date) {
+		return l.getTime() === r.getTime()
+	}
+
 	return l === r
 }
 
@@ -219,6 +223,10 @@ function $eq(l, r) {
 function $neq(l, r) {
 	if (l === undefined || r === undefined) {
 		return undefined
+	}
+
+	if (l instanceof Date && r instanceof Date) {
+		return l.getTime() !== r.getTime()
 	}
 
 	return l !== r
