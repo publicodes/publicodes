@@ -25,11 +25,7 @@ let rulename_to_snakecase (rule_name : Rule_name.t) : string =
 
 (* Convert a rule name to a valid TypeScript type name *)
 let rulename_to_type_name (rule_name : Rule_name.t) : string =
-  let base_name = Rule_name.to_string rule_name in
-  let capitalized =
-    String.capitalize
-      (String.substr_replace_all ~pattern:" " ~with_:"" base_name)
-  in
+  let capitalized = String.capitalize (rulename_to_snakecase rule_name) in
   Printf.sprintf "%sParams" capitalized
 
 (* -------------------- JSDoc Type Generation -------------------- *)
@@ -106,7 +102,8 @@ let generate_evaluate_jsdoc (tree : Tree.t) (rule_name : Rule_name.t) : string =
     {|/**
 		 * Evaluate "%s"
 		 * @param {%s} [params={}]
-		 * @param {boolean} [cache=false]
+		 * @param {Object} options
+		 * @param {boolean} [option.cache=false]
 		 * @return {%s | undefined | null}
 		 */|}
     (Rule_name.to_string rule_name)
@@ -120,7 +117,8 @@ let generate_evaluate_params_jsdoc (tree : Tree.t) (rule_name : Rule_name.t) :
     {|/**
 		 * Evaluate "%s" with information on missing and needed parameters
 		 * @param {%s} [params={}]
-		 * @param {boolean} [cache=false]
+		 * @param {Object} options
+		 * @param {boolean} [option.cache=false]
 		 * @return {{value: %s | undefined | null; needed: Array<keyof %s>, missing: Array<keyof %s> }}
 		 */|}
     (Rule_name.to_string rule_name)
@@ -321,8 +319,7 @@ let generate_rule_object hashed_tree
   let params_list =
     Printf.sprintf "[%s]"
       (String.concat ~sep:", "
-         (List.map parameters ~f:(fun p ->
-              Printf.sprintf "'%s'" (Rule_name.to_string p) ) ) )
+         (List.map parameters ~f:(fun p -> to_js_str (Rule_name.to_string p))) )
   in
   (* Generate unit property if present *)
   let unit_property =
@@ -353,9 +350,9 @@ let generate_rule_object hashed_tree
     {|%s: {
 		%s
 		%s
-		evaluate: (params = {}, cache = false) => $evaluate(_%s, params, cache).value,
+		evaluate: (params = {}, options) => $evaluate(_%s, params, options).value,
 		%s
-		evaluateParams: (params = {}, cache = false) => $evaluate(_%s, params, cache),
+		evaluateParams: (params = {}, options) => $evaluate(_%s, params, options),
 		/** @type {"%s"} */
 		type: "%s",%s
 		/** Parameter list for "%s"

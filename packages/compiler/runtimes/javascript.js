@@ -571,9 +571,12 @@ function $ref(rule, fn, ctx, params) {
 	return fn(ctx, params)
 }
 
-function $evaluate(fn, _global, cache) {
+function $evaluate(fn, _global, options = {}) {
 	const params = []
-	const value = fn({ _global, ...(cache ? { _cache: {} } : {}) }, params)
+	const value = fn(
+		{ _global, ...(options.cache ? { _cache: {} } : {}) },
+		params,
+	)
 	const needed = Array.from(new Set(params))
 	const missing = needed.filter((p) => !(p in _global))
 
