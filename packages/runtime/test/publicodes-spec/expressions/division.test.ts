@@ -3,32 +3,28 @@ import { yaml } from '../../utils/compile'
 
 describe('Expressions > division', () => {
 	it('division', async () => {
-		const engine = await yaml`
+		const { division } = await yaml`
 
 salaire de base:
   unité: ¥
 
-produit:
+division:
   valeur: salaire de base / 3
 `
-		expect(
-			engine.evaluate('produit', { 'salaire de base': 3000 }).value,
-		).toEqual(1000)
-		expect(engine.getType('produit').unit).toBe('¥')
+		expect(division.evaluate({ 'salaire de base': 3000 })).toEqual(1000)
+		expect(division.unit).toBe('¥')
 	})
 
 	it('division inverse', async () => {
-		const engine = await yaml`
+		const { division } = await yaml`
 
 salaire de base:
   unité: ¥
 
-produit:
+division:
   valeur: 3 / salaire de base
 `
-		expect(
-			engine.evaluate('produit', { 'salaire de base': 3000 }).value,
-		).toEqual(0.001)
-		expect(engine.getType('produit').unit).toBe('/¥')
+		expect(division.evaluate({ 'salaire de base': 3000 })).toEqual(0.001)
+		expect(division.unit).toBe('/¥')
 	})
 })

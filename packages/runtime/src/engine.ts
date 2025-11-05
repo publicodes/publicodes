@@ -1,13 +1,13 @@
-import evaluateNode, { Context } from './evaluate'
+import evaluateNode from './evaluate'
 import { Memoizer } from './memoize'
 import {
-	Publicodes,
-	Outputs,
-	GetContext,
-	Evaluation,
-	RuleName,
 	Computation,
+	Evaluation,
+	GetContext,
 	GetMeta,
+	Outputs,
+	Publicodes,
+	RuleName,
 } from './types'
 
 type EngineOptions = {

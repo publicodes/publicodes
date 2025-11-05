@@ -1,19 +1,16 @@
 import { run, bench, summary, do_not_optimize } from 'mitata'
 import LegacyEngine from 'publicodes'
 
-// New engine
-import NewEngine from '../dist/index.js'
-
 // Test data imports
-import newRules from '../test/simple-TJM/model.publicodes.json' assert { type: 'json' }
-import legacyRules from '../test/simple-TJM/legacy-build/index.js'
+import rules from '../examples/simple-TJM/model.publicodes.js'
+import legacyRules from '../examples/simple-TJM/publicodes-build/index.js'
 
 console.log('🚀 Publicodes Engine Benchmark - Simple TJM model\n')
 
 // Simple Model Benchmarks
 summary(() => {
 	bench('[Instanciation] Publicodes 2', () => {
-		return do_not_optimize(new NewEngine(newRules))
+		return do_not_optimize(rules)
 	})
 
 	bench('[Instanciation] Publicodes 1', () => {
@@ -22,13 +19,10 @@ summary(() => {
 })
 
 summary(() => {
-	// Pre-instantiate engines for evaluation benchmarks
-	const newEngineSimple = new NewEngine(newRules)
-	const legacyEngineSimple = new LegacyEngine(legacyRules)
-
 	// Simple model evaluations
+	const legacyEngineSimple = new LegacyEngine(legacyRules)
 	bench('[Evaluation without cache] Publicodes 2', () => {
-		return newEngineSimple.evaluate('exemples . CA élevé')
+		return rules['exemples . CA élevé'].evaluate()
 	})
 
 	bench('[Evaluation without cache] Publicodes 1', () => {
@@ -58,14 +52,12 @@ summary(() => {
 	})
 
 	bench('[Multiple rules evaluation - with cache] Publicodes 2', () => {
-		const newEngineSimple = new NewEngine(newRules, { cache: true })
-
 		const result = []
-		result.push(newEngineSimple.evaluate('revenu net', simpleSituation))
+		result.push(rules['revenu net'].evaluate(simpleSituation, { cache: true }))
 		result.push(
-			newEngineSimple.evaluate('exemples . CA élevé', simpleSituation),
+			rules['exemples . CA élevé'].evaluate(simpleSituation, { cache: true }),
 		)
-		result.push(newEngineSimple.evaluate('cotisations', simpleSituation))
+		result.push(rules['cotisations'].evaluate(simpleSituation, { cache: true }))
 
 		return result
 	})

@@ -3,38 +3,68 @@ import { yaml } from '../../utils/compile'
 
 describe('Mécanisme > par défaut', () => {
 	test('simple nombre', async () => {
-		const engine = await yaml`
+		const rules = await yaml`
 test:
   par défaut: 10
 `
-		expect(engine.evaluate('test').value).toEqual(10)
+		expect(rules.test.evaluate()).toBe(10)
 	})
 
-	test('simple texte', async () => {
-		const engine = await yaml`
+	test('simple texte vide', async () => {
+		const rules = await yaml`
 test:
-  par défaut: "calinou"
+  par défaut: ''
 `
-		expect(engine.evaluate('test').value).toEqual('calinou')
+		expect(rules.test.evaluate()).toBe('')
 	})
 
-	test('texte vide', async () => {
-		const engine = await yaml`
+	test('avec une valeur', async () => {
+		const rules = await yaml`
+a:
+b:
 test:
-  par défaut: ""
+  par défaut: a
+  valeur: b
 `
-		expect(engine.evaluate('test').value).toEqual('')
+		expect(rules.test.evaluateParams()).toMatchObject({
+			value: undefined,
+			missing: ['b', 'a'],
+		})
+
+		expect(rules.test.evaluateParams({ a: 5 })).toMatchObject({
+			value: 5,
+			missing: ['b'],
+		})
+
+		expect(rules.test.evaluateParams({ b: 5 })).toMatchObject({
+			value: 5,
+			missing: [],
+		})
 	})
 
-	test('avec une reference', async () => {
-		const engine = await yaml`
-a: 5
+	test('avec le contexte', async () => {
+		const rules = await yaml`
+a:
 test:
   par défaut: a
 `
-		expect(engine.evaluate('test').value).toEqual(5)
+		expect(rules.test.evaluateParams()).toMatchObject({
+			value: undefined,
+			missing: ['test', 'a'],
+		})
+
+		expect(rules.test.evaluateParams({ a: 5 })).toMatchObject({
+			value: 5,
+			missing: ['test'],
+		})
+
+		expect(rules.test.evaluateParams({ test: 5 })).toMatchObject({
+			value: 5,
+			missing: [],
+		})
 	})
 
+	// TODO move this to cram test
 	test('avec une valeur différente du type attendu', async () => {
 		try {
 			await yaml`
@@ -49,6 +79,7 @@ test:
 		expect.assertions(2)
 	})
 
+	// TODO move this to cram test
 	test('valeur manquante', async () => {
 		try {
 			await yaml`

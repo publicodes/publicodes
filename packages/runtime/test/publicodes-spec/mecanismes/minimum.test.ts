@@ -3,27 +3,27 @@ import { yaml } from '../../utils/compile'
 
 describe('Mécanisme > le minimum de', () => {
 	it('simple', async () => {
-		const engine = await yaml`
+		const { a } = await yaml`
 a:
   le minimum de:
     - 10
     - 4.4
     - -5
 `
-		expect(engine.evaluate('a').value).toEqual(-5)
+		expect(a.evaluate()).toBe(-5)
 	})
 
 	it('une seule valeur', async () => {
-		const engine = await yaml`
+		const { a } = await yaml`
 a:
   le minimum de:
     - -10
 `
-		expect(engine.evaluate('a').value).toEqual(-10)
+		expect(a.evaluate()).toBe(-10)
 	})
 
 	it('valeur non définie', async () => {
-		const engine = await yaml`
+		const { a, b } = await yaml`
 a:
   le minimum de:
     - 10 €
@@ -31,12 +31,12 @@ a:
     - b
 b:
 `
-		expect(engine.evaluate('a').value).toEqual(undefined)
-		expect(engine.getType('b').unit).toEqual('€')
+		expect(a.evaluate()).toBe(undefined)
+		expect(b.unit).toBe('€')
 	})
 
 	it('valeur non applicable', async () => {
-		const engine = await yaml`
+		const { a } = await yaml`
 a:
   le minimum de:
     - 10 %
@@ -45,6 +45,6 @@ a:
 b:
   non applicable si: oui
 `
-		expect(engine.evaluate('a').value).toEqual(4.4)
+		expect(a.evaluate()).toBe(4.4)
 	})
 })

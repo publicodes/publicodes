@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeAll } from 'bun:test'
+import { beforeAll, describe, expect, test } from 'bun:test'
 import { TestPublicodes, yaml } from '../utils/compile'
 
 describe('Constantes', () => {
-	let engine: TestPublicodes
+	let r: TestPublicodes
 	beforeAll(async () => {
-		engine = await yaml`
+		r = await yaml`
 
 entier: 5
 décimal: 5.4
@@ -15,24 +15,28 @@ chaine: "Salut le monde"
 `
 	})
 
-	it('entier', () => {
-		expect(engine.evaluate('entier').value).toEqual(5)
-		expect(engine.getType('entier')).toHaveProperty('number')
+	test('entier', () => {
+		expect(r.entier.evaluate()).toBe(5)
+		expect(r.entier.type).toBe('number')
 	})
 
-	it('nombre décimal', () => {
-		expect(engine.evaluate('décimal').value).toEqual(5.4)
+	test('nombre décimal', () => {
+		expect(r.décimal.evaluate()).toBe(5.4)
+		expect(r.décimal.type).toBe('number')
 	})
 
-	it('date', () => {
-		expect(engine.evaluate('date').value).toEqual(new Date('2025-12-03'))
+	test('date', () => {
+		expect(r.date.evaluate()).toEqual(new Date('2025-12-03'))
+		expect(r.date.type).toBe('date')
 	})
 
-	it('booléen', () => {
-		expect(engine.evaluate('booléen').value).toEqual(true)
+	test('booléen', () => {
+		expect(r.booléen.evaluate()).toBe(true)
+		expect(r.booléen.type).toBe('boolean')
 	})
 
-	it('chaine', () => {
-		expect(engine.evaluate('chaine').value).toEqual('Salut le monde')
+	test('chaine', () => {
+		expect(r.chaine.evaluate()).toBe('Salut le monde')
+		expect(r.chaine.type).toBe('text')
 	})
 })

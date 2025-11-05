@@ -1,3 +1,4 @@
+/** Start embedded runtime */
 /**
  * @typedef {Date | number | string | null | undefined} Value
  * @typedef {number | null | undefined} Number
@@ -580,3 +581,313 @@ function $evaluate(fn, _global, options = {}) {
 
 	return { value, needed, missing }
 }
+
+
+/** End embedded runtime */
+
+/** Compiled private Publicodes rules */
+
+
+	/** @type {Fn<boolean>}*/
+	function _auto_entrepreneur(ctx, params) {
+		return /** @type {boolean} */ ($cond(($get("auto-entrepreneur", ctx, params) === undefined), () => false, () => $get("auto-entrepreneur", ctx, params)))
+	}
+
+	/** @type {Fn<number>}*/
+	function _charges(ctx, params) {
+		return /** @type {number} */ ($cond($or(($ref("auto-entrepreneur", _auto_entrepreneur, ctx, params) === undefined), () =>  $or($eq($ref("auto-entrepreneur", _auto_entrepreneur, ctx, params),  false), () =>  $eq($ref("auto-entrepreneur", _auto_entrepreneur, ctx, params),  null))), () => $cond(($get("charges", ctx, params) === undefined), () => $cond($and($neq(100,  null), () =>  $lt($mul($mul(10, () =>  $ref("chiffre d'affaires", _chiffre_d_affaires, ctx, params)), () =>  0.01), () =>  100)), () => 100, () => $mul($mul(10, () =>  $ref("chiffre d'affaires", _chiffre_d_affaires, ctx, params)), () =>  0.01)), () => $get("charges", ctx, params)), () => null))
+	}
+
+	/** @type {Fn<number>}*/
+	function _chiffre_d_affaires(ctx, params) {
+		return /** @type {number} */ ($mul($ref("chiffre d'affaires . nombre de jour", _chiffre_d_affaires___nombre_de_jour, ctx, params), () =>  $ref("chiffre d'affaires . TJM", _chiffre_d_affaires___TJM, ctx, params)))
+	}
+
+	/** @type {Fn<number>}*/
+	function _chiffre_d_affaires___TJM(ctx, params) {
+		return /** @type {number} */ ($get("chiffre d'affaires . TJM", ctx, params))
+	}
+
+	/** @type {Fn<number>}*/
+	function _chiffre_d_affaires___nombre_de_jour(ctx, params) {
+		return /** @type {number} */ ($cond(($get("chiffre d'affaires . nombre de jour", ctx, params) === undefined), () => 16, () => $get("chiffre d'affaires . nombre de jour", ctx, params)))
+	}
+
+	/** @type {Fn<number>}*/
+	function _cotisations(ctx, params) {
+		return /** @type {number} */ ($mul($mul($ref("cotisations . taux", _cotisations___taux, ctx, params), () =>  $ref("chiffre d'affaires", _chiffre_d_affaires, ctx, params)), () =>  0.01))
+	}
+
+	/** @type {Fn<number>}*/
+	function _cotisations___taux(ctx, params) {
+		return /** @type {number} */ ($cond($or($eq($ref("auto-entrepreneur", _auto_entrepreneur, ctx, params),  null), () =>  $eq($ref("auto-entrepreneur", _auto_entrepreneur, ctx, params),  false)), () => 45, () => 30))
+	}
+
+	/** @type {Fn<unknown>}*/
+	function _exemples(ctx, params) {
+		return /** @type {unknown} */ ($get("exemples", ctx, params))
+	}
+
+	/** @type {Fn<number>}*/
+	function _exemples___CA_élevé(ctx, params) {
+		return /** @type {number} */ (((ctx) => $ref("revenu net", _revenu_net, ctx, params))({ ...ctx, "chiffre d'affaires . TJM": 600 }))
+	}
+
+	/** @type {Fn<number>}*/
+	function _revenu_net(ctx, params) {
+		return /** @type {number} */ ($add((- $ref("cotisations", _cotisations, ctx, params)),  $add((- $ref("charges", _charges, ctx, params)),  $ref("chiffre d'affaires", _chiffre_d_affaires, ctx, params))))
+	}
+
+/** Exported outputs/inputs */
+
+const rules = {
+'auto-entrepreneur': {
+		/**
+		 * Parameters of "auto-entrepreneur"
+		 * @typedef {{
+				'auto-entrepreneur'?: boolean | undefined
+			}} Auto_entrepreneurParams
+		 */
+		/**
+		 * Evaluate "auto-entrepreneur"
+		 * @param {Auto_entrepreneurParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {boolean | undefined | null}
+		 */
+		evaluate: (params = {}, options) => $evaluate(_auto_entrepreneur, params, options).value,
+		/**
+		 * Evaluate "auto-entrepreneur" with information on missing and needed parameters
+		 * @param {Auto_entrepreneurParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {{value: boolean | undefined | null; needed: Array<keyof Auto_entrepreneurParams>, missing: Array<keyof Auto_entrepreneurParams> }}
+		 */
+		evaluateParams: (params = {}, options) => $evaluate(_auto_entrepreneur, params, options),
+		/** @type {"boolean"} */
+		type: "boolean",
+		/** Parameter list for "auto-entrepreneur"
+		 * @type {Array<keyof Auto_entrepreneurParams>}
+		 */
+		params: ['auto-entrepreneur'],
+		/** @type {string} auto-entrepreneur */
+		title: 'auto-entrepreneur',
+	},
+'charges': {
+		/**
+		 * Parameters of "charges"
+		 * @typedef {{
+				'auto-entrepreneur'?: boolean | undefined;
+				'charges'?: number | undefined;
+				'chiffre d'affaires . TJM'?: number | undefined;
+				'chiffre d'affaires . nombre de jour'?: number | undefined
+			}} ChargesParams
+		 */
+		/**
+		 * Evaluate "charges"
+		 * @param {ChargesParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {number | undefined | null}
+		 */
+		evaluate: (params = {}, options) => $evaluate(_charges, params, options).value,
+		/**
+		 * Evaluate "charges" with information on missing and needed parameters
+		 * @param {ChargesParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {{value: number | undefined | null; needed: Array<keyof ChargesParams>, missing: Array<keyof ChargesParams> }}
+		 */
+		evaluateParams: (params = {}, options) => $evaluate(_charges, params, options),
+		/** @type {"number"} */
+		type: "number",
+		/** @type {"€"} */
+		unit: "€",
+		/** Parameter list for "charges"
+		 * @type {Array<keyof ChargesParams>}
+		 */
+		params: ['auto-entrepreneur', 'charges', 'chiffre d\'affaires . TJM', 'chiffre d\'affaires . nombre de jour'],
+		/** @type {string} charges */
+		title: 'charges',
+	},
+'chiffre d\'affaires . TJM': {
+		/**
+		 * Parameters of "chiffre d'affaires . TJM"
+		 * @typedef {{
+				'chiffre d'affaires . TJM'?: number | undefined
+			}} Chiffre_d_affaires___TJMParams
+		 */
+		/**
+		 * Evaluate "chiffre d'affaires . TJM"
+		 * @param {Chiffre_d_affaires___TJMParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {number | undefined | null}
+		 */
+		evaluate: (params = {}, options) => $evaluate(_chiffre_d_affaires___TJM, params, options).value,
+		/**
+		 * Evaluate "chiffre d'affaires . TJM" with information on missing and needed parameters
+		 * @param {Chiffre_d_affaires___TJMParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {{value: number | undefined | null; needed: Array<keyof Chiffre_d_affaires___TJMParams>, missing: Array<keyof Chiffre_d_affaires___TJMParams> }}
+		 */
+		evaluateParams: (params = {}, options) => $evaluate(_chiffre_d_affaires___TJM, params, options),
+		/** @type {"number"} */
+		type: "number",
+		/** @type {"€/jour"} */
+		unit: "€/jour",
+		/** Parameter list for "chiffre d'affaires . TJM"
+		 * @type {Array<keyof Chiffre_d_affaires___TJMParams>}
+		 */
+		params: ['chiffre d\'affaires . TJM'],
+		/** @type {string} chiffre d'affaires . TJM */
+		title: 'chiffre d\'affaires . TJM',
+	},
+'chiffre d\'affaires . nombre de jour': {
+		/**
+		 * Parameters of "chiffre d'affaires . nombre de jour"
+		 * @typedef {{
+				'chiffre d'affaires . nombre de jour'?: number | undefined
+			}} Chiffre_d_affaires___nombre_de_jourParams
+		 */
+		/**
+		 * Evaluate "chiffre d'affaires . nombre de jour"
+		 * @param {Chiffre_d_affaires___nombre_de_jourParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {number | undefined | null}
+		 */
+		evaluate: (params = {}, options) => $evaluate(_chiffre_d_affaires___nombre_de_jour, params, options).value,
+		/**
+		 * Evaluate "chiffre d'affaires . nombre de jour" with information on missing and needed parameters
+		 * @param {Chiffre_d_affaires___nombre_de_jourParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {{value: number | undefined | null; needed: Array<keyof Chiffre_d_affaires___nombre_de_jourParams>, missing: Array<keyof Chiffre_d_affaires___nombre_de_jourParams> }}
+		 */
+		evaluateParams: (params = {}, options) => $evaluate(_chiffre_d_affaires___nombre_de_jour, params, options),
+		/** @type {"number"} */
+		type: "number",
+		/** @type {"jour"} */
+		unit: "jour",
+		/** Parameter list for "chiffre d'affaires . nombre de jour"
+		 * @type {Array<keyof Chiffre_d_affaires___nombre_de_jourParams>}
+		 */
+		params: ['chiffre d\'affaires . nombre de jour'],
+		/** @type {string} chiffre d'affaires . nombre de jour */
+		title: 'chiffre d\'affaires . nombre de jour',
+	},
+'cotisations': {
+		/**
+		 * Parameters of "cotisations"
+		 * @typedef {{
+				'auto-entrepreneur'?: boolean | undefined;
+				'chiffre d'affaires . TJM'?: number | undefined;
+				'chiffre d'affaires . nombre de jour'?: number | undefined
+			}} CotisationsParams
+		 */
+		/**
+		 * Evaluate "cotisations"
+		 * @param {CotisationsParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {number | undefined | null}
+		 */
+		evaluate: (params = {}, options) => $evaluate(_cotisations, params, options).value,
+		/**
+		 * Evaluate "cotisations" with information on missing and needed parameters
+		 * @param {CotisationsParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {{value: number | undefined | null; needed: Array<keyof CotisationsParams>, missing: Array<keyof CotisationsParams> }}
+		 */
+		evaluateParams: (params = {}, options) => $evaluate(_cotisations, params, options),
+		/** @type {"number"} */
+		type: "number",
+		/** @type {"€"} */
+		unit: "€",
+		/** Parameter list for "cotisations"
+		 * @type {Array<keyof CotisationsParams>}
+		 */
+		params: ['auto-entrepreneur', 'chiffre d\'affaires . TJM', 'chiffre d\'affaires . nombre de jour'],
+		/** @type {string} cotisations */
+		title: 'cotisations',
+	},
+'exemples . CA élevé': {
+		/**
+		 * Parameters of "exemples . CA élevé"
+		 * @typedef {{
+				'auto-entrepreneur'?: boolean | undefined;
+				'charges'?: number | undefined;
+				'chiffre d'affaires . TJM'?: number | undefined;
+				'chiffre d'affaires . nombre de jour'?: number | undefined
+			}} Exemples___CA_élevéParams
+		 */
+		/**
+		 * Evaluate "exemples . CA élevé"
+		 * @param {Exemples___CA_élevéParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {number | undefined | null}
+		 */
+		evaluate: (params = {}, options) => $evaluate(_exemples___CA_élevé, params, options).value,
+		/**
+		 * Evaluate "exemples . CA élevé" with information on missing and needed parameters
+		 * @param {Exemples___CA_élevéParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {{value: number | undefined | null; needed: Array<keyof Exemples___CA_élevéParams>, missing: Array<keyof Exemples___CA_élevéParams> }}
+		 */
+		evaluateParams: (params = {}, options) => $evaluate(_exemples___CA_élevé, params, options),
+		/** @type {"number"} */
+		type: "number",
+		/** @type {"€"} */
+		unit: "€",
+		/** Parameter list for "exemples . CA élevé"
+		 * @type {Array<keyof Exemples___CA_élevéParams>}
+		 */
+		params: ['auto-entrepreneur', 'charges', 'chiffre d\'affaires . TJM', 'chiffre d\'affaires . nombre de jour'],
+		/** @type {string} exemples . CA élevé */
+		title: 'exemples . CA élevé',
+	},
+'revenu net': {
+		/**
+		 * Parameters of "revenu net"
+		 * @typedef {{
+				'auto-entrepreneur'?: boolean | undefined;
+				'charges'?: number | undefined;
+				'chiffre d'affaires . TJM'?: number | undefined;
+				'chiffre d'affaires . nombre de jour'?: number | undefined
+			}} Revenu_netParams
+		 */
+		/**
+		 * Evaluate "revenu net"
+		 * @param {Revenu_netParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {number | undefined | null}
+		 */
+		evaluate: (params = {}, options) => $evaluate(_revenu_net, params, options).value,
+		/**
+		 * Evaluate "revenu net" with information on missing and needed parameters
+		 * @param {Revenu_netParams} [params={}]
+		 * @param {Object} [options={}]
+		 * @param {boolean} [option.cache=false]
+		 * @return {{value: number | undefined | null; needed: Array<keyof Revenu_netParams>, missing: Array<keyof Revenu_netParams> }}
+		 */
+		evaluateParams: (params = {}, options) => $evaluate(_revenu_net, params, options),
+		/** @type {"number"} */
+		type: "number",
+		/** @type {"€"} */
+		unit: "€",
+		/** Parameter list for "revenu net"
+		 * @type {Array<keyof Revenu_netParams>}
+		 */
+		params: ['auto-entrepreneur', 'charges', 'chiffre d\'affaires . TJM', 'chiffre d\'affaires . nombre de jour'],
+		/** @type {string} revenu net */
+		title: 'revenu net',
+	}
+}
+
+export default rules;

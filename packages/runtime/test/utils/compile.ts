@@ -1,17 +1,10 @@
 /* eslint-disable no-console */
-import { $, env } from 'bun'
-import { PublicodesEngine } from '../../src'
-import type { Publicodes, Outputs } from '../../src'
+import { $ } from 'bun'
+import { Value } from '../../src/evaluate'
 
-/**
- * Compiles publicodes YAML to JSON using the publicodes compiler
- * @param yaml The publicodes YAML string to compile
- * @returns The compiled JSON object
- */
-
-export async function compilePublicodesToJSON(
+export async function compilePublicodesToJS(
 	yaml: string,
-): Promise<Publicodes<Outputs>> {
+): Promise<PublicodeExport> {
 	try {
 		const { stdout, stderr } =
 			await $`bunx publicodes2 compile -i --default-to-public -o -  < ${Buffer.from(yaml)}`.quiet()
@@ -19,38 +12,10 @@ export async function compilePublicodesToJSON(
 		if (stderr.toString()) {
 			console.warn(stderr.toString())
 		}
-
-		return JSON.parse(stdout.toString()) as Publicodes<Outputs>
-	} catch (error) {
-		if (error instanceof Error && 'exitCode' in error) {
-			// Shell error with exit code
-			const shellError = error as {
-				exitCode: number
-				stdout?: Buffer
-				stderr?: Buffer
-			}
-			throw new Error(
-				`Compilation failed with exit code ${shellError.exitCode}:\n` +
-					`stdout: ${shellError.stdout?.toString() || ''}\n` +
-					`stderr: ${shellError.stderr?.toString() || ''}`,
-			)
-		}
-		throw error
-	}
-}
-
-export async function compilePublicodesToJS(yaml: string): Promise<any> {
-	try {
-		const { stdout, stderr } =
-			await $`bunx publicodes2 compile -i --default-to-public -t js -o -  < ${Buffer.from(yaml)}`.quiet()
-
-		if (stderr.toString()) {
-			console.warn(stderr.toString())
-		}
-
+		// console.log(stdout.toString())
 		return eval(
-			stdout.toString().replace('export default ', '') + '\nnew Engine',
-		) // eslint-disable-line no-eval
+			stdout.toString().replace('export default ', ''),
+		) as PublicodeExport // eslint-disable-line no-eval
 	} catch (error) {
 		if (error instanceof Error && 'exitCode' in error) {
 			// Shell error with exit code
@@ -68,24 +33,36 @@ export async function compilePublicodesToJS(yaml: string): Promise<any> {
 		throw error
 	}
 }
+
+type PublicodeExport = Record<
+	string,
+	{
+		evaluate: (c?: Record<string, Value | Date>) => Value | Date
+		evaluateParams: (c?: Record<string, Value | Date>) => {
+			value: Value | Date
+			missing: string[]
+			needed: string[]
+		}
+		title: string
+		description?: string
+		note?: string
+		meta: Record<string, unknown>
+		type: string
+		unit: string
+	}
+>
 
 // A tag function that compiles publicodes YAML to JSON using the publicodes compiler.
 // Nammed "yaml" so that prettier will pick it and format the template string as such.
 export async function yaml(
 	strings: TemplateStringsArray,
 	...values: Array<{ toString(): string }>
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<PublicodesEngine<any>> {
+): Promise<PublicodeExport> {
 	const yaml = strings.reduce((acc, str, i) => {
 		return acc + str + (i < values.length ? String(values[i]) : '')
 	}, '')
-	if (env.OUTPUT_TYPE === 'js') {
-		return compilePublicodesToJS(dedent(yaml))
-	} else {
-		const rules = await compilePublicodesToJSON(dedent(yaml))
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		return new PublicodesEngine(rules as Publicodes<any>)
-	}
+
+	return compilePublicodesToJS(dedent(yaml))
 }
 
 export type TestPublicodes = Awaited<ReturnType<typeof yaml>>

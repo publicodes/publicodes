@@ -1,9 +1,6 @@
-import { PublicodesEngine } from '../../src'
-import rules from './model.publicodes.json'
+import rules from './model.publicodes.js'
 
-const engine = new PublicodesEngine(rules)
-
-const revenuNet = engine.evaluate('revenu net', {
+const revenuNet = rules['revenu net'].evaluate({
 	"chiffre d'affaires . TJM": 450,
 	'auto-entrepreneur': true,
 })

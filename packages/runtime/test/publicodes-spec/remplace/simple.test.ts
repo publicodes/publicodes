@@ -1,7 +1,10 @@
-import { describe, test, expect } from 'bun:test'
-import { yaml } from '../../utils/compile'
+import { describe, test, expect, beforeAll } from 'bun:test'
+import { yaml, TestPublicodes } from '../../utils/compile'
 
-const engine = await yaml`
+describe('Remplace > simple', () => {
+	let rules: TestPublicodes
+	beforeAll(async () => {
+		rules = await yaml`
 restaurant:
   avec:
     prix du repas: 10 €/repas
@@ -13,31 +16,30 @@ restaurant:
 
 test: restaurant . prix du repas
 `
-
-describe('Remplace > simple', () => {
+	})
 	test('non applicable', () => {
-		expect(
-			engine.evaluate('test', { 'restaurant . client gourmand': false }).value,
-		).toBe(10)
+		expect(rules.test.evaluate({ 'restaurant . client gourmand': false })).toBe(
+			10,
+		)
 	})
 
 	test('applicable', () => {
-		expect(
-			engine.evaluate('test', { 'restaurant . client gourmand': true }).value,
-		).toBe(15)
+		expect(rules.test.evaluate({ 'restaurant . client gourmand': true })).toBe(
+			15,
+		)
 	})
 
 	test('condition non définie', () => {
-		expect(engine.evaluate('test').value).toBe(10)
+		expect(rules.test.evaluate()).toBe(10)
 	})
 
 	test('remplace non défini', async () => {
-		const engine = await yaml`
+		const { x } = await yaml`
 a:
   remplace: b
 b: 1
 x: b
 `
-		expect(engine.evaluate('x').value).toBe(undefined)
+		expect(x.evaluate()).toBe(undefined)
 	})
 })

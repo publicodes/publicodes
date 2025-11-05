@@ -1,12 +1,12 @@
 import { describe, test, expect } from 'bun:test'
 import { yaml } from '../../utils/compile'
 
-describe('Mécanisme > toutes ces conditions', () => {
+describe('Mécanisme > une de ces conditions', () => {
 	test('avec une expression', async () => {
 		const { test } = await yaml`
 test:
   valeur:
-    toutes ces conditions:
+    une de ces conditions:
       - 10 > 5
 `
 		expect(test.evaluate()).toBe(true)
@@ -16,8 +16,8 @@ test:
 		const { test } = await yaml`
 test:
   valeur:
-    toutes ces conditions:
-      - 10 > 5
+    une de ces conditions:
+      - 10 < 5
       - 5 = 2
 `
 		expect(test.evaluate()).toBe(false)
@@ -31,16 +31,16 @@ ref:
 
 test:
   valeur:
-    toutes ces conditions:
+    une de ces conditions:
       - ref
 
 test2:
   valeur:
-    toutes ces conditions:
+    une de ces conditions:
       - ref
-      - 10 > 5
+      - 10 < 5
 `
 		expect(test.evaluate()).toBe(false)
-		expect(test2.evaluate()).toEqual(false)
+		expect(test2.evaluate()).toBe(false)
 	})
 })

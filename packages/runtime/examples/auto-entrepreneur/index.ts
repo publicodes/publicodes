@@ -1,7 +1,5 @@
-import { PublicodesEngine } from '../../src'
-import rules from './model.publicodes.json'
-
-const engine = new PublicodesEngine(rules)
+/* eslint-disable no-console */
+import rules from './model.publicodes.js'
 
 const context = {
 	"entreprise . chiffre d'affaires . BIC": 0,
@@ -12,22 +10,11 @@ const context = {
 	'entreprise . activité . nature . libérale . réglementée': false,
 	date: new Date('2025-05-20'),
 	'dirigeant . auto-entrepreneur . Cipav . adhérent': false,
-}
+	'entreprise . date de création': new Date('2025-05-20'),
+	"entreprise . durée d'activité . trimestres civils": 10,
+	"entreprise . durée d'activité . années civiles": 5,
+} as const
 
 console.log(
-	'revenu net',
-	engine.evaluate('dirigeant . auto-entrepreneur . revenu net', context),
-)
-
-console.log(
-	engine.meta(
-		'dirigeant . auto-entrepreneur . cotisations et contributions . TFC',
-	).title,
-)
-console.log(
-	'cotisations',
-	engine.evaluate(
-		'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations',
-		context,
-	),
+	rules['dirigeant . auto-entrepreneur . revenu net'].evaluateParams(context),
 )

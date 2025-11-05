@@ -26,6 +26,7 @@ dirigeant . auto-entrepreneur . DROM:
       valeur: entreprise . durée d'activité . années civiles <= 3
 
     taux service BIC:
+      applicable si: DROM
       remplace:
         références à: cotisations et contributions . cotisations . service BIC . taux
         priorité: 1
@@ -37,6 +38,7 @@ dirigeant . auto-entrepreneur . DROM:
         - sinon: 14.20%
 
     taux service BNC:
+      applicable si: DROM
       remplace:
         références à: cotisations et contributions . cotisations . service BNC . taux
         priorité: 1
@@ -72,6 +74,7 @@ dirigeant . auto-entrepreneur . DROM:
               - sinon: 14.10%
 
     taux vente restauration hébergement:
+      applicable si: DROM
       remplace:
         références à: cotisations et contributions . cotisations . vente restauration
           hébergement . taux
@@ -84,6 +87,7 @@ dirigeant . auto-entrepreneur . DROM:
         - sinon: 8.20%
 
     taux CIPAV:
+      applicable si: DROM
       remplace:
         références à: cotisations et contributions . cotisations . service BNC Cipav . taux
         priorité: 1
@@ -138,18 +142,22 @@ dirigeant . auto-entrepreneur . Acre:
         - si: entreprise . durée d'activité < 1 an
           alors: 50%
       meta:
-        
+
         références:
           FAQ auto-entrepreneur - Urssaf: https://www.autoentrepreneur.urssaf.fr/portail/accueil/une-question/questions-frequentes.html
           Aide à la création ou à la reprise d'une entreprise (Acre) - Service-public.fr: https://entreprendre.service-public.fr/vosdroits/F11677
 
     taux service BIC:
+      applicable si: DROM
+
       remplace: cotisations et contributions . cotisations . service BIC . taux
       valeur: taux Acre * cotisations et contributions . cotisations . service BIC .
         taux
       arrondi: 1 décimales
 
     taux service BNC:
+      applicable si: DROM
+
       remplace: cotisations et contributions . cotisations . service BNC . taux
       valeur: taux Acre * cotisations et contributions . cotisations . service BNC .
         taux
@@ -160,6 +168,8 @@ dirigeant . auto-entrepreneur . Acre:
           - sinon: 1 décimales
 
     taux vente restauration hébergement:
+      applicable si: DROM
+
       remplace: cotisations et contributions . cotisations . vente restauration
         hébergement . taux
       valeur: taux Acre * cotisations et contributions . cotisations . vente
@@ -167,7 +177,8 @@ dirigeant . auto-entrepreneur . Acre:
       arrondi: 1 décimales
 
     taux CIPAV:
-      applicable si: Cipav
+      applicable si: DROM
+
       remplace: cotisations et contributions . cotisations . service BNC Cipav . taux
       variations:
         - si: entreprise . date de création >= 01/04/2020
