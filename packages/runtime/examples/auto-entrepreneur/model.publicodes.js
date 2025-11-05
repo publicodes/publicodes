@@ -192,13 +192,11 @@ function $pow(l, right) {
 /**
  * @param {Value} left
  * @param {Value} right
- * @returns {boolean | undefined | null}
+ * @returns {boolean | undefined}
  *
  * @specification
  * The equality operation is defined as follows by order of precedence:
  * - ∀ x. eq(undefined, x) = eq(x, undefined) = undefined
- * - eq(null, null) = null
- * - eq(false, null) = true
  * - ∀ x, y. eq(x, y) = x === y
  */
 function $eq(l, r) {
@@ -209,10 +207,6 @@ function $eq(l, r) {
 	if (l instanceof Date && r instanceof Date) {
 		return l.getTime() === r.getTime()
 	}
-
-	// if ((l === null && r === false) || (l === false && r === null)) {
-	// 	return true
-	// }
 
 	return l === r
 }
@@ -225,8 +219,6 @@ function $eq(l, r) {
  * @specification
  * The inequality operation is defined as follows by order of precedence:
  * - ∀ x. neq(undefined, x) = neq(x, undefined) = undefined
- * - ∀ x. neq(false, null) = false
- * - ∀ x. neq(null, null) = null
  * - ∀ x, y. neq(x, y) = x !== y
  */
 function $neq(l, r) {
@@ -237,10 +229,6 @@ function $neq(l, r) {
 	if (l instanceof Date && r instanceof Date) {
 		return l.getTime() !== r.getTime()
 	}
-
-	// if ((l === null && r === false) || (l === false && r === null)) {
-	// 	return false
-	// }
 
 	return l !== r
 }
@@ -565,20 +553,20 @@ function $get(rule, ctx, params) {
 	return ctx._global[rule]
 }
 
+const globalCache = {}
 function $ref(rule, fn, ctx, params) {
 	if (rule in ctx || rule in ctx._global) {
 		return $get(rule, ctx, params)
 	}
 
-	if (ctx._cache) {
-		const cache = ctx._cache[rule] ?? new WeakMap()
-
+	if (ctx._options.cache) {
+		const cache = globalCache[rule] ?? new WeakMap()
 		if (cache.has(ctx)) {
 			return cache.get(ctx)
 		}
 		const value = fn(ctx, params)
 		cache.set(ctx, value)
-		ctx._cache[rule] = cache
+		globalCache[rule] = cache
 		return value
 	}
 	const v = fn(ctx, params)
@@ -587,10 +575,7 @@ function $ref(rule, fn, ctx, params) {
 
 function $evaluate(fn, _global, options = {}) {
 	const params = []
-	const value = fn(
-		{ _global, ...(options.cache ? { _cache: {} } : {}) },
-		params,
-	)
+	const value = fn({ _global, _options: options }, params)
 	const needed = Array.from(new Set(params))
 	const missing = needed.filter((p) => !(p in _global))
 

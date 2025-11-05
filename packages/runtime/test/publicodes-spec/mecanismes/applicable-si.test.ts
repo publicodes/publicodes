@@ -1,3 +1,4 @@
+import { beforeAll, describe, expect, test } from 'bun:test'
 import { TestPublicodes, yaml } from '../../utils/compile'
 
 describe('Mécanisme > applicable si', () => {
@@ -27,11 +28,12 @@ condition:
 			{},
 			{ value: null, missingParameters: ['condition'] },
 		],
-	])('%s', (_, context, expected) => {
+	])('%s', (_, context, expected, done) => {
 		expect(engine.test.evaluate(context)).toBe(expected.value)
 		expect(engine.test.evaluateParams(context).missing).toEqual(
 			expected.missingParameters,
 		)
+		done()
 	})
 
 	test('condition non applicable', async () => {

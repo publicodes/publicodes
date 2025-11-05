@@ -16,10 +16,10 @@ a:
 		['égalité', { a: 10 }, false],
 		['différence', { a: 20 }, true],
 		['non définie', {}, undefined],
-	])('%s', (_, context, expected) => {
+	])('%s', (_, context, expected, done) => {
 		expect(result.evaluate(context)).toBe(expected)
+		done()
 	})
-
 	// @TODO : doit-on garder ce comportement de la V1 ?
 	test.skip('non applicable égal faux', async () => {
 		const { result } = await yaml`

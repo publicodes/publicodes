@@ -16,8 +16,9 @@ a:
 		['égalité', { a: 10 }, true],
 		['différence', { a: 20 }, false],
 		['non définie', {}, undefined],
-	])('%s', (_, context, expected) => {
+	])('%s', (_, context, expected, done) => {
 		expect(result.evaluate(context)).toBe(expected)
+		done()
 	})
 
 	// @TODO : doit-on garder ce comportement de la V1 ?
