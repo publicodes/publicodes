@@ -11,15 +11,10 @@ const context = {
 	date: new Date('2025-05-20'),
 	'dirigeant . auto-entrepreneur . Cipav . adhérent': false,
 	'entreprise . date de création': new Date('2025-05-20'),
+	"entreprise . durée d'activité . trimestres civils": 10,
+	"entreprise . durée d'activité . années civiles": 5,
 } as const
 
 console.log(
 	rules['dirigeant . auto-entrepreneur . revenu net'].evaluateParams(context),
-)
-
-console.log(
-	'cotisations',
-	rules[
-		'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations'
-	].evaluate(context),
 )

@@ -169,12 +169,20 @@ and transform_applicable_if ~pos condition value =
        ( p
            (Binary_op
               ( Pos.mk ~pos Shared_ast.Or
+              , p (Unary_op (Pos.mk ~pos Is_undef, condition))
               , p
                   (Binary_op
-                     ( Pos.mk ~pos Shared_ast.Eq
-                     , condition
-                     , p (Const (Bool false)) ) )
-              , p (Unary_op (Pos.mk ~pos Is_undef, condition)) ) )
+                     ( Pos.mk ~pos Shared_ast.Or
+                     , p
+                         (Binary_op
+                            ( Pos.mk ~pos Shared_ast.Eq
+                            , condition
+                            , p (Const (Bool false)) ) )
+                     , p
+                         (Binary_op
+                            ( Pos.mk ~pos Shared_ast.Eq
+                            , condition
+                            , p (Const Null) ) ) ) ) ) )
        , p (Const Null)
        , value ) )
 
@@ -186,12 +194,20 @@ and transform_not_applicable_if ~pos condition value =
        ( p
            (Binary_op
               ( Pos.mk ~pos Shared_ast.Or
+              , p (Unary_op (Pos.mk ~pos Is_undef, condition))
               , p
                   (Binary_op
-                     ( Pos.mk ~pos Shared_ast.Eq
-                     , condition
-                     , p (Const (Bool false)) ) )
-              , p (Unary_op (Pos.mk ~pos Is_undef, condition)) ) )
+                     ( Pos.mk ~pos Shared_ast.Or
+                     , p
+                         (Binary_op
+                            ( Pos.mk ~pos Shared_ast.Eq
+                            , condition
+                            , p (Const (Bool false)) ) )
+                     , p
+                         (Binary_op
+                            ( Pos.mk ~pos Shared_ast.Eq
+                            , condition
+                            , p (Const Null) ) ) ) ) ) )
        , value
        , p (Const Null) ) )
 
