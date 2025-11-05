@@ -12,14 +12,18 @@ condition:
 `
 	})
 	test.each([
-		['applicable', { condition: true }, { value: 10, missingParameters: [] }],
 		[
-			'non-applicable',
+			'condition vrai',
+			{ condition: true },
+			{ value: 10, missingParameters: [] },
+		],
+		[
+			'condition fausse',
 			{ condition: false },
 			{ value: null, missingParameters: [] },
 		],
 		[
-			'non applicable si condition non définie',
+			'condition non définie',
 			{},
 			{ value: null, missingParameters: ['condition'] },
 		],
@@ -28,6 +32,18 @@ condition:
 		expect(engine.test.evaluateParams(context).missing).toEqual(
 			expected.missingParameters,
 		)
+	})
+
+	test('condition non applicable', async () => {
+		const { a } = await yaml`
+a:
+  applicable si: condition
+  valeur: 10
+
+condition:
+  applicable si: non
+`
+		expect(a.evaluate()).toBe(null)
 	})
 
 	test("s'applique au contexte", async () => {

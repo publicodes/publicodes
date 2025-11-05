@@ -191,11 +191,13 @@ function $pow(l, right) {
 /**
  * @param {Value} left
  * @param {Value} right
- * @returns {boolean | undefined}
+ * @returns {boolean | undefined | null}
  *
  * @specification
  * The equality operation is defined as follows by order of precedence:
  * - ∀ x. eq(undefined, x) = eq(x, undefined) = undefined
+ * - eq(null, null) = null
+ * - eq(false, null) = true
  * - ∀ x, y. eq(x, y) = x === y
  */
 function $eq(l, r) {
@@ -205,6 +207,14 @@ function $eq(l, r) {
 
 	if (l instanceof Date && r instanceof Date) {
 		return l.getTime() === r.getTime()
+	}
+
+	if (l === null && r === null) {
+		return null
+	}
+
+	if ((l === null && r === false) || (l === false && r === null)) {
+		return true
 	}
 
 	return l === r

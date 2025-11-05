@@ -12,12 +12,8 @@ condition:
 `
 	})
 	test.each([
-		['condition applicable', { condition: true }, { value: null, missing: [] }],
-		[
-			'condition non-applicable',
-			{ condition: false },
-			{ value: 10, missing: [] },
-		],
+		['condition vrai', { condition: true }, { value: null, missing: [] }],
+		['condition fausse', { condition: false }, { value: 10, missing: [] }],
 		[
 			'applicable si condition non définie',
 			{},
@@ -25,6 +21,18 @@ condition:
 		],
 	])('%s', (_, context, expected) => {
 		expect(rules.test.evaluateParams(context)).toMatchObject(expected)
+	})
+
+	test('condition non applicable', async () => {
+		const { a } = await yaml`
+a:
+  non applicable si: condition
+  valeur: 10
+
+condition:
+  applicable si: non
+`
+		expect(a.evaluate()).toBe(10)
 	})
 
 	test("s'applique au contexte", async () => {

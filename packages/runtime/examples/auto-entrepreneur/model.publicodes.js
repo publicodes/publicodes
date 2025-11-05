@@ -569,7 +569,9 @@ function $ref(rule, fn, ctx, params) {
 		return value
 	}
 
-	return fn(ctx, params)
+	const value = fn(ctx, params)
+	console.log(rule, value)
+	return value
 }
 
 function $evaluate(fn, _global, options = {}) {
@@ -584,706 +586,4013 @@ function $evaluate(fn, _global, options = {}) {
 	return { value, needed, missing }
 }
 
-
 /** End embedded runtime */
 
 /** Compiled private Publicodes rules */
 
-
-	/** @type {Fn<Date>}*/
-	function _date(ctx, params) {
-		return /** @type {Date} */ ($get("date", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _dirigeant(ctx, params) {
-		return /** @type {unknown} */ ($get("dirigeant", ctx, params))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur(ctx, params) {
-		return /** @type {boolean} */ ($cond(($eq($ref("dirigeant . régime social", _dirigeant___régime_social, ctx, params),  "auto-entrepreneur") === undefined), () => false, () => $eq($ref("dirigeant . régime social", _dirigeant___régime_social, ctx, params),  "auto-entrepreneur")))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _dirigeant___auto_entrepreneur___Acre(ctx, params) {
-		return /** @type {unknown} */ ($cond($or($eq($cond($or($eq($ref("dirigeant . auto-entrepreneur . DROM", _dirigeant___auto_entrepreneur___DROM, ctx, params),  null), () =>  $or(($ref("dirigeant . auto-entrepreneur . DROM", _dirigeant___auto_entrepreneur___DROM, ctx, params) === undefined), () =>  $eq($ref("dirigeant . auto-entrepreneur . DROM", _dirigeant___auto_entrepreneur___DROM, ctx, params),  false))), () => $ref("dirigeant . exonérations . ACRE", _dirigeant___exonérations___ACRE, ctx, params), () => null),  false), () =>  ($cond($or($eq($ref("dirigeant . auto-entrepreneur . DROM", _dirigeant___auto_entrepreneur___DROM, ctx, params),  null), () =>  $or(($ref("dirigeant . auto-entrepreneur . DROM", _dirigeant___auto_entrepreneur___DROM, ctx, params) === undefined), () =>  $eq($ref("dirigeant . auto-entrepreneur . DROM", _dirigeant___auto_entrepreneur___DROM, ctx, params),  false))), () => $ref("dirigeant . exonérations . ACRE", _dirigeant___exonérations___ACRE, ctx, params), () => null) === undefined)), () => null, () => $get("dirigeant . auto-entrepreneur . Acre", ctx, params)))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _dirigeant___auto_entrepreneur___Acre___notification_calcul_ACRE_annuel(ctx, params) {
-		return /** @type {unknown} */ ($get("dirigeant . auto-entrepreneur . Acre . notification calcul ACRE annuel", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___Acre___taux_Acre(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($lt($ref("entreprise . date de création", _entreprise___date_de_création, ctx, params), () =>  new Date('2019-04-01')),  null), () =>  $eq($lt($ref("entreprise . date de création", _entreprise___date_de_création, ctx, params), () =>  new Date('2019-04-01')),  false)), () => $cond($or($eq($lt($ref("entreprise . date de création", _entreprise___date_de_création, ctx, params), () =>  new Date('2020-04-01')),  null), () =>  $eq($lt($ref("entreprise . date de création", _entreprise___date_de_création, ctx, params), () =>  new Date('2020-04-01')),  false)), () => $cond($or($eq($lt($ref("entreprise . durée d'activité", _entreprise___durée_d_activité, ctx, params), () =>  1),  null), () =>  $eq($lt($ref("entreprise . durée d'activité", _entreprise___durée_d_activité, ctx, params), () =>  1),  false)), () => null, () => 50), () => 75), () => 25))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___Acre___taux_CIPAV(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($ref("dirigeant . auto-entrepreneur . Cipav", _dirigeant___auto_entrepreneur___Cipav, ctx, params),  false), () =>  ($ref("dirigeant . auto-entrepreneur . Cipav", _dirigeant___auto_entrepreneur___Cipav, ctx, params) === undefined)), () => null, () => $cond($or($eq($gte($ref("entreprise . date de création", _entreprise___date_de_création, ctx, params), () =>  new Date('2020-04-01')),  null), () =>  $eq($gte($ref("entreprise . date de création", _entreprise___date_de_création, ctx, params), () =>  new Date('2020-04-01')),  false)), () => $mul($mul($ref("dirigeant . auto-entrepreneur . Acre . taux Acre", _dirigeant___auto_entrepreneur___Acre___taux_Acre, ctx, params), () =>  $cond($neq($ref("dirigeant . auto-entrepreneur . DROM . taux CIPAV", _dirigeant___auto_entrepreneur___DROM___taux_CIPAV, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . DROM . taux CIPAV", _dirigeant___auto_entrepreneur___DROM___taux_CIPAV, ctx, params), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . taux", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___taux, ctx, params))), () =>  0.01), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 12.1, () => 13.9))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___Acre___taux_service_BIC(ctx, params) {
-		return /** @type {number} */ ($round('nearest', $mul($mul($ref("dirigeant . auto-entrepreneur . Acre . taux Acre", _dirigeant___auto_entrepreneur___Acre___taux_Acre, ctx, params), () =>  $cond($neq($ref("dirigeant . auto-entrepreneur . DROM . taux service BIC", _dirigeant___auto_entrepreneur___DROM___taux_service_BIC, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . DROM . taux service BIC", _dirigeant___auto_entrepreneur___DROM___taux_service_BIC, ctx, params), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . taux", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___taux, ctx, params))), () =>  0.01), () => $pow(10, () =>  (- 1))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___Acre___taux_service_BNC(ctx, params) {
-		return /** @type {number} */ ($round('nearest', $mul($mul($ref("dirigeant . auto-entrepreneur . Acre . taux Acre", _dirigeant___auto_entrepreneur___Acre___taux_Acre, ctx, params), () =>  $cond($neq($ref("dirigeant . auto-entrepreneur . DROM . taux service BNC", _dirigeant___auto_entrepreneur___DROM___taux_service_BNC, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . DROM . taux service BNC", _dirigeant___auto_entrepreneur___DROM___taux_service_BNC, ctx, params), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . taux", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___taux, ctx, params))), () =>  0.01), () => $pow(10, () =>  (- $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  false)), () => 1, () => 2)))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___Acre___taux_vente_restauration_hébergement(ctx, params) {
-		return /** @type {number} */ ($round('nearest', $mul($mul($ref("dirigeant . auto-entrepreneur . Acre . taux Acre", _dirigeant___auto_entrepreneur___Acre___taux_Acre, ctx, params), () =>  $cond($neq($ref("dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement", _dirigeant___auto_entrepreneur___DROM___taux_vente_restauration_hébergement, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement", _dirigeant___auto_entrepreneur___DROM___taux_vente_restauration_hébergement, ctx, params), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . taux", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___taux, ctx, params))), () =>  0.01), () => $pow(10, () =>  (- 1))))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___Cipav(ctx, params) {
-		return /** @type {boolean} */ ($or($ref("entreprise . activité . nature . libérale . réglementée", _entreprise___activité___nature___libérale___réglementée, ctx, params), () =>  $or($and($eq($ref("entreprise . activité . nature", _entreprise___activité___nature, ctx, params),  "libérale"), () =>  $and($lt($ref("entreprise . date de création", _entreprise___date_de_création, ctx, params), () =>  new Date('2018-01')), () =>  $and($eq($ref("dirigeant . auto-entrepreneur . Cipav . adhérent", _dirigeant___auto_entrepreneur___Cipav___adhérent, ctx, params),  true), () =>  true))), () =>  false)))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___Cipav___adhérent(ctx, params) {
-		return /** @type {boolean} */ ($cond(($get("dirigeant . auto-entrepreneur . Cipav . adhérent", ctx, params) === undefined), () => false, () => $get("dirigeant . auto-entrepreneur . Cipav . adhérent", ctx, params)))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___Cipav___retraite_complémentaire(ctx, params) {
-		return /** @type {number} */ ($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_complémentaire, ctx, params))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___DROM(ctx, params) {
-		return /** @type {boolean} */ ($cond($or($eq($ref("établissement . commune . département . outre-mer", _établissement___commune___département___outre_mer, ctx, params),  false), () =>  ($ref("établissement . commune . département . outre-mer", _établissement___commune___département___outre_mer, ctx, params) === undefined)), () => null, () => true))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___DROM___première_période(ctx, params) {
-		return /** @type {boolean} */ ($lte($ref("entreprise . durée d'activité . trimestres civils", _entreprise___durée_d_activité___trimestres_civils, ctx, params), () =>  8))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___DROM___seconde_période(ctx, params) {
-		return /** @type {boolean} */ ($lte($ref("entreprise . durée d'activité . années civiles", _entreprise___durée_d_activité___années_civiles, ctx, params), () =>  3))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___DROM___taux_CIPAV(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($ref("dirigeant . auto-entrepreneur . DROM . première période", _dirigeant___auto_entrepreneur___DROM___première_période, ctx, params),  null), () =>  $eq($ref("dirigeant . auto-entrepreneur . DROM . première période", _dirigeant___auto_entrepreneur___DROM___première_période, ctx, params),  false)), () => $cond($or($eq($ref("dirigeant . auto-entrepreneur . DROM . seconde période", _dirigeant___auto_entrepreneur___DROM___seconde_période, ctx, params),  null), () =>  $eq($ref("dirigeant . auto-entrepreneur . DROM . seconde période", _dirigeant___auto_entrepreneur___DROM___seconde_période, ctx, params),  false)), () => 14.2, () => 10.6), () => 7.1))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___DROM___taux_service_BIC(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($ref("dirigeant . auto-entrepreneur . DROM . première période", _dirigeant___auto_entrepreneur___DROM___première_période, ctx, params),  null), () =>  $eq($ref("dirigeant . auto-entrepreneur . DROM . première période", _dirigeant___auto_entrepreneur___DROM___première_période, ctx, params),  false)), () => $cond($or($eq($ref("dirigeant . auto-entrepreneur . DROM . seconde période", _dirigeant___auto_entrepreneur___DROM___seconde_période, ctx, params),  null), () =>  $eq($ref("dirigeant . auto-entrepreneur . DROM . seconde période", _dirigeant___auto_entrepreneur___DROM___seconde_période, ctx, params),  false)), () => 14.2, () => 10.6), () => 3.6))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___DROM___taux_service_BNC(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($ref("dirigeant . auto-entrepreneur . DROM . première période", _dirigeant___auto_entrepreneur___DROM___première_période, ctx, params),  null), () =>  $eq($ref("dirigeant . auto-entrepreneur . DROM . première période", _dirigeant___auto_entrepreneur___DROM___première_période, ctx, params),  false)), () => $cond($or($eq($ref("dirigeant . auto-entrepreneur . DROM . seconde période", _dirigeant___auto_entrepreneur___DROM___seconde_période, ctx, params),  null), () =>  $eq($ref("dirigeant . auto-entrepreneur . DROM . seconde période", _dirigeant___auto_entrepreneur___DROM___seconde_période, ctx, params),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 14.1, () => 15.4), () => 16.4), () => 17.4), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 10.6, () => 11.6), () => 12.3), () => 13.1)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 3.6, () => 3.9), () => 4.1), () => 4.4)))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___DROM___taux_vente_restauration_hébergement(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($ref("dirigeant . auto-entrepreneur . DROM . première période", _dirigeant___auto_entrepreneur___DROM___première_période, ctx, params),  null), () =>  $eq($ref("dirigeant . auto-entrepreneur . DROM . première période", _dirigeant___auto_entrepreneur___DROM___première_période, ctx, params),  false)), () => $cond($or($eq($ref("dirigeant . auto-entrepreneur . DROM . seconde période", _dirigeant___auto_entrepreneur___DROM___seconde_période, ctx, params),  null), () =>  $eq($ref("dirigeant . auto-entrepreneur . DROM . seconde période", _dirigeant___auto_entrepreneur___DROM___seconde_période, ctx, params),  false)), () => 8.199999999999999, () => 6.2), () => 2.1))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___affiliation_CIPAV(ctx, params) {
-		return /** @type {boolean} */ ($ref("dirigeant . auto-entrepreneur . Cipav", _dirigeant___auto_entrepreneur___Cipav, ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___chiffre_d_affaires(ctx, params) {
-		return /** @type {number} */ ($get("dirigeant . auto-entrepreneur . chiffre d'affaires", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions(ctx, params) {
-		return /** @type {number} */ ($add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . CFP", _dirigeant___auto_entrepreneur___cotisations_et_contributions___CFP, ctx, params),  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations, ctx, params))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___CFP(ctx, params) {
-		return /** @type {number} */ ($add($mul($mul($cond($or($eq($and($lt($ref("date", _date, ctx, params), () =>  new Date('2022-01')), () =>  $and($eq($ref("dirigeant . auto-entrepreneur . Cipav", _dirigeant___auto_entrepreneur___Cipav, ctx, params),  false), () =>  true)),  null), () =>  $eq($and($lt($ref("date", _date, ctx, params), () =>  new Date('2022-01')), () =>  $and($eq($ref("dirigeant . auto-entrepreneur . Cipav", _dirigeant___auto_entrepreneur___Cipav, ctx, params),  false), () =>  true)),  false)), () => 0.2, () => 0.1), () =>  $ref("entreprise . chiffre d'affaires . service BNC", _entreprise___chiffre_d_affaires___service_BNC, ctx, params)), () =>  0.01),  $mul($mul($cond($or($eq($eq($ref("entreprise . activité . nature", _entreprise___activité___nature, ctx, params),  "artisanale"),  null), () =>  $eq($eq($ref("entreprise . activité . nature", _entreprise___activité___nature, ctx, params),  "artisanale"),  false)), () => 0.1, () => 0.3), () =>  $ref("entreprise . chiffre d'affaires . BIC", _entreprise___chiffre_d_affaires___BIC, ctx, params)), () =>  0.01)))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC(ctx, params) {
-		return /** @type {number} */ ($add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers, ctx, params),  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . commerce", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___commerce, ctx, params)))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___commerce(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($eq($ref("entreprise . activité . nature", _entreprise___activité___nature, ctx, params),  "commerciale"),  false), () =>  ($eq($ref("entreprise . activité . nature", _entreprise___activité___nature, ctx, params),  "commerciale") === undefined)), () => null, () => $add($round('nearest', $mul($mul(0.015, () =>  $ref("entreprise . chiffre d'affaires . vente restauration hébergement", _entreprise___chiffre_d_affaires___vente_restauration_hébergement, ctx, params)), () =>  0.01), () => $cond(true, () => 1, () => null)),  $round('nearest', $mul($mul(0.044, () =>  $ref("entreprise . chiffre d'affaires . service BIC", _entreprise___chiffre_d_affaires___service_BIC, ctx, params)), () =>  0.01), () => $cond(true, () => 1, () => null)))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($eq($ref("entreprise . activité . nature", _entreprise___activité___nature, ctx, params),  "artisanale"),  false), () =>  ($eq($ref("entreprise . activité . nature", _entreprise___activité___nature, ctx, params),  "artisanale") === undefined)), () => null, () => $add($round('nearest', $mul($mul($cond($neq($ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux vente", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_vente, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux vente", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_vente, ctx, params), () => $cond($neq($ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux vente", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_vente, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux vente", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_vente, ctx, params), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux vente", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_vente, ctx, params))), () =>  $ref("entreprise . chiffre d'affaires . vente restauration hébergement", _entreprise___chiffre_d_affaires___vente_restauration_hébergement, ctx, params)), () =>  0.01), () => $cond(true, () => 1, () => null)),  $round('nearest', $mul($mul($cond($neq($ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux service", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_service, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux service", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_service, ctx, params), () => $cond($neq($ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux service", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_service, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux service", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_service, ctx, params), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux service", _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_service, ctx, params))), () =>  $ref("entreprise . chiffre d'affaires . service BIC", _entreprise___chiffre_d_affaires___service_BIC, ctx, params)), () =>  0.01), () => $cond(true, () => 1, () => null)))))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace(ctx, params) {
-		return /** @type {boolean} */ ($cond(($or($eq($ref("établissement . commune . département", _établissement___commune___département, ctx, params),  "Bas-Rhin"), () =>  $or($eq($ref("établissement . commune . département", _établissement___commune___département, ctx, params),  "Haut-Rhin"), () =>  false)) === undefined), () => false, () => $or($eq($ref("établissement . commune . département", _établissement___commune___département, ctx, params),  "Bas-Rhin"), () =>  $or($eq($ref("établissement . commune . département", _établissement___commune___département, ctx, params),  "Haut-Rhin"), () =>  false))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_service(ctx, params) {
-		return /** @type {number} */ (0.65)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_vente(ctx, params) {
-		return /** @type {number} */ (0.29)
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle(ctx, params) {
-		return /** @type {boolean} */ ($cond(($eq($ref("établissement . commune . département", _établissement___commune___département, ctx, params),  "Moselle") === undefined), () => false, () => $eq($ref("établissement . commune . département", _établissement___commune___département, ctx, params),  "Moselle")))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_service(ctx, params) {
-		return /** @type {number} */ (0.83)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_vente(ctx, params) {
-		return /** @type {number} */ (0.37)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_service(ctx, params) {
-		return /** @type {number} */ (0.48)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_vente(ctx, params) {
-		return /** @type {number} */ (0.22)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations(ctx, params) {
-		return /** @type {number} */ ($add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav, ctx, params),  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC, ctx, params)))))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition(ctx, params) {
-		return /** @type {unknown} */ ($get("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___autres_contributions(ctx, params) {
-		return /** @type {number} */ ($add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___autres_contributions, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___autres_contributions, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___autres_contributions, ctx, params),  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___autres_contributions, ctx, params)))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___formation_professionnelle(ctx, params) {
-		return /** @type {number} */ ($ref("dirigeant . auto-entrepreneur . cotisations et contributions . CFP", _dirigeant___auto_entrepreneur___cotisations_et_contributions___CFP, ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___invalidité_décès(ctx, params) {
-		return /** @type {number} */ ($add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___invalidité_décès, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___invalidité_décès, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___invalidité_décès, ctx, params),  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___invalidité_décès, ctx, params)))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___maladie_maternité(ctx, params) {
-		return /** @type {number} */ ($add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___maladie_maternité, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___maladie_maternité, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___maladie_maternité, ctx, params),  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___maladie_maternité, ctx, params)))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___retraite(ctx, params) {
-		return /** @type {number} */ ($add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite complémentaire", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___retraite_complémentaire, ctx, params),  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite de base", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___retraite_de_base, ctx, params)))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___retraite_complémentaire(ctx, params) {
-		return /** @type {number} */ ($add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_complémentaire, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_complémentaire, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_complémentaire, ctx, params),  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_complémentaire, ctx, params)))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___retraite_de_base(ctx, params) {
-		return /** @type {number} */ ($add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_de_base, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_de_base, ctx, params),  $add($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_de_base, ctx, params),  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_de_base, ctx, params)))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC(ctx, params) {
-		return /** @type {number} */ ($mul($mul($cond($neq($ref("dirigeant . auto-entrepreneur . DROM . taux service BIC", _dirigeant___auto_entrepreneur___DROM___taux_service_BIC, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . DROM . taux service BIC", _dirigeant___auto_entrepreneur___DROM___taux_service_BIC, ctx, params), () => $cond($neq($ref("dirigeant . auto-entrepreneur . Acre . taux service BIC", _dirigeant___auto_entrepreneur___Acre___taux_service_BIC, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . Acre . taux service BIC", _dirigeant___auto_entrepreneur___Acre___taux_service_BIC, ctx, params), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . taux", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___taux, ctx, params))), () =>  $ref("entreprise . chiffre d'affaires . service BIC", _entreprise___chiffre_d_affaires___service_BIC, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition(ctx, params) {
-		return /** @type {unknown} */ ($get("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___autres_contributions(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___autres_contributions___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___autres_contributions___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ (29.7)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___invalidité_décès(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___invalidité_décès___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___invalidité_décès___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ (3.1)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___maladie_maternité(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___maladie_maternité___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___maladie_maternité___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ (8.9)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_complémentaire(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_complémentaire___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_complémentaire___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ (16.5)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_de_base(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_de_base___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_de_base___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ (41.8)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___taux(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2022-10')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2022-10')),  false)), () => 22, () => 21.2))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gt($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav, ctx, params), () =>  0),  false), () =>  ($gt($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav, ctx, params), () =>  0) === undefined)), () => $mul($mul($cond($neq($ref("dirigeant . auto-entrepreneur . DROM . taux service BNC", _dirigeant___auto_entrepreneur___DROM___taux_service_BNC, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . DROM . taux service BNC", _dirigeant___auto_entrepreneur___DROM___taux_service_BNC, ctx, params), () => $cond($neq($ref("dirigeant . auto-entrepreneur . Acre . taux service BNC", _dirigeant___auto_entrepreneur___Acre___taux_service_BNC, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . Acre . taux service BNC", _dirigeant___auto_entrepreneur___Acre___taux_service_BNC, ctx, params), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . taux", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___taux, ctx, params))), () =>  $ref("entreprise . chiffre d'affaires . service BNC", _entreprise___chiffre_d_affaires___service_BNC, ctx, params)), () =>  0.01), () => null))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($ref("dirigeant . auto-entrepreneur . Cipav", _dirigeant___auto_entrepreneur___Cipav, ctx, params),  false), () =>  ($ref("dirigeant . auto-entrepreneur . Cipav", _dirigeant___auto_entrepreneur___Cipav, ctx, params) === undefined)), () => null, () => $mul($mul($cond($neq($ref("dirigeant . auto-entrepreneur . DROM . taux CIPAV", _dirigeant___auto_entrepreneur___DROM___taux_CIPAV, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . DROM . taux CIPAV", _dirigeant___auto_entrepreneur___DROM___taux_CIPAV, ctx, params), () => $cond($neq($ref("dirigeant . auto-entrepreneur . Acre . taux CIPAV", _dirigeant___auto_entrepreneur___Acre___taux_CIPAV, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . Acre . taux CIPAV", _dirigeant___auto_entrepreneur___Acre___taux_CIPAV, ctx, params), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . taux", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___taux, ctx, params))), () =>  $ref("entreprise . chiffre d'affaires . service BNC", _entreprise___chiffre_d_affaires___service_BNC, ctx, params)), () =>  0.01)))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition(ctx, params) {
-		return /** @type {unknown} */ ($get("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___autres_contributions(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___autres_contributions___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___autres_contributions___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 36.3, () => 34))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___invalidité_décès(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___invalidité_décès___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___invalidité_décès___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 2.6, () => 1.4))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___maladie_maternité(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___maladie_maternité___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___maladie_maternité___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 9.050000000000001, () => 10.2))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_complémentaire(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_complémentaire___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_complémentaire___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 20.75, () => 25.6))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_de_base(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_de_base___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_de_base___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 31.3, () => 28.8))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___taux(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 21.2, () => 23.2))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition(ctx, params) {
-		return /** @type {unknown} */ ($get("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___autres_contributions(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___autres_contributions___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___autres_contributions___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 36.5, () => 34.1), () => 32.5), () => 31.2))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___invalidité_décès(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___invalidité_décès___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___invalidité_décès___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 4.1, () => 3.7), () => 3.5), () => 3.25))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___maladie_maternité(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___maladie_maternité___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___maladie_maternité___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 3.9, () => 3.6), () => 3.4), () => 3))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_complémentaire(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_complémentaire___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_complémentaire___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 0, () => 7.85), () => 13), () => 17.7))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_de_base(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_de_base___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_de_base___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => 55.5, () => 50.75), () => 47.6), () => 44.85))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___taux(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2026-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2025-01')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2024-07')),  false)), () => $cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2022-10')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2022-10')),  false)), () => 22, () => 21.1), () => 23.1), () => 24.6), () => 26.1))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement(ctx, params) {
-		return /** @type {number} */ ($mul($mul($cond($neq($ref("dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement", _dirigeant___auto_entrepreneur___DROM___taux_vente_restauration_hébergement, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement", _dirigeant___auto_entrepreneur___DROM___taux_vente_restauration_hébergement, ctx, params), () => $cond($neq($ref("dirigeant . auto-entrepreneur . Acre . taux vente restauration hébergement", _dirigeant___auto_entrepreneur___Acre___taux_vente_restauration_hébergement, ctx, params),  null), () => $ref("dirigeant . auto-entrepreneur . Acre . taux vente restauration hébergement", _dirigeant___auto_entrepreneur___Acre___taux_vente_restauration_hébergement, ctx, params), () => $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . taux", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___taux, ctx, params))), () =>  $ref("entreprise . chiffre d'affaires . vente restauration hébergement", _entreprise___chiffre_d_affaires___vente_restauration_hébergement, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition(ctx, params) {
-		return /** @type {unknown} */ ($get("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___autres_contributions(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___autres_contributions___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___autres_contributions___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ (29.7)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___invalidité_décès(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___invalidité_décès___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___invalidité_décès___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ (3.1)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___maladie_maternité(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___maladie_maternité___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___maladie_maternité___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ (8.9)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_complémentaire(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_complémentaire___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_complémentaire___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ (16.5)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_de_base(ctx, params) {
-		return /** @type {number} */ ($mul($mul($ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement, ctx, params), () =>  $ref("dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base . taux de répartition", _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_de_base___taux_de_répartition, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_de_base___taux_de_répartition(ctx, params) {
-		return /** @type {number} */ (41.8)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___taux(ctx, params) {
-		return /** @type {number} */ ($cond($or($eq($gte($ref("date", _date, ctx, params), () =>  new Date('2022-10')),  null), () =>  $eq($gte($ref("date", _date, ctx, params), () =>  new Date('2022-10')),  false)), () => 12.8, () => 12.3))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___impôt(ctx, params) {
-		return /** @type {boolean} */ (true)
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___impôt___revenu_imposable(ctx, params) {
-		return /** @type {number} */ ($ref("entreprise . imposition . régime . micro-entreprise . revenu abattu", _entreprise___imposition___régime___micro_entreprise___revenu_abattu, ctx, params))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___impôt___versement_libératoire(ctx, params) {
-		return /** @type {boolean} */ ($cond(($get("dirigeant . auto-entrepreneur . impôt . versement libératoire", ctx, params) === undefined), () => false, () => $get("dirigeant . auto-entrepreneur . impôt . versement libératoire", ctx, params)))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___impôt___versement_libératoire___montant(ctx, params) {
-		return /** @type {number} */ ($add($mul($mul(1.7, () =>  $ref("entreprise . chiffre d'affaires . service BIC", _entreprise___chiffre_d_affaires___service_BIC, ctx, params)), () =>  0.01),  $add($mul($mul(2.2, () =>  $ref("entreprise . chiffre d'affaires . service BNC", _entreprise___chiffre_d_affaires___service_BNC, ctx, params)), () =>  0.01),  $mul($mul(1, () =>  $ref("entreprise . chiffre d'affaires . vente restauration hébergement", _entreprise___chiffre_d_affaires___vente_restauration_hébergement, ctx, params)), () =>  0.01))))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___impôt___versement_libératoire___seuil_dépassé(ctx, params) {
-		return /** @type {boolean} */ ($gt($ref("impôt . foyer fiscal . revenu fiscal de référence", _impôt___foyer_fiscal___revenu_fiscal_de_référence, ctx, params), () =>  27519))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___revenu_net(ctx, params) {
-		return /** @type {number} */ ($round('nearest', $sub($ref("entreprise . chiffre d'affaires", _entreprise___chiffre_d_affaires, ctx, params),  $ref("dirigeant . auto-entrepreneur . cotisations et contributions", _dirigeant___auto_entrepreneur___cotisations_et_contributions, ctx, params)), () => $cond(true, () => 1, () => null)))
-	}
-
-	/** @type {Fn<number>}*/
-	function _dirigeant___auto_entrepreneur___revenu_net___après_impôt(ctx, params) {
-		return /** @type {number} */ ($round('nearest', $sub($ref("dirigeant . auto-entrepreneur . revenu net", _dirigeant___auto_entrepreneur___revenu_net, ctx, params),  $ref("rémunération . impôt", _rémunération___impôt, ctx, params)), () => $cond(true, () => 1, () => null)))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___auto_entrepreneur___éligible_à_l_ACRE(ctx, params) {
-		return /** @type {boolean} */ ($cond($or($eq($lt($ref("entreprise . durée d'activité . en début d'année", _entreprise___durée_d_activité___en_début_d_année, ctx, params), () =>  1),  false), () =>  ($lt($ref("entreprise . durée d'activité . en début d'année", _entreprise___durée_d_activité___en_début_d_année, ctx, params), () =>  1) === undefined)), () => null, () => $cond(($get("dirigeant . auto-entrepreneur . éligible à l'ACRE", ctx, params) === undefined), () => false, () => $get("dirigeant . auto-entrepreneur . éligible à l'ACRE", ctx, params))))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _dirigeant___exonérations(ctx, params) {
-		return /** @type {unknown} */ ($get("dirigeant . exonérations", ctx, params))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _dirigeant___exonérations___ACRE(ctx, params) {
-		return /** @type {boolean} */ ($get("dirigeant . exonérations . ACRE", ctx, params))
-	}
-
-	/** @type {Fn<string>}*/
-	function _dirigeant___régime_social(ctx, params) {
-		return /** @type {string} */ ("auto-entrepreneur")
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _entreprise(ctx, params) {
-		return /** @type {unknown} */ ($get("entreprise", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _entreprise___activité(ctx, params) {
-		return /** @type {unknown} */ ($get("entreprise . activité", ctx, params))
-	}
-
-	/** @type {Fn<string>}*/
-	function _entreprise___activité___nature(ctx, params) {
-		return /** @type {string} */ ($get("entreprise . activité . nature", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _entreprise___activité___nature___libérale(ctx, params) {
-		return /** @type {unknown} */ ($get("entreprise . activité . nature . libérale", ctx, params))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _entreprise___activité___nature___libérale___réglementée(ctx, params) {
-		return /** @type {boolean} */ ($get("entreprise . activité . nature . libérale . réglementée", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _entreprise___activités(ctx, params) {
-		return /** @type {unknown} */ ($get("entreprise . activités", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _entreprise___activités___revenus_mixtes(ctx, params) {
-		return /** @type {unknown} */ ($get("entreprise . activités . revenus mixtes", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _entreprise___chiffre_d_affaires(ctx, params) {
-		return /** @type {number} */ ($add($ref("entreprise . chiffre d'affaires . service BIC", _entreprise___chiffre_d_affaires___service_BIC, ctx, params),  $add($ref("entreprise . chiffre d'affaires . service BNC", _entreprise___chiffre_d_affaires___service_BNC, ctx, params),  $add($ref("entreprise . chiffre d'affaires . vente restauration hébergement", _entreprise___chiffre_d_affaires___vente_restauration_hébergement, ctx, params),  $ref("entreprise . chiffre d'affaires . BIC", _entreprise___chiffre_d_affaires___BIC, ctx, params)))))
-	}
-
-	/** @type {Fn<number>}*/
-	function _entreprise___chiffre_d_affaires___BIC(ctx, params) {
-		return /** @type {number} */ ($get("entreprise . chiffre d'affaires . BIC", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _entreprise___chiffre_d_affaires___service_BIC(ctx, params) {
-		return /** @type {number} */ ($get("entreprise . chiffre d'affaires . service BIC", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _entreprise___chiffre_d_affaires___service_BNC(ctx, params) {
-		return /** @type {number} */ ($get("entreprise . chiffre d'affaires . service BNC", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _entreprise___chiffre_d_affaires___vente_restauration_hébergement(ctx, params) {
-		return /** @type {number} */ ($get("entreprise . chiffre d'affaires . vente restauration hébergement", ctx, params))
-	}
-
-	/** @type {Fn<Date>}*/
-	function _entreprise___date_de_création(ctx, params) {
-		return /** @type {Date} */ ($get("entreprise . date de création", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _entreprise___durée_d_activité(ctx, params) {
-		return /** @type {number} */ ($get("entreprise . durée d'activité", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _entreprise___durée_d_activité___années_civiles(ctx, params) {
-		return /** @type {number} */ ($get("entreprise . durée d'activité . années civiles", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _entreprise___durée_d_activité___en_début_d_année(ctx, params) {
-		return /** @type {number} */ ($get("entreprise . durée d'activité . en début d'année", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _entreprise___durée_d_activité___trimestres_civils(ctx, params) {
-		return /** @type {number} */ ($get("entreprise . durée d'activité . trimestres civils", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _entreprise___imposition(ctx, params) {
-		return /** @type {unknown} */ ($get("entreprise . imposition", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _entreprise___imposition___régime(ctx, params) {
-		return /** @type {unknown} */ ($get("entreprise . imposition . régime", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _entreprise___imposition___régime___micro_entreprise(ctx, params) {
-		return /** @type {unknown} */ ($get("entreprise . imposition . régime . micro-entreprise", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _entreprise___imposition___régime___micro_entreprise___revenu_abattu(ctx, params) {
-		return /** @type {number} */ ($mul($mul(60, () =>  $ref("entreprise . chiffre d'affaires", _entreprise___chiffre_d_affaires, ctx, params)), () =>  0.01))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _impôt(ctx, params) {
-		return /** @type {unknown} */ ($get("impôt", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _impôt___foyer_fiscal(ctx, params) {
-		return /** @type {unknown} */ ($get("impôt . foyer fiscal", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _impôt___foyer_fiscal___revenu_fiscal_de_référence(ctx, params) {
-		return /** @type {number} */ ($get("impôt . foyer fiscal . revenu fiscal de référence", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _revenu_imposable(ctx, params) {
-		return /** @type {unknown} */ ($get("revenu imposable", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _rémunération(ctx, params) {
-		return /** @type {unknown} */ ($get("rémunération", ctx, params))
-	}
-
-	/** @type {Fn<number>}*/
-	function _rémunération___impôt(ctx, params) {
-		return /** @type {number} */ ($get("rémunération . impôt", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _établissement(ctx, params) {
-		return /** @type {unknown} */ ($get("établissement", ctx, params))
-	}
-
-	/** @type {Fn<unknown>}*/
-	function _établissement___commune(ctx, params) {
-		return /** @type {unknown} */ ($get("établissement . commune", ctx, params))
-	}
-
-	/** @type {Fn<string>}*/
-	function _établissement___commune___département(ctx, params) {
-		return /** @type {string} */ ($get("établissement . commune . département", ctx, params))
-	}
-
-	/** @type {Fn<boolean>}*/
-	function _établissement___commune___département___outre_mer(ctx, params) {
-		return /** @type {boolean} */ ($get("établissement . commune . département . outre-mer", ctx, params))
-	}
+/** @type {Fn<Date>}*/
+function _date(ctx, params) {
+	return /** @type {Date} */ ($get('date', ctx, params))
+}
+
+/** @type {Fn<unknown>}*/
+function _dirigeant(ctx, params) {
+	return /** @type {unknown} */ ($get('dirigeant', ctx, params))
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur(ctx, params) {
+	return /** @type {boolean} */ (
+		$cond(
+			$eq(
+				$ref(
+					'dirigeant . régime social',
+					_dirigeant___régime_social,
+					ctx,
+					params,
+				),
+				'auto-entrepreneur',
+			) === undefined,
+			() => false,
+			() =>
+				$eq(
+					$ref(
+						'dirigeant . régime social',
+						_dirigeant___régime_social,
+						ctx,
+						params,
+					),
+					'auto-entrepreneur',
+				),
+		)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _dirigeant___auto_entrepreneur___Acre(ctx, params) {
+	return /** @type {unknown} */ (
+		$cond(
+			$or(
+				$eq(
+					$cond(
+						$or(
+							$eq(
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM',
+									_dirigeant___auto_entrepreneur___DROM,
+									ctx,
+									params,
+								),
+								null,
+							),
+							() =>
+								$or(
+									$ref(
+										'dirigeant . auto-entrepreneur . DROM',
+										_dirigeant___auto_entrepreneur___DROM,
+										ctx,
+										params,
+									) === undefined,
+									() =>
+										$eq(
+											$ref(
+												'dirigeant . auto-entrepreneur . DROM',
+												_dirigeant___auto_entrepreneur___DROM,
+												ctx,
+												params,
+											),
+											false,
+										),
+								),
+						),
+						() =>
+							$ref(
+								'dirigeant . exonérations . ACRE',
+								_dirigeant___exonérations___ACRE,
+								ctx,
+								params,
+							),
+						() => null,
+					),
+					false,
+				),
+				() =>
+					$cond(
+						$or(
+							$eq(
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM',
+									_dirigeant___auto_entrepreneur___DROM,
+									ctx,
+									params,
+								),
+								null,
+							),
+							() =>
+								$or(
+									$ref(
+										'dirigeant . auto-entrepreneur . DROM',
+										_dirigeant___auto_entrepreneur___DROM,
+										ctx,
+										params,
+									) === undefined,
+									() =>
+										$eq(
+											$ref(
+												'dirigeant . auto-entrepreneur . DROM',
+												_dirigeant___auto_entrepreneur___DROM,
+												ctx,
+												params,
+											),
+											false,
+										),
+								),
+						),
+						() =>
+							$ref(
+								'dirigeant . exonérations . ACRE',
+								_dirigeant___exonérations___ACRE,
+								ctx,
+								params,
+							),
+						() => null,
+					) === undefined,
+			),
+			() => null,
+			() => $get('dirigeant . auto-entrepreneur . Acre', ctx, params),
+		)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _dirigeant___auto_entrepreneur___Acre___notification_calcul_ACRE_annuel(
+	ctx,
+	params,
+) {
+	return /** @type {unknown} */ (
+		$get(
+			'dirigeant . auto-entrepreneur . Acre . notification calcul ACRE annuel',
+			ctx,
+			params,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___Acre___taux_Acre(ctx, params) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$lt(
+						$ref(
+							'entreprise . date de création',
+							_entreprise___date_de_création,
+							ctx,
+							params,
+						),
+						() => new Date('2019-04-01'),
+					),
+					null,
+				),
+				() =>
+					$eq(
+						$lt(
+							$ref(
+								'entreprise . date de création',
+								_entreprise___date_de_création,
+								ctx,
+								params,
+							),
+							() => new Date('2019-04-01'),
+						),
+						false,
+					),
+			),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$lt(
+								$ref(
+									'entreprise . date de création',
+									_entreprise___date_de_création,
+									ctx,
+									params,
+								),
+								() => new Date('2020-04-01'),
+							),
+							null,
+						),
+						() =>
+							$eq(
+								$lt(
+									$ref(
+										'entreprise . date de création',
+										_entreprise___date_de_création,
+										ctx,
+										params,
+									),
+									() => new Date('2020-04-01'),
+								),
+								false,
+							),
+					),
+					() =>
+						$cond(
+							$or(
+								$eq(
+									$lt(
+										$ref(
+											"entreprise . durée d'activité",
+											_entreprise___durée_d_activité,
+											ctx,
+											params,
+										),
+										() => 1,
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$lt(
+											$ref(
+												"entreprise . durée d'activité",
+												_entreprise___durée_d_activité,
+												ctx,
+												params,
+											),
+											() => 1,
+										),
+										false,
+									),
+							),
+							() => null,
+							() => 50,
+						),
+					() => 75,
+				),
+			() => 25,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___Acre___taux_CIPAV(ctx, params) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$ref(
+						'dirigeant . auto-entrepreneur . Cipav',
+						_dirigeant___auto_entrepreneur___Cipav,
+						ctx,
+						params,
+					),
+					false,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . Cipav',
+						_dirigeant___auto_entrepreneur___Cipav,
+						ctx,
+						params,
+					) === undefined,
+			),
+			() => null,
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$gte(
+								$ref(
+									'entreprise . date de création',
+									_entreprise___date_de_création,
+									ctx,
+									params,
+								),
+								() => new Date('2020-04-01'),
+							),
+							null,
+						),
+						() =>
+							$eq(
+								$gte(
+									$ref(
+										'entreprise . date de création',
+										_entreprise___date_de_création,
+										ctx,
+										params,
+									),
+									() => new Date('2020-04-01'),
+								),
+								false,
+							),
+					),
+					() =>
+						$mul(
+							$mul(
+								$ref(
+									'dirigeant . auto-entrepreneur . Acre . taux Acre',
+									_dirigeant___auto_entrepreneur___Acre___taux_Acre,
+									ctx,
+									params,
+								),
+								() =>
+									$cond(
+										$neq(
+											$ref(
+												'dirigeant . auto-entrepreneur . DROM . taux CIPAV',
+												_dirigeant___auto_entrepreneur___DROM___taux_CIPAV,
+												ctx,
+												params,
+											),
+											null,
+										),
+										() =>
+											$ref(
+												'dirigeant . auto-entrepreneur . DROM . taux CIPAV',
+												_dirigeant___auto_entrepreneur___DROM___taux_CIPAV,
+												ctx,
+												params,
+											),
+										() =>
+											$ref(
+												'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . taux',
+												_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___taux,
+												ctx,
+												params,
+											),
+									),
+							),
+							() => 0.01,
+						),
+					() =>
+						$cond(
+							$or(
+								$eq(
+									$gte(
+										$ref('date', _date, ctx, params),
+										() => new Date('2024-07'),
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$gte(
+											$ref('date', _date, ctx, params),
+											() => new Date('2024-07'),
+										),
+										false,
+									),
+							),
+							() => 12.1,
+							() => 13.9,
+						),
+				),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___Acre___taux_service_BIC(ctx, params) {
+	return /** @type {number} */ (
+		$round(
+			'nearest',
+			$mul(
+				$mul(
+					$ref(
+						'dirigeant . auto-entrepreneur . Acre . taux Acre',
+						_dirigeant___auto_entrepreneur___Acre___taux_Acre,
+						ctx,
+						params,
+					),
+					() =>
+						$cond(
+							$neq(
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . taux service BIC',
+									_dirigeant___auto_entrepreneur___DROM___taux_service_BIC,
+									ctx,
+									params,
+								),
+								null,
+							),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . taux service BIC',
+									_dirigeant___auto_entrepreneur___DROM___taux_service_BIC,
+									ctx,
+									params,
+								),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . taux',
+									_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___taux,
+									ctx,
+									params,
+								),
+						),
+				),
+				() => 0.01,
+			),
+			() => $pow(10, () => -1),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___Acre___taux_service_BNC(ctx, params) {
+	return /** @type {number} */ (
+		$round(
+			'nearest',
+			$mul(
+				$mul(
+					$ref(
+						'dirigeant . auto-entrepreneur . Acre . taux Acre',
+						_dirigeant___auto_entrepreneur___Acre___taux_Acre,
+						ctx,
+						params,
+					),
+					() =>
+						$cond(
+							$neq(
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . taux service BNC',
+									_dirigeant___auto_entrepreneur___DROM___taux_service_BNC,
+									ctx,
+									params,
+								),
+								null,
+							),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . taux service BNC',
+									_dirigeant___auto_entrepreneur___DROM___taux_service_BNC,
+									ctx,
+									params,
+								),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . taux',
+									_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___taux,
+									ctx,
+									params,
+								),
+						),
+				),
+				() => 0.01,
+			),
+			() =>
+				$pow(
+					10,
+					() =>
+						-$cond(
+							$or(
+								$eq(
+									$gte(
+										$ref('date', _date, ctx, params),
+										() => new Date('2026-01'),
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$gte(
+											$ref('date', _date, ctx, params),
+											() => new Date('2026-01'),
+										),
+										false,
+									),
+							),
+							() => 1,
+							() => 2,
+						),
+				),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___Acre___taux_vente_restauration_hébergement(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$round(
+			'nearest',
+			$mul(
+				$mul(
+					$ref(
+						'dirigeant . auto-entrepreneur . Acre . taux Acre',
+						_dirigeant___auto_entrepreneur___Acre___taux_Acre,
+						ctx,
+						params,
+					),
+					() =>
+						$cond(
+							$neq(
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement',
+									_dirigeant___auto_entrepreneur___DROM___taux_vente_restauration_hébergement,
+									ctx,
+									params,
+								),
+								null,
+							),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement',
+									_dirigeant___auto_entrepreneur___DROM___taux_vente_restauration_hébergement,
+									ctx,
+									params,
+								),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . taux',
+									_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___taux,
+									ctx,
+									params,
+								),
+						),
+				),
+				() => 0.01,
+			),
+			() => $pow(10, () => -1),
+		)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___Cipav(ctx, params) {
+	return /** @type {boolean} */ (
+		$or(
+			$ref(
+				'entreprise . activité . nature . libérale . réglementée',
+				_entreprise___activité___nature___libérale___réglementée,
+				ctx,
+				params,
+			),
+			() =>
+				$or(
+					$and(
+						$eq(
+							$ref(
+								'entreprise . activité . nature',
+								_entreprise___activité___nature,
+								ctx,
+								params,
+							),
+							'libérale',
+						),
+						() =>
+							$and(
+								$lt(
+									$ref(
+										'entreprise . date de création',
+										_entreprise___date_de_création,
+										ctx,
+										params,
+									),
+									() => new Date('2018-01'),
+								),
+								() =>
+									$and(
+										$eq(
+											$ref(
+												'dirigeant . auto-entrepreneur . Cipav . adhérent',
+												_dirigeant___auto_entrepreneur___Cipav___adhérent,
+												ctx,
+												params,
+											),
+											true,
+										),
+										() => true,
+									),
+							),
+					),
+					() => false,
+				),
+		)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___Cipav___adhérent(ctx, params) {
+	return /** @type {boolean} */ (
+		$cond(
+			$get('dirigeant . auto-entrepreneur . Cipav . adhérent', ctx, params) ===
+				undefined,
+			() => false,
+			() =>
+				$get('dirigeant . auto-entrepreneur . Cipav . adhérent', ctx, params),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___Cipav___retraite_complémentaire(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$ref(
+			'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire',
+			_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_complémentaire,
+			ctx,
+			params,
+		)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___DROM(ctx, params) {
+	return /** @type {boolean} */ (
+		$cond(
+			$or(
+				$eq(
+					$ref(
+						'établissement . commune . département . outre-mer',
+						_établissement___commune___département___outre_mer,
+						ctx,
+						params,
+					),
+					false,
+				),
+				() =>
+					$ref(
+						'établissement . commune . département . outre-mer',
+						_établissement___commune___département___outre_mer,
+						ctx,
+						params,
+					) === undefined,
+			),
+			() => null,
+			() => true,
+		)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___DROM___première_période(ctx, params) {
+	return /** @type {boolean} */ (
+		$lte(
+			$ref(
+				"entreprise . durée d'activité . trimestres civils",
+				_entreprise___durée_d_activité___trimestres_civils,
+				ctx,
+				params,
+			),
+			() => 8,
+		)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___DROM___seconde_période(ctx, params) {
+	return /** @type {boolean} */ (
+		$lte(
+			$ref(
+				"entreprise . durée d'activité . années civiles",
+				_entreprise___durée_d_activité___années_civiles,
+				ctx,
+				params,
+			),
+			() => 3,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___DROM___taux_CIPAV(ctx, params) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$ref(
+						'dirigeant . auto-entrepreneur . DROM . première période',
+						_dirigeant___auto_entrepreneur___DROM___première_période,
+						ctx,
+						params,
+					),
+					null,
+				),
+				() =>
+					$eq(
+						$ref(
+							'dirigeant . auto-entrepreneur . DROM . première période',
+							_dirigeant___auto_entrepreneur___DROM___première_période,
+							ctx,
+							params,
+						),
+						false,
+					),
+			),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$ref(
+								'dirigeant . auto-entrepreneur . DROM . seconde période',
+								_dirigeant___auto_entrepreneur___DROM___seconde_période,
+								ctx,
+								params,
+							),
+							null,
+						),
+						() =>
+							$eq(
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . seconde période',
+									_dirigeant___auto_entrepreneur___DROM___seconde_période,
+									ctx,
+									params,
+								),
+								false,
+							),
+					),
+					() => 14.2,
+					() => 10.6,
+				),
+			() => 7.1,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___DROM___taux_service_BIC(ctx, params) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$ref(
+						'dirigeant . auto-entrepreneur . DROM . première période',
+						_dirigeant___auto_entrepreneur___DROM___première_période,
+						ctx,
+						params,
+					),
+					null,
+				),
+				() =>
+					$eq(
+						$ref(
+							'dirigeant . auto-entrepreneur . DROM . première période',
+							_dirigeant___auto_entrepreneur___DROM___première_période,
+							ctx,
+							params,
+						),
+						false,
+					),
+			),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$ref(
+								'dirigeant . auto-entrepreneur . DROM . seconde période',
+								_dirigeant___auto_entrepreneur___DROM___seconde_période,
+								ctx,
+								params,
+							),
+							null,
+						),
+						() =>
+							$eq(
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . seconde période',
+									_dirigeant___auto_entrepreneur___DROM___seconde_période,
+									ctx,
+									params,
+								),
+								false,
+							),
+					),
+					() => 14.2,
+					() => 10.6,
+				),
+			() => 3.6,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___DROM___taux_service_BNC(ctx, params) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$ref(
+						'dirigeant . auto-entrepreneur . DROM . première période',
+						_dirigeant___auto_entrepreneur___DROM___première_période,
+						ctx,
+						params,
+					),
+					null,
+				),
+				() =>
+					$eq(
+						$ref(
+							'dirigeant . auto-entrepreneur . DROM . première période',
+							_dirigeant___auto_entrepreneur___DROM___première_période,
+							ctx,
+							params,
+						),
+						false,
+					),
+			),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$ref(
+								'dirigeant . auto-entrepreneur . DROM . seconde période',
+								_dirigeant___auto_entrepreneur___DROM___seconde_période,
+								ctx,
+								params,
+							),
+							null,
+						),
+						() =>
+							$eq(
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . seconde période',
+									_dirigeant___auto_entrepreneur___DROM___seconde_période,
+									ctx,
+									params,
+								),
+								false,
+							),
+					),
+					() =>
+						$cond(
+							$or(
+								$eq(
+									$gte(
+										$ref('date', _date, ctx, params),
+										() => new Date('2026-01'),
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$gte(
+											$ref('date', _date, ctx, params),
+											() => new Date('2026-01'),
+										),
+										false,
+									),
+							),
+							() =>
+								$cond(
+									$or(
+										$eq(
+											$gte(
+												$ref('date', _date, ctx, params),
+												() => new Date('2025-01'),
+											),
+											null,
+										),
+										() =>
+											$eq(
+												$gte(
+													$ref('date', _date, ctx, params),
+													() => new Date('2025-01'),
+												),
+												false,
+											),
+									),
+									() =>
+										$cond(
+											$or(
+												$eq(
+													$gte(
+														$ref('date', _date, ctx, params),
+														() => new Date('2024-07'),
+													),
+													null,
+												),
+												() =>
+													$eq(
+														$gte(
+															$ref('date', _date, ctx, params),
+															() => new Date('2024-07'),
+														),
+														false,
+													),
+											),
+											() => 14.1,
+											() => 15.4,
+										),
+									() => 16.4,
+								),
+							() => 17.4,
+						),
+					() =>
+						$cond(
+							$or(
+								$eq(
+									$gte(
+										$ref('date', _date, ctx, params),
+										() => new Date('2026-01'),
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$gte(
+											$ref('date', _date, ctx, params),
+											() => new Date('2026-01'),
+										),
+										false,
+									),
+							),
+							() =>
+								$cond(
+									$or(
+										$eq(
+											$gte(
+												$ref('date', _date, ctx, params),
+												() => new Date('2025-01'),
+											),
+											null,
+										),
+										() =>
+											$eq(
+												$gte(
+													$ref('date', _date, ctx, params),
+													() => new Date('2025-01'),
+												),
+												false,
+											),
+									),
+									() =>
+										$cond(
+											$or(
+												$eq(
+													$gte(
+														$ref('date', _date, ctx, params),
+														() => new Date('2024-07'),
+													),
+													null,
+												),
+												() =>
+													$eq(
+														$gte(
+															$ref('date', _date, ctx, params),
+															() => new Date('2024-07'),
+														),
+														false,
+													),
+											),
+											() => 10.6,
+											() => 11.6,
+										),
+									() => 12.3,
+								),
+							() => 13.1,
+						),
+				),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+							null,
+						),
+						() =>
+							$eq(
+								$gte(
+									$ref('date', _date, ctx, params),
+									() => new Date('2026-01'),
+								),
+								false,
+							),
+					),
+					() =>
+						$cond(
+							$or(
+								$eq(
+									$gte(
+										$ref('date', _date, ctx, params),
+										() => new Date('2025-01'),
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$gte(
+											$ref('date', _date, ctx, params),
+											() => new Date('2025-01'),
+										),
+										false,
+									),
+							),
+							() =>
+								$cond(
+									$or(
+										$eq(
+											$gte(
+												$ref('date', _date, ctx, params),
+												() => new Date('2024-07'),
+											),
+											null,
+										),
+										() =>
+											$eq(
+												$gte(
+													$ref('date', _date, ctx, params),
+													() => new Date('2024-07'),
+												),
+												false,
+											),
+									),
+									() => 3.6,
+									() => 3.9,
+								),
+							() => 4.1,
+						),
+					() => 4.4,
+				),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___DROM___taux_vente_restauration_hébergement(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$ref(
+						'dirigeant . auto-entrepreneur . DROM . première période',
+						_dirigeant___auto_entrepreneur___DROM___première_période,
+						ctx,
+						params,
+					),
+					null,
+				),
+				() =>
+					$eq(
+						$ref(
+							'dirigeant . auto-entrepreneur . DROM . première période',
+							_dirigeant___auto_entrepreneur___DROM___première_période,
+							ctx,
+							params,
+						),
+						false,
+					),
+			),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$ref(
+								'dirigeant . auto-entrepreneur . DROM . seconde période',
+								_dirigeant___auto_entrepreneur___DROM___seconde_période,
+								ctx,
+								params,
+							),
+							null,
+						),
+						() =>
+							$eq(
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . seconde période',
+									_dirigeant___auto_entrepreneur___DROM___seconde_période,
+									ctx,
+									params,
+								),
+								false,
+							),
+					),
+					() => 8.199999999999999,
+					() => 6.2,
+				),
+			() => 2.1,
+		)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___affiliation_CIPAV(ctx, params) {
+	return /** @type {boolean} */ (
+		$ref(
+			'dirigeant . auto-entrepreneur . Cipav',
+			_dirigeant___auto_entrepreneur___Cipav,
+			ctx,
+			params,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___chiffre_d_affaires(ctx, params) {
+	return /** @type {number} */ (
+		$get("dirigeant . auto-entrepreneur . chiffre d'affaires", ctx, params)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$add(
+			$ref(
+				'dirigeant . auto-entrepreneur . cotisations et contributions . TFC',
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC,
+				ctx,
+				params,
+			),
+			$add(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . CFP',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___CFP,
+					ctx,
+					params,
+				),
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations,
+					ctx,
+					params,
+				),
+			),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___CFP(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$add(
+			$mul(
+				$mul(
+					$cond(
+						$or(
+							$eq(
+								$and(
+									$lt(
+										$ref('date', _date, ctx, params),
+										() => new Date('2022-01'),
+									),
+									() =>
+										$and(
+											$eq(
+												$ref(
+													'dirigeant . auto-entrepreneur . Cipav',
+													_dirigeant___auto_entrepreneur___Cipav,
+													ctx,
+													params,
+												),
+												false,
+											),
+											() => true,
+										),
+								),
+								null,
+							),
+							() =>
+								$eq(
+									$and(
+										$lt(
+											$ref('date', _date, ctx, params),
+											() => new Date('2022-01'),
+										),
+										() =>
+											$and(
+												$eq(
+													$ref(
+														'dirigeant . auto-entrepreneur . Cipav',
+														_dirigeant___auto_entrepreneur___Cipav,
+														ctx,
+														params,
+													),
+													false,
+												),
+												() => true,
+											),
+									),
+									false,
+								),
+						),
+						() => 0.2,
+						() => 0.1,
+					),
+					() =>
+						$ref(
+							"entreprise . chiffre d'affaires . service BNC",
+							_entreprise___chiffre_d_affaires___service_BNC,
+							ctx,
+							params,
+						),
+				),
+				() => 0.01,
+			),
+			$mul(
+				$mul(
+					$cond(
+						$or(
+							$eq(
+								$eq(
+									$ref(
+										'entreprise . activité . nature',
+										_entreprise___activité___nature,
+										ctx,
+										params,
+									),
+									'artisanale',
+								),
+								null,
+							),
+							() =>
+								$eq(
+									$eq(
+										$ref(
+											'entreprise . activité . nature',
+											_entreprise___activité___nature,
+											ctx,
+											params,
+										),
+										'artisanale',
+									),
+									false,
+								),
+						),
+						() => 0.1,
+						() => 0.3,
+					),
+					() =>
+						$ref(
+							"entreprise . chiffre d'affaires . BIC",
+							_entreprise___chiffre_d_affaires___BIC,
+							ctx,
+							params,
+						),
+				),
+				() => 0.01,
+			),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$add(
+			$ref(
+				'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers',
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers,
+				ctx,
+				params,
+			),
+			$ref(
+				'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . commerce',
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___commerce,
+				ctx,
+				params,
+			),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___commerce(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$eq(
+						$ref(
+							'entreprise . activité . nature',
+							_entreprise___activité___nature,
+							ctx,
+							params,
+						),
+						'commerciale',
+					),
+					false,
+				),
+				() =>
+					$eq(
+						$ref(
+							'entreprise . activité . nature',
+							_entreprise___activité___nature,
+							ctx,
+							params,
+						),
+						'commerciale',
+					) === undefined,
+			),
+			() => null,
+			() =>
+				$add(
+					$round(
+						'nearest',
+						$mul(
+							$mul(0.015, () =>
+								$ref(
+									"entreprise . chiffre d'affaires . vente restauration hébergement",
+									_entreprise___chiffre_d_affaires___vente_restauration_hébergement,
+									ctx,
+									params,
+								),
+							),
+							() => 0.01,
+						),
+						() =>
+							$cond(
+								true,
+								() => 1,
+								() => null,
+							),
+					),
+					$round(
+						'nearest',
+						$mul(
+							$mul(0.044, () =>
+								$ref(
+									"entreprise . chiffre d'affaires . service BIC",
+									_entreprise___chiffre_d_affaires___service_BIC,
+									ctx,
+									params,
+								),
+							),
+							() => 0.01,
+						),
+						() =>
+							$cond(
+								true,
+								() => 1,
+								() => null,
+							),
+					),
+				),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$eq(
+						$ref(
+							'entreprise . activité . nature',
+							_entreprise___activité___nature,
+							ctx,
+							params,
+						),
+						'artisanale',
+					),
+					false,
+				),
+				() =>
+					$eq(
+						$ref(
+							'entreprise . activité . nature',
+							_entreprise___activité___nature,
+							ctx,
+							params,
+						),
+						'artisanale',
+					) === undefined,
+			),
+			() => null,
+			() =>
+				$add(
+					$round(
+						'nearest',
+						$mul(
+							$mul(
+								$cond(
+									$neq(
+										$ref(
+											'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux vente',
+											_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_vente,
+											ctx,
+											params,
+										),
+										null,
+									),
+									() =>
+										$ref(
+											'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux vente',
+											_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_vente,
+											ctx,
+											params,
+										),
+									() =>
+										$cond(
+											$neq(
+												$ref(
+													'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux vente',
+													_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_vente,
+													ctx,
+													params,
+												),
+												null,
+											),
+											() =>
+												$ref(
+													'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux vente',
+													_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_vente,
+													ctx,
+													params,
+												),
+											() =>
+												$ref(
+													'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux vente',
+													_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_vente,
+													ctx,
+													params,
+												),
+										),
+								),
+								() =>
+									$ref(
+										"entreprise . chiffre d'affaires . vente restauration hébergement",
+										_entreprise___chiffre_d_affaires___vente_restauration_hébergement,
+										ctx,
+										params,
+									),
+							),
+							() => 0.01,
+						),
+						() =>
+							$cond(
+								true,
+								() => 1,
+								() => null,
+							),
+					),
+					$round(
+						'nearest',
+						$mul(
+							$mul(
+								$cond(
+									$neq(
+										$ref(
+											'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux service',
+											_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_service,
+											ctx,
+											params,
+										),
+										null,
+									),
+									() =>
+										$ref(
+											'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle . taux service',
+											_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_service,
+											ctx,
+											params,
+										),
+									() =>
+										$cond(
+											$neq(
+												$ref(
+													'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux service',
+													_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_service,
+													ctx,
+													params,
+												),
+												null,
+											),
+											() =>
+												$ref(
+													'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace . taux service',
+													_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_service,
+													ctx,
+													params,
+												),
+											() =>
+												$ref(
+													'dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux service',
+													_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_service,
+													ctx,
+													params,
+												),
+										),
+								),
+								() =>
+									$ref(
+										"entreprise . chiffre d'affaires . service BIC",
+										_entreprise___chiffre_d_affaires___service_BIC,
+										ctx,
+										params,
+									),
+							),
+							() => 0.01,
+						),
+						() =>
+							$cond(
+								true,
+								() => 1,
+								() => null,
+							),
+					),
+				),
+		)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace(
+	ctx,
+	params,
+) {
+	return /** @type {boolean} */ (
+		$cond(
+			$or(
+				$eq(
+					$ref(
+						'établissement . commune . département',
+						_établissement___commune___département,
+						ctx,
+						params,
+					),
+					'Bas-Rhin',
+				),
+				() =>
+					$or(
+						$eq(
+							$ref(
+								'établissement . commune . département',
+								_établissement___commune___département,
+								ctx,
+								params,
+							),
+							'Haut-Rhin',
+						),
+						() => false,
+					),
+			) === undefined,
+			() => false,
+			() =>
+				$or(
+					$eq(
+						$ref(
+							'établissement . commune . département',
+							_établissement___commune___département,
+							ctx,
+							params,
+						),
+						'Bas-Rhin',
+					),
+					() =>
+						$or(
+							$eq(
+								$ref(
+									'établissement . commune . département',
+									_établissement___commune___département,
+									ctx,
+									params,
+								),
+								'Haut-Rhin',
+							),
+							() => false,
+						),
+				),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_service(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (0.65)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Alsace___taux_vente(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (0.29)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle(
+	ctx,
+	params,
+) {
+	return /** @type {boolean} */ (
+		$cond(
+			$eq(
+				$ref(
+					'établissement . commune . département',
+					_établissement___commune___département,
+					ctx,
+					params,
+				),
+				'Moselle',
+			) === undefined,
+			() => false,
+			() =>
+				$eq(
+					$ref(
+						'établissement . commune . département',
+						_établissement___commune___département,
+						ctx,
+						params,
+					),
+					'Moselle',
+				),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_service(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (0.83)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_Moselle___taux_vente(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (0.37)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_service(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (0.48)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC___métiers___taux_vente(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (0.22)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$add(
+			$ref(
+				'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC',
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC,
+				ctx,
+				params,
+			),
+			$add(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement,
+					ctx,
+					params,
+				),
+				$add(
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav,
+						ctx,
+						params,
+					),
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC,
+						ctx,
+						params,
+					),
+				),
+			),
+		)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition(
+	ctx,
+	params,
+) {
+	return /** @type {unknown} */ (
+		$get(
+			'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition',
+			ctx,
+			params,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___autres_contributions(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$add(
+			$ref(
+				'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions',
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___autres_contributions,
+				ctx,
+				params,
+			),
+			$add(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___autres_contributions,
+					ctx,
+					params,
+				),
+				$add(
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___autres_contributions,
+						ctx,
+						params,
+					),
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___autres_contributions,
+						ctx,
+						params,
+					),
+				),
+			),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___formation_professionnelle(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$ref(
+			'dirigeant . auto-entrepreneur . cotisations et contributions . CFP',
+			_dirigeant___auto_entrepreneur___cotisations_et_contributions___CFP,
+			ctx,
+			params,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___invalidité_décès(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$add(
+			$ref(
+				'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès',
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___invalidité_décès,
+				ctx,
+				params,
+			),
+			$add(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___invalidité_décès,
+					ctx,
+					params,
+				),
+				$add(
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___invalidité_décès,
+						ctx,
+						params,
+					),
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___invalidité_décès,
+						ctx,
+						params,
+					),
+				),
+			),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___maladie_maternité(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$add(
+			$ref(
+				'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité',
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___maladie_maternité,
+				ctx,
+				params,
+			),
+			$add(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___maladie_maternité,
+					ctx,
+					params,
+				),
+				$add(
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___maladie_maternité,
+						ctx,
+						params,
+					),
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___maladie_maternité,
+						ctx,
+						params,
+					),
+				),
+			),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___retraite(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$add(
+			$ref(
+				'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite complémentaire',
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___retraite_complémentaire,
+				ctx,
+				params,
+			),
+			$ref(
+				'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . répartition . retraite de base',
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___retraite_de_base,
+				ctx,
+				params,
+			),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___retraite_complémentaire(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$add(
+			$ref(
+				'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire',
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_complémentaire,
+				ctx,
+				params,
+			),
+			$add(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_complémentaire,
+					ctx,
+					params,
+				),
+				$add(
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_complémentaire,
+						ctx,
+						params,
+					),
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_complémentaire,
+						ctx,
+						params,
+					),
+				),
+			),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___répartition___retraite_de_base(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$add(
+			$ref(
+				'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base',
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_de_base,
+				ctx,
+				params,
+			),
+			$add(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_de_base,
+					ctx,
+					params,
+				),
+				$add(
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_de_base,
+						ctx,
+						params,
+					),
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_de_base,
+						ctx,
+						params,
+					),
+				),
+			),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$cond(
+					$neq(
+						$ref(
+							'dirigeant . auto-entrepreneur . DROM . taux service BIC',
+							_dirigeant___auto_entrepreneur___DROM___taux_service_BIC,
+							ctx,
+							params,
+						),
+						null,
+					),
+					() =>
+						$ref(
+							'dirigeant . auto-entrepreneur . DROM . taux service BIC',
+							_dirigeant___auto_entrepreneur___DROM___taux_service_BIC,
+							ctx,
+							params,
+						),
+					() =>
+						$cond(
+							$neq(
+								$ref(
+									'dirigeant . auto-entrepreneur . Acre . taux service BIC',
+									_dirigeant___auto_entrepreneur___Acre___taux_service_BIC,
+									ctx,
+									params,
+								),
+								null,
+							),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . Acre . taux service BIC',
+									_dirigeant___auto_entrepreneur___Acre___taux_service_BIC,
+									ctx,
+									params,
+								),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . taux',
+									_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___taux,
+									ctx,
+									params,
+								),
+						),
+				),
+				() =>
+					$ref(
+						"entreprise . chiffre d'affaires . service BIC",
+						_entreprise___chiffre_d_affaires___service_BIC,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition(
+	ctx,
+	params,
+) {
+	return /** @type {unknown} */ (
+		$get(
+			'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition',
+			ctx,
+			params,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___autres_contributions(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . autres contributions . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___autres_contributions___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___autres_contributions___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (29.7)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___invalidité_décès(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . invalidité-décès . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___invalidité_décès___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___invalidité_décès___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (3.1)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___maladie_maternité(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . maladie-maternité . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___maladie_maternité___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___maladie_maternité___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (8.9)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_complémentaire(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite complémentaire . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_complémentaire___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_complémentaire___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (16.5)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_de_base(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . répartition . retraite de base . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_de_base___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___répartition___retraite_de_base___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (41.8)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BIC___taux(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2022-10')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2022-10')),
+						false,
+					),
+			),
+			() => 22,
+			() => 21.2,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gt(
+						$ref(
+							'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav',
+							_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav,
+							ctx,
+							params,
+						),
+						() => 0,
+					),
+					false,
+				),
+				() =>
+					$gt(
+						$ref(
+							'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav',
+							_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav,
+							ctx,
+							params,
+						),
+						() => 0,
+					) === undefined,
+			),
+			() =>
+				$mul(
+					$mul(
+						$cond(
+							$neq(
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . taux service BNC',
+									_dirigeant___auto_entrepreneur___DROM___taux_service_BNC,
+									ctx,
+									params,
+								),
+								null,
+							),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . taux service BNC',
+									_dirigeant___auto_entrepreneur___DROM___taux_service_BNC,
+									ctx,
+									params,
+								),
+							() =>
+								$cond(
+									$neq(
+										$ref(
+											'dirigeant . auto-entrepreneur . Acre . taux service BNC',
+											_dirigeant___auto_entrepreneur___Acre___taux_service_BNC,
+											ctx,
+											params,
+										),
+										null,
+									),
+									() =>
+										$ref(
+											'dirigeant . auto-entrepreneur . Acre . taux service BNC',
+											_dirigeant___auto_entrepreneur___Acre___taux_service_BNC,
+											ctx,
+											params,
+										),
+									() =>
+										$ref(
+											'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . taux',
+											_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___taux,
+											ctx,
+											params,
+										),
+								),
+						),
+						() =>
+							$ref(
+								"entreprise . chiffre d'affaires . service BNC",
+								_entreprise___chiffre_d_affaires___service_BNC,
+								ctx,
+								params,
+							),
+					),
+					() => 0.01,
+				),
+			() => null,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$ref(
+						'dirigeant . auto-entrepreneur . Cipav',
+						_dirigeant___auto_entrepreneur___Cipav,
+						ctx,
+						params,
+					),
+					false,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . Cipav',
+						_dirigeant___auto_entrepreneur___Cipav,
+						ctx,
+						params,
+					) === undefined,
+			),
+			() => null,
+			() =>
+				$mul(
+					$mul(
+						$cond(
+							$neq(
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . taux CIPAV',
+									_dirigeant___auto_entrepreneur___DROM___taux_CIPAV,
+									ctx,
+									params,
+								),
+								null,
+							),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . DROM . taux CIPAV',
+									_dirigeant___auto_entrepreneur___DROM___taux_CIPAV,
+									ctx,
+									params,
+								),
+							() =>
+								$cond(
+									$neq(
+										$ref(
+											'dirigeant . auto-entrepreneur . Acre . taux CIPAV',
+											_dirigeant___auto_entrepreneur___Acre___taux_CIPAV,
+											ctx,
+											params,
+										),
+										null,
+									),
+									() =>
+										$ref(
+											'dirigeant . auto-entrepreneur . Acre . taux CIPAV',
+											_dirigeant___auto_entrepreneur___Acre___taux_CIPAV,
+											ctx,
+											params,
+										),
+									() =>
+										$ref(
+											'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . taux',
+											_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___taux,
+											ctx,
+											params,
+										),
+								),
+						),
+						() =>
+							$ref(
+								"entreprise . chiffre d'affaires . service BNC",
+								_entreprise___chiffre_d_affaires___service_BNC,
+								ctx,
+								params,
+							),
+					),
+					() => 0.01,
+				),
+		)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition(
+	ctx,
+	params,
+) {
+	return /** @type {unknown} */ (
+		$get(
+			'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition',
+			ctx,
+			params,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___autres_contributions(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . autres contributions . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___autres_contributions___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___autres_contributions___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+						false,
+					),
+			),
+			() => 36.3,
+			() => 34,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___invalidité_décès(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . invalidité-décès . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___invalidité_décès___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___invalidité_décès___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+						false,
+					),
+			),
+			() => 2.6,
+			() => 1.4,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___maladie_maternité(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . maladie-maternité . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___maladie_maternité___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___maladie_maternité___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+						false,
+					),
+			),
+			() => 9.050000000000001,
+			() => 10.2,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_complémentaire(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite complémentaire . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_complémentaire___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_complémentaire___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+						false,
+					),
+			),
+			() => 20.75,
+			() => 25.6,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_de_base(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC Cipav . répartition . retraite de base . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_de_base___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___répartition___retraite_de_base___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+						false,
+					),
+			),
+			() => 31.3,
+			() => 28.8,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC_Cipav___taux(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2024-07')),
+						false,
+					),
+			),
+			() => 21.2,
+			() => 23.2,
+		)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition(
+	ctx,
+	params,
+) {
+	return /** @type {unknown} */ (
+		$get(
+			'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition',
+			ctx,
+			params,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___autres_contributions(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . autres contributions . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___autres_contributions___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___autres_contributions___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+						false,
+					),
+			),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$gte($ref('date', _date, ctx, params), () => new Date('2025-01')),
+							null,
+						),
+						() =>
+							$eq(
+								$gte(
+									$ref('date', _date, ctx, params),
+									() => new Date('2025-01'),
+								),
+								false,
+							),
+					),
+					() =>
+						$cond(
+							$or(
+								$eq(
+									$gte(
+										$ref('date', _date, ctx, params),
+										() => new Date('2024-07'),
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$gte(
+											$ref('date', _date, ctx, params),
+											() => new Date('2024-07'),
+										),
+										false,
+									),
+							),
+							() => 36.5,
+							() => 34.1,
+						),
+					() => 32.5,
+				),
+			() => 31.2,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___invalidité_décès(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . invalidité-décès . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___invalidité_décès___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___invalidité_décès___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+						false,
+					),
+			),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$gte($ref('date', _date, ctx, params), () => new Date('2025-01')),
+							null,
+						),
+						() =>
+							$eq(
+								$gte(
+									$ref('date', _date, ctx, params),
+									() => new Date('2025-01'),
+								),
+								false,
+							),
+					),
+					() =>
+						$cond(
+							$or(
+								$eq(
+									$gte(
+										$ref('date', _date, ctx, params),
+										() => new Date('2024-07'),
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$gte(
+											$ref('date', _date, ctx, params),
+											() => new Date('2024-07'),
+										),
+										false,
+									),
+							),
+							() => 4.1,
+							() => 3.7,
+						),
+					() => 3.5,
+				),
+			() => 3.25,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___maladie_maternité(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . maladie-maternité . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___maladie_maternité___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___maladie_maternité___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+						false,
+					),
+			),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$gte($ref('date', _date, ctx, params), () => new Date('2025-01')),
+							null,
+						),
+						() =>
+							$eq(
+								$gte(
+									$ref('date', _date, ctx, params),
+									() => new Date('2025-01'),
+								),
+								false,
+							),
+					),
+					() =>
+						$cond(
+							$or(
+								$eq(
+									$gte(
+										$ref('date', _date, ctx, params),
+										() => new Date('2024-07'),
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$gte(
+											$ref('date', _date, ctx, params),
+											() => new Date('2024-07'),
+										),
+										false,
+									),
+							),
+							() => 3.9,
+							() => 3.6,
+						),
+					() => 3.4,
+				),
+			() => 3,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_complémentaire(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite complémentaire . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_complémentaire___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_complémentaire___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+						false,
+					),
+			),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$gte($ref('date', _date, ctx, params), () => new Date('2025-01')),
+							null,
+						),
+						() =>
+							$eq(
+								$gte(
+									$ref('date', _date, ctx, params),
+									() => new Date('2025-01'),
+								),
+								false,
+							),
+					),
+					() =>
+						$cond(
+							$or(
+								$eq(
+									$gte(
+										$ref('date', _date, ctx, params),
+										() => new Date('2024-07'),
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$gte(
+											$ref('date', _date, ctx, params),
+											() => new Date('2024-07'),
+										),
+										false,
+									),
+							),
+							() => 0,
+							() => 7.85,
+						),
+					() => 13,
+				),
+			() => 17.7,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_de_base(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BNC . répartition . retraite de base . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_de_base___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___répartition___retraite_de_base___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+						false,
+					),
+			),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$gte($ref('date', _date, ctx, params), () => new Date('2025-01')),
+							null,
+						),
+						() =>
+							$eq(
+								$gte(
+									$ref('date', _date, ctx, params),
+									() => new Date('2025-01'),
+								),
+								false,
+							),
+					),
+					() =>
+						$cond(
+							$or(
+								$eq(
+									$gte(
+										$ref('date', _date, ctx, params),
+										() => new Date('2024-07'),
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$gte(
+											$ref('date', _date, ctx, params),
+											() => new Date('2024-07'),
+										),
+										false,
+									),
+							),
+							() => 55.5,
+							() => 50.75,
+						),
+					() => 47.6,
+				),
+			() => 44.85,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___service_BNC___taux(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2026-01')),
+						false,
+					),
+			),
+			() =>
+				$cond(
+					$or(
+						$eq(
+							$gte($ref('date', _date, ctx, params), () => new Date('2025-01')),
+							null,
+						),
+						() =>
+							$eq(
+								$gte(
+									$ref('date', _date, ctx, params),
+									() => new Date('2025-01'),
+								),
+								false,
+							),
+					),
+					() =>
+						$cond(
+							$or(
+								$eq(
+									$gte(
+										$ref('date', _date, ctx, params),
+										() => new Date('2024-07'),
+									),
+									null,
+								),
+								() =>
+									$eq(
+										$gte(
+											$ref('date', _date, ctx, params),
+											() => new Date('2024-07'),
+										),
+										false,
+									),
+							),
+							() =>
+								$cond(
+									$or(
+										$eq(
+											$gte(
+												$ref('date', _date, ctx, params),
+												() => new Date('2022-10'),
+											),
+											null,
+										),
+										() =>
+											$eq(
+												$gte(
+													$ref('date', _date, ctx, params),
+													() => new Date('2022-10'),
+												),
+												false,
+											),
+									),
+									() => 22,
+									() => 21.1,
+								),
+							() => 23.1,
+						),
+					() => 24.6,
+				),
+			() => 26.1,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$cond(
+					$neq(
+						$ref(
+							'dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement',
+							_dirigeant___auto_entrepreneur___DROM___taux_vente_restauration_hébergement,
+							ctx,
+							params,
+						),
+						null,
+					),
+					() =>
+						$ref(
+							'dirigeant . auto-entrepreneur . DROM . taux vente restauration hébergement',
+							_dirigeant___auto_entrepreneur___DROM___taux_vente_restauration_hébergement,
+							ctx,
+							params,
+						),
+					() =>
+						$cond(
+							$neq(
+								$ref(
+									'dirigeant . auto-entrepreneur . Acre . taux vente restauration hébergement',
+									_dirigeant___auto_entrepreneur___Acre___taux_vente_restauration_hébergement,
+									ctx,
+									params,
+								),
+								null,
+							),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . Acre . taux vente restauration hébergement',
+									_dirigeant___auto_entrepreneur___Acre___taux_vente_restauration_hébergement,
+									ctx,
+									params,
+								),
+							() =>
+								$ref(
+									'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . taux',
+									_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___taux,
+									ctx,
+									params,
+								),
+						),
+				),
+				() =>
+					$ref(
+						"entreprise . chiffre d'affaires . vente restauration hébergement",
+						_entreprise___chiffre_d_affaires___vente_restauration_hébergement,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition(
+	ctx,
+	params,
+) {
+	return /** @type {unknown} */ (
+		$get(
+			'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition',
+			ctx,
+			params,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___autres_contributions(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . autres contributions . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___autres_contributions___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___autres_contributions___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (29.7)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___invalidité_décès(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . invalidité-décès . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___invalidité_décès___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___invalidité_décès___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (3.1)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___maladie_maternité(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . maladie-maternité . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___maladie_maternité___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___maladie_maternité___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (8.9)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_complémentaire(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite complémentaire . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_complémentaire___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_complémentaire___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (16.5)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_de_base(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement,
+					ctx,
+					params,
+				),
+				() =>
+					$ref(
+						'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . vente restauration hébergement . répartition . retraite de base . taux de répartition',
+						_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_de_base___taux_de_répartition,
+						ctx,
+						params,
+					),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___répartition___retraite_de_base___taux_de_répartition(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (41.8)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations___vente_restauration_hébergement___taux(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$cond(
+			$or(
+				$eq(
+					$gte($ref('date', _date, ctx, params), () => new Date('2022-10')),
+					null,
+				),
+				() =>
+					$eq(
+						$gte($ref('date', _date, ctx, params), () => new Date('2022-10')),
+						false,
+					),
+			),
+			() => 12.8,
+			() => 12.3,
+		)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___impôt(ctx, params) {
+	return /** @type {boolean} */ (true)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___impôt___revenu_imposable(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$ref(
+			'entreprise . imposition . régime . micro-entreprise . revenu abattu',
+			_entreprise___imposition___régime___micro_entreprise___revenu_abattu,
+			ctx,
+			params,
+		)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___impôt___versement_libératoire(
+	ctx,
+	params,
+) {
+	return /** @type {boolean} */ (
+		$cond(
+			$get(
+				'dirigeant . auto-entrepreneur . impôt . versement libératoire',
+				ctx,
+				params,
+			) === undefined,
+			() => false,
+			() =>
+				$get(
+					'dirigeant . auto-entrepreneur . impôt . versement libératoire',
+					ctx,
+					params,
+				),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___impôt___versement_libératoire___montant(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$add(
+			$mul(
+				$mul(1.7, () =>
+					$ref(
+						"entreprise . chiffre d'affaires . service BIC",
+						_entreprise___chiffre_d_affaires___service_BIC,
+						ctx,
+						params,
+					),
+				),
+				() => 0.01,
+			),
+			$add(
+				$mul(
+					$mul(2.2, () =>
+						$ref(
+							"entreprise . chiffre d'affaires . service BNC",
+							_entreprise___chiffre_d_affaires___service_BNC,
+							ctx,
+							params,
+						),
+					),
+					() => 0.01,
+				),
+				$mul(
+					$mul(1, () =>
+						$ref(
+							"entreprise . chiffre d'affaires . vente restauration hébergement",
+							_entreprise___chiffre_d_affaires___vente_restauration_hébergement,
+							ctx,
+							params,
+						),
+					),
+					() => 0.01,
+				),
+			),
+		)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___impôt___versement_libératoire___seuil_dépassé(
+	ctx,
+	params,
+) {
+	return /** @type {boolean} */ (
+		$gt(
+			$ref(
+				'impôt . foyer fiscal . revenu fiscal de référence',
+				_impôt___foyer_fiscal___revenu_fiscal_de_référence,
+				ctx,
+				params,
+			),
+			() => 27519,
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___revenu_net(ctx, params) {
+	return /** @type {number} */ (
+		$round(
+			'nearest',
+			$sub(
+				$ref(
+					"entreprise . chiffre d'affaires",
+					_entreprise___chiffre_d_affaires,
+					ctx,
+					params,
+				),
+				$ref(
+					'dirigeant . auto-entrepreneur . cotisations et contributions',
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions,
+					ctx,
+					params,
+				),
+			),
+			() =>
+				$cond(
+					true,
+					() => 1,
+					() => null,
+				),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _dirigeant___auto_entrepreneur___revenu_net___après_impôt(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$round(
+			'nearest',
+			$sub(
+				$ref(
+					'dirigeant . auto-entrepreneur . revenu net',
+					_dirigeant___auto_entrepreneur___revenu_net,
+					ctx,
+					params,
+				),
+				$ref('rémunération . impôt', _rémunération___impôt, ctx, params),
+			),
+			() =>
+				$cond(
+					true,
+					() => 1,
+					() => null,
+				),
+		)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___auto_entrepreneur___éligible_à_l_ACRE(ctx, params) {
+	return /** @type {boolean} */ (
+		$cond(
+			$or(
+				$eq(
+					$lt(
+						$ref(
+							"entreprise . durée d'activité . en début d'année",
+							_entreprise___durée_d_activité___en_début_d_année,
+							ctx,
+							params,
+						),
+						() => 1,
+					),
+					false,
+				),
+				() =>
+					$lt(
+						$ref(
+							"entreprise . durée d'activité . en début d'année",
+							_entreprise___durée_d_activité___en_début_d_année,
+							ctx,
+							params,
+						),
+						() => 1,
+					) === undefined,
+			),
+			() => null,
+			() =>
+				$cond(
+					$get(
+						"dirigeant . auto-entrepreneur . éligible à l'ACRE",
+						ctx,
+						params,
+					) === undefined,
+					() => false,
+					() =>
+						$get(
+							"dirigeant . auto-entrepreneur . éligible à l'ACRE",
+							ctx,
+							params,
+						),
+				),
+		)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _dirigeant___exonérations(ctx, params) {
+	return /** @type {unknown} */ ($get('dirigeant . exonérations', ctx, params))
+}
+
+/** @type {Fn<boolean>}*/
+function _dirigeant___exonérations___ACRE(ctx, params) {
+	return /** @type {boolean} */ (
+		$get('dirigeant . exonérations . ACRE', ctx, params)
+	)
+}
+
+/** @type {Fn<string>}*/
+function _dirigeant___régime_social(ctx, params) {
+	return /** @type {string} */ ('auto-entrepreneur')
+}
+
+/** @type {Fn<unknown>}*/
+function _entreprise(ctx, params) {
+	return /** @type {unknown} */ ($get('entreprise', ctx, params))
+}
+
+/** @type {Fn<unknown>}*/
+function _entreprise___activité(ctx, params) {
+	return /** @type {unknown} */ ($get('entreprise . activité', ctx, params))
+}
+
+/** @type {Fn<string>}*/
+function _entreprise___activité___nature(ctx, params) {
+	return /** @type {string} */ (
+		$get('entreprise . activité . nature', ctx, params)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _entreprise___activité___nature___libérale(ctx, params) {
+	return /** @type {unknown} */ (
+		$get('entreprise . activité . nature . libérale', ctx, params)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _entreprise___activité___nature___libérale___réglementée(ctx, params) {
+	return /** @type {boolean} */ (
+		$get('entreprise . activité . nature . libérale . réglementée', ctx, params)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _entreprise___activités(ctx, params) {
+	return /** @type {unknown} */ ($get('entreprise . activités', ctx, params))
+}
+
+/** @type {Fn<unknown>}*/
+function _entreprise___activités___revenus_mixtes(ctx, params) {
+	return /** @type {unknown} */ (
+		$get('entreprise . activités . revenus mixtes', ctx, params)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _entreprise___chiffre_d_affaires(ctx, params) {
+	return /** @type {number} */ (
+		$add(
+			$ref(
+				"entreprise . chiffre d'affaires . service BIC",
+				_entreprise___chiffre_d_affaires___service_BIC,
+				ctx,
+				params,
+			),
+			$add(
+				$ref(
+					"entreprise . chiffre d'affaires . service BNC",
+					_entreprise___chiffre_d_affaires___service_BNC,
+					ctx,
+					params,
+				),
+				$add(
+					$ref(
+						"entreprise . chiffre d'affaires . vente restauration hébergement",
+						_entreprise___chiffre_d_affaires___vente_restauration_hébergement,
+						ctx,
+						params,
+					),
+					$ref(
+						"entreprise . chiffre d'affaires . BIC",
+						_entreprise___chiffre_d_affaires___BIC,
+						ctx,
+						params,
+					),
+				),
+			),
+		)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _entreprise___chiffre_d_affaires___BIC(ctx, params) {
+	return /** @type {number} */ (
+		$get("entreprise . chiffre d'affaires . BIC", ctx, params)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _entreprise___chiffre_d_affaires___service_BIC(ctx, params) {
+	return /** @type {number} */ (
+		$get("entreprise . chiffre d'affaires . service BIC", ctx, params)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _entreprise___chiffre_d_affaires___service_BNC(ctx, params) {
+	return /** @type {number} */ (
+		$get("entreprise . chiffre d'affaires . service BNC", ctx, params)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _entreprise___chiffre_d_affaires___vente_restauration_hébergement(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$get(
+			"entreprise . chiffre d'affaires . vente restauration hébergement",
+			ctx,
+			params,
+		)
+	)
+}
+
+/** @type {Fn<Date>}*/
+function _entreprise___date_de_création(ctx, params) {
+	return /** @type {Date} */ (
+		$get('entreprise . date de création', ctx, params)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _entreprise___durée_d_activité(ctx, params) {
+	return /** @type {number} */ (
+		$get("entreprise . durée d'activité", ctx, params)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _entreprise___durée_d_activité___années_civiles(ctx, params) {
+	return /** @type {number} */ (
+		$get("entreprise . durée d'activité . années civiles", ctx, params)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _entreprise___durée_d_activité___en_début_d_année(ctx, params) {
+	return /** @type {number} */ (
+		$get("entreprise . durée d'activité . en début d'année", ctx, params)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _entreprise___durée_d_activité___trimestres_civils(ctx, params) {
+	return /** @type {number} */ (
+		$get("entreprise . durée d'activité . trimestres civils", ctx, params)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _entreprise___imposition(ctx, params) {
+	return /** @type {unknown} */ ($get('entreprise . imposition', ctx, params))
+}
+
+/** @type {Fn<unknown>}*/
+function _entreprise___imposition___régime(ctx, params) {
+	return /** @type {unknown} */ (
+		$get('entreprise . imposition . régime', ctx, params)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _entreprise___imposition___régime___micro_entreprise(ctx, params) {
+	return /** @type {unknown} */ (
+		$get('entreprise . imposition . régime . micro-entreprise', ctx, params)
+	)
+}
+
+/** @type {Fn<number>}*/
+function _entreprise___imposition___régime___micro_entreprise___revenu_abattu(
+	ctx,
+	params,
+) {
+	return /** @type {number} */ (
+		$mul(
+			$mul(60, () =>
+				$ref(
+					"entreprise . chiffre d'affaires",
+					_entreprise___chiffre_d_affaires,
+					ctx,
+					params,
+				),
+			),
+			() => 0.01,
+		)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _impôt(ctx, params) {
+	return /** @type {unknown} */ ($get('impôt', ctx, params))
+}
+
+/** @type {Fn<unknown>}*/
+function _impôt___foyer_fiscal(ctx, params) {
+	return /** @type {unknown} */ ($get('impôt . foyer fiscal', ctx, params))
+}
+
+/** @type {Fn<number>}*/
+function _impôt___foyer_fiscal___revenu_fiscal_de_référence(ctx, params) {
+	return /** @type {number} */ (
+		$get('impôt . foyer fiscal . revenu fiscal de référence', ctx, params)
+	)
+}
+
+/** @type {Fn<unknown>}*/
+function _revenu_imposable(ctx, params) {
+	return /** @type {unknown} */ ($get('revenu imposable', ctx, params))
+}
+
+/** @type {Fn<unknown>}*/
+function _rémunération(ctx, params) {
+	return /** @type {unknown} */ ($get('rémunération', ctx, params))
+}
+
+/** @type {Fn<number>}*/
+function _rémunération___impôt(ctx, params) {
+	return /** @type {number} */ ($get('rémunération . impôt', ctx, params))
+}
+
+/** @type {Fn<unknown>}*/
+function _établissement(ctx, params) {
+	return /** @type {unknown} */ ($get('établissement', ctx, params))
+}
+
+/** @type {Fn<unknown>}*/
+function _établissement___commune(ctx, params) {
+	return /** @type {unknown} */ ($get('établissement . commune', ctx, params))
+}
+
+/** @type {Fn<string>}*/
+function _établissement___commune___département(ctx, params) {
+	return /** @type {string} */ (
+		$get('établissement . commune . département', ctx, params)
+	)
+}
+
+/** @type {Fn<boolean>}*/
+function _établissement___commune___département___outre_mer(ctx, params) {
+	return /** @type {boolean} */ (
+		$get('établissement . commune . département . outre-mer', ctx, params)
+	)
+}
 
 /** Exported outputs/inputs */
 
-const rules = {
-'date': {
+const rules = /**@type {const} */ {
+	date: {
 		/**
 		 * Parameters of "date"
 		 * @typedef {{
@@ -1293,7 +4602,7 @@ const rules = {
 		/**
 		 * Evaluate "date"
 		 * @param {DateParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {Date | undefined | null}
 		 */
@@ -1301,13 +4610,13 @@ const rules = {
 		/**
 		 * Evaluate "date" with information on missing and needed parameters
 		 * @param {DateParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: Date | undefined | null; needed: Array<keyof DateParams>, missing: Array<keyof DateParams> }}
 		 */
 		evaluateParams: (params = {}, options) => $evaluate(_date, params, options),
 		/** @type {"date"} */
-		type: "date",
+		type: 'date',
 		/** Parameter list for "date"
 		 * @type {Array<keyof DateParams>}
 		 */
@@ -1315,7 +4624,7 @@ const rules = {
 		/** @type {string} date */
 		title: 'date',
 	},
-'dirigeant . auto-entrepreneur . Cipav . adhérent': {
+	'dirigeant . auto-entrepreneur . Cipav . adhérent': {
 		/**
 		 * Parameters of "dirigeant . auto-entrepreneur . Cipav . adhérent"
 		 * @typedef {{
@@ -1325,21 +4634,31 @@ const rules = {
 		/**
 		 * Evaluate "dirigeant . auto-entrepreneur . Cipav . adhérent"
 		 * @param {Dirigeant___auto_entrepreneur___Cipav___adhérentParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {boolean | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_dirigeant___auto_entrepreneur___Cipav___adhérent, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(
+				_dirigeant___auto_entrepreneur___Cipav___adhérent,
+				params,
+				options,
+			).value,
 		/**
 		 * Evaluate "dirigeant . auto-entrepreneur . Cipav . adhérent" with information on missing and needed parameters
 		 * @param {Dirigeant___auto_entrepreneur___Cipav___adhérentParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: boolean | undefined | null; needed: Array<keyof Dirigeant___auto_entrepreneur___Cipav___adhérentParams>, missing: Array<keyof Dirigeant___auto_entrepreneur___Cipav___adhérentParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_dirigeant___auto_entrepreneur___Cipav___adhérent, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(
+				_dirigeant___auto_entrepreneur___Cipav___adhérent,
+				params,
+				options,
+			),
 		/** @type {"boolean"} */
-		type: "boolean",
+		type: 'boolean',
 		/** Parameter list for "dirigeant . auto-entrepreneur . Cipav . adhérent"
 		 * @type {Array<keyof Dirigeant___auto_entrepreneur___Cipav___adhérentParams>}
 		 */
@@ -1356,11 +4675,18 @@ Les auto-entrepreneurs concernés disposent toutefois d’un droit d’option
 durant cinq ans afin de rejoindre la Sécurité sociale pour les indépendants
 (SSI).
  */
-		description: 'Depuis le 1er janvier 2018, les auto-entreprises d’activité libérale non\nréglementée sont affiliées à la Sécurité sociale pour les indépendants (SSI).\n\nLes auto-entreprises d’activité libérale non réglementée créées avant le 1er\njanvier 2018, qui étaient adhérentes à la Cipav, demeurent à la Cipav.\n\nLes auto-entrepreneurs concernés disposent toutefois d’un droit d’option\ndurant cinq ans afin de rejoindre la Sécurité sociale pour les indépendants\n(SSI).\n',
+		description:
+			'Depuis le 1er janvier 2018, les auto-entreprises d’activité libérale non\nréglementée sont affiliées à la Sécurité sociale pour les indépendants (SSI).\n\nLes auto-entreprises d’activité libérale non réglementée créées avant le 1er\njanvier 2018, qui étaient adhérentes à la Cipav, demeurent à la Cipav.\n\nLes auto-entrepreneurs concernés disposent toutefois d’un droit d’option\ndurant cinq ans afin de rejoindre la Sécurité sociale pour les indépendants\n(SSI).\n',
 		/** Custom meta of rule "dirigeant . auto-entrepreneur . Cipav . adhérent" */
-		meta: {"question":"Êtes-vous adhérent à la Cipav ?","références":{"Qui est assuré à la Cipav ?":"https://www.lacipav.fr/qui-est-assure-cipav"}} /** @type {const} */,
+		meta: {
+			question: 'Êtes-vous adhérent à la Cipav ?',
+			références: {
+				'Qui est assuré à la Cipav ?':
+					'https://www.lacipav.fr/qui-est-assure-cipav',
+			},
+		} /** @type {const} */,
 	},
-'dirigeant . auto-entrepreneur . cotisations et contributions': {
+	'dirigeant . auto-entrepreneur . cotisations et contributions': {
 		/**
 		 * Parameters of "dirigeant . auto-entrepreneur . cotisations et contributions"
 		 * @typedef {{
@@ -1381,33 +4707,63 @@ durant cinq ans afin de rejoindre la Sécurité sociale pour les indépendants
 		/**
 		 * Evaluate "dirigeant . auto-entrepreneur . cotisations et contributions"
 		 * @param {Dirigeant___auto_entrepreneur___cotisations_et_contributionsParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {number | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_dirigeant___auto_entrepreneur___cotisations_et_contributions, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions,
+				params,
+				options,
+			).value,
 		/**
 		 * Evaluate "dirigeant . auto-entrepreneur . cotisations et contributions" with information on missing and needed parameters
 		 * @param {Dirigeant___auto_entrepreneur___cotisations_et_contributionsParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: number | undefined | null; needed: Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributionsParams>, missing: Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributionsParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_dirigeant___auto_entrepreneur___cotisations_et_contributions, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions,
+				params,
+				options,
+			),
 		/** @type {"number"} */
-		type: "number",
+		type: 'number',
 		/** @type {"€/an"} */
-		unit: "€/an",
+		unit: '€/an',
 		/** Parameter list for "dirigeant . auto-entrepreneur . cotisations et contributions"
 		 * @type {Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributionsParams>}
 		 */
-		params: ['date', 'dirigeant . auto-entrepreneur . Cipav . adhérent', 'entreprise . activité . nature', 'entreprise . activité . nature . libérale . réglementée', 'entreprise . chiffre d\'affaires . BIC', 'entreprise . chiffre d\'affaires . service BIC', 'entreprise . chiffre d\'affaires . service BNC', 'entreprise . chiffre d\'affaires . vente restauration hébergement', 'entreprise . date de création', 'entreprise . durée d\'activité', 'entreprise . durée d\'activité . années civiles', 'entreprise . durée d\'activité . trimestres civils'],
+		params: [
+			'date',
+			'dirigeant . auto-entrepreneur . Cipav . adhérent',
+			'entreprise . activité . nature',
+			'entreprise . activité . nature . libérale . réglementée',
+			"entreprise . chiffre d'affaires . BIC",
+			"entreprise . chiffre d'affaires . service BIC",
+			"entreprise . chiffre d'affaires . service BNC",
+			"entreprise . chiffre d'affaires . vente restauration hébergement",
+			'entreprise . date de création',
+			"entreprise . durée d'activité",
+			"entreprise . durée d'activité . années civiles",
+			"entreprise . durée d'activité . trimestres civils",
+		],
 		/** @type {string} dirigeant . auto-entrepreneur . cotisations et contributions */
 		title: 'dirigeant . auto-entrepreneur . cotisations et contributions',
 		/** Custom meta of rule "dirigeant . auto-entrepreneur . cotisations et contributions" */
-		meta: {"références":{"Imposition du micro-entrepreneur (régime micro-fiscal et social)":"https://www.service-public.fr/professionnels-entreprises/vosdroits/F23267","Les cotisations et contributions sociales":"https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#cout-durant-vie-auto-entreprise"}} /** @type {const} */,
+		meta: {
+			références: {
+				'Imposition du micro-entrepreneur (régime micro-fiscal et social)':
+					'https://www.service-public.fr/professionnels-entreprises/vosdroits/F23267',
+				'Les cotisations et contributions sociales':
+					'https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#cout-durant-vie-auto-entreprise',
+			},
+		} /** @type {const} */,
 	},
-'dirigeant . auto-entrepreneur . cotisations et contributions . TFC': {
+	'dirigeant . auto-entrepreneur . cotisations et contributions . TFC': {
 		/**
 		 * Parameters of "dirigeant . auto-entrepreneur . cotisations et contributions . TFC"
 		 * @typedef {{
@@ -1419,27 +4775,41 @@ durant cinq ans afin de rejoindre la Sécurité sociale pour les indépendants
 		/**
 		 * Evaluate "dirigeant . auto-entrepreneur . cotisations et contributions . TFC"
 		 * @param {Dirigeant___auto_entrepreneur___cotisations_et_contributions___TFCParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {number | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC,
+				params,
+				options,
+			).value,
 		/**
 		 * Evaluate "dirigeant . auto-entrepreneur . cotisations et contributions . TFC" with information on missing and needed parameters
 		 * @param {Dirigeant___auto_entrepreneur___cotisations_et_contributions___TFCParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: number | undefined | null; needed: Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributions___TFCParams>, missing: Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributions___TFCParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(
+				_dirigeant___auto_entrepreneur___cotisations_et_contributions___TFC,
+				params,
+				options,
+			),
 		/** @type {"number"} */
-		type: "number",
+		type: 'number',
 		/** @type {"€/an"} */
-		unit: "€/an",
+		unit: '€/an',
 		/** Parameter list for "dirigeant . auto-entrepreneur . cotisations et contributions . TFC"
 		 * @type {Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributions___TFCParams>}
 		 */
-		params: ['entreprise . activité . nature', 'entreprise . chiffre d\'affaires . service BIC', 'entreprise . chiffre d\'affaires . vente restauration hébergement'],
+		params: [
+			'entreprise . activité . nature',
+			"entreprise . chiffre d'affaires . service BIC",
+			"entreprise . chiffre d'affaires . vente restauration hébergement",
+		],
 		/** @type {string} Taxes pour frais de chambre */
 		title: 'Taxes pour frais de chambre',
 		/** @type {string} Nous n’avons pas intégré les exceptions suivantes :
@@ -1447,10 +4817,16 @@ durant cinq ans afin de rejoindre la Sécurité sociale pour les indépendants
  */
 		note: 'Nous n’avons pas intégré les exceptions suivantes :\n- Artisans en double immatriculation CCI-CMA\n',
 		/** Custom meta of rule "dirigeant . auto-entrepreneur . cotisations et contributions . TFC" */
-		meta: {"références":{"Fiche service-public.fr":"https://www.service-public.fr/professionnels-entreprises/vosdroits/F32847"}} /** @type {const} */,
+		meta: {
+			références: {
+				'Fiche service-public.fr':
+					'https://www.service-public.fr/professionnels-entreprises/vosdroits/F32847',
+			},
+		} /** @type {const} */,
 	},
-'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations': {
-		/**
+	'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations':
+		{
+			/**
 		 * Parameters of "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations"
 		 * @typedef {{
 				'date'?: Date | undefined;
@@ -1466,33 +4842,56 @@ durant cinq ans afin de rejoindre la Sécurité sociale pour les indépendants
 				'entreprise . durée d'activité . trimestres civils'?: number | undefined
 			}} Dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisationsParams
 		 */
-		/**
-		 * Evaluate "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations"
-		 * @param {Dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisationsParams} [params={}]
-		 * @param {Object} options
-		 * @param {boolean} [option.cache=false]
-		 * @return {number | undefined | null}
-		 */
-		evaluate: (params = {}, options) => $evaluate(_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations, params, options).value,
-		/**
-		 * Evaluate "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations" with information on missing and needed parameters
-		 * @param {Dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisationsParams} [params={}]
-		 * @param {Object} options
-		 * @param {boolean} [option.cache=false]
-		 * @return {{value: number | undefined | null; needed: Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisationsParams>, missing: Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisationsParams> }}
-		 */
-		evaluateParams: (params = {}, options) => $evaluate(_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations, params, options),
-		/** @type {"number"} */
-		type: "number",
-		/** @type {"€/an"} */
-		unit: "€/an",
-		/** Parameter list for "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations"
-		 * @type {Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisationsParams>}
-		 */
-		params: ['date', 'dirigeant . auto-entrepreneur . Cipav . adhérent', 'entreprise . activité . nature', 'entreprise . activité . nature . libérale . réglementée', 'entreprise . chiffre d\'affaires . service BIC', 'entreprise . chiffre d\'affaires . service BNC', 'entreprise . chiffre d\'affaires . vente restauration hébergement', 'entreprise . date de création', 'entreprise . durée d\'activité', 'entreprise . durée d\'activité . années civiles', 'entreprise . durée d\'activité . trimestres civils'],
-		/** @type {string} dirigeant . auto-entrepreneur . cotisations et contributions . cotisations */
-		title: 'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations',
-		/** @type {string} Les cotisations sociales donnent à l’auto-entrepreneur accès à une
+			/**
+			 * Evaluate "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations"
+			 * @param {Dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisationsParams} [params={}]
+			 * @param {Object} [options={}]
+			 * @param {boolean} [option.cache=false]
+			 * @return {number | undefined | null}
+			 */
+			evaluate: (params = {}, options) =>
+				$evaluate(
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations,
+					params,
+					options,
+				).value,
+			/**
+			 * Evaluate "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations" with information on missing and needed parameters
+			 * @param {Dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisationsParams} [params={}]
+			 * @param {Object} [options={}]
+			 * @param {boolean} [option.cache=false]
+			 * @return {{value: number | undefined | null; needed: Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisationsParams>, missing: Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisationsParams> }}
+			 */
+			evaluateParams: (params = {}, options) =>
+				$evaluate(
+					_dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisations,
+					params,
+					options,
+				),
+			/** @type {"number"} */
+			type: 'number',
+			/** @type {"€/an"} */
+			unit: '€/an',
+			/** Parameter list for "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations"
+			 * @type {Array<keyof Dirigeant___auto_entrepreneur___cotisations_et_contributions___cotisationsParams>}
+			 */
+			params: [
+				'date',
+				'dirigeant . auto-entrepreneur . Cipav . adhérent',
+				'entreprise . activité . nature',
+				'entreprise . activité . nature . libérale . réglementée',
+				"entreprise . chiffre d'affaires . service BIC",
+				"entreprise . chiffre d'affaires . service BNC",
+				"entreprise . chiffre d'affaires . vente restauration hébergement",
+				'entreprise . date de création',
+				"entreprise . durée d'activité",
+				"entreprise . durée d'activité . années civiles",
+				"entreprise . durée d'activité . trimestres civils",
+			],
+			/** @type {string} dirigeant . auto-entrepreneur . cotisations et contributions . cotisations */
+			title:
+				'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations',
+			/** @type {string} Les cotisations sociales donnent à l’auto-entrepreneur accès à une
 protection sociale minimale : une retraite, des soins de santé, des
 allocations familiales, etc.
 
@@ -1500,11 +4899,21 @@ L’auto-entreprise est un régime simplifié : plutôt qu’une fiche de paie
 complexe, toutes les cotisations sont regroupées dans un *forfait* dont le
 taux dépend de la catégorie d’activité.
  */
-		description: 'Les cotisations sociales donnent à l’auto-entrepreneur accès à une\nprotection sociale minimale : une retraite, des soins de santé, des\nallocations familiales, etc.\n\nL’auto-entreprise est un régime simplifié : plutôt qu’une fiche de paie\ncomplexe, toutes les cotisations sont regroupées dans un *forfait* dont le\ntaux dépend de la catégorie d’activité.\n',
-		/** Custom meta of rule "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations" */
-		meta: {"références":{"Les cotisations et contributions sociales":"https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#cout-durant-vie-auto-entreprise","Cotisations et contributions sociales : montant et déclaration":"https://entreprendre.service-public.fr/vosdroits/F36232#fiche-item-aria-2","Droit à la retraite des travailleurs indépendants relevant du dispositif micro-social":"https://legislation.lassuranceretraite.fr/Pdf/circulaire_cnav_2024_23_16072024.pdf"}} /** @type {const} */,
-	},
-'dirigeant . auto-entrepreneur . revenu net': {
+			description:
+				'Les cotisations sociales donnent à l’auto-entrepreneur accès à une\nprotection sociale minimale : une retraite, des soins de santé, des\nallocations familiales, etc.\n\nL’auto-entreprise est un régime simplifié : plutôt qu’une fiche de paie\ncomplexe, toutes les cotisations sont regroupées dans un *forfait* dont le\ntaux dépend de la catégorie d’activité.\n',
+			/** Custom meta of rule "dirigeant . auto-entrepreneur . cotisations et contributions . cotisations" */
+			meta: {
+				références: {
+					'Les cotisations et contributions sociales':
+						'https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut.html#cout-durant-vie-auto-entreprise',
+					'Cotisations et contributions sociales : montant et déclaration':
+						'https://entreprendre.service-public.fr/vosdroits/F36232#fiche-item-aria-2',
+					'Droit à la retraite des travailleurs indépendants relevant du dispositif micro-social':
+						'https://legislation.lassuranceretraite.fr/Pdf/circulaire_cnav_2024_23_16072024.pdf',
+				},
+			} /** @type {const} */,
+		},
+	'dirigeant . auto-entrepreneur . revenu net': {
 		/**
 		 * Parameters of "dirigeant . auto-entrepreneur . revenu net"
 		 * @typedef {{
@@ -1525,35 +4934,56 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "dirigeant . auto-entrepreneur . revenu net"
 		 * @param {Dirigeant___auto_entrepreneur___revenu_netParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {number | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_dirigeant___auto_entrepreneur___revenu_net, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(_dirigeant___auto_entrepreneur___revenu_net, params, options)
+				.value,
 		/**
 		 * Evaluate "dirigeant . auto-entrepreneur . revenu net" with information on missing and needed parameters
 		 * @param {Dirigeant___auto_entrepreneur___revenu_netParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: number | undefined | null; needed: Array<keyof Dirigeant___auto_entrepreneur___revenu_netParams>, missing: Array<keyof Dirigeant___auto_entrepreneur___revenu_netParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_dirigeant___auto_entrepreneur___revenu_net, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(_dirigeant___auto_entrepreneur___revenu_net, params, options),
 		/** @type {"number"} */
-		type: "number",
+		type: 'number',
 		/** @type {"€/an"} */
-		unit: "€/an",
+		unit: '€/an',
 		/** Parameter list for "dirigeant . auto-entrepreneur . revenu net"
 		 * @type {Array<keyof Dirigeant___auto_entrepreneur___revenu_netParams>}
 		 */
-		params: ['date', 'dirigeant . auto-entrepreneur . Cipav . adhérent', 'entreprise . activité . nature', 'entreprise . activité . nature . libérale . réglementée', 'entreprise . chiffre d\'affaires . BIC', 'entreprise . chiffre d\'affaires . service BIC', 'entreprise . chiffre d\'affaires . service BNC', 'entreprise . chiffre d\'affaires . vente restauration hébergement', 'entreprise . date de création', 'entreprise . durée d\'activité', 'entreprise . durée d\'activité . années civiles', 'entreprise . durée d\'activité . trimestres civils'],
+		params: [
+			'date',
+			'dirigeant . auto-entrepreneur . Cipav . adhérent',
+			'entreprise . activité . nature',
+			'entreprise . activité . nature . libérale . réglementée',
+			"entreprise . chiffre d'affaires . BIC",
+			"entreprise . chiffre d'affaires . service BIC",
+			"entreprise . chiffre d'affaires . service BNC",
+			"entreprise . chiffre d'affaires . vente restauration hébergement",
+			'entreprise . date de création',
+			"entreprise . durée d'activité",
+			"entreprise . durée d'activité . années civiles",
+			"entreprise . durée d'activité . trimestres civils",
+		],
 		/** @type {string} dirigeant . auto-entrepreneur . revenu net */
 		title: 'dirigeant . auto-entrepreneur . revenu net',
 		/** @type {string} Il s’agit du revenu après déductions des cotisations, avant le paiement de l’impôt sur le revenu. */
-		description: 'Il s’agit du revenu après déductions des cotisations, avant le paiement de l’impôt sur le revenu.',
+		description:
+			'Il s’agit du revenu après déductions des cotisations, avant le paiement de l’impôt sur le revenu.',
 		/** Custom meta of rule "dirigeant . auto-entrepreneur . revenu net" */
-		meta: {"identifiant court":"auto-entrepreneur-net","résumé":"Avant impôt","question":"Quel revenu avant impôt voulez-vous toucher ?"} /** @type {const} */,
+		meta: {
+			'identifiant court': 'auto-entrepreneur-net',
+			résumé: 'Avant impôt',
+			question: 'Quel revenu avant impôt voulez-vous toucher ?',
+		} /** @type {const} */,
 	},
-'entreprise . activité . nature': {
+	'entreprise . activité . nature': {
 		/**
 		 * Parameters of "entreprise . activité . nature"
 		 * @typedef {{
@@ -1563,21 +4993,23 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "entreprise . activité . nature"
 		 * @param {Entreprise___activité___natureParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {string | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_entreprise___activité___nature, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(_entreprise___activité___nature, params, options).value,
 		/**
 		 * Evaluate "entreprise . activité . nature" with information on missing and needed parameters
 		 * @param {Entreprise___activité___natureParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: string | undefined | null; needed: Array<keyof Entreprise___activité___natureParams>, missing: Array<keyof Entreprise___activité___natureParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_entreprise___activité___nature, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(_entreprise___activité___nature, params, options),
 		/** @type {"text"} */
-		type: "text",
+		type: 'text',
 		/** Parameter list for "entreprise . activité . nature"
 		 * @type {Array<keyof Entreprise___activité___natureParams>}
 		 */
@@ -1585,7 +5017,7 @@ taux dépend de la catégorie d’activité.
 		/** @type {string} entreprise . activité . nature */
 		title: 'entreprise . activité . nature',
 	},
-'entreprise . activité . nature . libérale . réglementée': {
+	'entreprise . activité . nature . libérale . réglementée': {
 		/**
 		 * Parameters of "entreprise . activité . nature . libérale . réglementée"
 		 * @typedef {{
@@ -1595,21 +5027,31 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "entreprise . activité . nature . libérale . réglementée"
 		 * @param {Entreprise___activité___nature___libérale___réglementéeParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {boolean | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_entreprise___activité___nature___libérale___réglementée, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(
+				_entreprise___activité___nature___libérale___réglementée,
+				params,
+				options,
+			).value,
 		/**
 		 * Evaluate "entreprise . activité . nature . libérale . réglementée" with information on missing and needed parameters
 		 * @param {Entreprise___activité___nature___libérale___réglementéeParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: boolean | undefined | null; needed: Array<keyof Entreprise___activité___nature___libérale___réglementéeParams>, missing: Array<keyof Entreprise___activité___nature___libérale___réglementéeParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_entreprise___activité___nature___libérale___réglementée, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(
+				_entreprise___activité___nature___libérale___réglementée,
+				params,
+				options,
+			),
 		/** @type {"boolean"} */
-		type: "boolean",
+		type: 'boolean',
 		/** Parameter list for "entreprise . activité . nature . libérale . réglementée"
 		 * @type {Array<keyof Entreprise___activité___nature___libérale___réglementéeParams>}
 		 */
@@ -1617,7 +5059,7 @@ taux dépend de la catégorie d’activité.
 		/** @type {string} entreprise . activité . nature . libérale . réglementée */
 		title: 'entreprise . activité . nature . libérale . réglementée',
 	},
-'entreprise . chiffre d\'affaires': {
+	"entreprise . chiffre d'affaires": {
 		/**
 		 * Parameters of "entreprise . chiffre d'affaires"
 		 * @typedef {{
@@ -1630,31 +5072,38 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "entreprise . chiffre d'affaires"
 		 * @param {Entreprise___chiffre_d_affairesParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {number | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_entreprise___chiffre_d_affaires, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(_entreprise___chiffre_d_affaires, params, options).value,
 		/**
 		 * Evaluate "entreprise . chiffre d'affaires" with information on missing and needed parameters
 		 * @param {Entreprise___chiffre_d_affairesParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: number | undefined | null; needed: Array<keyof Entreprise___chiffre_d_affairesParams>, missing: Array<keyof Entreprise___chiffre_d_affairesParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_entreprise___chiffre_d_affaires, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(_entreprise___chiffre_d_affaires, params, options),
 		/** @type {"number"} */
-		type: "number",
+		type: 'number',
 		/** @type {"€/an"} */
-		unit: "€/an",
+		unit: '€/an',
 		/** Parameter list for "entreprise . chiffre d'affaires"
 		 * @type {Array<keyof Entreprise___chiffre_d_affairesParams>}
 		 */
-		params: ['entreprise . chiffre d\'affaires . BIC', 'entreprise . chiffre d\'affaires . service BIC', 'entreprise . chiffre d\'affaires . service BNC', 'entreprise . chiffre d\'affaires . vente restauration hébergement'],
+		params: [
+			"entreprise . chiffre d'affaires . BIC",
+			"entreprise . chiffre d'affaires . service BIC",
+			"entreprise . chiffre d'affaires . service BNC",
+			"entreprise . chiffre d'affaires . vente restauration hébergement",
+		],
 		/** @type {string} entreprise . chiffre d'affaires */
-		title: 'entreprise . chiffre d\'affaires',
+		title: "entreprise . chiffre d'affaires",
 	},
-'entreprise . chiffre d\'affaires . BIC': {
+	"entreprise . chiffre d'affaires . BIC": {
 		/**
 		 * Parameters of "entreprise . chiffre d'affaires . BIC"
 		 * @typedef {{
@@ -1664,31 +5113,33 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "entreprise . chiffre d'affaires . BIC"
 		 * @param {Entreprise___chiffre_d_affaires___BICParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {number | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_entreprise___chiffre_d_affaires___BIC, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(_entreprise___chiffre_d_affaires___BIC, params, options).value,
 		/**
 		 * Evaluate "entreprise . chiffre d'affaires . BIC" with information on missing and needed parameters
 		 * @param {Entreprise___chiffre_d_affaires___BICParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: number | undefined | null; needed: Array<keyof Entreprise___chiffre_d_affaires___BICParams>, missing: Array<keyof Entreprise___chiffre_d_affaires___BICParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_entreprise___chiffre_d_affaires___BIC, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(_entreprise___chiffre_d_affaires___BIC, params, options),
 		/** @type {"number"} */
-		type: "number",
+		type: 'number',
 		/** @type {"€/an"} */
-		unit: "€/an",
+		unit: '€/an',
 		/** Parameter list for "entreprise . chiffre d'affaires . BIC"
 		 * @type {Array<keyof Entreprise___chiffre_d_affaires___BICParams>}
 		 */
-		params: ['entreprise . chiffre d\'affaires . BIC'],
+		params: ["entreprise . chiffre d'affaires . BIC"],
 		/** @type {string} entreprise . chiffre d'affaires . BIC */
-		title: 'entreprise . chiffre d\'affaires . BIC',
+		title: "entreprise . chiffre d'affaires . BIC",
 	},
-'entreprise . chiffre d\'affaires . service BIC': {
+	"entreprise . chiffre d'affaires . service BIC": {
 		/**
 		 * Parameters of "entreprise . chiffre d'affaires . service BIC"
 		 * @typedef {{
@@ -1698,31 +5149,38 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "entreprise . chiffre d'affaires . service BIC"
 		 * @param {Entreprise___chiffre_d_affaires___service_BICParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {number | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_entreprise___chiffre_d_affaires___service_BIC, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(_entreprise___chiffre_d_affaires___service_BIC, params, options)
+				.value,
 		/**
 		 * Evaluate "entreprise . chiffre d'affaires . service BIC" with information on missing and needed parameters
 		 * @param {Entreprise___chiffre_d_affaires___service_BICParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: number | undefined | null; needed: Array<keyof Entreprise___chiffre_d_affaires___service_BICParams>, missing: Array<keyof Entreprise___chiffre_d_affaires___service_BICParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_entreprise___chiffre_d_affaires___service_BIC, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(
+				_entreprise___chiffre_d_affaires___service_BIC,
+				params,
+				options,
+			),
 		/** @type {"number"} */
-		type: "number",
+		type: 'number',
 		/** @type {"€/an"} */
-		unit: "€/an",
+		unit: '€/an',
 		/** Parameter list for "entreprise . chiffre d'affaires . service BIC"
 		 * @type {Array<keyof Entreprise___chiffre_d_affaires___service_BICParams>}
 		 */
-		params: ['entreprise . chiffre d\'affaires . service BIC'],
+		params: ["entreprise . chiffre d'affaires . service BIC"],
 		/** @type {string} entreprise . chiffre d'affaires . service BIC */
-		title: 'entreprise . chiffre d\'affaires . service BIC',
+		title: "entreprise . chiffre d'affaires . service BIC",
 	},
-'entreprise . chiffre d\'affaires . service BNC': {
+	"entreprise . chiffre d'affaires . service BNC": {
 		/**
 		 * Parameters of "entreprise . chiffre d'affaires . service BNC"
 		 * @typedef {{
@@ -1732,31 +5190,38 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "entreprise . chiffre d'affaires . service BNC"
 		 * @param {Entreprise___chiffre_d_affaires___service_BNCParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {number | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_entreprise___chiffre_d_affaires___service_BNC, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(_entreprise___chiffre_d_affaires___service_BNC, params, options)
+				.value,
 		/**
 		 * Evaluate "entreprise . chiffre d'affaires . service BNC" with information on missing and needed parameters
 		 * @param {Entreprise___chiffre_d_affaires___service_BNCParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: number | undefined | null; needed: Array<keyof Entreprise___chiffre_d_affaires___service_BNCParams>, missing: Array<keyof Entreprise___chiffre_d_affaires___service_BNCParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_entreprise___chiffre_d_affaires___service_BNC, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(
+				_entreprise___chiffre_d_affaires___service_BNC,
+				params,
+				options,
+			),
 		/** @type {"number"} */
-		type: "number",
+		type: 'number',
 		/** @type {"€/an"} */
-		unit: "€/an",
+		unit: '€/an',
 		/** Parameter list for "entreprise . chiffre d'affaires . service BNC"
 		 * @type {Array<keyof Entreprise___chiffre_d_affaires___service_BNCParams>}
 		 */
-		params: ['entreprise . chiffre d\'affaires . service BNC'],
+		params: ["entreprise . chiffre d'affaires . service BNC"],
 		/** @type {string} entreprise . chiffre d'affaires . service BNC */
-		title: 'entreprise . chiffre d\'affaires . service BNC',
+		title: "entreprise . chiffre d'affaires . service BNC",
 	},
-'entreprise . chiffre d\'affaires . vente restauration hébergement': {
+	"entreprise . chiffre d'affaires . vente restauration hébergement": {
 		/**
 		 * Parameters of "entreprise . chiffre d'affaires . vente restauration hébergement"
 		 * @typedef {{
@@ -1766,31 +5231,43 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "entreprise . chiffre d'affaires . vente restauration hébergement"
 		 * @param {Entreprise___chiffre_d_affaires___vente_restauration_hébergementParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {number | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_entreprise___chiffre_d_affaires___vente_restauration_hébergement, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(
+				_entreprise___chiffre_d_affaires___vente_restauration_hébergement,
+				params,
+				options,
+			).value,
 		/**
 		 * Evaluate "entreprise . chiffre d'affaires . vente restauration hébergement" with information on missing and needed parameters
 		 * @param {Entreprise___chiffre_d_affaires___vente_restauration_hébergementParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: number | undefined | null; needed: Array<keyof Entreprise___chiffre_d_affaires___vente_restauration_hébergementParams>, missing: Array<keyof Entreprise___chiffre_d_affaires___vente_restauration_hébergementParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_entreprise___chiffre_d_affaires___vente_restauration_hébergement, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(
+				_entreprise___chiffre_d_affaires___vente_restauration_hébergement,
+				params,
+				options,
+			),
 		/** @type {"number"} */
-		type: "number",
+		type: 'number',
 		/** @type {"€/an"} */
-		unit: "€/an",
+		unit: '€/an',
 		/** Parameter list for "entreprise . chiffre d'affaires . vente restauration hébergement"
 		 * @type {Array<keyof Entreprise___chiffre_d_affaires___vente_restauration_hébergementParams>}
 		 */
-		params: ['entreprise . chiffre d\'affaires . vente restauration hébergement'],
+		params: [
+			"entreprise . chiffre d'affaires . vente restauration hébergement",
+		],
 		/** @type {string} entreprise . chiffre d'affaires . vente restauration hébergement */
-		title: 'entreprise . chiffre d\'affaires . vente restauration hébergement',
+		title: "entreprise . chiffre d'affaires . vente restauration hébergement",
 	},
-'entreprise . date de création': {
+	'entreprise . date de création': {
 		/**
 		 * Parameters of "entreprise . date de création"
 		 * @typedef {{
@@ -1800,21 +5277,23 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "entreprise . date de création"
 		 * @param {Entreprise___date_de_créationParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {Date | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_entreprise___date_de_création, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(_entreprise___date_de_création, params, options).value,
 		/**
 		 * Evaluate "entreprise . date de création" with information on missing and needed parameters
 		 * @param {Entreprise___date_de_créationParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: Date | undefined | null; needed: Array<keyof Entreprise___date_de_créationParams>, missing: Array<keyof Entreprise___date_de_créationParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_entreprise___date_de_création, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(_entreprise___date_de_création, params, options),
 		/** @type {"date"} */
-		type: "date",
+		type: 'date',
 		/** Parameter list for "entreprise . date de création"
 		 * @type {Array<keyof Entreprise___date_de_créationParams>}
 		 */
@@ -1822,7 +5301,7 @@ taux dépend de la catégorie d’activité.
 		/** @type {string} entreprise . date de création */
 		title: 'entreprise . date de création',
 	},
-'entreprise . durée d\'activité': {
+	"entreprise . durée d'activité": {
 		/**
 		 * Parameters of "entreprise . durée d'activité"
 		 * @typedef {{
@@ -1832,31 +5311,33 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "entreprise . durée d'activité"
 		 * @param {Entreprise___durée_d_activitéParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {number | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_entreprise___durée_d_activité, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(_entreprise___durée_d_activité, params, options).value,
 		/**
 		 * Evaluate "entreprise . durée d'activité" with information on missing and needed parameters
 		 * @param {Entreprise___durée_d_activitéParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: number | undefined | null; needed: Array<keyof Entreprise___durée_d_activitéParams>, missing: Array<keyof Entreprise___durée_d_activitéParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_entreprise___durée_d_activité, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(_entreprise___durée_d_activité, params, options),
 		/** @type {"number"} */
-		type: "number",
+		type: 'number',
 		/** @type {"an"} */
-		unit: "an",
+		unit: 'an',
 		/** Parameter list for "entreprise . durée d'activité"
 		 * @type {Array<keyof Entreprise___durée_d_activitéParams>}
 		 */
-		params: ['entreprise . durée d\'activité'],
+		params: ["entreprise . durée d'activité"],
 		/** @type {string} entreprise . durée d'activité */
-		title: 'entreprise . durée d\'activité',
+		title: "entreprise . durée d'activité",
 	},
-'entreprise . durée d\'activité . années civiles': {
+	"entreprise . durée d'activité . années civiles": {
 		/**
 		 * Parameters of "entreprise . durée d'activité . années civiles"
 		 * @typedef {{
@@ -1866,31 +5347,41 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "entreprise . durée d'activité . années civiles"
 		 * @param {Entreprise___durée_d_activité___années_civilesParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {number | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_entreprise___durée_d_activité___années_civiles, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(
+				_entreprise___durée_d_activité___années_civiles,
+				params,
+				options,
+			).value,
 		/**
 		 * Evaluate "entreprise . durée d'activité . années civiles" with information on missing and needed parameters
 		 * @param {Entreprise___durée_d_activité___années_civilesParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: number | undefined | null; needed: Array<keyof Entreprise___durée_d_activité___années_civilesParams>, missing: Array<keyof Entreprise___durée_d_activité___années_civilesParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_entreprise___durée_d_activité___années_civiles, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(
+				_entreprise___durée_d_activité___années_civiles,
+				params,
+				options,
+			),
 		/** @type {"number"} */
-		type: "number",
+		type: 'number',
 		/** @type {"aucune"} */
-		unit: "aucune",
+		unit: 'aucune',
 		/** Parameter list for "entreprise . durée d'activité . années civiles"
 		 * @type {Array<keyof Entreprise___durée_d_activité___années_civilesParams>}
 		 */
-		params: ['entreprise . durée d\'activité . années civiles'],
+		params: ["entreprise . durée d'activité . années civiles"],
 		/** @type {string} entreprise . durée d'activité . années civiles */
-		title: 'entreprise . durée d\'activité . années civiles',
+		title: "entreprise . durée d'activité . années civiles",
 	},
-'entreprise . durée d\'activité . trimestres civils': {
+	"entreprise . durée d'activité . trimestres civils": {
 		/**
 		 * Parameters of "entreprise . durée d'activité . trimestres civils"
 		 * @typedef {{
@@ -1900,30 +5391,40 @@ taux dépend de la catégorie d’activité.
 		/**
 		 * Evaluate "entreprise . durée d'activité . trimestres civils"
 		 * @param {Entreprise___durée_d_activité___trimestres_civilsParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {number | undefined | null}
 		 */
-		evaluate: (params = {}, options) => $evaluate(_entreprise___durée_d_activité___trimestres_civils, params, options).value,
+		evaluate: (params = {}, options) =>
+			$evaluate(
+				_entreprise___durée_d_activité___trimestres_civils,
+				params,
+				options,
+			).value,
 		/**
 		 * Evaluate "entreprise . durée d'activité . trimestres civils" with information on missing and needed parameters
 		 * @param {Entreprise___durée_d_activité___trimestres_civilsParams} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: number | undefined | null; needed: Array<keyof Entreprise___durée_d_activité___trimestres_civilsParams>, missing: Array<keyof Entreprise___durée_d_activité___trimestres_civilsParams> }}
 		 */
-		evaluateParams: (params = {}, options) => $evaluate(_entreprise___durée_d_activité___trimestres_civils, params, options),
+		evaluateParams: (params = {}, options) =>
+			$evaluate(
+				_entreprise___durée_d_activité___trimestres_civils,
+				params,
+				options,
+			),
 		/** @type {"number"} */
-		type: "number",
+		type: 'number',
 		/** @type {"aucune"} */
-		unit: "aucune",
+		unit: 'aucune',
 		/** Parameter list for "entreprise . durée d'activité . trimestres civils"
 		 * @type {Array<keyof Entreprise___durée_d_activité___trimestres_civilsParams>}
 		 */
-		params: ['entreprise . durée d\'activité . trimestres civils'],
+		params: ["entreprise . durée d'activité . trimestres civils"],
 		/** @type {string} entreprise . durée d'activité . trimestres civils */
-		title: 'entreprise . durée d\'activité . trimestres civils',
-	}
+		title: "entreprise . durée d'activité . trimestres civils",
+	},
 }
 
-export default rules;
+export default rules

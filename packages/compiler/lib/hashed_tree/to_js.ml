@@ -102,7 +102,7 @@ let generate_evaluate_jsdoc (tree : Tree.t) (rule_name : Rule_name.t) : string =
     {|/**
 		 * Evaluate "%s"
 		 * @param {%s} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {%s | undefined | null}
 		 */|}
@@ -117,7 +117,7 @@ let generate_evaluate_params_jsdoc (tree : Tree.t) (rule_name : Rule_name.t) :
     {|/**
 		 * Evaluate "%s" with information on missing and needed parameters
 		 * @param {%s} [params={}]
-		 * @param {Object} options
+		 * @param {Object} [options={}]
 		 * @param {boolean} [option.cache=false]
 		 * @return {{value: %s | undefined | null; needed: Array<keyof %s>, missing: Array<keyof %s> }}
 		 */|}
