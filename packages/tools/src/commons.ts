@@ -286,6 +286,6 @@ export function getValueWithoutQuotes(value: PublicodesExpression | undefined) {
 /** Used by the CLI */
 
 export const DEFAULT_RULES_PATH = 'src'
+export const DEFAULT_SITUATION_PATH = 'situations'
 export const DEFAULT_BUILD_DIR = 'publicodes-build'
 export const DEFAULT_QUICKDOC_BUILD_DIR = 'publicodes-doc-build'
-export const DEFAULT_QUICKDOC_SITUATION_PATH = 'publicodes-doc-build'

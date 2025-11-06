@@ -8,7 +8,7 @@ import path from 'path'
 import buildDoc, { ViteBuildOptions } from '../buildQuickDoc'
 import {
 	DEFAULT_QUICKDOC_BUILD_DIR,
-	DEFAULT_QUICKDOC_SITUATION_PATH,
+	DEFAULT_SITUATION_PATH,
 	DEFAULT_RULES_PATH,
 } from '../commons'
 
@@ -79,9 +79,7 @@ To avoid passing arguments and flags every time, you can set their values in the
 
 		const situationFiles: string[] =
 			!flags.situations?.length ?
-				toArray(
-					pjson?.publicodes?.situations ?? DEFAULT_QUICKDOC_SITUATION_PATH,
-				)
+				toArray(pjson?.publicodes?.situations ?? DEFAULT_SITUATION_PATH)
 			:	flags.situations
 
 		const quickDocPath = path.join(
