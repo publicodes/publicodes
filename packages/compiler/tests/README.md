@@ -3,6 +3,10 @@
 This folder contains all the [cram
 tests](https://dune.readthedocs.io/en/stable/reference/cram.html) used to test the compiler.
 
+> [!NOTE]
+> Unit tests are directly defined in the `lib/` folder with the suffix
+> `_test.ml`.
+
 ## Adding a test
 
 Tests are grouped in subdirectories corresponding the tested command and defined

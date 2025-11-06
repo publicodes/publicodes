@@ -2,30 +2,59 @@ open Base
 open Shared
 open Shared.Eval_tree
 
-(* -------------------- Helper functions for names and types -------------------- *)
-
-(* Convert a Publicodes rule name to a valid snake_case JavaScript identifier *)
-(* @TODO : handle conflicts (e.g « a'a » and « a a » ) *)
-let rulename_to_snakecase (rule_name : Rule_name.t) : string =
+let rulename_to_js_identifier (rule_name : Rule_name.t) : string =
   Rule_name.to_string rule_name
-  |> String.substr_replace_all ~pattern:" " ~with_:"_"
-  |> String.substr_replace_all ~pattern:"." ~with_:"_"
-  |> String.substr_replace_all ~pattern:"'" ~with_:"_"
-  |> String.substr_replace_all ~pattern:"’" ~with_:"_"
-  |> String.substr_replace_all ~pattern:"-" ~with_:"_"
-  |> String.substr_replace_all ~pattern:"«" ~with_:"_"
-  |> String.substr_replace_all ~pattern:"»" ~with_:"_"
-  |> String.substr_replace_all ~pattern:"\"" ~with_:"_"
-  |> String.substr_replace_all ~pattern:"°" ~with_:"_deg"
-  |> String.substr_replace_all ~pattern:"€" ~with_:"_euro"
-  |> String.substr_replace_all ~pattern:"%" ~with_:"_pct"
-  |> String.substr_replace_all ~pattern:"²" ~with_:"_sq"
-  |> String.substr_replace_all ~pattern:"$" ~with_:"_dollar"
-  |> String.uncapitalize
+  |> String.substr_replace_all ~pattern:"_" ~with_:"__u__"
+  |> String.substr_replace_all ~pattern:" " ~with_:"__"
+  |> String.substr_replace_all ~pattern:"." ~with_:"__·__"
+  |> String.substr_replace_all ~pattern:"'" ~with_:"__a__"
+  |> String.substr_replace_all ~pattern:"-" ~with_:"__t__"
+  |> String.substr_replace_all ~pattern:"«" ~with_:"__go__"
+  |> String.substr_replace_all ~pattern:"»" ~with_:"__gf__"
+  |> String.substr_replace_all ~pattern:"\"" ~with_:"__d__"
+  |> String.substr_replace_all ~pattern:"°" ~with_:"__deg__"
+  |> String.substr_replace_all ~pattern:"€" ~with_:"__euro__"
+  |> String.substr_replace_all ~pattern:"%" ~with_:"__pct__"
+  |> String.substr_replace_all ~pattern:"²" ~with_:"__sq__"
+  |> String.substr_replace_all ~pattern:"$" ~with_:"__dollar__"
 
-(* Convert a rule name to a valid TypeScript type name *)
-let rulename_to_type_name (rule_name : Rule_name.t) : string =
-  let capitalized = String.capitalize (rulename_to_snakecase rule_name) in
+let%test_unit "There should be no conflicts over JS identifiers" =
+  let rulenames : Shared.Rule_name.t list =
+    [ ["a"]
+    ; ["a%"]
+    ; ["a\""]
+    ; ["a_"]
+    ; ["a°"]
+    ; ["a»"]
+    ; ["A"]
+    ; ["a$"]
+    ; ["a€"]
+    ; ["a²"]
+    ; ["a a"]
+    ; ["a'a"]
+    ; ["a-a"]
+    ; ["a_a"]
+    ; ["a . b"]
+    ; ["a'b"]
+    ; ["a\"b"]
+    ; ["a_b"]
+    ; ["a b c"]
+    ; ["a'b\"c"]
+    ; ["a-b-c"]
+    ; ["a\"b'c"]
+    ; ["a\"b\"c"]
+    ; ["a_b_c"]
+    ; ["a«b»c"]
+    ; ["a__deg__"] ]
+  in
+  let rulename_js_ids =
+    List.map rulenames ~f:rulename_to_js_identifier
+    |> List.stable_dedup ~compare:String.compare
+  in
+  [%test_eq: int] (List.length rulenames) (List.length rulename_js_ids)
+
+let rulename_to_ts_type_name (rule_name : Rule_name.t) : string =
+  let capitalized = String.capitalize (rulename_to_js_identifier rule_name) in
   Printf.sprintf "%sParams" capitalized
 
 (* -------------------- JSDoc Type Generation -------------------- *)
@@ -76,7 +105,7 @@ let get_publicodes_rule_type (tree : Tree.t) (rule_name : Rule_name.t) : string
 (* Generate JSDoc parameter type definition *)
 let generate_params_typedef (tree : Tree.t) (rule_name : Rule_name.t)
     (parameters : Rule_name.t list) : string =
-  let type_name = rulename_to_type_name rule_name in
+  let type_name = rulename_to_ts_type_name rule_name in
   let parameters_type =
     List.map parameters ~f:(fun param ->
         let param_name = Rule_name.to_string param in
@@ -97,7 +126,7 @@ let generate_params_typedef (tree : Tree.t) (rule_name : Rule_name.t)
 (* Generate JSDoc for evaluate function *)
 let generate_evaluate_jsdoc (tree : Tree.t) (rule_name : Rule_name.t) : string =
   let return_type = get_js_rule_type tree rule_name in
-  let type_name = rulename_to_type_name rule_name in
+  let type_name = rulename_to_ts_type_name rule_name in
   Printf.sprintf
     {|/**
 		 * Evaluate "%s"
@@ -112,7 +141,7 @@ let generate_evaluate_jsdoc (tree : Tree.t) (rule_name : Rule_name.t) : string =
 let generate_evaluate_params_jsdoc (tree : Tree.t) (rule_name : Rule_name.t) :
     string =
   let return_type = get_js_rule_type tree rule_name in
-  let type_name = rulename_to_type_name rule_name in
+  let type_name = rulename_to_ts_type_name rule_name in
   Printf.sprintf
     {|/**
 		 * Evaluate "%s" with information on missing and needed parameters
@@ -219,7 +248,7 @@ let rec value_to_js ({value; _} : Tree.value) : string =
   | Ref rule_name ->
       Printf.sprintf "$ref(\"%s\", _%s, ctx, params)"
         (Rule_name.to_string rule_name)
-        (rulename_to_snakecase rule_name)
+        (rulename_to_js_identifier rule_name)
   | Get_context rule_name ->
       Printf.sprintf "$get(\"%s\", ctx, params)" (Rule_name.to_string rule_name)
   | Set_context {context; value} ->
@@ -238,7 +267,7 @@ let rec value_to_js ({value; _} : Tree.value) : string =
 let rules_to_js_functions hashed_tree =
   Base.Hashtbl.fold hashed_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
       let rule_type = get_js_rule_type hashed_tree rule in
-      let rule_name = rulename_to_snakecase rule in
+      let rule_name = rulename_to_js_identifier rule in
       let rule_data = value_to_js data in
       (rule_type, rule_name, rule_data) :: acc )
   |> List.sort ~compare:(fun (_, name1, _) (_, name2, _) ->
@@ -267,8 +296,8 @@ let generate_rule_object hashed_tree
     Model_outputs.{rule_name; parameters; meta; _} =
   let publicodes_rule_type = get_publicodes_rule_type hashed_tree rule_name in
   let rule_name_str = Rule_name.to_string rule_name in
-  let rule_name_js = rulename_to_snakecase rule_name in
-  let type_name = rulename_to_type_name rule_name in
+  let rule_name_js = rulename_to_js_identifier rule_name in
+  let type_name = rulename_to_ts_type_name rule_name in
   (* Generate TypeDef for parameters *)
   let params_typedef =
     generate_params_typedef hashed_tree rule_name parameters
