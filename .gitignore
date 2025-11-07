@@ -52,3 +52,4 @@ dist-ssr
 packages/compiler/_build
 packages/compiler/_opam
 packages/codemod/bin/codemod-v2.js
+packages/runtime/examples/auto-entrepreneur/model.publicodes.js
