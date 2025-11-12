@@ -1,5 +1,11 @@
 # @publicodes/tools
 
+## 1.8.1
+
+### Patch Changes
+
+- [#783](https://github.com/publicodes/publicodes/pull/783) [`017831d`](https://github.com/publicodes/publicodes/commit/017831d9a8e8021e6a50a52bc0db826add1bc964) Thanks [@Clemog](https://github.com/Clemog)! - Fix default situations path for quick-doc build
+
 ## 1.8.0
 
 ### Minor Changes
