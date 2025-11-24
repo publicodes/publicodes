@@ -1,8 +1,10 @@
 import { utils } from 'publicodes'
 import { FormPages } from './formBuilder'
+import { FormLayout, simpleLayout } from './formLayout'
 
 /**
- * Groups fields into pages based on their namespace hierarchy, ensuring related fields stay together.
+ * Groups fields into pages based on their namespace hierarchy, ensuring related
+ * fields stay together.
  * Useful when organizing form fields into logical sections or steps.
  *
  * @example
@@ -19,16 +21,22 @@ import { FormPages } from './formBuilder'
  * // Result:
  * // [
  * //   {
- * 			elements: ['company . name', 'company . address'],
- * 			title: 'company'
+ * 				title: 'company'
+ * 				elements: [
+ * 					{ layout: 'simple', rule: 'company . name' },
+ * 					{ layout: 'simple', rule: 'company . address' }
+ * 				]
  * //   },
  * //   {
- * 			elements: ['personal . first name', 'personal . last name'],
- * 			title: 'personal'
+ * 				title: 'personal'
+ * 				elements: [
+ * 					{ layout: 'simple', rule: 'personal . first name' },
+ * 					{ layout: 'simple', rule: 'personal . last name' }
+ * 				]
  * //   },
  * //   {
- * 			elements: ['stock . quantity'],
- * 			title: 'stock'
+ * 				title: 'stock'
+ * 				elements: [ { layout: 'simple', rule: 'stock . quantity' } ]
  * //   }
  * // ]
  * ```
@@ -38,11 +46,13 @@ import { FormPages } from './formBuilder'
  */
 export function groupByNamespace<Name extends string>(
 	fields: Array<Name>,
-): FormPages<Name> {
-	const pages: FormPages<Name> = []
+): FormPages<FormLayout<Name>> {
+	const pages: FormPages<FormLayout<Name>> = []
+
 	while (fields.length > 0) {
 		const tree = createTree(fields)
 		const elements = createPage(tree)
+
 		fields = fields.filter((field) => !elements.includes(field))
 
 		const title =
@@ -54,7 +64,7 @@ export function groupByNamespace<Name extends string>(
 				)
 
 		pages.push({
-			elements,
+			elements: elements.map((name) => simpleLayout(name)),
 			title,
 		})
 	}

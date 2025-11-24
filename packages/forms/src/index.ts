@@ -1,22 +1,22 @@
 import type { Rule } from 'publicodes'
 
-export type * from './evaluatedFormElement'
-export { getEvaluatedFormElement } from './evaluatedFormElement'
+export type * from './elements/evaluatedFormElement'
+export { getEvaluatedFormElement } from './elements/evaluatedFormElement'
 
-export type * from './formElement'
-export { getFormElement } from './formElement'
+export type * from './elements/formElement'
+export { getFormElement } from './elements/formElement'
 
-export type * from './buildFormPage'
-export { buildFormPage } from './buildFormPage'
+export type * from './builder/buildFormPage'
+export { buildFormPage } from './builder/buildFormPage'
 
-export * from './formBuilder'
-export type { FormState } from './formBuilder'
+export * from './builder/formBuilder'
+export type { FormState } from './builder/formBuilder'
 
-export { computeNextFields } from './computeNextFields'
-export { groupByNamespace } from './groupByNamespace'
+export { computeNextFields } from './builder/computeNextFields'
+export { groupByNamespace } from './utils/groupByNamespace'
 
-export { convertInputValueToPublicodes } from './convertInputValueToPublicodes'
-export { updateSituationWithInputValue as updateSituationWithFormValue } from './updateSituationWithFormValue'
+export { convertInputValueToPublicodes } from './utils/convertInputValueToPublicodes'
+export { updateSituationWithInputValue as updateSituationWithFormValue } from './utils/updateSituationWithFormValue'
 
 /**
  * A Publicodes Rule with additional metadata for form input.

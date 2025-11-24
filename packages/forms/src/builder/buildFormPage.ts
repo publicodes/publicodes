@@ -5,6 +5,7 @@ import {
 	type EvaluatedFormElement,
 } from './evaluatedFormElement'
 import { UNDEFINED_NODE } from './utils'
+import { FormLayout } from './formLayout'
 
 /**
  * Properties that control how a form element should be displayed and behave in the UI.
@@ -58,7 +59,7 @@ export type FormPageElementProp = {
  * ```
  */
 export function buildFormPage<Name extends string>(
-	page: Array<Name>,
+	page: Array<FormLayout<Name>>,
 	engine: Engine<Name>,
 	targets: Array<Name>,
 	lastAnswered: Name | null,

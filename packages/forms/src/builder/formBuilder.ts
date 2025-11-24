@@ -8,6 +8,7 @@ import { buildFormPage } from './buildFormPage'
 import { computeNextFields } from './computeNextFields'
 import { groupByNamespace } from './groupByNamespace'
 import { updateSituationWithInputValue } from './updateSituationWithFormValue'
+import { FormLayout } from './formLayout'
 
 /**
  * Represents the complete state of a multi-page form.
@@ -36,9 +37,9 @@ import { updateSituationWithInputValue } from './updateSituationWithFormValue'
 export type FormState<RuleName extends string> = {
 	situation: Situation<RuleName>
 	targets: Array<RuleName>
-	pages: FormPages<RuleName>
+	pages: FormPages<FormLayout<RuleName>>
 	currentPageIndex: number
-	nextPages: FormPages<RuleName>
+	nextPages: FormPages<FormLayout<RuleName>>
 	lastAnswered: RuleName | null
 }
 
@@ -60,22 +61,21 @@ export type FormState<RuleName extends string> = {
  *   fields.map(field => [field])
  * ```
  */
-export type PageBuilder<RuleName> = (
+export type PageBuilder<RuleName extends string> = (
 	fields: Array<RuleName>,
-) => FormPages<RuleName>
+) => FormPages<FormLayout<RuleName>>
 
 /**
- * Represents all pages in a multi-page form. It is the output of PageBuilder.
+ * Represents all pages in a multi-page form. It is the output of {@link PageBuilder}.
  *
- * @template RuleName - The type of rule names used in the form
+ * @template LayoutElement - The type of layout elements contained in each page
  *
  * @remarks
  * Each page contains an array of elements that should be displayed together.
  * The `title` property is optional and can be used to provide a header for the page.
  */
-
-export type FormPages<RuleName> = Array<{
-	elements: Array<RuleName>
+export type FormPages<LayoutElement extends FormLayout> = Array<{
+	elements: Array<LayoutElement>
 	title?: string
 }>
 

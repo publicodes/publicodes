@@ -14,7 +14,10 @@ interface FormMeta<Name extends string = string> {
 	id: Name
 }
 
-type InputType =
+/**
+ * All supported HTML input types for form elements.
+ */
+export type InputType =
 	| 'date'
 	| 'month'
 	| 'checkbox'
