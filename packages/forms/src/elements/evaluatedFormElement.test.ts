@@ -1,6 +1,6 @@
 import Engine from 'publicodes'
 import { describe, expect, it } from 'vitest'
-import { EvaluatedRadioGroup } from '.'
+import { EvaluatedRadioGroup } from './evaluatedFormElement'
 import {
 	EvaluatedCheckbox,
 	EvaluatedNumberInput,

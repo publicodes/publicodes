@@ -1,6 +1,6 @@
 import { utils } from 'publicodes'
-import { FormPages } from './formBuilder'
-import { FormLayout, simpleLayout } from './formLayout'
+import { FormPages } from '../builder/formBuilder'
+import { FormLayout, simpleLayout } from '../layout/formLayout'
 
 /**
  * Groups fields into pages based on their namespace hierarchy, ensuring related

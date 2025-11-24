@@ -1,6 +1,7 @@
 import Engine from 'publicodes'
 import { describe, expect, it } from 'vitest'
 import { FormBuilder } from './formBuilder'
+import { simpleLayout, tableLayout } from '../layout/formLayout'
 
 describe('FormBuilder', () => {
 	// Define rule names type for type safety
@@ -56,7 +57,7 @@ describe('FormBuilder', () => {
 	describe('start', () => {
 		it('should initialize form with target and move to first page', () => {
 			const engine = createTestEngine()
-			const formBuilder = new FormBuilder({ engine })
+			const formBuilder = new FormBuilder<RuleName>({ engine })
 			let state = FormBuilder.newState<RuleName>()
 
 			state = formBuilder.start(state, 'eligibility')
@@ -81,7 +82,7 @@ describe('FormBuilder', () => {
 			// Custom page builder that puts each field on its own page
 			const customPageBuilder = (fields: RuleName[]) =>
 				fields.map((field) => {
-					return { elements: [field] }
+					return { elements: [simpleLayout(field)] }
 				})
 
 			const formBuilder = new FormBuilder<RuleName>({
@@ -110,7 +111,7 @@ describe('FormBuilder', () => {
 
 		it('should return form elements for current page', () => {
 			const engine = createTestEngine()
-			const formBuilder = new FormBuilder({ engine })
+			const formBuilder = new FormBuilder<RuleName>({ engine })
 			let state = FormBuilder.newState<RuleName>()
 			state = formBuilder.start(state, 'eligibility')
 
@@ -126,7 +127,7 @@ describe('FormBuilder', () => {
 	describe('pagination', () => {
 		it('should return correct pagination information', () => {
 			const engine = createTestEngine()
-			const formBuilder = new FormBuilder({ engine })
+			const formBuilder = new FormBuilder<RuleName>({ engine })
 			let state = FormBuilder.newState<RuleName>()
 			state = formBuilder.start(state, 'eligibility')
 
@@ -142,14 +143,14 @@ describe('FormBuilder', () => {
 	describe('navigation', () => {
 		it('should navigate to next page', () => {
 			const engine = createTestEngine()
-			const formBuilder = new FormBuilder({ engine })
+			const formBuilder = new FormBuilder<RuleName>({ engine })
 			let state = FormBuilder.newState<RuleName>()
 			state = formBuilder.start(state, 'eligibility')
 
 			const initialPage = state.currentPageIndex
 
 			// Add a second page to nextPages
-			state.nextPages = [{ elements: ['company . name'] }]
+			state.nextPages = [{ elements: [simpleLayout('company . name')] }]
 
 			state = formBuilder.goToNextPage(state)
 
@@ -159,7 +160,7 @@ describe('FormBuilder', () => {
 
 		it('should not navigate past the last page', () => {
 			const engine = createTestEngine()
-			const formBuilder = new FormBuilder({ engine })
+			const formBuilder = new FormBuilder<RuleName>({ engine })
 			let state = FormBuilder.newState<RuleName>()
 			state = formBuilder.start(state, 'eligibility')
 
@@ -175,12 +176,12 @@ describe('FormBuilder', () => {
 
 		it('should navigate to previous page', () => {
 			const engine = createTestEngine()
-			const formBuilder = new FormBuilder({ engine })
+			const formBuilder = new FormBuilder<RuleName>({ engine })
 			let state = FormBuilder.newState<RuleName>()
 			state = formBuilder.start(state, 'eligibility')
 
 			// Add a second page and navigate to it
-			state.nextPages = [{ elements: ['company . name'] }]
+			state.nextPages = [{ elements: [simpleLayout('company . name')] }]
 			state = formBuilder.goToNextPage(state)
 
 			const currentPage = state.currentPageIndex
@@ -191,7 +192,7 @@ describe('FormBuilder', () => {
 
 		it('should not navigate before the first page', () => {
 			const engine = createTestEngine()
-			const formBuilder = new FormBuilder({ engine })
+			const formBuilder = new FormBuilder<RuleName>({ engine })
 			let state = FormBuilder.newState<RuleName>()
 			state = formBuilder.start(state, 'eligibility')
 
@@ -207,7 +208,7 @@ describe('FormBuilder', () => {
 	describe('handleInputChange', () => {
 		it('should update situation and recalculate next pages', () => {
 			const engine = createTestEngine()
-			const formBuilder = new FormBuilder({ engine })
+			const formBuilder = new FormBuilder<RuleName>({ engine })
 			let state = FormBuilder.newState<RuleName>()
 			state = formBuilder.start(state, 'eligibility')
 
@@ -219,7 +220,7 @@ describe('FormBuilder', () => {
 
 		it('should handle undefined value to clear field', () => {
 			const engine = createTestEngine()
-			const formBuilder = new FormBuilder({ engine })
+			const formBuilder = new FormBuilder<RuleName>({ engine })
 			let state = FormBuilder.newState<RuleName>({ 'user . age': 25 })
 			state = formBuilder.start(state, 'eligibility')
 
@@ -232,7 +233,7 @@ describe('FormBuilder', () => {
 	describe('end-to-end form flow', () => {
 		it('should guide user through a complete form flow', () => {
 			const engine = createTestEngine()
-			const formBuilder = new FormBuilder({ engine })
+			const formBuilder = new FormBuilder<RuleName>({ engine })
 
 			// Start with empty state
 			let state = FormBuilder.newState<RuleName>()
@@ -247,6 +248,93 @@ describe('FormBuilder', () => {
 			const result = engine.evaluate('eligibility')
 
 			expect(result.nodeValue).toBe(true)
+		})
+	})
+
+	describe('TableLayout support', () => {
+		it('should handle custom page builder with TableLayout', () => {
+			const engine = new Engine(
+				{
+					a: { question: 'Question A' },
+					b: { question: 'Question B' },
+					c: { question: 'Question C' },
+					d: { question: 'Question D' },
+					target: { formule: 'a + b + c + d' },
+				},
+				{ flag: { filterNotApplicablePossibilities: true } },
+			)
+
+			const customPageBuilder = (fields: string[]) => [
+				{
+					elements: [
+						tableLayout(
+							'My Table',
+							['Col1', 'Col2'],
+							[
+								[fields[0], fields[1]],
+								[fields[2], fields[3]],
+							],
+						),
+					],
+				},
+			]
+
+			const formBuilder = new FormBuilder({
+				engine,
+				pageBuilder: customPageBuilder,
+			})
+
+			let state = FormBuilder.newState()
+			state = formBuilder.start(state, 'target')
+
+			expect(state.pages).toHaveLength(1)
+			expect(state.pages[0].elements).toHaveLength(1)
+			expect(state.pages[0].elements[0].type).toBe('table')
+		})
+
+		it('should render TableLayout in currentPage', () => {
+			const rules = {
+				a: { question: 'Question A' },
+				b: { question: 'Question B' },
+				target: { formule: 'a + b' },
+			}
+			type TableRuleName = keyof typeof rules
+
+			const engine = new Engine(rules, {
+				flag: { filterNotApplicablePossibilities: true },
+			})
+
+			const customPageBuilder = (_fields: TableRuleName[]) => [
+				{
+					elements: [
+						tableLayout<TableRuleName>(
+							'Test Table',
+							['Header1', 'Header2'],
+							[['a', 'b']],
+						),
+					],
+				},
+			]
+
+			const formBuilder = new FormBuilder<TableRuleName>({
+				engine,
+				pageBuilder: customPageBuilder,
+			})
+
+			let state = FormBuilder.newState<TableRuleName>()
+			state = formBuilder.start(state, 'target')
+
+			const page = formBuilder.currentPage(state)
+			expect(page.elements).toHaveLength(1)
+
+			const tableElement = page.elements[0]
+			expect(tableElement.type).toBe('table')
+			if (tableElement.type === 'table') {
+				expect(tableElement.title).toBe('Test Table')
+				expect(tableElement.headers).toEqual(['Header1', 'Header2'])
+				expect(tableElement.evaluatedRows).toHaveLength(1)
+				expect(tableElement.evaluatedRows[0]).toHaveLength(2)
+			}
 		})
 	})
 })

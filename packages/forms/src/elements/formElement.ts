@@ -1,6 +1,6 @@
 import type Engine from 'publicodes'
 import { formatValue, Possibility, PublicodesError } from 'publicodes'
-import { RuleWithFormMeta } from '.'
+import { RuleWithFormMeta } from '../utils/rulesWithFormMeta'
 
 export type Option = {
 	value: string | number | boolean
@@ -57,8 +57,6 @@ export type FormElementOptions = {
  * Represents the different types of form elements that can be generated from Publicodes rules.
  * This union type combines all possible form control representations.
  *
- * @typedef {Object} FormElement
- *
  * Can be one of:
  * - InputElement: Basic HTML input elements (text, number, date, etc.)
  * - SelectElement: Dropdown menu with predefined options
@@ -96,7 +94,6 @@ export type FormElementOptions = {
  *
  * @see {@link getFormElement}
  */
-
 export type FormElement<Name extends string = string> =
 	| InputElement<Name, InputType>
 	| SelectElement<Name>

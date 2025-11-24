@@ -1,14 +1,13 @@
-import { FormElementOptions } from './formElement'
+import { FormElementOptions } from '../elements/formElement'
 import type Engine from 'publicodes'
 
 import { Situation } from 'publicodes'
-import { EvaluatedFormElement } from '.'
-import type { FormPageElementProp } from './buildFormPage'
 import { buildFormPage } from './buildFormPage'
 import { computeNextFields } from './computeNextFields'
-import { groupByNamespace } from './groupByNamespace'
-import { updateSituationWithInputValue } from './updateSituationWithFormValue'
-import { FormLayout } from './formLayout'
+import { groupByNamespace } from '../utils/groupByNamespace'
+import { updateSituationWithInputValue } from '../utils/updateSituationWithFormValue'
+import { FormLayout } from '../layout/formLayout'
+import { EvaluatedFormLayout } from '../layout/evaluatedFormLayout'
 
 /**
  * Represents the complete state of a multi-page form.
@@ -128,7 +127,7 @@ export type FormBuilderOption<RuleName extends string> = {
 
 export type CurrentPageElements<RuleName extends string> = {
 	title?: string
-	elements: Array<EvaluatedFormElement<RuleName> & FormPageElementProp>
+	elements: Array<EvaluatedFormLayout<RuleName>>
 }
 
 export class FormBuilder<RuleName extends string> {
