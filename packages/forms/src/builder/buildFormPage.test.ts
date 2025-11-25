@@ -34,10 +34,10 @@ describe('buildFormPage', () => {
 			if (isSimpleLayout(element)) {
 				expect(element.type).toBe('simple')
 				expect(element.rule).toBe('a')
-				expect(element.id).toBe('a')
-				expect(element.useful).toBe(true)
-				expect(element.disabled).toBe(false)
-				expect(element.hidden).toBe(false)
+				expect(element.evaluatedElement.id).toBe('a')
+				expect(element.evaluatedElement.useful).toBe(true)
+				expect(element.evaluatedElement.disabled).toBe(false)
+				expect(element.evaluatedElement.hidden).toBe(false)
 			}
 		})
 
@@ -52,14 +52,14 @@ describe('buildFormPage', () => {
 			// First element (answered) should be visible
 			const first = result[0]
 			if (isSimpleLayout(first)) {
-				expect(first.hidden).toBe(false)
+				expect(first.evaluatedElement.hidden).toBe(false)
 			}
 
 			// Elements after lastAnswered should be hidden if not useful
 			// (b and c are useful so they won't be hidden in this case)
 			const second = result[1]
 			if (isSimpleLayout(second)) {
-				expect(second.useful).toBe(true)
+				expect(second.evaluatedElement.useful).toBe(true)
 			}
 		})
 
@@ -70,7 +70,7 @@ describe('buildFormPage', () => {
 
 			const first = result[0]
 			if (isSimpleLayout(first)) {
-				expect(first.autofocus).toBe(false) // No lastAnswered means not a new page
+				expect(first.evaluatedElement.autofocus).toBe(false) // No lastAnswered means not a new page
 			}
 		})
 	})
@@ -155,7 +155,7 @@ describe('buildFormPage', () => {
 			// The simple layout after lastAnswered should not be hidden (it's useful)
 			const lastElement = result[2]
 			if (isSimpleLayout(lastElement)) {
-				expect(lastElement.useful).toBe(true)
+				expect(lastElement.evaluatedElement.useful).toBe(true)
 			}
 		})
 	})
@@ -191,7 +191,7 @@ describe('buildFormPage', () => {
 			const lastElement = result[2]
 			if (isSimpleLayout(lastElement)) {
 				// d is after the table containing b, but it's useful so not hidden
-				expect(lastElement.useful).toBe(true)
+				expect(lastElement.evaluatedElement.useful).toBe(true)
 			}
 		})
 	})

@@ -93,7 +93,7 @@ export function buildFormPage<RuleName extends string>(
 			case 'simple': {
 				return {
 					...layout,
-					...evaluate(layout.rule),
+					evaluatedElement: evaluate(layout.rule),
 				} as EvaluatedSimpleLayout<RuleName>
 			}
 			case 'table': {
@@ -112,7 +112,7 @@ export function buildFormPage<RuleName extends string>(
 		const hasAnyAnswered = formPage.some((layout) => {
 			switch (layout.type) {
 				case 'simple':
-					return layout.answered
+					return layout.evaluatedElement.answered
 				case 'table':
 					return layout.evaluatedRows.flat().some((element) => element.answered)
 			}
@@ -121,7 +121,7 @@ export function buildFormPage<RuleName extends string>(
 		if (!hasAnyAnswered && formPage.length > 0) {
 			switch (formPage[0].type) {
 				case 'simple':
-					formPage[0].autofocus = true
+					formPage[0].evaluatedElement.autofocus = true
 					break
 				case 'table': {
 					const firstRow = formPage[0].evaluatedRows[0]

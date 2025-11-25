@@ -2,6 +2,7 @@ import Engine from 'publicodes'
 import { describe, expect, it } from 'vitest'
 import { FormBuilder } from './formBuilder'
 import { simpleLayout, tableLayout } from '../layout/formLayout'
+import { EvaluatedSimpleLayout } from '../../dist'
 
 describe('FormBuilder', () => {
 	// Define rule names type for type safety
@@ -118,9 +119,11 @@ describe('FormBuilder', () => {
 			const currentPageElements = formBuilder.currentPage(state).elements
 
 			expect(currentPageElements.length).toBeGreaterThan(0)
-			expect(currentPageElements[0]).toHaveProperty('id')
-			expect(currentPageElements[0]).toHaveProperty('label')
-			expect(currentPageElements[0]).toHaveProperty('element')
+			const firstElement =
+				currentPageElements[0] as EvaluatedSimpleLayout<RuleName>
+			expect(firstElement.evaluatedElement).toHaveProperty('id')
+			expect(firstElement.evaluatedElement).toHaveProperty('label')
+			expect(firstElement.evaluatedElement).toHaveProperty('element')
 		})
 	})
 

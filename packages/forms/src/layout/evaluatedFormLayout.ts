@@ -7,10 +7,11 @@ export type EvaluatedFormLayout<RuleName extends string> =
 	| EvaluatedTableLayout<RuleName>
 
 export type EvaluatedSimpleLayout<RuleName extends string> =
-	SimpleLayout<RuleName> &
-		EvaluatedFormElement<RuleName> &
-		// NOTE: should this be in a separated field?
-		FormPageElementProp
+	SimpleLayout<RuleName> & {
+		evaluatedElement: EvaluatedFormElement<RuleName> &
+			// NOTE: should this be in a separated field?
+			FormPageElementProp
+	}
 
 export type EvaluatedTableLayout<RuleName extends string> =
 	TableLayout<RuleName> & {
