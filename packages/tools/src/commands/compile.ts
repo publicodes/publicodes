@@ -324,7 +324,7 @@ export default rules`,
 }
 
 function serializeType(type: RuleType): string {
-	const nullable = type.isNullable ? ' | null' : ''
+	const nullable = type.isNullable ? ' | undefined' : ''
 	switch (type.type) {
 		case 'string': {
 			return `PString${nullable}`
@@ -347,7 +347,7 @@ function serializeType(type: RuleType): string {
 }
 
 function serializeJSType(type: RuleType): string {
-	const nullable = type.isNullable ? ' | null' : ''
+	const nullable = type.isNullable ? ' | undefined' : ''
 	switch (type.type) {
 		case 'string': {
 			return `string${nullable}`
