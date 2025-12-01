@@ -8,6 +8,7 @@ import { UNDEFINED_NODE } from '../utils/utils'
 import { FormLayout } from '../layout/formLayout'
 import {
 	EvaluatedFormLayout,
+	EvaluatedGroupLayout,
 	EvaluatedSimpleLayout,
 	EvaluatedTableLayout,
 } from '../layout/evaluatedFormLayout'
@@ -74,6 +75,8 @@ export function buildFormPage<RuleName extends string>(
 		switch (layout.type) {
 			case 'simple':
 				return layout.rule === lastAnswered
+			case 'group':
+				return layout.rules.some((element) => element === lastAnswered)
 			case 'table':
 				return layout.rows.flat().includes(lastAnswered!)
 		}
@@ -96,6 +99,12 @@ export function buildFormPage<RuleName extends string>(
 					evaluatedElement: evaluate(layout.rule),
 				} as EvaluatedSimpleLayout<RuleName>
 			}
+			case 'group': {
+				return {
+					...layout,
+					evaluatedElements: layout.rules.map((ruleName) => evaluate(ruleName)),
+				} as EvaluatedGroupLayout<RuleName>
+			}
 			case 'table': {
 				return {
 					...layout,
@@ -113,6 +122,8 @@ export function buildFormPage<RuleName extends string>(
 			switch (layout.type) {
 				case 'simple':
 					return layout.evaluatedElement.answered
+				case 'group':
+					return layout.evaluatedElements.some((element) => element.answered)
 				case 'table':
 					return layout.evaluatedRows.flat().some((element) => element.answered)
 			}
@@ -123,6 +134,13 @@ export function buildFormPage<RuleName extends string>(
 				case 'simple':
 					formPage[0].evaluatedElement.autofocus = true
 					break
+				case 'group': {
+					const firstElement = formPage[0].evaluatedElements[0]
+					if (firstElement) {
+						firstElement.autofocus = true
+					}
+					break
+				}
 				case 'table': {
 					const firstRow = formPage[0].evaluatedRows[0]
 					if (firstRow && firstRow.length > 0) {

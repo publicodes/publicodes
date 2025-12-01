@@ -10,6 +10,7 @@
  */
 export type FormLayout<RuleName extends string = string> =
 	| SimpleLayout<RuleName>
+	| GroupLayout<RuleName>
 	| TableLayout<RuleName>
 
 export interface SimpleLayout<RuleName extends string> {
@@ -36,4 +37,17 @@ export function tableLayout<RuleName extends string>(
 	rows: RuleName[][],
 ): TableLayout<RuleName> {
 	return { type: 'table', title, headers, rows }
+}
+
+export interface GroupLayout<RuleName extends string> {
+	type: 'group'
+	title: string
+	rules: RuleName[]
+}
+
+export function groupLayout<RuleName extends string>(
+	title: string,
+	rules: RuleName[],
+): GroupLayout<RuleName> {
+	return { type: 'group', title, rules }
 }

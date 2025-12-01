@@ -1,6 +1,9 @@
 import type Engine from 'publicodes'
 import { formatValue, Possibility, PublicodesError } from 'publicodes'
-import { RuleWithFormMeta } from '../utils/rulesWithFormMeta'
+import {
+	inferTypeFromRawFormMeta,
+	RuleWithFormMeta,
+} from '../utils/rulesWithFormMeta'
 
 export type Option = {
 	value: string | number | boolean
@@ -149,6 +152,8 @@ export function getFormElement<Name extends string>(
 		)
 	}
 
+	const inferredTypeFromMeta = inferTypeFromRawFormMeta(rawRule)
+	const effectiveType = inferredTypeFromMeta ?? typeInfo.type
 	let saisie = rawRule.form?.saisie
 
 	const inputDetails = {
@@ -157,7 +162,7 @@ export function getFormElement<Name extends string>(
 		id: dottedName,
 	}
 
-	if (typeInfo.type === 'boolean') {
+	if (effectiveType === 'boolean') {
 		if (saisie === 'oui/non' || rawRule.question) {
 			return {
 				...inputDetails,
@@ -174,7 +179,7 @@ export function getFormElement<Name extends string>(
 		}
 	}
 
-	if (typeInfo.type === 'date') {
+	if (effectiveType === 'date') {
 		return {
 			...inputDetails,
 			element: 'input',
@@ -223,14 +228,14 @@ export function getFormElement<Name extends string>(
 		}
 	}
 
-	if (typeInfo?.type === 'string') {
+	if (effectiveType === 'string') {
 		if (saisie === 'texte long') {
 			return { ...inputDetails, element: 'textarea' }
 		}
 		return { ...inputDetails, element: 'input', type: 'text' }
 	}
 
-	if (typeInfo?.type === 'number') {
+	if (effectiveType === 'number') {
 		return { ...inputDetails, element: 'input', type: 'number' }
 	}
 

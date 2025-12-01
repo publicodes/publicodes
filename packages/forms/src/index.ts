@@ -18,9 +18,13 @@ export { updateSituationWithInputValue as updateSituationWithFormValue } from '.
 
 // Layout types
 export type * from './layout/formLayout'
-export { simpleLayout, tableLayout } from './layout/formLayout'
+export { simpleLayout, tableLayout, groupLayout } from './layout/formLayout'
 
 export type * from './layout/evaluatedFormLayout'
-export { isSimpleLayout, isTableLayout } from './layout/evaluatedFormLayout'
+export {
+	isSimpleLayout,
+	isTableLayout,
+	isGroupLayout,
+} from './layout/evaluatedFormLayout'
 
 export type { RuleWithFormMeta } from './utils/rulesWithFormMeta'
