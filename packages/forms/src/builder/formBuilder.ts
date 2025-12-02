@@ -1,13 +1,13 @@
-import { FormElementOptions } from './formElement'
+import { FormElementOptions } from '../elements/formElement'
 import type Engine from 'publicodes'
 
-import { Situation } from 'publicodes'
-import { EvaluatedFormElement } from '.'
-import type { FormPageElementProp } from './buildFormPage'
+import { EvaluatedNode, RuleNode, Situation } from 'publicodes'
 import { buildFormPage } from './buildFormPage'
 import { computeNextFields } from './computeNextFields'
-import { groupByNamespace } from './groupByNamespace'
-import { updateSituationWithInputValue } from './updateSituationWithFormValue'
+import { groupByNamespace } from '../utils/groupByNamespace'
+import { updateSituationWithInputValue } from '../utils/updateSituationWithFormValue'
+import { FormLayout } from '../layout/formLayout'
+import { EvaluatedFormLayout } from '../layout/evaluatedFormLayout'
 
 /**
  * Represents the complete state of a multi-page form.
@@ -36,9 +36,9 @@ import { updateSituationWithInputValue } from './updateSituationWithFormValue'
 export type FormState<RuleName extends string> = {
 	situation: Situation<RuleName>
 	targets: Array<RuleName>
-	pages: FormPages<RuleName>
+	pages: FormPages<FormLayout<RuleName>>
 	currentPageIndex: number
-	nextPages: FormPages<RuleName>
+	nextPages: FormPages<FormLayout<RuleName>>
 	lastAnswered: RuleName | null
 }
 
@@ -60,22 +60,21 @@ export type FormState<RuleName extends string> = {
  *   fields.map(field => [field])
  * ```
  */
-export type PageBuilder<RuleName> = (
+export type PageBuilder<RuleName extends string> = (
 	fields: Array<RuleName>,
-) => FormPages<RuleName>
+) => FormPages<FormLayout<RuleName>>
 
 /**
- * Represents all pages in a multi-page form. It is the output of PageBuilder.
+ * Represents all pages in a multi-page form. It is the output of {@link PageBuilder}.
  *
- * @template RuleName - The type of rule names used in the form
+ * @template LayoutElement - The type of layout elements contained in each page
  *
  * @remarks
  * Each page contains an array of elements that should be displayed together.
  * The `title` property is optional and can be used to provide a header for the page.
  */
-
-export type FormPages<RuleName> = Array<{
-	elements: Array<RuleName>
+export type FormPages<LayoutElement extends FormLayout> = Array<{
+	elements: Array<LayoutElement>
 	title?: string
 }>
 
@@ -128,7 +127,7 @@ export type FormBuilderOption<RuleName extends string> = {
 
 export type CurrentPageElements<RuleName extends string> = {
 	title?: string
-	elements: Array<EvaluatedFormElement<RuleName> & FormPageElementProp>
+	elements: Array<EvaluatedFormLayout<RuleName>>
 }
 
 export class FormBuilder<RuleName extends string> {
@@ -294,11 +293,39 @@ export class FormBuilder<RuleName extends string> {
 	 * // The framework will track this dependency and re-run when formState changes
 	 * ```
 	 */
-	evaluate(formState: FormState<RuleName>, ruleName: RuleName) {
+	evaluate(formState: FormState<RuleName>, ruleName: RuleName): EvaluatedNode {
 		if (formState.situation !== this.engine.getSituation()) {
 			this.engine.setSituation(formState.situation)
 		}
 		return this.engine.evaluate(ruleName)
+	}
+
+	/**
+	 * Wrapper around engine.getRule that ensures proper reactivity in signal-based systems.
+	 *
+	 * This method ensures the engine's situation is up-to-date before evaluating a rule,
+	 * making it suitable for use in reactive frameworks that track dependencies (like Svelte,
+	 * Vue, Solid.js, or other signal-based systems).
+	 *
+	 * @param formState - The current state of the form
+	 * @param ruleName - The name of the rule to evaluate
+	 * @returns The rule node from the engine
+	 *
+	 * @example
+	 * ```typescript
+	 * // In a reactive framework
+	 * const result = formBuilder.getRule(formState, 'total . amount')
+	 * // The framework will track this dependency and re-run when formState changes
+	 * ```
+	 */
+	getRule(
+		formState: FormState<RuleName>,
+		ruleName: RuleName,
+	): RuleNode<RuleName> {
+		if (formState.situation !== this.engine.getSituation()) {
+			this.engine.setSituation(formState.situation)
+		}
+		return this.engine.getRule(ruleName)
 	}
 
 	/**

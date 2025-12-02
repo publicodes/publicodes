@@ -1,6 +1,7 @@
 import type Engine from 'publicodes'
-import { RuleWithFormMeta } from '.'
+import { RuleWithFormMeta } from '../index'
 import { FormPages } from './formBuilder'
+import { FormLayout } from '../layout/formLayout'
 
 /**
  * Computes the next fields that need to be asked next in a form.
@@ -15,9 +16,9 @@ import { FormPages } from './formBuilder'
  * @param state.pages - Array of pages, where each page is an array of rule names
  * @returns Array of dotted names representing the next fields to ask, sorted by priority
  */
-export function computeNextFields<Name extends string>(
-	engine: Engine<Name>,
-	state: { targets: Array<Name>; pages: FormPages<Name> },
+export function computeNextFields<RuleName extends string>(
+	engine: Engine<RuleName>,
+	state: { targets: Array<RuleName>; pages: FormPages<FormLayout<RuleName>> },
 ) {
 	const missings = engine.evaluate({
 		somme: state.targets,
@@ -28,12 +29,20 @@ export function computeNextFields<Name extends string>(
 				!state.pages
 					.map((page) => page.elements)
 					.flat()
-					.includes(dottedName as Name),
+					.flatMap((layout) => {
+						switch (layout.type) {
+							case 'simple':
+								return [layout.rule]
+							case 'table':
+								return layout.rows.flat()
+						}
+					})
+					.includes(dottedName as RuleName),
 		)
 		.sort(([, score1], [, score2]) => {
 			return score2 - score1
 		})
-		.map(([dottedName]) => dottedName as Name)
+		.map(([dottedName]) => dottedName as RuleName)
 	return sortedRules
 		.map(
 			(name) =>
