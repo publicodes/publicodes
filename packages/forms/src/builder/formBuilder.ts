@@ -1,7 +1,7 @@
 import { FormElementOptions } from '../elements/formElement'
 import type Engine from 'publicodes'
 
-import { Situation } from 'publicodes'
+import { EvaluatedNode, RuleNode, Situation } from 'publicodes'
 import { buildFormPage } from './buildFormPage'
 import { computeNextFields } from './computeNextFields'
 import { groupByNamespace } from '../utils/groupByNamespace'
@@ -293,11 +293,39 @@ export class FormBuilder<RuleName extends string> {
 	 * // The framework will track this dependency and re-run when formState changes
 	 * ```
 	 */
-	evaluate(formState: FormState<RuleName>, ruleName: RuleName) {
+	evaluate(formState: FormState<RuleName>, ruleName: RuleName): EvaluatedNode {
 		if (formState.situation !== this.engine.getSituation()) {
 			this.engine.setSituation(formState.situation)
 		}
 		return this.engine.evaluate(ruleName)
+	}
+
+	/**
+	 * Wrapper around engine.getRule that ensures proper reactivity in signal-based systems.
+	 *
+	 * This method ensures the engine's situation is up-to-date before evaluating a rule,
+	 * making it suitable for use in reactive frameworks that track dependencies (like Svelte,
+	 * Vue, Solid.js, or other signal-based systems).
+	 *
+	 * @param formState - The current state of the form
+	 * @param ruleName - The name of the rule to evaluate
+	 * @returns The rule node from the engine
+	 *
+	 * @example
+	 * ```typescript
+	 * // In a reactive framework
+	 * const result = formBuilder.getRule(formState, 'total . amount')
+	 * // The framework will track this dependency and re-run when formState changes
+	 * ```
+	 */
+	getRule(
+		formState: FormState<RuleName>,
+		ruleName: RuleName,
+	): RuleNode<RuleName> {
+		if (formState.situation !== this.engine.getSituation()) {
+			this.engine.setSituation(formState.situation)
+		}
+		return this.engine.getRule(ruleName)
 	}
 
 	/**
