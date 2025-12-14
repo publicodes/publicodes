@@ -32,7 +32,7 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
 	{
 		npm: 'modele-social',
 		maintainer: 'mon-entreprise',
-		users: ['estime', 'karburan']
+		users: ['estime', 'karburan', 'troopay']
 	},
 	{
 		npm: 'futureco-data',
