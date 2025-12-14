@@ -3,7 +3,9 @@ import karburanProImg from './logos/karburan-pro.webp';
 import mesAidesVeloImg from './logos/mes-aides-velo.webp';
 import mesAidesRenoImg from './logos/mes-aides-reno.webp';
 import monEmpreinteEauImg from './logos/mon-empreinte-eau.webp';
+import troopay from './logos/troopay.png';
 import jagisImg from './logos/jagis.webp';
+import teeImg from './logos/TEE.webp';
 
 const rawProduits = [
 	{
@@ -97,7 +99,7 @@ const rawProduits = [
 		description:
 			'Le service public Transition Écologique des Entreprises est un guichet d’accueil, d’aide et d’accompagnement dans la transition écologique des entreprises.',
 		url: 'https://mission-transition-ecologique.beta.gouv.fr/',
-		img: 'https://mission-transition-ecologique.beta.gouv.fr/images/TEE-preview-image-529-by-298.png',
+		img: teeImg,
 		github: 'https://github.com/betagouv/mission-transition-ecologique/'
 	},
 	{
@@ -134,6 +136,14 @@ const rawProduits = [
 		url: 'https://france-chaleur-urbaine.beta.gouv.fr',
 		github: 'https://github.com/betagouv/france-chaleur-urbaine-publicodes',
 		img: 'https://france-chaleur-urbaine.beta.gouv.fr/img/preview/fcu-preview-20220517.min.jpg'
+	},
+	{
+		slug: 'troopay',
+		name: 'Troopay',
+		description:
+			'Troopay utilise publicodes pour calculer un bulletin de paie pour les entrepreneurs',
+		url: 'https://www.troopay.com/',
+		img: troopay
 	}
 ] as const;
 
