@@ -10,7 +10,7 @@ package-lock.json
 
 build
 .cache-loader
-.next 
+.next
 .eslintcache
 
 # Local Netlify folder
@@ -49,3 +49,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+packages/compiler/_build
+packages/compiler/_opam

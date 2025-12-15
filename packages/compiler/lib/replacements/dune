@@ -1,0 +1,7 @@
+(library
+ (inline_tests)
+ (name replacements)
+ (libraries base parser ocamlgraph)
+ (modules :standard)
+ (preprocess
+  (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

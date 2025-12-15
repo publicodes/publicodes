@@ -1,0 +1,38 @@
+open Base
+
+
+(** Set implementation for rule names *)
+module Rule_name : sig
+  module T : sig
+    type t [@@deriving equal, compare, show, sexp]
+    val hash : t -> int
+  end
+  include module type of T
+  include module type of Comparable.Make(T)
+end
+
+include module type of Rule_name.T
+
+module Set : module type of Set.M (Rule_name)
+
+(** Hashtable implementation for rule names *)
+module Hashtbl : sig
+	include module type of Hashtbl.M (Rule_name)
+  val pp : (Stdlib.Format.formatter -> 'a -> unit) -> Stdlib.Format.formatter -> 'a t -> unit
+end
+
+val create_exn : string list -> t
+(** Create a rule name  *)
+
+val parent : t -> t option
+(** Get the immediate parent of a dotted name, if any.
+    Returns None for empty lists or single-segment names. *)
+
+val parents : t -> t list
+(** Get all the parents of a dotted name, including the name itself *)
+
+val to_string : t -> string
+(** Convert a rule name to a string *)
+
+val resolve : rule_names:Set.t -> current:t -> string list -> t option
+(** Resolve a rule name relative to the current rule name *)

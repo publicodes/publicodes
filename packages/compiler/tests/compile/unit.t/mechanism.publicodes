@@ -1,0 +1,30 @@
+# Percent unit
+a:
+  valeur: 5
+  unité: '%'
+
+test a: a > 4 € # KO
+
+# Empty unit
+b:
+  valeur: 5
+  unité:
+
+test b: b + 4 € # KO
+
+
+# Incompatible unit
+c: 12 €
+test c:
+  valeur: c
+  unité: kg # KO
+
+
+# Incompatible infered unit
+d: 12
+d 2:
+  valeur: d
+  unité: €
+test d:
+  valeur: d
+  unité: kg # KO

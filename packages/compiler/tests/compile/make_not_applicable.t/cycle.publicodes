@@ -1,0 +1,8 @@
+a:
+  rend non applicable: b
+
+b:
+  rend non applicable: c
+
+c:
+  rend non applicable: a

@@ -1,0 +1,38 @@
+{
+	"name": "@publicodes/runtime",
+	"version": "2.0.0-alpha.0",
+	"description": "A declarative language for encoding public algorithm",
+	"types": "dist/index.d.ts",
+	"type": "module",
+	"module": "dist/index.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/publicodes/publicodes.git",
+		"directory": "packages/runtime"
+	},
+	"bugs": "https://github.com/publicodes/publicodes/issues",
+	"homepage": "https://publi.codes/",
+	"license": "MIT",
+	"files": [
+		"dist/"
+	],
+	"devDependencies": {
+		"@publicodes/cli": "workspace:^",
+		"@publicodes/tools": "workspace:^",
+		"mitata": "^1.0.34",
+		"rolldown": "1.0.0-beta.9",
+		"rolldown-plugin-dts": "^0.16.6",
+		"typescript": "^5.9.2"
+	},
+	"scripts": {
+		"build": "rolldown -c rolldown.config.js",
+		"examples:auto-entrepreneur:compile": "cd ./examples/auto-entrepreneur; publicodes compile  './*.publicodes'; publicodes2 compile *.publicodes",
+		"examples:simple-TJM:compile": "cd ./examples/simple-TJM; publicodes compile  './*.publicodes'; publicodes2 compile *.publicodes",
+		"examples:compile": "run examples:auto-entrepreneur:compile && run examples:simple-TJM:compile",
+		"benchmark:simple-TJM": "bun ./benchmark/simple-TJM.js",
+		"benchmark:auto-entrepreneur": "bun ./benchmark/auto-entrepreneur.js",
+		"benchmark": "run benchmark:simple-TJM && run benchmark:auto-entrepreneur",
+		"test": "bun test",
+		"test:type": "tsc --noEmit"
+	}
+}
