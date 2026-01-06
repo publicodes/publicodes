@@ -61,7 +61,7 @@
 	"dependencies": {
 		"@clack/prompts": "^0.7.0",
 		"@oclif/core": "^4.2.5",
-		"@publicodes/react-ui": "^1.8.0",
+		"@publicodes/react-ui": "workspace:^",
 		"@tailwindcss/typography": "^0.5.16",
 		"@tailwindcss/vite": "^4.0.0",
 		"@types/node": "^18.11.18",
@@ -69,7 +69,7 @@
 		"chokidar": "^4.0.3",
 		"glob": "^10.4.1",
 		"path": "^0.12.7",
-		"publicodes": "^1.8.2",
+		"publicodes": "workspace:^",
 		"react": "^18.0.0",
 		"react-dom": "^18.0.0",
 		"react-router-dom": "^7.1.3",
