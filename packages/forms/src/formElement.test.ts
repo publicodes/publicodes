@@ -44,7 +44,23 @@ describe('inputDetails', function () {
 				],
 			})
 		})
+
+		test("checkbox input if there is a question but 'case à cocher' is specified", function () {
+			expect(
+				inputForRule({
+					question: 'Quel est ?',
+					form: { saisie: 'case à cocher' },
+				}),
+			).toEqual({
+				id: 'a',
+				element: 'input',
+				description: undefined,
+				label: 'Quel est ?',
+				type: 'checkbox',
+			})
+		})
 	})
+
 	describe('for string rules', function () {
 		test('text input by default', function () {
 			expect(inputForRule("''")).toMatchObject({
@@ -52,6 +68,7 @@ describe('inputDetails', function () {
 				type: 'text',
 			})
 		})
+
 		test('textarea if specified', function () {
 			expect(
 				inputForRule({
@@ -65,6 +82,7 @@ describe('inputDetails', function () {
 			})
 		})
 	})
+
 	test('for number rules', function () {
 		expect(inputForRule(0)).toMatchObject({
 			element: 'input',
@@ -79,6 +97,7 @@ describe('inputDetails', function () {
 				type: 'date',
 			})
 		})
+
 		test('month input', function () {
 			expect(
 				inputForRule({ type: 'date', form: { saisie: 'mois' } }),
@@ -163,6 +182,7 @@ describe('inputDetails', function () {
 				},
 			])
 		})
+
 		describe('saisie options', function () {
 			test('menu déroulant', function () {
 				const input = inputForRule({
@@ -173,7 +193,9 @@ describe('inputDetails', function () {
 				})
 				expect(input.element).toBe('select')
 			})
+
 			type InputRadio = FormElement & { element: 'RadioGroup' }
+
 			test('boutons radio (horizontal if less than two element)', function () {
 				const input = inputForRule({
 					'une possibilité': [1, 2],

@@ -158,7 +158,10 @@ export function getFormElement<Name extends string>(
 	}
 
 	if (typeInfo.type === 'boolean') {
-		if (saisie === 'oui/non' || rawRule.question) {
+		if (
+			saisie === 'oui/non' ||
+			(rawRule.question && saisie !== 'case à cocher')
+		) {
 			return {
 				...inputDetails,
 				element: 'RadioGroup',
