@@ -158,22 +158,32 @@ export class Engine<RuleNames extends string = string> {
 
 		const strictMode = options.strict || this.baseContext.strict.situation
 
-		let situationRules = Object.entries(situation).filter(
-			([dottedName, value]) => {
-				const error = this.checkSituationRule(
-					dottedName as RuleNames,
-					value as PublicodesExpression | ASTNode,
-				)
-				if (!error) return true
-				if (strictMode || this.baseContext.strict.checkPossibleValues) {
-					throw error
-				}
-				warning(this.context, error.message, 'situationIssues')
-				return false
-			},
-		)
-
 		const previousContext = this.context
+		const previousSituation = this.publicSituation
+
+		const handleError = (
+			error: false | PublicodesError<'SituationError'>,
+			shouldRestore = false,
+		): boolean => {
+			if (!error) return true
+			if (strictMode || this.baseContext.strict.checkPossibleValues) {
+				if (shouldRestore) {
+					this.context = previousContext
+					this.publicSituation = previousSituation
+				}
+				throw error
+			}
+			warning(this.context, error.message, 'situationIssues')
+			return false
+		}
+
+		let situationRules = Object.entries(situation).filter(([dottedName]) => {
+			return handleError(
+				this.checkSituationRuleStatic(dottedName as RuleNames),
+				true,
+			)
+		})
+
 		if (!keepPreviousSituation) {
 			this.context = copyContext(this.baseContext)
 			this.publicSituation = {}
@@ -198,6 +208,20 @@ export class Engine<RuleNames extends string = string> {
 				return !error
 			})
 		}
+
+		// We only dynamically check for possiblities after the current situation
+		// has been fully parsed to allow situation rules to depend on each other
+		// (e.g. a rule's possibilities applicability condition depending on another
+		// rule set in the situation)
+		situationRules = situationRules.filter(([dottedName, value]) => {
+			return handleError(
+				this.checkSituationRulePossibilities(
+					dottedName as RuleNames,
+					value as PublicodesExpression | ASTNode,
+				),
+				true,
+			)
+		})
 
 		this.publicSituation = Object.assign(
 			this.publicSituation,
@@ -444,9 +468,8 @@ export class Engine<RuleNames extends string = string> {
 		return 'continue'
 	})
 
-	private checkSituationRule(
+	private checkSituationRuleStatic(
 		dottedName: RuleNames,
-		value: PublicodesExpression | ASTNode,
 	): false | PublicodesError<'SituationError'> {
 		// We check if the dotteName is a rule of the model
 		if (!(dottedName in this.baseContext.parsedRules)) {
@@ -461,15 +484,27 @@ export class Engine<RuleNames extends string = string> {
 			const errorMessage = `La règle ${dottedName} est une règle privée.`
 			return new PublicodesError('SituationError', errorMessage, { dottedName })
 		}
+
+		return false
+	}
+
+	private checkSituationRulePossibilities(
+		dottedName: RuleNames,
+		value: PublicodesExpression | ASTNode,
+	): false | PublicodesError<'SituationError'> {
+		const rule = this.baseContext.parsedRules[dottedName]
+
 		if (
 			rule.possibilities &&
 			!isAValidOption(this, rule.possibilities, this.evaluate(value))
 		) {
-			const errorMessage = `La valeur "${this.evaluate(value).nodeValue}" ne fait pas partie des possibilités applicables listées pour cette règle.`
-
-			return new PublicodesError('SituationError', errorMessage, {
-				dottedName,
-			})
+			return new PublicodesError(
+				'SituationError',
+				`La valeur "${this.evaluate(value).nodeValue}" ne fait pas partie des possibilités applicables listées pour cette règle.`,
+				{
+					dottedName,
+				},
+			)
 		}
 
 		return false

@@ -220,4 +220,55 @@ a:
 		const missings = engine.evaluate('a').missingVariables
 		expect(Object.keys(missings)).toEqual(['a'])
 	})
+
+	it('should correctly manage situation with non-applicable possibilities', () => {
+		const engine = engineFromYaml(
+			`
+a:
+a . test:
+  applicable si:
+    toutes ces conditions:
+      - est défini: a
+      - a = oui
+  une possibilité:
+    - pos 1
+    - pos 2
+  avec:
+    pos 1:
+      titre: Pos 1
+    pos 2:
+      titre: Pos 2
+`,
+			{
+				flag: { filterNotApplicablePossibilities: true },
+			},
+		)
+
+		expect(() =>
+			engine.setSituation({
+				'a . test': "'pos 1'",
+			}),
+		).toThrow(
+			`La valeur "pos 1" ne fait pas partie des possibilités applicables listées pour cette règle.`,
+		)
+		expect(engine.evaluate('a . test').nodeValue).toEqual(null)
+
+		engine.setSituation({
+			a: 'oui',
+		})
+		engine.setSituation(
+			{
+				'a . test': "'pos 1'",
+			},
+			{ keepPreviousSituation: true },
+		)
+		expect(engine.evaluate('a . test').nodeValue).toEqual('pos 1')
+
+		engine.setSituation({})
+		engine.setSituation({
+			a: 'oui',
+			'a . test': "'pos 1'",
+		})
+		expect(engine.evaluate('a . test').nodeValue).toEqual('pos 1')
+	})
 })
