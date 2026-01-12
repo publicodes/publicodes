@@ -7,3 +7,4 @@ yarn.lock
 .yarn
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+packages/react-ui/CHANGELOG.md
