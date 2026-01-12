@@ -187,15 +187,21 @@ describe('computePages', () => {
 
 		expect(pages).toEqual([
 			{
-				elements: ['company . name', 'company . address'],
+				elements: [
+					{ type: 'simple', rule: 'company . name' },
+					{ type: 'simple', rule: 'company . address' },
+				],
 				title: 'company',
 			},
 			{
-				elements: ['personal . first name', 'personal . last name'],
+				elements: [
+					{ type: 'simple', rule: 'personal . first name' },
+					{ type: 'simple', rule: 'personal . last name' },
+				],
 				title: 'personal',
 			},
 			{
-				elements: ['stock . quantity'],
+				elements: [{ type: 'simple', rule: 'stock . quantity' }],
 				title: 'stock . quantity',
 			},
 		])
