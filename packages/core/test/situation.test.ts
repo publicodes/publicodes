@@ -249,8 +249,8 @@ a . test:
 
 		engine.setSituation({
 			'a . test': "'pos 1'",
-		}),
-			expect(engine.evaluate('a . test').nodeValue).toEqual(null)
+		})
+		expect(engine.evaluate('a . test').nodeValue).toEqual(null)
 
 		engine.setSituation({
 			a: 'oui',
