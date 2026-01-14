@@ -1,5 +1,11 @@
 # @publicodes/forms
 
+## 0.6.1
+
+### Patch Changes
+
+- [#790](https://github.com/publicodes/publicodes/pull/790) [`dc98321`](https://github.com/publicodes/publicodes/commit/dc983211915d64ca04b17935b50c89f0d30a44a5) Thanks [@EmileRolley](https://github.com/EmileRolley)! - The form meta `saisie: 'case à cocher'` override the `question` logic
+
 ## 0.6.0
 
 ### Minor Changes
