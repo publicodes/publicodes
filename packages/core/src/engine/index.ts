@@ -163,10 +163,11 @@ export class Engine<RuleNames extends string = string> {
 
 		const handleError = (
 			error: false | PublicodesError<'SituationError'>,
+			guard: boolean,
 			shouldRestore = false,
 		): boolean => {
 			if (!error) return true
-			if (strictMode || this.baseContext.strict.checkPossibleValues) {
+			if (guard) {
 				if (shouldRestore) {
 					this.context = previousContext
 					this.publicSituation = previousSituation
@@ -180,6 +181,7 @@ export class Engine<RuleNames extends string = string> {
 		let situationRules = Object.entries(situation).filter(([dottedName]) => {
 			return handleError(
 				this.checkSituationRuleStatic(dottedName as RuleNames),
+				strictMode,
 				true,
 			)
 		})
@@ -219,6 +221,7 @@ export class Engine<RuleNames extends string = string> {
 					dottedName as RuleNames,
 					value as PublicodesExpression | ASTNode,
 				),
+				this.baseContext.strict.checkPossibleValues,
 				true,
 			)
 		})

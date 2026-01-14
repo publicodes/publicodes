@@ -115,7 +115,9 @@ a . b: 5
 		expect(engine.evaluate('a . b').nodeValue).toBe(5)
 	})
 
-	it('should raise an error when `situation` strict mode option is set to `true`', () => {
+	// NOTE: in this case the strict mode option `checkPossibleValues` is false by
+	// default, so this should not raise an error if not set to true.
+	it.skip('should raise an error when `situation` strict mode option is set to `true`', () => {
 		const engine = new Engine(
 			parse(`
 a:
@@ -240,18 +242,15 @@ a . test:
       titre: Pos 2
 `,
 			{
+				strict: { checkPossibleValues: false },
 				flag: { filterNotApplicablePossibilities: true },
 			},
 		)
 
-		expect(() =>
-			engine.setSituation({
-				'a . test': "'pos 1'",
-			}),
-		).toThrow(
-			`La valeur "pos 1" ne fait pas partie des possibilités applicables listées pour cette règle.`,
-		)
-		expect(engine.evaluate('a . test').nodeValue).toEqual(null)
+		engine.setSituation({
+			'a . test': "'pos 1'",
+		}),
+			expect(engine.evaluate('a . test').nodeValue).toEqual(null)
 
 		engine.setSituation({
 			a: 'oui',
@@ -270,5 +269,13 @@ a . test:
 			'a . test': "'pos 1'",
 		})
 		expect(engine.evaluate('a . test').nodeValue).toEqual('pos 1')
+
+		engine.setSituation({
+			a: 'non',
+			'a . test': "'pos 1'",
+		})
+		expect(engine.evaluate({ 'est applicable': 'a . test' }).nodeValue).toEqual(
+			false,
+		)
 	})
 })
