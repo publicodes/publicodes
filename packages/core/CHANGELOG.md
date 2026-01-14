@@ -1,5 +1,12 @@
 # publicodes
 
+## 1.10.1
+
+### Patch Changes
+
+- [#791](https://github.com/publicodes/publicodes/pull/791) [`b442de9`](https://github.com/publicodes/publicodes/commit/b442de9f9c6bd2acda87673282e729832a0d6ed7) Thanks [@EmileRolley](https://github.com/EmileRolley)! - `setSituation` : fix a bug in the dynamic verification of `une possibilité`
+  values applicability where the rules could not depend on each other.
+
 ## 1.9.1
 
 ### Patch Changes

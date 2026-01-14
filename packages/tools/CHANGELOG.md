@@ -1,5 +1,17 @@
 # @publicodes/tools
 
+## 1.8.1
+
+### Patch Changes
+
+- [#783](https://github.com/publicodes/publicodes/pull/783) [`017831d`](https://github.com/publicodes/publicodes/commit/017831d9a8e8021e6a50a52bc0db826add1bc964) Thanks [@Clemog](https://github.com/Clemog)! - Fix default situations path for quick-doc build
+
+- [#788](https://github.com/publicodes/publicodes/pull/788) [`7a670e5`](https://github.com/publicodes/publicodes/commit/7a670e5c221a7b7217832d7a800b9b9b0c942efc) Thanks [@EmileRolley](https://github.com/EmileRolley)! - Use workspace version in dependencies and explicitly add styled-components
+
+- Updated dependencies [[`b442de9`](https://github.com/publicodes/publicodes/commit/b442de9f9c6bd2acda87673282e729832a0d6ed7)]:
+    - publicodes@1.10.1
+    - @publicodes/react-ui@1.10.0
+
 ## 1.8.0
 
 ### Minor Changes
