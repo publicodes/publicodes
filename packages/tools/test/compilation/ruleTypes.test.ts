@@ -1,5 +1,5 @@
 import Engine, { Rule } from 'publicodes'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'bun:test'
 import { RawRules } from '../../src'
 import { resolveRuleTypes } from '../../src/compilation/ruleTypes'
 

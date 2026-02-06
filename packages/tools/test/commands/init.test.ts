@@ -1,7 +1,7 @@
 import { execSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'bun:test'
 import { DEFAULT_BUILD_DIR } from '../../src'
 import { basePackageJson, PackageJson } from '../../src/utils/pjson'
 import { CLIExecutor, runInDir } from '../cli-utils'

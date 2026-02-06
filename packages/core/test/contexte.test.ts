@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
+import { describe, expect, it, beforeEach, afterEach, vi } from 'bun:test'
 import { parse } from 'yaml'
 import Engine from '../src'
 

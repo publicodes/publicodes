@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'bun:test'
 import yaml from 'yaml'
 import Engine from '../src/index'
 import { assert } from 'chai'

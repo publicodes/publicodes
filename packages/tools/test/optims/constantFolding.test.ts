@@ -1,5 +1,5 @@
 import Engine, { RawPublicodes, RuleNode } from 'publicodes'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { serializeParsedRules } from '../../src'
 import { RuleName, RawRules, disabledLogger } from '../../src/commons'
 import { constantFolding } from '../../src/optims/'

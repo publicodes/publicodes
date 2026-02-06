@@ -5,7 +5,9 @@
 	"workspaces": [
 		"website",
 		"packages/*",
-		"examples/*"
+		"examples/*",
+		"packages/compiler/tests/JS",
+		"packages/compiler/benchmark/JS"
 	],
 	"scripts": {
 		"test": "turbo run test",
@@ -40,5 +42,8 @@
 	"packageManager": "yarn@3.8.7",
 	"engines": {
 		"node": ">= 22"
+	},
+	"dependencies": {
+		"publicodes": "workspace:^"
 	}
 }

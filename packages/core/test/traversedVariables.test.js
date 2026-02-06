@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest'
+import { describe, it, expect, beforeAll } from 'bun:test'
 import Publicodes from '../src/index'
 
 describe('Traversed variables - Basics', () => {

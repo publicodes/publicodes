@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { parse } from 'yaml'
 import Engine from '../src/index'
 import { engineFromYaml, parseYaml } from './utils'

@@ -5,7 +5,7 @@
 	teste idéalement tous ses comportements sans en faire intervenir d'autres.
 */
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'bun:test'
 import { parse } from 'yaml'
 import Engine from '../src/index'
 import { Rule } from '../src/rule'
