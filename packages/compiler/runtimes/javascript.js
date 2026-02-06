@@ -1,11 +1,11 @@
 /**
  * @typedef {Date | number | string | null | undefined} Value
- * @typedef {number | null | undefined} Number
- * @typedef {boolean | null | undefined} Boolean
- * @typedef {() => Number} LazyNumber
- * @typedef {() => Boolean} LazyBoolean
+ * @typedef {number | null | undefined} PNumber
+ * @typedef {boolean | null | undefined} PBoolean
+ * @typedef {() => PNumber} LazyNumber
+ * @typedef {() => PBoolean} LazyBoolean
  * @typedef {() => Value} LazyValue
- */
+ * /
 
 /**
  * TODO:
@@ -52,8 +52,8 @@ class RuntimeError extends Error {
 /** Basic numeric operations */
 
 /**
- * @param {Number} left
- * @param {Number} right
+ * @param {PNumber} l
+ * @param {PNumber} r
  * @returns {number | undefined}
  *
  * @specification
@@ -72,8 +72,8 @@ function $add(l, r) {
 }
 
 /**
- * @param {Number} left
- * @param {Number} right
+ * @param {PNumber} l
+ * @param {PNumber} r
  * @returns {number | undefined}
  *
  * @specification
@@ -93,7 +93,7 @@ function $sub(l, r) {
 }
 
 /**
- * @param {Number} left
+ * @param {PNumber} l
  * @param {LazyNumber} right
  * @returns {number | null | undefined}
  *
@@ -121,7 +121,7 @@ function $mul(l, right) {
 }
 
 /**
- * @param {Number} left
+ * @param {PNumber} l
  * @param {LazyNumber} right
  * @returns {number | null | undefined}
  *
@@ -157,7 +157,7 @@ function $div(l, right) {
 }
 
 /**
- * @param {Number} left
+ * @param {PNumber} l
  * @param {LazyNumber} right
  * @returns {number | undefined}
  *
@@ -189,8 +189,8 @@ function $pow(l, right) {
 /** Basic boolean operations */
 
 /**
- * @param {Value} left
- * @param {Value} right
+ * @param {Value} l
+ * @param {Value} r
  * @returns {boolean | undefined}
  *
  * @specification
@@ -211,8 +211,8 @@ function $eq(l, r) {
 }
 
 /**
- * @param {Value} left
- * @param {Value} right
+ * @param {Value} l
+ * @param {Value} r
  * @returns {boolean | undefined}
  *
  * @specification
@@ -233,7 +233,7 @@ function $neq(l, r) {
 }
 
 /**
- * @param {Value} left
+ * @param {Value} l
  * @param {LazyValue} right
  * @returns {boolean | null | undefined}
  *
@@ -257,7 +257,7 @@ function $lt(l, right) {
 }
 
 /**
- * @param {Value} left
+ * @param {Value} l
  * @param {LazyValue} right
  * @returns {boolean | null | undefined}
  *
@@ -305,7 +305,7 @@ function $lte(l, right) {
 }
 
 /**
- * @param {Value} left
+ * @param {Value} l
  * @param {LazyValue} right
  * @returns {boolean | null | undefined}
  *
@@ -329,7 +329,7 @@ function $gte(l, right) {
 }
 
 /**
- * @param {Boolean} left
+ * @param {PBoolean} l
  * @param {LazyBoolean} right
  * @returns {boolean | undefined}
  *
@@ -358,7 +358,7 @@ function $and(l, right) {
 }
 
 /**
- * @param {Boolean} left
+ * @param {PBoolean} l
  * @param {LazyBoolean} right
  * @returns {boolean | undefined}
  *
@@ -395,7 +395,7 @@ function $or(l, right) {
 /** Unary operations */
 
 /**
- * @param {number | null | undefined} operand
+ * @param {number | null | undefined} val
  * @returns {number | undefined}
  * @specification
  * The unary negation operation is defined as follows by order of precedence:
@@ -413,7 +413,7 @@ function $neg(val) {
 
 /**
  * @param {'up' | 'down' | 'nearest'} mode
- * @param {Number} val
+ * @param {PNumber} val
  * @param {LazyNumber} precision
  * @returns {number | null | undefined}
  *
@@ -464,14 +464,15 @@ function $round(mode, val, precision) {
 }
 
 /**
- * @param {Number} left
- * @param {Number} right
- * @returns {number | undefined}
+ * @param {PNumber} left
+ * @param {PNumber} right
+ * @returns {number | undefined | null}
  *
  * @specification
  * The rounding operation is defined as follows by order of precedence:
  * - ∀ x. min(x, undefined) = min(undefined, x) = undefined
  * - ∀ x. min(x, null) = min(null, x) = x
+ * - min(null, null) = null
  * - ∀ x, y. min(x, y) = the minimum value between x and y
  */
 function $min(left, right) {
@@ -491,8 +492,8 @@ function $min(left, right) {
 }
 
 /**
- * @param {Number} left
- * @param {Number} right
+ * @param {PNumber} left
+ * @param {PNumber} right
  * @returns {number | undefined}
  *
  * @specification
@@ -518,7 +519,7 @@ function $max(left, right) {
 }
 
 /**
- * @param {Boolean} c
+ * @param {PBoolean} c
  * @param {LazyValue} ifTrue
  * @param {LazyValue} ifFalse
  * @returns {Value | undefined}

@@ -38,6 +38,7 @@ let%test_unit "There should be no conflicts over JS identifiers" =
     ; ["a'b"]
     ; ["a\"b"]
     ; ["a_b"]
+    ; ["a_ c"]
     ; ["a b c"]
     ; ["a'b\"c"]
     ; ["a-b-c"]
@@ -143,142 +144,159 @@ let is_lazy : Shared_ast.binary_op -> bool = function
 
 let date_to_js_pp = function
   | Eval_tree.Date (Day {day; month; year}) ->
-      Pp.textf "new Date('%d-%02d-%02d')" year month day
+      Pp.verbatimf "new Date('%d-%02d-%02d')" year month day
   | Date (Month {month; year}) ->
-      Pp.textf "new Date('%02d-%02d')" year month
+      Pp.verbatimf "new Date('%02d-%02d')" year month
   | _ ->
       failwith "Unsupported date format in JS conversion"
 
 let rec value_to_js_pp ({value; _} : Tree.value) =
   match value with
   | Eval_tree.Const (Eval_tree.Number (n, _)) ->
-      Pp.textf "%.16g" n
+      Pp.verbatimf "%.16g" n
   | Const (String s) ->
       let s =
         s
         |> String.strip ~drop:(Char.equal '\'')
         |> String.substr_replace_all ~pattern:"\"" ~with_:"\\\""
       in
-      Pp.textf "\"%s\"" s
+      Pp.verbatimf "\"%s\"" s
   | Const (Bool b) ->
-      Pp.textf "%b" b
+      Pp.verbatimf "%b" b
   | Const (Date d) ->
       date_to_js_pp (Date d)
   | Const Null ->
-      Pp.text "null"
+      Pp.verbatim "null"
   | Const Undefined ->
-      Pp.text "undefined"
+      Pp.verbatim "undefined"
   | Round (mode, precision, value) ->
       let rounding_mode =
         match mode with
         | Nearest ->
-            Pp.text "'nearest'"
+            Pp.verbatim "'nearest'"
         | Up ->
-            Pp.text "'up'"
+            Pp.verbatim "'up'"
         | Down ->
-            Pp.text "'down'"
+            Pp.verbatim "'down'"
       in
       Pp.concat
-        [ Pp.text "$round("
+        [ Pp.verbatim "$round("
         ; rounding_mode
-        ; Pp.text ", "
+        ; Pp.verbatim ", "
         ; value_to_js_pp value
-        ; Pp.text ", () => "
+        ; Pp.verbatim ", () => "
         ; value_to_js_pp precision
-        ; Pp.text ")" ]
+        ; Pp.verbatim ")" ]
   | Condition (cond, then_comp, else_comp) ->
       Pp.hovbox ~indent:2
         (Pp.concat
-           [ Pp.text "$cond("
+           [ Pp.verbatim "$cond("
            ; Pp.break ~nspaces:0 ~shift:0
            ; value_to_js_pp cond
-           ; Pp.text ","
+           ; Pp.verbatim ","
            ; Pp.break ~nspaces:1 ~shift:0
-           ; Pp.text "() => "
+           ; Pp.verbatim "() => "
            ; value_to_js_pp then_comp
-           ; Pp.text ","
+           ; Pp.verbatim ","
            ; Pp.break ~nspaces:1 ~shift:0
-           ; Pp.text "() => "
+           ; Pp.verbatim "() => "
            ; value_to_js_pp else_comp
            ; Pp.break ~nspaces:0 ~shift:0
-           ; Pp.text ")" ] )
+           ; Pp.verbatim ")" ] )
   | Binary_op ((op, _), left, right) ->
       Pp.hovbox ~indent:2
         (Pp.concat
-           [ Pp.text (binary_op_to_js op)
-           ; Pp.text "("
+           [ Pp.verbatim (binary_op_to_js op)
+           ; Pp.verbatim "("
            ; Pp.break ~nspaces:0 ~shift:0
            ; value_to_js_pp left
-           ; Pp.text ","
+           ; Pp.verbatim ","
            ; Pp.break ~nspaces:1 ~shift:0
-           ; (if is_lazy op then Pp.text "() => " else Pp.nop)
+           ; (if is_lazy op then Pp.verbatim "() => " else Pp.nop)
            ; value_to_js_pp right
            ; Pp.break ~nspaces:0 ~shift:0
-           ; Pp.text ")" ] )
+           ; Pp.verbatim ")" ] )
   | Unary_op ((Neg, _), comp) ->
-      Pp.concat [Pp.text "(- "; value_to_js_pp comp; Pp.text ")"]
+      Pp.concat [Pp.verbatim "(- "; value_to_js_pp comp; Pp.verbatim ")"]
   | Unary_op ((Is_undef, _), comp) ->
-      Pp.concat [Pp.text "("; value_to_js_pp comp; Pp.text " === undefined)"]
+      Pp.concat
+        [Pp.verbatim "("; value_to_js_pp comp; Pp.verbatim " === undefined)"]
   | Ref rule_name ->
       Pp.hovbox ~indent:2
         (Pp.concat
-           [ Pp.text "$ref("
+           [ Pp.verbatim "$ref("
            ; Pp.break ~nspaces:0 ~shift:0
-           ; Pp.textf "\"%s\"," (Rule_name.to_string rule_name)
+           ; Pp.verbatimf "\"%s\"," (Rule_name.to_string rule_name)
            ; Pp.break ~nspaces:1 ~shift:0
-           ; Pp.textf "_%s," (rulename_to_js_identifier rule_name)
+           ; Pp.verbatimf "_%s," (rulename_to_js_identifier rule_name)
            ; Pp.break ~nspaces:1 ~shift:0
-           ; Pp.text "ctx,"
+           ; Pp.verbatim "ctx,"
            ; Pp.break ~nspaces:1 ~shift:0
-           ; Pp.text "params"
+           ; Pp.verbatim "params"
            ; Pp.break ~nspaces:0 ~shift:0
-           ; Pp.text ")" ] )
+           ; Pp.verbatim ")" ] )
   | Get_context rule_name ->
       Pp.hovbox ~indent:2
         (Pp.concat
-           [ Pp.text "$get("
+           [ Pp.verbatim "$get("
            ; Pp.break ~nspaces:0 ~shift:0
-           ; Pp.textf "\"%s\"," (Rule_name.to_string rule_name)
+           ; Pp.verbatimf "\"%s\"," (Rule_name.to_string rule_name)
            ; Pp.break ~nspaces:1 ~shift:0
-           ; Pp.text "ctx,"
+           ; Pp.verbatim "ctx,"
            ; Pp.break ~nspaces:1 ~shift:0
-           ; Pp.text "params"
+           ; Pp.verbatim "params"
            ; Pp.break ~nspaces:0 ~shift:0
-           ; Pp.text ")" ] )
+           ; Pp.verbatim ")" ] )
   | Set_context {context; value} ->
       let context_items =
         List.map context ~f:(fun ((rule_name, _), value) ->
             Pp.hovbox ~indent:2
               (Pp.concat
-                 [ Pp.textf "\"%s\":" (Rule_name.to_string rule_name)
+                 [ Pp.verbatimf "\"%s\":" (Rule_name.to_string rule_name)
                  ; Pp.break ~nspaces:1 ~shift:0
                  ; value_to_js_pp value ] ) )
       in
       let context_str =
         Pp.concat_map
-          ~sep:(Pp.concat [Pp.text ","; Pp.break ~nspaces:1 ~shift:0])
+          ~sep:(Pp.concat [Pp.verbatim ","; Pp.break ~nspaces:1 ~shift:0])
           ~f:Fn.id context_items
       in
       Pp.hovbox ~indent:2
         (Pp.concat
-           [ Pp.text "((ctx) =>"
+           [ Pp.verbatim "((ctx) =>"
            ; Pp.break ~nspaces:1 ~shift:0
            ; value_to_js_pp value
-           ; Pp.text ")("
+           ; Pp.verbatim ")("
            ; Pp.break ~nspaces:0 ~shift:0
            ; Pp.hovbox ~indent:2
                (Pp.concat
-                  [ Pp.text "{"
+                  [ Pp.verbatim "{"
                   ; Pp.break ~nspaces:1 ~shift:0
-                  ; Pp.text "...ctx,"
+                  ; Pp.verbatim "...ctx,"
                   ; Pp.break ~nspaces:1 ~shift:0
                   ; context_str
                   ; Pp.break ~nspaces:1 ~shift:0
-                  ; Pp.text "}" ] )
+                  ; Pp.verbatim "}" ] )
            ; Pp.break ~nspaces:0 ~shift:0
-           ; Pp.text ")" ] )
+           ; Pp.verbatim ")" ] )
 
 (* -------------------- Pp-based JSDoc generation -------------------- *)
+
+let find_title (meta : Shared_ast.rule_meta list) : string option =
+  List.find_map meta ~f:(fun m ->
+      match m with Shared_ast.Title t -> Some t | _ -> None )
+
+let find_description (meta : Shared_ast.rule_meta list) : string option =
+  List.find_map meta ~f:(fun m ->
+      match m with Shared_ast.Description d -> Some d | _ -> None )
+
+(** Generate JSDoc description lines from a multi-line string.
+    Each line is prefixed with " * ". *)
+let description_to_jsdoc_pp (desc : string) =
+  let lines = String.split_lines desc in
+  Pp.concat_map lines ~sep:Pp.newline ~f:(fun line ->
+      if String.is_empty (String.strip line) then Pp.verbatim " *"
+      else Pp.verbatimf " * %s" line )
 
 let to_js_str_pp str =
   let js_str =
@@ -287,7 +305,7 @@ let to_js_str_pp str =
     |> String.substr_replace_all ~pattern:"\n" ~with_:"\\n"
     |> String.substr_replace_all ~pattern:"\t" ~with_:"\\t"
   in
-  Pp.textf "'%s'" js_str
+  Pp.verbatimf "'%s'" js_str
 
 let get_params_jsdoc_typedef_pp (tree : Tree.t) (rule_name : Rule_name.t)
     (parameters : Rule_name.t list) =
@@ -295,10 +313,13 @@ let get_params_jsdoc_typedef_pp (tree : Tree.t) (rule_name : Rule_name.t)
   let parameters_type =
     Pp.concat_map parameters
       ~f:(fun param ->
-        let param_name = Rule_name.to_string param in
+        let param_name =
+          Rule_name.to_string param
+          |> String.substr_replace_all ~pattern:"'" ~with_:"\\'"
+        in
         let param_type = get_rule_js_type tree param in
-        Pp.textf " *  '%s'?: %s | undefined" param_name param_type )
-      ~sep:(Pp.concat [Pp.text ";"; Pp.newline])
+        Pp.verbatimf " *  '%s'?: %s | undefined" param_name param_type )
+      ~sep:(Pp.concat [Pp.verbatim ";"; Pp.newline])
   in
   Pp.box ~indent:0
     (Pp.concat
@@ -312,54 +333,43 @@ let get_params_jsdoc_typedef_pp (tree : Tree.t) (rule_name : Rule_name.t)
        ; Pp.newline
        ; Pp.verbatimf " * }} %s" type_name
        ; Pp.newline
-       ; Pp.text " */" ] )
+       ; Pp.verbatim " */" ] )
 
 let get_evaluate_params_jsdoc_pp (tree : Tree.t) (rule_name : Rule_name.t) =
   let return_type = get_rule_js_type tree rule_name in
   let type_name = rulename_to_ts_type_name rule_name in
   Pp.box ~indent:0
     (Pp.concat
-       [ Pp.text "/**"
+       [ Pp.verbatim "/**"
        ; Pp.newline
-       ; Pp.textf
+       ; Pp.verbatimf
            " * Evaluate \"%s\" with information on missing and needed \
             parameters"
            (Rule_name.to_string rule_name)
        ; Pp.newline
-       ; Pp.textf " * @param {%s} [params={}]" type_name
+       ; Pp.verbatimf
+           " * @type {(params?: %s, options?: {cache?: boolean}) => {value: %s \
+            | undefined | null, needed: Array<keyof %s>, missing: Array<keyof \
+            %s>}}"
+           type_name return_type type_name type_name
        ; Pp.newline
-       ; Pp.text " * @param {Object} [options={}]"
-       ; Pp.newline
-       ; Pp.text " * @param {boolean} [option.cache=false]"
-       ; Pp.newline
-       ; Pp.textf
-           {| * @return {{
- *  value: %s | undefined | null;
- *  needed: Array<keyof %s>;
- *  missing: Array<keyof %s>
- * }}|}
-           return_type type_name type_name
-       ; Pp.newline
-       ; Pp.text " */" ] )
+       ; Pp.verbatim " */" ] )
 
 let get_evaluate_jsdoc_pp (tree : Tree.t) (rule_name : Rule_name.t) =
   let return_type = get_rule_js_type tree rule_name in
   let type_name = rulename_to_ts_type_name rule_name in
   Pp.box ~indent:0
     (Pp.concat
-       [ Pp.text "/**"
+       [ Pp.verbatim "/**"
        ; Pp.newline
-       ; Pp.textf " * Evaluate \"%s\"" (Rule_name.to_string rule_name)
+       ; Pp.verbatimf " * Evaluate \"%s\"" (Rule_name.to_string rule_name)
        ; Pp.newline
-       ; Pp.textf " * @param {%s} [params={}]" type_name
+       ; Pp.verbatimf
+           " * @type {(params?: %s, options?: {cache?: boolean}) => %s | \
+            undefined | null}"
+           type_name return_type
        ; Pp.newline
-       ; Pp.text " * @param {Object} [options={}]"
-       ; Pp.newline
-       ; Pp.text " * @param {boolean} [option.cache=false]"
-       ; Pp.newline
-       ; Pp.textf " * @return {%s | undefined | null}" return_type
-       ; Pp.newline
-       ; Pp.text " */" ] )
+       ; Pp.verbatim " */" ] )
 
 let get_meta_properties_jsdoc_pp (meta : Shared_ast.rule_meta list)
     (rule_name_str : string) =
@@ -368,41 +378,41 @@ let get_meta_properties_jsdoc_pp (meta : Shared_ast.rule_meta list)
         match meta with
         | Title title ->
             Some
-              (Pp.box ~indent:0
-                 (Pp.concat
-                    [ Pp.text "/** @type {string} */"
-                    ; Pp.newline
-                    ; Pp.text "title: "
-                    ; to_js_str_pp title ] ) )
+              (Pp.concat
+                 [ Pp.verbatim "/** @type {string} */"
+                 ; Pp.newline
+                 ; Pp.verbatim "title: "
+                 ; to_js_str_pp title
+                 ; Pp.verbatim "," ] )
         | Description desc ->
             Some
-              (Pp.box ~indent:0
-                 (Pp.concat
-                    [ Pp.text "/** @type {string} */"
-                    ; Pp.newline
-                    ; Pp.text "description: "
-                    ; to_js_str_pp desc ] ) )
+              (Pp.concat
+                 [ Pp.verbatim "/** @type {string} */"
+                 ; Pp.newline
+                 ; Pp.verbatim "description: "
+                 ; to_js_str_pp desc
+                 ; Pp.verbatim "," ] )
         | Note note ->
             Some
-              (Pp.box ~indent:0
-                 (Pp.concat
-                    [ Pp.text "/** @type {string} */"
-                    ; Pp.newline
-                    ; Pp.text "note: "
-                    ; to_js_str_pp note ] ) )
+              (Pp.concat
+                 [ Pp.verbatim "/** @type {string} */"
+                 ; Pp.newline
+                 ; Pp.verbatim "note: "
+                 ; to_js_str_pp note
+                 ; Pp.verbatim "," ] )
         | Custom_meta meta ->
             Some
-              (Pp.box ~indent:0
-                 (Pp.concat
-                    [ Pp.textf "/** Custom meta of rule \"%s\" */" rule_name_str
-                    ; Pp.newline
-                    ; Pp.text "meta: "
-                    ; Pp.text (Yojson.Safe.to_string meta)
-                    ; Pp.text " /** @type {const} */" ] ) )
+              (Pp.concat
+                 [ Pp.verbatimf "/** Custom meta of rule \"%s\" */" rule_name_str
+                 ; Pp.newline
+                 ; Pp.verbatim "meta: "
+                 ; Pp.verbatim (Yojson.Safe.to_string meta)
+                 ; Pp.verbatim " /** @type {const} */"
+                 ; Pp.verbatim "," ] )
         | Public ->
             None )
   in
-  Pp.concat_map ~sep:(Pp.concat [Pp.text ","; Pp.newline]) ~f:Fn.id meta_docs
+  Pp.concat_map ~sep:Pp.newline ~f:Fn.id meta_docs
 
 (* -------------------- Main Code Generation Functions -------------------- *)
 
@@ -420,22 +430,26 @@ let rules_to_js_functions_pp hashed_tree =
     List.map rules ~f:(fun (rule_type, rule_name, rule_data) ->
         Pp.box ~indent:0
           (Pp.concat
-             [ Pp.textf "/** @type {Fn<%s>} */" rule_type
+             [ Pp.verbatimf "/** @type {Fn<%s>} */" rule_type
              ; Pp.newline
-             ; Pp.textf "function _%s(ctx, params) {" rule_name
+             ; Pp.verbatimf "function _%s(ctx, params) {" rule_name
              ; Pp.newline
-             ; Pp.text "  return /** @type {"
-             ; Pp.text rule_type
-             ; Pp.text "} */ ("
+             ; Pp.verbatim "  return /** @type {"
+             ; Pp.verbatim rule_type
+             ; Pp.verbatim "} */ ("
              ; Pp.newline
-             ; Pp.text "    "
+             ; Pp.verbatim "    "
              ; rule_data
              ; Pp.newline
-             ; Pp.text "  )"
+             ; Pp.verbatim "  )"
              ; Pp.newline
-             ; Pp.text "}" ] ) )
+             ; Pp.verbatim "}" ] ) )
   in
   Pp.concat_map ~sep:(Pp.concat [Pp.newline; Pp.newline]) ~f:Fn.id function_docs
+
+let has_meta_properties (meta : Shared_ast.rule_meta list) =
+  List.exists meta ~f:(fun m ->
+      match m with Shared_ast.Public -> false | _ -> true )
 
 let generate_rule_object_pp hashed_tree
     Model_outputs.{rule_name; parameters; meta; _} =
@@ -446,6 +460,33 @@ let generate_rule_object_pp hashed_tree
   let params_typedef =
     get_params_jsdoc_typedef_pp hashed_tree rule_name parameters
   in
+  let title = find_title meta in
+  let description = find_description meta in
+  let rule_property_jsdoc =
+    let has_doc = Option.is_some title || Option.is_some description in
+    if has_doc then
+      Pp.concat
+        [ Pp.verbatim "/**"
+        ; Pp.newline
+        ; ( match title with
+          | Some t ->
+              Pp.concat [Pp.verbatimf " * **%s**" t; Pp.newline]
+          | None ->
+              Pp.nop )
+        ; ( match description with
+          | Some desc ->
+              Pp.concat
+                [ ( if Option.is_some title then
+                      Pp.concat [Pp.verbatim " *"; Pp.newline]
+                    else Pp.nop )
+                ; description_to_jsdoc_pp desc
+                ; Pp.newline ]
+          | None ->
+              Pp.nop )
+        ; Pp.verbatim " */"
+        ; Pp.newline ]
+    else Pp.nop
+  in
   let evaluate_jsdoc = get_evaluate_jsdoc_pp hashed_tree rule_name in
   let evaluate_params_jsdoc =
     get_evaluate_params_jsdoc_pp hashed_tree rule_name
@@ -455,26 +496,25 @@ let generate_rule_object_pp hashed_tree
     List.map parameters ~f:(fun p -> to_js_str_pp (Rule_name.to_string p))
   in
   let params_list_doc =
-    if List.is_empty params_list then Pp.text "[]"
+    if List.is_empty params_list then Pp.verbatim "[]"
     else
       Pp.hovbox ~indent:2
         (Pp.concat
-           [ Pp.text "["
+           [ Pp.verbatim "["
            ; Pp.cut
            ; Pp.concat_map
-               ~sep:(Pp.concat [Pp.text ","; Pp.break ~nspaces:1 ~shift:0])
+               ~sep:(Pp.concat [Pp.verbatim ","; Pp.break ~nspaces:1 ~shift:0])
                ~f:Fn.id params_list
            ; Pp.cut
-           ; Pp.text "]" ] )
+           ; Pp.verbatim "]" ] )
   in
   let unit_property =
     match get_rule_str_unit hashed_tree rule_name with
     | Some unit ->
-        Pp.box ~indent:0
-          (Pp.concat
-             [ Pp.textf "/** @type {\"%s\"} */" unit
-             ; Pp.newline
-             ; Pp.textf "unit: \"%s\"," unit ] )
+        Pp.concat
+          [ Pp.verbatimf "/** @type {\"%s\"} */" unit
+          ; Pp.newline
+          ; Pp.verbatimf "unit: \"%s\"," unit ]
     | None ->
         Pp.nop
   in
@@ -491,8 +531,9 @@ let generate_rule_object_pp hashed_tree
       ; Pp.verbatimf "$evaluate(_%s, params, options)," rule_name_js ]
   in
   Pp.concat
-    [ to_js_str_pp rule_name_str
-    ; Pp.text ": {"
+    [ rule_property_jsdoc
+    ; to_js_str_pp rule_name_str
+    ; Pp.verbatim ": {"
     ; Pp.break ~nspaces:1 ~shift:2
     ; Pp.hovbox
         (Pp.concat
@@ -520,18 +561,20 @@ let generate_rule_object_pp hashed_tree
            ; Pp.newline
            ; Pp.verbatimf " * @type {Array<keyof %s>}" type_name
            ; Pp.newline
-           ; Pp.text " */"
+           ; Pp.verbatim " */"
            ; Pp.newline
-           ; Pp.text "params: "
+           ; Pp.verbatim "params: "
            ; params_list_doc
-           ; Pp.text ","
-           ; meta_properties ] )
+           ; Pp.verbatim ","
+           ; ( if has_meta_properties meta then
+                 Pp.concat [Pp.newline; meta_properties]
+               else Pp.nop ) ] )
     ; Pp.newline
-    ; Pp.text "}" ]
+    ; Pp.verbatim "}" ]
 
 let outputs_to_js_rules_pp hashed_tree outputs =
   Pp.concat_map outputs
-    ~sep:(Pp.concat [Pp.text ","; Pp.newline])
+    ~sep:(Pp.concat [Pp.verbatim ","; Pp.newline])
     ~f:(generate_rule_object_pp hashed_tree)
 
 let generate_header_pp runtime =
@@ -551,14 +594,14 @@ let generate_private_rules_pp rules_doc =
 let generate_exports_pp outputs_doc =
   Pp.box
     (Pp.concat
-       [ Pp.text "/** Exported outputs/inputs */"
+       [ Pp.verbatim "/** Exported outputs/inputs */"
        ; Pp.newline
        ; Pp.newline
        ; Pp.verbatim "const rules = {"
        ; Pp.break ~nspaces:1 ~shift:2
        ; Pp.hovbox outputs_doc
        ; Pp.space
-       ; Pp.text "}"
+       ; Pp.verbatim "}"
        ; Pp.newline
        ; Pp.newline
        ; Pp.verbatim "export default rules;" ] )

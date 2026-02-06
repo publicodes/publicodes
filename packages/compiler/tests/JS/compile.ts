@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import { $ } from 'bun'
-import { Value } from '../../src/evaluate'
 
 export async function compilePublicodesToJS(
 	yaml: string,
@@ -33,13 +32,13 @@ export async function compilePublicodesToJS(
 		throw error
 	}
 }
-
+type Value = number | string | Date | boolean | null
 type PublicodeExport = Record<
 	string,
 	{
-		evaluate: (c?: Record<string, Value | Date>) => Value | Date
-		evaluateParams: (c?: Record<string, Value | Date>) => {
-			value: Value | Date
+		evaluate: (c?: Record<string, Value>) => Value
+		evaluateParams: (c?: Record<string, Value>) => {
+			value: Value
 			missing: string[]
 			needed: string[]
 		}

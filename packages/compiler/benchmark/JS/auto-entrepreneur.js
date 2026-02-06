@@ -1,12 +1,4 @@
-import {
-	run,
-	bench,
-	summary,
-	do_not_optimize,
-	barplot,
-	boxplot,
-	lineplot,
-} from 'mitata'
+import { run, bench, summary, do_not_optimize } from 'mitata'
 
 import LegacyEngine from 'publicodes'
 
