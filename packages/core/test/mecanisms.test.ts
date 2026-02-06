@@ -5,7 +5,7 @@
 	teste idéalement tous ses comportements sans en faire intervenir d'autres.
 */
 
-import { describe, expect, it } from 'bun:test'
+import { describe, expect, it } from 'vitest'
 import { parse } from 'yaml'
 import Engine from '../src/index'
 import { Rule } from '../src/rule'
@@ -48,7 +48,7 @@ testSuites.forEach(([suiteName, suite]) => {
 							: exemples.length > 1 ? ` (${i + 1})`
 							: '')
 
-						 
+						// eslint-disable-next-line vitest/valid-title
 						it(testTitle, () => {
 							const runExample = () =>
 								engine.setSituation(situation ?? {}).evaluate(name)

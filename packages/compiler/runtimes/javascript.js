@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * @typedef {Date | number | string | null | undefined} Value
  * @typedef {number | null | undefined} PNumber

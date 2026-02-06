@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from 'bun:test'
+import { describe, it, expect, beforeAll } from 'vitest'
 import yaml from 'yaml'
 import Engine from '../src/index'
 import { engineFromYaml } from './utils'

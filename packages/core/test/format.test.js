@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'bun:test'
+import { describe, it, expect } from 'vitest'
 import { capitalise0, formatValue } from '../src/format'
 import { parseUnit } from '../src/units'
 

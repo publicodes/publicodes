@@ -1,5 +1,5 @@
 import { Situation } from 'publicodes'
-import { describe, it, expect } from 'bun:test'
+import { describe, it, expect } from 'vitest'
 import { RuleName } from '../../src'
 import {
 	migrateSituation,

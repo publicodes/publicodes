@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { describe, it, expect } from 'bun:test'
+import { describe, it, expect } from 'vitest'
 import { CLIExecutor, runInDir } from '../cli-utils'
 import { DEFAULT_BUILD_DIR } from '../../src'
 

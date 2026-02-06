@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'bun:test'
+import { describe, it, expect } from 'vitest'
 import Engine from '../src/index'
 import serializeEvaluation from '../src/serializeEvaluation'
 

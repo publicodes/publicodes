@@ -68,7 +68,7 @@ Ok arrondi :
   
   d :
   round to:
-  if (@est arrondi = false) || (is_undef @est arrondi)
+  if (is_undef @est arrondi) || ((@est arrondi = false) || (@est arrondi = null))
   then null
   else 0.1
   4.65 €

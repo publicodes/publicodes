@@ -1,5 +1,5 @@
 import Engine from 'publicodes'
-import { describe, expect, it, vi } from 'bun:test'
+import { describe, expect, it, vi } from 'vitest'
 import { parse } from 'yaml'
 import { evaluate } from '../evaluate.js'
 

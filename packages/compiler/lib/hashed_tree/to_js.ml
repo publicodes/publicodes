@@ -4,9 +4,9 @@ open Shared.Eval_tree
 
 let rulename_to_js_identifier (rule_name : Rule_name.t) : string =
   Rule_name.to_string rule_name
+  |> String.substr_replace_all ~pattern:"_" ~with_:"___"
   |> String.substr_replace_all ~pattern:" " ~with_:"_"
   (* It's impossible to have more than two consecutives spaces in a Publicodes rule name. *)
-  |> String.substr_replace_all ~pattern:"_" ~with_:"__"
   (* Valid in latest ES version but not in olders ones *)
   |> String.substr_replace_all ~pattern:"." ~with_:"·"
   |> String.substr_replace_all ~pattern:"'" ~with_:"ʹ"
@@ -56,8 +56,7 @@ let%test_unit "There should be no conflicts over JS identifiers" =
   [%test_eq: int] (List.length rulenames) (List.length rulename_js_ids)
 
 let rulename_to_ts_type_name (rule_name : Rule_name.t) : string =
-  let capitalized = String.capitalize (rulename_to_js_identifier rule_name) in
-  Printf.sprintf "%sParams" capitalized
+  Printf.sprintf "%sParams" (rulename_to_js_identifier rule_name)
 
 (* -------------------- JSDoc Type Generation -------------------- *)
 

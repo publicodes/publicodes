@@ -3,7 +3,7 @@ import chai from 'chai'
 import chaiHttp from 'chai-http'
 import Koa from 'koa'
 import Engine from 'publicodes'
-import { afterAll, beforeAll, describe, expect, it } from 'bun:test'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { parse } from 'yaml'
 import publicodesAPI from '../middleware/koa.js'
 

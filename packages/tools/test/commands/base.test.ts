@@ -1,5 +1,5 @@
 import { CLIExecutor, runInDir } from '../cli-utils'
-import { describe, it, expect } from 'bun:test'
+import { describe, it, expect } from 'vitest'
 
 describe('publicodes --help', () => {
 	it(

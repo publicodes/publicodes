@@ -1,5 +1,5 @@
 import Engine, { PublicodesError } from 'publicodes'
-import { describe, expect, test } from 'bun:test'
+import { describe, expect, test } from 'vitest'
 import { FormElement, getFormElement, FormElementOptions } from './formElement'
 
 function inputForRule(

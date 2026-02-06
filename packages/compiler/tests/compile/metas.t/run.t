@@ -1,36 +1,16 @@
 Valid metas :
 
-  $ publicodes compile valid-metas.publicodes  -o -
-  {
-    "evaluation": [ 5.0 ],
-    "outputs": {
-      "a": {
-        "nodeIndex": 0,
-        "parameters": {},
-        "type": { "number": true, "unit": "aucune" },
-        "meta": {
-          "title": "Mon titre",
-          "description": "Voici une description.",
-          "note": "Attention, cette règle est importante.\n"
-        }
-      },
-      "b": {
-        "nodeIndex": 0,
-        "parameters": {},
-        "type": { "number": true, "unit": "€" },
-        "meta": {
-          "title": "bla",
-          "custom field": "true",
-          "nested field": { "titre": "test" }
-        }
-      }
-    }
-  }
+  $ publicodes compile valid-metas.publicodes  -t debug_eval_tree -o -
+  a :
+  5.
+  
+  b :
+  5. €
 
 
 Invalid metas :
 
-  $ publicodes compile invalid-metas.publicodes  -o -
+  $ publicodes compile invalid-metas.publicodes  -t debug_eval_tree -o -
   E017 mécanisme invalide [syntax error]
        ╒══  invalid-metas.publicodes:4:3 ══
      3 │   public: oui

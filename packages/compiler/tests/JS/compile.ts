@@ -6,7 +6,7 @@ export async function compilePublicodesToJS(
 ): Promise<PublicodeExport> {
 	try {
 		const { stdout, stderr } =
-			await $`bunx publicodes2 compile -i --default-to-public -o -  < ${Buffer.from(yaml)}`.quiet()
+			await $`yarn run publicodes2 compile -i --default-to-public -o -  < ${Buffer.from(yaml)}`.quiet()
 
 		if (stderr.toString()) {
 			console.warn(stderr.toString())
@@ -14,7 +14,7 @@ export async function compilePublicodesToJS(
 		// console.log(stdout.toString())
 		return eval(
 			stdout.toString().replace('export default ', ''),
-		) as PublicodeExport  
+		) as PublicodeExport
 	} catch (error) {
 		if (error instanceof Error && 'exitCode' in error) {
 			// Shell error with exit code
