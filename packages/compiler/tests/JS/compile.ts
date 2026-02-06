@@ -14,7 +14,7 @@ export async function compilePublicodesToJS(
 		// console.log(stdout.toString())
 		return eval(
 			stdout.toString().replace('export default ', ''),
-		) as PublicodeExport // eslint-disable-line no-eval
+		) as PublicodeExport  
 	} catch (error) {
 		if (error instanceof Error && 'exitCode' in error) {
 			// Shell error with exit code
@@ -32,13 +32,13 @@ export async function compilePublicodesToJS(
 		throw error
 	}
 }
-type Value = number | string | Date | boolean | null
+type Value = number | string | Date | boolean | null | undefined
 type PublicodeExport = Record<
 	string,
 	{
 		evaluate: (c?: Record<string, Value>) => Value
 		evaluateParams: (c?: Record<string, Value>) => {
-			value: Value
+			value: Value | undefined
 			missing: string[]
 			needed: string[]
 		}

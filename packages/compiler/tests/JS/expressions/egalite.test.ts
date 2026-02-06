@@ -15,10 +15,12 @@ a:
 	test.each([
 		['égalité', { a: 10 }, true],
 		['différence', { a: 20 }, false],
-		['non définie', {}, undefined],
-	])('%s', (_, context, expected, done) => {
+	] as const)('%s', (_, context, expected) => {
 		expect(result.evaluate(context)).toBe(expected)
-		done()
+	})
+
+	test('non définie', () => {
+		expect(result.evaluate({})).toBeUndefined()
 	})
 
 	// @TODO : doit-on garder ce comportement de la V1 ?

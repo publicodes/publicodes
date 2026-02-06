@@ -26,6 +26,6 @@ x: c
 	})
 
 	it('aucun applicable', () => {
-		expect(x.evaluate({ a: false, b: false })).toBe(undefined)
+		expect(x.evaluate({ a: false, b: false })).toBeUndefined()
 	})
 })

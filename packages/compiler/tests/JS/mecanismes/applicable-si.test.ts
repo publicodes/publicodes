@@ -28,12 +28,11 @@ condition:
 			{},
 			{ value: null, missingParameters: ['condition'] },
 		],
-	])('%s', (_, context, expected, done) => {
+	])('%s', (_, context, expected) => {
 		expect(engine.test.evaluate(context)).toBe(expected.value)
 		expect(engine.test.evaluateParams(context).missing).toEqual(
 			expected.missingParameters,
 		)
-		done()
 	})
 
 	test('condition non applicable', async () => {

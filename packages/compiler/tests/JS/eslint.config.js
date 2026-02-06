@@ -1,4 +1,4 @@
-import baseConfig from '../../eslint.config.js'
+import baseConfig from '../../../../eslint.config.js'
 import vitest from '@vitest/eslint-plugin'
 import tseslint from 'typescript-eslint'
 

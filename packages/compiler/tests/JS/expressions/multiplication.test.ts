@@ -43,11 +43,11 @@ a:
 b:
 produit: a * b
 `
-		;[{ a: 0 }, { b: 0 }].forEach((s) => {
+		;([{ a: 0 }, { b: 0 }] as const).forEach((s) => {
 			expect(produit.evaluate(s)).toBe(0)
 			expect(produit.evaluateParams(s).missing).toEqual([])
 		})
-		;[{ a: null }, { b: null }].forEach((s) => {
+		;([{ a: null }, { b: null }] as const).forEach((s) => {
 			expect(produit.evaluate(s)).toBe(null)
 			expect(produit.evaluateParams(s).missing).toEqual([])
 		})

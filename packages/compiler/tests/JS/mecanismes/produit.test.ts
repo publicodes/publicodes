@@ -31,7 +31,7 @@ a:
     - 10
 b:
 `
-		expect(a.evaluate()).toBe(undefined)
+		expect(a.evaluate()).toBeUndefined()
 	})
 
 	test('valeur non applicable', async () => {

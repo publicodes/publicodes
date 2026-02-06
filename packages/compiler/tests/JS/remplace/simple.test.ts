@@ -40,6 +40,6 @@ a:
 b: 1
 x: b
 `
-		expect(x.evaluate()).toBe(undefined)
+		expect(x.evaluate()).toBeUndefined()
 	})
 })

@@ -48,7 +48,7 @@ testSuites.forEach(([suiteName, suite]) => {
 							: exemples.length > 1 ? ` (${i + 1})`
 							: '')
 
-						// eslint-disable-next-line vitest/valid-title
+						 
 						it(testTitle, () => {
 							const runExample = () =>
 								engine.setSituation(situation ?? {}).evaluate(name)

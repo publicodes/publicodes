@@ -31,7 +31,7 @@ a:
     - b
 b:
 `
-		expect(a.evaluate()).toBe(undefined)
+		expect(a.evaluate()).toBeUndefined()
 		expect(b.unit).toBe('€')
 	})
 
