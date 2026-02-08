@@ -139,6 +139,6 @@ let apply_replacements ~(replacements : t) ~(mk : 'a mk_value_fn)
   in
   let updated_tree =
     Hashtbl.mapi tree ~f:(fun ~key:rule ~data:value ->
-        Eval_tree.map value ~f:(apply_to_node ~rule) )
+        Eval_tree.map_value value ~f:(apply_to_node ~rule) )
   in
   return ~logs:!logs updated_tree

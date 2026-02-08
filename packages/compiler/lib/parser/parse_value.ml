@@ -9,6 +9,12 @@ open Expr
 let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
     Ast.value Output.t =
   match yaml with
+  | `Scalar ({value; style= `Single_quoted}, value_pos)
+  | `Scalar ({value; style= `Double_quoted}, value_pos) ->
+      return
+        { value=
+            Pos.mk ~pos (Expr (Pos.mk ~pos:value_pos (Const (String value))))
+        ; chainable_mechanisms= [] }
   | `Scalar ({value= ""; _}, value_pos) ->
       let logs =
         if error_if_undefined then
@@ -18,18 +24,14 @@ let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
         else []
       in
       return ~logs {value= Pos.mk ~pos Undefined; chainable_mechanisms= []}
-  | `Scalar ({value; style= `Single_quoted}, value_pos)
-  | `Scalar ({value; style= `Double_quoted}, value_pos) ->
-      return
-        { value=
-            Pos.mk ~pos (Expr (Pos.mk ~pos:value_pos (Const (String value))))
-        ; chainable_mechanisms= [] }
   | `Scalar ({value; _}, pos) ->
       let* expr = parse_expression ~pos value in
       return {value= Pos.mk ~pos (Expr expr); chainable_mechanisms= []}
   | `O mapping ->
       let* mapping = remove_double mapping in
       let* value =
+        (* NOTE: pourquoi avoir la fonction parse comme arguement si c'est
+				 toujours la même ? *)
         Parse_mechanisms.parse_value_mechanism ~pos ~parse:parse_value mapping
       in
       let* chainable_mechanisms =

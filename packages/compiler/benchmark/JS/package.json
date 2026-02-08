@@ -1,0 +1,28 @@
+{
+	"name": "@publicodes/benchmark",
+	"private": true,
+	"version": "2.0.0-alpha.0",
+	"description": "JS benchmark for publicodes evaluation",
+	"type": "module",
+	"license": "MIT",
+	"devDependencies": {
+		"@publicodes/cli": "workspace:^",
+		"@publicodes/tools": "workspace:^",
+		"typescript": "^5.9.2"
+	},
+	"scripts": {
+		"test:type": "tsc --noEmit",
+		"compile:auto-entrepreneur": "cd ./examples/auto-entrepreneur; publicodes compile '*.publicodes'; publicodes2 compile *.publicodes",
+		"compile:simple-TJM": "cd ./examples/simple-TJM; publicodes compile '*.publicodes'; publicodes2 compile *.publicodes",
+		"compile": "run compile:auto-entrepreneur && run compile:simple-TJM",
+		"benchmark:simple-TJM": "bun ./simple-TJM.js",
+		"benchmark:auto-entrepreneur": "bun ./auto-entrepreneur.js",
+		"benchmark": "run benchmark:simple-TJM && run benchmark:auto-entrepreneur",
+		"start": "run compile && run benchmark"
+	},
+	"dependencies": {
+		"bun": "^1.3.8",
+		"mitata": "^1.0.34",
+		"publicodes": "workspace:^"
+	}
+}

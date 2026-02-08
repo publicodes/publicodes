@@ -36,9 +36,6 @@
 			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"],
 			"outputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"]
 		},
-		"benchmark": {
-			"dependsOn": ["build"]
-		},
 		"lint": {
 			"dependsOn": ["^build", "codegen"],
 			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx}"]

@@ -1,5 +1,7 @@
-include Utils.Output
+open Base
 module Typ = Typ
+open Shared
+include Utils.Output
 include Tree
 
 let from_resolved_ast = From_ast.from_ast
@@ -37,6 +39,6 @@ let type_check tree =
     value |> Simplify_unit.simplify_value |> Mecha_rounding.normalize_value
   in
   let normalized_tree =
-    Base.Hashtbl.map ~f:(Shared.Eval_tree.map ~f:post_transform) tree
+    Hashtbl.map ~f:(Eval_tree.map_value ~f:post_transform) tree
   in
   return normalized_tree
