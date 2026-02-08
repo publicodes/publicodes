@@ -10,13 +10,12 @@ let input_stdin =
   let doc = "Use stdin as input to compile." in
   Arg.(value & flag & info ["i"; "input"] ~doc)
 
-let default_output_file = "model.publicodes.json"
-
 let output_file =
   let doc = "$(docv) is the file to write to. Use $(b,-) for $(b,stdout)." in
   Arg.(
     value
-    & opt string default_output_file
+    (* With an empty string, the extension is match according the output type. *)
+    & opt string ""
     & info ["o"; "output-file"] ~doc ~docv:"FILE" )
 
 let watch =
@@ -27,7 +26,7 @@ let output_type =
   let doc = "$(docv) is the output type." in
   Arg.(
     value
-    & opt (enum [("json", `Json); ("debug_eval_tree", `Debug_eval_tree)]) `Json
+    & opt (enum [("js", `Js); ("debug_eval_tree", `Debug_eval_tree)]) `Js
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
 
 let default_to_public =
@@ -51,6 +50,17 @@ let cmd =
   and+ default_to_public = default_to_public
   and+ output_type = output_type in
   let input_files = if input_stdin then ["-"] else input_files in
+  let output_file =
+    if String.equal output_file "" then
+      "model.publicodes"
+      ^
+      match output_type with
+      | `Debug_eval_tree ->
+          ".eval_tree.debug"
+      | `Js ->
+          ".js"
+    else output_file
+  in
   if Base.List.length input_files = 0 then (
     Stdlib.Format.eprintf
       "No input publicodes file provided.\n\

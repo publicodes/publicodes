@@ -63,4 +63,4 @@ jobs:
 
       - name: Make artifacts executable
         run: chmod +x ./packages/cli/bin/compiler/*
-      - run: yarn test
+      - run: yarn run test

@@ -33,6 +33,8 @@ export default tseslint.config(
 			'.typedoc/',
 			'**/rolldown.config.js',
 			'packages/*/bin/',
+			'packages/compiler/**/runtimes/javascript.js',
+			'packages/compiler/benchmark/',
 		],
 	},
 )

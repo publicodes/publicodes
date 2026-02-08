@@ -5,7 +5,7 @@ import { engineFromYaml, parseYaml } from './utils'
 
 describe('setSituation', () => {
 	it('should allow to evaluate without situation', () => {
-		expect(engineFromYaml('a: ').evaluate('a').nodeValue).toBe(undefined)
+		expect(engineFromYaml('a: ').evaluate('a').nodeValue).toBeUndefined()
 	})
 
 	it('should allow to evaluate with situation set', () => {

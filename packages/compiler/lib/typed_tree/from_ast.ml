@@ -90,6 +90,7 @@ and unfold_chainable_mechanism ~init mechanisms =
          | Shared_ast.Round round ->
              transform_round ~pos round acc )
 
+(* TODO: a lot of factorisation possible here! *)
 and transform_sum ~pos nodes =
   let typ = any_number () ~pos in
   match nodes with
@@ -119,9 +120,8 @@ and transform_any_of ~pos nodes =
   match nodes with
   | [] ->
       mk ~pos ~typ (Const Null)
-  | n :: nodes ->
-      let value = transform_value n in
-      let init = {value with meta= typ} in
+  | nodes ->
+      let init = mk ~pos ~typ (Const (Bool false)) in
       List.fold_right nodes ~init ~f:(fun node acc ->
           mk ~pos
             (Binary_op (Pos.mk ~pos Shared_ast.Or, transform_value node, acc)) )
@@ -131,9 +131,8 @@ and transform_all_of ~pos nodes =
   match nodes with
   | [] ->
       mk ~pos ~typ (Const Null)
-  | n :: nodes ->
-      let value = transform_value n in
-      let init = {value with meta= typ} in
+  | nodes ->
+      let init = mk ~pos ~typ (Const (Bool true)) in
       List.fold_right nodes ~init ~f:(fun node acc ->
           mk ~pos
             (Binary_op (Pos.mk ~pos Shared_ast.And, transform_value node, acc)) )
@@ -170,12 +169,20 @@ and transform_applicable_if ~pos condition value =
        ( p
            (Binary_op
               ( Pos.mk ~pos Shared_ast.Or
+              , p (Unary_op (Pos.mk ~pos Is_undef, condition))
               , p
                   (Binary_op
-                     ( Pos.mk ~pos Shared_ast.Eq
-                     , condition
-                     , p (Const (Bool false)) ) )
-              , p (Unary_op (Pos.mk ~pos Is_undef, condition)) ) )
+                     ( Pos.mk ~pos Shared_ast.Or
+                     , p
+                         (Binary_op
+                            ( Pos.mk ~pos Shared_ast.Eq
+                            , condition
+                            , p (Const (Bool false)) ) )
+                     , p
+                         (Binary_op
+                            ( Pos.mk ~pos Shared_ast.Eq
+                            , condition
+                            , p (Const Null) ) ) ) ) ) )
        , p (Const Null)
        , value ) )
 
@@ -187,12 +194,20 @@ and transform_not_applicable_if ~pos condition value =
        ( p
            (Binary_op
               ( Pos.mk ~pos Shared_ast.Or
+              , p (Unary_op (Pos.mk ~pos Is_undef, condition))
               , p
                   (Binary_op
-                     ( Pos.mk ~pos Shared_ast.Eq
-                     , condition
-                     , p (Const (Bool false)) ) )
-              , p (Unary_op (Pos.mk ~pos Is_undef, condition)) ) )
+                     ( Pos.mk ~pos Shared_ast.Or
+                     , p
+                         (Binary_op
+                            ( Pos.mk ~pos Shared_ast.Eq
+                            , condition
+                            , p (Const (Bool false)) ) )
+                     , p
+                         (Binary_op
+                            ( Pos.mk ~pos Shared_ast.Eq
+                            , condition
+                            , p (Const Null) ) ) ) ) ) )
        , value
        , p (Const Null) ) )
 
@@ -208,7 +223,7 @@ and transform_floor ~pos floor value =
               , p
                   (Binary_op
                      (Pos.mk ~pos Shared_ast.NotEq, floor, p (Const Null)) )
-              , p (Binary_op (Pos.mk ~pos Shared_ast.Gt, value, floor)) ) )
+              , p (Binary_op (Pos.mk ~pos Shared_ast.Lt, value, floor)) ) )
        , floor
        , value ) )
 
@@ -224,7 +239,7 @@ and transform_ceiling ~pos ceil value =
               , p
                   (Binary_op (Pos.mk ~pos Shared_ast.NotEq, ceil, p (Const Null))
                   )
-              , p (Binary_op (Pos.mk ~pos Shared_ast.Lt, value, ceil)) ) )
+              , p (Binary_op (Pos.mk ~pos Shared_ast.Gt, value, ceil)) ) )
        , ceil
        , value ) )
 

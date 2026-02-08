@@ -5,7 +5,9 @@
 	"workspaces": [
 		"website",
 		"packages/*",
-		"examples/*"
+		"examples/*",
+		"packages/compiler/tests/JS",
+		"packages/compiler/benchmark/JS"
 	],
 	"scripts": {
 		"test": "turbo run test",

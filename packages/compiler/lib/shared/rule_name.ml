@@ -15,6 +15,7 @@ module Rule_name = struct
   include Comparable.Make (T)
 end
 
+(* NOTE: seems weird to have a module the same as the module name *)
 include Rule_name
 
 module Set = struct
@@ -86,3 +87,5 @@ let resolve ~rule_names ~current (name : string list) =
       Printf.printf "Debug: list length = %i\n" (List.length name) ; *)
       if String.equal (to_string current) (to_string name) then Some current
       else None
+
+let make_reserved uid = [Printf.sprintf "__%s" uid]

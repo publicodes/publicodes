@@ -9,4 +9,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 packages/react-ui/CHANGELOG.md
 model.publicodes.json
+model.publicodes.json
+model.publicodes.js
 publicodes-build

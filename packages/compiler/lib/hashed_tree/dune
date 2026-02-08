@@ -5,9 +5,17 @@
  (modules :standard)
  (preprocess
   (pps
+   ppx_assert
+   ppx_compare
+   ppx_deriving.show
    ppx_inline_test
    ppx_sexp_conv
-   ppx_deriving.show
-   ppx_compare
-   sedlex.ppx
-   ppx_assert)))
+   sedlex.ppx)))
+
+(rule
+ (with-stdout-to
+  js_runtime.ml
+  (progn
+   (echo "let runtime = {|")
+   (cat ../../runtimes/javascript.js)
+   (echo "|}"))))
