@@ -36,9 +36,9 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@github.com/publicodes/tools.git"
+		"url": "git+ssh://git@github.com/publicodes/publicodes.git"
 	},
-	"bugs": "https://github.com/publicodes/tools/issues",
+	"bugs": "https://github.com/publicodes/publicodes/issues",
 	"keywords": [
 		"compilation",
 		"optimization",
