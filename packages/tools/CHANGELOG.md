@@ -1,5 +1,11 @@
 # @publicodes/tools
 
+## 1.8.2
+
+### Patch Changes
+
+- [#798](https://github.com/publicodes/publicodes/pull/798) [`6be07f0`](https://github.com/publicodes/publicodes/commit/6be07f0ed71ebea9603749c7755196d2ca5d27ec) Thanks [@EmileRolley](https://github.com/EmileRolley)! - Add `publicodes` in `peerDependencies` and upgrade `glob`
+
 ## 1.8.1
 
 ### Patch Changes
