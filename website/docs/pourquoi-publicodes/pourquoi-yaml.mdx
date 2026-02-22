@@ -1,0 +1,122 @@
+---
+sidebar_position: 3.5
+title: Pourquoi écrire le code source en yaml ?
+---
+
+Prenons un exemple concret : l'implémentation d'une version simplifiée de la taxe sur les salaires.
+
+```yaml
+nom: barème annuel
+formule:
+  barème:
+    assiette: assiette annuelle
+    tranches:
+      - en-dessous de: 7721
+        taux: 4.25%
+      - de: 7721
+        à: 15417
+        taux: 8.5%
+      - de:  15417
+        à: 152279
+        taux: 13.6%
+      - au-dessus de: 152279
+        taux: 0%
+
+
+nom: montant annuel
+formule:
+  allègement:
+    assiette: barème annuel
+    franchise: 1200
+    décote:
+      plafond: 2040
+      taux: 75%
+    abattement: 20507
+
+```
+
+### Un code source déclaratif réutilisable
+
+Le principe du langage YAML est simple : le langage nous met à disposition deux types, les listes et les objets. On est libre d'écrire ce que l'on veut sémantiquement, mais en n'utilisant que ces deux constructions universelles.
+
+Cette contrainte a l'avantage de rendre le code facilement interprétable, que ce
+soit par Publicodes, ou par n'importe quel autre programme : par exemple, pour
+afficher le barème ci-dessus dans une page Web, il suffit de transformer le YAML
+en object, puis d'itérer sur la valeur de l'attribut `tranches` :
+
+```js
+const render = (json) => (
+	<div>
+		<h3>{json.nom}</h3>
+		<ol>
+			{json.formule.barème.tranches.map((tranche) => (
+				<li>{tranche.taux}%</li>
+			))}
+		</ol>
+	</div>
+)
+```
+
+Le code YAML est donc à la fois facile à écrire, relativement expressif, et lisible à la fois par un programme et par un humain, grace à son style déclaratif. On décrit l'algorithme, plutôt que de l'implémenter dans ses détails avec l'énorme liberté d'un lanage de programmation complet.
+
+La contrainte en échange, c'est qu'on ne peut pas à la volée définir de
+nouvelles fonctions comme dans un langage généraliste : `barème` est ce qu'on
+appelle un mécanisme publicodes, disponible parmi une liste finie de mécanismes.
+
+Pourtant, c'est bien volontaire. Chaque règle doit utiliser un jeu limité de
+mécanismes, pour garantir la lisibilité et la documentation des algorithmes.
+
+Il faut écrire, nommer, spécifier, implémenter et documenter ces fonctions, que l'on appelle des mécanismes.
+
+Ci-dessous, un équivalent en Javascript.
+
+```js
+import { calcBarème, calcAllègement } from 'Engine/mecanisms'
+
+export default function taxeSalaires(assiette) {
+	let taxe = calcBarème(assiette, [
+		{
+			to: 7721,
+			rate: 0.0425,
+		},
+		{
+			from: 7721,
+			to: 15417,
+			rate: 0.085,
+		},
+		{
+			from: 15417,
+			to: 152279,
+			rate: 0.136,
+		},
+		{
+			from: 152279,
+			rate: 0,
+		},
+	])
+
+	let taxeAllegée = calcAllègement(
+		taxe,
+		1200,
+		{ plafond: 2040, taux: 0.75 },
+		20507,
+	)
+
+	return taxeAllegée
+}
+```
+
+On voit de suite apparaître les éléments de syntaxe du langage lui-même, qui sont incontournables mais qui sont des barrières à la lisibilité du domaine métier : import, from, function, `{`, `(` etc.
+
+Le code n'est plus une représentation de la loi, mais simplement une implémentation particulière dans le seul but de faire des calculs. Il n'est pas du tout aisé de l'interpréter par exemple dans un environnement Python pour en faire quelque chose d'autre : il faut pour cela le réécrire pour extraire, spécifier, documenter les "paramètres" importants du calcul. C'est ce qu'offre Publicodes.
+
+### Moins de liberté d'écriture
+
+Il est également fort probable que la liberté de pouvoir écrire du code ad-hoc (écrit pour l'occasion) soit fréquemment exploitée par les développeurs.
+
+L'écriture est plus rapide et facile... mais la relecture peut devenir très pénible, et des erreurs s'introduisent facilement en l'absence de tests exhaustifs : concernant les barèmes, l'erreur classique concerne les seuils : supérieur ou égal, oubli du comportement au-delà des bornes, etc.
+
+D'autre part, le jeu limité de mécanisme à disposition rend l'écriture et la
+lecture plus simple pour les contributeurs non-développeurs. Le jeu de mécanisme
+à appréhender est plus limité que les possibilités d'un langage de programmation
+complet.
