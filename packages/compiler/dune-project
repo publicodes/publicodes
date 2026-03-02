@@ -39,8 +39,8 @@
     unionFind
     yaml
     yojson
-	  (ocaml-lsp-server :with-dev)
-	  (ocamlformat :with-dev)
+	  (ocaml-lsp-server :with-dev-setup)
+	  (ocamlformat :with-dev-setup)
 	  (ppx_inline_test :with-test)
 	  (ppx_assert :with-test)
 	  (ppx_compare :with-test))
