@@ -1,13 +1,13 @@
 open Stdlib.Format
 open Cmdliner
 
-let watch_compile ~input_files:_ ~output_file:_ ~output_type:_
-    ~default_to_public:_ =
+let watch_compile _ =
   printf "\027[1;31mWatch mode is only supported on linux for now\027[0m" ;
   Cmd.Exit.cli_error
 [@@config not (target_os = "linux")]
 
-let watch_compile ~input_files ~output_file ~output_type ~default_to_public =
+let watch_compile
+    ({output_file; input_files; output_type; default_to_public} : Compile.t) =
   let open Stdlib in
   (* Filter out stdin if present in input files for watching *)
   let watchable_files =
@@ -19,7 +19,8 @@ let watch_compile ~input_files ~output_file ~output_type ~default_to_public =
     (* ANSI escape code to clear screen and move cursor to top *)
     print_flush () ;
     let code =
-      Compile.compile ~input_files ~output_file ~output_type ~default_to_public
+      Compile.compile_files ~input_files ~output_file ~output_type
+        ~default_to_public
     in
     print_flush () ;
     (* I want to remove all text from stdinput here, to clear the terminal *)
