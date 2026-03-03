@@ -2,6 +2,8 @@ open Base
 open Utils
 open Utils.Output
 
+type target_type = Js | Debug_eval_tree
+
 let to_unresolved_ast ~input_files ~default_to_public =
   let+ unresolved_programs =
     List.map input_files ~f:(fun filename ->
@@ -32,9 +34,9 @@ let compile ~input_files ~output_type ~default_to_public =
   let* eval_tree = to_eval_tree ~ast in
   let+ result_string =
     match output_type with
-    | `Debug_eval_tree ->
+    | Debug_eval_tree ->
         return (Shared.Eval_tree_printer.to_string_eval_tree eval_tree)
-    | `Js ->
+    | Js ->
         let* outputs =
           Dependency_graph.cycle_check eval_tree
           >>= Dependency_graph.extract_outputs ~ast ~eval_tree
