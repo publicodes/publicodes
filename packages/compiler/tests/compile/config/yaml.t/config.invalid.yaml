@@ -1,0 +1,7 @@
+targets:
+  - output: test.js
+    inputs:
+      - test.publicodes
+      - false
+    type: js
+    default_to_public: false
