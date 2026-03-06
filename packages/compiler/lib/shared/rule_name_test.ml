@@ -1,17 +1,20 @@
-(* FIXME: not working *)
-
 open Base
-open Rule_name
 
-let mk = create_exn
+let mk = Rule_name.create_exn
 
 let%test_unit "parent of dotted name" =
   (* Test single element *)
-  [%test_eq: t option] (parent @@ mk ["a"]) (None : t option) ;
+  [%test_eq: Rule_name.t option]
+    (Rule_name.parent @@ mk ["a"])
+    (None : Rule_name.t option) ;
   (* Test two elements *)
-  [%test_eq: t option] (parent @@ mk ["a"; "b"]) (Some (mk ["a"])) ;
+  [%test_eq: Rule_name.t option]
+    (Rule_name.parent @@ mk ["a"; "b"])
+    (Some (mk ["a"])) ;
   (* Test three elements *)
-  [%test_eq: t option] (parent @@ mk ["a"; "b"; "c"]) (Some (mk ["a"; "b"]))
+  [%test_eq: Rule_name.t option]
+    (Rule_name.parent @@ mk ["a"; "b"; "c"])
+    (Some (mk ["a"; "b"]))
 
 let%test_unit "do not disambiguate complete reference" =
   let rule_names =
@@ -19,23 +22,29 @@ let%test_unit "do not disambiguate complete reference" =
   in
   let current = mk ["rule 1"] in
   let ref = ["rule 2"] in
-  [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ref)) ;
+  [%test_eq: Rule_name.t option]
+    (Rule_name.resolve ~rule_names ~current ref)
+    (Some (mk ref)) ;
   let rule_names = Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "b"]] in
   let current = mk ["a"] in
   let ref = ["a"; "b"] in
-  [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ref))
+  [%test_eq: Rule_name.t option]
+    (Rule_name.resolve ~rule_names ~current ref)
+    (Some (mk ref))
 
 let%test_unit "disambiguate child rule" =
   let rule_names = Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "b"]] in
   let current = mk ["a"] in
   let ref = ["b"] in
-  [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ["a"; "b"])) ;
+  [%test_eq: Rule_name.t option]
+    (Rule_name.resolve ~rule_names ~current ref)
+    (Some (mk ["a"; "b"])) ;
   let rule_names =
     Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "b"; "c"]]
   in
   let current = mk ["a"] in
-  [%test_eq: t option]
-    (resolve ~rule_names ~current ["b"; "c"])
+  [%test_eq: Rule_name.t option]
+    (Rule_name.resolve ~rule_names ~current ["b"; "c"])
     (Some (mk ["a"; "b"; "c"]))
 
 let%test_unit "disambiguate parent rule" =
@@ -44,7 +53,9 @@ let%test_unit "disambiguate parent rule" =
   in
   let current = mk ["a"; "b"; "c"] in
   let ref = ["b"] in
-  [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ["a"; "b"]))
+  [%test_eq: Rule_name.t option]
+    (Rule_name.resolve ~rule_names ~current ref)
+    (Some (mk ["a"; "b"]))
 
 let%test_unit "disambiguate child rule first" =
   let rule_names =
@@ -52,21 +63,25 @@ let%test_unit "disambiguate child rule first" =
   in
   let current = mk ["a"; "a"] in
   let ref = ["a"] in
-  [%test_eq: t option]
-    (resolve ~rule_names ~current ref)
+  [%test_eq: Rule_name.t option]
+    (Rule_name.resolve ~rule_names ~current ref)
     (Some (mk ["a"; "a"; "a"]))
 
 let%test_unit "disambiguate current rule last" =
   let rule_names = Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "a"]] in
   let current = mk ["a"; "a"] in
   let ref = ["a"] in
-  [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ["a"]))
+  [%test_eq: Rule_name.t option]
+    (Rule_name.resolve ~rule_names ~current ref)
+    (Some (mk ["a"]))
 
 let%test_unit "disambiguate current rule last" =
   let rule_names = Set.of_list (module Rule_name) [mk ["a"]; mk ["a"; "a"]] in
   let current = mk ["a"; "a"] in
   let ref = ["a"] in
-  [%test_eq: t option] (resolve ~rule_names ~current ref) (Some (mk ["a"]))
+  [%test_eq: Rule_name.t option]
+    (Rule_name.resolve ~rule_names ~current ref)
+    (Some (mk ["a"]))
 
 let%test_unit "disambiguate reference with shared parts in complex rules" =
   let current =
@@ -92,4 +107,6 @@ let%test_unit "disambiguate reference with shared parts in complex rules" =
     ; "vente restauration hébergement"
     ; "taux" ]
   in
-  [%test_eq: t option] (resolve ~rule_names ~current ref) (Some resolved_rule)
+  [%test_eq: Rule_name.t option]
+    (Rule_name.resolve ~rule_names ~current ref)
+    (Some resolved_rule)

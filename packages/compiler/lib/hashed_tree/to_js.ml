@@ -48,6 +48,7 @@ let%test_unit "There should be no conflicts over JS identifiers" =
     ; ["a_euro_"]
     ; ["a«b»c"]
     ; ["a__deg__"] ]
+    |> List.map ~f:Rule_name.create_exn
   in
   let rulename_js_ids =
     List.map rulenames ~f:rulename_to_js_identifier
