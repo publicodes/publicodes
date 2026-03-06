@@ -29,6 +29,10 @@ let output_type =
     & opt (enum [("js", `Js); ("debug_eval_tree", `Debug_eval_tree)]) `Js
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
 
+let config_file =
+  let doc = "$(docv) is the config file." in
+  Arg.(value & opt string "" & info ["c"; "config-file"] ~doc ~docv:"FILE")
+
 let default_to_public =
   let doc =
     "Compile every rule as `public`, which means that they are all exported."
@@ -48,7 +52,8 @@ let cmd =
   and+ input_stdin = input_stdin
   and+ watch_mode = watch
   and+ default_to_public = default_to_public
-  and+ output_type = output_type in
+  and+ output_type = output_type
+  and+ config_file = config_file in
   let input_files = if input_stdin then ["-"] else input_files in
   let output_file =
     if String.equal output_file "" then
@@ -61,9 +66,16 @@ let cmd =
           ".js"
     else output_file
   in
-  if Base.List.length input_files = 0 then (
+  if String.length config_file > 0 then (
+    match Config.parse_compile config_file with
+    | Ok code ->
+        code
+    | Error (`Msg msg) ->
+        Stdlib.Format.eprintf "Error: %s\n%!" msg ;
+        Cmd.Exit.cli_error )
+  else if Base.List.length input_files = 0 then (
     Stdlib.Format.eprintf
-      "No input publicodes file provided.\n\
+      "No input publicodes nor config file provided.\n\
        Try `publicodes compile --help` for more information.\n\
        %!" ;
     Cmd.Exit.cli_error )

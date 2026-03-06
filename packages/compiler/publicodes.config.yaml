@@ -1,0 +1,6 @@
+targets:
+  - output: test.js.local
+    inputs:
+      - test.publicodes.local
+    type: js
+    default_to_public: false
