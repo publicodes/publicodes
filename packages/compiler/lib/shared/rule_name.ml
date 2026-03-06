@@ -1,7 +1,7 @@
 open Base
 
-module Rule_name = struct
-  module T = struct
+module T = struct
+  module T_ = struct
     type t = string list [@@deriving equal, compare, sexp]
 
     let show = String.concat ~sep:" . "
@@ -11,21 +11,15 @@ module Rule_name = struct
     let hash = Base.Hashtbl.hash
   end
 
-  include T
-  include Comparable.Make (T)
+  include T_
+  include Comparable.Make (T_)
 end
 
-(* NOTE: seems weird to have a module the same as the module name *)
-include Rule_name
-
-module Set = struct
-  module M = Set.M (Rule_name)
-  include M
-end
+include T
+module Set = Set.M (T)
 
 module Hashtbl = struct
-  module M = Hashtbl.M (Rule_name)
-  include M
+  include Hashtbl.M (T)
 
   let pp pp_val ppf tbl =
     Stdlib.Format.fprintf ppf "@[<hv>@[<hv 2>{" ;
@@ -39,23 +33,19 @@ module Hashtbl = struct
     Stdlib.Format.fprintf ppf "@]@ }@]"
 end
 
-let create_exn (ref : string list) : t =
+let create_exn ref =
   match ref with
   | [] ->
       raise (Invalid_argument "Rule name cannot be empty")
   | _ :: _ ->
       ref
 
-(* Get the immediate parent of a dotted name *)
 let parent = function
-  | [] ->
-      None
-  | [_] ->
+  | [] | [_] ->
       None
   | rule_name ->
       Some (List.sub ~pos:0 ~len:(List.length rule_name - 1) rule_name)
 
-(* Get all the parent of a dotted name *)
 let parents rule_name =
   List.fold
     ~f:(fun (acc, parents) rule ->
@@ -66,7 +56,7 @@ let parents rule_name =
 
 let to_string rule_name = String.concat ~sep:" . " rule_name
 
-let resolve ~rule_names ~current (name : string list) =
+let resolve ~rule_names ~current name =
   let parent_paths = parents current @ [[]] in
   let matched_rule =
     List.find_map parent_paths ~f:(fun parent ->
@@ -81,10 +71,6 @@ let resolve ~rule_names ~current (name : string list) =
       Some x
   (* If no matching, we check if the current rule is a match *)
   | None ->
-      (* Debug: *)
-      (* Printf.printf "Debug: current rule = %s\n" (to_string current) ;
-      Printf.printf "Debug: name = %s\n" (to_string name) ;
-      Printf.printf "Debug: list length = %i\n" (List.length name) ; *)
       if String.equal (to_string current) (to_string name) then Some current
       else None
 
