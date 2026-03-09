@@ -1,6 +1,7 @@
 (library
  (inline_tests)
  (name expr)
+ (public_name publicodes.parser.expr)
  (libraries base utils sedlex shared)
  (modules :standard)
  (preprocess

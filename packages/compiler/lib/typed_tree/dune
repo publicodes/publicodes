@@ -1,6 +1,7 @@
 (library
  (inline_tests)
  (name typed_tree)
+ (public_name publicodes.typed_tree)
  (libraries base yojson parser unionFind ocamlgraph)
  (modules :standard)
  (preprocess
