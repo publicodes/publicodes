@@ -1,6 +1,6 @@
 Wrongly formatted variations :
 
-  $ publicodes compile syntax_error.publicodes -t debug_eval_tree -o - -
+  $ publicodes compile syntax_error.publicodes -t debug_eval_tree -o -
   E017 mécanisme invalide [syntax error]
        ╒══  syntax_error.publicodes:5:7 ══
      4 │       alors: 200
@@ -34,9 +34,4 @@ Wrongly formatted variations :
        │   ˘˘˘˘˘˘˘˘˘˘˘
    Hint: Il doit y avoir au moins une variation en plus de
          la clause « sinon »
-  E002
-  mot clé inattendu : Stream_end (attendu : the beginning of file)
-  [yaml error]
-  <could not read source file>
-  
   [123]
