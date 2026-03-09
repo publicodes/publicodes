@@ -20,3 +20,7 @@ val parse_yaml : in_channel -> (t, [`Msg of string]) result
 val parse : string -> (t, [`Msg of string]) result
 (** [pare config] parse a config from a file path. The parser is guessed
   from the file extension. *)
+
+val default_yaml : Yaml.value
+
+val default_yaml_str : string

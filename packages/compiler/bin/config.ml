@@ -80,3 +80,14 @@ let parse file_path =
       In_channel.with_open_text file_path parse_yaml
     else Error (`Msg "Unsupported format")
   else Error (`Msg ("File not found \"" ^ file_path ^ "\""))
+
+let target_default_yaml =
+  Yaml.Util.obj
+    [ ("output", Yaml.Util.string "models.js")
+    ; ("inputs", Yaml.Util.list Yaml.Util.string ["models.publicodes"])
+    ; ("type", Yaml.Util.string "js")
+    ; ("default_to_public", Yaml.Util.bool false) ]
+
+let default_yaml = Yaml.Util.obj [("targets", `A [target_default_yaml])]
+
+let default_yaml_str = Yaml.to_string_exn default_yaml
