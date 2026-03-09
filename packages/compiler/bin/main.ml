@@ -10,7 +10,8 @@ let publicodes =
     Term.(ret (const (`Help (`Auto, None))))
     (* show help *)
   in
-  Cmd.group (Cmd.info "publicodes" ~doc) ~default @@ [Cmd_compile.cmd]
+  Cmd.group (Cmd.info "publicodes" ~doc) ~default
+  @@ [Cmd_compile.cmd; Cmd_init.cmd]
 
 let main () = Cmd.eval' publicodes
 
