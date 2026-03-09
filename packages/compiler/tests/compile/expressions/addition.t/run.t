@@ -7,8 +7,10 @@ Simple addition/soustraction expression :
 Missing term :
 
   $ publicodes compile missing_term.publicodes
-  publicodes: FILES… arguments: no 'missing_term.publicodes' file or
-              directory
-  Usage: publicodes compile [OPTION]… [FILES]…
-  Try 'publicodes compile --help' or 'publicodes --help' for more information.
-  [124]
+  E007 expression malformée [syntax error]
+       ╒══  missing_term.publicodes:1:14 ══
+     1 │ an other: 12 +
+       │              ˘ une valeur ou une référence sont attendues après l'opérateur `+`
+   Hint: supprimez l'opérateur `+` ou bien ajoutez une
+         expression
+  [123]
