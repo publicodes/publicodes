@@ -1,6 +1,7 @@
 (library
  (inline_tests)
  (name yaml_parser)
+ (public_name publicodes.yaml_parser)
  (libraries yaml base utils yojson)
  (modules :standard)
  (preprocess

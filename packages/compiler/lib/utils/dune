@@ -1,5 +1,6 @@
 (library
  (name utils)
+ (public_name publicodes.utils)
  (libraries base stdune ppx_deriving)
  (modules :standard)
  (preprocess

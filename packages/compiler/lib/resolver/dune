@@ -1,6 +1,7 @@
 (library
  (inline_tests)
  (name resolver)
+ (public_name publicodes.resolver)
  (libraries base parser expr shared)
  (modules :standard)
  (preprocess

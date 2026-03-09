@@ -1,6 +1,7 @@
 (library
  (inline_tests)
  (name dependency_graph)
+ (public_name publicodes.dependency_graph)
  (libraries base hashed_tree ocamlgraph utils shared)
  (modules :standard)
  (preprocess
