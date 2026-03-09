@@ -2,6 +2,8 @@ open Base
 open Utils
 open Utils.Output
 
+type target_type = Js | Debug_eval_tree
+
 (* NOTE: this could be moved in the [Compiler] module. However, logging should
 	 be removed from the function code. *)
 let to_unresolved_ast ~input_files ~default_to_public =
@@ -34,9 +36,9 @@ let compile ~input_files ~output_type ~default_to_public =
   let* eval_tree = to_eval_tree ~ast in
   let+ result_string =
     match output_type with
-    | `Debug_eval_tree ->
+    | Debug_eval_tree ->
         return (Shared.Eval_tree_printer.to_string_eval_tree eval_tree)
-    | `Js ->
+    | Js ->
         let* outputs =
           Dependency_graph.cycle_check eval_tree
           >>= Dependency_graph.extract_outputs ~ast ~eval_tree

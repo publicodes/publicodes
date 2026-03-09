@@ -39,9 +39,9 @@ let yaml_target value =
     >>= Yaml.Util.to_string
     >>= (function
     | "js" ->
-        Ok `Js
+        Ok Compiler.Js
     | "debug_eval_tree" ->
-        Ok `Debug_eval_tree
+        Ok Compiler.Debug_eval_tree
     | value ->
         Error (`Msg ("Unsupported value \"" ^ value ^ "\"")) )
     |> Result.map_error ~f:(function `Msg msg ->

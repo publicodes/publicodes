@@ -3,12 +3,10 @@ open Cmdliner
 open Utils
 open Utils.Output
 
-type target_type = [`Js | `Debug_eval_tree]
-
 type target =
   { output_file: string
   ; input_files: string list
-  ; output_type: target_type
+  ; output_type: Compiler.target_type
   ; default_to_public: bool }
 
 let cmd_exit (logs : Log.t list) : Cmd.Exit.code =

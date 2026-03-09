@@ -28,7 +28,10 @@ let output_type =
   let doc = "$(docv) is the output type." in
   Arg.(
     value
-    & opt (enum [("js", `Js); ("debug_eval_tree", `Debug_eval_tree)]) `Js
+    & opt
+        (enum
+           [("js", Compiler.Js); ("debug_eval_tree", Compiler.Debug_eval_tree)] )
+        Compiler.Js
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
 
 let config_file =
@@ -69,9 +72,9 @@ let cmd =
           "model.publicodes"
           ^
           match output_type with
-          | `Debug_eval_tree ->
+          | Debug_eval_tree ->
               ".eval_tree.debug"
-          | `Js ->
+          | Js ->
               ".js"
         else output_file
       in
