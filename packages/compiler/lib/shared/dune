@@ -1,6 +1,7 @@
 (library
  (inline_tests)
  (name shared)
+ (public_name publicodes.shared)
  (libraries base utils yojson)
  (modules :standard)
  (preprocess

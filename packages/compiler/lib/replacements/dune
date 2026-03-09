@@ -1,6 +1,7 @@
 (library
  (inline_tests)
  (name replacements)
+ (public_name publicodes.replacements)
  (libraries base parser ocamlgraph)
  (modules :standard)
  (preprocess
