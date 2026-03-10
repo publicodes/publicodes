@@ -1,0 +1,125 @@
+{%- macro fmt_binop (op) %}
+	{%- switch op %}
+	{%- case "add" -%} +
+	{%- case "sub" -%} -
+	{%- case "mul" -%} *
+	{%- case "div" -%} /
+	{%- case "pow" -%} **
+	{%- case "eq" -%} =
+	{%- case "neq" -%} !=
+	{%- case "lt" -%} <
+	{%- case "gt" -%} >
+	{%- case "gte" -%} >=
+	{%- case "lte" -%} <=
+	{%- case "and" -%} &&
+	{%- case "or" -%} ||
+	{%- case "min" -%} min
+	{%- case "max" -%} max
+	{%- endswitch %}
+{%- endmacro %}
+
+{%- macro fmt_unop (op) %}
+	{%- switch op %}
+	{%- case "neg_op" -%} -
+	{%- case "is_undef" -%} is_undef
+	{%- endswitch %}
+{%- endmacro %}
+
+{%- macro fmt_rule_unit (unit) %}
+	{%- if unit && unit != "aucune" %} {{ unit }}{% endif %}
+{%- endmacro %}
+
+{%- function needs_parens (op) %}
+	{{ op == "binary_op" || op == "unary_op" }}
+{%- endfunction %}
+
+{%- macro fmt_operand (rule) %}
+	{%- if needs_parens(rule.rule_type) %}({% endif -%}
+	{{ fmt_rule(rule) }}
+	{%- if needs_parens(rule.rule_type) %}){% endif -%}
+{%- endmacro %}
+
+{%- macro indent (prefix) -%}
+{%- set input -%}{{ caller() }}{%- endset -%}
+{{ replace ("\n", "\n" + prefix, input) }}
+{%- endmacro -%}
+
+
+{%- macro fmt_rule (rule) %}
+{%- set rule_type, rule_value = (rule.rule_type, rule.rule_value) -%}
+{%- switch rule_type %}
+
+{%- case "number" -%}
+{{ rule_value.number }}{{ fmt_rule_unit (rule_value.unit) }}
+
+{%- case "text" -%}
+"{{ rule_value }}"
+
+{%- case "bool" -%}
+{{ rule_value }}
+
+{%- case "date" -%}
+{%- if rule_value.day -%}
+Shared_ast.Day {day = {{ rule_value.day }}; year = {{ rule_value.year }}; month = {{ rule_value.month}}}
+{%- else -%}
+Shared_ast.Month {month = {{ rule_value.month}}; year = {{ rule_value.year }}}
+{%- endif %}
+
+{%- case "null" -%}
+null
+
+{%- case "undefined" -%}
+undefined
+
+{%- case "round" -%}
+round {% if rule_value.mode != "nearest" %}{{ rule_value.mode }} {% endif %}to:
+{%- call indent ("  ") %} {{ fmt_rule(rule_value.precision) }}
+{%- endcall %}
+{{ fmt_rule(rule_value.number) }}
+
+{%- case "condition" -%}
+if
+{%- call indent ("  ") %} {{
+	fmt_rule(rule_value.cond) }}
+{%- endcall %}
+then
+{%- call indent ("  ") %} {{
+	fmt_rule(rule_value.then) }}
+{%- endcall %}
+else
+{%- call indent ("  ") %} {{
+	fmt_rule(rule_value._else) }}
+{%- endcall %}
+
+{%- case "binary_op" -%}
+{{ fmt_operand(rule_value.left) }} {{ fmt_binop(rule_value.op) }} {{ fmt_operand(rule_value.right) }}
+
+{%- case "unary_op" -%}
+{{ fmt_unop(rule_value.op) }} {{ fmt_rule(rule_value.arg) }}
+
+{%- case "ref" -%}
+@{{ rule_value }}
+
+{%- case "get_ctx" -%}
+get_context({{ rule_value }})
+
+{%- case "set_ctx" -%}
+with
+{
+{%- for item in rule_value.items %}
+{%- set item_name, item_value = (item.name, item.value) %}
+{{ item_name }} = {{ fmt_rule(item_value) }}
+{%- endfor %}
+}
+in
+{{ fmt_rule(rule_value.expr) }}
+{%- endswitch %}
+{%- endmacro %}
+
+{%- for rule_type, rule_name, rule_data in rules %}
+{%- if !loop.first %}
+
+{% endif -%}
+{{ rule_name }} :
+{{ fmt_rule(rule_data) }}
+{%- endfor -%}

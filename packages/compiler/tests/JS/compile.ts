@@ -13,7 +13,27 @@ export async function compilePublicodesToJS(
 			console.warn(stderr.toString())
 		}
 		compiled = stdout.toString()
+
+		return eval(compiled.replace('export default ', '')) as PublicodeExport
 	} catch (error) {
+		if (error instanceof SyntaxError) {
+			const syntaxError = error as {
+				message: string
+				stack: string
+				lineNumber?: number
+			}
+			const lines = compiled.split('\n')
+			const start = lines.indexOf('/** Compiled private Publicodes rules */')
+			const part = compiled
+				.split('\n')
+				.slice(start + 2, -3)
+				.join('\n')
+			throw new Error(
+				`Compilated Javascript is invalid:\n` +
+					`${part}\n` +
+					`error: ${syntaxError.message}\n`,
+			)
+		}
 		if (error instanceof Error && 'exitCode' in error) {
 			// Shell error with exit code
 			const shellError = error as {
@@ -26,41 +46,6 @@ export async function compilePublicodesToJS(
 					`stdout: ${shellError.stdout?.toString() || ''}\n` +
 					`stderr: ${shellError.stderr?.toString() || ''}`,
 			)
-		}
-		throw error
-	}
-	try {
-		return eval(compiled.replace('export default ', '')) as PublicodeExport
-	} catch (error) {
-		if (error instanceof SyntaxError) {
-			const syntaxError = error as {
-				message: string
-				stack: string
-				lineNumber?: number
-			}
-			if (syntaxError.lineNumber !== undefined) {
-				const line = syntaxError.lineNumber
-				const part = compiled
-					.split('\n')
-					.slice(line - 3, line + 3)
-					.join('\n')
-				throw new Error(
-					`Compilated Javascript is invalid:\n` + `${part}\n`,
-					+`${syntaxError.message}\n`,
-				)
-			} else {
-				const lines = compiled.split('\n')
-				const start = lines.indexOf('/** Compiled private Publicodes rules */')
-				const part = compiled
-					.split('\n')
-					.slice(start + 2, -3)
-					.join('\n')
-				throw new Error(
-					`Compilated Javascript is invalid:\n` +
-						`${part}\n` +
-						`error: ${syntaxError.message}\n`,
-				)
-			}
 		}
 		throw error
 	}

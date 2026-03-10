@@ -30,10 +30,8 @@ multiple on same rule ok :
   
   y :
   if (@a = null) || ((is_undef @a) || (@a = false))
-  then
-    if (@b = null) || ((is_undef @b) || (@b = false))
-    then
-      if (@c = null) || ((is_undef @c) || (@c = false))
+  then if (@b = null) || ((is_undef @b) || (@b = false))
+    then if (@c = null) || ((is_undef @c) || (@c = false))
       then @x
       else null
     else null
@@ -65,16 +63,12 @@ transitivity in make not applicable :
   
   x :
   if (if (@a = null) || ((is_undef @a) || (@a = false))
-                              then @b
-                              else null = null) || ((is_undef if (@a = null) || ((is_undef @a) || (@a = false))
-                                                                      then
-                                                                      @b
-                                                                      else
-                                                                      null) || (if (@a = null) || ((is_undef @a) || (@a = false))
-                                                                      then
-                                                                      @b
-                                                                      else
-                                                                      null = false))
+    then @b
+    else null = null) || ((is_undef if (@a = null) || ((is_undef @a) || (@a = false))
+    then @b
+    else null) || (if (@a = null) || ((is_undef @a) || (@a = false))
+    then @b
+    else null = false))
   then @c
   else null
 
@@ -127,8 +121,8 @@ Multiple definitions
   if (@a = null) || ((is_undef @a) || (@a = false))
   then @c
   else null + if (@a = null) || ((is_undef @a) || (@a = false))
-                                         then @x
-                                         else null
+  then @x
+  else null
 
 
 Type error
@@ -160,8 +154,7 @@ Rend non applicable take precedence over remplace
   
   x :
   if (@b = null) || ((is_undef @b) || (@b = false))
-  then
-    if @a != null
+  then if @a != null
     then @a
     else @c
   else null
