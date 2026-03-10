@@ -2,7 +2,7 @@
  (inline_tests)
  (name hashed_tree)
  (public_name publicodes.hashed_tree)
- (libraries base yojson typed_tree shared)
+ (libraries base yojson typed_tree shared jingoo)
  (modules :standard)
  (preprocess
   (pps
@@ -12,11 +12,3 @@
    ppx_inline_test
    ppx_sexp_conv
    sedlex.ppx)))
-
-(rule
- (with-stdout-to
-  js_runtime.ml
-  (progn
-   (echo "let runtime = {|")
-   (cat ../../runtimes/javascript.js)
-   (echo "|}"))))

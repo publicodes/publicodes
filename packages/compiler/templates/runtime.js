@@ -1,3 +1,4 @@
+/** Start embedded runtime */
 /* eslint-disable */
 /**
  * @typedef {Date | number | string | null | undefined} Value
@@ -582,3 +583,5 @@ function $evaluate(fn, _global, options = {}) {
 
 	return { value, needed, missing }
 }
+
+/** End embedded runtime */

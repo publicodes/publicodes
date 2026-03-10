@@ -47,10 +47,9 @@ Bad types for arrondi :
 Ok arrondi :
   $ publicodes compile ok.publicodes -t debug_eval_tree -o -
   a :
-  round to:
-  if true
-  then 1.
-  else null
+  round to: if true
+    then 1.
+    else null
   get_context(a)
   
   arrondi à la dizaine :
@@ -62,15 +61,13 @@ Ok arrondi :
   43. €
   
   c :
-  round up to:
-  10. ** (- 4. décimales)
+  round up to: 10. ** (- 4. décimales)
   get_context(c)
   
   d :
-  round to:
-  if (is_undef @est arrondi) || ((@est arrondi = false) || (@est arrondi = null))
-  then null
-  else 0.1
+  round to: if (is_undef @est arrondi) || ((@est arrondi = false) || (@est arrondi = null))
+    then null
+    else 0.1
   4.65 €
   
   est arrondi :

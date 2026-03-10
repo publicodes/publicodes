@@ -9,3 +9,4 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 model.publicodes.js
 publicodes-build
+packages/compiler/templates/template.*

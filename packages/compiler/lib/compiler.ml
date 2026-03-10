@@ -32,15 +32,16 @@ let compile ~input_files ~output_type ~default_to_public =
   let open Output in
   let* ast = to_unresolved_ast ~input_files ~default_to_public in
   let* eval_tree = to_eval_tree ~ast in
-  let+ result_string =
+  let* outputs =
+    Dependency_graph.cycle_check eval_tree
+    >>= Dependency_graph.extract_outputs ~ast ~eval_tree
+  in
+  let models = Hashed_tree.to_jingoo_models eval_tree outputs in
+  let template =
     match output_type with
     | Debug_eval_tree ->
-        return (Shared.Eval_tree_printer.to_string_eval_tree eval_tree)
+        Eval_tree_template.template
     | Js ->
-        let* outputs =
-          Dependency_graph.cycle_check eval_tree
-          >>= Dependency_graph.extract_outputs ~ast ~eval_tree
-        in
-        return (Hashed_tree.to_js eval_tree outputs)
+        Js_template.template
   in
-  result_string
+  return (Utils.Template.from_template template models)

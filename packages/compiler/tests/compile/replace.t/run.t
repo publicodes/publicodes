@@ -71,10 +71,9 @@ transitivity in replacement :
   
   x :
   if if @a != null
-              then @a
-              else @b != null
-  then
-    if @a != null
+    then @a
+    else @b != null
+  then if @a != null
     then @a
     else @b
   else @c
@@ -120,8 +119,7 @@ Multiples remplacements avec priorité différentes :
   x :
   if @a != null
   then @a
-  else
-    if @c != null
+  else if @c != null
     then @c
     else @b
 
@@ -146,10 +144,8 @@ Multiple definitions
   if @a != null
   then @a
   else @c + if @a != null
-                                                  then
-                                                    @a
-                                                  else
-                                                    @x
+  then @a
+  else @x
 
 Type mismatch
 
