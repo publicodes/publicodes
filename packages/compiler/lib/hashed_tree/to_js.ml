@@ -318,7 +318,9 @@ let get_params_jsdoc_typedef_pp (tree : Tree.t) (rule_name : Rule_name.t)
           |> String.substr_replace_all ~pattern:"'" ~with_:"\\'"
         in
         let param_type = get_rule_js_type tree param in
-        Pp.verbatimf " *  '%s'?: %s | undefined" param_name param_type )
+        Pp.concat
+          [ Pp.newline
+          ; Pp.verbatimf " *  '%s'?: %s | undefined" param_name param_type ] )
       ~sep:(Pp.concat [Pp.verbatim ";"; Pp.newline])
   in
   Pp.box ~indent:0
@@ -328,7 +330,6 @@ let get_params_jsdoc_typedef_pp (tree : Tree.t) (rule_name : Rule_name.t)
        ; Pp.verbatimf " * Parameters of \"%s\"" (Rule_name.to_string rule_name)
        ; Pp.newline
        ; Pp.verbatim " * @typedef {{"
-       ; Pp.newline
        ; parameters_type
        ; Pp.newline
        ; Pp.verbatimf " * }} %s" type_name
@@ -557,7 +558,7 @@ let generate_rule_object_pp hashed_tree
                else Pp.nop )
            ; Pp.verbatimf "/**"
            ; Pp.newline
-           ; Pp.verbatimf " * Parameter list for \"%s\" " rule_name_str
+           ; Pp.verbatimf " * Parameter list for \"%s\"" rule_name_str
            ; Pp.newline
            ; Pp.verbatimf " * @type {Array<keyof %s>}" type_name
            ; Pp.newline
@@ -604,7 +605,8 @@ let generate_exports_pp outputs_doc =
        ; Pp.verbatim "}"
        ; Pp.newline
        ; Pp.newline
-       ; Pp.verbatim "export default rules;" ] )
+       ; Pp.verbatim "export default rules;"
+       ; Pp.newline ] )
 
 let to_js tree outputs : string =
   let doc =
