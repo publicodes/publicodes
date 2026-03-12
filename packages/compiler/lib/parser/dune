@@ -1,6 +1,7 @@
 (library
  (inline_tests)
  (name parser)
+ (public_name publicodes.parser)
  (libraries yaml_parser base utils expr shared)
  (modules :standard)
  (preprocess

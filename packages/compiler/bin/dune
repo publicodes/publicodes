@@ -3,7 +3,7 @@
  (enabled_if
   (= %{system} "linux"))
  (name main)
- (libraries unix cmdliner compiler yaml yojson inotify)
+ (libraries unix cmdliner compiler yaml fpath yojson inotify)
  (preprocess
   (pps config.ppx)))
 

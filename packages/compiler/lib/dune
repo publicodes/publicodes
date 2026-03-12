@@ -1,6 +1,7 @@
 (library
  (inline_tests)
  (name compiler)
+ (public_name publicodes.compiler)
  (libraries
   yaml
   base
