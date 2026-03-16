@@ -2,8 +2,6 @@ open Base
 open Utils
 open Utils.Output
 
-(* NOTE: this could be moved in the [Compiler] module. However, logging should
-	 be removed from the function code. *)
 let to_unresolved_ast ~input_files ~default_to_public =
   let+ unresolved_programs =
     List.map input_files ~f:(fun filename ->
