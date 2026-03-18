@@ -424,7 +424,7 @@ let rules_to_js_functions_pp hashed_tree =
         let rule_data = value_to_js_pp data in
         (rule_type, rule_name, rule_data) :: acc )
     |> List.sort ~compare:(fun (_, name1, _) (_, name2, _) ->
-           String.compare name1 name2 )
+        String.compare name1 name2 )
   in
   let function_docs =
     List.map rules ~f:(fun (rule_type, rule_name, rule_data) ->
