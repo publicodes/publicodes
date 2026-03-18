@@ -10,13 +10,13 @@ let from_resolved_ast ast =
   let* replacement_graph =
     ast
     |> Replacements_graph.build_graph ~get_replacement_rules:(fun rule ->
-           rule.replace )
+        rule.replace )
     |> Replacements_graph.detect_cycles
   in
   let* make_not_applicable_graph =
     ast
     |> Replacements_graph.build_graph ~get_replacement_rules:(fun rule ->
-           rule.make_not_applicable )
+        rule.make_not_applicable )
     |> Replacements_graph.detect_cycles
   in
   return

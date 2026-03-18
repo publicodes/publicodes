@@ -69,26 +69,26 @@ and transform_mechanism_value (node, pos) =
 and unfold_chainable_mechanism ~init mechanisms =
   mechanisms
   |> List.sort ~compare:(fun a b ->
-         Shared_ast.compare_chainable_mechanism Rule_name.compare (Pos.value a)
-           (Pos.value b) )
+      Shared_ast.compare_chainable_mechanism Rule_name.compare (Pos.value a)
+        (Pos.value b) )
   |> List.fold_right ~init ~f:(fun (mec, pos) acc ->
-         match mec with
-         | Shared_ast.Applicable_if applicable_if ->
-             transform_applicable_if ~pos applicable_if acc
-         | Shared_ast.Not_applicable_if not_applicable_if ->
-             transform_not_applicable_if ~pos not_applicable_if acc
-         | Shared_ast.Ceiling ceiling ->
-             transform_ceiling ~pos ceiling acc
-         | Shared_ast.Floor floor ->
-             transform_floor ~pos floor acc
-         | Shared_ast.Context context ->
-             transform_context ~pos context acc
-         | Shared_ast.Default default ->
-             transform_default ~pos default acc
-         | Shared_ast.Type t ->
-             transform_typ t acc
-         | Shared_ast.Round round ->
-             transform_round ~pos round acc )
+      match mec with
+      | Shared_ast.Applicable_if applicable_if ->
+          transform_applicable_if ~pos applicable_if acc
+      | Shared_ast.Not_applicable_if not_applicable_if ->
+          transform_not_applicable_if ~pos not_applicable_if acc
+      | Shared_ast.Ceiling ceiling ->
+          transform_ceiling ~pos ceiling acc
+      | Shared_ast.Floor floor ->
+          transform_floor ~pos floor acc
+      | Shared_ast.Context context ->
+          transform_context ~pos context acc
+      | Shared_ast.Default default ->
+          transform_default ~pos default acc
+      | Shared_ast.Type t ->
+          transform_typ t acc
+      | Shared_ast.Round round ->
+          transform_round ~pos round acc )
 
 (* TODO: a lot of factorisation possible here! *)
 and transform_sum ~pos nodes =

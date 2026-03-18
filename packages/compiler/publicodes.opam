@@ -38,7 +38,7 @@ depends: [
   "yaml"
   "yojson"
   "ocaml-lsp-server" {with-dev-setup}
-  "ocamlformat" {with-dev-setup}
+  "ocamlformat" {"0.28.1" >= with-dev-setup}
   "ppx_inline_test" {with-test}
   "ppx_assert" {with-test}
   "ppx_compare" {with-test}
