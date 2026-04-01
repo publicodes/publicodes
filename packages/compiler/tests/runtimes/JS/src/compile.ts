@@ -7,7 +7,8 @@ const COMPILER_PATH =
 export async function compilePublicodesToJS(
 	yaml: string,
 ): Promise<PublicodeExport> {
-	let compiled
+	let compiled: string = ''
+
 	try {
 		const { stdout, stderr } =
 			await $`${COMPILER_PATH} compile -i --default-to-public -o -  < ${Buffer.from(yaml)}`.quiet()

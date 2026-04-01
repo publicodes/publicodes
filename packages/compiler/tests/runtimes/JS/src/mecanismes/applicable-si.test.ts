@@ -12,6 +12,7 @@ test:
 condition:
 `
 	})
+
 	test.each([
 		[
 			'condition vrai',

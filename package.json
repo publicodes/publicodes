@@ -6,7 +6,7 @@
 		"website",
 		"packages/*",
 		"packages/compiler/tests/runtimes/JS",
-		"packages/compiler/benchmark/JS"
+		"packages/compiler/benchmarks/JS"
 	],
 	"scripts": {
 		"test": "turbo run test",

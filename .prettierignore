@@ -13,3 +13,7 @@ model.publicodes.json
 model.publicodes.js
 publicodes-build
 packages/compiler/templates/template.*
+
+website/src/routes/docs/api/**/*.md
+
+packages/cli/bin
