@@ -50,9 +50,6 @@ jobs:
     name: Tests
     needs: build-compiler-linux
     runs-on: ubuntu-latest
-    env:
-      # We use the @publicodes/cli package here instead of the binary path
-      PUBLICODES_COMPILER_PATH: bun run publicodes2
     steps:
       - uses: actions/checkout@v4
       - name: Install node
@@ -66,4 +63,5 @@ jobs:
 
       - name: Make artifacts executable
         run: chmod +x ./packages/cli/bin/compiler/*
-      - run: yarn run test
+      # We use the @publicodes/cli package here instead of the binary path
+      - run: PUBLICODES_COMPILER_PATH="publicodes2" yarn run test

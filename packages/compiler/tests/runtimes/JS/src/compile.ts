@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import { $, env } from 'bun'
 
-const COMPILER_PATH =
-	env.PUBLICODES_COMPILER_PATH ?? '../../../_build/default/bin/main.exe'
+const COMPILER_PATH = env.PUBLICODES_COMPILER_PATH ?? 'publicodes2'
 
 export async function compilePublicodesToJS(
 	yaml: string,
