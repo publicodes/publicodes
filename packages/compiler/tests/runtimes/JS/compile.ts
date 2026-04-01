@@ -1,5 +1,8 @@
 /* eslint-disable no-console */
-import { $ } from 'bun'
+import { $, env } from 'bun'
+
+const COMPILER_PATH =
+	env.PUBLICODES_COMPILER_PATH ?? '../../../_build/default/bin/main.exe'
 
 export async function compilePublicodesToJS(
 	yaml: string,
@@ -7,7 +10,7 @@ export async function compilePublicodesToJS(
 	let compiled
 	try {
 		const { stdout, stderr } =
-			await $`yarn run publicodes2 compile -i --default-to-public -o -  < ${Buffer.from(yaml)}`.quiet()
+			await $`${COMPILER_PATH} compile -i --default-to-public -o -  < ${Buffer.from(yaml)}`.quiet()
 
 		if (stderr.toString()) {
 			console.warn(stderr.toString())
