@@ -22,9 +22,10 @@ export async function compilePublicodesToJS(
 				stack: string
 				lineNumber?: number
 			}
-			const lines = compiled.split('\n')
+			const source = compiled as string
+			const lines = source.split('\n')
 			const start = lines.indexOf('/** Compiled private Publicodes rules */')
-			const part = compiled
+			const part = source
 				.split('\n')
 				.slice(start + 2, -3)
 				.join('\n')
