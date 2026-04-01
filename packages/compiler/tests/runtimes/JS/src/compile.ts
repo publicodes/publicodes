@@ -7,7 +7,8 @@ const COMPILER_PATH =
 export async function compilePublicodesToJS(
 	yaml: string,
 ): Promise<PublicodeExport> {
-	let compiled
+	let compiled: string = ''
+
 	try {
 		const { stdout, stderr } =
 			await $`${COMPILER_PATH} compile -i --default-to-public -o -  < ${Buffer.from(yaml)}`.quiet()
@@ -25,7 +26,7 @@ export async function compilePublicodesToJS(
 				stack: string
 				lineNumber?: number
 			}
-			const source = compiled as string
+			const source = compiled
 			const lines = source.split('\n')
 			const start = lines.indexOf('/** Compiled private Publicodes rules */')
 			const part = source

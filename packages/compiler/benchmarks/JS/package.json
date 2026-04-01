@@ -1,8 +1,8 @@
 {
-	"name": "@publicodes/benchmark",
+	"name": "compiler-benchmarks-js",
 	"private": true,
 	"version": "2.0.0-alpha.0",
-	"description": "JS benchmark for publicodes evaluation",
+	"description": "Publicodes JS runtime benchmark on real-world examples",
 	"type": "module",
 	"license": "MIT",
 	"devDependencies": {
