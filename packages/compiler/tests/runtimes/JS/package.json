@@ -1,5 +1,5 @@
 {
-	"name": "@publicodes/test",
+	"name": "publicodes-runtime-js-test",
 	"private": true,
 	"version": "2.0.0-alpha.0",
 	"description": "JS test for publicodes evaluation",

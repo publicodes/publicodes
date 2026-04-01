@@ -5,8 +5,7 @@
 	"workspaces": [
 		"website",
 		"packages/*",
-		"examples/*",
-		"packages/compiler/tests/JS",
+		"packages/compiler/tests/runtimes/JS",
 		"packages/compiler/benchmark/JS"
 	],
 	"scripts": {

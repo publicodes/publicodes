@@ -1,26 +1,93 @@
 # Publicodes compiler
 
-## Run in local
+The Publicodes compiler.
+
+## Usage
+
+Currently, the best way to use the compiler is via the
+[`@publicodes/cli`](#using-the-npm-package) NPM package.
+
+### Using the NPM package
+
+```sh
+# Install the compiler globally
+npm install -g @publicodes/cli
+
+# Install the compiler in your local dev dependencies
+npm install --save-dev @publicodes/cli
+
+# Use it directly with npx or bunx
+npx @publicodes/cli init
+
+```
+
+### Using opam
+
+The package is not yet available via [opam](https://opam.ocaml.org/).
+
+### From source
+
+See [Local developement](#local-developement).
+
+## Local developement
+
+To build it from source you need to have the [OCaml](https://ocaml.org/)
+toolchain setup ([`Dune`](https://dune.build/) and
+[`opam`](https://opam.ocaml.org/)) and
+[Make](https://www.gnu.org/software/make/).
+
+### Install dependencies
+
+In OCaml, it's recommended to use [opam Switches](https://ocaml.org/docs/opam-switch-introduction):
 
 ```sh
 opam switch create . --deps-only
     # --with-test (to add testing lib)
     # --with-dev-setup (to add dev tools format and lsp server)
-
-dune build # or dune exec publicodes -- <publicodes compiler flags>
 ```
 
-## Run tests
+### Build
 
-To run [cram tests](./tests/README.md) and unit tests (defined in
+To build the compiler you can simply run:
+
+```sh
+make build
+
+# Or, to build in watch mode
+make dev
+```
+
+### Run tests
+
+To run [cram tests](./tests/crams/README.md) and unit tests (defined in
 `./lib/**/*_test.ml`):
 
 ```sh
-dune test
+make test-ocaml
 
 # To promote cram test outputs
-dune promote
+make test-ocaml-promote
 ```
 
 > For inline tests, we use
 > [`ppx_inline_test`](https://dune.readthedocs.io/en/stable/tests.html#inline-tests).
+
+#### Runtime specific tests
+
+There is a dedicated test suite for the runtimes defined in
+[`./tests/runtimes/`](./tests/runtimes/).
+
+##### JavaScript
+
+To run JS runtime tests defined in [`./tests/runtimes/JS`](./tests/runtimes/JS),
+you need first to install JavaScript related deps:
+
+```sh
+make install-js
+```
+
+Then, you can run the test suite with:
+
+```sh
+make test-js
+```
