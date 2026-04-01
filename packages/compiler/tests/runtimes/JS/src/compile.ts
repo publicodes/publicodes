@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import { $, env } from 'bun'
 
-const COMPILER_PATH =
-	env.PUBLICODES_COMPILER_PATH ?? '../../../_build/default/bin/main.exe'
+const COMPILER_PATH = env.PUBLICODES_COMPILER_PATH ?? 'publicodes2'
 
 export async function compilePublicodesToJS(
 	yaml: string,
@@ -26,7 +25,7 @@ export async function compilePublicodesToJS(
 				stack: string
 				lineNumber?: number
 			}
-			const source = compiled as string
+			const source = compiled
 			const lines = source.split('\n')
 			const start = lines.indexOf('/** Compiled private Publicodes rules */')
 			const part = source

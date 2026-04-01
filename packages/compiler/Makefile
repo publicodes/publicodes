@@ -1,8 +1,9 @@
 help : Makefile
 	@sed -n 's/^#> //p' $<
 
-JS_TESTS_DIR = ./tests/runtimes/JS
+JS_TESTS_DIR = tests/runtimes/JS
 CLI_DIR = ../cli
+COMPILER_PATH = _build/default/bin/main.exe
 
 #> install            | Install OCaml dependencies using opam
 install:
@@ -29,7 +30,7 @@ test-all: test-ocaml test-js
 #> test-js            | Run JavaScript tests using yarn
 test-js: build
 	@echo "Running JavaScript tests..."
-	yarn --cwd $(JS_TESTS_DIR) test
+	PUBLICODES_COMPILER_PATH=../../../$(COMPILER_PATH) yarn --cwd $(JS_TESTS_DIR) test
 
 #> test-ocaml         | Run OCaml unit and cram tests using dune
 test-ocaml:
