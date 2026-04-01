@@ -1,14 +1,7 @@
 /* eslint-disable no-console */
 import { $, env } from 'bun'
 
-<<<<<<<< HEAD:packages/compiler/tests/runtimes/JS/src/compile.ts
 const COMPILER_PATH = env.PUBLICODES_COMPILER_PATH ?? 'publicodes2'
-|||||||| parent of b7bfbc1d (feat(compiler): add a Makefile):packages/compiler/tests/JS/compile.ts
-import { $ } from 'bun'
-========
-const COMPILER_PATH =
-	env.PUBLICODES_COMPILER_PATH ?? '../../../_build/default/bin/main.exe'
->>>>>>>> b7bfbc1d (feat(compiler): add a Makefile):packages/compiler/tests/runtimes/JS/compile.ts
 
 export async function compilePublicodesToJS(
 	yaml: string,

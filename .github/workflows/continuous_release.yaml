@@ -49,9 +49,6 @@ jobs:
     name: Tests
     needs: build-compiler-linux
     runs-on: ubuntu-latest
-    env:
-      # We use the @publicodes/cli package here instead of the binary path
-      PUBLICODES_COMPILER_PATH: bun run publicodes2
     steps:
       - uses: actions/checkout@v4
       - name: Install node
