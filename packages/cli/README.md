@@ -1,15 +1,18 @@
-# cli
+# `@publicodes/cli`
 
-To install dependencies:
+Publicodes [`compiler`](../compiler/) as a NPM package.
 
-```bash
-bun install
+## Install
+
+```
+npm install @publicodes/cli
 ```
 
-To run:
+## Local developpement
 
-```bash
-bun run index.ts
 ```
+yarn install
 
-This project was created using `bun init` in bun v1.2.21. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+# Create a symbolic link to the compiler binary
+yarn codegen:dev
+```

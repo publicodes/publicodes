@@ -37,12 +37,12 @@ if (!fs.existsSync(path.dirname(DEST_BINARY))) {
 	fs.mkdirSync(path.dirname(DEST_BINARY), { recursive: true, mode: 0o755 })
 }
 
-// 3. Copy the generated binary
-console.log('Copying compiler binary...')
+// 3. Create a symbolic link to the built binary in the destination directory
+console.log('Creating symbolic link to the built binary...')
 
-fs.copyFile(BUILT_BINARY, DEST_BINARY, (err) => {
+fs.symlink(BUILT_BINARY, DEST_BINARY, (err) => {
 	if (err) {
-		console.error('Error copying file:', err)
+		console.error('Error creating symbolic link:', err)
 		process.exit(1)
 	}
 
