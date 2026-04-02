@@ -78,8 +78,8 @@
 {%- endmacro -%}
 
 {%- macro fmt_rule (rule) -%}
-	{%- set rule_type, rule_value = (rule.rule_type, rule.rule_value) -%}
-	{%- switch rule_type %}
+	{%- set rule_type, rule_value, rule_id = (rule.rule_type, rule.rule_value, rule.rule_id) -%}
+	$ret("{{ rule_id }}", ctx, {% switch rule_type %}
 	{%- case "number" -%}
 		{{ rule_value.number }}
 	{%- case "text" -%}
@@ -142,7 +142,8 @@
 		)
 	{%- default -%}
 		not handled {{ rule_type }}
-	{%- endswitch %}
+	{%- endswitch -%}
+	)
 {%- endmacro %}
 
 {%- for rule_type, rule_name, rule_data in rules %}
@@ -192,7 +193,8 @@ const rules = {
     evaluate: (params = {}, options) =>
       $evaluate({{ fmt_method(out.rule_name) }}, params, options).value,
     /**
-     * Evaluate "{{ out.rule_name }}" with information on missing and needed parameters
+     * Evaluate "{{ out.rule_name }}" with evaluation trace, and information on
+     * missing and needed parameters.
      * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {cache?: boolean}) => {value: {{ fmt_ts_type(out.return_type) }} | undefined | null, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>}}
      */
     evaluateParams: (params = {}, options) =>

@@ -70,3 +70,6 @@ val merge : pos -> pos -> pos
 
 val to_loc : pos -> Stdune.Loc.t
 (** Convert a position to a Stdune location. *)
+
+val to_id : pos -> string
+(** Convert a position to a unique identifier hash. *)
