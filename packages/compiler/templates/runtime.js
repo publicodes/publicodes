@@ -556,7 +556,7 @@ function $get(rule, ctx, params) {
 }
 
 const globalCache = {}
-function $ref(rule, fn, ctx, params) {
+function $ref(rule, fn, ctx, params, trace) {
 	if (rule in ctx || rule in ctx._global) {
 		return $get(rule, ctx, params)
 	}
@@ -571,17 +571,24 @@ function $ref(rule, fn, ctx, params) {
 		globalCache[rule] = cache
 		return value
 	}
-	const v = fn(ctx, params)
+	const v = fn(ctx, params, trace)
 	return v
 }
 
 function $evaluate(fn, _global, options = {}) {
 	const params = []
-	const value = fn({ _global, _options: options }, params)
+	const trace = []
+	const value = fn({ _global, _options: options }, params, trace)
 	const needed = Array.from(new Set(params))
 	const missing = needed.filter((p) => !(p in _global))
 
+	console.log(trace)
 	return { value, needed, missing }
+}
+
+function $ret(id, trace, value) {
+	trace[id] = value
+	return value
 }
 
 /** End embedded runtime */

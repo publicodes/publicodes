@@ -78,8 +78,8 @@
 {%- endmacro -%}
 
 {%- macro fmt_rule (rule) -%}
-	{%- set rule_type, rule_value = (rule.rule_type, rule.rule_value) -%}
-	{%- switch rule_type %}
+	{%- set rule_type, rule_value, rule_id = (rule.rule_type, rule.rule_value, rule.rule_id) -%}
+	$ret("id{{ rule_id }}", trace, {% switch rule_type %}
 	{%- case "number" -%}
 		{{ rule_value.number }}
 	{%- case "text" -%}
@@ -127,9 +127,9 @@
 			({{ fmt_rule(rule_value.arg) }} === undefined)
 		{%- endswitch -%}
 	{%- case "ref" -%}
-		$ref("{{ rule_value }}", {{ fmt_method(rule_value) }}, ctx, params)
+		$ref("{{ rule_value }}", {{ fmt_method(rule_value) }}, ctx, params, trace)
 	{%- case "get_ctx" -%}
-		$get("{{ rule_value }}", ctx, params)
+		$get("{{ rule_value }}", ctx, params, trace)
 	{%- case "set_ctx" -%}
 		((ctx) => {{ fmt_rule(rule_value.expr) }})(
 			{
@@ -142,13 +142,14 @@
 		)
 	{%- default -%}
 		not handled {{ rule_type }}
-	{%- endswitch %}
+	{%- endswitch -%}
+	)
 {%- endmacro %}
 
 {%- for rule_type, rule_name, rule_data in rules %}
 
 /** @type {Fn<{{ fmt_ts_type(rule_type) }}>} */
-function {{ fmt_method(rule_name) }}(ctx, params) {
+function {{ fmt_method(rule_name) }}(ctx, params, trace) {
   return /** @type \{{{ fmt_ts_type(rule_type)}}\} */ (
     {%- call indentret ("    ") -%}
     {{ fmt_rule(rule_data) }}

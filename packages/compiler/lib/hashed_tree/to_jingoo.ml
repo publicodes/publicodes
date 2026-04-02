@@ -96,10 +96,10 @@ let metas_of_meta (meta : Shared_ast.rule_meta list) =
          | Public ->
              None ) )
 
-let rule_of_type_value _type value =
-  Tobj [("rule_type", Tstr _type); ("rule_value", value)]
+let rule_of_type_value id _type value =
+  Tobj [("rule_type", Tstr _type); ("rule_value", value); ("rule_id", Tint id)]
 
-let rule_of_number value units =
+let rule_of_number id value units =
   let unit =
     match units with
     | Some u ->
@@ -107,28 +107,29 @@ let rule_of_number value units =
     | None ->
         Tnull
   in
-  rule_of_type_value "number" @@ Tobj [("number", Tfloat value); ("unit", unit)]
+  rule_of_type_value id "number"
+  @@ Tobj [("number", Tfloat value); ("unit", unit)]
 
-let rule_of_text value = rule_of_type_value "text" @@ Tstr value
+let rule_of_text id value = rule_of_type_value id "text" @@ Tstr value
 
-let rule_of_bool value = rule_of_type_value "bool" @@ Tbool value
+let rule_of_bool id value = rule_of_type_value id "bool" @@ Tbool value
 
-let rule_of_date value =
+let rule_of_date id value =
   match value with
   | Eval_tree.Date (Day {day; month; year}) ->
-      rule_of_type_value "date"
+      rule_of_type_value id "date"
       @@ Tobj [("year", Tint year); ("month", Tint month); ("day", Tint day)]
   | Date (Month {month; year}) ->
-      rule_of_type_value "date"
+      rule_of_type_value id "date"
       @@ Tobj [("year", Tint year); ("month", Tint month)]
   | _ ->
       failwith "Unsupported date format"
 
-let rule_of_null = rule_of_type_value "null" @@ Tnull
+let rule_of_null id = rule_of_type_value id "null" @@ Tnull
 
-let rule_of_undefined = rule_of_type_value "undefined" @@ Tnull
+let rule_of_undefined id = rule_of_type_value id "undefined" @@ Tnull
 
-let rule_of_round (mode : Shared_ast.rounding) (value_rule : tvalue)
+let rule_of_round id (mode : Shared_ast.rounding) (value_rule : tvalue)
     (precision_rule : tvalue) =
   let rounding_mode =
     match mode with
@@ -139,79 +140,82 @@ let rule_of_round (mode : Shared_ast.rounding) (value_rule : tvalue)
     | Down ->
         Tstr "down"
   in
-  rule_of_type_value "round"
+  rule_of_type_value id "round"
   @@ Tobj
        [ ("mode", rounding_mode)
        ; ("number", value_rule)
        ; ("precision", precision_rule) ]
 
-let rule_of_condition (cond : tvalue) (then_rule : tvalue) (else_rule : tvalue)
-    =
-  rule_of_type_value "condition"
+let rule_of_condition id (cond : tvalue) (then_rule : tvalue)
+    (else_rule : tvalue) =
+  rule_of_type_value id "condition"
   @@ Tobj [("cond", cond); ("then", then_rule); ("_else", else_rule)]
 
-let rule_of_binary_op op (left_rule : tvalue) (right_rule : tvalue) =
-  rule_of_type_value "binary_op"
+let rule_of_binary_op id op (left_rule : tvalue) (right_rule : tvalue) =
+  rule_of_type_value id "binary_op"
   @@ Tobj
        [ ("op", from_op op)
        ; ("lazy", Tbool (is_lazy op))
        ; ("left", left_rule)
        ; ("right", right_rule) ]
 
-let rule_of_unary_op op (arg : tvalue) =
-  rule_of_type_value "unary_op" @@ Tobj [("op", Tstr op); ("arg", arg)]
+let rule_of_unary_op id op (arg : tvalue) =
+  rule_of_type_value id "unary_op" @@ Tobj [("op", Tstr op); ("arg", arg)]
 
-let rule_of_neg_op (arg : tvalue) = rule_of_unary_op "neg_op" arg
+let rule_of_neg_op id (arg : tvalue) = rule_of_unary_op id "neg_op" arg
 
-let rule_of_undef_op (arg : tvalue) = rule_of_unary_op "is_undef" arg
+let rule_of_undef_op id (arg : tvalue) = rule_of_unary_op id "is_undef" arg
 
-let rule_of_ref (name : string) = rule_of_type_value "ref" @@ Tstr name
+let rule_of_ref id (name : string) = rule_of_type_value id "ref" @@ Tstr name
 
-let rule_of_get_ctx (name : string) = rule_of_type_value "get_ctx" @@ Tstr name
+let rule_of_get_ctx id (name : string) =
+  rule_of_type_value id "get_ctx" @@ Tstr name
 
-let rule_of_set_ctx (expr : tvalue) (items : (string * tvalue) list) =
+let rule_of_set_ctx id (expr : tvalue) (items : (string * tvalue) list) =
   let items =
     List.map items ~f:(fun (name, value) ->
         Tobj [("name", Tstr name); ("value", value)] )
   in
-  rule_of_type_value "set_ctx" @@ Tobj [("expr", expr); ("items", Tlist items)]
+  rule_of_type_value id "set_ctx"
+  @@ Tobj [("expr", expr); ("items", Tlist items)]
 
-let rec rule_of_tree_val ({value; _} : Tree.value) =
+let rec rule_of_tree_val ({value; id; _} : Tree.value) =
   match value with
   | Eval_tree.Const (Eval_tree.Number (n, units)) ->
-      rule_of_number n units
+      rule_of_number id n units
   | Const (String s) ->
-      rule_of_text s
+      rule_of_text id s
   | Const (Bool b) ->
-      rule_of_bool b
+      rule_of_bool id b
   | Const (Date d) ->
-      rule_of_date (Date d)
+      rule_of_date id (Date d)
   | Const Null ->
-      rule_of_null
+      rule_of_null id
   | Const Undefined ->
-      rule_of_undefined
+      rule_of_undefined id
   | Round (mode, precision, value) ->
-      rule_of_round mode (rule_of_tree_val value) (rule_of_tree_val precision)
+      rule_of_round id mode (rule_of_tree_val value)
+        (rule_of_tree_val precision)
   | Condition (cond, then_comp, else_comp) ->
-      rule_of_condition (rule_of_tree_val cond)
+      rule_of_condition id (rule_of_tree_val cond)
         (rule_of_tree_val then_comp)
         (rule_of_tree_val else_comp)
   | Binary_op ((op, _), left, right) ->
-      rule_of_binary_op op (rule_of_tree_val left) (rule_of_tree_val right)
+      rule_of_binary_op id op (rule_of_tree_val left) (rule_of_tree_val right)
   | Unary_op ((Neg, _), comp) ->
-      rule_of_neg_op (rule_of_tree_val comp)
+      rule_of_neg_op id (rule_of_tree_val comp)
   | Unary_op ((Is_undef, _), comp) ->
-      rule_of_undef_op (rule_of_tree_val comp)
+      rule_of_undef_op id (rule_of_tree_val comp)
   | Ref rule_name ->
-      rule_of_ref (Rule_name.to_string rule_name)
+      rule_of_ref id (Rule_name.to_string rule_name)
   | Get_context rule_name ->
-      rule_of_get_ctx (Rule_name.to_string rule_name)
+      rule_of_get_ctx id (Rule_name.to_string rule_name)
   | Set_context {context; value} ->
       let context_items =
         List.map context ~f:(fun ((rule_name, _), value) ->
             (Rule_name.to_string rule_name, rule_of_tree_val value) )
       in
-      rule_of_set_ctx (rule_of_tree_val value) context_items
+      rule_of_set_ctx id (rule_of_tree_val value) context_items
 
 let from_rules hashed_tree =
   let rules =
