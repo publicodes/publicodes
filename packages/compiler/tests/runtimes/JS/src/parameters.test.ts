@@ -95,33 +95,42 @@ with constant:
 	})
 
 	test('with context', () => {
-		expect(r['with context'].evaluateParams()).toEqual({
+		expect(r['with context'].evaluateParams({}, { noTrace: true })).toEqual({
 			missing: [],
 			needed: [],
+			trace: {},
 			value: 9,
 		})
 	})
 
 	test('with embeded context', () => {
-		expect(r['with embeded context'].evaluateParams()).toEqual({
+		expect(
+			r['with embeded context'].evaluateParams({}, { noTrace: true }),
+		).toEqual({
 			missing: ['params . a'],
 			needed: ['params . a'],
+			trace: {},
 			value: undefined,
 		})
 
 		expect(
-			r['with embeded context'].evaluateParams({ 'params . a': 4 }),
+			r['with embeded context'].evaluateParams(
+				{ 'params . a': 4 },
+				{ noTrace: true },
+			),
 		).toEqual({
 			missing: [],
 			needed: ['params . a'],
+			trace: {},
 			value: 17,
 		})
 	})
 
 	test('with embeded context', () => {
-		expect(r['with constant'].evaluateParams()).toEqual({
+		expect(r['with constant'].evaluateParams({}, { noTrace: true })).toEqual({
 			missing: [],
 			needed: [],
+			trace: {},
 			value: 6,
 		})
 	})

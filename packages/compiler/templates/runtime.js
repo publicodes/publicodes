@@ -577,11 +577,19 @@ function $ref(rule, fn, ctx, params) {
 
 function $evaluate(fn, _global, options = {}) {
 	const params = []
-	const value = fn({ _global, _options: options }, params)
+	const ctx = { _global, _options: options, _trace: {} }
+	const value = fn(ctx, params)
 	const needed = Array.from(new Set(params))
 	const missing = needed.filter((p) => !(p in _global))
 
-	return { value, needed, missing }
+	return { value, needed, missing, trace: ctx._trace }
+}
+
+function $ret(id, ctx, value) {
+	if (!ctx._options.noTrace) {
+		ctx._trace[id] = value
+	}
+	return value
 }
 
 /** End embedded runtime */

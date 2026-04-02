@@ -62,3 +62,14 @@ let to_loc (pos : pos) : Stdune.Loc.t =
   Stdune.Loc.create
     ~start:(Point.to_position pos.start_pos ~file:pos.file)
     ~stop:(Point.to_position pos.end_pos ~file:pos.file)
+
+let to_id (pos : pos) : string =
+  let hash = Cryptokit.Hash.sha256 () in
+  hash#add_string pos.file ;
+  hash#add_byte pos.start_pos.index ;
+  hash#add_byte pos.start_pos.line ;
+  hash#add_byte pos.start_pos.column ;
+  hash#add_byte pos.end_pos.index ;
+  hash#add_byte pos.end_pos.line ;
+  hash#add_byte pos.end_pos.column ;
+  Cryptokit.transform_string (Cryptokit.Hexa.encode ()) hash#result
