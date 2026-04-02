@@ -17985,7 +17985,6 @@ __metadata:
     prettier: "npm:^3.1.0"
     prettier-plugin-svelte: "npm:^3.2.4"
     prettier-plugin-tailwindcss: "npm:^0.6.5"
-    publicodes: "workspace:^"
     rimraf: "npm:^3.0.2"
     turbo: "npm:^2.2.3"
     typescript-eslint: "npm:^8.16.0"
@@ -20268,9 +20267,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-jsx@npm:5.1.1":
-  version: 5.1.1
-  resolution: "styled-jsx@npm:5.1.1"
+"styled-jsx@npm:5.1.6":
+  version: 5.1.6
+  resolution: "styled-jsx@npm:5.1.6"
   dependencies:
     client-only: "npm:0.0.1"
   peerDependencies:
