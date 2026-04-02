@@ -43,8 +43,10 @@ const NotApplicable = /** @type {NotApplicable} */ (
  *
  * Other types:
  * @typedef {string} RuleName
- * @typedef {{cache?: boolean}} Options
- * @typedef {{[rule: RuleName]: Value } & { _global: Partial<Record<RuleName, Value>>, _options: Options}} Context
+ * @typedef {Record<string, Value>} Trace
+ * @typedef {{cache?: boolean, trace?: boolean}} Options
+ * @typedef {{[rule: RuleName]: Value } & { _global: Partial<Record<RuleName, Value>>, _options: Options, _trace: Trace}} Context
+ * @typedef {{value: Value, needed: RuleName[], missing: RuleName[], trace: Trace}} Evaluated
  */
 
 /**
@@ -689,16 +691,33 @@ function $ref(rule, fn, ctx, params) {
  * @param {Function} fn
  * @param {Context['_global']} _global
  * @param {Options} options
- * @returns {{value: Value, needed: RuleName[], missing: RuleName[]}}
+ * @returns {Evaluated}
  */
 function $evaluate(fn, _global, options = {}) {
 	/** @type {RuleName[]} */
 	const params = []
-	const value = fn({ _global, _options: options }, params)
+	const ctx = { _global, _options: options, _trace: {} }
+	const value = fn(ctx, params)
 	const needed = Array.from(new Set(params))
 	const missing = needed.filter((p) => !(p in _global))
 
-	return { value, needed, missing }
+	return { value, needed, missing, trace: ctx._trace }
+}
+
+/**
+ * Return an evaluated value, and if the [trace] option is set, hydrates the
+ * evaluation trace.
+ *
+ * @param {string} id
+ * @param {Context} ctx
+ * @param {Value} value
+ * @returns {Value}
+ */
+function $ret(id, ctx, value) {
+	if (ctx._options.trace) {
+		ctx._trace[id] = value
+	}
+	return value
 }
 
 export const p = {

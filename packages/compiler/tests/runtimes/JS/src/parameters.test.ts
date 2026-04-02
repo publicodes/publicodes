@@ -98,6 +98,7 @@ with constant:
 		expect(r['with context'].evaluateParams()).toEqual({
 			missing: [],
 			needed: [],
+			trace: {},
 			value: 9,
 		})
 	})
@@ -106,6 +107,7 @@ with constant:
 		expect(r['with embeded context'].evaluateParams()).toEqual({
 			missing: ['params . a'],
 			needed: ['params . a'],
+			trace: {},
 			value: p.NotDefined,
 		})
 
@@ -114,6 +116,7 @@ with constant:
 		).toEqual({
 			missing: [],
 			needed: ['params . a'],
+			trace: {},
 			value: 17,
 		})
 	})
@@ -122,7 +125,33 @@ with constant:
 		expect(r['with constant'].evaluateParams()).toEqual({
 			missing: [],
 			needed: [],
+			trace: {},
 			value: 6,
+		})
+	})
+
+	test('with trace', () => {
+		expect(
+			r['with embeded context'].evaluateParams(
+				{ 'params . a': 4 },
+				{ trace: true },
+			),
+		).toEqual({
+			missing: [],
+			needed: ['params . a'],
+			trace: {
+				'555ccda59844e913a64b1f498d5d9df0': 9,
+				'5d401c2a9eb8b8d49a33af4d66c6c383': 4,
+				'8f2b9e2f3702120275459974e5f4d8e7': 17,
+				a989d85c9e8c51126db1bc3672ae6bb9: 9,
+				b2e2684cc0c1e14723e3832c0e3ffa43: 2,
+				c4651942ba177b21360915506b5c3294: 9,
+				ecce653a2bfb77f49115594fd4a80f01: 4,
+				ee46807607510687ecd6bb320970ecd1: 8,
+				fc262924710df1b37ca620c1baf06fc2: 5,
+				fdc9a73d9e3cd2036f5b45c657830872: 4,
+			},
+			value: 17,
 		})
 	})
 })

@@ -1,6 +1,11 @@
 /* eslint-disable no-console */
 import { $, env } from 'bun'
-import { Context, RuleName, Value } from '../../../../runtimes/runtime'
+import {
+	Context,
+	Evaluated,
+	Options,
+	Value,
+} from '../../../../runtimes/runtime'
 
 export { p } from '../../../../runtimes/runtime'
 
@@ -65,11 +70,7 @@ type PublicodeExport = Record<
 	string,
 	{
 		evaluate: (c?: Context['_global']) => Value
-		evaluateParams: (c?: Context['_global']) => {
-			value: Value | undefined
-			missing: RuleName[]
-			needed: RuleName[]
-		}
+		evaluateParams: (c?: Context['_global'], o?: Options) => Evaluated
 		title: string
 		description?: string
 		note?: string
