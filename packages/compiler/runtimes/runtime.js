@@ -694,11 +694,27 @@ function $ref(rule, fn, ctx, params) {
 function $evaluate(fn, _global, options = {}) {
 	/** @type {RuleName[]} */
 	const params = []
-	const value = fn({ _global, _options: options }, params)
+	const ctx = { _global, _options: options, _trace: {} }
+	const value = fn(ctx, params)
 	const needed = Array.from(new Set(params))
 	const missing = needed.filter((p) => !(p in _global))
 
-	return { value, needed, missing }
+	return { value, needed, missing, trace: ctx._trace }
+}
+
+/**
+ * Return an evaluated value, and potentially hydrate the evaluation trace.
+ *
+ * @param string id
+ * @param {Context} ctx
+ * @param Value value
+ * @returns Value
+ */
+function $ret(id, ctx, value) {
+	if (ctx._options.trace) {
+		ctx._trace[id] = value
+	}
+	return value
 }
 
 export const p = {
