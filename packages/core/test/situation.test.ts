@@ -209,6 +209,7 @@ a:
 			engine.setSituation({ a: 'non valide' })
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (e) {
+			// eslint-disable-next-line vitest/no-conditional-expect
 			expect(engine.evaluate('a').nodeValue).toBe(10)
 		}
 	})
