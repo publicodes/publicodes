@@ -13,8 +13,5 @@
 		"mitata": "^1.0.34",
 		"publicodes": "workspace:^",
 		"typescript": "^5.9.2"
-	},
-	"scripts": {
-		"test:type": "tsc --noEmit"
 	}
 }
