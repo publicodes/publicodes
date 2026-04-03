@@ -34,7 +34,7 @@ export default tseslint.config(
 			'**/rolldown.config.js',
 			'packages/*/bin/',
 			'packages/compiler/**/templates/*.js',
-			'packages/compiler/benchmarks/',
+			'packages/compiler/examples/',
 			'packages/compiler/_build/**',
 			'packages/compiler/_opam/**',
 		],

@@ -5260,9 +5260,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"compiler-benchmarks-js@workspace:packages/compiler/benchmarks/JS":
+"compiler-examples@workspace:packages/compiler/examples":
   version: 0.0.0-use.local
-  resolution: "compiler-benchmarks-js@workspace:packages/compiler/benchmarks/JS"
+  resolution: "compiler-examples@workspace:packages/compiler/examples"
   dependencies:
     "@mitata/counters": "npm:^0.0.8"
     "@publicodes/cli": "workspace:^"
@@ -9984,6 +9984,7 @@ __metadata:
   resolution: "publicodes@workspace:packages/core"
   dependencies:
     "@incubateur-ademe/nosgestesclimat": "npm:^3.5.3"
+    "@vitest/eslint-plugin": "npm:^1.6.14"
     dedent-js: "npm:1.0.1"
     intl: "npm:^1.2.5"
     mitata: "npm:^0.1.6"
