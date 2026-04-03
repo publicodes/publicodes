@@ -38,6 +38,7 @@ install:
 #> install-js               | Install JavaScript dependencies using yarn
 install-js:
 	@echo "Installing JavaScript dependencies..."
+	yarn --cwd $(JS_TESTS_DIR) install
 	yarn --cwd $(EXAMPLES_DIR) install
 
 #> build                    | Build the compiler using dune
