@@ -91,3 +91,14 @@ Then, you can run the test suite with:
 ```sh
 make test-js
 ```
+
+### Run benchmarks
+
+#### JavaScript
+
+Benchmarks are defined in
+[`./examples/<benchmark-name>/benchmark.ts`](./examples/) and can be run with:
+
+```sh
+make bench-<benchmark-name>
+```

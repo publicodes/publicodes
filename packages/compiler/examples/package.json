@@ -1,0 +1,20 @@
+{
+	"name": "compiler-examples",
+	"private": true,
+	"version": "2.0.0-alpha.0",
+	"description": "Publicodes JS runtime benchmark on real-world examples",
+	"type": "module",
+	"license": "MIT",
+	"devDependencies": {
+		"@mitata/counters": "^0.0.8",
+		"@publicodes/cli": "workspace:^",
+		"@publicodes/tools": "workspace:^",
+		"bun": "^1.3.11",
+		"mitata": "^1.0.34",
+		"publicodes": "workspace:^",
+		"typescript": "^5.9.2"
+	},
+	"scripts": {
+		"test:type": "tsc --noEmit"
+	}
+}
