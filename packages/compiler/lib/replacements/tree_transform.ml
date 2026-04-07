@@ -65,8 +65,8 @@ let find_applicable_make_not_applicable ~rule ~reference replacements =
   |> List.filter ~f:(is_replacement_applicable ~rule)
   |> List.map ~f:fst
 
-let create_make_not_applicable_node ~mk ~pos ~condition_node ~node =
-  let p = mk ~pos in
+let create_make_not_applicable_node ~mk ~pos ~id ~condition_node ~node =
+  let p = mk ~pos ~id in
   let o = Pos.mk ~pos in
   (* if (condition_node = null || is_undef condition_node || condition_node = false) then node else null *)
   p
@@ -86,8 +86,8 @@ let create_make_not_applicable_node ~mk ~pos ~condition_node ~node =
        , node
        , p (Const Null) ) )
 
-let create_replace_node ~mk ~pos ~replacing_node ~node =
-  let p = mk ~pos in
+let create_replace_node ~mk ~pos ~id ~replacing_node ~node =
+  let p = mk ~pos ~id in
   let o = Pos.mk ~pos in
   (* if replacement != null then replacement else node *)
   p
@@ -104,6 +104,7 @@ let apply_replacements ~(replacements : t) ~(mk : 'a mk_value_fn)
   let rec apply_to_node ~(rule : Rule_name.t) (node : 'a Eval_tree.value) :
       'a Eval_tree.value =
     let pos = node.pos in
+    let id = node.id in
     match node.value with
     | Ref reference ->
         let replacement_list, log =
@@ -115,9 +116,9 @@ let apply_replacements ~(replacements : t) ~(mk : 'a mk_value_fn)
           List.fold replacement_list ~init:node ~f:(fun node_acc replacement ->
               (* Apply replacements recursively to the replacing node *)
               let replacing_node =
-                apply_to_node ~rule (mk ~pos (Ref replacement))
+                apply_to_node ~rule (mk ~pos ~id (Ref replacement))
               in
-              create_replace_node ~mk ~pos ~replacing_node ~node:node_acc )
+              create_replace_node ~mk ~id ~pos ~replacing_node ~node:node_acc )
         in
         let make_not_applicable_list =
           find_applicable_make_not_applicable ~rule ~reference
@@ -128,9 +129,9 @@ let apply_replacements ~(replacements : t) ~(mk : 'a mk_value_fn)
             ~f:(fun node_acc condition_rule ->
               (* Apply make not applicable recursively (to handle transitivity) *)
               let condition_node =
-                apply_to_node ~rule (mk ~pos (Ref condition_rule))
+                apply_to_node ~rule (mk ~pos ~id (Ref condition_rule))
               in
-              create_make_not_applicable_node ~mk ~pos ~condition_node
+              create_make_not_applicable_node ~mk ~pos ~id ~condition_node
                 ~node:node_acc )
         in
         node

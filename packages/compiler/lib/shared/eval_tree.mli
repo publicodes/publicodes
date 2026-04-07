@@ -28,10 +28,11 @@ and 'meta context =
   {context: (Rule_name.t Pos.t * 'meta value) list; value: 'meta value}
 [@@deriving show]
 
-and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.pos}
+and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.pos; id: int}
 [@@deriving show]
 
-type 'meta mk_value_fn = pos:Pos.pos -> 'meta naked_value -> 'meta value
+type 'meta mk_value_fn =
+  pos:Pos.pos -> id:int -> 'meta naked_value -> 'meta value
 
 type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving show]
 

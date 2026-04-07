@@ -26,7 +26,8 @@ let rec normalize_value (value : Tree.value) : Tree.value =
 and normalize_rounding_precision (precision : Tree.value) =
   let typ = to_concrete precision.meta in
   let pos = precision.pos in
-  let p = Tree.mk ~pos ~typ:(number_with_unit ~pos Units.empty) in
+  let id = precision.id in
+  let p = Tree.mk ~pos ~id ~typ:(number_with_unit ~pos Units.empty) in
   match typ with
   (* Case 1: precision is BOOLEAN *)
   | Some (Literal Bool) ->

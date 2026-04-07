@@ -4,11 +4,13 @@ open Shared
 open Utils
 open Output
 
-let convert ~pos expr from_unit to_unit =
+let convert ~pos id expr from_unit to_unit =
   let percent_pow_from = Map.find from_unit "%" |> Option.value ~default:0 in
   let percent_pow_to = Map.find to_unit "%" |> Option.value ~default:0 in
-  let mk node = Tree.mk ~pos ~typ:(number_with_unit ~pos Units.empty) node in
-  Tree.mk ~pos
+  let mk node =
+    Tree.mk ~pos ~id ~typ:(number_with_unit ~pos Units.empty) node
+  in
+  Tree.mk ~pos ~id
     ~typ:(number_with_unit ~pos to_unit)
     (Binary_op
        ( Pos.mk ~pos Shared_ast.Mul
@@ -35,7 +37,8 @@ Note : this will not work if the user assign a unit to a one that would have bee
 @TODO : we shouldn't allow user to specify unit that are not simplified (for instance %.% or €/% )
 *)
 
-let simplify_value ({pos; meta= typ; value} as expr : Tree.value) : Tree.value =
+let simplify_value ({pos; meta= typ; value; id} as expr : Tree.value) :
+    Tree.value =
   match value with
   | Binary_op (((Shared_ast.Mul as op), _), right, left)
   | Binary_op (((Shared_ast.Div as op), _), right, left) ->
@@ -53,7 +56,8 @@ let simplify_value ({pos; meta= typ; value} as expr : Tree.value) : Tree.value =
           | _ ->
               failwith "Unexpected operator"
         in
-        if not (equal op_unit unit) then return (convert ~pos expr op_unit unit)
+        if not (equal op_unit unit) then
+          return (convert ~pos id expr op_unit unit)
         else return expr
       in
       new_expr |> Output.value ~default:expr

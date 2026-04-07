@@ -7,7 +7,7 @@ open Shared.Shared_ast
 open Shared.Eval_tree
 
 let type_check ?(snd_pass = false) (tree : Tree.t) =
-  let rec unify_value {meta= typ; pos; value} =
+  let rec unify_value {meta= typ; pos; value; id= _} =
     match value with
     | Const const -> (
       match const with
