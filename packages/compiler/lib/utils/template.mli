@@ -1,7 +1,3 @@
-open Jingoo.Jg_types
-
-type t
-
-val from_rules_outputs : tvalue -> tvalue -> t
+type t = (string * Jingoo.Jg_types.tvalue) list
 
 val from_template : string -> t -> string

@@ -264,6 +264,20 @@ let from_output hashed_tree Model_outputs.{rule_name; parameters; meta; _} =
 let from_outputs hashed_tree outputs =
   Tlist (List.map outputs ~f:(from_output hashed_tree))
 
-let models tree outputs =
-  Utils.Template.from_rules_outputs (from_rules tree)
-    (from_outputs tree outputs)
+let models ?with_runtime tree outputs =
+  let rules = from_rules tree in
+  let outputs = from_outputs tree outputs in
+  let model = [("rules", rules); ("outputs", outputs)] in
+  match with_runtime with
+  | Some runtime ->
+      ("runtime", Tstr runtime) :: model
+  | None ->
+      model
+
+let to_js tree outputs =
+  let model = models tree outputs ~with_runtime:Template_js.runtime in
+  Utils.Template.from_template Template_js.template model
+
+let to_debug tree outputs =
+  let model = models tree outputs in
+  Utils.Template.from_template Template_debug.template model

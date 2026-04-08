@@ -61,32 +61,6 @@ summary(() => {
 		})
 	})
 
-	group('Same evaluation repeated with cache', () => {
-		const legacyEngineAE = new LegacyEngine(autoEntrepreneurLegacyRules)
-		legacyEngineAE.setSituation(situation)
-
-		bench('Publicodes 1', () => {
-			do_not_optimize(
-				legacyEngineAE.evaluate('dirigeant . auto-entrepreneur . revenu net')
-					.nodeValue,
-			)
-		})
-
-		bench('Publicodes 2 (with cache)', () => {
-			do_not_optimize(
-				rules['dirigeant . auto-entrepreneur . revenu net'].evaluate(contexte, {
-					cache: true,
-				}),
-			)
-		})
-
-		bench('Publicodes 2 (without cache)', () => {
-			do_not_optimize(
-				rules['dirigeant . auto-entrepreneur . revenu net'].evaluate(contexte),
-			)
-		})
-	})
-
 	group('Multiple rules evaluated first eval', () => {
 		const legacyEngineAE = new LegacyEngine(autoEntrepreneurLegacyRules)
 

@@ -1,8 +1,4 @@
-open Jingoo.Jg_types
-
 type t = (string * Jingoo.Jg_types.tvalue) list
-
-let from_rules_outputs rules outputs = [("rules", rules); ("outputs", outputs)]
 
 let from_template template models =
   Jingoo.Jg_template.from_string
