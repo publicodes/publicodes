@@ -12,3 +12,25 @@
    ppx_inline_test
    ppx_sexp_conv
    sedlex.ppx)))
+
+(rule
+ (with-stdout-to
+  js_template.ml
+  (progn
+   (echo "let template = {|")
+   (cat ./templates/js_template.jinja)
+   (echo "|}")
+   (echo "let runtime = {|")
+   (cat ../../runtimes/runtime.js)
+   (echo "|}")
+   )
+))
+
+(rule
+ (with-stdout-to
+  debug_template.ml
+  (progn
+   (echo "let template = {|")
+   (cat ./templates/debug_template.jinja)
+   (echo "|}"))
+))

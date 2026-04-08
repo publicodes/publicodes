@@ -36,12 +36,11 @@ let compile ~input_files ~output_type ~default_to_public =
     Dependency_graph.cycle_check eval_tree
     >>= Dependency_graph.extract_outputs ~ast ~eval_tree
   in
-  let models = Hashed_tree.to_jingoo_models eval_tree outputs in
-  let template =
+  let output_str =
     match output_type with
     | Debug_eval_tree ->
-        Eval_tree_template.template
+        Hashed_tree.to_debug_str eval_tree outputs
     | Js ->
-        Js_template.template
+        Hashed_tree.to_js_str eval_tree outputs
   in
-  return (Utils.Template.from_template template models)
+  return output_str
