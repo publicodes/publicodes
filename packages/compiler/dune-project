@@ -41,7 +41,7 @@
     (jingoo (and (>= 1.5.2) (< 1.6)))
     yojson
 	  (ocaml-lsp-server :with-dev-setup)
-	  (ocamlformat (>= 0.28.1 :with-dev-setup))
+	  (ocamlformat (and (>= 0.28.1) :with-dev-setup))
 	  (ppx_inline_test :with-test)
 	  (ppx_assert :with-test)
 	  (ppx_compare :with-test))
