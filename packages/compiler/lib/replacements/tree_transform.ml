@@ -1,6 +1,5 @@
 open Shared
 open Shared.Eval_tree
-open Shared.Shared_ast
 open Utils
 open Base
 open Utils.Output
@@ -65,38 +64,32 @@ let find_applicable_make_not_applicable ~rule ~reference replacements =
   |> List.filter ~f:(is_replacement_applicable ~rule)
   |> List.map ~f:fst
 
-(* TODO: should be refactored with EDSL functions from Eval_tree? *)
-(* NOTE: is it really necessary to have mk as paramter here? *)
+(* TODO: is it really necessary to have mk as parameter here? *)
 let create_make_not_applicable_node ~mk ~pos ~condition_node ~node =
   let p = mk ~pos in
-  let o = Pos.mk ~pos in
-  (* if (condition_node = null || is_undef condition_node || condition_node = false) then node else null *)
-  p
-    (Condition
-       ( p
-           (Binary_op
-              ( o Or
-              , p (Binary_op (o Eq, condition_node, p (Const Not_applicable)))
-              , p
-                  (Binary_op
-                     ( o Or
-                     , p (Unary_op (Pos.mk ~pos Is_not_defined, condition_node))
-                     , p
-                         (Binary_op
-                            (o Eq, condition_node, p (Const (Bool false))) ) )
-                  ) ) )
-       , node
-       , p (Const Not_applicable) ) )
+  (* if (condition_node = null || is_not_defined condition_node || condition_node = false)
+        then node else null *)
+  Eval_tree.(
+    p
+      (mk_condition
+         ~cond:
+           (p
+              (binop_or ~pos
+                 (p (binop_eq ~pos condition_node (p const_not_applicable)))
+                 (p
+                    (binop_or ~pos
+                       (p (unop_is_not_defined ~pos condition_node))
+                       (p (binop_eq ~pos condition_node (p const_false))) ) ) ) )
+         ~then_:node ~else_:(p const_not_applicable) ) )
 
 let create_replace_node ~mk ~pos ~replacing_node ~node =
   let p = mk ~pos in
-  let o = Pos.mk ~pos in
   (* if replacement != null then replacement else node *)
-  p
-    (Condition
-       ( p (Binary_op (o NotEq, replacing_node, p (Const Not_applicable)))
-       , replacing_node
-       , node ) )
+  Eval_tree.(
+    p
+      (mk_condition
+         ~cond:(p (binop_neq ~pos replacing_node (p const_not_applicable)))
+         ~then_:replacing_node ~else_:node ) )
 
 (** Apply rule replacements to a tree *)
 let apply_replacements ~(replacements : t) ~(mk : 'a mk_value_fn)
