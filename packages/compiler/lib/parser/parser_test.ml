@@ -51,7 +51,7 @@ let%test_unit "parse: empty rule" =
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
         (Shared.Rule_name.create_exn ["rule 1"]) ;
       [%test_eq: string list Shared.Shared_ast.value] rule_def.value
-        {value= p 0 Undefined; chainable_mechanisms= []}
+        {value= p 0 Not_defined; chainable_mechanisms= []}
   | _ ->
       print_logs output ;
       assert false
@@ -68,7 +68,7 @@ let%test_unit "parse: rules with title" =
       [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
         (Shared.Rule_name.create_exn ["rule 1"; "subrule 2"]) ;
       [%test_eq: string list Shared.Shared_ast.value] rule_def.value
-        {value= p 0 Undefined; chainable_mechanisms= []}
+        {value= p 0 Not_defined; chainable_mechanisms= []}
   | _ ->
       print_logs output ;
       assert false

@@ -21,7 +21,7 @@
 {%- macro fmt_unop (op) %}
 	{%- switch op %}
 	{%- case "neg_op" -%} -
-	{%- case "is_undef" -%} is_undef
+	{%- case "is_not_defined_op" -%} is_not_defined
 	{%- endswitch %}
 {%- endmacro %}
 
@@ -65,11 +65,11 @@ Shared_ast.Day {day = {{ rule_value.day }}; year = {{ rule_value.year }}; month 
 Shared_ast.Month {month = {{ rule_value.month}}; year = {{ rule_value.year }}}
 {%- endif %}
 
-{%- case "not applicable" -%}
-null
+{%- case "not_applicable" -%}
+not_applicable
 
-{%- case "undefined" -%}
-undefined
+{%- case "not_defined" -%}
+not_defined
 
 {%- case "round" -%}
 round {% if rule_value.mode != "nearest" %}{{ rule_value.mode }} {% endif %}to:

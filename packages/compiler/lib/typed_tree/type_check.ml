@@ -27,7 +27,7 @@ let type_check ?(snd_pass = false) (tree : Tree.t) =
       | Date _ ->
           let+ _ = unify typ (literal ~pos Date) in
           ()
-      | Undefined | Null ->
+      | Not_defined | Not_applicable ->
           return () )
     | Binary_op ((operator, _), left, right) -> (
         let* _ = unify_value left in
@@ -71,7 +71,7 @@ let type_check ?(snd_pass = false) (tree : Tree.t) =
           let* _ = unify expr.meta (any_number ~pos ()) in
           let+ _ = unify typ expr.meta in
           ()
-      | Is_undef ->
+      | Is_not_defined ->
           let* _ = unify_value expr in
           let+ _ = unify typ (literal ~pos Bool) in
           () )

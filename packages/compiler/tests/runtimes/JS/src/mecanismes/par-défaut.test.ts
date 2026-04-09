@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'bun:test'
-import { yaml } from '../compile'
+import { p, yaml } from '../compile'
 
 describe('Mécanisme > par défaut', () => {
 	test('simple nombre', async () => {
@@ -27,7 +27,7 @@ test:
   valeur: b
 `
 		expect(rules.test.evaluateParams()).toMatchObject({
-			value: undefined,
+			value: p.NotDefined,
 			missing: ['b', 'a'],
 		})
 
@@ -49,7 +49,7 @@ test:
   par défaut: a
 `
 		expect(rules.test.evaluateParams()).toMatchObject({
-			value: undefined,
+			value: p.NotDefined,
 			missing: ['test', 'a'],
 		})
 

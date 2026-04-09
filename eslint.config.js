@@ -37,6 +37,7 @@ export default tseslint.config(
 			'packages/compiler/examples/',
 			'packages/compiler/_build/**',
 			'packages/compiler/_opam/**',
+			'packages/compiler/runtimes/runtime.js',
 		],
 	},
 )
