@@ -1,7 +1,9 @@
 open Base
 module Typ = Typ
 open Shared
-include Utils.Output
+open Utils
+open Output.Let_syntax
+open Output.Infix
 include Tree
 
 let from_resolved_ast = From_ast.from_ast
@@ -21,7 +23,7 @@ let type_check tree =
 	@TODO : the simplest and more efficient way to do it would be have topological sort before type checking
 *)
   let* tree =
-    tree |> Type_check.type_check |> ignore_logs
+    Type_check.type_check tree |> Output.ignore_logs
     >>= Type_check.type_check ~snd_pass:true
   in
   (*
@@ -36,9 +38,9 @@ let type_check tree =
 	different, consider refactoring this to a new pass.
 *)
   let post_transform value =
-    value |> Simplify_unit.simplify_value |> Mecha_rounding.normalize_value
+    Simplify_unit.simplify_value value |> Mecha_rounding.normalize_value
   in
   let normalized_tree =
     Hashtbl.map ~f:(Eval_tree.map_value ~f:post_transform) tree
   in
-  return normalized_tree
+  Output.return normalized_tree

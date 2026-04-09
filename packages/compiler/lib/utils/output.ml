@@ -79,14 +79,23 @@ let default_to ~default = function None, logs -> (Some default, logs) | x -> x
 let value ~default = function None, _ -> default | Some x, _ -> x
 
 (* Monadic operators *)
-let ( >>= ) m f = bind m ~f
+module Infix = struct
+  let ( >>= ) m f = bind m ~f
 
-let ( >>| ) m f = map ~f m
+  let ( >>| ) m f = map ~f m
+end
 
-(* Applicative syntax *)
-let ( let+ ) m f = map ~f m
+include Infix
 
-let ( let* ) m f = bind m ~f
+module Let_syntax = struct
+  let return = return
+
+  let ( let+ ) m f = map ~f m
+
+  let ( let* ) m f = bind m ~f
+end
+
+include Let_syntax
 
 (* Print functions *)
 
