@@ -1,8 +1,8 @@
 Simple addition/soustraction expression :
 
   $ publicodes compile simple.publicodes -t debug_eval_tree -o -
-  simple expression :
-  12. + 4.5
+  simple expression:
+    12. + 4.5
 
 Missing term :
 

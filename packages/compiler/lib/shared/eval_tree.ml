@@ -66,11 +66,29 @@ let rec map_value ~(f : 'a value -> 'a value) (c : 'a value) : 'a value =
 
 (** {1 Constructors for naked values} *)
 
+let mk_binop ~pos op left right = Binary_op (Pos.mk ~pos op, left, right)
+
 let unop_is_not_defined ~pos comp = Unary_op (Pos.mk ~pos Is_not_defined, comp)
 
-let binop_or ~pos left right = Binary_op (Pos.mk ~pos Shared_ast.Or, left, right)
+let binop_or ~pos = mk_binop ~pos Shared_ast.Or
 
-let binop_eq ~pos left right = Binary_op (Pos.mk ~pos Shared_ast.Eq, left, right)
+let binop_and ~pos = mk_binop ~pos Shared_ast.And
+
+let binop_eq ~pos = mk_binop ~pos Shared_ast.Eq
+
+let binop_neq ~pos = mk_binop ~pos Shared_ast.NotEq
+
+let binop_lt ~pos = mk_binop ~pos Shared_ast.Lt
+
+let binop_gt ~pos = mk_binop ~pos Shared_ast.Gt
+
+let binop_add ~pos = mk_binop ~pos Shared_ast.Add
+
+let binop_mul ~pos = mk_binop ~pos Shared_ast.Mul
+
+let binop_max ~pos = mk_binop ~pos Shared_ast.Max
+
+let binop_min ~pos = mk_binop ~pos Shared_ast.Min
 
 let mk_condition ~cond ~then_ ~else_ = Condition (cond, then_, else_)
 
@@ -79,3 +97,5 @@ let const_not_applicable = Const Not_applicable
 let const_not_defined = Const Not_defined
 
 let const_false = Const (Bool false)
+
+let const_true = Const (Bool true)
