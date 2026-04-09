@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, test } from 'bun:test'
-import { TestPublicodes, yaml } from '../compile'
+import { p, TestPublicodes, yaml } from '../compile'
 
 describe('Mécanisme > applicable si', () => {
 	let engine: TestPublicodes
@@ -14,26 +14,16 @@ condition:
 	})
 
 	test.each([
-		[
-			'condition vrai',
-			{ condition: true },
-			{ value: 10, missingParameters: [] },
-		],
-		[
-			'condition fausse',
-			{ condition: false },
-			{ value: null, missingParameters: [] },
-		],
-		[
-			'condition non définie',
-			{},
-			{ value: null, missingParameters: ['condition'] },
-		],
+		['condition vrai', { condition: true }, 10],
+		['condition fausse', { condition: false }, p.NotApplicable],
+		['condition non définie', {}, p.NotApplicable],
 	])('%s', (_, context, expected) => {
-		expect(engine.test.evaluate(context)).toBe(expected.value)
-		expect(engine.test.evaluateParams(context).missing).toEqual(
-			expected.missingParameters,
-		)
+		expect(engine.test.evaluate(context)).toEqual(expected)
+	})
+
+	test('missing parameters', () => {
+		expect(engine.test.evaluateParams({ condition: false }).missing).toEqual([])
+		expect(engine.test.evaluateParams({}).missing).toEqual(['condition'])
 	})
 
 	test('condition non applicable', async () => {
@@ -45,7 +35,7 @@ a:
 condition:
   applicable si: non
 `
-		expect(a.evaluate()).toBe(null)
+		expect(p.isNotApplicable(a.evaluate())).toBeTrue()
 	})
 
 	test("s'applique au contexte", async () => {
@@ -54,6 +44,6 @@ test:
   applicable si: non
 condition:
 `
-		expect(engine.test.evaluate({ test: 10 })).toBe(null)
+		expect(p.isNotApplicable(engine.test.evaluate({ test: 10 }))).toBeTrue()
 	})
 })

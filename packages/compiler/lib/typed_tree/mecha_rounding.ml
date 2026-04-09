@@ -31,7 +31,10 @@ and normalize_rounding_precision (precision : Tree.value) =
   (* Case 1: precision is BOOLEAN *)
   | Some (Literal Bool) ->
       (*if precision then precision = 1 else precision = Non applicable *)
-      p (Condition (precision, p (Const (Number (1., None))), p (Const Null)))
+      p
+        (Condition
+           (precision, p (Const (Number (1., None))), p (Const Not_applicable))
+        )
   (* Case 2: precision is in « décimales » *)
   | Some (Number (Some unit))
     when Units.equal unit (Units.parse_unit "décimales") ->

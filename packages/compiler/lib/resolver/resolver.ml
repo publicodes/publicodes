@@ -98,7 +98,7 @@ let resolve_rule ~rule_names rule =
       match value with
       | Expr expr ->
           let mapped_expr = map_expr expr >>| fun e -> Expr e in
-          Output.default_to ~default:Undefined mapped_expr
+          Output.default_to ~default:Not_defined mapped_expr
       | Sum values ->
           let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
           Sum mapped_values
@@ -126,8 +126,8 @@ let resolve_rule ~rule_names rule =
       | Is_not_applicable value ->
           let+ value = map_value value in
           Is_not_applicable value
-      | Undefined ->
-          return Undefined
+      | Not_defined ->
+          return Not_defined
       | Variations (variations, else_) ->
           let* variations =
             List.map

@@ -28,11 +28,11 @@ let rec transform_expr (expr, pos) =
   | Shared_ast.Ref name ->
       mk ~pos (Ref name)
 
-and transform_value ?(undefined = Const Undefined) (node : 'a Shared_ast.value)
+and transform_value ?(undefined = Const Not_defined) (node : 'a Shared_ast.value)
     =
   let value =
     match Pos.value node.value with
-    | Shared_ast.Undefined ->
+    | Shared_ast.Not_defined ->
         mk ~pos:(Pos.pos node.value) undefined
     | _ ->
         transform_mechanism_value node.value
@@ -41,8 +41,8 @@ and transform_value ?(undefined = Const Undefined) (node : 'a Shared_ast.value)
 
 and transform_mechanism_value (node, pos) =
   match node with
-  | Shared_ast.Undefined ->
-      mk ~pos (Const Undefined)
+  | Shared_ast.Not_defined ->
+      mk ~pos (Const Not_defined)
   | Shared_ast.Expr expr ->
       transform_expr expr
   | Shared_ast.Sum sum ->
@@ -95,7 +95,7 @@ and transform_sum ~pos nodes =
   let typ = any_number () ~pos in
   match nodes with
   | [] ->
-      mk ~pos ~typ (Const Null)
+      mk ~pos ~typ (Const Not_applicable)
   | n :: nodes ->
       let value = transform_value n in
       let init = {value with meta= typ} in
@@ -107,7 +107,7 @@ and transform_product ~pos nodes =
   let typ = any_number () ~pos in
   match nodes with
   | [] ->
-      mk ~pos ~typ (Const Null)
+      mk ~pos ~typ (Const Not_applicable)
   | n :: nodes ->
       let value = transform_value n in
       let init = {value with meta= typ} in
@@ -119,7 +119,7 @@ and transform_any_of ~pos nodes =
   let typ = literal ~pos Bool in
   match nodes with
   | [] ->
-      mk ~pos ~typ (Const Null)
+      mk ~pos ~typ (Const Not_applicable)
   | nodes ->
       let init = mk ~pos ~typ (Const (Bool false)) in
       List.fold_right nodes ~init ~f:(fun node acc ->
@@ -130,7 +130,7 @@ and transform_all_of ~pos nodes =
   let typ = literal ~pos Bool in
   match nodes with
   | [] ->
-      mk ~pos ~typ (Const Null)
+      mk ~pos ~typ (Const Not_applicable)
   | nodes ->
       let init = mk ~pos ~typ (Const (Bool true)) in
       List.fold_right nodes ~init ~f:(fun node acc ->
@@ -141,7 +141,7 @@ and transform_max_of ~pos nodes =
   let typ = any_number ~pos () in
   match nodes with
   | [] ->
-      mk ~pos ~typ (Const Null)
+      mk ~pos ~typ (Const Not_applicable)
   | n :: nodes ->
       let value = transform_value n in
       let init = {value with meta= typ} in
@@ -153,7 +153,7 @@ and transform_min_of ~pos nodes =
   let typ = any_number ~pos () in
   match nodes with
   | [] ->
-      mk ~pos ~typ (Const Null)
+      mk ~pos ~typ (Const Not_applicable)
   | n :: nodes ->
       let value = transform_value n in
       let init = {value with meta= typ} in
@@ -164,52 +164,34 @@ and transform_min_of ~pos nodes =
 and transform_applicable_if ~pos condition value =
   let p = mk ~pos in
   let condition = transform_value condition in
-  p
-    (Condition
-       ( p
-           (Binary_op
-              ( Pos.mk ~pos Shared_ast.Or
-              , p (Unary_op (Pos.mk ~pos Is_undef, condition))
-              , p
-                  (Binary_op
-                     ( Pos.mk ~pos Shared_ast.Or
-                     , p
-                         (Binary_op
-                            ( Pos.mk ~pos Shared_ast.Eq
-                            , condition
-                            , p (Const (Bool false)) ) )
-                     , p
-                         (Binary_op
-                            ( Pos.mk ~pos Shared_ast.Eq
-                            , condition
-                            , p (Const Null) ) ) ) ) ) )
-       , p (Const Null)
-       , value ) )
+  Eval_tree.(
+    p
+      (mk_condition
+         ~cond:
+           (p
+              (binop_or ~pos
+                 (p (unop_is_not_defined ~pos condition))
+                 (p
+                    (binop_or ~pos
+                       (p (binop_eq ~pos condition (p const_false)))
+                       (p (binop_eq ~pos condition (p const_not_applicable))) ) ) ) )
+         ~then_:(p const_not_applicable) ~else_:value ) )
 
 and transform_not_applicable_if ~pos condition value =
   let p = mk ~pos in
   let condition = transform_value condition in
-  p
-    (Condition
-       ( p
-           (Binary_op
-              ( Pos.mk ~pos Shared_ast.Or
-              , p (Unary_op (Pos.mk ~pos Is_undef, condition))
-              , p
-                  (Binary_op
-                     ( Pos.mk ~pos Shared_ast.Or
-                     , p
-                         (Binary_op
-                            ( Pos.mk ~pos Shared_ast.Eq
-                            , condition
-                            , p (Const (Bool false)) ) )
-                     , p
-                         (Binary_op
-                            ( Pos.mk ~pos Shared_ast.Eq
-                            , condition
-                            , p (Const Null) ) ) ) ) ) )
-       , value
-       , p (Const Null) ) )
+  Eval_tree.(
+    p
+      (mk_condition
+         ~cond:
+           (p
+              (binop_or ~pos
+                 (p (unop_is_not_defined ~pos condition))
+                 (p
+                    (binop_or ~pos
+                       (p (binop_eq ~pos condition (p const_false)))
+                       (p (binop_eq ~pos condition (p const_not_applicable))) ) ) ) )
+         ~then_:value ~else_:(p const_not_applicable) ) )
 
 and transform_floor ~pos floor value =
   let p = mk ~pos in
@@ -222,7 +204,9 @@ and transform_floor ~pos floor value =
               ( Pos.mk ~pos Shared_ast.And
               , p
                   (Binary_op
-                     (Pos.mk ~pos Shared_ast.NotEq, floor, p (Const Null)) )
+                     ( Pos.mk ~pos Shared_ast.NotEq
+                     , floor
+                     , p (Const Not_applicable) ) )
               , p (Binary_op (Pos.mk ~pos Shared_ast.Lt, value, floor)) ) )
        , floor
        , value ) )
@@ -237,8 +221,10 @@ and transform_ceiling ~pos ceil value =
            (Binary_op
               ( Pos.mk ~pos Shared_ast.And
               , p
-                  (Binary_op (Pos.mk ~pos Shared_ast.NotEq, ceil, p (Const Null))
-                  )
+                  (Binary_op
+                     ( Pos.mk ~pos Shared_ast.NotEq
+                     , ceil
+                     , p (Const Not_applicable) ) )
               , p (Binary_op (Pos.mk ~pos Shared_ast.Gt, value, ceil)) ) )
        , ceil
        , value ) )
@@ -253,16 +239,16 @@ and transform_context ~pos context value =
 
 and transform_default ~pos default value =
   let p = mk ~pos in
-  p
-    (Condition
-       ( p (Unary_op (Pos.mk ~pos Is_undef, value))
-       , transform_value default
-       , value ) )
+  Eval_tree.(
+    p
+      (Condition
+         (p (unop_is_not_defined ~pos value), transform_value default, value) ) )
 
 and transform_variations ~pos (variations, else_) =
   let p = mk ~pos in
   let else_ =
-    Option.value_map ~default:(p (Const Null)) ~f:transform_value else_
+    Option.value_map ~default:(p (Const Not_applicable)) ~f:transform_value
+      else_
   in
   List.fold_right variations ~init:else_ ~f:(fun {if_; then_} acc ->
       let if_ = transform_value if_ in
@@ -273,8 +259,10 @@ and transform_variations ~pos (variations, else_) =
                (Binary_op
                   ( Pos.mk ~pos Shared_ast.Or
                   , p
-                      (Binary_op (Pos.mk ~pos Shared_ast.Eq, if_, p (Const Null))
-                      )
+                      (Binary_op
+                         ( Pos.mk ~pos Shared_ast.Eq
+                         , if_
+                         , p (Const Not_applicable) ) )
                   , p
                       (Binary_op
                          (Pos.mk ~pos Shared_ast.Eq, if_, p (Const (Bool false)))
@@ -285,12 +273,12 @@ and transform_variations ~pos (variations, else_) =
 and transform_is_not_applicable ~pos value =
   let p = mk ~pos in
   let value = transform_value value in
-  p (Binary_op (Pos.mk ~pos Shared_ast.Eq, value, p (Const Null)))
+  p (Binary_op (Pos.mk ~pos Shared_ast.Eq, value, p (Const Not_applicable)))
 
 and transform_is_applicable ~pos value =
   let p = mk ~pos in
   let value = transform_value value in
-  p (Binary_op (Pos.mk ~pos Shared_ast.NotEq, value, p (Const Null)))
+  p (Binary_op (Pos.mk ~pos Shared_ast.NotEq, value, p (Const Not_applicable)))
 
 and transform_typ t value =
   let pos = Pos.pos t in
