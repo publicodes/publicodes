@@ -22,8 +22,7 @@
    (echo "|}")
    (echo "let runtime = {|")
    (cat ../../runtimes/runtime.js)
-   (echo "|}")
-   )
+   (echo "|}"))
 ))
 
 (rule

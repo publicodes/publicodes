@@ -97,7 +97,7 @@ let parse_value_mechanism ~pos ~parse mapping :
   in
   match mechanism with
   | None ->
-      return (Pos.mk ~pos Undefined)
+      return (Pos.mk ~pos Not_defined)
   | Some (key, value) ->
       let mechanism_name = get_value key in
       let mechanism_fn = Hashtbl.find_exn value_mechanisms mechanism_name in
