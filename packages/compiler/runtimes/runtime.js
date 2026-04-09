@@ -1,42 +1,91 @@
-/** Start embedded runtime */
 /* eslint-disable */
+
 /**
- * @typedef {Date | number | string | null | undefined} Value
- * @typedef {number | null | undefined} PNumber
- * @typedef {boolean | null | undefined} PBoolean
- * @typedef {() => PNumber} LazyNumber
- * @typedef {() => PBoolean} LazyBoolean
- * @typedef {() => Value} LazyValue
- * /
+ * @note We use branded types to represent the `undefined` and `not applicable`
+ * values. This allows to have distinct types for these two values (see
+ * https://effect.website/docs/code-style/branded-types/ or
+ * https://github.com/microsoft/TypeScript/issues/202).
+ *
+ *
+ * @typedef {symbol & { __brand: 'NotDefined' }} NotDefined
+ * @typedef {symbol & { __brand: 'NotApplicable' }} NotApplicable
+ */
+
+/**
+ * Representation of an undefined rule (e.g. parameter wihout a value). It
+ * spreads to all operations, except in:
+ * - definition checks (`est définie`, `est non définie`),
+ * - in binop operations with a neutral element (e.g. `add`, `mul`, `and` and
+ *   `or`).
+ *
+ *  @note Prefer to use the {@link p.isNotDefined} function to benefit from type
+ *  discrimination, where a simple `===` can't.
+ */
+const NotDefined = /** @type {NotDefined} */ (Symbol.for('not defined'))
+
+/**
+ * Representation of a not applicable rule (e.g. a rule that is not applicable
+ * in the current context). It spreads to all  operations, except in:
+ * - applicability checks (`est applicable`, `n'est pas applicable`),
+ * - and sum operations (e.g. `add`, `sub`, `and` and `or`) where it is
+ *   considered as a neutral element.
+ *
+ *  @note Prefer to use the {@link p.isNotApplicable} function to benefit from
+ *  type discrimination, where a simple `===` can't.
+ */
+const NotApplicable = /** @type {NotApplicable} */ (
+	Symbol.for('not applicable')
+)
+
+/**
+ * @private
+ * @typedef {Date | number | string | boolean | NotApplicable | NotDefined} Value
+ *
+ * Other types:
+ * @typedef {string} RuleName
+ * @typedef {{cache?: boolean}} Options
+ * @typedef {{[rule: RuleName]: Value } & { _global: Partial<Record<RuleName, Value>>, _options: Options}} Context
+ */
+
+/**
+ * Checks if a Publicodes value is not applicable.
+ *
+ * @note This function allow to discriminate values where a simple `value ===
+ * NotApplicable` can't.
+ *
+ * @param {Value} value
+ * @returns {value is NotApplicable}
+ */
+function isNotApplicable(value) {
+	return value === NotApplicable
+}
+
+/**
+ * Checks if a Publicodes value is not defined.
+ *
+ * @note This function allow to discriminate values where a simple `value ===
+ * NotDefined` can't.
+ *
+ * @param {Value} value
+ * @returns {value is NotDefined}
+ */
+function isNotDefined(value) {
+	return value === NotDefined
+}
 
 /**
  * TODO:
- * - How to provide better information about the error (eg. rule name,
- *   operation, etc...)?
- * - Some function are factorizable, do we want to?
- * - Do we want to accept other types than numbers for the negation operation?
  * - Don't use lazy values if it's a constant value?
- *
- * NOTE:
- * - for multiplication, if the value is null (i.e not applicable), does it make
- *   sense to return 0?
- * - instead of using `?? 0` each time, we could use a wraping function or class
- *   to modelize the number. However, this could be an overhead for simple
- *   operations.
- * - `null` as `0` even in power, multiplication, and division?
- * - do we want to directly use `undefined` and `null` or use dedicated values?
- *   (linked to the second point)
- * - for now, dates are compared using the JS polymorphic variant of the
- *   operator. However, if we choose to continue with the JS approach,
- *   we should use https://github.com/CatalaLang/dates-calc.
+ * - For now, dates are compared using the JS polymorphic variant of the
+ *   operator. However, if we choose to continue with the JS approach, we
+ *   should use https://github.com/CatalaLang/dates-calc.
  *
  * FIXME:
- * - In the current `evaluateNode` implementation, the `null` value in the right
- *   operand of the `LazyNullOps` aren't handled correctly. The following
- *   property is not satisfied: ∀ x, op. op(x, null) = op(null, x) = null
  * - In the actual implementation (Publicodes 1), the `null` value is not
  *   commutative in the `LazyNullOps` operations.
- *   null * 0 = null and 0 * null = 0
+ *   null * 0 = null and 0 * null = 0.
+ * 	 - Why don't we always spreads undefined values before not applicable ones?
+ * 	 - Do we really want to keep lazy null ops?
  */
 
 /** Error handling */
@@ -54,56 +103,62 @@ class RuntimeError extends Error {
 /** Basic numeric operations */
 
 /**
- * @param {PNumber} l
- * @param {PNumber} r
- * @returns {number | undefined}
+ * @param {number | NotDefined | NotApplicable} l
+ * @param {number | NotDefined | NotApplicable} r
+ * @returns {number | NotDefined}
  *
  * @specification
  * The addition operation is defined as follows by order of precedence:
- * - ∀ x. add(undefined, x) = add(x, undefined) = undefined
- * - ∀ x. add(x, null) = add(null, x) = x
- * - ∀ x. add(null, null) = 0
+ * - ∀ x. add(NotDefined, x) = add(x, NotDefined) = NotDefined
+ * - ∀ x. add(x, NotApplicable) = add(NotApplicable, x) = x
+ * - ∀ x. add(NotApplicable, NotApplicable) = 0
  * - ∀ x, y. add(x, y) = x + y
  */
 function $add(l, r) {
-	if (l === undefined || r === undefined) {
-		return undefined
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
 	}
 
-	return (l ?? 0) + (r ?? 0)
+	const l0 = isNotApplicable(l) ? 0 : l
+	const r0 = isNotApplicable(r) ? 0 : r
+
+	return l0 + r0
 }
 
 /**
- * @param {PNumber} l
- * @param {PNumber} r
- * @returns {number | undefined}
+ * @param {number | NotDefined | NotApplicable} l
+ * @param {number | NotDefined | NotApplicable} r
+ * @returns {number | NotDefined}
  *
  * @specification
  * The subtraction operation is defined as follows by order of precedence:
- * - ∀ x. sub(undefined, x) = sub(x, undefined) = undefined
- * - ∀ x. sub(null, null) = 0
- * - ∀ x. sub(x, null) = x
- * - ∀ x. sub(null, x) = -x
+ * - ∀ x. sub(NotDefined, x) = sub(x, NotDefined) = NotDefined
+ * - ∀ x. sub(NotApplicable, NotApplicable) = 0
+ * - ∀ x. sub(x, NotApplicable) = x
+ * - ∀ x. sub(NotApplicable, x) = -x
  * - ∀ x, y. sub(x, y) = x - y
  */
 function $sub(l, r) {
-	if (l === undefined || r === undefined) {
-		return undefined
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
 	}
 
-	return (l ?? 0) - (r ?? 0)
+	const l0 = isNotApplicable(l) ? 0 : l
+	const r0 = isNotApplicable(r) ? 0 : r
+
+	return l0 - r0
 }
 
 /**
- * @param {PNumber} l
- * @param {LazyNumber} right
- * @returns {number | null | undefined}
+ * @param {number | NotDefined | NotApplicable} l
+ * @param {() => number | NotDefined | NotApplicable} right
+ * @returns {number | NotApplicable | NotDefined}
  *
  * @specification
  * The multiplication operation is defined as follows by order of precedence:
  * - ∀ x. mul(0, x) = mul(x, 0) = 0
- * - ∀ x. mul(undefined, x) = mul(x, undefined) = undefined
- * - ∀ x. mul(null, x) = mul(x, null) = null
+ * - ∀ x. mul(NotDefined, x) = mul(x, NotDefined) = NotDefined
+ * - ∀ x. mul(NotApplicable, x) = mul(x, NotApplicable) = NotApplicable
  */
 function $mul(l, right) {
 	if (l === 0) {
@@ -111,21 +166,25 @@ function $mul(l, right) {
 	}
 
 	const r = right()
-	if (l === undefined) {
-		return r === 0 ? 0 : undefined
+	if (r === 0) {
+		return 0
 	}
 
-	return (
-		r === undefined ? undefined
-		: l === null || r === null ? null
-		: l * r
-	)
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
+	}
+
+	if (isNotApplicable(l) || isNotApplicable(r)) {
+		return NotApplicable
+	}
+
+	return l * r
 }
 
 /**
- * @param {PNumber} l
- * @param {LazyNumber} right
- * @returns {number | null | undefined}
+ * @param {number | NotDefined | NotApplicable} l
+ * @param {() => number | NotDefined | NotApplicable} right
+ * @returns {number | NotApplicable | NotDefined}
  *
  * @throws {RuntimeError} if the right operand is evaluated to zero.
  *
@@ -133,8 +192,8 @@ function $mul(l, right) {
  * The division operation is defined as follows by order of precedence:
  * - ∀ x. div(0, x) = 0
  * - ∀ x. div(x, 0) = throw RuntimeError('Division by zero')
- * - ∀ x. div(undefined, x) = div(x, undefined) = undefined
- * - ∀ x. div(null, x) = div(x, null) = null
+ * - ∀ x. div(NotDefined, x) = div(x, NotDefined) = NotDefined
+ * - ∀ x. div(NotApplicable, x) = div(x, NotApplicable) = NotApplicable
  * - ∀ x, y. div(x, y) = x / y
  */
 function $div(l, right) {
@@ -143,32 +202,33 @@ function $div(l, right) {
 	}
 
 	const r = right()
-	if (l === undefined) {
-		if (r === 0) {
-			// TODO: improve information provided in the error
-			throw new RuntimeError('Division by zero')
-		}
-		return undefined
+	if (r === 0) {
+		// TODO: improve information provided in the error
+		throw new RuntimeError(`Division by zero: ${String(l)} / ${String(r)}`)
 	}
 
-	return (
-		r === undefined ? undefined
-		: l === null || r === null ? null
-		: l / r
-	)
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
+	}
+
+	if (isNotApplicable(l) || isNotApplicable(r)) {
+		return NotApplicable
+	}
+
+	return l / r
 }
 
 /**
- * @param {PNumber} l
- * @param {LazyNumber} right
- * @returns {number | undefined}
+ * @param {number | NotDefined | NotApplicable} l
+ * @param {() => number | NotDefined | NotApplicable} right
+ * @returns {number | NotDefined | NotApplicable}
  *
  * @specification
  * The power operation is defined as follows by order of precedence:
  * - ∀ x. pow(0, x) = 0
  * - ∀ x. pow(x, 0) = 1
- * - ∀ x. pow(undefined, y) = pow(x, undefined) = undefined
- * - ∀ x. pow(x, null) = pow(null, x) = null
+ * - ∀ x. pow(NotDefined, y) = pow(x, NotDefined) = NotDefined
+ * - ∀ x. pow(x, NotApplicable) = pow(NotApplicable, x) = NotApplicable
  * - ∀ x, y. pow(x, y) = x ** y
  */
 function $pow(l, right) {
@@ -177,15 +237,19 @@ function $pow(l, right) {
 	}
 
 	const r = right()
-	if (l === undefined) {
-		return r === 0 ? 1 : undefined
+	if (r === 0) {
+		return 1
 	}
 
-	return (
-		r === undefined ? undefined
-		: l === null || r === null ? null
-		: l ** r
-	)
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
+	}
+
+	if (isNotApplicable(l) || isNotApplicable(r)) {
+		return NotApplicable
+	}
+
+	return l ** r
 }
 
 /** Basic boolean operations */
@@ -193,18 +257,20 @@ function $pow(l, right) {
 /**
  * @param {Value} l
  * @param {Value} r
- * @returns {boolean | undefined}
+ * @returns {boolean | NotDefined}
  *
  * @specification
  * The equality operation is defined as follows by order of precedence:
- * - ∀ x. eq(undefined, x) = eq(x, undefined) = undefined
+ * - ∀ x. eq(NotDefined, x) = eq(x, NotDefined) = NotDefined
  * - ∀ x, y. eq(x, y) = x === y
  */
 function $eq(l, r) {
-	if (l === undefined || r === undefined) {
-		return undefined
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
 	}
 
+	// For dates, we need to explicitly compare their time values (see
+	// https://stackoverflow.com/questions/492994/compare-two-dates-with-javascript).
 	if (l instanceof Date && r instanceof Date) {
 		return l.getTime() === r.getTime()
 	}
@@ -215,18 +281,20 @@ function $eq(l, r) {
 /**
  * @param {Value} l
  * @param {Value} r
- * @returns {boolean | undefined}
+ * @returns {boolean | NotDefined}
  *
  * @specification
  * The inequality operation is defined as follows by order of precedence:
- * - ∀ x. neq(undefined, x) = neq(x, undefined) = undefined
+ * - ∀ x. neq(NotDefined, x) = neq(x, NotDefined) = NotDefined
  * - ∀ x, y. neq(x, y) = x !== y
  */
 function $neq(l, r) {
-	if (l === undefined || r === undefined) {
-		return undefined
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
 	}
 
+	// For dates, we need to explicitly compare their time values (see
+	// https://stackoverflow.com/questions/492994/compare-two-dates-with-javascript).
 	if (l instanceof Date && r instanceof Date) {
 		return l.getTime() !== r.getTime()
 	}
@@ -236,140 +304,156 @@ function $neq(l, r) {
 
 /**
  * @param {Value} l
- * @param {LazyValue} right
- * @returns {boolean | null | undefined}
+ * @param {() => Value} right
+ * @returns {boolean | NotApplicable | NotDefined}
  *
  * @specification
  * The less than operation is defined as follows by order of precedence:
- * - ∀ x. lt(null, x) = lt(x, null) = null
- * - ∀ x. lt(undefined, x) = lt(x, undefined) = undefined
+ * - ∀ x. lt(NotApplicable, x) = lt(x, NotApplicable) = NotApplicable
+ * - ∀ x. lt(NotDefined, x) = lt(x, NotDefined) = NotDefined
  * - ∀ x, y. lt(x, y) = x < y
  */
 function $lt(l, right) {
-	if (l === null) {
-		return null
+	if (isNotApplicable(l)) {
+		return NotApplicable
 	}
 
 	const r = right()
-	if (r === null) {
-		return null
+	if (isNotApplicable(r)) {
+		return NotApplicable
 	}
 
-	return l === undefined || r === undefined ? undefined : l < r
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
+	}
+
+	return l < r
 }
 
 /**
  * @param {Value} l
- * @param {LazyValue} right
- * @returns {boolean | null | undefined}
+ * @param {() => Value} right
+ * @returns {boolean | NotApplicable | NotDefined}
  *
  * @specification
  * The greater than operation is defined as follows by order of precedence:
- * - ∀ x. gt(null, x) = gt(x, null) = null
- * - ∀ x. gt(undefined, x) = gt(x, undefined) = undefined
+ * - ∀ x. gt(NotApplicable, x) = gt(x, NotApplicable) = NotApplicable
+ * - ∀ x. gt(NotDefined, x) = gt(x, NotDefined) = NotDefined
  * - ∀ x, y. lt(x, y) = x > y
  */
 function $gt(l, right) {
-	if (l === null) {
-		return null
+	if (isNotApplicable(l)) {
+		return NotApplicable
 	}
 
 	const r = right()
-	if (r === null) {
-		return null
+	if (isNotApplicable(r)) {
+		return NotApplicable
 	}
 
-	return l === undefined || r === undefined ? undefined : l > r
-}
-
-/**
- * @param {Value} left
- * @param {LazyValue} right
- * @returns {boolean | null | undefined}
- *
- * @specification
- * The less than or equal is defined as follows by order of precedence:
- * - ∀ x. lte(null, x) = lte(x, null) = null
- * - ∀ x. lte(undefined, x) = lte(x, undefined) = undefined
- * - ∀ x, y. lte(x, y) = x <= y
- */
-function $lte(l, right) {
-	if (l === null) {
-		return null
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
 	}
 
-	const r = right()
-	if (r === null) {
-		return null
-	}
-
-	return l === undefined || r === undefined ? undefined : l <= r
+	return l > r
 }
 
 /**
  * @param {Value} l
- * @param {LazyValue} right
- * @returns {boolean | null | undefined}
+ * @param {() => Value} right
+ * @returns {boolean | NotApplicable | NotDefined}
  *
  * @specification
- * The greater than or equal is defined as follows by order of precedence:
- * - ∀ x. gte(null, x) = gte(x, null) = null
- * - ∀ x. gte(undefined, x) = gte(x, undefined) = undefined
- * - ∀ x, y. gte(x, y) = x <= y
+ * The less than or equal is defined as follows by order of precedence:
+ * - ∀ x. lte(NotApplicable, x) = lte(x, NotApplicable) = NotApplicable
+ * - ∀ x. lte(NotDefined, x) = lte(x, NotDefined) = NotDefined
+ * - ∀ x, y. lte(x, y) = x <= y
  */
-function $gte(l, right) {
-	if (l === null) {
-		return null
+function $lte(l, right) {
+	if (isNotApplicable(l)) {
+		return NotApplicable
 	}
 
 	const r = right()
-	if (r === null) {
-		return null
+	if (isNotApplicable(r)) {
+		return NotApplicable
 	}
 
-	return l === undefined || r === undefined ? undefined : l >= r
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
+	}
+
+	return l <= r
 }
 
 /**
- * @param {PBoolean} l
- * @param {LazyBoolean} right
- * @returns {boolean | undefined}
+ * @param {Value} l
+ * @param {() => Value} right
+ * @returns {boolean | NotApplicable | NotDefined}
+ *
+ * @specification
+ * The greater than or equal is defined as follows by order of precedence:
+ * - ∀ x. gte(NotApplicable, x) = gte(x, NotApplicable) = NotApplicable
+ * - ∀ x. gte(NotDefined, x) = gte(x, NotDefined) = NotDefined
+ * - ∀ x, y. gte(x, y) = x >= y
+ */
+function $gte(l, right) {
+	if (isNotApplicable(l)) {
+		return NotApplicable
+	}
+
+	const r = right()
+	if (isNotApplicable(r)) {
+		return NotApplicable
+	}
+
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
+	}
+
+	return l >= r
+}
+
+/**
+ * @param {boolean | NotDefined | NotApplicable} l
+ * @param {() => boolean | NotDefined | NotApplicable} right
+ * @returns {boolean | NotDefined}
  *
  * @specification
  * The logical AND operation is defined as follows by order of precedence:
- * - ∀ x. and(true, x) = and(x, true) = true
- * - ∀ x. and(undefined, x) = and(x, undefined) = undefined
- * - ∀ x. and(null, x) = and(x, null) = false
+ * - ∀ x. and(false, x) = and(x, false) = false
+ * - ∀ x. and(NotDefined, x) = and(x, NotDefined) = NotDefined
+ * - ∀ x. and(NotApplicable, x) = and(x, NotApplicable) = false
  * - ∀ x, y. and(x, y) = x && y
  */
 function $and(l, right) {
-	if (l === null || l === false) {
+	if (isNotApplicable(l) || l === false) {
 		return false
 	}
 
 	const r = right()
-	if (l === undefined) {
-		return r === false ? false : undefined
+	if (isNotApplicable(r) || r === false) {
+		return false
 	}
 
-	if (r === undefined) {
-		return undefined
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
 	}
 
-	return l === null || r === null ? false : l && r
+	return true
 }
 
 /**
- * @param {PBoolean} l
- * @param {LazyBoolean} right
- * @returns {boolean | undefined}
+ * @param {boolean | NotDefined | NotApplicable} l
+ * @param {() => boolean | NotDefined | NotApplicable} right
+ * @returns {boolean | NotDefined}
  *
  * @specification
  * The logical OR operation is defined as follows by order of precedence:
  * - ∀ x. or(true, x) = or(x, true) = true
- * - ∀ x. or(undefined, x) = or(x, undefined) = undefined
- * - ∀ x. or(null, null) = false
- * - ∀ x. or(null, x) = or(x, null) = x
+ * - ∀ x. or(NotDefined, x) = or(x, NotDefined) = NotDefined
+ * - ∀ x. or(NotApplicable, NotApplicable) = false
+ * - ∀ x. or(NotApplicable, x) = or(x, NotApplicable) = x
  * - ∀ x, y. or(x, y) = x || y
  */
 function $or(l, right) {
@@ -378,71 +462,74 @@ function $or(l, right) {
 	}
 
 	const r = right()
-	if (l === undefined) {
-		return r === true ? true : undefined
+	if (r === true) {
+		return true
 	}
 
-	if (r === undefined) {
-		return undefined
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
 	}
 
-	return (
-		l === null && r === null ? false
-		: l === null ? r
-		: r === null ? l
-		: l || r
-	)
+	return false
 }
 
 /** Unary operations */
 
 /**
- * @param {number | null | undefined} val
- * @returns {number | undefined}
+ * @param {number | NotDefined | NotApplicable } val
+ * @returns {number | NotDefined}
  * @specification
  * The unary negation operation is defined as follows by order of precedence:
- * 1. ∀ x. neg(undefined) = undefined
- * 2. ∀ x. neg(null) = 0
+ * 1. ∀ x. neg(NotDefined) = NotDefined
+ * 2. ∀ x. neg(NotApplicable) = 0
  * 3. ∀ x. neg(x) = -x
  */
 function $neg(val) {
-	if (val === undefined) {
-		return undefined
+	if (isNotDefined(val)) {
+		return NotDefined
 	}
 
-	return val === null ? 0 : -val
+	if (isNotApplicable(val)) {
+		return 0
+	}
+
+	return -val
 }
 
 /**
  * @param {'up' | 'down' | 'nearest'} mode
- * @param {PNumber} val
- * @param {LazyNumber} precision
- * @returns {number | null | undefined}
+ * @param {number | NotDefined | NotApplicable} val
+ * @param {() => number | NotDefined | NotApplicable} precision
+ * @returns {number | NotDefined | NotApplicable}
  *
  * @throws {RuntimeError} if the precision is negative, equals to zero or not an integer.
  *
  * @specification
  * The rounding operation is defined as follows by order of precedence:
- * - ∀ x. round(mode, null, precision) = null
- * - ∀ x. round(mode, undefined, precision) = undefined
- * - ∀ x. round(mode, x, undefined) = undefined
- * - ∀ x. round(mode, x, null) = x
+ * - ∀ x. round(mode, NotDefined, precision) = NotDefined
+ * - ∀ x. round(mode, NotApplicable, precision) = NotApplicable
+ * - ∀ x. round(mode, x, NotDefined) = NotDefined
+ * - ∀ x. round(mode, x, NotApplicable) = x
  * - ∀ x, p. round(mode, x, p) = rounded value of x with the given mode and precision p
  *    - if mode = 'up', round towards the nearest multiple of p greater than or equal to x
  *    - if mode = 'down', round towards the nearest multiple of p less than or equal to x
  *    - if mode = 'nearest', round to the nearest multiple of p
  */
 function $round(mode, val, precision) {
-	if (val === null) {
-		return val
+	if (isNotDefined(val)) {
+		return NotDefined
+	}
+
+	if (isNotApplicable(val)) {
+		return NotApplicable
 	}
 
 	const p = precision()
-	if (val === undefined || p === undefined) {
-		return undefined
+	if (isNotDefined(p)) {
+		return NotDefined
 	}
 
-	if (p === null) {
+	if (isNotApplicable(p)) {
 		return val
 	}
 
@@ -452,6 +539,7 @@ function $round(mode, val, precision) {
 		)
 	}
 
+	/** @type {(num: number) => number} */
 	const toPrecision = (num) =>
 		// NOTE: Use 15 precision for floating number in JS https://stackoverflow.com/a/3644302
 		// NOTE: the unary plus is used to remove trailing zeros and convert back
@@ -466,85 +554,85 @@ function $round(mode, val, precision) {
 }
 
 /**
- * @param {PNumber} left
- * @param {PNumber} right
- * @returns {number | undefined | null}
+ * @param {number | NotDefined | NotApplicable} l
+ * @param {number | NotDefined | NotApplicable} r
+ * @returns {number | NotDefined | NotApplicable}
  *
  * @specification
  * The rounding operation is defined as follows by order of precedence:
- * - ∀ x. min(x, undefined) = min(undefined, x) = undefined
- * - ∀ x. min(x, null) = min(null, x) = x
- * - min(null, null) = null
+ * - ∀ x. min(x, NotDefined) = min(NotDefined, x) = NotDefined
+ * - ∀ x. min(x, NotApplicable) = min(NotApplicable, x) = x
  * - ∀ x, y. min(x, y) = the minimum value between x and y
  */
-function $min(left, right) {
-	if (left === undefined) {
-		return undefined
+function $min(l, r) {
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
 	}
 
-	if (right === undefined) {
-		return undefined
+	if (isNotApplicable(l) || isNotApplicable(r)) {
+		return isNotApplicable(l) ? r : l
 	}
 
-	if (left === null || right === null) {
-		return left === null ? right : left
-	}
-
-	return left < right ? left : right
+	return l < r ? l : r
 }
 
 /**
- * @param {PNumber} left
- * @param {PNumber} right
- * @returns {number | undefined}
+ * @param {number | NotDefined | NotApplicable} l
+ * @param {number | NotDefined | NotApplicable} r
+ * @returns {number | NotDefined | NotApplicable}
  *
  * @specification
  * The rounding operation is defined as follows by order of precedence:
- * - ∀ x. max(x, undefined) = max(undefined, x) = undefined
- * - ∀ x. max(x, null) = max(null, x) = x
+ * - ∀ x. max(x, NotDefined) = max(NotDefined, x) = NotDefined
+ * - ∀ x. max(x, NotApplicable) = max(NotApplicable, x) = x
  * - ∀ x, y. max(x, y) = the max value between x and y
  */
-function $max(left, right) {
-	if (left === undefined) {
-		return undefined
+function $max(l, r) {
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
 	}
 
-	if (right === undefined) {
-		return undefined
+	if (isNotApplicable(l) || isNotApplicable(r)) {
+		return isNotApplicable(l) ? r : l
 	}
 
-	if (left === null || right === null) {
-		return left === null ? right : left
-	}
-
-	return left > right ? left : right
+	return l > r ? l : r
 }
 
 /**
- * @param {PBoolean} c
- * @param {LazyValue} ifTrue
- * @param {LazyValue} ifFalse
- * @returns {Value | undefined}
+ * @param {boolean | NotDefined | NotApplicable} c
+ * @param {() => Value} ifTrue
+ * @param {() => Value} ifFalse
+ * @returns {Value}
  *
  * @specification
  * The conditional operation is defined as follows by order of precedence:
- * - ∀ x, y. cond(undefined, x, y) = undefined
- * - ∀ x, y. cond(null, x, y) = null
+ * - ∀ x, y. cond(NotDefined, x, y) = NotDefined
+ * - ∀ x, y. cond(NotApplicable, x, y) = NotApplicable
  * - ∀ x, y. cond(true, x, y) = x
  * - ∀ x, y. cond(false, x, y) = y
  */
 function $cond(c, ifTrue, ifFalse) {
-	if (c === undefined) {
-		return undefined
+	if (c === NotDefined) {
+		return NotDefined
 	}
 
-	if (c === null) {
-		return null
+	if (isNotApplicable(c)) {
+		return NotApplicable
 	}
 
 	return c ? ifTrue() : ifFalse()
 }
 
+/**
+ * Retrieves the value of the given rule from the context and updates the list
+ * of accessed parameters.
+ *
+ * @param {RuleName} rule
+ * @param {Context} ctx
+ * @param {RuleName[]} params
+ * @returns {Value}
+ */
 function $get(rule, ctx, params) {
 	if (rule in ctx) {
 		return ctx[rule]
@@ -552,10 +640,26 @@ function $get(rule, ctx, params) {
 
 	params.push(rule)
 
-	return ctx._global[rule]
+	return ctx._global[rule] ?? NotDefined
 }
 
+/**
+ * Global cache for rules evaluation.
+ * @type {Record<string, WeakMap<object, any>>}
+ */
 const globalCache = {}
+
+/**
+ * Evaluates a reference to a rule. If the rule is already defined in the
+ * context, it returns its value. Otherwise, it evaluates the rule using the
+ * provided function `fn`.
+ *
+ * @param {RuleName} rule
+ * @param {Function} fn
+ * @param {Context} ctx
+ * @param {RuleName[]} params
+ * @returns {Value}
+ */
 function $ref(rule, fn, ctx, params) {
 	if (rule in ctx || rule in ctx._global) {
 		return $get(rule, ctx, params)
@@ -571,11 +675,24 @@ function $ref(rule, fn, ctx, params) {
 		globalCache[rule] = cache
 		return value
 	}
-	const v = fn(ctx, params)
-	return v
+
+	return fn(ctx, params)
 }
 
+/**
+ * Evaluates a `fn` function with a given global context and options. It returns
+ * the value of the evaluation, the list of needed parameters (i.e. parameter
+ * rules accessed during the evaluation) and the list of missing parameters
+ * (i.e. parameter rules accessed during the evaluation that are undefined in
+ * the global context).
+ *
+ * @param {Function} fn
+ * @param {Context['_global']} _global
+ * @param {Options} options
+ * @returns {{value: Value, needed: RuleName[], missing: RuleName[]}}
+ */
 function $evaluate(fn, _global, options = {}) {
+	/** @type {RuleName[]} */
 	const params = []
 	const value = fn({ _global, _options: options }, params)
 	const needed = Array.from(new Set(params))
@@ -584,4 +701,9 @@ function $evaluate(fn, _global, options = {}) {
 	return { value, needed, missing }
 }
 
-/** End embedded runtime */
+export const p = {
+	NotDefined,
+	NotApplicable,
+	isNotDefined,
+	isNotApplicable,
+}

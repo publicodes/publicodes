@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import { yaml } from '../compile'
+import { p, yaml } from '../compile'
 
 describe('Mécanisme > le maximum de', () => {
 	it('simple', async () => {
@@ -31,7 +31,7 @@ a:
     - b
 b:
 `
-		expect(a.evaluate()).toBeUndefined()
+		expect(p.isNotDefined(a.evaluate())).toBeTrue()
 		expect(b.unit).toBe('€')
 	})
 

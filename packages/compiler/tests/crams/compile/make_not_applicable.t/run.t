@@ -8,9 +8,9 @@ valid simple make not applicable :
   get_context(b)
   
   x :
-  if (@a = null) || ((is_undef @a) || (@a = false))
+  if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
   then @b
-  else null
+  else not_applicable
 
 
 multiple on same rule ok :
@@ -29,13 +29,13 @@ multiple on same rule ok :
   get_context(x)
   
   y :
-  if (@a = null) || ((is_undef @a) || (@a = false))
-  then if (@b = null) || ((is_undef @b) || (@b = false))
-    then if (@c = null) || ((is_undef @c) || (@c = false))
+  if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+  then if (@b = not_applicable) || ((is_not_defined @b) || (@b = false))
+    then if (@c = not_applicable) || ((is_not_defined @c) || (@c = false))
       then @x
-      else null
-    else null
-  else null
+      else not_applicable
+    else not_applicable
+  else not_applicable
 
 make not applicable with cycle :
 
@@ -62,15 +62,15 @@ transitivity in make not applicable :
   get_context(c)
   
   x :
-  if (if (@a = null) || ((is_undef @a) || (@a = false))
+  if (if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
     then @b
-    else null = null) || ((is_undef if (@a = null) || ((is_undef @a) || (@a = false))
+    else not_applicable = not_applicable) || ((is_not_defined if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
     then @b
-    else null) || (if (@a = null) || ((is_undef @a) || (@a = false))
+    else not_applicable) || (if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
     then @b
-    else null = false))
+    else not_applicable = false))
   then @c
-  else null
+  else not_applicable
 
 
 
@@ -87,17 +87,17 @@ make not applicable in / except in :
   get_context(c)
   
   x :
-  if (@b = null) || ((is_undef @b) || (@b = false))
+  if (@b = not_applicable) || ((is_not_defined @b) || (@b = false))
   then @c
-  else null
+  else not_applicable
   
   y :
   @c
   
   z :
-  if (@a = null) || ((is_undef @a) || (@a = false))
+  if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
   then @c
-  else null
+  else not_applicable
 
 
 Multiple definitions
@@ -110,19 +110,19 @@ Multiple definitions
   get_context(b)
   
   c :
-  if (@a = null) || ((is_undef @a) || (@a = false))
+  if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
   then @b
-  else null
+  else not_applicable
   
   x :
   @c
   
   y :
-  if (@a = null) || ((is_undef @a) || (@a = false))
+  if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
   then @c
-  else null + if (@a = null) || ((is_undef @a) || (@a = false))
+  else not_applicable + if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
   then @x
-  else null
+  else not_applicable
 
 
 Type error
@@ -153,8 +153,8 @@ Rend non applicable take precedence over remplace
   get_context(c)
   
   x :
-  if (@b = null) || ((is_undef @b) || (@b = false))
-  then if @a != null
+  if (@b = not_applicable) || ((is_not_defined @b) || (@b = false))
+  then if @a != not_applicable
     then @a
     else @c
-  else null
+  else not_applicable

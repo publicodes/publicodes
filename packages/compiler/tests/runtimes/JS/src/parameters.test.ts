@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeAll } from 'bun:test'
-import { TestPublicodes, yaml } from './compile'
+import { p, TestPublicodes, yaml } from './compile'
 
 describe('Needed parameters', () => {
 	let r: TestPublicodes
@@ -106,7 +106,7 @@ with constant:
 		expect(r['with embeded context'].evaluateParams()).toEqual({
 			missing: ['params . a'],
 			needed: ['params . a'],
-			value: undefined,
+			value: p.NotDefined,
 		})
 
 		expect(

@@ -1,4 +1,4 @@
-import { TestPublicodes, yaml } from '../compile'
+import { p, TestPublicodes, yaml } from '../compile'
 
 describe('Mécanisme > plafond', () => {
 	let engine: TestPublicodes
@@ -14,8 +14,12 @@ plafond:
 	test.each([
 		['inférieur (applicable)', { plafond: 5 }, { value: 5, missing: [] }],
 		['supérieur (non applicable)', { plafond: 15 }, { value: 10, missing: [] }],
-		['non défini', {}, { value: undefined, missing: ['plafond'] }],
-		['non applicable', { plafond: null }, { value: 10, missing: [] }],
+		['non défini', {}, { value: p.NotDefined, missing: ['plafond'] }],
+		[
+			'non applicable',
+			{ plafond: p.NotApplicable },
+			{ value: 10, missing: [] },
+		],
 	])('%s', (_, context, expected) => {
 		expect(engine.test.evaluateParams(context)).toMatchObject(expected)
 	})
