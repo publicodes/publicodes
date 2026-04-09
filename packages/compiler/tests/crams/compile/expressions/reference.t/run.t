@@ -1,14 +1,14 @@
 Valid :
 
   $ publicodes compile valid.publicodes  -t debug_eval_tree -o -
-  b :
-  get_context(b)
+  b:
+    get_context(b)
   
-  b . a :
-  @b . c
+  b . a:
+    @b . c
   
-  b . c :
-  @c
+  b . c:
+    @c
   
-  c :
-  5.
+  c:
+    5.

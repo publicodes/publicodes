@@ -120,6 +120,8 @@ in
 {%- if !loop.first %}
 
 {% endif -%}
-{{ rule_name }} :
+{{ rule_name }}:
+{%- call indent ("  ") %}
 {{ fmt_rule(rule_data) }}
+{%- endcall %}
 {%- endfor -%}

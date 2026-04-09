@@ -28,11 +28,11 @@ Bad types for arrondi :
 
 Ok arrondi :
   $ publicodes compile ok.publicodes -t debug_eval_tree -o -
-  a :
-  4. max (3. max 5.)
+  a:
+    4. max (3. max 5.)
   
-  b :
-  1.
+  b:
+    1.
   
-  c :
-  (1. max (2. max (3. € max (4. max (5. max (6. max (122. max (3. * 2.)))))))) max 5.
+  c:
+    (1. max (2. max (3. € max (4. max (5. max (6. max (122. max (3. * 2.)))))))) max 5.

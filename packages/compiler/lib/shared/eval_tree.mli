@@ -51,7 +51,23 @@ val unop_is_not_defined : pos:Pos.pos -> 'meta value -> 'meta naked_value
 
 val binop_or : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
 
+val binop_and : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+
 val binop_eq : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+
+val binop_neq : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+
+val binop_lt : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+
+val binop_gt : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+
+val binop_add : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+
+val binop_mul : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+
+val binop_max : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+
+val binop_min : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
 
 val mk_condition :
      cond:'meta value
@@ -64,3 +80,5 @@ val const_not_applicable : 'meta naked_value
 val const_not_defined : 'meta naked_value
 
 val const_false : 'meta naked_value
+
+val const_true : 'meta naked_value
