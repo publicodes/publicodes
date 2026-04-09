@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeAll } from 'bun:test'
-import { yaml, TestPublicodes } from '../compile'
+import { yaml, TestPublicodes, p } from '../compile'
 
 describe('Remplace > simple', () => {
 	let rules: TestPublicodes
@@ -40,6 +40,6 @@ a:
 b: 1
 x: b
 `
-		expect(x.evaluate()).toBeUndefined()
+		expect(p.isNotDefined(x.evaluate())).toBeTrue()
 	})
 })

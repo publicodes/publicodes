@@ -1,26 +1,25 @@
 import { beforeAll, describe, expect, test } from 'bun:test'
-import { TestPublicodes, yaml } from '../compile'
+import { p, TestPublicodes, yaml } from '../compile'
 
 describe('Expressions > égalité', () => {
-	let result: TestPublicodes[string]
+	let model: TestPublicodes
 	beforeAll(async () => {
-		result = (
-			await yaml`
+		model = await yaml`
 result: a = 10
 a:
 `
-		).result
 	})
 
 	test.each([
 		['égalité', { a: 10 }, true],
 		['différence', { a: 20 }, false],
 	] as const)('%s', (_, context, expected) => {
-		expect(result.evaluate(context)).toBe(expected)
+		expect(model.result.evaluate(context)).toBe(expected)
 	})
 
 	test('non définie', () => {
-		expect(result.evaluate({})).toBeUndefined()
+		const val = model.result.evaluate({})
+		expect(p.isNotDefined(val)).toBeTrue()
 	})
 
 	// @TODO : doit-on garder ce comportement de la V1 ?
@@ -41,6 +40,6 @@ result: 12 = a
 a:
   non applicable si: oui
 `
-		expect(result.evaluate()).toBe(false)
+		expect(result.evaluate({})).toBe(false)
 	})
 })

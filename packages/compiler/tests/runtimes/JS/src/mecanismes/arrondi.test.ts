@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeAll } from 'bun:test'
-import { TestPublicodes, yaml } from '../compile'
+import { p, TestPublicodes, yaml } from '../compile'
 
 describe('Mécanisme > arrondi', () => {
 	describe('arrondi simple', () => {
@@ -128,8 +128,10 @@ arrondi non applicable:
   arrondi: règle non applicable
 `
 			expect(
-				engine["arrondi d'une valeur non applicable"].evaluate(),
-			).toBeNull()
+				p.isNotApplicable(
+					engine["arrondi d'une valeur non applicable"].evaluate(),
+				),
+			).toBeTrue()
 
 			expect(engine['arrondi non applicable'].evaluate()).toBe(13.45)
 		})
@@ -140,7 +142,7 @@ test arrondi:
   arrondi: oui
 `
 			const result = engine['test arrondi'].evaluate()
-			expect(result).toBeUndefined()
+			expect(p.isNotDefined(result)).toBeTrue()
 		})
 	})
 

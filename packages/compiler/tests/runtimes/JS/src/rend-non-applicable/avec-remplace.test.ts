@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import { yaml } from '../compile'
+import { p, yaml } from '../compile'
 
 describe('Rend non applicable > avec remplace', () => {
 	it('rend non applicable take precedence over remplace', async () => {
@@ -14,7 +14,7 @@ describe('Rend non applicable > avec remplace', () => {
     c:
     x: c
   `
-		expect(x.evaluate()).toBe(null)
+		expect(p.isNotApplicable(x.evaluate())).toBeTrue()
 	})
 
 	it('remplace «rend non applicable»', async () => {
@@ -30,6 +30,6 @@ describe('Rend non applicable > avec remplace', () => {
 
     x: c
   `
-		expect(x.evaluate()).toBe(null)
+		expect(p.isNotApplicable(x.evaluate())).toBeTrue()
 	})
 })

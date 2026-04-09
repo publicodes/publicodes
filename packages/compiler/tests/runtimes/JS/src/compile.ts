@@ -1,5 +1,8 @@
 /* eslint-disable no-console */
 import { $, env } from 'bun'
+import { Context, RuleName, Value } from '../../../../runtimes/runtime'
+
+export { p } from '../../../../runtimes/runtime'
 
 const COMPILER_PATH = env.PUBLICODES_COMPILER_PATH ?? 'publicodes2'
 
@@ -15,9 +18,12 @@ export async function compilePublicodesToJS(
 		if (stderr.toString()) {
 			console.warn(stderr.toString())
 		}
-		compiled = stdout.toString()
+		compiled = stdout
+			.toString()
+			.replace('export default ', '')
+			.replaceAll('export ', '')
 
-		return eval(compiled.replace('export default ', '')) as PublicodeExport
+		return eval(compiled) as PublicodeExport
 	} catch (error) {
 		if (error instanceof SyntaxError) {
 			const syntaxError = error as {
@@ -54,15 +60,15 @@ export async function compilePublicodesToJS(
 		throw error
 	}
 }
-type Value = number | string | Date | boolean | null | undefined
+
 type PublicodeExport = Record<
 	string,
 	{
-		evaluate: (c?: Record<string, Value>) => Value
-		evaluateParams: (c?: Record<string, Value>) => {
+		evaluate: (c?: Context['_global']) => Value
+		evaluateParams: (c?: Context['_global']) => {
 			value: Value | undefined
-			missing: string[]
-			needed: string[]
+			missing: RuleName[]
+			needed: RuleName[]
 		}
 		title: string
 		description?: string

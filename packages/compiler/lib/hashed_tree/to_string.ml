@@ -124,9 +124,9 @@ let rule_of_date value =
   | _ ->
       failwith "Unsupported date format"
 
-let rule_of_null = rule_of_type_value "null" @@ Tnull
+let rule_of_not_applicable = rule_of_type_value "not_applicable" @@ Tnull
 
-let rule_of_undefined = rule_of_type_value "undefined" @@ Tnull
+let rule_of_not_defined = rule_of_type_value "not_defined" @@ Tnull
 
 let rule_of_round (mode : Shared_ast.rounding) (value_rule : tvalue)
     (precision_rule : tvalue) =
@@ -163,7 +163,8 @@ let rule_of_unary_op op (arg : tvalue) =
 
 let rule_of_neg_op (arg : tvalue) = rule_of_unary_op "neg_op" arg
 
-let rule_of_undef_op (arg : tvalue) = rule_of_unary_op "is_undef" arg
+let rule_of_is_not_defined_op (arg : tvalue) =
+  rule_of_unary_op "is_not_defined_op" arg
 
 let rule_of_ref (name : string) = rule_of_type_value "ref" @@ Tstr name
 
@@ -186,10 +187,10 @@ let rec rule_of_tree_val ({value; _} : Tree.value) =
       rule_of_bool b
   | Const (Date d) ->
       rule_of_date (Date d)
-  | Const Null ->
-      rule_of_null
-  | Const Undefined ->
-      rule_of_undefined
+  | Const Not_applicable ->
+      rule_of_not_applicable
+  | Const Not_defined ->
+      rule_of_not_defined
   | Round (mode, precision, value) ->
       rule_of_round mode (rule_of_tree_val value) (rule_of_tree_val precision)
   | Condition (cond, then_comp, else_comp) ->
@@ -200,8 +201,8 @@ let rec rule_of_tree_val ({value; _} : Tree.value) =
       rule_of_binary_op op (rule_of_tree_val left) (rule_of_tree_val right)
   | Unary_op ((Neg, _), comp) ->
       rule_of_neg_op (rule_of_tree_val comp)
-  | Unary_op ((Is_undef, _), comp) ->
-      rule_of_undef_op (rule_of_tree_val comp)
+  | Unary_op ((Is_not_defined, _), comp) ->
+      rule_of_is_not_defined_op (rule_of_tree_val comp)
   | Ref rule_name ->
       rule_of_ref (Rule_name.to_string rule_name)
   | Get_context rule_name ->
