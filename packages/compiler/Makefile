@@ -80,4 +80,4 @@ $(foreach dir,$(notdir $(EXAMPLES_DIRS)),$(eval $(call make_bench_rules,$(dir)))
 #> bench-%                  | Run the benchmark for a given example (e.g. make bench-simple-TJM)
 bench-%: build $(EXAMPLES_DIR)/%/publicodes-build/index.js $(EXAMPLES_DIR)/%/model.publicodes.js
 	@echo "Running benchmark for $*..."
-	yarn run bun --expose-gc $(EXAMPLES_DIR)/$*/benchmark.ts
+	yarn --cwd $(EXAMPLES_DIR)/$* run bun --expose-gc benchmark.ts
