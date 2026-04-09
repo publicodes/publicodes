@@ -6,13 +6,13 @@ type constant =
   | Bool of bool
   | String of string
   | Date of Shared_ast.date
-  | Undefined
-  | Null
+  | Not_defined
+  | Not_applicable
 [@@deriving show]
 
 type binary_op = Shared_ast.binary_op [@@deriving show]
 
-type unary_op = Neg | Is_undef [@@deriving show]
+type unary_op = Neg | Is_not_defined [@@deriving show]
 
 type 'meta naked_value =
   | Const of constant
@@ -63,3 +63,19 @@ let rec map_value ~(f : 'a value -> 'a value) (c : 'a value) : 'a value =
         c.value
   in
   f {c with value= new_value}
+
+(** {1 Constructors for naked values} *)
+
+let unop_is_not_defined ~pos comp = Unary_op (Pos.mk ~pos Is_not_defined, comp)
+
+let binop_or ~pos left right = Binary_op (Pos.mk ~pos Shared_ast.Or, left, right)
+
+let binop_eq ~pos left right = Binary_op (Pos.mk ~pos Shared_ast.Eq, left, right)
+
+let mk_condition ~cond ~then_ ~else_ = Condition (cond, then_, else_)
+
+let const_not_applicable = Const Not_applicable
+
+let const_not_defined = Const Not_defined
+
+let const_false = Const (Bool false)

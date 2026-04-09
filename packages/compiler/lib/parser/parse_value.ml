@@ -23,7 +23,7 @@ let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
               ~labels:[Pos.mk ~pos:value_pos "valeur attendue ici"] ]
         else []
       in
-      return ~logs {value= Pos.mk ~pos Undefined; chainable_mechanisms= []}
+      return ~logs {value= Pos.mk ~pos Not_defined; chainable_mechanisms= []}
   | `Scalar ({value; _}, pos) ->
       let* expr = parse_expression ~pos value in
       return {value= Pos.mk ~pos (Expr expr); chainable_mechanisms= []}
@@ -39,7 +39,7 @@ let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
       in
       let logs =
         match (error_if_undefined, value) with
-        | true, (Undefined, pos) ->
+        | true, (Not_defined, pos) ->
             let code, message = Err.parsing_empty_value in
             [ Log.error ~pos ~code ~kind:`Syntax message
                 ~hints:
@@ -57,4 +57,4 @@ let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
               [ "Peut-être avez-vous oublié d'ajouter le nom du mécanisme (par \
                  exemple « somme : »)" ] ]
       in
-      return ~logs {value= Pos.mk ~pos Undefined; chainable_mechanisms= []}
+      return ~logs {value= Pos.mk ~pos Not_defined; chainable_mechanisms= []}

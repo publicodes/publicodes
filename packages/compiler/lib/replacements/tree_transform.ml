@@ -65,6 +65,8 @@ let find_applicable_make_not_applicable ~rule ~reference replacements =
   |> List.filter ~f:(is_replacement_applicable ~rule)
   |> List.map ~f:fst
 
+(* TODO: should be refactored with EDSL functions from Eval_tree? *)
+(* NOTE: is it really necessary to have mk as paramter here? *)
 let create_make_not_applicable_node ~mk ~pos ~condition_node ~node =
   let p = mk ~pos in
   let o = Pos.mk ~pos in
@@ -74,17 +76,17 @@ let create_make_not_applicable_node ~mk ~pos ~condition_node ~node =
        ( p
            (Binary_op
               ( o Or
-              , p (Binary_op (o Eq, condition_node, p (Const Null)))
+              , p (Binary_op (o Eq, condition_node, p (Const Not_applicable)))
               , p
                   (Binary_op
                      ( o Or
-                     , p (Unary_op (Pos.mk ~pos Is_undef, condition_node))
+                     , p (Unary_op (Pos.mk ~pos Is_not_defined, condition_node))
                      , p
                          (Binary_op
                             (o Eq, condition_node, p (Const (Bool false))) ) )
                   ) ) )
        , node
-       , p (Const Null) ) )
+       , p (Const Not_applicable) ) )
 
 let create_replace_node ~mk ~pos ~replacing_node ~node =
   let p = mk ~pos in
@@ -92,7 +94,7 @@ let create_replace_node ~mk ~pos ~replacing_node ~node =
   (* if replacement != null then replacement else node *)
   p
     (Condition
-       ( p (Binary_op (o NotEq, replacing_node, p (Const Null)))
+       ( p (Binary_op (o NotEq, replacing_node, p (Const Not_applicable)))
        , replacing_node
        , node ) )
 

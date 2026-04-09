@@ -1,4 +1,4 @@
-import { TestPublicodes, yaml } from '../compile'
+import { p, TestPublicodes, yaml } from '../compile'
 
 describe('Mécanisme > plancher', () => {
 	let engine: TestPublicodes
@@ -15,8 +15,12 @@ plancher:
 	test.each([
 		['inférieur (non applicable)', { plancher: 5 }, { value: 10, missing: [] }],
 		['supérieur (applicable)', { plancher: 15 }, { value: 15, missing: [] }],
-		['non défini', {}, { value: undefined, missing: ['plancher'] }],
-		['non applicable', { plancher: null }, { value: 10, missing: [] }],
+		['non défini', {}, { value: p.NotDefined, missing: ['plancher'] }],
+		[
+			'non applicable',
+			{ plancher: p.NotApplicable },
+			{ value: 10, missing: [] },
+		],
 	])('%s', (_, context, expected) => {
 		expect(engine.test.evaluateParams(context)).toMatchObject(expected)
 	})

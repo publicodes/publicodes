@@ -49,7 +49,7 @@ Ok arrondi :
   a :
   round to: if true
     then 1.
-    else null
+    else not_applicable
   get_context(a)
   
   arrondi à la dizaine :
@@ -65,8 +65,8 @@ Ok arrondi :
   get_context(c)
   
   d :
-  round to: if (is_undef @est arrondi) || ((@est arrondi = false) || (@est arrondi = null))
-    then null
+  round to: if (is_not_defined @est arrondi) || ((@est arrondi = false) || (@est arrondi = not_applicable))
+    then not_applicable
     else 0.1
   4.65 €
   

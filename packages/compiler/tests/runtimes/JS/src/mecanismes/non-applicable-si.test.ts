@@ -1,4 +1,5 @@
-import { TestPublicodes, yaml } from '../compile'
+import { describe, test, expect, beforeAll } from 'bun:test'
+import { p, TestPublicodes, yaml } from '../compile'
 
 describe('Mécanisme > non applicable si', () => {
 	let rules: TestPublicodes
@@ -11,8 +12,13 @@ test:
 condition:
 `
 	})
+
 	test.each([
-		['condition vrai', { condition: true }, { value: null, missing: [] }],
+		[
+			'condition vrai',
+			{ condition: true },
+			{ value: p.NotApplicable, missing: [] },
+		],
 		['condition fausse', { condition: false }, { value: 10, missing: [] }],
 		[
 			'applicable si condition non définie',
@@ -41,6 +47,6 @@ a:
   non applicable si: oui
 condition:
 `
-		expect(a.evaluate({ a: 10 })).toBe(null)
+		expect(p.isNotApplicable(a.evaluate({ a: 10 }))).toBeTrue()
 	})
 })

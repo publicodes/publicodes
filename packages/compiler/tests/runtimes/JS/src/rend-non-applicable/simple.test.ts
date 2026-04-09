@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import { yaml } from '../compile'
+import { p, yaml } from '../compile'
 
 describe('Rend non applicable > simple', () => {
 	it('si règle vrai', async () => {
@@ -10,7 +10,7 @@ describe('Rend non applicable > simple', () => {
         rend non applicable: impôt
         valeur: oui
       `
-		expect(àPayer.evaluate()).toBe(null)
+		expect(p.isNotApplicable(àPayer.evaluate())).toBeTrue()
 	})
 	it('si règle vaut non', async () => {
 		const { 'à payer': àPayer } = await yaml`

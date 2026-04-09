@@ -52,6 +52,14 @@
 		string
 	{%- case "date" -%}
 		Date
+	{%- case "number" -%}
+		number
+	{%- case "boolean" -%}
+		boolean
+	{%- case "not applicable" -%}
+		NotApplicable
+	{%- case "not defined" -%}
+		NotDefined
 	{%- default -%}
 		{{ type }}
 	{%- endswitch %}
@@ -95,10 +103,10 @@
 			{{ printf("new Date('%02d-%02d')",
 				rule_value.year, rule_value.month) }}
 		{%- endif -%}
-	{%- case "null" -%}
-		null
-	{%- case "undefined" -%}
-		undefined
+	{%- case "not_applicable" -%}
+		NotApplicable
+	{%- case "not_defined" -%}
+		NotDefined
 	{%- case "round" -%}
 		$round("{{ rule_value.mode }}", {{ fmt_rule(rule_value.number) }}, () => {{ fmt_rule(rule_value.precision) }})
 	{%- case "condition" -%}
@@ -124,8 +132,8 @@
 		{%- switch rule_value.op -%}
 		{%- case "neg_op" -%}
 			(-{{ fmt_rule(rule_value.arg) }})
-		{%- case "is_undef" -%}
-			({{ fmt_rule(rule_value.arg) }} === undefined)
+		{%- case "is_not_defined_op" -%}
+			(isNotDefined({{ fmt_rule(rule_value.arg) }}))
 		{%- endswitch -%}
 	{%- case "ref" -%}
 		$ref("{{ rule_value }}", {{ fmt_method(rule_value) }}, ctx, params)
@@ -142,13 +150,13 @@
 			}
 		)
 	{%- default -%}
-		not handled {{ rule_type }}
+		>>>> Templating error: unknown rule type "{{ rule_type }}" <<<<
 	{%- endswitch %}
 {%- endmacro %}
 
 {%- for rule_type, rule_name, rule_data in rules %}
 
-/** @type {Fn<{{ fmt_ts_type(rule_type) }}>} */
+/** @type {(ctx: Context, params: RuleName[]) => {{ fmt_ts_type(rule_type) }}} */
 function {{ fmt_method(rule_name) }}(ctx, params) {
   return /** @type \{{{ fmt_ts_type(rule_type)}}\} */ (
     {%- call indentret ("    ") -%}
@@ -182,19 +190,19 @@ const rules = {
      * Parameters of "{{ out.rule_name }}"
      * @typedef \{{
      {%- for param_type, param_value in out.params %}
-     *  '{{ fmt_esc(param_value) }}'?: {{ fmt_ts_type(param_type) }} | undefined
+     *  '{{ fmt_esc(param_value) }}'?: {{ fmt_ts_type(param_type) }}
      {%- endfor %}
      * }} {{ fmt_identifier(out.rule_name) }}Params
      */
     /**
      * Evaluate "{{ out.rule_name }}"
-     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {cache?: boolean}) => {{ fmt_ts_type(out.return_type) }} | undefined | null}
+     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {cache?: boolean}) => {{ fmt_ts_type(out.return_type) }}}
      */
     evaluate: (params = {}, options) =>
       $evaluate({{ fmt_method(out.rule_name) }}, params, options).value,
     /**
      * Evaluate "{{ out.rule_name }}" with information on missing and needed parameters
-     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {cache?: boolean}) => {value: {{ fmt_ts_type(out.return_type) }} | undefined | null, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>}}
+     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {cache?: boolean}) => {value: {{ fmt_ts_type(out.return_type) }}, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>}}
      */
     evaluateParams: (params = {}, options) =>
       $evaluate({{ fmt_method(out.rule_name) }}, params, options),
