@@ -1,27 +1,27 @@
 valid simple replacement :
 
   $ publicodes compile replace.publicodes  -t debug_eval_tree -o -
-  a :
-  4.
+  a:
+    4.
   
-  b :
-  5.
+  b:
+    5.
   
-  c :
-  get_context(c)
+  c:
+    get_context(c)
   
-  d :
-  get_context(d)
+  d:
+    get_context(d)
   
-  x :
-  if @a != not_applicable
-  then @a
-  else @b
+  x:
+    if @a != not_applicable
+    then @a
+    else @b
   
-  y :
-  if @c != not_applicable
-  then @c
-  else @d
+  y:
+    if @c != not_applicable
+    then @c
+    else @d
 
 
 
@@ -60,92 +60,92 @@ replacement with cycle :
 transitivity in replacement :
 
   $ publicodes compile transitivity.publicodes  -t debug_eval_tree -o -
-  a :
-  4.
+  a:
+    4.
   
-  b :
-  5.
+  b:
+    5.
   
-  c :
-  get_context(c)
+  c:
+    get_context(c)
   
-  x :
-  if if @a != not_applicable
-    then @a
-    else @b != not_applicable
-  then if @a != not_applicable
-    then @a
-    else @b
-  else @c
+  x:
+    if if @a != not_applicable
+      then @a
+      else @b != not_applicable
+    then if @a != not_applicable
+      then @a
+      else @b
+    else @c
 
 
 replacement dans / sauf dans :
 
   $ publicodes compile dans_sauf_dans.publicodes  -t debug_eval_tree -o -
-  a :
-  get_context(a)
+  a:
+    get_context(a)
   
-  b :
-  get_context(b)
+  b:
+    get_context(b)
   
-  c :
-  get_context(c)
+  c:
+    get_context(c)
   
-  x :
-  if @b != not_applicable
-  then @b
-  else @c
+  x:
+    if @b != not_applicable
+    then @b
+    else @c
   
-  y :
-  @c
+  y:
+    @c
   
-  z :
-  if @a != not_applicable
-  then @a
-  else @c
+  z:
+    if @a != not_applicable
+    then @a
+    else @c
 
 Multiples remplacements avec priorité différentes :
 
   $ publicodes compile multiple_replacements.publicodes  -t debug_eval_tree -o -
-  a :
-  4.
+  a:
+    4.
   
-  b :
-  5.
+  b:
+    5.
   
-  c :
-  get_context(c)
+  c:
+    get_context(c)
   
-  x :
-  if @a != not_applicable
-  then @a
-  else if @c != not_applicable
-    then @c
-    else @b
+  x:
+    if @a != not_applicable
+    then @a
+    else if @c != not_applicable
+      then @c
+      else @b
 
 Multiple definitions
 
   $ publicodes compile multiple_definitions.publicodes  -t debug_eval_tree -o -
-  a :
-  get_context(a)
+  a:
+    get_context(a)
   
-  b :
-  get_context(b)
+  b:
+    get_context(b)
   
-  c :
-  if @a != not_applicable
-  then @a
-  else @b
+  c:
+    if @a != not_applicable
+    then @a
+    else @b
   
-  x :
-  @c
+  x:
+    @c
   
-  y :
-  if @a != not_applicable
-  then @a
-  else @c + if @a != not_applicable
-  then @a
-  else @x
+  y:
+    if @a != not_applicable
+    then @a
+    else @c + if @a != not_applicable
+    then @a
+    else @x
 
 Type mismatch
 
