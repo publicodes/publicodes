@@ -22,7 +22,7 @@ x: c
 		expect(p.isNotApplicable(x.evaluate({ a: true, b: true }))).toBeTrue()
 	})
 
-	it.only('un seul applicable', () => {
+	it('un seul applicable', () => {
 		expect(p.isNotApplicable(x.evaluate({ a: true }))).toBeTrue()
 		expect(p.isNotApplicable(x.evaluate({ b: true }))).toBeTrue()
 	})
