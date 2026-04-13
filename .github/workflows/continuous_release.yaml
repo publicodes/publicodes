@@ -62,5 +62,5 @@ jobs:
 
       - name: Make artifacts executable
         run: chmod +x ./packages/cli/bin/compiler/*
-      # We use the @publicodes/cli package here instead of the binary path
-      - run: PUBLICODES_COMPILER_PATH="publicodes2" yarn run test
+      - name: Yarn tests
+        run: yarn run test
