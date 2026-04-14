@@ -12,7 +12,7 @@
 	},
 	"scripts": {
 		"lint": "bunx eslint .",
-		"test": "bun test --concurrent",
+		"test": "bun test --concurrent --only-failures",
 		"test:type": "tsc --noEmit"
 	},
 	"dependencies": {
