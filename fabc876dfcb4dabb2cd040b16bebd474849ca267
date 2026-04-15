@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d10872df_60651abc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-15T13:23:40Z",
+      "side": 1,
+      "message": "some minor points",
+      "revId": "fabc876dfcb4dabb2cd040b16bebd474849ca267",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ccd0ba6_ec245b3f",
+        "filename": "packages/compiler/lib/utils/pos.mli",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-15T13:23:40Z",
+      "side": 1,
+      "message": "document this",
+      "revId": "fabc876dfcb4dabb2cd040b16bebd474849ca267",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ddc0228b_4e87fc96",
+        "filename": "packages/compiler/templates/template.js",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-15T13:23:40Z",
+      "side": 1,
+      "message": "should we rename this method now?",
+      "revId": "fabc876dfcb4dabb2cd040b16bebd474849ca267",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
