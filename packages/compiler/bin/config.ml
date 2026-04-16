@@ -36,6 +36,8 @@ let yaml_target value =
         Ok Compiler.Js
     | "debug_eval_tree" ->
         Ok Compiler.Debug_eval_tree
+    | "json_doc" ->
+        Ok Compiler.Json_doc
     | value ->
         Error (`Msg ("Unsupported value \"" ^ value ^ "\"")) )
     |> Result.map_error ~f:(function `Msg msg ->

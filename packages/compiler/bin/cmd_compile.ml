@@ -29,7 +29,9 @@ let output_type =
     value
     & opt
         (enum
-           [("js", Compiler.Js); ("debug_eval_tree", Compiler.Debug_eval_tree)] )
+           [ ("js", Compiler.Js)
+           ; ("debug_eval_tree", Compiler.Debug_eval_tree)
+           ; ("json_doc", Compiler.Json_doc) ] )
         Compiler.Js
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
 
@@ -73,6 +75,8 @@ let cmd =
               ".eval_tree.debug"
           | Js ->
               ".js"
+          | Json_doc ->
+              ".json"
         else output_file
       in
       Ok
