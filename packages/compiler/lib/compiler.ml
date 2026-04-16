@@ -2,7 +2,7 @@ open Base
 open Utils
 open Utils.Output
 
-type target_type = Js | Debug_eval_tree
+type target_type = Js | Debug_eval_tree | Json_doc
 
 let to_unresolved_ast ~input_files ~default_to_public =
   let+ unresolved_programs =
@@ -28,7 +28,7 @@ let to_eval_tree ~ast =
   let+ typed_tree = Typed_tree.type_check eval_tree_with_replacements in
   Hashed_tree.from_typed_tree typed_tree
 
-let compile ~input_files ~output_type ~default_to_public =
+let compile ~input_files ~output_type ~default_to_public : string Output.t =
   let open Output in
   let* ast = to_unresolved_ast ~input_files ~default_to_public in
   let* eval_tree = to_eval_tree ~ast in
@@ -42,5 +42,7 @@ let compile ~input_files ~output_type ~default_to_public =
         Hashed_tree.to_debug_str eval_tree outputs
     | Js ->
         Hashed_tree.to_js_str eval_tree outputs
+    | Json_doc ->
+        Hashed_tree.to_json_doc_str eval_tree
   in
   return output_str
