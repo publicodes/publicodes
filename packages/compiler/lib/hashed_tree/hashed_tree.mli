@@ -21,3 +21,7 @@ val to_js_str : t -> Shared.Model_outputs.t -> string
 val to_debug_str : t -> Shared.Model_outputs.t -> string
 (** [to_debug tree outputs] converts a hashed typed tree to its corresponding
     debug string representation. *)
+
+val to_json_doc_str : t -> string
+(** [to_json_doc_str tree outputs] converts a hashed typed tree to its
+    corresponding json documentation string representation. *)
