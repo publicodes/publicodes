@@ -1,5 +1,11 @@
 # @publicodes/tools
 
+## 1.10.2
+
+### Patch Changes
+
+- [#813](https://github.com/publicodes/publicodes/pull/813) [`87ca6b6`](https://github.com/publicodes/publicodes/commit/87ca6b6dca8696b510fb949d77169ef40ff03b1d) Thanks [@EmileRolley](https://github.com/EmileRolley)! - Fix dependencies issues at installation
+
 ## 1.8.2
 
 ### Patch Changes
