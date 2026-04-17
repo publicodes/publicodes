@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f2dab09a_38eb49a2",
+        "filename": "packages/compiler/dune-project",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-17T07:01:30Z",
+      "side": 1,
+      "message": "Use Stdlib.Digest instead",
+      "revId": "61d8edbb92089cec177a1943059ee978f4b4e458",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
