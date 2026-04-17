@@ -16,6 +16,24 @@
       "message": "Use Stdlib.Digest instead",
       "revId": "61d8edbb92089cec177a1943059ee978f4b4e458",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "739cafd5_acdf702d",
+        "filename": "packages/compiler/dune-project",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-17T13:10:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f2dab09a_38eb49a2",
+      "revId": "61d8edbb92089cec177a1943059ee978f4b4e458",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
