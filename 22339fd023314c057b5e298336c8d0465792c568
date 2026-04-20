@@ -68,6 +68,24 @@
       "message": "should we rename this?",
       "revId": "22339fd023314c057b5e298336c8d0465792c568",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "75fd6673_1784f130",
+        "filename": "packages/compiler/templates/template.js",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-20T12:46:59Z",
+      "side": 1,
+      "message": "I agree that it\u0027s probably not necessary to have both `evaluate` and `evaluateParams`. I\u0027m in favor of having a single `evaluate` (current `evaluateParams`) function 👍",
+      "parentUuid": "b1051fe5_22119ea2",
+      "revId": "22339fd023314c057b5e298336c8d0465792c568",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ],
   "submitRequirementResults": []
