@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, test } from 'bun:test'
-import { p, TestPublicodes, yaml } from '../compile'
+import { p, TestPublicodes, yaml, value } from '../compile'
 
 describe('Mécanisme > applicable si', () => {
 	let engine: TestPublicodes
@@ -18,7 +18,7 @@ condition:
 		['condition fausse', { condition: false }, p.NotApplicable],
 		['condition non définie', {}, p.NotApplicable],
 	])('%s', (_, context, expected) => {
-		expect(engine.test.evaluate(context).value).toEqual(expected)
+		expect(value(engine.test.evaluate(context))).toEqual(expected)
 	})
 
 	test('missing parameters', () => {
@@ -35,7 +35,7 @@ a:
 condition:
   applicable si: non
 `
-		expect(p.isNotApplicable(a.evaluate().value)).toBeTrue()
+		expect(p.isNotApplicable(value(a.evaluate()))).toBeTrue()
 	})
 
 	test("s'applique au contexte", async () => {
@@ -45,7 +45,7 @@ test:
 condition:
 `
 		expect(
-			p.isNotApplicable(engine.test.evaluate({ test: 10 }).value),
+			p.isNotApplicable(value(engine.test.evaluate({ test: 10 }))),
 		).toBeTrue()
 	})
 })
