@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'bun:test'
-import { p, TestPublicodes, yaml } from '../compile'
+import { p, TestPublicodes, yaml, value } from '../compile'
 
 describe('Rend non applicable > multiple', () => {
 	let x: TestPublicodes[string]
@@ -19,15 +19,17 @@ x: c
 	})
 
 	it('tous applicable', () => {
-		expect(p.isNotApplicable(x.evaluate({ a: true, b: true }).value)).toBeTrue()
+		expect(
+			p.isNotApplicable(value(x.evaluate({ a: true, b: true }))),
+		).toBeTrue()
 	})
 
 	it('un seul applicable', () => {
-		expect(p.isNotApplicable(x.evaluate({ a: true }).value)).toBeTrue()
-		expect(p.isNotApplicable(x.evaluate({ b: true }).value)).toBeTrue()
+		expect(p.isNotApplicable(value(x.evaluate({ a: true })))).toBeTrue()
+		expect(p.isNotApplicable(value(x.evaluate({ b: true })))).toBeTrue()
 	})
 
 	it('aucun applicable', () => {
-		expect(p.isNotDefined(x.evaluate({ a: false, b: false }).value)).toBeTrue()
+		expect(p.isNotDefined(value(x.evaluate({ a: false, b: false })))).toBeTrue()
 	})
 })

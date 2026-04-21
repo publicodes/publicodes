@@ -719,6 +719,46 @@ function $ret(id, ctx, value) {
 	return value
 }
 
+/**
+ * Extract the value from an evaluation response.
+ *
+ * @param {Evaluated} params
+ * @returns {Value}
+ */
+export function value(params) {
+	return params.value
+}
+
+/**
+ * Extract the needed from an evaluation response.
+ *
+ * @param {Evaluated} params
+ * @returns {RuleName[]}
+ */
+export function needed(params) {
+	return params.needed
+}
+
+/**
+ * Extract the missing from an evaluation response.
+ *
+ * @param {Evaluated} params
+ * @returns {RuleName[]}
+ */
+export function missing(params) {
+	return params.missing
+}
+
+/**
+ * Extract the trace from an evaluation response.
+ *
+ * @param {Evaluated} params
+ * @returns {Trace}
+ */
+export function trace(params) {
+	return params.trace
+}
+
 export const p = {
 	NotDefined,
 	NotApplicable,

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import { yaml } from '../compile'
+import { yaml, value } from '../compile'
 
 describe('Expressions > division', () => {
 	it('division', async () => {
@@ -11,7 +11,7 @@ salaire de base:
 division:
   valeur: salaire de base / 3
 `
-		expect(division.evaluate({ 'salaire de base': 3000 }).value).toEqual(1000)
+		expect(value(division.evaluate({ 'salaire de base': 3000 }))).toEqual(1000)
 		expect(division.unit).toBe('¥')
 	})
 
@@ -24,7 +24,7 @@ salaire de base:
 division:
   valeur: 3 / salaire de base
 `
-		expect(division.evaluate({ 'salaire de base': 3000 }).value).toEqual(0.001)
+		expect(value(division.evaluate({ 'salaire de base': 3000 }))).toEqual(0.001)
 		expect(division.unit).toBe('/¥')
 	})
 })
