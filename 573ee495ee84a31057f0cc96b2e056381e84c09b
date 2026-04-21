@@ -16,6 +16,24 @@
       "message": "is that expected?",
       "revId": "573ee495ee84a31057f0cc96b2e056381e84c09b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7c8cef83_fa1df859",
+        "filename": "packages/compiler/lib/hashed_tree/templates/template.debug.jinja",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-21T13:47:47Z",
+      "side": 1,
+      "message": "Nope, if fix this, thanks.",
+      "parentUuid": "d7574760_e8241699",
+      "revId": "573ee495ee84a31057f0cc96b2e056381e84c09b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
