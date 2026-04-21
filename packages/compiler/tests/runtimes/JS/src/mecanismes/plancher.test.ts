@@ -1,4 +1,4 @@
-import { p, TestPublicodes, yaml } from '../compile'
+import { p, TestPublicodes, yaml, value } from '../compile'
 
 describe('Mécanisme > plancher', () => {
 	let engine: TestPublicodes
@@ -30,6 +30,6 @@ plancher:
 test:
   plancher: 10
 `
-		expect(engine.test.evaluate({ test: 5 }).value).toBe(10)
+		expect(value(engine.test.evaluate({ test: 5 }))).toBe(10)
 	})
 })

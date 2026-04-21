@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeAll } from 'bun:test'
-import { p, TestPublicodes, yaml } from '../compile'
+import { p, TestPublicodes, yaml, value } from '../compile'
 
 describe('Mécanisme > non applicable si', () => {
 	let rules: TestPublicodes
@@ -38,7 +38,7 @@ a:
 condition:
   applicable si: non
 `
-		expect(a.evaluate().value).toBe(10)
+		expect(value(a.evaluate())).toBe(10)
 	})
 
 	test("s'applique au contexte", async () => {
@@ -47,6 +47,6 @@ a:
   non applicable si: oui
 condition:
 `
-		expect(p.isNotApplicable(a.evaluate({ a: 10 }).value)).toBeTrue()
+		expect(p.isNotApplicable(value(a.evaluate({ a: 10 })))).toBeTrue()
 	})
 })

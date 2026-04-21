@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, test } from 'bun:test'
-import { p, TestPublicodes, yaml } from '../compile'
+import { p, TestPublicodes, yaml, value } from '../compile'
 
 describe('Expressions > différence', () => {
 	let result: TestPublicodes[string]
@@ -16,11 +16,11 @@ a:
 		['égalité', { a: 10 }, false],
 		['différence', { a: 20 }, true],
 	] as const)('%s', (_, context, expected) => {
-		expect(result.evaluate(context).value).toBe(expected)
+		expect(value(result.evaluate(context))).toBe(expected)
 	})
 
 	test('non définie', () => {
-		expect(p.isNotDefined(result.evaluate({}).value)).toBeTrue()
+		expect(p.isNotDefined(value(result.evaluate({})))).toBeTrue()
 	})
 	// @TODO : doit-on garder ce comportement de la V1 ?
 	test.skip('non applicable égal faux', async () => {
@@ -29,7 +29,7 @@ result: a != non
 a:
   non applicable si: oui
 `
-		expect(result.evaluate().value).toBeFalse()
+		expect(value(result.evaluate())).toBeFalse()
 	})
 
 	test("non applicable n'est pas égale à x, si x est applicable", async () => {
@@ -39,6 +39,6 @@ result: 12 != a
 a:
   non applicable si: oui
 `
-		expect(result.evaluate().value).toBeTrue()
+		expect(value(result.evaluate())).toBeTrue()
 	})
 })

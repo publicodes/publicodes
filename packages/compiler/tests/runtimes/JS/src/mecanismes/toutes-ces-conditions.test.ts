@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'bun:test'
-import { yaml } from '../compile'
+import { yaml, value } from '../compile'
 
 describe('Mécanisme > toutes ces conditions', () => {
 	test('avec une expression', async () => {
@@ -9,7 +9,7 @@ test:
     toutes ces conditions:
       - 10 > 5
 `
-		expect(test.evaluate().value).toBe(true)
+		expect(value(test.evaluate())).toBe(true)
 	})
 
 	test('avec deux expressions', async () => {
@@ -20,7 +20,7 @@ test:
       - 10 > 5
       - 5 = 2
 `
-		expect(test.evaluate().value).toBe(false)
+		expect(value(test.evaluate())).toBe(false)
 	})
 
 	test('avec une référence à une règle non applicable', async () => {
@@ -40,7 +40,7 @@ test2:
       - ref
       - 10 > 5
 `
-		expect(test.evaluate().value).toBe(false)
-		expect(test2.evaluate().value).toEqual(false)
+		expect(value(test.evaluate())).toBe(false)
+		expect(value(test2.evaluate())).toEqual(false)
 	})
 })

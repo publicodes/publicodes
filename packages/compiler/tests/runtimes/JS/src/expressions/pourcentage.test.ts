@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import { yaml } from '../compile'
+import { yaml, value } from '../compile'
 
 describe('Expressions > pourcentage', () => {
 	it('constante', async () => {
@@ -8,7 +8,7 @@ describe('Expressions > pourcentage', () => {
 constante:
   valeur: 38.1%
     `
-		expect(constante.evaluate().value).toEqual(38.1)
+		expect(value(constante.evaluate())).toEqual(38.1)
 		expect(constante.unit).toBe('%')
 	})
 
@@ -21,9 +21,11 @@ soustraction:
   valeur: 100% - taux
     `
 		expect(
-			soustraction.evaluate({
-				taux: 89,
-			}).value,
+			value(
+				soustraction.evaluate({
+					taux: 89,
+				}),
+			),
 		).toEqual(11)
 		expect(soustraction.unit).toBe('%')
 	})
@@ -36,9 +38,11 @@ salaire:
 multiplication:  38.1% * salaire
     `
 		expect(
-			multiplication.evaluate({
-				salaire: 1000,
-			}).value,
+			value(
+				multiplication.evaluate({
+					salaire: 1000,
+				}),
+			),
 		).toEqual(381)
 		expect(multiplication.unit).toBe('€')
 	})
@@ -60,13 +64,13 @@ multiplication:
     c: 40 kg * 50% #20kg
     d: 20 * 5% #100%
     `
-		expect(a.evaluate().value).toEqual(25)
+		expect(value(a.evaluate())).toEqual(25)
 		expect(a.unit).toBe('W')
-		expect(b.evaluate().value).toEqual(50)
+		expect(value(b.evaluate())).toEqual(50)
 		expect(b.unit).toBe('%')
-		expect(c.evaluate().value).toEqual(20)
+		expect(value(c.evaluate())).toEqual(20)
 		expect(c.unit).toBe('kg')
-		expect(d.evaluate().value).toEqual(100)
+		expect(value(d.evaluate())).toEqual(100)
 		expect(d.unit).toBe('%')
 	})
 })
