@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d7574760_e8241699",
+        "filename": "packages/compiler/lib/hashed_tree/templates/template.debug.jinja",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T13:43:26Z",
+      "side": 1,
+      "message": "is that expected?",
+      "revId": "573ee495ee84a31057f0cc96b2e056381e84c09b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
