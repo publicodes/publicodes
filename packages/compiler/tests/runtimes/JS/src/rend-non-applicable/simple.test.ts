@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import { p, yaml } from '../compile'
+import { p, yaml, value } from '../compile'
 
 describe('Rend non applicable > simple', () => {
 	it('si règle vrai', async () => {
@@ -10,7 +10,7 @@ describe('Rend non applicable > simple', () => {
         rend non applicable: impôt
         valeur: oui
       `
-		expect(p.isNotApplicable(àPayer.evaluate().value)).toBeTrue()
+		expect(p.isNotApplicable(value(àPayer.evaluate()))).toBeTrue()
 	})
 	it('si règle vaut non', async () => {
 		const { 'à payer': àPayer } = await yaml`
@@ -20,7 +20,7 @@ describe('Rend non applicable > simple', () => {
         valeur: non
         rend non applicable: impôt
       `
-		expect(àPayer.evaluate().value).toBe(1000)
+		expect(value(àPayer.evaluate())).toBe(1000)
 	})
 
 	it('si règle non applicable', async () => {
@@ -31,7 +31,7 @@ describe('Rend non applicable > simple', () => {
         applicable si: non
         rend non applicable: impôt
       `
-		expect(àPayer.evaluate().value).toBe(1000)
+		expect(value(àPayer.evaluate())).toBe(1000)
 	})
 
 	it('si règle non définie', async () => {
@@ -41,7 +41,7 @@ describe('Rend non applicable > simple', () => {
       exilé fiscal:
         rend non applicable: impôt
       `
-		expect(r['à payer'].evaluate().value).toBe(1000)
+		expect(value(r['à payer'].evaluate())).toBe(1000)
 		expect(r['exilé fiscal'].type).toBe('boolean')
 	})
 })

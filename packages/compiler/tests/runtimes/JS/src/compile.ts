@@ -2,7 +2,7 @@
 import { $, env } from 'bun'
 import { Context, Evaluated, Options } from '../../../../runtimes/runtime'
 
-export { p } from '../../../../runtimes/runtime'
+export { p, value } from '../../../../runtimes/runtime'
 
 const COMPILER_PATH = env.PUBLICODES_COMPILER_PATH ?? 'publicodes2'
 
