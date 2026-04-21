@@ -25,7 +25,7 @@
 	{%- endswitch %}
 {%- endmacro %}
 
-{%- macro fmt_rule_unit (unit) %}
+{%- macro fmt_node_unit (unit) %}
 	{%- if unit && unit != "aucune" %} {{ unit }}{% endif %}
 {%- endmacro %}
 
@@ -33,10 +33,10 @@
 	{{ op == "binary_op" || op == "unary_op" }}
 {%- endfunction %}
 
-{%- macro fmt_operand (rule) %}
-	{%- if needs_parens(rule.rule_type) %}({% endif -%}
-	{{ fmt_rule(rule) }}
-	{%- if needs_parens(rule.rule_type) %}){% endif -%}
+{%- macro fmt_operand (node) %}
+	{%- if needs_parens(node.node_type) %}({% endif -%}
+	{{ fmt_node(node) }}
+	{%- if needs_parens(node.node_type) %}){% endif -%}
 {%- endmacro %}
 
 {%- macro indent (prefix) -%}
@@ -45,24 +45,24 @@
 {%- endmacro -%}
 
 
-{%- macro fmt_rule (rule) %}
-{%- set rule_type, rule_value = (rule.rule_type, rule.rule_value) -%}
-{%- switch rule_type %}
+{%- macro fmt_node (node) %}
+{%- set node_type, node_value = (node.node_type, node.node_value) -%}
+{%- switch node_type %}
 
 {%- case "number" -%}
-{{ rule_value.number }}{{ fmt_rule_unit (rule_value.unit) }}
+{{ node_value.number }}{{ fmt_node_unit (node_value.unit) }}
 
 {%- case "text" -%}
-"{{ rule_value }}"
+"{{ node_value }}"
 
 {%- case "bool" -%}
-{{ rule_value }}
+{{ node_value }}
 
 {%- case "date" -%}
-{%- if rule_value.day -%}
-Shared_ast.Day {day = {{ rule_value.day }}; year = {{ rule_value.year }}; month = {{ rule_value.month}}}
+{%- if node_value.day -%}
+Shared_ast.Day {day = {{ node_value.day }}; year = {{ node_value.year }}; month = {{ node_value.month}}}
 {%- else -%}
-Shared_ast.Month {month = {{ rule_value.month}}; year = {{ rule_value.year }}}
+Shared_ast.Month {month = {{ node_value.month}}; year = {{ node_value.year }}}
 {%- endif %}
 
 {%- case "not_applicable" -%}
@@ -72,56 +72,56 @@ not_applicable
 not_defined
 
 {%- case "round" -%}
-round {% if rule_value.mode != "nearest" %}{{ rule_value.mode }} {% endif %}to:
-{%- call indent ("  ") %} {{ fmt_rule(rule_value.precision) }}
+round {% if node_value.mode != "nearest" %}{{ node_value.mode }} {% endif %}to:
+{%- call indent ("  ") %} {{ fmt_node(node_value.precision) }}
 {%- endcall %}
-{{ fmt_rule(rule_value.number) }}
+{{ fmt_node(node_value.number) }}
 
 {%- case "condition" -%}
 if
 {%- call indent ("  ") %} {{
-	fmt_rule(rule_value.cond) }}
+	fmt_node(node_value.cond) }}
 {%- endcall %}
 then
 {%- call indent ("  ") %} {{
-	fmt_rule(rule_value.then) }}
+	fmt_node(node_value.then) }}
 {%- endcall %}
 else
 {%- call indent ("  ") %} {{
-	fmt_rule(rule_value._else) }}
+	fmt_node(node_value._else) }}
 {%- endcall %}
 
 {%- case "binary_op" -%}
-{{ fmt_operand(rule_value.left) }} {{ fmt_binop(rule_value.op) }} {{ fmt_operand(rule_value.right) }}
+{{ fmt_operand(node_value.left) }} {{ fmt_binop(node_value.op) }} {{ fmt_operand(node_value.right) }}
 
 {%- case "unary_op" -%}
-{{ fmt_unop(rule_value.op) }} {{ fmt_rule(rule_value.arg) }}
+{{ fmt_unop(node_value.op) }} {{ fmt_node(node_value.arg) }}
 
 {%- case "ref" -%}
-@{{ rule_value }}
+@{{ node_value }}
 
 {%- case "get_ctx" -%}
-get_context({{ rule_value }})
+get_context({{ node_value }})
 
 {%- case "set_ctx" -%}
 with
 {
-{%- for item in rule_value.items %}
+{%- for item in node_value.items %}
 {%- set item_name, item_value = (item.name, item.value) %}
-{{ item_name }} = {{ fmt_rule(item_value) }}
+{{ item_name }} = {{ fmt_node(item_value) }}
 {%- endfor %}
 }
 in
-{{ fmt_rule(rule_value.expr) }}
+{{ fmt_node(node_value.expr) }}
 {%- endswitch %}
 {%- endmacro %}
 
-{%- for rule_type, rule_name, rule_data in rules %}
+{%- for rule_type, rule_name, rule_node in rules %}
 {%- if !loop.first %}
 
 {% endif -%}
 {{ rule_name }}:
 {%- call indent ("  ") %}
-{{ fmt_rule(rule_data) }}
+{{ fmt_node(rule_node) }}
 {%- endcall %}
 {%- endfor -%}
