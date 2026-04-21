@@ -22,7 +22,7 @@ plancher:
 			{ value: 10, missing: [] },
 		],
 	])('%s', (_, context, expected) => {
-		expect(engine.test.evaluateParams(context)).toMatchObject(expected)
+		expect(engine.test.evaluate(context)).toMatchObject(expected)
 	})
 
 	test("s'applique au contexte", async () => {
@@ -30,6 +30,6 @@ plancher:
 test:
   plancher: 10
 `
-		expect(engine.test.evaluate({ test: 5 })).toBe(10)
+		expect(engine.test.evaluate({ test: 5 }).value).toBe(10)
 	})
 })

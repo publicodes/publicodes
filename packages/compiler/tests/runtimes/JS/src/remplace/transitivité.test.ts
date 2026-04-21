@@ -13,7 +13,7 @@ describe('Remplace > transitivité', () => {
     c: 3
     x: c
   `
-		expect(x.evaluate()).toBe(1)
+		expect(x.evaluate().value).toBe(1)
 	})
 
 	it('non applicable', async () => {
@@ -31,6 +31,6 @@ describe('Remplace > transitivité', () => {
     d: 4
     x: d
   `
-		expect(x.evaluate()).toBe(2)
+		expect(x.evaluate().value).toBe(2)
 	})
 })
