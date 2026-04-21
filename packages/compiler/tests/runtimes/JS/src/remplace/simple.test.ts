@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeAll } from 'bun:test'
-import { yaml, TestPublicodes, p } from '../compile'
+import { yaml, TestPublicodes, p, value } from '../compile'
 
 describe('Remplace > simple', () => {
 	let rules: TestPublicodes
@@ -19,18 +19,18 @@ test: restaurant . prix du repas
 	})
 	test('non applicable', () => {
 		expect(
-			rules.test.evaluate({ 'restaurant . client gourmand': false }).value,
+			value(rules.test.evaluate({ 'restaurant . client gourmand': false })),
 		).toBe(10)
 	})
 
 	test('applicable', () => {
 		expect(
-			rules.test.evaluate({ 'restaurant . client gourmand': true }).value,
+			value(rules.test.evaluate({ 'restaurant . client gourmand': true })),
 		).toBe(15)
 	})
 
 	test('condition non définie', () => {
-		expect(rules.test.evaluate().value).toBe(10)
+		expect(value(rules.test.evaluate())).toBe(10)
 	})
 
 	test('remplace non défini', async () => {
@@ -40,6 +40,6 @@ a:
 b: 1
 x: b
 `
-		expect(p.isNotDefined(x.evaluate().value)).toBeTrue()
+		expect(p.isNotDefined(value(x.evaluate()))).toBeTrue()
 	})
 })

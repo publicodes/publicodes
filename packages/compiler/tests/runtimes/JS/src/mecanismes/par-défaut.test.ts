@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'bun:test'
-import { p, yaml } from '../compile'
+import { p, yaml, value } from '../compile'
 
 describe('Mécanisme > par défaut', () => {
 	test('simple nombre', async () => {
@@ -7,7 +7,7 @@ describe('Mécanisme > par défaut', () => {
 test:
   par défaut: 10
 `
-		expect(rules.test.evaluate().value).toBe(10)
+		expect(value(rules.test.evaluate())).toBe(10)
 	})
 
 	test('simple texte vide', async () => {
@@ -15,7 +15,7 @@ test:
 test:
   par défaut: ''
 `
-		expect(rules.test.evaluate().value).toBe('')
+		expect(value(rules.test.evaluate())).toBe('')
 	})
 
 	test('avec une valeur', async () => {
