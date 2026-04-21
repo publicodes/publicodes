@@ -10,7 +10,7 @@ a:
     - 4.4
     - -5
 `
-		expect(a.evaluate()).toBe(10)
+		expect(a.evaluate().value).toBe(10)
 	})
 
 	it('une seule valeur', async () => {
@@ -19,7 +19,7 @@ a:
   le maximum de:
     - -10
 `
-		expect(a.evaluate()).toBe(-10)
+		expect(a.evaluate().value).toBe(-10)
 	})
 
 	it('valeur non définie', async () => {
@@ -31,7 +31,7 @@ a:
     - b
 b:
 `
-		expect(p.isNotDefined(a.evaluate())).toBeTrue()
+		expect(p.isNotDefined(a.evaluate().value)).toBeTrue()
 		expect(b.unit).toBe('€')
 	})
 
@@ -45,6 +45,6 @@ a:
 b:
   non applicable si: oui
 `
-		expect(a.evaluate()).toBe(10)
+		expect(a.evaluate().value).toBe(10)
 	})
 })

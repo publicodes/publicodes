@@ -7,7 +7,7 @@ describe('Mécanisme > par défaut', () => {
 test:
   par défaut: 10
 `
-		expect(rules.test.evaluate()).toBe(10)
+		expect(rules.test.evaluate().value).toBe(10)
 	})
 
 	test('simple texte vide', async () => {
@@ -15,7 +15,7 @@ test:
 test:
   par défaut: ''
 `
-		expect(rules.test.evaluate()).toBe('')
+		expect(rules.test.evaluate().value).toBe('')
 	})
 
 	test('avec une valeur', async () => {
@@ -26,17 +26,17 @@ test:
   par défaut: a
   valeur: b
 `
-		expect(rules.test.evaluateParams()).toMatchObject({
+		expect(rules.test.evaluate()).toMatchObject({
 			value: p.NotDefined,
 			missing: ['b', 'a'],
 		})
 
-		expect(rules.test.evaluateParams({ a: 5 })).toMatchObject({
+		expect(rules.test.evaluate({ a: 5 })).toMatchObject({
 			value: 5,
 			missing: ['b'],
 		})
 
-		expect(rules.test.evaluateParams({ b: 5 })).toMatchObject({
+		expect(rules.test.evaluate({ b: 5 })).toMatchObject({
 			value: 5,
 			missing: [],
 		})
@@ -48,17 +48,17 @@ a:
 test:
   par défaut: a
 `
-		expect(rules.test.evaluateParams()).toMatchObject({
+		expect(rules.test.evaluate()).toMatchObject({
 			value: p.NotDefined,
 			missing: ['test', 'a'],
 		})
 
-		expect(rules.test.evaluateParams({ a: 5 })).toMatchObject({
+		expect(rules.test.evaluate({ a: 5 })).toMatchObject({
 			value: 5,
 			missing: ['test'],
 		})
 
-		expect(rules.test.evaluateParams({ test: 5 })).toMatchObject({
+		expect(rules.test.evaluate({ test: 5 })).toMatchObject({
 			value: 5,
 			missing: [],
 		})

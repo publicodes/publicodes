@@ -19,15 +19,15 @@ x: c
 	})
 
 	it('tous applicable', () => {
-		expect(p.isNotApplicable(x.evaluate({ a: true, b: true }))).toBeTrue()
+		expect(p.isNotApplicable(x.evaluate({ a: true, b: true }).value)).toBeTrue()
 	})
 
 	it('un seul applicable', () => {
-		expect(p.isNotApplicable(x.evaluate({ a: true }))).toBeTrue()
-		expect(p.isNotApplicable(x.evaluate({ b: true }))).toBeTrue()
+		expect(p.isNotApplicable(x.evaluate({ a: true }).value)).toBeTrue()
+		expect(p.isNotApplicable(x.evaluate({ b: true }).value)).toBeTrue()
 	})
 
 	it('aucun applicable', () => {
-		expect(p.isNotDefined(x.evaluate({ a: false, b: false }))).toBeTrue()
+		expect(p.isNotDefined(x.evaluate({ a: false, b: false }).value)).toBeTrue()
 	})
 })

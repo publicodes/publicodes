@@ -196,17 +196,11 @@ const rules = {
      * }} {{ fmt_identifier(out.rule_name) }}Params
      */
     /**
-     * Evaluate "{{ out.rule_name }}"
-     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {cache?: boolean}) => {{ fmt_ts_type(out.return_type) }}}
-     */
-    evaluate: (params = {}, options) =>
-      $evaluate({{ fmt_method(out.rule_name) }}, params, options).value,
-    /**
      * Evaluate "{{ out.rule_name }}" with evaluation trace, and information on
      * missing and needed parameters.
      * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {cache?: boolean, trace?: boolean}) => {value: {{ fmt_ts_type(out.return_type) }}, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>}}
      */
-    evaluateParams: (params = {}, options) =>
+    evaluate: (params = {}, options) =>
       $evaluate({{ fmt_method(out.rule_name) }}, params, options),
     /** @type {"{{ out.rule_type }}"} */
     type: "{{ out.rule_type }}",

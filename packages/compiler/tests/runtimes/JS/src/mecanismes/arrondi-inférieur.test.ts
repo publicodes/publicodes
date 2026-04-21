@@ -34,7 +34,7 @@ describe("Mécanisme > arrondi à l'inférieur", () => {
 		['à 0.5 près', 38.0],
 		['à 5 décimales', 38.4167],
 	])('%s', (name, expected) => {
-		expect(engine[name].evaluate()).toBe(expected)
+		expect(engine[name].evaluate().value).toBe(expected)
 	})
 
 	test("s'applique au contexte", async () => {
@@ -42,6 +42,6 @@ describe("Mécanisme > arrondi à l'inférieur", () => {
 a:
   arrondi à l'inférieur: oui
 `
-		expect(a.evaluate({ a: 1.7 })).toEqual(1)
+		expect(a.evaluate({ a: 1.7 }).value).toEqual(1)
 	})
 })

@@ -26,7 +26,7 @@ condition:
 			{ value: 10, missing: ['condition'] },
 		],
 	])('%s', (_, context, expected) => {
-		expect(rules.test.evaluateParams(context)).toMatchObject(expected)
+		expect(rules.test.evaluate(context)).toMatchObject(expected)
 	})
 
 	test('condition non applicable', async () => {
@@ -38,7 +38,7 @@ a:
 condition:
   applicable si: non
 `
-		expect(a.evaluate()).toBe(10)
+		expect(a.evaluate().value).toBe(10)
 	})
 
 	test("s'applique au contexte", async () => {
@@ -47,6 +47,6 @@ a:
   non applicable si: oui
 condition:
 `
-		expect(p.isNotApplicable(a.evaluate({ a: 10 }))).toBeTrue()
+		expect(p.isNotApplicable(a.evaluate({ a: 10 }).value)).toBeTrue()
 	})
 })
