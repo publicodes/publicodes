@@ -18,12 +18,12 @@ condition:
 		['condition fausse', { condition: false }, p.NotApplicable],
 		['condition non définie', {}, p.NotApplicable],
 	])('%s', (_, context, expected) => {
-		expect(engine.test.evaluate(context)).toEqual(expected)
+		expect(engine.test.evaluate(context).value).toEqual(expected)
 	})
 
 	test('missing parameters', () => {
-		expect(engine.test.evaluateParams({ condition: false }).missing).toEqual([])
-		expect(engine.test.evaluateParams({}).missing).toEqual(['condition'])
+		expect(engine.test.evaluate({ condition: false }).missing).toEqual([])
+		expect(engine.test.evaluate({}).missing).toEqual(['condition'])
 	})
 
 	test('condition non applicable', async () => {
@@ -35,7 +35,7 @@ a:
 condition:
   applicable si: non
 `
-		expect(p.isNotApplicable(a.evaluate())).toBeTrue()
+		expect(p.isNotApplicable(a.evaluate().value)).toBeTrue()
 	})
 
 	test("s'applique au contexte", async () => {
@@ -44,6 +44,8 @@ test:
   applicable si: non
 condition:
 `
-		expect(p.isNotApplicable(engine.test.evaluate({ test: 10 }))).toBeTrue()
+		expect(
+			p.isNotApplicable(engine.test.evaluate({ test: 10 }).value),
+		).toBeTrue()
 	})
 })
