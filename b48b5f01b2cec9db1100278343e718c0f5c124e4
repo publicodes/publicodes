@@ -36,6 +36,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c38af05b_bb86941e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T10:05:50Z",
+      "side": 1,
+      "message": "no, was referring to the meaning of spreading NotApplicable in different situations",
+      "parentUuid": "6b04291d_fc412518",
+      "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9d983228_ffcebc34",
