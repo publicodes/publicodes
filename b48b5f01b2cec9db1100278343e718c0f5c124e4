@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d8ea2a3_c8eaa840",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T07:05:15Z",
+      "side": 1,
+      "message": "Nice, this make the runtime and the test much more clear. I\u0027m not quite sure of all the consequences of the NotApplicable, and how outputs of the runtimes make sense, but that is not strictly related to this patch",
+      "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9d983228_ffcebc34",
+        "filename": "packages/compiler/lib/replacements/tree_transform.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T07:05:15Z",
+      "side": 1,
+      "message": "could be, remove \"?\"",
+      "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8881e83_c96cb6d8",
+        "filename": "packages/compiler/lib/replacements/tree_transform.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T07:05:15Z",
+      "side": 1,
+      "message": "also agree here. I though about it myself. We can leave this a TODO too",
+      "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9e440d17_bc497fb6",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 1
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T07:05:15Z",
+      "side": 1,
+      "message": "if both are NotApplicable, this return true. Is that okay?",
+      "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "67e524ba_f7db0bd2",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 1
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T07:05:15Z",
+      "side": 1,
+      "message": "same thing here if both are NotApplicable",
+      "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
