@@ -1,41 +1,41 @@
 valid simple make not applicable :
 
   $ publicodes compile simple.publicodes  -t debug_eval_tree -o -
-  a :
-  get_context(a)
+  a:
+    get_context(a)
   
-  b :
-  get_context(b)
+  b:
+    get_context(b)
   
-  x :
-  if (@a = null) || ((is_undef @a) || (@a = false))
-  then @b
-  else null
+  x:
+    if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+    then @b
+    else not_applicable
 
 
 multiple on same rule ok :
 
   $ publicodes compile multiple_on_same_rule.publicodes  -t debug_eval_tree -o -
-  a :
-  get_context(a)
+  a:
+    get_context(a)
   
-  b :
-  get_context(b)
+  b:
+    get_context(b)
   
-  c :
-  get_context(c)
+  c:
+    get_context(c)
   
-  x :
-  get_context(x)
+  x:
+    get_context(x)
   
-  y :
-  if (@a = null) || ((is_undef @a) || (@a = false))
-  then if (@b = null) || ((is_undef @b) || (@b = false))
-    then if (@c = null) || ((is_undef @c) || (@c = false))
-      then @x
-      else null
-    else null
-  else null
+  y:
+    if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+    then if (@b = not_applicable) || ((is_not_defined @b) || (@b = false))
+      then if (@c = not_applicable) || ((is_not_defined @c) || (@c = false))
+        then @x
+        else not_applicable
+      else not_applicable
+    else not_applicable
 
 make not applicable with cycle :
 
@@ -52,77 +52,77 @@ make not applicable with cycle :
 transitivity in make not applicable :
 
   $ publicodes compile transitivity.publicodes  -t debug_eval_tree -o -
-  a :
-  get_context(a)
+  a:
+    get_context(a)
   
-  b :
-  get_context(b)
+  b:
+    get_context(b)
   
-  c :
-  get_context(c)
+  c:
+    get_context(c)
   
-  x :
-  if (if (@a = null) || ((is_undef @a) || (@a = false))
-    then @b
-    else null = null) || ((is_undef if (@a = null) || ((is_undef @a) || (@a = false))
-    then @b
-    else null) || (if (@a = null) || ((is_undef @a) || (@a = false))
-    then @b
-    else null = false))
-  then @c
-  else null
+  x:
+    if (if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+      then @b
+      else not_applicable = not_applicable) || ((is_not_defined if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+      then @b
+      else not_applicable) || (if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+      then @b
+      else not_applicable = false))
+    then @c
+    else not_applicable
 
 
 
 make not applicable in / except in :
 
   $ publicodes compile dans_sauf_dans.publicodes  -t debug_eval_tree -o -
-  a :
-  get_context(a)
+  a:
+    get_context(a)
   
-  b :
-  get_context(b)
+  b:
+    get_context(b)
   
-  c :
-  get_context(c)
+  c:
+    get_context(c)
   
-  x :
-  if (@b = null) || ((is_undef @b) || (@b = false))
-  then @c
-  else null
+  x:
+    if (@b = not_applicable) || ((is_not_defined @b) || (@b = false))
+    then @c
+    else not_applicable
   
-  y :
-  @c
+  y:
+    @c
   
-  z :
-  if (@a = null) || ((is_undef @a) || (@a = false))
-  then @c
-  else null
+  z:
+    if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+    then @c
+    else not_applicable
 
 
 Multiple definitions
 
   $ publicodes compile multiple_definitions.publicodes  -t debug_eval_tree -o -
-  a :
-  get_context(a)
+  a:
+    get_context(a)
   
-  b :
-  get_context(b)
+  b:
+    get_context(b)
   
-  c :
-  if (@a = null) || ((is_undef @a) || (@a = false))
-  then @b
-  else null
+  c:
+    if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+    then @b
+    else not_applicable
   
-  x :
-  @c
+  x:
+    @c
   
-  y :
-  if (@a = null) || ((is_undef @a) || (@a = false))
-  then @c
-  else null + if (@a = null) || ((is_undef @a) || (@a = false))
-  then @x
-  else null
+  y:
+    if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+    then @c
+    else not_applicable + if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+    then @x
+    else not_applicable
 
 
 Type error
@@ -143,18 +143,18 @@ Type error
 Rend non applicable take precedence over remplace
 
   $ publicodes compile remplace_and_make_not_applicable.publicodes  -t debug_eval_tree -o -
-  a :
-  true
+  a:
+    true
   
-  b :
-  true
+  b:
+    true
   
-  c :
-  get_context(c)
+  c:
+    get_context(c)
   
-  x :
-  if (@b = null) || ((is_undef @b) || (@b = false))
-  then if @a != null
-    then @a
-    else @c
-  else null
+  x:
+    if (@b = not_applicable) || ((is_not_defined @b) || (@b = false))
+    then if @a != not_applicable
+      then @a
+      else @c
+    else not_applicable

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { yaml } from '../compile'
+import { p, yaml } from '../compile'
 
 describe('Mécanisme > produit', () => {
 	test('simple', async () => {
@@ -31,7 +31,7 @@ a:
     - 10
 b:
 `
-		expect(a.evaluate()).toBeUndefined()
+		expect(p.isNotDefined(a.evaluate())).toBeTrue()
 	})
 
 	test('valeur non applicable', async () => {
@@ -43,6 +43,6 @@ a:
 salaire brut:
   non applicable si: oui
 `
-		expect(a.evaluate()).toBe(null)
+		expect(p.isNotApplicable(a.evaluate())).toBeTrue()
 	})
 })

@@ -1,23 +1,23 @@
 Valid parenthesis expression :
 
   $ publicodes compile simple.publicodes -t debug_eval_tree -o -
-  a :
-  4.5
+  a:
+    4.5
   
-  b :
-  4.5 + 3.
+  b:
+    4.5 + 3.
   
-  c :
-  4.
+  c:
+    4.
   
-  d :
-  4. + 5.
+  d:
+    4. + 5.
   
-  e :
-  - 3.
+  e:
+    - 3.
   
-  f :
-  - 4. - 3.
+  f:
+    - 4. - 3.
 
 Invalid parenthesis expression :
 

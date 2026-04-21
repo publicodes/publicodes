@@ -55,7 +55,7 @@ type 'a value_mechanism =
   | Min_of of 'a value list
   | Max_of of 'a value list
   | One_of of 'a value list
-  | Undefined
+  | Not_defined
   | Variations of
       (* If-then list *)
       ( 'a variation list
@@ -149,7 +149,7 @@ let has_public_tag rule_def =
   List.exists ~f:(function Public -> true | _ -> false) rule_def.meta
 
 let has_value rule_def =
-  match rule_def.value.value with Undefined, _ -> false | _ -> true
+  match rule_def.value.value with Not_defined, _ -> false | _ -> true
 
 let merge (p1 : 'a program) (p2 : 'a program) = List.append p1 p2
 

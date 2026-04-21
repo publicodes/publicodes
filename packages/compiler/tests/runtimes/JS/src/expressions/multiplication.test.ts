@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { yaml } from '../compile'
+import { yaml, p } from '../compile'
 
 describe('Expressions > multiplication', () => {
 	test('simple', async () => {
@@ -22,7 +22,7 @@ a:
   unité: €
 produit: a * 3
 `
-		expect(produit.evaluate()).toEqual(null)
+		expect(p.isNotApplicable(produit.evaluate())).toBeTrue()
 		expect(produit.unit).toBe('€')
 	})
 
@@ -47,9 +47,11 @@ produit: a * b
 			expect(produit.evaluate(s)).toBe(0)
 			expect(produit.evaluateParams(s).missing).toEqual([])
 		})
-		;([{ a: null }, { b: null }] as const).forEach((s) => {
-			expect(produit.evaluate(s)).toBe(null)
-			expect(produit.evaluateParams(s).missing).toEqual([])
-		})
+		;([{ a: p.NotApplicable }, { b: p.NotApplicable }] as const).forEach(
+			(s) => {
+				expect(produit.evaluate(s)).toBe(p.NotApplicable)
+				expect(produit.evaluateParams(s).missing).toEqual([])
+			},
+		)
 	})
 })

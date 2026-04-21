@@ -1,14 +1,14 @@
 
 Simple multiplication without unit :
   $ publicodes compile -o - -t debug_eval_tree simple-multiplication-without-unit.publicodes
-  a :
-  5. €
+  a:
+    5. €
   
-  b :
-  3. * @a
+  b:
+    3. * @a
   
-  c :
-  @b + 4. $
+  c:
+    @b + 4. $
 
 Simple addition unit with unit :
 
