@@ -46,6 +46,7 @@ const NotApplicable = /** @type {NotApplicable} */ (
  * @typedef {Object.<string, Value>} Trace
  * @typedef {{cache?: boolean}} Options
  * @typedef {{[rule: RuleName]: Value } & { _global: Partial<Record<RuleName, Value>>, _options: Options}} Context
+ * @typedef {{value: Value, needed: RuleName[], missing: RuleName[], trace: Trace}} Evaluated
  */
 
 /**
@@ -690,7 +691,7 @@ function $ref(rule, fn, ctx, params) {
  * @param {Function} fn
  * @param {Context['_global']} _global
  * @param {Options} options
- * @returns {{value: Value, needed: RuleName[], missing: RuleName[], trace: Trace}}
+ * @returns Evaluated
  */
 function $evaluate(fn, _global, options = {}) {
 	/** @type {RuleName[]} */
@@ -716,6 +717,46 @@ function $ret(id, ctx, value) {
 		ctx._trace[id] = value
 	}
 	return value
+}
+
+/**
+ * Extract the value from an evaluation response.
+ *
+ * @param Evaluated params
+ * @returns Value
+ */
+export function value(params) {
+	return params.value
+}
+
+/**
+ * Extract the needed from an evaluation response.
+ *
+ * @param Evaluated params
+ * @returns RuleName[]
+ */
+export function needed(params) {
+	return params.needed
+}
+
+/**
+ * Extract the missing from an evaluation response.
+ *
+ * @param Evaluated params
+ * @returns RuleName[]
+ */
+export function missing(params) {
+	return params.missing
+}
+
+/**
+ * Extract the trace from an evaluation response.
+ *
+ * @param Evaluated params
+ * @returns Trace
+ */
+export function trace(params) {
+	return params.trace
 }
 
 export const p = {

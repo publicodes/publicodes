@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'bun:test'
-import { TestPublicodes, yaml } from '../compile'
+import { TestPublicodes, yaml, value } from '../compile'
 
 describe('Expressions > booléens', () => {
 	let rules: TestPublicodes
@@ -14,17 +14,17 @@ paramètre:
 	})
 
 	it('constante', () => {
-		expect(rules.a.evaluate().value).toEqual(true)
+		expect(value(rules.a.evaluate())).toEqual(true)
 		expect(rules.a.type).toBe('boolean')
 	})
 
 	it('paramètre', () => {
-		expect(rules.paramètre.evaluate({ paramètre: true }).value).toBe(true)
-		expect(rules.paramètre.evaluate({ paramètre: false }).value).toBe(false)
+		expect(value(rules.paramètre.evaluate({ paramètre: true }))).toBe(true)
+		expect(value(rules.paramètre.evaluate({ paramètre: false }))).toBe(false)
 	})
 
 	it('négation', () => {
-		expect(rules.négation.evaluate().value).toBe(false)
+		expect(value(rules.négation.evaluate())).toBe(false)
 		expect(rules.négation.type).toBe('boolean')
 	})
 })
