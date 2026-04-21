@@ -1,11 +1,6 @@
 /* eslint-disable no-console */
 import { $, env } from 'bun'
-import {
-	Context,
-	Evaluated,
-	Options,
-	Value,
-} from '../../../../runtimes/runtime'
+import { Context, Evaluated, Options } from '../../../../runtimes/runtime'
 
 export { p } from '../../../../runtimes/runtime'
 
@@ -69,8 +64,7 @@ export async function compilePublicodesToJS(
 type PublicodeExport = Record<
 	string,
 	{
-		evaluate: (c?: Context['_global']) => Value
-		evaluateParams: (c?: Context['_global'], o?: Options) => Evaluated
+		evaluate: (c?: Context['_global'], o?: Options) => Evaluated
 		title: string
 		description?: string
 		note?: string
