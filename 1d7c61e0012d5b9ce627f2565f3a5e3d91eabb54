@@ -121,6 +121,24 @@
       "parentUuid": "8fbc3e96_9d83d18e",
       "revId": "1d7c61e0012d5b9ce627f2565f3a5e3d91eabb54",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "df4f22bd_567e4d4f",
+        "filename": "packages/compiler/lib/hashed_tree/templates/js_template.jinja",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-21T10:13:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "04f8e593_1ea67567",
+      "revId": "1d7c61e0012d5b9ce627f2565f3a5e3d91eabb54",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
