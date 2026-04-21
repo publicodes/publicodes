@@ -30,7 +30,7 @@ arrondi à 0.5 près:
 			['arrondi à la dizaine', 30],
 			['arrondi à 0.5 près', 33.5],
 		])('%s', (name, expected) => {
-			expect(engine[name].evaluate()).toBe(expected)
+			expect(engine[name].evaluate().value).toBe(expected)
 		})
 	})
 
@@ -51,16 +51,16 @@ b:
 		})
 
 		test('arrondi à 0 décimales', () => {
-			expect(a.evaluate({ b: 0 })).toBe(12)
+			expect(a.evaluate({ b: 0 }).value).toBe(12)
 		})
 
 		test('arrondi à 5 décimales', () => {
-			expect(a.evaluate({ b: 5 })).toBe(12.458)
+			expect(a.evaluate({ b: 5 }).value).toBe(12.458)
 			expect(a.unit).toBe('%')
 		})
 
 		test('arrondi à -1 décimales', () => {
-			expect(a.evaluate({ b: -1 })).toBe(10)
+			expect(a.evaluate({ b: -1 }).value).toBe(10)
 		})
 	})
 
@@ -79,19 +79,21 @@ b:
 		})
 
 		test('arrondi à 0 (erreur)', () => {
-			expect(() => rules.a.evaluate({ b: 0 })).toThrowError('Rounding error')
+			expect(() => rules.a.evaluate({ b: 0 }).value).toThrowError(
+				'Rounding error',
+			)
 		})
 
 		test('arrondi à 5 près', () => {
-			expect(rules.a.evaluate({ b: 5 })).toBe(15)
+			expect(rules.a.evaluate({ b: 5 }).value).toBe(15)
 		})
 
 		test('arrondi à 10 près', () => {
-			expect(rules.a.evaluate({ b: 10 })).toBe(10)
+			expect(rules.a.evaluate({ b: 10 }).value).toBe(10)
 		})
 
 		test('arrondi à 0.005 près', () => {
-			expect(rules.a.evaluate({ b: 0.005 })).toBe(13.46)
+			expect(rules.a.evaluate({ b: 0.005 }).value).toBe(13.46)
 		})
 	})
 
@@ -103,7 +105,7 @@ a:
   arrondi: 15 décimales
 
 `
-			expect(rules.a.evaluate()).toBe(35.465729905)
+			expect(rules.a.evaluate().value).toBe(35.465729905)
 		})
 
 		test('sans unité (erreur)', () => {
@@ -129,11 +131,11 @@ arrondi non applicable:
 `
 			expect(
 				p.isNotApplicable(
-					engine["arrondi d'une valeur non applicable"].evaluate(),
+					engine["arrondi d'une valeur non applicable"].evaluate().value,
 				),
 			).toBeTrue()
 
-			expect(engine['arrondi non applicable'].evaluate()).toBe(13.45)
+			expect(engine['arrondi non applicable'].evaluate().value).toBe(13.45)
 		})
 
 		test('non défini', async () => {
@@ -141,7 +143,7 @@ arrondi non applicable:
 test arrondi:
   arrondi: oui
 `
-			const result = engine['test arrondi'].evaluate()
+			const result = engine['test arrondi'].evaluate().value
 			expect(p.isNotDefined(result)).toBeTrue()
 		})
 	})
@@ -154,7 +156,7 @@ montant:
   arrondi: oui
 `
 
-		expect(montant.evaluate()).toBe(150)
+		expect(montant.evaluate().value).toBe(150)
 	})
 
 	test("s'applique au contexte", async () => {
@@ -163,6 +165,6 @@ a:
   arrondi: oui
 `
 
-		expect(a.evaluate({ a: 1.4 })).toBe(1)
+		expect(a.evaluate({ a: 1.4 }).value).toBe(1)
 	})
 })

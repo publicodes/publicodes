@@ -9,7 +9,7 @@ test:
     une de ces conditions:
       - 10 > 5
 `
-		expect(test.evaluate()).toBe(true)
+		expect(test.evaluate().value).toBe(true)
 	})
 
 	test('avec deux expressions', async () => {
@@ -20,7 +20,7 @@ test:
       - 10 < 5
       - 5 = 2
 `
-		expect(test.evaluate()).toBe(false)
+		expect(test.evaluate().value).toBe(false)
 	})
 
 	test('avec une référence à une règle non applicable', async () => {
@@ -40,7 +40,7 @@ test2:
       - ref
       - 10 < 5
 `
-		expect(test.evaluate()).toBe(false)
-		expect(test2.evaluate()).toBe(false)
+		expect(test.evaluate().value).toBe(false)
+		expect(test2.evaluate().value).toBe(false)
 	})
 })
