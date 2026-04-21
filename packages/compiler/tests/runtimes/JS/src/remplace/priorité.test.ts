@@ -15,7 +15,7 @@ describe('Remplace > priorité', () => {
     c:
     x: c
   `
-		expect(x.evaluate()).toBe(1)
+		expect(x.evaluate().value).toBe(1)
 	})
 
 	it('non applicable', async () => {
@@ -32,6 +32,6 @@ describe('Remplace > priorité', () => {
     c:
     x: c
   `
-		expect(x.evaluate()).toBe(2)
+		expect(x.evaluate().value).toBe(2)
 	})
 })

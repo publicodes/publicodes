@@ -6,7 +6,7 @@ describe('Expressions > addition', () => {
 		const { addition } = await yaml`
 addition: 28 + 1.1
 `
-		expect(addition.evaluate()).toBe(29.1)
+		expect(addition.evaluate().value).toBe(29.1)
 		expect(addition.type).toBe('number')
 	})
 
@@ -18,7 +18,7 @@ règle non applicable:
   applicable si: non
 addition: 5 + règle non applicable
 `
-		expect(addition.evaluate()).toEqual(5)
+		expect(addition.evaluate().value).toEqual(5)
 	})
 
 	test('addition de deux nombres non applicable est 0', async () => {
@@ -29,7 +29,7 @@ règle non applicable:
   applicable si: non
 addition: règle non applicable + règle non applicable
 `
-		expect(addition.evaluate()).toEqual(0)
+		expect(addition.evaluate().value).toEqual(0)
 	})
 
 	test('addition avec unité', async () => {
@@ -44,7 +44,7 @@ addition: salaire de base + primes
 			addition.evaluate({
 				'salaire de base': 2000,
 				primes: 500,
-			}),
+			}).value,
 		).toEqual(2500)
 		expect(addition.type).toBe('number')
 	})

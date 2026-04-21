@@ -8,7 +8,7 @@ describe('Expressions > pourcentage', () => {
 constante:
   valeur: 38.1%
     `
-		expect(constante.evaluate()).toEqual(38.1)
+		expect(constante.evaluate().value).toEqual(38.1)
 		expect(constante.unit).toBe('%')
 	})
 
@@ -23,7 +23,7 @@ soustraction:
 		expect(
 			soustraction.evaluate({
 				taux: 89,
-			}),
+			}).value,
 		).toEqual(11)
 		expect(soustraction.unit).toBe('%')
 	})
@@ -38,7 +38,7 @@ multiplication:  38.1% * salaire
 		expect(
 			multiplication.evaluate({
 				salaire: 1000,
-			}),
+			}).value,
 		).toEqual(381)
 		expect(multiplication.unit).toBe('€')
 	})
@@ -60,13 +60,13 @@ multiplication:
     c: 40 kg * 50% #20kg
     d: 20 * 5% #100%
     `
-		expect(a.evaluate()).toEqual(25)
+		expect(a.evaluate().value).toEqual(25)
 		expect(a.unit).toBe('W')
-		expect(b.evaluate()).toEqual(50)
+		expect(b.evaluate().value).toEqual(50)
 		expect(b.unit).toBe('%')
-		expect(c.evaluate()).toEqual(20)
+		expect(c.evaluate().value).toEqual(20)
 		expect(c.unit).toBe('kg')
-		expect(d.evaluate()).toEqual(100)
+		expect(d.evaluate().value).toEqual(100)
 		expect(d.unit).toBe('%')
 	})
 })

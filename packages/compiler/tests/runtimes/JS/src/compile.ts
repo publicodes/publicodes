@@ -64,11 +64,11 @@ export async function compilePublicodesToJS(
 type PublicodeExport = Record<
 	string,
 	{
-		evaluate: (c?: Context['_global']) => Value
-		evaluateParams: (c?: Context['_global']) => {
+		evaluate: (c?: Context['_global']) => {
 			value: Value | undefined
 			missing: RuleName[]
 			needed: RuleName[]
+			trace: Record<string, unknown>
 		}
 		title: string
 		description?: string
