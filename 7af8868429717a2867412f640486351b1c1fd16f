@@ -41,6 +41,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ec522074_f8bed597",
+        "filename": "packages/compiler/lib/hashed_tree/to_jingoo.ml",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T15:17:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0b959ae5_7e89b2c9",
+      "range": {
+        "startLine": 99,
+        "startChar": 27,
+        "endLine": 99,
+        "endChar": 32
+      },
+      "revId": "7af8868429717a2867412f640486351b1c1fd16f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3c95ee2d_7576ea8a",
@@ -54,6 +78,30 @@
       "writtenOn": "2026-04-20T12:46:59Z",
       "side": 1,
       "message": "It is more of an expression/node identifier than a rule identifier.",
+      "range": {
+        "startLine": 100,
+        "startChar": 10,
+        "endLine": 100,
+        "endChar": 17
+      },
+      "revId": "7af8868429717a2867412f640486351b1c1fd16f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d021d8af_705b9e99",
+        "filename": "packages/compiler/lib/hashed_tree/to_jingoo.ml",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T15:17:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c95ee2d_7576ea8a",
       "range": {
         "startLine": 100,
         "startChar": 10,
@@ -81,6 +129,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "896952d4_b8eec2b3",
+        "filename": "packages/compiler/lib/utils/pos.mli",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T15:17:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0ead862_2cd8ae71",
+      "revId": "7af8868429717a2867412f640486351b1c1fd16f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5fc521b3_1dcce7e7",
@@ -94,6 +160,30 @@
       "writtenOn": "2026-04-20T12:46:59Z",
       "side": 1,
       "message": "issue: I\u0027m in favor of having the trace option as opt-in like the cache option.\n\n```suggestion\n\tif (ctx._options.trace) {\n```",
+      "range": {
+        "startLine": 589,
+        "startChar": 5,
+        "endLine": 589,
+        "endChar": 26
+      },
+      "revId": "7af8868429717a2867412f640486351b1c1fd16f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "55b33a19_8c97f9bd",
+        "filename": "packages/compiler/templates/runtime.js",
+        "patchSetId": 3
+      },
+      "lineNbr": 589,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T15:17:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5fc521b3_1dcce7e7",
       "range": {
         "startLine": 589,
         "startChar": 5,
@@ -127,6 +217,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8b98ec83_0ae6758f",
+        "filename": "packages/compiler/templates/template.js",
+        "patchSetId": 3
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T15:17:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4df49216_1a3a17bb",
+      "range": {
+        "startLine": 198,
+        "startChar": 55,
+        "endLine": 198,
+        "endChar": 82
+      },
+      "revId": "7af8868429717a2867412f640486351b1c1fd16f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "fb349cbb_dbaf57a5",
@@ -140,6 +254,24 @@
       "writtenOn": "2026-04-20T12:46:59Z",
       "side": 1,
       "message": "issue: we should add some tests on the trace.",
+      "revId": "7af8868429717a2867412f640486351b1c1fd16f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "06012bf3_6d8fc6c1",
+        "filename": "packages/compiler/tests/runtimes/JS/src/parameters.test.ts",
+        "patchSetId": 3
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-21T15:17:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb349cbb_dbaf57a5",
       "revId": "7af8868429717a2867412f640486351b1c1fd16f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
