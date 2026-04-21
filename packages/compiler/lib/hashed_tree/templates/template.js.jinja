@@ -86,66 +86,66 @@
 {{ replace ("\n", "\n" + prefix, input) | replace(" +$", "") }}
 {%- endmacro -%}
 
-{%- macro fmt_rule (rule) -%}
-	{%- set rule_type, rule_value, rule_id = (rule.rule_type, rule.rule_value, rule.rule_id) -%}
-	$ret("{{ rule_id }}", ctx, {% switch rule_type %}
+{%- macro fmt_node (rule) -%}
+	{%- set node_type, node_value, node_id = (rule.node_type, rule.node_value, rule.node_id) -%}
+	$ret("{{ node_id }}", ctx, {% switch node_type %}
 	{%- case "number" -%}
-		{{ rule_value.number }}
+		{{ node_value.number }}
 	{%- case "text" -%}
-		"{{ fmt_esc(rule_value) }}"
+		"{{ fmt_esc(node_value) }}"
 	{%- case "bool" -%}
-		{{ rule_value }}
+		{{ node_value }}
 	{%- case "date" -%}
-		{%- if rule_value.day -%}
+		{%- if node_value.day -%}
 			{{ printf("new Date('%d-%02d-%02d')",
-				rule_value.year, rule_value.month, rule_value.day) }}
+				node_value.year, node_value.month, node_value.day) }}
 		{%- else -%}
 			{{ printf("new Date('%02d-%02d')",
-				rule_value.year, rule_value.month) }}
+				node_value.year, node_value.month) }}
 		{%- endif -%}
 	{%- case "not_applicable" -%}
 		NotApplicable
 	{%- case "not_defined" -%}
 		NotDefined
 	{%- case "round" -%}
-		$round("{{ rule_value.mode }}", {{ fmt_rule(rule_value.number) }}, () => {{ fmt_rule(rule_value.precision) }})
+		$round("{{ node_value.mode }}", {{ fmt_node(node_value.number) }}, () => {{ fmt_node(node_value.precision) }})
 	{%- case "condition" -%}
 		$cond(
 			{%- call indentret ("  ") -%}
-			{{ fmt_rule(rule_value.cond) }}, () => {{ fmt_rule(rule_value.then) }}, () => {{ fmt_rule(rule_value._else) }}
+			{{ fmt_node(node_value.cond) }}, () => {{ fmt_node(node_value.then) }}, () => {{ fmt_node(node_value._else) }}
 			{%- endcall -%}
 		)
 	{%- case "binary_op" -%}
-		{{ fmt_binop(rule_value.op) }}(
+		{{ fmt_binop(node_value.op) }}(
 			{%- call indentret ("  ") -%}
-			{{ fmt_rule(rule_value.left) }},
+			{{ fmt_node(node_value.left) }},
 			{%- endcall -%}
 			{%- call indentret ("  ") -%}
-				{%- if rule_value.lazy -%}
-				() => {{ fmt_rule(rule_value.right) }}
+				{%- if node_value.lazy -%}
+				() => {{ fmt_node(node_value.right) }}
 				{%- else -%}
-				{{ fmt_rule(rule_value.right) }}
+				{{ fmt_node(node_value.right) }}
 				{%- endif -%}
 			{%- endcall -%}
 		)
 	{%- case "unary_op" -%}
-		{%- switch rule_value.op -%}
+		{%- switch node_value.op -%}
 		{%- case "neg_op" -%}
-			(-{{ fmt_rule(rule_value.arg) }})
+			(-{{ fmt_node(node_value.arg) }})
 		{%- case "is_not_defined_op" -%}
-			(isNotDefined({{ fmt_rule(rule_value.arg) }}))
+			(isNotDefined({{ fmt_node(node_value.arg) }}))
 		{%- endswitch -%}
 	{%- case "ref" -%}
-		$ref("{{ rule_value }}", {{ fmt_method(rule_value) }}, ctx, params)
+		$ref("{{ node_value }}", {{ fmt_method(node_value) }}, ctx, params)
 	{%- case "get_ctx" -%}
-		$get("{{ rule_value }}", ctx, params)
+		$get("{{ node_value }}", ctx, params)
 	{%- case "set_ctx" -%}
-		((ctx) => {{ fmt_rule(rule_value.expr) }})(
+		((ctx) => {{ fmt_node(node_value.expr) }})(
 			{
 				...ctx,
-				{%- for item in rule_value.items %}
+				{%- for item in node_value.items %}
 				{%- set item_name, item_value = (item.name, item.value) %}
-					"{{ item_name }}": {{ fmt_rule(item_value) }},
+					"{{ item_name }}": {{ fmt_node(item_value) }},
 				{% endfor %}
 			}
 		)
@@ -155,13 +155,13 @@
 	)
 {%- endmacro %}
 
-{%- for rule_type, rule_name, rule_data in rules %}
+{%- for rule_type, rule_name, rule_node in rules %}
 
 /** @type {(ctx: Context, params: RuleName[]) => {{ fmt_ts_type(rule_type) }}} */
 function {{ fmt_method(rule_name) }}(ctx, params) {
   return /** @type \{{{ fmt_ts_type(rule_type)}}\} */ (
     {%- call indentret ("    ") -%}
-    {{ fmt_rule(rule_data) }}
+    {{ fmt_node(rule_node) }}
     {%- endcall %}
   )
 }
