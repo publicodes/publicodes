@@ -53,17 +53,17 @@ with constant:
 	})
 
 	test('no parameters needed', () => {
-		const result = r['no parameters needed'].evaluateParams()
+		const result = r['no parameters needed'].evaluate()
 		expect(result.needed).toEqual([])
 		expect(result.missing).toEqual([])
 	})
 
 	test('params a needed', () => {
-		const result = r['params a needed'].evaluateParams()
+		const result = r['params a needed'].evaluate()
 		expect(result.needed).toEqual(['params . a'])
 		expect(result.missing).toEqual(['params . a'])
 
-		const resultWithA = r['params a needed'].evaluateParams({
+		const resultWithA = r['params a needed'].evaluate({
 			'params . a': 3,
 		})
 		expect(resultWithA.needed).toEqual(['params . a'])
@@ -71,11 +71,11 @@ with constant:
 	})
 
 	test('params a and b needed', () => {
-		const result = r['params a and b needed'].evaluateParams()
+		const result = r['params a and b needed'].evaluate()
 		expect(result.needed).toEqual(['params . a', 'params . b'])
 		expect(result.missing).toEqual(['params . a', 'params . b'])
 
-		const resultWithA = r['params a and b needed'].evaluateParams({
+		const resultWithA = r['params a and b needed'].evaluate({
 			'params . a': 3,
 		})
 		expect(resultWithA.needed).toEqual(['params . a', 'params . b'])
@@ -83,11 +83,11 @@ with constant:
 	})
 
 	test('conditionnal', () => {
-		const result = r.conditionnal.evaluateParams()
+		const result = r.conditionnal.evaluate()
 		expect(result.needed).toEqual(['params . c', 'params . a'])
 		expect(result.missing).toEqual(['params . c', 'params . a'])
 
-		const resultWithA = r.conditionnal.evaluateParams({
+		const resultWithA = r.conditionnal.evaluate({
 			'params . c': false,
 		})
 		expect(resultWithA.needed).toEqual(['params . c', 'params . b'])
@@ -95,7 +95,7 @@ with constant:
 	})
 
 	test('with context', () => {
-		expect(r['with context'].evaluateParams()).toEqual({
+		expect(r['with context'].evaluate()).toEqual({
 			missing: [],
 			needed: [],
 			trace: {},
@@ -104,16 +104,14 @@ with constant:
 	})
 
 	test('with embeded context', () => {
-		expect(r['with embeded context'].evaluateParams()).toEqual({
+		expect(r['with embeded context'].evaluate()).toEqual({
 			missing: ['params . a'],
 			needed: ['params . a'],
 			trace: {},
 			value: p.NotDefined,
 		})
 
-		expect(
-			r['with embeded context'].evaluateParams({ 'params . a': 4 }),
-		).toEqual({
+		expect(r['with embeded context'].evaluate({ 'params . a': 4 })).toEqual({
 			missing: [],
 			needed: ['params . a'],
 			trace: {},
@@ -122,7 +120,7 @@ with constant:
 	})
 
 	test('with embeded context', () => {
-		expect(r['with constant'].evaluateParams()).toEqual({
+		expect(r['with constant'].evaluate()).toEqual({
 			missing: [],
 			needed: [],
 			trace: {},
@@ -132,10 +130,7 @@ with constant:
 
 	test('with trace', () => {
 		expect(
-			r['with embeded context'].evaluateParams(
-				{ 'params . a': 4 },
-				{ trace: true },
-			),
+			r['with embeded context'].evaluate({ 'params . a': 4 }, { trace: true }),
 		).toEqual({
 			missing: [],
 			needed: ['params . a'],

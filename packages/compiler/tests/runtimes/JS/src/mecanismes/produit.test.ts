@@ -10,7 +10,7 @@ a:
     - 4 kg
     - 5 €/kg
 `
-		expect(a.evaluate()).toBe(200)
+		expect(a.evaluate().value).toBe(200)
 		expect(a.unit).toBe('€')
 	})
 
@@ -20,7 +20,7 @@ a:
   produit:
     - -10
 `
-		expect(a.evaluate()).toBe(-10)
+		expect(a.evaluate().value).toBe(-10)
 	})
 
 	test('valeur non définie', async () => {
@@ -31,7 +31,7 @@ a:
     - 10
 b:
 `
-		expect(p.isNotDefined(a.evaluate())).toBeTrue()
+		expect(p.isNotDefined(a.evaluate().value)).toBeTrue()
 	})
 
 	test('valeur non applicable', async () => {
@@ -43,6 +43,6 @@ a:
 salaire brut:
   non applicable si: oui
 `
-		expect(p.isNotApplicable(a.evaluate())).toBeTrue()
+		expect(p.isNotApplicable(a.evaluate().value)).toBeTrue()
 	})
 })

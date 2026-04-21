@@ -14,7 +14,7 @@ SMIC net:
     salaire brut: SMIC brut
 `
 
-		expect(engine['SMIC net'].evaluateParams()).toMatchObject({
+		expect(engine['SMIC net'].evaluate()).toMatchObject({
 			value: 500,
 			missing: [],
 		})
@@ -35,7 +35,7 @@ cotisation:
 salaire brut: 10000 €
 `
 
-		expect(engine['cotisation'].evaluateParams()).toMatchObject({
+		expect(engine['cotisation'].evaluate()).toMatchObject({
 			value: 100,
 			missing: [],
 		})
@@ -52,7 +52,7 @@ test:
     b: b + 10
 `
 
-		expect(engine['test'].evaluateParams()).toMatchObject({
+		expect(engine['test'].evaluate()).toMatchObject({
 			value: 15,
 			missing: [],
 		})
@@ -69,7 +69,7 @@ test:
     a: a + b
     b: 0
 `
-		expect(engine['test'].evaluateParams()).toMatchObject({
+		expect(engine['test'].evaluate()).toMatchObject({
 			value: 15,
 			missing: [],
 		})
@@ -95,12 +95,12 @@ z: a + b
 a: 0
 b: 0
 `
-		expect(engine['x'].evaluateParams()).toMatchObject({
+		expect(engine['x'].evaluate()).toMatchObject({
 			value: 3,
 			missing: [],
 		})
 
-		expect(engine['y'].evaluateParams()).toMatchObject({
+		expect(engine['y'].evaluate()).toMatchObject({
 			value: 2,
 			missing: [],
 		})
@@ -125,23 +125,23 @@ a:
   par défaut: 3
 test: x + y + z
 `
-		expect(engine['x'].evaluateParams()).toMatchObject({
+		expect(engine['x'].evaluate()).toMatchObject({
 			value: 1,
 			missing: [],
 		})
 
-		expect(engine['y'].evaluateParams()).toMatchObject({
+		expect(engine['y'].evaluate()).toMatchObject({
 			value: 2,
 			missing: [],
 		})
 
-		expect(engine['test'].evaluateParams()).toMatchObject({
+		expect(engine['test'].evaluate()).toMatchObject({
 			value: 6,
 			missing: ['a'],
 		})
 
 		expect(
-			engine['test'].evaluateParams({
+			engine['test'].evaluate({
 				a: 4,
 			}),
 		).toMatchObject({
@@ -163,7 +163,7 @@ test:
       contexte:
         a: 8
 `
-		expect(engine['test'].evaluateParams()).toMatchObject({
+		expect(engine['test'].evaluate()).toMatchObject({
 			value: 2,
 			missing: [],
 		})
