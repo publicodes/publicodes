@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import { p, yaml } from '../compile'
+import { p, yaml, value } from '../compile'
 
 describe('Rend non applicable > transitivité', () => {
 	it('simple', async () => {
@@ -14,7 +14,7 @@ describe('Rend non applicable > transitivité', () => {
     c: oui
     x: c
   `
-		expect(x.evaluate().value).toBe(true)
+		expect(value(x.evaluate())).toBe(true)
 	})
 
 	it('simple', async () => {
@@ -32,6 +32,6 @@ describe('Rend non applicable > transitivité', () => {
     d: oui
     x: d
   `
-		expect(p.isNotApplicable(x.evaluate().value)).toBeTrue()
+		expect(p.isNotApplicable(value(x.evaluate()))).toBeTrue()
 	})
 })
