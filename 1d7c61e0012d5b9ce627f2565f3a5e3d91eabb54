@@ -35,6 +35,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "3880de51_c6e6396f",
+        "filename": "packages/compiler/lib/hashed_tree/hashed_tree.mli",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-21T09:21:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "231ac2df_a734c7e2",
+      "revId": "1d7c61e0012d5b9ce627f2565f3a5e3d91eabb54",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9545ca09_569ffc68",
@@ -65,6 +83,42 @@
       "writtenOn": "2026-04-21T07:11:55Z",
       "side": 1,
       "message": "I continue to prefer \"template.js.jinja\". It help the tooling to detect \"js\".",
+      "revId": "1d7c61e0012d5b9ce627f2565f3a5e3d91eabb54",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d292741a_56a0af9d",
+        "filename": "packages/compiler/lib/hashed_tree/templates/js_template.jinja",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-21T09:21:38Z",
+      "side": 1,
+      "message": "Thanks",
+      "parentUuid": "9545ca09_569ffc68",
+      "revId": "1d7c61e0012d5b9ce627f2565f3a5e3d91eabb54",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "04f8e593_1ea67567",
+        "filename": "packages/compiler/lib/hashed_tree/templates/js_template.jinja",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-21T09:21:38Z",
+      "side": 1,
+      "message": "I\u0027m okay to go with `js.jinja`, this was done before our discussion about it.",
+      "parentUuid": "8fbc3e96_9d83d18e",
       "revId": "1d7c61e0012d5b9ce627f2565f3a5e3d91eabb54",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
