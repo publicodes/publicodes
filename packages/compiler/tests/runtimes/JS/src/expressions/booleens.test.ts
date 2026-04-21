@@ -14,17 +14,17 @@ paramètre:
 	})
 
 	it('constante', () => {
-		expect(rules.a.evaluate()).toEqual(true)
+		expect(rules.a.evaluate().value).toEqual(true)
 		expect(rules.a.type).toBe('boolean')
 	})
 
 	it('paramètre', () => {
-		expect(rules.paramètre.evaluate({ paramètre: true })).toBe(true)
-		expect(rules.paramètre.evaluate({ paramètre: false })).toBe(false)
+		expect(rules.paramètre.evaluate({ paramètre: true }).value).toBe(true)
+		expect(rules.paramètre.evaluate({ paramètre: false }).value).toBe(false)
 	})
 
 	it('négation', () => {
-		expect(rules.négation.evaluate()).toBe(false)
+		expect(rules.négation.evaluate().value).toBe(false)
 		expect(rules.négation.type).toBe('boolean')
 	})
 })

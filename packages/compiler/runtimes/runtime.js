@@ -43,6 +43,7 @@ const NotApplicable = /** @type {NotApplicable} */ (
  *
  * Other types:
  * @typedef {string} RuleName
+ * @typedef {Object.<string, Value>} Trace
  * @typedef {{cache?: boolean}} Options
  * @typedef {{[rule: RuleName]: Value } & { _global: Partial<Record<RuleName, Value>>, _options: Options}} Context
  */
@@ -689,7 +690,7 @@ function $ref(rule, fn, ctx, params) {
  * @param {Function} fn
  * @param {Context['_global']} _global
  * @param {Options} options
- * @returns {{value: Value, needed: RuleName[], missing: RuleName[]}}
+ * @returns {{value: Value, needed: RuleName[], missing: RuleName[], trace: Trace}}
  */
 function $evaluate(fn, _global, options = {}) {
 	/** @type {RuleName[]} */

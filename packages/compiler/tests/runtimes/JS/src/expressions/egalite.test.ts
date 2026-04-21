@@ -14,11 +14,11 @@ a:
 		['égalité', { a: 10 }, true],
 		['différence', { a: 20 }, false],
 	] as const)('%s', (_, context, expected) => {
-		expect(model.result.evaluate(context)).toBe(expected)
+		expect(model.result.evaluate(context).value).toBe(expected)
 	})
 
 	test('non définie', () => {
-		const val = model.result.evaluate({})
+		const val = model.result.evaluate({}).value
 		expect(p.isNotDefined(val)).toBeTrue()
 	})
 
@@ -30,7 +30,7 @@ a:
   valeur: oui
   non applicable si: oui
 `
-		expect(result.evaluate()).toBe(true)
+		expect(result.evaluate().value).toBe(true)
 	})
 
 	test("non applicable n'est pas égale à x, si x est applicable", async () => {
@@ -40,6 +40,6 @@ result: 12 = a
 a:
   non applicable si: oui
 `
-		expect(result.evaluate({})).toBe(false)
+		expect(result.evaluate({}).value).toBe(false)
 	})
 })
