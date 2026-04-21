@@ -14,7 +14,7 @@ describe('Rend non applicable > transitivité', () => {
     c: oui
     x: c
   `
-		expect(x.evaluate()).toBe(true)
+		expect(x.evaluate().value).toBe(true)
 	})
 
 	it('simple', async () => {
@@ -32,6 +32,6 @@ describe('Rend non applicable > transitivité', () => {
     d: oui
     x: d
   `
-		expect(p.isNotApplicable(x.evaluate())).toBeTrue()
+		expect(p.isNotApplicable(x.evaluate().value)).toBeTrue()
 	})
 })

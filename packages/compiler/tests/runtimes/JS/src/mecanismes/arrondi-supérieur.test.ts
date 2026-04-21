@@ -34,7 +34,7 @@ describe('Mécanisme > arrondi au supérieur', () => {
 		['à 0.05 près', 38.45],
 		['à 5 décimales', 38.4167],
 	])('%s', (name, expected) => {
-		expect(engine[name].evaluate()).toBe(expected)
+		expect(engine[name].evaluate().value).toBe(expected)
 	})
 
 	test("s'applique au contexte", async () => {
@@ -42,6 +42,6 @@ describe('Mécanisme > arrondi au supérieur', () => {
 a:
   arrondi au supérieur: oui
 `
-		expect(a.evaluate({ a: 1.4 })).toEqual(2)
+		expect(a.evaluate({ a: 1.4 }).value).toEqual(2)
 	})
 })
