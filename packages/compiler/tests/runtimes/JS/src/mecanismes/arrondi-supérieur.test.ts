@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeAll } from 'bun:test'
-import { TestPublicodes, yaml } from '../compile'
+import { TestPublicodes, yaml, value } from '../compile'
 
 describe('Mécanisme > arrondi au supérieur', () => {
 	let engine: TestPublicodes
@@ -34,7 +34,7 @@ describe('Mécanisme > arrondi au supérieur', () => {
 		['à 0.05 près', 38.45],
 		['à 5 décimales', 38.4167],
 	])('%s', (name, expected) => {
-		expect(engine[name].evaluate().value).toBe(expected)
+		expect(value(engine[name].evaluate())).toBe(expected)
 	})
 
 	test("s'applique au contexte", async () => {
@@ -42,6 +42,6 @@ describe('Mécanisme > arrondi au supérieur', () => {
 a:
   arrondi au supérieur: oui
 `
-		expect(a.evaluate({ a: 1.4 }).value).toEqual(2)
+		expect(value(a.evaluate({ a: 1.4 }))).toEqual(2)
 	})
 })

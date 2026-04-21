@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import { yaml } from '../compile'
+import { yaml, value } from '../compile'
 
 describe('Remplace > priorité', () => {
 	it('simple', async () => {
@@ -15,7 +15,7 @@ describe('Remplace > priorité', () => {
     c:
     x: c
   `
-		expect(x.evaluate().value).toBe(1)
+		expect(value(x.evaluate())).toBe(1)
 	})
 
 	it('non applicable', async () => {
@@ -32,6 +32,6 @@ describe('Remplace > priorité', () => {
     c:
     x: c
   `
-		expect(x.evaluate().value).toBe(2)
+		expect(value(x.evaluate())).toBe(2)
 	})
 })

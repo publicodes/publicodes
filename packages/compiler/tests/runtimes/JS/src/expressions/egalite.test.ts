@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, test } from 'bun:test'
-import { p, TestPublicodes, yaml } from '../compile'
+import { p, TestPublicodes, yaml, value } from '../compile'
 
 describe('Expressions > égalité', () => {
 	let model: TestPublicodes
@@ -14,11 +14,11 @@ a:
 		['égalité', { a: 10 }, true],
 		['différence', { a: 20 }, false],
 	] as const)('%s', (_, context, expected) => {
-		expect(model.result.evaluate(context).value).toBe(expected)
+		expect(value(model.result.evaluate(context))).toBe(expected)
 	})
 
 	test('non définie', () => {
-		const val = model.result.evaluate({}).value
+		const val = value(model.result.evaluate({}))
 		expect(p.isNotDefined(val)).toBeTrue()
 	})
 
@@ -30,7 +30,7 @@ a:
   valeur: oui
   non applicable si: oui
 `
-		expect(result.evaluate().value).toBe(true)
+		expect(value(result.evaluate())).toBe(true)
 	})
 
 	test("non applicable n'est pas égale à x, si x est applicable", async () => {
@@ -40,6 +40,6 @@ result: 12 = a
 a:
   non applicable si: oui
 `
-		expect(result.evaluate({}).value).toBe(false)
+		expect(value(result.evaluate({}))).toBe(false)
 	})
 })
