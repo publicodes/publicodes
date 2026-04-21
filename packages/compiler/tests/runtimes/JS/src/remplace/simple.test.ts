@@ -18,19 +18,19 @@ test: restaurant . prix du repas
 `
 	})
 	test('non applicable', () => {
-		expect(rules.test.evaluate({ 'restaurant . client gourmand': false })).toBe(
-			10,
-		)
+		expect(
+			rules.test.evaluate({ 'restaurant . client gourmand': false }).value,
+		).toBe(10)
 	})
 
 	test('applicable', () => {
-		expect(rules.test.evaluate({ 'restaurant . client gourmand': true })).toBe(
-			15,
-		)
+		expect(
+			rules.test.evaluate({ 'restaurant . client gourmand': true }).value,
+		).toBe(15)
 	})
 
 	test('condition non définie', () => {
-		expect(rules.test.evaluate()).toBe(10)
+		expect(rules.test.evaluate().value).toBe(10)
 	})
 
 	test('remplace non défini', async () => {
@@ -40,6 +40,6 @@ a:
 b: 1
 x: b
 `
-		expect(p.isNotDefined(x.evaluate())).toBeTrue()
+		expect(p.isNotDefined(x.evaluate().value)).toBeTrue()
 	})
 })

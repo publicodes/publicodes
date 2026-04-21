@@ -14,7 +14,7 @@ describe('Rend non applicable > avec remplace', () => {
     c:
     x: c
   `
-		expect(p.isNotApplicable(x.evaluate())).toBeTrue()
+		expect(p.isNotApplicable(x.evaluate().value)).toBeTrue()
 	})
 
 	it('remplace «rend non applicable»', async () => {
@@ -30,6 +30,6 @@ describe('Rend non applicable > avec remplace', () => {
 
     x: c
   `
-		expect(p.isNotApplicable(x.evaluate())).toBeTrue()
+		expect(p.isNotApplicable(x.evaluate().value)).toBeTrue()
 	})
 })
