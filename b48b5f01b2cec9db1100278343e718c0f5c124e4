@@ -18,6 +18,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6b04291d_fc412518",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-21T09:21:51Z",
+      "side": 1,
+      "message": "\u003e how outputs of the runtimes make sense\n\nAre you referring to the exported `p` object ?",
+      "parentUuid": "1d8ea2a3_c8eaa840",
+      "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "9d983228_ffcebc34",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-04-21T07:05:15Z",
       "side": 1,
       "message": "could be, remove \"?\"",
+      "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e26d226_6ced1c20",
+        "filename": "packages/compiler/lib/replacements/tree_transform.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-21T09:21:51Z",
+      "side": 1,
+      "message": "Yes, I should probably correct it right now 👍",
+      "parentUuid": "9d983228_ffcebc34",
       "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
@@ -69,6 +105,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f2b556d7_a4f0a4c9",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 1
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-21T09:21:51Z",
+      "side": 1,
+      "message": "Yes, it\u0027s the spec we keep from the v1 👍\n\nhttps://publi.codes/studio/test#a%3A%0A%20%20applicable%20si%3A%20non%0A%0Ab%3A%0A%20%20applicable%20si%3A%20non%0A%0Atest%3A%20a%20%3D%20b",
+      "parentUuid": "9e440d17_bc497fb6",
+      "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "67e524ba_f7db0bd2",
@@ -82,6 +136,24 @@
       "writtenOn": "2026-04-21T07:05:15Z",
       "side": 1,
       "message": "same thing here if both are NotApplicable",
+      "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8548c1ef_9971f552",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 1
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-21T09:21:51Z",
+      "side": 1,
+      "message": "Yes, same answer as before. I\u0027m thinking maybe we want to define `$neq` as `!$eq` (after handling the not defined values) 🤔",
+      "parentUuid": "67e524ba_f7db0bd2",
       "revId": "b48b5f01b2cec9db1100278343e718c0f5c124e4",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
