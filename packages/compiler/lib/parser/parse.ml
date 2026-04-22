@@ -8,7 +8,7 @@ let authorized_keys =
   Parse_meta.reserved_meta
   @ Hashtbl.keys Parse_mechanisms.chainable_mechanisms
   @ Hashtbl.keys Parse_mechanisms.value_mechanisms
-  @ ["remplace"; "avec"; "rend non applicable"]
+  @ ["remplace"; "avec"; "rend non applicable"; "importer"]
   (* To implement *)
   @ [ "barème"
     ; "grille"
@@ -53,15 +53,18 @@ let rec parse_rule ~default_to_public ?(current_rule_name = []) (name, yaml) =
       let* meta = Parse_meta.parse yaml in
       let meta = default_meta @ meta in
       let* with_ = parse_with ~default_to_public ~current_rule_name:name yaml in
+      let* import =
+        parse_import ~default_to_public ~current_rule_name:name yaml
+      in
       let* replace = parse_replace yaml in
       let* make_not_applicable = parse_make_not_applicable yaml in
       return
-        ( { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
-          ; value
-          ; meta
-          ; replace
-          ; make_not_applicable }
-        :: with_ )
+        ( [ { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
+            ; value
+            ; meta
+            ; replace
+            ; make_not_applicable } ]
+        @ with_ @ import )
   | `A _ ->
       (* Should not happen because already checked by parse_value*)
       empty
@@ -73,6 +76,21 @@ and parse_with ~default_to_public ?(current_rule_name = []) mapping =
       return []
   | Some (rules, pos) ->
       parse_rules ~default_to_public ~pos ~current_rule_name rules
+
+and parse_import ~default_to_public ?(current_rule_name = []) mapping =
+  let import = find_value "importer" mapping in
+  match import with
+  | None ->
+      return []
+  | Some (import, pos) -> (
+    match import with
+    | `A yaml ->
+        let* values = yaml |> List.map ~f:(get_scalar ~pos) |> all_keep_logs in
+        let input_files = List.map ~f:(fun ({value; _}, _) -> value) values in
+        parse_files ~default_to_public ~current_rule_name input_files
+    | _ ->
+        let code, message = Err.parsing_should_be_array in
+        fatal_error ~pos ~code ~kind:`Syntax message )
 
 and parse_files ~default_to_public ?(current_rule_name = []) input_files =
   let+ unresolved_programs =
