@@ -102,3 +102,42 @@ Benchmarks are defined in
 ```sh
 make bench-<benchmark-name>
 ```
+### Reviewing with Gerrit
+
+#### With Git
+
+Setup:
+
+```sh
+git remote add gerrit \
+    ssh://USER@review.gerrithub.io:29418/publicodes/publicodes
+curl -Lo "$(git rev-parse --git-dir)/hooks/commit-msg" \
+    https://gerrithub.io/tools/hooks/commit-msg
+# Re-commit to add the Change-Id trailing
+```
+
+Usage:
+
+```sh
+git push gerrit HEAD:refs/for/2.0
+```
+
+#### With Jujutsu
+
+Setup:
+
+```sh
+jj git remote add gerrit \
+    ssh://USER@review.gerrithub.io:29418/publicodes/publicodes
+jj config set --repo gerrit.default-remote gerrit
+jj config set --repo gerrit.default-remote-branch 2.0
+jj config set --repo templates.commit_trailers \
+    'if(!trailers.contains_key("Change-Id"), format_gerrit_change_id_trailer(self))'
+# Re-commit to add the Change-Id trailing
+```
+
+Usage:
+
+```sh
+jj gerrit upload
+```
