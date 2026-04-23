@@ -89,6 +89,7 @@ type rule_meta =
   | Note of string
   | Public
   | Custom_meta of Yojson.Safe.t
+  | Module_id of Module_id.t
 [@@deriving equal, show]
 
 type 'a replace =
@@ -147,6 +148,10 @@ let binary_op_to_string = function
 (** Map expression *)
 let has_public_tag rule_def =
   List.exists ~f:(function Public -> true | _ -> false) rule_def.meta
+
+let get_module_id_exn rule_def =
+  List.find_map_exn rule_def.meta ~f:(fun meta ->
+      match meta with Module_id id -> Some id | _ -> None )
 
 let has_value rule_def =
   match rule_def.value.value with Not_defined, _ -> false | _ -> true
