@@ -1,6 +1,6 @@
 Should correctly transform `applicable si` mechanism:
 
-  $ publicodes compile ./applicable_si.publicodes -t debug_eval_tree -o -
+  $ publicodes compile ./applicable_si -t debug_eval_tree -o -
   condition:
     get_context(condition)
   
@@ -11,7 +11,7 @@ Should correctly transform `applicable si` mechanism:
 
 Should correctly transform `non applicable si` mechanism:
 
-  $ publicodes compile ./non_applicable_si.publicodes -t debug_eval_tree -o -
+  $ publicodes compile ./non_applicable_si -t debug_eval_tree -o -
   condition:
     get_context(condition)
   

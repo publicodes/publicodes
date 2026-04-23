@@ -34,10 +34,13 @@ module Code = struct
     | Type_missing_in_mechanism
     (* Cycle detection errors *)
     | Cycle_detected
+    | Private_rule
+    | Illegal_reference
     (* Replacement errors *)
     | Replace_multiple
     | Replace_cycle
     | Parsing_invalid_meta
+    | No_file_or_directory
   [@@deriving equal]
 
   let show = function
@@ -101,6 +104,12 @@ module Code = struct
         "E029"
     | Parsing_invalid_meta ->
         "E030"
+    | Private_rule ->
+        "E031"
+    | Illegal_reference ->
+        "E032"
+    | No_file_or_directory ->
+        "E033"
 
   let pp fmt err = Stdlib.Format.fprintf fmt "%s" (show err)
 end
@@ -171,6 +180,11 @@ let type_missing_in_mechanism =
 
 let cycle_detected = (Code.Cycle_detected, "cycle de dépendance détecté")
 
+let illegal_reference =
+  (Code.Illegal_reference, "cette règle n'est pas accessible")
+
+let private_rule = (Code.Private_rule, "cette règle est privée")
+
 let missing_parent_rule =
   (Code.Resolver_missing_parent_rule, "règle parente manquante")
 
@@ -185,3 +199,13 @@ let parsing_invalid_mechanism =
 let replace_multiple = (Code.Replace_multiple, "remplacement multiples")
 
 let replace_cycle = (Code.Replace_cycle, "cycle de remplacement détecté")
+
+let no_file_or_directory =
+  (Code.No_file_or_directory, "la resource est introuvable")
+
+let import_cycle chain =
+  let message =
+    String.concat " <- " chain
+    |> Stdlib.Format.sprintf "cycle d'import détecté : %s"
+  in
+  (Code.Cycle_detected, message)

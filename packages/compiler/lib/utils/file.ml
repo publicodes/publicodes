@@ -1,3 +1,5 @@
+open Base
+
 type t = string
 
 let pp = Stdlib.Format.pp_print_string
@@ -21,3 +23,16 @@ let write_file ~path ~content =
       write content Out_channel.stdout
   | file ->
       Out_channel.with_open_bin file (write content)
+
+let publicodes_module module_ =
+  if not (Stdlib.Sys.file_exists module_) then None
+  else if not (Stdlib.Sys.is_directory module_) then None
+  else
+    let dir = Fpath.of_string module_ |> Stdlib.Result.get_ok in
+    let files =
+      Stdlib.Sys.readdir module_ |> List.of_array
+      |> List.map ~f:(Fpath.add_seg dir)
+      |> List.filter ~f:(Fpath.has_ext "publicodes")
+      |> List.map ~f:Fpath.to_string
+    in
+    if List.is_empty files then None else Some files

@@ -1,6 +1,6 @@
 Valid :
 
-  $ publicodes compile valid.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile valid  -t debug_eval_tree -o -
   b:
     get_context(b)
   
