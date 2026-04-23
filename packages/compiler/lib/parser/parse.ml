@@ -74,6 +74,22 @@ and parse_with ~default_to_public ?(current_rule_name = []) mapping =
   | Some (rules, pos) ->
       parse_rules ~default_to_public ~pos ~current_rule_name rules
 
+and parse_files ~default_to_public ?(current_rule_name = []) input_files =
+  let+ unresolved_programs =
+    List.map input_files ~f:(fun filename ->
+        (* Read the file content *)
+        let file_content = File.read_file filename in
+        (* Parse the file content *)
+        to_yaml ~filename file_content
+        >>= parse_rules ~default_to_public
+              ~pos:(Pos.beginning_of_file filename)
+              ~current_rule_name )
+    |> all_keep_logs
+  in
+  List.fold
+    ~f:(fun acc program -> Ast.merge acc program)
+    ~init:[] unresolved_programs
+
 and parse_replace mapping =
   let replace = find_value "remplace" mapping in
   match replace with
