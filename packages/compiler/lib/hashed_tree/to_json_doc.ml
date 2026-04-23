@@ -1,6 +1,6 @@
 open Base
 
-let rec to_value ({value; pos; meta= {typ; _}} : Tree.value) =
+let rec to_value name ({value; pos; meta= {typ; _}} : Tree.value) =
   let _type, value =
     match value with
     | Shared.Eval_tree.Const (Number (v, _)) ->
@@ -21,9 +21,9 @@ let rec to_value ({value; pos; meta= {typ; _}} : Tree.value) =
     | Shared.Eval_tree.Condition (_if, _then, _else) ->
         ( "condition"
         , `Assoc
-            [ ("if", to_value _if)
-            ; ("then", to_value _then)
-            ; ("else", to_value _else) ] )
+            [ ("if", to_value name _if)
+            ; ("then", to_value name _then)
+            ; ("else", to_value name _else) ] )
     | Shared.Eval_tree.Binary_op ((op, _), left, right) ->
         let op =
           match op with
@@ -61,13 +61,15 @@ let rec to_value ({value; pos; meta= {typ; _}} : Tree.value) =
         ( "binary_op"
         , `Assoc
             [ ("type", `String op)
-            ; ("left", to_value left)
-            ; ("right", to_value right) ] )
+            ; ("left", to_value name left)
+            ; ("right", to_value name right) ] )
     | Shared.Eval_tree.Unary_op ((Neg, _), value) ->
-        ("unary_op", `Assoc [("type", `String "neg"); ("value", to_value value)])
+        ( "unary_op"
+        , `Assoc [("type", `String "neg"); ("value", to_value name value)] )
     | Shared.Eval_tree.Unary_op ((Is_not_defined, _), value) ->
         ( "unary_op"
-        , `Assoc [("type", `String "not_defined"); ("value", to_value value)] )
+        , `Assoc
+            [("type", `String "not_defined"); ("value", to_value name value)] )
     | Shared.Eval_tree.Ref name ->
         ("ref", `String (Shared.Rule_name.show name))
     | Shared.Eval_tree.Get_context name ->
@@ -77,10 +79,11 @@ let rec to_value ({value; pos; meta= {typ; _}} : Tree.value) =
           List.map ctx.context ~f:(function (name, _), value ->
               `Assoc
                 [ ("name", `String (Shared.Rule_name.show name))
-                ; ("value", to_value value) ] )
+                ; ("value", to_value name value) ] )
         in
         ( "set_context"
-        , `Assoc [("context", `List ctxs); ("value", to_value ctx.value)] )
+        , `Assoc [("context", `List ctxs); ("value", to_value name ctx.value)]
+        )
     | Shared.Eval_tree.Round (mode, precision, value) ->
         let mode =
           match mode with Up -> "up" | Down -> "down" | Nearest -> "nearest"
@@ -88,8 +91,8 @@ let rec to_value ({value; pos; meta= {typ; _}} : Tree.value) =
         ( "round"
         , `Assoc
             [ ("mode", `String mode)
-            ; ("precision", to_value precision)
-            ; ("value", to_value value) ] )
+            ; ("precision", to_value name precision)
+            ; ("value", to_value name value) ] )
   in
   let typ =
     match typ with
@@ -107,7 +110,7 @@ let rec to_value ({value; pos; meta= {typ; _}} : Tree.value) =
     | None ->
         `Null
   in
-  let id = Utils.Pos.hash pos in
+  let id = Shared.Id.hash name pos in
   `Assoc
     [ ("type", `String _type)
     ; ("unit", typ)
@@ -115,7 +118,7 @@ let rec to_value ({value; pos; meta= {typ; _}} : Tree.value) =
     ; ("value", value) ]
 
 let to_rules ((name, value) : Shared.Rule_name.t * Tree.value) =
-  (Shared.Rule_name.show name, to_value value)
+  (Shared.Rule_name.show name, to_value name value)
 
 let to_json (ast : Tree.t) : Yojson.Basic.t =
   let rules = Hashtbl.to_alist ast |> List.map ~f:to_rules in
