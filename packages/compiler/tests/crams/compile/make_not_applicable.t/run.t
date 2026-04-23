@@ -1,6 +1,6 @@
 valid simple make not applicable :
 
-  $ publicodes compile simple.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile simple  -t debug_eval_tree -o -
   a:
     get_context(a)
   
@@ -15,7 +15,7 @@ valid simple make not applicable :
 
 multiple on same rule ok :
 
-  $ publicodes compile multiple_on_same_rule.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile multiple_on_same_rule  -t debug_eval_tree -o -
   a:
     get_context(a)
   
@@ -39,7 +39,7 @@ multiple on same rule ok :
 
 make not applicable with cycle :
 
-  $ publicodes compile cycle.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile cycle  -t debug_eval_tree -o -
   E027 cycle de dépendance détecté [cycle warning]
   <no
   source
@@ -51,7 +51,7 @@ make not applicable with cycle :
 
 transitivity in make not applicable :
 
-  $ publicodes compile transitivity.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile transitivity  -t debug_eval_tree -o -
   a:
     get_context(a)
   
@@ -76,7 +76,7 @@ transitivity in make not applicable :
 
 make not applicable in / except in :
 
-  $ publicodes compile dans_sauf_dans.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile dans_sauf_dans  -t debug_eval_tree -o -
   a:
     get_context(a)
   
@@ -102,7 +102,7 @@ make not applicable in / except in :
 
 Multiple definitions
 
-  $ publicodes compile multiple_definitions.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile multiple_definitions  -t debug_eval_tree -o -
   a:
     get_context(a)
   
@@ -127,13 +127,13 @@ Multiple definitions
 
 Type error
 
-  $ publicodes compile type_error.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile type_error  -t debug_eval_tree -o -
   E023 types non cohérents entre eux [type error]
-       ╒══  type_error.publicodes:7:4 ══
+       ╒══  type_error/rules.publicodes:7:4 ══
      6 │ 
      7 │ c: b
        │    ˘ est un booléen (oui / non)
-       ╒══  type_error.publicodes:3:11 ══
+       ╒══  type_error/rules.publicodes:3:11 ══
      2 │   rend non applicable: b
      3 │   valeur: 6
        │           ˘ est un nombre 
@@ -142,7 +142,7 @@ Type error
 
 Rend non applicable take precedence over remplace
 
-  $ publicodes compile remplace_and_make_not_applicable.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile remplace_and_make_not_applicable  -t debug_eval_tree -o -
   a:
     true
   

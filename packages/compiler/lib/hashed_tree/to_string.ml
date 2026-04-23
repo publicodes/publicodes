@@ -94,6 +94,8 @@ let metas_of_meta (meta : Shared_ast.rule_meta list) =
              Some
                (meta_of_type_value "custom" @@ Tstr (Yojson.Safe.to_string meta))
          | Public ->
+             None
+         | Module_id _ ->
              None ) )
 
 let node_of (id : string) (type_ : string) (value : tvalue) =
@@ -176,8 +178,10 @@ let node_of_set_ctx id (expr : tvalue) (items : (string * tvalue) list) =
   in
   node_of id "set_ctx" @@ Tobj [("expr", expr); ("items", Tlist items)]
 
-let rec node_of_tree_val ({value; pos; _} : Tree.value) =
-  let id = Utils.Pos.hash pos in
+let rec node_of_tree_val (name : Shared.Rule_name.t)
+    ({value; pos; _} : Tree.value) =
+  let id = Shared.Id.hash name pos in
+  let node_of_tree_val = node_of_tree_val name in
   match value with
   | Eval_tree.Const (Eval_tree.Number (n, units)) ->
       node_of_number id n units
@@ -220,7 +224,7 @@ let from_rules hashed_tree =
     Base.Hashtbl.fold hashed_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
         let rule_type = from_rule_type hashed_tree rule in
         let rule_name = from_rule_name rule in
-        let rule_node = node_of_tree_val data in
+        let rule_node = node_of_tree_val rule data in
         (rule_type, rule_name, rule_node) :: acc )
     |> List.sort ~compare:(fun (_, name1, _) (_, name2, _) ->
         String.compare (unbox_string name1) (unbox_string name2) )

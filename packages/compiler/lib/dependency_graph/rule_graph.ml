@@ -17,6 +17,7 @@ open Shared
  *   - Finding all rules referenced by a given rule (outgoing edges)
  *   - Finding all rules that reference a given rule (incoming edges)
  *   - Detecting cycles in the rule dependencies
+ *   - Detecting illegal reference in the rule dependencies
  *)
 
 module Rule_vertex = struct

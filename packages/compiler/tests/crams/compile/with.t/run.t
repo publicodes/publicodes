@@ -1,9 +1,9 @@
 
 Valid avec @FIXME
 
-  $ publicodes compile valid.publicodes -o -
+  $ publicodes compile valid -o -
   E020 cette règle n'existe pas [syntax error]
-       ╒══  valid.publicodes:9:8 ══
+       ╒══  valid/rules.publicodes:9:8 ══
      8 │   avec:
      9 │     e: e
        │        ˘

@@ -1,23 +1,23 @@
 Valid json doc :
 
-  $ publicodes compile ok.publicodes -t json_doc -o -
+  $ publicodes compile ok -t json_doc -o -
   {
     "c": {
       "type": "binary_op",
       "unit": null,
-      "id": "89389cc1cc9badb793987e80636b06fb",
+      "id": "e5db019856d24f944f370a2e3ad4e572",
       "value": {
         "type": "add",
         "left": {
           "type": "number",
           "unit": null,
-          "id": "ed93b38a09aaeea6047444e03dda51f0",
+          "id": "6e5bbb8efadb9d58c60aa3e40bbd3bf7",
           "value": 3.0
         },
         "right": {
           "type": "number",
           "unit": null,
-          "id": "5147834a597086aed3ab64cedf4d9a29",
+          "id": "d47997a309d031d8a5337ed7d9a90603",
           "value": 2.0
         }
       }
@@ -25,25 +25,25 @@ Valid json doc :
     "b": {
       "type": "number",
       "unit": null,
-      "id": "8d6016e7d2b04bf39e02a892dbaee2f7",
+      "id": "d0d89643968fa0bc30a83b1727431ff9",
       "value": 6.0
     },
     "a": {
       "type": "binary_op",
       "unit": null,
-      "id": "f99da294b2b0809850b6ad931cc02cc1",
+      "id": "5e493ac9904dcb6fcc3c5ef60bd62265",
       "value": {
         "type": "add",
         "left": {
           "type": "ref",
           "unit": null,
-          "id": "e265ab23d41503eac15d7d3e4b54d5dc",
+          "id": "c83f417767965172653528f51c8d8ef1",
           "value": "b"
         },
         "right": {
           "type": "ref",
           "unit": null,
-          "id": "ea6fd93f26b7ae63c00ca0e59393e4f2",
+          "id": "ae07295d447fb97c1ac178f81ef49ee3",
           "value": "c"
         }
       }

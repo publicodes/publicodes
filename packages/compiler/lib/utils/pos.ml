@@ -62,14 +62,3 @@ let to_loc (pos : pos) : Stdune.Loc.t =
   Stdune.Loc.create
     ~start:(Point.to_position pos.start_pos ~file:pos.file)
     ~stop:(Point.to_position pos.end_pos ~file:pos.file)
-
-let hash (pos : pos) : string =
-  List.map ~f:Int.to_string
-    [ pos.start_pos.index
-    ; pos.start_pos.line
-    ; pos.start_pos.column
-    ; pos.end_pos.index
-    ; pos.end_pos.line
-    ; pos.end_pos.column ]
-  |> List.append [pos.file] |> String.concat |> Stdlib.Digest.string
-  |> Stdlib.Digest.to_hex

@@ -1,0 +1,3 @@
+rule vendored e:
+  valeur: 40
+  public: oui
