@@ -144,6 +144,10 @@ const rawProduits = [
 			'Troopay utilise publicodes pour calculer un bulletin de paie pour les entrepreneurs',
 		url: 'https://www.troopay.com/',
 		img: troopay
+	},
+	{
+		slug: 'calinou',
+		name: 'Calinou'
 	}
 ] as const;
 
@@ -154,8 +158,8 @@ export type ProduitSlug = (typeof rawProduits)[number]['slug'];
 export type Produit = {
 	name: string;
 	slug: ProduitSlug;
-	description: string;
-	url: string;
+	description?: string;
+	url?: string;
 	img?: string;
 	github?: string;
 };

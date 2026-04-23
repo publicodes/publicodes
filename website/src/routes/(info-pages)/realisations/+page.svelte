@@ -39,41 +39,43 @@
 	role="list"
 	class="grid grid-cols-1 gap-8 pb-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 	{#each displayedProduit as { img, name, description, url, pkg }}
-		<Card {img} {url} role="listitem">
-			{#snippet title()}
-				<h2>{name}</h2>
-			{/snippet}
-			<p class="flex-1">{description}</p>
-			{#if pkg.length > 0}
-				<div class="z-10 text-right">
-					<Tooltip>
-						{#snippet text()}
-							<h3 class="prose">
-								Modèle{pkg.length > 1 ? 's' : ''} Publicodes
-							</h3>
-							<ul>
-								{#each pkg as { npm }}
-									<li class="prose prose-sm">
-										<a
-											href={`https://www.npmjs.com/package/${npm}`}
-											target="_blank"
-											rel="noopener">
-											{npm}
-											<ExternalLink class="inline" size={12}></ExternalLink>
-										</a>
-									</li>
-								{/each}
-							</ul>
-						{/snippet}
-						<span
-							class="mb-1 inline-flex items-center gap-1 text-sm text-slate-500">
-							<Package size={16} strokeWidth={1} />
-							{pkg.length}
-						</span>
-					</Tooltip>
-				</div>
-			{/if}
-		</Card>
+		{#if url && description}
+			<Card {img} {url} role="listitem">
+				{#snippet title()}
+					<h2>{name}</h2>
+				{/snippet}
+				<p class="flex-1">{description}</p>
+				{#if pkg.length > 0}
+					<div class="z-10 text-right">
+						<Tooltip>
+							{#snippet text()}
+								<h3 class="prose">
+									Modèle{pkg.length > 1 ? 's' : ''} Publicodes
+								</h3>
+								<ul>
+									{#each pkg as { npm }}
+										<li class="prose prose-sm">
+											<a
+												href={`https://www.npmjs.com/package/${npm}`}
+												target="_blank"
+												rel="noopener">
+												{npm}
+												<ExternalLink class="inline" size={12}></ExternalLink>
+											</a>
+										</li>
+									{/each}
+								</ul>
+							{/snippet}
+							<span
+								class="mb-1 inline-flex items-center gap-1 text-sm text-slate-500">
+								<Package size={16} strokeWidth={1} />
+								{pkg.length}
+							</span>
+						</Tooltip>
+					</div>
+				{/if}
+			</Card>
+		{/if}
 	{/each}
 </div>
 <div class="prose max-w-full py-10">

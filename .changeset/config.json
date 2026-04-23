@@ -6,7 +6,14 @@
 	],
 	"commit": false,
 	"fixed": [],
-	"linked": [["publicodes", "@publicodes/react-ui", "@publicodes/rest-api"]],
+	"linked": [
+		[
+			"publicodes",
+			"@publicodes/react-ui",
+			"@publicodes/rest-api",
+			"@publicodes/tools"
+		]
+	],
 	"access": "public",
 	"baseBranch": "master",
 	"updateInternalDependencies": "patch",
