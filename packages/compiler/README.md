@@ -102,6 +102,7 @@ Benchmarks are defined in
 ```sh
 make bench-<benchmark-name>
 ```
+
 ### Reviewing with Gerrit
 
 #### With Git
