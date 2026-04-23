@@ -37,6 +37,7 @@ module Code = struct
     (* Replacement errors *)
     | Replace_multiple
     | Replace_cycle
+    | Import_cycle
     | Parsing_invalid_meta
   [@@deriving equal]
 
@@ -99,8 +100,10 @@ module Code = struct
         "E028"
     | Replace_cycle ->
         "E029"
-    | Parsing_invalid_meta ->
+    | Import_cycle ->
         "E030"
+    | Parsing_invalid_meta ->
+        "E031"
 
   let pp fmt err = Stdlib.Format.fprintf fmt "%s" (show err)
 end
@@ -185,3 +188,10 @@ let parsing_invalid_mechanism =
 let replace_multiple = (Code.Replace_multiple, "remplacement multiples")
 
 let replace_cycle = (Code.Replace_cycle, "cycle de remplacement détecté")
+
+let import_cycle chain =
+  let message =
+    String.concat " <- " chain
+    |> Stdlib.Format.sprintf "cycle d'import détecté : %s"
+  in
+  (Code.Import_cycle, message)
