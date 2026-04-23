@@ -1,6 +1,7 @@
 open Base
 
-let rec to_value ({value; pos; meta= {typ; _}} : Tree.value) =
+let rec to_value name ({value; pos; meta= {typ; _}} : Tree.value) =
+  let to_value = to_value name in
   let _type, value =
     match value with
     | Shared.Eval_tree.Const (Number (v, _)) ->
@@ -107,7 +108,7 @@ let rec to_value ({value; pos; meta= {typ; _}} : Tree.value) =
     | None ->
         `Null
   in
-  let id = Utils.Pos.hash pos in
+  let id = Shared.Id.hash name pos in
   `Assoc
     [ ("type", `String _type)
     ; ("unit", typ)
@@ -115,7 +116,7 @@ let rec to_value ({value; pos; meta= {typ; _}} : Tree.value) =
     ; ("value", value) ]
 
 let to_rules ((name, value) : Shared.Rule_name.t * Tree.value) =
-  (Shared.Rule_name.show name, to_value value)
+  (Shared.Rule_name.show name, to_value name value)
 
 let to_json (ast : Tree.t) : Yojson.Basic.t =
   let rules = Hashtbl.to_alist ast |> List.map ~f:to_rules in
