@@ -40,6 +40,12 @@ module Code = struct
     | Replace_multiple
     | Replace_cycle
     | Parsing_invalid_meta
+    | Private_rule
+    | Illegal_reference
+    | No_file_or_directory
+    | Parsing_missing_value
+    | Invalid_path
+    | Invalid_config
   [@@deriving equal, enum, show]
 
   let show = fun code -> Stdlib.Format.sprintf "E%03d" (to_enum code)
@@ -113,6 +119,11 @@ let type_missing_in_mechanism =
 
 let cycle_detected = (Code.Cycle_detected, "cycle de dépendance détecté")
 
+let illegal_reference =
+  (Code.Illegal_reference, "cette règle n'est pas accessible")
+
+let private_rule = (Code.Private_rule, "cette règle est privée")
+
 let missing_parent_rule =
   (Code.Resolver_missing_parent_rule, "règle parente manquante")
 
@@ -124,6 +135,23 @@ let malformed_expression =
 let parsing_invalid_mechanism =
   (Code.Parsing_invalid_mechanism, "mécanisme invalide")
 
+let parsing_missing_value value =
+  (Code.Parsing_missing_value, Stdlib.Format.sprintf "champ manquant : %s" value)
+
 let replace_multiple = (Code.Replace_multiple, "remplacement multiples")
 
 let replace_cycle = (Code.Replace_cycle, "cycle de remplacement détecté")
+
+let no_file_or_directory =
+  (Code.No_file_or_directory, "la resource est introuvable")
+
+let invalid_path = (Code.Invalid_path, "chemin invalide")
+
+let invalid_config = (Code.Invalid_config, "configuration invalide")
+
+let import_cycle chain =
+  let message =
+    String.concat " <- " chain
+    |> Stdlib.Format.sprintf "cycle d'import détecté : %s"
+  in
+  (Code.Cycle_detected, message)

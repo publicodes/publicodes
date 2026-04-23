@@ -1,6 +1,6 @@
 valid rule name :
 
-  $ publicodes compile nom.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile nom  -t debug_eval_tree -o -
   a:
     get_context(a)
   

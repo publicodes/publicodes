@@ -1,6 +1,6 @@
 valid simple replacement :
 
-  $ publicodes compile replace.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile replace  -t debug_eval_tree -o -
   a:
     4.
   
@@ -27,13 +27,13 @@ valid simple replacement :
 
 same priority warning :
 
-  $ publicodes compile same_priority.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile same_priority  -t debug_eval_tree -o -
   E028 remplacement multiples [replace error]
-       ╒══  same_priority.publicodes:8:13 ══
+       ╒══  same_priority/rules.publicodes:8:13 ══
      7 │ c:
      8 │   remplace: b
        │             ˘ Priorité 0
-       ╒══  same_priority.publicodes:2:13 ══
+       ╒══  same_priority/rules.publicodes:2:13 ══
      1 │ a:
      2 │   remplace: b
        │             ˘ Priorité 0
@@ -47,7 +47,7 @@ same priority warning :
 
 replacement with cycle :
 
-  $ publicodes compile cycle.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile cycle  -t debug_eval_tree -o -
   E027 cycle de dépendance détecté [cycle warning]
   <no
   source
@@ -59,7 +59,7 @@ replacement with cycle :
 
 transitivity in replacement :
 
-  $ publicodes compile transitivity.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile transitivity  -t debug_eval_tree -o -
   a:
     4.
   
@@ -81,7 +81,7 @@ transitivity in replacement :
 
 replacement dans / sauf dans :
 
-  $ publicodes compile dans_sauf_dans.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile dans_sauf_dans  -t debug_eval_tree -o -
   a:
     get_context(a)
   
@@ -106,7 +106,7 @@ replacement dans / sauf dans :
 
 Multiples remplacements avec priorité différentes :
 
-  $ publicodes compile multiple_replacements.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile multiple_replacements  -t debug_eval_tree -o -
   a:
     4.
   
@@ -125,7 +125,7 @@ Multiples remplacements avec priorité différentes :
 
 Multiple definitions
 
-  $ publicodes compile multiple_definitions.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile multiple_definitions  -t debug_eval_tree -o -
   a:
     get_context(a)
   
@@ -149,13 +149,13 @@ Multiple definitions
 
 Type mismatch
 
-  $ publicodes compile type_mismatch.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile type_mismatch  -t debug_eval_tree -o -
   E025 unités non compatibles [type error]
-       ╒══  type_mismatch.publicodes:5:4 ══
+       ╒══  type_mismatch/rules.publicodes:5:4 ══
      4 │ 
      5 │ b: 5 mois
        │    ˘˘˘˘˘˘ unité: mois
-       ╒══  type_mismatch.publicodes:2:11 ══
+       ╒══  type_mismatch/rules.publicodes:2:11 ══
      1 │ a:
      2 │   valeur: 4 €
        │           ˘˘˘ unité: €

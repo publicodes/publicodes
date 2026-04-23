@@ -1,6 +1,6 @@
 Valid :
 
-  $ publicodes compile input.publicodes -t debug_eval_tree -o -
+  $ publicodes compile input -t debug_eval_tree -o -
   a:
     10.
   

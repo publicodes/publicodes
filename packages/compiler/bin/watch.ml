@@ -7,7 +7,8 @@ let watch_compile _ =
 [@@config not (target_os = "linux")]
 
 let watch_compile
-    ({output_file; input_files; output_type; default_to_public} : Compile.t) =
+    ({output_file; module_; input_files; output_type; default_to_public} :
+      Compile.t ) =
   let open Stdlib in
   (* Filter out stdin if present in input files for watching *)
   let watchable_files =
@@ -19,7 +20,7 @@ let watch_compile
     (* ANSI escape code to clear screen and move cursor to top *)
     print_flush () ;
     let code =
-      Compile.compile_files ~input_files ~output_file ~output_type
+      Compile.compile_files ~input_files ~output_file ~module_ ~output_type
         ~default_to_public
     in
     print_flush () ;

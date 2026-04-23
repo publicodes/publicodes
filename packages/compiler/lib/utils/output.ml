@@ -125,3 +125,6 @@ let all_keep_logs ?default (ts : 'a t list) : 'a list t =
 
 let to_exn (output : 'a t) =
   match output with Some x, _ -> x | None, _ -> failwith (sprintf_logs output)
+
+let of_opt ~log opt : 'a t =
+  match opt with None -> (None, [log]) | Some value -> return value

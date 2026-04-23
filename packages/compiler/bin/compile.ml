@@ -6,6 +6,7 @@ open Utils.Output
 type t =
   { output_file: string
   ; input_files: string list
+  ; module_: string
   ; output_type: Compiler.target_type
   ; default_to_public: bool }
 
@@ -16,8 +17,11 @@ let cmd_exit (logs : Log.t list) : Cmd.Exit.code =
   in
   if contains_error logs then Cmd.Exit.some_error else Cmd.Exit.ok
 
-let compile_files ~input_files ~output_type ~output_file ~default_to_public =
-  let output = Compiler.compile ~input_files ~output_type ~default_to_public in
+let compile_files ~input_files ~module_ ~output_type ~output_file
+    ~default_to_public =
+  let output =
+    Compiler.compile ~input_files ~module_ ~output_type ~default_to_public
+  in
   print_logs output ;
   match result output with
   | Some content ->
@@ -28,8 +32,11 @@ let compile_files ~input_files ~output_type ~output_file ~default_to_public =
       Cmd.Exit.some_error
 
 let compile_target target =
-  let {output_file; input_files; output_type; default_to_public} = target in
-  compile_files ~input_files ~output_file ~output_type ~default_to_public
+  let {output_file; input_files; module_; output_type; default_to_public} =
+    target
+  in
+  compile_files ~input_files ~module_ ~output_file ~output_type
+    ~default_to_public
 
 let rec compile_targets targets =
   match targets with
