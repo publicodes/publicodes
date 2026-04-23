@@ -3,13 +3,9 @@ open Cmdliner
 open Utils.Result
 open Cmdliner.Term.Syntax
 
-let input_files =
-  let doc = "$(docv) is the input files. Use $(b,-) for $(b,stdin)." in
-  Arg.(value & pos_all file [] & info [] ~doc ~docv:"FILES")
-
-let input_stdin =
-  let doc = "Use stdin as input to compile." in
-  Arg.(value & flag & info ["i"; "input"] ~doc)
+let input =
+  let doc = "$(docv) is the input module. Use $(b,-) for $(b,stdin)." in
+  Arg.(required & pos 0 (some string) None & info [] ~doc ~docv:"DIR")
 
 let output_file =
   let doc = "$(docv) is the file to write to. Use $(b,-) for $(b,stdout)." in
@@ -35,13 +31,6 @@ let output_type =
         Compiler.Js
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
 
-let config_file =
-  let doc = "$(docv) is the config file." in
-  Arg.(
-    value
-    & opt string "publicodes.yaml"
-    & info ["c"; "config-file"] ~doc ~docv:"FILE" )
-
 let default_to_public =
   let doc =
     "Compile every rule as `public`, which means that they are all exported."
@@ -56,35 +45,45 @@ let cmd =
   in
   Cmd.v (Cmd.info "compile" ~doc ~version:"%%VERSION%%" ~exits)
   @@
-  let+ input_files = input_files
+  let+ input = input
   and+ output_file = output_file
-  and+ input_stdin = input_stdin
   and+ watch_mode = watch
   and+ default_to_public = default_to_public
-  and+ output_type = output_type
-  and+ config_file = config_file in
+  and+ output_type = output_type in
   let targets =
-    if List.length input_files > 0 || input_stdin then
-      let input_files = if input_stdin then ["-"] else input_files in
-      let output_file =
-        if String.equal output_file "" then
-          "model.publicodes"
-          ^
-          match output_type with
-          | Debug_eval_tree ->
-              ".eval_tree.debug"
-          | Js ->
-              ".js"
-          | Json_doc ->
-              ".json"
-        else output_file
-      in
-      Ok
-        [ ( {input_files; output_file; output_type; default_to_public}
-            : Compile.t ) ]
-    else
-      let* config = Config.parse config_file in
-      Ok config.targets
+    let* input_files, module_ =
+      if String.equal input "-" then Ok (["-"], "./")
+      else
+        match Utils.File.publicodes_module input with
+        | Error (Invalid_path _) ->
+            Error (`Msg "Path is invalid")
+        | Error (Not_found _) ->
+            Error (`Msg "Path does not exists")
+        | Error (Is_not_directory _) ->
+            Error (`Msg "Path is not a directory")
+        | Error (Empty_directory _) ->
+            Error (`Msg "Directory does not contains Publicodes files")
+        | Error _ ->
+            failwith "unreachable"
+        | Ok files ->
+            Ok (files, input)
+    in
+    let output_file =
+      if String.equal output_file "" then
+        "model.publicodes"
+        ^
+        match output_type with
+        | Debug_eval_tree ->
+            ".eval_tree.debug"
+        | Js ->
+            ".js"
+        | Json_doc ->
+            ".json"
+      else output_file
+    in
+    Ok
+      [ ( {input_files; module_; output_file; output_type; default_to_public}
+          : Compile.t ) ]
   in
   match targets with
   | Ok (target :: []) ->

@@ -1,6 +1,6 @@
 Simple base type (bool, number, date) :
 
-  $ publicodes compile base.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile base  -t debug_eval_tree -o -
   a:
     12.
   
@@ -19,7 +19,7 @@ Simple base type (bool, number, date) :
 
 String :
 
-  $ publicodes compile string.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile string  -t debug_eval_tree -o -
   a:
     "bla"
   
@@ -35,7 +35,7 @@ String :
 
 Number with unit :
 
-  $ publicodes compile number_with_unit.publicodes  -t debug_eval_tree -o -
+  $ publicodes compile number_with_unit  -t debug_eval_tree -o -
   a:
     12. €
   
