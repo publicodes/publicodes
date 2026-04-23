@@ -24,6 +24,8 @@ module Code = struct
     (* Name resolution errors *)
     | Resolver_missing_parent_rule
     | Resolver_missing_rule
+    | Resolver_private_rule
+    | Resolver_out_of_scope_rule
     (* Array mechanism errors *)
     | Array_mechanism_with_empty_value
     (* Type errors *)
@@ -37,6 +39,7 @@ module Code = struct
     (* Replacement errors *)
     | Replace_multiple
     | Replace_cycle
+    | Import_cycle
     | Parsing_invalid_meta
   [@@deriving equal]
 
@@ -99,8 +102,14 @@ module Code = struct
         "E028"
     | Replace_cycle ->
         "E029"
-    | Parsing_invalid_meta ->
+    | Import_cycle ->
         "E030"
+    | Parsing_invalid_meta ->
+        "E031"
+    | Resolver_private_rule ->
+        "E032"
+    | Resolver_out_of_scope_rule ->
+        "E033"
 
   let pp fmt err = Stdlib.Format.fprintf fmt "%s" (show err)
 end
@@ -176,6 +185,11 @@ let missing_parent_rule =
 
 let missing_rule = (Code.Resolver_missing_rule, "cette règle n'existe pas")
 
+let out_of_scope_rule =
+  (Code.Resolver_out_of_scope_rule, "cette règle n'est pas accessible")
+
+let private_rule = (Code.Resolver_private_rule, "cette règle est privée")
+
 let malformed_expression =
   (Code.Parsing_missing_closing_paren, "expression malformée")
 
@@ -185,3 +199,10 @@ let parsing_invalid_mechanism =
 let replace_multiple = (Code.Replace_multiple, "remplacement multiples")
 
 let replace_cycle = (Code.Replace_cycle, "cycle de remplacement détecté")
+
+let import_cycle chain =
+  let message =
+    String.concat " <- " chain
+    |> Stdlib.Format.sprintf "cycle d'import détecté : %s"
+  in
+  (Code.Import_cycle, message)
