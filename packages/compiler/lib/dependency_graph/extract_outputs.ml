@@ -12,7 +12,7 @@ let remove_duplicates (a : 'a list) : 'a list =
   Set.to_list @@ Set.Poly.of_list a
 
 let extract_outputs ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t)
-    (graph : G.t) : Model_outputs.t Output.t =
+    ~(warn_types : bool) (graph : G.t) : Model_outputs.t Output.t =
   let transitive_dependencies =
     Oper.transitive_closure ~reflexive:false graph
   in
@@ -86,4 +86,4 @@ let extract_outputs ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t)
         | Some _ ->
             None )
   in
-  return ~logs:warnings outputs
+  if warn_types then return ~logs:warnings outputs else return outputs

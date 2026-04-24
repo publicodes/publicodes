@@ -35,6 +35,7 @@ let compile ~input_files ~output_type ~default_to_public =
   let* outputs =
     Dependency_graph.cycle_check eval_tree
     >>= Dependency_graph.extract_outputs ~ast ~eval_tree
+          ~warn_types:(not default_to_public)
   in
   let output_str =
     match output_type with
