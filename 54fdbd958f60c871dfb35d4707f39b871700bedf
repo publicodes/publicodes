@@ -16,6 +16,24 @@
       "message": "I added the missing `trace` in types.\n\nI also noticed that there were warnings during the JavaScript tests:\n\n```\nbun test v1.3.8 (b64edcb4)\n\nsrc/parameters.test.ts:\nE024\ninformation de type manquante pour ce résultat [type warning]\n\u003ccould not read source file\u003e\n Hint: Spécifiez le type de la règle. Par exemple :\n       `type: texte`\n Hint: params\n```",
       "revId": "54fdbd958f60c871dfb35d4707f39b871700bedf",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cf3d3fab_76ec6ad1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-24T06:37:09Z",
+      "side": 1,
+      "message": "afaik this is not new, and apparently this warning is there from the beginning of the 2.0 work. I\u0027ll make a patch to add those in another commit",
+      "parentUuid": "38fa638a_96597de8",
+      "revId": "54fdbd958f60c871dfb35d4707f39b871700bedf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
