@@ -1,0 +1,205 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1d7ec2db_a1033920",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-24T14:13:06Z",
+      "side": 1,
+      "message": "The implementation seems straightforward, this is nice!\n\nIf you could add some tests, it would great too.\n\nI think we could start tweaking a simple command to pretty print the trace log from a `doc.json` and a `trace.json` with each sub-expression associated with it\u0027s corresponding value. This will allow easier debugging and test.",
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc804390_61cf9018",
+        "filename": "packages/compiler/bin/cmd_compile.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-24T14:13:06Z",
+      "side": 1,
+      "message": "I think we could do that later on, but shouldn’t the compile command automatically generate the json alongside the JS file without having to run two separate commands?",
+      "range": {
+        "startLine": 34,
+        "startChar": 14,
+        "endLine": 34,
+        "endChar": 43
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52a13163_f5b97c76",
+        "filename": "packages/compiler/lib/compiler.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-24T14:13:06Z",
+      "side": 1,
+      "message": "Should be in a `compiler.mli` file.",
+      "range": {
+        "startLine": 31,
+        "startChar": 57,
+        "endLine": 31,
+        "endChar": 76
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d361a9ef_81dcdc7a",
+        "filename": "packages/compiler/lib/hashed_tree/hashed_tree.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-24T14:13:06Z",
+      "side": 1,
+      "message": "question: should it be renamed in `",
+      "range": {
+        "startLine": 5,
+        "startChar": 19,
+        "endLine": 5,
+        "endChar": 28
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "897d2a0f_273da91f",
+        "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-24T14:13:06Z",
+      "side": 1,
+      "message": "issue: the `to_json_doc.mli` file documenting the json format is missing here.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 2
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa1ab77c_19a4e97b",
+        "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-24T14:13:06Z",
+      "side": 1,
+      "message": "question: could it be cast errors here?",
+      "range": {
+        "startLine": 7,
+        "startChar": 29,
+        "endLine": 7,
+        "endChar": 30
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6dee0cfd_ccdab3e9",
+        "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-24T14:13:06Z",
+      "side": 1,
+      "message": "nitpicks: maybe `const` could be shorter here.",
+      "range": {
+        "startLine": 7,
+        "startChar": 10,
+        "endLine": 7,
+        "endChar": 19
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "564edd6d_751f6352",
+        "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-24T14:13:06Z",
+      "side": 1,
+      "message": "question: I wonder if don\u0027t want to have the internals in english to anticipate future translations? Or at least stick to the existing Publicodes syntaxe if we keep it to french.",
+      "range": {
+        "startLine": 46,
+        "startChar": 15,
+        "endLine": 46,
+        "endChar": 35
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff86fa2a_f04ab043",
+        "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-04-24T14:13:06Z",
+      "side": 1,
+      "message": "Is it still a todo?",
+      "range": {
+        "startLine": 77,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 2
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
