@@ -34,6 +34,24 @@
       "parentUuid": "38fa638a_96597de8",
       "revId": "54fdbd958f60c871dfb35d4707f39b871700bedf",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f805a7aa_5cb15af1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 10
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-24T07:03:21Z",
+      "side": 1,
+      "message": "https://gerrithub.io/c/publicodes/publicodes/+/1236209",
+      "parentUuid": "cf3d3fab_76ec6ad1",
+      "revId": "54fdbd958f60c871dfb35d4707f39b871700bedf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
