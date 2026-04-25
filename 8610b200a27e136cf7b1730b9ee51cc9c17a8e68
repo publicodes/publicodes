@@ -41,6 +41,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4d9a5fab_2bcbf1a1",
+        "filename": "packages/compiler/bin/cmd_compile.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-25T10:01:15Z",
+      "side": 1,
+      "message": "The config file already allow to build both, as two targets. But we could consider this later right",
+      "parentUuid": "bc804390_61cf9018",
+      "range": {
+        "startLine": 34,
+        "startChar": 14,
+        "endLine": 34,
+        "endChar": 43
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "52a13163_f5b97c76",
@@ -54,6 +78,30 @@
       "writtenOn": "2026-04-24T14:13:06Z",
       "side": 1,
       "message": "Should be in a `compiler.mli` file.",
+      "range": {
+        "startLine": 31,
+        "startChar": 57,
+        "endLine": 31,
+        "endChar": 76
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26dd68e8_f01c34f1",
+        "filename": "packages/compiler/lib/compiler.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-25T10:01:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "52a13163_f5b97c76",
       "range": {
         "startLine": 31,
         "startChar": 57,
@@ -89,6 +137,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e3dfe764_9cfee0eb",
+        "filename": "packages/compiler/lib/hashed_tree/hashed_tree.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-25T10:01:15Z",
+      "side": 1,
+      "message": "I guess you mean something like To_debug.to_str, and To_js.to_str?",
+      "parentUuid": "d361a9ef_81dcdc7a",
+      "range": {
+        "startLine": 5,
+        "startChar": 19,
+        "endLine": 5,
+        "endChar": 28
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "897d2a0f_273da91f",
         "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
         "patchSetId": 9
@@ -100,6 +172,30 @@
       "writtenOn": "2026-04-24T14:13:06Z",
       "side": 1,
       "message": "issue: the `to_json_doc.mli` file documenting the json format is missing here.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 2
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "84d94d8c_5a8acadd",
+        "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-25T10:01:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "897d2a0f_273da91f",
       "range": {
         "startLine": 1,
         "startChar": 0,
@@ -158,6 +254,54 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2d3e8571_1a5e25cc",
+        "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-25T10:01:15Z",
+      "side": 1,
+      "message": "Sorry, I dont get it",
+      "parentUuid": "aa1ab77c_19a4e97b",
+      "range": {
+        "startLine": 7,
+        "startChar": 29,
+        "endLine": 7,
+        "endChar": 30
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4ce2997e_3ab4b9f9",
+        "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-25T10:01:15Z",
+      "side": 1,
+      "message": "done by renaming all to english (see note)",
+      "parentUuid": "6dee0cfd_ccdab3e9",
+      "range": {
+        "startLine": 7,
+        "startChar": 10,
+        "endLine": 7,
+        "endChar": 19
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "564edd6d_751f6352",
         "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
         "patchSetId": 9
@@ -169,6 +313,30 @@
       "writtenOn": "2026-04-24T14:13:06Z",
       "side": 1,
       "message": "question: I wonder if don\u0027t want to have the internals in english to anticipate future translations? Or at least stick to the existing Publicodes syntaxe if we keep it to french.",
+      "range": {
+        "startLine": 46,
+        "startChar": 15,
+        "endLine": 46,
+        "endChar": 35
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "10539526_87f069ff",
+        "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-25T10:01:15Z",
+      "side": 1,
+      "message": "At first this was a Yaml file, so keeping keys in French was meaningfull. But I agree we should now use more compact and compatible keys. Renamed to english",
+      "parentUuid": "564edd6d_751f6352",
       "range": {
         "startLine": 46,
         "startChar": 15,
@@ -192,6 +360,30 @@
       "writtenOn": "2026-04-24T14:13:06Z",
       "side": 1,
       "message": "Is it still a todo?",
+      "range": {
+        "startLine": 77,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 2
+      },
+      "revId": "8610b200a27e136cf7b1730b9ee51cc9c17a8e68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa49f577_0100e93e",
+        "filename": "packages/compiler/lib/hashed_tree/to_json_doc.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-04-25T10:01:15Z",
+      "side": 1,
+      "message": "Yes, I was unsure of the Get_context purpose. Now renamed to simply \"get_context\"",
+      "parentUuid": "ff86fa2a_f04ab043",
       "range": {
         "startLine": 77,
         "startChar": 0,
