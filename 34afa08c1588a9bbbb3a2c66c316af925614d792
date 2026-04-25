@@ -17,5 +17,30 @@
       "revId": "34afa08c1588a9bbbb3a2c66c316af925614d792",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
+  ],
+  "submitRequirementResults": [
+    {
+      "submitRequirement": {
+        "name": "Code-Review",
+        "description": {},
+        "applicabilityExpression": {},
+        "submittabilityExpression": {
+          "expressionString": "label:Code-Review\u003e\u003d1,user\u003dnon_uploader AND -label:Code-Review\u003dMIN"
+        },
+        "overrideExpression": {},
+        "allowOverrideInChildProjects": false
+      },
+      "applicabilityExpressionResult": {},
+      "submittabilityExpressionResult": {
+        "value": {"expression":{"expressionString":"label:Code-Review>=1,user=non_uploader AND -label:Code-Review=MIN"},"status":"FAIL","errorMessage":{"value":null},"passingAtoms":[],"failingAtoms":["label:Code-Review=MIN","label:Code-Review>=1,user=non_uploader"],"atomExplanations":{"value":{"label:Code-Review=MIN":"","label:Code-Review>=1,user=non_uploader":""}}}
+      },
+      "overrideExpressionResult": {},
+      "patchSetCommitId": "34afa08c1588a9bbbb3a2c66c316af925614d792",
+      "legacy": {
+        "value": false
+      },
+      "forced": {},
+      "hidden": {}
+    }
   ]
 }
