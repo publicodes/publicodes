@@ -1,0 +1,15 @@
+a: 10
+test:
+  public: oui
+  valeur: a
+
+z:
+  public: oui
+  valeur:
+    somme:
+      - test
+      - valeur: test
+        contexte:
+          test: 30
+  contexte:
+    test: 20

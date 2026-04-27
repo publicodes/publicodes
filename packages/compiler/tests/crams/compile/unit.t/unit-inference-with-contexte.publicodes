@@ -1,0 +1,41 @@
+chiffre d'affaires:
+  unité: €
+  produit:
+    - TJM
+    - nombre de jour
+  avec:
+    TJM:
+    nombre de jour:
+      par défaut: 16 jour
+
+auto-entrepreneur:
+  par défaut: non
+
+cotisations:
+  valeur: taux * chiffre d'affaires
+  avec:
+    taux:
+      variations:
+        - si: auto-entrepreneur
+          alors: 30%
+        - sinon: 45%
+
+charges:
+  non applicable si: auto-entrepreneur
+  par défaut:
+    valeur: 10% * chiffre d'affaires
+    plancher: 100€
+
+revenu net:
+  public: oui
+  somme:
+    - chiffre d'affaires
+    - (- cotisations)
+    - (- charges)
+
+exemples:
+exemples . CA élevé:
+  public: oui
+  valeur: chiffre d'affaires
+  contexte:
+    chiffre d'affaires . TJM: 600 € # KO : should be €/jour

@@ -12,7 +12,21 @@ permissions:
   id-token: write # Required for OIDC
 
 jobs:
+  build-compiler:
+    name: Ocaml compiler
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [linux, macos, windows]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test the ocaml compiler
+        uses: ./.github/actions/build-compiler
+        with:
+          platform: ${{ matrix.platform }}
+
   release:
+    needs: build-compiler
     name: Release
     runs-on: ubuntu-latest
     environment: Publish

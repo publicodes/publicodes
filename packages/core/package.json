@@ -26,6 +26,7 @@
 	],
 	"devDependencies": {
 		"@incubateur-ademe/nosgestesclimat": "^3.5.3",
+		"@vitest/eslint-plugin": "^1.6.14",
 		"dedent-js": "1.0.1",
 		"intl": "^1.2.5",
 		"mitata": "^0.1.6",

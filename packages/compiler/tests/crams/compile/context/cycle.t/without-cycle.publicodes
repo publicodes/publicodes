@@ -1,0 +1,11 @@
+cotisation:
+  valeur: 10% * salaire brut
+  plafond: plafond
+  avec:
+    plafond:
+      # There should not be a cycle because plafond is set with contexte and is not undefined
+      valeur: cotisation
+      contexte:
+        salaire brut: 1000 €
+        plafond: non
+salaire brut: 10000 €
