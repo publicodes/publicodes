@@ -1,0 +1,28 @@
+{
+  "comments": [],
+  "submitRequirementResults": [
+    {
+      "submitRequirement": {
+        "name": "Code-Review",
+        "description": {},
+        "applicabilityExpression": {},
+        "submittabilityExpression": {
+          "expressionString": "label:Code-Review\u003e\u003d1,user\u003dnon_uploader AND -label:Code-Review\u003dMIN"
+        },
+        "overrideExpression": {},
+        "allowOverrideInChildProjects": false
+      },
+      "applicabilityExpressionResult": {},
+      "submittabilityExpressionResult": {
+        "value": {"expression":{"expressionString":"label:Code-Review>=1,user=non_uploader AND -label:Code-Review=MIN"},"status":"FAIL","errorMessage":{"value":null},"passingAtoms":[],"failingAtoms":["label:Code-Review=MIN","label:Code-Review>=1,user=non_uploader"],"atomExplanations":{"value":{"label:Code-Review=MIN":"","label:Code-Review>=1,user=non_uploader":""}}}
+      },
+      "overrideExpressionResult": {},
+      "patchSetCommitId": "5bc6a5cddc634bd9137ad855739f2c59aefeb610",
+      "legacy": {
+        "value": false
+      },
+      "forced": {},
+      "hidden": {}
+    }
+  ]
+}
