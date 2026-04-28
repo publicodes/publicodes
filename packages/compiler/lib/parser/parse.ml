@@ -56,6 +56,10 @@ let rec parse_rule ~default_to_public ?(ctx = new_ctx) (name, yaml) =
       in
       let* meta = Parse_meta.parse yaml in
       let meta = default_meta @ meta in
+      let meta =
+        if List.length ctx.imported = 1 then meta
+        else List.filter meta ~f:(function Public -> false | _ -> true)
+      in
       let* with_ =
         parse_with ~default_to_public
           ~ctx:{ctx with current_rule_name= name}
