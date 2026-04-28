@@ -34,10 +34,14 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
   let name = ctx.current_rule_name @ name in
   let* value = Parse_value.parse_value ~error_if_undefined:false ~pos yaml in
   let default_meta = if default_to_public then [Public] else [] in
+  let meta =
+    if List.length ctx.files = 1 then default_meta
+    else List.filter default_meta ~f:(function Public -> false | _ -> true)
+  in
   let parsed_rule =
     { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
     ; value
-    ; meta= default_meta
+    ; meta
     ; replace= []
     ; make_not_applicable= [] }
   in
@@ -54,6 +58,10 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
       in
       let* meta = Parse_meta.parse yaml in
       let meta = default_meta @ meta in
+      let meta =
+        if List.length ctx.files = 1 then meta
+        else List.filter meta ~f:(function Public -> false | _ -> true)
+      in
       let* with_ =
         parse_with ~default_to_public
           ~ctx:{ctx with current_rule_name= name}
