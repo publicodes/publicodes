@@ -90,6 +90,7 @@ type rule_meta =
   | Public
   | Custom_meta of Yojson.Safe.t
   | Module_id of int
+  | Exported
 [@@deriving equal, show]
 
 type 'a replace =
@@ -146,8 +147,8 @@ let binary_op_to_string = function
       "min"
 
 (** Map expression *)
-let has_public_tag rule_def =
-  List.exists ~f:(function Public -> true | _ -> false) rule_def.meta
+let has_exported_tag rule_def =
+  List.exists ~f:(function Exported -> true | _ -> false) rule_def.meta
 
 let has_value rule_def =
   match rule_def.value.value with Not_defined, _ -> false | _ -> true

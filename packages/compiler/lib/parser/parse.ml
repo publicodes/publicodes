@@ -40,10 +40,14 @@ let rec parse_rule ~default_to_public ~module_id ?(ctx = new_ctx) (name, yaml) =
     let module_id = Module_id module_id in
     if default_to_public then [Public; module_id] else [module_id]
   in
+  let meta =
+    if module_id = 1 && default_to_public then Exported :: default_meta
+    else default_meta
+  in
   let parsed_rule =
     { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
     ; value
-    ; meta= default_meta
+    ; meta
     ; replace= []
     ; make_not_applicable= [] }
   in
@@ -60,6 +64,13 @@ let rec parse_rule ~default_to_public ~module_id ?(ctx = new_ctx) (name, yaml) =
       in
       let* meta = Parse_meta.parse yaml in
       let meta = default_meta @ meta in
+      let meta =
+        if
+          module_id = 1
+          && List.exists meta ~f:(function Public -> true | _ -> false)
+        then Exported :: meta
+        else meta
+      in
       let* with_ =
         parse_with ~default_to_public ~module_id
           ~ctx:{ctx with current_rule_name= name}

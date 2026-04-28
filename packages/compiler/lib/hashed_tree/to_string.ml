@@ -96,6 +96,8 @@ let metas_of_meta (meta : Shared_ast.rule_meta list) =
          | Public ->
              None
          | Module_id _ ->
+             None
+         | Exported ->
              None ) )
 
 let node_of (id : string) (type_ : string) (value : tvalue) =
