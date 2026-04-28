@@ -176,8 +176,9 @@ let node_of_set_ctx id (expr : tvalue) (items : (string * tvalue) list) =
   in
   node_of id "set_ctx" @@ Tobj [("expr", expr); ("items", Tlist items)]
 
-let rec node_of_tree_val ({value; pos; _} : Tree.value) =
-  let id = Utils.Pos.hash pos in
+let rec node_of_tree_val (name : Shared.Rule_name.t)
+    ({value; pos; _} : Tree.value) =
+  let id = Shared.Id.hash name pos in
   match value with
   | Eval_tree.Const (Eval_tree.Number (n, units)) ->
       node_of_number id n units
@@ -192,18 +193,22 @@ let rec node_of_tree_val ({value; pos; _} : Tree.value) =
   | Const Not_defined ->
       node_of_not_defined id
   | Round (mode, precision, value) ->
-      node_of_round id mode (node_of_tree_val value)
-        (node_of_tree_val precision)
+      node_of_round id mode
+        (node_of_tree_val name value)
+        (node_of_tree_val name precision)
   | Condition (cond, then_comp, else_comp) ->
-      node_of_condition id (node_of_tree_val cond)
-        (node_of_tree_val then_comp)
-        (node_of_tree_val else_comp)
+      node_of_condition id
+        (node_of_tree_val name cond)
+        (node_of_tree_val name then_comp)
+        (node_of_tree_val name else_comp)
   | Binary_op ((op, _), left, right) ->
-      node_of_binary_op id op (node_of_tree_val left) (node_of_tree_val right)
+      node_of_binary_op id op
+        (node_of_tree_val name left)
+        (node_of_tree_val name right)
   | Unary_op ((Neg, _), comp) ->
-      node_of_neg_op id (node_of_tree_val comp)
+      node_of_neg_op id (node_of_tree_val name comp)
   | Unary_op ((Is_not_defined, _), comp) ->
-      node_of_is_not_defined_op id (node_of_tree_val comp)
+      node_of_is_not_defined_op id (node_of_tree_val name comp)
   | Ref rule_name ->
       node_of_ref id (Rule_name.to_string rule_name)
   | Get_context rule_name ->
@@ -211,16 +216,16 @@ let rec node_of_tree_val ({value; pos; _} : Tree.value) =
   | Set_context {context; value} ->
       let context_items =
         List.map context ~f:(fun ((rule_name, _), value) ->
-            (Rule_name.to_string rule_name, node_of_tree_val value) )
+            (Rule_name.to_string rule_name, node_of_tree_val name value) )
       in
-      node_of_set_ctx id (node_of_tree_val value) context_items
+      node_of_set_ctx id (node_of_tree_val name value) context_items
 
 let from_rules hashed_tree =
   let rules =
     Base.Hashtbl.fold hashed_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
         let rule_type = from_rule_type hashed_tree rule in
         let rule_name = from_rule_name rule in
-        let rule_node = node_of_tree_val data in
+        let rule_node = node_of_tree_val rule data in
         (rule_type, rule_name, rule_node) :: acc )
     |> List.sort ~compare:(fun (_, name1, _) (_, name2, _) ->
         String.compare (unbox_string name1) (unbox_string name2) )
