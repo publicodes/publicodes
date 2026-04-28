@@ -34,6 +34,13 @@ type context =
   ; next_module_id: int ref }
 
 let fill_meta ~module_id meta =
+  let meta =
+    if
+      module_id = 0
+      && List.exists meta ~f:(function Public -> true | _ -> false)
+    then Exported :: meta
+    else meta
+  in
   let module_id = Module_id module_id in
   module_id :: meta
 
