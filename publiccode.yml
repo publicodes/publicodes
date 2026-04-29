@@ -1,8 +1,7 @@
-publiccodeYmlVersion: '0.2'
+publiccodeYmlVersion: "0"
 name: Publicodes
 url: https://github.com/publicodes/publicodes
 landingURL: https://publi.codes
-creationDate: 2019-04-02
 softwareVersion: 1.5.1
 releaseDate: 2024-09-05
 platforms:
@@ -15,7 +14,7 @@ usedBy:
   - Ministère du Travail, du Plein Emploi et de l'Insertion (MTPEI)
   - Direction interministérielle du numérique (Dinum)
 
-roadmap: 'https://github.com/orgs/publicodes/projects/2'
+roadmap: "https://github.com/orgs/publicodes/projects/2"
 categories:
   - collaboration
 developmentStatus: stable
@@ -44,17 +43,16 @@ description:
       - API REST
 
 legal:
-  license: mit
-  repoOwner: publicodes
-  mainCopyrightOwner: '@laem, @johangirod, @mquandalle, @wiinxt, @EmileRolley, et toute la communauté des contributeurs'
+  license: MIT
+  mainCopyrightOwner: "@laem, @johangirod, @mquandalle, @wiinxt, @EmileRolley, et toute la communauté des contributeurs"
 
 maintenance:
   type: community
   contacts:
-    - name: 'Johan Girod'
-      email: 'dev\x64johangirod.com'
-    - name: 'Emile Rolley'
-      email: 'emile.rolley\x64tuta.io'
+    - name: "Johan Girod"
+      email: "dev@johangirod.com"
+    - name: "Emile Rolley"
+      email: "emile.rolley@tuta.io"
 
 localisation:
   localisationReady: false
@@ -62,8 +60,8 @@ localisation:
 
 fundedBy:
   - name: Urssaf Caisse Nationale
-    url: https://lannuaire.service-public.fr/gouvernement/2ebb4281-f836-48b6-9b15-4e305d2df145
+    uri: https://lannuaire.service-public.fr/gouvernement/2ebb4281-f836-48b6-9b15-4e305d2df145
   - name: Ademe
-    url: https://lannuaire.service-public.fr/gouvernement/98505403-46c6-4d6c-9766-6c58bce9a221
+    uri: https://lannuaire.service-public.fr/gouvernement/98505403-46c6-4d6c-9766-6c58bce9a221
   - name: Dinum
-    url: https://lannuaire.service-public.fr/gouvernement/d1a97841-b4bf-46df-a089-1003e4e266b4
+    uri: https://lannuaire.service-public.fr/gouvernement/d1a97841-b4bf-46df-a089-1003e4e266b4
