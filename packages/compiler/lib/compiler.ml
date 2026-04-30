@@ -1,22 +1,7 @@
-open Base
 open Utils
 open Utils.Output
 
 type target_type = Js | Debug_eval_tree | Json_doc
-
-let to_unresolved_ast ~input_files ~default_to_public =
-  let+ unresolved_programs =
-    List.map input_files ~f:(fun filename ->
-        (* Read the file content *)
-        let file_content = File.read_file filename in
-        (* Parse the file content *)
-        Yaml_parser.to_yaml ~filename file_content
-        >>= Parser.to_ast ~filename ~default_to_public )
-    |> all_keep_logs
-  in
-  List.fold
-    ~f:(fun acc program -> Parser.Ast.merge acc program)
-    ~init:[] unresolved_programs
 
 let to_eval_tree ~ast =
   let* ast = Resolver.to_resolved_ast ast in
@@ -30,7 +15,7 @@ let to_eval_tree ~ast =
 
 let compile ~input_files ~output_type ~default_to_public =
   let open Output in
-  let* ast = to_unresolved_ast ~input_files ~default_to_public in
+  let* ast = Parser.parse_files ~default_to_public input_files in
   let* eval_tree = to_eval_tree ~ast in
   let* outputs =
     Dependency_graph.cycle_check eval_tree
