@@ -94,6 +94,8 @@ let metas_of_meta (meta : Shared_ast.rule_meta list) =
              Some
                (meta_of_type_value "custom" @@ Tstr (Yojson.Safe.to_string meta))
          | Public ->
+             None
+         | Module_id _ ->
              None ) )
 
 let node_of (id : string) (type_ : string) (value : tvalue) =

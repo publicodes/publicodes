@@ -27,7 +27,15 @@ let authorized_keys =
     ; "privé"
     ; "logarithme" ]
 
-type context = {current_rule_name: string list; files: string list}
+type context =
+  { current_rule_name: string list
+  ; files: string list
+  ; current_module_id: int
+  ; next_module_id: int ref }
+
+let fill_meta ~module_id meta =
+  let module_id = Module_id module_id in
+  module_id :: meta
 
 let rec parse_rule ~default_to_public ~ctx (name, yaml) =
   let* name, pos = parse_ref name in
@@ -37,7 +45,7 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
   let parsed_rule =
     { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
     ; value
-    ; meta= default_meta
+    ; meta= fill_meta ~module_id:ctx.current_module_id default_meta
     ; replace= []
     ; make_not_applicable= [] }
   in
@@ -69,7 +77,7 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
       return
         ( [ { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
             ; value
-            ; meta
+            ; meta= fill_meta ~module_id:ctx.current_module_id meta
             ; replace
             ; make_not_applicable } ]
         @ with_ @ import )
@@ -115,6 +123,8 @@ and parse_import ~default_to_public ~ctx mapping =
         fatal_error ~pos ~code ~kind:`Syntax message )
 
 and parse_files ~default_to_public ~ctx input_files =
+  let module_id = !(ctx.next_module_id) in
+  ctx.next_module_id := !(ctx.next_module_id) + 1 ;
   let+ unresolved_programs =
     List.map input_files ~f:(fun filename ->
         (* Read the file content *)
@@ -123,7 +133,10 @@ and parse_files ~default_to_public ~ctx input_files =
         to_yaml ~filename file_content
         >>= parse_rules ~default_to_public
               ~pos:(Pos.beginning_of_file filename)
-              ~ctx:{ctx with files= filename :: ctx.files} )
+              ~ctx:
+                { ctx with
+                  files= filename :: ctx.files
+                ; current_module_id= module_id } )
     |> all_keep_logs
   in
   List.fold
@@ -131,7 +144,12 @@ and parse_files ~default_to_public ~ctx input_files =
     ~init:[] unresolved_programs
 
 and parse_root ~default_to_public input_files =
-  let ctx = {current_rule_name= []; files= []} in
+  let ctx =
+    { current_rule_name= []
+    ; files= []
+    ; current_module_id= 0
+    ; next_module_id= ref 0 }
+  in
   parse_files ~default_to_public ~ctx input_files
 
 and parse_replace mapping =
@@ -172,5 +190,10 @@ and parse_rules ~default_to_public ~pos ~ctx yaml =
 
 let parse ~filename ?(default_to_public = false) (yaml : yaml) : Ast.t Output.t
     =
-  let ctx = {current_rule_name= []; files= [filename]} in
+  let ctx =
+    { current_rule_name= []
+    ; files= [filename]
+    ; current_module_id= 0
+    ; next_module_id= ref 0 }
+  in
   parse_rules ~default_to_public ~pos:(Pos.beginning_of_file filename) ~ctx yaml
