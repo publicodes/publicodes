@@ -27,15 +27,19 @@ let authorized_keys =
     ; "privé"
     ; "logarithme" ]
 
-type context = {current_rule_name: string list; files: string list}
+type context =
+  {current_rule_name: string list; files: string list; module_id: int ref}
 
-let new_ctx = {current_rule_name= []; files= []}
+let new_ctx = {current_rule_name= []; files= []; module_id= ref 0}
 
-let rec parse_rule ~default_to_public ?(ctx = new_ctx) (name, yaml) =
+let rec parse_rule ~default_to_public ~module_id ?(ctx = new_ctx) (name, yaml) =
   let* name, pos = parse_ref name in
   let name = ctx.current_rule_name @ name in
   let* value = Parse_value.parse_value ~error_if_undefined:false ~pos yaml in
-  let default_meta = if default_to_public then [Public] else [] in
+  let default_meta =
+    let module_id = Module_id module_id in
+    if default_to_public then [Public; module_id] else [module_id]
+  in
   let parsed_rule =
     { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
     ; value
@@ -57,7 +61,7 @@ let rec parse_rule ~default_to_public ?(ctx = new_ctx) (name, yaml) =
       let* meta = Parse_meta.parse yaml in
       let meta = default_meta @ meta in
       let* with_ =
-        parse_with ~default_to_public
+        parse_with ~default_to_public ~module_id
           ~ctx:{ctx with current_rule_name= name}
           yaml
       in
@@ -79,13 +83,13 @@ let rec parse_rule ~default_to_public ?(ctx = new_ctx) (name, yaml) =
       (* Should not happen because already checked by parse_value*)
       empty
 
-and parse_with ~default_to_public ~ctx mapping =
+and parse_with ~default_to_public ~module_id ~ctx mapping =
   let rules = find_value "avec" mapping in
   match rules with
   | None ->
       return []
   | Some (rules, pos) ->
-      parse_rules ~default_to_public ~pos ~ctx rules
+      parse_rules ~default_to_public ~module_id ~pos ~ctx rules
 
 and parse_import ~default_to_public ~ctx mapping =
   let import = find_value "importer" mapping in
@@ -117,13 +121,14 @@ and parse_import ~default_to_public ~ctx mapping =
         fatal_error ~pos ~code ~kind:`Syntax message )
 
 and parse_files ~default_to_public ?(ctx = new_ctx) input_files =
+  ctx.module_id := !(ctx.module_id) + 1 ;
   let+ unresolved_programs =
     List.map input_files ~f:(fun filename ->
         (* Read the file content *)
         let file_content = File.read_file filename in
         (* Parse the file content *)
         to_yaml ~filename file_content
-        >>= parse_rules ~default_to_public
+        >>= parse_rules ~default_to_public ~module_id:!(ctx.module_id)
               ~pos:(Pos.beginning_of_file filename)
               ~ctx:{ctx with files= filename :: ctx.files} )
     |> all_keep_logs
@@ -150,7 +155,7 @@ and parse_make_not_applicable mapping =
         ~f:(Parse_replace.parse_make_not_applicable ~pos)
         make_not_applicable
 
-and parse_rules ~default_to_public ~pos ?(ctx = new_ctx) yaml =
+and parse_rules ~default_to_public ~pos ~module_id ?(ctx = new_ctx) yaml =
   match yaml with
   | `O [] ->
       let code, message =
@@ -160,7 +165,7 @@ and parse_rules ~default_to_public ~pos ?(ctx = new_ctx) yaml =
       fatal_error ~code ~pos ~kind:`Syntax message
   | `O mapping ->
       let+ rules =
-        List.map ~f:(parse_rule ~default_to_public ~ctx) mapping
+        List.map ~f:(parse_rule ~default_to_public ~ctx ~module_id) mapping
         |> all_keep_logs
       in
       List.concat rules
@@ -170,7 +175,7 @@ and parse_rules ~default_to_public ~pos ?(ctx = new_ctx) yaml =
 
 let parse ~filename ?(default_to_public = false) (yaml : yaml) : Ast.t Output.t
     =
-  parse_rules ~default_to_public
+  parse_rules ~default_to_public ~module_id:0
     ~pos:(Pos.beginning_of_file filename)
     ~ctx:{new_ctx with files= [filename]}
     yaml
