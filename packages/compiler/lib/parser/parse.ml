@@ -32,22 +32,26 @@ type context =
 
 let new_ctx = {current_rule_name= []; files= []; module_id= ref 0}
 
+let fill_meta ~module_id meta =
+  let meta =
+    if
+      module_id = 1
+      && List.exists meta ~f:(function Public -> true | _ -> false)
+    then Exported :: meta
+    else meta
+  in
+  let module_id = Module_id module_id in
+  module_id :: meta
+
 let rec parse_rule ~default_to_public ~module_id ?(ctx = new_ctx) (name, yaml) =
   let* name, pos = parse_ref name in
   let name = ctx.current_rule_name @ name in
   let* value = Parse_value.parse_value ~error_if_undefined:false ~pos yaml in
-  let default_meta =
-    let module_id = Module_id module_id in
-    if default_to_public then [Public; module_id] else [module_id]
-  in
-  let meta =
-    if module_id = 1 && default_to_public then Exported :: default_meta
-    else default_meta
-  in
+  let default_meta = if default_to_public then [Public] else [] in
   let parsed_rule =
     { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
     ; value
-    ; meta
+    ; meta= fill_meta default_meta ~module_id
     ; replace= []
     ; make_not_applicable= [] }
   in
@@ -63,14 +67,6 @@ let rec parse_rule ~default_to_public ~module_id ?(ctx = new_ctx) (name, yaml) =
           yaml
       in
       let* meta = Parse_meta.parse yaml in
-      let meta = default_meta @ meta in
-      let meta =
-        if
-          module_id = 1
-          && List.exists meta ~f:(function Public -> true | _ -> false)
-        then Exported :: meta
-        else meta
-      in
       let* with_ =
         parse_with ~default_to_public ~module_id
           ~ctx:{ctx with current_rule_name= name}
@@ -86,7 +82,7 @@ let rec parse_rule ~default_to_public ~module_id ?(ctx = new_ctx) (name, yaml) =
       return
         ( [ { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
             ; value
-            ; meta
+            ; meta= fill_meta (default_meta @ meta) ~module_id
             ; replace
             ; make_not_applicable } ]
         @ with_ @ import )
