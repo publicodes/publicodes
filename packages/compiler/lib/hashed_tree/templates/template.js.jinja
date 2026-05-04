@@ -1,0 +1,236 @@
+{{ runtime }}
+
+/** Compiled private Publicodes rules */
+
+{%- macro fmt_binop (op) -%}
+	{%- switch op -%}
+	{%- case "add" -%} $add
+	{%- case "sub" -%} $sub
+	{%- case "mul" -%} $mul
+	{%- case "div" -%} $div
+	{%- case "pow" -%} $pow
+	{%- case "eq" -%} $eq
+	{%- case "neq" -%} $neq
+	{%- case "lt" -%} $lt
+	{%- case "gt" -%} $gt
+	{%- case "gte" -%} $gte
+	{%- case "lte" -%} $lte
+	{%- case "and" -%} $and
+	{%- case "or" -%} $or
+	{%- case "min" -%} $min
+	{%- case "max" -%} $max
+	{%- endswitch %}
+{%- endmacro %}
+
+{%- macro fmt_identifier (name) -%}
+	{{ name
+		| replace("_", "___")
+		| replace(" ", "_")
+		| replace("\\.", "·")
+		| replace("'", "ʹ")
+		| replace("-", "__t__")
+		| replace("«", "__go__")
+		| replace("»", "__gf__")
+		| replace("\"", "__d__")
+		| replace("€", "__euro__")
+		| replace("%", "__pct__")
+		| replace("²", "__sq__")
+	}}
+{%- endmacro -%}
+
+{%- macro fmt_method (name) -%}
+	_{{ fmt_identifier(name) }}
+{%- endmacro -%}
+
+{%- macro fmt_type (name) -%}
+	{{ fmt_identifier(name) }}Params
+{%- endmacro -%}
+
+{%- macro fmt_ts_type (type) -%}
+	{%- switch type %}
+	{%- case "text" -%}
+		string
+	{%- case "date" -%}
+		Date
+	{%- case "number" -%}
+		number
+	{%- case "boolean" -%}
+		boolean
+	{%- case "not applicable" -%}
+		NotApplicable
+	{%- case "not defined" -%}
+		NotDefined
+	{%- default -%}
+		{{ type }}
+	{%- endswitch %}
+{%- endmacro -%}
+
+{%- macro fmt_esc (input) -%}
+	{{ input
+		| replace ("'", "\\'")
+		| replace ("\n", "\\n")
+		| replace ("\t", "\\t") }}
+{%- endmacro -%}
+
+{%- macro indent (prefix) -%}
+{%- set input -%}
+{{ caller() }}
+{%- endset -%}
+{{ replace ("\n", "\n" + prefix, input) | replace(" +$", "") }}
+{%- endmacro -%}
+
+{%- macro indentret (prefix) -%}
+{%- set input %}
+{{ caller() }}
+{%- endset -%}
+{{ replace ("\n", "\n" + prefix, input) | replace(" +$", "") }}
+{%- endmacro -%}
+
+{%- macro fmt_node (rule) -%}
+	{%- set node_type, node_value, node_id = (rule.node_type, rule.node_value, rule.node_id) -%}
+	$ret("{{ node_id }}", ctx, {% switch node_type %}
+	{%- case "number" -%}
+		{{ node_value.number }}
+	{%- case "text" -%}
+		"{{ fmt_esc(node_value) }}"
+	{%- case "bool" -%}
+		{{ node_value }}
+	{%- case "date" -%}
+		{%- if node_value.day -%}
+			{{ printf("new Date('%d-%02d-%02d')",
+				node_value.year, node_value.month, node_value.day) }}
+		{%- else -%}
+			{{ printf("new Date('%02d-%02d')",
+				node_value.year, node_value.month) }}
+		{%- endif -%}
+	{%- case "not_applicable" -%}
+		NotApplicable
+	{%- case "not_defined" -%}
+		NotDefined
+	{%- case "round" -%}
+		$round("{{ node_value.mode }}", {{ fmt_node(node_value.number) }}, () => {{ fmt_node(node_value.precision) }})
+	{%- case "condition" -%}
+		$cond(
+			{%- call indentret ("  ") -%}
+			{{ fmt_node(node_value.cond) }}, () => {{ fmt_node(node_value.then) }}, () => {{ fmt_node(node_value._else) }}
+			{%- endcall -%}
+		)
+	{%- case "binary_op" -%}
+		{{ fmt_binop(node_value.op) }}(
+			{%- call indentret ("  ") -%}
+			{{ fmt_node(node_value.left) }},
+			{%- endcall -%}
+			{%- call indentret ("  ") -%}
+				{%- if node_value.lazy -%}
+				() => {{ fmt_node(node_value.right) }}
+				{%- else -%}
+				{{ fmt_node(node_value.right) }}
+				{%- endif -%}
+			{%- endcall -%}
+		)
+	{%- case "unary_op" -%}
+		{%- switch node_value.op -%}
+		{%- case "neg_op" -%}
+			(-{{ fmt_node(node_value.arg) }})
+		{%- case "is_not_defined_op" -%}
+			(isNotDefined({{ fmt_node(node_value.arg) }}))
+		{%- endswitch -%}
+	{%- case "ref" -%}
+		$ref("{{ node_value }}", {{ fmt_method(node_value) }}, ctx, params)
+	{%- case "get_ctx" -%}
+		$get("{{ node_value }}", ctx, params)
+	{%- case "set_ctx" -%}
+		((ctx) => {{ fmt_node(node_value.expr) }})(
+			{
+				...ctx,
+				{%- for item in node_value.items %}
+				{%- set item_name, item_value = (item.name, item.value) %}
+					"{{ item_name }}": {{ fmt_node(item_value) }},
+				{% endfor %}
+			}
+		)
+	{%- default -%}
+		>>>> Templating error: unknown rule type "{{ rule_type }}" <<<<
+	{%- endswitch -%}
+	)
+{%- endmacro %}
+
+{%- for rule_type, rule_name, rule_node in rules %}
+
+/** @type {(ctx: Context, params: RuleName[]) => {{ fmt_ts_type(rule_type) }}} */
+function {{ fmt_method(rule_name) }}(ctx, params) {
+  return /** @type \{{{ fmt_ts_type(rule_type)}}\} */ (
+    {%- call indentret ("    ") -%}
+    {{ fmt_node(rule_node) }}
+    {%- endcall %}
+  )
+}
+{%- endfor %}
+
+/** Exported outputs/inputs */
+
+const rules = {
+  {%- for out in outputs %}
+  {%- if out.title || out.description %}
+  /**
+   {%- if out.title %}
+   * **{{ out.title }}**
+   {%- endif %}
+   {%- if out.description %}
+   {%- if out.title %}
+   *
+   {%- endif %}
+   * {% call indent ("   * ") -%}
+     {{ trim (out.description) }}
+   {%- endcall %}
+   {%- endif %}
+   */
+  {%- endif %}
+  '{{ fmt_esc(out.rule_name) }}': {
+    /**
+     * Parameters of "{{ out.rule_name }}"
+     * @typedef \{{
+     {%- for param_type, param_value in out.params %}
+     *  '{{ fmt_esc(param_value) }}'?: {{ fmt_ts_type(param_type) }}
+     {%- endfor %}
+     * }} {{ fmt_identifier(out.rule_name) }}Params
+     */
+    /**
+     * Evaluate "{{ out.rule_name }}" with evaluation trace, and information on
+     * missing and needed parameters.
+     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {Options}) => {value: {{ fmt_ts_type(out.return_type) }}, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>, trace: {Trace}}}
+     */
+    evaluate: (params = {}, options) =>
+      $evaluate({{ fmt_method(out.rule_name) }}, params, options),
+    /** @type {"{{ out.rule_type }}"} */
+    type: "{{ out.rule_type }}",
+    {%- if out.unit %}
+    /** @type {"{{ out.unit }}"} */
+    unit: "{{ out.unit }}",
+    {%- endif %}
+    /**
+     * Parameter list for "{{ out.rule_name }}"
+     * @type {Array<keyof {{ fmt_type(out.rule_name) }}>}
+     */
+    params: [
+    {%- call indent ("             ") -%}
+    {%- for param_type, param_value in out.params -%}
+      '{{ fmt_esc(param_value) }}'{% if !loop.last %},{{ "\n" }}{% endif %}
+    {%- endfor -%}
+    {%- endcall -%}
+    ],
+    {%- for meta_type, meta_value in out.metas %}
+    {%- switch meta_type %}
+    {%- case "custom" %}
+    /** Custom meta of rule "{{ out.rule_name }}" */
+    meta: {{ meta_value }} /** @type {const} */,
+    {%- default %}
+    /** @type {string} */
+    {{ meta_type }}: '{{ fmt_esc(meta_value) }}',
+    {%- endswitch %}
+    {%- endfor %}
+  }{% if !loop.last %},{% endif %}
+  {%- endfor %}
+}
+
+export default rules;

@@ -1,0 +1,100 @@
+open Base
+open Cmdliner
+open Cmdliner.Term.Syntax
+open Utils.Result
+
+let input_files =
+  let doc = "$(docv) is the input files. Use $(b,-) for $(b,stdin)." in
+  Arg.(value & pos_all file [] & info [] ~doc ~docv:"FILES")
+
+let input_stdin =
+  let doc = "Use stdin as input to compile." in
+  Arg.(value & flag & info ["i"; "input"] ~doc)
+
+let output_file =
+  let doc = "$(docv) is the file to write to. Use $(b,-) for $(b,stdout)." in
+  Arg.(
+    value
+    (* With an empty string, the extension is match according the output type. *)
+    & opt string ""
+    & info ["o"; "output-file"] ~doc ~docv:"FILE" )
+
+let watch =
+  let doc = "Watch input files for changes and recompile automatically." in
+  Arg.(value & flag & info ["w"; "watch"] ~doc)
+
+let output_type =
+  let doc = "$(docv) is the output type." in
+  Arg.(
+    value
+    & opt
+        (enum
+           [ ("js", Compiler.Js)
+           ; ("debug_eval_tree", Compiler.Debug_eval_tree)
+           ; ("json_doc", Compiler.Json_doc) ] )
+        Compiler.Js
+    & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
+
+let config_file =
+  let doc = "$(docv) is the config file." in
+  Arg.(
+    value
+    & opt string "publicodes.yaml"
+    & info ["c"; "config-file"] ~doc ~docv:"FILE" )
+
+let default_to_public =
+  let doc =
+    "Compile every rule as `public`, which means that they are all exported."
+  in
+  Arg.(value & flag & info ["default-to-public"] ~doc)
+
+let cmd =
+  let doc = "Compile a Publicodes program from file or stdin." in
+  let exits =
+    Cmd.Exit.info Cli.exit_parsing_err ~doc:"on parsing error"
+    :: Cmd.Exit.defaults
+  in
+  Cmd.v (Cmd.info "compile" ~doc ~version:"%%VERSION%%" ~exits)
+  @@
+  let+ input_files = input_files
+  and+ output_file = output_file
+  and+ input_stdin = input_stdin
+  and+ watch_mode = watch
+  and+ default_to_public = default_to_public
+  and+ output_type = output_type
+  and+ config_file = config_file in
+  let targets =
+    if List.length input_files > 0 || input_stdin then
+      let input_files = if input_stdin then ["-"] else input_files in
+      let output_file =
+        if String.equal output_file "" then
+          "model.publicodes"
+          ^
+          match output_type with
+          | Debug_eval_tree ->
+              ".eval_tree.debug"
+          | Js ->
+              ".js"
+          | Json_doc ->
+              ".json"
+        else output_file
+      in
+      Ok
+        [ ( {input_files; output_file; output_type; default_to_public}
+            : Compile.t ) ]
+    else
+      let* config = Config.parse config_file in
+      Ok config.targets
+  in
+  match targets with
+  | Ok (target :: []) ->
+      if watch_mode then Watch.watch_compile target
+      else Compile.compile_target target
+  | Ok targets ->
+      if watch_mode then (
+        Stdlib.Format.eprintf "Can't watch mode with multiple targets yet\n%!" ;
+        Cmd.Exit.cli_error )
+      else Compile.compile_targets targets
+  | Error (`Msg msg) ->
+      Stdlib.Format.eprintf "Error: %s\n%!" msg ;
+      Cmd.Exit.cli_error

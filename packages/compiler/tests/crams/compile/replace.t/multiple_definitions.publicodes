@@ -1,0 +1,14 @@
+a:
+  remplace:
+    - références à:
+        - b
+        - x
+    - références à: c
+      sauf dans: x
+
+b:
+
+c: b
+
+x: c
+y: c + x
