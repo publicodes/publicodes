@@ -91,6 +91,7 @@ type rule_meta =
   | Custom_meta of Yojson.Safe.t
   | Module_id of int
   | Exported
+  | Private
 [@@deriving equal, show]
 
 type 'a replace =
@@ -149,6 +150,13 @@ let binary_op_to_string = function
 (** Map expression *)
 let has_exported_tag rule_def =
   List.exists ~f:(function Exported -> true | _ -> false) rule_def.meta
+
+let has_private_tag rule_def =
+  List.exists ~f:(function Private -> true | _ -> false) rule_def.meta
+
+let module_id rule_def =
+  List.find_map_exn rule_def.meta ~f:(fun meta ->
+      match meta with Module_id id -> Some id | _ -> None )
 
 let has_value rule_def =
   match rule_def.value.value with Not_defined, _ -> false | _ -> true

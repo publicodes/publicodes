@@ -23,7 +23,7 @@ let check_orphan_rules ~rule_names ast =
   in
   List.filter_map ast ~f:warn_if_orphan
 
-let resolve_rule ~rule_names rule =
+let resolve_rule ~rule_names ~ast rule =
   let context_rule = Pos.value rule.name in
   let resolve_ref ~pos ref =
     let resolved_ref =
@@ -40,7 +40,17 @@ let resolve_rule ~rule_names rule =
                 Rule_name.pp missing_rule_name
             ; "Vérifiez les erreurs de typos dans le nom de la règle" ]
     | Some ref ->
-        return ref
+        let modulea = Shared_ast.module_id rule in
+        let ruleb = Shared_ast.find ref ast in
+        let moduleb = Shared_ast.module_id ruleb in
+        if modulea <> moduleb && Shared_ast.has_private_tag ruleb then
+          let code, message = Err.private_rule in
+          fatal_error ~pos ~kind:`Syntax ~code message
+            ~hints:
+              [ Stdlib.Format.asprintf "La rêgle `%a` est privée" Rule_name.pp
+                  ref
+              ; "Ajouter l'attribut public sur la rêgle référencé" ]
+        else return ref
   in
   let rec map_expr (expr, pos) =
     let+ expr =
@@ -191,7 +201,7 @@ let to_resolved_ast ast =
   let orphan_logs = check_orphan_rules ~rule_names ast in
   let+ ast =
     ast
-    |> List.map ~f:(resolve_rule ~rule_names)
+    |> List.map ~f:(resolve_rule ~rule_names ~ast)
     |> all_keep_logs |> add_logs ~logs:orphan_logs
   in
   ast

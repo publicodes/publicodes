@@ -24,6 +24,7 @@ module Code = struct
     (* Name resolution errors *)
     | Resolver_missing_parent_rule
     | Resolver_missing_rule
+    | Resolver_private_rule
     (* Array mechanism errors *)
     | Array_mechanism_with_empty_value
     (* Type errors *)
@@ -104,6 +105,8 @@ module Code = struct
         "E030"
     | Parsing_invalid_meta ->
         "E031"
+    | Resolver_private_rule ->
+        "E032"
 
   let pp fmt err = Stdlib.Format.fprintf fmt "%s" (show err)
 end
@@ -178,6 +181,8 @@ let missing_parent_rule =
   (Code.Resolver_missing_parent_rule, "règle parente manquante")
 
 let missing_rule = (Code.Resolver_missing_rule, "cette règle n'existe pas")
+
+let private_rule = (Code.Resolver_private_rule, "cette règle est privée")
 
 let malformed_expression =
   (Code.Parsing_missing_closing_paren, "expression malformée")
