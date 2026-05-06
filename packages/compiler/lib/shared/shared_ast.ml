@@ -89,7 +89,7 @@ type rule_meta =
   | Note of string
   | Public
   | Custom_meta of Yojson.Safe.t
-  | Module_id of int
+  | Module_id of int list
   | Exported
   | Private
 [@@deriving equal, show]

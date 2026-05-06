@@ -23,6 +23,15 @@ let check_orphan_rules ~rule_names ast =
   in
   List.filter_map ast ~f:warn_if_orphan
 
+(* parent module rules can access child module rules? *)
+let can_access parent child =
+  let parentz = List.length parent in
+  let childz = List.length child in
+  if childz < parentz then false
+  else
+    let prefix = List.take child parentz in
+    List.equal ( = ) parent prefix
+
 let resolve_rule ~rule_names ~ast rule =
   let context_rule = Pos.value rule.name in
   let resolve_ref ~pos ref =
@@ -43,7 +52,17 @@ let resolve_rule ~rule_names ~ast rule =
         let modulea = Shared_ast.module_id rule in
         let ruleb = Shared_ast.find ref ast in
         let moduleb = Shared_ast.module_id ruleb in
-        if modulea <> moduleb && Shared_ast.has_private_tag ruleb then
+        if not (can_access modulea moduleb) then
+          let code, message = Err.out_of_scope_rule in
+          fatal_error ~pos ~kind:`Syntax ~code message
+            ~hints:
+              [ Stdlib.Format.asprintf
+                  "La rêgle `%a` n'est pas accessible depuis ce module"
+                  Rule_name.pp ref ]
+        else if
+          (not (List.equal ( = ) modulea moduleb))
+          && Shared_ast.has_private_tag ruleb
+        then
           let code, message = Err.private_rule in
           fatal_error ~pos ~kind:`Syntax ~code message
             ~hints:

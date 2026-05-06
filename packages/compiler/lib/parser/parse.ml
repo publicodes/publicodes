@@ -30,13 +30,13 @@ let authorized_keys =
 type context =
   { current_rule_name: string list
   ; files: string list
-  ; current_module_id: int
+  ; current_module_id: int list
   ; next_module_id: int ref }
 
 let fill_meta ~module_id meta =
   let meta =
     if List.exists meta ~f:(function Public -> true | _ -> false) then
-      if module_id = 0 then Exported :: meta else meta
+      if List.equal ( = ) module_id [0] then Exported :: meta else meta
     else Private :: meta
   in
   let module_id = Module_id module_id in
@@ -141,7 +141,7 @@ and parse_files ~default_to_public ~ctx input_files =
               ~ctx:
                 { ctx with
                   files= filename :: ctx.files
-                ; current_module_id= module_id } )
+                ; current_module_id= ctx.current_module_id @ [module_id] } )
     |> all_keep_logs
   in
   List.fold
@@ -152,7 +152,7 @@ and parse_root ~default_to_public input_files =
   let ctx =
     { current_rule_name= []
     ; files= []
-    ; current_module_id= 0
+    ; current_module_id= []
     ; next_module_id= ref 0 }
   in
   parse_files ~default_to_public ~ctx input_files
@@ -198,7 +198,7 @@ let parse ~filename ?(default_to_public = false) (yaml : yaml) : Ast.t Output.t
   let ctx =
     { current_rule_name= []
     ; files= [filename]
-    ; current_module_id= 0
+    ; current_module_id= []
     ; next_module_id= ref 0 }
   in
   parse_rules ~default_to_public ~pos:(Pos.beginning_of_file filename) ~ctx yaml
