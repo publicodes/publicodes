@@ -41,6 +41,7 @@ module Code = struct
     | Replace_cycle
     | Import_cycle
     | Parsing_invalid_meta
+    | No_file_or_directory
   [@@deriving equal]
 
   let show = function
@@ -109,6 +110,8 @@ module Code = struct
     | Resolver_private_rule ->
         "E032"
     | Resolver_out_of_scope_rule ->
+        "E033"
+    | No_file_or_directory ->
         "E033"
 
   let pp fmt err = Stdlib.Format.fprintf fmt "%s" (show err)
@@ -199,6 +202,9 @@ let parsing_invalid_mechanism =
 let replace_multiple = (Code.Replace_multiple, "remplacement multiples")
 
 let replace_cycle = (Code.Replace_cycle, "cycle de remplacement détecté")
+
+let no_file_or_directory =
+  (Code.No_file_or_directory, "fichier ou dossier manquant")
 
 let import_cycle chain =
   let message =
