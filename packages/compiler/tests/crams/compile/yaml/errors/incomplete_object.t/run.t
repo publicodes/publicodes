@@ -9,10 +9,10 @@ quelles sont acceptables.
 
 Objet incomplet #1
 
-  $ publicodes compile input.publicodes
+  $ publicodes compile input
   E001 caractère `:` non valide à cet endroit [yaml
   error]
-       ╒══  input.publicodes:1:1 ══
+       ╒══  input/rules.publicodes:1:1 ══
      1 │ {a:, b}
        │ ˘
   
@@ -20,9 +20,9 @@ Objet incomplet #1
 
 Objet incomplet #2
 
-  $ publicodes compile input2.publicodes
+  $ publicodes compile input2
   E001 l'objet n'est pas fermé [yaml error]
-       ╒══  input2.publicodes:3:1 ══
+       ╒══  input2/rules.publicodes:3:1 ══
      2 │ - 14
    Hint: il manque  `}` pour le fermer, ou `,` pour
          ajouter un élément
