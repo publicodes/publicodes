@@ -13,7 +13,7 @@ export async function compilePublicodesToJS(
 
 	try {
 		const { stdout, stderr } =
-			await $`${COMPILER_PATH} compile -i --default-to-public -o -  < ${Buffer.from(yaml)}`.quiet()
+			await $`${COMPILER_PATH} compile --default-to-public -o - - < ${Buffer.from(yaml)}`.quiet()
 
 		if (stderr.toString()) {
 			console.warn(stderr.toString())

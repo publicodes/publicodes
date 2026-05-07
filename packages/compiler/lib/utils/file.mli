@@ -7,3 +7,5 @@ val read_file : t -> string
 
 val write_file : path:t -> content:string -> unit
 (** [write_file ~path ~content] writes the [content] to the file at [path]. *)
+val publicodes_module : string -> string Base.List.t option
+(** [publicodes_module ~path] list Publicodes files in a module. *)
