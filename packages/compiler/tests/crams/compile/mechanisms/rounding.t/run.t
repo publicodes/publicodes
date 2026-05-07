@@ -1,41 +1,41 @@
 Bad types for arrondi :
-  $ publicodes compile type_error.publicodes -t debug_eval_tree -o -
+  $ publicodes compile type_error -t debug_eval_tree -o -
   E014 valeur manquante [syntax error]
-       ╒══  type_error.publicodes:14:11 ══
+       ╒══  type_error/rules.publicodes:14:11 ══
     13 │   valeur: 5€
     14 │   arrondi:
        │            valeur attendue ici
   
   E025 unités non compatibles [type error]
-       ╒══  type_error.publicodes:9:11 ══
+       ╒══  type_error/rules.publicodes:9:11 ══
      8 │ c:
      9 │   valeur: 4 $
        │           ˘˘˘ unité: $
-       ╒══  type_error.publicodes:10:12 ══
+       ╒══  type_error/rules.publicodes:10:12 ══
      9 │   valeur: 4 $
     10 │   arrondi: 0.1 €
        │            ˘˘˘˘˘ unité: €
   
   E022 type invalide détécté [type error]
-       ╒══  type_error.publicodes:14:3 ══
+       ╒══  type_error/rules.publicodes:14:3 ══
     13 │   valeur: 5€
     14 │   arrondi:
        │   ˘˘˘˘˘˘˘˘
    Hint: arrondi doit être un nombre ou un booléen
   E022 type invalide détécté [type error]
-       ╒══  type_error.publicodes:19:12 ══
+       ╒══  type_error/rules.publicodes:19:12 ══
     18 │   valeur: 5€
     19 │   arrondi: x
        │            ˘
    Hint: arrondi doit être un nombre ou un booléen
   E022 type invalide détécté [type error]
-       ╒══  type_error.publicodes:6:12 ══
+       ╒══  type_error/rules.publicodes:6:12 ══
      5 │ b:
      6 │   arrondi: 01/2025
        │            ˘˘˘˘˘˘˘
    Hint: arrondi doit être un nombre ou un booléen
   E022 type invalide détécté [type error]
-       ╒══  type_error.publicodes:2:12 ══
+       ╒══  type_error/rules.publicodes:2:12 ══
      1 │ a:
      2 │   arrondi: "non"
        │            ˘˘˘˘˘
@@ -45,7 +45,7 @@ Bad types for arrondi :
 
 
 Ok arrondi :
-  $ publicodes compile ok.publicodes -t debug_eval_tree -o -
+  $ publicodes compile ok -t debug_eval_tree -o -
   a:
     round to: if true
       then 1.

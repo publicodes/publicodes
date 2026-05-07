@@ -1,23 +1,23 @@
 Bad types for arrondi :
-  $ publicodes compile type_error.publicodes -t debug_eval_tree -o -
+  $ publicodes compile type_error -t debug_eval_tree -o -
   E011 tableau attendu [syntax error]
-       ╒══  type_error.publicodes:2:3 ══
+       ╒══  type_error/rules.publicodes:2:3 ══
      1 │ a:
      2 │   le maximum de: non
        │   ˘˘˘˘˘˘˘˘˘˘˘˘˘˘
   
   E014 valeur manquante [syntax error]
-       ╒══  type_error.publicodes:12:6 ══
+       ╒══  type_error/rules.publicodes:12:6 ══
     11 │   le maximum de:
     12 │     -
        │       valeur attendue ici
   
   E025 unités non compatibles [type error]
-       ╒══  type_error.publicodes:5:1 ══
+       ╒══  type_error/rules.publicodes:5:1 ══
      4 │ 
      5 │ b:
        │ ˘˘ unité: €
-       ╒══  type_error.publicodes:8:7 ══
+       ╒══  type_error/rules.publicodes:8:7 ══
      7 │     - 5 €
      8 │     - 4 tomates
        │       ˘˘˘˘˘˘˘˘˘ unité: tomates
@@ -27,7 +27,7 @@ Bad types for arrondi :
 
 
 Ok arrondi :
-  $ publicodes compile ok.publicodes -t debug_eval_tree -o -
+  $ publicodes compile ok -t debug_eval_tree -o -
   a:
     4. max (3. max 5.)
   
