@@ -96,26 +96,28 @@ and parse_import ~default_to_public ~ctx mapping =
       return []
   | Some (import, pos) -> (
     match import with
-    | `A yaml -> (
-        let* values = yaml |> List.map ~f:(get_scalar ~pos) |> all_keep_logs in
-        let input_files =
-          List.map ~f:(fun ({value; _}, pos) -> (value, pos)) values
+    | `Scalar ({value; _}, pos) -> (
+        let* input_files =
+          match Utils.File.publicodes_module value with
+          | Some files ->
+              return files
+          | None ->
+              let code, message = Err.no_file_or_directory in
+              fatal_error ~pos ~code ~kind:`Syntax message
         in
         let circular_files =
-          List.find input_files ~f:(fun (filename, _) ->
+          List.find input_files ~f:(fun filename ->
               List.exists ctx.files ~f:(String.equal filename) )
         in
         match circular_files with
-        | Some (circular, pos) ->
+        | Some circular ->
             let code, message = Err.import_cycle (circular :: ctx.files) in
             fatal_error ~pos ~code ~kind:`Syntax message
         | None ->
-            let input_files =
-              List.map ~f:(fun (value, _) -> value) input_files
-            in
+            let input_files = List.map ~f:(fun value -> value) input_files in
             parse_files ~default_to_public ~ctx input_files )
     | _ ->
-        let code, message = Err.parsing_should_be_array in
+        let code, message = Err.parsing_should_be_scalar in
         fatal_error ~pos ~code ~kind:`Syntax message )
 
 and parse_files ~default_to_public ~ctx input_files =

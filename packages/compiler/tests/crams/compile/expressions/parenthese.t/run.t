@@ -1,6 +1,6 @@
 Valid parenthesis expression :
 
-  $ publicodes compile simple.publicodes -t debug_eval_tree -o -
+  $ publicodes compile simple -t debug_eval_tree -o -
   a:
     4.5
   
@@ -21,22 +21,22 @@ Valid parenthesis expression :
 
 Invalid parenthesis expression :
 
-  $ publicodes compile missing.publicodes -t debug_eval_tree -o -
+  $ publicodes compile missing -t debug_eval_tree -o -
   E008 caractère invalide [syntax error]
-       ╒══  missing.publicodes:1:5 ══
+       ╒══  missing/rules.publicodes:1:5 ══
      1 │ a: (
        │     
   
   E002 mot clé inattendu : Tokens.LPAREN [syntax
   error]
-       ╒══  missing.publicodes:2:6 ══
+       ╒══  missing/rules.publicodes:2:6 ══
      1 │ a: (
      2 │ b: 4 ()
        │      ˘˘
   
   E002 mot clé inattendu : Tokens.RPAREN [syntax
   error]
-       ╒══  missing.publicodes:3:5 ══
+       ╒══  missing/rules.publicodes:3:5 ══
      2 │ b: 4 ()
      3 │ c: 6)
        │     ˘
