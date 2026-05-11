@@ -146,7 +146,7 @@
 				{%- for item in node_value.items %}
 				{%- set item_name, item_value = (item.name, item.value) %}
 					"{{ item_name }}": {{ fmt_node(item_value) }},
-				{% endfor %}
+				{%- endfor %}
 			}
 		)
 	{%- default -%}
