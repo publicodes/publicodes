@@ -1,0 +1,8 @@
+module a:
+  importer: module a
+module b:
+  importer: module b
+
+result:
+  valeur: 67
+  public: oui
