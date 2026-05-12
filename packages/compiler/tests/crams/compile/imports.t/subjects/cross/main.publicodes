@@ -1,0 +1,6 @@
+module b:
+  importer: module b
+module cross:
+  importer: cross ref
+
+out: module cross . regle d
