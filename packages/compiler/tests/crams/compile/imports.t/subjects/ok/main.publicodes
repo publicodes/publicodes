@@ -1,0 +1,4 @@
+module a:
+  importer: module a
+module b:
+  importer: module b

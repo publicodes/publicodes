@@ -1,0 +1,6 @@
+parent ref: 10
+
+module parent:
+  importer: parent ref
+
+out: module parent . regle c
