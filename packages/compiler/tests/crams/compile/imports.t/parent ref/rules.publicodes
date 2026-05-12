@@ -1,0 +1,3 @@
+regle d:
+  valeur: parent ref
+  public: oui

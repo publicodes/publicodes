@@ -1,0 +1,4 @@
+module b:
+  importer: module b
+
+out: module b . regle b
