@@ -16,6 +16,24 @@
       "message": "Not a strong -1, but I think \"Exported\" and \"Private\" aren\u0027t necessary now that we have the \"Module_id\". They both can be determined localy, and \"Private\" also depends on if the rule is a dependency of some output. I would drop both when I fix this remaining issue",
       "revId": "2ac71f0f7129bea3d61d0cb9beb8ed6ebbfa369e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "28aee2d6_ba5e0c07",
+        "filename": "packages/compiler/lib/shared/shared_ast.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-14T13:20:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "347b0fb6_27bdb430",
+      "revId": "2ac71f0f7129bea3d61d0cb9beb8ed6ebbfa369e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
