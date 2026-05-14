@@ -1,5 +1,5 @@
 ---
-title: "Publicodes et IA : générer vite, auditer bien"
+title: 'Publicodes et IA : générer vite, auditer bien'
 description: "Un LLM peut générer un simulateur en 30 secondes. Mais qui vérifie que les règles sont bonnes avant la mise en production ? Publicodes, langage déclaratif en français, permet à l'expert métier d'auditer le code généré directement, sans être développeur."
 author: Johan Girod
 date: 2026-05-13
@@ -10,12 +10,12 @@ featured: true
 <script>
 import generatedSimulatorPng from './generated_simulator.png';
 </script>
+
 ## Un simulateur en 30 secondes chrono
 
 L'expérience est saisissante. Prenez [la page service-public.fr sur l'aide au permis de conduire](https://www.service-public.gouv.fr/particuliers/vosdroits/F13609), donnez-la à un LLM, et demandez-lui :
 
-> *« Peux-tu créer un petit simulateur en JavaScript pour modéliser cette aide ? »*
-
+> _« Peux-tu créer un petit simulateur en JavaScript pour modéliser cette aide ? »_
 
 ![Capture d'écran d'un simulateur généré par IA en quelques secondes. L'interface montre des champs de saisie pour l'âge, la situation, le type de permis, et affiche un résultat d'éligibilité avec un montant d'aide.]({generatedSimulatorPng})
 
@@ -55,7 +55,7 @@ Le résultat est fonctionnel, plutôt propre, mais pose trois problèmes fondame
 
 En 2024, le CEO de GitHub annonçait que **46 % du code écrit avec Copilot était déjà généré par l'IA**. En 2026, plus de la moitié des développeurs professionnels utilisent ces outils **quotidiennement** ([Stack Overflow Survey 2025](https://survey.stackoverflow.co/2025/ai)). La tendance est massive et ne fait que s'accélérer.
 
-Mais derrière l'euphorie des commits accélérés, une autre statistique, plus inquiétante : **46 % des développeurs se méfient activement de l'exactitude du code généré**, contre seulement 33 % qui lui font confiance (Stack Overflow 2025). Pire : le problème n°1 cité par 66 % des développeurs, c'est *« des solutions presque bonnes, mais pas tout à fait »* ce genre d'erreur subtile qu'on ne détecte qu'après coup.
+Mais derrière l'euphorie des commits accélérés, une autre statistique, plus inquiétante : **46 % des développeurs se méfient activement de l'exactitude du code généré**, contre seulement 33 % qui lui font confiance (Stack Overflow 2025). Pire : le problème n°1 cité par 66 % des développeurs, c'est _« des solutions presque bonnes, mais pas tout à fait »_ ce genre d'erreur subtile qu'on ne détecte qu'après coup.
 
 Qui supporte le risque quand ce code « presque bon » atterrit en production ?
 
@@ -75,29 +75,29 @@ Reprenons la même aide réserviste, écrite en Publicodes :
 
 ```yaml
 aide réserviste:
-  description: Aide financière pour les réservistes des armées ou de la gendarmerie.
-  références:
-    service-public.fr: https://www.service-public.gouv.fr/particuliers/vosdroits/F1188
+    description: Aide financière pour les réservistes des armées ou de la gendarmerie.
+    références:
+        service-public.fr: https://www.service-public.gouv.fr/particuliers/vosdroits/F1188
 
 aide réserviste . éligible:
-  toutes ces conditions:
-    - est réserviste
-    - déjà permis B valide = non
-    - jours activité réserviste >= 50
-    - plus de 2 ans avant fin contrat réserve = non
-    - âge <= 25
-    - permis cible = B
+    toutes ces conditions:
+        - est réserviste
+        - déjà permis B valide = non
+        - jours activité réserviste >= 50
+        - plus de 2 ans avant fin contrat réserve = non
+        - âge <= 25
+        - permis cible = B
 
 aide réserviste . montant:
-  applicable si: aide réserviste . éligible
-  valeur: 1000 €
+    applicable si: aide réserviste . éligible
+    valeur: 1000 €
 ```
 
 ### Lisible par les humains, lisible par les machines
 
 Le code Publicodes se lit comme du français. Un juriste, un chargé de mission, un gestionnaire n'importe qui ayant déjà écrit une formule dans un tableur peut comprendre chaque règle sans être développeur. Chaque condition est une phrase. Les noms de variables ne sont pas en `camelCaseIllisible` mais en français naturel : `déjà permis B valide`, `jours activité réserviste`. Pas de `if/else` imbriqués, pas de retours anticipés, pas de `!` qui inverse silencieusement la logique.
 
-Mais cette lisibilité n'est pas qu'une affaire de syntaxe. C'est aussi une question de **structure**. Un LLM qui génère du JavaScript dispose d'une liberté infinie : fonctions fléchées, ternaires, boucles, closures. Chaque degré de liberté est une opportunité d'hallucination ou, plus vicieux, de *presque correct* que personne ne remarquera. Publicodes impose un vocabulaire métier restreint et explicite (`toutes ces conditions`, `applicable si`, `somme`, `produit`, `remplace`). Pas de boucles, pas d'assignation, pas de types arbitraires. Résultat : le code généré est **structurellement prévisible**, et donc vérifiable par un humain comme par un validateur automatique.
+Mais cette lisibilité n'est pas qu'une affaire de syntaxe. C'est aussi une question de **structure**. Un LLM qui génère du JavaScript dispose d'une liberté infinie : fonctions fléchées, ternaires, boucles, closures. Chaque degré de liberté est une opportunité d'hallucination ou, plus vicieux, de _presque correct_ que personne ne remarquera. Publicodes impose un vocabulaire métier restreint et explicite (`toutes ces conditions`, `applicable si`, `somme`, `produit`, `remplace`). Pas de boucles, pas d'assignation, pas de types arbitraires. Résultat : le code généré est **structurellement prévisible**, et donc vérifiable par un humain comme par un validateur automatique.
 
 ### La documentation est l'audit littéralement
 
@@ -123,7 +123,7 @@ Voici comment Publicodes redistribue les rôles :
 4. Il corrige directement le fichier YAML ou ajuste le prompt et relance la génération puis revérifie. Le cycle génération/relecture peut tourner plusieurs fois
 5. Une fois le modèle validé, il est intégré **directement** dans l'applicatif : le YAML est le code exécuté, sans retraduction par un développeur
 
-Ce qui change fondamentalement, c'est que **l'expert métier devient le signataire du modèle**, pas seulement son prescripteur. L'IA propose, l'expert dispose, le résultat part en production et chaque règle est auditable par la personne la plus légitime pour le faire. C'est du *vibe coding* pour experts métier, avec une différence de taille : on ne prie pas pour que ça marche, on le vérifie.
+Ce qui change fondamentalement, c'est que **l'expert métier devient le signataire du modèle**, pas seulement son prescripteur. L'IA propose, l'expert dispose, le résultat part en production et chaque règle est auditable par la personne la plus légitime pour le faire. C'est du _vibe coding_ pour experts métier, avec une différence de taille : on ne prie pas pour que ça marche, on le vérifie.
 
 À terme, ce workflow pourrait être outillé par une interface SaaS dédiée où l'expert génère, relit, corrige et valide son modèle sans jamais ouvrir un IDE ni un terminal.
 

@@ -1,4 +1,4 @@
-publiccodeYmlVersion: "0"
+publiccodeYmlVersion: '0'
 name: Publicodes
 url: https://github.com/publicodes/publicodes
 landingURL: https://publi.codes
@@ -14,7 +14,7 @@ usedBy:
   - Ministère du Travail, du Plein Emploi et de l'Insertion (MTPEI)
   - Direction interministérielle du numérique (Dinum)
 
-roadmap: "https://github.com/orgs/publicodes/projects/2"
+roadmap: 'https://github.com/orgs/publicodes/projects/2'
 categories:
   - collaboration
 developmentStatus: stable
@@ -44,15 +44,15 @@ description:
 
 legal:
   license: MIT
-  mainCopyrightOwner: "@laem, @johangirod, @mquandalle, @wiinxt, @EmileRolley, et toute la communauté des contributeurs"
+  mainCopyrightOwner: '@laem, @johangirod, @mquandalle, @wiinxt, @EmileRolley, et toute la communauté des contributeurs'
 
 maintenance:
   type: community
   contacts:
-    - name: "Johan Girod"
-      email: "dev@johangirod.com"
-    - name: "Emile Rolley"
-      email: "emile.rolley@tuta.io"
+    - name: 'Johan Girod'
+      email: 'dev@johangirod.com'
+    - name: 'Emile Rolley'
+      email: 'emile.rolley@tuta.io'
 
 localisation:
   localisationReady: false
