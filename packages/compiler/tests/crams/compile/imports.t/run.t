@@ -132,11 +132,40 @@ Cross reference :
   [123]
 
 Missing reference :
-  $ publicodes compile subjects/missing -t debug_eval_tree -o -
+  $ PUBLICODESPATH=vendor publicodes compile subjects/missing -t debug_eval_tree -o -
   E033 la resource est introuvable [syntax error]
        ╒══  subjects/missing/rules.publicodes:2:13 ══
      1 │ module missing:
      2 │   importer: module missing
        │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘
   
+  E033 la resource est introuvable [syntax error]
+       ╒══  subjects/missing/rules.publicodes:7:14 ══
+     6 │   importer:
+     7 │     package: package missing
+       │              ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
+  
+  E033 la resource est introuvable [syntax error]
+       ╒══  subjects/missing/rules.publicodes:14:13 ══
+    13 │     package: package a
+    14 │     module: vendored missing
+       │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
+  
+  E034 champ manquant : module [syntax error]
+       ╒══  subjects/missing/rules.publicodes:18:3 ══
+    17 │   valeur: rule vendored c + 3
+    18 │   importer:
+       │   ˘˘˘˘˘˘˘˘˘
+  
   [123]
+
+Vendor reference :
+  $ PUBLICODESPATH=vendor publicodes compile subjects/vendored -t debug_eval_tree -o -
+  out:
+    @out . rule vendored a + 3.
+  
+  out . rule vendored a:
+    @out . rule vendored a . rule vendored b
+  
+  out . rule vendored a . rule vendored b:
+    10.
