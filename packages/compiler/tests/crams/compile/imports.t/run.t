@@ -107,3 +107,36 @@ Cross reference :
    Hint: La rêgle `module b . regle b` n'est pas
          accessible depuis ce module
   [123]
+
+Vendor reference :
+  $ PUBLICODESPATH=vendor publicodes compile subjects/vendored -t debug_eval_tree -o -
+  out:
+    @out . rule vendored a + 3.
+  
+  out . rule vendored a:
+    @out . rule vendored a . rule vendored b
+  
+  out . rule vendored a . rule vendored b:
+    10.
+
+Vendor reference :
+  $ PUBLICODESPATH=vendor publicodes compile "subjects/missing vendored" -t debug_eval_tree -o -
+  E033 fichier ou dossier manquant [syntax error]
+       ╒══  subjects/missing vendored/main.publicodes:4:14 ══
+     3 │   importer:
+     4 │     package: package missing
+       │              ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
+  
+  E033 fichier ou dossier manquant [syntax error]
+       ╒══  subjects/missing vendored/main.publicodes:11:13 ══
+    10 │     package: package a
+    11 │     module: vendored missing
+       │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
+  
+  E034 champ manquant : module [syntax error]
+       ╒══  subjects/missing vendored/main.publicodes:15:3 ══
+    14 │   valeur: rule vendored c + 3
+    15 │   importer:
+       │   ˘˘˘˘˘˘˘˘˘
+  
+  [123]
