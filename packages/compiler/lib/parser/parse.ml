@@ -31,7 +31,8 @@ type context =
   { current_rule_name: string list
   ; files: string list
   ; current_module_id: int list
-  ; next_module_id: int ref }
+  ; next_module_id: int ref
+  ; current_package: string option }
 
 let rec parse_rule ~default_to_public ~ctx (name, yaml) =
   let* name, pos = parse_ref name in
@@ -95,30 +96,54 @@ and parse_import ~default_to_public ~ctx mapping =
   | None ->
       return []
   | Some (import, pos) -> (
-    match import with
-    | `Scalar ({value; _}, pos) -> (
-        let* input_files =
-          match Utils.File.publicodes_module value with
-          | Some files ->
-              return files
-          | None ->
-              let code, message = Err.no_file_or_directory in
-              fatal_error ~pos ~code ~kind:`Syntax message
-        in
-        let circular_files =
-          List.find input_files ~f:(fun filename ->
-              List.exists ctx.files ~f:(fun file -> String.equal file filename) )
-        in
-        match circular_files with
-        | Some circular ->
-            let code, message = Err.import_cycle (circular :: ctx.files) in
+      let* package, (module_, pos) =
+        match import with
+        | `A _ ->
+            let code, message = Err.parsing_should_not_be_array in
             fatal_error ~pos ~code ~kind:`Syntax message
+        | `Scalar ({value; _}, pos) ->
+            return (ctx.current_package, (value, pos))
+        | `O mapping -> (
+            let* module_ =
+              let code, message = Err.parsing_missing_value "module" in
+              let log = Log.error ~pos ~code ~kind:`Syntax message in
+              let* value, _ = find_value "module" mapping |> of_opt ~log in
+              let* {value; _}, pos = get_scalar ~pos value in
+              return (value, pos)
+            in
+            match find_value "package" mapping with
+            | None ->
+                return (ctx.current_package, module_)
+            | Some (package, pos) -> (
+                let* {value; _}, pos = get_scalar ~pos package in
+                match Utils.File.publicodes_package value with
+                | None ->
+                    let code, message = Err.no_file_or_directory in
+                    fatal_error ~pos ~code ~kind:`Syntax message
+                | Some package ->
+                    return (Some package, module_) ) )
+      in
+      let* input_files =
+        match Utils.File.publicodes_module ?package module_ with
         | None ->
-            let input_files = List.map ~f:(fun value -> value) input_files in
-            parse_files ~default_to_public ~ctx input_files )
-    | _ ->
-        let code, message = Err.parsing_should_be_scalar in
-        fatal_error ~pos ~code ~kind:`Syntax message )
+            let code, message = Err.no_file_or_directory in
+            fatal_error ~pos ~code ~kind:`Syntax message
+        | Some files ->
+            return files
+      in
+      let circular_files =
+        List.find input_files ~f:(fun filename ->
+            List.exists ctx.files ~f:(fun file -> String.equal file filename) )
+      in
+      match circular_files with
+      | Some circular ->
+          let code, message = Err.import_cycle (circular :: ctx.files) in
+          fatal_error ~pos ~code ~kind:`Syntax message
+      | None ->
+          let input_files = List.map ~f:(fun value -> value) input_files in
+          parse_files ~default_to_public
+            ~ctx:{ctx with current_package= package}
+            input_files )
 
 and parse_files ~default_to_public ~ctx input_files =
   let module_id = !(ctx.next_module_id) in
@@ -146,7 +171,8 @@ and parse_root ~default_to_public input_files =
     { current_rule_name= []
     ; files= []
     ; current_module_id= []
-    ; next_module_id= ref 0 }
+    ; next_module_id= ref 0
+    ; current_package= None }
   in
   parse_files ~default_to_public ~ctx input_files
 
@@ -192,6 +218,7 @@ let parse ~filename ?(default_to_public = false) (yaml : yaml) : Ast.t Output.t
     { current_rule_name= []
     ; files= [filename]
     ; current_module_id= []
-    ; next_module_id= ref 0 }
+    ; next_module_id= ref 0
+    ; current_package= None }
   in
   parse_rules ~default_to_public ~pos:(Pos.beginning_of_file filename) ~ctx yaml
