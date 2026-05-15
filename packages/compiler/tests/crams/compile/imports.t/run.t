@@ -107,3 +107,14 @@ Cross reference :
    Hint: La rêgle `module b . regle b` n'est pas
          accessible depuis ce module
   [123]
+
+Vendor reference :
+  $ PUBLICODESPATH=vendor publicodes compile subjects/vendored -t debug_eval_tree -o -
+  out:
+    @out . rule vendored a + 3.
+  
+  out . rule vendored a:
+    @out . rule vendored a . rule vendored b
+  
+  out . rule vendored a . rule vendored b:
+    10.

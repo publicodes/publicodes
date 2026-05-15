@@ -19,6 +19,7 @@ module Code = struct
     | Parsing_invalid_value
     | Parsing_invalid_rule_name
     | Parsing_invalid_mechanism
+    | Parsing_missing_value
     (* Expression errors *)
     | Expr_lex_invalid_expression
     (* Name resolution errors *)
@@ -110,6 +111,8 @@ module Code = struct
         "E032"
     | No_file_or_directory ->
         "E033"
+    | Parsing_missing_value ->
+        "E034"
 
   let pp fmt err = Stdlib.Format.fprintf fmt "%s" (show err)
 end
@@ -195,6 +198,9 @@ let malformed_expression =
 
 let parsing_invalid_mechanism =
   (Code.Parsing_invalid_mechanism, "mécanisme invalide")
+
+let parsing_missing_value value =
+  (Code.Parsing_missing_value, Stdlib.Format.sprintf "champ manquant : %s" value)
 
 let replace_multiple = (Code.Replace_multiple, "remplacement multiples")
 
