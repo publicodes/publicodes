@@ -1,0 +1,16 @@
+out:
+  valeur: rule vendored a + 3
+  importer:
+    package: package missing
+    module: vendored a
+
+out2:
+  valeur: rule vendored c + 3
+  importer:
+    package: package a
+    module: vendored missing
+
+out2:
+  valeur: rule vendored c + 3
+  importer:
+    package: package a
