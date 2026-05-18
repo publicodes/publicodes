@@ -5,6 +5,8 @@ author: Johan Girod
 date: 2026-05-13
 tags: modelisation
 featured: true
+draft: true
+
 ---
 
 <script>
