@@ -25,6 +25,16 @@ let write_file ~path ~content =
   | file ->
       Out_channel.with_open_bin file (write content)
 
+let is_valid path =
+  match Fpath.of_string path with
+  | Error _ ->
+      false
+  | Ok path ->
+      Fpath.segs path
+      |> List.filter ~f:(function seg ->
+          List.filter [".."; "."] ~f:(String.equal seg) |> List.is_empty |> not )
+      |> List.is_empty
+
 let publicodes_module ?package module_ =
   let* path =
     match package with

@@ -42,6 +42,7 @@ module Code = struct
     | Replace_cycle
     | Parsing_invalid_meta
     | No_file_or_directory
+    | Invalid_path
   [@@deriving equal]
 
   let show = function
@@ -113,6 +114,8 @@ module Code = struct
         "E033"
     | Parsing_missing_value ->
         "E034"
+    | Invalid_path ->
+        "E035"
 
   let pp fmt err = Stdlib.Format.fprintf fmt "%s" (show err)
 end
@@ -208,6 +211,8 @@ let replace_cycle = (Code.Replace_cycle, "cycle de remplacement détecté")
 
 let no_file_or_directory =
   (Code.No_file_or_directory, "fichier ou dossier manquant")
+
+let invalid_path = (Code.Invalid_path, "chemin invalide")
 
 let import_cycle chain =
   let message =
