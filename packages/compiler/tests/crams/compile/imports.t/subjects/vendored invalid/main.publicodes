@@ -1,0 +1,33 @@
+out:
+  valeur: rule vendored a + 3
+  importer: foo/../bar
+
+out1:
+  valeur: rule vendored a + 3
+  importer:
+    package: ../node_modules/foo
+    module: bar
+
+out2:
+  valeur: rule vendored a + 3
+  importer:
+    package: foo
+    module: bar/../toot
+
+out3:
+  valeur: rule vendored a + 3
+  importer:
+    package: foo
+    module: bar/./toot
+
+out4:
+  valeur: rule vendored a + 3
+  importer:
+    package: ./foo
+    module: bar
+
+out5:
+  valeur: rule vendored a + 3
+  importer:
+    package: foo
+    module: ./bar
