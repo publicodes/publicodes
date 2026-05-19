@@ -2,9 +2,9 @@ open Yaml.Stream
 
 let starts_with = String.starts_with
 
+open Utils
 open Base
 open Ast
-open Utils
 
 (*
 This module will parse YAML content and produce YAML AST with position information.

@@ -1,7 +1,7 @@
 open Base
 open Cmdliner
-open Cmdliner.Term.Syntax
 open Utils.Result
+open Cmdliner.Term.Syntax
 
 let input_files =
   let doc = "$(docv) is the input files. Use $(b,-) for $(b,stdin)." in

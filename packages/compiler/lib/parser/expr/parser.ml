@@ -1,6 +1,6 @@
+open Utils
 open Base
 open Tokens
-open Utils
 open Shared.Shared_ast
 open Utils.Output
 

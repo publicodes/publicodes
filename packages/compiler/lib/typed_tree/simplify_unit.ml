@@ -1,7 +1,7 @@
+open Utils
 open Base
 open Typ
 open Shared
-open Utils
 open Output
 
 let convert ~pos expr from_unit to_unit =
