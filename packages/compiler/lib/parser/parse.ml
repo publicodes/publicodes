@@ -92,6 +92,12 @@ and parse_with ~default_to_public ~ctx mapping =
       parse_rules ~default_to_public ~pos ~ctx rules
 
 and parse_import ~default_to_public ~ctx mapping =
+  let check_valid path pos =
+    if not (Utils.File.is_valid path) then
+      let code, message = Err.invalid_path in
+      fatal_error ~pos ~code ~kind:`Syntax message
+    else return path
+  in
   match find_value "importer" mapping with
   | None ->
       return []
@@ -102,21 +108,24 @@ and parse_import ~default_to_public ~ctx mapping =
             let code, message = Err.parsing_should_not_be_array in
             fatal_error ~pos ~code ~kind:`Syntax message
         | `Scalar ({value; _}, pos) ->
-            return (ctx.current_package, (value, pos))
+            let* path = check_valid value pos in
+            return (ctx.current_package, (path, pos))
         | `O mapping -> (
             let* module_ =
               let code, message = Err.parsing_missing_value "module" in
               let log = Log.error ~pos ~code ~kind:`Syntax message in
               let* value, _ = find_value "module" mapping |> of_opt ~log in
               let* {value; _}, pos = get_scalar ~pos value in
-              return (value, pos)
+              let* path = check_valid value pos in
+              return (path, pos)
             in
             match find_value "package" mapping with
             | None ->
                 return (ctx.current_package, module_)
             | Some (package, pos) -> (
                 let* {value; _}, pos = get_scalar ~pos package in
-                match Utils.File.publicodes_package value with
+                let* path = check_valid value pos in
+                match Utils.File.publicodes_package path with
                 | None ->
                     let code, message = Err.no_file_or_directory in
                     fatal_error ~pos ~code ~kind:`Syntax message
