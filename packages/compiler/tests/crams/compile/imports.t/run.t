@@ -169,3 +169,31 @@ Vendor reference :
   
   out . rule vendored a . rule vendored b:
     10.
+
+Vendor invalid reference :
+  $ PUBLICODESPATH=vendor publicodes compile "subjects/vendored invalid" -t debug_eval_tree -o -
+  E035 chemin invalide [syntax error]
+       ╒══  subjects/vendored invalid/main.publicodes:3:13 ══
+     2 │   valeur: rule vendored a + 3
+     3 │   importer: foo/../bar
+       │             ˘˘˘˘˘˘˘˘˘˘
+  
+  E035 chemin invalide [syntax error]
+       ╒══  subjects/vendored invalid/main.publicodes:8:14 ══
+     7 │   importer:
+     8 │     package: ../node_modules/foo
+       │              ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
+  
+  E035 chemin invalide [syntax error]
+       ╒══  subjects/vendored invalid/main.publicodes:15:13 ══
+    14 │     package: foo
+    15 │     module: bar/../toot
+       │             ˘˘˘˘˘˘˘˘˘˘˘
+  
+  E035 chemin invalide [syntax error]
+       ╒══  subjects/vendored invalid/main.publicodes:21:13 ══
+    20 │     package: foo
+    21 │     module: bar/./toot
+       │             ˘˘˘˘˘˘˘˘˘˘
+  
+  [123]
