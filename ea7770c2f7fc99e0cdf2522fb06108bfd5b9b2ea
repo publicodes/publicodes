@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f3577650_5df70b06",
+        "filename": "packages/compiler/lib/utils/err.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-21T15:42:36Z",
+      "side": 1,
+      "message": "C\u0027est pas tout à fait ça \n« Aucun dossier de ce nom ou le dossier est vide » \n\nCe qui me fait penser que cela correspond peut être à deux code d\u0027erreurs différents ?",
+      "range": {
+        "startLine": 202,
+        "startChar": 1,
+        "endLine": 205,
+        "endChar": 1
+      },
+      "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
