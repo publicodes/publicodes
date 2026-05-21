@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "34304fdd_648dcbcf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-21T15:26:46Z",
+      "side": 1,
+      "message": "Petite question : il vaut mieux séparer le commit des test ou les mettre avec les changements ? Pas forcément de conviction, mais je suis preneur de vos avis",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 2
+      },
+      "revId": "2a4758fe60ed161d771f07cd2a055dca029067ee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0adad74b_93bb1573",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-21T15:26:46Z",
+      "side": 1,
+      "message": "Au sujet des imports relatif au fichier vs à la racine de l\u0027execution de la compilation... tu as pu retrouver des arguments / explications sur les avantage du second sur le premier ? \n\nPour l\u0027instant j\u0027ai l\u0027impression que les deux ont leur avantage et inconvénient, et qu\u0027il s\u0027agit plus d\u0027une préférence philosophique, mais je me trompe peut être. \n\nCar dans ce cas, j\u0027arguerai qu\u0027il vaut mieux garder la « JS way » car pour l\u0027instant les développeur de Publicodes sont plutôt de ce sérail là. L\u0027avantage c\u0027est qu\u0027on aurait pas à différencier entre import local et import node module : la présence d\u0027un indicateur de chemin relatif suffirait.\n\nping @emile+dev@calinou.coop",
+      "revId": "2a4758fe60ed161d771f07cd2a055dca029067ee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
