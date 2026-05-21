@@ -1,0 +1,159 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "63dc5e86_59bcc74c",
+        "filename": "packages/compiler/lib/dependency_graph/checks.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-21T15:10:50Z",
+      "side": 1,
+      "message": "`La règle %a n\u0027est pas exportée`\n\nÇa évite d\u0027introduire une notion de « règle privée » que l\u0027on retrouverai que dans le module",
+      "range": {
+        "startLine": 57,
+        "startChar": 36,
+        "endLine": 57,
+        "endChar": 60
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "644d0f60_3ecce062",
+        "filename": "packages/compiler/lib/dependency_graph/extract_outputs.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-21T15:10:50Z",
+      "side": 1,
+      "message": "Ok la il va y avoir un cas particulier à gérer. \n\n--- module A\n```\nrésultat a: 3 * paramètre a\nparamètre a:  \n```\n\n---module main\n```\nmodule A: \n  importer: \"module A\"\nrésultat: \n  public: oui\n  valeur: module a . résultat a\n```\n\nOn a un cas ou on export un résultat qui dépend d\u0027un paramètre qui ne peut JAMAIS être modifié car non exporté. Cela dénote un problème logique dans le code, et devrait aboutir à une erreur. \n\nJe propose de garder la même logique pour tout les paramètres : ils sont automatiquement exportés si ils sont utilisés pour le calcul d\u0027un output. \n\nSauf si ils ont été affectés directement dans le module appelant, mais il faut qu\u0027on reflechisse à ce cas d\u0027usage...",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 19
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8c87bea1_7bd7b310",
+        "filename": "packages/compiler/lib/hashed_tree/to_string.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-21T15:10:50Z",
+      "side": 1,
+      "message": "(pinaillage) On pourrait imaginer faire de l\u0027application partielle pour ne pas répeter le name à chaque fois",
+      "range": {
+        "startLine": 199,
+        "startChar": 4,
+        "endLine": 200,
+        "endChar": 41
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "99130d59_e900d58d",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-21T15:10:50Z",
+      "side": 1,
+      "message": "Que se passe-t-il si une règle de `avec` a le même nom qu\u0027une règle de `import` ? \n\nOn a envie d\u0027autoriser le cas pour les règles non exportée, mais ne pas l\u0027autoriser pour les règles exportée... Je pense que c\u0027est un sujet à traiter dans une autre PR mais à avoir en tête.",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 8
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e04f67e2_2f2bdbe7",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-21T15:10:50Z",
+      "side": 1,
+      "message": "on aurait envie d\u0027avoir un fichier séparé pour cette logique (comme pour remplace)",
+      "range": {
+        "startLine": 92,
+        "startChar": 1,
+        "endLine": 94,
+        "endChar": 42
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b12786d1_d8d3c417",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-21T15:10:50Z",
+      "side": 1,
+      "message": "J\u0027ai mis un poil de temps à comprendre cet algo (clever). Je pense qu\u0027on pourrait nommer cette variable un peu plus précisément pour que ce soit plus clair\n\n`importStackFiles` ? `importFilesStack` `importChain` ?",
+      "range": {
+        "startLine": 106,
+        "startChar": 26,
+        "endLine": 106,
+        "endChar": 35
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7d4f29a_c1ed7c7a",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-21T15:10:50Z",
+      "side": 1,
+      "message": "Comme tu crée un nouveau contexte, je pense que le mieux est d\u0027utiliser une forme immutable avec une nouvelle affectation, plutôt que de modifier par reference, surtpout que c\u0027est déjà ce que tu fais ligne 132 (ou alors je comprends pas le besoin ici)",
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
