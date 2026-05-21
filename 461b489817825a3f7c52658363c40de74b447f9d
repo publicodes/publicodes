@@ -118,6 +118,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a22750dd_59f51364",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-21T15:33:50Z",
+      "side": 1,
+      "message": "Pourquoi forcément un tableau ? A moins qu\u0027on coalesce dans `findValue` je ne me souvient plus...\n\nMais on est d\u0027accord que les deux syntaxes sont acceptées : \n\n```\na: \n  importer: module a\n```\n\n\n```\na: \n  importer: \n    - module a\n    - module b\n```",
+      "range": {
+        "startLine": 99,
+        "startChar": 4,
+        "endLine": 99,
+        "endChar": 18
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b12786d1_d8d3c417",
         "filename": "packages/compiler/lib/parser/parse.ml",
         "patchSetId": 5
