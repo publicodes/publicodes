@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e55c567_a3e50a68",
+        "filename": "packages/compiler/lib/dependency_graph/extract_outputs.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-05-22T13:53:59Z",
+      "side": 1,
+      "message": "Je pense que cette comparaison gagnerait a être extraite dans une fonction utilitaire avec un nom explicite.\n\nDe manière générale le type des module id pourrait être un typique opaque je pense pour gagner en compréhension.",
+      "range": {
+        "startLine": 48,
+        "startChar": 12,
+        "endLine": 48,
+        "endChar": 65
+      },
+      "revId": "1a258bde688a7218a5eb7a18f69e446b3a732224",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "95699992_8abf5b8a",
+        "filename": "packages/compiler/lib/shared/shared_ast.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-05-22T13:53:59Z",
+      "side": 1,
+      "message": "```suggestion\nlet get_module_id_exn rule_def \u003d\n```",
+      "range": {
+        "startLine": 152,
+        "startChar": 4,
+        "endLine": 152,
+        "endChar": 13
+      },
+      "revId": "1a258bde688a7218a5eb7a18f69e446b3a732224",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "76a85dc2_a9d5d9be",
+        "filename": "packages/compiler/tests/runtimes/JS/src/parameters.test.ts",
+        "patchSetId": 6
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-05-22T13:53:59Z",
+      "side": 1,
+      "message": "Pourquoi l\u0027ordre de la trace d\u0027exécution est différente ?",
+      "range": {
+        "startLine": 138,
+        "startChar": 0,
+        "endLine": 138,
+        "endChar": 2
+      },
+      "revId": "1a258bde688a7218a5eb7a18f69e446b3a732224",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}

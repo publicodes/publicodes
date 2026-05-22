@@ -251,6 +251,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "46ec2284_01e46376",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-05-22T13:53:59Z",
+      "side": 1,
+      "message": "Est-ce que tu pourrais rajouter une petite explication d\u0027à quoi servent les infos du contexte ? En particulier, ça me parait pas évident de comprendre pourquoi le `current_module_id` est une liste d\u0027entier.",
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "99130d59_e900d58d",
         "filename": "packages/compiler/lib/parser/parse.ml",
         "patchSetId": 5
@@ -513,6 +530,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "76c8153e_d14ec234",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-05-22T13:53:59Z",
+      "side": 1,
+      "message": "Ca ne me choque pas d\u0027avoir ces fonctions dans le même fichers personnellement. C\u0027est relativement courant en OCaml d\u0027avoir des \"gros\" modules.\n\nCa vaudrait en revanche le coup de rajouter les fichiers `.mli` pour documenter les fonctions et voir les quelles sont publics (je pense notamment à `parse_files` qui est à la fois une définition récursive imbriquée et à la fois appellée dans un module externe.",
+      "parentUuid": "f5e83649_7c43cb03",
+      "range": {
+        "startLine": 92,
+        "startChar": 1,
+        "endLine": 94,
+        "endChar": 42
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a22750dd_59f51364",
         "filename": "packages/compiler/lib/parser/parse.ml",
         "patchSetId": 5
@@ -648,6 +689,29 @@
         "startChar": 26,
         "endLine": 106,
         "endChar": 35
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26260105_45aeec01",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-05-22T13:53:59Z",
+      "side": 1,
+      "message": "Ca pourrait être fait dans une prochaine PR, mais il faudrait avoir les deux positions pour ce genre d\u0027erreurs.",
+      "range": {
+        "startLine": 111,
+        "startChar": 25,
+        "endLine": 111,
+        "endChar": 28
       },
       "revId": "461b489817825a3f7c52658363c40de74b447f9d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
