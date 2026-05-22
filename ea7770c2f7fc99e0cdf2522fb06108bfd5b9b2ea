@@ -118,6 +118,30 @@
       },
       "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bc82292e_3e76f5df",
+        "filename": "packages/compiler/lib/utils/err.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-05-22T14:04:27Z",
+      "side": 1,
+      "message": "On est d\u0027accord que ça ne pourra être autre chose qu\u0027un dossier qui est référencé dans import ? Je trouverais donc ça logique que ce soit explicite de dire que le dossier est manquants. La première fois que j\u0027ai testé la commande, je n\u0027ai pas compris que l\u0027on attendais un dossier.\n\nSi on reste sur un système relatif au cwd d\u0027où est exécuté la commande `compile`, ça vaudrait le coup de rajouter le chemin absolu vers le dossier manquants dans les hints ou quelque chose du style \"Le dossier \u003cmon_dossier\u003e est introuvable dans \u003ccwd\u003e\".",
+      "parentUuid": "d74ab78b_e201c103",
+      "range": {
+        "startLine": 202,
+        "startChar": 1,
+        "endLine": 205,
+        "endChar": 1
+      },
+      "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
