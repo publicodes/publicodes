@@ -49,6 +49,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1f195689_5c2dbb15",
+        "filename": "packages/compiler/lib/dependency_graph/extract_outputs.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T08:15:46Z",
+      "side": 1,
+      "message": "Je ne suis pas sure de saisir. Les paramètres des outputs sont ajouté juste après dans le workflow. Ici effectivement `module A . paramètre a` fera partie des exports. J\u0027ai raté quelque chose?",
+      "parentUuid": "644d0f60_3ecce062",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 19
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8c87bea1_7bd7b310",
         "filename": "packages/compiler/lib/hashed_tree/to_string.ml",
         "patchSetId": 5
@@ -60,6 +84,30 @@
       "writtenOn": "2026-05-21T15:10:50Z",
       "side": 1,
       "message": "(pinaillage) On pourrait imaginer faire de l\u0027application partielle pour ne pas répeter le name à chaque fois",
+      "range": {
+        "startLine": 199,
+        "startChar": 4,
+        "endLine": 200,
+        "endChar": 41
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59f729f8_a580ab6d",
+        "filename": "packages/compiler/lib/hashed_tree/to_string.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T08:15:46Z",
+      "side": 1,
+      "message": "Pour le coup je suis preneuse du moindre trick ici. C\u0027est la partie du diff dont je suis le moins satisfaite. Je vais essayer l\u0027application partielle tient pourquoi pas.",
+      "parentUuid": "8c87bea1_7bd7b310",
       "range": {
         "startLine": 199,
         "startChar": 4,
@@ -95,6 +143,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "d179bb32_5631e6de",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T08:15:46Z",
+      "side": 1,
+      "message": "Actuellement le compilateur ne détecte absolument pas les redéfinitions de règles. On peux littéralement répéter une règle, et ce problème ne se limite pas aux imports. Il faut effectivement ajouter ce check au parsing. Je pense qu\u0027on ne souhaite pas ajouter de contrainte autour de \"importer\". On dois pouvoir avoir \"importer\" et \"avec\" qui cohabitent, juste il faut que le clash soit correctement détecté et hinté.",
+      "parentUuid": "99130d59_e900d58d",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 8
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e04f67e2_2f2bdbe7",
         "filename": "packages/compiler/lib/parser/parse.ml",
         "patchSetId": 5
@@ -106,6 +178,30 @@
       "writtenOn": "2026-05-21T15:10:50Z",
       "side": 1,
       "message": "on aurait envie d\u0027avoir un fichier séparé pour cette logique (comme pour remplace)",
+      "range": {
+        "startLine": 92,
+        "startChar": 1,
+        "endLine": 94,
+        "endChar": 42
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "89dacacc_0a35dc35",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T08:15:46Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "e04f67e2_2f2bdbe7",
       "range": {
         "startLine": 92,
         "startChar": 1,
@@ -141,6 +237,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6371f4f9_912a1d36",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T08:15:46Z",
+      "side": 1,
+      "message": "Ce patch est en amont du \"treat directories as module\". A ce moment la, on indique encore une liste de fichiers.",
+      "parentUuid": "a22750dd_59f51364",
+      "range": {
+        "startLine": 99,
+        "startChar": 4,
+        "endLine": 99,
+        "endChar": 18
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b12786d1_d8d3c417",
         "filename": "packages/compiler/lib/parser/parse.ml",
         "patchSetId": 5
@@ -164,6 +284,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "04998ec4_fb3b4ac1",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T08:15:46Z",
+      "side": 1,
+      "message": "Et a mon avis c\u0027est loin d\u0027être le pire, et ce le sera encore bien davantage si on supporte les chemins relatifs.",
+      "parentUuid": "b12786d1_d8d3c417",
+      "range": {
+        "startLine": 106,
+        "startChar": 26,
+        "endLine": 106,
+        "endChar": 35
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a7d4f29a_c1ed7c7a",
         "filename": "packages/compiler/lib/parser/parse.ml",
         "patchSetId": 5
@@ -175,6 +319,24 @@
       "writtenOn": "2026-05-21T15:10:50Z",
       "side": 1,
       "message": "Comme tu crée un nouveau contexte, je pense que le mieux est d\u0027utiliser une forme immutable avec une nouvelle affectation, plutôt que de modifier par reference, surtpout que c\u0027est déjà ce que tu fais ligne 132 (ou alors je comprends pas le besoin ici)",
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c4e5821_ffa256f6",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T08:15:46Z",
+      "side": 1,
+      "message": "Non pas du tout. On veux incrémenter continuellement, et ne pas faire de back-and-forth lors du retour de l\u0027import. Importer deux modules a la suite doit donner des ids différents.",
+      "parentUuid": "a7d4f29a_c1ed7c7a",
       "revId": "461b489817825a3f7c52658363c40de74b447f9d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
