@@ -94,6 +94,30 @@
       },
       "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d74ab78b_e201c103",
+        "filename": "packages/compiler/lib/utils/err.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T10:00:47Z",
+      "side": 1,
+      "message": "J\u0027ai mis `la resource est introuvable`.\n\n```\n  E033 la resource est introuvable [syntax error]\n       ╒══  subjects/missing/rules.publicodes:2:13 ══\n     1 │ module missing:\n     2 │   importer: module missing\n       │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘\n  \n  E033 la resource est introuvable [syntax error]\n       ╒══  subjects/missing/rules.publicodes:7:14 ══\n     6 │   importer:\n     7 │     package: package missing\n       │              ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘\n  \n  E033 la resource est introuvable [syntax error]\n       ╒══  subjects/missing/rules.publicodes:14:13 ══\n    13 │     package: package a\n    14 │     module: vendored missing\n       │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘\n```",
+      "parentUuid": "c5ee13f5_678ab563",
+      "range": {
+        "startLine": 202,
+        "startChar": 1,
+        "endLine": 205,
+        "endChar": 1
+      },
+      "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
