@@ -1,0 +1,11 @@
+a:
+  valeur: 4
+  remplace:
+    références à: b
+    priorité: 2
+
+b: 5
+c:
+  remplace: b
+
+x: b

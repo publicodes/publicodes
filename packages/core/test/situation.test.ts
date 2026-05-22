@@ -5,7 +5,7 @@ import { engineFromYaml, parseYaml } from './utils'
 
 describe('setSituation', () => {
 	it('should allow to evaluate without situation', () => {
-		expect(engineFromYaml('a: ').evaluate('a').nodeValue).toBe(undefined)
+		expect(engineFromYaml('a: ').evaluate('a').nodeValue).toBeUndefined()
 	})
 
 	it('should allow to evaluate with situation set', () => {
@@ -209,6 +209,7 @@ a:
 			engine.setSituation({ a: 'non valide' })
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (e) {
+			// eslint-disable-next-line vitest/no-conditional-expect
 			expect(engine.evaluate('a').nodeValue).toBe(10)
 		}
 	})

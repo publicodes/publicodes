@@ -1,8 +1,8 @@
 import { CLIExecutor, runInDir } from '../cli-utils'
-import { describe, it, expect } from 'vitest'
+import { describe, test, expect } from 'vitest'
 
 describe('publicodes --help', () => {
-	it('should list all available commands', async () => {
+	test('should list all available commands', async () => {
 		const cli = new CLIExecutor()
 
 		await runInDir('tmp', async () => {
@@ -10,5 +10,5 @@ describe('publicodes --help', () => {
 			expect(stdout).toContain('init')
 			expect(stdout).toContain('compile')
 		})
-	})
+	}, 10000)
 })

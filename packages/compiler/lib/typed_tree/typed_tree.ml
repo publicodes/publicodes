@@ -1,0 +1,46 @@
+open Base
+module Typ = Typ
+open Shared
+open Utils
+open Output.Let_syntax
+open Output.Infix
+include Tree
+
+let from_resolved_ast = From_ast.from_ast
+
+let mk = Tree.mk ?typ:None
+
+let type_check tree =
+  (*
+	1. Typecheck pass (twice)
+	-------------------------
+
+	We need to traverse the tree twice for good unit inference and error detecting
+
+	- The first time, we create unit type for each number and unify what can be unify.
+	- The second time, everything that can be infered has been infered, so we can check for type inconsistency
+
+	@TODO : the simplest and more efficient way to do it would be have topological sort before type checking
+*)
+  let* tree =
+    Type_check.type_check tree |> Output.ignore_logs
+    >>= Type_check.type_check ~snd_pass:true
+  in
+  (*
+  2. Post-typecheck pass
+  ----------------------
+
+  Normalization and implementations that depend on the type inferred.
+  These transStdlib.Formations must occur after type checking.
+
+	Note: Ideally, we would use a different AST representation, but this
+	would complicate the codebase. If it appears that the ASTs are too
+	different, consider refactoring this to a new pass.
+*)
+  let post_transform value =
+    Simplify_unit.simplify_value value |> Mecha_rounding.normalize_value
+  in
+  let normalized_tree =
+    Hashtbl.map ~f:(Eval_tree.map_value ~f:post_transform) tree
+  in
+  Output.return normalized_tree
