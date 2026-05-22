@@ -24,6 +24,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f3502e8c_cf00446a",
+        "filename": "packages/compiler/lib/dependency_graph/extract_outputs.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T15:29:41Z",
+      "side": 1,
+      "message": "J\u0027ai crée un module Module_id, avec les méthodes qui y sont liés.",
+      "parentUuid": "1e55c567_a3e50a68",
+      "range": {
+        "startLine": 48,
+        "startChar": 12,
+        "endLine": 48,
+        "endChar": 65
+      },
+      "revId": "1a258bde688a7218a5eb7a18f69e446b3a732224",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "95699992_8abf5b8a",
@@ -37,6 +61,30 @@
       "writtenOn": "2026-05-22T13:53:59Z",
       "side": 1,
       "message": "```suggestion\nlet get_module_id_exn rule_def \u003d\n```",
+      "range": {
+        "startLine": 152,
+        "startChar": 4,
+        "endLine": 152,
+        "endChar": 13
+      },
+      "revId": "1a258bde688a7218a5eb7a18f69e446b3a732224",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "87f6715c_dcda8973",
+        "filename": "packages/compiler/lib/shared/shared_ast.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T15:29:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95699992_8abf5b8a",
       "range": {
         "startLine": 152,
         "startChar": 4,
