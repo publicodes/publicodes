@@ -346,6 +346,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "156b6341_1ceb1072",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T10:11:15Z",
+      "side": 1,
+      "message": "Marked as unresolved.",
+      "parentUuid": "dd3a371c_5e9f5081",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 8
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "e04f67e2_2f2bdbe7",
         "filename": "packages/compiler/lib/parser/parse.ml",
         "patchSetId": 5
@@ -405,6 +429,30 @@
       "side": 1,
       "message": "Je ferais ca dans un commit en aval, ou apres un squash.",
       "parentUuid": "89dacacc_0a35dc35",
+      "range": {
+        "startLine": 92,
+        "startChar": 1,
+        "endLine": 94,
+        "endChar": 42
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a589c1aa_939dab18",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T10:11:15Z",
+      "side": 1,
+      "message": "Marked as unresolved.",
+      "parentUuid": "8b047900_41043517",
       "range": {
         "startLine": 92,
         "startChar": 1,
