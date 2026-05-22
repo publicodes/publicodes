@@ -24,6 +24,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": true,
+      "key": {
+        "uuid": "dfa4cc72_0743e2f6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T07:26:04Z",
+      "side": 1,
+      "message": "Les deux se font. Ici je les ais séparés pour ne pas faire trop d\u0027aller et retour dans les commits. Par exemple ici j\u0027aurais dû ajouter des tests avec \"import feature\", que j\u0027aurais dû changer avec \"treat directories as publicode modules\". Et enfin ajouter certains tests pour les packages. Mais si on valide le design, je vais tout squash",
+      "parentUuid": "34304fdd_648dcbcf",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 2
+      },
+      "revId": "2a4758fe60ed161d771f07cd2a055dca029067ee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": false,
       "key": {
         "uuid": "0adad74b_93bb1573",
