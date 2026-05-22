@@ -22,6 +22,30 @@
       },
       "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1d9142a1_055b3518",
+        "filename": "packages/compiler/lib/utils/err.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T07:57:33Z",
+      "side": 1,
+      "message": "L\u0027erreur se veux la plus générique possible, et renvois a plusieurs cas en fonction de son origine. C\u0027est littéralement un \"ENOENT No such file or directory (POSIX.1-2001)\". Lorsqu\u0027elle est renvoyé lors de la résolution d\u0027un paquet, c\u0027est que le dossier n\u0027existe pas. Lorsqu\u0027elle est renvoyé lors de la résolution d\u0027un module, c\u0027est soit le dossier n\u0027existe pas, soit il est vide de fichier .publicodes. Dans les deux cas, le module n\u0027existe pas au sens Publicodes.",
+      "parentUuid": "f3577650_5df70b06",
+      "range": {
+        "startLine": 202,
+        "startChar": 1,
+        "endLine": 205,
+        "endChar": 1
+      },
+      "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
