@@ -68,6 +68,30 @@
       },
       "revId": "1a258bde688a7218a5eb7a18f69e446b3a732224",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c742440_b66a32ee",
+        "filename": "packages/compiler/tests/runtimes/JS/src/parameters.test.ts",
+        "patchSetId": 6
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T14:03:07Z",
+      "side": 1,
+      "message": "Un même fichier peut être importé a différents endroits, depuis différents modules, et les ids générés ne doivent jamais clash entre eux. C\u0027est pour ca que je maintient l’arborescence des module_id, que `current_module_id` est une liste d\u0027entier. J\u0027ajoute donc ces valeurs au digest des ids, et donc en conséquence, les ids ne sont plus les mêmes.",
+      "parentUuid": "76a85dc2_a9d5d9be",
+      "range": {
+        "startLine": 138,
+        "startChar": 0,
+        "endLine": 138,
+        "endChar": 2
+      },
+      "revId": "1a258bde688a7218a5eb7a18f69e446b3a732224",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
