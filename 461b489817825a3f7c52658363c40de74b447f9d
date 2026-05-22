@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6c3bbb41_3546d13d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-22T08:24:59Z",
+      "side": 1,
+      "message": "Rien à voir, mais j\u0027aime BEAUCOUP le flow de review avec Gerrithub \u003c3",
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "63dc5e86_59bcc74c",
@@ -73,6 +90,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6b806421_64126b59",
+        "filename": "packages/compiler/lib/dependency_graph/extract_outputs.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-22T08:24:59Z",
+      "side": 1,
+      "message": "J\u0027ai lu trop vite, au temps pour moi. Si jamais il n\u0027y a pas de test pour ce cas, je pense que ça peut valoir le coup d\u0027en ajouter.",
+      "parentUuid": "1f195689_5c2dbb15",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 19
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8c87bea1_7bd7b310",
         "filename": "packages/compiler/lib/hashed_tree/to_string.ml",
         "patchSetId": 5
@@ -108,6 +149,30 @@
       "side": 1,
       "message": "Pour le coup je suis preneuse du moindre trick ici. C\u0027est la partie du diff dont je suis le moins satisfaite. Je vais essayer l\u0027application partielle tient pourquoi pas.",
       "parentUuid": "8c87bea1_7bd7b310",
+      "range": {
+        "startLine": 199,
+        "startChar": 4,
+        "endLine": 200,
+        "endChar": 41
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "64fb6a02_551f08c8",
+        "filename": "packages/compiler/lib/hashed_tree/to_string.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-22T08:24:59Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "59f729f8_a580ab6d",
       "range": {
         "startLine": 199,
         "startChar": 4,
@@ -155,6 +220,30 @@
       "side": 1,
       "message": "Actuellement le compilateur ne détecte absolument pas les redéfinitions de règles. On peux littéralement répéter une règle, et ce problème ne se limite pas aux imports. Il faut effectivement ajouter ce check au parsing. Je pense qu\u0027on ne souhaite pas ajouter de contrainte autour de \"importer\". On dois pouvoir avoir \"importer\" et \"avec\" qui cohabitent, juste il faut que le clash soit correctement détecté et hinté.",
       "parentUuid": "99130d59_e900d58d",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 8
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a313fa2_0099432e",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-22T08:24:59Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "d179bb32_5631e6de",
       "range": {
         "startLine": 62,
         "startChar": 4,
@@ -259,6 +348,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "39df2acc_41aeadc3",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-22T08:24:59Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "6371f4f9_912a1d36",
+      "range": {
+        "startLine": 99,
+        "startChar": 4,
+        "endLine": 99,
+        "endChar": 18
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b12786d1_d8d3c417",
@@ -337,6 +450,24 @@
       "side": 1,
       "message": "Non pas du tout. On veux incrémenter continuellement, et ne pas faire de back-and-forth lors du retour de l\u0027import. Importer deux modules a la suite doit donner des ids différents.",
       "parentUuid": "a7d4f29a_c1ed7c7a",
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f5b6b2b1_da496152",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-22T08:24:59Z",
+      "side": 1,
+      "message": "Ok, je comprends mieux.",
+      "parentUuid": "1c4e5821_ffa256f6",
       "revId": "461b489817825a3f7c52658363c40de74b447f9d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
