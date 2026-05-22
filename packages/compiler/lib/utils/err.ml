@@ -46,6 +46,7 @@ module Code = struct
     | Parsing_missing_value
     | Invalid_path
     | Invalid_config
+    | Resolver_duplicate_rule
   [@@deriving equal, enum, show]
 
   let show = fun code -> Stdlib.Format.sprintf "E%03d" (to_enum code)
@@ -128,6 +129,9 @@ let missing_parent_rule =
   (Code.Resolver_missing_parent_rule, "règle parente manquante")
 
 let missing_rule = (Code.Resolver_missing_rule, "cette règle n'existe pas")
+
+let duplicate_rule =
+  (Code.Resolver_duplicate_rule, "cette règle existe en double")
 
 let malformed_expression =
   (Code.Parsing_missing_closing_paren, "expression malformée")
