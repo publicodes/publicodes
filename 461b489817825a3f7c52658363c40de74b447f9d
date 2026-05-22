@@ -368,6 +368,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "c60af9be_29d58b8f",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T13:07:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "156b6341_1ceb1072",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 8
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e04f67e2_2f2bdbe7",
@@ -453,6 +477,30 @@
       "side": 1,
       "message": "Marked as unresolved.",
       "parentUuid": "8b047900_41043517",
+      "range": {
+        "startLine": 92,
+        "startChar": 1,
+        "endLine": 94,
+        "endChar": 42
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f5e83649_7c43cb03",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T13:07:02Z",
+      "side": 1,
+      "message": "Mhh c\u0027est un peu plus compliqué que cela. `parse_import` appelle `parse_files` appelle `parse_rules` appelle `parse_import`. Et le tout est recursif.",
+      "parentUuid": "a589c1aa_939dab18",
       "range": {
         "startLine": 92,
         "startChar": 1,
