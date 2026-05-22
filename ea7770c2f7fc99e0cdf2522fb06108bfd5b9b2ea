@@ -142,6 +142,30 @@
       },
       "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f53f5583_3a5da9bb",
+        "filename": "packages/compiler/lib/utils/err.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T14:08:05Z",
+      "side": 1,
+      "message": "Ou le dossier est manquant, ou il ne contient pas de fichier Publicodes. Cette erreur est utilisé à plusieurs endroits, et est attaché soit au module soit au package.\nPlutot d\u0027accord pour le hint +1",
+      "parentUuid": "bc82292e_3e76f5df",
+      "range": {
+        "startLine": 202,
+        "startChar": 1,
+        "endLine": 205,
+        "endChar": 1
+      },
+      "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
