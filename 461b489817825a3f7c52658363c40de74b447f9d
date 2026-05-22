@@ -18,6 +18,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e77a43e_8d2948e3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T08:32:27Z",
+      "side": 1,
+      "message": "oui moi aussi x]",
+      "parentUuid": "6c3bbb41_3546d13d",
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "63dc5e86_59bcc74c",
@@ -102,6 +120,30 @@
       "side": 1,
       "message": "J\u0027ai lu trop vite, au temps pour moi. Si jamais il n\u0027y a pas de test pour ce cas, je pense que ça peut valoir le coup d\u0027en ajouter.",
       "parentUuid": "1f195689_5c2dbb15",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 50,
+        "endChar": 19
+      },
+      "revId": "461b489817825a3f7c52658363c40de74b447f9d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cf7eedf9_a5a2d6a5",
+        "filename": "packages/compiler/lib/dependency_graph/extract_outputs.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T08:32:27Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "6b806421_64126b59",
       "range": {
         "startLine": 46,
         "startChar": 0,
