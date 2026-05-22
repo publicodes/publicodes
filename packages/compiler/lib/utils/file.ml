@@ -114,16 +114,19 @@ let find_package current_package path =
         Error (Invalid_path path)
   in
   let* vendors =
-    let* values_str =
+    let* value =
       match Stdlib.Sys.getenv_opt "PUBLICODESPATH" with
+      | Some value ->
+          Ok value
       | None ->
           Error Absent_env
-      | Some value ->
-          let values =
-            String.split value ~on:':'
-            |> List.filter ~f:(fun part -> String.is_empty part |> not)
-          in
-          if List.is_empty values then Error Empty_env else Ok values
+    in
+    let values =
+      String.split value ~on:':'
+      |> List.filter ~f:(fun part -> String.is_empty part |> not)
+    in
+    let* values_str =
+      if List.is_empty values then Error Empty_env else Ok values
     in
     let values = List.map values_str ~f:Fpath.of_string in
     if List.filter values ~f:Result.is_error |> List.is_empty then Ok values_str
