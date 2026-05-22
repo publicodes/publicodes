@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "f163af03_583f0c97",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-22T07:51:44Z",
+      "side": 1,
+      "message": "Si on se limite au chemin relatifs la quasi totalité des imports seront préfixés par au moins un \"../\". Je trouve cela inélégant au possible. Considère ce simple cas:\n\n./\n├── module a/\n│   └── module b/\n│       ├── rules.publicodes:\n│       │ module c:\n│       │ \timporter: ../../module c\n│       └ \n└── module c/\n\nDe plus l\u0027utilisation de chemins relatifs devra être controlé et sécurisé. On ne veux pas qu\u0027un module dépendances puisse aller parcourir le filesystem comme il le souhaite.\n\nLa solution qu\u0027on choisira devras fonctionner avec des chemins absolus. Et pour cela, il faut indiquer la racine des paquets. Sinon le comportement de \"importer\" sera différent entre le paquet root, et ses dépendances.\n\nSéparer les deux résout effectivement beaucoup de problèmes. Et en plus ca autorise le shadowing.",
+      "parentUuid": "122551fe_3ca12d0b",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 25
+      },
+      "revId": "c1dd1271c09822443df2f289f716df7a6e7c2424",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b952540b_9776784d",
         "filename": "packages/compiler/lib/utils/file.ml",
         "patchSetId": 6
