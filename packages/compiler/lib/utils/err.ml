@@ -25,6 +25,7 @@ module Code = struct
     (* Name resolution errors *)
     | Resolver_missing_parent_rule
     | Resolver_missing_rule
+    | Resolver_duplicate_rule
     (* Array mechanism errors *)
     | Array_mechanism_with_empty_value
     (* Type errors *)
@@ -116,6 +117,8 @@ module Code = struct
         "E034"
     | Invalid_path ->
         "E035"
+    | Resolver_duplicate_rule ->
+        "E036"
 
   let pp fmt err = Stdlib.Format.fprintf fmt "%s" (show err)
 end
@@ -195,6 +198,9 @@ let missing_parent_rule =
   (Code.Resolver_missing_parent_rule, "règle parente manquante")
 
 let missing_rule = (Code.Resolver_missing_rule, "cette règle n'existe pas")
+
+let duplicate_rule =
+  (Code.Resolver_duplicate_rule, "cette règle existe en double")
 
 let malformed_expression =
   (Code.Parsing_missing_closing_paren, "expression malformée")
