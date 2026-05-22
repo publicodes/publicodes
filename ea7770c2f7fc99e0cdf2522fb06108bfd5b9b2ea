@@ -46,6 +46,30 @@
       },
       "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "90e7349f_dbff94b1",
+        "filename": "packages/compiler/lib/utils/err.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-05-22T08:20:08Z",
+      "side": 1,
+      "message": "Je pense que du point de vue utilisateur ça peut être justifié de séparer l\u0027erreur dûe au fait que le dossier n\u0027existe pas de l\u0027erreur dûe au fait que le dossier soit vide. D\u0027ailleurs l\u0027erreur posix n\u0027est pas levée si le dossier existe mais est vide. \n\nMais tu préfères garder une seule erreur, on peut garder plutôt : \n« Les fichiers ou le dossier sont introuvables » plutôt que « manquant »",
+      "parentUuid": "1d9142a1_055b3518",
+      "range": {
+        "startLine": 202,
+        "startChar": 1,
+        "endLine": 205,
+        "endChar": 1
+      },
+      "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
