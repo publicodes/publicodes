@@ -23,6 +23,28 @@ let check_orphan_rules ~rule_names ast =
   in
   List.filter_map ast ~f:warn_if_orphan
 
+let check_duplicate_rules ast =
+  let duplicate_logs {name= name, pos; _} =
+    let code, message = Err.duplicate_rule in
+    Log.error message ~code ~pos ~kind:`Syntax
+      ~hints:
+        [ Stdlib.Format.asprintf "La règle `%a` est définie plusieurs fois"
+            Rule_name.pp name ]
+  in
+  let warn_if_duplicate rule_name =
+    let matching_defs =
+      List.filter ast ~f:(function rule ->
+          Rule_name.equal (Pos.value rule.name) rule_name )
+    in
+    if List.length matching_defs > 1 then
+      Some (List.map matching_defs ~f:duplicate_logs)
+    else None
+  in
+  List.map ast ~f:(function rule -> Pos.value rule.name)
+  |> List.stable_dedup ~compare:Rule_name.compare
+  |> List.filter_map ~f:warn_if_duplicate
+  |> List.concat
+
 let resolve_rule ~rule_names rule =
   let context_rule = Pos.value rule.name in
   let resolve_ref ~pos ref =
@@ -189,9 +211,11 @@ let to_resolved_ast ast =
       (List.map ast ~f:(fun rule -> Pos.value rule.name))
   in
   let orphan_logs = check_orphan_rules ~rule_names ast in
+  let duplicate_logs = check_duplicate_rules ast in
   let+ ast =
     ast
     |> List.map ~f:(resolve_rule ~rule_names)
-    |> all_keep_logs |> add_logs ~logs:orphan_logs
+    |> all_keep_logs
+    |> add_logs ~logs:(orphan_logs @ duplicate_logs)
   in
   ast
