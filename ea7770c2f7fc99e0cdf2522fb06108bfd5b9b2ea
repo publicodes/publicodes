@@ -166,6 +166,30 @@
       },
       "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e7ff50c_b161b7f8",
+        "filename": "packages/compiler/lib/utils/err.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-05-26T09:40:33Z",
+      "side": 1,
+      "message": "Pour améliorer le hinting, je vais devoir revoir une grosse partie du code. Je vais délayer ca pour plus tard, une fois qu\u0027on auras bien validé tout le reste.",
+      "parentUuid": "f53f5583_3a5da9bb",
+      "range": {
+        "startLine": 202,
+        "startChar": 1,
+        "endLine": 205,
+        "endChar": 1
+      },
+      "revId": "ea7770c2f7fc99e0cdf2522fb06108bfd5b9b2ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
