@@ -13,9 +13,9 @@ let to_eval_tree ~ast =
   let+ typed_tree = Typed_tree.type_check eval_tree_with_replacements in
   Hashed_tree.from_typed_tree typed_tree
 
-let compile ~input_files ~output_type ~default_to_public =
+let compile ~input_files ~module_ ~output_type ~default_to_public =
   let open Output in
-  let* ast = Parser.parse_files ~default_to_public input_files in
+  let* ast = Parser.parse_files ~default_to_public ~module_ input_files in
   let* eval_tree = to_eval_tree ~ast in
   let* outputs =
     Dependency_graph.checks ~ast ~eval_tree
