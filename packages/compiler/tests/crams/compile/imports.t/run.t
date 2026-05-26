@@ -226,3 +226,14 @@ Module relative import :
   
   out3 . regle relative . regle relative 2:
     30.
+
+Vendor relative import :
+  $ PUBLICODESPATH=./vendor publicodes compile "subjects/vendored relative" -t debug_eval_tree -o -
+  out:
+    @out . rule vendored d
+  
+  out . rule vendored d:
+    @out . rule vendored d . rule vendored e
+  
+  out . rule vendored d . rule vendored e:
+    40.

@@ -128,7 +128,9 @@ and parse_import ~default_to_public ~ctx mapping =
             | Some (package, pos) -> (
                 let* {value; _}, pos = get_scalar ~pos package in
                 let* path = check_valid ~allow_relative:false value pos in
-                match Utils.File.publicodes_package path with
+                match
+                  Utils.File.publicodes_package ctx.current_package path
+                with
                 | None ->
                     let code, message = Err.no_file_or_directory in
                     fatal_error ~pos ~code ~kind:`Syntax message

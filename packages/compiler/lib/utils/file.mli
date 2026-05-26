@@ -19,5 +19,6 @@ val publicodes_module : ?package:string -> string -> string Base.List.t option
 (** [publicodes_module ~package ~module] list Publicodes files in a package
 module. *)
 
-val publicodes_package : string -> string option
-(** [publicodes_package ~path] gives the path to the package directory. *)
+val publicodes_package : string option -> string -> string option
+(** [publicodes_package ~current_package ~path] gives the path to the
+  package directory. *)
