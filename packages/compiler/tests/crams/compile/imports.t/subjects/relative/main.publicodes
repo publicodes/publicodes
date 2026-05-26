@@ -1,0 +1,13 @@
+out:
+  valeur: regle relative
+  importer: ./module relative
+
+out2:
+  valeur: regle relative
+  importer:
+    module: ./module relative
+
+out3:
+  valeur: regle relative
+  importer:
+    module: relative

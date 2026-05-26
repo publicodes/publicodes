@@ -11,6 +11,10 @@ val write_file : path:t -> content:string -> unit
 val is_valid : string -> bool
 (** [is_valid ~path] returns true if the path is a valid Publicode path *)
 
+val relativize : string -> string -> string
+(** [relativize ~dir ~path] concat the two Publicode path valid strings to
+  build a relative module directory path. *)
+
 val publicodes_module : ?package:string -> string -> string Base.List.t option
 (** [publicodes_module ~package ~module] list Publicodes files in a package
 module. *)
