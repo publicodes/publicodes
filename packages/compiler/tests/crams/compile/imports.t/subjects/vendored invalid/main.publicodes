@@ -25,9 +25,3 @@ out4:
   importer:
     package: ./foo
     module: bar
-
-out5:
-  valeur: rule vendored a + 3
-  importer:
-    package: foo
-    module: ./bar

@@ -8,8 +8,12 @@ val read_file : t -> string
 val write_file : path:t -> content:string -> unit
 (** [write_file ~path ~content] writes the [content] to the file at [path]. *)
 
-val is_valid : string -> bool
+val is_valid : allow_relative:bool -> string -> bool
 (** [is_valid ~path] returns true if the path is a valid Publicode path *)
+
+val relativize_exn : string -> string -> string
+(** [relativize_exn ~dir ~path] in case of relative path, concat the two
+  valid Publicode path strings to build a relative module directory path. *)
 
 val publicodes_module : ?package:string -> string -> string Base.List.t option
 (** [publicodes_module ~package ~module] list Publicodes files in a package

@@ -32,7 +32,8 @@ type context =
   ; files: string list (* list of parsed files paths to detect cycles *)
   ; current_module_id: Shared.Module_id.t (* the module id genealogy *)
   ; next_module_id: int ref (* the next module id to be assigned *)
-  ; current_package: string option (* the current package path *) }
+  ; current_package: string option (* the current package path *)
+  ; current_module: string (* the current module path *) }
 
 let rec parse_rule ~default_to_public ~ctx (name, yaml) =
   let* name, pos = parse_ref name in
@@ -92,8 +93,8 @@ and parse_with ~default_to_public ~ctx mapping =
       parse_rules ~default_to_public ~pos ~ctx rules
 
 and parse_import ~default_to_public ~ctx mapping =
-  let check_valid path pos =
-    if not (Utils.File.is_valid path) then
+  let check_valid ~allow_relative path pos =
+    if not (Utils.File.is_valid ~allow_relative path) then
       let code, message = Err.invalid_path in
       fatal_error ~pos ~code ~kind:`Syntax message
     else return path
@@ -108,7 +109,8 @@ and parse_import ~default_to_public ~ctx mapping =
             let code, message = Err.parsing_should_not_be_array in
             fatal_error ~pos ~code ~kind:`Syntax message
         | `Scalar ({value; _}, pos) ->
-            let* path = check_valid value pos in
+            let* path = check_valid ~allow_relative:true value pos in
+            let path = Utils.File.relativize_exn ctx.current_module path in
             return (ctx.current_package, (path, pos))
         | `O mapping -> (
             let* module_ =
@@ -116,7 +118,8 @@ and parse_import ~default_to_public ~ctx mapping =
               let log = Log.error ~pos ~code ~kind:`Syntax message in
               let* value, _ = find_value "module" mapping |> of_opt ~log in
               let* {value; _}, pos = get_scalar ~pos value in
-              let* path = check_valid value pos in
+              let* path = check_valid ~allow_relative:true value pos in
+              let path = Utils.File.relativize_exn ctx.current_module path in
               return (path, pos)
             in
             match find_value "package" mapping with
@@ -124,7 +127,7 @@ and parse_import ~default_to_public ~ctx mapping =
                 return (ctx.current_package, module_)
             | Some (package, pos) -> (
                 let* {value; _}, pos = get_scalar ~pos package in
-                let* path = check_valid value pos in
+                let* path = check_valid ~allow_relative:false value pos in
                 match Utils.File.publicodes_package path with
                 | None ->
                     let code, message = Err.no_file_or_directory in
@@ -151,7 +154,7 @@ and parse_import ~default_to_public ~ctx mapping =
       | None ->
           let input_files = List.map ~f:(fun value -> value) input_files in
           parse_files ~default_to_public
-            ~ctx:{ctx with current_package= package}
+            ~ctx:{ctx with current_package= package; current_module= module_}
             input_files )
 
 and parse_files ~default_to_public ~ctx input_files =
@@ -176,13 +179,14 @@ and parse_files ~default_to_public ~ctx input_files =
     ~f:(fun acc program -> Ast.merge acc program)
     ~init:[] unresolved_programs
 
-and parse_root ~default_to_public input_files =
+and parse_root ~default_to_public ~module_ input_files =
   let ctx =
     { current_rule_name= []
     ; files= []
     ; current_module_id= Shared.Module_id.empty
     ; next_module_id= ref 0
-    ; current_package= None }
+    ; current_package= None
+    ; current_module= module_ }
   in
   parse_files ~default_to_public ~ctx input_files
 
@@ -229,6 +233,7 @@ let parse ~filename ?(default_to_public = false) (yaml : yaml) : Ast.t Output.t
     ; files= [filename]
     ; current_module_id= Shared.Module_id.empty
     ; next_module_id= ref 0
-    ; current_package= None }
+    ; current_package= None
+    ; current_module= "" }
   in
   parse_rules ~default_to_public ~pos:(Pos.beginning_of_file filename) ~ctx yaml

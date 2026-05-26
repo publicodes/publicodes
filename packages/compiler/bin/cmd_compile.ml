@@ -51,14 +51,14 @@ let cmd =
   and+ default_to_public = default_to_public
   and+ output_type = output_type in
   let targets =
-    let* input_files =
-      if String.equal input "-" then Ok ["-"]
+    let* input_files, module_ =
+      if String.equal input "-" then Ok (["-"], "./")
       else
         match Utils.File.publicodes_module input with
         | None ->
             Error (`Msg "No publicodes files or no directory")
         | Some files ->
-            Ok files
+            Ok (files, input)
     in
     let output_file =
       if String.equal output_file "" then
@@ -73,7 +73,9 @@ let cmd =
             ".json"
       else output_file
     in
-    Ok [({input_files; output_file; output_type; default_to_public} : Compile.t)]
+    Ok
+      [ ( {input_files; module_; output_file; output_type; default_to_public}
+          : Compile.t ) ]
   in
   match targets with
   | Ok (target :: []) ->

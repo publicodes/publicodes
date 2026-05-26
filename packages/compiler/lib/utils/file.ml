@@ -25,15 +25,26 @@ let write_file ~path ~content =
   | file ->
       Out_channel.with_open_bin file (write content)
 
-let is_valid path =
+let is_valid ~allow_relative path =
   match Fpath.of_string path with
   | Error _ ->
       false
   | Ok path ->
       Fpath.segs path
-      |> List.filter ~f:(function seg ->
-          List.filter [".."; "."] ~f:(String.equal seg) |> List.is_empty |> not )
+      |> List.filteri ~f:(fun i seg ->
+          if String.is_empty seg then true
+          else if i = 0 && String.equal "." seg then not allow_relative
+          else if String.equal "." seg then true
+          else if String.equal ".." seg then true
+          else false )
       |> List.is_empty
+
+let relativize_exn dir path =
+  let dir = Fpath.of_string dir |> Stdlib.Result.get_ok in
+  let path = Fpath.of_string path |> Stdlib.Result.get_ok in
+  if Fpath.segs path |> List.hd_exn |> String.equal "." then
+    Fpath.append dir path |> Fpath.to_string
+  else Fpath.to_string path
 
 let publicodes_module ?package module_ =
   let* path =
