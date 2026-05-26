@@ -75,30 +75,39 @@ let publicodes_module ?package module_ =
     in
     if List.is_empty files then None else Some files
 
-let publicodes_package path =
+let publicodes_package current_package path =
+  let _current_package = current_package in
   let* path =
     match Fpath.of_string path with Error _ -> None | Ok path -> Some path
   in
-  let* value =
+  let* vendors =
     match Stdlib.Sys.getenv_opt "PUBLICODESPATH" with
     | None ->
         Stdlib.Printf.eprintf "Warning: missing PUBLICODESPATH\n" ;
         None
     | Some value ->
-        Some value
+        let values =
+          String.split value ~on:':'
+          |> List.filter ~f:(function str -> not (String.equal "" str))
+        in
+        Some values
   in
-  let vendors =
-    String.split value ~on:':'
-    |> List.filter ~f:(function str -> not (String.equal "" str))
-    |> List.map ~f:Fpath.of_string
-  in
-  if not (List.filter vendors ~f:Result.is_error |> List.is_empty) then
+  let valid_vendors = List.filter vendors ~f:is_valid in
+  if List.length vendors <> List.length valid_vendors then
     Stdlib.Printf.eprintf "Warning: invalid PUBLICODESPATH\n" ;
-  let valid_vendors =
-    List.filter vendors ~f:Result.is_ok |> Result.all |> Stdlib.Result.get_ok
+  let vendors =
+    let relative_vendors =
+      match current_package with
+      | None ->
+          vendors
+      | Some current_package ->
+          List.map valid_vendors ~f:(relativize current_package)
+    in
+    List.map relative_vendors ~f:Fpath.of_string
+    |> Result.all |> Stdlib.Result.get_ok
   in
   let directories =
-    List.map valid_vendors ~f:(function loc -> Fpath.append loc path)
+    List.map vendors ~f:(function loc -> Fpath.append loc path)
   in
   let existing_directories =
     List.filter directories ~f:(function dir ->
