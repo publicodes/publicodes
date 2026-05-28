@@ -5,3 +5,10 @@
  (modules :standard)
  (preprocess
   (pps ppx_sexp_conv ppx_deriving.show ppx_compare)))
+
+(rule
+ (with-stdout-to
+  default.ml
+  (progn
+   (echo "let publicodespath = \"$PUBLICODESPATH\""))
+))

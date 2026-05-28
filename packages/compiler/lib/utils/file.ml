@@ -81,17 +81,11 @@ let publicodes_package current_package path =
   let* path =
     match Fpath.of_string path with Error _ -> None | Ok path -> Some path
   in
-  let* vendors =
-    match Stdlib.Sys.getenv_opt "PUBLICODESPATH" with
-    | None ->
-        Stdlib.Printf.eprintf "Warning: missing PUBLICODESPATH\n" ;
-        None
-    | Some value ->
-        let values =
-          String.split value ~on:':'
-          |> List.filter ~f:(function str -> not (String.equal "" str))
-        in
-        Some values
+  let vendors =
+    Stdlib.Sys.getenv_opt "PUBLICODESPATH"
+    |> Option.value ~default:Default.publicodespath
+    |> String.split ~on:':'
+    |> List.filter ~f:(function str -> not (String.equal "" str))
   in
   let valid_vendors = List.filter vendors ~f:(is_valid ~allow_relative:true) in
   if List.length vendors <> List.length valid_vendors then
