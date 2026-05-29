@@ -1,5 +1,7 @@
 module Code = struct
+  (* Tips: add new ones to the bottom *)
   type t =
+    | None (* Placeholder for id 0. Leave it as first *)
     (* Yaml parsing errors *)
     | Yaml_parsing
     | Yaml_unexpected_token
@@ -38,69 +40,9 @@ module Code = struct
     | Replace_multiple
     | Replace_cycle
     | Parsing_invalid_meta
-  [@@deriving equal]
+  [@@deriving equal, enum, show]
 
-  let show = function
-    | Yaml_parsing ->
-        "E001"
-    | Yaml_unexpected_token ->
-        "E002"
-    | Yaml_alias_not_supported ->
-        "E003"
-    | Yaml_empty_file ->
-        "E004"
-    | Yaml_duplicate_key ->
-        "E005"
-    | Parsing_unexpected_token ->
-        "E006"
-    | Parsing_missing_closing_paren ->
-        "E007"
-    | Parsing_invalid_char ->
-        "E008"
-    | Parsing_should_not_be_array ->
-        "E009"
-    | Parsing_should_not_be_object ->
-        "E010"
-    | Parsing_should_be_array ->
-        "E011"
-    | Parsing_should_be_object ->
-        "E012"
-    | Parsing_should_be_scalar ->
-        "E013"
-    | Parsing_empty_value ->
-        "E014"
-    | Parsing_invalid_value ->
-        "E015"
-    | Parsing_invalid_rule_name ->
-        "E016"
-    | Parsing_invalid_mechanism ->
-        "E017"
-    | Expr_lex_invalid_expression ->
-        "E018"
-    | Resolver_missing_parent_rule ->
-        "E019"
-    | Resolver_missing_rule ->
-        "E020"
-    | Array_mechanism_with_empty_value ->
-        "E021"
-    | Type_invalid_type ->
-        "E022"
-    | Type_incoherence ->
-        "E023"
-    | Type_missing_output_type ->
-        "E024"
-    | Type_incompatible_units ->
-        "E025"
-    | Type_missing_in_mechanism ->
-        "E026"
-    | Cycle_detected ->
-        "E027"
-    | Replace_multiple ->
-        "E028"
-    | Replace_cycle ->
-        "E029"
-    | Parsing_invalid_meta ->
-        "E030"
+  let show = fun code -> Stdlib.Format.sprintf "E%03d" (to_enum code)
 
   let pp fmt err = Stdlib.Format.fprintf fmt "%s" (show err)
 end
