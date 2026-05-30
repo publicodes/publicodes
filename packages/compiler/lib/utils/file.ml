@@ -118,8 +118,12 @@ let find_package current_package path =
       match Stdlib.Sys.getenv_opt "PUBLICODESPATH" with
       | Some value ->
           Ok value
-      | None ->
-          Error Absent_env
+      | None -> (
+        match [%comptime_env_opt "PUBLICODESPATH"] with
+        | Some value ->
+            Ok value
+        | None ->
+            Error Absent_env )
     in
     let values =
       String.split value ~on:':'
