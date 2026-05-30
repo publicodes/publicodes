@@ -117,6 +117,10 @@ type find_package_error =
   | Empty_env
   | Invalid_env of string list
 
+let default_publicodes_path = [%comptime_env_opt "PUBLICODESPATH"]
+
+let publicodes_path = Stdlib.Sys.getenv_opt "PUBLICODESPATH"
+
 let find_package current_package path =
   let* path =
     match Fpath.of_string path with
@@ -127,11 +131,15 @@ let find_package current_package path =
   in
   let* vendors =
     let* value =
-      match Stdlib.Sys.getenv_opt "PUBLICODESPATH" with
+      match publicodes_path with
       | Some value ->
           Ok value
-      | None ->
-          Error Absent_env
+      | None -> (
+        match default_publicodes_path with
+        | Some value ->
+            Ok value
+        | None ->
+            Error Absent_env )
     in
     let values =
       String.split value ~on:':'
