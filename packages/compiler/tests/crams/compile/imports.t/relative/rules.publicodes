@@ -1,0 +1,4 @@
+regle relative:
+  public: oui
+  valeur: regle relative 2
+  importer: ./relative 2
