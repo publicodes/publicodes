@@ -68,6 +68,12 @@ type find_package_error =
   | Empty_env
   | Invalid_env of string list
 
+val publicodes_path : string option
+(** [publicodes_path] returns the value for publicodes path. *)
+
+val default_publicodes_path : string option
+(** [default_publicodes_path] returns the default value for publicodes path. *)
+
 val find_package : t option -> string -> (t, find_package_error) result
 (** [publicodes_package ~current_package ~path] finds the path to the package
   directory. *)
