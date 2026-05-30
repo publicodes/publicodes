@@ -3,5 +3,6 @@
  (public_name publicodes.utils)
  (libraries base stdune ppx_deriving jingoo fpath)
  (modules :standard)
+ (preprocessor_deps (env_var PUBLICODESPATH))
  (preprocess
-  (pps ppx_sexp_conv ppx_deriving.show ppx_deriving.enum ppx_compare)))
+  (pps ppx_sexp_conv ppx_deriving.show ppx_deriving.enum ppx_compare ppx_comptime_env)))
