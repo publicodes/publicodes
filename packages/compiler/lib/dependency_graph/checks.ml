@@ -54,9 +54,54 @@ let illegal_check (ast : 'a Shared_ast.t) (graph : Rule_graph.t) : Log.t list =
   in
   Rule_graph.fold_edges_e log_illegal graph []
 
+let unused_context_check (tree : 'a Eval_tree.t) (graph : Rule_graph.t) :
+    Log.t list =
+  let rec is_used ctx froms =
+    match froms with
+    | [] ->
+        false
+    | from :: rest ->
+        let ctxs =
+          let rule_def = Eval_tree.get_value tree from in
+          Eval_tree.get_contexts rule_def |> List.map ~f:Pos.value
+        in
+        let deps = Rule_graph.succ graph from in
+        if List.exists ctxs ~f:(Rule_name.equal ctx) then
+          (* the context is override here *)
+          false
+        else if List.exists deps ~f:(Rule_name.equal ctx) then
+          (* the context is actually used here *)
+          true
+        else is_used ctx (rest @ deps)
+  in
+  let log_unused from acc =
+    let unused_ctxs =
+      let deps = Rule_graph.succ graph from in
+      (* we filter out contexts immediately used *)
+      let ctxs =
+        let rule_def = Eval_tree.get_value tree from in
+        Eval_tree.get_contexts rule_def
+        |> List.filter ~f:(fun (ctx, _) ->
+            List.exists deps ~f:(Rule_name.equal ctx) |> not )
+      in
+      List.filter ctxs ~f:(fun (ctx, _) -> not (is_used ctx deps))
+    in
+    if List.is_empty unused_ctxs then acc
+    else
+      let code, message = Err.unused_context in
+      let labels =
+        List.map unused_ctxs ~f:(fun (_, pos) ->
+            Pos.mk ~pos "contexte inutilisé" )
+      in
+      Log.error ~labels ~kind:`Syntax ~code message :: acc
+  in
+  Rule_graph.fold_vertex log_unused graph []
+
 let checks ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t) :
     Rule_graph.t Output.t =
   let graph = Rule_graph.mk eval_tree in
   let cycle_logs = cycle_check eval_tree graph in
   let access_logs = illegal_check ast graph in
-  return ~logs:(cycle_logs @ access_logs) graph
+  let context_logs = unused_context_check eval_tree graph in
+  let logs = cycle_logs @ access_logs @ context_logs in
+  return ~logs graph

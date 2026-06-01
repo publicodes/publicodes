@@ -79,8 +79,8 @@ test:
 		// Lors de plusieurs contextes imbriqués, le contexte le plus profond a la priorité.
 		const engine = await yaml`
 x:
-  # valeur attendue: 3
-  valeur: y
+  # valeur attendue: 4
+  valeur: y + a
   contexte:
     a: 1
     b: 1
@@ -96,7 +96,7 @@ a: 0
 b: 0
 `
 		expect(engine['x'].evaluate()).toMatchObject({
-			value: 3,
+			value: 4,
 			missing: [],
 		})
 
