@@ -54,10 +54,53 @@ let illegal_check (ast : 'a Shared_ast.t) (graph : Rule_graph.t) : Log.t list =
   in
   Rule_graph.fold_edges_e log_illegal graph []
 
+let unused_context_check (tree : 'a Eval_tree.t) (dep_graph : Rule_graph.t)
+    (cont_graph : Rule_graph.t) : Log.t list =
+  let rec is_used from ctx =
+    let ctxs = Rule_graph.succ cont_graph from in
+    let deps = Rule_graph.succ dep_graph from in
+    if List.exists ctxs ~f:(Rule_name.equal ctx) then
+      (* the context is overrode here *)
+      false
+    else if List.exists deps ~f:(Rule_name.equal ctx) then
+      (* the context is actually used here *)
+      true
+    else (* continue crawling *)
+      List.exists deps ~f:(fun ref -> is_used ref ctx)
+  in
+  let log_unused from acc =
+    let unused_ctxs =
+      let deps = Rule_graph.succ dep_graph from in
+      (* we filter out contexts immediately used *)
+      let ctxs =
+        Rule_graph.succ cont_graph from
+        |> List.filter ~f:(fun ctx ->
+            List.exists deps ~f:(Rule_name.equal ctx) |> not )
+      in
+      List.filter ctxs ~f:(fun ctx ->
+          List.for_all deps ~f:(fun ref -> is_used ref ctx |> not) )
+    in
+    if List.is_empty unused_ctxs then acc
+    else
+      let pos = get_pos tree from in
+      let code, message = Err.unused_context in
+      let unused_ctxs =
+        List.map unused_ctxs ~f:Rule_name.show |> String.concat ~sep:", "
+      in
+      Log.error ~pos ~kind:`Syntax ~code message
+        ~hints:
+          [ Stdlib.Format.asprintf "ces contextes ne sont pas utilisés : %s"
+              unused_ctxs ]
+      :: acc
+  in
+  Rule_graph.fold_vertex log_unused dep_graph []
+
 let checks ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t) :
     (Rule_graph.t * Rule_graph.t) Output.t =
   let dep_graph = Rule_graph.mk_depend eval_tree in
   let cont_graph = Rule_graph.mk_context eval_tree in
   let cycle_logs = cycle_check eval_tree dep_graph in
   let access_logs = illegal_check ast dep_graph in
-  return ~logs:(cycle_logs @ access_logs) (dep_graph, cont_graph)
+  let context_logs = unused_context_check eval_tree dep_graph cont_graph in
+  let logs = cycle_logs @ access_logs @ context_logs in
+  return ~logs (dep_graph, cont_graph)
