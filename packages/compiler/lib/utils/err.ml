@@ -47,6 +47,7 @@ module Code = struct
     | Invalid_path
     | Invalid_config
     | Resolver_duplicate_rule
+    | Unused_context
   [@@deriving equal, enum, show]
 
   let show = fun code -> Stdlib.Format.sprintf "E%03d" (to_enum code)
@@ -159,3 +160,6 @@ let import_cycle chain =
     |> Stdlib.Format.sprintf "cycle d'import détecté : %s"
   in
   (Code.Cycle_detected, message)
+
+let unused_context =
+  (Code.Unused_context, "certaines règles du contexte non utilisées")
