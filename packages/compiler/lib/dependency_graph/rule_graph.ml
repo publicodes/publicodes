@@ -40,7 +40,7 @@ module G =
   Graph.Imperative.Digraph.ConcreteBidirectionalLabeled (Rule_vertex) (Ref_edge)
 include G
 
-let mk (ast : 'a Eval_tree.t) : G.t =
+let mk_depend (ast : 'a Eval_tree.t) : G.t =
   (* Create a new empty graph *)
   let graph = G.create () in
   let rec find_references ({pos; value; _} : 'a Eval_tree.value) :
@@ -76,6 +76,31 @@ let mk (ast : 'a Eval_tree.t) : G.t =
         (* Add the referenced rule vertex if it doesn't exist *)
         G.add_vertex graph referenced_rule ;
         (* Add an edge from the rule to the referenced rule, labeled with the reference position *)
+        let edge = (current_rule, Pos.pos ref_name, referenced_rule) in
+        G.add_edge_e graph edge )
+    (* Add edges for each context *)
+  in
+  (* Process all rules in the AST *)
+  Hashtbl.iteri ast ~f:(fun ~key:rule_name ~data:rule_def ->
+      add_rule_dependencies rule_name rule_def ) ;
+  graph
+
+let mk_context (ast : 'a Eval_tree.t) : G.t =
+  let graph = G.create () in
+  let list_contexts ({value; _} : 'a Eval_tree.value) : Rule_name.t Pos.t list =
+    match value with
+    | Set_context {context; _} ->
+        List.map context ~f:(fun (key, _) -> key)
+    | _ ->
+        []
+  in
+  (* Add vertices and edges to the graph *)
+  let add_rule_dependencies (current_rule : Rule_name.t) computation =
+    G.add_vertex graph current_rule ;
+    let conts = list_contexts computation in
+    List.iter conts ~f:(fun ref_name ->
+        let referenced_rule = Pos.value ref_name in
+        G.add_vertex graph referenced_rule ;
         let edge = (current_rule, Pos.pos ref_name, referenced_rule) in
         G.add_edge_e graph edge )
   in
