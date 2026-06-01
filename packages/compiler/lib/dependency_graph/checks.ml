@@ -55,8 +55,9 @@ let illegal_check (ast : 'a Shared_ast.t) (graph : Rule_graph.t) : Log.t list =
   Rule_graph.fold_edges_e log_illegal graph []
 
 let checks ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t) :
-    Rule_graph.t Output.t =
-  let graph = Rule_graph.mk eval_tree in
-  let cycle_logs = cycle_check eval_tree graph in
-  let access_logs = illegal_check ast graph in
-  return ~logs:(cycle_logs @ access_logs) graph
+    (Rule_graph.t * Rule_graph.t) Output.t =
+  let dep_graph = Rule_graph.mk eval_tree in
+  let cont_graph = Rule_graph.mk_context eval_tree in
+  let cycle_logs = cycle_check eval_tree dep_graph in
+  let access_logs = illegal_check ast dep_graph in
+  return ~logs:(cycle_logs @ access_logs) (dep_graph, cont_graph)

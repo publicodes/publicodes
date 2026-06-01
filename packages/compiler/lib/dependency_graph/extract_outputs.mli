@@ -5,7 +5,7 @@ val extract_outputs :
      ast:'a Shared_ast.t
   -> eval_tree:Hashed_tree.t
   -> warn_types:bool
-  -> Rule_graph.G.t
+  -> Rule_graph.G.t * Rule_graph.G.t
   -> Model_outputs.t Output.t
 (** Extracts the public outputs of a model from its AST and dependency graph.
 
