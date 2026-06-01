@@ -1,0 +1,17 @@
+a:
+  type: nombre
+b:
+  type: nombre
+c:
+  type: nombre
+d:
+  valeur: a
+e:
+  valeur: a + b + c + d
+  contexte:
+    a: 20
+out:
+  valeur: e
+  public: oui
+  contexte:
+    b: 10
