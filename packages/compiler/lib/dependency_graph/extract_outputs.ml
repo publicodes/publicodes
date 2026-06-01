@@ -12,20 +12,34 @@ let remove_duplicates (a : 'a list) : 'a list =
   Set.to_list @@ Set.Poly.of_list a
 
 let extract_outputs ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t)
-    ~(warn_types : bool) (graph : G.t) : Model_outputs.t Output.t =
-  let transitive_dependencies =
-    Oper.transitive_closure ~reflexive:false graph
-  in
+    ~(warn_types : bool) ((dep_graph, cont_graph) : G.t * G.t) :
+    Model_outputs.t Output.t =
   (* Add self-dependencies for rules without value *)
   List.iter ast ~f:(fun rule_def ->
       let rule_name = Pos.value rule_def.name in
       if not (Shared_ast.has_value rule_def) then
-        G.add_edge transitive_dependencies rule_name rule_name ) ;
+        G.add_edge dep_graph rule_name rule_name ) ;
+  (* Crawl the dependency graph from a starting vertex, accumulate the context
+    rules, and chop edges targeting them. *)
+  let rec chop_contexts ?(acc = []) graph from =
+    let acc = acc @ Rule_graph.succ cont_graph from in
+    List.iter acc ~f:(fun target -> Rule_graph.remove_edge graph from target) ;
+    (* filter out self references *)
+    Rule_graph.succ graph from
+    |> List.filter ~f:(fun to_ -> Rule_name.equal from to_ |> not)
+    |> List.iter ~f:(chop_contexts ~acc graph)
+  in
+  let transitive_dependencies from =
+    let graph = Rule_graph.copy dep_graph in
+    chop_contexts graph from ;
+    Oper.transitive_closure ~reflexive:false graph
+  in
   (* Extracts the parameters (rules without values) that a given rule depends on.
 
       @param rule_name The name of the rule to extract parameters for
       @return A tuple containing the rule name and its list of parameter dependencies *)
   let extract_parameters rule_name =
+    let transitive_dependencies = transitive_dependencies rule_name in
     let successor_rules = G.succ transitive_dependencies rule_name in
     let parameter_rules =
       List.filter successor_rules ~f:(fun dependent_rule_name ->
