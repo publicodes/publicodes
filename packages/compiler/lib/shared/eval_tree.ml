@@ -36,6 +36,8 @@ type 'meta mk_value_fn = pos:Pos.pos -> 'meta naked_value -> 'meta value
 
 type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving show]
 
+let get_value eval_tree rule_name = Hashtbl.find_exn eval_tree rule_name
+
 let get_meta eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).meta
 
 let get_pos eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).pos
@@ -99,3 +101,10 @@ let const_not_defined = Const Not_defined
 let const_false = Const (Bool false)
 
 let const_true = Const (Bool true)
+
+let get_contexts ({value; _} : 'a value) : Rule_name.t Pos.t list =
+  match value with
+  | Set_context {context; _} ->
+      List.map context ~f:(fun (key, _) -> key)
+  | _ ->
+      []

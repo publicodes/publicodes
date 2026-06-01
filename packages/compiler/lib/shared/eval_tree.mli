@@ -38,6 +38,8 @@ type 'meta mk_value_fn = pos:Pos.pos -> 'meta naked_value -> 'meta value
 
 type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving show]
 
+val get_value : 'meta t -> Rule_name.t -> 'meta value
+
 val get_meta : 'meta t -> Rule_name.t -> 'meta
 (** FIXME: should be _exn *)
 
@@ -82,3 +84,5 @@ val const_not_defined : 'meta naked_value
 val const_false : 'meta naked_value
 
 val const_true : 'meta naked_value
+
+val get_contexts : 'a value -> Rule_name.t Utils.Pos.t Base.list
