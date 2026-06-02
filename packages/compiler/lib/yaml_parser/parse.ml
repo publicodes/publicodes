@@ -123,8 +123,8 @@ let parse (filename : string) (content : string) : yaml Output.t =
             return result
         | token ->
             unexpected_token_error token "the end of stream" )
-    | token ->
-        unexpected_token_error token "the beginning of stream"
+    | _ ->
+        fatal_error_from_current_token Err.no_rules
   and parse_document () =
     let* document_start, _ = next () in
     match document_start with
@@ -137,8 +137,8 @@ let parse (filename : string) (content : string) : yaml Output.t =
             return result
         | token ->
             unexpected_token_error token "the end of file" )
-    | token ->
-        unexpected_token_error token "the beginning of file"
+    | _ ->
+        fatal_error_from_current_token Err.no_rules
   and parse_node () =
     let event, pos = !current_token in
     match event with
