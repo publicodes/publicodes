@@ -80,6 +80,12 @@ Check root exports :
       params: ['module c . regle c'],
     }
   }
+  export const parameters = {
+    'module c . regle c': rules['module c . regle c'],
+  }
+  export const outputs = {
+    'result': rules['result'],
+  }
 
 Cycle imports :
 

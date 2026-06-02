@@ -56,3 +56,9 @@ Valid :
       params: ['c'],
     }
   }
+  export const parameters = {
+    'c': rules['c'],
+  }
+  export const outputs = {
+    'out': rules['out'],
+  }
