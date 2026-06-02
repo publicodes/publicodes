@@ -48,6 +48,7 @@ module Code = struct
     | Invalid_config
     | Resolver_duplicate_rule
     | Unused_context
+    | Parsing_no_rules
   [@@deriving equal, enum, show]
 
   let show = fun code -> Stdlib.Format.sprintf "E%03d" (to_enum code)
@@ -163,3 +164,6 @@ let import_cycle chain =
 
 let unused_context =
   (Code.Unused_context, "certaines règles du contexte non utilisées")
+
+let no_rules =
+  (Code.Parsing_no_rules, "aucune règle trouvée dans le fichier ou le stream")
