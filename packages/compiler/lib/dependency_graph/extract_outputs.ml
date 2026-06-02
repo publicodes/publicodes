@@ -53,8 +53,15 @@ let extract_outputs ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t)
     in
     (rule_name, remove_duplicates parameter_rules)
   in
+  let wrap_meta kind (rule_name, parameters) =
+    { rule_name
+    ; parameters
+    ; typ= (Eval_tree.get_meta eval_tree rule_name).typ
+    ; meta= (Shared_ast.find rule_name ast).meta
+    ; kind }
+  in
   (* Extract the parameter list for each output rule *)
-  let outputs =
+  let output_parameters =
     List.filter_map ast ~f:(fun rule_def ->
         let rule_name = Pos.value rule_def.name in
         if
@@ -63,22 +70,13 @@ let extract_outputs ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t)
         then Some (extract_parameters rule_name)
         else None )
   in
-  (* Parameters are also outputs of the model as they can be evaluated independently *)
-  let parameters = remove_duplicates @@ List.concat_map ~f:snd outputs in
-  let outputs =
-    remove_duplicates (outputs @ List.map parameters ~f:extract_parameters)
+  let outputs = List.map ~f:(wrap_meta Output) output_parameters in
+  let parameters =
+    let dedup = remove_duplicates @@ List.concat_map ~f:snd output_parameters in
+    List.map ~f:extract_parameters dedup |> List.map ~f:(wrap_meta Parameter)
   in
-  (* Add metadata to outputs *)
-  let outputs : t =
-    List.map
-      ~f:(fun (rule_name, parameters) ->
-        { rule_name
-        ; parameters
-        ; typ= (Eval_tree.get_meta eval_tree rule_name).typ
-        ; meta= (Shared_ast.find rule_name ast).meta } )
-      outputs
-  in
-  (* Generate warnings for outputs missing type information *)
+  let outputs = parameters @ outputs in
+  (* Generate warnings for missing type information *)
   let warnings =
     List.filter_map outputs ~f:(fun {rule_name; typ; _} ->
         match typ with
