@@ -233,4 +233,20 @@ const rules = {
   {%- endfor %}
 }
 
+export const parameters = {
+  {%- for out in outputs %}
+  {%- if !out.is_output %}
+  '{{ fmt_esc(out.rule_name) }}': rules['{{ fmt_esc(out.rule_name) }}'],
+  {%- endif %}
+  {%- endfor %}
+}
+
+export const outputs = {
+  {%- for out in outputs %}
+  {%- if out.is_output %}
+  '{{ fmt_esc(out.rule_name) }}': rules['{{ fmt_esc(out.rule_name) }}'],
+  {%- endif %}
+  {%- endfor %}
+}
+
 export default rules;
