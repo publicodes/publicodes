@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f42c07fe_82f1da3d",
+        "filename": "packages/compiler/lib/dependency_graph/extract_outputs.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-03T15:32:17Z",
+      "side": 1,
+      "message": "Ca devrait être `rules` du coup non ?",
+      "range": {
+        "startLine": 78,
+        "startChar": 6,
+        "endLine": 78,
+        "endChar": 13
+      },
+      "revId": "2a4d6f447ab258f349bb4a84b61882cf8d1ae197",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bdc22ef5_aebed309",
+        "filename": "packages/compiler/lib/shared/model_outputs.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-03T15:32:17Z",
+      "side": 1,
+      "message": "La documentation devrait être dans les fichiers d\u0027interfaces.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 2
+      },
+      "revId": "2a4d6f447ab258f349bb4a84b61882cf8d1ae197",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15d35a4c_9a224f35",
+        "filename": "packages/compiler/lib/shared/model_outputs.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-03T15:32:17Z",
+      "side": 1,
+      "message": "Ca pourrait être simplement `is_output: bool`. Quels autres `kinds` anticipes-tu ?",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 2
+      },
+      "revId": "2a4d6f447ab258f349bb4a84b61882cf8d1ae197",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
