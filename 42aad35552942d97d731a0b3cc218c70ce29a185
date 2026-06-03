@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27184cca_5fbafbc9",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-03T13:56:21Z",
+      "side": 1,
+      "message": "Je crois que je ne suis toujours pas convaincu par le fait de dépendre du cwd pour la compilation mais bon si vous jugez tout les deux que c\u0027est la bonne solution, avançons. En revanche je me pose la question de l\u0027intérêt de garder la possibilité de faire des imports relatifs en autorisant simplement le `./` : est-ce que ça ne va pas simplement créer de l\u0027incompréhension sur le fait de ne pas pouvoir référencer n\u0027importe quel chemin ? Si on garde le mot clé `package`, on n\u0027a pas d\u0027intérêt à avoir du relatif plus absolu par rapport au cwd non ?\n\nJe pense que tu peux commencer à documenter le concept de module vs paquet, la syntaxe (pas sûre que `package` soit le meilleur mot clé d\u0027ailleurs) et les cas d\u0027usages en vu de l\u0027intégrer dans la documentation.",
+      "revId": "42aad35552942d97d731a0b3cc218c70ce29a185",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "15359ec8_0bb1557b",
+        "filename": "packages/compiler/bin/cmd_compile.ml",
+        "patchSetId": 14
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-03T13:56:21Z",
+      "side": 1,
+      "message": "Ce serait bien de garder le même système de message d\u0027erreur que pour le reste. On se retrouve avec un simple message en anglais c\u0027est pas terrible en terme de DX je trouve.",
+      "range": {
+        "startLine": 57,
+        "startChar": 2,
+        "endLine": 66,
+        "endChar": 21
+      },
+      "revId": "42aad35552942d97d731a0b3cc218c70ce29a185",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e16de1a0_fa9665b9",
+        "filename": "packages/compiler/lib/utils/file.mli",
+        "patchSetId": 14
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-03T13:56:21Z",
+      "side": 1,
+      "message": "Il y a une raison pour ne pas avoir des modules séparés pour les modules et paquets ?",
+      "range": {
+        "startLine": 11,
+        "startChar": 4,
+        "endLine": 11,
+        "endChar": 19
+      },
+      "revId": "42aad35552942d97d731a0b3cc218c70ce29a185",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aab190b8_1023484b",
+        "filename": "packages/compiler/tests/crams/compile/imports.t/run.t",
+        "patchSetId": 14
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-03T13:56:21Z",
+      "side": 1,
+      "message": "Quel est le comportement pour la gestion du `.` à la compilation ? \n\nCette erreur ne me parait pas être la bonne par exemple :\n\n```\ncompile/imports.t/relative.HEAD(42aad35) ~?+2-1\n» pwd       \n/home/emile/Dev/publicodes/publicodes/packages/compiler/tests/crams/compile/imports.t/relative\ncompile/imports.t/relative.HEAD(42aad35) ~?+2-1\n» dune exec publicodes -- compile .\nEntering directory \u0027/home/emile/Dev/publicodes/publicodes/packages/compiler\u0027\nLeaving directory \u0027/home/emile/Dev/publicodes/publicodes/packages/compiler\u0027\nE035 chemin invalide [syntax error]    \n     ╒══  ./rules.publicodes:3:13 ══\n   2 │   public: oui\n   3 │   importer: ./relative 2\n     │             ˘˘˘˘˘˘˘˘˘˘˘˘\n Hint: \u0027./relative 2\u0027 n\u0027est pas une valeur de module\n       valide\n```",
+      "revId": "42aad35552942d97d731a0b3cc218c70ce29a185",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "84f5f967_553d051e",
+        "filename": "packages/compiler/tests/crams/compile/imports.t/run.t",
+        "patchSetId": 14
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-03T13:56:21Z",
+      "side": 1,
+      "message": "Il y a une différence entre règle non-accessible et inexistante ?",
+      "range": {
+        "startLine": 112,
+        "startChar": 0,
+        "endLine": 112,
+        "endChar": 2
+      },
+      "revId": "42aad35552942d97d731a0b3cc218c70ce29a185",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
