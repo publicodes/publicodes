@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "767aaee6_eff5b55a",
+        "filename": "packages/compiler/lib/dependency_graph/checks.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-03T14:22:18Z",
+      "side": 1,
+      "message": "Si je comprends bien, tu calcules le graphe de dépendances et le graphe de dépendances aux règles des contextes pour ensuite en faire la différence au moment d\u0027extraire l\u0027output.\n\nA première vue, j\u0027aurais simplement modifié le calcul du graphe de dépendance pour ignorer les règles référencées dans les contextes, mais j\u0027imagine qu\u0027il y a une raison pour laquelle tu n\u0027as pas adopté cette approche ? Le graphe de dépendance est utilisé ailleurs et les règles des contextes doivent être considérées comme des dépendances ?",
+      "range": {
+        "startLine": 59,
+        "startChar": 1,
+        "endLine": 60,
+        "endChar": 53
+      },
+      "revId": "580662f3b20a24dccbd4929a7e131d2adef4e0de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
