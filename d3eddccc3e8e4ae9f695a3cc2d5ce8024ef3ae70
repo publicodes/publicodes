@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ff8774eb_72f16e8a",
+        "filename": "packages/compiler/lib/utils/err.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-03T15:19:47Z",
+      "side": 1,
+      "message": "```suggestion\nlet no_rules \u003d (Code.Parsing_no_rules, \"Aucune règle trouvée dans le fichier.\")\n```",
+      "range": {
+        "startLine": 167,
+        "startChar": 40,
+        "endLine": 167,
+        "endChar": 61
+      },
+      "revId": "d3eddccc3e8e4ae9f695a3cc2d5ce8024ef3ae70",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
