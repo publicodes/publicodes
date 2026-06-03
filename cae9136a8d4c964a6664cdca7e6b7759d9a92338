@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11edca0e_95dea9f3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-03T14:05:30Z",
+      "side": 1,
+      "message": "Je ne suis pas sûre de comprendre pourquoi on a besoin de précompiler la variable d\u0027env plutôt que de simplement avoir une valeur par défaut si `PUBLICODESPATH` n\u0027est pas définie ?",
+      "revId": "cae9136a8d4c964a6664cdca7e6b7759d9a92338",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
