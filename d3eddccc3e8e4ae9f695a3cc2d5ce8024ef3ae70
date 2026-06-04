@@ -22,6 +22,30 @@
       },
       "revId": "d3eddccc3e8e4ae9f695a3cc2d5ce8024ef3ae70",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "153c5063_91cff2dd",
+        "filename": "packages/compiler/lib/utils/err.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:37:46Z",
+      "side": 1,
+      "message": "c\u0027est pas forcément un fichier, ca peut aussi être un stream, ici le stdin",
+      "parentUuid": "ff8774eb_72f16e8a",
+      "range": {
+        "startLine": 167,
+        "startChar": 40,
+        "endLine": 167,
+        "endChar": 61
+      },
+      "revId": "d3eddccc3e8e4ae9f695a3cc2d5ce8024ef3ae70",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
