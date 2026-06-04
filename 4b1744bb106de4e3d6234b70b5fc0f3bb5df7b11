@@ -46,6 +46,30 @@
       },
       "revId": "4b1744bb106de4e3d6234b70b5fc0f3bb5df7b11",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd687a16_6d3072ef",
+        "filename": "packages/compiler/tests/crams/compile/duplicate_rule.t/run.t",
+        "patchSetId": 9
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T11:26:51Z",
+      "side": 1,
+      "message": "Ah my bad, c\u0027est tout a fait déja possible avec les `labels`.",
+      "parentUuid": "0cb05f36_c5fdbb8e",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 2
+      },
+      "revId": "4b1744bb106de4e3d6234b70b5fc0f3bb5df7b11",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
