@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "e0acb97a_029f63ab",
+        "filename": "packages/compiler/lib/dependency_graph/checks.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:37:46Z",
+      "side": 1,
+      "message": "Oui tout a fait, une Map ferais aussi bien le café ici aussi, donc je pourrais le changer. Comme mentionné, je pense que ca pourras nous être utiles par exemple si on a besoin de les additionner pour un check futur.",
+      "parentUuid": "b07539d4_d08024bf",
+      "range": {
+        "startLine": 60,
+        "startChar": 31,
+        "endLine": 60,
+        "endChar": 41
+      },
+      "revId": "18a8068242ca796f033210293999fc3323a4e6ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "42bf3a96_ad1f1205",
         "filename": "packages/compiler/lib/dependency_graph/checks.ml",
         "patchSetId": 2
@@ -37,6 +61,30 @@
       "writtenOn": "2026-06-03T15:10:09Z",
       "side": 1,
       "message": "Il vaut mieux (lorsque c\u0027est possible) utiliser des appels récursifs terminaux (https://fr.wikipedia.org/wiki/R%C3%A9cursion_terminale) pour qu\u0027ils soient optimisés par le compilateur et éviter une pile d\u0027appel qui explose si le graphe est profond :\n\n```suggestion\n    let rec are_used ctx rules_to_check \u003d\n    match rules_to_check with\n    | [] -\u003e\n        false\n    | from :: rest -\u003e\n        let ctxs \u003d Rule_graph.succ cont_graph from in\n        let deps \u003d Rule_graph.succ dep_graph from in\n        if List.exists ctxs ~f:(Rule_name.equal ctx) then\n          (* the context is override here *)\n          false\n        else if List.exists deps ~f:(Rule_name.equal ctx) then\n          (* the context is actually used here *)\n          true\n        else are_used ctx (rest @ deps)\n  in\n  let log_unused from acc \u003d\n    let unused_ctxs \u003d\n      let deps \u003d Rule_graph.succ dep_graph from in\n      (* we filter out contexts immediately used *)\n      let ctxs \u003d\n        Rule_graph.succ cont_graph from\n        |\u003e List.filter ~f:(fun ctx -\u003e\n            List.exists deps ~f:(Rule_name.equal ctx) |\u003e not )\n      in\n      List.filter ctxs ~f:(fun ctx -\u003e not (are_used ctx deps))\n    in\n```",
+      "range": {
+        "startLine": 59,
+        "startChar": 2,
+        "endLine": 82,
+        "endChar": 6
+      },
+      "revId": "18a8068242ca796f033210293999fc3323a4e6ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b22a3e2b_e320fb34",
+        "filename": "packages/compiler/lib/dependency_graph/checks.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:37:46Z",
+      "side": 1,
+      "message": "Okay compris, je vais tacher d\u0027y faire attention a l\u0027avenir",
+      "parentUuid": "42bf3a96_ad1f1205",
       "range": {
         "startLine": 59,
         "startChar": 2,
@@ -70,6 +118,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ff88bbfa_417bb677",
+        "filename": "packages/compiler/lib/dependency_graph/checks.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:37:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bccabbec_06ee7bcc",
+      "range": {
+        "startLine": 88,
+        "startChar": 68,
+        "endLine": 88,
+        "endChar": 73
+      },
+      "revId": "18a8068242ca796f033210293999fc3323a4e6ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "08f45e91_7da0138f",
@@ -83,6 +155,30 @@
       "writtenOn": "2026-06-03T15:10:09Z",
       "side": 1,
       "message": "```suggestion\nlet unused_context \u003d (Code.Unused_context, \"Certaines règles du contexte non utilisées\")\n```",
+      "range": {
+        "startLine": 164,
+        "startChar": 44,
+        "endLine": 164,
+        "endChar": 64
+      },
+      "revId": "18a8068242ca796f033210293999fc3323a4e6ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d1f6c095_8bd2ea76",
+        "filename": "packages/compiler/lib/utils/err.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:37:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "08f45e91_7da0138f",
       "range": {
         "startLine": 164,
         "startChar": 44,
