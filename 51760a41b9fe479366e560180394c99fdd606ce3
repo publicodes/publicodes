@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a49fcb19_7128335c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 15
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:45:47Z",
+      "side": 1,
+      "message": "J\u0027ai peut être mergé celui ci un peu vite, il reste quelques discussions, mais le code a été globalement revu et rien ne semblais ressortir",
+      "revId": "51760a41b9fe479366e560180394c99fdd606ce3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}

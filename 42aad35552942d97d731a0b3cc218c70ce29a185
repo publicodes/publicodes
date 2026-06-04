@@ -18,6 +18,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "46390689_f5ce90da",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 14
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:45:47Z",
+      "side": 1,
+      "message": "le `./` n’étais pas la au début, je l\u0027ai ajouté suite a vos retours, et il est assez peu coûteux.\nSur l\u0027incompréhension, les hints indique maintenant clairement les chemins complets attendus, et les valeurs invalides. Il me semble qu\u0027on ne peux plus vraiment rester coincé à ne pas trouver la valeur que le compilateur attends.\nPour le mot clef `package`, il me semble que Johan avait proposé quelque chose comme `depuis`. J\u0027ai juste trouvé que ca rendais `module` bizarre, il faudrait peut être le changer par `le module`, mais c\u0027est moins pratique au final. `package` permet aussi de l\u0027encrer dans la nomenclature, ce qui feras sens avec de la doc dédié. Sur le fond, je reste d\u0027accords qu\u0027il y a probablement mieux à trouver.\nPour la doc, oui clairement il va falloir une partie dédiée dans notre documentation pour expliquer les tenants et aboutissants",
+      "parentUuid": "27184cca_5fbafbc9",
+      "revId": "42aad35552942d97d731a0b3cc218c70ce29a185",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "15359ec8_0bb1557b",
@@ -31,6 +49,30 @@
       "writtenOn": "2026-06-03T13:56:21Z",
       "side": 1,
       "message": "Ce serait bien de garder le même système de message d\u0027erreur que pour le reste. On se retrouve avec un simple message en anglais c\u0027est pas terrible en terme de DX je trouve.",
+      "range": {
+        "startLine": 57,
+        "startChar": 2,
+        "endLine": 66,
+        "endChar": 21
+      },
+      "revId": "42aad35552942d97d731a0b3cc218c70ce29a185",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef4d2b36_d621d6d9",
+        "filename": "packages/compiler/bin/cmd_compile.ml",
+        "patchSetId": 14
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:45:47Z",
+      "side": 1,
+      "message": "La totalité de la commande line, les arguments, les helpers, sont encore en anglais. Et on a encore aucune localization dessus. Pour moi, soit on passe tout en Francais, pour s\u0027aligner sur les erreurs de parse/syntax ; Soit on attends d\u0027avoir un support i18n plus flexible, pour adapter en fonction de la LOCALE.\n\nhttps://github.com/publicodes/publicodes/issues/803",
+      "parentUuid": "15359ec8_0bb1557b",
       "range": {
         "startLine": 57,
         "startChar": 2,
@@ -66,6 +108,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8b376935_65dc42fa",
+        "filename": "packages/compiler/lib/utils/file.mli",
+        "patchSetId": 14
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:45:47Z",
+      "side": 1,
+      "message": "Les deux sont extrêmement lié donc je pense pas qu\u0027on puisse les séparer, et au final le but est de trouver des dossiers et fichiers, donc le module File me semblais approprié. Il était assez vide en plus, donc c\u0027est pas plus mal de lui ajouter cette responsabilité",
+      "parentUuid": "e16de1a0_fa9665b9",
+      "range": {
+        "startLine": 11,
+        "startChar": 4,
+        "endLine": 11,
+        "endChar": 19
+      },
+      "revId": "42aad35552942d97d731a0b3cc218c70ce29a185",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "aab190b8_1023484b",
         "filename": "packages/compiler/tests/crams/compile/imports.t/run.t",
         "patchSetId": 14
@@ -83,6 +149,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "caf21198_3f9a4800",
+        "filename": "packages/compiler/tests/crams/compile/imports.t/run.t",
+        "patchSetId": 14
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:45:47Z",
+      "side": 1,
+      "message": "tu es sûr d\u0027être bien à jour? je n\u0027ai pas d\u0027erreur en jouant la même commande dans ce dossier. On dirais que t\u0027on compilateur date d\u0027avant l\u0027ajout du `./`.",
+      "parentUuid": "aab190b8_1023484b",
+      "revId": "42aad35552942d97d731a0b3cc218c70ce29a185",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "84f5f967_553d051e",
         "filename": "packages/compiler/tests/crams/compile/imports.t/run.t",
         "patchSetId": 14
@@ -94,6 +178,30 @@
       "writtenOn": "2026-06-03T13:56:21Z",
       "side": 1,
       "message": "Il y a une différence entre règle non-accessible et inexistante ?",
+      "range": {
+        "startLine": 112,
+        "startChar": 0,
+        "endLine": 112,
+        "endChar": 2
+      },
+      "revId": "42aad35552942d97d731a0b3cc218c70ce29a185",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "89793202_23e6eb34",
+        "filename": "packages/compiler/tests/crams/compile/imports.t/run.t",
+        "patchSetId": 14
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:45:47Z",
+      "side": 1,
+      "message": "non-accessible c\u0027est par exemple lorsqu\u0027un module importé fais reference à une règle d\u0027un autre module importé depuis son parent. Les deux modules sont adelphes ou cousins. La règle existe, mais tu n\u0027as pas le droit de la référencer d\u0027ici. Ca veux souvent dire qu\u0027il y a une typo, ou qu\u0027une autre rêgle est manquante dans ce scope local.",
+      "parentUuid": "84f5f967_553d051e",
       "range": {
         "startLine": 112,
         "startChar": 0,
