@@ -22,6 +22,30 @@
       },
       "revId": "580662f3b20a24dccbd4929a7e131d2adef4e0de",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "255a41d5_527a596f",
+        "filename": "packages/compiler/lib/dependency_graph/checks.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-04T09:37:46Z",
+      "side": 1,
+      "message": "Mhh non l\u0027algorithme est plus complexe que ca. Les edges a retirer dépendent du point de départ et du cheminement au sein du graph. On peux pas juste retirer des edges au calcul de départ du graph de dépendances.\nInitialement j\u0027avais espéré trouver un algo existant pour faire de la magie avec mes deux graphs, mais au final je parcours manuellement le graph de dépendance pour chaque point de départ. Le graph des contextes est resté un graph par praticité, mais c\u0027est surtout un tableau associatif a ce stade. Je me dis encore que l\u0027avoir sous forme de graph pourra nous être utiles pour de futurs checks.",
+      "parentUuid": "767aaee6_eff5b55a",
+      "range": {
+        "startLine": 59,
+        "startChar": 1,
+        "endLine": 60,
+        "endChar": 53
+      },
+      "revId": "580662f3b20a24dccbd4929a7e131d2adef4e0de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
