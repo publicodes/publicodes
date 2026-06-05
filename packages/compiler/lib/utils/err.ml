@@ -155,12 +155,7 @@ let invalid_path = (Code.Invalid_path, "chemin invalide")
 
 let invalid_config = (Code.Invalid_config, "configuration invalide")
 
-let import_cycle chain =
-  let message =
-    String.concat " <- " chain
-    |> Stdlib.Format.sprintf "cycle d'import détecté : %s"
-  in
-  (Code.Cycle_detected, message)
+let import_cycle = (Code.Cycle_detected, "cycle d'import détecté")
 
 let unused_context =
   (Code.Unused_context, "certaines règles du contexte non utilisées")
