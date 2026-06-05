@@ -39,3 +39,7 @@ val find_package :
   string option -> string -> (string, find_package_error) result
 (** [publicodes_package ~current_package ~path] finds the path to the package
   directory. *)
+
+val dirname : string -> string
+(* [dirname ~path] Returns the directory path of a file or directory path.
+  Raise an exception for invalid or empty path. *)
