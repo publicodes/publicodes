@@ -161,3 +161,17 @@ let find_package current_package path =
       Ok directory
   | None ->
       Error (Not_found paths)
+
+let dirname path =
+  let path = Fpath.of_string path |> Stdlib.Result.get_ok in
+  let segs = Fpath.segs path |> List.drop_last_exn in
+  let hd, rest =
+    match segs with [] -> ("./", []) | hd :: rest -> (hd, rest)
+  in
+  let acc = Fpath.v hd in
+  List.fold rest ~init:acc ~f:Fpath.add_seg |> Fpath.to_string
+
+let%test_unit "dirname" =
+  [%test_eq: string] (dirname "foo/bar/toot.publicodes") "foo/bar" ;
+  [%test_eq: string] (dirname "foo/bar/") "foo/bar" ;
+  [%test_eq: string] (dirname "foo") "./"

@@ -148,7 +148,7 @@ and parse_import ~default_to_public ~ctx mapping =
   match find_value "importer" mapping with
   | None ->
       return []
-  | Some (value, pos) -> (
+  | Some (value, pos) ->
       let* package, (module_, pos) =
         match value with
         | `A _ ->
@@ -202,23 +202,52 @@ and parse_import ~default_to_public ~ctx mapping =
         | Ok files ->
             return files
       in
-      let circular_files =
-        List.find input_files ~f:(fun filename ->
-            List.exists ctx.files ~f:(String.equal filename) )
-      in
-      match circular_files with
-      | Some circular ->
-          let code, message = Err.import_cycle (circular :: ctx.files) in
-          fatal_error ~pos ~code ~kind:`Syntax message
-      | None ->
-          let input_files = List.map ~f:(fun value -> value) input_files in
-          parse_files ~default_to_public
-            ~ctx:{ctx with current_package= package; current_module= module_}
-            input_files )
+      let input_files = List.map ~f:(fun value -> value) input_files in
+      parse_files ~default_to_public ~pos
+        ~ctx:{ctx with current_package= package; current_module= module_}
+        input_files
 
-and parse_files ~default_to_public ~ctx input_files =
+and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
   let module_id = !(ctx.next_module_id) in
   ctx.next_module_id := !(ctx.next_module_id) + 1 ;
+  let new_module_id =
+    Shared.Module_id.append ctx.current_module_id (Pos.mk ~pos module_id)
+  in
+  let* _ =
+    let circular_file =
+      List.find_map input_files ~f:(fun input_file ->
+          List.findi ctx.files ~f:(fun _ file -> String.equal input_file file) )
+    in
+    match circular_file with
+    | None ->
+        return []
+    | Some (circular_i, circular_file) ->
+        let labels =
+          let module_ids =
+            Shared.Module_id.to_list new_module_id
+            |> List.filter ~f:(fun module_ ->
+                Pos.equal_pos (Pos.pos module_) Pos.dummy |> not )
+          in
+          List.mapi module_ids ~f:(fun i (_, pos) ->
+              let msg =
+                if i < List.length module_ids - 1 then
+                  let _, file =
+                    List.findi_exn ctx.files ~f:(fun y _ -> y = i + 1)
+                  in
+                  let dir = File.dirname file in
+                  if i = circular_i then
+                    Stdlib.Format.sprintf
+                      "module '%s' importé ici, début du cycle" dir
+                  else Stdlib.Format.sprintf "module '%s' importé ici" dir
+                else
+                  let dir = File.dirname circular_file in
+                  Stdlib.Format.sprintf "module '%s' importé à nouveau ici" dir
+              in
+              Pos.mk ~pos msg )
+        in
+        let code, message = Err.import_cycle in
+        fatal_error ~pos ~labels ~code ~kind:`Syntax message
+  in
   let+ unresolved_programs =
     List.map input_files ~f:(fun filename ->
         (* Read the file content *)
@@ -229,9 +258,8 @@ and parse_files ~default_to_public ~ctx input_files =
               ~pos:(Pos.beginning_of_file filename)
               ~ctx:
                 { ctx with
-                  files= filename :: ctx.files
-                ; current_module_id=
-                    Shared.Module_id.append ctx.current_module_id module_id } )
+                  files= ctx.files @ [filename]
+                ; current_module_id= new_module_id } )
     |> all_keep_logs
   in
   List.fold
