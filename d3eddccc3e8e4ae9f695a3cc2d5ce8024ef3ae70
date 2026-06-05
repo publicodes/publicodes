@@ -46,6 +46,30 @@
       },
       "revId": "d3eddccc3e8e4ae9f695a3cc2d5ce8024ef3ae70",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "52c40dec_57f0cbd1",
+        "filename": "packages/compiler/lib/utils/err.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-05T14:20:38Z",
+      "side": 1,
+      "message": "Ah oui je n\u0027y avais pas pensé, \"Aucune règle trouvée\" est suffisant du coup je pense désolé 👍",
+      "parentUuid": "153c5063_91cff2dd",
+      "range": {
+        "startLine": 167,
+        "startChar": 40,
+        "endLine": 167,
+        "endChar": 61
+      },
+      "revId": "d3eddccc3e8e4ae9f695a3cc2d5ce8024ef3ae70",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
