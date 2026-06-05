@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9f37e6a4_f1c05d9d",
+        "filename": "packages/compiler/tests/crams/compile/duplicate_rule.t/run.t",
+        "patchSetId": 11
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-05T14:18:16Z",
+      "side": 1,
+      "message": "Dans l\u0027idéal il faudrait merge les lignes lorsque les positions pointent vers le même fichier mais ça pourrait être fait dans une passe suivante :\n\n```\n     ╒══  duplicate/rules.publicodes:1:1 ══\n   1 │ regle a: 10\n     │ ˘˘˘˘˘˘˘˘ définie ici\n   2 │ regle a: 20\n     │ ˘˘˘˘˘˘˘˘ définie ici\n```",
+      "range": {
+        "startLine": 4,
+        "startChar": 7,
+        "endLine": 4,
+        "endChar": 35
+      },
+      "revId": "e60c38ff5a7fb7ff53230d1199eac25581a39e4f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
