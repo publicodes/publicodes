@@ -90,13 +90,23 @@ Check root exports :
 Cycle imports :
 
   $ publicodes compile subjects/cycle -t debug_eval_tree -o -
-  E027
-  cycle d'import détecté : cycle a/rules.publicodes <- cycle b/rules.publicodes <- cycle a/rules.publicodes <- subjects/cycle/main.publicodes
-  [syntax error]
-       ╒══  cycle b/rules.publicodes:2:13 ══
+  E027 cycle d'import détecté [syntax error]
+       ╒══  subjects/cycle/main.publicodes:2:13 ══
      1 │ cycle a:
      2 │   importer: cycle a
-       │             ˘˘˘˘˘˘˘
+       │             ˘˘˘˘˘˘˘ importé ici
+       ╒══  cycle a/rules.publicodes:2:13 ══
+     1 │ cycle b:
+     2 │   importer: cycle b
+       │             ˘˘˘˘˘˘˘ re-boucle ici
+       ╒══  cycle b/rules.publicodes:2:13 ══
+     1 │ cycle c:
+     2 │   importer: cycle c
+       │             ˘˘˘˘˘˘˘ importé ici
+       ╒══  cycle c/rules.publicodes:2:13 ══
+     1 │ cycle a:
+     2 │   importer: cycle a
+       │             ˘˘˘˘˘˘˘ boucle ici
   
   [123]
 
