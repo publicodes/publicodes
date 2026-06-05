@@ -46,6 +46,30 @@
       },
       "revId": "580662f3b20a24dccbd4929a7e131d2adef4e0de",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "597de919_f3327540",
+        "filename": "packages/compiler/lib/dependency_graph/checks.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-05T15:03:07Z",
+      "side": 1,
+      "message": "\u003e Mhh non l\u0027algorithme est plus complexe que ca. Les edges a retirer dépendent du point de départ et du cheminement au sein du graph. On peux pas juste retirer des edges au calcul de départ du graph de dépendances.\n\nOui je vois 👍\n\n\u003e Le graph des contextes est resté un graph par praticité, mais c\u0027est surtout un tableau associatif a ce stade. Je me dis encore que l\u0027avoir sous forme de graph pourra nous être utiles pour de futurs checks.\n\nJe serai plus d\u0027avis de garder la structure la plus simple pour l\u0027instant et si le besoin se fait ressentir, le transformer en graphe à ce moment là.",
+      "parentUuid": "255a41d5_527a596f",
+      "range": {
+        "startLine": 59,
+        "startChar": 1,
+        "endLine": 60,
+        "endChar": 53
+      },
+      "revId": "580662f3b20a24dccbd4929a7e131d2adef4e0de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
