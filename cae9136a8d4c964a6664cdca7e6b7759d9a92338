@@ -34,6 +34,24 @@
       "parentUuid": "11edca0e_95dea9f3",
       "revId": "cae9136a8d4c964a6664cdca7e6b7759d9a92338",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99252403_dd23bcb8",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-05T14:24:06Z",
+      "side": 1,
+      "message": "On peut pas simplement avoir une valeur par défaut `./node_modules:node_modules:/usr/src/publicodes` ?",
+      "parentUuid": "7809b465_6b4b01c7",
+      "revId": "cae9136a8d4c964a6664cdca7e6b7759d9a92338",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
