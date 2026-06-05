@@ -70,6 +70,30 @@
       },
       "revId": "4b1744bb106de4e3d6234b70b5fc0f3bb5df7b11",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "14a44479_131a4c6c",
+        "filename": "packages/compiler/tests/crams/compile/duplicate_rule.t/run.t",
+        "patchSetId": 9
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-05T14:12:33Z",
+      "side": 1,
+      "message": "Oui c\u0027est ce que je voulais dire 👍",
+      "parentUuid": "cd687a16_6d3072ef",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 2
+      },
+      "revId": "4b1744bb106de4e3d6234b70b5fc0f3bb5df7b11",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
