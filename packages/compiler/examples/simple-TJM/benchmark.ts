@@ -33,7 +33,9 @@ summary(() => {
 
 		bench('Publicodes 2', () => {
 			let res
-			do_not_optimize((res = localRules['exemples . CA élevé'].evaluate()))
+			do_not_optimize(
+				(res = localRules['exemples . CA élevé'].evaluate().value),
+			)
 			assert(res === 4320, `Expected 10000, got ${res}`)
 		})
 	})
@@ -77,7 +79,7 @@ summary(() => {
 			do_not_optimize(
 				(revenuNet = localRules['revenu net'].evaluate(simpleSituation, {
 					cache: true,
-				})),
+				}).value),
 			)
 			assert(
 				revenuNet === simpleSituationResults['revenu net'],
@@ -88,7 +90,7 @@ summary(() => {
 			do_not_optimize(
 				(caEleve = localRules['exemples . CA élevé'].evaluate(simpleSituation, {
 					cache: true,
-				})),
+				}).value),
 			)
 			assert(
 				caEleve === simpleSituationResults['exemples . CA élevé'],
@@ -99,7 +101,7 @@ summary(() => {
 			do_not_optimize(
 				(cotisations = localRules['cotisations'].evaluate(simpleSituation, {
 					cache: true,
-				})),
+				}).value),
 			)
 			assert(
 				cotisations === simpleSituationResults['cotisations'],
