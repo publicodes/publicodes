@@ -48,6 +48,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "fa215fb0_fd1ac7a6",
+        "filename": "packages/compiler/lib/dependency_graph/checks.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-06T07:45:22Z",
+      "side": 1,
+      "message": "J\u0027adapte également cet algo pour query l\u0027eval_tree, comme pour le patch d\u0027avant",
+      "parentUuid": "e0acb97a_029f63ab",
+      "range": {
+        "startLine": 60,
+        "startChar": 31,
+        "endLine": 60,
+        "endChar": 41
+      },
+      "revId": "18a8068242ca796f033210293999fc3323a4e6ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "42bf3a96_ad1f1205",
