@@ -1,19 +1,64 @@
-Cycle analysis should take context into account (TODO) :
+Valid :
 
-  $ publicodes compile without-cycle -o -
-  E020 cette règle n'existe pas [syntax error]
-       ╒══  without-cycle/rules.publicodes:10:9 ══
-     9 │         salaire brut: 1000 €
-    10 │         plafond: non
-       │         ˘˘˘˘˘˘˘˘
-   Hint: Ajoutez la règle `plafond` manquante
-   Hint: Vérifiez les erreurs de typos dans le nom de la
-         règle
-  E027 cycle de dépendance détecté [cycle warning]
-       ╒══  without-cycle/rules.publicodes:3:3 ══
-     2 │   valeur: 10% * salaire brut
-     3 │   plafond: plafond
-       │   ˘˘˘˘˘˘˘˘
-   Hint: cotisation -> cotisation . plafond ->
-         cotisation
-  [123]
+  $ publicodes compile input -o - | awk '
+  > /^ *$/ { next }
+  > /const rules = {/ { enabled=1 }
+  > /export default rules;/ { enabled=0 }
+  > enabled { print }
+  > '
+  const rules = {
+    'c': {
+      /**
+       * Parameters of "c"
+       * @typedef {{
+       *  'c'?: number
+       * }} cParams
+       */
+      /**
+       * Evaluate "c" with evaluation trace, and information on
+       * missing and needed parameters.
+       * @type {(params?: cParams, options?: {Options}) => {value: number, needed: Array<keyof cParams>, missing: Array<keyof cParams>, trace: {Trace}}}
+       */
+      evaluate: (params = {}, options) =>
+        $evaluate(_c, params, options),
+      /** @type {"number"} */
+      type: "number",
+      /** @type {"aucune"} */
+      unit: "aucune",
+      /**
+       * Parameter list for "c"
+       * @type {Array<keyof cParams>}
+       */
+      params: ['c'],
+    },
+    'out': {
+      /**
+       * Parameters of "out"
+       * @typedef {{
+       *  'c'?: number
+       * }} outParams
+       */
+      /**
+       * Evaluate "out" with evaluation trace, and information on
+       * missing and needed parameters.
+       * @type {(params?: outParams, options?: {Options}) => {value: number, needed: Array<keyof outParams>, missing: Array<keyof outParams>, trace: {Trace}}}
+       */
+      evaluate: (params = {}, options) =>
+        $evaluate(_out, params, options),
+      /** @type {"number"} */
+      type: "number",
+      /** @type {"aucune"} */
+      unit: "aucune",
+      /**
+       * Parameter list for "out"
+       * @type {Array<keyof outParams>}
+       */
+      params: ['c'],
+    }
+  }
+  export const parameters = {
+    'c': rules['c'],
+  }
+  export const outputs = {
+    'out': rules['out'],
+  }
