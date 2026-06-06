@@ -52,6 +52,24 @@
       "parentUuid": "7809b465_6b4b01c7",
       "revId": "cae9136a8d4c964a6664cdca7e6b7759d9a92338",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b0f15933_8b955966",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-06T08:20:25Z",
+      "side": 1,
+      "message": "C\u0027est effectivement l\u0027alternative. Je garde ce patch dans un coin pour éventuellement plus tard, ca semble pas te convaincre pour le moment",
+      "parentUuid": "99252403_dd23bcb8",
+      "revId": "cae9136a8d4c964a6664cdca7e6b7759d9a92338",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
