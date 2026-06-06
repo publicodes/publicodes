@@ -70,6 +70,30 @@
       },
       "revId": "580662f3b20a24dccbd4929a7e131d2adef4e0de",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dd083349_2f213a5f",
+        "filename": "packages/compiler/lib/dependency_graph/checks.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-06T07:45:22Z",
+      "side": 1,
+      "message": "tu sembles avoir trouvé une bonne approche. On vois ca lundi, mais pour l\u0027instant j\u0027ai une version de ce patch sans ce graph supplémentaire. Je query directement l\u0027eval_tree, et le patch devient vraiment minime. On vois si on peux encore trouver mieux, mais ca adresse déjà le problème",
+      "parentUuid": "597de919_f3327540",
+      "range": {
+        "startLine": 59,
+        "startChar": 1,
+        "endLine": 60,
+        "endChar": 53
+      },
+      "revId": "580662f3b20a24dccbd4929a7e131d2adef4e0de",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
