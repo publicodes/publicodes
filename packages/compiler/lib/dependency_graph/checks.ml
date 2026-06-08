@@ -68,7 +68,7 @@ let unused_context_check (tree : 'a Eval_tree.t) (graph : Rule_graph.t) :
         let deps = Rule_graph.succ graph from in
         if List.exists ctxs ~f:(Rule_name.equal ctx) then
           (* the context is override here *)
-          false
+          is_used ctx rest
         else if List.exists deps ~f:(Rule_name.equal ctx) then
           (* the context is actually used here *)
           true
