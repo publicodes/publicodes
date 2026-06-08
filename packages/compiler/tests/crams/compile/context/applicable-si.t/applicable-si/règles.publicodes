@@ -1,0 +1,12 @@
+a: # c in neededParameters, not d
+  valeur: b
+  contexte:
+    b: 10
+
+b:
+  applicable si: c
+  valeur: d
+
+c:
+
+d:
