@@ -1,0 +1,23 @@
+a: # c,d,e,f,g,h, in neededParameters, not x
+  valeur: b
+  contexte:
+    b: 10
+
+b:
+  applicable si: c
+  non applicable si: d
+  arrondi: e
+  valeur: d
+  plafond: f
+  plancher: g
+  par défaut: h
+  valeur: x
+
+x:
+
+c:
+d:
+e:
+f:
+g:
+h:

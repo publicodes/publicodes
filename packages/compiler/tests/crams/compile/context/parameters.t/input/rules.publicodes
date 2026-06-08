@@ -1,0 +1,12 @@
+a: # c in needed parameters, not b
+  valeur: b
+  contexte:
+    b:
+      applicable si: c
+      valeur: 3
+
+b:
+  variations:
+    - si: c
+      alors: 4
+    - sinon: 6
