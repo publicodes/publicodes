@@ -94,6 +94,7 @@ let gather_module ?package module_ =
       Stdlib.Sys.readdir pathstr |> List.of_array
       |> List.map ~f:(Fpath.add_seg path)
       |> List.filter ~f:(Fpath.has_ext "publicodes")
+      |> List.sort ~compare:Fpath.compare
       |> List.map ~f:Fpath.to_string
     in
     if List.is_empty files then Error (Empty_directory pathstr) else Ok files

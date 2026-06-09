@@ -16,11 +16,11 @@ let compile ~input_files ~module_ ~output_type ~default_to_public =
   let open Output in
   let* ast = Parser.parse_files ~default_to_public ~module_ input_files in
   let* resolved_ast = Resolver.to_resolved_ast ast in
+  let* dependency_graph = Dependency_graph.mk_and_checks resolved_ast in
   let* eval_tree = to_eval_tree ~ast:resolved_ast in
   let* outputs =
-    Dependency_graph.checks ~ast ~eval_tree
-    >>= Dependency_graph.extract_outputs ~ast ~eval_tree
-          ~warn_types:(not default_to_public)
+    Dependency_graph.extract_outputs dependency_graph ~ast:resolved_ast
+      ~eval_tree ~warn_types:(not default_to_public)
   in
   let output_str =
     match output_type with
