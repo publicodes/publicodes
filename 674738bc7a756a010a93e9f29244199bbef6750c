@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "486301b3_d5a493eb",
+        "filename": "packages/compiler/lib/dependency_graph/checks.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-09T09:04:21Z",
+      "side": 1,
+      "message": "```suggestion\n          (* The context is potentially override here; the [ctx] must be used\n             before the [deps] to be considered as used. *)\n\n```",
+      "range": {
+        "startLine": 70,
+        "startChar": 13,
+        "endLine": 70,
+        "endChar": 41
+      },
+      "revId": "674738bc7a756a010a93e9f29244199bbef6750c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
