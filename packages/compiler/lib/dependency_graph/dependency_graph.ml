@@ -1,4 +1,4 @@
-module Rule_graph = Rule_graph.G
+module Rule_graph = Rule_graph
 
 let checks = Checks.checks
 
