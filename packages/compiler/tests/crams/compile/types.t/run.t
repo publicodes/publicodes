@@ -1,6 +1,7 @@
 Should have error when type don't match
 
   $ publicodes compile type_error -o -
+  
   E023 types non cohérents entre eux [type error]
        ╒══  type_error/rules.publicodes:3:4 ══
      2 │ 
@@ -15,6 +16,7 @@ Should have error when type don't match
 Should allow to specify type with `type` key
 
   $ publicodes compile type_key -o -
+  
   E023 types non cohérents entre eux [type error]
        ╒══  type_key/rules.publicodes:9:9 ══
      8 │   valeur: a > b

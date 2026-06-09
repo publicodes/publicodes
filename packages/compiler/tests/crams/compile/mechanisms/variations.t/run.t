@@ -32,12 +32,14 @@ Correclty formatted variations :
 Wrongly formatted variations :
 
   $ publicodes compile ./syntax_error -t debug_eval_tree -o -
+  
   E017 mécanisme invalide [syntax error]
        ╒══  ./syntax_error/rules.publicodes:5:7 ══
      4 │       alors: 200
      5 │       sinon: 300 #KO
        │       ˘˘˘˘˘˘
    Hint: La clé `sinon` n'est pas valide
+  
   E017 mécanisme invalide [syntax error]
        ╒══  ./syntax_error/rules.publicodes:8:3 ══
      7 │ b:
@@ -45,12 +47,14 @@ Wrongly formatted variations :
        │   ˘˘˘˘˘˘˘˘˘˘˘
    Hint: Une variation doit contenir « si: » et «
          alors: »
+  
   E017 mécanisme invalide [syntax error]
        ╒══  ./syntax_error/rules.publicodes:15:7 ══
     14 │   variations:
     15 │     - sinon: 200 # KO
        │       ˘˘˘˘˘˘
    Hint: La clé `sinon` n'est pas valide
+  
   E017 mécanisme invalide [syntax error]
        ╒══  ./syntax_error/rules.publicodes:14:3 ══
     13 │ c:
@@ -58,6 +62,7 @@ Wrongly formatted variations :
        │   ˘˘˘˘˘˘˘˘˘˘˘
    Hint: Une variation doit contenir « si: » et «
          alors: »
+  
   E017 mécanisme invalide [syntax error]
        ╒══  ./syntax_error/rules.publicodes:20:3 ══
     19 │ d:

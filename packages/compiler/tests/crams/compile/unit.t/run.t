@@ -13,6 +13,7 @@ Simple multiplication without unit :
 Simple addition unit with unit :
 
   $ publicodes compile simple-addition
+  
   E025 unités non compatibles [type error]
        ╒══  simple-addition/rules.publicodes:1:26 ══
      1 │ simple expression: 12€ + 5$
@@ -20,6 +21,7 @@ Simple addition unit with unit :
        ╒══  simple-addition/rules.publicodes:1:20 ══
      1 │ simple expression: 12€ + 5$
        │                    ˘˘˘˘ unité: €
+  
   
   E025 unités non compatibles [type error]
        ╒══  simple-addition/rules.publicodes:3:1 ══
@@ -36,6 +38,7 @@ Simple addition unit with unit :
 Simple multiplication with unit :
 
   $ publicodes compile simple-multiplication
+  
   E025 unités non compatibles [type error]
        ╒══  simple-multiplication/rules.publicodes:1:29 ══
      1 │ simple expression ko:  (5kg * 5€/kg) = 12$
@@ -49,6 +52,7 @@ Simple multiplication with unit :
 Unit inference :
 
   $ publicodes compile unit_inference
+  
   E025 unités non compatibles [type error]
        ╒══  unit_inference/rules.publicodes:7:9 ══
      6 │ z:
@@ -58,6 +62,7 @@ Unit inference :
      3 │ 
      4 │ x: z * 4€/mois
        │      ˘˘˘˘˘˘˘˘˘ unité: €
+  
   
   E025 unités non compatibles [type error]
        ╒══  unit_inference/rules.publicodes:2:6 ══
@@ -73,6 +78,7 @@ Unit inference :
 Unit with percent :
 
   $ publicodes compile percent
+  
   E025 unités non compatibles [type error]
        ╒══  percent/rules.publicodes:14:12 ══
     13 │ # should have error
@@ -88,6 +94,7 @@ Unit with percent :
 Add unit information with `unité` mechanism :
 
   $ publicodes compile mechanism
+  
   E025 unités non compatibles [type error]
        ╒══  mechanism/rules.publicodes:13:13 ══
     12 │ 
@@ -97,6 +104,7 @@ Add unit information with `unité` mechanism :
     10 │   valeur: 5
     11 │   unité:
        │          unité: aucune
+  
   
   E025 unités non compatibles [type error]
        ╒══  mechanism/rules.publicodes:4:10 ══
@@ -108,6 +116,7 @@ Add unit information with `unité` mechanism :
      6 │ test a: a > 4 € # KO
        │             ˘˘˘˘ unité: €
   
+  
   E025 unités non compatibles [type error]
        ╒══  mechanism/rules.publicodes:30:10 ══
     29 │   valeur: d
@@ -117,6 +126,7 @@ Add unit information with `unité` mechanism :
     26 │   valeur: d
     27 │   unité: €
        │          ˘ unité: €
+  
   
   E025 unités non compatibles [type error]
        ╒══  mechanism/rules.publicodes:20:10 ══
@@ -134,6 +144,7 @@ Add unit information with `unité` mechanism :
 Infer composed `unit` with contexte :
 
   $ publicodes compile unit-inference-with-contexte
+  
   E025 unités non compatibles [type error]
        ╒══  unit-inference-with-contexte/rules.publicodes:2:10 ══
      1 │ chiffre d'affaires:

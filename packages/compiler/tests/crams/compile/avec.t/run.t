@@ -1,6 +1,7 @@
 Avec :
 
   $ publicodes compile input -o -
+  
   E027 cycle de dépendance détecté [cycle warning]
        ╒══  input/rules.publicodes:4:15 ══
      3 │     b:

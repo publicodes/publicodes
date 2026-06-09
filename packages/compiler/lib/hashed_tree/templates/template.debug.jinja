@@ -104,14 +104,12 @@ else
 get_context({{ node_value }})
 
 {%- case "set_ctx" -%}
-with
-{
+with: {
 {%- for item in node_value.items %}
 {%- set item_name, item_value = (item.name, item.value) %}
-{{ item_name }} = {{ fmt_node(item_value) }}
+  {{ item_name }} = {{ fmt_node(item_value) }}
 {%- endfor %}
-}
-in
+} in
 {{ fmt_node(node_value.expr) }}
 {%- endswitch %}
 {%- endmacro %}
