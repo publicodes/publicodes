@@ -105,7 +105,7 @@ let invalid_meta = (Code.Parsing_invalid_meta, "meta invalide")
 
 let invalid_rule_name = (Code.Parsing_invalid_rule_name, "nom de règle invalide")
 
-let type_invalid_type = (Code.Type_invalid_type, "type invalide détécté")
+let type_invalid_type = (Code.Type_invalid_type, "type invalide détecté")
 
 let type_incoherence = (Code.Type_incoherence, "types non cohérents entre eux")
 
