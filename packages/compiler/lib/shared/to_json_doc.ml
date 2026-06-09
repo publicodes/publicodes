@@ -14,7 +14,8 @@ let to_pos (pos : Utils.Pos.pos) =
       ; ("end", `Assoc (to_point pos.end_pos)) ] )
 
 let to_publicodes name pos =
-  let id = ("id", `String (Id.hash name pos)) in
+  let id_str = Id.hash name pos |> Id.to_string in
+  let id = ("id", `String id_str) in
   let pos = to_pos pos in
   ("_publicodes", `Assoc [id; pos])
 
