@@ -1,0 +1,14 @@
+a:
+  somme:
+    - valeur: b
+      contexte:
+        b: 10 # ok
+    - valeur: c
+      contexte:
+        b: 10 # non utilisé
+    - valeur: 10
+      contexte:
+        b: 10 # non utilisé
+        c: 20 # non utilisé
+b:
+c:
