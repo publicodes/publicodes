@@ -19,28 +19,28 @@ Bad types for arrondi :
        │            ˘˘˘˘˘ unité: €
   
   
-  E022 type invalide détécté [type error]
+  E022 type invalide détecté [type error]
        ╒══  type_error/rules.publicodes:14:3 ══
     13 │   valeur: 5€
     14 │   arrondi:
        │   ˘˘˘˘˘˘˘˘
    Hint: arrondi doit être un nombre ou un booléen
   
-  E022 type invalide détécté [type error]
+  E022 type invalide détecté [type error]
        ╒══  type_error/rules.publicodes:19:12 ══
     18 │   valeur: 5€
     19 │   arrondi: x
        │            ˘
    Hint: arrondi doit être un nombre ou un booléen
   
-  E022 type invalide détécté [type error]
+  E022 type invalide détecté [type error]
        ╒══  type_error/rules.publicodes:6:12 ══
      5 │ b:
      6 │   arrondi: 01/2025
        │            ˘˘˘˘˘˘˘
    Hint: arrondi doit être un nombre ou un booléen
   
-  E022 type invalide détécté [type error]
+  E022 type invalide détecté [type error]
        ╒══  type_error/rules.publicodes:2:12 ══
      1 │ a:
      2 │   arrondi: "non"

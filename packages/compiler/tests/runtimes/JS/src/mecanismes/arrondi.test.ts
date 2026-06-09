@@ -113,7 +113,7 @@ a:
 a:
   arrondi: b
 b:
-`).rejects.toThrowError('type invalide détécté')
+`).rejects.toThrowError('type invalide détecté')
 		})
 
 		test('non applicable', async () => {
