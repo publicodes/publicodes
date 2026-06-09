@@ -108,7 +108,7 @@ let rec to_value name ({value; pos; meta= {typ; _}} : Tree.value) =
     | None ->
         `Null
   in
-  let id = Shared.Id.hash name pos in
+  let id = Shared.Id.(hash name pos |> to_string) in
   `Assoc
     [ ("type", `String _type)
     ; ("unit", typ)
