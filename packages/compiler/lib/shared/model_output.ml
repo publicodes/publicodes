@@ -7,12 +7,9 @@
     - [meta]: Metadata associated with the rule
     - [kind]: The kin of the rule (output/parameter)
     - [typ]: The type of the rule (optional) *)
-type model_output =
+type t =
   { rule_name: Rule_name.t
   ; parameters: Rule_name.t list
   ; meta: Shared_ast.rule_meta list
   ; is_output: bool
   ; typ: Typ.t option }
-
-(** A list of model outputs representing all the public API of a model. *)
-type t = model_output list

@@ -14,10 +14,10 @@ val from_typed_tree : Typed_tree.t -> t
 (** [from_typed_tree typed_tree] returns a hashed tree generated from
     [typed_tree]. *)
 
-val to_js_str : t -> Shared.Model_outputs.t -> string
+val to_js_str : t -> Shared.Model_output.t list -> string
 (** [to_js_str tree outputs] converts a hashed typed tree to its corresponding
     JavaScript code. *)
 
-val to_debug_str : t -> Shared.Model_outputs.t -> string
+val to_debug_str : t -> Shared.Model_output.t list -> string
 (** [to_debug tree outputs] converts a hashed typed tree to its corresponding
     debug string representation. *)

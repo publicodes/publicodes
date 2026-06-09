@@ -237,7 +237,7 @@ let from_rules hashed_tree =
            ; ("rule_node", rule_node) ] ) )
 
 let from_output hashed_tree
-    Model_outputs.{rule_name; parameters; meta; is_output; _} =
+    Model_output.{rule_name; parameters; meta; is_output; _} =
   let rule_type = from_rule_type hashed_tree rule_name in
   let title =
     find_title meta |> function None -> Tnull | Some str -> Tstr str
