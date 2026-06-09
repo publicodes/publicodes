@@ -1,0 +1,7 @@
+a:
+  valeur: b
+  contexte:
+    a: 10
+
+b: a
+

@@ -1,11 +1,11 @@
-Valid :
+Should correctly parse rules with nested contexts:
 
-  $ publicodes compile input -t debug_eval_tree -o -
-  a:
+  $ publicodes compile ./src -t debug_eval_tree -o -
+  test:
     10.
   
-  test:
-    @a
+  w:
+    @test + @z
   
   z:
     with: {
@@ -14,4 +14,13 @@ Valid :
     with: {
       test = 30.
     } in
-    @test + @test
+    @test + with: {
+      z = 30.
+    } in
+    @w
+    with: {
+      test = 20.
+    } in
+    with: {
+      test = 30.
+    } in

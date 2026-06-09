@@ -10,3 +10,6 @@ Valid avec @FIXME
        │        ˘
    Hint: d . e -> d . e
   [123]
+Self referencing rules should be allowed:
+
+  $ publicodes compile ./valid/ 

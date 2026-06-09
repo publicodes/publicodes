@@ -18,8 +18,8 @@ let compile ~input_files ~module_ ~output_type ~default_to_public =
   let* resolved_ast = Resolver.to_resolved_ast ast in
   let* eval_tree = to_eval_tree ~ast:resolved_ast in
   let* outputs =
-    Dependency_graph.checks ~ast ~eval_tree
-    >>= Dependency_graph.extract_outputs ~ast ~eval_tree
+    Dependency_graph.checks ~ast:resolved_ast ~eval_tree
+    >>= Dependency_graph.extract_outputs ~ast:resolved_ast ~eval_tree
           ~warn_types:(not default_to_public)
   in
   let output_str =
