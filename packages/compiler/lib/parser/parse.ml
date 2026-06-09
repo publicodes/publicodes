@@ -266,14 +266,14 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
     ~f:(fun acc program -> Ast.merge acc program)
     ~init:[] unresolved_programs
 
-and parse_root ~default_to_public ~module_ input_files =
+and parse_root ~default_to_public ~module_path input_files =
   let ctx =
     { current_rule_name= []
     ; files= []
     ; current_module_id= Shared.Module_id.empty
     ; next_module_id= ref 0
     ; current_package= None
-    ; current_module= module_ }
+    ; current_module= module_path }
   in
   parse_files ~default_to_public ~ctx input_files
 
