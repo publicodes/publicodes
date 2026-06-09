@@ -6,6 +6,9 @@ let empty : 'a t = (None, [])
 
 let return ?(logs = []) x : 'a t = (Some x, logs)
 
+let break ?(logs = []) x : 'a t =
+  match logs with [] -> (Some x, []) | _ -> (None, logs)
+
 let result (x, _) = x
 
 let logs (_, logs) = logs

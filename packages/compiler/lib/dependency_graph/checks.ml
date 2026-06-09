@@ -104,4 +104,4 @@ let checks ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t) :
   let access_logs = illegal_check ast graph in
   let context_logs = unused_context_check eval_tree graph in
   let logs = cycle_logs @ access_logs @ context_logs in
-  return ~logs graph
+  break ~logs graph
