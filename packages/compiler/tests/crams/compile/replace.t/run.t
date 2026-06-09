@@ -28,6 +28,7 @@ valid simple replacement :
 same priority warning :
 
   $ publicodes compile same_priority  -t debug_eval_tree -o -
+  
   E028 remplacement multiples [replace error]
        ╒══  same_priority/rules.publicodes:8:13 ══
      7 │ c:
@@ -48,6 +49,7 @@ same priority warning :
 replacement with cycle :
 
   $ publicodes compile cycle  -t debug_eval_tree -o -
+  
   E027 cycle de dépendance détecté [cycle warning]
   <no
   source
@@ -150,6 +152,7 @@ Multiple definitions
 Type mismatch
 
   $ publicodes compile type_mismatch  -t debug_eval_tree -o -
+  
   E025 unités non compatibles [type error]
        ╒══  type_mismatch/rules.publicodes:5:4 ══
      4 │ 

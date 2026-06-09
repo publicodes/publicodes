@@ -238,7 +238,9 @@ let print (log : Log.t) =
   in
   let hints_doc = format_hints hints in
   (* Create the complete document *)
-  let doc = vbox (concat [header; cut; code_excerpt; cut; hints_doc; cut]) in
+  let doc =
+    vbox (concat [newline; header; cut; code_excerpt; cut; hints_doc; cut])
+  in
   (* Print the document to stdout with styled tags *)
   to_fmt_with_tags
     (Stdlib.Format.get_err_formatter ())

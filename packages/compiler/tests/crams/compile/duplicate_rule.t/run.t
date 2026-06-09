@@ -1,6 +1,7 @@
 Les erreurs :
 
   $ publicodes compile duplicate -t debug_eval_tree -o -
+  
   E037 cette règle existe en double [syntax error]
        ╒══  duplicate/rules.publicodes:1:1 ══
      1 │ regle a: 10
@@ -11,6 +12,7 @@ Les erreurs :
        │ ˘˘˘˘˘˘˘˘ définie ici
    Hint: La règle `regle a` est définie plusieurs
          fois
+  
   E037 cette règle existe en double [syntax error]
        ╒══  duplicate/rules.publicodes:7:5 ══
      6 │   avec:
@@ -21,6 +23,7 @@ Les erreurs :
        │ ˘˘˘˘˘˘˘˘ définie ici
    Hint: La règle `module b . regle b` est définie
          plusieurs fois
+  
   E037 cette règle existe en double [syntax error]
        ╒══  duplicate/rules.publicodes:9:1 ══
      8 │ 
