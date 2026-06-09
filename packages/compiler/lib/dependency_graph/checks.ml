@@ -126,7 +126,7 @@ let unused_context_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
             in
             Log.error ~labels ~kind:`Syntax ~code message :: acc ) )
 
-let checks ~(ast : 'a Shared_ast.t) : Rule_graph.t Output.t =
+let mk_and_checks ast =
   let graph = Rule_graph.mk ast in
   let cycle_logs = cycle_check graph in
   let access_logs = illegal_check ast graph in
