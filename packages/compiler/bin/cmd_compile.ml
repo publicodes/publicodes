@@ -50,8 +50,8 @@ let cmd =
   and+ watch_mode = watch
   and+ default_to_public = default_to_public
   and+ output_type = output_type in
-  let targets =
-    let* input_files, module_ =
+  let target =
+    let* input_files, module_path =
       if String.equal input "-" then Ok (["-"], "./")
       else
         match Utils.File.gather_module input with
@@ -66,32 +66,25 @@ let cmd =
         | Ok files ->
             Ok (files, input)
     in
-    let output_file =
-      if String.equal output_file "" then
-        "model.publicodes"
-        ^
-        match output_type with
-        | Debug_eval_tree ->
-            ".eval_tree.debug"
-        | Js ->
-            ".js"
-        | Json_doc ->
-            ".json"
-      else output_file
-    in
-    Ok
-      [ ( {input_files; module_; output_file; output_type; default_to_public}
-          : Compile.t ) ]
+    Ok Compiler.{input_files; module_path; output_type; default_to_public}
   in
-  match targets with
-  | Ok (target :: []) ->
-      if watch_mode then Watch.watch_compile target
-      else Compile.compile_target target
-  | Ok targets ->
-      if watch_mode then (
-        Stdlib.Format.eprintf "Can't watch mode with multiple targets yet\n%!" ;
-        Cmd.Exit.cli_error )
-      else Compile.compile_targets targets
+  let output_path =
+    if String.equal output_file "" then
+      "model.publicodes"
+      ^
+      match output_type with
+      | Debug_eval_tree ->
+          ".eval_tree.debug"
+      | Js ->
+          ".js"
+      | Json_doc ->
+          ".json"
+    else output_file
+  in
+  match target with
+  | Ok target ->
+      if watch_mode then Watch.watch_compile target output_path
+      else Compile.compile_target target output_path
   | Error (`Msg msg) ->
       Stdlib.Format.eprintf "Error: %s\n%!" msg ;
       Cmd.Exit.cli_error
