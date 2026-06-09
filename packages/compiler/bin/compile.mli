@@ -1,20 +1,6 @@
 open Cmdliner
 
-type t =
-  { output_file: string
-  ; input_files: string list
-  ; module_: string
-  ; output_type: Compiler.target_type
-  ; default_to_public: bool }
-
-val compile_files :
-     input_files:string list
-  -> module_:string
-  -> output_type:Compiler.target_type
-  -> output_file:string
-  -> default_to_public:bool
-  -> Cmd.Exit.code
-
-val compile_target : t -> Cmd.Exit.code
-
-val compile_targets : t list -> Cmd.Exit.code
+val compile_target : Compiler.t -> string -> Cmd.Exit.code
+(** [compile_target target output_path] compiles the given [target] and writes
+    the result to [output_path]. It returns a command exit code indicating
+    success or failure. *)

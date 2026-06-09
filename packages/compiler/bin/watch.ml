@@ -6,23 +6,18 @@ let watch_compile _ =
   Cmd.Exit.cli_error
 [@@config not (target_os = "linux")]
 
-let watch_compile
-    ({output_file; module_; input_files; output_type; default_to_public} :
-      Compile.t ) =
+let watch_compile (target : Compiler.t) output_path =
   let open Stdlib in
   (* Filter out stdin if present in input files for watching *)
   let watchable_files =
-    Base.List.filter input_files ~f:(fun f -> not (String.equal f "-"))
+    Base.List.filter target.input_files ~f:(fun f -> not (String.equal f "-"))
   in
   let recompile () =
     printf "\nFile change detected. Recompiling...\n" ;
     printf "\027[2J\027[H" ;
     (* ANSI escape code to clear screen and move cursor to top *)
     print_flush () ;
-    let code =
-      Compile.compile_files ~input_files ~output_file ~module_ ~output_type
-        ~default_to_public
-    in
+    let code = Compile.compile_target target output_path in
     print_flush () ;
     (* I want to remove all text from stdinput here, to clear the terminal *)
     if code = Cmd.Exit.ok then printf "\027[1;32mCompilation succeeded\027[0m"

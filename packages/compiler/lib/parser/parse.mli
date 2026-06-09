@@ -2,7 +2,7 @@ open Base
 open Utils
 
 val parse_root :
-  default_to_public:bool -> module_:string -> string list -> Ast.t Output.t
+  default_to_public:bool -> module_path:string -> string list -> Ast.t Output.t
 
 val parse :
      filename:string
