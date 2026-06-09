@@ -1,5 +1,6 @@
 a:
+  valeur: 5
   contexte:
     b: 4  # doit lever une erreur
-  valeur: 5
+
 b:
