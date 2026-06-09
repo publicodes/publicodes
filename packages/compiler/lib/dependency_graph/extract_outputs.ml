@@ -4,7 +4,6 @@ open Shared.Shared_ast
 open Utils
 open Rule_graph
 open Utils.Output
-open Model_outputs
 module Oper = Graph.Oper.I (G)
 module Traverse = Graph.Traverse.Dfs (G)
 
@@ -12,7 +11,7 @@ let remove_duplicates (a : 'a list) : 'a list =
   Set.to_list @@ Set.Poly.of_list a
 
 let extract_outputs ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t)
-    ~(warn_types : bool) (graph : G.t) : Model_outputs.t Output.t =
+    ~(warn_types : bool) (graph : G.t) : Model_output.t list Output.t =
   (* Add self-dependencies for rules without value *)
   List.iter ast ~f:(fun rule_def ->
       let rule_name = Pos.value rule_def.name in
@@ -56,11 +55,12 @@ let extract_outputs ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t)
     (rule_name, remove_duplicates parameter_rules)
   in
   let wrap_meta ~is_output (rule_name, parameters) =
-    { rule_name
-    ; parameters
-    ; typ= (Eval_tree.get_meta eval_tree rule_name).typ
-    ; meta= (Shared_ast.find rule_name ast).meta
-    ; is_output }
+    Model_output.
+      { rule_name
+      ; parameters
+      ; typ= (Eval_tree.get_meta eval_tree rule_name).typ
+      ; meta= (Shared_ast.find rule_name ast).meta
+      ; is_output }
   in
   (* Extract the parameter list for each output rule *)
   let output_parameters =
