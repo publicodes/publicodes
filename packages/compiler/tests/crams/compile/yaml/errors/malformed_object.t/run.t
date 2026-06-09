@@ -1,6 +1,7 @@
 Objet YAML malformé
 
   $ publicodes compile input
+  
   E001
   impossible de déclarer un objet à cet endroit [yaml error]
        ╒══  input/rules.publicodes:2:3 ══

@@ -85,6 +85,7 @@ Check root exports :
 Cycle imports :
 
   $ publicodes compile subjects/cycle -t debug_eval_tree -o -
+  
   E027 cycle d'import détecté [syntax error]
        ╒══  subjects/cycle/main.publicodes:2:13 ══
      1 │ cycle a:
@@ -107,6 +108,7 @@ Cycle imports :
 
 Private reference :
   $ publicodes compile subjects/private -t debug_eval_tree -o -
+  
   E031 cette règle est privée [syntax error]
        ╒══  subjects/private/main.publicodes:4:6 ══
      3 │ 
@@ -120,6 +122,7 @@ Private reference :
 
 Parent reference :
   $ publicodes compile subjects/parent -t debug_eval_tree -o -
+  
   E032 cette règle n'est pas accessible [syntax
   error]
        ╒══  parent ref/rules.publicodes:2:11 ══
@@ -132,6 +135,7 @@ Parent reference :
 
 Cross reference :
   $ publicodes compile subjects/cross -t debug_eval_tree -o -
+  
   E032 cette règle n'est pas accessible [syntax
   error]
        ╒══  cross ref/rules.publicodes:2:11 ══
@@ -144,12 +148,14 @@ Cross reference :
 
 Missing reference :
   $ PUBLICODESPATH=vendor publicodes compile subjects/missing -t debug_eval_tree -o -
+  
   E033 la resource est introuvable [syntax error]
        ╒══  subjects/missing/rules.publicodes:2:13 ══
      1 │ module missing:
      2 │   importer: module missing
        │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘
    Hint: le chemin 'module missing' n'existe pas
+  
   E033 la resource est introuvable [syntax error]
        ╒══  subjects/missing/rules.publicodes:5:13 ══
      4 │ module empty:
@@ -157,6 +163,7 @@ Missing reference :
        │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘
    Hint: le dossier 'subjects/missing/module empty' est
          vide
+  
   E033 la resource est introuvable [syntax error]
        ╒══  subjects/missing/rules.publicodes:10:14 ══
      9 │   importer:
@@ -164,6 +171,7 @@ Missing reference :
        │              ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
    Hint: le dossier n'a pas été trouvé dans aucun des
          emplacements suivants : 'vendor/package missing'
+  
   E033 la resource est introuvable [syntax error]
        ╒══  subjects/missing/rules.publicodes:17:13 ══
     16 │     package: package a
@@ -171,6 +179,7 @@ Missing reference :
        │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
    Hint: le chemin 'vendor/package a/vendored missing'
          n'existe pas
+  
   E034 champ manquant : module [syntax error]
        ╒══  subjects/missing/rules.publicodes:21:3 ══
     20 │   valeur: rule vendored c + 3
@@ -192,6 +201,7 @@ Vendor reference :
 
 Vendor invalid reference :
   $ PUBLICODESPATH=vendor publicodes compile "subjects/vendored invalid" -t debug_eval_tree -o -
+  
   E035 chemin invalide [syntax error]
        ╒══  subjects/vendored invalid/main.publicodes:3:13 ══
      2 │   valeur: rule vendored a + 3
@@ -199,6 +209,7 @@ Vendor invalid reference :
        │             ˘˘˘˘˘˘˘˘˘˘˘
    Hint: 'foo/../bar' n'est pas une valeur de module
          valide
+  
   E035 chemin invalide [syntax error]
        ╒══  subjects/vendored invalid/main.publicodes:8:14 ══
      7 │   importer:
@@ -206,6 +217,7 @@ Vendor invalid reference :
        │              ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
    Hint: '../node_modules/foo' n'est pas une valeur de
          paquet valide
+  
   E035 chemin invalide [syntax error]
        ╒══  subjects/vendored invalid/main.publicodes:15:13 ══
     14 │     package: package a
@@ -213,6 +225,7 @@ Vendor invalid reference :
        │             ˘˘˘˘˘˘˘˘˘˘˘˘
    Hint: 'bar/../toot' n'est pas une valeur de module
          valide
+  
   E035 chemin invalide [syntax error]
        ╒══  subjects/vendored invalid/main.publicodes:21:13 ══
     20 │     package: package a
@@ -220,6 +233,7 @@ Vendor invalid reference :
        │             ˘˘˘˘˘˘˘˘˘˘˘
    Hint: 'bar/./toot' n'est pas une valeur de module
          valide
+  
   E035 chemin invalide [syntax error]
        ╒══  subjects/vendored invalid/main.publicodes:26:14 ══
     25 │   importer:

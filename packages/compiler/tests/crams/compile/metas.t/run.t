@@ -11,6 +11,7 @@ Valid metas :
 Invalid metas :
 
   $ publicodes compile invalid-metas  -t debug_eval_tree -o -
+  
   E017 mécanisme invalide [syntax error]
        ╒══  invalid-metas/rules.publicodes:4:3 ══
      3 │   public: oui
@@ -19,6 +20,7 @@ Invalid metas :
    Hint: La clé `références` n'est pas valide
    Hint: Utilisez la clé 'meta' pour ajouter des
          propriétés personnalisées à une règle
+  
   E030 meta invalide [syntax error]
        ╒══  invalid-metas/rules.publicodes:11:5 ══
     10 │   meta:
