@@ -2,12 +2,10 @@
 Valid avec @FIXME
 
   $ publicodes compile valid -o -
-  E020 cette règle n'existe pas [syntax error]
+  E027 cycle de dépendance détecté [cycle warning]
        ╒══  valid/rules.publicodes:9:8 ══
      8 │   avec:
      9 │     e: e
        │        ˘
-   Hint: Ajoutez la règle `e` manquante
-   Hint: Vérifiez les erreurs de typos dans le nom de la
-         règle
+   Hint: d . e -> d . e
   [123]
