@@ -158,7 +158,7 @@ let invalid_config = (Code.Invalid_config, "configuration invalide")
 let import_cycle = (Code.Cycle_detected, "cycle d'import détecté")
 
 let unused_context =
-  (Code.Unused_context, "certaines règles du contexte non utilisées")
+  (Code.Unused_context, "certaines règles du contexte sont non utilisées")
 
 let no_rules =
   (Code.Parsing_no_rules, "aucune règle trouvée dans le fichier ou le stream")
