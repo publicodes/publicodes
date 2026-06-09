@@ -40,6 +40,7 @@ multiple on same rule ok :
 make not applicable with cycle :
 
   $ publicodes compile cycle  -t debug_eval_tree -o -
+  
   E027 cycle de dépendance détecté [cycle warning]
   <no
   source
@@ -128,6 +129,7 @@ Multiple definitions
 Type error
 
   $ publicodes compile type_error  -t debug_eval_tree -o -
+  
   E023 types non cohérents entre eux [type error]
        ╒══  type_error/rules.publicodes:7:4 ══
      6 │ 

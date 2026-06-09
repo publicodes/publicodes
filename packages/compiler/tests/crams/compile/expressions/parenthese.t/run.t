@@ -22,10 +22,12 @@ Valid parenthesis expression :
 Invalid parenthesis expression :
 
   $ publicodes compile missing -t debug_eval_tree -o -
+  
   E008 caractère invalide [syntax error]
        ╒══  missing/rules.publicodes:1:5 ══
      1 │ a: (
        │     
+  
   
   E002 mot clé inattendu : Tokens.LPAREN [syntax
   error]
@@ -33,6 +35,7 @@ Invalid parenthesis expression :
      1 │ a: (
      2 │ b: 4 ()
        │      ˘˘
+  
   
   E002 mot clé inattendu : Tokens.RPAREN [syntax
   error]

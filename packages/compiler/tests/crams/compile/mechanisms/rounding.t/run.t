@@ -1,10 +1,12 @@
 Bad types for arrondi :
   $ publicodes compile type_error -t debug_eval_tree -o -
+  
   E014 valeur manquante [syntax error]
        ╒══  type_error/rules.publicodes:14:11 ══
     13 │   valeur: 5€
     14 │   arrondi:
        │            valeur attendue ici
+  
   
   E025 unités non compatibles [type error]
        ╒══  type_error/rules.publicodes:9:11 ══
@@ -16,24 +18,28 @@ Bad types for arrondi :
     10 │   arrondi: 0.1 €
        │            ˘˘˘˘˘ unité: €
   
+  
   E022 type invalide détécté [type error]
        ╒══  type_error/rules.publicodes:14:3 ══
     13 │   valeur: 5€
     14 │   arrondi:
        │   ˘˘˘˘˘˘˘˘
    Hint: arrondi doit être un nombre ou un booléen
+  
   E022 type invalide détécté [type error]
        ╒══  type_error/rules.publicodes:19:12 ══
     18 │   valeur: 5€
     19 │   arrondi: x
        │            ˘
    Hint: arrondi doit être un nombre ou un booléen
+  
   E022 type invalide détécté [type error]
        ╒══  type_error/rules.publicodes:6:12 ══
      5 │ b:
      6 │   arrondi: 01/2025
        │            ˘˘˘˘˘˘˘
    Hint: arrondi doit être un nombre ou un booléen
+  
   E022 type invalide détécté [type error]
        ╒══  type_error/rules.publicodes:2:12 ══
      1 │ a:
