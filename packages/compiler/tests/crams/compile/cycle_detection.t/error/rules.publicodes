@@ -1,0 +1,21 @@
+cotisation:
+  valeur: 10% * salaire brut
+  plafond: plafond
+  avec:
+    plafond:
+      valeur: cotisation
+
+salaire brut: 10000 €
+
+avec indirection:
+  avec:
+    a:
+      valeur: 10% * b
+      plafond: c
+    c:
+      valeur: d
+    b: 10000 €
+    d: a
+
+auto-référencée:
+  valeur: auto-référencée
