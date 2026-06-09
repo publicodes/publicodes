@@ -1,0 +1,12 @@
+{0 The Publicodes compiler internals}
+
+{1 Architecture}
+
+The compiler is divided into different passes, each one applies different
+transformations:
+1. Yaml parsing - `./yaml_parser`
+2. Parsing - `./parser`
+3. Desugaring - `./resolver`
+4. Resolution of _remplacements_ - `./replacements`
+5. Type inference - `./typed_tree`
+6. Outputs - `./hashed_tree`
