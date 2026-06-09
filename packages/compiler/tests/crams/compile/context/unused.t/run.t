@@ -1,6 +1,7 @@
 Invalid :
 
   $ publicodes compile unused -t debug_eval_tree -o -
+  
   E038 certaines règles du contexte non utilisées
   [syntax error]
        ╒══  unused/rules.publicodes:3:5 ══
@@ -11,6 +12,7 @@ Invalid :
   [123]
 
   $ publicodes compile override -t debug_eval_tree -o -
+  
   E038 certaines règles du contexte non utilisées
   [syntax error]
        ╒══  override/rules.publicodes:4:5 ══
@@ -22,12 +24,10 @@ Invalid :
 
   $ publicodes compile works -t debug_eval_tree -o -
   x:
-    with
-    {
-    x . a = 1.
-    x . b = 1.
-    }
-    in
+    with: {
+      x . a = 1.
+      x . b = 1.
+    } in
     @x . y + @x . w
   
   x . a:
@@ -40,9 +40,7 @@ Invalid :
     @x . a
   
   x . y:
-    with
-    {
-    x . a = 2.
-    }
-    in
+    with: {
+      x . a = 2.
+    } in
     @x . a + @x . b

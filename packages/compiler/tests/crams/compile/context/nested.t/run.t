@@ -8,14 +8,10 @@ Valid :
     @a
   
   z:
-    with
-    {
-    test = 20.
-    }
-    in
-    with
-    {
-    test = 30.
-    }
-    in
+    with: {
+      test = 20.
+    } in
+    with: {
+      test = 30.
+    } in
     @test + @test

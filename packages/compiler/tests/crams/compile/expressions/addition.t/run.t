@@ -7,6 +7,7 @@ Simple addition/soustraction expression :
 Missing term :
 
   $ publicodes compile missing_term
+  
   E007 expression malformée [syntax error]
        ╒══  missing_term/rules.publicodes:1:14 ══
      1 │ an other: 12 +
