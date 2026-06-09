@@ -158,5 +158,9 @@ let has_value rule_def =
 
 let merge (p1 : 'a program) (p2 : 'a program) = List.append p1 p2
 
-let find rule_name =
+let find_exn rule_name =
   List.find_exn ~f:(fun {name; _} -> Rule_name.equal (Pos.value name) rule_name)
+
+let get_pos_exn (ast : 'a t) (rule_name : Rule_name.t) : Pos.pos =
+  let rule_def = find_exn rule_name ast in
+  Pos.pos rule_def.name
