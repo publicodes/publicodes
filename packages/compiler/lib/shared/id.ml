@@ -1,6 +1,8 @@
 open Base
 
-let hash (name : Rule_name.t) (pos : Utils.Pos.pos) : string =
+type t = string [@@deriving equal, compare]
+
+let hash name (pos : Utils.Pos.pos) =
   List.map ~f:Int.to_string
     [ pos.start_pos.index
     ; pos.start_pos.line
@@ -10,3 +12,7 @@ let hash (name : Rule_name.t) (pos : Utils.Pos.pos) : string =
     ; pos.end_pos.column ]
   |> List.append [Rule_name.show name; pos.file]
   |> String.concat |> Stdlib.Digest.string |> Stdlib.Digest.to_hex
+
+let equal = String.equal
+
+let to_string id = id

@@ -98,7 +98,8 @@ let metas_of_meta (meta : Shared_ast.rule_meta list) =
          | Module_id _ ->
              None ) )
 
-let node_of (id : string) (type_ : string) (value : tvalue) =
+let node_of (id : Shared.Id.t) (type_ : string) (value : tvalue) =
+  let id = Shared.Id.to_string id in
   Tobj [("node_id", Tstr id); ("node_type", Tstr type_); ("node_value", value)]
 
 let node_of_number id value units =
