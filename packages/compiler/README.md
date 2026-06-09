@@ -44,7 +44,15 @@ In OCaml, it's recommended to use [opam Switches](https://ocaml.org/docs/opam-sw
 opam switch create . --deps-only
     # --with-test (to add testing lib)
     # --with-dev-setup (to add dev tools format and lsp server)
+
+# or simply
+
+make install
 ```
+
+To verify the JSON Schema of the [debugging tree](./docs/debugging-tree/), you
+will need to intall
+[`check-jsonschema`](https://github.com/python-jsonschema/check-jsonschema).
 
 ### Build
 
