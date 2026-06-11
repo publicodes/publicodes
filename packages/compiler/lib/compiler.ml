@@ -11,12 +11,12 @@ let to_eval_tree ~ast =
     Replacements.apply_replacements ~mk:Typed_tree.mk ~replacements eval_tree
   in
   let+ typed_tree = Typed_tree.type_check eval_tree_with_replacements in
-  Hashed_tree.from_typed_tree typed_tree
+  (ast, Hashed_tree.from_typed_tree typed_tree)
 
 let compile ~input_files ~module_ ~output_type ~default_to_public =
   let open Output in
   let* ast = Parser.parse_files ~default_to_public ~module_ input_files in
-  let* eval_tree = to_eval_tree ~ast in
+  let* resolved_ast, eval_tree = to_eval_tree ~ast in
   let* outputs =
     Dependency_graph.checks ~ast ~eval_tree
     >>= Dependency_graph.extract_outputs ~ast ~eval_tree
@@ -29,6 +29,6 @@ let compile ~input_files ~module_ ~output_type ~default_to_public =
     | Js ->
         Hashed_tree.to_js_str eval_tree outputs
     | Json_doc ->
-        Hashed_tree.to_json_doc_str eval_tree
+        Shared.To_json_doc.to_str resolved_ast
   in
   return output_str
