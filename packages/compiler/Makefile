@@ -68,8 +68,13 @@ test-ocaml-promote:
 	@echo "Running OCaml tests and promoting cram test outputs..."
 	dune promote
 
-#> test-all                 | Run all tests (JavaScript and OCaml)
-test-all: test-ocaml test-js
+#> test-json-schema         | Run JSON-Schema checks
+test-json-schemas:
+	@echo "Running JSON-Schema checks..."
+	$(MAKE) -C docs/debugging\ tree/
+
+#> test-all                 | Run all tests (JavaScript, OCaml, JSON-Schema)
+test-all: test-ocaml test-js test-json-schemas
 
 #
 # Benchmarks
