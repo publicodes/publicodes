@@ -29,6 +29,6 @@ let compile ~input_files ~module_ ~output_type ~default_to_public =
     | Js ->
         Hashed_tree.to_js_str eval_tree outputs
     | Json_doc ->
-        Hashed_tree.to_json_doc_str eval_tree
+        Shared.To_json_doc.to_str resolved_ast
   in
   return output_str
