@@ -2,7 +2,7 @@
  (inline_tests)
  (name hashed_tree)
  (public_name publicodes.hashed_tree)
- (libraries base yojson typed_tree shared jingoo)
+ (libraries base typed_tree shared jingoo)
  (modules :standard)
  (preprocess
   (pps
