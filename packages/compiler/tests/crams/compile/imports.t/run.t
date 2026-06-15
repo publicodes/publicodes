@@ -24,12 +24,7 @@ Nominal imports :
 
 Check root exports :
 
-  $ publicodes compile subjects/ok -t js -o - | awk '
-  > /^ *$/ { next }
-  > /const rules = {/ { enabled=1 }
-  > /export default rules;/ { enabled=0 }
-  > enabled { print }
-  > '
+  $ publicodes compile subjects/ok -t js -o - | ../../scripts/get_rules.awk
   const rules = {
     'module c . regle c': {
       /**

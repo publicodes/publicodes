@@ -1,11 +1,6 @@
 Valid :
 
-  $ publicodes compile input -o - | awk '
-  > /^ *$/ { next }
-  > /const rules = {/ { enabled=1 }
-  > /export default rules;/ { enabled=0 }
-  > enabled { print }
-  > '
+  $ publicodes compile input -o - | ../../../scripts/get_rules.awk
   const rules = {
     'c': {
       /**
