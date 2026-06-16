@@ -101,7 +101,8 @@ let parse_value_mechanism ~pos ~parse mapping :
   | Some (key, value) ->
       let mechanism_name = get_value key in
       let mechanism_fn = Hashtbl.find_exn value_mechanisms mechanism_name in
-      let+ result = mechanism_fn ~pos:(Pos.pos key) ~parse value in
+      let pos = Pos.pos key in
+      let+ result = mechanism_fn ~pos ~parse value in
       Pos.mk ~pos result
 
 let parse_chainable_mechanisms ~parse mapping :
