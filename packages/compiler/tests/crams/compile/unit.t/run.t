@@ -22,10 +22,10 @@ Simple addition unit with unit :
        │                    ˘˘˘˘ unité: €
   
   E025 unités non compatibles [type error]
-       ╒══  simple-addition/rules.publicodes:3:1 ══
-     2 │ 
+       ╒══  simple-addition/rules.publicodes:4:3 ══
      3 │ rule 2:
-       │ ˘˘˘˘˘˘˘ unité: €
+     4 │   somme:
+       │   ˘˘˘˘˘˘ unité: €
        ╒══  simple-addition/rules.publicodes:6:9 ══
      5 │     - 4 €
      6 │     - -(4 kg/m)
@@ -139,8 +139,9 @@ Infer composed `unit` with contexte :
      1 │ chiffre d'affaires:
      2 │   unité: €
        │          ˘ unité: €
-       ╒══  unit-inference-with-contexte/rules.publicodes:1:1 ══
-     1 │ chiffre d'affaires:
-       │ ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ unité: jour.€
+       ╒══  unit-inference-with-contexte/rules.publicodes:3:3 ══
+     2 │   unité: €
+     3 │   produit:
+       │   ˘˘˘˘˘˘˘˘ unité: jour.€
   
   [123]

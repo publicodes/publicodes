@@ -19,11 +19,11 @@ Valid json doc :
           "value mecanism": {
             "type": "value",
             "_publicodes": {
-              "id": "671cf31f521a21768557a1d05df98a17",
+              "id": "b330e868a4ee75bdb9673f4b374368bf",
               "position": {
                 "file": "ok/rules.publicodes",
-                "start": { "index": 0, "line": 1, "column": 1 },
-                "end": { "index": 1, "line": 1, "column": 2 }
+                "start": { "index": 5, "line": 2, "column": 3 },
+                "end": { "index": 11, "line": 2, "column": 9 }
               }
             },
             "value": {
@@ -65,11 +65,11 @@ Valid json doc :
           "value mecanism": {
             "type": "sumn",
             "_publicodes": {
-              "id": "969799a0c994d65e939da3be780d0195",
+              "id": "42af92aad66aef67de55ea117b04b7bb",
               "position": {
                 "file": "ok/rules.publicodes",
-                "start": { "index": 56, "line": 5, "column": 1 },
-                "end": { "index": 57, "line": 5, "column": 2 }
+                "start": { "index": 61, "line": 6, "column": 3 },
+                "end": { "index": 66, "line": 6, "column": 8 }
               }
             },
             "value": [
@@ -77,11 +77,11 @@ Valid json doc :
                 "value mecanism": {
                   "type": "value",
                   "_publicodes": {
-                    "id": "42af92aad66aef67de55ea117b04b7bb",
+                    "id": "53c2c6e359fd92fb12891eac38793e59",
                     "position": {
                       "file": "ok/rules.publicodes",
-                      "start": { "index": 61, "line": 6, "column": 3 },
-                      "end": { "index": 66, "line": 6, "column": 8 }
+                      "start": { "index": 80, "line": 8, "column": 7 },
+                      "end": { "index": 86, "line": 8, "column": 13 }
                     }
                   },
                   "value": {
@@ -237,11 +237,11 @@ Valid json doc :
           "value mecanism": {
             "type": "variations",
             "_publicodes": {
-              "id": "52e8c013cde911a60cb1e1d0631c1efe",
+              "id": "70e4c4a5aa0d531d504d903dd427cc22",
               "position": {
                 "file": "ok/rules.publicodes",
-                "start": { "index": 154, "line": 15, "column": 1 },
-                "end": { "index": 155, "line": 15, "column": 2 }
+                "start": { "index": 174, "line": 17, "column": 3 },
+                "end": { "index": 184, "line": 17, "column": 13 }
               }
             },
             "value": {
@@ -402,11 +402,11 @@ Valid json doc :
           "value mecanism": {
             "type": "value",
             "_publicodes": {
-              "id": "5bed73751a6b8c68c928f9cd402a8025",
+              "id": "910eb5f681b22776a1961a01cc2b2b8a",
               "position": {
                 "file": "ok/rules.publicodes",
-                "start": { "index": 265, "line": 23, "column": 1 },
-                "end": { "index": 266, "line": 23, "column": 2 }
+                "start": { "index": 332, "line": 28, "column": 3 },
+                "end": { "index": 338, "line": 28, "column": 9 }
               }
             },
             "value": {
@@ -477,11 +477,11 @@ Valid json doc :
           "value mecanism": {
             "type": "value",
             "_publicodes": {
-              "id": "d0c30e8cf564ff4703fd16fd75e950b6",
+              "id": "15e73a6b0f75a17f801ecd42d259880e",
               "position": {
                 "file": "ok/rules.publicodes",
-                "start": { "index": 352, "line": 30, "column": 1 },
-                "end": { "index": 353, "line": 30, "column": 2 }
+                "start": { "index": 357, "line": 31, "column": 3 },
+                "end": { "index": 363, "line": 31, "column": 9 }
               }
             },
             "value": {
@@ -665,11 +665,11 @@ Valid json doc :
           "value mecanism": {
             "type": "value",
             "_publicodes": {
-              "id": "b0ea68402bb15f32d00afacc5e9c56b4",
+              "id": "cd2964906a48de9b49dee4eddcdef6f1",
               "position": {
                 "file": "ok/rules.publicodes",
-                "start": { "index": 440, "line": 38, "column": 1 },
-                "end": { "index": 441, "line": 38, "column": 2 }
+                "start": { "index": 445, "line": 39, "column": 3 },
+                "end": { "index": 451, "line": 39, "column": 9 }
               }
             },
             "value": {
@@ -750,11 +750,11 @@ Valid json doc :
           "value mecanism": {
             "type": "value",
             "_publicodes": {
-              "id": "3996f491a57fcaa77e0eedd8bc361ee5",
+              "id": "dcee4611b7d07199257c1bc7af1d29b6",
               "position": {
                 "file": "ok/rules.publicodes",
-                "start": { "index": 480, "line": 41, "column": 1 },
-                "end": { "index": 481, "line": 41, "column": 2 }
+                "start": { "index": 485, "line": 42, "column": 3 },
+                "end": { "index": 491, "line": 42, "column": 9 }
               }
             },
             "value": {
@@ -905,11 +905,11 @@ Valid json doc :
           "value mecanism": {
             "type": "value",
             "_publicodes": {
-              "id": "b150a5a69c8bd3c42a66b58e3a7b7a4b",
+              "id": "3b2419752b336d304f689fd0d87a7b2d",
               "position": {
                 "file": "ok/rules.publicodes",
-                "start": { "index": 559, "line": 47, "column": 1 },
-                "end": { "index": 560, "line": 47, "column": 2 }
+                "start": { "index": 564, "line": 48, "column": 3 },
+                "end": { "index": 570, "line": 48, "column": 9 }
               }
             },
             "value": {
@@ -984,11 +984,11 @@ Valid json doc :
           "value mecanism": {
             "type": "value",
             "_publicodes": {
-              "id": "479ff20b4a938314f24b66e545a4847b",
+              "id": "15c6d1eb9e96f789e11381e1823b0163",
               "position": {
                 "file": "ok/rules.publicodes",
-                "start": { "index": 589, "line": 50, "column": 1 },
-                "end": { "index": 590, "line": 50, "column": 2 }
+                "start": { "index": 594, "line": 51, "column": 3 },
+                "end": { "index": 600, "line": 51, "column": 9 }
               }
             },
             "value": {
@@ -1235,9 +1235,9 @@ Valid json doc :
   
   function _b(ctx, params) {
     return /** @type {number} */ (
-      $ret("969799a0c994d65e939da3be780d0195", ctx, $add(
+      $ret("42af92aad66aef67de55ea117b04b7bb", ctx, $add(
         $ret("fdf43fcb0f9e59345833e87010cf2284", ctx, $ref("a", _a, ctx, params)),
-        $ret("969799a0c994d65e939da3be780d0195", ctx, $add(
+        $ret("42af92aad66aef67de55ea117b04b7bb", ctx, $add(
           $ret("7645595219f544844a979bd48abe21fa", ctx, $ref("b . c", _b_·_c, ctx, params)),
           $ret("cf6b772cd42698f02d7e852a34313551", ctx, ((ctx) => $ret("22e546e7e75af96371f69ad2d8af2964", ctx, $ref("a", _a, ctx, params)))(
           			{
@@ -1254,17 +1254,17 @@ Valid json doc :
   
   function _d(ctx, params) {
     return /** @type {number} */ (
-      $ret("52e8c013cde911a60cb1e1d0631c1efe", ctx, $cond(
-        $ret("52e8c013cde911a60cb1e1d0631c1efe", ctx, $eq(
+      $ret("70e4c4a5aa0d531d504d903dd427cc22", ctx, $cond(
+        $ret("70e4c4a5aa0d531d504d903dd427cc22", ctx, $eq(
           $ret("2f5e60389611c1c6bc3e4e4478f1a702", ctx, $gt(
             $ret("b876e832d1c1cfc749952f4c3adf90b7", ctx, $ref("a", _a, ctx, params)),
             () => $ret("12fc410435c3fde2cecced5f92aec122", ctx, 20.))),
-          $ret("52e8c013cde911a60cb1e1d0631c1efe", ctx, true))), () => $ret("0810c167be1f6bea68936aefa29443f6", ctx, 20.), () => $ret("52e8c013cde911a60cb1e1d0631c1efe", ctx, $cond(
-          $ret("52e8c013cde911a60cb1e1d0631c1efe", ctx, $eq(
+          $ret("70e4c4a5aa0d531d504d903dd427cc22", ctx, true))), () => $ret("0810c167be1f6bea68936aefa29443f6", ctx, 20.), () => $ret("70e4c4a5aa0d531d504d903dd427cc22", ctx, $cond(
+          $ret("70e4c4a5aa0d531d504d903dd427cc22", ctx, $eq(
             $ret("ec1ea70b3bd12375b862295d06425227", ctx, $gt(
               $ret("2dc5c0b0c43c058c103dbee17d837b4b", ctx, $ref("a", _a, ctx, params)),
               () => $ret("632ca371f1cdcb5398bdb3ef00b776f8", ctx, 5.))),
-            $ret("52e8c013cde911a60cb1e1d0631c1efe", ctx, true))), () => $ret("696286ffa15e0165e4122cebfa200487", ctx, 5.), () => $ret("2eeba914d25693e73fffa6283fd01dd8", ctx, 0.)))))
+            $ret("70e4c4a5aa0d531d504d903dd427cc22", ctx, true))), () => $ret("696286ffa15e0165e4122cebfa200487", ctx, 5.), () => $ret("2eeba914d25693e73fffa6283fd01dd8", ctx, 0.)))))
     )
   
   function _e(ctx, params) {
