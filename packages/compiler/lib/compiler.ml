@@ -1,10 +1,9 @@
 open Utils
-open Utils.Output
+open Utils.Output.Let_syntax
 
 type target_type = Js | Debug_eval_tree | Json_doc
 
 let to_eval_tree ~ast =
-  let* ast = Resolver.to_resolved_ast ast in
   let eval_tree = Typed_tree.from_resolved_ast ast in
   let* replacements = Replacements.from_resolved_ast ast in
   let* eval_tree_with_replacements =
@@ -16,7 +15,8 @@ let to_eval_tree ~ast =
 let compile ~input_files ~module_ ~output_type ~default_to_public =
   let open Output in
   let* ast = Parser.parse_files ~default_to_public ~module_ input_files in
-  let* eval_tree = to_eval_tree ~ast in
+  let* resolved_ast = Resolver.to_resolved_ast ast in
+  let* eval_tree = to_eval_tree ~ast:resolved_ast in
   let* outputs =
     Dependency_graph.checks ~ast ~eval_tree
     >>= Dependency_graph.extract_outputs ~ast ~eval_tree
