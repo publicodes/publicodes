@@ -17,6 +17,7 @@ type t =
   | DATE_LITERAL of [`Day of int * int * int | `Month of int * int]
   | NUMBER of float * string option
   | STRING of string
+  | SYMBOL of string
   | RULE_NAME of string
   | BOOLEAN of bool
 [@@deriving equal, compare, show, sexp]

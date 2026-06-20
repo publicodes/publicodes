@@ -1,3 +1,30 @@
+Should works:
+
+  $ publicodes compile ok -o - -t debug_eval_tree
+  a:
+    get_context(a)
+  
+  b:
+    get_context(b)
+  
+  c:
+    get_context(c)
+  
+  d:
+    get_context(d)
+  
+  test a:
+    @a = 42.
+  
+  test b:
+    @b = Shared_ast.Day {day = 11; year = 2000; month = 1}
+  
+  test c:
+    @c = "foo"
+  
+  test d:
+    @d = 'foo'
+
 Should have error when type don't match:
 
   $ publicodes compile ./errors/type_mismatch/ -o -
@@ -10,6 +37,16 @@ Should have error when type don't match:
      2 │ 
      3 │ b: 12
        │    ˘˘ est un nombre
+  
+  
+  E023 types non cohérents entre eux [type error]
+       ╒══  ./errors/type_mismatch/rules.publicodes:1:4 ══
+     1 │ a: "Test"
+       │    ˘˘˘˘˘˘ est un texte
+       ╒══  ./errors/type_mismatch/rules.publicodes:9:4 ══
+     8 │ 
+     9 │ e: 'Test'
+       │    ˘˘˘˘˘˘ est un symbole
   
   [123]
 

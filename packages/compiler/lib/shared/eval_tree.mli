@@ -4,6 +4,7 @@ type constant =
   | Number of float * Units.t option
   | Bool of bool
   | String of string
+  | Symbol of string
   | Date of Shared_ast.date
   | Not_defined
   | Not_applicable
