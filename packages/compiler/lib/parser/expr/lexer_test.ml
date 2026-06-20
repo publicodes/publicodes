@@ -44,8 +44,11 @@ let%test_unit "Lex Number" =
 
 let%test_unit "Lex string" =
   [%test_eq: Tokens.t] (STRING "abc") (Pos.value (lexstr "\"abc\"")) ;
-  [%test_eq: Tokens.t] (STRING "1239") (Pos.value (lexstr "\"1239\"")) ;
-  [%test_eq: Tokens.t] (STRING "✨€€") (Pos.value (lexstr "\'✨€€\'"))
+  [%test_eq: Tokens.t] (STRING "1239") (Pos.value (lexstr "\"1239\""))
+
+let%test_unit "Lex symbol" =
+  [%test_eq: Tokens.t] (SYMBOL "abc") (Pos.value (lexstr "'abc'")) ;
+  [%test_eq: Tokens.t] (SYMBOL "1239") (Pos.value (lexstr "'1239'"))
 
 let%test_unit "Lex Rule Name" =
   [%test_eq: Tokens.t] (RULE_NAME "rule_name") (Pos.value (lexstr "rule_name")) ;

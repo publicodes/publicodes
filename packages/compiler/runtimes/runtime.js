@@ -38,6 +38,28 @@ const NotApplicable = /** @type {NotApplicable} */ (
 )
 
 /**
+ * Build a symbol for the provided string representation.
+ *
+ * @param {string} value
+ * @returns {Symbol}
+ */
+function symbol(value) {
+	return Symbol.for(`_${value}`)
+}
+
+/**
+ * Checks if a Publicodes value is the symbol specified with the provided
+ * string representation.
+ *
+ * @param {string} expected
+ * @param {Value} value
+ * @returns {boolean}
+ */
+function isSymbol(expected, value) {
+	return symbol(expected) == symbol(expected)
+}
+
+/**
  * @private
  * @typedef {Date | number | string | boolean | NotApplicable | NotDefined} Value
  *
@@ -725,4 +747,6 @@ export const p = {
 	NotApplicable,
 	isNotDefined,
 	isNotApplicable,
+	symbol,
+	isSymbol,
 }

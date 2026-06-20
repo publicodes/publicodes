@@ -12,6 +12,8 @@ let parse_type ~pos ~parse:_ value =
       return (Shared_ast.Type (Pos.mk ~pos (Literal Bool)))
   | "date" ->
       return (Shared_ast.Type (Pos.mk ~pos (Literal Date)))
+  | "symbole" ->
+      return (Shared_ast.Type (Pos.mk ~pos (Literal Symbol)))
   | "nombre" ->
       return (Shared_ast.Type (Pos.mk ~pos (Number None)))
   | "" ->
@@ -23,8 +25,8 @@ let parse_type ~pos ~parse:_ value =
       fatal_error ~pos ~kind:`Syntax ~code message
         ~labels:
           [ Pos.mk ~pos
-              "Les types valides sont `texte`, `booléen`, `date` ou `nombre`."
-          ]
+              "Les types valides sont `texte`, `booléen`, `date`, `symbole`, \
+               ou `nombre`." ]
 
 let parse_units ~pos ~parse:_ value =
   let* {value; _}, pos = Parser_utils.get_scalar ~pos value in
