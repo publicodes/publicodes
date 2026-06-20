@@ -56,6 +56,8 @@ let to_const const : Yojson.Basic.t =
         ("bool", `Assoc [("value", `Bool bool)])
     | String str ->
         ("string", `Assoc [("value", `String str)])
+    | Symbol str ->
+        ("symbol", `Assoc [("value", `String str)])
     | Date date ->
         let date =
           match date with
@@ -184,6 +186,8 @@ and to_chain_mec name (chain_meca, pos) : Yojson.Basic.t =
           ("type", `Assoc [("type", `String "boolean")])
       | Literal Date ->
           ("type", `Assoc [("type", `String "date")])
+      | Symbol _ ->
+          failwith "unreachable" (* there is no type symbol *)
       | Number unit ->
           let unit =
             match unit with
