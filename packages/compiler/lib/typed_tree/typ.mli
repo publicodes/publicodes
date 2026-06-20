@@ -21,6 +21,8 @@ val any : pos:Pos.pos -> unit -> t
 
 val literal : pos:Pos.pos -> Typ.literal -> t
 
+val enum : pos:Pos.pos -> string Pos.t list -> t
+
 val symbol : pos:Pos.pos -> string -> t
 
 val number_with_unit : pos:Pos.pos -> Units.t -> t

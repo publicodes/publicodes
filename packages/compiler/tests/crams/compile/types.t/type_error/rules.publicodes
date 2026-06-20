@@ -25,3 +25,35 @@ i:
   avec:
     super: 'super'
     bien: 'bien'
+
+j:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+test j: j = 'toot' # not part of "une possibilité"
+
+k:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+      - 'toot'
+  variations:
+    - si: 20 = 50
+      alors: 'foo'
+    - si: 20 > 50
+      alors: 'tata'
+test k: k = 'tata' # not part of "une possibilité"
+
+l:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+      - 'toot'
+  variations: # no intersection with "une possibilité"
+    - si: 20 = 50
+      alors: 'super'
+    - si: 20 > 50
+      alors: 'tata'

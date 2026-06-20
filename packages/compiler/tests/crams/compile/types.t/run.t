@@ -20,6 +20,16 @@ Should works
       then 'bar'
       else not_applicable
   
+  f:
+    get_context(f)
+  
+  g:
+    if (20. = 50.) = true
+    then 'foo'
+    else if (20. > 50.) = true
+      then 'tata'
+      else not_applicable
+  
   test a:
     @a = 42.
   
@@ -34,8 +44,36 @@ Should works
   
   test e:
     @e = 'foo'
+  
+  test f:
+    @f = 'bar'
+  
+  test g:
+    @g = 'bar'
 
   $ publicodes compile type_error -o -
+  E023 types non cohérents entre eux [type error]
+       ╒══  type_error/rules.publicodes:38:5 ══
+    37 │   type:
+    38 │     une possibilité:
+       │     ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar', 'toot']
+       ╒══  type_error/rules.publicodes:39:9 ══
+    38 │     une possibilité:
+    39 │       - 'foo'
+       │         ˘˘˘˘˘ est le symbole 'foo'
+       ╒══  type_error/rules.publicodes:40:9 ══
+    39 │       - 'foo'
+    40 │       - 'bar'
+       │         ˘˘˘˘˘ est le symbole 'bar'
+       ╒══  type_error/rules.publicodes:41:9 ══
+    40 │       - 'bar'
+    41 │       - 'toot'
+       │         ˘˘˘˘˘˘ est le symbole 'toot'
+       ╒══  type_error/rules.publicodes:47:13 ══
+    46 │       alors: 'tata'
+    47 │ test k: k = 'tata' # not part of "une possibilité"
+       │             ˘˘˘˘˘˘˘ est le symbole 'tata'
+  
   E023 types non cohérents entre eux [type error]
        ╒══  type_error/rules.publicodes:1:4 ══
      1 │ a: "Test"
@@ -85,6 +123,54 @@ Should works
      2 │ 
      3 │ b: 12
        │    ˘˘ est un nombre
+  
+  E023 types non cohérents entre eux [type error]
+       ╒══  type_error/rules.publicodes:31:5 ══
+    30 │   type:
+    31 │     une possibilité:
+       │     ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar']
+       ╒══  type_error/rules.publicodes:32:9 ══
+    31 │     une possibilité:
+    32 │       - 'foo'
+       │         ˘˘˘˘˘ est le symbole 'foo'
+       ╒══  type_error/rules.publicodes:33:9 ══
+    32 │       - 'foo'
+    33 │       - 'bar'
+       │         ˘˘˘˘˘ est le symbole 'bar'
+       ╒══  type_error/rules.publicodes:34:13 ══
+    33 │       - 'bar'
+    34 │ test j: j = 'toot' # not part of "une possibilité"
+       │             ˘˘˘˘˘˘˘ est le symbole 'toot'
+  
+  E023 types non cohérents entre eux [type error]
+       ╒══  type_error/rules.publicodes:51:5 ══
+    50 │   type:
+    51 │     une possibilité:
+       │     ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar', 'toot']
+       ╒══  type_error/rules.publicodes:52:9 ══
+    51 │     une possibilité:
+    52 │       - 'foo'
+       │         ˘˘˘˘˘ est le symbole 'foo'
+       ╒══  type_error/rules.publicodes:53:9 ══
+    52 │       - 'foo'
+    53 │       - 'bar'
+       │         ˘˘˘˘˘ est le symbole 'bar'
+       ╒══  type_error/rules.publicodes:54:9 ══
+    53 │       - 'bar'
+    54 │       - 'toot'
+       │         ˘˘˘˘˘˘ est le symbole 'toot'
+       ╒══  type_error/rules.publicodes:55:3 ══
+    54 │       - 'toot'
+    55 │   variations: # no intersection with "une possibilité"
+       │   ˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['super', 'tata']
+       ╒══  type_error/rules.publicodes:57:14 ══
+    56 │     - si: 20 = 50
+    57 │       alors: 'super'
+       │              ˘˘˘˘˘˘˘ est le symbole 'super'
+       ╒══  type_error/rules.publicodes:59:14 ══
+    58 │     - si: 20 > 50
+    59 │       alors: 'tata'
+       │              ˘˘˘˘˘˘ est le symbole 'tata'
   
   [123]
 

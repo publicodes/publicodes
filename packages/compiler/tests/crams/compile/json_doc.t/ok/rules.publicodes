@@ -56,3 +56,11 @@ n:
   arrondi à l'inférieur: 2.3
 o:
   arrondi au supérieur: 2.3
+p:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+  variations:
+    - si: 5 = 1
+      alors: 'foo'

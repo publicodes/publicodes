@@ -187,6 +187,11 @@ and to_chain_mec name (chain_meca, pos) : Yojson.Basic.t =
           ("type", `Assoc [("type", `String "boolean")])
       | Literal Date ->
           ("type", `Assoc [("type", `String "date")])
+      | Enum consts ->
+          let consts =
+            List.map consts ~f:(fun const -> `String (Utils.Pos.value const))
+          in
+          ("type", `Assoc [("enum", `List consts)])
       | Number unit ->
           let unit =
             match unit with
