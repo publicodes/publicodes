@@ -13,6 +13,8 @@ let convert_constant expr_const =
       Bool b
   | Shared_ast.String s ->
       String s
+  | Shared_ast.Symbol s ->
+      Symbol s
   | Shared_ast.Date d ->
       Date d
 
