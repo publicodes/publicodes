@@ -63,3 +63,11 @@ q:
       alors: 'foo'
     - si: non
       alors: 'bar'
+r:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+  variations:
+    - si: 5 = 1
+      alors: 'foo'
