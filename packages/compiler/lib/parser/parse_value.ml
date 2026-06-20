@@ -9,7 +9,11 @@ open Expr
 let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
     Ast.value Output.t =
   match yaml with
-  | `Scalar ({value; style= `Single_quoted}, value_pos)
+  | `Scalar ({value; style= `Single_quoted}, value_pos) ->
+      return
+        { value=
+            Pos.mk ~pos (Expr (Pos.mk ~pos:value_pos (Const (Symbol value))))
+        ; chainable_mechanisms= [] }
   | `Scalar ({value; style= `Double_quoted}, value_pos) ->
       return
         { value=

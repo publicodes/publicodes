@@ -28,6 +28,8 @@ let from_rule_type (tree : Tree.t) (rule_name : Rule_name.t) =
       Tstr "boolean"
   | Some (Literal Date) ->
       Tstr "date"
+  | Some (Symbol value) ->
+      Tstr (Stdlib.Format.asprintf "\"%s\"" value)
   | None ->
       Tstr "unknown"
 
@@ -114,6 +116,8 @@ let node_of_number id value units =
 
 let node_of_text id value = node_of id "text" @@ Tstr value
 
+let node_of_symbol id value = node_of id "symbol" @@ Tstr value
+
 let node_of_bool id value = node_of id "bool" @@ Tbool value
 
 let node_of_date id value =
@@ -188,6 +192,8 @@ let rec node_of_tree_val (name : Shared.Rule_name.t)
       node_of_number id n units
   | Const (String s) ->
       node_of_text id s
+  | Const (Symbol s) ->
+      node_of_symbol id s
   | Const (Bool b) ->
       node_of_bool id b
   | Const (Date d) ->

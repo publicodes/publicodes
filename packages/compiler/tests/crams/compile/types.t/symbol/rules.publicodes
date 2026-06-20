@@ -1,0 +1,9 @@
+a: 'foo'
+b: a = 'foo' # ack
+c: a = 'bar' # nack
+d:
+  variations: # nak
+    - si: oui
+      alors: 'foo'
+    - si: non
+      alors: 'bar'
