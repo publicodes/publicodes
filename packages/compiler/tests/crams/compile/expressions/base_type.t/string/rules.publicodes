@@ -1,4 +1,3 @@
 a: "bla"
-b: 'ouaha ouhah'
-c: "'foo'bar'"
-d: 'No : "foo"'
+b: "'foo'bar'"
+c: "bla\"foo"

@@ -9,6 +9,7 @@
  *
  * @typedef {symbol & { __brand: 'NotDefined' }} NotDefined
  * @typedef {symbol & { __brand: 'NotApplicable' }} NotApplicable
+ * @typedef {string} symbol
  */
 
 /**
@@ -39,7 +40,7 @@ const NotApplicable = /** @type {NotApplicable} */ (
 
 /**
  * @private
- * @typedef {Date | number | string | boolean | NotApplicable | NotDefined} Value
+ * @typedef {Date | number | string | symbol | boolean | NotApplicable | NotDefined} Value
  *
  * Other types:
  * @typedef {string} RuleName

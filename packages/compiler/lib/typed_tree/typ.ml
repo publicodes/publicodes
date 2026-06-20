@@ -4,7 +4,11 @@ open Utils.Output
 open Shared
 module Any = Utils.Uid.Make ()
 
-type naked_t = Literal of Typ.literal | Number of Number_unit.t | Any of Any.t
+type naked_t =
+  | Literal of Typ.literal
+  | Number of Number_unit.t
+  | Symbol of string
+  | Any of Any.t
 
 and t = naked_t Pos.t UnionFind.elem
 
@@ -19,6 +23,8 @@ let to_string t =
       "bool"
   | Literal Date ->
       "date"
+  | Symbol value ->
+      Stdlib.Format.asprintf "'%s'" value
   | _ ->
       "?"
 
@@ -28,28 +34,31 @@ let any ~pos () = mk ~pos (Any (Any.mk ()))
 
 let literal ~pos typ = mk ~pos (Literal typ)
 
+let symbol ~pos value = mk ~pos (Symbol value)
+
 let number_with_unit ~pos unit = mk ~pos (Number (Number_unit.concrete unit))
 
 let any_number ~pos () = mk ~pos (Number (Number_unit.any ()))
 
 let error_typ_mismatch (typ1, pos1) (typ2, pos2) =
-  let to_str = function
+  let to_labels (typ, pos) =
+    match typ with
     | Number _ ->
-        "un nombre"
+        [Pos.mk ~pos "est un nombre"]
     | Literal String ->
-        "un texte"
+        [Pos.mk ~pos "est un texte"]
     | Literal Bool ->
-        "un booléen (oui / non)"
+        [Pos.mk ~pos "est un booléen (oui / non)"]
     | Literal Date ->
-        "une date"
+        [Pos.mk ~pos "est une date"]
+    | Symbol s ->
+        [Pos.mk ~pos (Stdlib.Format.sprintf "est le symbole '%s'" s)]
     | _ ->
         failwith "Impossible"
   in
   let code, message = Err.type_incoherence in
   fatal_error ~pos:pos1 ~kind:`Type ~code
-    ~labels:
-      [ Pos.mk ~pos:pos1 (Stdlib.Format.sprintf "est %s" (to_str typ1))
-      ; Pos.mk ~pos:pos2 (Stdlib.Format.sprintf "est %s" (to_str typ2)) ]
+    ~labels:(to_labels (typ1, pos1) @ to_labels (typ2, pos2))
     message
 
 let unify t1 t2 =
@@ -69,11 +78,14 @@ let unify t1 t2 =
         (* Todo replace with a unique type_error, with the pos of the different arguments *)
         error_typ_mismatch typ1 typ2
       else return t1
-  | Number _, Literal _ | Literal _, Number _ ->
-      error_typ_mismatch typ1 typ2
+  | Symbol s1, Symbol s2 ->
+      if not (String.equal s1 s2) then error_typ_mismatch typ1 typ2
+      else return t1
   | Number n1, Number n2 ->
       let* _ = Number_unit.unify ~pos1 ~pos2 n1 n2 in
       return t1
+  | _, _ ->
+      error_typ_mismatch typ1 typ2
 
 let multiply ~pos n1 n2 =
   let typ1 = n1 |> UnionFind.get in
@@ -110,5 +122,7 @@ let to_concrete typ =
       (* else Some (Shared.Typ.Number None) *)
   | Literal l ->
       Some (Shared.Typ.Literal l)
+  | Symbol value ->
+      Some (Shared.Typ.Symbol value)
   | Any _ ->
       None

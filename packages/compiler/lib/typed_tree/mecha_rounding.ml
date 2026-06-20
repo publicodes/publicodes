@@ -62,7 +62,7 @@ let typecheck ~unify_value ~pos ~typ ~pass (_, precision, value) =
   if pass >= 2 then
     let typ, pos = UnionFind.get precision.meta in
     match typ with
-    | Any _ | Literal String | Literal Date ->
+    | Any _ | Literal String | Literal Date | Symbol _ ->
         let code, message = Err.type_invalid_type in
         fatal_error ~kind:`Type
           ~hints:["arrondi doit être un nombre ou un booléen"]

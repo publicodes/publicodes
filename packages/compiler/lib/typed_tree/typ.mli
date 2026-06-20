@@ -4,7 +4,11 @@ open Shared
 
 module Any : Utils.Uid.S
 
-type naked_t = Literal of Typ.literal | Number of Number_unit.t | Any of Any.t
+type naked_t =
+  | Literal of Typ.literal
+  | Number of Number_unit.t
+  | Symbol of string
+  | Any of Any.t
 
 and t = naked_t Pos.t UnionFind.elem
 
@@ -15,6 +19,8 @@ val mk : pos:Pos.pos -> naked_t -> t
 val any : pos:Pos.pos -> unit -> t
 
 val literal : pos:Pos.pos -> Typ.literal -> t
+
+val symbol : pos:Pos.pos -> string -> t
 
 val number_with_unit : pos:Pos.pos -> Units.t -> t
 

@@ -24,13 +24,22 @@ String :
     "bla"
   
   b:
-    "ouaha ouhah"
-  
-  c:
     "'foo'bar'"
   
-  d:
-    "No : "foo""
+  c:
+    "bla"foo"
+
+Symbol :
+
+  $ publicodes compile symbol  -t debug_eval_tree -o -
+  a:
+    'ouaha ouhah'
+  
+  b:
+    'No : "foo"'
+  
+  c:
+    'boo'hou'
 
 
 Number with unit :

@@ -1,3 +1,50 @@
+Working case:
+
+  $ publicodes compile ok -o - -t debug_eval_tree
+  a:
+    get_context(a)
+  
+  b:
+    get_context(b)
+  
+  c:
+    get_context(c)
+  
+  test a:
+    @a = 42.
+  
+  test b:
+    @b = Shared_ast.Day {day = 11; year = 2000; month = 1}
+  
+  test c:
+    @c = "foo"
+
+Symbol checks:
+
+  $ publicodes compile ./symbol/ -o - -t debug_eval_tree
+  
+  E023 types non cohérents entre eux [type error]
+       ╒══  ./symbol/rules.publicodes:7:14 ══
+     6 │     - si: oui
+     7 │       alors: 'foo'
+       │              ˘˘˘˘˘ est le symbole 'foo'
+       ╒══  ./symbol/rules.publicodes:9:14 ══
+     8 │     - si: non
+     9 │       alors: 'bar'
+       │              ˘˘˘˘˘ est le symbole 'bar'
+  
+  
+  E023 types non cohérents entre eux [type error]
+       ╒══  ./symbol/rules.publicodes:1:4 ══
+     1 │ a: 'foo'
+       │    ˘˘˘˘˘ est le symbole 'foo'
+       ╒══  ./symbol/rules.publicodes:3:8 ══
+     2 │ b: a = 'foo' # ack
+     3 │ c: a = 'bar' # nack
+       │        ˘˘˘˘˘˘ est le symbole 'bar'
+  
+  [123]
+
 Should have error when type don't match:
 
   $ publicodes compile ./errors/type_mismatch/ -o -
@@ -10,6 +57,16 @@ Should have error when type don't match:
      2 │ 
      3 │ b: 12
        │    ˘˘ est un nombre
+  
+  
+  E023 types non cohérents entre eux [type error]
+       ╒══  ./errors/type_mismatch/rules.publicodes:1:4 ══
+     1 │ a: "Test"
+       │    ˘˘˘˘˘˘ est un texte
+       ╒══  ./errors/type_mismatch/rules.publicodes:9:4 ══
+     8 │ 
+     9 │ e: 'Test'
+       │    ˘˘˘˘˘˘ est le symbole 'Test'
   
   [123]
 
