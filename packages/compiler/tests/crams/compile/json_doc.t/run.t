@@ -1277,6 +1277,102 @@ Valid json doc :
           }
         },
         "chainable mecanisms": []
+      },
+      {
+        "name": "r",
+        "_publicodes": {
+          "id": "34bb3c58881a81d9eb5a564aba2d8fe9",
+          "position": {
+            "file": "ok/rules.publicodes",
+            "start": { "index": 795, "line": 66, "column": 1 },
+            "end": { "index": 796, "line": 66, "column": 2 }
+          }
+        },
+        "value mecanism": {
+          "type": "variations",
+          "_publicodes": {
+            "id": "8651138b0c019be4c49df4a7cadc8238",
+            "position": {
+              "file": "ok/rules.publicodes",
+              "start": { "index": 857, "line": 71, "column": 3 },
+              "end": { "index": 867, "line": 71, "column": 13 }
+            }
+          },
+          "parameters": {
+            "conditions": [
+              {
+                "if": {
+                  "value mecanism": {
+                    "type": "expr",
+                    "_publicodes": {
+                      "id": "0fff6f381ab757923342e18c456a7a8b",
+                      "position": {
+                        "file": "ok/rules.publicodes",
+                        "start": { "index": 879, "line": 72, "column": 11 },
+                        "end": { "index": 884, "line": 72, "column": 16 }
+                      }
+                    },
+                    "parameters": {
+                      "type": "eq",
+                      "parameters": {
+                        "left": {
+                          "type": "constant",
+                          "parameters": {
+                            "type": "number",
+                            "parameters": { "value": 5.0 }
+                          }
+                        },
+                        "right": {
+                          "type": "constant",
+                          "parameters": {
+                            "type": "number",
+                            "parameters": { "value": 1.0 }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "chainable mecanisms": []
+                },
+                "then": {
+                  "value mecanism": {
+                    "type": "expr",
+                    "_publicodes": {
+                      "id": "573400a8e3c6f93430ab506ed658570c",
+                      "position": {
+                        "file": "ok/rules.publicodes",
+                        "start": { "index": 891, "line": 73, "column": 7 },
+                        "end": { "index": 896, "line": 73, "column": 12 }
+                      }
+                    },
+                    "parameters": {
+                      "type": "constant",
+                      "parameters": {
+                        "type": "symbol",
+                        "parameters": { "value": "foo" }
+                      }
+                    }
+                  },
+                  "chainable mecanisms": []
+                }
+              }
+            ]
+          }
+        },
+        "chainable mecanisms": [
+          {
+            "type": "type",
+            "_publicodes": {
+              "id": "0e4ff2e1429a37ff505a42e721479bc8",
+              "position": {
+                "file": "ok/rules.publicodes",
+                "start": { "index": 800, "line": 67, "column": 3 },
+                "end": { "index": 804, "line": 67, "column": 7 }
+              }
+            },
+            "parameters": { "enum": "'foo', 'bar'" }
+          }
+        ]
       }
     ]
   }
@@ -1452,4 +1548,14 @@ Valid json doc :
           $ret("89129915ff64e38296ff0bdd95661c13", ctx, $eq(
             $ret("5ea9807021df2d38e89f776a8398aa41", ctx, false),
             $ret("89129915ff64e38296ff0bdd95661c13", ctx, true))), () => $ret("376321b5d1cd24ea1be87197dd6d34df", ctx, "bar"), () => $ret("89129915ff64e38296ff0bdd95661c13", ctx, NotApplicable)))))
+    )
+  
+  function _r(ctx, params) {
+    return /** @type {"foo" | "bar"} */ (
+      $ret("8651138b0c019be4c49df4a7cadc8238", ctx, $cond(
+        $ret("8651138b0c019be4c49df4a7cadc8238", ctx, $eq(
+          $ret("10c0223705b199c5ec39541449b8b44b", ctx, $eq(
+            $ret("ec82c37b0c0a4b652f90723f84e541ef", ctx, 5.),
+            $ret("a3fa8ec07fbbbb942570db231be8b1d5", ctx, 1.))),
+          $ret("8651138b0c019be4c49df4a7cadc8238", ctx, true))), () => $ret("0b0b83cdf2e9428ceeb71c11604b9c79", ctx, "foo"), () => $ret("8651138b0c019be4c49df4a7cadc8238", ctx, NotApplicable)))
     )
