@@ -44,6 +44,8 @@ let literal ~pos typ = mk ~pos (Literal typ)
 
 let symbol ~pos value = mk ~pos (Symbol value)
 
+let enum ~pos value = mk ~pos (Enum value)
+
 let number_with_unit ~pos unit = mk ~pos (Number (Number_unit.concrete unit))
 
 let any_number ~pos () = mk ~pos (Number (Number_unit.any ()))
