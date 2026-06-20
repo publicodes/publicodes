@@ -30,6 +30,8 @@ let from_rule_type (tree : Tree.t) (rule_name : Rule_name.t) =
       Tstr "boolean"
   | Some (Literal Date) ->
       Tstr "date"
+  | Some (Enum _) ->
+      Tstr "enum"
   | None ->
       Tstr "unknown"
 
