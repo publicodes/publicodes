@@ -270,6 +270,8 @@ and transform_typ t value =
         Typ.number_with_unit ~pos unit
     | Shared.Typ.Literal l ->
         Typ.literal ~pos l
+    | Shared.Typ.Enum e ->
+        Typ.enum ~pos e
   in
   {value with meta= typ}
 
