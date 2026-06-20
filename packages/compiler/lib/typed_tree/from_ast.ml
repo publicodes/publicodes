@@ -272,8 +272,8 @@ and transform_typ t value =
         Typ.literal ~pos l
     | Shared.Typ.Symbol _ ->
         failwith "unreachable" (* there is no type symbol *)
-    | Shared.Typ.Enum _ ->
-        failwith "unreachable" (* there is no type enum *)
+    | Shared.Typ.Enum e ->
+        Typ.enum ~pos e
   in
   {value with meta= typ}
 

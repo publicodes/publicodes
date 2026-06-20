@@ -188,8 +188,13 @@ and to_chain_mec name (chain_meca, pos) : Yojson.Basic.t =
           ("type", `Assoc [("type", `String "date")])
       | Symbol _ ->
           failwith "unreachable" (* there is no type symbol *)
-      | Enum _ ->
-          failwith "unreachable" (* there is no type enum *)
+      | Enum values ->
+          let values =
+            List.map values ~f:Utils.Pos.value
+            |> List.map ~f:(Stdlib.Format.asprintf "'%s'")
+          in
+          let value = String.concat ~sep:", " values in
+          ("type", `Assoc [("enum", `String value)])
       | Number unit ->
           let unit =
             match unit with
