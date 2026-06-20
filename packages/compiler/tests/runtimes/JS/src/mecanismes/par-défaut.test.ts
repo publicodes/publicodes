@@ -13,7 +13,7 @@ test:
 	test('simple texte vide', async () => {
 		const rules = await yaml`
 test:
-  par défaut: ''
+  par défaut: ""
 `
 		expect(rules.test.evaluate().value).toBe('')
 	})

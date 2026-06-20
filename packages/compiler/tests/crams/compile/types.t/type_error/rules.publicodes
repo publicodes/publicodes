@@ -5,3 +5,7 @@ b: 12
 c: a > b
 
 d: a = "pas Test"
+
+e: 'Test'
+
+f: a = e

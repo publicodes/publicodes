@@ -55,6 +55,9 @@
 {%- case "text" -%}
 "{{ node_value }}"
 
+{%- case "symbol" -%}
+'{{ node_value }}'
+
 {%- case "bool" -%}
 {{ node_value }}
 

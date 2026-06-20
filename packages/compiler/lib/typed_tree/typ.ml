@@ -43,6 +43,8 @@ let unify t1 t2 =
           "un nombre"
       | Literal String ->
           "un texte"
+      | Literal Symbol ->
+          "un symbole"
       | Literal Bool ->
           "un booléen (oui / non)"
       | Literal Date ->
