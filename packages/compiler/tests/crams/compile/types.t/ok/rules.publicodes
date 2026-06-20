@@ -18,3 +18,23 @@ e:
     - si: a > 40
       alors: 'bar'
 test e: e = 'foo' # part of the enum
+
+f:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+test f: f = 'bar'
+
+g:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+      - 'toot'
+  variations:
+    - si: 20 = 50
+      alors: 'foo'
+    - si: 20 > 50
+      alors: 'tata'
+test g: g = 'bar'
