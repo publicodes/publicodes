@@ -93,6 +93,8 @@
 		{{ node_value.number }}
 	{%- case "text" -%}
 		"{{ fmt_esc(node_value) }}"
+	{%- case "symbol" -%}
+		"{{ fmt_esc(node_value) }}"
 	{%- case "bool" -%}
 		{{ node_value }}
 	{%- case "date" -%}

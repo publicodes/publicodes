@@ -1132,6 +1132,36 @@ Valid json doc :
             }
           }
         ]
+      },
+      {
+        "name": "p",
+        "_publicodes": {
+          "id": "502bb89b9ab8534e6191f8ea100d2cec",
+          "position": {
+            "file": "ok/rules.publicodes",
+            "start": { "index": 703, "line": 59, "column": 1 },
+            "end": { "index": 704, "line": 59, "column": 2 }
+          }
+        },
+        "value mecanism": {
+          "type": "expr",
+          "_publicodes": {
+            "id": "502bb89b9ab8534e6191f8ea100d2cec",
+            "position": {
+              "file": "ok/rules.publicodes",
+              "start": { "index": 703, "line": 59, "column": 1 },
+              "end": { "index": 704, "line": 59, "column": 2 }
+            }
+          },
+          "parameters": {
+            "type": "constant",
+            "parameters": {
+              "type": "symbol",
+              "parameters": { "value": "foo" }
+            }
+          }
+        },
+        "chainable mecanisms": []
       }
     ]
   }
@@ -1291,4 +1321,9 @@ Valid json doc :
   function _o(ctx, params) {
     return /** @type {number} */ (
       $ret("63087e876b62b228ce1ca32f323fa133", ctx, $round("up", $ret("63087e876b62b228ce1ca32f323fa133", ctx, $get("o", ctx, params)), () => $ret("9eefb1d8169ec53b896ee6369c28130a", ctx, 2.3)))
+    )
+  
+  function _p(ctx, params) {
+    return /** @type {"foo"} */ (
+      $ret("7a4b65152797006a36e155d3959e6250", ctx, "foo")
     )

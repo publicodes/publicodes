@@ -13,6 +13,8 @@ let convert_constant expr_const =
       Bool b
   | Shared_ast.String s ->
       String s
+  | Shared_ast.Symbol s ->
+      Symbol s
   | Shared_ast.Date d ->
       Date d
 
@@ -268,6 +270,8 @@ and transform_typ t value =
         Typ.number_with_unit ~pos unit
     | Shared.Typ.Literal l ->
         Typ.literal ~pos l
+    | Shared.Typ.Symbol _ ->
+        failwith "unreachable" (* there is no type symbol *)
   in
   {value with meta= typ}
 

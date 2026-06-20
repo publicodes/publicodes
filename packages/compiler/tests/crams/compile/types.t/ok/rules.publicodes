@@ -1,0 +1,9 @@
+a:
+  type: nombre
+test a: a = 42
+b:
+  type: date
+test b: b = 11/01/2000
+c:
+  type: texte
+test c: c = "foo"
