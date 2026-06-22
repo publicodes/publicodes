@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a1314d3d_a586aa87",
+        "filename": "packages/compiler/tests/crams/compile/json_doc.t/run.t",
+        "patchSetId": 8
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-22T08:20:45Z",
+      "side": 1,
+      "message": "Je remarque que j\u0027ai laissé ce \"parameters\" dans les chainables. Ici ca devrait plutôt être \"value\", comme pour les mécanismes. Ou alors mettre \"parameters\" dans les \"value mecanism\". L\u0027un ou l\u0027autre, mais au moins rendre cohérent les deux.",
+      "revId": "743a7b62df1bf964dd065e5f3af2a94fb95afab6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
