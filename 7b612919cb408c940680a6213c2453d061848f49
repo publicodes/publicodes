@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7d95c29a_6d56ae0d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-22T08:10:49Z",
+      "side": 1,
+      "message": "C\u0027est bon pour merge de mon côté merci 👍\n\nEst-ce que tu pourras simplement rajouter les commentaires de https://github.com/publicodes/publicodes/pull/840/changes/7b612919cb408c940680a6213c2453d061848f49#r3450641677 sur l\u0027issue concernant l\u0027amélioration des messages d\u0027erreurs (je ne me rappelle plus s\u0027il en existe déjà une d\u0027ouverte ou pas) stp ?",
+      "revId": "7b612919cb408c940680a6213c2453d061848f49",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
