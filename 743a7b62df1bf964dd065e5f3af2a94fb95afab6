@@ -316,6 +316,30 @@
       },
       "revId": "743a7b62df1bf964dd065e5f3af2a94fb95afab6",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a95e02d1_ff4a70e1",
+        "filename": "packages/compiler/tests/crams/compile/json_doc.t/run.t",
+        "patchSetId": 8
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-23T09:12:15Z",
+      "side": 1,
+      "message": "Je pensais juste simplifié pour les constantes car de toute façon que ce soit via les paramètres ou via des clés dans le même objet il faudra effectivement matcher le type du noeud courant donc simplement au lieu d\u0027aller chercher les bonnes infos dans paramètres on irait chercher dans le noeud courant. En terme de complexité de parcours ça me semble donc équivalent.\n\nLe réel intérêt est de réduire la taille finale du fichier JSON.\n\nJe suis d\u0027accord sur ta proposition d\u0027attendre la spec + l\u0027usage réel avant d\u0027essayer d\u0027optimiser 👍",
+      "parentUuid": "df1ab9a1_f9e8a1fe",
+      "range": {
+        "startLine": 289,
+        "startChar": 23,
+        "endLine": 293,
+        "endChar": 25
+      },
+      "revId": "743a7b62df1bf964dd065e5f3af2a94fb95afab6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
