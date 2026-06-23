@@ -24,6 +24,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5738a5a3_817d8cce",
+        "filename": "packages/compiler/lib/shared/to_json_doc.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-23T07:43:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c7fe06fb_f293b225",
+      "range": {
+        "startLine": 7,
+        "startChar": 2,
+        "endLine": 18,
+        "endChar": 4
+      },
+      "revId": "743a7b62df1bf964dd065e5f3af2a94fb95afab6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "6aeecaf0_3e56cd0e",
@@ -37,6 +61,30 @@
       "writtenOn": "2026-06-22T08:30:54Z",
       "side": 1,
       "message": "Cela pourrait simplement être `(Sexp.to_string (Shared_ast.sexp_of_binary_op binop))`",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 2
+      },
+      "revId": "743a7b62df1bf964dd065e5f3af2a94fb95afab6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "297be0ac_5192c5a1",
+        "filename": "packages/compiler/lib/shared/to_json_doc.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-23T07:43:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6aeecaf0_3e56cd0e",
       "range": {
         "startLine": 24,
         "startChar": 0,
@@ -72,6 +120,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "78996574_187a47b1",
+        "filename": "packages/compiler/lib/shared/to_json_doc.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-23T07:43:19Z",
+      "side": 1,
+      "message": "Pareil ca viens casser la cohérence (voir autre com)",
+      "parentUuid": "a86d5dcc_fcebd395",
+      "range": {
+        "startLine": 80,
+        "startChar": 0,
+        "endLine": 80,
+        "endChar": 2
+      },
+      "revId": "743a7b62df1bf964dd065e5f3af2a94fb95afab6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "b1449740_11958fad",
         "filename": "packages/compiler/lib/shared/to_json_doc.ml",
         "patchSetId": 8
@@ -83,6 +155,30 @@
       "writtenOn": "2026-06-22T08:30:54Z",
       "side": 1,
       "message": "Je pense que l\u0027on peut rester au plus proche des noeuds de l\u0027AST : `expr`, `is_applicable`, `is_not_applicable`, etc...",
+      "range": {
+        "startLine": 124,
+        "startChar": 12,
+        "endLine": 124,
+        "endChar": 22
+      },
+      "revId": "743a7b62df1bf964dd065e5f3af2a94fb95afab6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6a0182cc_c8dc4418",
+        "filename": "packages/compiler/lib/shared/to_json_doc.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-23T07:43:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b1449740_11958fad",
       "range": {
         "startLine": 124,
         "startChar": 12,
@@ -106,6 +202,30 @@
       "writtenOn": "2026-06-22T08:30:54Z",
       "side": 1,
       "message": "Si la fonction n\u0027est jamais utilisée à l’extérieur du module il vaut mieux ne pas l\u0027exposer.\n\nCe serait bien de rajouter une documentation décrivant le format de sortie également je pense.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 2
+      },
+      "revId": "743a7b62df1bf964dd065e5f3af2a94fb95afab6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "edefdebd_33b690f5",
+        "filename": "packages/compiler/lib/shared/to_json_doc.mli",
+        "patchSetId": 8
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-23T07:43:19Z",
+      "side": 1,
+      "message": "vérace. Pour la doc, je vais tenter de nous faire un json-schema.",
+      "parentUuid": "14e5f101_8e1954ad",
       "range": {
         "startLine": 1,
         "startChar": 0,
@@ -164,6 +284,30 @@
       "writtenOn": "2026-06-22T08:30:54Z",
       "side": 1,
       "message": "Ca pourrait simplement être : \n\n```json\n{\n  \"value\": {\n    \"type\": \"number\",\n    \"value\": 20.0\n  } \n}\n```\nTu vois un intérêt particulier de garder `type: constant` et `parameters` ?",
+      "range": {
+        "startLine": 289,
+        "startChar": 23,
+        "endLine": 293,
+        "endChar": 25
+      },
+      "revId": "743a7b62df1bf964dd065e5f3af2a94fb95afab6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df1ab9a1_f9e8a1fe",
+        "filename": "packages/compiler/tests/crams/compile/json_doc.t/run.t",
+        "patchSetId": 8
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-23T07:43:19Z",
+      "side": 1,
+      "message": "C\u0027est tout a fait faisable, mais ca viens casser la cohérence. atm tous les noeuds qui ont un `type`, ont un `parameters`. Le type indique comment parser les paramètres. \n\nD\u0027une manière plus générale, j\u0027ai tenté plusieurs fois de retirer le `parameters`, et de les appliquer au noeud parent. Mais la plupars des mécanismes ont plusieurs parametres, oubien leur parametre est un tableau. Donc on a de toute manière besoin de clefs spécifique par type de mécanisme. Au final, ca ne me semble pas en accord avec notre objectif de base, qui est de simplifier le parsing.\n\nMon avis c\u0027est qu\u0027on garde la forme en l\u0027état, et les prochains changements on les évalues en amont via la spec que je vais faire. Ce sera plus simple que de faire des aller et retours sur le code.",
+      "parentUuid": "52a5af0a_e12d0b24",
       "range": {
         "startLine": 289,
         "startChar": 23,
