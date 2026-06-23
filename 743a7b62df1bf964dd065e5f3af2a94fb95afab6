@@ -340,6 +340,30 @@
       },
       "revId": "743a7b62df1bf964dd065e5f3af2a94fb95afab6",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57bbf400_4ff0b7bd",
+        "filename": "packages/compiler/tests/crams/compile/json_doc.t/run.t",
+        "patchSetId": 8
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-23T15:26:53Z",
+      "side": 1,
+      "message": "\u003e Le réel intérêt est de réduire la taille finale du fichier JSON.\n\nOui et je ne pense pas que ce soit vraiment interessant.",
+      "parentUuid": "a95e02d1_ff4a70e1",
+      "range": {
+        "startLine": 289,
+        "startChar": 23,
+        "endLine": 293,
+        "endChar": 25
+      },
+      "revId": "743a7b62df1bf964dd065e5f3af2a94fb95afab6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }

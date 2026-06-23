@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b19f9d9e_1f1e2c30",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 11
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-23T15:26:53Z",
+      "side": 1,
+      "message": "J\u0027ai écrit un JSON-Schema complet pour documenter et vérifier ce Json.",
+      "revId": "ff5728c4a227a174c99515bbdff56cce576b389a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
