@@ -92,6 +92,7 @@ let gather_module ?package module_ =
   else
     let files =
       Stdlib.Sys.readdir pathstr |> List.of_array
+      |> List.sort ~compare:String.compare
       |> List.map ~f:(Fpath.add_seg path)
       |> List.filter ~f:(Fpath.has_ext "publicodes")
       |> List.map ~f:Fpath.to_string
