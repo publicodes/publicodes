@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aa5cedeb_ce47fb70",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-25T07:47:51Z",
+      "side": 1,
+      "message": "A quoi sert cette nouvelle ligne? On a aucun .exe ailleurs que dans _opam/ ou node_modules/",
+      "revId": "9bcdac01cc305ba7f23630233ec9a4176cacb0e4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
