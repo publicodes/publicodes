@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26015f96_4d389279",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-25T08:16:34Z",
+      "side": 1,
+      "message": "Le mieux ce serais évidemment de tout split, mais ici on peux tout garder dans un seul commit. Par contre il faudrais adapter le titre du commit pour quelque chose d\u0027encore plus plus générique.\n\nDu genre:\n\n    chore: simplifications and cleanups\n\n    Removes the unused multiple target compilation logic, and uses the\n    dedicated [Compiler.t] type to refactorize the compilation context.\n\n    Cleanup the bin module, remove comments, fix the watch mode.\n\n    Add missing .mli, and rename some APIs.\n\n    ...",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 65
+      },
+      "revId": "3c73564ea0fe2c2cc73cada85d424d81bcb25197",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e1e6878f_9c49dc41",
+        "filename": "packages/compiler/lib/parser/parser.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-25T08:16:34Z",
+      "side": 1,
+      "message": "Oui je reconnais que c\u0027est bizarre. Selon moi on pourrais renommer \"parse_files\" pour \"parse_root\" dans ce fichier. Mais ca me semble tout aussi étrange d\u0027exposer ce détail d\u0027implémentation dans cette interface.\n\n\"parse_root\" est le point d\u0027entrée qui initie le contexte de parsing, et il est donc différent de \"parse_files\" qui est le point de recursion. C\u0027est lié au fait qu\u0027il y ait une ref dans ctx, et que donc on ne peux pas (a ma connaissance), utiliser une valeur par défaut pour un argument ctx optionnel. Sinon toutes nos compilation successive vont partager le même \"next_module_id\".",
+      "revId": "3c73564ea0fe2c2cc73cada85d424d81bcb25197",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
