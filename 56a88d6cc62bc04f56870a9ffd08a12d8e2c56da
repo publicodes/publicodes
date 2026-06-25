@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "39fc342e_00ba1a76",
+        "filename": "packages/compiler/lib/dependency_graph/checks.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-25T08:58:38Z",
+      "side": 1,
+      "message": "bug sur l\u0027accumulateur ici",
+      "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
