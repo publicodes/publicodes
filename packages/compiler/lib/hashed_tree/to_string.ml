@@ -21,15 +21,22 @@ let from_rule_type (tree : Tree.t) (rule_name : Rule_name.t) =
   let Tree.{typ; _} = Eval_tree.get_meta tree rule_name in
   match typ with
   | Some (Number _) ->
-      Tstr "number"
+      Tlist [Tstr "number"]
   | Some (Literal String) ->
-      Tstr "text"
+      Tlist [Tstr "text"]
   | Some (Literal Bool) ->
-      Tstr "boolean"
+      Tlist [Tstr "boolean"]
   | Some (Literal Date) ->
-      Tstr "date"
+      Tlist [Tstr "date"]
   | Some (Symbol value) ->
-      Tstr (Stdlib.Format.asprintf "\"%s\"" value)
+      Tlist [Tstr (Stdlib.Format.asprintf "\"%s\"" value)]
+  | Some (Enum values) ->
+      let values =
+        List.map values ~f:Utils.Pos.value
+        |> List.map ~f:(Stdlib.Format.asprintf "\"%s\"")
+      in
+      let value = String.concat ~sep:" | " values in
+      Tlist [Tstr value]
   | None ->
       Tstr "unknown"
 

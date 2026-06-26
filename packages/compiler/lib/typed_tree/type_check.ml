@@ -85,7 +85,7 @@ let type_check ?(snd_pass = false) (tree : Tree.t) =
         let* _ = unify_value then_expr in
         let* _ = unify_value else_expr in
         let* _ = unify cond_expr.meta (literal ~pos Bool) in
-        let* _ = unify then_expr.meta else_expr.meta in
+        let* _ = unify ~enumerate:pos then_expr.meta else_expr.meta in
         let+ _ = unify typ then_expr.meta in
         ()
     | Ref ref_name ->
