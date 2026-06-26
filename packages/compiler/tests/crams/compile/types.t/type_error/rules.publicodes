@@ -9,3 +9,19 @@ d: a = "pas Test"
 e: 'Test'
 
 f: a = e
+
+g:
+  variations:
+    - si: b > 50
+      alors: 'foo'
+    - si: b > 40
+      alors: 'bar'
+    - si: b > 40
+      alors: 'toot'
+h: g = 'nak' # not part of the enum
+
+i:
+  valeur: super = bien # not the same
+  avec:
+    super: 'super'
+    bien: 'bien'
