@@ -40,7 +40,7 @@ Check root exports :
        */
       evaluate: (params = {}, options) =>
         $evaluate(_module_c_·_regle_c, params, options),
-      /** @type {"number"} */
+      /** @type {number} */
       type: "number",
       /** @type {"aucune"} */
       unit: "aucune",
@@ -64,7 +64,7 @@ Check root exports :
        */
       evaluate: (params = {}, options) =>
         $evaluate(_result, params, options),
-      /** @type {"number"} */
+      /** @type {number} */
       type: "number",
       /** @type {"aucune"} */
       unit: "aucune",

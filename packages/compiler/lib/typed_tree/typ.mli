@@ -8,6 +8,7 @@ type naked_t =
   | Literal of Typ.literal
   | Number of Number_unit.t
   | Symbol of string
+  | Enum of string Pos.t list
   | Any of Any.t
 
 and t = naked_t Pos.t UnionFind.elem
@@ -28,7 +29,7 @@ val any_number : pos:Pos.pos -> unit -> t
 
 (** Operations *)
 
-val unify : t -> t -> t Output.t
+val unify : ?enumerate:Pos.pos -> t -> t -> t Output.t
 
 val multiply : pos:Pos.pos -> t -> t -> t
 
