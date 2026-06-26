@@ -8,6 +8,7 @@ type naked_t =
   | Literal of Typ.literal
   | Number of Number_unit.t
   | Symbol of string
+  | Enum of string Pos.t list
   | Any of Any.t
 
 and t = naked_t Pos.t UnionFind.elem
@@ -25,6 +26,13 @@ let to_string t =
       "date"
   | Symbol value ->
       Stdlib.Format.asprintf "'%s'" value
+  | Enum values ->
+      let values =
+        List.map values ~f:Utils.Pos.value
+        |> List.map ~f:(Stdlib.Format.asprintf "'%s'")
+      in
+      let value = String.concat ~sep:", " values in
+      Stdlib.Format.asprintf "[%s]" value
   | _ ->
       "?"
 
@@ -40,7 +48,21 @@ let number_with_unit ~pos unit = mk ~pos (Number (Number_unit.concrete unit))
 
 let any_number ~pos () = mk ~pos (Number (Number_unit.any ()))
 
-let unify t1 t2 =
+(* Returns true if all l2 values fit in l1 *)
+let fit_in l1 l2 =
+  List.filter l2 ~f:(fun v2 ->
+      not (List.exists l1 ~f:(fun v1 -> String.equal v1 v2)) )
+  |> List.is_empty
+
+let%test_unit "fit_in" =
+  [%test_eq: bool] (fit_in ["foo"; "bar"] ["foo"]) true ;
+  [%test_eq: bool] (fit_in ["foo"; "bar"] ["foo"; "super"]) false
+
+let dedup_symbols symbols =
+  List.stable_dedup symbols ~compare:(fun v1 v2 ->
+      String.compare (Pos.value v1) (Pos.value v2) )
+
+let unify ?enumerate t1 t2 =
   let typ1 = t1 |> UnionFind.get in
   let typ2 = t2 |> UnionFind.get in
   let pos1 = Pos.pos typ1 in
@@ -58,6 +80,15 @@ let unify t1 t2 =
           [Pos.mk ~pos "est une date"]
       | Symbol s ->
           [Pos.mk ~pos (Stdlib.Format.sprintf "est le symbole '%s'" s)]
+      | Enum symbols ->
+          let symstr =
+            List.map symbols ~f:Pos.value
+            |> List.map ~f:(Stdlib.Format.sprintf "'%s'")
+            |> String.concat ~sep:", "
+          in
+          Pos.mk ~pos (Stdlib.Format.sprintf "est l'énum [%s]" symstr)
+          :: List.map symbols ~f:(function s, pos ->
+              Pos.mk ~pos (Stdlib.Format.sprintf "avec ce symbole '%s'" s) )
       | _ ->
           failwith "Impossible"
     in
@@ -78,8 +109,47 @@ let unify t1 t2 =
         (* Todo replace with a unique type_error, with the pos of the different arguments *)
         error_typ_mismatch ()
       else return t1
-  | Symbol s1, Symbol s2 ->
-      if not (String.equal s1 s2) then error_typ_mismatch () else return t1
+  | Symbol s1, Symbol s2 -> (
+    match enumerate with
+    | Some pos ->
+        let e =
+          if String.equal s1 s2 then [Pos.mk ~pos:pos1 s1]
+          else [Pos.mk ~pos:pos1 s1; Pos.mk ~pos:pos2 s2]
+        in
+        return (UnionFind.merge (fun _ _ -> Pos.mk ~pos (Enum e)) t1 t2)
+    | None ->
+        if not (String.equal s1 s2) then error_typ_mismatch () else return t1 )
+  | Enum e, Symbol s | Symbol s, Enum e -> (
+    match enumerate with
+    | Some pos ->
+        let enum =
+          if
+            let is_enum_first =
+              Pos.value typ1 |> function Enum _ -> true | _ -> false
+            in
+            is_enum_first
+          then e @ [Pos.mk ~pos:pos2 s]
+          else [Pos.mk ~pos:pos1 s] @ e |> dedup_symbols
+        in
+        return (UnionFind.merge (fun _ _ -> Pos.mk ~pos (Enum enum)) t1 t2)
+    | None ->
+        if
+          let e = List.map e ~f:Pos.value in
+          not (List.exists e ~f:(String.equal s))
+        then error_typ_mismatch ()
+        else return t2 )
+  | Enum e1, Enum e2 -> (
+    match enumerate with
+    | Some pos ->
+        let enum = dedup_symbols (e1 @ e2) in
+        return (UnionFind.merge (fun _ _ -> Pos.mk ~pos (Enum enum)) t1 t2)
+    | None ->
+        if
+          let e1 = List.map e1 ~f:Pos.value in
+          let e2 = List.map e2 ~f:Pos.value in
+          not (fit_in e1 e2)
+        then error_typ_mismatch ()
+        else return t1 )
   | Number n1, Number n2 ->
       let* _ = Number_unit.unify ~pos1 ~pos2 n1 n2 in
       return t1
@@ -123,5 +193,7 @@ let to_concrete typ =
       Some (Shared.Typ.Literal l)
   | Symbol value ->
       Some (Shared.Typ.Symbol value)
+  | Enum value ->
+      Some (Shared.Typ.Enum value)
   | Any _ ->
       None

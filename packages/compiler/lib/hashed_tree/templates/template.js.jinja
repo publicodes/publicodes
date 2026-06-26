@@ -65,6 +65,12 @@
 	{%- endswitch %}
 {%- endmacro -%}
 
+{%- macro fmt_ts_types (types) -%}
+	{%- for type in types -%}
+		{{ fmt_ts_type(type) }}{% if !loop.last %},{{ " | " }}{% endif %}
+	{%- endfor -%}
+{%- endmacro -%}
+
 {%- macro fmt_esc (input) -%}
 	{{ input
 		| replace ("'", "\\'")
@@ -159,9 +165,9 @@
 
 {%- for rule_type, rule_name, rule_node in rules %}
 
-/** @type {(ctx: Context, params: RuleName[]) => {{ fmt_ts_type(rule_type) }}} */
+/** @type {(ctx: Context, params: RuleName[]) => {{ fmt_ts_types(rule_type) }}} */
 function {{ fmt_method(rule_name) }}(ctx, params) {
-  return /** @type \{{{ fmt_ts_type(rule_type)}}\} */ (
+  return /** @type \{{{ fmt_ts_types(rule_type)}}\} */ (
     {%- call indentret ("    ") -%}
     {{ fmt_node(rule_node) }}
     {%- endcall %}
@@ -193,19 +199,23 @@ const rules = {
      * Parameters of "{{ out.rule_name }}"
      * @typedef \{{
      {%- for param_type, param_value in out.params %}
-     *  '{{ fmt_esc(param_value) }}'?: {{ fmt_ts_type(param_type) }}
+     *  '{{ fmt_esc(param_value) }}'?: {{ fmt_ts_types(param_type) }}
      {%- endfor %}
      * }} {{ fmt_identifier(out.rule_name) }}Params
      */
     /**
      * Evaluate "{{ out.rule_name }}" with evaluation trace, and information on
      * missing and needed parameters.
-     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {Options}) => {value: {{ fmt_ts_type(out.return_type) }}, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>, trace: {Trace}}}
+     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {Options}) => {value: {{ fmt_ts_types(out.return_type) }}, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>, trace: {Trace}}}
      */
     evaluate: (params = {}, options) =>
       $evaluate({{ fmt_method(out.rule_name) }}, params, options),
-    /** @type {"{{ out.rule_type }}"} */
-    type: "{{ out.rule_type }}",
+    /** @type \{{{ fmt_ts_types(out.rule_type) }}} */
+    type: "
+      {%- for rule_type in out.rule_type -%}
+        {{ rule_type }}{% if !loop.last %},{{ " | " }}{% endif %}
+      {%- endfor -%}
+    ",
     {%- if out.unit %}
     /** @type {"{{ out.unit }}"} */
     unit: "{{ out.unit }}",

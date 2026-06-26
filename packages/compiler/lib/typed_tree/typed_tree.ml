@@ -18,6 +18,7 @@ let type_check tree =
 	We need to traverse the tree multiple times for good unit inference and error detecting
 
 	- The first time, we create unit type for each constant and unify simplest forms.
+	- The second time, we unify conditional then and else branches, which enumerate symbols.
 	- The last time, everything that can be infered has been infered, so we can check for unit inconsistency
 
 	@TODO : the simplest and more efficient way to do it would be have topological sort before type checking
@@ -26,6 +27,8 @@ let type_check tree =
     Type_check.type_check ~pass:1 tree
     |> Output.ignore_logs
     >>= Type_check.type_check ~pass:2
+    |> Output.ignore_logs
+    >>= Type_check.type_check ~pass:3
   in
   (*
   2. Post-typecheck pass
