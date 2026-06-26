@@ -10,3 +10,11 @@ test c: c = "foo"
 d:
   type: symbole
 test d: d = 'foo'
+
+e:
+  variations:
+    - si: a > 50
+      alors: 'foo'
+    - si: a > 40
+      alors: 'bar'
+test e: e = 'foo' # part of the enum
