@@ -1162,6 +1162,121 @@ Valid json doc :
           }
         },
         "chainable mecanisms": []
+      },
+      {
+        "name": "q",
+        "_publicodes": {
+          "id": "a85468d2fca866b8f4cb33974a03e918",
+          "position": {
+            "file": "ok/rules.publicodes",
+            "start": { "index": 712, "line": 60, "column": 1 },
+            "end": { "index": 713, "line": 60, "column": 2 }
+          }
+        },
+        "value mecanism": {
+          "type": "variations",
+          "_publicodes": {
+            "id": "89129915ff64e38296ff0bdd95661c13",
+            "position": {
+              "file": "ok/rules.publicodes",
+              "start": { "index": 717, "line": 61, "column": 3 },
+              "end": { "index": 727, "line": 61, "column": 13 }
+            }
+          },
+          "parameters": {
+            "conditions": [
+              {
+                "if": {
+                  "value mecanism": {
+                    "type": "expr",
+                    "_publicodes": {
+                      "id": "1413f4e83de89a540b748b90f97dccea",
+                      "position": {
+                        "file": "ok/rules.publicodes",
+                        "start": { "index": 739, "line": 62, "column": 11 },
+                        "end": { "index": 742, "line": 62, "column": 14 }
+                      }
+                    },
+                    "parameters": {
+                      "type": "constant",
+                      "parameters": {
+                        "type": "bool",
+                        "parameters": { "value": true }
+                      }
+                    }
+                  },
+                  "chainable mecanisms": []
+                },
+                "then": {
+                  "value mecanism": {
+                    "type": "expr",
+                    "_publicodes": {
+                      "id": "3c998a9a4f91162f9a49fbc783e7d812",
+                      "position": {
+                        "file": "ok/rules.publicodes",
+                        "start": { "index": 749, "line": 63, "column": 7 },
+                        "end": { "index": 754, "line": 63, "column": 12 }
+                      }
+                    },
+                    "parameters": {
+                      "type": "constant",
+                      "parameters": {
+                        "type": "symbol",
+                        "parameters": { "value": "foo" }
+                      }
+                    }
+                  },
+                  "chainable mecanisms": []
+                }
+              },
+              {
+                "if": {
+                  "value mecanism": {
+                    "type": "expr",
+                    "_publicodes": {
+                      "id": "5ea9807021df2d38e89f776a8398aa41",
+                      "position": {
+                        "file": "ok/rules.publicodes",
+                        "start": { "index": 772, "line": 64, "column": 11 },
+                        "end": { "index": 775, "line": 64, "column": 14 }
+                      }
+                    },
+                    "parameters": {
+                      "type": "constant",
+                      "parameters": {
+                        "type": "bool",
+                        "parameters": { "value": false }
+                      }
+                    }
+                  },
+                  "chainable mecanisms": []
+                },
+                "then": {
+                  "value mecanism": {
+                    "type": "expr",
+                    "_publicodes": {
+                      "id": "578b86ae693636f768eb5c06a45614b8",
+                      "position": {
+                        "file": "ok/rules.publicodes",
+                        "start": { "index": 782, "line": 65, "column": 7 },
+                        "end": { "index": 787, "line": 65, "column": 12 }
+                      }
+                    },
+                    "parameters": {
+                      "type": "constant",
+                      "parameters": {
+                        "type": "symbol",
+                        "parameters": { "value": "bar" }
+                      }
+                    }
+                  },
+                  "chainable mecanisms": []
+                }
+              }
+            ]
+          }
+        },
+        "chainable mecanisms": []
       }
     ]
   }
@@ -1324,6 +1439,17 @@ Valid json doc :
     )
   
   function _p(ctx, params) {
-    return /** @type {symbol} */ (
+    return /** @type {"foo"} */ (
       $ret("7a4b65152797006a36e155d3959e6250", ctx, "foo")
+    )
+  
+  function _q(ctx, params) {
+    return /** @type {"foo" | "bar"} */ (
+      $ret("89129915ff64e38296ff0bdd95661c13", ctx, $cond(
+        $ret("89129915ff64e38296ff0bdd95661c13", ctx, $eq(
+          $ret("1413f4e83de89a540b748b90f97dccea", ctx, true),
+          $ret("89129915ff64e38296ff0bdd95661c13", ctx, true))), () => $ret("653fedc93360236646d104ff6c284d0f", ctx, "foo"), () => $ret("89129915ff64e38296ff0bdd95661c13", ctx, $cond(
+          $ret("89129915ff64e38296ff0bdd95661c13", ctx, $eq(
+            $ret("5ea9807021df2d38e89f776a8398aa41", ctx, false),
+            $ret("89129915ff64e38296ff0bdd95661c13", ctx, true))), () => $ret("376321b5d1cd24ea1be87197dd6d34df", ctx, "bar"), () => $ret("89129915ff64e38296ff0bdd95661c13", ctx, NotApplicable)))))
     )

@@ -1,3 +1,5 @@
+open Base
+
 module Code = struct
   (* Tips: add new ones to the bottom *)
   type t =
@@ -49,6 +51,7 @@ module Code = struct
     | Resolver_duplicate_rule
     | Unused_context
     | Parsing_no_rules
+    | Type_missing_symbols
   [@@deriving equal, enum, show]
 
   let show = fun code -> Stdlib.Format.sprintf "E%03d" (to_enum code)
@@ -108,6 +111,22 @@ let invalid_rule_name = (Code.Parsing_invalid_rule_name, "nom de règle invalide
 let type_invalid_type = (Code.Type_invalid_type, "type invalide détecté")
 
 let type_incoherence = (Code.Type_incoherence, "types non cohérents entre eux")
+
+let type_missing_symbols symbols =
+  let symbols = List.map symbols ~f:(Stdlib.Format.asprintf "'%s'") in
+  let msg =
+    match symbols with
+    | [] ->
+        failwith "empty symbols"
+    | [symbol] ->
+        Stdlib.Format.asprintf
+          "le symbole %s ne fait pas partie de l'énumération" symbol
+    | _ ->
+        String.concat ~sep:", " symbols
+        |> Stdlib.Format.asprintf
+             "les symboles %s ne font pas partie de l'énumération"
+  in
+  (Code.Type_missing_symbols, msg)
 
 let type_unit_incoherence =
   (Code.Type_incompatible_units, "unités non compatibles")

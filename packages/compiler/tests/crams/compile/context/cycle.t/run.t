@@ -16,8 +16,8 @@ Valid :
        */
       evaluate: (params = {}, options) =>
         $evaluate(_c, params, options),
-      /** @type {"number"} */
-      type: "number",
+      /** @type {number} */
+      type: 'number',
       /** @type {"aucune"} */
       unit: "aucune",
       /**
@@ -40,8 +40,8 @@ Valid :
        */
       evaluate: (params = {}, options) =>
         $evaluate(_out, params, options),
-      /** @type {"number"} */
-      type: "number",
+      /** @type {number} */
+      type: 'number',
       /** @type {"aucune"} */
       unit: "aucune",
       /**
