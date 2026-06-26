@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "802ecc14_7becc2aa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-26T07:51:09Z",
+      "side": 1,
+      "message": "Ca m\u0027as pris un peu de temps a review, les algorithmes sont un peu plus complexes, mais avec la doc et le graph, ca me semble assez clair maintenant. Mis à part certains détails, et le bug qu\u0027on a trouvé, j\u0027ai pas grand chose à y redire. Je me suis amusée a prendre les tests et les ramener sur 2.0, et ca met effectivement bien en évidence tous les cas qui ne fonctionnais pas. Trop cool, excellent taf!",
+      "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "39fc342e_00ba1a76",
@@ -14,6 +31,74 @@
       "writtenOn": "2026-06-25T08:58:38Z",
       "side": 1,
       "message": "bug sur l\u0027accumulateur ici",
+      "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "692a8ae7_8c96e357",
+        "filename": "packages/compiler/lib/dependency_graph/rule_graph.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-26T07:51:09Z",
+      "side": 1,
+      "message": "Je propose d\u0027aller un peu plus loin, et d\u0027utiliser ce output_dot automatiquement: Check une variable d\u0027environnement connu, comme par exemple `PUBLICODE_GRAPHVIZ_DEPS`, et lorsqu\u0027elle est présente, output le graph sur la stderr.",
+      "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5db3d343_c65c7c8a",
+        "filename": "packages/compiler/lib/dependency_graph/rule_graph.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-26T07:51:09Z",
+      "side": 1,
+      "message": "pas fan de ce `(`. On peux juste retirer ces parentheses et ca sembler marcher tout aussi bien. Il y a une raison que je rate?",
+      "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0e30e53_60ddf140",
+        "filename": "packages/compiler/tests/crams/compile/context/valid_parameters.t/run.t",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-26T07:51:09Z",
+      "side": 1,
+      "message": "Petit soucis de iis ici",
+      "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ecddc6f6_5f7b3e4a",
+        "filename": "packages/compiler/tests/crams/compile/cycle_detection.t/run.t",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-06-26T07:51:09Z",
+      "side": 1,
+      "message": "Je ne suis pas convaincue par ce hint sur les cycles. Je propose ceci, et il me semble que c\u0027est encore plus simple à implémenter:\n\n```\n  E027 cycle de dépendance détecté [cycle warning]\n       ╒══  ./error/rules.publicodes:6:15 ══\n     5 │     plafond:\n     6 │       valeur: cotisation\n       │               ˘˘˘˘˘˘˘˘˘˘ \u0027cotisation . plafond\u0027 -\u003e \u0027cotisation\u0027\n\n       ╒══  ./error/rules.publicodes:3:12 ══\n     2 │   valeur: 10% * salaire brut\n     3 │   plafond: plafond\n       │            ˘˘˘˘˘˘˘ \u0027cotisation\u0027 -\u003e \u0027cotisation . plafond\u0027\n```\n\nCa indique mieux depuis quelle règle les références sont faites.\n\nCa retire le `de nouveau` parce que ce n\u0027est pas l\u0027indice que l\u0027on souhaite mettre en avant. De toute façon l\u0027ordre des labels est non définie, et il n\u0027y a de pas de \"bon sens\" pour afficher un cycle. Typiquement ici on tombe sur la règle dont le namespace est le plus profond en premier, et on met l\u0027accent sur la ligne 3, alors que pour le coup, il y a davantage de chance que l\u0027erreur soit de l\u0027autre coté.",
       "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
