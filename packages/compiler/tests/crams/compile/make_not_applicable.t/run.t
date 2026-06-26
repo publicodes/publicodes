@@ -136,7 +136,7 @@ Type error
        ╒══  type_error/rules.publicodes:3:11 ══
      2 │   rend non applicable: b
      3 │   valeur: 6
-       │           ˘ est un nombre 
+       │           ˘ est un nombre
   
   [123]
 

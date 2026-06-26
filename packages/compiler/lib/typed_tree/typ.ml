@@ -40,7 +40,7 @@ let unify t1 t2 =
   let error_typ_mismatch () =
     let to_str = function
       | Number _ ->
-          "un nombre "
+          "un nombre"
       | Literal String ->
           "un texte"
       | Literal Bool ->
