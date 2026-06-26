@@ -57,12 +57,12 @@ let typecheck ~unify_value ~pos ~typ ~pass (_, precision, value) =
   let* _ = unify typ value.meta in
   (*
 	  We do not unify the precision, because it is polymorphic (boolean, integer with unit `décimales`, or any other unit)
-	  But we type_check it once we know its type (second pass)
+	  But we type_check it once we know its type (last pass)
 	*)
-  if pass >= 2 then
+  if pass >= 3 then
     let typ, pos = UnionFind.get precision.meta in
     match typ with
-    | Any _ | Literal String | Literal Date | Symbol _ ->
+    | Any _ | Literal String | Literal Date | Symbol _ | Enum _ ->
         let code, message = Err.type_invalid_type in
         fatal_error ~kind:`Type
           ~hints:["arrondi doit être un nombre ou un booléen"]

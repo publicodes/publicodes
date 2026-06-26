@@ -65,7 +65,7 @@ let type_check ~pass (tree : Tree.t) =
             ()
         | Gt | Lt | LtEq | GtEq | Eq | NotEq ->
             let* _ = unify typ (literal ~pos Bool) in
-            if pass >= 2 then
+            if pass >= 3 then
               let+ _ = unify left.meta right.meta in
               ()
             else return () )
@@ -85,9 +85,11 @@ let type_check ~pass (tree : Tree.t) =
         let* _ = unify_value then_expr in
         let* _ = unify_value else_expr in
         let* _ = unify cond_expr.meta (literal ~pos Bool) in
-        let* _ = unify then_expr.meta else_expr.meta in
-        let+ _ = unify typ then_expr.meta in
-        ()
+        if pass >= 2 then
+          let* _ = unify ~enumerate:pos then_expr.meta else_expr.meta in
+          let+ _ = unify typ then_expr.meta in
+          ()
+        else return ()
     | Ref ref_name ->
         let rule = Hashtbl.find_exn tree ref_name in
         let+ _ = unify typ rule.meta in
