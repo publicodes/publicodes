@@ -50,7 +50,7 @@ and normalize_rounding_precision (precision : Tree.value) =
   | _ ->
       precision
 
-let typecheck ~unify_value ~pos ~typ ~snd_pass (_, precision, value) =
+let typecheck ~unify_value ~pos ~typ ~pass (_, precision, value) =
   let* _ = unify_value value in
   let* _ = unify value.meta (any_number ~pos ()) in
   let* _ = unify_value precision in
@@ -59,7 +59,7 @@ let typecheck ~unify_value ~pos ~typ ~snd_pass (_, precision, value) =
 	  We do not unify the precision, because it is polymorphic (boolean, integer with unit `décimales`, or any other unit)
 	  But we type_check it once we know its type (second pass)
 	*)
-  if snd_pass then
+  if pass >= 2 then
     let typ, pos = UnionFind.get precision.meta in
     match typ with
     | Any _ | Literal String | Literal Date ->
