@@ -3,13 +3,13 @@ Should have error when type don't match:
   $ publicodes compile ./errors/type_mismatch/ -o -
   
   E023 types non cohérents entre eux [type error]
+       ╒══  ./errors/type_mismatch/rules.publicodes:1:4 ══
+     1 │ a: "Test"
+       │    ˘˘˘˘˘˘ est un texte
        ╒══  ./errors/type_mismatch/rules.publicodes:3:4 ══
      2 │ 
      3 │ b: 12
        │    ˘˘ est un nombre
-       ╒══  ./errors/type_mismatch/rules.publicodes:1:4 ══
-     1 │ a: "Test"
-       │    ˘˘˘˘˘˘ est un texte
   
   [123]
 
