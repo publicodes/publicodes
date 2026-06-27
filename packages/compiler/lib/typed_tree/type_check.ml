@@ -62,8 +62,10 @@ let type_check ?(snd_pass = false) (tree : Tree.t) =
             ()
         | Gt | Lt | LtEq | GtEq | Eq | NotEq ->
             let* _ = unify typ (literal ~pos Bool) in
-            let+ _ = unify left.meta right.meta in
-            () )
+            if snd_pass then
+              let+ _ = unify left.meta right.meta in
+              ()
+            else return () )
     | Unary_op ((op, _), expr) -> (
       match op with
       | Neg ->
