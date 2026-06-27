@@ -129,14 +129,14 @@ Type error
 
   $ publicodes compile type_error  -t debug_eval_tree -o -
   E023 types non cohérents entre eux [type error]
-       ╒══  type_error/rules.publicodes:7:4 ══
-     6 │ 
-     7 │ c: b
-       │    ˘ est un booléen (oui / non)
        ╒══  type_error/rules.publicodes:3:11 ══
      2 │   rend non applicable: b
      3 │   valeur: 6
        │           ˘ est un nombre
+       ╒══  type_error/rules.publicodes:7:4 ══
+     6 │ 
+     7 │ c: b
+       │    ˘ est un booléen (oui / non)
   
   [123]
 
