@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "424c16c0_f785c7b2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-30T15:40:26Z",
+      "side": 1,
+      "message": "Cf. mon message sur l’autre commit (ça se duplique du coup).",
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7bdfa385_2606c32d",
+        "filename": "packages/compiler/lib/typed_tree/type_check.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-30T15:40:26Z",
+      "side": 1,
+      "message": "On s\u0027était dit que l\u0027on utilisait pas un nouveau type symbole qui contiendrait toutes les valeurs possibles mais des types constantes (on peut garder symbole) où il y aurait un type par valeur possibles.\n\nConcrètement, au lieu d\u0027avoir le type `Symbol` on aurait `Symbol of string`.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 2
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "915c9989_9242183b",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-30T15:40:26Z",
+      "side": 1,
+      "message": "Pourquoi utiliser les symbol typescript plutôt que les types littéraux ?",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 1
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "915cd16c_985b1c92",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-30T15:40:26Z",
+      "side": 1,
+      "message": "La fonction de comparaison ne devrait pas être utilisée dans le runtime du coup ?",
+      "range": {
+        "startLine": 58,
+        "startChar": 9,
+        "endLine": 58,
+        "endChar": 17
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26e9468f_65db5153",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-30T15:40:26Z",
+      "side": 1,
+      "message": "Il manque le type ici",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 2
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
