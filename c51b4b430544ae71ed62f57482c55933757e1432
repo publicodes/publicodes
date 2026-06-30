@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "36cf3aed_33dbe09e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-30T15:38:10Z",
+      "side": 1,
+      "message": "Dans l\u0027ensemble sur l\u0027utilisation ça me parait bien même si on pourrait améliorer les messages d\u0027erreurs je pense et couvrir plus de cas de tests (remplacement, variations imbriquées).\n\nReste à bien se mettre d\u0027accord sur la représentation du type dans l\u0027AST (type primitifs symbole ou bien type littérale) et dans le runtime JS.",
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b49581c2_bbeb292f",
+        "filename": "packages/compiler/lib/typed_tree/typ.mli",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-30T15:38:10Z",
+      "side": 1,
+      "message": "Une énumération n\u0027est pas une liste de symboles ?",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 2
+      },
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7a6c047b_8c772839",
+        "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-30T15:38:10Z",
+      "side": 1,
+      "message": "Le message d\u0027erreur devrait pointer la comparaison `super \u003d bien` en premier ici avant de préciser les types des deux références.",
+      "range": {
+        "startLine": 50,
+        "startChar": 10,
+        "endLine": 57,
+        "endChar": 2
+      },
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e52a079_e50e3455",
+        "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-30T15:38:10Z",
+      "side": 1,
+      "message": "Pour moi le message d\u0027erreur devrait parler du type de `g` et non celui de sa variation.\n\nJe mettrais d\u0027avantage l\u0027accent sur le fait que le symbole `nak` n\u0027appartient pas à l\u0027énumération `[\u0027foo\u0027, \u0027bar\u0027, \u0027toot\u0027]` et je rajouterai l\u0027explication de l\u0027inférence du type de `g` après. Car en l\u0027état l\u0027information principale de l\u0027erreur est un peu noyée je trouve.",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 56
+      },
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e107cb3_0995f64b",
+        "filename": "packages/compiler/tests/crams/compile/types.t/type_error/rules.publicodes",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-06-30T15:38:10Z",
+      "side": 1,
+      "message": "L\u0027inférence à partir de variations est top ! Est-ce que ça va jusqu\u0027à discriminer le type dans les branches de la condition (je ne m\u0027en rend pas compte à quel point ce serait compliqué) ?\n\nIl faudrait au moins rajouter des tests pour le remplace également (et réfléchir à un message d\u0027erreur compréhensible)",
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
