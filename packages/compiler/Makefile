@@ -33,7 +33,7 @@ help:
 #> install                  | Install OCaml dependencies using opam
 install:
 	@echo "Installing dependencies..."
-	opam install . --deps-only --with-test --with-doc --with-dev-setup
+	opam switch create . --deps-only --with-test --with-dev-setup
 
 #> install-js               | Install JavaScript dependencies using yarn
 install-js:
