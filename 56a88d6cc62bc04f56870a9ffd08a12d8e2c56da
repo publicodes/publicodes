@@ -54,6 +54,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b593d58a_647e110c",
+        "filename": "packages/compiler/lib/dependency_graph/rule_graph.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-06T11:11:32Z",
+      "side": 1,
+      "message": "Je ne suis pas sûre que ce soit très utile en l\u0027état car rien que pour les exemples auto-entrepreneur le graphe est trop gros et ne s\u0027affiche pas (c\u0027est peut-être un signe qu\u0027il essaie de modéliser trop d\u0027états ceci étant dit)..",
+      "parentUuid": "692a8ae7_8c96e357",
+      "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5db3d343_c65c7c8a",
         "filename": "packages/compiler/lib/dependency_graph/rule_graph.ml",
         "patchSetId": 2
@@ -65,6 +83,24 @@
       "writtenOn": "2026-06-26T07:51:09Z",
       "side": 1,
       "message": "pas fan de ce `(`. On peux juste retirer ces parentheses et ca sembler marcher tout aussi bien. Il y a une raison que je rate?",
+      "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2a5e77a2_9a800fab",
+        "filename": "packages/compiler/lib/dependency_graph/rule_graph.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-06T11:11:32Z",
+      "side": 1,
+      "message": "Oui bien vu ça doit être un artefact de refacto 👍",
+      "parentUuid": "5db3d343_c65c7c8a",
       "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
@@ -86,6 +122,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc2fed6e_1c2f6151",
+        "filename": "packages/compiler/tests/crams/compile/context/valid_parameters.t/run.t",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-06T11:11:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0e30e53_60ddf140",
+      "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ecddc6f6_5f7b3e4a",
@@ -99,6 +153,24 @@
       "writtenOn": "2026-06-26T07:51:09Z",
       "side": 1,
       "message": "Je ne suis pas convaincue par ce hint sur les cycles. Je propose ceci, et il me semble que c\u0027est encore plus simple à implémenter:\n\n```\n  E027 cycle de dépendance détecté [cycle warning]\n       ╒══  ./error/rules.publicodes:6:15 ══\n     5 │     plafond:\n     6 │       valeur: cotisation\n       │               ˘˘˘˘˘˘˘˘˘˘ \u0027cotisation . plafond\u0027 -\u003e \u0027cotisation\u0027\n\n       ╒══  ./error/rules.publicodes:3:12 ══\n     2 │   valeur: 10% * salaire brut\n     3 │   plafond: plafond\n       │            ˘˘˘˘˘˘˘ \u0027cotisation\u0027 -\u003e \u0027cotisation . plafond\u0027\n```\n\nCa indique mieux depuis quelle règle les références sont faites.\n\nCa retire le `de nouveau` parce que ce n\u0027est pas l\u0027indice que l\u0027on souhaite mettre en avant. De toute façon l\u0027ordre des labels est non définie, et il n\u0027y a de pas de \"bon sens\" pour afficher un cycle. Typiquement ici on tombe sur la règle dont le namespace est le plus profond en premier, et on met l\u0027accent sur la ligne 3, alors que pour le coup, il y a davantage de chance que l\u0027erreur soit de l\u0027autre coté.",
+      "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8a244a80_9f937e1b",
+        "filename": "packages/compiler/tests/crams/compile/cycle_detection.t/run.t",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-06T11:11:32Z",
+      "side": 1,
+      "message": "Je comprend mais avec ta proposition il y a une redondance d\u0027informations. Je pense qu\u0027il faudrait améliorer les messages d\u0027erreurs pour toujours afficher dans quelle règle on se situe.",
+      "parentUuid": "ecddc6f6_5f7b3e4a",
       "revId": "56a88d6cc62bc04f56870a9ffd08a12d8e2c56da",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
