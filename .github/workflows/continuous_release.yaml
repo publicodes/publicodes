@@ -7,22 +7,18 @@ permissions:
   attestations: write
 
 jobs:
-  build-compiler-linux:
-    name: Ocaml compiler (linux)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build and test the ocaml compiler
-        uses: ./.github/actions/build-compiler
-        with:
-          platform: linux
-
-  build-compiler-macos-windows:
-    name: Ocaml compiler
-    runs-on: ubuntu-latest
+  build-compiler:
+    name: Ocaml compiler (${{ matrix.platform }})
     strategy:
       matrix:
-        platform: [macos, windows]
+        include:
+          - platform: linux
+            os: ubuntu-latest
+          - platform: macos
+            os: macos-latest
+          - platform: windows
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Build and test the ocaml compiler
@@ -33,7 +29,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: build-compiler-linux
+    needs: build-compiler
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/install-node
@@ -47,7 +43,7 @@ jobs:
 
   test:
     name: Tests
-    needs: build-compiler-linux
+    needs: build-compiler
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
