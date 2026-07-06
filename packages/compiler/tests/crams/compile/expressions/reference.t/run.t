@@ -12,3 +12,7 @@ Valid :
   
   c:
     5.
+    
+Invalid :
+
+  $ publicodes compile invalid -o -
