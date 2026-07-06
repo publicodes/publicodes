@@ -24,6 +24,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "850f3fba_26037b55",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-06T11:21:55Z",
+      "side": 1,
+      "message": "Je trouve que le titre correspond bien aux changements effectués dans le commit justement : simplification du driver et ajout de fichiers d\u0027interfaces manquants. Paraphraser les modifications du commits ne me semble pas très utile.\n\nMais je suis d\u0027accord que je peux essayer de split le commit.",
+      "parentUuid": "26015f96_4d389279",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 65
+      },
+      "revId": "3c73564ea0fe2c2cc73cada85d424d81bcb25197",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e1e6878f_9c49dc41",
@@ -37,6 +61,24 @@
       "writtenOn": "2026-06-25T08:16:34Z",
       "side": 1,
       "message": "Oui je reconnais que c\u0027est bizarre. Selon moi on pourrais renommer \"parse_files\" pour \"parse_root\" dans ce fichier. Mais ca me semble tout aussi étrange d\u0027exposer ce détail d\u0027implémentation dans cette interface.\n\n\"parse_root\" est le point d\u0027entrée qui initie le contexte de parsing, et il est donc différent de \"parse_files\" qui est le point de recursion. C\u0027est lié au fait qu\u0027il y ait une ref dans ctx, et que donc on ne peux pas (a ma connaissance), utiliser une valeur par défaut pour un argument ctx optionnel. Sinon toutes nos compilation successive vont partager le même \"next_module_id\".",
+      "revId": "3c73564ea0fe2c2cc73cada85d424d81bcb25197",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8901554d_121e7544",
+        "filename": "packages/compiler/lib/parser/parser.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-06T11:21:55Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "e1e6878f_9c49dc41",
       "revId": "3c73564ea0fe2c2cc73cada85d424d81bcb25197",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
