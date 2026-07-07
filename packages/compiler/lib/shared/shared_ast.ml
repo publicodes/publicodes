@@ -94,10 +94,10 @@ type rule_meta =
 [@@deriving equal, show]
 
 type 'a replace =
-  { references: 'a Pos.t list
+  { reference: 'a Pos.t
   ; only_in: 'a Pos.t list
   ; except_in: 'a Pos.t list
-  ; priority: int }
+  ; exclusive: bool }
 [@@deriving equal, show, sexp]
 
 type 'a rule_def =

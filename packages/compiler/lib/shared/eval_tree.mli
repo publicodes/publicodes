@@ -26,6 +26,7 @@ type 'meta naked_value =
   | Get_context of Rule_name.t
   | Set_context of 'meta context
   | Round of (Shared_ast.rounding * 'meta value * 'meta value)
+  | Exclusive_replacement of (Rule_name.t * Rule_name.t list)
 [@@deriving show]
 
 and 'meta context =
@@ -76,6 +77,11 @@ val mk_condition :
      cond:'meta value
   -> then_:'meta value
   -> else_:'meta value
+  -> 'meta naked_value
+
+val mk_exclusive_replacement :
+     target:Rule_name.t
+  -> replacements:Rule_name.t list
   -> 'meta naked_value
 
 val const_not_applicable : 'meta naked_value

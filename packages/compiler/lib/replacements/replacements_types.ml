@@ -4,15 +4,12 @@ open Base
 
 (** Metadata for rule replacements, including priority and scope limitations *)
 type replace_meta =
-  { priority: int
-  ; only_in: Rule_name.t Pos.t list
+  { only_in: Rule_name.t Pos.t list
         (** Rules where this replacement applies. If empty, applies to all rules *)
   ; except_in: Rule_name.t Pos.t list
-        (** Rules where this replacement doesn't apply *) }
-[@@deriving show]
-
-(** Compare replacement metadata based on priority *)
-let compare_replace_meta a b = Int.compare a.priority b.priority
+        (** Rules where this replacement doesn't apply *)
+  ; exclusive: bool  (** Boolean flag to assume multiple replace exclusive**) }
+[@@deriving show, compare]
 
 (** Module for rule vertices in the replacement graph *)
 module RuleVertex = struct
@@ -23,15 +20,12 @@ end
 
 (** Module for edges between rules in the replacement graph *)
 module ReplacementEdge = struct
-  type t = replace_meta Pos.t [@@deriving show]
-
-  let compare a b = compare_replace_meta (Pos.value a) (Pos.value b)
-
-  let equal x y = 0 = compare x y
+  type t = replace_meta Pos.t [@@deriving show, compare]
 
   let hash = Hashtbl.hash
 
-  let default = Pos.mk ~pos:Pos.dummy {priority= 0; only_in= []; except_in= []}
+  let default =
+    Pos.mk ~pos:Pos.dummy {only_in= []; except_in= []; exclusive= false}
 end
 
 (** Directed graph for tracking rule replacements *)

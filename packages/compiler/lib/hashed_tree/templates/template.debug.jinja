@@ -106,6 +106,13 @@ else
 {%- case "get_ctx" -%}
 get_context({{ node_value }})
 
+{%- case "exclusive_replacement" -%}
+exclusive_replacement(@{{ node_value.target }}, [
+	{%- for r in node_value.replacements -%}
+	@{{ r }}{%- if !loop.last -%}, {% endif -%}
+	{%- endfor -%}
+])
+
 {%- case "set_ctx" -%}
 with: {
 {%- for item in node_value.items %}

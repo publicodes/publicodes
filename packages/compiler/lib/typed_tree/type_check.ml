@@ -94,6 +94,10 @@ let type_check ~pass (tree : Tree.t) =
         let rule = Hashtbl.find_exn tree ref_name in
         let+ _ = unify typ rule.meta in
         ()
+    | Exclusive_replacement (ref_name, _) ->
+        let rule = Hashtbl.find_exn tree ref_name in
+        let+ _ = unify typ rule.meta in
+        ()
     | Get_context _ ->
         return ()
     | Set_context {context= ctx; value= ctx_value} ->
