@@ -1,0 +1,21 @@
+a: 10
+
+b:
+  remplace: a
+  valeur: 5
+
+c:
+  remplace:
+    références à: b
+    exclusif: oui
+  valeur: 10
+
+c prime:
+  non applicable si:
+    est applicable: c
+  remplace:
+    références à: b
+    exclusif: oui
+  valeur: 15
+
+x: a
