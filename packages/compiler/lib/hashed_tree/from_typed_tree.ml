@@ -51,6 +51,9 @@ let rec transform_to_hash_and_type (value : Typed_tree.value) : Tree.value =
           Tree.Hash.(combine [of_string "ref"; of_rule_name rule_name])
         in
         (Eval_tree.Ref rule_name, hash)
+    | Eval_tree.Exclusive_replacement (target, replacements) ->
+        let hash = Tree.Hash.(combine [of_string "ref"; of_rule_name target]) in
+        (Eval_tree.Exclusive_replacement (target, replacements), hash)
     | Eval_tree.Get_context rule_name ->
         let hash =
           Tree.Hash.(combine [of_string "get_context"; of_rule_name rule_name])

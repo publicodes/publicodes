@@ -88,6 +88,10 @@ let type_check ?(snd_pass = false) (tree : Tree.t) =
         let rule = Hashtbl.find_exn tree ref_name in
         let+ _ = unify typ rule.meta in
         ()
+    | Exclusive_replacement (ref_name, _) ->
+        let rule = Hashtbl.find_exn tree ref_name in
+        let+ _ = unify typ rule.meta in
+        ()
     | Get_context _ ->
         return ()
         (* let _, ref_meta = Hashtbl.find_exn tree name in

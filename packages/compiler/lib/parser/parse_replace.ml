@@ -6,10 +6,10 @@ open Shared.Shared_ast
 
 exception Invalid_rule_name of string
 
-let parse_references ~key ?(if_key_not_found = return []) mapping =
+let parse_context_references ~key mapping =
   match find_value key mapping with
   | None ->
-      if_key_not_found
+      return []
   | Some (`Scalar ref, _) ->
       let+ ref = parse_ref ref in
       [ref]
@@ -19,19 +19,22 @@ let parse_references ~key ?(if_key_not_found = return []) mapping =
       let code, message = Err.parsing_should_not_be_object in
       fatal_error ~pos ~kind:`Syntax ~code message
 
-let parse_priority mapping =
-  match find_value "priorité" mapping with
+let parse_exclusive mapping =
+  match find_value "exclusif" mapping with
   | None ->
-      return 0
+      return false
   | Some (yaml, pos) -> (
       let* scalar = get_scalar ~pos yaml in
-      let priority = scalar |> get_value |> Stdlib.int_of_string_opt in
-      match priority with
-      | Some priority ->
-          return priority
-      | None ->
+      let value = scalar |> get_value in
+      match value with
+      | "oui" ->
+          return true
+      | "non" ->
+          return false
+      | _ ->
           let code, message = Err.parsing_invalid_mechanism in
-          fatal_error ~pos ~kind:`Syntax ~code ~hints:["doit être un nombre"]
+          fatal_error ~pos ~kind:`Syntax ~code
+            ~hints:["doit valoir « oui » ou « non »"]
             message )
 
 let no_reference_error ~pos =
@@ -42,28 +45,44 @@ let no_reference_error ~pos =
       ; "Précisez-la avec « références à: ... »" ]
     message
 
+let multiple_references_error ~pos =
+  let code, message = Err.parsing_invalid_mechanism in
+  fatal_error ~pos ~kind:`Syntax ~code
+    ~hints:
+      [ "Une seule règle peut être référencée à la fois dans un « références à »"
+      ; "Utilisez plusieurs « références à: » au sein du « remplace » pour \
+         cibler plusieurs règles pour remplacer plusieurs règles" ]
+    message
+
+let parse_reference ~pos mapping =
+  match find_value "références à" mapping with
+  | None ->
+      no_reference_error ~pos
+  | Some (`A _, pos) ->
+      multiple_references_error ~pos
+  | Some (yaml, pos) ->
+      let* scalar = get_scalar ~pos yaml in
+      parse_ref scalar
+
 let parse_replace ~pos yaml =
   match yaml with
   | `Scalar s ->
       let+ reference = parse_ref s in
-      {references= [reference]; only_in= []; except_in= []; priority= 0}
+      {reference; only_in= []; except_in= []; exclusive= false}
   | `O mapping ->
       let* _ =
         check_authorized_keys
-          ~keys:["références à"; "dans"; "sauf dans"; "priorité"]
+          ~keys:["références à"; "dans"; "sauf dans"; "exclusif"]
           mapping
       in
-      let references =
-        parse_references ~key:"références à"
-          ~if_key_not_found:(no_reference_error ~pos) mapping
+      let reference = parse_reference ~pos mapping in
+      let only_in = parse_context_references ~key:"dans" mapping in
+      let except_in = parse_context_references ~key:"sauf dans" mapping in
+      let exclusive = parse_exclusive mapping in
+      let+ reference, only_in, except_in, exclusive =
+        combine_4 reference only_in except_in exclusive
       in
-      let only_in = parse_references ~key:"dans" mapping in
-      let except_in = parse_references ~key:"sauf dans" mapping in
-      let priority = parse_priority mapping in
-      let+ references, only_in, except_in, priority =
-        combine_4 references only_in except_in priority
-      in
-      {references; only_in; except_in; priority}
+      {reference; only_in; except_in; exclusive}
   | `A _ ->
       let code, message = Err.parsing_should_not_be_array in
       fatal_error ~pos ~kind:`Syntax ~code message
@@ -72,23 +91,20 @@ let parse_make_not_applicable ~pos yaml =
   match yaml with
   | `Scalar s ->
       let+ reference = parse_ref s in
-      {references= [reference]; only_in= []; except_in= []; priority= 0}
+      {reference; only_in= []; except_in= []; exclusive= false}
   | `O mapping ->
       let* _ =
         check_authorized_keys
           ~keys:["références à"; "dans"; "sauf dans"]
           mapping
       in
-      let references =
-        parse_references ~key:"références à"
-          ~if_key_not_found:(no_reference_error ~pos) mapping
+      let reference = parse_reference ~pos mapping in
+      let only_in = parse_context_references ~key:"dans" mapping in
+      let except_in = parse_context_references ~key:"sauf dans" mapping in
+      let+ reference, only_in, except_in =
+        combine_3 reference only_in except_in
       in
-      let only_in = parse_references ~key:"dans" mapping in
-      let except_in = parse_references ~key:"sauf dans" mapping in
-      let+ references, only_in, except_in =
-        combine_3 references only_in except_in
-      in
-      {references; only_in; except_in; priority= 0}
+      {reference; only_in; except_in; exclusive= false}
   | `A _ ->
       let code, message = Err.parsing_should_not_be_array in
       fatal_error ~pos ~kind:`Syntax ~code message

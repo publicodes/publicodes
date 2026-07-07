@@ -19,7 +19,7 @@ let compute_depth_and_freq hashed_tree =
     let open Eval_tree in
     let depth =
       match node.value with
-      | Const _ | Ref _ | Get_context _ ->
+      | Const _ | Ref _ | Get_context _ | Exclusive_replacement _ ->
           0
       | Condition (cond, then_comp, else_comp) ->
           let cond_depth = loop cond in
@@ -99,7 +99,7 @@ let compress hashed_tree =
           let new_rule_value =
             let open Eval_tree in
             match node.value with
-            | Const _ | Ref _ | Get_context _ ->
+            | Const _ | Ref _ | Get_context _ | Exclusive_replacement _ ->
                 node.value
             | Condition (cond, then_comp, else_comp) ->
                 Condition
