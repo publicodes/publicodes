@@ -1,2 +1,3 @@
 publicodes.yaml
 *.publicodes.js
+**/*.schema.ts

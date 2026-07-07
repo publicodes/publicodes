@@ -1,0 +1,165 @@
+{
+  "a": {
+    "id": "dca2571aef84dfe7058f32386204350b",
+    "position": {
+      "file": "test/test.publicodes",
+      "start": { "index": 0, "line": 1, "column": 1 },
+      "end": { "index": 1, "line": 1, "column": 2 }
+    },
+    "value_mechanism": {
+      "kind": "value",
+      "id": "ad9e011e3204a4def1bd9d04c1cd7792",
+      "position": {
+        "file": "test/test.publicodes",
+        "start": { "index": 5, "line": 2, "column": 3 },
+        "end": { "index": 11, "line": 2, "column": 9 }
+      },
+      "parameters": {
+        "value_mechanism": {
+          "kind": "variations",
+          "id": "22bdba9af9936e361e6a4d71f870d362",
+          "position": {
+            "file": "test/test.publicodes",
+            "start": { "index": 17, "line": 3, "column": 5 },
+            "end": { "index": 27, "line": 3, "column": 15 }
+          },
+          "parameters": {
+            "conditions": [
+              {
+                "if": {
+                  "value_mechanism": {
+                    "kind": "expr",
+                    "id": "0807ae369e0eaf279e22f318a9060e85",
+                    "position": {
+                      "file": "test/test.publicodes",
+                      "start": { "index": 41, "line": 4, "column": 13 },
+                      "end": { "index": 47, "line": 4, "column": 19 }
+                    },
+                    "parameters": {
+                      "kind": "gt",
+                      "parameters": {
+                        "left": { "kind": "ref", "parameters": "b" },
+                        "right": {
+                          "kind": "constant",
+                          "parameters": {
+                            "type": "number",
+                            "parameters": { "value": 20.0 }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "chained_mechanisms": []
+                },
+                "then": {
+                  "value_mechanism": {
+                    "kind": "expr",
+                    "id": "525c56beade21a100727c16287303d08",
+                    "position": {
+                      "file": "test/test.publicodes",
+                      "start": { "index": 63, "line": 5, "column": 16 },
+                      "end": { "index": 67, "line": 5, "column": 20 }
+                    },
+                    "parameters": {
+                      "kind": "constant",
+                      "parameters": {
+                        "type": "number",
+                        "parameters": { "value": 20.0, "unit": "€" }
+                      }
+                    }
+                  },
+                  "chained_mechanisms": []
+                }
+              },
+              {
+                "if": {
+                  "value_mechanism": {
+                    "kind": "expr",
+                    "id": "bb6c11f36bc5177978839786befc3fce",
+                    "position": {
+                      "file": "test/test.publicodes",
+                      "start": { "index": 80, "line": 6, "column": 13 },
+                      "end": { "index": 85, "line": 6, "column": 18 }
+                    },
+                    "parameters": {
+                      "kind": "gt",
+                      "parameters": {
+                        "left": { "kind": "ref", "parameters": "b" },
+                        "right": {
+                          "kind": "constant",
+                          "parameters": {
+                            "type": "number",
+                            "parameters": { "value": 5.0 }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "chained_mechanisms": []
+                },
+                "then": {
+                  "value_mechanism": {
+                    "kind": "expr",
+                    "id": "516d881cbdf036d86cc1cc432b4427ef",
+                    "position": {
+                      "file": "test/test.publicodes",
+                      "start": { "index": 101, "line": 7, "column": 16 },
+                      "end": { "index": 104, "line": 7, "column": 19 }
+                    },
+                    "parameters": {
+                      "kind": "constant",
+                      "parameters": {
+                        "type": "number",
+                        "parameters": { "value": 5.0, "unit": "€" }
+                      }
+                    }
+                  },
+                  "chained_mechanisms": []
+                }
+              }
+            ],
+            "else": {
+              "value_mechanism": {
+                "kind": "expr",
+                "id": "b9277afbc505f161b832ab7fc3d60588",
+                "position": {
+                  "file": "test/test.publicodes",
+                  "start": { "index": 120, "line": 8, "column": 16 },
+                  "end": { "index": 121, "line": 8, "column": 17 }
+                },
+                "parameters": {
+                  "kind": "constant",
+                  "parameters": {
+                    "type": "number",
+                    "parameters": { "value": 0.0 }
+                  }
+                }
+              },
+              "chained_mechanisms": []
+            }
+          }
+        },
+        "chained_mechanisms": []
+      }
+    },
+    "chained_mechanisms": []
+  },
+  "b": {
+    "id": "46dd24c741140845a030062e471da106",
+    "position": {
+      "file": "test/test.publicodes",
+      "start": { "index": 123, "line": 10, "column": 1 },
+      "end": { "index": 124, "line": 10, "column": 2 }
+    },
+    "value_mechanism": {
+      "kind": "not_defined",
+      "id": "46dd24c741140845a030062e471da106",
+      "position": {
+        "file": "test/test.publicodes",
+        "start": { "index": 123, "line": 10, "column": 1 },
+        "end": { "index": 124, "line": 10, "column": 2 }
+      }
+    },
+    "chained_mechanisms": []
+  }
+}

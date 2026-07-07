@@ -1,4 +1,4 @@
-# Publicodes compiler
+# The Publicodes compiler
 
 The Publicodes compiler.
 

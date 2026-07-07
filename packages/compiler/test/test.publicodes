@@ -1,0 +1,10 @@
+a:
+  valeur:
+    variations:
+      - si: b > 20
+        alors: 20 €
+      - si: b > 5
+        alors: 5 €
+      - sinon: 0
+
+b:
