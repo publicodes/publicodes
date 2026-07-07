@@ -20,15 +20,15 @@ let build_graph
   (* Process a single rule definition *)
   let process_rule_def rule_def =
     List.iter (get_replacement_rules rule_def) ~f:(fun replace ->
-        List.iter replace.references ~f:(fun replaced_rule ->
-            let replace_meta =
-              Pos.mk ~pos:(Pos.pos replaced_rule)
-                { priority= replace.priority
-                ; only_in= replace.only_in
-                ; except_in= replace.except_in }
-            in
-            add_replacement ~rule:(Pos.value replaced_rule) ~replace_meta
-              ~replaced_by:(Pos.value rule_def.name) ) )
+        let replaced_rule = replace.reference in
+        let replace_meta =
+          Pos.mk ~pos:(Pos.pos replaced_rule)
+            { only_in= replace.only_in
+            ; except_in= replace.except_in
+            ; exclusive= replace.exclusive }
+        in
+        add_replacement ~rule:(Pos.value replaced_rule) ~replace_meta
+          ~replaced_by:(Pos.value rule_def.name) )
   in
   List.iter ast ~f:process_rule_def ;
   graph
@@ -54,8 +54,8 @@ let detect_cycles (graph : ReplacementGraph.t) : ReplacementGraph.t Output.t =
   let logs = CycleAnalysis.fold_cycles log_cycle graph [] in
   if List.is_empty logs then return ~logs graph else (None, logs)
 
-(** Check if a replacement is applicable in the current rule context *)
-let is_replacement_applicable ~(rule : Rule_name.t)
+(** Check if a replacement is eligible in the current rule context *)
+let is_replacement_eligible ~(rule : Rule_name.t)
     (replacement : Rule_name.t * ReplacementEdge.t) : bool =
   let open Rule_name in
   (* We don't replace the reference if we are in the rule that define the replacement *)

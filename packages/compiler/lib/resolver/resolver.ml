@@ -181,17 +181,15 @@ let resolve_rule ~rule_names rule =
       let+ ref = resolve_ref ~pos (Pos.value v) in
       Pos.mk ~pos ref
     in
-    let references =
-      List.map replace.references ~f:resolve_ref |> all_keep_logs
-    in
+    let reference = resolve_ref replace.reference in
     let only_in = List.map replace.only_in ~f:resolve_ref |> all_keep_logs in
     let except_in =
       List.map replace.except_in ~f:resolve_ref |> all_keep_logs
     in
-    let+ references, only_in, except_in =
-      combine_3 references only_in except_in
+    let+ reference, only_in, except_in =
+      combine_3 reference only_in except_in
     in
-    {references; only_in; except_in; priority= replace.priority}
+    {reference; only_in; except_in; exclusive= replace.exclusive}
   and map_value (v : 'a value) =
     let* value = map_value_mechanism v.value in
     let+ chainable_mechanisms =
