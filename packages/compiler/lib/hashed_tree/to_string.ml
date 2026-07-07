@@ -179,6 +179,12 @@ let node_of_set_ctx id (expr : tvalue) (items : (string * tvalue) list) =
   in
   node_of id "set_ctx" @@ Tobj [("expr", expr); ("items", Tlist items)]
 
+let node_of_exclusive_replacement id (target : string)
+    (replacements : string list) =
+  let replacements = List.map replacements ~f:(fun r -> Tstr r) in
+  node_of id "exclusive_replacement"
+  @@ Tobj [("target", Tstr target); ("replacements", Tlist replacements)]
+
 let rec node_of_tree_val (name : Shared.Rule_name.t)
     ({value; pos; _} : Tree.value) =
   let id = Shared.Id.hash name pos in
@@ -219,6 +225,10 @@ let rec node_of_tree_val (name : Shared.Rule_name.t)
             (Rule_name.to_string rule_name, node_of_tree_val value) )
       in
       node_of_set_ctx id (node_of_tree_val value) context_items
+  | Exclusive_replacement (target, replacements) ->
+      let target = Rule_name.to_string target in
+      let replacements = List.map replacements ~f:Rule_name.to_string in
+      node_of_exclusive_replacement id target replacements
 
 let from_rules hashed_tree =
   let rules =

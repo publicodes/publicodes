@@ -720,6 +720,40 @@ function $ret(id, ctx, value) {
 	return value
 }
 
+/**
+ * @param {() => Value} target
+ * @param {[RuleName, Function][]} replacements
+ * @param {Context} ctx
+ * @param {RuleName[]} params
+ * @returns {Value}
+ *
+ * @throws {RuntimeError} supposed exclusive replacements are not (2 or + are applicable)
+ *
+ * @specification
+ * blabla
+ */
+
+function $exclusive_replacement(target, replacements, ctx, params) {
+	const applicableReplacements = replacements.filter((r) => {
+		const value = $ref(r[0], r[1], ctx, params)
+		return !isNotApplicable(value)
+	})
+	switch (applicableReplacements.length) {
+		case 0:
+			return target()
+		case 1:
+			const replacement = applicableReplacements[0]
+			return $ref(replacement[0], replacement[1], ctx, params)
+		default:
+			const applicableReplacementsRuleNames = applicableReplacements.map(
+				(r) => r[0],
+			)
+			throw new RuntimeError(
+				`Exclusivity check: more than 1 applicable replacement ${applicableReplacementsRuleNames.join(', ')}`,
+			)
+	}
+}
+
 export const p = {
 	NotDefined,
 	NotApplicable,
