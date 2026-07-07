@@ -41,8 +41,9 @@ let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t)
       Some
         (Log.warning ~code ~pos ~kind:`Type
            ~hints:
-             [ "Spécifiez le type de la règle. Par exemple : `type: texte`"
-             ; Stdlib.Format.asprintf "%a" Rule_name.pp rule_name ]
+             [ "Spécifiez le type de la règle."
+             ; Stdlib.Format.asprintf "Par exemple :\n\n%a:\n  type: nombre"
+                 Rule_name.pp rule_name ]
            message )
   | Some (Number None) ->
       let code, message = Err.missing_output_type in
@@ -84,7 +85,9 @@ let extract_outputs ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t)
   let rules = parameters @ outputs in
   if warn_types then
     let warnings =
-      List.filter_map rules ~f:(get_missing_type_warnings_opt ~eval_tree)
+      List.stable_dedup rules ~compare:(fun a b ->
+          Rule_name.compare a.rule_name b.rule_name )
+      |> List.filter_map ~f:(get_missing_type_warnings_opt ~eval_tree)
     in
     return ~logs:warnings rules
   else return rules
