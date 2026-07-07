@@ -15,10 +15,6 @@ let output_file =
     & opt string ""
     & info ["o"; "output-file"] ~doc ~docv:"FILE" )
 
-let watch =
-  let doc = "Watch input files for changes and recompile automatically." in
-  Arg.(value & flag & info ["w"; "watch"] ~doc)
-
 let output_type =
   let doc = "$(docv) is the output type." in
   Arg.(
@@ -47,7 +43,6 @@ let cmd =
   @@
   let+ input = input
   and+ output_file = output_file
-  and+ watch_mode = watch
   and+ default_to_public = default_to_public
   and+ output_type = output_type in
   let target =
@@ -83,8 +78,7 @@ let cmd =
   in
   match target with
   | Ok target ->
-      if watch_mode then Watch.watch_compile target output_path
-      else Compile.compile_target target output_path
+      Compile.compile_target target output_path
   | Error (`Msg msg) ->
       Stdlib.Format.eprintf "Error: %s\n%!" msg ;
       Cmd.Exit.cli_error
