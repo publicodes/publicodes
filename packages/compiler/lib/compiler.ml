@@ -31,7 +31,7 @@ let compile
   let output_str =
     match output_type with
     | Json_doc ->
-        Shared.To_json_doc.to_str resolved_ast
+        Shared.To_json_doc.to_str typed_ast
     | Debug_eval_tree ->
         Backends.to_debug eval_tree outputs
     | Js ->

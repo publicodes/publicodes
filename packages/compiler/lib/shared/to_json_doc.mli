@@ -1,1 +1,1 @@
-val to_str : Shared_ast.resolved -> Base.string
+val to_str : Shared_ast.typed -> Base.string
