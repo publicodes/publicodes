@@ -14,11 +14,11 @@ let to_pos (pos : Utils.Pos.t) =
       ; ("start", `Assoc (to_point pos.start_pos))
       ; ("end", `Assoc (to_point pos.end_pos)) ] )
 
-let to_publicodes name pos =
+let to_compiler_metadata name pos =
   let id_str = Id.hash name pos |> Id.to_string in
   let id = ("id", `String id_str) in
   let pos = to_pos pos in
-  ("_publicodes", `Assoc [id; pos])
+  [id; pos]
 
 let to_binop binop =
   Shared_ast.sexp_of_binary_op binop |> Sexp.to_string |> String.lowercase
@@ -42,7 +42,7 @@ let to_meta meta =
       Some ("meta", Yojson.Safe.to_basic meta)
 
 let to_const const : Yojson.Basic.t =
-  let _type, parameters =
+  let type_, parameters =
     match const with
     | Number (number, unit) ->
         let unit =
@@ -69,11 +69,14 @@ let to_const const : Yojson.Basic.t =
         in
         ("date", `Assoc [("value", date)])
   in
-  `Assoc [("type", `String _type); ("parameters", parameters)]
+  let type_ = ("type", `String type_) in
+  let parameters = ("parameters", parameters) in
+  `Assoc [type_; parameters]
 
-let rec expr_to_mapping (expr, _) : Yojson.Basic.t =
-  let _type, parameters =
-    match expr with
+let rec expr_to_mapping rule_name (expr_value, expr_mark) : Yojson.Basic.t =
+  let expr_to_mapping = expr_to_mapping rule_name in
+  let kind, parameters =
+    match expr_value with
     | Const const ->
         ("constant", to_const const)
     | Ref ref ->
@@ -86,76 +89,78 @@ let rec expr_to_mapping (expr, _) : Yojson.Basic.t =
     | Unary_op ((unop, _), expr) ->
         (to_unop unop, expr_to_mapping expr)
   in
-  let _type = [("type", `String _type)] in
-  let parameters = [("parameters", parameters)] in
-  `Assoc (_type @ parameters)
+  let kind = ("kind", `String kind) in
+  let parameters = ("parameters", parameters) in
+  let compiler_metadata = to_compiler_metadata rule_name expr_mark.pos in
+  `Assoc (kind :: parameters :: compiler_metadata)
 
-let rec to_value_mec name value_mecha : Yojson.Basic.t =
-  let value_meca, Mark.{pos} = value_mecha in
-  let _type, parameters =
-    match value_meca with
+let rec to_value_mec rule_name value_mecha : Yojson.Basic.t =
+  let value_mecha, value_mark = value_mecha in
+  let Shared_ast.{pos; _} = value_mark in
+  let kind, parameters =
+    match value_mecha with
     | Expr expr ->
-        ("expr", Some (expr_to_mapping expr))
+        ("expr", Some (expr_to_mapping rule_name expr))
     | Value value ->
-        ("value", Some (`Assoc (to_mecs name value)))
+        ("value", Some (`Assoc (to_mechanism rule_name value)))
     | Is_applicable value ->
-        ("is_applicable", Some (`Assoc (to_mecs name value)))
+        ("is_applicable", Some (`Assoc (to_mechanism rule_name value)))
     | Is_not_applicable value ->
-        ("is_not_applicable", Some (`Assoc (to_mecs name value)))
+        ("is_not_applicable", Some (`Assoc (to_mechanism rule_name value)))
     | Is_defined value ->
-        ("is_defined", Some (`Assoc (to_mecs name value)))
+        ("is_defined", Some (`Assoc (to_mechanism rule_name value)))
     | Is_not_defined value ->
-        ("is_not_defined", Some (`Assoc (to_mecs name value)))
+        ("is_not_defined", Some (`Assoc (to_mechanism rule_name value)))
     | Sum values ->
         ( "sum"
         , Some
             (`List
                (List.map values ~f:(function value ->
-                   `Assoc (to_mecs name value) )) ) )
+                   `Assoc (to_mechanism rule_name value) )) ) )
     | Product values ->
         ( "product"
         , Some
             (`List
                (List.map values ~f:(function value ->
-                   `Assoc (to_mecs name value) )) ) )
+                   `Assoc (to_mechanism rule_name value) )) ) )
     | Average values ->
         ( "average"
         , Some
             (`List
                (List.map values ~f:(function value ->
-                   `Assoc (to_mecs name value) )) ) )
+                   `Assoc (to_mechanism rule_name value) )) ) )
     | All_of values ->
         ( "all_of"
         , Some
             (`List
                (List.map values ~f:(function value ->
-                   `Assoc (to_mecs name value) )) ) )
+                   `Assoc (to_mechanism rule_name value) )) ) )
     | Min_of values ->
         ( "min_of"
         , Some
             (`List
                (List.map values ~f:(function value ->
-                   `Assoc (to_mecs name value) )) ) )
+                   `Assoc (to_mechanism rule_name value) )) ) )
     | Max_of values ->
         ( "max_of"
         , Some
             (`List
                (List.map values ~f:(function value ->
-                   `Assoc (to_mecs name value) )) ) )
+                   `Assoc (to_mechanism rule_name value) )) ) )
     | One_of values ->
         ( "one_of"
         , Some
             (`List
                (List.map values ~f:(function value ->
-                   `Assoc (to_mecs name value) )) ) )
+                   `Assoc (to_mechanism rule_name value) )) ) )
     | Not_defined ->
         ("not_defined", None)
     | Variations (variations, else_) ->
         let variations : Yojson.Basic.t list =
           List.map variations ~f:(function {if_; then_} ->
               `Assoc
-                [ ("if", `Assoc (to_mecs name if_))
-                ; ("then", `Assoc (to_mecs name then_)) ] )
+                [ ("if", `Assoc (to_mechanism rule_name if_))
+                ; ("then", `Assoc (to_mechanism rule_name then_)) ] )
         in
         let value =
           match else_ with
@@ -163,7 +168,7 @@ let rec to_value_mec name value_mecha : Yojson.Basic.t =
               [("conditions", `List variations)]
           | Some else_ ->
               [ ("conditions", `List variations)
-              ; ("else", `Assoc (to_mecs name else_)) ]
+              ; ("else", `Assoc (to_mechanism rule_name else_)) ]
         in
         ("variations", Some (`Assoc value))
   in
@@ -174,23 +179,23 @@ let rec to_value_mec name value_mecha : Yojson.Basic.t =
     | Some parameters ->
         [("parameters", parameters)]
   in
-  let _type = [("type", `String _type)] in
-  `Assoc (_type @ [to_publicodes name pos] @ parameters)
+  let kind = [("kind", `String kind)] in
+  `Assoc (kind @ to_compiler_metadata rule_name pos @ parameters)
 
-and to_chain_mec name chain_mecha : Yojson.Basic.t =
-  let chain_meca, Mark.{pos} = chain_mecha in
-  let (_type : string), (parameters : Yojson.Basic.t) =
-    match chain_meca with
+and to_chained_mechanism name (chained_mecha, chained_mecha_mark) :
+    Yojson.Basic.t =
+  let (kind : string), (parameters : Yojson.Basic.t) =
+    match chained_mecha with
     | Context contexts ->
         let contexts : (string * Yojson.Basic.t) list =
           List.map contexts ~f:(function (key, _pos), value ->
-              (Rule_name.show key, `Assoc (to_mecs name value)) )
+              (Rule_name.show key, `Assoc (to_mechanism name value)) )
         in
         ("context", `Assoc contexts)
     | Applicable_if value ->
-        ("applicable_if", `Assoc (to_mecs name value))
+        ("applicable_if", `Assoc (to_mechanism name value))
     | Not_applicable_if value ->
-        ("not_applicable_if", `Assoc (to_mecs name value))
+        ("not_applicable_if", `Assoc (to_mechanism name value))
     | Type (typ, _) -> (
         let number_unit unit =
           match unit with
@@ -219,40 +224,36 @@ and to_chain_mec name chain_mecha : Yojson.Basic.t =
             let value = String.concat ~sep:", " values in
             ("type", `Assoc [("enum", `String value)]) )
     | Default value ->
-        ("default", `Assoc (to_mecs name value))
+        ("default", `Assoc (to_mechanism name value))
     | Ceiling value ->
-        ("ceiling", `Assoc (to_mecs name value))
+        ("ceiling", `Assoc (to_mechanism name value))
     | Floor value ->
-        ("floor", `Assoc (to_mecs name value))
+        ("floor", `Assoc (to_mechanism name value))
     | Round (Up, value) ->
-        ("round up", `Assoc (to_mecs name value))
+        ("round_up", `Assoc (to_mechanism name value))
     | Round (Down, value) ->
-        ("round down", `Assoc (to_mecs name value))
+        ("round_down", `Assoc (to_mechanism name value))
     | Round (Nearest, value) ->
-        ("round nearest", `Assoc (to_mecs name value))
+        ("round_nearest", `Assoc (to_mechanism name value))
   in
-  let _type = [("type", `String _type)] in
+  let kind = [("kind", `String kind)] in
   let parameters = [("parameters", parameters)] in
-  `Assoc (_type @ [to_publicodes name pos] @ parameters)
+  `Assoc (kind @ to_compiler_metadata name chained_mecha_mark.pos @ parameters)
 
-and to_mecs name ({value; chainable_mechanisms}, _) :
+and to_mechanism name ({value; chainable_mechanisms}, _) :
     (string * Yojson.Basic.t) list =
-  [ ("value mecanism", to_value_mec name value)
-  ; ( "chainable mecanisms"
-    , `List (List.map chainable_mechanisms ~f:(to_chain_mec name)) ) ]
+  [ ("value_mechanism", to_value_mec name value)
+  ; ( "chained_mechanisms"
+    , `List (List.map chainable_mechanisms ~f:(to_chained_mechanism name)) ) ]
 
-let to_mapping ({name; value; meta; _} : Shared_ast.resolved_rule_def) :
-    Yojson.Basic.t =
+let to_json_entry ({name; value; meta; _} : Shared_ast.typed_rule_def) :
+    string * Yojson.Basic.t =
   let name, Mark.{pos} = name in
-  let publicodes = to_publicodes name pos in
-  let value = to_mecs name value in
-  let name = [("name", `String (Rule_name.show name))] in
+  let publicodes = to_compiler_metadata name pos in
+  let value = to_mechanism name value in
   let meta = List.filter_map meta ~f:to_meta in
-  `Assoc (name @ meta @ [publicodes] @ value)
+  (Rule_name.to_string name, `Assoc (publicodes @ meta @ value))
 
-let to_json (ast : Shared_ast.resolved) : Yojson.Basic.t =
-  let rules = List.map ast ~f:to_mapping in
-  `Assoc [("rules", `List rules)]
-
-let to_str (ast : Shared_ast.resolved) : string =
-  Yojson.Basic.pretty_to_string @@ to_json ast
+let to_str (ast : Shared_ast.typed) : string =
+  let json_entries = `Assoc (List.map ast ~f:to_json_entry) in
+  Yojson.Basic.pretty_to_string json_entries
