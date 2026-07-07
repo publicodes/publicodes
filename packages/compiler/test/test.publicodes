@@ -1,0 +1,18 @@
+paramètre seul: # manque l'information de type
+  public: oui
+
+résultat:
+  public: oui
+  valeur: résultat paramètre
+
+résultat paramètre:
+
+a:
+
+b:
+  type: nombre # ok
+  valeur: 12
+
+c:
+  type: texte # erreur
+  valeur: a > b

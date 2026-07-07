@@ -277,7 +277,7 @@ and transform_round ~pos round value =
   p (Round (rounding, transform_value precision, value))
 
 let from_ast (resolved_ast : Shared_ast.resolved) : t =
-  let evalTree =
+  let eval_tree =
     Hashtbl.create
       (module Shared.Rule_name)
       ~size:(List.length resolved_ast) ~growth_allowed:false
@@ -285,5 +285,5 @@ let from_ast (resolved_ast : Shared_ast.resolved) : t =
   List.iter resolved_ast ~f:(fun Shared_ast.{name; value; _} ->
       let key = Pos.value name in
       let data = transform_value ~undefined:(Get_context key) value in
-      Hashtbl.add evalTree ~key ~data |> ignore ) ;
-  evalTree
+      Hashtbl.add eval_tree ~key ~data |> ignore ) ;
+  eval_tree
