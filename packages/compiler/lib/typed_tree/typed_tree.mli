@@ -17,3 +17,8 @@ val from_resolved_ast : Shared.Shared_ast.resolved -> t
 val type_check : t -> t Output.t
 (** [type_check typed_tree] type checks a typed tree and returns the same tree
     with all types unified. *)
+
+val get_type : pos:Utils.Pos.pos -> rule:Shared.Rule_name.t -> t -> Typ.t
+(** [get_type ~pos ~rule tree] returns the type of the value at position [pos]
+    in the value of rule [rule] in the typed tree [tree]. If no value is found
+    at that position, returns [Typ.any]. *)

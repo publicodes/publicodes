@@ -3,16 +3,17 @@
  (name compiler)
  (public_name publicodes.compiler)
  (libraries
-  yaml
+	autodoc
   base
-  utils
+  dependency_graph
+  hashed_tree
   parser
+  replacements
   resolver
   typed_tree
-  hashed_tree
-  yaml_parser
-  dependency_graph
-  replacements)
+  utils
+  yaml
+  yaml_parser)
  (modules :standard)
  (preprocess
   (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

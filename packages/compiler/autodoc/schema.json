@@ -54,46 +54,51 @@
 					"properties": {
 						"type": {
 							"anyOf": [
-								{ "const": "texte" },
+								{ "const": "text" },
 								{ "const": "boolean" },
-								{ "const": "date" }
+								{ "const": "date" },
+								{ "const": "unknown" }
 							]
 						}
 					}
 				}
 			]
 		},
+		"node_identifier": {
+			"title": "Node identifier",
+			"required": ["id", "position"],
+			"properties": {
+				"id": {
+					"title": "Uid",
+					"type": "string"
+				},
+				"position": {
+					"title": "AST node position",
+					"type": "object",
+					"required": ["file", "start", "end"],
+					"properties": {
+						"file": {
+							"title": "Source file",
+							"type": "string"
+						},
+						"start": {
+							"title": "Starting position in the source file",
+							"$ref": "#/$defs/position"
+						},
+						"end": {
+							"title": "Ending position in the source file",
+							"$ref": "#/$defs/position"
+						}
+					}
+				}
+			}
+		},
 		"compiler_metadata": {
 			"title": "Compiler metadata",
 			"type": "object",
 			"allOf": [
 				{
-					"required": ["id", "position"],
-					"properties": {
-						"id": {
-							"title": "Uid",
-							"type": "string"
-						},
-						"position": {
-							"title": "AST node position",
-							"type": "object",
-							"required": ["file", "start", "end"],
-							"properties": {
-								"file": {
-									"title": "Source file",
-									"type": "string"
-								},
-								"start": {
-									"title": "Starting position in the source file",
-									"$ref": "#/$defs/position"
-								},
-								"end": {
-									"title": "Ending position in the source file",
-									"$ref": "#/$defs/position"
-								}
-							}
-						}
-					}
+					"$ref": "#/$defs/node_identifier"
 				},
 				{
 					"$ref": "#/$defs/publicodes_type"
@@ -125,7 +130,7 @@
 			"required": ["kind"],
 			"properties": {
 				"kind": {
-					"title": "Type of the mechanism",
+					"title": "Kind of the mechanism",
 					"type": "string"
 				}
 			},
@@ -174,7 +179,7 @@
 			"required": ["kind"],
 			"properties": {
 				"kind": {
-					"title": "Type of the mechanism",
+					"title": "Kind of the mechanism",
 					"type": "string"
 				}
 			},
@@ -189,7 +194,7 @@
 					"$ref": "#/$defs/mechanisms/not_applicable_if"
 				},
 				{
-					"$ref": "#/$defs/mechanisms/_type"
+					"$ref": "#/$defs/mechanisms/type_def"
 				},
 				{
 					"$ref": "#/$defs/mechanisms/default"
@@ -280,6 +285,43 @@
 							},
 							"parameters": {
 								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"type_def": {
+				"title": "Type def",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "type_def"
+							},
+							"parameters": {
+								"required": ["value"],
+								"properties": {
+									"value": {
+										"anyOf": [
+											{
+												"const": "number"
+											},
+											{
+												"const": "text"
+											},
+											{
+												"const": "boolean"
+											},
+											{
+												"const": "date"
+											}
+										]
+									}
+								}
 							}
 						}
 					},
@@ -539,65 +581,6 @@
 					}
 				]
 			},
-			"_type": {
-				"title": "Type mechanism",
-				"required": ["kind", "parameters"],
-				"properties": {
-					"kind": {
-						"const": "type"
-					}
-				},
-				"anyOf": [
-					{
-						"properties": {
-							"parameters": {
-								"type": "object",
-								"properties": {
-									"type": {
-										"const": "texte"
-									}
-								}
-							}
-						}
-					},
-					{
-						"properties": {
-							"parameters": {
-								"type": "object",
-								"properties": {
-									"type": {
-										"const": "boolean"
-									}
-								}
-							}
-						}
-					},
-					{
-						"properties": {
-							"parameters": {
-								"type": "object",
-								"properties": {
-									"type": {
-										"const": "date"
-									}
-								}
-							}
-						}
-					},
-					{
-						"properties": {
-							"parameters": {
-								"type": "object",
-								"properties": {
-									"type": {
-										"const": "number"
-									}
-								}
-							}
-						}
-					}
-				]
-			},
 			"default": {
 				"title": "Default mechanism",
 				"allOf": [
@@ -739,63 +722,63 @@
 						"properties": {
 							"kind": {
 								"const": "constant"
+							},
+							"parameters": {
+								"anyOf": [
+									{
+										"required": ["kind", "value"],
+										"properties": {
+											"kind": {
+												"const": "number"
+											},
+											"value": {
+												"type": "number"
+											},
+											"unit": {
+												"type": "string"
+											}
+										}
+									},
+									{
+										"required": ["kind", "value"],
+										"properties": {
+											"kind": {
+												"const": "text"
+											},
+											"value": {
+												"type": "string"
+											}
+										}
+									},
+									{
+										"required": ["kind", "value"],
+										"properties": {
+											"kind": {
+												"const": "boolean"
+											},
+											"value": {
+												"type": "boolean"
+											}
+										}
+									},
+									{
+										"required": ["kind", "value"],
+										"properties": {
+											"kind": {
+												"const": "date"
+											},
+											"value": {
+												"type": "string",
+												"description": "Date in ISO 8601 format (YYYY-MM-DD)"
+											}
+										}
+									}
+								]
 							}
 						}
 					},
 					{
-						"anyOf": [
-							{
-								"required": ["type", "value"],
-								"properties": {
-									"type": {
-										"const": "number"
-									},
-									"value": {
-										"type": "number"
-									},
-									"unit": {
-										"type": "string"
-									}
-								}
-							},
-							{
-								"required": ["type", "value"],
-								"properties": {
-									"type": {
-										"const": "texte"
-									},
-									"value": {
-										"type": "string"
-									}
-								}
-							},
-							{
-								"required": ["type", "value"],
-								"properties": {
-									"type": {
-										"const": "boolean"
-									},
-									"value": {
-										"type": "boolean"
-									}
-								}
-							},
-							{
-								"required": ["type", "value"],
-								"properties": {
-									"type": {
-										"const": "date"
-									},
-									"value": {
-										"type": "string",
-										"description": "Date in ISO 8601 format (YYYY-MM-DD)"
-									}
-								}
-							}
-						]
-					},
-					{
-						"$ref": "#/$defs/compiler_metadata"
+						"$ref": "#/$defs/node_identifier"
 					}
 				]
 			},

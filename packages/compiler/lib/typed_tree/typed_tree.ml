@@ -44,3 +44,5 @@ let type_check tree =
     Hashtbl.map ~f:(Eval_tree.map_value ~f:post_transform) tree
   in
   Output.return normalized_tree
+
+let get_type = Tree.get_type

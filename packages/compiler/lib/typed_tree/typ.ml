@@ -9,8 +9,8 @@ type naked_t = Literal of Typ.literal | Number of Number_unit.t | Any of Any.t
 and t = naked_t Pos.t UnionFind.elem
 
 let to_string t =
-  UnionFind.get t |> Pos.value
-  |> function
+  let typ, _ = UnionFind.get t in
+  match typ with
   | Number u ->
       "num " ^ Number_unit.to_string u
   | Literal String ->
@@ -109,7 +109,6 @@ let to_concrete typ =
   | Number unit ->
       let unit = Number_unit.normalize unit in
       Some (Shared.Typ.Number (Some unit.concrete))
-      (* else Some (Shared.Typ.Number None) *)
   | Literal l ->
       Some (Shared.Typ.Literal l)
   | Any _ ->
