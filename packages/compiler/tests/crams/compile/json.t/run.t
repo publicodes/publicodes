@@ -1,8 +1,10 @@
 Valid json doc :
 
-  $ publicodes compile ok -t json_doc -o -
+  $ publicodes compile ok -t json -o -
   {
     "a": {
+      "type": "number",
+      "unit": "€",
       "id": "671cf31f521a21768557a1d05df98a17",
       "position": {
         "file": "ok/rules.publicodes",
@@ -13,6 +15,8 @@ Valid json doc :
       "description": "la valeur A",
       "value_mechanism": {
         "kind": "value",
+        "type": "number",
+        "unit": "€",
         "id": "b330e868a4ee75bdb9673f4b374368bf",
         "position": {
           "file": "ok/rules.publicodes",
@@ -22,6 +26,8 @@ Valid json doc :
         "parameters": {
           "value_mechanism": {
             "kind": "expr",
+            "type": "number",
+            "unit": "€",
             "id": "dfb3c6796b344957f44c2e7300f71dff",
             "position": {
               "file": "ok/rules.publicodes",
@@ -30,10 +36,9 @@ Valid json doc :
             },
             "parameters": {
               "kind": "constant",
-              "parameters": {
-                "type": "number",
-                "parameters": { "value": 10.0, "unit": "€" }
-              },
+              "type": "number",
+              "unit": "€",
+              "parameters": { "kind": "number", "value": 10.0, "unit": "€" },
               "id": "dfb3c6796b344957f44c2e7300f71dff",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -48,6 +53,8 @@ Valid json doc :
       "chained_mechanisms": []
     },
     "b": {
+      "type": "number",
+      "unit": "€",
       "id": "969799a0c994d65e939da3be780d0195",
       "position": {
         "file": "ok/rules.publicodes",
@@ -56,6 +63,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "sum",
+        "type": "number",
+        "unit": "€",
         "id": "42af92aad66aef67de55ea117b04b7bb",
         "position": {
           "file": "ok/rules.publicodes",
@@ -66,6 +75,8 @@ Valid json doc :
           {
             "value_mechanism": {
               "kind": "value",
+              "type": "number",
+              "unit": "€",
               "id": "53c2c6e359fd92fb12891eac38793e59",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -75,6 +86,8 @@ Valid json doc :
               "parameters": {
                 "value_mechanism": {
                   "kind": "expr",
+                  "type": "number",
+                  "unit": "€",
                   "id": "22e546e7e75af96371f69ad2d8af2964",
                   "position": {
                     "file": "ok/rules.publicodes",
@@ -83,6 +96,8 @@ Valid json doc :
                   },
                   "parameters": {
                     "kind": "ref",
+                    "type": "number",
+                    "unit": "€",
                     "parameters": "a",
                     "id": "22e546e7e75af96371f69ad2d8af2964",
                     "position": {
@@ -98,6 +113,8 @@ Valid json doc :
             "chained_mechanisms": [
               {
                 "kind": "context",
+                "type": "number",
+                "unit": "€",
                 "id": "cf6b772cd42698f02d7e852a34313551",
                 "position": {
                   "file": "ok/rules.publicodes",
@@ -108,6 +125,8 @@ Valid json doc :
                   "a": {
                     "value_mechanism": {
                       "kind": "expr",
+                      "type": "number",
+                      "unit": "€",
                       "id": "df39a19cbe24fa860540eb7e75d9de92",
                       "position": {
                         "file": "ok/rules.publicodes",
@@ -116,10 +135,9 @@ Valid json doc :
                       },
                       "parameters": {
                         "kind": "constant",
-                        "parameters": {
-                          "type": "number",
-                          "parameters": { "value": 30.0 }
-                        },
+                        "type": "number",
+                        "unit": "€",
+                        "parameters": { "kind": "number", "value": 30.0 },
                         "id": "df39a19cbe24fa860540eb7e75d9de92",
                         "position": {
                           "file": "ok/rules.publicodes",
@@ -137,6 +155,8 @@ Valid json doc :
           {
             "value_mechanism": {
               "kind": "expr",
+              "type": "number",
+              "unit": "€",
               "id": "fdf43fcb0f9e59345833e87010cf2284",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -145,6 +165,8 @@ Valid json doc :
               },
               "parameters": {
                 "kind": "ref",
+                "type": "number",
+                "unit": "€",
                 "parameters": "a",
                 "id": "fdf43fcb0f9e59345833e87010cf2284",
                 "position": {
@@ -159,6 +181,8 @@ Valid json doc :
           {
             "value_mechanism": {
               "kind": "expr",
+              "type": "number",
+              "unit": "€",
               "id": "7645595219f544844a979bd48abe21fa",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -167,6 +191,8 @@ Valid json doc :
               },
               "parameters": {
                 "kind": "ref",
+                "type": "number",
+                "unit": "€",
                 "parameters": "b . c",
                 "id": "7645595219f544844a979bd48abe21fa",
                 "position": {
@@ -183,6 +209,8 @@ Valid json doc :
       "chained_mechanisms": []
     },
     "b . c": {
+      "type": "number",
+      "unit": "€",
       "id": "8b1fd0195e4732d89a9d8bd2f82b63fd",
       "position": {
         "file": "ok/rules.publicodes",
@@ -191,6 +219,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "expr",
+        "type": "number",
+        "unit": "€",
         "id": "233d46a39aa61b1b99cbe5c01e0fbf81",
         "position": {
           "file": "ok/rules.publicodes",
@@ -199,7 +229,9 @@ Valid json doc :
         },
         "parameters": {
           "kind": "constant",
-          "parameters": { "type": "number", "parameters": { "value": 55.0 } },
+          "type": "number",
+          "unit": "€",
+          "parameters": { "kind": "number", "value": 55.0 },
           "id": "233d46a39aa61b1b99cbe5c01e0fbf81",
           "position": {
             "file": "ok/rules.publicodes",
@@ -211,6 +243,8 @@ Valid json doc :
       "chained_mechanisms": []
     },
     "d": {
+      "type": "number",
+      "unit": "€",
       "id": "52e8c013cde911a60cb1e1d0631c1efe",
       "position": {
         "file": "ok/rules.publicodes",
@@ -219,6 +253,7 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "variations",
+        "type": "enum",
         "id": "70e4c4a5aa0d531d504d903dd427cc22",
         "position": {
           "file": "ok/rules.publicodes",
@@ -231,6 +266,7 @@ Valid json doc :
               "if": {
                 "value_mechanism": {
                   "kind": "expr",
+                  "type": "boolean",
                   "id": "f9ce896d4a9abd3d1b8dbb1c4e297fd7",
                   "position": {
                     "file": "ok/rules.publicodes",
@@ -239,9 +275,12 @@ Valid json doc :
                   },
                   "parameters": {
                     "kind": "gt",
+                    "type": "boolean",
                     "parameters": {
                       "left": {
                         "kind": "ref",
+                        "type": "number",
+                        "unit": "€",
                         "parameters": "a",
                         "id": "b876e832d1c1cfc749952f4c3adf90b7",
                         "position": {
@@ -252,10 +291,9 @@ Valid json doc :
                       },
                       "right": {
                         "kind": "constant",
-                        "parameters": {
-                          "type": "number",
-                          "parameters": { "value": 20.0 }
-                        },
+                        "type": "number",
+                        "unit": "€",
+                        "parameters": { "kind": "number", "value": 20.0 },
                         "id": "12fc410435c3fde2cecced5f92aec122",
                         "position": {
                           "file": "ok/rules.publicodes",
@@ -277,6 +315,8 @@ Valid json doc :
               "then": {
                 "value_mechanism": {
                   "kind": "expr",
+                  "type": "number",
+                  "unit": "€",
                   "id": "0d55b0bd7d204b083e38cceb31742fa5",
                   "position": {
                     "file": "ok/rules.publicodes",
@@ -285,9 +325,12 @@ Valid json doc :
                   },
                   "parameters": {
                     "kind": "constant",
+                    "type": "number",
+                    "unit": "€",
                     "parameters": {
-                      "type": "number",
-                      "parameters": { "value": 20.0, "unit": "€" }
+                      "kind": "number",
+                      "value": 20.0,
+                      "unit": "€"
                     },
                     "id": "0d55b0bd7d204b083e38cceb31742fa5",
                     "position": {
@@ -304,6 +347,7 @@ Valid json doc :
               "if": {
                 "value_mechanism": {
                   "kind": "expr",
+                  "type": "boolean",
                   "id": "be354af8a0b9b89073d0231a78f2d54c",
                   "position": {
                     "file": "ok/rules.publicodes",
@@ -312,9 +356,12 @@ Valid json doc :
                   },
                   "parameters": {
                     "kind": "gt",
+                    "type": "boolean",
                     "parameters": {
                       "left": {
                         "kind": "ref",
+                        "type": "number",
+                        "unit": "€",
                         "parameters": "a",
                         "id": "c4907119921e373ccf421389cc13e9ad",
                         "position": {
@@ -325,10 +372,9 @@ Valid json doc :
                       },
                       "right": {
                         "kind": "constant",
-                        "parameters": {
-                          "type": "number",
-                          "parameters": { "value": 5.0 }
-                        },
+                        "type": "number",
+                        "unit": "€",
+                        "parameters": { "kind": "number", "value": 5.0 },
                         "id": "a4177905ea6c46748202c10e2e2bdba2",
                         "position": {
                           "file": "ok/rules.publicodes",
@@ -350,6 +396,8 @@ Valid json doc :
               "then": {
                 "value_mechanism": {
                   "kind": "expr",
+                  "type": "number",
+                  "unit": "€",
                   "id": "4b9b7a91ed4c95bddf9dd12a2f9a10fd",
                   "position": {
                     "file": "ok/rules.publicodes",
@@ -358,9 +406,12 @@ Valid json doc :
                   },
                   "parameters": {
                     "kind": "constant",
+                    "type": "number",
+                    "unit": "€",
                     "parameters": {
-                      "type": "number",
-                      "parameters": { "value": 5.0, "unit": "€" }
+                      "kind": "number",
+                      "value": 5.0,
+                      "unit": "€"
                     },
                     "id": "4b9b7a91ed4c95bddf9dd12a2f9a10fd",
                     "position": {
@@ -377,6 +428,8 @@ Valid json doc :
           "else": {
             "value_mechanism": {
               "kind": "expr",
+              "type": "number",
+              "unit": "€",
               "id": "2fcb42f66ae8d0ba5e6662c7776547fa",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -385,10 +438,9 @@ Valid json doc :
               },
               "parameters": {
                 "kind": "constant",
-                "parameters": {
-                  "type": "number",
-                  "parameters": { "value": 0.0 }
-                },
+                "type": "number",
+                "unit": "€",
+                "parameters": { "kind": "number", "value": 0.0 },
                 "id": "2fcb42f66ae8d0ba5e6662c7776547fa",
                 "position": {
                   "file": "ok/rules.publicodes",
@@ -403,7 +455,9 @@ Valid json doc :
       },
       "chained_mechanisms": [
         {
-          "kind": "type",
+          "kind": "type_def",
+          "type": "number",
+          "unit": "€",
           "id": "43ea7b3cb3bb5028a0b16fbdd73b5741",
           "position": {
             "file": "ok/rules.publicodes",
@@ -415,6 +469,8 @@ Valid json doc :
       ]
     },
     "e": {
+      "type": "number",
+      "unit": "€",
       "id": "33974554be77431324881fd453cbbf50",
       "position": {
         "file": "ok/rules.publicodes",
@@ -425,6 +481,8 @@ Valid json doc :
       "meta": { "une meta": "23", "une autre meta": "42" },
       "value_mechanism": {
         "kind": "value",
+        "type": "number",
+        "unit": "€",
         "id": "375265e5a5330ccb98ce30d1dd6d0ae7",
         "position": {
           "file": "ok/rules.publicodes",
@@ -434,6 +492,8 @@ Valid json doc :
         "parameters": {
           "value_mechanism": {
             "kind": "expr",
+            "type": "number",
+            "unit": "€",
             "id": "b98093565171af625aecadfe1fe747d8",
             "position": {
               "file": "ok/rules.publicodes",
@@ -442,9 +502,13 @@ Valid json doc :
             },
             "parameters": {
               "kind": "add",
+              "type": "number",
+              "unit": "€",
               "parameters": {
                 "left": {
                   "kind": "ref",
+                  "type": "number",
+                  "unit": "€",
                   "parameters": "a",
                   "id": "a1a2199e81c13976e98730c176e3ee11",
                   "position": {
@@ -455,6 +519,8 @@ Valid json doc :
                 },
                 "right": {
                   "kind": "ref",
+                  "type": "number",
+                  "unit": "€",
                   "parameters": "b",
                   "id": "b30b94f8a1d3a541e69bf18766548f78",
                   "position": {
@@ -478,6 +544,8 @@ Valid json doc :
       "chained_mechanisms": []
     },
     "f": {
+      "type": "number",
+      "unit": "€",
       "id": "6e958ff2e0c6b6af8b7c8a916deceade",
       "position": {
         "file": "ok/rules.publicodes",
@@ -486,6 +554,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "expr",
+        "type": "number",
+        "unit": "€",
         "id": "ba22056e27833dff59c87d75403e0c2d",
         "position": {
           "file": "ok/rules.publicodes",
@@ -494,8 +564,12 @@ Valid json doc :
         },
         "parameters": {
           "kind": "neg",
+          "type": "number",
+          "unit": "€",
           "parameters": {
             "kind": "ref",
+            "type": "number",
+            "unit": "€",
             "parameters": "e",
             "id": "100ec86cc10e97b572c01fb694cf12d5",
             "position": {
@@ -515,6 +589,8 @@ Valid json doc :
       "chained_mechanisms": []
     },
     "g": {
+      "type": "number",
+      "unit": "€",
       "id": "9551bafb02d33f8ee5a742204baab0e2",
       "position": {
         "file": "ok/rules.publicodes",
@@ -523,6 +599,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "value",
+        "type": "number",
+        "unit": "€",
         "id": "4718358da0921b79490f05cd21d138d0",
         "position": {
           "file": "ok/rules.publicodes",
@@ -532,6 +610,8 @@ Valid json doc :
         "parameters": {
           "value_mechanism": {
             "kind": "expr",
+            "type": "number",
+            "unit": "€",
             "id": "d261b92b31edeceb55cf0a21a1159419",
             "position": {
               "file": "ok/rules.publicodes",
@@ -540,9 +620,13 @@ Valid json doc :
             },
             "parameters": {
               "kind": "add",
+              "type": "number",
+              "unit": "€",
               "parameters": {
                 "left": {
                   "kind": "ref",
+                  "type": "number",
+                  "unit": "€",
                   "parameters": "b",
                   "id": "4f5e4d136c93ec364521a1a692012790",
                   "position": {
@@ -553,6 +637,8 @@ Valid json doc :
                 },
                 "right": {
                   "kind": "ref",
+                  "type": "number",
+                  "unit": "€",
                   "parameters": "g . here",
                   "id": "fa66d0fc6f7588a92efa7e30b3bf8d25",
                   "position": {
@@ -576,6 +662,8 @@ Valid json doc :
       "chained_mechanisms": [
         {
           "kind": "context",
+          "type": "number",
+          "unit": "€",
           "id": "afafc1aab9936444e382cb08fc157307",
           "position": {
             "file": "ok/rules.publicodes",
@@ -586,6 +674,8 @@ Valid json doc :
             "a": {
               "value_mechanism": {
                 "kind": "expr",
+                "type": "number",
+                "unit": "€",
                 "id": "210ae98ccf1b505aa542f2e38adc1e09",
                 "position": {
                   "file": "ok/rules.publicodes",
@@ -594,10 +684,9 @@ Valid json doc :
                 },
                 "parameters": {
                   "kind": "constant",
-                  "parameters": {
-                    "type": "number",
-                    "parameters": { "value": 2.0 }
-                  },
+                  "type": "number",
+                  "unit": "€",
+                  "parameters": { "kind": "number", "value": 2.0 },
                   "id": "210ae98ccf1b505aa542f2e38adc1e09",
                   "position": {
                     "file": "ok/rules.publicodes",
@@ -611,6 +700,8 @@ Valid json doc :
             "b . c": {
               "value_mechanism": {
                 "kind": "expr",
+                "type": "number",
+                "unit": "€",
                 "id": "529ed2f0d11cd3de1c855166b00ed38c",
                 "position": {
                   "file": "ok/rules.publicodes",
@@ -619,10 +710,9 @@ Valid json doc :
                 },
                 "parameters": {
                   "kind": "constant",
-                  "parameters": {
-                    "type": "number",
-                    "parameters": { "value": 3.0 }
-                  },
+                  "type": "number",
+                  "unit": "€",
+                  "parameters": { "kind": "number", "value": 3.0 },
                   "id": "529ed2f0d11cd3de1c855166b00ed38c",
                   "position": {
                     "file": "ok/rules.publicodes",
@@ -636,6 +726,8 @@ Valid json doc :
             "g . here": {
               "value_mechanism": {
                 "kind": "expr",
+                "type": "number",
+                "unit": "€",
                 "id": "f6fa180da1df794e59ee03a7fec72a98",
                 "position": {
                   "file": "ok/rules.publicodes",
@@ -644,10 +736,9 @@ Valid json doc :
                 },
                 "parameters": {
                   "kind": "constant",
-                  "parameters": {
-                    "type": "number",
-                    "parameters": { "value": 9.0 }
-                  },
+                  "type": "number",
+                  "unit": "€",
+                  "parameters": { "kind": "number", "value": 9.0 },
                   "id": "f6fa180da1df794e59ee03a7fec72a98",
                   "position": {
                     "file": "ok/rules.publicodes",
@@ -663,6 +754,8 @@ Valid json doc :
       ]
     },
     "g . here": {
+      "type": "number",
+      "unit": "€",
       "id": "caf7ef889f1edc979789dd84d850b241",
       "position": {
         "file": "ok/rules.publicodes",
@@ -671,6 +764,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "expr",
+        "type": "number",
+        "unit": "€",
         "id": "96e452abcb8db5630752b6bc7c8adb61",
         "position": {
           "file": "ok/rules.publicodes",
@@ -679,7 +774,9 @@ Valid json doc :
         },
         "parameters": {
           "kind": "constant",
-          "parameters": { "type": "number", "parameters": { "value": 5.0 } },
+          "type": "number",
+          "unit": "€",
+          "parameters": { "kind": "number", "value": 5.0 },
           "id": "96e452abcb8db5630752b6bc7c8adb61",
           "position": {
             "file": "ok/rules.publicodes",
@@ -691,6 +788,8 @@ Valid json doc :
       "chained_mechanisms": []
     },
     "h": {
+      "type": "number",
+      "unit": "aucune",
       "id": "ff8a9dba81b2dfcabf8b7107ba73c57f",
       "position": {
         "file": "ok/rules.publicodes",
@@ -699,6 +798,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "value",
+        "type": "number",
+        "unit": "aucune",
         "id": "deca5743988cb4963ef1ecbd661bd179",
         "position": {
           "file": "ok/rules.publicodes",
@@ -708,6 +809,8 @@ Valid json doc :
         "parameters": {
           "value_mechanism": {
             "kind": "expr",
+            "type": "number",
+            "unit": "aucune",
             "id": "054ea3efdb5eadbd6a68952db6cce7f9",
             "position": {
               "file": "ok/rules.publicodes",
@@ -716,10 +819,9 @@ Valid json doc :
             },
             "parameters": {
               "kind": "constant",
-              "parameters": {
-                "type": "number",
-                "parameters": { "value": 30.0 }
-              },
+              "type": "number",
+              "unit": "aucune",
+              "parameters": { "kind": "number", "value": 30.0 },
               "id": "054ea3efdb5eadbd6a68952db6cce7f9",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -734,6 +836,8 @@ Valid json doc :
       "chained_mechanisms": [
         {
           "kind": "applicable_if",
+          "type": "number",
+          "unit": "aucune",
           "id": "04ff0686e92917b8722d8a3c065e58bd",
           "position": {
             "file": "ok/rules.publicodes",
@@ -743,6 +847,7 @@ Valid json doc :
           "parameters": {
             "value_mechanism": {
               "kind": "expr",
+              "type": "boolean",
               "id": "c5977727da2862f6fbc361dcbd49fbd7",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -751,9 +856,12 @@ Valid json doc :
               },
               "parameters": {
                 "kind": "gt",
+                "type": "boolean",
                 "parameters": {
                   "left": {
                     "kind": "ref",
+                    "type": "number",
+                    "unit": "€",
                     "parameters": "g",
                     "id": "d914314173af9efefd78bf8a679f1881",
                     "position": {
@@ -764,10 +872,9 @@ Valid json doc :
                   },
                   "right": {
                     "kind": "constant",
-                    "parameters": {
-                      "type": "number",
-                      "parameters": { "value": 20.0 }
-                    },
+                    "type": "number",
+                    "unit": "€",
+                    "parameters": { "kind": "number", "value": 20.0 },
                     "id": "3598d8309a2f44998cade37eacf5b8b5",
                     "position": {
                       "file": "ok/rules.publicodes",
@@ -790,6 +897,8 @@ Valid json doc :
       ]
     },
     "i": {
+      "type": "number",
+      "unit": "aucune",
       "id": "f9d4cec6e25a0e79506072bcccc6aa93",
       "position": {
         "file": "ok/rules.publicodes",
@@ -798,6 +907,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "value",
+        "type": "number",
+        "unit": "aucune",
         "id": "d24d99cec040687675fac66e5c45707f",
         "position": {
           "file": "ok/rules.publicodes",
@@ -807,6 +918,8 @@ Valid json doc :
         "parameters": {
           "value_mechanism": {
             "kind": "expr",
+            "type": "number",
+            "unit": "aucune",
             "id": "2daf2319f6592f55b59a413213ae9c38",
             "position": {
               "file": "ok/rules.publicodes",
@@ -815,10 +928,9 @@ Valid json doc :
             },
             "parameters": {
               "kind": "constant",
-              "parameters": {
-                "type": "number",
-                "parameters": { "value": 30.0 }
-              },
+              "type": "number",
+              "unit": "aucune",
+              "parameters": { "kind": "number", "value": 30.0 },
               "id": "2daf2319f6592f55b59a413213ae9c38",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -833,6 +945,8 @@ Valid json doc :
       "chained_mechanisms": [
         {
           "kind": "not_applicable_if",
+          "type": "number",
+          "unit": "aucune",
           "id": "1d4170a008fe7e9a5550e66144d9fbc1",
           "position": {
             "file": "ok/rules.publicodes",
@@ -842,6 +956,7 @@ Valid json doc :
           "parameters": {
             "value_mechanism": {
               "kind": "expr",
+              "type": "boolean",
               "id": "a5c8dd1f526a4d376bbfcd7cd54231c4",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -850,9 +965,12 @@ Valid json doc :
               },
               "parameters": {
                 "kind": "gt",
+                "type": "boolean",
                 "parameters": {
                   "left": {
                     "kind": "ref",
+                    "type": "number",
+                    "unit": "€",
                     "parameters": "g",
                     "id": "49ad0e3621f180134b876e4a3eed89fd",
                     "position": {
@@ -863,10 +981,9 @@ Valid json doc :
                   },
                   "right": {
                     "kind": "constant",
-                    "parameters": {
-                      "type": "number",
-                      "parameters": { "value": 20.0 }
-                    },
+                    "type": "number",
+                    "unit": "€",
+                    "parameters": { "kind": "number", "value": 20.0 },
                     "id": "706db75cdf95b9ed7c4442f0af6c5940",
                     "position": {
                       "file": "ok/rules.publicodes",
@@ -889,6 +1006,8 @@ Valid json doc :
       ]
     },
     "j": {
+      "type": "number",
+      "unit": "aucune",
       "id": "4dd128f83551869d4cd97e1ac99b309b",
       "position": {
         "file": "ok/rules.publicodes",
@@ -897,6 +1016,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "not_defined",
+        "type": "number",
+        "unit": "aucune",
         "id": "4dd128f83551869d4cd97e1ac99b309b",
         "position": {
           "file": "ok/rules.publicodes",
@@ -906,7 +1027,9 @@ Valid json doc :
       },
       "chained_mechanisms": [
         {
-          "kind": "type",
+          "kind": "type_def",
+          "type": "number",
+          "unit": "aucune",
           "id": "8d429db374150725a3f896b4de6637ba",
           "position": {
             "file": "ok/rules.publicodes",
@@ -917,6 +1040,8 @@ Valid json doc :
         },
         {
           "kind": "default",
+          "type": "number",
+          "unit": "aucune",
           "id": "dd2468b224a417fc4bbf3374ee09dd34",
           "position": {
             "file": "ok/rules.publicodes",
@@ -926,6 +1051,8 @@ Valid json doc :
           "parameters": {
             "value_mechanism": {
               "kind": "expr",
+              "type": "number",
+              "unit": "aucune",
               "id": "e9749d8c0d9f8ccbcaaae789a74ac4a5",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -934,10 +1061,9 @@ Valid json doc :
               },
               "parameters": {
                 "kind": "constant",
-                "parameters": {
-                  "type": "number",
-                  "parameters": { "value": 20.0 }
-                },
+                "type": "number",
+                "unit": "aucune",
+                "parameters": { "kind": "number", "value": 20.0 },
                 "id": "e9749d8c0d9f8ccbcaaae789a74ac4a5",
                 "position": {
                   "file": "ok/rules.publicodes",
@@ -952,6 +1078,8 @@ Valid json doc :
       ]
     },
     "k": {
+      "type": "number",
+      "unit": "aucune",
       "id": "6ce2999031aa6b9dc254713c2dd2bf6b",
       "position": {
         "file": "ok/rules.publicodes",
@@ -960,6 +1088,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "value",
+        "type": "number",
+        "unit": "aucune",
         "id": "d3a5646cd96122c13d28ce493dc5a3a2",
         "position": {
           "file": "ok/rules.publicodes",
@@ -969,6 +1099,8 @@ Valid json doc :
         "parameters": {
           "value_mechanism": {
             "kind": "expr",
+            "type": "number",
+            "unit": "aucune",
             "id": "0ca5948ac06e266f5076c7a1a7611848",
             "position": {
               "file": "ok/rules.publicodes",
@@ -977,10 +1109,9 @@ Valid json doc :
             },
             "parameters": {
               "kind": "constant",
-              "parameters": {
-                "type": "number",
-                "parameters": { "value": 4.0 }
-              },
+              "type": "number",
+              "unit": "aucune",
+              "parameters": { "kind": "number", "value": 4.0 },
               "id": "0ca5948ac06e266f5076c7a1a7611848",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -995,6 +1126,8 @@ Valid json doc :
       "chained_mechanisms": [
         {
           "kind": "ceiling",
+          "type": "number",
+          "unit": "aucune",
           "id": "24d865e5b12c5b69db0cc0fe177cd3d1",
           "position": {
             "file": "ok/rules.publicodes",
@@ -1004,6 +1137,8 @@ Valid json doc :
           "parameters": {
             "value_mechanism": {
               "kind": "expr",
+              "type": "number",
+              "unit": "aucune",
               "id": "b17dc7e427cf8afea464c4a228752bc5",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -1012,10 +1147,9 @@ Valid json doc :
               },
               "parameters": {
                 "kind": "constant",
-                "parameters": {
-                  "type": "number",
-                  "parameters": { "value": 2.3 }
-                },
+                "type": "number",
+                "unit": "aucune",
+                "parameters": { "kind": "number", "value": 2.3 },
                 "id": "b17dc7e427cf8afea464c4a228752bc5",
                 "position": {
                   "file": "ok/rules.publicodes",
@@ -1030,6 +1164,8 @@ Valid json doc :
       ]
     },
     "l": {
+      "type": "number",
+      "unit": "aucune",
       "id": "09da53f6baea1b170742ec76f50dd711",
       "position": {
         "file": "ok/rules.publicodes",
@@ -1038,6 +1174,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "value",
+        "type": "number",
+        "unit": "aucune",
         "id": "2be8869347e49a63193de6d0098ec37b",
         "position": {
           "file": "ok/rules.publicodes",
@@ -1047,6 +1185,8 @@ Valid json doc :
         "parameters": {
           "value_mechanism": {
             "kind": "expr",
+            "type": "number",
+            "unit": "aucune",
             "id": "43b51d25e91301a1f5d231ed694cac7a",
             "position": {
               "file": "ok/rules.publicodes",
@@ -1055,10 +1195,9 @@ Valid json doc :
             },
             "parameters": {
               "kind": "constant",
-              "parameters": {
-                "type": "number",
-                "parameters": { "value": 2.0 }
-              },
+              "type": "number",
+              "unit": "aucune",
+              "parameters": { "kind": "number", "value": 2.0 },
               "id": "43b51d25e91301a1f5d231ed694cac7a",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -1073,6 +1212,8 @@ Valid json doc :
       "chained_mechanisms": [
         {
           "kind": "floor",
+          "type": "number",
+          "unit": "aucune",
           "id": "24216a81fc80214620c7a3b2d78493ad",
           "position": {
             "file": "ok/rules.publicodes",
@@ -1082,6 +1223,8 @@ Valid json doc :
           "parameters": {
             "value_mechanism": {
               "kind": "expr",
+              "type": "number",
+              "unit": "aucune",
               "id": "b8bee0b4d1909a31172817500746d0a4",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -1090,10 +1233,9 @@ Valid json doc :
               },
               "parameters": {
                 "kind": "constant",
-                "parameters": {
-                  "type": "number",
-                  "parameters": { "value": 3.0 }
-                },
+                "type": "number",
+                "unit": "aucune",
+                "parameters": { "kind": "number", "value": 3.0 },
                 "id": "b8bee0b4d1909a31172817500746d0a4",
                 "position": {
                   "file": "ok/rules.publicodes",
@@ -1108,6 +1250,8 @@ Valid json doc :
       ]
     },
     "m": {
+      "type": "number",
+      "unit": "aucune",
       "id": "27d84601f4a2a551e2ac5cc994c3add6",
       "position": {
         "file": "ok/rules.publicodes",
@@ -1116,6 +1260,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "not_defined",
+        "type": "number",
+        "unit": "aucune",
         "id": "27d84601f4a2a551e2ac5cc994c3add6",
         "position": {
           "file": "ok/rules.publicodes",
@@ -1126,6 +1272,8 @@ Valid json doc :
       "chained_mechanisms": [
         {
           "kind": "round_nearest",
+          "type": "number",
+          "unit": "aucune",
           "id": "f3a20b788a484e0ae8daf1d8f8347ad8",
           "position": {
             "file": "ok/rules.publicodes",
@@ -1135,6 +1283,8 @@ Valid json doc :
           "parameters": {
             "value_mechanism": {
               "kind": "expr",
+              "type": "number",
+              "unit": "aucune",
               "id": "d79f36416fece81425e0870cd85b023c",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -1143,10 +1293,9 @@ Valid json doc :
               },
               "parameters": {
                 "kind": "constant",
-                "parameters": {
-                  "type": "number",
-                  "parameters": { "value": 2.3 }
-                },
+                "type": "number",
+                "unit": "aucune",
+                "parameters": { "kind": "number", "value": 2.3 },
                 "id": "d79f36416fece81425e0870cd85b023c",
                 "position": {
                   "file": "ok/rules.publicodes",
@@ -1161,6 +1310,8 @@ Valid json doc :
       ]
     },
     "n": {
+      "type": "number",
+      "unit": "aucune",
       "id": "f7a4534321d211a5fef78a02cf4f31c1",
       "position": {
         "file": "ok/rules.publicodes",
@@ -1169,6 +1320,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "not_defined",
+        "type": "number",
+        "unit": "aucune",
         "id": "f7a4534321d211a5fef78a02cf4f31c1",
         "position": {
           "file": "ok/rules.publicodes",
@@ -1179,6 +1332,8 @@ Valid json doc :
       "chained_mechanisms": [
         {
           "kind": "round_down",
+          "type": "number",
+          "unit": "aucune",
           "id": "48814d0d42e81b1835e2a955336e4aee",
           "position": {
             "file": "ok/rules.publicodes",
@@ -1188,6 +1343,8 @@ Valid json doc :
           "parameters": {
             "value_mechanism": {
               "kind": "expr",
+              "type": "number",
+              "unit": "aucune",
               "id": "9a1277fc15ed4ef68174aca2db3341e2",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -1196,10 +1353,9 @@ Valid json doc :
               },
               "parameters": {
                 "kind": "constant",
-                "parameters": {
-                  "type": "number",
-                  "parameters": { "value": 2.3 }
-                },
+                "type": "number",
+                "unit": "aucune",
+                "parameters": { "kind": "number", "value": 2.3 },
                 "id": "9a1277fc15ed4ef68174aca2db3341e2",
                 "position": {
                   "file": "ok/rules.publicodes",
@@ -1214,6 +1370,8 @@ Valid json doc :
       ]
     },
     "o": {
+      "type": "number",
+      "unit": "aucune",
       "id": "63087e876b62b228ce1ca32f323fa133",
       "position": {
         "file": "ok/rules.publicodes",
@@ -1222,6 +1380,8 @@ Valid json doc :
       },
       "value_mechanism": {
         "kind": "not_defined",
+        "type": "number",
+        "unit": "aucune",
         "id": "63087e876b62b228ce1ca32f323fa133",
         "position": {
           "file": "ok/rules.publicodes",
@@ -1232,6 +1392,8 @@ Valid json doc :
       "chained_mechanisms": [
         {
           "kind": "round_up",
+          "type": "number",
+          "unit": "aucune",
           "id": "40a75ee6698b4089c983662b9d877196",
           "position": {
             "file": "ok/rules.publicodes",
@@ -1241,6 +1403,8 @@ Valid json doc :
           "parameters": {
             "value_mechanism": {
               "kind": "expr",
+              "type": "number",
+              "unit": "aucune",
               "id": "9eefb1d8169ec53b896ee6369c28130a",
               "position": {
                 "file": "ok/rules.publicodes",
@@ -1249,10 +1413,9 @@ Valid json doc :
               },
               "parameters": {
                 "kind": "constant",
-                "parameters": {
-                  "type": "number",
-                  "parameters": { "value": 2.3 }
-                },
+                "type": "number",
+                "unit": "aucune",
+                "parameters": { "kind": "number", "value": 2.3 },
                 "id": "9eefb1d8169ec53b896ee6369c28130a",
                 "position": {
                   "file": "ok/rules.publicodes",
@@ -1267,47 +1430,52 @@ Valid json doc :
       ]
     },
     "p": {
-      "id": "502bb89b9ab8534e6191f8ea100d2cec",
+      "type": "symbol",
+      "id": "681835d59f7b734ce3bbe2a8b67c4603",
       "position": {
         "file": "ok/rules.publicodes",
-        "start": { "index": 703, "line": 59, "column": 1 },
-        "end": { "index": 704, "line": 59, "column": 2 }
+        "start": { "index": 704, "line": 60, "column": 1 },
+        "end": { "index": 705, "line": 60, "column": 2 }
       },
       "value_mechanism": {
         "kind": "expr",
-        "id": "502bb89b9ab8534e6191f8ea100d2cec",
+        "type": "symbol",
+        "id": "681835d59f7b734ce3bbe2a8b67c4603",
         "position": {
           "file": "ok/rules.publicodes",
-          "start": { "index": 703, "line": 59, "column": 1 },
-          "end": { "index": 704, "line": 59, "column": 2 }
+          "start": { "index": 704, "line": 60, "column": 1 },
+          "end": { "index": 705, "line": 60, "column": 2 }
         },
         "parameters": {
           "kind": "constant",
-          "parameters": { "type": "symbol", "parameters": { "value": "foo" } },
-          "id": "7a4b65152797006a36e155d3959e6250",
+          "type": "symbol",
+          "parameters": { "kind": "symbol", "value": "foo" },
+          "id": "1d31a5b73d80604c262c9d94e8f30d15",
           "position": {
             "file": "ok/rules.publicodes",
-            "start": { "index": 706, "line": 59, "column": 4 },
-            "end": { "index": 711, "line": 59, "column": 9 }
+            "start": { "index": 707, "line": 60, "column": 4 },
+            "end": { "index": 712, "line": 60, "column": 9 }
           }
         }
       },
       "chained_mechanisms": []
     },
     "q": {
-      "id": "a85468d2fca866b8f4cb33974a03e918",
+      "type": "enum",
+      "id": "1238150d78453c477177aada17b8cf3c",
       "position": {
         "file": "ok/rules.publicodes",
-        "start": { "index": 712, "line": 60, "column": 1 },
-        "end": { "index": 713, "line": 60, "column": 2 }
+        "start": { "index": 714, "line": 62, "column": 1 },
+        "end": { "index": 715, "line": 62, "column": 2 }
       },
       "value_mechanism": {
         "kind": "variations",
-        "id": "89129915ff64e38296ff0bdd95661c13",
+        "type": "enum",
+        "id": "7781aed213bd818bcc4d2a2368448725",
         "position": {
           "file": "ok/rules.publicodes",
-          "start": { "index": 717, "line": 61, "column": 3 },
-          "end": { "index": 727, "line": 61, "column": 13 }
+          "start": { "index": 719, "line": 63, "column": 3 },
+          "end": { "index": 729, "line": 63, "column": 13 }
         },
         "parameters": {
           "conditions": [
@@ -1315,23 +1483,22 @@ Valid json doc :
               "if": {
                 "value_mechanism": {
                   "kind": "expr",
-                  "id": "1413f4e83de89a540b748b90f97dccea",
+                  "type": "boolean",
+                  "id": "3218eda5d8c65879d85696262d4769d9",
                   "position": {
                     "file": "ok/rules.publicodes",
-                    "start": { "index": 739, "line": 62, "column": 11 },
-                    "end": { "index": 742, "line": 62, "column": 14 }
+                    "start": { "index": 741, "line": 64, "column": 11 },
+                    "end": { "index": 744, "line": 64, "column": 14 }
                   },
                   "parameters": {
                     "kind": "constant",
-                    "parameters": {
-                      "type": "bool",
-                      "parameters": { "value": true }
-                    },
-                    "id": "1413f4e83de89a540b748b90f97dccea",
+                    "type": "boolean",
+                    "parameters": { "kind": "bool", "value": true },
+                    "id": "3218eda5d8c65879d85696262d4769d9",
                     "position": {
                       "file": "ok/rules.publicodes",
-                      "start": { "index": 739, "line": 62, "column": 11 },
-                      "end": { "index": 742, "line": 62, "column": 14 }
+                      "start": { "index": 741, "line": 64, "column": 11 },
+                      "end": { "index": 744, "line": 64, "column": 14 }
                     }
                   }
                 },
@@ -1340,23 +1507,22 @@ Valid json doc :
               "then": {
                 "value_mechanism": {
                   "kind": "expr",
-                  "id": "3c998a9a4f91162f9a49fbc783e7d812",
+                  "type": "symbol",
+                  "id": "2ded146d326af3fec91482d17b336f46",
                   "position": {
                     "file": "ok/rules.publicodes",
-                    "start": { "index": 749, "line": 63, "column": 7 },
-                    "end": { "index": 754, "line": 63, "column": 12 }
+                    "start": { "index": 751, "line": 65, "column": 7 },
+                    "end": { "index": 756, "line": 65, "column": 12 }
                   },
                   "parameters": {
                     "kind": "constant",
-                    "parameters": {
-                      "type": "symbol",
-                      "parameters": { "value": "foo" }
-                    },
-                    "id": "653fedc93360236646d104ff6c284d0f",
+                    "type": "symbol",
+                    "parameters": { "kind": "symbol", "value": "foo" },
+                    "id": "e71bbefc0b4254179a4b5b96476a2d37",
                     "position": {
                       "file": "ok/rules.publicodes",
-                      "start": { "index": 756, "line": 63, "column": 14 },
-                      "end": { "index": 761, "line": 63, "column": 19 }
+                      "start": { "index": 758, "line": 65, "column": 14 },
+                      "end": { "index": 763, "line": 65, "column": 19 }
                     }
                   }
                 },
@@ -1367,23 +1533,22 @@ Valid json doc :
               "if": {
                 "value_mechanism": {
                   "kind": "expr",
-                  "id": "5ea9807021df2d38e89f776a8398aa41",
+                  "type": "boolean",
+                  "id": "1537ec7f6626a617e9f2cc64b3c6fec0",
                   "position": {
                     "file": "ok/rules.publicodes",
-                    "start": { "index": 772, "line": 64, "column": 11 },
-                    "end": { "index": 775, "line": 64, "column": 14 }
+                    "start": { "index": 774, "line": 66, "column": 11 },
+                    "end": { "index": 777, "line": 66, "column": 14 }
                   },
                   "parameters": {
                     "kind": "constant",
-                    "parameters": {
-                      "type": "bool",
-                      "parameters": { "value": false }
-                    },
-                    "id": "5ea9807021df2d38e89f776a8398aa41",
+                    "type": "boolean",
+                    "parameters": { "kind": "bool", "value": false },
+                    "id": "1537ec7f6626a617e9f2cc64b3c6fec0",
                     "position": {
                       "file": "ok/rules.publicodes",
-                      "start": { "index": 772, "line": 64, "column": 11 },
-                      "end": { "index": 775, "line": 64, "column": 14 }
+                      "start": { "index": 774, "line": 66, "column": 11 },
+                      "end": { "index": 777, "line": 66, "column": 14 }
                     }
                   }
                 },
@@ -1392,23 +1557,22 @@ Valid json doc :
               "then": {
                 "value_mechanism": {
                   "kind": "expr",
-                  "id": "578b86ae693636f768eb5c06a45614b8",
+                  "type": "symbol",
+                  "id": "5398edcebb4c6e6b95cc683762c1f72f",
                   "position": {
                     "file": "ok/rules.publicodes",
-                    "start": { "index": 782, "line": 65, "column": 7 },
-                    "end": { "index": 787, "line": 65, "column": 12 }
+                    "start": { "index": 784, "line": 67, "column": 7 },
+                    "end": { "index": 789, "line": 67, "column": 12 }
                   },
                   "parameters": {
                     "kind": "constant",
-                    "parameters": {
-                      "type": "symbol",
-                      "parameters": { "value": "bar" }
-                    },
-                    "id": "376321b5d1cd24ea1be87197dd6d34df",
+                    "type": "symbol",
+                    "parameters": { "kind": "symbol", "value": "bar" },
+                    "id": "7d67fb9cd42609441f7b6d6a7201e84f",
                     "position": {
                       "file": "ok/rules.publicodes",
-                      "start": { "index": 789, "line": 65, "column": 14 },
-                      "end": { "index": 794, "line": 65, "column": 19 }
+                      "start": { "index": 791, "line": 67, "column": 14 },
+                      "end": { "index": 796, "line": 67, "column": 19 }
                     }
                   }
                 },
@@ -1421,19 +1585,21 @@ Valid json doc :
       "chained_mechanisms": []
     },
     "r": {
-      "id": "34bb3c58881a81d9eb5a564aba2d8fe9",
+      "type": "enum",
+      "id": "1015cd64843bf309539a522d1d57d5be",
       "position": {
         "file": "ok/rules.publicodes",
-        "start": { "index": 795, "line": 66, "column": 1 },
-        "end": { "index": 796, "line": 66, "column": 2 }
+        "start": { "index": 797, "line": 68, "column": 1 },
+        "end": { "index": 798, "line": 68, "column": 2 }
       },
       "value_mechanism": {
         "kind": "variations",
-        "id": "8651138b0c019be4c49df4a7cadc8238",
+        "type": "symbol",
+        "id": "1b683e4a964a42a7a22490e2358e8493",
         "position": {
           "file": "ok/rules.publicodes",
-          "start": { "index": 857, "line": 71, "column": 3 },
-          "end": { "index": 867, "line": 71, "column": 13 }
+          "start": { "index": 859, "line": 73, "column": 3 },
+          "end": { "index": 869, "line": 73, "column": 13 }
         },
         "parameters": {
           "conditions": [
@@ -1441,47 +1607,47 @@ Valid json doc :
               "if": {
                 "value_mechanism": {
                   "kind": "expr",
-                  "id": "0fff6f381ab757923342e18c456a7a8b",
+                  "type": "boolean",
+                  "id": "067f28b610b1e838498be8ebd1e1a1b9",
                   "position": {
                     "file": "ok/rules.publicodes",
-                    "start": { "index": 879, "line": 72, "column": 11 },
-                    "end": { "index": 884, "line": 72, "column": 16 }
+                    "start": { "index": 881, "line": 74, "column": 11 },
+                    "end": { "index": 886, "line": 74, "column": 16 }
                   },
                   "parameters": {
                     "kind": "eq",
+                    "type": "boolean",
                     "parameters": {
                       "left": {
                         "kind": "constant",
-                        "parameters": {
-                          "type": "number",
-                          "parameters": { "value": 5.0 }
-                        },
-                        "id": "ec82c37b0c0a4b652f90723f84e541ef",
+                        "type": "number",
+                        "unit": "aucune",
+                        "parameters": { "kind": "number", "value": 5.0 },
+                        "id": "4e0fdc3e06abdd569071c02dc4c80a63",
                         "position": {
                           "file": "ok/rules.publicodes",
-                          "start": { "index": 879, "line": 72, "column": 11 },
-                          "end": { "index": 880, "line": 72, "column": 12 }
+                          "start": { "index": 881, "line": 74, "column": 11 },
+                          "end": { "index": 882, "line": 74, "column": 12 }
                         }
                       },
                       "right": {
                         "kind": "constant",
-                        "parameters": {
-                          "type": "number",
-                          "parameters": { "value": 1.0 }
-                        },
-                        "id": "a3fa8ec07fbbbb942570db231be8b1d5",
+                        "type": "number",
+                        "unit": "aucune",
+                        "parameters": { "kind": "number", "value": 1.0 },
+                        "id": "a8550ed4f8a1cb15d793db93a4875e4a",
                         "position": {
                           "file": "ok/rules.publicodes",
-                          "start": { "index": 883, "line": 72, "column": 15 },
-                          "end": { "index": 884, "line": 72, "column": 16 }
+                          "start": { "index": 885, "line": 74, "column": 15 },
+                          "end": { "index": 886, "line": 74, "column": 16 }
                         }
                       }
                     },
-                    "id": "10c0223705b199c5ec39541449b8b44b",
+                    "id": "0855e6997d9e1979bb4a2405929c2b24",
                     "position": {
                       "file": "ok/rules.publicodes",
-                      "start": { "index": 881, "line": 72, "column": 13 },
-                      "end": { "index": 884, "line": 72, "column": 16 }
+                      "start": { "index": 883, "line": 74, "column": 13 },
+                      "end": { "index": 886, "line": 74, "column": 16 }
                     }
                   }
                 },
@@ -1490,23 +1656,22 @@ Valid json doc :
               "then": {
                 "value_mechanism": {
                   "kind": "expr",
-                  "id": "573400a8e3c6f93430ab506ed658570c",
+                  "type": "symbol",
+                  "id": "04ade490082d8524aad2f825c7d6f464",
                   "position": {
                     "file": "ok/rules.publicodes",
-                    "start": { "index": 891, "line": 73, "column": 7 },
-                    "end": { "index": 896, "line": 73, "column": 12 }
+                    "start": { "index": 893, "line": 75, "column": 7 },
+                    "end": { "index": 898, "line": 75, "column": 12 }
                   },
                   "parameters": {
                     "kind": "constant",
-                    "parameters": {
-                      "type": "symbol",
-                      "parameters": { "value": "foo" }
-                    },
-                    "id": "0b0b83cdf2e9428ceeb71c11604b9c79",
+                    "type": "symbol",
+                    "parameters": { "kind": "symbol", "value": "foo" },
+                    "id": "6fcd24ea5f13a3bc84fd8b7aa0997ff7",
                     "position": {
                       "file": "ok/rules.publicodes",
-                      "start": { "index": 898, "line": 73, "column": 14 },
-                      "end": { "index": 903, "line": 73, "column": 19 }
+                      "start": { "index": 900, "line": 75, "column": 14 },
+                      "end": { "index": 905, "line": 75, "column": 19 }
                     }
                   }
                 },
@@ -1518,14 +1683,15 @@ Valid json doc :
       },
       "chained_mechanisms": [
         {
-          "kind": "type",
-          "id": "0e4ff2e1429a37ff505a42e721479bc8",
+          "kind": "type_def",
+          "type": "enum",
+          "id": "03d1aa7cddbb1b81df5f32a919d9fb79",
           "position": {
             "file": "ok/rules.publicodes",
-            "start": { "index": 800, "line": 67, "column": 3 },
-            "end": { "index": 804, "line": 67, "column": 7 }
+            "start": { "index": 802, "line": 69, "column": 3 },
+            "end": { "index": 806, "line": 69, "column": 7 }
           },
-          "parameters": { "enum": "'foo', 'bar'" }
+          "parameters": { "type": "enum" }
         }
       ]
     }
@@ -1690,209 +1856,26 @@ Valid json doc :
   
   function _p(ctx, params) {
     return /** @type {'foo'} */ (
-      $ret("7a4b65152797006a36e155d3959e6250", ctx, "foo")
+      $ret("1d31a5b73d80604c262c9d94e8f30d15", ctx, "foo")
     )
   
   function _q(ctx, params) {
     return /** @type {('foo'|'bar')} */ (
-      $ret("89129915ff64e38296ff0bdd95661c13", ctx, $cond(
-        $ret("89129915ff64e38296ff0bdd95661c13", ctx, $eq(
-          $ret("1413f4e83de89a540b748b90f97dccea", ctx, true),
-          $ret("89129915ff64e38296ff0bdd95661c13", ctx, true))), () => $ret("653fedc93360236646d104ff6c284d0f", ctx, "foo"), () => $ret("89129915ff64e38296ff0bdd95661c13", ctx, $cond(
-          $ret("89129915ff64e38296ff0bdd95661c13", ctx, $eq(
-            $ret("5ea9807021df2d38e89f776a8398aa41", ctx, false),
-            $ret("89129915ff64e38296ff0bdd95661c13", ctx, true))), () => $ret("376321b5d1cd24ea1be87197dd6d34df", ctx, "bar"), () => $ret("89129915ff64e38296ff0bdd95661c13", ctx, NotApplicable)))))
+      $ret("7781aed213bd818bcc4d2a2368448725", ctx, $cond(
+        $ret("7781aed213bd818bcc4d2a2368448725", ctx, $eq(
+          $ret("3218eda5d8c65879d85696262d4769d9", ctx, true),
+          $ret("7781aed213bd818bcc4d2a2368448725", ctx, true))), () => $ret("e71bbefc0b4254179a4b5b96476a2d37", ctx, "foo"), () => $ret("7781aed213bd818bcc4d2a2368448725", ctx, $cond(
+          $ret("7781aed213bd818bcc4d2a2368448725", ctx, $eq(
+            $ret("1537ec7f6626a617e9f2cc64b3c6fec0", ctx, false),
+            $ret("7781aed213bd818bcc4d2a2368448725", ctx, true))), () => $ret("7d67fb9cd42609441f7b6d6a7201e84f", ctx, "bar"), () => $ret("7781aed213bd818bcc4d2a2368448725", ctx, NotApplicable)))))
     )
   
   function _r(ctx, params) {
     return /** @type {('foo'|'bar')} */ (
-      $ret("8651138b0c019be4c49df4a7cadc8238", ctx, $cond(
-        $ret("8651138b0c019be4c49df4a7cadc8238", ctx, $eq(
-          $ret("10c0223705b199c5ec39541449b8b44b", ctx, $eq(
-            $ret("ec82c37b0c0a4b652f90723f84e541ef", ctx, 5.),
-            $ret("a3fa8ec07fbbbb942570db231be8b1d5", ctx, 1.))),
-          $ret("8651138b0c019be4c49df4a7cadc8238", ctx, true))), () => $ret("0b0b83cdf2e9428ceeb71c11604b9c79", ctx, "foo"), () => $ret("8651138b0c019be4c49df4a7cadc8238", ctx, NotApplicable)))
-    )
-
-  $ publicodes compile ok --without-trace -o - | ../../scripts/get_functions.awk
-  
-  function _a(ctx, params) {
-    return /** @type {10.000000} */ (
-      10.
-    )
-  
-  function _b(ctx, params) {
-    return /** @type {number} */ (
-      $add(
-        $add(
-          ((ctx) => $ref("a", _a, ctx, params))(
-          			{
-          				...ctx,
-          					"a": 30.,
-          			}
-          		),
-          $ref("a", _a, ctx, params)),
-        $ref("b . c", _b_·_c, ctx, params))
-    )
-  
-  function _b_·_c(ctx, params) {
-    return /** @type {55.000000} */ (
-      55.
-    )
-  
-  function _d(ctx, params) {
-    return /** @type {number} */ (
-      $cond(
-        $eq(
-          $gt(
-            $ref("a", _a, ctx, params),
-            () => 20.),
-          true), () => 20., () => $cond(
-          $eq(
-            $gt(
-              $ref("a", _a, ctx, params),
-              () => 5.),
-            true), () => 5., () => 0.))
-    )
-  
-  function _e(ctx, params) {
-    return /** @type {number} */ (
-      $add(
-        $ref("a", _a, ctx, params),
-        $ref("b", _b, ctx, params))
-    )
-  
-  function _f(ctx, params) {
-    return /** @type {number} */ (
-      (-$ref("e", _e, ctx, params))
-    )
-  
-  function _g(ctx, params) {
-    return /** @type {number} */ (
-      ((ctx) => $add(
-        $ref("b", _b, ctx, params),
-        $ref("g . here", _g_·_here, ctx, params)))(
-      			{
-      				...ctx,
-      					"a": 2.,
-      					"b . c": 3.,
-      					"g . here": 9.,
-      			}
-      		)
-    )
-  
-  function _g_·_here(ctx, params) {
-    return /** @type {5.000000} */ (
-      5.
-    )
-  
-  function _h(ctx, params) {
-    return /** @type {30.000000} */ (
-      $cond(
-        $or(
-          (isNotDefined($gt(
-            $ref("g", _g, ctx, params),
-            () => 20.))),
-          () => $or(
-            $eq(
-              $gt(
-                $ref("g", _g, ctx, params),
-                () => 20.),
-              false),
-            () => $eq(
-              $gt(
-                $ref("g", _g, ctx, params),
-                () => 20.),
-              NotApplicable))), () => NotApplicable, () => 30.)
-    )
-  
-  function _i(ctx, params) {
-    return /** @type {30.000000} */ (
-      $cond(
-        $or(
-          (isNotDefined($gt(
-            $ref("g", _g, ctx, params),
-            () => 20.))),
-          () => $or(
-            $eq(
-              $gt(
-                $ref("g", _g, ctx, params),
-                () => 20.),
-              false),
-            () => $eq(
-              $gt(
-                $ref("g", _g, ctx, params),
-                () => 20.),
-              NotApplicable))), () => 30., () => NotApplicable)
-    )
-  
-  function _j(ctx, params) {
-    return /** @type {number} */ (
-      $cond(
-        (isNotDefined($get("j", ctx, params))), () => 20., () => $get("j", ctx, params))
-    )
-  
-  function _k(ctx, params) {
-    return /** @type {2.300000} */ (
-      $cond(
-        $and(
-          $neq(
-            2.3,
-            NotApplicable),
-          () => $gt(
-            4.,
-            () => 2.3)), () => 2.3, () => 4.)
-    )
-  
-  function _l(ctx, params) {
-    return /** @type {3.000000} */ (
-      $cond(
-        $and(
-          $neq(
-            3.,
-            NotApplicable),
-          () => $lt(
-            2.,
-            () => 3.)), () => 3., () => 2.)
-    )
-  
-  function _m(ctx, params) {
-    return /** @type {number} */ (
-      $round("nearest", $get("m", ctx, params), () => 2.3)
-    )
-  
-  function _n(ctx, params) {
-    return /** @type {number} */ (
-      $round("down", $get("n", ctx, params), () => 2.3)
-    )
-  
-  function _o(ctx, params) {
-    return /** @type {number} */ (
-      $round("up", $get("o", ctx, params), () => 2.3)
-    )
-  
-  function _p(ctx, params) {
-    return /** @type {'foo'} */ (
-      "foo"
-    )
-  
-  function _q(ctx, params) {
-    return /** @type {('foo'|'bar')} */ (
-      $cond(
-        $eq(
-          true,
-          true), () => "foo", () => $cond(
-          $eq(
-            false,
-            true), () => "bar", () => NotApplicable))
-    )
-  
-  function _r(ctx, params) {
-    return /** @type {('foo'|'bar')} */ (
-      $cond(
-        $eq(
-          $eq(
-            5.,
-            1.),
-          true), () => "foo", () => NotApplicable)
+      $ret("1b683e4a964a42a7a22490e2358e8493", ctx, $cond(
+        $ret("1b683e4a964a42a7a22490e2358e8493", ctx, $eq(
+          $ret("0855e6997d9e1979bb4a2405929c2b24", ctx, $eq(
+            $ret("4e0fdc3e06abdd569071c02dc4c80a63", ctx, 5.),
+            $ret("a8550ed4f8a1cb15d793db93a4875e4a", ctx, 1.))),
+          $ret("1b683e4a964a42a7a22490e2358e8493", ctx, true))), () => $ret("6fcd24ea5f13a3bc84fd8b7aa0997ff7", ctx, "foo"), () => $ret("1b683e4a964a42a7a22490e2358e8493", ctx, NotApplicable)))
     )

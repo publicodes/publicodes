@@ -1,6 +1,8 @@
 open Utils
 open Output.Let_syntax
 
+type target_type = Js | Json | Debug_eval_tree
+
 type t =
   { input_files: File.t list
   ; module_path: File.t
@@ -8,14 +10,10 @@ type t =
   ; default_to_public: bool
   ; without_trace: bool }
 
-and target_type = Js | Debug_eval_tree | Json_doc
-
 let compile
     {input_files; module_path; output_type; default_to_public; without_trace} =
-  let* parsed_ast =
-    Parser.parse_files input_files ~default_to_public ~module_path
-  in
-  let* resolved_ast = Resolver.from_parsed_ast parsed_ast in
+  let* ast = Parser.parse_files ~default_to_public ~module_path input_files in
+  let* resolved_ast = Resolver.from_parsed_ast ast in
   let* {replacement_graph; make_not_applicable_graph; dependency_graph} =
     Analysis.mk_and_checks resolved_ast
   in
@@ -30,11 +28,11 @@ let compile
   in
   let output_str =
     match output_type with
-    | Json_doc ->
-        Shared.To_json_doc.to_str typed_ast
-    | Debug_eval_tree ->
-        Backends.to_debug eval_tree outputs
     | Js ->
         Backends.to_js eval_tree outputs ~without_trace
+    | Debug_eval_tree ->
+        Backends.to_debug eval_tree outputs
+    | Json ->
+        Autodoc.to_json_str typed_ast
   in
   Output.return output_str
