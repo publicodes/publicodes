@@ -16,5 +16,6 @@ packages/compiler/templates/template.*
 packages/compiler/docs/debugging tree/*
 
 website/src/routes/docs/api/**/*.md
+website-v2/src/routes/docs/api/**/*.md
 
 packages/cli/bin
