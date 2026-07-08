@@ -153,7 +153,7 @@ Si on change la valeur de la règle `nouveau salarié` à `non`, alors la réfé
 
 <Callout type="info" title="Note">
 
-La syntaxe `rend non applicable` fonctionne de la même manière que le remplacement : elle rend non applicable toutes les références à la règle choisie.
+La syntaxe `rend non applicable` fonctionne de la même manière que le remplacement : elle rend non applicable toutes les références à la règle choisie et ce, en prenant le pas sur les remplace. **Une règle rendue non applicable ne peut pas être remplacée.**
 
 **[En savoir plus sur le remplacement](/docs/manuel#remplacement)**
 </Callout>
@@ -347,11 +347,32 @@ résultat: a # vaut non car b est applicable
 
 </Callout>
 
-### Ordre de priorité
+### Plusieurs remplacements pour une même règle
 
-Lorsque plusieurs remplacements sont applicables pour une référence, l'ordre de priorité est le suivant :
+Lorsque plusieurs remplacements sont applicables pour une même référence, alors il est indispensable qu'ils soient exclusifs car seule la personne métier est en mesure de spécifier l'ordre de priorité (auquel cas on privilegiera des remplacements successifs).
 
-1. Le remplacement avec la `priorité` la plus haute est utilisée
+Pour garantir l'exclusivité, il est nécessaire de spécifier l'attribut `exclusif: oui` dans le mécanisme `remplace`.
+
+```publicodes
+a: 1
+b:
+  non applicable si:
+    est défini: c
+  remplace:
+    références à: a
+    exclusif: oui
+  valeur: 5
+c:
+  remplace:
+    références à: a
+    exclusif: oui
+  valeur: 10
+
+résultat: a
+# est remplacé par `c` car `c` est défini rendant `b` non applicable.
+```
+
+Dans le cas où l'exclusivité est spécifiée mais non respectée, une erreur sera levée :
 
 ```publicodes
 a: 1
@@ -359,31 +380,33 @@ a: 1
 b:
   remplace:
     références à: a
-    priorité: 2
+    exclusif: oui
   valeur: 5
 
 c:
-  remplace: a
+  remplace:
+    références à: a
+    exclusif: oui
   valeur: 10
 
-résultat: a
-# est remplacé par `b` car ce remplacement a une priorité
-# plus élevée que celui de `c` (par défaut à zéro)
+# Ce cas produit une erreur.
 ```
 
-2. Sinon, c'est le nom de la règle de définition qui est utilisé (comparaison lexicographique)
+### Remplacements chainés
+
+Les remplacements sont exclusifs (remplacement unique ou définis comme étant exclusifs). Il est possible de chaîner plusieurs remplacements pour une même référence : le remplacement est transitif.
 
 ```publicodes
 a: 1
 b:
   remplace: a
   valeur: 5
-b . c:
-  remplace: a
+c:
+  remplace: b
   valeur: 10
 
 résultat: a
-# est remplacé par `b . c` car il est situé après `b` dans l'ordre alphabétique
+# est remplacé par `b` puis par `c`, donc vaut 10
 ```
 
 ## Définir des règles imbriquées
