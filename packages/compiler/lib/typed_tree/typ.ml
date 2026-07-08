@@ -65,36 +65,37 @@ let unify t1 t2 =
   | _, Any _ ->
       return (UnionFind.merge (fun a _ -> a) t1 t2)
   | Literal l1, Literal l2 ->
-      if Typ.equal_literal l1 l2 |> not then
+      if Typ.equal_literal l1 l2 then return t1
+      else
         (* Todo replace with a unique type_error, with the pos of the different arguments *)
         error_typ_mismatch typ1 typ2
-      else return t1
   | Number _, Literal _ | Literal _, Number _ ->
       error_typ_mismatch typ1 typ2
-  | Number n1, Number n2 ->
-      let* _ = Number_unit.unify ~pos1 ~pos2 n1 n2 in
+  | Number unit1, Number unit2 ->
+      let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
       return t1
 
 let multiply ~pos n1 n2 =
-  let typ1 = n1 |> UnionFind.get in
-  let typ2 = n2 |> UnionFind.get in
+  let typ1 = UnionFind.get n1 in
+  let typ2 = UnionFind.get n2 in
   match (Pos.value typ1, Pos.value typ2) with
-  | Number n1, Number n2 ->
-      mk ~pos (Number (Number_unit.multiply n1 n2))
+  | Number unit1, Number unit2 ->
+      mk ~pos (Number (Number_unit.multiply unit1 unit2))
   | _, _ ->
       failwith "Can't multiply"
 
 let divide ~pos n1 n2 =
-  let typ1 = n1 |> UnionFind.get in
-  let typ2 = n2 |> UnionFind.get in
+  let typ1 = UnionFind.get n1 in
+  let typ2 = UnionFind.get n2 in
   match (Pos.value typ1, Pos.value typ2) with
   | Number n1, Number n2 ->
       mk ~pos (Number (Number_unit.divide n1 n2))
   | _, _ ->
       failwith "Can't divide"
 
-let get_unit typ =
-  match typ |> UnionFind.get |> Pos.value with
+let get_unit elem =
+  let typ, _ = UnionFind.get elem in
+  match typ with
   | Number unit ->
       let unit = Number_unit.normalize unit in
       (* If not a concrete unit, exit *)
@@ -102,8 +103,9 @@ let get_unit typ =
   | _ ->
       empty
 
-let to_concrete typ =
-  match typ |> UnionFind.get |> Pos.value with
+let to_concrete elem =
+  let typ, _ = UnionFind.get elem in
+  match typ with
   | Number unit ->
       let unit = Number_unit.normalize unit in
       Some (Shared.Typ.Number (Some unit.concrete))

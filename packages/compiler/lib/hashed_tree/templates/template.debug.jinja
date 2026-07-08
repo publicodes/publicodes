@@ -29,14 +29,27 @@
 	{%- if unit && unit != "aucune" %} {{ unit }}{% endif %}
 {%- endmacro %}
 
+{%- macro fmt_type_node_unit (unit) %}
+{%- if unit && unit != "aucune" %}<{{ unit }}>{% endif %}
+{%- endmacro %}
+
 {%- function needs_parens (op) %}
 	{{ op == "binary_op" || op == "unary_op" }}
 {%- endfunction %}
 
+{%- function is_multiline_node (op) %}
+	{{ op == "condition" || op == "round" || op == "set_ctx" }}
+{%- endfunction %}
+
+{%- function should_break_binary (left_kind, right_kind) %}
+	{{ left_kind == "binary_op" || right_kind == "binary_op"
+		|| is_multiline_node(left_kind) || is_multiline_node(right_kind) }}
+{%- endfunction %}
+
 {%- macro fmt_operand (node) %}
-	{%- if needs_parens(node.node_type) %}({% endif -%}
+	{%- if needs_parens(node.node_kind) %}({% endif -%}
 	{{ fmt_node(node) }}
-	{%- if needs_parens(node.node_type) %}){% endif -%}
+	{%- if needs_parens(node.node_kind) %}){% endif -%}
 {%- endmacro %}
 
 {%- macro indent (prefix) -%}
@@ -45,10 +58,9 @@
 {%- endmacro -%}
 
 
-{%- macro fmt_node (node) %}
-{%- set node_type, node_value = (node.node_type, node.node_value) -%}
-{%- switch node_type %}
-
+{%- macro fmt_node_body (node) %}
+{%- set node_kind, node_value = (node.node_kind, node.node_value) -%}
+{%- switch node_kind %}
 {%- case "number" -%}
 {{ node_value.number }}{{ fmt_node_unit (node_value.unit) }}
 
@@ -92,7 +104,12 @@ else
 {%- endcall %}
 
 {%- case "binary_op" -%}
+{%- if show_types && should_break_binary(node_value.left.node_kind, node_value.right.node_kind) -%}
+{{ fmt_operand(node_value.left) }} {{ fmt_binop(node_value.op) }}
+{{ fmt_operand(node_value.right) }}
+{%- else -%}
 {{ fmt_operand(node_value.left) }} {{ fmt_binop(node_value.op) }} {{ fmt_operand(node_value.right) }}
+{%- endif %}
 
 {%- case "unary_op" -%}
 {{ fmt_unop(node_value.op) }} {{ fmt_node(node_value.arg) }}
@@ -111,14 +128,32 @@ with: {
 {%- endfor %}
 } in
 {{ fmt_node(node_value.expr) }}
-{%- endswitch %}
+{%- endswitch -%}
+{%- endmacro %}
+
+{%- macro fmt_node (node) %}
+{%- set node_kind, node_value, node_type = (node.node_kind, node.node_value, node.node_type) -%}
+{%- if show_types -%}
+{%- if is_multiline_node(node_kind) -%}
+{{ node_type }}{{ fmt_type_node_unit (node_value.unit) }}[
+{%- call indent ("  ") -%}{{ fmt_node_body(node) }}{%- endcall %}
+]
+{%- else -%}
+{{ node_type }}{{ fmt_type_node_unit (node_value.unit) }}[{{ fmt_node_body(node) }}]
+{%- endif -%}
+{%- else -%}
+{{ fmt_node_body(node) }}
+{%- endif -%}
 {%- endmacro %}
 
 {%- for rule_type, rule_name, rule_node in rules %}
 {%- if !loop.first %}
 
 {% endif -%}
-{{ rule_name }}:
+{%- set rule_label -%}
+{%- if show_types -%}{{ rule_name }} ({{ rule_type }}){%- else -%}{{ rule_name }}{%- endif -%}
+{%- endset -%}
+{{ rule_label }}:
 {%- call indent ("  ") %}
 {{ fmt_node(rule_node) }}
 {%- endcall %}
