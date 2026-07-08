@@ -42,3 +42,14 @@ exemples . CA élevé:
   valeur: revenu net
   contexte:
     chiffre d'affaires . TJM: 600 €/jour
+
+espace de nom a:
+  valeur:
+    variations:
+      - si: cond1
+        alors:
+          valeur: ref 1
+          si non applicable désactive l'espace de nom: oui
+      - sinon: ref 2
+
+

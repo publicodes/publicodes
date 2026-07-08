@@ -1,0 +1,12 @@
+charges:
+  non applicable si: auto-entrepreneur
+  par défaut:
+    valeur: 10% * chiffre d'affaires
+    plancher: 100€
+
+auto-entrepreneur:
+  par défaut: non
+
+chiffre d'affaires:
+  valeur: 10
+  unité: €
