@@ -84,14 +84,11 @@ let type_check ?(snd_pass = false) (tree : Tree.t) =
         let+ _ = unify typ then_expr.meta in
         ()
     | Ref ref_name ->
-        (* return () *)
         let rule = Hashtbl.find_exn tree ref_name in
         let+ _ = unify typ rule.meta in
         ()
     | Get_context _ ->
         return ()
-        (* let _, ref_meta = Hashtbl.find_exn tree name in
-          unify  meta ref_meta *)
     | Set_context {context= ctx; value= ctx_value} ->
         let* _ = unify_value ctx_value in
         let* _ = unify typ ctx_value.meta in
