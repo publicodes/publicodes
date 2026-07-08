@@ -94,9 +94,8 @@ let rec expr_to_mapping rule_name (expr_value, expr_mark) : Yojson.Basic.t =
   let compiler_metadata = to_compiler_metadata rule_name expr_mark.pos in
   `Assoc (kind :: parameters :: compiler_metadata)
 
-let rec to_value_mec rule_name value_mecha : Yojson.Basic.t =
-  let value_mecha, value_mark = value_mecha in
-  let Shared_ast.{pos; _} = value_mark in
+let rec to_value_mec rule_name (value_mecha, value_mecha_mark) : Yojson.Basic.t
+    =
   let kind, parameters =
     match value_mecha with
     | Expr expr ->
@@ -180,7 +179,8 @@ let rec to_value_mec rule_name value_mecha : Yojson.Basic.t =
         [("parameters", parameters)]
   in
   let kind = [("kind", `String kind)] in
-  `Assoc (kind @ to_compiler_metadata rule_name pos @ parameters)
+  `Assoc
+    (kind @ to_compiler_metadata rule_name value_mecha_mark.pos @ parameters)
 
 and to_chained_mechanism name (chained_mecha, chained_mecha_mark) :
     Yojson.Basic.t =

@@ -24,7 +24,7 @@ let output_type =
         (enum
            [ ("js", Compiler.Js)
            ; ("debug_eval_tree", Compiler.Debug_eval_tree)
-           ; ("json_doc", Compiler.Json_doc) ] )
+           ; ("json", Compiler.Json) ] )
         Compiler.Js
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
 
@@ -104,7 +104,7 @@ let cmd =
                 ".eval_tree.debug"
             | Js ->
                 ".js"
-            | Json_doc ->
+            | Json ->
                 ".json"
           in
           Ok (File.of_string_exn default)
