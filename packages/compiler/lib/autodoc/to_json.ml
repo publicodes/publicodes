@@ -233,35 +233,37 @@ and to_mechanism get_type name {value; chainable_mechanisms} :
         (List.map chainable_mechanisms ~f:(to_chained_mechanism get_type name))
     ) ]
 
-let to_json_entry {name= name, pos; value; meta; _} get_type =
+let to_type typ =
+  match Typed_tree.Typ.to_concrete typ with
+  | Some (Number None) ->
+      [("type", `String "number")]
+  | Some (Number (Some unit)) ->
+      [ ("type", `String "number")
+      ; ("unit", `String (Stdlib.Format.asprintf "%a" Shared.Units.pp unit)) ]
+  | Some (Literal String) ->
+      [("type", `String "text")]
+  | Some (Literal Bool) ->
+      [("type", `String "boolean")]
+  | Some (Literal Date) ->
+      [("type", `String "date")]
+  | _ ->
+      (* FIXME: should not happen *)
+      [("type", `String "unknown")]
+
+let to_json_entry typed_ast rule_def =
+  let get_type ~rule ~pos =
+    let typ = Typed_tree.get_type ~rule ~pos typed_ast in
+    to_type typ
+  in
+  let {name= name, pos; value; meta; _} = rule_def in
   let compiler_metadata = to_compiler_metadata name pos in
   let value = to_mechanism get_type name value in
   let meta = List.filter_map meta ~f:to_meta in
-  let typ = get_type ~rule:name ~pos in
+  let typed_meta = Shared.Eval_tree.get_meta typed_ast name in
+  let typ = to_type typed_meta in
   ( Shared.Rule_name.to_string name
   , `Assoc (typ @ compiler_metadata @ meta @ value) )
 
-let to_str ast (typed_ast : Typed_tree.t) =
-  let get_type ~rule ~pos =
-    let typ = Typed_tree.get_type ~rule ~pos typed_ast in
-    match Typed_tree.Typ.to_concrete typ with
-    | Some (Number None) ->
-        [("type", `String "number")]
-    | Some (Number (Some unit)) ->
-        [ ("type", `String "number")
-        ; ("unit", `String (Stdlib.Format.asprintf "%a" Shared.Units.pp unit))
-        ]
-    | Some (Literal String) ->
-        [("type", `String "text")]
-    | Some (Literal Bool) ->
-        [("type", `String "boolean")]
-    | Some (Literal Date) ->
-        [("type", `String "date")]
-    | _ ->
-        (* FIXME: should not happen *)
-        [("type", `String "unknown")]
-  in
-  let json_entries =
-    `Assoc (List.map ast ~f:(fun rule_def -> to_json_entry rule_def get_type))
-  in
+let to_str ast typed_ast =
+  let json_entries = `Assoc (List.map ast ~f:(to_json_entry typed_ast)) in
   Yojson.Basic.pretty_to_string json_entries
