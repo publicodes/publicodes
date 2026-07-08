@@ -32,33 +32,31 @@ let number_with_unit ~pos unit = mk ~pos (Number (Number_unit.concrete unit))
 
 let any_number ~pos () = mk ~pos (Number (Number_unit.any ()))
 
+let error_typ_mismatch (typ1, pos1) (typ2, pos2) =
+  let to_str = function
+    | Number _ ->
+        "un nombre"
+    | Literal String ->
+        "un texte"
+    | Literal Bool ->
+        "un booléen (oui / non)"
+    | Literal Date ->
+        "une date"
+    | _ ->
+        failwith "Impossible"
+  in
+  let code, message = Err.type_incoherence in
+  fatal_error ~pos:pos1 ~kind:`Type ~code
+    ~labels:
+      [ Pos.mk ~pos:pos1 (Stdlib.Format.sprintf "est %s" (to_str typ1))
+      ; Pos.mk ~pos:pos2 (Stdlib.Format.sprintf "est %s" (to_str typ2)) ]
+    message
+
 let unify t1 t2 =
-  let typ1 = t1 |> UnionFind.get in
-  let typ2 = t2 |> UnionFind.get in
+  let typ1 = UnionFind.get t1 in
+  let typ2 = UnionFind.get t2 in
   let pos1 = Pos.pos typ1 in
   let pos2 = Pos.pos typ2 in
-  let error_typ_mismatch () =
-    let to_str = function
-      | Number _ ->
-          "un nombre"
-      | Literal String ->
-          "un texte"
-      | Literal Bool ->
-          "un booléen (oui / non)"
-      | Literal Date ->
-          "une date"
-      | _ ->
-          failwith "Impossible"
-    in
-    let code, message = Err.type_incoherence in
-    fatal_error ~pos:pos1 ~kind:`Type ~code
-      ~labels:
-        [ Pos.mk ~pos:pos1
-            (Stdlib.Format.sprintf "est %s" (to_str (Pos.value typ1)))
-        ; Pos.mk ~pos:pos2
-            (Stdlib.Format.sprintf "est %s" (to_str (Pos.value typ2))) ]
-      message
-  in
   match (Pos.value typ1, Pos.value typ2) with
   | Any _, Any _ ->
       return (UnionFind.union t1 t2)
@@ -69,10 +67,10 @@ let unify t1 t2 =
   | Literal l1, Literal l2 ->
       if Typ.equal_literal l1 l2 |> not then
         (* Todo replace with a unique type_error, with the pos of the different arguments *)
-        error_typ_mismatch ()
+        error_typ_mismatch typ1 typ2
       else return t1
   | Number _, Literal _ | Literal _, Number _ ->
-      error_typ_mismatch ()
+      error_typ_mismatch typ1 typ2
   | Number n1, Number n2 ->
       let* _ = Number_unit.unify ~pos1 ~pos2 n1 n2 in
       return t1
