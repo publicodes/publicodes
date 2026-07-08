@@ -87,8 +87,8 @@
 {%- endmacro -%}
 
 {%- macro fmt_node (rule) -%}
-	{%- set node_type, node_value, node_id = (rule.node_type, rule.node_value, rule.node_id) -%}
-	$ret("{{ node_id }}", ctx, {% switch node_type %}
+	{%- set node_kind, node_value, node_id = (rule.node_kind, rule.node_value, rule.node_id) -%}
+	$ret("{{ node_id }}", ctx, {% switch node_kind %}
 	{%- case "number" -%}
 		{{ node_value.number }}
 	{%- case "text" -%}

@@ -6,7 +6,7 @@ type t =
   ; output_type: target_type
   ; default_to_public: bool }
 
-and target_type = Js | Json | Debug_eval_tree
+and target_type = Js | Json | Debug_eval_tree | Debug_typed_eval_tree
 
 let compile {input_files; module_path; output_type; default_to_public} =
   let open Output in
@@ -33,5 +33,7 @@ let compile {input_files; module_path; output_type; default_to_public} =
         Autodoc.to_json_str resolved_ast typed_ast
     | Debug_eval_tree ->
         Hashed_tree.to_debug_str typed_hashed_ast outputs
+    | Debug_typed_eval_tree ->
+        Hashed_tree.to_debug_str typed_hashed_ast outputs ~show_types:true
   in
   return output_str

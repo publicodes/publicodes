@@ -23,6 +23,7 @@ let output_type =
         (enum
            [ ("js", Compiler.Js)
            ; ("debug_eval_tree", Compiler.Debug_eval_tree)
+           ; ("debug_typed_eval_tree", Compiler.Debug_typed_eval_tree)
            ; ("json", Compiler.Json) ] )
         Compiler.Js
     & info ["t"; "output-type"] ~doc ~docv:"TYPE" )
@@ -68,7 +69,7 @@ let cmd =
       "model.publicodes"
       ^
       match output_type with
-      | Debug_eval_tree ->
+      | Debug_typed_eval_tree | Debug_eval_tree ->
           ".eval_tree.debug"
       | Js ->
           ".js"
