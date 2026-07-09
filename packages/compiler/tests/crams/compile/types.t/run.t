@@ -372,9 +372,9 @@ Should allow to specify type with `type` key:
      8 │   valeur: a > b
      9 │   type: texte # erreur
        │         ˘˘˘˘˘˘ est un texte
-       ╒══  type_key/rules.publicodes:8:13 ══
+       ╒══  type_key/rules.publicodes:8:11 ══
      7 │ c:
      8 │   valeur: a > b
-       │             ˘˘˘ est un booléen (oui / non)
+       │           ˘˘˘˘˘ est un booléen (oui / non)
   
   [123]
