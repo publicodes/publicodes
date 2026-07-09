@@ -585,7 +585,7 @@
                       "right": {
                         "kind": "constant",
                         "type": "date",
-                        "parameters": { "kind": "date", "value": "2018-1" },
+                        "parameters": { "kind": "date", "value": "2018-01" },
                         "id": "8223b0aceed94328a3016da7b139c8f5",
                         "position": {
                           "file": "inputs/auto-entrepreneur.publicodes",
@@ -2682,7 +2682,7 @@
                                         "type": "date",
                                         "parameters": {
                                           "kind": "date",
-                                          "value": "2022-1"
+                                          "value": "2022-01"
                                         },
                                         "id": "60ab268fa98fdcc23b7073b9fb659e4d",
                                         "position": {
@@ -4829,7 +4829,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2026-1" },
+                      "parameters": { "kind": "date", "value": "2026-01" },
                       "id": "033191de3d221fab373945fb013cf738",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -4916,7 +4916,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2025-1" },
+                      "parameters": { "kind": "date", "value": "2025-01" },
                       "id": "8de9da12bd5f4c70ab6a12ec09ec1247",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -5003,7 +5003,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "a7d022690643483842dd9c16cf8eed5f",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -5321,7 +5321,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2026-1" },
+                      "parameters": { "kind": "date", "value": "2026-01" },
                       "id": "dd9e6cf5c8175e3eeb7b04f32d91b9fb",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -5408,7 +5408,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2025-1" },
+                      "parameters": { "kind": "date", "value": "2025-01" },
                       "id": "1a353a9de7050446eb92effa4c6cd7f5",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -5495,7 +5495,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "ed4c1c6de1ed6870f08d16050bfe86fa",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -5706,7 +5706,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2026-1" },
+                      "parameters": { "kind": "date", "value": "2026-01" },
                       "id": "306e4c5b4a90449307a39cec1d01b4b8",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -5793,7 +5793,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2025-1" },
+                      "parameters": { "kind": "date", "value": "2025-01" },
                       "id": "7930867b0b335da8f8e39abc4466f1f7",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -5880,7 +5880,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "349091e04bf49707bba2016d7562ffa1",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -6091,7 +6091,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2026-1" },
+                      "parameters": { "kind": "date", "value": "2026-01" },
                       "id": "44da76de2c02eb248b43930454e16373",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -6178,7 +6178,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2025-1" },
+                      "parameters": { "kind": "date", "value": "2025-01" },
                       "id": "b21f452bcfe9f102b39de26e3db205b5",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -6265,7 +6265,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "56ce174eb70482f1aa6de8a0b32a9b75",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -6476,7 +6476,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2026-1" },
+                      "parameters": { "kind": "date", "value": "2026-01" },
                       "id": "03678c46648dedb8c5b48e29dcf9be47",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -6563,7 +6563,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2025-1" },
+                      "parameters": { "kind": "date", "value": "2025-01" },
                       "id": "e8d0ca29bd8718c76aef3b85b33c260f",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -6650,7 +6650,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "9dab4afdc2e0b5efdbcc7427c08c05c7",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -6861,7 +6861,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2026-1" },
+                      "parameters": { "kind": "date", "value": "2026-01" },
                       "id": "966e70541098e587d030d5c88b5d6de0",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -6948,7 +6948,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2025-1" },
+                      "parameters": { "kind": "date", "value": "2025-01" },
                       "id": "b42a5e37909977b9b14c57b0a46dcbd2",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -7035,7 +7035,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "65ca05146c058d6c1e08acc55f37f5b5",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -8076,7 +8076,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "82fe372c1ab8b67e098c7630f6785216",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -8312,7 +8312,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "8a78f92fc6ab19006de64cd01ce9c056",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -8527,7 +8527,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "cec66ef30af97d48a1b5ac370d595c5d",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -8738,7 +8738,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "caf99e4b9d8fd983352cdeb1e8a70fb1",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -8949,7 +8949,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "9974a88240745c4483d61d6e0a8189c9",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -9160,7 +9160,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2024-7" },
+                      "parameters": { "kind": "date", "value": "2024-07" },
                       "id": "d64b04f00e54f6cfee3042d33b806455",
                       "position": {
                         "file": "inputs/cotisations-et-contributions.publicodes",
@@ -9779,7 +9779,7 @@
                                 "type": "date",
                                 "parameters": {
                                   "kind": "date",
-                                  "value": "2026-1"
+                                  "value": "2026-01"
                                 },
                                 "id": "7bb6b5d2746c9262b765bd7fc059118e",
                                 "position": {
@@ -9909,7 +9909,7 @@
                                 "type": "date",
                                 "parameters": {
                                   "kind": "date",
-                                  "value": "2025-1"
+                                  "value": "2025-01"
                                 },
                                 "id": "c97e3fd352638aae90a3bc01567e01e5",
                                 "position": {
@@ -10039,7 +10039,7 @@
                                 "type": "date",
                                 "parameters": {
                                   "kind": "date",
-                                  "value": "2024-7"
+                                  "value": "2024-07"
                                 },
                                 "id": "4a574f1e37d98e897bd693e80496c770",
                                 "position": {
@@ -10247,7 +10247,7 @@
                                 "type": "date",
                                 "parameters": {
                                   "kind": "date",
-                                  "value": "2026-1"
+                                  "value": "2026-01"
                                 },
                                 "id": "f8529c2c668d56b5c10f3595e1a2c214",
                                 "position": {
@@ -10377,7 +10377,7 @@
                                 "type": "date",
                                 "parameters": {
                                   "kind": "date",
-                                  "value": "2025-1"
+                                  "value": "2025-01"
                                 },
                                 "id": "a66c98c82523a425d6048810566539b2",
                                 "position": {
@@ -10507,7 +10507,7 @@
                                 "type": "date",
                                 "parameters": {
                                   "kind": "date",
-                                  "value": "2024-7"
+                                  "value": "2024-07"
                                 },
                                 "id": "07f71fa1dbfb0f44fea5c71ae1468b96",
                                 "position": {
@@ -10683,7 +10683,7 @@
                             "type": "date",
                             "parameters": {
                               "kind": "date",
-                              "value": "2026-1"
+                              "value": "2026-01"
                             },
                             "id": "2b99f9d5ef8d90be28b09c0d6b7cd94e",
                             "position": {
@@ -10789,7 +10789,7 @@
                             "type": "date",
                             "parameters": {
                               "kind": "date",
-                              "value": "2025-1"
+                              "value": "2025-01"
                             },
                             "id": "dce4a50cdd21498564213e5d19121de6",
                             "position": {
@@ -10895,7 +10895,7 @@
                             "type": "date",
                             "parameters": {
                               "kind": "date",
-                              "value": "2024-7"
+                              "value": "2024-07"
                             },
                             "id": "9120967dd92820cf1539e191bb678fcd",
                             "position": {
@@ -11553,7 +11553,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2019-4-1" },
+                      "parameters": { "kind": "date", "value": "2019-04-01" },
                       "id": "be4f54ce75f9bb569c84237c1f3a6f0a",
                       "position": {
                         "file": "inputs/exoneration.publicodes",
@@ -11632,7 +11632,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2020-4-1" },
+                      "parameters": { "kind": "date", "value": "2020-04-01" },
                       "id": "05ee68c07f6c86d4f42c049d3f0b9d7d",
                       "position": {
                         "file": "inputs/exoneration.publicodes",
@@ -12097,7 +12097,7 @@
                             "type": "date",
                             "parameters": {
                               "kind": "date",
-                              "value": "2026-1"
+                              "value": "2026-01"
                             },
                             "id": "bc838f86f74e5183c23cf37d3da11deb",
                             "position": {
@@ -12399,7 +12399,7 @@
                     "right": {
                       "kind": "constant",
                       "type": "date",
-                      "parameters": { "kind": "date", "value": "2020-4-1" },
+                      "parameters": { "kind": "date", "value": "2020-04-01" },
                       "id": "a88ac184b32edae8ca4db981b05ce2f2",
                       "position": {
                         "file": "inputs/exoneration.publicodes",
@@ -12478,7 +12478,7 @@
                                 "type": "date",
                                 "parameters": {
                                   "kind": "date",
-                                  "value": "2024-7"
+                                  "value": "2024-07"
                                 },
                                 "id": "55a23fc120c49d02acfac3865de7bbb2",
                                 "position": {

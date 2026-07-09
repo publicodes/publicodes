@@ -10,7 +10,7 @@ Pow mechanism should be correctly parsed:
       /**
        * Evaluate "a" with evaluation trace, and information on
        * missing and needed parameters.
-       * @type {(params?: aParams, options?: {Options}) => {value: number, needed: Array<keyof aParams>, missing: Array<keyof aParams>, trace: {Trace}}}
+       * @type {(params?: aParams, options?: Options) => {value: number, needed: Array<keyof aParams>, missing: Array<keyof aParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
         $evaluate(_a, params, options),
@@ -33,7 +33,7 @@ Pow mechanism should be correctly parsed:
       /**
        * Evaluate "b" with evaluation trace, and information on
        * missing and needed parameters.
-       * @type {(params?: bParams, options?: {Options}) => {value: 4.000000, needed: Array<keyof bParams>, missing: Array<keyof bParams>, trace: {Trace}}}
+       * @type {(params?: bParams, options?: Options) => {value: 4.000000, needed: Array<keyof bParams>, missing: Array<keyof bParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
         $evaluate(_b, params, options),

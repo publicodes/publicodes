@@ -12,7 +12,7 @@ Valid :
       /**
        * Evaluate "out" with evaluation trace, and information on
        * missing and needed parameters.
-       * @type {(params?: outParams, options?: {Options}) => {value: number, needed: Array<keyof outParams>, missing: Array<keyof outParams>, trace: {Trace}}}
+       * @type {(params?: outParams, options?: Options) => {value: number, needed: Array<keyof outParams>, missing: Array<keyof outParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
         $evaluate(_out, params, options),
@@ -36,7 +36,7 @@ Valid :
       /**
        * Evaluate "c" with evaluation trace, and information on
        * missing and needed parameters.
-       * @type {(params?: cParams, options?: {Options}) => {value: number, needed: Array<keyof cParams>, missing: Array<keyof cParams>, trace: {Trace}}}
+       * @type {(params?: cParams, options?: Options) => {value: number, needed: Array<keyof cParams>, missing: Array<keyof cParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
         $evaluate(_c, params, options),

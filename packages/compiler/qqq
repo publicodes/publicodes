@@ -1,0 +1,87 @@
+[1m[38;5;2m@[0m  [1m[38;5;13mxt[38;5;8mpllxxx[39m [38;5;3memile.rolley@tuta.io[39m [38;5;14m2026-10-20 12:19:31[39m [38;5;12m9c[38;5;8mcc0527[39m[0m
+│  [1m[38;5;3m(no description set)[39m[0m
+│ [1m[38;5;1m×[0m  [1m[38;5;5mm[0m[38;5;8mvzpulmu[39m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4m53[0m[38;5;8m598429[39m [38;5;1m(conflict)[39m
+│ │  wip
+│ [1m[38;5;1m×[0m  [1m[38;5;5mzq[0m[38;5;8mmsxyyl[39m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4m44[0m[38;5;8m6b4dc4[39m [38;5;1m(conflict)[39m
+│ │  wip
+│ [1m[38;5;1m×[0m  [1m[38;5;5mol[0m[38;5;8mvxnqxr[39m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4m0c[0m[38;5;8mefa1d4[39m [38;5;1m(conflict)[39m
+│ │  wip
+│ [1m[38;5;1m×[0m  [1m[38;5;5mow[0m[38;5;8msxyoty[39m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4mf9[0m[38;5;8mc562ad[39m [38;5;1m(conflict)[39m
+│ │  wip
+│ [1m[38;5;1m×[0m  [1m[38;5;5ml[0m[38;5;8mrxmxzow[39m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4m8d[0m[38;5;8m66d56f[39m [38;5;1m(conflict)[39m
+│ │  wip
+│ [1m[38;5;1m×[0m  [1m[38;5;5mzx[0m[38;5;8mrlxrwt[39m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4m2a[0m[38;5;8ma9d836[39m [38;5;1m(conflict)[39m
+│ │  wip
+│ [1m[38;5;1m×[0m  [1m[38;5;5mq[0m[38;5;8muysxspl[39m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4mf1[0m[38;5;8med0619[39m [38;5;1m(conflict)[39m
+│ │  feat(autodoc): rebuild the rule page around one unfold gesture
+│ [1m[38;5;1m×[0m  [1m[38;5;5mwr[0m[38;5;8mwmzqyt[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2026-10-20 12:09:31[39m [38;5;5m2.0_/auto-doc*[39m [1m[38;5;4m3[0m[38;5;8m5a86eab[39m [38;5;1m(conflict)[39m
+│ │  feat(autodoc): handle stacked context mechanisms
+│ [1m[38;5;1m×[0m  [1m[38;5;5moo[0m[38;5;8mkxlolp[39m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4mea[0m[38;5;8mb2b151[39m [38;5;1m(conflict)[39m
+│ │  style: improvements
+│ [1m[38;5;1m×[0m  [1m[38;5;5muk[0m[38;5;8multzuq[39m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4me1[0m[38;5;8m560cd8[39m [38;5;1m(conflict)[39m
+├─╯  feat(autodoc): refine mechanism rendering and split React contexts
+[1m[38;5;1m×[0m  [1m[38;5;1muo[0m[38;5;8mssxstp[1m[38;5;1m/0[0m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4mb4[0m[38;5;8mba643c[39m [38;5;1m(divergent)[39m [38;5;1m(conflict)[39m
+│  feat: improve and test trace runtime
+[1m[38;5;1m×[0m  [1m[38;5;1myv[0m[38;5;8mlonoku[1m[38;5;1m/0[0m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4m03[0m[38;5;8m357659[39m [38;5;1m(divergent)[39m [38;5;1m(conflict)[39m
+│  feat(autodoc): setup autodoc-core and autodoc-react
+○  [1m[38;5;1mwo[0m[38;5;8mwowtlm[1m[38;5;1m/0[0m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4m9e4[0m[38;5;8m824e8[39m [38;5;1m(divergent)[39m
+│  fix(compiler): correctly resolve types for the JSON target
+○  [1m[38;5;1mzvs[0m[38;5;8mmpovo[1m[38;5;1m/0[0m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4mc05[0m[38;5;8m17770[39m [38;5;1m(divergent)[39m
+│  feat(compiler): introduce the Autodoc package.
+○  [1m[38;5;5mkr[0m[38;5;8mzwoqrq[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2026-10-20 12:09:31[39m [1m[38;5;4m73[0m[38;5;8ma45d0e[39m
+│  feat: enhance the JSON Doc
+[1m[38;5;14m◆[0m    [1m[38;5;5mv[0m[38;5;8mltykzsm[39m [38;5;3m41898282+github-actions[bot]@users.noreply.github.com[39m [38;5;6m2026-10-20 12:07:13[39m [38;5;5mmaster master@gerrit[39m [1m[38;5;4mfc[0m[38;5;8mc4215d[39m
+├─╮  Version Packages (alpha)
+│ │
+│ ~
+│
+[38;5;8m~[39m  [38;5;8m(elided revisions)[39m
+│ ○  [1m[38;5;5mzvz[0m[38;5;8mwwnwk[39m [38;5;3mcontact@willowbarraco.fr[39m [38;5;6m2026-07-18 15:30:53[39m [1m[38;5;4mff[0m[38;5;8md15e8f[39m
+├─╯  WIP: blog: new hackaton-juillet-2026
+[1m[38;5;14m◆[0m  [1m[38;5;5mwnu[0m[38;5;8mvutlu[39m [38;5;3mcontact@willowbarraco.fr[39m [38;5;6m2026-07-16 09:55:09[39m [1m[38;5;4m48[0m[38;5;8mf535e6[39m
+│  chore: bump jingoo
+[38;5;8m~[39m  [38;5;8m(elided revisions)[39m
+│ ○  [1m[38;5;1muo[0m[38;5;8mssxstp[1m[38;5;1m/13[0m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-07-10 10:37:19[39m [1m[38;5;4me8[0m[38;5;8m870eeb[39m [38;5;1m(divergent)[39m
+│ │  feat: improve and test trace runtime
+│ ○  [1m[38;5;1myv[0m[38;5;8mlonoku[1m[38;5;1m/13[0m [38;5;3mdev@johangirod.com[39m [38;5;6m2026-07-10 10:37:19[39m [1m[38;5;4m9e3[0m[38;5;8m5bc10[39m [38;5;1m(divergent)[39m
+│ │  feat(autodoc): setup autodoc-core and autodoc-react
+│ ○  [1m[38;5;1mwo[0m[38;5;8mwowtlm[1m[38;5;1m/12[0m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2026-07-10 10:37:19[39m [1m[38;5;4mc02[0m[38;5;8m3c0d7[39m [38;5;1m(divergent)[39m
+│ │  fix(compiler): correctly resolve types for the JSON target
+│ ○  [1m[38;5;5mwny[0m[38;5;8mulqrv[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2026-07-10 10:37:19[39m [1m[38;5;4mf2[0m[38;5;8m53bc3b[39m
+│ │  fix(compiler): use complete range position for binop
+│ ○  [1m[38;5;5mrzo[0m[38;5;8molouv[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2026-07-10 10:37:19[39m [1m[38;5;4me4[0m[38;5;8md7e2e0[39m
+│ │  feat(compiler): add crams test for the type checking
+│ ○  [1m[38;5;5mzr[0m[38;5;8mxqxkrr[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2026-07-10 10:37:19[39m [1m[38;5;4m84[0m[38;5;8m24030d[39m
+│ │  refactor(compiler): clean and simplify type checking
+│ ○  [1m[38;5;1mzvs[0m[38;5;8mmpovo[1m[38;5;1m/7[0m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2026-07-10 10:37:19[39m [1m[38;5;4m93[0m[38;5;8m0c1ac9[39m [38;5;1m(divergent)[39m
+│ │  feat(compiler): introduce the Autodoc package.
+│ ○  [1m[38;5;5mup[0m[38;5;8mvyotno[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2026-07-10 10:37:17[39m [1m[38;5;4m23[0m[38;5;8m0ff64c[39m
+├─╯  feat: enhance the JSON Doc
+[1m[38;5;14m◆[0m  [1m[38;5;5ms[0m[38;5;8mkrutwxp[39m [38;5;3mcontact@willowbarraco.fr[39m [38;5;6m2026-07-09 13:51:28[39m [1m[38;5;4mc7be[0m[38;5;8m1d1f[39m
+│  chore: set permission over gerrit commit-msg
+[38;5;8m~[39m  [38;5;8m(elided revisions)[39m
+│ ○  [1m[38;5;5mn[0m[38;5;8mnpovotx[39m [38;5;3mcontact@willowbarraco.fr[39m [38;5;6m2026-07-08 09:49:35[39m [1m[38;5;4mf6[0m[38;5;8m4f12ad[39m
+├─╯  drop: watch mode
+│ ○  [1m[38;5;5mxx[0m[38;5;8mwlnpwn[39m [38;5;3mcontact@willowbarraco.fr[39m [38;5;6m2026-07-08 09:49:35[39m [1m[38;5;4m78c[0m[38;5;8m19ac5[39m
+│ │  Fixes
+│ ○  [1m[38;5;5mwz[0m[38;5;8mtwnxrl[39m [38;5;3mclem.auger@hotmail.fr[39m [38;5;6m2026-07-08 09:49:34[39m [1m[38;5;4mb6[0m[38;5;8m5867b0[39m
+├─╯  fix: use fswatch instead of inotify
+[1m[38;5;14m◆[0m  [1m[38;5;5mt[0m[38;5;8mokxplqz[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2026-07-08 09:49:34[39m [1m[38;5;4m788[0m[38;5;8mf25d3[39m
+│  fix: avoid duplication in missing type errors.
+~
+
+○  [1m[38;5;5mrzw[0m[38;5;8mywnqw[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2025-05-16 13:54:04[39m [1m[38;5;4mb1[0m[38;5;8md8c580[39m
+│  feat(compiler): refactor json generation for the cmd_compile
+○  [1m[38;5;5mxl[0m[38;5;8mpumoyu[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2025-05-16 13:42:38[39m [1m[38;5;4m74[0m[38;5;8m5a9ec2[39m
+│  feat(compiler): setup simple log from grace
+○  [1m[38;5;5mxm[0m[38;5;8mnkoqur[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2025-05-16 13:42:38[39m [1m[38;5;4m6[0m[38;5;8m9ad7d3c[39m
+│  feat(compiler): setup grace for log printing
+○  [1m[38;5;5mkv[0m[38;5;8mrwmvrn[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2025-05-16 13:42:37[39m [1m[38;5;4m52[0m[38;5;8m619d34[39m
+│  feat(compiler): parse mutliple files from the compile command
+○  [1m[38;5;5myw[0m[38;5;8mpumqzx[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2025-05-16 13:42:07[39m [1m[38;5;4mc7b3[0m[38;5;8mbe40[39m
+│  feat(compiler): minimal cmdliner setup
+○  [1m[38;5;5mrk[0m[38;5;8mswuzok[39m [38;5;3memile.rolley@tuta.io[39m [38;5;6m2025-05-16 13:42:07[39m [1m[38;5;4m5d[0m[38;5;8m56d8a9[39m
+│  pkg(compiler): specify the ocamlgraph dependeny in the dune-project
+[1m[38;5;14m◆[0m  [1m[38;5;5myu[0m[38;5;8mttmuwr[39m [38;5;3mdev@johangirod.com[39m [38;5;6m2025-05-16 13:39:35[39m [1m[38;5;4m46[0m[38;5;8m93758e[39m
+│  V2/mechanism (#691)
+~
