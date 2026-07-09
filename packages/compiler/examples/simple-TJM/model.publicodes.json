@@ -1,0 +1,836 @@
+{
+  "chiffre d'affaires": {
+    "type": "number",
+    "unit": "€",
+    "id": "9ec766091f3dc0918853336ba7931c01",
+    "position": {
+      "file": "inputs/TJM.publicodes",
+      "start": { "index": 0, "line": 1, "column": 1 },
+      "end": { "index": 18, "line": 1, "column": 19 }
+    },
+    "value_mechanism": {
+      "kind": "product",
+      "type": "number",
+      "unit": "€",
+      "id": "21745ec96f8fc51c411b2d3add0d77c6",
+      "position": {
+        "file": "inputs/TJM.publicodes",
+        "start": { "index": 33, "line": 3, "column": 3 },
+        "end": { "index": 40, "line": 3, "column": 10 }
+      },
+      "parameters": [
+        {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "number",
+            "unit": "€/jour",
+            "id": "bff08b0285952c9a782ea62f02379688",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 48, "line": 4, "column": 7 },
+              "end": { "index": 51, "line": 4, "column": 10 }
+            },
+            "parameters": {
+              "kind": "ref",
+              "type": "number",
+              "unit": "€/jour",
+              "parameters": "chiffre d'affaires . TJM",
+              "id": "bff08b0285952c9a782ea62f02379688",
+              "position": {
+                "file": "inputs/TJM.publicodes",
+                "start": { "index": 48, "line": 4, "column": 7 },
+                "end": { "index": 51, "line": 4, "column": 10 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        },
+        {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "number",
+            "unit": "jour",
+            "id": "7c24ef4af345c1947dc7b01980ed96b1",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 58, "line": 5, "column": 7 },
+              "end": { "index": 72, "line": 5, "column": 21 }
+            },
+            "parameters": {
+              "kind": "ref",
+              "type": "number",
+              "unit": "jour",
+              "parameters": "chiffre d'affaires . nombre de jour",
+              "id": "7c24ef4af345c1947dc7b01980ed96b1",
+              "position": {
+                "file": "inputs/TJM.publicodes",
+                "start": { "index": 58, "line": 5, "column": 7 },
+                "end": { "index": 72, "line": 5, "column": 21 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        }
+      ]
+    },
+    "chained_mechanisms": [
+      {
+        "kind": "type_def",
+        "type": "unknown",
+        "id": "421258bee6bc872f2367a06de55f167e",
+        "position": {
+          "file": "inputs/TJM.publicodes",
+          "start": { "index": 22, "line": 2, "column": 3 },
+          "end": { "index": 27, "line": 2, "column": 8 }
+        },
+        "parameters": { "value": "€" }
+      }
+    ]
+  },
+  "chiffre d'affaires . TJM": {
+    "type": "number",
+    "unit": "€/jour",
+    "id": "710378defc4f32871e3e51c8c719e883",
+    "position": {
+      "file": "inputs/TJM.publicodes",
+      "start": { "index": 85, "line": 7, "column": 5 },
+      "end": { "index": 88, "line": 7, "column": 8 }
+    },
+    "value_mechanism": {
+      "kind": "not_defined",
+      "type": "number",
+      "unit": "€/jour",
+      "id": "710378defc4f32871e3e51c8c719e883",
+      "position": {
+        "file": "inputs/TJM.publicodes",
+        "start": { "index": 85, "line": 7, "column": 5 },
+        "end": { "index": 88, "line": 7, "column": 8 }
+      }
+    },
+    "chained_mechanisms": [
+      {
+        "kind": "type_def",
+        "type": "unknown",
+        "id": "0b824b563e358561b798399a4668e0f6",
+        "position": {
+          "file": "inputs/TJM.publicodes",
+          "start": { "index": 96, "line": 8, "column": 7 },
+          "end": { "index": 101, "line": 8, "column": 12 }
+        },
+        "parameters": { "value": "€/jour" }
+      }
+    ]
+  },
+  "chiffre d'affaires . nombre de jour": {
+    "type": "number",
+    "unit": "jour",
+    "id": "1220370097a9d33afde0c32eb8ec8eec",
+    "position": {
+      "file": "inputs/TJM.publicodes",
+      "start": { "index": 114, "line": 9, "column": 5 },
+      "end": { "index": 128, "line": 9, "column": 19 }
+    },
+    "value_mechanism": {
+      "kind": "not_defined",
+      "type": "number",
+      "unit": "jour",
+      "id": "1220370097a9d33afde0c32eb8ec8eec",
+      "position": {
+        "file": "inputs/TJM.publicodes",
+        "start": { "index": 114, "line": 9, "column": 5 },
+        "end": { "index": 128, "line": 9, "column": 19 }
+      }
+    },
+    "chained_mechanisms": [
+      {
+        "kind": "default",
+        "type": "number",
+        "unit": "jour",
+        "id": "2e759521bb3c878423353e8c3db6be10",
+        "position": {
+          "file": "inputs/TJM.publicodes",
+          "start": { "index": 136, "line": 10, "column": 7 },
+          "end": { "index": 146, "line": 10, "column": 17 }
+        },
+        "parameters": {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "number",
+            "unit": "jour",
+            "id": "81c241389e166206c64b8ae53be2734a",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 148, "line": 10, "column": 19 },
+              "end": { "index": 155, "line": 10, "column": 26 }
+            },
+            "parameters": {
+              "kind": "constant",
+              "type": "number",
+              "unit": "jour",
+              "parameters": {
+                "kind": "number",
+                "value": 16.0,
+                "unit": "jour"
+              },
+              "id": "81c241389e166206c64b8ae53be2734a",
+              "position": {
+                "file": "inputs/TJM.publicodes",
+                "start": { "index": 148, "line": 10, "column": 19 },
+                "end": { "index": 155, "line": 10, "column": 26 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        }
+      }
+    ]
+  },
+  "auto-entrepreneur": {
+    "type": "boolean",
+    "id": "3ada8abbcec88657ea41e30c4d452258",
+    "position": {
+      "file": "inputs/TJM.publicodes",
+      "start": { "index": 157, "line": 12, "column": 1 },
+      "end": { "index": 174, "line": 12, "column": 18 }
+    },
+    "value_mechanism": {
+      "kind": "not_defined",
+      "type": "boolean",
+      "id": "3ada8abbcec88657ea41e30c4d452258",
+      "position": {
+        "file": "inputs/TJM.publicodes",
+        "start": { "index": 157, "line": 12, "column": 1 },
+        "end": { "index": 174, "line": 12, "column": 18 }
+      }
+    },
+    "chained_mechanisms": [
+      {
+        "kind": "default",
+        "type": "boolean",
+        "id": "07087200e9b4e366fb40ab82b18d3ad9",
+        "position": {
+          "file": "inputs/TJM.publicodes",
+          "start": { "index": 178, "line": 13, "column": 3 },
+          "end": { "index": 188, "line": 13, "column": 13 }
+        },
+        "parameters": {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "boolean",
+            "id": "b2abd8d2ab5a0694664ddc6f374753c9",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 190, "line": 13, "column": 15 },
+              "end": { "index": 193, "line": 13, "column": 18 }
+            },
+            "parameters": {
+              "kind": "constant",
+              "type": "boolean",
+              "parameters": { "kind": "bool", "value": false },
+              "id": "b2abd8d2ab5a0694664ddc6f374753c9",
+              "position": {
+                "file": "inputs/TJM.publicodes",
+                "start": { "index": 190, "line": 13, "column": 15 },
+                "end": { "index": 193, "line": 13, "column": 18 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        }
+      }
+    ]
+  },
+  "cotisations": {
+    "type": "number",
+    "unit": "€",
+    "id": "651b4f507b403d7ae9ddd53677cf9079",
+    "position": {
+      "file": "inputs/TJM.publicodes",
+      "start": { "index": 195, "line": 15, "column": 1 },
+      "end": { "index": 206, "line": 15, "column": 12 }
+    },
+    "public": true,
+    "value_mechanism": {
+      "kind": "value",
+      "type": "unknown",
+      "id": "de56302af58f5bfc9a2fecb68bbde78a",
+      "position": {
+        "file": "inputs/TJM.publicodes",
+        "start": { "index": 224, "line": 17, "column": 3 },
+        "end": { "index": 230, "line": 17, "column": 9 }
+      },
+      "parameters": {
+        "value_mechanism": {
+          "kind": "expr",
+          "type": "number",
+          "unit": "€",
+          "id": "657454251ca2d5268e2f7463467c6465",
+          "position": {
+            "file": "inputs/TJM.publicodes",
+            "start": { "index": 232, "line": 17, "column": 11 },
+            "end": { "index": 257, "line": 17, "column": 36 }
+          },
+          "parameters": {
+            "kind": "mul",
+            "type": "number",
+            "unit": "€",
+            "parameters": {
+              "left": {
+                "kind": "ref",
+                "type": "number",
+                "unit": "%",
+                "parameters": "cotisations . taux",
+                "id": "7298059aab2c18d47afd65f2e489378a",
+                "position": {
+                  "file": "inputs/TJM.publicodes",
+                  "start": { "index": 232, "line": 17, "column": 11 },
+                  "end": { "index": 236, "line": 17, "column": 15 }
+                }
+              },
+              "right": {
+                "kind": "ref",
+                "type": "number",
+                "unit": "€",
+                "parameters": "chiffre d'affaires",
+                "id": "3902cf80e504dbf10a6f69d4750b682c",
+                "position": {
+                  "file": "inputs/TJM.publicodes",
+                  "start": { "index": 239, "line": 17, "column": 18 },
+                  "end": { "index": 257, "line": 17, "column": 36 }
+                }
+              }
+            },
+            "id": "657454251ca2d5268e2f7463467c6465",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 232, "line": 17, "column": 11 },
+              "end": { "index": 257, "line": 17, "column": 36 }
+            }
+          }
+        },
+        "chained_mechanisms": []
+      }
+    },
+    "chained_mechanisms": []
+  },
+  "cotisations . taux": {
+    "type": "number",
+    "unit": "%",
+    "id": "7389b93e3b9ddb74c909222186e28412",
+    "position": {
+      "file": "inputs/TJM.publicodes",
+      "start": { "index": 270, "line": 19, "column": 5 },
+      "end": { "index": 274, "line": 19, "column": 9 }
+    },
+    "value_mechanism": {
+      "kind": "variations",
+      "type": "number",
+      "unit": "%",
+      "id": "b7ef0fcdd647aa030568a7e1b126f8af",
+      "position": {
+        "file": "inputs/TJM.publicodes",
+        "start": { "index": 282, "line": 20, "column": 7 },
+        "end": { "index": 292, "line": 20, "column": 17 }
+      },
+      "parameters": {
+        "conditions": [
+          {
+            "if": {
+              "value_mechanism": {
+                "kind": "expr",
+                "type": "boolean",
+                "id": "ad8d8914dd18a6be7470e14b7e5274e1",
+                "position": {
+                  "file": "inputs/TJM.publicodes",
+                  "start": { "index": 308, "line": 21, "column": 15 },
+                  "end": { "index": 325, "line": 21, "column": 32 }
+                },
+                "parameters": {
+                  "kind": "ref",
+                  "type": "boolean",
+                  "parameters": "auto-entrepreneur",
+                  "id": "ad8d8914dd18a6be7470e14b7e5274e1",
+                  "position": {
+                    "file": "inputs/TJM.publicodes",
+                    "start": { "index": 308, "line": 21, "column": 15 },
+                    "end": { "index": 325, "line": 21, "column": 32 }
+                  }
+                }
+              },
+              "chained_mechanisms": []
+            },
+            "then": {
+              "value_mechanism": {
+                "kind": "expr",
+                "type": "number",
+                "unit": "%",
+                "id": "473e6c8158e920ac8e67ff1f16263199",
+                "position": {
+                  "file": "inputs/TJM.publicodes",
+                  "start": { "index": 343, "line": 22, "column": 18 },
+                  "end": { "index": 346, "line": 22, "column": 21 }
+                },
+                "parameters": {
+                  "kind": "constant",
+                  "type": "number",
+                  "unit": "%",
+                  "parameters": {
+                    "kind": "number",
+                    "value": 30.0,
+                    "unit": "%"
+                  },
+                  "id": "473e6c8158e920ac8e67ff1f16263199",
+                  "position": {
+                    "file": "inputs/TJM.publicodes",
+                    "start": { "index": 343, "line": 22, "column": 18 },
+                    "end": { "index": 346, "line": 22, "column": 21 }
+                  }
+                }
+              },
+              "chained_mechanisms": []
+            }
+          }
+        ],
+        "else": {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "number",
+            "unit": "%",
+            "id": "7e1389c5a7a7e582116170564f6b99cd",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 364, "line": 23, "column": 18 },
+              "end": { "index": 367, "line": 23, "column": 21 }
+            },
+            "parameters": {
+              "kind": "constant",
+              "type": "number",
+              "unit": "%",
+              "parameters": { "kind": "number", "value": 45.0, "unit": "%" },
+              "id": "7e1389c5a7a7e582116170564f6b99cd",
+              "position": {
+                "file": "inputs/TJM.publicodes",
+                "start": { "index": 364, "line": 23, "column": 18 },
+                "end": { "index": 367, "line": 23, "column": 21 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        }
+      }
+    },
+    "chained_mechanisms": []
+  },
+  "charges": {
+    "type": "number",
+    "unit": "€",
+    "id": "3961a95a958c3b0d4a3877931762fb32",
+    "position": {
+      "file": "inputs/TJM.publicodes",
+      "start": { "index": 369, "line": 25, "column": 1 },
+      "end": { "index": 376, "line": 25, "column": 8 }
+    },
+    "value_mechanism": {
+      "kind": "not_defined",
+      "type": "number",
+      "unit": "€",
+      "id": "3961a95a958c3b0d4a3877931762fb32",
+      "position": {
+        "file": "inputs/TJM.publicodes",
+        "start": { "index": 369, "line": 25, "column": 1 },
+        "end": { "index": 376, "line": 25, "column": 8 }
+      }
+    },
+    "chained_mechanisms": [
+      {
+        "kind": "not_applicable_if",
+        "type": "number",
+        "unit": "€",
+        "id": "a33f28a0b2880bfd4b0ff905dd5f15c2",
+        "position": {
+          "file": "inputs/TJM.publicodes",
+          "start": { "index": 380, "line": 26, "column": 3 },
+          "end": { "index": 397, "line": 26, "column": 20 }
+        },
+        "parameters": {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "boolean",
+            "id": "80cfff3eef476cd61c306cda0f0a7efc",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 399, "line": 26, "column": 22 },
+              "end": { "index": 416, "line": 26, "column": 39 }
+            },
+            "parameters": {
+              "kind": "ref",
+              "type": "boolean",
+              "parameters": "auto-entrepreneur",
+              "id": "80cfff3eef476cd61c306cda0f0a7efc",
+              "position": {
+                "file": "inputs/TJM.publicodes",
+                "start": { "index": 399, "line": 26, "column": 22 },
+                "end": { "index": 416, "line": 26, "column": 39 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        }
+      },
+      {
+        "kind": "default",
+        "type": "number",
+        "unit": "€",
+        "id": "40902d96fd48af55fbab7b4f05f62149",
+        "position": {
+          "file": "inputs/TJM.publicodes",
+          "start": { "index": 419, "line": 27, "column": 3 },
+          "end": { "index": 429, "line": 27, "column": 13 }
+        },
+        "parameters": {
+          "value_mechanism": {
+            "kind": "value",
+            "type": "unknown",
+            "id": "15ee8fe8a253aad6dee293f75730c2e2",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 435, "line": 28, "column": 5 },
+              "end": { "index": 441, "line": 28, "column": 11 }
+            },
+            "parameters": {
+              "value_mechanism": {
+                "kind": "expr",
+                "type": "number",
+                "unit": "€",
+                "id": "82b9ff67b1be0fd5843da84c888dc6d1",
+                "position": {
+                  "file": "inputs/TJM.publicodes",
+                  "start": { "index": 443, "line": 28, "column": 13 },
+                  "end": { "index": 467, "line": 28, "column": 37 }
+                },
+                "parameters": {
+                  "kind": "mul",
+                  "type": "number",
+                  "unit": "€",
+                  "parameters": {
+                    "left": {
+                      "kind": "constant",
+                      "type": "number",
+                      "unit": "%",
+                      "parameters": {
+                        "kind": "number",
+                        "value": 10.0,
+                        "unit": "%"
+                      },
+                      "id": "d72fddff53afdd2746e25afa79be9331",
+                      "position": {
+                        "file": "inputs/TJM.publicodes",
+                        "start": { "index": 443, "line": 28, "column": 13 },
+                        "end": { "index": 446, "line": 28, "column": 16 }
+                      }
+                    },
+                    "right": {
+                      "kind": "ref",
+                      "type": "number",
+                      "unit": "€",
+                      "parameters": "chiffre d'affaires",
+                      "id": "6f83bad8b3b6e413f7852fa9d21a9117",
+                      "position": {
+                        "file": "inputs/TJM.publicodes",
+                        "start": { "index": 449, "line": 28, "column": 19 },
+                        "end": { "index": 467, "line": 28, "column": 37 }
+                      }
+                    }
+                  },
+                  "id": "82b9ff67b1be0fd5843da84c888dc6d1",
+                  "position": {
+                    "file": "inputs/TJM.publicodes",
+                    "start": { "index": 443, "line": 28, "column": 13 },
+                    "end": { "index": 467, "line": 28, "column": 37 }
+                  }
+                }
+              },
+              "chained_mechanisms": []
+            }
+          },
+          "chained_mechanisms": [
+            {
+              "kind": "floor",
+              "type": "number",
+              "unit": "€",
+              "id": "81c77746f89b5da71fa1ca690b872fd4",
+              "position": {
+                "file": "inputs/TJM.publicodes",
+                "start": { "index": 472, "line": 29, "column": 5 },
+                "end": { "index": 480, "line": 29, "column": 13 }
+              },
+              "parameters": {
+                "value_mechanism": {
+                  "kind": "expr",
+                  "type": "number",
+                  "unit": "€",
+                  "id": "59a6753fbb8b3dfb872e5115dc987028",
+                  "position": {
+                    "file": "inputs/TJM.publicodes",
+                    "start": { "index": 482, "line": 29, "column": 15 },
+                    "end": { "index": 486, "line": 29, "column": 19 }
+                  },
+                  "parameters": {
+                    "kind": "constant",
+                    "type": "number",
+                    "unit": "€",
+                    "parameters": {
+                      "kind": "number",
+                      "value": 100.0,
+                      "unit": "€"
+                    },
+                    "id": "59a6753fbb8b3dfb872e5115dc987028",
+                    "position": {
+                      "file": "inputs/TJM.publicodes",
+                      "start": { "index": 482, "line": 29, "column": 15 },
+                      "end": { "index": 486, "line": 29, "column": 19 }
+                    }
+                  }
+                },
+                "chained_mechanisms": []
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "revenu net": {
+    "type": "number",
+    "unit": "€",
+    "id": "91879ffdac4ef35a02465a5671465435",
+    "position": {
+      "file": "inputs/TJM.publicodes",
+      "start": { "index": 488, "line": 31, "column": 1 },
+      "end": { "index": 498, "line": 31, "column": 11 }
+    },
+    "public": true,
+    "value_mechanism": {
+      "kind": "sum",
+      "type": "number",
+      "unit": "€",
+      "id": "c52eb9f15e824f6538cdd0d3b34712a3",
+      "position": {
+        "file": "inputs/TJM.publicodes",
+        "start": { "index": 516, "line": 33, "column": 3 },
+        "end": { "index": 521, "line": 33, "column": 8 }
+      },
+      "parameters": [
+        {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "number",
+            "unit": "€",
+            "id": "dd4be13730781eb98db9e08624c4a767",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 529, "line": 34, "column": 7 },
+              "end": { "index": 547, "line": 34, "column": 25 }
+            },
+            "parameters": {
+              "kind": "ref",
+              "type": "number",
+              "unit": "€",
+              "parameters": "chiffre d'affaires",
+              "id": "dd4be13730781eb98db9e08624c4a767",
+              "position": {
+                "file": "inputs/TJM.publicodes",
+                "start": { "index": 529, "line": 34, "column": 7 },
+                "end": { "index": 547, "line": 34, "column": 25 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        },
+        {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "unknown",
+            "id": "b98be5b95f098becbb5c3f4c08f5d66f",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 554, "line": 35, "column": 7 },
+              "end": { "index": 569, "line": 35, "column": 22 }
+            },
+            "parameters": {
+              "kind": "neg",
+              "type": "number",
+              "unit": "€",
+              "parameters": {
+                "kind": "ref",
+                "type": "number",
+                "unit": "€",
+                "parameters": "cotisations",
+                "id": "2b3b179d25c10d84c461fc1be6afca09",
+                "position": {
+                  "file": "inputs/TJM.publicodes",
+                  "start": { "index": 557, "line": 35, "column": 10 },
+                  "end": { "index": 568, "line": 35, "column": 21 }
+                }
+              },
+              "id": "f48b0738aa1ad4dead8453689d770275",
+              "position": {
+                "file": "inputs/TJM.publicodes",
+                "start": { "index": 555, "line": 35, "column": 8 },
+                "end": { "index": 568, "line": 35, "column": 21 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        },
+        {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "unknown",
+            "id": "4478db316d17c044d0e9e92cd39a770b",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 576, "line": 36, "column": 7 },
+              "end": { "index": 587, "line": 36, "column": 18 }
+            },
+            "parameters": {
+              "kind": "neg",
+              "type": "number",
+              "unit": "€",
+              "parameters": {
+                "kind": "ref",
+                "type": "number",
+                "unit": "€",
+                "parameters": "charges",
+                "id": "cc5750b8626b05006d7c592d87ce2461",
+                "position": {
+                  "file": "inputs/TJM.publicodes",
+                  "start": { "index": 579, "line": 36, "column": 10 },
+                  "end": { "index": 586, "line": 36, "column": 17 }
+                }
+              },
+              "id": "cfc09a22fc2af63833f3a9615dcfe03e",
+              "position": {
+                "file": "inputs/TJM.publicodes",
+                "start": { "index": 577, "line": 36, "column": 8 },
+                "end": { "index": 586, "line": 36, "column": 17 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        }
+      ]
+    },
+    "chained_mechanisms": []
+  },
+  "exemples": {
+    "type": "unknown",
+    "id": "933a22806479a69dd21b6c4c1f2ddfde",
+    "position": {
+      "file": "inputs/TJM.publicodes",
+      "start": { "index": 590, "line": 39, "column": 1 },
+      "end": { "index": 598, "line": 39, "column": 9 }
+    },
+    "value_mechanism": {
+      "kind": "not_defined",
+      "type": "unknown",
+      "id": "933a22806479a69dd21b6c4c1f2ddfde",
+      "position": {
+        "file": "inputs/TJM.publicodes",
+        "start": { "index": 590, "line": 39, "column": 1 },
+        "end": { "index": 598, "line": 39, "column": 9 }
+      }
+    },
+    "chained_mechanisms": []
+  },
+  "exemples . CA élevé": {
+    "type": "number",
+    "unit": "€",
+    "id": "7d22786ca152980576a9958a12382de0",
+    "position": {
+      "file": "inputs/TJM.publicodes",
+      "start": { "index": 600, "line": 40, "column": 1 },
+      "end": { "index": 619, "line": 40, "column": 20 }
+    },
+    "public": true,
+    "value_mechanism": {
+      "kind": "value",
+      "type": "unknown",
+      "id": "44c11f274ee98a7b9d141ddf76eacb73",
+      "position": {
+        "file": "inputs/TJM.publicodes",
+        "start": { "index": 637, "line": 42, "column": 3 },
+        "end": { "index": 643, "line": 42, "column": 9 }
+      },
+      "parameters": {
+        "value_mechanism": {
+          "kind": "expr",
+          "type": "number",
+          "unit": "€",
+          "id": "750fc5d050fd43ebce5f1327c6046bf5",
+          "position": {
+            "file": "inputs/TJM.publicodes",
+            "start": { "index": 645, "line": 42, "column": 11 },
+            "end": { "index": 655, "line": 42, "column": 21 }
+          },
+          "parameters": {
+            "kind": "ref",
+            "type": "number",
+            "unit": "€",
+            "parameters": "revenu net",
+            "id": "750fc5d050fd43ebce5f1327c6046bf5",
+            "position": {
+              "file": "inputs/TJM.publicodes",
+              "start": { "index": 645, "line": 42, "column": 11 },
+              "end": { "index": 655, "line": 42, "column": 21 }
+            }
+          }
+        },
+        "chained_mechanisms": []
+      }
+    },
+    "chained_mechanisms": [
+      {
+        "kind": "context",
+        "type": "number",
+        "unit": "€",
+        "id": "5b201ca29ccd469d5db7734829d2da40",
+        "position": {
+          "file": "inputs/TJM.publicodes",
+          "start": { "index": 658, "line": 43, "column": 3 },
+          "end": { "index": 666, "line": 43, "column": 11 }
+        },
+        "parameters": {
+          "chiffre d'affaires . TJM": {
+            "value_mechanism": {
+              "kind": "expr",
+              "type": "unknown",
+              "id": "1b45ee9f467096c51546509455686a7e",
+              "position": {
+                "file": "inputs/TJM.publicodes",
+                "start": { "index": 698, "line": 44, "column": 31 },
+                "end": { "index": 708, "line": 44, "column": 41 }
+              },
+              "parameters": {
+                "kind": "constant",
+                "type": "unknown",
+                "parameters": {
+                  "kind": "number",
+                  "value": 600.0,
+                  "unit": "€/jour"
+                },
+                "id": "1b45ee9f467096c51546509455686a7e",
+                "position": {
+                  "file": "inputs/TJM.publicodes",
+                  "start": { "index": 698, "line": 44, "column": 31 },
+                  "end": { "index": 708, "line": 44, "column": 41 }
+                }
+              }
+            },
+            "chained_mechanisms": []
+          }
+        }
+      }
+    ]
+  }
+}
