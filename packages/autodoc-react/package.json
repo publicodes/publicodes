@@ -1,0 +1,54 @@
+{
+	"name": "@publicodes/autodoc-react",
+	"version": "0.0.1",
+	"description": "React bindings for @publicodes/autodoc-core",
+	"license": "MIT",
+	"types": "dist/index.d.ts",
+	"type": "module",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"sideEffects": [
+		"**/*.css"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/publicodes/publicodes.git",
+		"directory": "packages/autodoc-react"
+	},
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"test": "vitest run",
+		"test:type": "tsc --noEmit",
+		"test:watch": "vitest watch"
+	},
+	"files": [
+		"dist/"
+	],
+	"dependencies": {
+		"@publicodes/autodoc-core": "workspace:^"
+	},
+	"peerDependencies": {
+		"react": "^18 || ^19",
+		"react-dom": "^18 || ^19"
+	},
+	"devDependencies": {
+		"@publicodes/autodoc-core": "workspace:^",
+		"@testing-library/dom": "^10.4.0",
+		"@testing-library/jest-dom": "^6.6.3",
+		"@testing-library/react": "^16.1.0",
+		"@types/react": "^18.2.23",
+		"@types/react-dom": "^18.0.11",
+		"jsdom": "^26.0.0",
+		"tsup": "^8.3.5",
+		"typescript": "^5.7.3",
+		"vitest": "^3.0.8"
+	}
+}
