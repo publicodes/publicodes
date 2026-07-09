@@ -12,3 +12,4 @@ export type { ValueMechanismProps } from './components/ValueMechanism'
 export { Expression } from './components/expressions/Expression'
 export type { ExpressionProps } from './components/expressions/Expression'
 
+export { AutodocProvider } from './components/AutodocContext'

@@ -63,9 +63,9 @@ let to_const const : Yojson.Basic.t =
         let date =
           match date with
           | Day {day: int; year: int; month: int} ->
-              `String (Stdlib.Format.asprintf "%d-%d-%d" year month day)
+              `String (Stdlib.Format.asprintf "%d-%02d-%02d" year month day)
           | Month {month: int; year: int} ->
-              `String (Stdlib.Format.asprintf "%d-%d" year month)
+              `String (Stdlib.Format.asprintf "%d-%02d" year month)
         in
         ("date", [("value", date)])
   in

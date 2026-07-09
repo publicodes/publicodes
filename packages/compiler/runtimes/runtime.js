@@ -40,12 +40,14 @@ const NotApplicable = /** @type {NotApplicable} */ (
 /**
  * @private
  * @typedef {Date | number | string | boolean | NotApplicable | NotDefined} Value
- *
+ *ui
  * Other types:
  * @typedef {string} RuleName
- * @typedef {Record<string, Value>} Trace
+ * @typedef {Record<string, Record<string, Value>>} Trace
+ * @typedef {Record<string, Partial<Record<RuleName, Value>>>} Global
+ *
  * @typedef {{cache?: boolean, trace?: boolean}} Options
- * @typedef {{[rule: RuleName]: Value } & { _global: Partial<Record<RuleName, Value>>, _options: Options, _trace: Trace}} Context
+ * @typedef {{[rule: RuleName]: Value } & { _global: Partial<Record<RuleName, Value>>, _options: Options, _trace: Trace, _context_stack: string }} Context
  * @typedef {{value: Value, needed: RuleName[], missing: RuleName[], trace: Trace}} Evaluated
  */
 
@@ -696,7 +698,7 @@ function $ref(rule, fn, ctx, params) {
 function $evaluate(fn, _global, options = {}) {
 	/** @type {RuleName[]} */
 	const params = []
-	const ctx = { _global, _options: options, _trace: {} }
+	const ctx = { _global, _options: options, _trace: {}, _context_stack: '' }
 	const value = fn(ctx, params)
 	const needed = Array.from(new Set(params))
 	const missing = needed.filter((p) => !(p in _global))
@@ -715,7 +717,8 @@ function $evaluate(fn, _global, options = {}) {
  */
 function $ret(id, ctx, value) {
 	if (ctx._options.trace) {
-		ctx._trace[id] = value
+		ctx._trace[id] ??= {}
+		ctx._trace[id][ctx._context_stack] = value
 	}
 	return value
 }
