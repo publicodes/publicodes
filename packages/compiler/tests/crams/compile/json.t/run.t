@@ -1445,6 +1445,7 @@ Valid json doc :
           $ret("7e9534cba09caa7c995eba8c46bcfd79", ctx, ((ctx) => $ret("7376ca41dea2a05ace8fc15304576e71", ctx, $ref("a", _a, ctx, params)))(
           			{
           				...ctx,
+          				_context_stack: ctx._context_stack + "-7e9534cba09caa7c995eba8c46bcfd79",
           					"a": $ret("595b0c17f535d045274041b9a0a1855a", ctx, 30.),
           			}
           		)),
@@ -1491,6 +1492,7 @@ Valid json doc :
         $ret("41697ec63e11b929d94198cd48976882", ctx, $ref("g . here", _g_·_here, ctx, params)))))(
       			{
       				...ctx,
+      				_context_stack: ctx._context_stack + "-7e9798e032e4287594dc7d232960cf9e",
       					"a": $ret("c02ec14716102dac6e9109832a512303", ctx, 2.),
       					"b . c": $ret("952d97e6dede9eaf7d5408d9a5cd4275", ctx, 3.),
       					"g . here": $ret("48bcd184f7ead186da3d6c15a1aeaeaf", ctx, 9.),

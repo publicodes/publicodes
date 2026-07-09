@@ -8,7 +8,7 @@ import { CombinationMechanism } from './mechanisms/CombinationMechanism'
 import { BoundaryMechanism } from './mechanisms/BoundaryMechanism'
 import { NotDefined } from './mechanisms/NotDefined'
 import { VariationsMechanism } from './mechanisms/VariationsMechanism'
-import { MechanismBox } from './TypeTooltip'
+import { MechanismBox } from './MechanismBox'
 
 export interface ValueMechanismProps {
 	mechanism: Ast.ValueMechanism
@@ -52,5 +52,9 @@ export function ValueMechanism(props: ValueMechanismProps): JSX.Element {
 			return mechanism satisfies never
 	}
 
-	return <MechanismBox mechanism={mechanism} trace={trace}>{inner}</MechanismBox>
+	return (
+		<MechanismBox mechanism={mechanism} trace={trace}>
+			{inner}
+		</MechanismBox>
+	)
 }

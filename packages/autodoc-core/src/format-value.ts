@@ -1,11 +1,10 @@
-import { TraceValue } from "./trace";
+import { NotApplicable, NotDefined, TraceValue } from './trace'
 
 export type FormatType =
 	| { type: 'number'; unit?: string }
 	| { type: 'text' }
 	| { type: 'boolean' }
 	| { type: 'date' }
-
 
 function formatNumber(value: number, unit?: string): string {
 	const formatted = new Intl.NumberFormat('fr-FR', {
@@ -25,18 +24,17 @@ function formatBoolean(value: boolean): string {
 
 function formatDate(value: string | Date): string {
 	const date = typeof value === 'string' ? new Date(value) : value
-	return new Intl.DateTimeFormat('fr-FR', {
-		dateStyle: 'long',
-	}).format(date)
+	return date.toLocaleDateString()
 }
 
 export function formatValue(
 	value: TraceValue | undefined,
 	spec: FormatType,
 ): string {
-	if (value === undefined) {
-		return "non défini"
-	} else if (value === null) {
+	if (value === NotDefined) {
+		return 'non défini'
+	}
+	if (value === NotApplicable) {
 		return '-'
 	}
 

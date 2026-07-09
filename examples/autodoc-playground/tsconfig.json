@@ -12,7 +12,11 @@
 		"noEmit": true,
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
-		"lib": ["es2021", "dom"],
-		"isolatedModules": true
+		"lib": [
+			"es2021",
+			"dom"
+		],
+		"isolatedModules": true,
+		"allowJs": true
 	}
 }
