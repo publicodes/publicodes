@@ -97,3 +97,18 @@ let parse_one_or_many ~f yaml =
   | _ ->
       let+ value = f yaml in
       [value]
+
+let parse_bool ~pos yaml =
+  let* scalar = get_scalar ~pos yaml in
+  let value = scalar |> get_value in
+  match value with
+  | "" | "oui" ->
+      return true
+  | "non" ->
+      return false
+  | _ ->
+      let code, message = Err.parsing_invalid_mechanism in
+      fatal_error ~pos ~kind:`Syntax ~code
+        ~hints:
+          ["doit valoir « oui » ou « non »"; "si vide, la valeur est « oui »"]
+        message

@@ -23,19 +23,8 @@ let parse_exclusive mapping =
   match find_value "exclusif" mapping with
   | None ->
       return false
-  | Some (yaml, pos) -> (
-      let* scalar = get_scalar ~pos yaml in
-      let value = scalar |> get_value in
-      match value with
-      | "oui" ->
-          return true
-      | "non" ->
-          return false
-      | _ ->
-          let code, message = Err.parsing_invalid_mechanism in
-          fatal_error ~pos ~kind:`Syntax ~code
-            ~hints:["doit valoir « oui » ou « non »"]
-            message )
+  | Some (yaml, pos) ->
+      parse_bool ~pos yaml
 
 let no_reference_error ~pos =
   let code, message = Err.parsing_invalid_mechanism in

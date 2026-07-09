@@ -58,16 +58,13 @@ let parse mapping =
     | "meta" ->
         parse_custom_meta ~pos:(Pos.pos key) value
     | "public" ->
-        let* value = scalar_value () in
-        let pos = Pos.pos value in
-        let value = get_value value in
-        if not (String.equal value "oui" || String.equal value "") then
+        let pos = Pos.pos key in
+        let* value = parse_bool ~pos value in
+        if not value then
           let code, message = Err.invalid_value in
           fatal_error ~pos ~code ~kind:`Syntax message
             ~labels:[Pos.mk ~pos "doit valoir `oui` ou être vide"]
-            ~hints:
-              [ Printf.sprintf "Remplacez `%s` par `oui` ou supprimez la clée"
-                  value ]
+            ~hints:[Printf.sprintf "Remplacez par `oui` ou supprimez la clé"]
         else return Public
     | _ ->
         empty
