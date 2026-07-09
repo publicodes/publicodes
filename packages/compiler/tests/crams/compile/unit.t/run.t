@@ -40,9 +40,9 @@ Simple multiplication with unit :
   $ publicodes compile simple-multiplication
   
   E025 unités non compatibles [type error]
-       ╒══  simple-multiplication/rules.publicodes:1:29 ══
+       ╒══  simple-multiplication/rules.publicodes:1:25 ══
      1 │ simple expression ko:  (5kg * 5€/kg) = 12$
-       │                             ˘˘˘˘˘˘˘˘ unité: €
+       │                         ˘˘˘˘˘˘˘˘˘˘˘˘ unité: €
        ╒══  simple-multiplication/rules.publicodes:1:40 ══
      1 │ simple expression ko:  (5kg * 5€/kg) = 12$
        │                                        ˘˘˘ unité: $
@@ -54,21 +54,21 @@ Unit inference :
   $ publicodes compile unit_inference
   
   E025 unités non compatibles [type error]
-       ╒══  unit_inference/rules.publicodes:7:9 ══
+       ╒══  unit_inference/rules.publicodes:7:7 ══
      6 │ z:
      7 │ test: x + 9 mois # KO car z est inféré à "mois" et x à "€"
-       │         ˘˘˘˘˘˘˘˘˘ unité: mois
-       ╒══  unit_inference/rules.publicodes:4:6 ══
+       │       ˘˘˘˘˘˘˘˘˘˘˘ unité: mois
+       ╒══  unit_inference/rules.publicodes:4:4 ══
      3 │ 
      4 │ x: z * 4€/mois
-       │      ˘˘˘˘˘˘˘˘˘ unité: €
+       │    ˘˘˘˘˘˘˘˘˘˘˘ unité: €
   
   
   E025 unités non compatibles [type error]
-       ╒══  unit_inference/rules.publicodes:2:6 ══
+       ╒══  unit_inference/rules.publicodes:2:4 ══
      1 │ a: 5€
      2 │ b: a + 4kg # KO
-       │      ˘˘˘˘˘˘ unité: kg
+       │    ˘˘˘˘˘˘˘˘ unité: kg
        ╒══  unit_inference/rules.publicodes:1:4 ══
      1 │ a: 5€
        │    ˘˘ unité: €

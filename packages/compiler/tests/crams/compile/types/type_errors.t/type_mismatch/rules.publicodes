@@ -1,0 +1,5 @@
+comparaison booléenne:
+  valeur: a > b
+  avec:
+    a: "Test"
+    b: 12

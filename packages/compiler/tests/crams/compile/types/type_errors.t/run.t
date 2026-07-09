@@ -1,15 +1,17 @@
 Should have error when type don't match:
+(FIXME: should have a main position pointing to the comparison expression)
 
   $ publicodes compile ./type_mismatch/ -o -
   
   E023 types non cohérents entre eux [type error]
-       ╒══  ./type_mismatch/rules.publicodes:3:4 ══
-     2 │ 
-     3 │ b: 12
-       │    ˘˘ est un nombre
-       ╒══  ./type_mismatch/rules.publicodes:1:4 ══
-     1 │ a: "Test"
-       │    ˘˘˘˘˘˘ est un texte
+       ╒══  ./type_mismatch/rules.publicodes:4:8 ══
+     3 │   avec:
+     4 │     a: "Test"
+       │        ˘˘˘˘˘˘ est un texte
+       ╒══  ./type_mismatch/rules.publicodes:5:8 ══
+     4 │     a: "Test"
+     5 │     b: 12
+       │        ˘˘ est un nombre
   
   [123]
 
