@@ -122,6 +122,7 @@ git remote add gerrit \
     ssh://USER@review.gerrithub.io:29418/publicodes/publicodes
 curl -Lo "$(git rev-parse --git-dir)/hooks/commit-msg" \
     https://gerrithub.io/tools/hooks/commit-msg
+chmox +x "$(git rev-parse --git-dir)/hooks/commit-msg"
 # Re-commit to add the Change-Id trailing
 ```
 
