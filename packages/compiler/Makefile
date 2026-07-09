@@ -2,6 +2,7 @@
 .SUFFIXES:
 
 JS_TESTS_DIR = ./tests/runtimes/JS
+TEST ?=
 CLI_DIR = ../cli
 COMPILER_PATH = _build/default/bin/main.exe
 
@@ -56,7 +57,7 @@ dev:
 #> test-js                  | Run JavaScript tests using yarn
 test-js: build
 	@echo "Running JavaScript tests..."
-	PUBLICODES_COMPILER_PATH=../../../$(COMPILER_PATH) yarn --cwd $(JS_TESTS_DIR) test
+	PUBLICODES_COMPILER_PATH=../../../$(COMPILER_PATH) yarn --cwd $(JS_TESTS_DIR) test $(TEST)
 
 #> test-ocaml               | Run OCaml unit and cram tests using dune
 test-ocaml:
