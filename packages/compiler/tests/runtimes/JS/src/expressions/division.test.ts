@@ -27,4 +27,17 @@ division:
 		expect(division.evaluate({ 'salaire de base': 3000 }).value).toEqual(0.001)
 		expect(division.unit).toBe('/¥')
 	})
+
+	it('division par zéro', async () => {
+		const { division } = await yaml`
+
+x: 0
+
+division:
+  valeur: 3 / x
+`
+		expect(() => division.evaluate({}).value).toThrowError(
+			'Division by zero: 3 / 0',
+		)
+	})
 })
