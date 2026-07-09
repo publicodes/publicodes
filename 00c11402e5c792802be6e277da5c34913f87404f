@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56e7cb4a_6dfbbb80",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 733,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-09T14:45:34Z",
+      "side": 1,
+      "message": "blabla",
+      "revId": "00c11402e5c792802be6e277da5c34913f87404f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3fe08234_9320cf9f",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-09T14:45:34Z",
+      "side": 1,
+      "message": "extra line return",
+      "revId": "00c11402e5c792802be6e277da5c34913f87404f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
