@@ -19,7 +19,8 @@ import { FloorMechanismPage } from './pages/FloorMechanismPage'
 import { RoundUpMechanismPage } from './pages/RoundUpMechanismPage'
 import { RoundDownMechanismPage } from './pages/RoundDownMechanismPage'
 import { RoundNearestMechanismPage } from './pages/RoundNearestMechanismPage'
-import { TJMExamplePage } from './pages/TJMExamplePage'
+import { AutoEntrepeneurExamplePage } from './pages/AutoEntrepreneurExamplePage'
+import { SimpleTJMExamplePage } from './pages/SimpleTJMExamplePage'
 
 const PAGES = {
 	home: { label: 'Accueil', component: HomePage },
@@ -62,8 +63,12 @@ const PAGES = {
 		component: RoundNearestMechanismPage,
 	},
 	tjm_example: {
-		label: 'TJM Example',
-		component: TJMExamplePage,
+		label: 'Exemple : simple TJM',
+		component: SimpleTJMExamplePage,
+	},
+	autoentrepreneur_example: {
+		label: 'Exemple : auto-entrepreneur',
+		component: AutoEntrepeneurExamplePage,
 	},
 } as const
 

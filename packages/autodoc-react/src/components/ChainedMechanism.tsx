@@ -6,13 +6,12 @@ import { TypeMechanism } from './mechanisms/TypeMechanism'
 import { DefaultMechanism } from './mechanisms/DefaultMechanism'
 import { BoundMechanism } from './mechanisms/BoundMechanism'
 import { RoundingMechanism } from './mechanisms/RoundingMechanism'
-import { MechanismBox } from './TypeTooltip'
+import { MechanismBox } from './MechanismBox'
 
 export interface ChainedMechanismProps {
 	mechanism: Ast.ChainedMechanism
 	trace?: Trace
 }
-
 
 export function ChainedMechanism(props: ChainedMechanismProps): JSX.Element {
 	const { mechanism, trace } = props
