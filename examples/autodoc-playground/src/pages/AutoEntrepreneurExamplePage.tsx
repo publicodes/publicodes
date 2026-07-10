@@ -1,5 +1,9 @@
 import { PublicodeAST } from '@publicodes/autodoc-core/ast'
-import { ChainedValue } from '@publicodes/autodoc-react'
+import {
+	AutodocButtonNavigationContext,
+	AutodocRuleContext,
+	ChainedValue,
+} from '@publicodes/autodoc-react'
 import tjmAutodoc from '../../../../packages/compiler/examples/auto-entrepreneur/model.publicodes.json'
 import tjmRules from '../../../../packages/compiler/examples/auto-entrepreneur/model.publicodes.js'
 
@@ -11,16 +15,30 @@ let trace = tjmRules['dirigeant . auto-entrepreneur . revenu net'].evaluate(
 	{ trace: true },
 ).trace
 
+const reference = Object.keys(doc)[0]
+
 export function AutoEntrepeneurExamplePage() {
 	return (
-		<>
-			<h1>Exemple : auto-entrepreneur</h1>
-			{Object.entries(doc).map(([key, value]) => (
-				<div className="demo-block">
-					<strong>{key}</strong>
-					<ChainedValue key={key} node={value} trace={trace} />
-				</div>
-			))}
-		</>
+		<AutodocRuleContext.Provider value={{ doc, currentRule: reference }}>
+			<AutodocButtonNavigationContext.Provider
+				value={{
+					currentRule: reference,
+					onNavigate: (ruleName) => {
+						const el = document.getElementById(`rule-${ruleName}`)
+						if (el) {
+							el.scrollIntoView({ behavior: 'smooth' })
+						}
+					},
+				}}
+			>
+				<h1>Exemple : auto-entrepreneur</h1>
+				{Object.entries(doc).map(([key, value]) => (
+					<div className="demo-block" id={`rule-${key}`}>
+						<strong>{key}</strong>
+						<ChainedValue key={key} node={value} trace={trace} />
+					</div>
+				))}
+			</AutodocButtonNavigationContext.Provider>
+		</AutodocRuleContext.Provider>
 	)
 }

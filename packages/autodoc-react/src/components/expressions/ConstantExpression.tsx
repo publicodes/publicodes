@@ -12,12 +12,11 @@ export function ConstantExpression({
 }: ConstantExpressionProps): JSX.Element | null {
 	if (!expression.parameters) return null
 
-	const { kind, value } = expression.parameters
-	const spec = { type: kind, ...('unit' in expression.parameters ? { unit: expression.parameters.unit } : {}) }
+	const {  value } = expression.parameters
 
 	return (
 		<span className="publicodes-expression publicodes-expression--constant">
-			{formatValue(value, spec as any)}
+			{formatValue(value, expression)}
 		</span>
 	)
 }

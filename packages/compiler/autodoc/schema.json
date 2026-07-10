@@ -55,6 +55,7 @@
 						"type": {
 							"anyOf": [
 								{ "const": "text" },
+								{ "const": "symbol" },
 								{ "const": "boolean" },
 								{ "const": "date" },
 								{ "const": "unknown" }
@@ -149,6 +150,9 @@
 				},
 				{
 					"$ref": "#/$defs/mechanisms/sum"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/average"
 				},
 				{
 					"$ref": "#/$defs/mechanisms/product"
@@ -338,6 +342,28 @@
 						"properties": {
 							"kind": {
 								"const": "sum"
+							},
+							"parameters": {
+								"type": "array",
+								"items": {
+									"$ref": "#/$defs/evaluable"
+								}
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"average": {
+				"title": "Average mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "average"
 							},
 							"parameters": {
 								"type": "array",
@@ -729,7 +755,7 @@
 										"required": ["kind", "value"],
 										"properties": {
 											"kind": {
-												"const": "number"
+												"const": "const_number"
 											},
 											"value": {
 												"type": "number"
@@ -743,7 +769,7 @@
 										"required": ["kind", "value"],
 										"properties": {
 											"kind": {
-												"const": "text"
+												"const": "const_text"
 											},
 											"value": {
 												"type": "string"
@@ -754,7 +780,18 @@
 										"required": ["kind", "value"],
 										"properties": {
 											"kind": {
-												"const": "boolean"
+												"const": "const_symbol"
+											},
+											"value": {
+												"type": "string"
+											}
+										}
+									},
+									{
+										"required": ["kind", "value"],
+										"properties": {
+											"kind": {
+												"const": "const_boolean"
 											},
 											"value": {
 												"type": "boolean"
@@ -765,7 +802,7 @@
 										"required": ["kind", "value"],
 										"properties": {
 											"kind": {
-												"const": "date"
+												"const": "const_date"
 											},
 											"value": {
 												"type": "string",
@@ -778,7 +815,7 @@
 						}
 					},
 					{
-						"$ref": "#/$defs/node_identifier"
+						"$ref": "#/$defs/compiler_metadata"
 					}
 				]
 			},

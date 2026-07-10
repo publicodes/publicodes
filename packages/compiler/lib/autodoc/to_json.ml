@@ -82,13 +82,13 @@ let to_const const : Yojson.Basic.t =
           | None ->
               []
         in
-        ("number", ("value", `Float number) :: unit)
+        ("const_number", ("value", `Float number) :: unit)
     | Bool bool ->
-        ("bool", [("value", `Bool bool)])
+        ("const_boolean", [("value", `Bool bool)])
     | String str ->
-        ("string", [("value", `String str)])
+        ("const_text", [("value", `String str)])
     | Symbol str ->
-        ("symbol", [("value", `String str)])
+        ("const_symbol", [("value", `String str)])
     | Date date ->
         let date =
           match date with
@@ -97,7 +97,7 @@ let to_const const : Yojson.Basic.t =
           | Month {month: int; year: int} ->
               `String (Stdlib.Format.asprintf "%d-%02d" year month)
         in
-        ("date", [("value", date)])
+        ("const_date", [("value", date)])
   in
   let kind = ("kind", `String kind) in
   `Assoc (kind :: parameters)
