@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a5cd72c1_bd4b4e32",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-10T13:29:34Z",
+      "side": 1,
+      "message": "ui",
+      "revId": "e8870eeb36db08a307a10ec09d1668e9d199ab2f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
