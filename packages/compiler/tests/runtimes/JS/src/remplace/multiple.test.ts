@@ -37,7 +37,7 @@ describe('Remplace > multiple', () => {
     x: c
   `
 		expect(() => x.evaluate().value).toThrowError(
-			'Exclusivity check: more than 1 applicable replacement b, a',
+			'Exclusivity check: more than 1 applicable replacement: \n- b\n- a',
 		)
 	})
 })
