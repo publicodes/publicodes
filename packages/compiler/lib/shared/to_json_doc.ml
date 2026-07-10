@@ -104,6 +104,10 @@ let rec to_value_mec name value_mecha : Yojson.Basic.t =
         ("is_applicable", Some (`Assoc (to_mecs name value)))
     | Is_not_applicable value ->
         ("is_not_applicable", Some (`Assoc (to_mecs name value)))
+    | Is_defined value ->
+        ("is_defined", Some (`Assoc (to_mecs name value)))
+    | Is_not_defined value ->
+        ("is_not_defined", Some (`Assoc (to_mecs name value)))
     | Sum values ->
         ( "sum"
         , Some
