@@ -53,6 +53,7 @@ dist-ssr
 packages/compiler/_build
 packages/compiler/_opam
 packages/compiler/**/*.exe
-packages/compiler/**/*.publicodes.js
+**/*.publicodes.js
+**/*.publicodes.json
 
 packages/codemod/bin/codemod-v2.js

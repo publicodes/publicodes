@@ -1,0 +1,903 @@
+{
+	"$id": "https://publi.codes/debug.schema.json",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "Publicode AST",
+	"description": "JSON representation of the AST produced by the Publicodes compiler with the target `json_doc`.",
+	"type": "object",
+	"patternProperties": {
+		".*": {
+			"$ref": "#/$defs/rule"
+		}
+	},
+	"additionalProperties": false,
+	"$defs": {
+		"rule": {
+			"title": "Rule definition",
+			"type": "object",
+			"allOf": [
+				{ "$ref": "#/$defs/compiler_metadata" },
+				{ "$ref": "#/$defs/evaluable" }
+			]
+		},
+		"evaluable": {
+			"title": "Chained value",
+			"required": ["value_mechanism", "chained_mechanisms"],
+			"properties": {
+				"value_mechanism": {
+					"$ref": "#/$defs/value_mechanism"
+				},
+				"chained_mechanisms": {
+					"type": "array",
+					"items": {
+						"$ref": "#/$defs/chained_mechanism"
+					}
+				}
+			}
+		},
+		"publicodes_type": {
+			"title": "Publicodes type",
+			"description": "Inferred type of a Publicodes value",
+			"anyOf": [
+				{
+					"required": ["type"],
+					"properties": {
+						"type": {
+							"const": "number"
+						},
+						"unit": {
+							"type": "string"
+						}
+					}
+				},
+				{
+					"required": ["type"],
+					"properties": {
+						"type": {
+							"anyOf": [
+								{ "const": "text" },
+								{ "const": "boolean" },
+								{ "const": "date" },
+								{ "const": "unknown" }
+							]
+						}
+					}
+				}
+			]
+		},
+		"node_identifier": {
+			"title": "Node identifier",
+			"required": ["id", "position"],
+			"properties": {
+				"id": {
+					"title": "Uid",
+					"type": "string"
+				},
+				"position": {
+					"title": "AST node position",
+					"type": "object",
+					"required": ["file", "start", "end"],
+					"properties": {
+						"file": {
+							"title": "Source file",
+							"type": "string"
+						},
+						"start": {
+							"title": "Starting position in the source file",
+							"$ref": "#/$defs/position"
+						},
+						"end": {
+							"title": "Ending position in the source file",
+							"$ref": "#/$defs/position"
+						}
+					}
+				}
+			}
+		},
+		"compiler_metadata": {
+			"title": "Compiler metadata",
+			"type": "object",
+			"allOf": [
+				{
+					"$ref": "#/$defs/node_identifier"
+				},
+				{
+					"$ref": "#/$defs/publicodes_type"
+				}
+			]
+		},
+		"position": {
+			"title": "Position in a source file",
+			"type": "object",
+			"required": ["index", "line", "column"],
+			"properties": {
+				"index": {
+					"title": "Cursor index",
+					"type": "integer"
+				},
+				"line": {
+					"title": "Line number",
+					"type": "integer"
+				},
+				"column": {
+					"title": "Column number",
+					"type": "integer"
+				}
+			}
+		},
+		"value_mechanism": {
+			"title": "Value mechanism",
+			"type": "object",
+			"required": ["kind"],
+			"properties": {
+				"kind": {
+					"title": "Kind of the mechanism",
+					"type": "string"
+				}
+			},
+			"anyOf": [
+				{
+					"$ref": "#/$defs/mechanisms/expr"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/value"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/is_applicable"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/is_not_applicable"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/sum"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/product"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/all_of"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/min_of"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/max_of"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/one_of"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/not_defined"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/variations"
+				}
+			]
+		},
+		"chained_mechanism": {
+			"title": "Chained mechanism",
+			"type": "object",
+			"required": ["kind"],
+			"properties": {
+				"kind": {
+					"title": "Kind of the mechanism",
+					"type": "string"
+				}
+			},
+			"anyOf": [
+				{
+					"$ref": "#/$defs/mechanisms/context"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/applicable_if"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/not_applicable_if"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/type_def"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/default"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/ceiling"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/floor"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/round_up"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/round_down"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/round_nearest"
+				}
+			]
+		},
+		"mechanisms": {
+			"expr": {
+				"title": "Expression mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "expr"
+							},
+							"parameters": {
+								"$ref": "#/$defs/expression"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"value": {
+				"title": "Value",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "value"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"is_applicable": {
+				"title": "Is applicable mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "is_applicable"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"is_not_applicable": {
+				"title": "Is not applicable mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "is_not_applicable"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"type_def": {
+				"title": "Type def",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "type_def"
+							},
+							"parameters": {
+								"required": ["value"],
+								"properties": {
+									"value": {
+										"anyOf": [
+											{
+												"const": "number"
+											},
+											{
+												"const": "text"
+											},
+											{
+												"const": "boolean"
+											},
+											{
+												"const": "date"
+											}
+										]
+									}
+								}
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"sum": {
+				"title": "Sum mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "sum"
+							},
+							"parameters": {
+								"type": "array",
+								"items": {
+									"$ref": "#/$defs/evaluable"
+								}
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"product": {
+				"title": "Product mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "product"
+							},
+							"parameters": {
+								"type": "array",
+								"items": {
+									"$ref": "#/$defs/evaluable"
+								}
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"all_of": {
+				"title": "All of mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "all_of"
+							},
+							"parameters": {
+								"type": "array",
+								"items": {
+									"$ref": "#/$defs/evaluable"
+								}
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"min_of": {
+				"title": "Min of mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "min_of"
+							},
+							"parameters": {
+								"type": "array",
+								"items": {
+									"$ref": "#/$defs/evaluable"
+								}
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"max_of": {
+				"title": "Max of mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "max_of"
+							},
+							"parameters": {
+								"type": "array",
+								"items": {
+									"$ref": "#/$defs/evaluable"
+								}
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"one_of": {
+				"title": "One of mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "one_of"
+							},
+							"parameters": {
+								"type": "array",
+								"items": {
+									"$ref": "#/$defs/evaluable"
+								}
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"not_defined": {
+				"title": "Not defined",
+				"allOf": [
+					{
+						"required": ["kind"],
+						"properties": {
+							"kind": {
+								"const": "not_defined"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"variations": {
+				"title": "Variation mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "variations"
+							},
+							"parameters": {
+								"type": "object",
+								"required": ["conditions"],
+								"properties": {
+									"conditions": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"required": ["if", "then"],
+											"properties": {
+												"if": {
+													"$ref": "#/$defs/evaluable"
+												},
+												"then": {
+													"$ref": "#/$defs/evaluable"
+												}
+											}
+										}
+									},
+									"else": {
+										"$ref": "#/$defs/evaluable"
+									}
+								}
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"context": {
+				"title": "Context mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "context"
+							},
+							"parameters": {
+								"type": "object",
+								"patternProperties": {
+									".": {
+										"$ref": "#/$defs/evaluable"
+									}
+								},
+								"additionalProperties": false
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"applicable_if": {
+				"title": "Applicable if mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "applicable_if"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"not_applicable_if": {
+				"title": "Not applicable if mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "not_applicable_if"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"default": {
+				"title": "Default mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "default"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"ceiling": {
+				"title": "Ceiling mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "ceiling"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"floor": {
+				"title": "Floor mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "floor"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"round_up": {
+				"title": "Round up mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "round_up"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"round_down": {
+				"title": "Round down mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "round_down"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"round_nearest": {
+				"title": "Round nearest mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "round_nearest"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			}
+		},
+		"expression": {
+			"title": "Expression",
+			"anyOf": [
+				{
+					"$ref": "#/$defs/expressions/constant"
+				},
+				{
+					"$ref": "#/$defs/expressions/ref"
+				},
+				{
+					"$ref": "#/$defs/expressions/binary"
+				},
+				{
+					"$ref": "#/$defs/expressions/unary"
+				}
+			]
+		},
+		"expressions": {
+			"constant": {
+				"title": "Constant expression",
+				"allOf": [
+					{
+						"required": ["kind"],
+						"properties": {
+							"kind": {
+								"const": "constant"
+							},
+							"parameters": {
+								"anyOf": [
+									{
+										"required": ["kind", "value"],
+										"properties": {
+											"kind": {
+												"const": "const_number"
+											},
+											"value": {
+												"type": "number"
+											},
+											"unit": {
+												"type": "string"
+											}
+										}
+									},
+									{
+										"required": ["kind", "value"],
+										"properties": {
+											"kind": {
+												"const": "const_text"
+											},
+											"value": {
+												"type": "string"
+											}
+										}
+									},
+									{
+										"required": ["kind", "value"],
+										"properties": {
+											"kind": {
+												"const": "const_boolean"
+											},
+											"value": {
+												"type": "boolean"
+											}
+										}
+									},
+									{
+										"required": ["kind", "value"],
+										"properties": {
+											"kind": {
+												"const": "const_date"
+											},
+											"value": {
+												"type": "string",
+												"description": "Date in ISO 8601 format (YYYY-MM-DD)"
+											}
+										}
+									}
+								]
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"ref": {
+				"title": "Reference expression",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "ref"
+							},
+							"parameters": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"binary": {
+				"title": "Binary operation expression",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"anyOf": [
+									{
+										"const": "add"
+									},
+									{
+										"const": "sub"
+									},
+									{
+										"const": "mul"
+									},
+									{
+										"const": "div"
+									},
+									{
+										"const": "pow"
+									},
+									{
+										"const": "gt"
+									},
+									{
+										"const": "lt"
+									},
+									{
+										"const": "gteq"
+									},
+									{
+										"const": "lteq"
+									},
+									{
+										"const": "eq"
+									},
+									{
+										"const": "noteq"
+									},
+									{
+										"const": "and"
+									},
+									{
+										"const": "or"
+									},
+									{
+										"const": "max"
+									},
+									{
+										"const": "min"
+									}
+								]
+							},
+							"parameters": {
+								"type": "object",
+								"required": ["left", "right"],
+								"properties": {
+									"left": {
+										"$ref": "#/$defs/expression"
+									},
+									"right": {
+										"$ref": "#/$defs/expression"
+									}
+								}
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"unary": {
+				"title": "Unary operation expression",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"anyOf": [
+									{
+										"const": "neg"
+									}
+								]
+							},
+							"parameters": {
+								"$ref": "#/$defs/expression"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			}
+		}
+	}
+}

@@ -1,0 +1,54 @@
+{
+	"name": "@publicodes/autodoc-core",
+	"version": "0.0.1",
+	"description": "Headless UI components for publicodes auto-generated documentation",
+	"sideEffects": [
+		"*.css",
+		"**/*.css"
+	],
+	"license": "MIT",
+	"types": "dist/index.d.ts",
+	"type": "module",
+	"main": "dist/index.cjs",
+	"module": "dist/index.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./ast": {
+			"types": "./dist/ast/index.d.ts",
+			"import": "./dist/ast/index.js",
+			"require": "./dist/ast/index.cjs"
+		},
+		"./examples": {
+			"types": "./dist/examples/index.d.ts",
+			"import": "./dist/examples/index.js",
+			"require": "./dist/examples/index.cjs"
+		},
+		"./styles/autodoc.css": "./dist/styles/autodoc.css"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/publicodes/publicodes.git",
+		"directory": "packages/autodoc-core"
+	},
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"codegen": "json2ts ../compiler/autodoc/schema.json -o src/ast/types.codegen.ts --additionalProperties false",
+		"test": "vitest run",
+		"test:type": "tsc --noEmit",
+		"test:watch": "vitest watch"
+	},
+	"files": [
+		"dist/"
+	],
+	"devDependencies": {
+		"json-schema-to-typescript": "^15.0.4",
+		"tsup": "^8.3.5",
+		"typescript": "^5.7.3",
+		"vitest": "^3.0.8"
+	}
+}

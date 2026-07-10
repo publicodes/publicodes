@@ -20,9 +20,11 @@ type t =
     - {!Debug_eval_tree}: generates a simplified representation of the
       {!Hashed_tree.t} (the last internal representation) for debugging and test
       purposes.
-    - {!Json_doc}: generates a JSON representation of the
-      {!Shared.Shared_ast.resolved} AST for documentation and tooling purposes. *)
-and target_type = Js | Debug_eval_tree | Json_doc
+    - {!Debug_typed_eval_tree}: same as {!Debug_eval_tree} but with the types of
+      each node in the tree.
+    - {!Json}: generates a JSON representation of the
+    {!Shared.Shared_ast.resolved} AST for documentation and tooling purposes. *)
+and target_type = Js | Json | Debug_eval_tree | Debug_typed_eval_tree
 
 val compile : t -> string Utils.Output.t
 (** [compile target] compiles the Publicodes model specified by the [target]

@@ -1,0 +1,68 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-family: system-ui, sans-serif;
+	font-size: 16px;
+	line-height: 1.5;
+	color: #1a1a1a;
+	background: #fafafa;
+}
+
+body {
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 2rem;
+}
+
+h1 {
+	font-size: 1.75rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+}
+
+h2 {
+	font-size: 1.25rem;
+	font-weight: 600;
+	margin: 2rem 0 0.5rem;
+}
+
+a {
+	color: #2563eb;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+}
+
+li {
+	margin-bottom: 0.25rem;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid #e5e5e5;
+	margin: 2rem 0;
+}
+
+.demo-block {
+	margin: 2rem 0;
+	padding: 1rem;
+	border: 1px solid #e5e5e5;
+	border-radius: 6px;
+	background: #fff;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}

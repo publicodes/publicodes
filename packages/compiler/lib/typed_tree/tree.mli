@@ -7,3 +7,5 @@ val mk :
   -> ?typ:Typ.t
   -> Typ.t Shared.Eval_tree.naked_value
   -> Typ.t Shared.Eval_tree.value
+
+val get_type : pos:Utils.Pos.pos -> rule:Shared.Rule_name.t -> t -> Typ.t

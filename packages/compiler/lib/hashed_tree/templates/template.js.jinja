@@ -87,8 +87,8 @@
 {%- endmacro -%}
 
 {%- macro fmt_node (rule) -%}
-	{%- set node_type, node_value, node_id = (rule.node_type, rule.node_value, rule.node_id) -%}
-	$ret("{{ node_id }}", ctx, {% switch node_type %}
+	{%- set node_kind, node_value, node_id = (rule.node_kind, rule.node_value, rule.node_id) -%}
+	$ret("{{ node_id }}", ctx, {% switch node_kind %}
 	{%- case "number" -%}
 		{{ node_value.number }}
 	{%- case "text" -%}
@@ -100,7 +100,7 @@
 			{{ printf("new Date('%d-%02d-%02d')",
 				node_value.year, node_value.month, node_value.day) }}
 		{%- else -%}
-			{{ printf("new Date('%02d-%02d')",
+			{{ printf("new Date('%d-%02d')",
 				node_value.year, node_value.month) }}
 		{%- endif -%}
 	{%- case "not_applicable" -%}
@@ -143,6 +143,7 @@
 		((ctx) => {{ fmt_node(node_value.expr) }})(
 			{
 				...ctx,
+				_context_stack: ctx._context_stack + "-{{ node_id }}",
 				{%- for item in node_value.items %}
 				{%- set item_name, item_value = (item.name, item.value) %}
 					"{{ item_name }}": {{ fmt_node(item_value) }},
@@ -198,7 +199,7 @@ const rules = {
     /**
      * Evaluate "{{ out.rule_name }}" with evaluation trace, and information on
      * missing and needed parameters.
-     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {Options}) => {value: {{ fmt_ts_type(out.return_type) }}, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>, trace: {Trace}}}
+     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: Options) => {value: {{ fmt_ts_type(out.return_type) }}, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>, trace: Trace}}
      */
     evaluate: (params = {}, options) =>
       $evaluate({{ fmt_method(out.rule_name) }}, params, options),

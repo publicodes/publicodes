@@ -18,6 +18,6 @@ val to_js_str : t -> Shared.Model_output.t list -> string
 (** [to_js_str tree outputs] converts a hashed typed tree to its corresponding
     JavaScript code. *)
 
-val to_debug_str : t -> Shared.Model_output.t list -> string
+val to_debug_str : ?show_types:bool -> t -> Shared.Model_output.t list -> string
 (** [to_debug tree outputs] converts a hashed typed tree to its corresponding
     debug string representation. *)
