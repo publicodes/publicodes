@@ -19,3 +19,21 @@ Should correctly transform `non applicable si` mechanism:
     if (is_not_defined @condition) || ((@condition = false) || (@condition = not_applicable))
     then not_applicable
     else 10.
+
+Should correctly transform `est applicable` mechanism:
+
+  $ publicodes compile ./est_applicable -t debug_eval_tree -o -
+  a:
+    (is_not_defined @b) = false
+  
+  b:
+    10.
+
+Should correctly transform `est non applicable` mechanism:
+
+  $ publicodes compile ./est_non_applicable	 -t debug_eval_tree -o -
+  a:
+    is_not_defined @b
+  
+  b:
+    10.
