@@ -14433,9 +14433,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"website-v2@workspace:website-v2":
+"website-v1@workspace:website-v1":
   version: 0.0.0-use.local
-  resolution: "website-v2@workspace:website-v2"
+  resolution: "website-v1@workspace:website-v1"
   dependencies:
     "@codemirror/lang-yaml": "npm:^6.1.1"
     "@docsearch/js": "npm:3"

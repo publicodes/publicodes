@@ -70,7 +70,7 @@
 			"cache": false,
 			"persistent": true
 		},
-		"website-v2#doc": {
+		"website-v1#doc": {
 			"dependsOn": ["^build", "@publicodes/rest-api#build"],
 			"inputs": [
 				"../packages/**/*.{ts,tsx}",
@@ -79,10 +79,10 @@
 			],
 			"outputs": ["./website/src/routes/docs/api"]
 		},
-		"website-v2#build": {
+		"website-v1#build": {
 			"dependsOn": ["^build", "doc"]
 		},
-		"website-v2#dev": {
+		"website-v1#dev": {
 			"dependsOn": ["^build", "doc"],
 			"cache": false,
 			"persistent": true
