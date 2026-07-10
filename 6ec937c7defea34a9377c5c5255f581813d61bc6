@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5f5bcc34_eb0b5a09",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 3
+      },
+      "lineNbr": 729,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-10T13:29:13Z",
+      "side": 1,
+      "message": "[RuleName, Value][], and drop ctx, params?",
+      "revId": "6ec937c7defea34a9377c5c5255f581813d61bc6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "217b1156_82e8b9dc",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 3
+      },
+      "lineNbr": 752,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-10T13:29:13Z",
+      "side": 1,
+      "message": "liste a point?",
+      "revId": "6ec937c7defea34a9377c5c5255f581813d61bc6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
