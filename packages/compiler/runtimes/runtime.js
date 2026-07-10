@@ -14,7 +14,7 @@
 /**
  * Representation of an undefined rule (e.g. parameter wihout a value). It
  * spreads to all operations, except in:
- * - definition checks (`est définie`, `est non définie`),
+ * - definition checks (`est défini`, `est non défini`),
  * - in binop operations with a neutral element (e.g. `add`, `mul`, `and` and
  *   `or`).
  *
@@ -26,7 +26,7 @@ const NotDefined = /** @type {NotDefined} */ (Symbol.for('not defined'))
 /**
  * Representation of a not applicable rule (e.g. a rule that is not applicable
  * in the current context). It spreads to all  operations, except in:
- * - applicability checks (`est applicable`, `n'est pas applicable`),
+ * - applicability checks (`est applicable`, `est non applicable`),
  * - and sum operations (e.g. `add`, `sub`, `and` and `or`) where it is
  *   considered as a neutral element.
  *

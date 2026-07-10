@@ -46,7 +46,15 @@ let value_mechanisms =
     ; ( "est non applicable"
       , fun ~pos ~parse value ->
           let+ value = parse ~pos value in
-          Is_not_applicable value ) ]
+          Is_not_applicable value )
+    ; ( "est défini"
+      , fun ~pos ~parse value ->
+          let+ value = parse ~pos value in
+          Is_defined value )
+    ; ( "est non défini"
+      , fun ~pos ~parse value ->
+          let+ value = parse ~pos value in
+          Is_not_defined value ) ]
 
 let chainable_mechanisms =
   Hashtbl.of_alist_exn

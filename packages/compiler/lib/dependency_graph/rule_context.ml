@@ -53,7 +53,11 @@ let from_rule_def (rule_def : Rule_name.t Shared_ast.rule_def) : t list =
         acc
   and get_contexts_in_value value acc : t list =
     match Pos.value value.value with
-    | Value v | Is_applicable v | Is_not_applicable v ->
+    | Value v
+    | Is_applicable v
+    | Is_not_applicable v
+    | Is_defined v
+    | Is_not_defined v ->
         get_contexts_in_value v acc
     | Variations (variations, else_) ->
         let contexts_in_variations =

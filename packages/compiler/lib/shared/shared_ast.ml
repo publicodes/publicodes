@@ -49,6 +49,8 @@ type 'a value_mechanism =
   | Value of 'a value
   | Is_applicable of 'a value
   | Is_not_applicable of 'a value
+  | Is_defined of 'a value
+  | Is_not_defined of 'a value
   | Sum of 'a value list
   | Product of 'a value list
   | All_of of 'a value list

@@ -172,7 +172,10 @@ and find_references_in_value (only_in_chainable : bool)
           Pos.mk ~pos (ref_name, context_stack) )
   | Shared_ast.Value v ->
       find_references v
-  | Shared_ast.Is_applicable v | Shared_ast.Is_not_applicable v ->
+  | Shared_ast.Is_applicable v
+  | Shared_ast.Is_not_applicable v
+  | Shared_ast.Is_defined v
+  | Shared_ast.Is_not_defined v ->
       find_references v
   | Shared_ast.Sum vs
   | Shared_ast.Product vs

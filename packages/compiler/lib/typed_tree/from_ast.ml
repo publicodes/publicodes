@@ -64,6 +64,10 @@ and transform_mechanism_value (node, pos) =
       transform_is_applicable ~pos value
   | Shared_ast.Is_not_applicable value ->
       transform_is_not_applicable ~pos value
+  | Shared_ast.Is_defined value ->
+      transform_is_defined ~pos value
+  | Shared_ast.Is_not_defined value ->
+      transform_is_not_defined ~pos value
 
 and unfold_chainable_mechanism ~init mechanisms =
   mechanisms
@@ -257,6 +261,18 @@ and transform_is_applicable ~pos value =
   let p = mk ~pos in
   let value = transform_value value in
   Eval_tree.(p (binop_neq ~pos value (p const_not_applicable)))
+
+and transform_is_not_defined ~pos value =
+  let p = mk ~pos in
+  let value = transform_value value in
+  Eval_tree.(p (unop_is_not_defined ~pos value))
+
+and transform_is_defined ~pos value =
+  let p = mk ~pos in
+  let value = transform_value value in
+  (* check if value is defined with "no" unop_is_not_defined *)
+  Eval_tree.(
+    p (binop_eq ~pos (p (unop_is_not_defined ~pos value)) (p const_false)) )
 
 and transform_typ t value =
   let pos = Pos.pos t in

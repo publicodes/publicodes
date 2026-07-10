@@ -8,16 +8,19 @@ let authorized_keys =
   Parse_meta.reserved_meta
   @ Hashtbl.keys Parse_mechanisms.chainable_mechanisms
   @ Hashtbl.keys Parse_mechanisms.value_mechanisms
-  @ ["remplace"; "avec"; "rend non applicable"; "importer"]
+  @ [ "remplace"
+    ; "avec"
+    ; "rend non applicable"
+    ; "importer"
+    ; "est défini"
+    ; "est non défini"
+    ; "est applicable"
+    ; "est non applicable" ]
   (* To implement *)
   @ [ "barème"
     ; "grille"
     ; "inversion numérique"
     ; "moyenne"
-    ; "est défini"
-    ; "est applicable"
-    ; "est non applicable"
-    ; "est non défini"
     ; "taux progressif"
     ; "durée"
     ; "texte"

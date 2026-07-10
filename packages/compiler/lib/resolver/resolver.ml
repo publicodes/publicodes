@@ -152,6 +152,12 @@ let resolve_rule ~rule_names rule =
       | Is_not_applicable value ->
           let+ value = map_value value in
           Is_not_applicable value
+      | Is_defined value ->
+          let+ value = map_value value in
+          Is_defined value
+      | Is_not_defined value ->
+          let+ value = map_value value in
+          Is_not_defined value
       | Not_defined ->
           return Not_defined
       | Variations (variations, else_) ->
