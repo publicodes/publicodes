@@ -170,9 +170,11 @@ and find_references_in_value (only_in_chainable : bool)
   | Expr expr ->
       find_references_in_expr expr
       |> List.map ~f:(Mark.map ~f:(fun ref_name -> (ref_name, context_stack)))
-  | Value v ->
-      find_references v
-  | Is_applicable v | Is_not_applicable v ->
+  | Value v
+  | Is_defined v
+  | Is_not_defined v
+  | Is_applicable v
+  | Is_not_applicable v ->
       find_references v
   | Average vs
   | Sum vs
