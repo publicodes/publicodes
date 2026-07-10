@@ -164,8 +164,7 @@
 }
 
 .publicodes-chained-mechanisms,
-.publicodes-mechanism__list,
-.publicodes-variations > div {
+.publicodes-mechanism__list {
 	display: flex;
 	flex-direction: column;
 	gap: var(--publicodes-gap);
@@ -198,7 +197,6 @@
 .publicodes-variations__else {
 	display: grid;
 	grid-template-columns: auto 1fr;
-	gap: var(--publicodes-gap);
 	align-items: baseline;
 	padding-block: calc(var(--publicodes-gap) / 2);
 }
