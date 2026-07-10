@@ -1,8 +1,4 @@
-import {
-	formatValue,
-	type Trace,
-	type FormatType,
-} from '@publicodes/autodoc-core'
+import { formatValue, type Trace } from '@publicodes/autodoc-core'
 import {
 	useId,
 	useRef,
@@ -13,6 +9,7 @@ import {
 	useContext,
 } from 'react'
 import type * as Ast from '@publicodes/autodoc-core/ast'
+import { AutodocButtonNavigationContext } from './AutodocNavigationContext'
 import { AutodocEvaluationTraceContext } from './AutodocEvaluationTraceContext'
 
 const TYPE_LABELS: Record<string, string> = {
@@ -51,6 +48,9 @@ export function MechanismBox({
 	const show = useCallback(
 		(e: MouseEvent) => {
 			if (!label) return
+			// FIXME: on perd la valeur lors du hover lorsque l'on a un contexte
+			// global.
+			console.log('box:', contextStackId)
 			const target = e.target as Element
 			if (target.closest('.publicodes-mechanism') !== boxRef.current) return
 			if (timerRef.current || popoverRef.current?.matches(':popover-open'))
