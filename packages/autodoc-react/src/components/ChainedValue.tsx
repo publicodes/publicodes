@@ -12,6 +12,7 @@ export interface ChainedValueProps {
 export function ChainedValue({ node, trace }: ChainedValueProps): ReactElement {
 	return (
 		<>
+			<ValueMechanism mechanism={node.value_mechanism} trace={trace} />
 			{node.chained_mechanisms.length > 0 && (
 				<div role="list" className="publicodes-chained-mechanisms">
 					{node.chained_mechanisms.map((mechanism, i) => (
@@ -21,7 +22,6 @@ export function ChainedValue({ node, trace }: ChainedValueProps): ReactElement {
 					))}
 				</div>
 			)}
-			<ValueMechanism mechanism={node.value_mechanism} trace={trace} />
 		</>
 	)
 }

@@ -13,6 +13,11 @@ const OPERATOR: Record<string, string> = {
 	product: '×',
 }
 
+const LABELS: Record<string, string> = {
+	sum: 'somme',
+	product: 'produit',
+}
+
 export function FoldMechanism({
 	mechanism,
 	trace,
@@ -20,15 +25,20 @@ export function FoldMechanism({
 	const operator = OPERATOR[mechanism.kind]
 
 	return (
-		<div role="list" className="publicodes-mechanism__list">
-			{mechanism.parameters.map((item, i) => (
-				<div role="listitem" key={i}>
-					{i > 0 && (
-						<span className="publicodes-fold__operator">{operator}</span>
-					)}
-					<ChainedValue node={item} trace={trace} />
-				</div>
-			))}
-		</div>
+		<>
+			<span className="publicodes-mechanism__label">
+				{LABELS[mechanism.kind]}
+			</span>
+			<div role="list" className="publicodes-mechanism__list">
+				{mechanism.parameters.map((item, i) => (
+					<div role="listitem" key={i}>
+						{i > 0 && (
+							<span className="publicodes-fold__operator">{operator}</span>
+						)}
+						<ChainedValue node={item} trace={trace} />
+					</div>
+				))}
+			</div>
+		</>
 	)
 }

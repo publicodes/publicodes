@@ -23,31 +23,35 @@ const ref = (id: string, name: string): ReferenceExpression => ({
 const num = (id: string, value: number, unit?: string): ConstantExpression => ({
 	kind: 'constant',
 	parameters: {
-		kind: 'number',
+		kind: 'const_number',
 		value,
 		unit,
 	},
 	id,
+	type: 'number',
+	unit,
 	position: pos(),
 })
 
 const txt = (id: string, value: string): ConstantExpression => ({
 	kind: 'constant',
 	parameters: {
-		kind: 'text',
+		kind: 'const_text',
 		value,
 	},
 	id,
+	type: 'text',
 	position: pos(),
 })
 
 const bul = (id: string, value: boolean): ConstantExpression => ({
 	kind: 'constant',
 	parameters: {
-		kind: 'boolean',
+		kind: 'const_boolean',
 		value,
 	},
 	id,
+	type: 'boolean',
 	position: pos(),
 })
 
@@ -708,10 +712,11 @@ export const constantBooleanExpressionStub = bul('cst-true', true)
 export const constantDateExpressionStub = {
 	kind: 'constant' as const,
 	parameters: {
-		kind: 'date' as const,
+		kind: 'const_date' as const,
 		value: '2024-01-15',
 	},
 	id: 'cst-date',
+	type: 'date' as const,
 	position: pos(),
 } satisfies ConstantExpression
 

@@ -2,23 +2,26 @@ import { Uid } from '@publicodes/autodoc-core/ast'
 import type { ContextStackId } from '@publicodes/autodoc-core'
 import { createContext, PropsWithChildren, useState } from 'react'
 
-export interface AutodocContext {
+export interface AutodocEvaluationTraceContext {
 	push: (id: Uid) => void
 	pop: () => Uid | undefined
 	contextStackId: ContextStackId
 }
 
-export const AutodocContext = createContext<AutodocContext>({
-	contextStackId: '',
-	push: (_) => {},
-	pop: () => undefined,
-})
+export const AutodocEvaluationTraceContext =
+	createContext<AutodocEvaluationTraceContext>({
+		contextStackId: '',
+		push: (_) => {},
+		pop: () => undefined,
+	})
 
-export function AutodocProvider({ children }: PropsWithChildren): JSX.Element {
+export function AutodocEvaluationTraceProvider({
+	children,
+}: PropsWithChildren): JSX.Element {
 	const [contextStack, setContextStack] = useState<Uid[]>([''])
 
 	return (
-		<AutodocContext.Provider
+		<AutodocEvaluationTraceContext.Provider
 			value={{
 				push: (id: Uid) => setContextStack([...contextStack, id]),
 				pop: () => {
@@ -33,6 +36,6 @@ export function AutodocProvider({ children }: PropsWithChildren): JSX.Element {
 			}}
 		>
 			{children}
-		</AutodocContext.Provider>
+		</AutodocEvaluationTraceContext.Provider>
 	)
 }

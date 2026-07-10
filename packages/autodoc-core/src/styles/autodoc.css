@@ -18,17 +18,18 @@
 	--publicodes-color-gray: #868e96;
 
 	--publicodes-text: #212529;
+	--publicodes-bg: #ffffff;
 	--publicodes-neutral: #495057;
 	--publicodes-link: #1c7ed6;
 	--publicodes-hover-bg: rgba(0, 0, 0, 0.035);
-	--publicodes-tooltip-bg: #1a1b1e;
-	--publicodes-tooltip-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
 	--publicodes-gap: 0.4rem;
 	--publicodes-indent: 1rem;
 	--publicodes-radius: 4px;
 	--publicodes-border-width: 2px;
 	--publicodes-font-size: 1rem;
+	--publicodes-font-size-value: 0.9rem;
+	--publicodes-line-height-expression: 1.6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,10 +48,10 @@
 		--publicodes-color-gray: #adb5bd;
 
 		--publicodes-text: #e9ecef;
+		--publicodes-bg: #1a1b1e;
 		--publicodes-neutral: #ced4da;
 		--publicodes-link: #74c0fc;
 		--publicodes-hover-bg: rgba(255, 255, 255, 0.05);
-		--publicodes-tooltip-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 	}
 }
 
@@ -106,7 +107,6 @@
 	font-size: var(--publicodes-font-size);
 	color: var(--publicodes-text);
 	border-left: var(--publicodes-border-width) solid var(--publicodes-accent);
-	margin: var(--publicodes-gap) 0;
 }
 .publicodes-mechanism.publicodes-expr {
 	display: inline;
@@ -159,6 +159,9 @@
 	text-underline-offset: 0.2em;
 	margin-right: var(--publicodes-gap);
 }
+.publicodes-chained-mechanisms {
+	margin-bottom: var(--publicodes-gap);
+}
 
 .publicodes-chained-mechanisms,
 .publicodes-mechanism__list,
@@ -187,7 +190,6 @@
 .publicodes-fold__operator {
 	grid-column: 1;
 	text-align: center;
-	font-family: var(--publicodes-font-mono);
 	font-weight: 700;
 	color: var(--publicodes-neutral);
 }
@@ -198,6 +200,7 @@
 	grid-template-columns: auto 1fr;
 	gap: var(--publicodes-gap);
 	align-items: baseline;
+	padding-block: calc(var(--publicodes-gap) / 2);
 }
 .publicodes-variations__else {
 	padding-top: var(--publicodes-gap);
@@ -211,8 +214,12 @@
 	grid-column: 2;
 }
 
-.publicodes-expression {
+.publicodes-expression,
+.publicodes-fold__operator,
+.publicodes-mechanism__key {
 	font-family: var(--publicodes-font-mono);
+	font-size: var(--publicodes-font-size-value);
+	line-height: var(--publicodes-line-height-expression);
 }
 
 .publicodes-expression--ref {
@@ -221,6 +228,12 @@
 }
 .publicodes-expression--ref:hover {
 	text-decoration: underline;
+}
+button.publicodes-expression--ref {
+	background: none;
+	border: none;
+	padding: 0;
+	text-align: inherit;
 }
 .publicodes-expression__operator,
 .publicodes-expression--paren {
@@ -232,17 +245,24 @@
 
 .publicodes-type-tooltip {
 	position: absolute;
-	position-area: top right;
+	position-area: top left;
+	position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
 	inset: auto;
 	margin: 0 0 4px 0;
 	padding: 0.15em 0.5em;
-	background: var(--publicodes-tooltip-bg);
-	color: #fff;
+	background: var(--publicodes-text);
+	color: var(--publicodes-bg);
+	border: none;
 	border-radius: var(--publicodes-radius);
-	box-shadow: var(--publicodes-tooltip-shadow);
+	box-shadow: 0 1px 4px color-mix(in srgb, var(--publicodes-text) 20%, transparent);
 	font-family: var(--publicodes-font-sans);
 	font-size: 0.75em;
 	white-space: nowrap;
+}
+
+.publicodes-trace-value {
+	font-family: var(--publicodes-font-mono);
+	opacity: 0.7;
 }
 
 .publicodes-mechanism:not(:has(.publicodes-mechanism:hover)):hover {

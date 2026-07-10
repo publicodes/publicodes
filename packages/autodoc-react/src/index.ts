@@ -12,4 +12,14 @@ export type { ValueMechanismProps } from './components/ValueMechanism'
 export { Expression } from './components/expressions/Expression'
 export type { ExpressionProps } from './components/expressions/Expression'
 
-export { AutodocProvider } from './components/AutodocContext'
+export { AutodocEvaluationTraceProvider } from './components/AutodocEvaluationTraceContext'
+export {
+	AutodocLinkNavigationContext,
+	AutodocButtonNavigationContext,
+} from './components/AutodocNavigationContext'
+export type {
+	AutodocLinkNavigationContext as AutodocLinkNavigationContextType,
+	AutodocButtonNavigationContext as AutodocButtonNavigationContextType,
+} from './components/AutodocNavigationContext'
+export { AutodocRuleContext } from './components/AutodocRuleContext'
+export type { AutodocRuleContext as AutodocRuleContextType } from './components/AutodocRuleContext'

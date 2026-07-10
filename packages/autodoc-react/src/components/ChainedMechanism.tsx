@@ -2,7 +2,6 @@ import type * as Ast from '@publicodes/autodoc-core/ast'
 import type { Trace } from '@publicodes/autodoc-core'
 import { ContextMechanism } from './mechanisms/ContextMechanism'
 import { ApplicabilityMechanism } from './mechanisms/ApplicabilityMechanism'
-import { TypeMechanism } from './mechanisms/TypeMechanism'
 import { DefaultMechanism } from './mechanisms/DefaultMechanism'
 import { BoundMechanism } from './mechanisms/BoundMechanism'
 import { RoundingMechanism } from './mechanisms/RoundingMechanism'
@@ -16,7 +15,7 @@ export interface ChainedMechanismProps {
 export function ChainedMechanism(props: ChainedMechanismProps): JSX.Element {
 	const { mechanism, trace } = props
 
-	let inner: JSX.Element
+	let inner: JSX.Element | null
 	switch (mechanism.kind) {
 		case 'context':
 			inner = <ContextMechanism mechanism={mechanism} trace={trace} />
@@ -26,7 +25,7 @@ export function ChainedMechanism(props: ChainedMechanismProps): JSX.Element {
 			inner = <ApplicabilityMechanism mechanism={mechanism} trace={trace} />
 			break
 		case 'type_def':
-			inner = <TypeMechanism mechanism={mechanism} trace={trace} />
+			inner = null
 			break
 		case 'default':
 			inner = <DefaultMechanism mechanism={mechanism} trace={trace} />
@@ -41,7 +40,8 @@ export function ChainedMechanism(props: ChainedMechanismProps): JSX.Element {
 			inner = <RoundingMechanism mechanism={mechanism} trace={trace} />
 			break
 		default:
-			return <div className="publicodes-chained-mechanism" />
+			return mechanism satisfies never
+
 	}
 
 	return (

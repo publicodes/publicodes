@@ -729,7 +729,7 @@
 										"required": ["kind", "value"],
 										"properties": {
 											"kind": {
-												"const": "number"
+												"const": "const_number"
 											},
 											"value": {
 												"type": "number"
@@ -743,7 +743,7 @@
 										"required": ["kind", "value"],
 										"properties": {
 											"kind": {
-												"const": "text"
+												"const": "const_text"
 											},
 											"value": {
 												"type": "string"
@@ -754,7 +754,7 @@
 										"required": ["kind", "value"],
 										"properties": {
 											"kind": {
-												"const": "boolean"
+												"const": "const_boolean"
 											},
 											"value": {
 												"type": "boolean"
@@ -765,7 +765,7 @@
 										"required": ["kind", "value"],
 										"properties": {
 											"kind": {
-												"const": "date"
+												"const": "const_date"
 											},
 											"value": {
 												"type": "string",
@@ -778,7 +778,7 @@
 						}
 					},
 					{
-						"$ref": "#/$defs/node_identifier"
+						"$ref": "#/$defs/compiler_metadata"
 					}
 				]
 			},

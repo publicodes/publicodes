@@ -2,7 +2,7 @@ import type * as Ast from '@publicodes/autodoc-core/ast'
 import type { Trace } from '@publicodes/autodoc-core'
 import { ChainedValue } from '../ChainedValue'
 import { useContext } from 'react'
-import { AutodocContext } from '../AutodocContext'
+import { AutodocEvaluationTraceContext } from '../AutodocEvaluationTraceContext'
 
 export interface ContextMechanismProps {
 	mechanism: Ast.ContextMechanism
@@ -13,7 +13,7 @@ export function ContextMechanism({
 	mechanism,
 	trace,
 }: ContextMechanismProps): JSX.Element {
-	const { push, pop } = useContext(AutodocContext)
+	const { push, pop } = useContext(AutodocEvaluationTraceContext)
 	return (
 		<>
 			<div>

@@ -8,7 +8,6 @@ import { AllOfMechanismPage } from './pages/AllOfMechanismPage'
 import { OneOfMechanismPage } from './pages/OneOfMechanismPage'
 import { MinOfMechanismPage } from './pages/MinOfMechanismPage'
 import { MaxOfMechanismPage } from './pages/MaxOfMechanismPage'
-import { NotDefinedMechanismPage } from './pages/NotDefinedMechanismPage'
 import { VariationsMechanismPage } from './pages/VariationsMechanismPage'
 import { ApplicableIfMechanismPage } from './pages/ApplicableIfMechanismPage'
 import { NotApplicableIfMechanismPage } from './pages/NotApplicableIfMechanismPage'
@@ -36,7 +35,6 @@ const PAGES = {
 	one_of: { label: 'OneOfMechanism', component: OneOfMechanismPage },
 	min_of: { label: 'MinOfMechanism', component: MinOfMechanismPage },
 	max_of: { label: 'MaxOfMechanism', component: MaxOfMechanismPage },
-	not_defined: { label: 'NotDefined', component: NotDefinedMechanismPage },
 	variations: {
 		label: 'VariationsMechanism',
 		component: VariationsMechanismPage,

@@ -9,10 +9,11 @@ import {
 	useCallback,
 	type ReactNode,
 	type CSSProperties,
+	type MouseEvent,
 	useContext,
 } from 'react'
 import type * as Ast from '@publicodes/autodoc-core/ast'
-import { AutodocContext } from './AutodocContext'
+import { AutodocEvaluationTraceContext } from './AutodocEvaluationTraceContext'
 
 const TYPE_LABELS: Record<string, string> = {
 	number: 'nombre',
@@ -42,23 +43,35 @@ export function MechanismBox({
 }: MechanismBoxProps): JSX.Element {
 	const id = useId()
 	const name = `--tt-${id.replaceAll(':', '-')}`
+	const boxRef = useRef<HTMLDivElement>(null)
 	const popoverRef = useRef<HTMLDivElement>(null)
 	const timerRef = useRef<ReturnType<typeof setTimeout>>()
 	const label = formatType(mechanism)
 
-	const show = useCallback(() => {
-		if (!label) return
-		timerRef.current = setTimeout(() => {
-			popoverRef.current?.showPopover()
-		}, 300)
-	}, [label])
+	const show = useCallback(
+		(e: MouseEvent) => {
+			if (!label) return
+			const target = e.target as Element
+			if (target.closest('.publicodes-mechanism') !== boxRef.current) return
+			if (timerRef.current || popoverRef.current?.matches(':popover-open'))
+				return
+			timerRef.current = setTimeout(() => {
+				timerRef.current = undefined
+				popoverRef.current?.showPopover()
+			}, 300)
+		},
+		[label],
+	)
 
-	const hide = useCallback(() => {
+	const hide = useCallback((e: MouseEvent) => {
+		const related = e.relatedTarget as Node | null
+		if (related && boxRef.current?.contains(related)) return
 		clearTimeout(timerRef.current)
+		timerRef.current = undefined
 		popoverRef.current?.hidePopover()
 	}, [])
 
-	const { contextStackId } = useContext(AutodocContext)
+	const { contextStackId } = useContext(AutodocEvaluationTraceContext)
 
 	return (
 		<>
@@ -81,10 +94,11 @@ export function MechanismBox({
 				</div>
 			)}
 			<div
+				ref={boxRef}
 				className={`publicodes-mechanism publicodes-${mechanism.kind}`}
 				style={label ? ({ anchorName: name } as CSSProperties) : undefined}
-				onMouseEnter={show}
-				onMouseLeave={hide}
+				onMouseOver={show}
+				onMouseOut={hide}
 			>
 				{children}
 			</div>
