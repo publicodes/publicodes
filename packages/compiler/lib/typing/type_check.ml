@@ -495,9 +495,10 @@ and check_value_mechanism (value : Ast.typing_marked_value_mechanism) ~ctx =
       check_expression expr ~ctx:{ctx with parent_typ= Some mark.typ}
   | Value value ->
       check_value value ~ctx:{ctx with parent_typ= Some mark.typ}
-  | Is_applicable _ | Is_not_applicable _ ->
+  | Is_applicable _ | Is_not_applicable _ | Is_defined _ | Is_not_defined _ ->
       (* TODO: handle this when Not_applicable is a type *)
-      Output.return ()
+      let bool_typ = Ast.mk_bool ~pos in
+      check_union bool_typ mark.typ
   | Average [] | Sum [] | Min_of [] | Max_of [] | Product [] ->
       Output.return ()
   | Average values | Sum values | Min_of values | Max_of values ->
