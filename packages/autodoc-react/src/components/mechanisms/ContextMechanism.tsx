@@ -1,8 +1,6 @@
 import type * as Ast from '@publicodes/autodoc-core/ast'
 import type { Trace } from '@publicodes/autodoc-core'
 import { ChainedValue } from '../ChainedValue'
-import { useContext } from 'react'
-import { AutodocEvaluationTraceContext } from '../AutodocEvaluationTraceContext'
 
 export interface ContextMechanismProps {
 	mechanism: Ast.ContextMechanism
@@ -13,13 +11,8 @@ export function ContextMechanism({
 	mechanism,
 	trace,
 }: ContextMechanismProps): JSX.Element {
-	const { push, pop } = useContext(AutodocEvaluationTraceContext)
 	return (
 		<>
-			<div>
-				<button onClick={() => push(mechanism.id)}>Appliquer</button>
-				<button onClick={pop}>Désactiver</button>
-			</div>
 			<span className="publicodes-mechanism__label">avec le contexte</span>
 			<div role="list" className="publicodes-mechanism__list">
 				{Object.entries(mechanism.parameters).map(([key, item]) => (

@@ -1,10 +1,12 @@
 import { PublicodeAST } from '@publicodes/autodoc-core/ast'
 import {
 	ChainedValue,
-	AutodocEvaluationTraceProvider,
+	AutodocButtonNavigationContext,
+	AutodocRuleContext,
 } from '@publicodes/autodoc-react'
 import tjmAutodoc from '../../../../packages/compiler/examples/simple-TJM/model.publicodes.json'
 import tjmRules from '../../../../packages/compiler/examples/simple-TJM/model.publicodes.js'
+import { useState } from 'react'
 
 let doc = tjmAutodoc as PublicodeAST
 let trace = tjmRules['exemples . CA élevé'].evaluate(
@@ -15,15 +17,38 @@ let trace = tjmRules['exemples . CA élevé'].evaluate(
 ).trace
 
 export function SimpleTJMExamplePage() {
+	const [contextStackId, setContextStackId] = useState('')
+
 	return (
-		<AutodocEvaluationTraceProvider>
+		<AutodocRuleContext.Provider value={{ doc }}>
 			<h1>Exemple : simple TJM</h1>
-			{Object.entries(doc).map(([key, value]) => (
+			{contextStackId !== '' ?
+				<div>
+					Evaluation dans le contexte : <code>{contextStackId}</code>
+					<button onClick={() => setContextStackId('')}>Supprimer</button>
+				</div>
+			:	<></>}
+			{Object.entries(doc).map(([rule, value]) => (
 				<div className="demo-block">
-					<strong>{key}</strong>
-					<ChainedValue key={key} node={value} trace={trace} />
+					<strong>{rule}</strong>
+
+					<AutodocButtonNavigationContext.Provider
+						value={{
+							contextStackId,
+							rule: rule,
+							onNavigate: (ruleName, contextStackId) => {
+								const el = document.getElementById(`rule-${ruleName}`)
+								if (el) {
+									el.scrollIntoView({ behavior: 'smooth' })
+								}
+								setContextStackId(contextStackId)
+							},
+						}}
+					>
+						<ChainedValue key={rule} node={value} trace={trace} />
+					</AutodocButtonNavigationContext.Provider>
 				</div>
 			))}
-		</AutodocEvaluationTraceProvider>
+		</AutodocRuleContext.Provider>
 	)
 }
