@@ -38,7 +38,11 @@ Valid json doc :
               "kind": "constant",
               "type": "number",
               "unit": "€",
-              "parameters": { "kind": "number", "value": 10.0, "unit": "€" },
+              "parameters": {
+                "kind": "const_number",
+                "value": 10.0,
+                "unit": "€"
+              },
               "id": "8d47d3ca5b989cd22f6f87e097e899de",
               "position": {
                 "file": "./ok/example/rules.publicodes",
@@ -137,7 +141,7 @@ Valid json doc :
                         "kind": "constant",
                         "type": "number",
                         "unit": "€",
-                        "parameters": { "kind": "number", "value": 30.0 },
+                        "parameters": { "kind": "const_number", "value": 30.0 },
                         "id": "595b0c17f535d045274041b9a0a1855a",
                         "position": {
                           "file": "./ok/example/rules.publicodes",
@@ -231,7 +235,7 @@ Valid json doc :
           "kind": "constant",
           "type": "number",
           "unit": "€",
-          "parameters": { "kind": "number", "value": 55.0 },
+          "parameters": { "kind": "const_number", "value": 55.0 },
           "id": "d34862e6bd782c4198dd76069a047222",
           "position": {
             "file": "./ok/example/rules.publicodes",
@@ -293,7 +297,7 @@ Valid json doc :
                         "kind": "constant",
                         "type": "number",
                         "unit": "€",
-                        "parameters": { "kind": "number", "value": 20.0 },
+                        "parameters": { "kind": "const_number", "value": 20.0 },
                         "id": "2e80d7ac0607c370e7fd09f2aeca3896",
                         "position": {
                           "file": "./ok/example/rules.publicodes",
@@ -328,7 +332,7 @@ Valid json doc :
                     "type": "number",
                     "unit": "€",
                     "parameters": {
-                      "kind": "number",
+                      "kind": "const_number",
                       "value": 20.0,
                       "unit": "€"
                     },
@@ -374,7 +378,7 @@ Valid json doc :
                         "kind": "constant",
                         "type": "number",
                         "unit": "€",
-                        "parameters": { "kind": "number", "value": 5.0 },
+                        "parameters": { "kind": "const_number", "value": 5.0 },
                         "id": "15122ef90c36d657ff8ddaaaa527d85a",
                         "position": {
                           "file": "./ok/example/rules.publicodes",
@@ -409,7 +413,7 @@ Valid json doc :
                     "type": "number",
                     "unit": "€",
                     "parameters": {
-                      "kind": "number",
+                      "kind": "const_number",
                       "value": 5.0,
                       "unit": "€"
                     },
@@ -440,7 +444,7 @@ Valid json doc :
                 "kind": "constant",
                 "type": "number",
                 "unit": "€",
-                "parameters": { "kind": "number", "value": 0.0 },
+                "parameters": { "kind": "const_number", "value": 0.0 },
                 "id": "35695be255c34515f1808225a01c09c8",
                 "position": {
                   "file": "./ok/example/rules.publicodes",
@@ -686,7 +690,7 @@ Valid json doc :
                   "kind": "constant",
                   "type": "number",
                   "unit": "€",
-                  "parameters": { "kind": "number", "value": 2.0 },
+                  "parameters": { "kind": "const_number", "value": 2.0 },
                   "id": "c02ec14716102dac6e9109832a512303",
                   "position": {
                     "file": "./ok/example/rules.publicodes",
@@ -712,7 +716,7 @@ Valid json doc :
                   "kind": "constant",
                   "type": "number",
                   "unit": "€",
-                  "parameters": { "kind": "number", "value": 3.0 },
+                  "parameters": { "kind": "const_number", "value": 3.0 },
                   "id": "952d97e6dede9eaf7d5408d9a5cd4275",
                   "position": {
                     "file": "./ok/example/rules.publicodes",
@@ -738,7 +742,7 @@ Valid json doc :
                   "kind": "constant",
                   "type": "number",
                   "unit": "€",
-                  "parameters": { "kind": "number", "value": 9.0 },
+                  "parameters": { "kind": "const_number", "value": 9.0 },
                   "id": "48bcd184f7ead186da3d6c15a1aeaeaf",
                   "position": {
                     "file": "./ok/example/rules.publicodes",
@@ -776,7 +780,7 @@ Valid json doc :
           "kind": "constant",
           "type": "number",
           "unit": "€",
-          "parameters": { "kind": "number", "value": 5.0 },
+          "parameters": { "kind": "const_number", "value": 5.0 },
           "id": "58dc14caf290f5005a19962c8f8a9a72",
           "position": {
             "file": "./ok/example/rules.publicodes",
@@ -821,7 +825,7 @@ Valid json doc :
               "kind": "constant",
               "type": "number",
               "unit": "aucune",
-              "parameters": { "kind": "number", "value": 30.0 },
+              "parameters": { "kind": "const_number", "value": 30.0 },
               "id": "64a1b24a77b882891a31680e5fa89462",
               "position": {
                 "file": "./ok/example/rules.publicodes",
@@ -874,7 +878,7 @@ Valid json doc :
                     "kind": "constant",
                     "type": "number",
                     "unit": "€",
-                    "parameters": { "kind": "number", "value": 20.0 },
+                    "parameters": { "kind": "const_number", "value": 20.0 },
                     "id": "dbde4e44c57517873c5abcd454e180b1",
                     "position": {
                       "file": "./ok/example/rules.publicodes",
@@ -930,7 +934,7 @@ Valid json doc :
               "kind": "constant",
               "type": "number",
               "unit": "aucune",
-              "parameters": { "kind": "number", "value": 30.0 },
+              "parameters": { "kind": "const_number", "value": 30.0 },
               "id": "7cecdb85484bd252b76704352e3fda06",
               "position": {
                 "file": "./ok/example/rules.publicodes",
@@ -983,7 +987,7 @@ Valid json doc :
                     "kind": "constant",
                     "type": "number",
                     "unit": "€",
-                    "parameters": { "kind": "number", "value": 20.0 },
+                    "parameters": { "kind": "const_number", "value": 20.0 },
                     "id": "3c6a84a1c49d3db2d16126e0e2e54850",
                     "position": {
                       "file": "./ok/example/rules.publicodes",
@@ -1063,7 +1067,7 @@ Valid json doc :
                 "kind": "constant",
                 "type": "number",
                 "unit": "aucune",
-                "parameters": { "kind": "number", "value": 20.0 },
+                "parameters": { "kind": "const_number", "value": 20.0 },
                 "id": "6c6935e8b5db5bc024ab8110014d0f87",
                 "position": {
                   "file": "./ok/example/rules.publicodes",
@@ -1111,7 +1115,7 @@ Valid json doc :
               "kind": "constant",
               "type": "number",
               "unit": "aucune",
-              "parameters": { "kind": "number", "value": 4.0 },
+              "parameters": { "kind": "const_number", "value": 4.0 },
               "id": "e4e5a0e71cca211236e660570626c448",
               "position": {
                 "file": "./ok/example/rules.publicodes",
@@ -1149,7 +1153,7 @@ Valid json doc :
                 "kind": "constant",
                 "type": "number",
                 "unit": "aucune",
-                "parameters": { "kind": "number", "value": 2.3 },
+                "parameters": { "kind": "const_number", "value": 2.3 },
                 "id": "1a10aa3f0e1d172300c290beacc10145",
                 "position": {
                   "file": "./ok/example/rules.publicodes",
@@ -1197,7 +1201,7 @@ Valid json doc :
               "kind": "constant",
               "type": "number",
               "unit": "aucune",
-              "parameters": { "kind": "number", "value": 2.0 },
+              "parameters": { "kind": "const_number", "value": 2.0 },
               "id": "703e26ad78b10a053b188e9c85f3e4cb",
               "position": {
                 "file": "./ok/example/rules.publicodes",
@@ -1235,7 +1239,7 @@ Valid json doc :
                 "kind": "constant",
                 "type": "number",
                 "unit": "aucune",
-                "parameters": { "kind": "number", "value": 3.0 },
+                "parameters": { "kind": "const_number", "value": 3.0 },
                 "id": "dcbcf10c6c7c9d00bd19cfbc4eca5b3c",
                 "position": {
                   "file": "./ok/example/rules.publicodes",
@@ -1295,7 +1299,7 @@ Valid json doc :
                 "kind": "constant",
                 "type": "number",
                 "unit": "aucune",
-                "parameters": { "kind": "number", "value": 2.3 },
+                "parameters": { "kind": "const_number", "value": 2.3 },
                 "id": "5b1eb71254712afe6ff916bba64fbdee",
                 "position": {
                   "file": "./ok/example/rules.publicodes",
@@ -1355,7 +1359,7 @@ Valid json doc :
                 "kind": "constant",
                 "type": "number",
                 "unit": "aucune",
-                "parameters": { "kind": "number", "value": 2.3 },
+                "parameters": { "kind": "const_number", "value": 2.3 },
                 "id": "429f61faaab2e7b2b6e0db6ae580e223",
                 "position": {
                   "file": "./ok/example/rules.publicodes",
@@ -1415,7 +1419,7 @@ Valid json doc :
                 "kind": "constant",
                 "type": "number",
                 "unit": "aucune",
-                "parameters": { "kind": "number", "value": 2.3 },
+                "parameters": { "kind": "const_number", "value": 2.3 },
                 "id": "7a9dbfffe97119be7c1deb558ba61287",
                 "position": {
                   "file": "./ok/example/rules.publicodes",
@@ -1692,7 +1696,7 @@ Correctly handle types:
                         "type": "number",
                         "unit": "%",
                         "parameters": {
-                          "kind": "number",
+                          "kind": "const_number",
                           "value": 10.0,
                           "unit": "%"
                         },
@@ -1754,7 +1758,7 @@ Correctly handle types:
                       "type": "number",
                       "unit": "€",
                       "parameters": {
-                        "kind": "number",
+                        "kind": "const_number",
                         "value": 100.0,
                         "unit": "€"
                       },
@@ -1815,7 +1819,7 @@ Correctly handle types:
               "parameters": {
                 "kind": "constant",
                 "type": "boolean",
-                "parameters": { "kind": "bool", "value": false },
+                "parameters": { "kind": "const_boolean", "value": false },
                 "id": "f4cf7c38669cad052b87198e2f365607",
                 "position": {
                   "file": "./ok/simple-tjm/rules.publicodes",
@@ -1863,7 +1867,7 @@ Correctly handle types:
               "kind": "constant",
               "type": "number",
               "unit": "€",
-              "parameters": { "kind": "number", "value": 10.0 },
+              "parameters": { "kind": "const_number", "value": 10.0 },
               "id": "0647719c3836a1f7ebaf8096f92d83a3",
               "position": {
                 "file": "./ok/simple-tjm/rules.publicodes",

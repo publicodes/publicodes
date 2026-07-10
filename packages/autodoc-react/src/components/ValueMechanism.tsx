@@ -6,7 +6,6 @@ import { ApplicabilityMechanism } from './mechanisms/ApplicabilityMechanism'
 import { FoldMechanism } from './mechanisms/FoldMechanism'
 import { CombinationMechanism } from './mechanisms/CombinationMechanism'
 import { BoundaryMechanism } from './mechanisms/BoundaryMechanism'
-import { NotDefined } from './mechanisms/NotDefined'
 import { VariationsMechanism } from './mechanisms/VariationsMechanism'
 import { MechanismBox } from './MechanismBox'
 
@@ -18,7 +17,7 @@ export interface ValueMechanismProps {
 export function ValueMechanism(props: ValueMechanismProps): JSX.Element {
 	const { mechanism, trace } = props
 
-	let inner: JSX.Element
+	let inner: JSX.Element | null
 	switch (mechanism.kind) {
 		case 'expr':
 			inner = <Expression expression={mechanism.parameters} trace={trace} />
@@ -43,7 +42,7 @@ export function ValueMechanism(props: ValueMechanismProps): JSX.Element {
 			inner = <BoundaryMechanism mechanism={mechanism} trace={trace} />
 			break
 		case 'not_defined':
-			inner = <NotDefined mechanism={mechanism} trace={trace} />
+			inner = null
 			break
 		case 'variations':
 			inner = <VariationsMechanism mechanism={mechanism} trace={trace} />

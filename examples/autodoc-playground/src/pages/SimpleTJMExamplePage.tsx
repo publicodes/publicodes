@@ -1,5 +1,8 @@
 import { PublicodeAST } from '@publicodes/autodoc-core/ast'
-import { ChainedValue, AutodocProvider } from '@publicodes/autodoc-react'
+import {
+	ChainedValue,
+	AutodocEvaluationTraceProvider,
+} from '@publicodes/autodoc-react'
 import tjmAutodoc from '../../../../packages/compiler/examples/simple-TJM/model.publicodes.json'
 import tjmRules from '../../../../packages/compiler/examples/simple-TJM/model.publicodes.js'
 
@@ -13,7 +16,7 @@ let trace = tjmRules['exemples . CA élevé'].evaluate(
 
 export function SimpleTJMExamplePage() {
 	return (
-		<AutodocProvider>
+		<AutodocEvaluationTraceProvider>
 			<h1>Exemple : simple TJM</h1>
 			{Object.entries(doc).map(([key, value]) => (
 				<div className="demo-block">
@@ -21,6 +24,6 @@ export function SimpleTJMExamplePage() {
 					<ChainedValue key={key} node={value} trace={trace} />
 				</div>
 			))}
-		</AutodocProvider>
+		</AutodocEvaluationTraceProvider>
 	)
 }
