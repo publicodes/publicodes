@@ -152,9 +152,9 @@
 	{%- case "exclusive_replacement" -%}
 		$exclusive_replacement({{ fmt_method(node_value.target) }}, [
 		{%- for r in node_value.replacements -%}
-		["{{ r }}", {{ fmt_method(r) }}]{%- if !loop.last -%}, {% endif -%}
+		["{{ r }}", () => {{ fmt_method(r) }}(ctx, params)]{%- if !loop.last -%}, {% endif -%}
 		{%- endfor -%}
-	], ctx, params)
+		])
 	{%- default -%}
 		>>>> Templating error: unknown rule type "{{ rule_type }}" <<<<
 	{%- endswitch -%}
