@@ -50,6 +50,12 @@ and transform_value_mechanism (value : Shared_ast.resolved_value_mechanism) :
   | Is_not_applicable value ->
       let value = transform_value value in
       Is_not_applicable value
+  | Is_defined value ->
+      let value = transform_value value in
+      Is_defined value
+  | Is_not_defined value ->
+      let value = transform_value value in
+      Is_not_defined value
   | Sum values ->
       let values = List.map values ~f:transform_value in
       Sum values
