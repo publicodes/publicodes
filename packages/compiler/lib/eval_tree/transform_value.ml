@@ -126,6 +126,10 @@ and transform_mechanism_value
       transform_is_applicable ~pos ~typ value
   | Is_not_applicable value ->
       transform_is_not_applicable ~pos ~typ value
+  | Is_defined value ->
+      transform_is_defined ~pos ~typ value
+  | Is_not_defined value ->
+      transform_is_not_defined ~pos ~typ value
 
 and unfold_chainable_mechanism ~init mechanisms =
   mechanisms
@@ -380,6 +384,17 @@ and transform_is_applicable ~pos ~typ value =
   let p = Tree.mk_value ~pos ~meta:typ in
   let value = transform value in
   Tree.(p (binop_neq ~pos value (p const_not_applicable)))
+
+and transform_is_not_defined ~pos ~typ value =
+  let p = Tree.mk_value ~pos ~meta:typ in
+  let value = transform value in
+  Tree.(p (unop_is_not_defined ~pos value))
+
+and transform_is_defined ~pos ~typ value =
+  let p = Tree.mk_value ~pos ~meta:typ in
+  let value = transform value in
+  (* check if value is defined with "no" unop_is_not_defined *)
+  Tree.(p (binop_eq ~pos (p (unop_is_not_defined ~pos value)) (p const_false)))
 
 and transform_round ~pos ~typ round value =
   let p = Tree.mk_value ~pos ~meta:typ in

@@ -60,7 +60,11 @@ let from_rule_def (rule_def : Shared_ast.resolved_rule_def) : t list =
       (value : (Rule_name.t, Mark.pos_mark) Shared_ast.naked_value) acc : t list
       =
     match Mark.remove value.value with
-    | Shared_ast.Value v | Is_applicable v | Is_not_applicable v ->
+    | Shared_ast.Value v
+    | Is_applicable v
+    | Is_not_applicable v
+    | Is_defined v
+    | Is_not_defined v ->
         get_contexts acc v
     | Variations (variations, else_) ->
         let contexts_in_variations =

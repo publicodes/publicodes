@@ -70,6 +70,12 @@ and to_value_mechanism (value : Ast.typing_value_mechanism) :
   | Is_not_applicable value ->
       let+ value = to_value value in
       Shared_ast.Is_not_applicable value
+  | Is_defined value ->
+      let+ value = to_value value in
+      Shared_ast.Is_defined value
+  | Is_not_defined value ->
+      let+ value = to_value value in
+      Shared_ast.Is_not_defined value
   | Sum values ->
       let+ values = to_values values in
       Shared_ast.Sum values
