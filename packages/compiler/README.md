@@ -2,6 +2,8 @@
 
 The Publicodes compiler.
 
+foo
+
 ## Usage
 
 Currently, the best way to use the compiler is via the
