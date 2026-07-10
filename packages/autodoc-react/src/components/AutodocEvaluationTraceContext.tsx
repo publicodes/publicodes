@@ -1,38 +1,38 @@
 import { Uid } from '@publicodes/autodoc-core/ast'
 import type { ContextStackId } from '@publicodes/autodoc-core'
-import { createContext, PropsWithChildren, useState } from 'react'
+import { createContext, PropsWithChildren, useContext } from 'react'
+import { AutodocButtonNavigationContext } from './AutodocNavigationContext'
 
 export interface AutodocEvaluationTraceContext {
-	push: (id: Uid) => void
-	pop: () => Uid | undefined
 	contextStackId: ContextStackId
 }
 
 export const AutodocEvaluationTraceContext =
 	createContext<AutodocEvaluationTraceContext>({
 		contextStackId: '',
-		push: (_) => {},
-		pop: () => undefined,
 	})
 
 export function AutodocEvaluationTraceProvider({
+	contextId,
 	children,
-}: PropsWithChildren): JSX.Element {
-	const [contextStack, setContextStack] = useState<Uid[]>([''])
+}: PropsWithChildren<{ contextId?: Uid }>): JSX.Element {
+	const { contextStackId: evaluationContextStackId } = useContext(
+		AutodocEvaluationTraceContext,
+	)
+	const navContext = useContext(AutodocButtonNavigationContext)
+
+	const contextStackId =
+		evaluationContextStackId === '' && navContext ?
+			navContext.contextStackId
+		:	evaluationContextStackId
+
+	console.log('contextStackId:', contextStackId)
+	console.log('contextId:', contextId)
 
 	return (
 		<AutodocEvaluationTraceContext.Provider
 			value={{
-				push: (id: Uid) => setContextStack([...contextStack, id]),
-				pop: () => {
-					if (contextStack.length === 1) {
-						return undefined
-					}
-					const e = contextStack.pop()
-					setContextStack([...contextStack])
-					return e
-				},
-				contextStackId: contextStack.join('-'),
+				contextStackId: contextStackId + '-' + contextId,
 			}}
 		>
 			{children}

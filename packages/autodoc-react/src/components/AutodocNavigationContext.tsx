@@ -1,3 +1,4 @@
+import { ContextStackId } from '@publicodes/autodoc-core'
 import type { ReactNode, ComponentType } from 'react'
 import { createContext } from 'react'
 
@@ -9,8 +10,9 @@ export interface AutodocLinkNavigationContext {
 }
 
 export interface AutodocButtonNavigationContext {
-	currentRule: string
-	onNavigate: (ruleName: string) => void
+	rule: string
+	contextStackId: ContextStackId
+	onNavigate: (rule: string, contextStackId: ContextStackId) => void
 }
 
 export const AutodocLinkNavigationContext =

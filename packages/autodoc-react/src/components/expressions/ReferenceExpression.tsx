@@ -2,11 +2,9 @@ import type * as Ast from '@publicodes/autodoc-core/ast'
 import type { Trace } from '@publicodes/autodoc-core'
 import { getRefDisplayName } from '@publicodes/autodoc-core'
 import { useContext } from 'react'
-import {
-	AutodocLinkNavigationContext,
-	AutodocButtonNavigationContext,
-} from '../AutodocNavigationContext'
+import { AutodocButtonNavigationContext } from '../AutodocNavigationContext'
 import { AutodocRuleContext } from '../AutodocRuleContext'
+import { AutodocEvaluationTraceContext } from '../AutodocEvaluationTraceContext'
 
 export interface ReferenceExpressionProps {
 	expression: Ast.ReferenceExpression
@@ -16,41 +14,26 @@ export interface ReferenceExpressionProps {
 export function ReferenceExpression({
 	expression,
 }: ReferenceExpressionProps): JSX.Element {
-	const linkNav = useContext(AutodocLinkNavigationContext)
 	const buttonNav = useContext(AutodocButtonNavigationContext)
 	const ruleCtx = useContext(AutodocRuleContext)
+	const { contextStackId } = useContext(AutodocEvaluationTraceContext)
 
 	const ruleName = expression.parameters
 
-	const displayName = ruleCtx
-		? getRefDisplayName(
+	const displayName =
+		buttonNav && ruleCtx ?
+			getRefDisplayName(
 				ruleName,
-				ruleCtx.currentRule,
+				buttonNav.rule,
 				ruleCtx.doc as Record<string, { title?: string }>,
 			)
-		: ruleName
-
-	if (linkNav) {
-		const { LinkComponent, basePath, getHref } = linkNav
-		const href = getHref ? getHref(ruleName) : `${basePath}/${ruleName}`
-		return (
-			<span className="publicodes-expression publicodes-expression--ref">
-				{LinkComponent ? (
-					<LinkComponent href={href}>{displayName}</LinkComponent>
-				) : (
-					<a href={href}>{displayName}</a>
-				)}
-			</span>
-		)
-			</span>
-		)
-	}
+		:	ruleName
 
 	if (buttonNav) {
 		return (
 			<button
 				className="publicodes-expression publicodes-expression--ref"
-				onClick={() => buttonNav.onNavigate(ruleName)}
+				onClick={() => buttonNav.onNavigate(ruleName, contextStackId)}
 			>
 				{displayName}
 			</button>
