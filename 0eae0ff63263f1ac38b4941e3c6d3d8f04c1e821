@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "a5a9ea44_34ed47f4",
+        "filename": "packages/compiler/lib/typed_tree/type_check.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-11T13:09:20Z",
+      "side": 1,
+      "message": "Effectivement, j\u0027ai retiré ce \"type\". On a maintenant un `Symbol of string`, même s\u0027il n\u0027est pas utilisable via un \"type\".",
+      "parentUuid": "7bdfa385_2606c32d",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 2
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "915c9989_9242183b",
         "filename": "packages/compiler/runtimes/runtime.js",
         "patchSetId": 2
@@ -54,6 +78,30 @@
       "writtenOn": "2026-06-30T15:40:26Z",
       "side": 1,
       "message": "Pourquoi utiliser les symbol typescript plutôt que les types littéraux ?",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 1
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "698e39dc_f44f513c",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-11T13:09:20Z",
+      "side": 1,
+      "message": "J\u0027ai changé ca. Au lieu de Symbol, j\u0027utilise des litéraux, des chaines de caractères, et je les types avec `@type {\"foo\"}`. Il me semble que c\u0027est comme ca qu\u0027il faut faire, mais je ne trouve pas la référence. Indique moi s\u0027il faut faire autrement. Plus tard j\u0027utiliserais `@type {\"foo\" | \"bar\"}` pour les enums.",
+      "parentUuid": "915c9989_9242183b",
       "range": {
         "startLine": 46,
         "startChar": 0,
@@ -89,6 +137,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "46840578_ff8f0a0e",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-11T13:09:20Z",
+      "side": 1,
+      "message": "Je les ais retirés du coup.",
+      "parentUuid": "915cd16c_985b1c92",
+      "range": {
+        "startLine": 58,
+        "startChar": 9,
+        "endLine": 58,
+        "endChar": 17
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "26e9468f_65db5153",
         "filename": "packages/compiler/runtimes/runtime.js",
         "patchSetId": 2
@@ -100,6 +172,30 @@
       "writtenOn": "2026-06-30T15:40:26Z",
       "side": 1,
       "message": "Il manque le type ici",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 2
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3f60e130_d1a72c6a",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-11T13:09:20Z",
+      "side": 1,
+      "message": "Comme j\u0027ai retiré ces nouveaux types, on a plus besoin de toucher à ca, exact?",
+      "parentUuid": "26e9468f_65db5153",
       "range": {
         "startLine": 64,
         "startChar": 0,
