@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0f7ad19b_23cefabd",
+        "filename": "packages/compiler/lib/typed_tree/typ.mli",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-11T13:09:25Z",
+      "side": 1,
+      "message": "Yes. Je n\u0027utilise pas de type commun entre les deux cas. Je pense pas que ce soit bien necesssaire.",
+      "parentUuid": "b49581c2_bbeb292f",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 2
+      },
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7a6c047b_8c772839",
         "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
         "patchSetId": 2
@@ -54,6 +78,30 @@
       "writtenOn": "2026-06-30T15:38:10Z",
       "side": 1,
       "message": "Le message d\u0027erreur devrait pointer la comparaison `super \u003d bien` en premier ici avant de préciser les types des deux références.",
+      "range": {
+        "startLine": 50,
+        "startChar": 10,
+        "endLine": 57,
+        "endChar": 2
+      },
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ad056ad1_f0433165",
+        "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-11T13:09:25Z",
+      "side": 1,
+      "message": "Oui je suis d\u0027accord. Mais ce n\u0027est actuellement pas faisable avec cette implémentation du type checking. Il faudrait revoir son implémentation pour améliorer ces messages.\n\nCela dit, on dois quand même pouvoir aboutir a un meilleur résultat, par exemple en gérant plus spécifiquement le cas des symbols et des enums. Je vais essayer de faire mieux.",
+      "parentUuid": "7a6c047b_8c772839",
       "range": {
         "startLine": 50,
         "startChar": 10,
@@ -89,6 +137,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "6b8892f7_b8441e7e",
+        "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-11T13:09:25Z",
+      "side": 1,
+      "message": "Oui, voir message précédent, on dois pouvoir faire mieux ici.",
+      "parentUuid": "8e52a079_e50e3455",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 56
+      },
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4e107cb3_0995f64b",
         "filename": "packages/compiler/tests/crams/compile/types.t/type_error/rules.publicodes",
         "patchSetId": 2
@@ -100,6 +172,24 @@
       "writtenOn": "2026-06-30T15:38:10Z",
       "side": 1,
       "message": "L\u0027inférence à partir de variations est top ! Est-ce que ça va jusqu\u0027à discriminer le type dans les branches de la condition (je ne m\u0027en rend pas compte à quel point ce serait compliqué) ?\n\nIl faudrait au moins rajouter des tests pour le remplace également (et réfléchir à un message d\u0027erreur compréhensible)",
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d2fd4421_98b9a813",
+        "filename": "packages/compiler/tests/crams/compile/types.t/type_error/rules.publicodes",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-11T13:09:25Z",
+      "side": 1,
+      "message": "Je suis pas sure de comprendre. Tu voudrais constater qu\u0027on itère effectivement sur une même valeur, ici `b`? Si c\u0027est ca, alors non, c\u0027est pas ce qu\u0027on fais. On énumère uniquement sur le type des `alors`.\n\nBien d\u0027accord pour les replaces. Il faudrait peut être aussi tester un cas plus complexe, avec des variations imbriquées et des références par exemple.",
+      "parentUuid": "4e107cb3_0995f64b",
       "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
