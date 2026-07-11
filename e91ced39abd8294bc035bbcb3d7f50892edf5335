@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f0ad1276_ce3e989e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-11T13:11:59Z",
+      "side": 1,
+      "message": "Il me semble que ce n\u0027est pas tout a fait exact. Par exemple c\u0027est bien \"Date\" qu\u0027on veux comme type.",
+      "revId": "e91ced39abd8294bc035bbcb3d7f50892edf5335",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
