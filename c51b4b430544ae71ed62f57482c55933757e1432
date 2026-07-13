@@ -114,6 +114,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "5be5af00_f50c14b3",
+        "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-13T13:09:13Z",
+      "side": 1,
+      "message": "Difficile d\u0027obtenir beaucoup mieux avec l\u0027algorithme actuel. J\u0027ai quand même pu améliorer la situation un tout petit peu. Par exemple en indiquant les symboles qui ne font pas partie de l\u0027enum, ainsi qu\u0027en affichant différemment les symboles lorsqu\u0027on décrit un énum dés symboles seuls:\n\n```\n  E040\n  le symbole \u0027nak\u0027 ne fait pas partie de l\u0027énumération [type\n  error]\n       ╒══  ./errors/type_mismatch/rules.publicodes:14:3 ══\n    13 │ g:\n    14 │   variations:\n       │   ˘˘˘˘˘˘˘˘˘˘˘ est l\u0027énum [\u0027foo\u0027, \u0027bar\u0027, \u0027toot\u0027]\n       ╒══  ./errors/type_mismatch/rules.publicodes:16:14 ══\n    15 │     - si: b \u003e 50\n    16 │       alors: \u0027foo\u0027\n       │              ˘˘˘˘˘ avec ce symbole \u0027foo\u0027\n       ╒══  ./errors/type_mismatch/rules.publicodes:18:14 ══\n    17 │     - si: b \u003e 40\n    18 │       alors: \u0027bar\u0027\n       │              ˘˘˘˘˘ avec ce symbole \u0027bar\u0027\n       ╒══  ./errors/type_mismatch/rules.publicodes:20:14 ══\n    19 │     - si: b \u003e 40\n    20 │       alors: \u0027toot\u0027\n       │              ˘˘˘˘˘˘ avec ce symbole \u0027toot\u0027\n       ╒══  ./errors/type_mismatch/rules.publicodes:21:8 ══\n    20 │       alors: \u0027toot\u0027\n    21 │ h: g \u003d \u0027nak\u0027 # not part of the enum\n       │        ˘˘˘˘˘˘ est le symbole \u0027nak\u0027\n```\n\nUne implémentation du type checking top-down permettrait de positionner l\u0027erreur au point précis des comparaisons, et des branches conditionnelles.",
+      "parentUuid": "ad056ad1_f0433165",
+      "range": {
+        "startLine": 50,
+        "startChar": 10,
+        "endLine": 57,
+        "endChar": 2
+      },
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8e52a079_e50e3455",
         "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
         "patchSetId": 2
@@ -161,6 +185,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "741371c6_b61e46d8",
+        "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-13T13:09:13Z",
+      "side": 1,
+      "message": "Fais, voir message précédent.",
+      "parentUuid": "6b8892f7_b8441e7e",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 62,
+        "endChar": 56
+      },
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4e107cb3_0995f64b",
         "filename": "packages/compiler/tests/crams/compile/types.t/type_error/rules.publicodes",
         "patchSetId": 2
@@ -190,6 +238,24 @@
       "side": 1,
       "message": "Je suis pas sure de comprendre. Tu voudrais constater qu\u0027on itère effectivement sur une même valeur, ici `b`? Si c\u0027est ca, alors non, c\u0027est pas ce qu\u0027on fais. On énumère uniquement sur le type des `alors`.\n\nBien d\u0027accord pour les replaces. Il faudrait peut être aussi tester un cas plus complexe, avec des variations imbriquées et des références par exemple.",
       "parentUuid": "4e107cb3_0995f64b",
+      "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fc38caec_92383d7d",
+        "filename": "packages/compiler/tests/crams/compile/types.t/type_error/rules.publicodes",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-13T13:09:13Z",
+      "side": 1,
+      "message": "J\u0027ai ajouté plusieurs tests avec variations imbriqués, et replace dans le commit suivant. C\u0027est plus percutant avec le type enum.",
+      "parentUuid": "d2fd4421_98b9a813",
       "revId": "c51b4b430544ae71ed62f57482c55933757e1432",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
