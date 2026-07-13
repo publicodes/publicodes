@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c5bba670_4d4bc417",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-13T13:48:25Z",
+      "side": 1,
+      "message": "Apply this one immediately. I have already rebased my work on top of this.",
+      "revId": "8424030d7a0e2f941a0565f69e5329efc5a60bce",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
