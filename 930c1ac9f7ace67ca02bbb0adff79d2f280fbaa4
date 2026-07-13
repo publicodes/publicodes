@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d6aff36e_7b90a490",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-13T13:34:30Z",
+      "side": 1,
+      "message": "I think we should squash all enhancement to the json schema, and its rename to the related commit",
+      "revId": "930c1ac9f7ace67ca02bbb0adff79d2f280fbaa4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
