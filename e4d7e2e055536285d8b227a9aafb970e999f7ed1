@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fddd7d22_83f4f8ca",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-13T14:23:29Z",
+      "side": 1,
+      "message": "I don\u0027t really see the benefit of this, and I think the syntax is barely lisible, and confusing. I don\u0027t even think this would help debugging the type checking. In case of type checking issue, we can\u0027t even produce this output, and so are left with the poors compilers errors anyway. The type checking either works, or fails, so this will also not help preventing much regression.\n\nThat being said, I agree that debugging type checking errors is really hard now. We could probably produce a dedicated output, of the ongoing unified result, to help figuring out implementation issues (instead of eprintf-ing everywhere..). This may help a bit, but would not make debugging issues that much more easy. Anyway we should re-implement the whole type checking, so this make this extra format immediately obsolete.\n\nOn a side note, to make the review process faster, safer, and easier, this one should not adapt existing test subjects. Typically this patchset must only add tests, and must not remove any line. I also agree that restructuring existing tests recently became necessary, but we should reserve this to dedicated commits, planned when no major works is ongoing.",
+      "revId": "e4d7e2e055536285d8b227a9aafb970e999f7ed1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
