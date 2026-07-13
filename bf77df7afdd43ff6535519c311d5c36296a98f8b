@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "878c7c5c_db8cf494",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-13T10:05:33Z",
+      "side": 1,
+      "message": "En essayant d\u0027ajouter des tests avec des références, variations imbriqués, et remplace, que le type checking sous cette forme ne fonctionne pas tout à fait. En vérité il faut une troisième passe pour que cela fonctionne.\n\nLa premiere passe résous les types primaires. La second énumère. La troisième valide les binop eq, et les unités.\n\nIl devient évident que l\u0027algorithme de type checking n\u0027est pas dés plus sains. Il faudra a mon avis le revoir entièrement. J\u0027ai l\u0027intuition qu\u0027une approche top-down donnerais de meilleurs résultats.",
+      "revId": "bf77df7afdd43ff6535519c311d5c36296a98f8b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
