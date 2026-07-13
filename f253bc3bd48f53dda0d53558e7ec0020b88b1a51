@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "319ef050_124b4652",
+        "filename": "packages/compiler/tests/crams/compile/json.t/run.t",
+        "patchSetId": 1
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-13T14:26:58Z",
+      "side": 1,
+      "message": "maybe related to the conflict?",
+      "parentUuid": "9913d26f_743df3e2",
+      "revId": "f253bc3bd48f53dda0d53558e7ec0020b88b1a51",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "2b09f249_bda4ca10",
         "filename": "packages/compiler/tests/crams/compile/json.t/run.t",
         "patchSetId": 1
@@ -48,6 +66,24 @@
       "writtenOn": "2026-07-13T14:25:55Z",
       "side": 1,
       "message": "why this change?",
+      "revId": "f253bc3bd48f53dda0d53558e7ec0020b88b1a51",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9d471e84_a7ef665a",
+        "filename": "packages/compiler/tests/crams/compile/json.t/run.t",
+        "patchSetId": 1
+      },
+      "lineNbr": 849,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-13T14:26:58Z",
+      "side": 1,
+      "message": "maybe related to the conflict?",
+      "parentUuid": "2b09f249_bda4ca10",
       "revId": "f253bc3bd48f53dda0d53558e7ec0020b88b1a51",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
