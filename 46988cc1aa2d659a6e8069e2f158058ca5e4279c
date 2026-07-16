@@ -1,0 +1,199 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc189b7f_0709e5a3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "Grâce à ton travail je me rend compte qu\u0027il nous reste une question à trancher : est-ce que l\u0027on souhaite différencier les valeurs de types `texte` et celles de types `symbole` ? Si c\u0027est le cas il faudrait le faire au niveau des valeurs du runtime également.\n\nPersonnellement, je me pose la question de savoir si on souhaite faire la distinction. On pourrait simplement généraliser les types littéraux à terme pour avoir :\n\n```\ntype t \u003d\n  | String of string\n  | Bool of boolean\n  | Date of date\n  | Number of (number * Units.t option)\n```\n\nEt ainsi pouvoir faire l\u0027union de n\u0027importe quel type littéral :\n\n```yaml\na: # type : [\u0027foo\u0027, \u0027bar\u0027]\n  variations: \n    - si: oui\n      alors: \u0027foo\u0027\n    - si: non\n      alors: \u0027bar\u0027\nb: # type : [1, 3]\n  variations: \n    - si: oui\n      alors: 1\n    - si: non\n      alors: 3\n```\n\nEst-ce que tu te bases sur un algorithme particulier pour le typechecking ? Je me pose la question sur le fait d\u0027avoir besoin de plus de deux passes (bottom-up et top-down) ?",
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cec72088_808ac845",
+        "filename": "packages/compiler/lib/parser/expr/lexer_test.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "Je serai pour avoir des tests plus exhaustifs (gestion des caractères unicodes, `\u0027` non escape, espaces, etc..) ou bien simplement les drops en faveur des crams tests, mais en l\u0027était ils ne servent pas trop je trouve.",
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a7e594f5_6de56eda",
+        "filename": "packages/compiler/lib/shared/to_json_doc.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "Pourquoi il n\u0027y en aurait pas ?",
+      "range": {
+        "startLine": 190,
+        "startChar": 0,
+        "endLine": 190,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "7fa1ab6d_302423ad",
+        "filename": "packages/compiler/lib/shared/typ.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "Je ne suis pas forcément convaincu par la distinction initiale entre les types littéraux et nombre. Pour moi il n\u0027y a que des types littéraux ici.",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9b228859_68a71c4f",
+        "filename": "packages/compiler/lib/typed_tree/typ.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "Il y a une raison particulière sur le fait de dupliquer le `Pos.mk ~pos` ?",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "797d79c3_d5a23866",
+        "filename": "packages/compiler/tests/crams/compile/expressions/base_type.t/symbol/rules.publicodes",
+        "patchSetId": 8
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "Il manque le cas `\u0027l\u0027état\u0027` :\n\n```\n E001\n error calling parser: did not find expected key character 0 position 0 returned: 0\n [yaml error]\n      ╒══  symbol/rules.publicodes:3:4 ══\n    2 │ d: \u0027No : \"foo\"\u0027\n    3 │ c: \u0027No\u0027b\u0027\n      │    ˘˘˘˘˘\n \n [123]\n```",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27eba24a_770f4f4a",
+        "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "L\u0027erreur devrait pointer vers la comparaison ici.",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "57cac84b_809dbb44",
+        "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "La position principale de l\u0027erreur devrait être la comparaison ici et dans un second temps expliquer pourquoi les types sont incompatibles entre eux.\n\nQuelques inspirations (sachant que l\u0027on souhaite ne souhaite pas s\u0027adresser qu\u0027à un public de dev, j’opterai plutôt pour une version verbeuse à la Elm) :\n\n```\nTYPE MISMATCH\n\nI need both sides of (\u003d\u003d) to be the same type:\n\n5|  let b \u003d a \u003d\u003d 5 in\n            ^^^^^^\nThe left side of (\u003d\u003d) is:\n\n    String\n\nBut the right side is:\n\n    number\n\nDifferent types can never be equal though! Which side is messed up?\n\nHint: Try using String.toInt to convert it to an integer?\n```\n\n```\nerror[E0369]: cannot add `{integer}` to `\u0026str`\n --\u003e src/main.rs:3:15\n  |\n3 |     let b \u003d a + 5;\n  |             - ^ - {integer}\n  |             |\n  |             \u0026str\n\nFor more information about this error, try `rustc --explain E0369`.\n```\n\n```\n\nerror: Type mismatch\n  ┌─ /tmp/test_app/src/test_app.gleam:5:14\n  │\n5 │ let _ \u003d a \u003d\u003d 5\n  │              ^\n\nExpected type:\n\n    String\n\nFound type:\n\n    Int\n```",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "144f3130_e24fe4a0",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/par-défaut.test.ts",
+        "patchSetId": 8
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "Ici que ce soit `\u0027\u0027` ou `\"\"` le test devrait passer non ?",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}

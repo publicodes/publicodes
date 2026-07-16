@@ -67,6 +67,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "63c8b03c_73bf5414",
+        "filename": "packages/compiler/lib/typed_tree/type_check.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "Tu veux dire que l\u0027on ne peut pas définir ? Pourquoi ?\n\n```yaml\na:\n  type: \u0027const 1\u0027\n```",
+      "parentUuid": "a5a9ea44_34ed47f4",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 2
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "915c9989_9242183b",
         "filename": "packages/compiler/runtimes/runtime.js",
         "patchSetId": 2
@@ -102,6 +126,30 @@
       "side": 1,
       "message": "J\u0027ai changé ca. Au lieu de Symbol, j\u0027utilise des litéraux, des chaines de caractères, et je les types avec `@type {\"foo\"}`. Il me semble que c\u0027est comme ca qu\u0027il faut faire, mais je ne trouve pas la référence. Indique moi s\u0027il faut faire autrement. Plus tard j\u0027utiliserais `@type {\"foo\" | \"bar\"}` pour les enums.",
       "parentUuid": "915c9989_9242183b",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 1
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5df1310f_3b8dff7b",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "698e39dc_f44f513c",
       "range": {
         "startLine": 46,
         "startChar": 0,
@@ -159,6 +207,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "da11851b_0358d29e",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "46840578_ff8f0a0e",
+      "range": {
+        "startLine": 58,
+        "startChar": 9,
+        "endLine": 58,
+        "endChar": 17
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "26e9468f_65db5153",
@@ -196,6 +268,30 @@
       "side": 1,
       "message": "Comme j\u0027ai retiré ces nouveaux types, on a plus besoin de toucher à ca, exact?",
       "parentUuid": "26e9468f_65db5153",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 2
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d788ebfc_777cec91",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-07-16T17:04:22Z",
+      "side": 1,
+      "message": "Hmm, ça pose la question de si on veut garder un type string différents des unions (comme c\u0027est le cas actuellement dans ton implémentation si je me trompe ?). Car il faudrait les différencier dans le type `Value` dans ce cas là.",
+      "parentUuid": "3f60e130_d1a72c6a",
       "range": {
         "startLine": 64,
         "startChar": 0,
