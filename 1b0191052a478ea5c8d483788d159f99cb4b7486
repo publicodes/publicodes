@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "13d2d912_894a076d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-16T07:57:36Z",
+      "side": 1,
+      "message": "split lines",
+      "revId": "1b0191052a478ea5c8d483788d159f99cb4b7486",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e9428db9_f95ab30b",
+        "filename": "packages/compiler/tests/crams/compile/mechanisms/applicability.t/run.t",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-16T07:57:36Z",
+      "side": 1,
+      "message": "This is probably a good moment to make the \"is not defined\" check to looks more similar to `(@condition \u003d not_applicable)`. This mean making the eval_tree a binop, and should be very straighforward. But that could be done in a second commit.",
+      "revId": "1b0191052a478ea5c8d483788d159f99cb4b7486",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
