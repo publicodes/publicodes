@@ -18,6 +18,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b93a5449_2923046d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-17T09:16:34Z",
+      "side": 1,
+      "message": "Oui carrément, est c\u0027est amusant parce que c\u0027était justement mon approche initiale. J\u0027avais aussi envie de ne pas distinguer les symboles des autres littéraux, et de pouvoir valider statiquement si une comparaison ne fais pas sens. A mon avis c\u0027est tout a fait faisable, mais ca demande des changements bien plus intrusifs au niveau du type checking. J\u0027ai donc repoussé cette idée en attendant d\u0027ajouter d\u0027abord les Symbols, et de limiter l\u0027énumération a ce seul type. Et si on vas dans cette vois, avoir un type symbol devient même obsolete, on pourras utiliser les enums avec des textes littéraux oui. Egalement, si on souhaite overhaul le type checking, il faudra planifier ce travail en amont ou en aval, pour ne pas trop perdre de temps sur les conflicts.\n\nPour l\u0027algo il est selon moi assez simple. Partir du haut, et checker la gauche et la droite successivement avant de checker la comparaison en elle même. On peux alors péter l\u0027erreur immédiatement, et la positionner sur l\u0027opérateur, lorsque le type de la gauche et de la droite ne sont pas compatible.\n\nActuellement on est assez loin de ca, on traverse le hash de type, on unifie la gauche et la droite, et on pète ensuite bien plus loin lorsqu\u0027on unifie le second type (droite ou gauche, c\u0027est du hasard), et que ce coté ne colle pas avec l\u0027autre.",
+      "parentUuid": "dc189b7f_0709e5a3",
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cec72088_808ac845",
@@ -60,6 +78,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4a38ef3e_768b8140",
+        "filename": "packages/compiler/lib/shared/to_json_doc.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-17T09:16:34Z",
+      "side": 1,
+      "message": "Parce qu\u0027il n\u0027est pas possible actuellement de faire:\n\n```yaml\nfoo:\n  type: \u003csymbol\u003e\n```\n\nIl n\u0027y a donc aucun `Symbol str` qui viens du parse. (voir autre com pour discuter de l\u0027utilité de pouvoir faire ca)",
+      "parentUuid": "a7e594f5_6de56eda",
+      "range": {
+        "startLine": 190,
+        "startChar": 0,
+        "endLine": 190,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7fa1ab6d_302423ad",
         "filename": "packages/compiler/lib/shared/typ.ml",
         "patchSetId": 8
@@ -71,6 +113,30 @@
       "writtenOn": "2026-07-16T17:04:22Z",
       "side": 1,
       "message": "Je ne suis pas forcément convaincu par la distinction initiale entre les types littéraux et nombre. Pour moi il n\u0027y a que des types littéraux ici.",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 5,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "abfc5fdf_08213d07",
+        "filename": "packages/compiler/lib/shared/typ.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-17T09:16:34Z",
+      "side": 1,
+      "message": "Si je comprends bien seul le type nombre a une unité. C\u0027est sur ca que la différence se fait. Et puis non il n\u0027y a pas que des litéraux ici, un input sans valeur n\u0027est pas un litéral. C\u0027est la nomenclature qui est fausse ici, literal est un très mauvais nom. Il faudrais des litéraux et des types. Les litéraux étant associé a une valeur, comme l\u0027est `Symbol of string` ici. C\u0027est le seul \"vrais\" littéral dans `t`.",
+      "parentUuid": "7fa1ab6d_302423ad",
       "range": {
         "startLine": 5,
         "startChar": 0,
@@ -106,6 +172,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "82a80138_82f6c229",
+        "filename": "packages/compiler/lib/typed_tree/typ.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-17T09:16:34Z",
+      "side": 1,
+      "message": "je vois pas trop l’intérêt de factoriser `Pos.mk ~pos` pour ajouter un \"est\". Le code me semble plus simple comme ca.",
+      "parentUuid": "9b228859_68a71c4f",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 47,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "797d79c3_d5a23866",
         "filename": "packages/compiler/tests/crams/compile/expressions/base_type.t/symbol/rules.publicodes",
         "patchSetId": 8
@@ -117,6 +207,30 @@
       "writtenOn": "2026-07-16T17:04:22Z",
       "side": 1,
       "message": "Il manque le cas `\u0027l\u0027état\u0027` :\n\n```\n E001\n error calling parser: did not find expected key character 0 position 0 returned: 0\n [yaml error]\n      ╒══  symbol/rules.publicodes:3:4 ══\n    2 │ d: \u0027No : \"foo\"\u0027\n    3 │ c: \u0027No\u0027b\u0027\n      │    ˘˘˘˘˘\n \n [123]\n```",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ed796b2c_751f32eb",
+        "filename": "packages/compiler/tests/crams/compile/expressions/base_type.t/symbol/rules.publicodes",
+        "patchSetId": 8
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-17T09:16:34Z",
+      "side": 1,
+      "message": "En yaml pour escape les single quotes il faut les doubler. J\u0027ajoute un test pour le mettre en évidence.",
+      "parentUuid": "797d79c3_d5a23866",
       "range": {
         "startLine": 2,
         "startChar": 0,
@@ -152,6 +266,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b3d16822_de866d03",
+        "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-17T09:16:34Z",
+      "side": 1,
+      "message": "je suis d\u0027accords, mais c\u0027est complètement impossible avec l\u0027implémentation du type checking actuel",
+      "parentUuid": "27eba24a_770f4f4a",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 26,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "57cac84b_809dbb44",
         "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
         "patchSetId": 8
@@ -175,6 +313,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "54c37ec1_9e6c6b63",
+        "filename": "packages/compiler/tests/crams/compile/types.t/run.t",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-17T09:16:34Z",
+      "side": 1,
+      "message": "Comme dit juste avant c\u0027est complètement impossible en l\u0027état",
+      "parentUuid": "57cac84b_809dbb44",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "144f3130_e24fe4a0",
         "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/par-défaut.test.ts",
         "patchSetId": 8
@@ -186,6 +348,30 @@
       "writtenOn": "2026-07-16T17:04:22Z",
       "side": 1,
       "message": "Ici que ce soit `\u0027\u0027` ou `\"\"` le test devrait passer non ?",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 2
+      },
+      "revId": "46988cc1aa2d659a6e8069e2f158058ca5e4279c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0484ebd_0c8beff2",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/par-défaut.test.ts",
+        "patchSetId": 8
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-17T09:16:34Z",
+      "side": 1,
+      "message": "En effet, le problème ici venait d’ailleurs. Le js de sortie avais un probleme sur le type. Ca donnais `type: \"\"\"\"`, et j\u0027ai fix par `type: \u0027\"\"\u0027`. On a pas vraiment définit ce qu\u0027on attendais en type ici pour les symbols et enums, mais je pense que ce que j\u0027ai fais est au moins utile.",
+      "parentUuid": "144f3130_e24fe4a0",
       "range": {
         "startLine": 16,
         "startChar": 0,

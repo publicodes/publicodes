@@ -91,6 +91,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "08edcb34_a0934fbd",
+        "filename": "packages/compiler/lib/typed_tree/type_check.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-17T09:16:34Z",
+      "side": 1,
+      "message": "J\u0027en vois aucun interet. Tu saurais me donner un use-case de ca?",
+      "parentUuid": "63c8b03c_73bf5414",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 2
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "915c9989_9242183b",
         "filename": "packages/compiler/runtimes/runtime.js",
         "patchSetId": 2
@@ -292,6 +316,30 @@
       "side": 1,
       "message": "Hmm, ça pose la question de si on veut garder un type string différents des unions (comme c\u0027est le cas actuellement dans ton implémentation si je me trompe ?). Car il faudrait les différencier dans le type `Value` dans ce cas là.",
       "parentUuid": "3f60e130_d1a72c6a",
+      "range": {
+        "startLine": 64,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 2
+      },
+      "revId": "0eae0ff63263f1ac38b4941e3c6d3d8f04c1e821",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5d9697ed_7e5a8caf",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-07-17T09:16:34Z",
+      "side": 1,
+      "message": "Oui d\u0027accord. Pour avancer je propose d\u0027ajouter cet alias de type `symbol` vers `string`, et de correctement typer les valeurs symbols plus bas. Ca me conduit également a fix le problème cité plus tard avec le `par défaut`.\n\nA mon avis on finira par jeter symbol lorsque l\u0027énumération de strings marchera tout aussi bien, et ca simplifiera tout.",
+      "parentUuid": "d788ebfc_777cec91",
       "range": {
         "startLine": 64,
         "startChar": 0,
