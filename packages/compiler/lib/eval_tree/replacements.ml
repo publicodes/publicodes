@@ -1,10 +1,29 @@
-open Shared
-open Shared.Eval_tree
-open Utils
 open Base
-open Utils.Output
-open Replacements_types
+open Shared
+open Shared_ast
+open Utils
+open Output
 open Replacements_graph
+
+type t =
+  { replace: Replacements_graph.Graph.t
+  ; make_not_applicable: Replacements_graph.Graph.t }
+
+let from_resolved_ast ast =
+  let* replacement_graph =
+    ast
+    |> Replacements_graph.build_graph ~get_replacement_rules:(fun rule ->
+        rule.replace )
+    |> Replacements_graph.detect_cycles
+  in
+  let* make_not_applicable_graph =
+    ast
+    |> Replacements_graph.build_graph ~get_replacement_rules:(fun rule ->
+        rule.make_not_applicable )
+    |> Replacements_graph.detect_cycles
+  in
+  return
+    {replace= replacement_graph; make_not_applicable= make_not_applicable_graph}
 
 let check_exclusive_duplicates ~pos replacements =
   if List.length replacements <= 1 then []
@@ -35,7 +54,7 @@ let check_exclusive_duplicates ~pos replacements =
 (* Find all eligible replacements for a rule reference *)
 let find_eligible_replacements ~pos ~rule ~reference graph =
   let replacements =
-    find_replacements ~rule:reference graph
+    Replacements_graph.find_replacements ~rule:reference graph
     (* Filter replacements based on only_in and except_in *)
     |> List.filter ~f:(is_replacement_eligible ~rule)
   in
@@ -44,17 +63,17 @@ let find_eligible_replacements ~pos ~rule ~reference graph =
   (List.map replacements ~f:fst, logs)
 
 let find_eligible_make_not_applicable ~rule ~reference replacements =
-  find_replacements ~rule:reference replacements
+  Replacements_graph.find_replacements ~rule:reference replacements
   (* Filter replacements based on only_in and except_in *)
   |> List.filter ~f:(is_replacement_eligible ~rule)
   |> List.map ~f:fst
 
 (* TODO: is it really necessary to have mk as parameter here? *)
-let create_make_not_applicable_node ~mk ~pos ~condition_node ~node =
-  let p = mk ~pos in
+let create_make_not_applicable_node ~pos ~condition_node ~node =
+  let p = Tree.mk_value ~pos in
   (* if (condition_node = null || is_not_defined condition_node || condition_node = false)
         then node else null *)
-  Eval_tree.(
+  Tree.(
     p
       (mk_condition
          ~cond:
@@ -67,27 +86,25 @@ let create_make_not_applicable_node ~mk ~pos ~condition_node ~node =
                        (p (binop_eq ~pos condition_node (p const_false))) ) ) ) )
          ~then_:node ~else_:(p const_not_applicable) ) )
 
-let create_replace_node ~mk ~pos ~replacing_node ~node =
-  let p = mk ~pos in
+let create_replace_node ~pos ~replacing_node ~node =
+  let p = Tree.mk_value ~pos in
   (* if replacement != null then replacement else node *)
-  Eval_tree.(
+  Tree.(
     p
       (mk_condition
          ~cond:(p (binop_neq ~pos replacing_node (p const_not_applicable)))
          ~then_:replacing_node ~else_:node ) )
 
-let create_exclusive_replacement_node ~mk ~pos ~replacement_list ~node =
-  let p = mk ~pos in
-  Eval_tree.(
-    p (mk_exclusive_replacement ~target:node ~replacements:replacement_list) )
+let create_exclusive_replacement_node ~pos ~replacement_list ~node =
+  let p = Tree.mk_value ~pos in
+  Tree.(p (mk_exclusive_replacement ~target:node ~replacements:replacement_list))
 
 (* Apply rule replacements to a tree *)
-let apply_replacements ~(replacements : t) ~(mk : 'a mk_value_fn)
-    (tree : 'a Eval_tree.t) : 'a Eval_tree.t Output.t =
+let transform ~(replacements : t) rule value =
   let logs = ref [] in
   (* Apply rule replacements to an evaluation tree *)
-  let rec apply_to_node ~(rule : Rule_name.t) (node : 'a Eval_tree.value) :
-      'a Eval_tree.value =
+  let rec apply_to_node ~(rule : Rule_name.t) (node : 'a Tree.value) :
+      'a Tree.value =
     let pos = node.pos in
     match node.value with
     | Ref reference ->
@@ -100,10 +117,12 @@ let apply_replacements ~(replacements : t) ~(mk : 'a mk_value_fn)
           | [] ->
               node
           | [hd] ->
-              let replacing_node = apply_to_node ~rule (mk ~pos (Ref hd)) in
-              create_replace_node ~mk ~pos ~replacing_node ~node
+              let replacing_node =
+                apply_to_node ~rule (Tree.mk_value ~pos (Ref hd))
+              in
+              create_replace_node ~pos ~replacing_node ~node
           | _ ->
-              create_exclusive_replacement_node ~mk ~pos ~replacement_list
+              create_exclusive_replacement_node ~pos ~replacement_list
                 ~node:reference
         in
         let make_not_applicable_list =
@@ -115,17 +134,14 @@ let apply_replacements ~(replacements : t) ~(mk : 'a mk_value_fn)
             ~f:(fun node_acc condition_rule ->
               (* Apply make not applicable recursively (to handle transitivity) *)
               let condition_node =
-                apply_to_node ~rule (mk ~pos (Ref condition_rule))
+                apply_to_node ~rule (Tree.mk_value ~pos (Ref condition_rule))
               in
-              create_make_not_applicable_node ~mk ~pos ~condition_node
+              create_make_not_applicable_node ~pos ~condition_node
                 ~node:node_acc )
         in
         node
     | _ ->
         node
   in
-  let updated_tree =
-    Hashtbl.mapi tree ~f:(fun ~key:rule ~data:value ->
-        Eval_tree.map_value value ~f:(apply_to_node ~rule) )
-  in
+  let updated_tree = Tree.map_value value ~f:(apply_to_node ~rule) in
   return ~logs:!logs updated_tree

@@ -1,21 +1,50 @@
 open Shared
-open Shared.Shared_ast
 open Utils
 open Base
-open Utils.Output
-open Replacements_types
+open Output
+module G = Graph
+
+(** Metadata for rule replacements, including priority and scope limitations *)
+type replace_meta =
+  { only_in: Rule_name.t Pos.t list
+        (** Rules where this replacement applies. If empty, applies to all rules *)
+  ; except_in: Rule_name.t Pos.t list
+        (** Rules where this replacement doesn't apply *)
+  ; exclusive: bool  (** Boolean flag to assume multiple replace exclusive**) }
+[@@deriving show, compare]
+
+(** Module for rule vertices in the replacement graph *)
+module RuleVertex = struct
+  type t = Rule_name.t [@@deriving equal, compare]
+
+  let hash = Hashtbl.hash
+end
+
+(** Module for edges between rules in the replacement graph *)
+module ReplacementEdge = struct
+  type t = replace_meta Pos.t [@@deriving show, compare]
+
+  let hash = Hashtbl.hash
+
+  let default =
+    Pos.mk ~pos:Pos.dummy {only_in= []; except_in= []; exclusive= false}
+end
+
+(** Directed graph for tracking rule replacements *)
+module Graph =
+  G.Imperative.Digraph.ConcreteLabeled (RuleVertex) (ReplacementEdge)
 
 (** Build a replacement graph from the AST *)
 let build_graph
     ~(get_replacement_rules :
        'a Shared_ast.rule_def -> 'a Shared_ast.replace list )
-    (ast : Shared_ast.resolved) : ReplacementGraph.t =
-  let graph = ReplacementGraph.create () in
+    (ast : Shared_ast.resolved) : Graph.t =
+  let graph = Graph.create () in
   (* Add a replacement edge to the graph *)
   let add_replacement ~rule ~replace_meta ~replaced_by =
-    ReplacementGraph.add_vertex graph rule ;
-    ReplacementGraph.add_vertex graph replaced_by ;
-    ReplacementGraph.add_edge_e graph (rule, replace_meta, replaced_by)
+    Graph.add_vertex graph rule ;
+    Graph.add_vertex graph replaced_by ;
+    Graph.add_edge_e graph (rule, replace_meta, replaced_by)
   in
   (* Process a single rule definition *)
   let process_rule_def rule_def =
@@ -34,10 +63,10 @@ let build_graph
   graph
 
 (** Module for cycle detection in the replacement graph *)
-module CycleAnalysis = Graph.Cycles.Johnson (ReplacementGraph)
+module CycleAnalysis = G.Cycles.Johnson (Graph)
 
 (** Detect cycles in the replacement graph *)
-let detect_cycles (graph : ReplacementGraph.t) : ReplacementGraph.t Output.t =
+let detect_cycles (graph : Graph.t) : Graph.t Output.t =
   let log_cycle cycle acc =
     let first_rule_name = List.hd_exn cycle in
     let cycle = cycle @ [first_rule_name] in
@@ -56,7 +85,7 @@ let detect_cycles (graph : ReplacementGraph.t) : ReplacementGraph.t Output.t =
 
 (** Check if a replacement is eligible in the current rule context *)
 let is_replacement_eligible ~(rule : Rule_name.t)
-    (replacement : Rule_name.t * ReplacementEdge.t) : bool =
+    (replacement : RuleVertex.t * ReplacementEdge.t) : bool =
   let open Rule_name in
   (* We don't replace the reference if we are in the rule that define the replacement *)
   if equal (fst replacement) rule then false
@@ -72,12 +101,12 @@ let is_replacement_eligible ~(rule : Rule_name.t)
     in
     (not is_blacklisted) && is_whitelisted
 
-let find_replacements ~(rule : Rule_name.t) (graph : ReplacementGraph.t) =
-  if ReplacementGraph.mem_vertex graph rule then
-    ReplacementGraph.fold_succ_e
+let find_replacements ~(rule : Rule_name.t) (graph : Graph.t) =
+  if Graph.mem_vertex graph rule then
+    Graph.fold_succ_e
       (fun e acc ->
-        let replaced_by = ReplacementGraph.E.dst e in
-        let label = ReplacementGraph.E.label e in
+        let replaced_by = Graph.E.dst e in
+        let label = Graph.E.label e in
         (replaced_by, label) :: acc )
       graph rule []
   else []

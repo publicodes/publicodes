@@ -8,11 +8,10 @@
   utils
   parser
   resolver
-  typed_tree
+  eval_tree
   hashed_tree
   yaml_parser
-  dependency_graph
-  replacements)
+  dependency_graph)
  (modules :standard)
  (preprocess
   (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

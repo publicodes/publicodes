@@ -1,6 +1,5 @@
 open Base
 open Shared
-open Shared.Eval_tree
 
 (* [compute_depth_and_freq] computes, for each hashed node, the number of
 	 its occurrence in the tree as well as its depth. *)
@@ -16,7 +15,6 @@ let compute_depth_and_freq hashed_tree =
           (1, depth) )
   in
   let rec loop (node : Tree.value) =
-    let open Eval_tree in
     let depth =
       match node.value with
       | Const _ | Ref _ | Get_context _ | Exclusive_replacement _ ->
@@ -97,7 +95,6 @@ let compress hashed_tree =
           (Some rule_name, rule)
       | None ->
           let new_rule_value =
-            let open Eval_tree in
             match node.value with
             | Const _ | Ref _ | Get_context _ | Exclusive_replacement _ ->
                 node.value

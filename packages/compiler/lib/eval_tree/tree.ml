@@ -1,5 +1,6 @@
 open Base
 open Utils
+open Shared
 
 type constant =
   | Number of float * Units.t option
@@ -39,6 +40,8 @@ type 'meta mk_value_fn = pos:Pos.pos -> 'meta naked_value -> 'meta value
 type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving show]
 
 let get_value eval_tree rule_name = Hashtbl.find_exn eval_tree rule_name
+
+let mk_value ~pos ?(typ = Type.any ~pos ()) value = {value; pos; meta= typ}
 
 let get_meta eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).meta
 
