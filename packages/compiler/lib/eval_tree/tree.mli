@@ -1,3 +1,4 @@
+open Shared
 open Utils
 
 type constant =
@@ -42,6 +43,8 @@ type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving show]
 
 val get_value : 'meta t -> Rule_name.t -> 'meta value
 
+val mk_value : pos:Pos.pos -> ?typ:Type.t -> Type.t naked_value -> Type.t value
+
 val get_meta : 'meta t -> Rule_name.t -> 'meta
 (** FIXME: should be _exn *)
 
@@ -80,9 +83,7 @@ val mk_condition :
   -> 'meta naked_value
 
 val mk_exclusive_replacement :
-     target:Rule_name.t
-  -> replacements:Rule_name.t list
-  -> 'meta naked_value
+  target:Rule_name.t -> replacements:Rule_name.t list -> 'meta naked_value
 
 val const_not_applicable : 'meta naked_value
 

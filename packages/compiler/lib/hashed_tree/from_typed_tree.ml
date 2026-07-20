@@ -1,7 +1,5 @@
 open Base
-open Shared
 open Utils
-open Shared.Eval_tree
 
 (*
   We do type retrival and add hash to the node in one pass as :
@@ -10,8 +8,8 @@ open Shared.Eval_tree
   - We want to avoid traversing the tree twice
 *)
 
-let rec transform_to_hash_and_type (value : Typed_tree.value) : Tree.value =
-  let {value; meta= typ; pos} = value in
+let rec transform_to_hash_and_type value : Tree.value =
+  let Eval_tree.{value; meta= typ; pos} = value in
   let transform_naked_value = function
     | Eval_tree.Const const ->
         let hash = Tree.Hash.of_constant const in
@@ -90,8 +88,8 @@ let rec transform_to_hash_and_type (value : Typed_tree.value) : Tree.value =
         (Eval_tree.Round (rounding, precision', expr'), hash)
   in
   let new_value, hash = transform_naked_value value in
-  let typ_concrete = Typed_tree.Typ.to_concrete typ in
+  let typ_concrete = Eval_tree.Type.to_concrete typ in
   {value= new_value; meta= {typ= typ_concrete; hash}; pos}
 
-let from_typed_tree (tree : Typed_tree.t) : Tree.t =
+let from_typed_tree (tree : Eval_tree.Type.t Eval_tree.t) : Tree.t =
   Hashtbl.map tree ~f:transform_to_hash_and_type
