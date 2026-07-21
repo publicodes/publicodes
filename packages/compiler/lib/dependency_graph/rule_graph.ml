@@ -118,29 +118,27 @@ let rec find_references (only_in_chainable : bool)
     (context_stack : Rule_context.t list) (current_rule : Rule_name.t)
     (({value; chainable_mechanisms}, _) : Shared_ast.resolved_value) :
     Rule_vertex.t Mark.pos list =
-  let context_stack, aleady_visited =
+  let context_stack =
     match get_context current_rule chainable_mechanisms with
     | Some ctx ->
         let already_visited =
           List.exists context_stack ~f:(Rule_context.equal ctx)
         in
-        (ctx :: context_stack, already_visited)
+        if not already_visited then ctx :: context_stack else context_stack
     | None ->
-        (context_stack, false)
+        context_stack
   in
-  if aleady_visited then []
+  let chainable_refs =
+    List.concat_map chainable_mechanisms ~f:(fun (mecha, _) ->
+        find_references_in_chainable context_stack current_rule mecha )
+  in
+  if only_in_chainable then chainable_refs
   else
-    let chainable_refs =
-      List.concat_map chainable_mechanisms ~f:(fun (mecha, _) ->
-          find_references_in_chainable context_stack current_rule mecha )
+    let value_refs =
+      find_references_in_value only_in_chainable context_stack current_rule
+        (Mark.remove value)
     in
-    if only_in_chainable then chainable_refs
-    else
-      let value_refs =
-        find_references_in_value only_in_chainable context_stack current_rule
-          (Mark.remove value)
-      in
-      value_refs @ chainable_refs
+    value_refs @ chainable_refs
 
 and find_references_in_chainable (context_stack : Rule_context.t list)
     (current_rule : Rule_name.t)
