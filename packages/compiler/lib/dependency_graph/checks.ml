@@ -121,8 +121,8 @@ let unused_context_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
         @ List.map unused_ctxs ~f:(fun unused_ctx_rules ->
             let code, message = Err.unused_context in
             let labels =
-              (* TODO: should also provide the position of the context overriding
-             the unused context, if any. *)
+              (* TODO: should also provide the position of the context
+                 overriding the unused context, if any. *)
               List.rev_map unused_ctx_rules
                 ~f:(Mark.map ~f:(fun _ -> "contexte inutilisé"))
             in
