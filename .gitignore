@@ -56,3 +56,4 @@ packages/compiler/**/*.exe
 packages/compiler/**/*.publicodes.js
 
 packages/codemod/bin/codemod-v2.js
+packages/compiler/.codegraph

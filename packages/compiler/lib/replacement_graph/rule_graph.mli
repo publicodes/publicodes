@@ -4,9 +4,9 @@ open Base
 
 (** Metadata for rule replacements, including priority and scope limitations *)
 type replace_meta =
-  { only_in: Rule_name.t Pos.t list
+  { only_in: Rule_name.t Mark.pos list
         (** Rules where this replacement applies. If empty, applies to all rules *)
-  ; except_in: Rule_name.t Pos.t list
+  ; except_in: Rule_name.t Mark.pos list
         (** Rules where this replacement doesn't apply *)
   ; exclusive: bool  (** Boolean flag to assume multiple replace exclusive**) }
 [@@deriving show, compare]
@@ -20,7 +20,7 @@ end
 
 (** Module for edges between rules in the replacement graph *)
 module Replacement_edge : sig
-  type t = replace_meta Pos.t [@@deriving show, compare]
+  type t = replace_meta Mark.pos [@@deriving show, compare]
 
   val hash : t -> int
 
@@ -40,7 +40,7 @@ end
 
 val mk :
      get_replacement_rules:
-       (   Rule_name.t Shared.Shared_ast.rule_def
+       (   Shared.Shared_ast.resolved_rule_def
         -> Rule_name.t Shared.Shared_ast.replace list )
   -> Shared.Shared_ast.resolved
   -> t

@@ -32,12 +32,12 @@ let exclusive_duplicate_check (graph : Rule_graph.t) : Log.t list =
     else
       let without_exclusive =
         List.filter_map replaces ~f:(fun replace ->
-            if not (Pos.value replace).exclusive then Some replace else None )
+            if not (Mark.remove replace).exclusive then Some replace else None )
       in
       if List.is_empty without_exclusive then acc
       else
         let labels =
-          List.map without_exclusive ~f:(fun (_, pos) -> Pos.mk ~pos "ici")
+          List.map without_exclusive ~f:(Mark.map ~f:(fun _ -> "ici"))
         in
         let code, message = Err.replace_multiple in
         let error =

@@ -1,0 +1,7 @@
+(library
+ (name typing)
+ (public_name publicodes.typing)
+ (libraries base utils shared eval_tree)
+ (modules :standard)
+ (preprocess
+  (pps ppx_deriving.show ppx_compare)))

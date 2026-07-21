@@ -12,7 +12,7 @@ let parse_variation ~pos ~(parse : parse_value_fn) yaml =
       let if_ = find_value "si" mapping in
       let then_ = find_value "alors" mapping in
       match (if_, then_) with
-      | Some (if_, pos_if), Some (then_, pos_then) ->
+      | Some (if_, {pos= pos_if}), Some (then_, {pos= pos_then}) ->
           let* if_ = parse ~pos:pos_if if_ in
           let+ then_ = parse ~pos:pos_then then_ in
           {if_; then_}
@@ -31,8 +31,8 @@ let parse_else_clause ~(parse : parse_value_fn) (yaml : yaml) =
       (* let* _ = check_authorized_keys ~keys:["sinon"] mapping in *)
       let else_ = find_value "sinon" mapping in
       match else_ with
-      | Some (else_, pos_else) ->
-          let+ else_ = parse ~pos:pos_else else_ in
+      | Some (else_, {pos}) ->
+          let+ else_ = parse ~pos else_ in
           else_
       | None ->
           failwith "Internal error: missing 'sinon' key" )

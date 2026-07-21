@@ -1,163 +1,193 @@
 open Base
 open Utils
+open Shared
 open Tree
-module Shared_ast = Shared.Shared_ast
 
 (* Helper function to convert between the two constant types *)
 let convert_constant expr_const =
   match expr_const with
   | Shared_ast.Number (n, unit) ->
       Tree.Number (n, unit)
-  | Shared_ast.Bool b ->
+  | Bool b ->
       Bool b
-  | Shared_ast.String s ->
+  | String s ->
       String s
-  | Shared_ast.Symbol s ->
+  | Symbol s ->
       Symbol s
-  | Shared_ast.Date d ->
+  | Date d ->
       Date d
 
 let rec transform ?(undefined = Tree.const_not_defined)
-    (node : 'a Shared_ast.value) =
+    (value : Shared_ast.typed_value) : Typ.t Tree.value =
+  let node, _ = value in
+  let node_value, Shared_ast.{pos; typ} = node.value in
   let value =
-    match Pos.value node.value with
-    | Shared_ast.Not_defined ->
-        Tree.mk_value ~pos:(Pos.pos node.value) undefined
+    match node_value with
+    | Not_defined ->
+        (* FIXME: should be an NotDefined type *)
+        Tree.mk_value ~meta:typ ~pos undefined
     | _ ->
         transform_mechanism_value node.value
   in
   unfold_chainable_mechanism ~init:value node.chainable_mechanisms
 
-and transform_expr (expr, pos) =
+and transform_expr
+    ((expr, {pos; typ}) :
+      (Shared.Rule_name.t, Shared_ast.typed_mark) Shared_ast.expr ) =
+  let mk_value = Tree.mk_value ~meta:typ ~pos in
   match expr with
-  | Shared_ast.Const value ->
-      Tree.mk_value ~pos (Const (convert_constant value))
-  | Shared_ast.Binary_op (op, left, right) ->
-      Tree.mk_value ~pos
-        (Binary_op (op, transform_expr left, transform_expr right))
-  | Shared_ast.(Unary_op ((Neg, pos), expr)) ->
-      Tree.mk_value ~pos (Unary_op (Pos.mk ~pos Tree.Neg, transform_expr expr))
-  | Shared_ast.Ref name ->
-      Tree.mk_value ~pos (Ref name)
+  | Const value ->
+      mk_value (Const (convert_constant value))
+  | Binary_op (op, left, right) ->
+      mk_value (Binary_op (op, transform_expr left, transform_expr right))
+  | Unary_op ((Neg, {pos}), expr) ->
+      mk_value (Unary_op (Mark.mk_pos ~pos Tree.Neg, transform_expr expr))
+  | Ref name ->
+      mk_value (Ref name)
 
-and transform_mechanism_value (node, pos) =
+and transform_mechanism_value
+    ((node, {pos; typ}) :
+      ( (Shared.Rule_name.t, Shared_ast.typed_mark) Shared_ast.value_mechanism
+      , Shared_ast.typed_mark )
+      Mark.ed ) =
   match node with
-  | Shared_ast.Not_defined ->
-      Tree.mk_value ~pos (Const Not_defined)
-  | Shared_ast.Expr expr ->
+  | Not_defined ->
+      Tree.mk_value ~pos ~meta:typ (Const Not_defined)
+  | Expr expr ->
       transform_expr expr
-  | Shared_ast.Sum sum ->
+  | Sum sum ->
       transform_sum ~pos sum
-  | Shared_ast.Product product ->
+  | Product product ->
       transform_product ~pos product
-  | Shared_ast.One_of any_of ->
+  | One_of any_of ->
       transform_any_of ~pos any_of
-  | Shared_ast.All_of all_of ->
+  | All_of all_of ->
       transform_all_of ~pos all_of
-  | Shared_ast.Min_of all_of ->
+  | Min_of all_of ->
       transform_min_of ~pos all_of
-  | Shared_ast.Max_of all_of ->
+  | Max_of all_of ->
       transform_max_of ~pos all_of
-  | Shared_ast.Value value ->
+  | Value value ->
       transform value
-  | Shared_ast.Variations variations ->
+  | Variations variations ->
       transform_variations ~pos variations
-  | Shared_ast.Is_applicable value ->
+  | Is_applicable value ->
       transform_is_applicable ~pos value
-  | Shared_ast.Is_not_applicable value ->
+  | Is_not_applicable value ->
       transform_is_not_applicable ~pos value
 
 and unfold_chainable_mechanism ~init mechanisms =
   mechanisms
-  |> List.sort ~compare:(fun a b ->
+  |> List.sort ~compare:(fun (a, _) (b, _) ->
       Shared_ast.compare_chainable_mechanism Shared.Rule_name.compare
-        (Pos.value a) (Pos.value b) )
-  |> List.fold_right ~init ~f:(fun (mec, pos) acc ->
-      match mec with
-      | Shared_ast.Applicable_if applicable_if ->
-          transform_applicable_if ~pos applicable_if acc
-      | Shared_ast.Not_applicable_if not_applicable_if ->
-          transform_not_applicable_if ~pos not_applicable_if acc
-      | Shared_ast.Ceiling ceiling ->
-          transform_ceiling ~pos ceiling acc
-      | Shared_ast.Floor floor ->
-          transform_floor ~pos floor acc
-      | Shared_ast.Context context ->
-          transform_context ~pos context acc
-      | Shared_ast.Default default ->
-          transform_default ~pos default acc
-      | Shared_ast.Type t ->
-          transform_type_def t acc
-      | Shared_ast.Round round ->
-          transform_round ~pos round acc )
+        Shared_ast.compare_typed_mark a b )
+  |> List.fold_right ~init
+       ~f:(fun
+           ((mec, {pos; _}) : (_, Shared_ast.typed_mark) Mark.ed)
+           (acc : Typ.t value)
+         ->
+         match mec with
+         | Shared_ast.Type _ ->
+             acc
+         | Applicable_if applicable_if ->
+             transform_applicable_if ~pos applicable_if acc
+         | Not_applicable_if not_applicable_if ->
+             transform_not_applicable_if ~pos not_applicable_if acc
+         | Ceiling ceiling ->
+             transform_ceiling ~pos ceiling acc
+         | Floor floor ->
+             transform_floor ~pos floor acc
+         | Context context ->
+             transform_context ~pos context acc
+         | Default default ->
+             transform_default ~pos default acc
+         | Round round ->
+             transform_round ~pos round acc )
 
 (* TODO: a lot of factorisation possible here! *)
 and transform_sum ~pos nodes =
-  let typ = Type.any_number () ~pos in
   match nodes with
   | [] ->
-      Tree.mk_value ~pos ~typ Tree.const_not_applicable
+      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
+        ~meta:Typ.TBool ~pos Tree.const_not_applicable
   | n :: nodes ->
       let value = transform n in
-      let init = {value with meta= typ} in
-      List.fold_right nodes ~init ~f:(fun node acc ->
-          Tree.mk_value ~pos (Tree.binop_add ~pos (transform node) acc) )
+      List.fold_right nodes ~init:value ~f:(fun node acc ->
+          let Shared_ast.{typ; _} = Mark.get node in
+          Tree.mk_value ~pos ~meta:typ
+            (Tree.binop_add ~pos (transform node) acc) )
 
 and transform_product ~pos nodes =
-  let typ = Type.any_number () ~pos in
   match nodes with
   | [] ->
-      Tree.mk_value ~pos ~typ Tree.const_not_applicable
+      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
+        ~meta:Typ.TBool ~pos Tree.const_not_applicable
   | n :: nodes ->
       let value = transform n in
-      let init = {value with meta= typ} in
-      List.fold_right nodes ~init ~f:(fun node acc ->
-          Tree.mk_value ~pos (Tree.binop_mul ~pos (transform node) acc) )
+      List.fold_right nodes ~init:value ~f:(fun node acc ->
+          let Shared_ast.{typ; _} = Mark.get node in
+          Tree.mk_value ~pos ~meta:typ
+            (Tree.binop_mul ~pos (transform node) acc) )
 
 and transform_any_of ~pos nodes =
-  let typ = Type.literal ~pos Shared.Typ.Bool in
   match nodes with
   | [] ->
-      Tree.mk_value ~pos ~typ Tree.const_not_applicable
+      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
+        ~meta:Typ.TBool ~pos Tree.const_not_applicable
   | nodes ->
-      let init = Tree.mk_value ~pos ~typ Tree.const_false in
+      let init =
+        Tree.mk_value ~pos
+          ~meta:(Typ.Literal (Mark.mk_pos ~pos Typ.(LBool false)))
+          Tree.const_false
+      in
       List.fold_right nodes ~init ~f:(fun node acc ->
-          Tree.mk_value ~pos (Tree.binop_or ~pos (transform node) acc) )
+          let Shared_ast.{typ; _} = Mark.get node in
+          Tree.mk_value ~pos ~meta:typ (Tree.binop_or ~pos (transform node) acc) )
 
 and transform_all_of ~pos nodes =
-  let typ = Type.literal ~pos Shared.Typ.Bool in
   match nodes with
   | [] ->
-      Tree.mk_value ~pos ~typ Tree.const_not_applicable
+      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
+        ~meta:Typ.TBool ~pos Tree.const_not_applicable
   | nodes ->
-      let init = Tree.mk_value ~pos ~typ Tree.const_true in
+      let init =
+        Tree.mk_value ~pos
+          ~meta:(Typ.Literal (Mark.mk_pos ~pos Typ.(LBool true)))
+          Tree.const_true
+      in
       List.fold_right nodes ~init ~f:(fun node acc ->
-          Tree.mk_value ~pos (Tree.binop_and ~pos (transform node) acc) )
+          let Shared_ast.{typ; _} = Mark.get node in
+          Tree.mk_value ~pos ~meta:typ
+            (Tree.binop_and ~pos (transform node) acc) )
 
 and transform_max_of ~pos nodes =
-  let typ = Type.any_number ~pos () in
   match nodes with
   | [] ->
-      Tree.mk_value ~pos ~typ Tree.const_not_applicable
+      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
+        ~meta:Typ.TBool ~pos Tree.const_not_applicable
   | n :: nodes ->
       let value = transform n in
-      let init = {value with meta= typ} in
-      List.fold_right nodes ~init ~f:(fun node acc ->
-          Tree.mk_value ~pos (Tree.binop_max ~pos (transform node) acc) )
+      List.fold_right nodes ~init:value ~f:(fun node acc ->
+          let Shared_ast.{typ; _} = Mark.get node in
+          Tree.mk_value ~pos ~meta:typ
+            (Tree.binop_max ~pos (transform node) acc) )
 
 and transform_min_of ~pos nodes =
-  let typ = Type.any_number ~pos () in
   match nodes with
   | [] ->
-      Tree.mk_value ~pos ~typ Tree.const_not_applicable
+      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
+        ~meta:Typ.TBool ~pos Tree.const_not_applicable
   | n :: nodes ->
       let value = transform n in
-      let init = {value with meta= typ} in
-      List.fold_right nodes ~init ~f:(fun node acc ->
-          Tree.mk_value ~pos (Tree.binop_min ~pos (transform node) acc) )
+      List.fold_right nodes ~init:value ~f:(fun node acc ->
+          let Shared_ast.{typ; _} = Mark.get node in
+          Tree.mk_value ~pos ~meta:typ
+            (Tree.binop_min ~pos (transform node) acc) )
 
 and transform_applicable_if ~pos condition value =
-  let p = Tree.mk_value ~pos in
+  let Shared_ast.{typ; _} = Mark.get condition in
+  (* FIXME: each node probably need it's own type, not just the condition *)
+  let p = Tree.mk_value ~pos ~meta:typ in
   let condition = transform condition in
   Tree.(
     p
@@ -173,7 +203,9 @@ and transform_applicable_if ~pos condition value =
          ~then_:(p const_not_applicable) ~else_:value ) )
 
 and transform_not_applicable_if ~pos condition value =
-  let p = Tree.mk_value ~pos in
+  let Shared_ast.{typ; _} = Mark.get condition in
+  (* FIXME: each node probably need it's own type, not just the condition *)
+  let p = Tree.mk_value ~pos ~meta:typ in
   let condition = transform condition in
   Tree.(
     p
@@ -189,7 +221,9 @@ and transform_not_applicable_if ~pos condition value =
          ~then_:value ~else_:(p const_not_applicable) ) )
 
 and transform_floor ~pos floor value =
-  let p = Tree.mk_value ~pos in
+  let Shared_ast.{typ; _} = Mark.get floor in
+  (* FIXME: each node probably need it's own type, not just the condition *)
+  let p = Tree.mk_value ~pos ~meta:typ in
   (* TODO : structural sharing *)
   let floor = transform floor in
   Tree.(
@@ -203,7 +237,9 @@ and transform_floor ~pos floor value =
          ~then_:floor ~else_:value ) )
 
 and transform_ceiling ~pos ceil value =
-  let p = Tree.mk_value ~pos in
+  let Shared_ast.{typ; _} = Mark.get ceil in
+  (* FIXME: each node probably need it's own type, not just the condition *)
+  let p = Tree.mk_value ~pos ~meta:typ in
   (* TODO : structural sharing *)
   let ceil = transform ceil in
   Tree.(
@@ -217,7 +253,8 @@ and transform_ceiling ~pos ceil value =
          ~then_:ceil ~else_:value ) )
 
 and transform_context ~pos context value =
-  Tree.mk_value ~pos
+  (* FIXME: add a type for context values *)
+  Tree.mk_value ~pos ~meta:Typ.TBool
     (Set_context
        { context=
            List.map context ~f:(fun (rule_name, value) ->
@@ -225,7 +262,8 @@ and transform_context ~pos context value =
        ; value } )
 
 and transform_default ~pos default value =
-  let p = Tree.mk_value ~pos in
+  let Shared_ast.{typ; _} = Mark.get default in
+  let p = Tree.mk_value ~pos ~meta:typ in
   Tree.(
     p
       (mk_condition
@@ -233,7 +271,8 @@ and transform_default ~pos default value =
          ~then_:(transform default) ~else_:value ) )
 
 and transform_variations ~pos (variations, else_) =
-  let p = Tree.mk_value ~pos in
+  let Shared_ast.{typ; _} = Mark.get (List.hd_exn variations).if_ in
+  let p = Tree.mk_value ~pos ~meta:typ in
   let else_ =
     match else_ with
     | None ->
@@ -251,33 +290,17 @@ and transform_variations ~pos (variations, else_) =
              ~then_ ~else_ ) ) )
 
 and transform_is_not_applicable ~pos value =
-  let p = Tree.mk_value ~pos in
+  let p = Tree.mk_value ~pos ~meta:Typ.TBool in
   let value = transform value in
   Tree.(p (binop_eq ~pos value (p const_not_applicable)))
 
 and transform_is_applicable ~pos value =
-  let p = Tree.mk_value ~pos in
+  let p = Tree.mk_value ~pos ~meta:Typ.TBool in
   let value = transform value in
   Tree.(p (binop_neq ~pos value (p const_not_applicable)))
 
-and transform_type_def t value =
-  let pos = Pos.pos t in
-  let typ =
-    match Pos.value t with
-    | Shared.Typ.Number None ->
-        Type.any_number ~pos ()
-    | Shared.Typ.Number (Some unit) ->
-        Type.number_with_unit ~pos unit
-    | Shared.Typ.Literal l ->
-        Type.literal ~pos l
-    | Shared.Typ.Symbol _ ->
-        failwith "unreachable" (* there is no type symbol *)
-    | Shared.Typ.Enum e ->
-        Type.enum ~pos e
-  in
-  {value with meta= typ}
-
 and transform_round ~pos round value =
-  let p = Tree.mk_value ~pos in
+  let Shared_ast.{typ; _} = Mark.get (snd round) in
+  let p = Tree.mk_value ~pos ~meta:typ in
   let rounding, precision = round in
   p (Round (rounding, transform precision, value))

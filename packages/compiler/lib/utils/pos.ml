@@ -20,25 +20,8 @@ module Point = struct
   let dummy = {index= 0; line= 1; column= 1}
 end
 
-type pos = {file: string; start_pos: Point.t; end_pos: Point.t}
+type t = {file: string; start_pos: Point.t; end_pos: Point.t}
 [@@deriving equal, compare, show, sexp]
-
-type 'a t = 'a * pos [@@deriving equal, compare, show, sexp]
-
-(* Map operation *)
-let map ~f (x, pos) = (f x, pos)
-
-let ( >>| ) m f = map ~f m
-
-(* Applicative syntax *)
-let ( let+ ) m f = map ~f m
-
-(* Utility functions *)
-let value (x, _) = x
-
-let pos (_, pos) = pos
-
-let mk ~pos x = (x, pos)
 
 let beginning_of_file file = {file; start_pos= Point.dummy; end_pos= Point.dummy}
 
@@ -58,7 +41,7 @@ let add ?(len = 0) ?(line = 0) pos =
       ; line= pos.end_pos.line + line
       ; column= pos.end_pos.column + len } }
 
-let to_loc (pos : pos) : Stdune.Loc.t =
+let to_loc (pos : t) : Stdune.Loc.t =
   Stdune.Loc.create
     ~start:(Point.to_position pos.start_pos ~file:pos.file)
     ~stop:(Point.to_position pos.end_pos ~file:pos.file)

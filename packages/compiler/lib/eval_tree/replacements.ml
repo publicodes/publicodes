@@ -13,8 +13,8 @@ let find_eligible_make_not_applicable ~rule ~reference make_not_applicable =
     make_not_applicable
   |> List.map ~f:fst
 
-let create_make_not_applicable_node ~pos ~condition_node ~node =
-  let p = Tree.mk_value ~pos in
+let create_make_not_applicable_node ~pos ~meta ~condition_node ~node =
+  let p = Tree.mk_value ~pos ~meta in
   (* if (condition_node = null || is_not_defined condition_node || condition_node = false)
         then node else null *)
   Tree.(
@@ -30,8 +30,8 @@ let create_make_not_applicable_node ~pos ~condition_node ~node =
                        (p (binop_eq ~pos condition_node (p const_false))) ) ) ) )
          ~then_:node ~else_:(p const_not_applicable) ) )
 
-let create_replace_node ~pos ~replacing_node ~node =
-  let p = Tree.mk_value ~pos in
+let create_replace_node ~pos ~meta ~replacing_node ~node =
+  let p = Tree.mk_value ~pos ~meta in
   (* if replacement != null then replacement else node *)
   Tree.(
     p
@@ -51,6 +51,7 @@ let transform ~(replacement_graph : Replacement_graph.Rule_graph.t)
   let rec apply_to_node ~(rule : Rule_name.t) (node : 'a Tree.value) :
       'a Tree.value =
     let pos = node.pos in
+    let meta = node.meta in
     match node.value with
     | Ref reference ->
         let replacement_list =
@@ -62,11 +63,11 @@ let transform ~(replacement_graph : Replacement_graph.Rule_graph.t)
               node
           | [hd] ->
               let replacing_node =
-                apply_to_node ~rule (Tree.mk_value ~pos (Ref hd))
+                apply_to_node ~rule (Tree.mk_value ~pos ~meta (Ref hd))
               in
-              create_replace_node ~pos ~replacing_node ~node
+              create_replace_node ~pos ~meta ~replacing_node ~node
           | _ ->
-              create_exclusive_replacement_node ~pos ~replacement_list
+              create_exclusive_replacement_node ~pos ~meta ~replacement_list
                 ~node:reference
         in
         let make_not_applicable_list =
@@ -78,9 +79,10 @@ let transform ~(replacement_graph : Replacement_graph.Rule_graph.t)
             ~f:(fun node_acc condition_rule ->
               (* Apply make not applicable recursively (to handle transitivity) *)
               let condition_node =
-                apply_to_node ~rule (Tree.mk_value ~pos (Ref condition_rule))
+                apply_to_node ~rule
+                  (Tree.mk_value ~meta ~pos (Ref condition_rule))
               in
-              create_make_not_applicable_node ~pos ~condition_node
+              create_make_not_applicable_node ~pos ~meta ~condition_node
                 ~node:node_acc )
         in
         node

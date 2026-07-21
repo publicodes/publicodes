@@ -2,7 +2,7 @@ open Base
 
 type t = string [@@deriving equal, compare]
 
-let hash name (pos : Utils.Pos.pos) =
+let hash name (pos : Utils.Pos.t) =
   List.map ~f:Int.to_string
     [ pos.start_pos.index
     ; pos.start_pos.line

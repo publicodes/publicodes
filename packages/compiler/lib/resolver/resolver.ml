@@ -5,7 +5,9 @@ open Shared.Shared_ast
 open Utils.Output
 
 let check_orphan_rules ~rule_names ast =
-  let warn_if_orphan {name= name, pos; _} =
+  let warn_if_orphan rule =
+    let name = Mark.remove rule.name in
+    let pos = Mark.pos rule.name in
     let parent = Rule_name.parent name in
     match parent with
     | None ->
@@ -27,8 +29,8 @@ let check_duplicate_rules ast =
   let duplicate_logs name rules =
     let labels =
       List.map rules ~f:(fun rule ->
-          let pos = Pos.pos rule.name in
-          Pos.mk ~pos "définie ici" )
+          let pos = Mark.pos rule.name in
+          Mark.mk_pos ~pos "définie ici" )
     in
     let code, message = Err.duplicate_rule in
     Log.error message ~code ~labels ~kind:`Syntax
@@ -39,18 +41,19 @@ let check_duplicate_rules ast =
   let warn_if_duplicate rule_name =
     let matching_defs =
       List.filter ast ~f:(function rule ->
-          Rule_name.equal (Pos.value rule.name) rule_name )
+          Rule_name.equal (Mark.remove rule.name) rule_name )
     in
     if List.length matching_defs > 1 then
       Some (duplicate_logs rule_name matching_defs)
     else None
   in
-  List.map ast ~f:(function rule -> Pos.value rule.name)
+  List.map ast ~f:(function rule -> Mark.remove rule.name)
   |> List.stable_dedup ~compare:Rule_name.compare
   |> List.filter_map ~f:warn_if_duplicate
 
-let resolve_rule ~rule_names rule =
-  let context_rule = Pos.value rule.name in
+let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
+    resolved_rule_def Output.t =
+  let context_rule = Mark.remove rule.name in
   let resolve_ref ~pos ref =
     let resolved_ref =
       Rule_name.resolve ~rule_names ~current:context_rule ref
@@ -68,7 +71,8 @@ let resolve_rule ~rule_names rule =
     | Some ref ->
         return ref
   in
-  let rec map_expr (expr, pos) =
+  let rec map_expr
+      (((expr, {pos; _}) : (string list, Mark.pos_mark) expr) as expr_mark) =
     let+ expr =
       match expr with
       | Binary_op (op, left, right) ->
@@ -84,10 +88,14 @@ let resolve_rule ~rule_names rule =
           let+ ref_value = resolve_ref ~pos r in
           Ref ref_value
     in
-    (expr, pos)
-  and map_chainable_mechanism ((value, pos) : 'a chainable_mechanism Pos.t) =
-    let+ value =
-      match value with
+    Mark.copy expr_mark expr
+  and map_chainable_mechanism
+      (mechanism_mark :
+        ( (string list, Mark.pos_mark) chainable_mechanism
+        , Mark.pos_mark )
+        Mark.ed ) =
+    let+ mechanism =
+      match Mark.remove mechanism_mark with
       | Applicable_if value ->
           let+ value = map_value value in
           Applicable_if value
@@ -102,10 +110,11 @@ let resolve_rule ~rule_names rule =
           Floor value
       | Context context ->
           let+ context =
-            List.map context ~f:(fun ((ref, pos), value) ->
-                let* rule = resolve_ref ~pos ref in
+            List.map context ~f:(fun (ref, value) ->
+                let ref_name, ({pos; _} : Mark.pos_mark) = ref in
+                let* rule = resolve_ref ~pos ref_name in
                 let+ value = map_value value in
-                ((rule, pos), value) )
+                (Mark.mk_pos ~pos rule, value) )
             |> all_keep_logs
           in
           Context context
@@ -118,10 +127,13 @@ let resolve_rule ~rule_names rule =
       | Type t ->
           return (Type t)
     in
-    (value, pos)
-  and map_value_mechanism ((value, pos) : 'a value_mechanism Pos.t) =
-    let+ value =
-      match value with
+    Mark.copy mechanism_mark mechanism
+  and map_value_mechanism
+      (mechanism_mark :
+        ((string list, Mark.pos_mark) value_mechanism, Mark.pos_mark) Mark.ed )
+      =
+    let+ mechanism =
+      match Mark.remove mechanism_mark with
       | Expr expr ->
           let mapped_expr = map_expr expr >>| fun e -> Expr e in
           Output.default_to ~default:Not_defined mapped_expr
@@ -174,12 +186,12 @@ let resolve_rule ~rule_names rule =
           in
           Variations (variations, else_)
     in
-    (value, pos)
+    Mark.copy mechanism_mark mechanism
   and map_replace (replace : 'a replace) =
     let resolve_ref v =
-      let pos = Pos.pos v in
-      let+ ref = resolve_ref ~pos (Pos.value v) in
-      Pos.mk ~pos ref
+      let pos = Mark.pos v in
+      let+ ref = resolve_ref ~pos (Mark.remove v) in
+      Mark.mk_pos ~pos ref
     in
     let reference = resolve_ref replace.reference in
     let only_in = List.map replace.only_in ~f:resolve_ref |> all_keep_logs in
@@ -190,14 +202,15 @@ let resolve_rule ~rule_names rule =
       combine_3 reference only_in except_in
     in
     {reference; only_in; except_in; exclusive= replace.exclusive}
-  and map_value (v : 'a value) =
-    let* value = map_value_mechanism v.value in
+  and map_value (v : (string list, Mark.pos_mark) value) =
+    let node = Mark.remove v in
+    let* value = map_value_mechanism node.value in
     let+ chainable_mechanisms =
-      v.chainable_mechanisms
+      node.chainable_mechanisms
       |> List.map ~f:map_chainable_mechanism
       |> all_keep_logs
     in
-    {value; chainable_mechanisms}
+    Mark.copy v {value; chainable_mechanisms}
   in
   let* value = map_value rule.value in
   let* replace = List.map ~f:map_replace rule.replace |> all_keep_logs in
@@ -206,11 +219,11 @@ let resolve_rule ~rule_names rule =
   in
   return {rule with value; replace; make_not_applicable}
 
-let to_resolved_ast ast =
+let to_resolved_ast (ast : Parser.Ast.t) : resolved Output.t =
   let rule_names =
     Set.of_list
       (module Rule_name)
-      (List.map ast ~f:(fun rule -> Pos.value rule.name))
+      (List.map ast ~f:(fun rule -> Mark.remove rule.name))
   in
   let orphan_logs = check_orphan_rules ~rule_names ast in
   let duplicate_logs = check_duplicate_rules ast in

@@ -1,27 +1,29 @@
 open Utils
 open Base
 open Tokens
-open Shared.Shared_ast
 open Utils.Output
+module Shared_ast = Shared.Shared_ast
 
 exception SyntaxError of Log.t
 
 let raise_syntax_error ~pos ~code message =
   raise (SyntaxError (Log.error ~kind:`Syntax ~code ~pos message))
 
-let token_at t = Pos.mk (Some t)
+let token_at ~pos t = Mark.mk_pos ~pos (Some t)
 
-let rec parse (expression : Tokens.t Pos.t list) =
+let mk_expr ~pos expr = Mark.mk_pos ~pos expr
+
+let rec parse (expression : Tokens.t Mark.pos list) =
   try
     let result, remaining =
-      parse_expression expression (Pos.mk None ~pos:Pos.dummy)
+      parse_expression expression (Mark.mk_pos ~pos:Pos.dummy None)
     in
     match remaining with
     | [] ->
         return result
     | (EOF, _) :: [] ->
         return result
-    | (token, pos) :: _ ->
+    | (token, Mark.{pos; _}) :: _ ->
         let code, message = Err.unexpected_token (Tokens.show token) in
         raise_syntax_error ~pos ~code message
   with SyntaxError log -> (None, [log])
@@ -29,109 +31,130 @@ let rec parse (expression : Tokens.t Pos.t list) =
 and parse_expression tokens ctx = parse_equality tokens ctx
 
 (* Handle equality operators (= and !=) *)
-and parse_equality tokens ctx =
+and parse_equality tokens ctx :
+    (_, Mark.pos_mark) Shared_ast.expr * Tokens.t Mark.pos list =
   let left, tokens = parse_comparison tokens ctx in
   match tokens with
-  | (EQ, pos) :: rest ->
-      let right, rest = parse_equality rest (token_at EQ ~pos) in
-      let pos = Pos.merge pos (Pos.pos right) in
-      (Pos.mk ~pos (Binary_op (Pos.mk ~pos Eq, left, right)), rest)
-  | (NEQ, pos) :: rest ->
-      let right, rest = parse_equality rest (token_at NEQ ~pos) in
-      let pos = Pos.merge pos (Pos.pos right) in
-      (Pos.mk ~pos (Binary_op (Pos.mk ~pos NotEq, left, right)), rest)
+  | (EQ, Mark.{pos}) :: rest ->
+      let right, rest = parse_equality rest (token_at ~pos EQ) in
+      let pos = Pos.merge pos (Mark.pos right) in
+      ( mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos Eq, left, right))
+      , rest )
+  | (NEQ, {pos}) :: rest ->
+      let right, rest = parse_equality rest (token_at ~pos NEQ) in
+      let pos = Pos.merge pos (Mark.pos right) in
+      ( mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos NotEq, left, right))
+      , rest )
   | _ ->
       (left, tokens)
 
 (* Handle comparison operators (>, <, >=, <=) *)
 and parse_comparison tokens ctx =
   let left, tokens = parse_additive tokens ctx in
-  let left_pos = Pos.pos left in
+  let left_pos = Mark.pos left in
   match tokens with
-  | (GT, pos) :: rest ->
-      let right, rest = parse_additive rest (token_at GT ~pos) in
-      let right_pos = Pos.pos right in
+  | (GT, Mark.{pos}) :: rest ->
+      let right, rest = parse_additive rest (token_at ~pos GT) in
+      let right_pos = Mark.pos right in
       let pos = Pos.merge left_pos right_pos in
-      (Pos.mk ~pos (Binary_op (Pos.mk ~pos Gt, left, right)), rest)
-  | (LT, pos) :: rest ->
-      let right, rest = parse_additive rest (token_at LT ~pos) in
-      let right_pos = Pos.pos right in
+      ( mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos Gt, left, right))
+      , rest )
+  | (LT, {pos}) :: rest ->
+      let right, rest = parse_additive rest (token_at ~pos LT) in
+      let right_pos = Mark.pos right in
       let pos = Pos.merge left_pos right_pos in
-      (Pos.mk ~pos (Binary_op (Pos.mk ~pos Lt, left, right)), rest)
-  | (GTE, pos) :: rest ->
-      let right, rest = parse_additive rest (token_at GTE ~pos) in
-      let right_pos = Pos.pos right in
+      ( mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos Lt, left, right))
+      , rest )
+  | (GTE, {pos}) :: rest ->
+      let right, rest = parse_additive rest (token_at ~pos GTE) in
+      let right_pos = Mark.pos right in
       let pos = Pos.merge left_pos right_pos in
-      (Pos.mk ~pos (Binary_op (Pos.mk ~pos GtEq, left, right)), rest)
-  | (LTE, pos) :: rest ->
-      let right, rest = parse_additive rest (token_at LTE ~pos) in
-      let right_pos = Pos.pos right in
+      ( mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos GtEq, left, right))
+      , rest )
+  | (LTE, {pos}) :: rest ->
+      let right, rest = parse_additive rest (token_at ~pos LTE) in
+      let right_pos = Mark.pos right in
       let pos = Pos.merge pos right_pos in
-      (Pos.mk ~pos (Binary_op (Pos.mk ~pos LtEq, left, right)), rest)
+      ( mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos LtEq, left, right))
+      , rest )
   | _ ->
       (left, tokens)
 
 (* Handle addition and subtraction *)
 and parse_additive tokens ctx =
   let left, tokens = parse_multiplicative tokens ctx in
-  let left_pos = Pos.pos left in
+  let left_pos = Mark.pos left in
   match tokens with
-  | (ADD, pos) :: rest ->
-      let right, rest = parse_additive rest (token_at ADD ~pos) in
-      let right_pos = Pos.pos right in
+  | (ADD, Mark.{pos}) :: rest ->
+      let right, rest = parse_additive rest (token_at ~pos ADD) in
+      let right_pos = Mark.pos right in
       let pos = Pos.merge left_pos right_pos in
-      (Pos.mk ~pos (Binary_op (Pos.mk ~pos Add, left, right)), rest)
-  | (SUB, pos) :: rest ->
-      let right, rest = parse_additive rest (token_at SUB ~pos) in
-      let right_pos = Pos.pos right in
+      ( mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos Add, left, right))
+      , rest )
+  | (SUB, {pos}) :: rest ->
+      let right, rest = parse_additive rest (token_at ~pos SUB) in
+      let right_pos = Mark.pos right in
       let pos = Pos.merge left_pos right_pos in
-      (Pos.mk ~pos (Binary_op (Pos.mk ~pos Sub, left, right)), rest)
+      ( mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos Sub, left, right))
+      , rest )
   | _ ->
       (left, tokens)
 
 (* Handle multiplication and division *)
-and parse_multiplicative tokens ctx =
+and parse_multiplicative tokens ctx :
+    ('a, Mark.pos_mark) Shared_ast.expr * Tokens.t Mark.pos list =
   let left, tokens = parse_power tokens ctx in
-  let left_pos = Pos.pos left in
+  let left_pos = Mark.pos left in
   match tokens with
-  | (MUL, pos) :: rest ->
-      let right, rest = parse_multiplicative rest (token_at MUL ~pos) in
-      let right_pos = Pos.pos right in
+  | (MUL, Mark.{pos}) :: rest ->
+      let right, rest = parse_multiplicative rest (token_at ~pos MUL) in
+      let right_pos = Mark.pos right in
       let pos = Pos.merge left_pos right_pos in
-      let ast = Pos.mk ~pos (Binary_op (Pos.mk ~pos Mul, left, right)) in
+      let ast =
+        mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos Mul, left, right))
+      in
       (ast, rest)
-  | (DIV, pos) :: rest ->
-      let right, rest = parse_multiplicative rest (token_at DIV ~pos) in
-      let right_pos = Pos.pos right in
+  | (DIV, {pos}) :: rest ->
+      let right, rest = parse_multiplicative rest (token_at ~pos DIV) in
+      let right_pos = Mark.pos right in
       let pos = Pos.merge left_pos right_pos in
-      let ast = Pos.mk ~pos (Binary_op (Pos.mk ~pos Div, left, right)) in
+      let ast =
+        mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos Div, left, right))
+      in
       (ast, rest)
   | _ ->
       (left, tokens)
 
 (* Handle exponentiation *)
-and parse_power tokens ctx =
+and parse_power tokens ctx :
+    ('a, Mark.pos_mark) Shared_ast.expr * Tokens.t Mark.pos list =
   let left, tokens = parse_primary tokens ctx in
-  let left_pos = Pos.pos left in
+  let left_pos = Mark.pos left in
   match tokens with
-  | (POW, pos) :: rest ->
-      let right, rest = parse_power rest (token_at POW ~pos) in
-      let right_pos = Pos.pos right in
+  | (POW, Mark.{pos}) :: rest ->
+      let right, rest = parse_power rest (token_at ~pos POW) in
+      let right_pos = Mark.pos right in
       let pos = Pos.merge left_pos right_pos in
-      let ast = Pos.mk ~pos (Binary_op (Pos.mk ~pos Pow, left, right)) in
+      let ast =
+        mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos Pow, left, right))
+      in
       (ast, rest)
   | _ ->
       (left, tokens)
 
 (* Handle primary expressions: constants, parentheses, rule names *)
-and parse_primary tokens ctx =
+and parse_primary tokens ctx :
+    ('a, Mark.pos_mark) Shared_ast.expr * Tokens.t Mark.pos list =
   match tokens with
   | [] ->
       failwith "Unexpected end of input"
-  | (SUB, pos) :: rest ->
-      let expr, rest = parse_primary rest (token_at SUB ~pos) in
-      let pos = Pos.merge pos (Pos.pos expr) in
-      let ast = Pos.mk ~pos (Unary_op (Pos.mk ~pos Neg, expr)) in
+  | (SUB, Mark.{pos}) :: rest ->
+      let expr, rest = parse_primary rest (token_at ~pos SUB) in
+      let expr_pos = Mark.pos expr in
+      let pos = Pos.merge pos expr_pos in
+      let ast =
+        mk_expr ~pos Shared_ast.(Unary_op (Mark.mk_pos ~pos Neg, expr))
+      in
       (ast, rest)
   | (LPAREN, _) :: rest -> (
       let expr, rest = parse_expression rest ctx in
@@ -140,35 +163,38 @@ and parse_primary tokens ctx =
           (expr, rest)
       | _ ->
           let code, message = Err.missing_closing_paren in
+          let pos = Mark.pos expr in
           (* TODO: add labels to better error message *)
-          raise_syntax_error ~pos:(Pos.pos expr) ~code message )
-  | (NUMBER (n, Some unit), pos) :: rest ->
-      let value = Number (n, Some (Shared.Units.parse_unit unit)) in
-      (Pos.mk ~pos (Const value), rest)
-  | (NUMBER (n, None), pos) :: rest ->
-      let value = Number (n, None) in
-      (Pos.mk ~pos (Const value), rest)
-  | (STRING s, pos) :: rest ->
-      let value = String s in
-      (Pos.mk ~pos (Const value), rest)
-  | (SYMBOL s, pos) :: rest ->
-      let value = Symbol s in
-      (Pos.mk ~pos (Const value), rest)
-  | (BOOLEAN b, pos) :: rest ->
-      let value = Bool b in
-      (Pos.mk ~pos (Const value), rest)
-  | (DATE_LITERAL (`Day (d, m, y)), pos) :: rest ->
-      let value = Date (Day {day= d; month= m; year= y}) in
-      (Pos.mk ~pos (Const value), rest)
-  | (DATE_LITERAL (`Month (m, y)), pos) :: rest ->
-      let value = Date (Month {month= m; year= y}) in
-      (Pos.mk ~pos (Const value), rest)
-  | (RULE_NAME name, pos) :: rest ->
+          raise_syntax_error ~pos ~code message )
+  | (NUMBER (n, Some unit), {pos}) :: rest ->
+      let value =
+        Shared_ast.(Number (n, Some (Shared.Units.parse_unit unit)))
+      in
+      (mk_expr ~pos Shared_ast.(Const value), rest)
+  | (NUMBER (n, None), {pos}) :: rest ->
+      let value = Shared_ast.Number (n, None) in
+      (mk_expr ~pos Shared_ast.(Const value), rest)
+  | (STRING s, {pos}) :: rest ->
+      let value = Shared_ast.String s in
+      (mk_expr ~pos Shared_ast.(Const value), rest)
+  | (SYMBOL s, {pos}) :: rest ->
+      let value = Shared_ast.Symbol s in
+      (mk_expr ~pos Shared_ast.(Const value), rest)
+  | (BOOLEAN b, {pos}) :: rest ->
+      let value = Shared_ast.Bool b in
+      (mk_expr ~pos Shared_ast.(Const value), rest)
+  | (DATE_LITERAL (`Day (d, m, y)), {pos}) :: rest ->
+      let value = Shared_ast.(Date (Day {day= d; month= m; year= y})) in
+      (mk_expr ~pos Shared_ast.(Const value), rest)
+  | (DATE_LITERAL (`Month (m, y)), {pos}) :: rest ->
+      let value = Shared_ast.(Date (Month {month= m; year= y})) in
+      (mk_expr ~pos Shared_ast.(Const value), rest)
+  | (RULE_NAME name, {pos}) :: rest ->
       parse_rule_name ~pos [name] rest
-  | (token, pos) :: _ ->
+  | (token, {pos}) :: _ ->
       (* Code for nice error printing *)
       let after_op =
-        Pos.value ctx
+        Mark.remove ctx
         |> Option.map ~f:Tokens.is_operator
         |> Option.value ~default:false
       in
@@ -177,24 +203,24 @@ and parse_primary tokens ctx =
         if after_op || Tokens.is_operator token then Err.malformed_expression
         else Err.invalid_char
       in
-      let op_pos = Pos.pos ctx in
+      let op_pos = Mark.pos ctx in
       let op_token_str =
         if after_op then
-          Pos.value ctx |> Option.value_map ~default:"" ~f:Tokens.to_string
+          Mark.remove ctx |> Option.value_map ~default:"" ~f:Tokens.to_string
         else if before_op then Tokens.to_string token
         else ""
       in
       let labels =
         if after_op then
-          Option.map (Pos.value ctx) ~f:(fun ctx ->
-              [ Pos.mk ~pos:op_pos
+          Option.map (Mark.remove ctx) ~f:(fun ctx ->
+              [ Mark.mk_pos ~pos:op_pos
                   (Printf.sprintf
                      "une valeur ou une référence sont attendues après \
                       l'opérateur `%s`"
                      (Tokens.to_string ctx) ) ] )
           |> Option.value ~default:[]
         else if Tokens.is_operator token then
-          [ Pos.mk ~pos
+          [ Mark.mk_pos ~pos
               (Printf.sprintf
                  "une valeur (nombre, booléean, date) ou une référence est \
                   attendue AVANT l'opérateur `%s`"
@@ -213,8 +239,8 @@ and parse_primary tokens ctx =
 
 and parse_rule_name ~pos names tokens =
   match tokens with
-  | (DOT, _) :: (RULE_NAME name, end_pos) :: rest ->
+  | (DOT, _) :: (RULE_NAME name, {pos= end_pos}) :: rest ->
       let pos = Pos.merge pos end_pos in
       parse_rule_name ~pos (name :: names) rest
   | _ ->
-      (Pos.mk ~pos (Ref (List.rev names)), tokens)
+      (mk_expr ~pos Shared_ast.(Ref (List.rev names)), tokens)

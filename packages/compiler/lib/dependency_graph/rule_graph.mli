@@ -118,7 +118,7 @@ module Rule_vertex : sig
 end
 
 module Ref_edge : sig
-  type t = Utils.Pos.pos [@@deriving compare]
+  type t = Utils.Pos.t [@@deriving compare]
 
   val hash : t -> int
 

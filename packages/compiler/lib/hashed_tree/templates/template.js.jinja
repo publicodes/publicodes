@@ -46,29 +46,72 @@
 	{{ fmt_identifier(name) }}Params
 {%- endmacro -%}
 
-{%- macro fmt_ts_type (type) -%}
-	{%- switch type %}
-	{%- case "text" -%}
-		string
+{%- macro fmt_ts_type_literal (literal) -%}
+	{%- switch literal.type %}
+	{%- case "bool" -%}
+		{{ literal.value }}
 	{%- case "date" -%}
-		Date
+		{%- if literal.day -%}
+			{{ printf("'%d-%02d-%02d'",
+				literal.year, literal.month, literal.day) }}
+		{%- else -%}
+			{{ printf("'%02d-%02d'",
+				literal.year, literal.month) }}
+		{%- endif -%}
+	{%- case "text" -%}
+		"{{ literal.value }}"
+	{%- case "symbol" -%}
+		'{{ literal.value }}'
 	{%- case "number" -%}
-		number
-	{%- case "boolean" -%}
-		boolean
-	{%- case "not applicable" -%}
-		NotApplicable
-	{%- case "not defined" -%}
-		NotDefined
-	{%- default -%}
-		{{ type }}
+		{{ printf('%f', literal.value) }}
 	{%- endswitch %}
 {%- endmacro -%}
 
-{%- macro fmt_ts_types (types) -%}
-	{%- for type in types -%}
-		{{ fmt_ts_type(type) }}{% if !loop.last %},{{ " | " }}{% endif %}
-	{%- endfor -%}
+{%- macro fmt_ts_type_generalize (literal) -%}
+	{%- switch literal.type %}
+	{%- case "bool" -%}
+		boolean
+	{%- case "date" -%}
+		date
+	{%- case "text" -%}
+		text
+	{%- case "symbol" -%}
+		symbol
+	{%- case "number" -%}
+		number
+	{%- endswitch %}
+{%- endmacro -%}
+
+{%- macro fmt_ts_type (type, generalize) -%}
+	{%- switch type.type %}
+	{%- case "literal" -%}
+		{%- if generalize -%}
+			{{ fmt_ts_type_generalize (type.literal) }}
+		{%- else -%}
+			{{ fmt_ts_type_literal (type.literal) }}
+		{%- endif -%}
+	{%- case "text" -%}
+		text
+	{%- case "boolean" -%}
+		boolean
+	{%- case "date" -%}
+		date
+	{%- case "number" -%}
+		number
+	{%- case "enum" -%}
+		{%- if generalize -%}
+			{{ fmt_ts_type_generalize (type.literals[0]) }}
+		{%- else -%}
+			(
+				{%- for literal in type.literals -%}
+						{{ fmt_ts_type_literal (literal) }}
+					{%- if !loop.last %}{{ "|" }}{% endif %}
+				{%- endfor -%}
+			)
+		{%- endif -%}
+	{%- case "unknown" -%}
+		unknown
+	{%- endswitch %}
 {%- endmacro -%}
 
 {%- macro fmt_esc (input) -%}
@@ -171,9 +214,9 @@
 
 {%- for rule_type, rule_name, rule_node in rules %}
 
-/** @type {(ctx: Context, params: RuleName[]) => {{ fmt_ts_types(rule_type) }}} */
+/** @type {(ctx: Context, params: RuleName[]) => {{ fmt_ts_type(rule_type) }}} */
 function {{ fmt_method(rule_name) }}(ctx, params) {
-  return /** @type \{{{ fmt_ts_types(rule_type)}}\} */ (
+  return /** @type \{{{ fmt_ts_type(rule_type, false)}}\} */ (
     {%- call indentret ("    ") -%}
     {{ fmt_node(rule_node) }}
     {%- endcall %}
@@ -205,23 +248,19 @@ const rules = {
      * Parameters of "{{ out.rule_name }}"
      * @typedef \{{
      {%- for param_type, param_value in out.params %}
-     *  '{{ fmt_esc(param_value) }}'?: {{ fmt_ts_types(param_type) }}
+     *  '{{ fmt_esc(param_value) }}'?: {{ fmt_ts_type(param_type, false) }}
      {%- endfor %}
      * }} {{ fmt_identifier(out.rule_name) }}Params
      */
     /**
      * Evaluate "{{ out.rule_name }}" with evaluation trace, and information on
      * missing and needed parameters.
-     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {Options}) => {value: {{ fmt_ts_types(out.return_type) }}, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>, trace: {Trace}}}
+     * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: {Options}) => {value: {{ fmt_ts_type(out.return_type, false) }}, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>, trace: {Trace}}}
      */
     evaluate: (params = {}, options) =>
       $evaluate({{ fmt_method(out.rule_name) }}, params, options),
-    /** @type \{{{ fmt_ts_types(out.rule_type) }}} */
-    type: '
-      {%- for rule_type in out.rule_type -%}
-        {{ rule_type }}{% if !loop.last %},{{ " | " }}{% endif %}
-      {%- endfor -%}
-    ',
+    /** @type \{"{{ fmt_ts_type(out.rule_type, true) }}"} */
+    type: "{{ fmt_ts_type(out.rule_type, true) }}",
     {%- if out.unit %}
     /** @type {"{{ out.unit }}"} */
     unit: "{{ out.unit }}",

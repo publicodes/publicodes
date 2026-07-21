@@ -1,6 +1,6 @@
 open Base
+open Utils
 open Shared
-module Pos = Utils.Pos
 
 module Rule_vertex = struct
   type t = Rule_name.t * Rule_context.t list [@@deriving equal, compare]
@@ -28,7 +28,7 @@ end
 
 (* Module for edge labels *)
 module Ref_edge = struct
-  type t = Pos.pos [@@deriving compare]
+  type t = Pos.t [@@deriving compare]
 
   let hash = Hashtbl.hash
 
@@ -85,26 +85,28 @@ let output_dot ?(file_path = "./rule_graph.dot") graph =
 
 let root_vertex rule_name = (rule_name, [])
 
-let rec find_references_in_expr (expr : Rule_name.t Shared_ast.expr) :
-    Rule_name.t Pos.t list =
-  match Pos.value expr with
+let rec find_references_in_expr
+    ((expr, {pos; _}) : (Rule_name.t, Mark.pos_mark) Shared_ast.expr) :
+    Rule_name.t Mark.pos list =
+  match expr with
   | Shared_ast.Const _ ->
       []
-  | Shared_ast.Ref name ->
-      let pos = Pos.pos expr in
-      [Pos.mk ~pos name]
-  | Shared_ast.Unary_op (_, expr) ->
+  | Ref name ->
+      [Mark.mk_pos ~pos name]
+  | Unary_op (_, expr) ->
       find_references_in_expr expr
-  | Shared_ast.Binary_op (_, expr, expr') ->
+  | Binary_op (_, expr, expr') ->
       find_references_in_expr expr @ find_references_in_expr expr'
 
 let get_context current_rule
     (chainable_mechanisms :
-      Rule_name.t Shared_ast.chainable_mechanism Pos.t list ) :
-    Rule_context.t option =
+      ( (Rule_name.t, Mark.pos_mark) Shared_ast.chainable_mechanism
+      , Mark.pos_mark )
+      Mark.ed
+      list ) : Rule_context.t option =
   (* NOTE: there is only one context for each value, so we can stop at the first
      one we find *)
-  List.find_map chainable_mechanisms ~f:(fun (mecha, pos) ->
+  List.find_map chainable_mechanisms ~f:(fun (mecha, {pos; _}) ->
       match mecha with
       | Shared_ast.Context contexts ->
           let context_rules = List.map contexts ~f:fst in
@@ -114,8 +116,8 @@ let get_context current_rule
 
 let rec find_references (only_in_chainable : bool)
     (context_stack : Rule_context.t list) (current_rule : Rule_name.t)
-    ({value; chainable_mechanisms} : Rule_name.t Shared_ast.value) :
-    Rule_vertex.t Pos.t list =
+    (({value; chainable_mechanisms}, _) : Shared_ast.resolved_value) :
+    Rule_vertex.t Mark.pos list =
   let context_stack, aleady_visited =
     match get_context current_rule chainable_mechanisms with
     | Some ctx ->
@@ -136,52 +138,47 @@ let rec find_references (only_in_chainable : bool)
     else
       let value_refs =
         find_references_in_value only_in_chainable context_stack current_rule
-          (Pos.value value)
+          (Mark.remove value)
       in
       value_refs @ chainable_refs
 
 and find_references_in_chainable (context_stack : Rule_context.t list)
     (current_rule : Rule_name.t)
-    (chainable_mechanism : Rule_name.t Shared_ast.chainable_mechanism) =
+    (chainable_mechanism : (Rule_name.t, 'mark) Shared_ast.chainable_mechanism)
+    =
   let find_references = find_references false context_stack current_rule in
   match chainable_mechanism with
   | Shared_ast.Context contexts ->
       List.concat_map contexts ~f:(fun (_, v) -> find_references v)
-  | Shared_ast.Default v
-  | Shared_ast.Ceiling v
-  | Shared_ast.Floor v
-  | Shared_ast.Round (_, v)
-  | Shared_ast.Applicable_if v
-  | Shared_ast.Not_applicable_if v ->
+  | Default v
+  | Ceiling v
+  | Floor v
+  | Round (_, v)
+  | Applicable_if v
+  | Not_applicable_if v ->
       find_references v
-  | Shared_ast.Type _ ->
+  | Type _ ->
       []
 
 and find_references_in_value (only_in_chainable : bool)
     (context_stack : Rule_context.t list) (current_rule : Rule_name.t)
-    (value : Rule_name.t Shared_ast.value_mechanism) =
+    (value : (Rule_name.t, 'mark) Shared_ast.value_mechanism) =
   let find_references =
     find_references only_in_chainable context_stack current_rule
   in
   match value with
   | Shared_ast.Not_defined ->
       []
-  | Shared_ast.Expr expr ->
+  | Expr expr ->
       find_references_in_expr expr
-      |> List.map ~f:(fun (ref_name, pos) ->
-          Pos.mk ~pos (ref_name, context_stack) )
-  | Shared_ast.Value v ->
+      |> List.map ~f:(Mark.map ~f:(fun ref_name -> (ref_name, context_stack)))
+  | Value v ->
       find_references v
-  | Shared_ast.Is_applicable v | Shared_ast.Is_not_applicable v ->
+  | Is_applicable v | Is_not_applicable v ->
       find_references v
-  | Shared_ast.Sum vs
-  | Shared_ast.Product vs
-  | Shared_ast.All_of vs
-  | Shared_ast.Min_of vs
-  | Shared_ast.Max_of vs
-  | Shared_ast.One_of vs ->
+  | Sum vs | Product vs | All_of vs | Min_of vs | Max_of vs | One_of vs ->
       List.concat_map vs ~f:find_references
-  | Shared_ast.Variations (variations, else_opt) ->
+  | Variations (variations, else_opt) ->
       let variation_refs =
         List.concat_map variations ~f:(fun {if_; then_} ->
             find_references if_ @ find_references then_ )
@@ -195,9 +192,9 @@ let mk ast =
   let graph = G.create () in
   let visited_node = ref [] in
   let rec add_rule_dependencies
-      ({name; value; _} : Rule_name.t Shared_ast.rule_def)
+      ({name; value; _} : Shared_ast.resolved_rule_def)
       (context_stack : Rule_context.t list) =
-    let current_rule = Pos.value name in
+    let current_rule = Mark.remove name in
     let current_node = (current_rule, context_stack) in
     if List.exists !visited_node ~f:(Rule_vertex.equal current_node) then
       (* Already visited, do nothing *)
@@ -217,10 +214,10 @@ let mk ast =
         find_references only_in_chainable context_stack current_rule value
       in
       (*  iter refs[i].replaced_by -> ajouter un edge *)
-      List.iter refs ~f:(fun (referenced_node, referenced_pos) ->
-          let ref_name, ref_ctx_stack = referenced_node in
-          G.add_vertex graph referenced_node ;
-          let edge = (current_node, referenced_pos, referenced_node) in
+      List.iter refs ~f:(fun (ref_node, {pos= ref_pos}) ->
+          let ref_name, ref_ctx_stack = ref_node in
+          G.add_vertex graph ref_node ;
+          let edge = (current_node, ref_pos, ref_node) in
           G.add_edge_e graph edge ;
           add_rule_dependencies (Shared_ast.find_exn ref_name ast) ref_ctx_stack )
       )

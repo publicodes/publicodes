@@ -36,7 +36,7 @@ let message_traduction =
     , ("caractère `:` non valide à cet endroit", []) ) ]
 
 let make_scalar pos (scalar : Yaml.scalar) =
-  Pos.mk ~pos Ast.{value= scalar.value; style= scalar.style}
+  Mark.mk_pos ~pos:pos Ast.{value= scalar.value; style= scalar.style}
 
 let print_token =
   let open Event in

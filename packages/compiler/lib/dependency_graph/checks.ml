@@ -28,7 +28,7 @@ let cycle_check (graph : Rule_graph.t) : Log.t list =
                   (Rule_name.to_string ref)
                 ^ if is_last then "de nouveau" else "ici"
               in
-              Pos.mk ~pos label )
+              Mark.mk_pos ~pos label )
         in
         let code, message = Err.cycle_detected in
         Log.warning message ~code ~kind:`Cycle ~pos:first_ref_pos ~labels :: acc
@@ -36,14 +36,15 @@ let cycle_check (graph : Rule_graph.t) : Log.t list =
         let _, pos, _ = Rule_graph.find_edge graph rule rule in
         let code, message = Err.cycle_detected in
         Log.warning message ~code ~kind:`Cycle ~pos
-          ~labels:[Pos.mk ~pos "la règle se référence elle-même"]
+          ~labels:[Mark.mk_pos ~pos "la règle se référence elle-même"]
         :: acc
     | [] ->
         acc
   in
   Cycle_analysis.fold_cycles log_cycle graph []
 
-let illegal_check (ast : 'a Shared_ast.t) (graph : Rule_graph.t) : Log.t list =
+let illegal_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
+    Log.t list =
   let log_illegal ((rule_a, _), pos, (rule_b, _)) acc =
     let rule_def_a = Shared_ast.find_exn rule_a ast in
     let rule_def_b = Shared_ast.find_exn rule_b ast in
@@ -97,16 +98,16 @@ let is_rule_used_in_deps ctx_rule (current_ctx : Rule_context.t)
   in
   not (List.is_empty deps_using_ctx_rule)
 
-let get_unused_rules_in_deps deps ctx : Rule_name.t Pos.t list =
+let get_unused_rules_in_deps deps ctx : Rule_name.t Mark.pos list =
   Rule_context.rules ctx
   |> List.filter ~f:(fun rule ->
-      not (is_rule_used_in_deps (Pos.value rule) ctx deps) )
+      not (is_rule_used_in_deps (Mark.remove rule) ctx deps) )
 
 let unused_context_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
     Log.t list =
   let graph = Rule_graph.Oper.transitive_closure graph in
   List.fold ast ~init:[] ~f:(fun acc rule_def ->
-      let rule_name = Pos.value rule_def.name in
+      let rule_name = Mark.remove rule_def.name in
       let ctxs = Rule_context.from_rule_def rule_def in
       let from = Rule_graph.root_vertex rule_name in
       let deps = Rule_graph.succ graph from in
@@ -122,8 +123,8 @@ let unused_context_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
             let labels =
               (* TODO: should also provide the position of the context overriding
              the unused context, if any. *)
-              List.rev_map unused_ctx_rules ~f:(fun (_, pos) ->
-                  Pos.mk ~pos "contexte inutilisé" )
+              List.rev_map unused_ctx_rules
+                ~f:(Mark.map ~f:(fun _ -> "contexte inutilisé"))
             in
             Log.error ~labels ~kind:`Syntax ~code message ) )
 

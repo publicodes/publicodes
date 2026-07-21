@@ -9,7 +9,7 @@ open Yaml_parser
     And returns the parsed AST value wrapped in an [Output.t] for error handling.
 *)
 type parse_value_fn =
-  ?error_if_undefined:bool -> pos:Pos.pos -> yaml -> Ast.value Output.t
+  ?error_if_undefined:bool -> pos:Pos.t -> yaml -> Ast.value Output.t
 
 (** Type for parsing mechanism functions.
 
@@ -23,4 +23,4 @@ type parse_value_fn =
     The ['a] type parameter represents the specific mechanism type being parsed
     (e.g., [value_mechanism] or [chainable_mechanism]).
 *)
-type 'a parse_meca = pos:Pos.pos -> parse:parse_value_fn -> yaml -> 'a Output.t
+type 'a parse_meca = pos:Pos.t -> parse:parse_value_fn -> yaml -> 'a Output.t

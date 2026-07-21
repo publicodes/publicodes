@@ -8,68 +8,68 @@ open Utils
 
 let lexstr str = str |> Utf8.from_string |> lex_one
 
-let%test_unit "Lex '+'" = [%test_eq: Tokens.t] ADD (Pos.value (lexstr "+"))
+let%test_unit "Lex '+'" = [%test_eq: Tokens.t] ADD (Mark.remove (lexstr "+"))
 
-let%test_unit "Lex '>='" = [%test_eq: Tokens.t] GTE (Pos.value (lexstr ">="))
+let%test_unit "Lex '>='" = [%test_eq: Tokens.t] GTE (Mark.remove (lexstr ">="))
 
-let%test_unit "Lex ' . '" = [%test_eq: Tokens.t] DOT (Pos.value (lexstr " . "))
+let%test_unit "Lex ' . '" = [%test_eq: Tokens.t] DOT (Mark.remove (lexstr " . "))
 
 let%test_unit "Lex Date" =
   [%test_eq: Tokens.t]
     (DATE_LITERAL (`Day (31, 12, 2024)))
-    (Pos.value (lexstr "31/12/2024")) ;
+    (Mark.remove (lexstr "31/12/2024")) ;
   [%test_eq: Tokens.t]
     (DATE_LITERAL (`Month (12, 1998)))
-    (Pos.value (lexstr "12/1998"))
+    (Mark.remove (lexstr "12/1998"))
 
 let%test_unit "Lex Number" =
-  [%test_eq: Tokens.t] (NUMBER (1239., None)) (Pos.value (lexstr "01239")) ;
-  [%test_eq: Tokens.t] (NUMBER (12.098, None)) (Pos.value (lexstr "12.098")) ;
-  [%test_eq: Tokens.t] (NUMBER (12.8, Some "€")) (Pos.value (lexstr "12.80€")) ;
-  [%test_eq: Tokens.t] (NUMBER (42., Some "£")) (Pos.value (lexstr "42 £")) ;
-  [%test_eq: Tokens.t] (NUMBER (0.4, Some "%")) (Pos.value (lexstr "0.4%")) ;
+  [%test_eq: Tokens.t] (NUMBER (1239., None)) (Mark.remove (lexstr "01239")) ;
+  [%test_eq: Tokens.t] (NUMBER (12.098, None)) (Mark.remove (lexstr "12.098")) ;
+  [%test_eq: Tokens.t] (NUMBER (12.8, Some "€")) (Mark.remove (lexstr "12.80€")) ;
+  [%test_eq: Tokens.t] (NUMBER (42., Some "£")) (Mark.remove (lexstr "42 £")) ;
+  [%test_eq: Tokens.t] (NUMBER (0.4, Some "%")) (Mark.remove (lexstr "0.4%")) ;
   [%test_eq: Tokens.t]
     (NUMBER (42., Some "% /an"))
-    (Pos.value (lexstr "42 % /an")) ;
+    (Mark.remove (lexstr "42 % /an")) ;
   [%test_eq: Tokens.t]
     (NUMBER (312., Some "€/an"))
-    (Pos.value (lexstr "312 €/an")) ;
+    (Mark.remove (lexstr "312 €/an")) ;
   [%test_eq: Tokens.t]
     (NUMBER (1., Some "$ /employé /mois"))
-    (Pos.value (lexstr "1 $ /employé /mois")) ;
-  [%test_eq: Tokens.t] (NUMBER (10., Some "%")) (Pos.value (lexstr "10 %")) ;
+    (Mark.remove (lexstr "1 $ /employé /mois")) ;
+  [%test_eq: Tokens.t] (NUMBER (10., Some "%")) (Mark.remove (lexstr "10 %")) ;
   [%test_eq: Tokens.t]
     (NUMBER (42., Some "kW.h/an.personne"))
-    (Pos.value (lexstr "42 kW.h/an.personne"))
+    (Mark.remove (lexstr "42 kW.h/an.personne"))
 
 let%test_unit "Lex string" =
-  [%test_eq: Tokens.t] (STRING "abc") (Pos.value (lexstr "\"abc\"")) ;
-  [%test_eq: Tokens.t] (STRING "1239") (Pos.value (lexstr "\"1239\""))
+  [%test_eq: Tokens.t] (STRING "abc") (Mark.remove (lexstr "\"abc\"")) ;
+  [%test_eq: Tokens.t] (STRING "1239") (Mark.remove (lexstr "\"1239\""))
 
 let%test_unit "Lex symbol" =
-  [%test_eq: Tokens.t] (SYMBOL "abc") (Pos.value (lexstr "'abc'")) ;
-  [%test_eq: Tokens.t] (SYMBOL "1239") (Pos.value (lexstr "'1239'"))
+  [%test_eq: Tokens.t] (SYMBOL "abc") (Mark.remove (lexstr "'abc'")) ;
+  [%test_eq: Tokens.t] (SYMBOL "1239") (Mark.remove (lexstr "'1239'"))
 
 let%test_unit "Lex Rule Name" =
-  [%test_eq: Tokens.t] (RULE_NAME "rule_name") (Pos.value (lexstr "rule_name")) ;
-  [%test_eq: Tokens.t] (RULE_NAME "rule name") (Pos.value (lexstr "rule name")) ;
+  [%test_eq: Tokens.t] (RULE_NAME "rule_name") (Mark.remove (lexstr "rule_name")) ;
+  [%test_eq: Tokens.t] (RULE_NAME "rule name") (Mark.remove (lexstr "rule name")) ;
   [%test_eq: Tokens.t] (RULE_NAME "rule « '$n+ame 12 mo#éè °")
-    (Pos.value (lexstr "rule « '$n+ame 12 mo#éè °")) ;
+    (Mark.remove (lexstr "rule « '$n+ame 12 mo#éè °")) ;
   [%test_eq: Tokens.t] (RULE_NAME "rule oui da")
-    (Pos.value (lexstr "rule oui da"))
+    (Mark.remove (lexstr "rule oui da"))
 
 let%test_unit "Lex Boolean" =
-  [%test_eq: Tokens.t] (BOOLEAN true) (Pos.value (lexstr "oui")) ;
-  [%test_eq: Tokens.t] (BOOLEAN false) (Pos.value (lexstr "non"))
+  [%test_eq: Tokens.t] (BOOLEAN true) (Mark.remove (lexstr "oui")) ;
+  [%test_eq: Tokens.t] (BOOLEAN false) (Mark.remove (lexstr "non"))
 
-let%test_unit "Lex EOF" = [%test_eq: Tokens.t] EOF (Pos.value (lexstr ""))
+let%test_unit "Lex EOF" = [%test_eq: Tokens.t] EOF (Mark.remove (lexstr ""))
 
 let%test_unit "Lex Expressions" =
   let tokens =
-    lex (Pos.mk ~pos:Pos.dummy "12 € + 4.5€ * 10 % / règle") |> to_exn
+    lex (Mark.mk_pos ~pos:Pos.dummy "12 € + 4.5€ * 10 % / règle") |> to_exn
   in
   [%test_eq: Tokens.t list]
-    (List.map ~f:Pos.value tokens)
+    (List.map ~f:Mark.remove tokens)
     [ NUMBER (12., Some "€")
     ; ADD
     ; NUMBER (4.5, Some "€")
@@ -80,9 +80,9 @@ let%test_unit "Lex Expressions" =
     ; EOF ]
 
 let%test_unit "Lex Expressions with" =
-  let tokens = lex (Pos.mk ~pos:Pos.dummy "12 . az . mo / oui") |> to_exn in
+  let tokens = lex (Mark.mk_pos ~pos:Pos.dummy "12 . az . mo / oui") |> to_exn in
   [%test_eq: Tokens.t list]
-    (List.map ~f:Pos.value tokens)
+    (List.map ~f:Mark.remove tokens)
     [ NUMBER (12., None)
     ; DOT
     ; RULE_NAME "az"

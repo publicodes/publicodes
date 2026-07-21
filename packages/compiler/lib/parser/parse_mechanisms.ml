@@ -13,7 +13,7 @@ let value_mechanisms =
         , fun ~pos ~parse value ->
             let+ value = parse ~pos value in
             Value value )
-        : string * 'a value_mechanism parse_meca )
+        : string * ('a, 'mark) value_mechanism parse_meca )
     ; ( "somme"
       , fun ~pos ~parse value ->
           let+ nodes = parse_array ~pos ~parse value in
@@ -55,7 +55,7 @@ let chainable_mechanisms =
         , fun ~pos ~parse value ->
             let+ value = parse ~pos value in
             Applicable_if value )
-        : string * 'a chainable_mechanism parse_meca )
+        : string * ('a, 'mark) chainable_mechanism parse_meca )
     ; ( "non applicable si"
       , fun ~pos ~parse value ->
           let+ value = parse ~pos value in
@@ -89,7 +89,7 @@ let chainable_mechanisms =
           Round (Up, value) ) ]
 
 let parse_value_mechanism ~pos ~parse mapping :
-    'a value_mechanism Pos.t Output.t =
+    ('a, 'mark) value_mechanism Mark.pos Output.t =
   (* 1. Check that there is at most one value mechanism *)
   let mechanism =
     List.find mapping ~f:(fun (key, _) ->
@@ -97,16 +97,16 @@ let parse_value_mechanism ~pos ~parse mapping :
   in
   match mechanism with
   | None ->
-      return (Pos.mk ~pos Not_defined)
+      return (Mark.mk_pos ~pos:pos Not_defined)
   | Some (key, value) ->
       let mechanism_name = get_value key in
       let mechanism_fn = Hashtbl.find_exn value_mechanisms mechanism_name in
-      let pos = Pos.pos key in
+      let pos = Mark.pos key in
       let+ result = mechanism_fn ~pos ~parse value in
-      Pos.mk ~pos result
+      Mark.mk_pos ~pos:pos result
 
 let parse_chainable_mechanisms ~parse mapping :
-    'a chainable_mechanism Pos.t list Output.t =
+    ('a, 'mark) chainable_mechanism Mark.pos list Output.t =
   let chainable_mechanism_entries =
     List.filter mapping ~f:(fun (key, _) ->
         Hashtbl.mem chainable_mechanisms (get_value key) )
@@ -115,8 +115,8 @@ let parse_chainable_mechanisms ~parse mapping :
     ~f:(fun (key, value) ->
       let mechanism_name = get_value key in
       let mechanism_fn = Hashtbl.find_exn chainable_mechanisms mechanism_name in
-      let pos = Pos.pos key in
+      let pos = Mark.pos key in
       let+ value = mechanism_fn ~pos ~parse value in
-      Pos.mk ~pos value )
+      Mark.mk_pos ~pos:pos value )
     chainable_mechanism_entries
   |> all_keep_logs

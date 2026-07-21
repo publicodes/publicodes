@@ -2,11 +2,13 @@ open Yaml_parser
 open Utils.Output
 open Parse
 open Base
+open Shared
 open Ast
 
-let p length any = Pos.(mk ~pos:(add ~len:length dummy)) any
+let p length any = Mark.mk_pos ~pos:Pos.(add ~len:length dummy) any
 
-let scalar (value : string) : scalar = ({value; style= `Plain}, Pos.dummy)
+let scalar (value : string) : scalar =
+  Mark.mk_pos ~pos:Pos.dummy {value; style= `Plain}
 
 let value v = `Scalar (scalar v)
 
@@ -15,11 +17,13 @@ let%test_unit "parse: simple rule" =
   let output = parse ~filename:"test" (`O [(scalar "rule", value "42")]) in
   match result output with
   | Some [rule_def] ->
-      [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
+      [%test_eq: Shared.Rule_name.t]
+        (Mark.remove rule_def.name)
         (Shared.Rule_name.create_exn ["rule"]) ;
-      [%test_eq: string list Shared.Shared_ast.value] rule_def.value
-        { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
-        ; chainable_mechanisms= [] }
+      [%test_eq: (string list, Mark.pos_mark) Shared_ast.value] rule_def.value
+        (p 0
+           { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
+           ; chainable_mechanisms= [] } )
   | _ ->
       print_logs output ;
       assert false
@@ -31,15 +35,20 @@ let%test_unit "parse: simple rules" =
   in
   match result output with
   | Some [rule_def1; rule_def2] ->
-      [%test_eq: Shared.Rule_name.t] (Pos.value rule_def1.name)
+      [%test_eq: Shared.Rule_name.t]
+        (Mark.remove rule_def1.name)
         (Shared.Rule_name.create_exn ["rule 1"]) ;
-      [%test_eq: string list Shared.Shared_ast.value] rule_def1.value
-        { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
-        ; chainable_mechanisms= [] } ;
-      [%test_eq: Shared.Rule_name.t] (Pos.value rule_def2.name)
+      [%test_eq: (string list, Mark.pos_mark) Shared_ast.value] rule_def1.value
+        (p 0
+           { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
+           ; chainable_mechanisms= [] } ) ;
+      [%test_eq: Shared.Rule_name.t]
+        (Mark.remove rule_def2.name)
         (Shared.Rule_name.create_exn ["rule 2"]) ;
-      [%test_eq: string list Shared.Shared_ast.value] rule_def2.value
-        {value= p 0 (Expr (p 3 (Const (Bool false)))); chainable_mechanisms= []}
+      [%test_eq: (string list, Mark.pos_mark) Shared_ast.value] rule_def2.value
+        (p 0
+           { value= p 0 (Expr (p 3 (Const (Bool false))))
+           ; chainable_mechanisms= [] } )
   | _ ->
       print_logs output ;
       assert false
@@ -48,10 +57,11 @@ let%test_unit "parse: empty rule" =
   let output = parse ~filename:"test" (`O [(scalar "rule 1", value "")]) in
   match result output with
   | Some [rule_def] ->
-      [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
+      [%test_eq: Shared.Rule_name.t]
+        (Mark.remove rule_def.name)
         (Shared.Rule_name.create_exn ["rule 1"]) ;
-      [%test_eq: string list Shared.Shared_ast.value] rule_def.value
-        {value= p 0 Not_defined; chainable_mechanisms= []}
+      [%test_eq: (string list, Mark.pos_mark) Shared_ast.value] rule_def.value
+        (p 0 {value= p 0 Not_defined; chainable_mechanisms= []})
   | _ ->
       print_logs output ;
       assert false
@@ -65,10 +75,11 @@ let%test_unit "parse: rules with title" =
   in
   match result output with
   | Some [rule_def] ->
-      [%test_eq: Shared.Rule_name.t] (Pos.value rule_def.name)
+      [%test_eq: Shared.Rule_name.t]
+        (Mark.remove rule_def.name)
         (Shared.Rule_name.create_exn ["rule 1"; "subrule 2"]) ;
-      [%test_eq: string list Shared.Shared_ast.value] rule_def.value
-        {value= p 0 Not_defined; chainable_mechanisms= []}
+      [%test_eq: (string list, Mark.pos_mark) Shared_ast.value] rule_def.value
+        (p 0 {value= p 0 Not_defined; chainable_mechanisms= []})
   | _ ->
       print_logs output ;
       assert false
@@ -84,13 +95,15 @@ let%test_unit "parse: rules with description and valeur" =
   in
   match result output with
   | Some [{value; _}] ->
-      [%test_eq: string list Shared.Shared_ast.value] value
-        { value=
-            p 0
-              (Value
-                 { value= p 0 (Expr (p 6 (Ref ["rule 3"])))
-                 ; chainable_mechanisms= [] } )
-        ; chainable_mechanisms= [] }
+      [%test_eq: (string list, Mark.pos_mark) Shared_ast.value] value
+        (p 0
+           { value=
+               p 0
+                 (Value
+                    (p 0
+                       { value= p 0 (Expr (p 6 (Ref ["rule 3"])))
+                       ; chainable_mechanisms= [] } ) )
+           ; chainable_mechanisms= [] } )
   | _ ->
       failwith "Expected no rule definitions"
 
@@ -106,17 +119,20 @@ let%test_unit "parse: non applicable si" =
   in
   match result output with
   | Some [{value; _}] ->
-      [%test_eq: string list Shared.Shared_ast.value] value
-        { value=
-            p 0
-              (Value
-                 { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
-                 ; chainable_mechanisms= [] } )
-        ; chainable_mechanisms=
-            [ p 0
-                (Not_applicable_if
-                   { value= p 0 (Expr (p 9 (Ref ["condition"])))
-                   ; chainable_mechanisms= [] } ) ] }
+      [%test_eq: (string list, Mark.pos_mark) Shared_ast.value] value
+        (p 0
+           { value=
+               p 0
+                 (Value
+                    (p 0
+                       { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
+                       ; chainable_mechanisms= [] } ) )
+           ; chainable_mechanisms=
+               [ p 0
+                   (Not_applicable_if
+                      (p 0
+                         { value= p 0 (Expr (p 9 (Ref ["condition"])))
+                         ; chainable_mechanisms= [] } ) ) ] } )
   | _ ->
       print_logs output ;
       assert false
@@ -131,17 +147,20 @@ let%test_unit "parse: plafond" =
   in
   match result output with
   | Some [{value; _}] ->
-      [%test_eq: string list Shared.Shared_ast.value] value
-        { value=
-            p 0
-              (Value
-                 { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
-                 ; chainable_mechanisms= [] } )
-        ; chainable_mechanisms=
-            [ p 0
-                (Ceiling
-                   { value= p 0 (Expr (p 4 (Const (Number (1000., None)))))
-                   ; chainable_mechanisms= [] } ) ] }
+      [%test_eq: (string list, Mark.pos_mark) Shared_ast.value] value
+        (p 0
+           { value=
+               p 0
+                 (Value
+                    (p 0
+                       { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
+                       ; chainable_mechanisms= [] } ) )
+           ; chainable_mechanisms=
+               [ p 0
+                   (Ceiling
+                      (p 0
+                         { value= p 0 (Expr (p 4 (Const (Number (1000., None)))))
+                         ; chainable_mechanisms= [] } ) ) ] } )
   | _ ->
       print_logs output ;
       assert false
@@ -159,25 +178,30 @@ let%test_unit "parse: multiple chainable mechanisms" =
   in
   match result output with
   | Some [{value; _}] ->
-      [%test_eq: string list Shared.Shared_ast.value] value
-        { value=
-            p 0
-              (Value
-                 { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
-                 ; chainable_mechanisms= [] } )
-        ; chainable_mechanisms=
-            [ p 0
-                (Applicable_if
-                   { value= p 0 (Expr (p 9 (Ref ["condition"])))
-                   ; chainable_mechanisms= [] } )
-            ; p 0
-                (Ceiling
-                   { value= p 0 (Expr (p 4 (Const (Number (1000., None)))))
-                   ; chainable_mechanisms= [] } )
-            ; p 0
-                (Floor
-                   { value= p 0 (Expr (p 2 (Const (Number (10., None)))))
-                   ; chainable_mechanisms= [] } ) ] }
+      [%test_eq: (string list, Mark.pos_mark) Shared_ast.value] value
+        (p 0
+           { value=
+               p 0
+                 (Value
+                    (p 0
+                       { value= p 0 (Expr (p 2 (Const (Number (42., None)))))
+                       ; chainable_mechanisms= [] } ) )
+           ; chainable_mechanisms=
+               [ p 0
+                   (Applicable_if
+                      (p 0
+                         { value= p 0 (Expr (p 9 (Ref ["condition"])))
+                         ; chainable_mechanisms= [] } ) )
+               ; p 0
+                   (Ceiling
+                      (p 0
+                         { value= p 0 (Expr (p 4 (Const (Number (1000., None)))))
+                         ; chainable_mechanisms= [] } ) )
+               ; p 0
+                   (Floor
+                      (p 0
+                         { value= p 0 (Expr (p 2 (Const (Number (10., None)))))
+                         ; chainable_mechanisms= [] } ) ) ] } )
   | _ ->
       print_logs output ;
       assert false

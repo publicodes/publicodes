@@ -23,20 +23,20 @@ type level = [`Error | `Warning | `Debug] [@@deriving equal]
 type log =
   { kind: kind
   ; level: level
-  ; message: string (* ; labels: string Pos.t list *)
+  ; message: string (* ; labels: string Mark.pos list *)
   ; hints: string list
-  ; labels: string Pos.t list
+  ; labels: string Mark.pos list
   ; code: Err.Code.t option }
 [@@deriving equal]
 
-type t = log Pos.t [@@deriving equal]
+type t = log Mark.pos [@@deriving equal]
 
 val error :
      code:Err.Code.t
   -> ?kind:kind
-  -> ?pos:Pos.pos
+  -> ?pos:Pos.t
   -> ?hints:string list
-  -> ?labels:string Pos.t list
+  -> ?labels:string Mark.pos list
   -> string
   -> t
 (** [error ~code ?kind ?pos ?hints message] creates an error log with the given error code,
@@ -46,9 +46,9 @@ val error :
 val warning :
      code:Err.Code.t
   -> ?kind:kind
-  -> ?pos:Pos.pos
+  -> ?pos:Pos.t
   -> ?hints:string list
-  -> ?labels:string Pos.t list
+  -> ?labels:string Mark.pos list
   -> string
   -> t
 (** [warning ~code ?kind ?pos ?hints message] creates a warning log with the given error code,
@@ -58,9 +58,9 @@ val warning :
 val debug :
      code:Err.Code.t
   -> ?kind:kind
-  -> ?pos:Pos.pos
+  -> ?pos:Pos.t
   -> ?hints:string list
-  -> ?labels:string Pos.t list
+  -> ?labels:string Mark.pos list
   -> string
   -> t
 (** [warning ~code ?kind ?pos ?hints message] creates a debug log with the given error code,

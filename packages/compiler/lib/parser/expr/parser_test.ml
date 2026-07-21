@@ -1,38 +1,41 @@
+module SA = Shared.Shared_ast
 open Tokens
 open Base
 open Utils
 open Utils.Output
 open Shared.Shared_ast
 
-let p any = Pos.mk ~pos:Pos.dummy any
+let pop any = Mark.mk_pos ~pos:Pos.dummy any
 
-let with_no_pos = List.map ~f:(Pos.mk ~pos:Pos.dummy)
+let p any = Mark.mk_pos ~pos:Pos.dummy any
+
+let with_no_pos = List.map ~f:(Mark.mk_pos ~pos:Pos.dummy)
 
 let rule str_list = p @@ Ref str_list
 
 let parse tokens = tokens |> with_no_pos |> Parser.parse |> to_exn
 
 let%test_unit "Parse 12 + 4.5 / 3" =
-  [%test_eq: Ast.t]
+  [%test_eq: (string list, Mark.pos_mark) SA.expr]
     (parse
        [NUMBER (12., None); ADD; NUMBER (4.5, None); DIV; NUMBER (3., None)] )
     (p
        (Binary_op
-          ( p Add
+          ( pop Add
           , p (Const (Number (12., None)))
           , p
               (Binary_op
-                 ( p Div
+                 ( pop Div
                  , p (Const (Number (4.5, None)))
                  , p (Const (Number (3., None))) ) ) ) ) )
 
 let%test_unit "Parse a . b" =
-  [%test_eq: Ast.t]
+  [%test_eq: (string list, Mark.pos_mark) SA.expr]
     (parse [RULE_NAME "a"; DOT; RULE_NAME "b"])
     (rule ["a"; "b"])
 
 let%test_unit "Parse a > 12 != b . c * 2 <= 0" =
-  [%test_eq: Ast.t]
+  [%test_eq: (string list, Mark.pos_mark) SA.expr]
     (parse
        [ RULE_NAME "a"
        ; GT
@@ -47,20 +50,21 @@ let%test_unit "Parse a > 12 != b . c * 2 <= 0" =
        ; NUMBER (0., None) ] )
     (p
        (Binary_op
-          ( p NotEq
-          , p (Binary_op (p Gt, rule ["a"], p @@ Const (Number (12., None))))
+          ( pop NotEq
+          , p (Binary_op (pop Gt, rule ["a"], p @@ Const (Number (12., None))))
           , p
               (Binary_op
-                 ( p LtEq
+                 ( pop LtEq
                  , p
                      (Binary_op
-                        (p Mul, rule ["b"; "c"], p @@ Const (Number (2., None)))
-                     )
+                        ( pop Mul
+                        , rule ["b"; "c"]
+                        , p @@ Const (Number (2., None)) ) )
                  , p @@ Const (Number (0., None)) ) ) ) ) )
 
 let%test_unit "Parse 12/01/2024 + 3 mois <= contrat salarié . date de démission"
     =
-  [%test_eq: Ast.t]
+  [%test_eq: (string list, Mark.pos_mark) SA.expr]
     (parse
        [ DATE_LITERAL (`Day (12, 1, 2024))
        ; ADD
@@ -71,10 +75,10 @@ let%test_unit "Parse 12/01/2024 + 3 mois <= contrat salarié . date de démissio
        ; RULE_NAME "date de démission" ] )
     (p
        (Binary_op
-          ( p LtEq
+          ( pop LtEq
           , p
               (Binary_op
-                 ( p Add
+                 ( pop Add
                  , p @@ Const (Date (Day {day= 12; month= 1; year= 2024}))
                  , p
                    @@ Const (Number (3., Some (Shared.Units.parse_unit "mois")))
@@ -82,19 +86,19 @@ let%test_unit "Parse 12/01/2024 + 3 mois <= contrat salarié . date de démissio
           , rule ["contrat salarié"; "date de démission"] ) ) )
 
 let%test_unit "Parse -(3 * -a)" =
-  [%test_eq: Ast.t]
+  [%test_eq: (string list, Mark.pos_mark) SA.expr]
     (parse [SUB; LPAREN; NUMBER (3., None); MUL; SUB; RULE_NAME "a"; RPAREN])
     (p
        (Unary_op
-          ( p Neg
+          ( pop Neg
           , p
               (Binary_op
-                 ( p Mul
+                 ( pop Mul
                  , p @@ Const (Number (3., None))
-                 , p @@ Unary_op (p Neg, rule ["a"]) ) ) ) ) )
+                 , p @@ Unary_op (pop Neg, rule ["a"]) ) ) ) ) )
 
 let%test_unit "Parse (10 + 5 ** 2) / b" =
-  [%test_eq: Ast.t]
+  [%test_eq: (string list, Mark.pos_mark) SA.expr]
     (parse
        [ LPAREN
        ; NUMBER (10., None)
@@ -107,14 +111,14 @@ let%test_unit "Parse (10 + 5 ** 2) / b" =
        ; RULE_NAME "b" ] )
     (p
        (Binary_op
-          ( p Div
+          ( pop Div
           , p
               (Binary_op
-                 ( p Add
+                 ( pop Add
                  , p @@ Const (Number (10., None))
                  , p
                      (Binary_op
-                        ( p Pow
+                        ( pop Pow
                         , p @@ Const (Number (5., None))
                         , p @@ Const (Number (2., None)) ) ) ) )
           , rule ["b"] ) ) )

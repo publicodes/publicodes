@@ -19,8 +19,8 @@ type unary_op = Neg | Is_not_defined [@@deriving show]
 type 'meta naked_value =
   | Const of constant
   | Condition of 'meta value * 'meta value * 'meta value
-  | Binary_op of binary_op Pos.t * 'meta value * 'meta value
-  | Unary_op of unary_op Pos.t * 'meta value
+  | Binary_op of binary_op Mark.pos * 'meta value * 'meta value
+  | Unary_op of unary_op Mark.pos * 'meta value
   | Ref of Rule_name.t
   | Get_context of Rule_name.t
   | Set_context of 'meta context
@@ -29,19 +29,21 @@ type 'meta naked_value =
 [@@deriving show]
 
 and 'meta context =
-  {context: (Rule_name.t Pos.t * 'meta value) list; value: 'meta value}
+  {context: (Rule_name.t Mark.pos * 'meta value) list; value: 'meta value}
 [@@deriving show]
 
-and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.pos}
+(** NOTE: do we really need to have a generic meta type here as we only build
+    the eval tree with meta = Shared.Typ.t? *)
+and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.t}
 [@@deriving show]
 
-type 'meta mk_value_fn = pos:Pos.pos -> 'meta naked_value -> 'meta value
+type 'meta mk_value_fn = pos:Pos.t -> 'meta naked_value -> 'meta value
 
 type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving show]
 
 let get_value eval_tree rule_name = Hashtbl.find_exn eval_tree rule_name
 
-let mk_value ~pos ?(typ = Type.any ~pos ()) value = {value; pos; meta= typ}
+let mk_value ~pos ~meta value = {value; pos; meta}
 
 let get_meta eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).meta
 
@@ -73,9 +75,10 @@ let rec map_value ~(f : 'a value -> 'a value) (c : 'a value) : 'a value =
 
 (** {1 Constructors for naked values} *)
 
-let mk_binop ~pos op left right = Binary_op (Pos.mk ~pos op, left, right)
+let mk_binop ~pos op left right = Binary_op (Mark.mk_pos ~pos op, left, right)
 
-let unop_is_not_defined ~pos comp = Unary_op (Pos.mk ~pos Is_not_defined, comp)
+let unop_is_not_defined ~pos comp =
+  Unary_op (Mark.mk_pos ~pos Is_not_defined, comp)
 
 let binop_or ~pos = mk_binop ~pos Shared_ast.Or
 
@@ -110,7 +113,7 @@ let const_false = Const (Bool false)
 
 let const_true = Const (Bool true)
 
-let get_contexts ({value; _} : 'a value) : Rule_name.t Pos.t list =
+let get_contexts ({value; _} : 'a value) : Rule_name.t Mark.pos list =
   match value with
   | Set_context {context; _} ->
       List.map context ~f:(fun (key, _) -> key)

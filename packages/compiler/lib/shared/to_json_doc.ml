@@ -1,4 +1,5 @@
 open Base
+open Utils
 open Shared_ast
 
 let to_point (point : Utils.Pos.Point.t) =
@@ -6,7 +7,7 @@ let to_point (point : Utils.Pos.Point.t) =
   ; ("line", `Int point.line)
   ; ("column", `Int point.column) ]
 
-let to_pos (pos : Utils.Pos.pos) =
+let to_pos (pos : Utils.Pos.t) =
   ( "position"
   , `Assoc
       [ ("file", `String pos.file)
@@ -70,29 +71,30 @@ let to_const const : Yojson.Basic.t =
   in
   `Assoc [("type", `String _type); ("parameters", parameters)]
 
-let rec expr_to_mapping expr : Yojson.Basic.t =
+let rec expr_to_mapping (expr, _) : Yojson.Basic.t =
   let _type, parameters =
     match expr with
     | Const const ->
         ("constant", to_const const)
     | Ref ref ->
         ("ref", `String (Rule_name.show ref))
-    | Binary_op ((binop, _), (left, _), (right, _)) ->
+    | Binary_op ((binop, _), left, right) ->
         ( to_binop binop
         , `Assoc
             [("left", expr_to_mapping left); ("right", expr_to_mapping right)]
         )
-    | Unary_op ((unop, _), (expr, _)) ->
+    | Unary_op ((unop, _), expr) ->
         (to_unop unop, expr_to_mapping expr)
   in
   let _type = [("type", `String _type)] in
   let parameters = [("parameters", parameters)] in
   `Assoc (_type @ parameters)
 
-let rec to_value_mec name (value_meca, pos) : Yojson.Basic.t =
+let rec to_value_mec name value_mecha : Yojson.Basic.t =
+  let value_meca, Mark.{pos} = value_mecha in
   let _type, parameters =
     match value_meca with
-    | Expr (expr, _) ->
+    | Expr expr ->
         ("expr", Some (expr_to_mapping expr))
     | Value value ->
         ("value", Some (`Assoc (to_mecs name value)))
@@ -165,7 +167,8 @@ let rec to_value_mec name (value_meca, pos) : Yojson.Basic.t =
   let _type = [("type", `String _type)] in
   `Assoc (_type @ [to_publicodes name pos] @ parameters)
 
-and to_chain_mec name (chain_meca, pos) : Yojson.Basic.t =
+and to_chain_mec name chain_mecha : Yojson.Basic.t =
+  let chain_meca, Mark.{pos} = chain_mecha in
   let (_type : string), (parameters : Yojson.Basic.t) =
     match chain_meca with
     | Context contexts ->
@@ -179,31 +182,32 @@ and to_chain_mec name (chain_meca, pos) : Yojson.Basic.t =
     | Not_applicable_if value ->
         ("not_applicable_if", `Assoc (to_mecs name value))
     | Type (typ, _) -> (
-      match typ with
-      | Literal String ->
-          ("type", `Assoc [("type", `String "text")])
-      | Literal Bool ->
-          ("type", `Assoc [("type", `String "boolean")])
-      | Literal Date ->
-          ("type", `Assoc [("type", `String "date")])
-      | Symbol _ ->
-          failwith "unreachable" (* there is no type symbol *)
-      | Enum values ->
-          let values =
-            List.map values ~f:Utils.Pos.value
-            |> List.map ~f:(Stdlib.Format.asprintf "'%s'")
-          in
-          let value = String.concat ~sep:", " values in
-          ("type", `Assoc [("enum", `String value)])
-      | Number unit ->
-          let unit =
-            match unit with
-            | Some unit ->
-                Stdlib.Format.asprintf "%a" Units.pp unit
-            | None ->
-                "number"
-          in
-          ("type", `Assoc [("type", `String unit)]) )
+        let number_unit unit =
+          match unit with
+          | Some unit ->
+              Stdlib.Format.asprintf "%a" Units.pp unit
+          | None ->
+              "number"
+        in
+        match typ with
+        | Literal (LNumber (_, unit), _) | TNumber unit ->
+            let unit = number_unit unit in
+            ("type", `Assoc [("type", `String unit)])
+        | Literal (LString _, _) | TString ->
+            ("type", `Assoc [("type", `String "text")])
+        | Literal (LBool _, _) | TBool ->
+            ("type", `Assoc [("type", `String "boolean")])
+        | Literal (LDate _, _) | TDate ->
+            ("type", `Assoc [("type", `String "date")])
+        | Literal (LSymbol _, _) ->
+            ("type", `Assoc [("type", `String "symbol")])
+        | TEnum values ->
+            let values =
+              List.map values ~f:Mark.remove
+              |> List.map ~f:Typ.literal_to_string
+            in
+            let value = String.concat ~sep:", " values in
+            ("type", `Assoc [("enum", `String value)]) )
     | Default value ->
         ("default", `Assoc (to_mecs name value))
     | Ceiling value ->
@@ -221,15 +225,15 @@ and to_chain_mec name (chain_meca, pos) : Yojson.Basic.t =
   let parameters = [("parameters", parameters)] in
   `Assoc (_type @ [to_publicodes name pos] @ parameters)
 
-and to_mecs name {value; chainable_mechanisms} : (string * Yojson.Basic.t) list
-    =
+and to_mecs name ({value; chainable_mechanisms}, _) :
+    (string * Yojson.Basic.t) list =
   [ ("value mecanism", to_value_mec name value)
   ; ( "chainable mecanisms"
     , `List (List.map chainable_mechanisms ~f:(to_chain_mec name)) ) ]
 
-let to_mapping
-    ({name= name, pos; value; meta; _} : Rule_name.t Shared_ast.rule_def) :
+let to_mapping ({name; value; meta; _} : Shared_ast.resolved_rule_def) :
     Yojson.Basic.t =
+  let name, Mark.{pos} = name in
   let publicodes = to_publicodes name pos in
   let value = to_mecs name value in
   let name = [("name", `String (Rule_name.show name))] in

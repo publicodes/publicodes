@@ -11,34 +11,59 @@ let get_rule_str_unit (tree : Tree.t) (rule_name : Rule_name.t) : string option
   let open Shared.Typ in
   let Tree.{typ; _} = Eval_tree.get_meta tree rule_name in
   match typ with
-  | Some (Number (Some unit)) ->
+  | Some (TNumber (Some unit))
+  | Some (Literal (LNumber (_, Some unit), _))
+  | Some (TEnum ((LNumber (_, Some unit), _) :: _)) ->
       Some (Stdlib.Format.asprintf "%a" Shared.Units.pp unit)
   | _ ->
       None
 
 let from_rule_type (tree : Tree.t) (rule_name : Rule_name.t) =
-  let open Shared.Typ in
   let Tree.{typ; _} = Eval_tree.get_meta tree rule_name in
+  let from_lit lit =
+    match lit with
+    | Typ.LBool value ->
+        Tobj [("type", Tstr "bool"); ("value", Tbool value)]
+    | LDate (Day {year; month; day}) ->
+        Tobj
+          [ ("type", Tstr "date")
+          ; ("year", Tint year)
+          ; ("month", Tint month)
+          ; ("day", Tint day) ]
+    | LDate (Month {year; month}) ->
+        Tobj [("type", Tstr "date"); ("year", Tint year); ("month", Tint month)]
+    | LString s ->
+        Tobj [("type", Tstr "text"); ("value", Tstr s)]
+    | LSymbol s ->
+        Tobj [("type", Tstr "symbol"); ("value", Tstr s)]
+    | LNumber (n, Some u) ->
+        Tobj
+          [ ("type", Tstr "number")
+          ; ("value", Tfloat n)
+          ; ("unit", Tstr (Stdlib.Format.asprintf "%a" Units.pp u)) ]
+    | LNumber (n, None) ->
+        Tobj [("type", Tstr "number"); ("value", Tfloat n); ("unit", Tnull)]
+  in
   match typ with
-  | Some (Number _) ->
-      Tlist [Tstr "number"]
-  | Some (Literal String) ->
-      Tlist [Tstr "text"]
-  | Some (Literal Bool) ->
-      Tlist [Tstr "boolean"]
-  | Some (Literal Date) ->
-      Tlist [Tstr "date"]
-  | Some (Symbol value) ->
-      Tlist [Tstr (Stdlib.Format.asprintf "\"%s\"" value)]
-  | Some (Enum values) ->
-      let values =
-        List.map values ~f:Utils.Pos.value
-        |> List.map ~f:(Stdlib.Format.asprintf "\"%s\"")
-      in
-      let value = String.concat ~sep:" | " values in
-      Tlist [Tstr value]
+  | Some (Literal (lit, _)) ->
+      Tobj [("type", Tstr "literal"); ("literal", from_lit lit)]
+  | Some TString ->
+      Tobj [("type", Tstr "text")]
+  | Some TBool ->
+      Tobj [("type", Tstr "boolean")]
+  | Some TDate ->
+      Tobj [("type", Tstr "date")]
+  | Some (TNumber (Some u)) ->
+      Tobj
+        [ ("type", Tstr "number")
+        ; ("unit", Tstr (Stdlib.Format.asprintf "%a" Units.pp u)) ]
+  | Some (TNumber None) ->
+      Tobj [("type", Tstr "number"); ("unit", Tnull)]
+  | Some (TEnum values) ->
+      let lits = List.map values ~f:fst |> List.map ~f:from_lit in
+      Tobj [("type", Tstr "enum"); ("literals", Tlist lits)]
   | None ->
-      Tstr "unknown"
+      Tobj [("type", Tstr "unknown")]
 
 let from_op : Shared.Shared_ast.binary_op -> tvalue = function
   | Shared.Shared_ast.Add ->

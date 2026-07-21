@@ -1,6 +1,6 @@
 type t [@@deriving equal, compare]
 
-val hash : Rule_name.t -> Utils.Pos.pos -> t
+val hash : Rule_name.t -> Utils.Pos.t -> t
 (** [hash name pos] generates a unique identifier from a rule [name] and [pos]. *)
 
 val equal : t -> t -> bool

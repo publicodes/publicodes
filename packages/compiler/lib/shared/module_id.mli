@@ -23,11 +23,11 @@ module_a *)
 val is_root : T.t -> bool
 (** [is_root module] returns true if module is the root module *)
 
-val append : T.t -> int Pos.t -> T.t
+val append : T.t -> int Mark.pos -> T.t
 (** [append module id] push a module id to the module_id *)
 
 val empty : T.t
 (** [empty] returns the empty module_id *)
 
-val to_list : T.t -> int Pos.t list
+val to_list : T.t -> int Mark.pos list
 (** [to_list module] return the module id as list *)

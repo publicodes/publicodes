@@ -10,22 +10,24 @@ let parse_context_references ~key mapping =
   match find_value key mapping with
   | None ->
       return []
-  | Some (`Scalar ref, _) ->
-      let+ ref = parse_ref ref in
-      [ref]
-  | Some (`A refs, pos) ->
-      parse_refs ~pos refs
-  | Some (`O _, pos) ->
-      let code, message = Err.parsing_should_not_be_object in
-      fatal_error ~pos ~kind:`Syntax ~code message
+  | Some (value, Mark.{pos}) -> (
+    match value with
+    | `Scalar ref ->
+        let+ ref = parse_ref ref in
+        [ref]
+    | `A refs ->
+        parse_refs ~pos refs
+    | `O _ ->
+        let code, message = Err.parsing_should_not_be_object in
+        fatal_error ~pos ~kind:`Syntax ~code message )
 
 let parse_exclusive mapping =
   match find_value "exclusif" mapping with
   | None ->
       return false
-  | Some (yaml, pos) -> (
-      let* scalar = get_scalar ~pos yaml in
-      let value = scalar |> get_value in
+  | Some (value, Mark.{pos}) -> (
+      let* scalar = get_scalar ~pos value in
+      let value = get_value scalar in
       match value with
       | "oui" ->
           return true
@@ -58,11 +60,13 @@ let parse_reference ~pos mapping =
   match find_value "références à" mapping with
   | None ->
       no_reference_error ~pos
-  | Some (`A _, pos) ->
-      multiple_references_error ~pos
-  | Some (yaml, pos) ->
-      let* scalar = get_scalar ~pos yaml in
-      parse_ref scalar
+  | Some (value, Mark.{pos}) -> (
+    match value with
+    | `A _ ->
+        multiple_references_error ~pos
+    | yaml ->
+        let* scalar = get_scalar ~pos yaml in
+        parse_ref scalar )
 
 let parse_replace ~pos yaml =
   match yaml with

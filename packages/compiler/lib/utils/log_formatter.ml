@@ -51,7 +51,7 @@ let read_file_lines filename =
   with _ -> None
 
 (* Stdlib.Format a position as "filename:line:column" for IDE clickability *)
-let format_position (pos : Pos.pos) =
+let format_position (pos : Pos.t) =
   if Pos.is_empty_file pos then text "<unknown>"
   else
     let file = pos.file in
@@ -62,7 +62,7 @@ let format_position (pos : Pos.pos) =
     textf "%s:%d:%d" file start_line start_col
 
 (* Stdlib.Format code excerpt with the problematic part tagged based on level *)
-let format_code_excerpt ?message ~(pos : Pos.pos) level =
+let format_code_excerpt ?message ~(pos : Pos.t) level =
   if Pos.is_empty_file pos then text "<no source available>"
   else
     let location =
@@ -200,8 +200,8 @@ let format_hints hints =
 
 (* Main function to Stdlib.Format a log message *)
 let print (log : Log.t) =
-  let position = Pos.pos log in
-  let Log.{kind; level; message; hints; code; labels} = Pos.value log in
+  let position = Mark.pos log in
+  let Log.{kind; level; message; hints; code; labels} = Mark.remove log in
   let level_tag =
     match level with
     | `Debug ->
@@ -232,7 +232,9 @@ let print (log : Log.t) =
              [format_code_excerpt ~pos:position level_tag]
          | labels ->
              List.map
-               ~f:(fun (message, pos) ->
+               ~f:(fun label ->
+                 let message = Mark.remove label in
+                 let pos = Mark.pos label in
                  format_code_excerpt ~pos ~message level_tag )
                labels ) )
   in

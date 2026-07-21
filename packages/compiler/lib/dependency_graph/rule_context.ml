@@ -1,8 +1,8 @@
 open Base
+open Utils
 open Shared
-module Pos = Utils.Pos
 
-type t = Id.t * Rule_name.t Pos.t list [@@deriving equal, compare]
+type t = Id.t * Rule_name.t Mark.pos list [@@deriving equal, compare]
 
 let mk current_rule rules pos =
   let id = Id.hash current_rule pos in
@@ -12,7 +12,7 @@ let id (id, _) = id
 
 let rules (_, rules) = rules
 
-let rules_without_pos (_, rules) = List.map rules ~f:Pos.value
+let rules_without_pos (_, rules) = List.map rules ~f:Mark.remove
 
 let equal (id1, _) (id2, _) = Id.equal id1 id2
 
@@ -26,15 +26,15 @@ let to_string (id, rules) =
   in
   Printf.sprintf "(%s, { %s })" (Id.to_string id) rules_str
 
-let from_rule_def (rule_def : Rule_name.t Shared_ast.rule_def) : t list =
-  let current_rule = Pos.value rule_def.name in
-  let rec get_contexts acc (value : 'a Shared_ast.value) : t list =
+let from_rule_def (rule_def : Shared_ast.resolved_rule_def) : t list =
+  let current_rule = Mark.remove rule_def.name in
+  let rec get_contexts acc ((value, _) : Shared_ast.resolved_value) : t list =
     value.chainable_mechanisms
     |> List.fold ~f:get_contexts_in_chained_mechanism ~init:acc
     |> get_contexts_in_value value
-  and get_contexts_in_chained_mechanism acc (mecha, pos) : t list =
+  and get_contexts_in_chained_mechanism acc (mecha, {pos; _}) : t list =
     match mecha with
-    | Context contexts ->
+    | Shared_ast.Context contexts ->
         let current_context_rules, acc =
           List.fold contexts
             ~f:(fun (ctx_rules, acc) (ctx_name, v) ->
@@ -51,10 +51,12 @@ let from_rule_def (rule_def : Rule_name.t Shared_ast.rule_def) : t list =
         get_contexts acc v
     | Type _ ->
         acc
-  and get_contexts_in_value value acc : t list =
-    match Pos.value value.value with
-    | Value v | Is_applicable v | Is_not_applicable v ->
-        get_contexts_in_value v acc
+  and get_contexts_in_value
+      (value : (Rule_name.t, Mark.pos_mark) Shared_ast.naked_value) acc : t list
+      =
+    match Mark.remove value.value with
+    | Shared_ast.Value v | Is_applicable v | Is_not_applicable v ->
+        get_contexts acc v
     | Variations (variations, else_) ->
         let contexts_in_variations =
           List.concat_map variations ~f:(fun {if_; then_} ->
