@@ -1,8 +1,8 @@
 (library
  (inline_tests)
- (name eval_tree)
- (public_name publicodes.eval_tree)
- (libraries base shared utils replacement_graph unionFind)
+ (name replacement_graph)
+ (public_name publicodes.replacement_graph)
+ (libraries base ocamlgraph utils shared)
  (modules :standard)
  (preprocess
   (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))
