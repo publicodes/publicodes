@@ -3,12 +3,12 @@ open Shared
 open Utils
 open Utils.Output
 
-let is_parameter rule_name ~(ast : 'a Shared_ast.t) : bool =
+let is_parameter rule_name ~(ast : Shared_ast.resolved) : bool =
   let rule_def = Shared_ast.find_exn rule_name ast in
   not (Shared_ast.has_value rule_def)
 
-let extract_parameters rule_name ~(graph : Rule_graph.t) ~(ast : 'a Shared_ast.t)
-    : Rule_name.t * Rule_name.t list =
+let extract_parameters rule_name ~(graph : Rule_graph.t)
+    ~(ast : Shared_ast.resolved) : Rule_name.t * Rule_name.t list =
   let transitive_dependencies =
     Rule_graph.Oper.transitive_closure ~reflexive:false graph
   in
@@ -26,9 +26,9 @@ let extract_parameters rule_name ~(graph : Rule_graph.t) ~(ast : 'a Shared_ast.t
   (rule_name, List.stable_dedup parameter_rules ~compare:Rule_name.compare)
 
 let add_self_dependencies_for_parameters ~(graph : Rule_graph.t)
-    ~(ast : 'a Shared_ast.t) : unit =
+    ~(ast : Shared_ast.resolved) : unit =
   List.iter ast ~f:(fun rule_def ->
-      let rule_name = Pos.value rule_def.name in
+      let rule_name = Mark.remove rule_def.name in
       if is_parameter rule_name ~ast then
         Rule_graph.add_edge graph (rule_name, []) (rule_name, []) )
 
@@ -45,7 +45,7 @@ let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t)
              ; Stdlib.Format.asprintf "Par exemple :\n\n%a:\n  type: nombre"
                  Rule_name.pp rule_name ]
            message )
-  | Some (Number None) ->
+  | Some (TNumber None) ->
       let code, message = Err.missing_output_type in
       let pos = Eval_tree.get_pos eval_tree rule_name in
       Some
@@ -55,7 +55,7 @@ let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t)
   | Some _ ->
       None
 
-let extract_outputs ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t)
+let extract_outputs ~(ast : Shared_ast.resolved) ~(eval_tree : Hashed_tree.t)
     ~(warn_types : bool) (graph : Rule_graph.t) : Model_output.t list Output.t =
   let graph = Rule_graph.copy graph in
   add_self_dependencies_for_parameters ~graph ~ast ;
@@ -69,7 +69,7 @@ let extract_outputs ~(ast : 'a Shared_ast.t) ~(eval_tree : Hashed_tree.t)
   in
   let output_parameters =
     List.filter_map ast ~f:(fun rule_def ->
-        let rule_name = Pos.value rule_def.name in
+        let rule_name = Mark.remove rule_def.name in
         let module_id = Shared_ast.get_module_id_exn rule_def in
         if Shared_ast.has_public_tag rule_def && Module_id.is_root module_id
         then Some (extract_parameters rule_name ~graph ~ast)

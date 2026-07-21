@@ -10,7 +10,7 @@ open Shared
 
 type t [@@deriving equal, compare]
 
-val mk : Rule_name.t -> Rule_name.t Utils.Pos.t list -> Utils.Pos.pos -> t
+val mk : Rule_name.t -> Rule_name.t Utils.Mark.pos list -> Utils.Pos.t -> t
 (** [mk current_rule rules pos] creates a new context with a unique identifier
     based on the [current_rule] and its position [pos], along with a list of
     [rules] that are defined in the context. *)
@@ -18,7 +18,7 @@ val mk : Rule_name.t -> Rule_name.t Utils.Pos.t list -> Utils.Pos.pos -> t
 val id : t -> Id.t
 (** [id ctx] returns the unique identifier of the context [ctx]. *)
 
-val rules : t -> Rule_name.t Utils.Pos.t list
+val rules : t -> Rule_name.t Utils.Mark.pos list
 (** [rules ctx] returns the list of rules defined in the context [ctx], along
     with their positions. *)
 
@@ -37,6 +37,6 @@ val contains : Rule_name.t -> t -> bool
 val to_string : t -> string
 (** [to_string ctx] converts the context [ctx] to a string representation. *)
 
-val from_rule_def : Rule_name.t Shared_ast.rule_def -> t list
+val from_rule_def : Shared_ast.resolved_rule_def -> t list
 (** [from_rule_def rule_def] collects all contexts defined in a given
     [rule_def]. *)

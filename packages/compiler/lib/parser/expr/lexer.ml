@@ -79,7 +79,7 @@ let update_acc (lexbuf : lexbuf) : unit =
     @param lexbuf The lexing buffer to tokenize
     @return The next token in the input stream
     @raise Invalid_token if an unrecognized or malformed token is encountered *)
-let rec lex_one (lexbuf : lexbuf) : Tokens.t Pos.t =
+let rec lex_one (lexbuf : lexbuf) : Tokens.t Mark.pos =
   let with_pos token =
     let start_pos, end_pos = Sedlexing.lexing_positions lexbuf in
     let pos =
@@ -88,7 +88,7 @@ let rec lex_one (lexbuf : lexbuf) : Tokens.t Pos.t =
         ; start_pos= Pos.Point.of_position start_pos
         ; end_pos= Pos.Point.of_position end_pos }
     in
-    Pos.mk ~pos token
+    Mark.mk_pos ~pos:pos token
   in
   match%sedlex lexbuf with
   | space_plus ->
@@ -178,7 +178,9 @@ let rec lex_one (lexbuf : lexbuf) : Tokens.t Pos.t =
   | _ ->
       raise (Invalid_token (Utf8.lexeme lexbuf))
 
-let lex ((publicodes, pos) : string Pos.t) : Tokens.t Pos.t list Output.t =
+let lex (source : string Mark.pos) : Tokens.t Mark.pos list Output.t =
+  let publicodes = Mark.remove source in
+  let pos = Mark.pos source in
   let lexbuf = Utf8.from_string publicodes in
   let file = pos.file in
   Sedlexing.set_position lexbuf (Pos.Point.to_position ~file pos.start_pos) ;
@@ -186,7 +188,7 @@ let lex ((publicodes, pos) : string Pos.t) : Tokens.t Pos.t list Output.t =
   let rec lex_loop acc =
     try
       let token = lex_one lexbuf in
-      match Pos.value token with
+      match Mark.remove token with
       | EOF ->
           return (List.rev (token :: acc))
       | _ ->

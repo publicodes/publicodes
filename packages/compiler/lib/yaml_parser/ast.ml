@@ -12,7 +12,7 @@ type naked_scalar = {value: string; style: scalar_style}
 type yaml = [`Scalar of scalar | `A of sequence | `O of mapping]
 [@@deriving equal, compare, sexp]
 
-and scalar = naked_scalar Pos.t [@@deriving equal, compare, sexp]
+and scalar = naked_scalar Mark.pos [@@deriving equal, compare, sexp]
 
 and sequence = yaml list [@@deriving equal, compare, sexp]
 

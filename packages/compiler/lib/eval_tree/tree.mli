@@ -21,8 +21,8 @@ type unary_op = Neg | Is_not_defined [@@deriving show]
 type 'meta naked_value =
   | Const of constant
   | Condition of 'meta value * 'meta value * 'meta value
-  | Binary_op of binary_op Pos.t * 'meta value * 'meta value
-  | Unary_op of unary_op Pos.t * 'meta value
+  | Binary_op of binary_op Mark.pos * 'meta value * 'meta value
+  | Unary_op of unary_op Mark.pos * 'meta value
   | Ref of Rule_name.t
   | Get_context of Rule_name.t
   | Set_context of 'meta context
@@ -31,50 +31,50 @@ type 'meta naked_value =
 [@@deriving show]
 
 and 'meta context =
-  {context: (Rule_name.t Pos.t * 'meta value) list; value: 'meta value}
+  {context: (Rule_name.t Mark.pos * 'meta value) list; value: 'meta value}
 [@@deriving show]
 
-and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.pos}
+and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.t}
 [@@deriving show]
 
-type 'meta mk_value_fn = pos:Pos.pos -> 'meta naked_value -> 'meta value
+type 'meta mk_value_fn = pos:Pos.t -> 'meta naked_value -> 'meta value
 
 type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving show]
 
 val get_value : 'meta t -> Rule_name.t -> 'meta value
 
-val mk_value : pos:Pos.pos -> ?typ:Type.t -> Type.t naked_value -> Type.t value
+val mk_value : pos:Pos.t -> meta:'meta -> 'meta naked_value -> 'meta value
 
 val get_meta : 'meta t -> Rule_name.t -> 'meta
 (** FIXME: should be _exn *)
 
-val get_pos : 'meta t -> Rule_name.t -> Pos.pos
+val get_pos : 'meta t -> Rule_name.t -> Pos.t
 
 val map_value : f:('meta value -> 'meta value) -> 'meta value -> 'meta value
 
 (** {1 Constructors for naked values} *)
 
-val unop_is_not_defined : pos:Pos.pos -> 'meta value -> 'meta naked_value
+val unop_is_not_defined : pos:Pos.t -> 'meta value -> 'meta naked_value
 
-val binop_or : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+val binop_or : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
-val binop_and : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+val binop_and : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
-val binop_eq : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+val binop_eq : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
-val binop_neq : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+val binop_neq : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
-val binop_lt : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+val binop_lt : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
-val binop_gt : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+val binop_gt : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
-val binop_add : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+val binop_add : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
-val binop_mul : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+val binop_mul : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
-val binop_max : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+val binop_max : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
-val binop_min : pos:Pos.pos -> 'meta value -> 'meta value -> 'meta naked_value
+val binop_min : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
 val mk_condition :
      cond:'meta value
@@ -93,4 +93,4 @@ val const_false : 'meta naked_value
 
 val const_true : 'meta naked_value
 
-val get_contexts : 'a value -> Rule_name.t Utils.Pos.t Base.list
+val get_contexts : 'a value -> Rule_name.t Utils.Mark.pos Base.list

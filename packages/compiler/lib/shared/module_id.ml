@@ -3,11 +3,10 @@ open Utils
 
 module T = struct
   module T_ = struct
-    type t = int Pos.t list [@@deriving equal, compare, sexp]
+    type t = int Mark.pos list [@@deriving equal, compare, sexp]
 
     let show a =
-      List.map a ~f:(fun a -> Pos.value a |> Int.to_string)
-      |> String.concat ~sep:" . "
+      List.map a ~f:(fun (a, _) -> Int.to_string a) |> String.concat ~sep:" . "
 
     let pp ppf module_id = Stdlib.Format.fprintf ppf "%s" (show module_id)
   end
@@ -28,7 +27,7 @@ let is_parent module_a module_b =
 
 let empty = []
 
-let root = [Pos.mk ~pos:Pos.dummy 0]
+let root = [Mark.mk_pos ~pos:Pos.dummy 0]
 
 let is_root module_ = equal module_ root
 

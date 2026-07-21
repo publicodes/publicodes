@@ -75,9 +75,9 @@ let unify ~pos1 ~pos2 (u1 : t) (u2 : t) =
         let code, message = Err.type_unit_incoherence in
         fatal_error ~pos:pos1 ~kind:`Type ~code
           ~labels:
-            [ Pos.mk ~pos:pos1
+            [ Mark.mk_pos ~pos:pos1
                 (Stdlib.Format.asprintf "unité: %a" Units.pp concrete1)
-            ; Pos.mk ~pos:pos2
+            ; Mark.mk_pos ~pos:pos2
                 (Stdlib.Format.asprintf "unité: %a" Units.pp concrete2) ]
           message
       else return ()

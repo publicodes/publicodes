@@ -1,4 +1,5 @@
 open Shared
 open Base
 
-type t = string list Shared_ast.expr [@@deriving equal, compare, show, sexp]
+type 'mark t = (string list, 'mark) Shared_ast.expr
+[@@deriving equal, compare, show, sexp]

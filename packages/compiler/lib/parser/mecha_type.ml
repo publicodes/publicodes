@@ -6,20 +6,31 @@ open Yaml_parser
 
 let parse_symbol ~pos yaml =
   match yaml with
-  | `Scalar ({value; style= `Single_quoted}, pos) ->
-      return (Pos.mk ~pos value)
+  | `Scalar scalar ->
+      let pos = Mark.pos scalar in
+      let {value; style} = Mark.remove scalar in
+      if Poly.( = ) style `Single_quoted then
+        return (Mark.mk_pos ~pos (LSymbol value))
+      else
+        let code, message = Err.invalid_symbol in
+        fatal_error ~pos ~kind:`Syntax ~code message
   | _ ->
       let code, message = Err.invalid_symbol in
       fatal_error ~pos ~kind:`Syntax ~code message
 
 let parse_possibility ~pos (mapping : Yaml_parser.mapping) =
   match Parser_utils.find_value "une possibilité" mapping with
-  | Some (`A consts, pos) ->
-      let* symbols = List.map consts ~f:(parse_symbol ~pos) |> all_keep_logs in
-      return (Shared_ast.Type (Pos.mk ~pos (Enum symbols)))
-  | Some _ ->
-      let code, message = Err.parsing_should_be_array in
-      fatal_error ~pos ~kind:`Syntax ~code message
+  | Some value -> (
+      let pos = Mark.pos value in
+      match Mark.remove value with
+      | `A consts ->
+          let* symbols =
+            List.map consts ~f:(parse_symbol ~pos) |> all_keep_logs
+          in
+          return (Shared_ast.Type (Mark.mk_pos ~pos (TEnum symbols)))
+      | _ ->
+          let code, message = Err.parsing_should_be_array in
+          fatal_error ~pos ~kind:`Syntax ~code message )
   | None ->
       let code, message = Err.parsing_invalid_mechanism in
       fatal_error ~pos ~kind:`Syntax ~code message
@@ -27,25 +38,28 @@ let parse_possibility ~pos (mapping : Yaml_parser.mapping) =
 
 let parse_type ~pos ~parse:_ value =
   match value with
-  | `Scalar ({value= "texte"; _}, pos) ->
-      return (Shared_ast.Type (Pos.mk ~pos (Literal String)))
-  | `Scalar ({value= "booléen"; _}, pos) ->
-      return (Shared_ast.Type (Pos.mk ~pos (Literal Bool)))
-  | `Scalar ({value= "date"; _}, pos) ->
-      return (Shared_ast.Type (Pos.mk ~pos (Literal Date)))
-  | `Scalar ({value= "nombre"; _}, pos) ->
-      return (Shared_ast.Type (Pos.mk ~pos (Number None)))
-  | `Scalar ({value= ""; _}, pos) ->
-      let code, message = Err.parsing_empty_value in
-      fatal_error ~pos ~kind:`Syntax ~code message
-  | `Scalar _ ->
-      (* FIXME: should be an invalid_type error *)
-      let code, message = Err.invalid_value in
-      fatal_error ~pos ~kind:`Syntax ~code message
-        ~labels:
-          [ Pos.mk ~pos
-              "Les types valides sont `texte`, `booléen`, `date` ou `nombre`."
-          ]
+  | `Scalar scalar -> (
+      let pos = Mark.pos scalar in
+      match Yaml_parser.get_value scalar with
+      | "texte" ->
+          return (Shared_ast.Type (Mark.mk_pos ~pos TString))
+      | "booléen" ->
+          return (Shared_ast.Type (Mark.mk_pos ~pos TBool))
+      | "date" ->
+          return (Shared_ast.Type (Mark.mk_pos ~pos TDate))
+      | "nombre" ->
+          return (Shared_ast.Type (Mark.mk_pos ~pos (TNumber None)))
+      | "" ->
+          let code, message = Err.parsing_empty_value in
+          fatal_error ~pos ~kind:`Syntax ~code message
+      | _ ->
+          (* FIXME: should be an invalid_type error *)
+          let code, message = Err.invalid_value in
+          fatal_error ~pos ~kind:`Syntax ~code message
+            ~labels:
+              [ Mark.mk_pos ~pos
+                  "Les types valides sont `texte`, `booléen`, `date` ou \
+                   `nombre`." ] )
   | `O mapping ->
       parse_possibility ~pos mapping
   | _ ->
@@ -57,17 +71,26 @@ let parse_type ~pos ~parse:_ value =
           ; "Vérifiez l'indentation." ]
 
 let parse_units ~pos ~parse:_ value =
-  let* {value; _}, pos = Parser_utils.get_scalar ~pos value in
+  let* scalar = Parser_utils.get_scalar ~pos value in
+  let value = Yaml_parser.get_value scalar in
+  let pos = Mark.pos scalar in
   match value with
   | "" ->
-      return (Shared_ast.Type (Pos.mk ~pos (Number (Some Shared.Units.empty))))
+      return
+        (Shared_ast.Type (Mark.mk_pos ~pos (TNumber (Some Shared.Units.empty))))
   | _ -> (
       (* We create a fake number to parse the unit the same way we parse them in expression *)
       let units = Expr.parse_expression ~pos ("0 " ^ value) |> Output.result in
       match units with
-      | Some (Shared_ast.Const (Shared_ast.Number (_, unit)), _) ->
-          return (Shared_ast.Type (Pos.mk ~pos (Number unit)))
+      | Some expr -> (
+        match Mark.remove expr with
+        | Shared_ast.Const (Shared_ast.Number (_, unit)) ->
+            return (Shared_ast.Type (Mark.mk_pos ~pos (TNumber unit)))
+        | _ ->
+            let code, message = Err.invalid_value in
+            fatal_error ~pos ~kind:`Syntax ~code message
+              ~labels:[Mark.mk_pos ~pos "Unité non valide"] )
       | _ ->
           let code, message = Err.invalid_value in
           fatal_error ~pos ~kind:`Syntax ~code message
-            ~labels:[Pos.mk ~pos "Unité non valide"] )
+            ~labels:[Mark.mk_pos ~pos "Unité non valide"] )

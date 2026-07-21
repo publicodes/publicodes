@@ -4,9 +4,9 @@ open Base
 
 (** Metadata for rule replacements, including priority and scope limitations *)
 type replace_meta =
-  { only_in: Rule_name.t Pos.t list
+  { only_in: Rule_name.t Mark.pos list
         (** Rules where this replacement applies. If empty, applies to all rules *)
-  ; except_in: Rule_name.t Pos.t list
+  ; except_in: Rule_name.t Mark.pos list
         (** Rules where this replacement doesn't apply *)
   ; exclusive: bool  (** Boolean flag to assume multiple replace exclusive**) }
 [@@deriving show, compare]
@@ -20,12 +20,12 @@ end
 
 (** Module for edges between rules in the replacement graph *)
 module Replacement_edge = struct
-  type t = replace_meta Pos.t [@@deriving show, compare]
+  type t = replace_meta Mark.pos [@@deriving show, compare]
 
   let hash = Hashtbl.hash
 
   let default =
-    Pos.mk ~pos:Pos.dummy {only_in= []; except_in= []; exclusive= false}
+    Mark.mk_pos ~pos:Pos.dummy {only_in= []; except_in= []; exclusive= false}
 end
 
 (* Create the graph module using the functors *)
@@ -37,7 +37,7 @@ module Traverse = Graph.Traverse.Dfs (G)
 
 let mk
     ~(get_replacement_rules :
-       'a Shared_ast.rule_def -> 'a Shared_ast.replace list )
+       Shared_ast.resolved_rule_def -> Rule_name.t Shared_ast.replace list )
     (ast : Shared_ast.resolved) : G.t =
   let graph = G.create () in
   (* Add a replacement edge to the graph *)
@@ -51,13 +51,13 @@ let mk
     List.iter (get_replacement_rules rule_def) ~f:(fun replace ->
         let replaced_rule = replace.reference in
         let replace_meta =
-          Pos.mk ~pos:(Pos.pos replaced_rule)
+          Mark.copy replaced_rule
             { only_in= replace.only_in
             ; except_in= replace.except_in
             ; exclusive= replace.exclusive }
         in
-        add_replacement ~rule:(Pos.value replaced_rule) ~replace_meta
-          ~replaced_by:(Pos.value rule_def.name) )
+        add_replacement ~rule:(Mark.remove replaced_rule) ~replace_meta
+          ~replaced_by:(Mark.remove rule_def.name) )
   in
   List.iter ast ~f:process_rule_def ;
   graph
@@ -70,10 +70,10 @@ let is_replacement_eligible ~(rule : Rule_name.t)
   if equal (fst replacement) rule then false
   else
     let _, meta = replacement in
-    let {only_in; except_in; _} = Pos.value meta in
+    let {only_in; except_in; _} = Mark.remove meta in
     (* We don't replace  *)
-    let except_in = List.map ~f:Pos.value except_in in
-    let only_in = List.map ~f:Pos.value only_in in
+    let except_in = List.map ~f:Mark.remove except_in in
+    let only_in = List.map ~f:Mark.remove only_in in
     let is_blacklisted = List.mem except_in rule ~equal in
     let is_whitelisted =
       List.is_empty only_in || List.mem only_in rule ~equal

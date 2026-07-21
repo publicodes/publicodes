@@ -36,13 +36,13 @@ type context =
   ; current_module: string (* the current module path *) }
 
 let rec parse_rule ~default_to_public ~ctx (name, yaml) =
-  let* name, pos = parse_ref name in
+  let* name, {pos} = parse_ref name in
   let name = ctx.current_rule_name @ name in
   let* value = Parse_value.parse_value ~error_if_undefined:false ~pos yaml in
   let default_meta = if default_to_public then [Public] else [] in
   let module_id = Module_id ctx.current_module_id in
   let parsed_rule =
-    { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
+    { name= Mark.mk_pos ~pos (Shared.Rule_name.create_exn name)
     ; value
     ; meta= module_id :: default_meta
     ; replace= []
@@ -74,7 +74,7 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
       let* replace = parse_replace yaml in
       let* make_not_applicable = parse_make_not_applicable yaml in
       return
-        ( [ { name= Pos.mk ~pos (Shared.Rule_name.create_exn name)
+        ( [ { name= Mark.mk_pos ~pos (Shared.Rule_name.create_exn name)
             ; value
             ; meta= module_id :: meta
             ; replace
@@ -89,12 +89,14 @@ and parse_with ~default_to_public ~ctx mapping =
   match rules with
   | None ->
       return []
-  | Some (rules, pos) ->
+  | Some (rules, {pos}) ->
       parse_rules ~default_to_public ~pos ~ctx rules
 
 and parse_import ~default_to_public ~ctx mapping =
   let parse_package value pos =
-    let* {value; _}, pos = get_scalar ~pos value in
+    let* scalar = get_scalar ~pos value in
+    let value = get_value scalar in
+    let pos = Mark.pos scalar in
     if not (Utils.File.is_valid_import value) then
       let code, message = Err.invalid_path in
       fatal_error ~pos ~code ~kind:`Syntax message
@@ -148,26 +150,28 @@ and parse_import ~default_to_public ~ctx mapping =
   match find_value "importer" mapping with
   | None ->
       return []
-  | Some (value, pos) ->
+  | Some (value, {pos}) ->
       let* package, (module_, pos) =
         match value with
         | `A _ ->
             let code, message = Err.parsing_should_not_be_array in
             fatal_error ~pos ~code ~kind:`Syntax message
-        | `Scalar ({value; _}, pos) ->
-            return (ctx.current_package, (value, pos))
+        | `Scalar scalar ->
+            return (ctx.current_package, (get_value scalar, Mark.pos scalar))
         | `O mapping -> (
             let* module_ =
               let code, message = Err.parsing_missing_value "module" in
               let log = Log.error ~pos ~code ~kind:`Syntax message in
-              let* value, _ = find_value "module" mapping |> of_opt ~log in
-              let* {value; _}, pos = get_scalar ~pos value in
+              let* value = find_value "module" mapping |> of_opt ~log in
+              let* scalar = get_scalar ~pos (Mark.remove value) in
+              let value = get_value scalar in
+              let pos = Mark.pos scalar in
               return (value, pos)
             in
             match find_value "package" mapping with
             | None ->
                 return (ctx.current_package, module_)
-            | Some (package, pos) ->
+            | Some (package, {pos}) ->
                 let* package = parse_package package pos in
                 return (Some package, module_) )
       in
@@ -211,7 +215,7 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
   let module_id = !(ctx.next_module_id) in
   ctx.next_module_id := !(ctx.next_module_id) + 1 ;
   let new_module_id =
-    Shared.Module_id.append ctx.current_module_id (Pos.mk ~pos module_id)
+    Shared.Module_id.append ctx.current_module_id (Mark.mk_pos ~pos module_id)
   in
   let* _ =
     let circular_file =
@@ -225,10 +229,10 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
         let labels =
           let module_ids =
             Shared.Module_id.to_list new_module_id
-            |> List.filter ~f:(fun module_ ->
-                Pos.equal_pos (Pos.pos module_) Pos.dummy |> not )
+            |> List.filter ~f:(fun (_, Mark.{pos}) ->
+                not (Pos.equal pos Pos.dummy) )
           in
-          List.mapi module_ids ~f:(fun i (_, pos) ->
+          List.mapi module_ids ~f:(fun i (_, {pos}) ->
               let msg =
                 if i < List.length module_ids - 1 then
                   let _, file =
@@ -243,7 +247,7 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
                   let dir = File.dirname circular_file in
                   Stdlib.Format.sprintf "module '%s' importé à nouveau ici" dir
               in
-              Pos.mk ~pos msg )
+              Mark.mk_pos ~pos msg )
         in
         let code, message = Err.import_cycle in
         fatal_error ~pos ~labels ~code ~kind:`Syntax message
@@ -282,7 +286,7 @@ and parse_replace mapping =
   match replace with
   | None ->
       return []
-  | Some (replace, pos) ->
+  | Some (replace, {pos}) ->
       parse_one_or_many ~f:(Parse_replace.parse_replace ~pos) replace
 
 and parse_make_not_applicable mapping =
@@ -290,7 +294,7 @@ and parse_make_not_applicable mapping =
   match make_not_applicable with
   | None ->
       return []
-  | Some (make_not_applicable, pos) ->
+  | Some (make_not_applicable, {pos}) ->
       parse_one_or_many
         ~f:(Parse_replace.parse_make_not_applicable ~pos)
         make_not_applicable

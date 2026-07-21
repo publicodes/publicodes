@@ -18,7 +18,7 @@ let get_scalar ~pos (value : yaml) =
 
 let parse_array ~pos
     ~(parse :
-       ?error_if_undefined:bool -> pos:Pos.pos -> yaml -> Ast.value Output.t )
+       ?error_if_undefined:bool -> pos:Pos.t -> yaml -> Ast.value Output.t )
     (yaml : yaml) =
   match yaml with
   | `A seq ->
@@ -34,7 +34,7 @@ let remove_double (mapping : mapping) : mapping Output.t =
   let logs = ref [] in
   List.iter mapping ~f:(fun (key, value) ->
       let key_value = get_value key in
-      let key_pos = Pos.pos key in
+      let key_pos = Mark.pos key in
       if Set.mem !seen_keys key_value then
         let code, message = Err.yaml_duplicate_key in
         (* TODO: show the two keys in labels *)
@@ -49,11 +49,21 @@ let remove_double (mapping : mapping) : mapping Output.t =
   return ~logs:!logs (List.rev !result_mapping)
 
 let parse_ref s =
-  let {value; _}, pos = s in
+  let value = get_value s in
+  let pos = Mark.pos s in
   let expr = Expr.parse_expression ~pos value in
   match expr with
-  | Some (Ref rule_name, _), _ ->
-      return (Pos.mk ~pos rule_name)
+  | Some expr, _ -> (
+    match Mark.remove expr with
+    | Ref rule_name ->
+        return (Mark.mk_pos ~pos:pos rule_name)
+    | _ ->
+        let code, message = Err.invalid_rule_name in
+        fatal_error ~pos ~kind:`Syntax ~code message
+          ~hints:
+            [ Printf.sprintf
+                "un nom de règle doit être de la forme suivante : `mon \
+                 namespace . ma règle` ou `ma règle`" ] )
   | _ ->
       let code, message = Err.invalid_rule_name in
       fatal_error ~pos ~kind:`Syntax ~code message
@@ -69,8 +79,7 @@ let parse_refs ~pos yaml =
 
 let find_value key mapping =
   List.find_map mapping ~f:(fun (k, value) ->
-      if String.equal (get_value k) key then
-        Some (Pos.mk ~pos:(Pos.pos k) value)
+      if String.equal (get_value k) key then Some (Mark.copy k value)
       else None )
 
 let check_authorized_keys ~keys ?(hints = []) mapping =
@@ -80,7 +89,7 @@ let check_authorized_keys ~keys ?(hints = []) mapping =
         let code, message = Err.parsing_invalid_mechanism in
         if not is_allowed then
           Some
-            (Log.error ~code ~pos:(Pos.pos k) ~kind:`Syntax
+            (Log.error ~code ~pos:(Mark.pos k) ~kind:`Syntax
                ~hints:
                  ( Stdlib.Format.asprintf "La clé `%s` n'est pas valide"
                      (get_value k)

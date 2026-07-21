@@ -16,12 +16,12 @@ let compile {input_files; module_path; output_type; default_to_public} =
     Replacement_graph.mk_and_checks resolved_ast
   in
   let* dependency_graph = Dependency_graph.mk_and_checks resolved_ast in
+  let* typed_ast = Typing.type_check resolved_ast in
   let* eval_tree =
-    Eval_tree.from_resolved_ast ~replacement_graph ~make_not_applicable_graph
-      resolved_ast
+    Eval_tree.from_typed_ast ~replacement_graph ~make_not_applicable_graph
+      typed_ast
   in
-  let* typed_ast = Eval_tree.type_check eval_tree in
-  let hashed_tree = Hashed_tree.from_typed_tree typed_ast in
+  let hashed_tree = Hashed_tree.from_typed_tree eval_tree in
   let* outputs =
     Dependency_graph.extract_outputs dependency_graph ~ast:resolved_ast
       ~eval_tree:hashed_tree ~warn_types:(not default_to_public)

@@ -30,7 +30,7 @@ let rec transform_to_hash_and_type value : Tree.value =
     | Eval_tree.Binary_op (op, left, right) ->
         let left' = transform_to_hash_and_type left in
         let right' = transform_to_hash_and_type right in
-        let op_hash = Tree.Hash.of_binary_op (Pos.value op) in
+        let op_hash = Tree.Hash.of_binary_op (Mark.remove op) in
         let hash =
           Tree.Hash.(
             combine
@@ -39,7 +39,7 @@ let rec transform_to_hash_and_type value : Tree.value =
         (Eval_tree.Binary_op (op, left', right'), hash)
     | Eval_tree.Unary_op (op, comp) ->
         let comp' = transform_to_hash_and_type comp in
-        let op_hash = Tree.Hash.of_unary_op (Pos.value op) in
+        let op_hash = Tree.Hash.of_unary_op (Mark.remove op) in
         let hash =
           Tree.Hash.(combine [of_string "unary_op"; op_hash; comp'.meta.hash])
         in
@@ -66,7 +66,7 @@ let rec transform_to_hash_and_type value : Tree.value =
         let context_hashes =
           List.map context' ~f:(fun (rule_name, comp) ->
               Tree.Hash.(
-                combine [of_rule_name (Pos.value rule_name); comp.meta.hash] ) )
+                combine [of_rule_name (Mark.remove rule_name); comp.meta.hash] ) )
         in
         let hash =
           Tree.Hash.(
@@ -88,8 +88,7 @@ let rec transform_to_hash_and_type value : Tree.value =
         (Eval_tree.Round (rounding, precision', expr'), hash)
   in
   let new_value, hash = transform_naked_value value in
-  let typ_concrete = Eval_tree.Type.to_concrete typ in
-  {value= new_value; meta= {typ= typ_concrete; hash}; pos}
+  {value= new_value; meta= {typ= Some typ; hash}; pos}
 
-let from_typed_tree (tree : Eval_tree.Type.t Eval_tree.t) : Tree.t =
+let from_typed_tree (tree : Shared.Typ.t Eval_tree.t) : Tree.t =
   Hashtbl.map tree ~f:transform_to_hash_and_type

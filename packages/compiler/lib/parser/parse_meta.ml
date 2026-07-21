@@ -26,9 +26,9 @@ let parse_custom_meta ~pos yaml =
         let reserved_keys_label =
           List.map
             ~f:(fun k ->
-              let pos = Pos.pos k in
+              let pos = Mark.pos k in
               let key = Yaml_parser.get_value k in
-              Pos.mk ~pos key )
+              Mark.mk_pos ~pos:pos key )
             reserved_keys
         in
         fatal_error ~pos ~code ~kind:`Syntax ~labels:reserved_keys_label
@@ -44,7 +44,7 @@ let parse_custom_meta ~pos yaml =
 
 let parse mapping =
   let parse_key (key, value) =
-    let scalar_value () = get_scalar ~pos:(Pos.pos key) value in
+    let scalar_value () = get_scalar ~pos:(Mark.pos key) value in
     match get_value key with
     | "description" ->
         let* value = scalar_value () in
@@ -56,15 +56,15 @@ let parse mapping =
         let* value = scalar_value () in
         return (Note (get_value value))
     | "meta" ->
-        parse_custom_meta ~pos:(Pos.pos key) value
+        parse_custom_meta ~pos:(Mark.pos key) value
     | "public" ->
         let* value = scalar_value () in
-        let pos = Pos.pos value in
+        let pos = Mark.pos value in
         let value = get_value value in
         if not (String.equal value "oui" || String.equal value "") then
           let code, message = Err.invalid_value in
           fatal_error ~pos ~code ~kind:`Syntax message
-            ~labels:[Pos.mk ~pos "doit valoir `oui` ou être vide"]
+            ~labels:[Mark.mk_pos ~pos:pos "doit valoir `oui` ou être vide"]
             ~hints:
               [ Printf.sprintf "Remplacez `%s` par `oui` ou supprimez la clée"
                   value ]

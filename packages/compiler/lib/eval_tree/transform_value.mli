@@ -1,4 +1,4 @@
 val transform :
-     ?undefined:Type.t Tree.naked_value
-  -> Shared.Rule_name.t Shared.Shared_ast.value
-  -> Type.t Tree.value
+     ?undefined:Shared.Typ.t Tree.naked_value
+  -> Shared.Shared_ast.typed_value
+  -> Shared.Typ.t Tree.value

@@ -11,34 +11,19 @@ let get_rule_str_unit (tree : Tree.t) (rule_name : Rule_name.t) : string option
   let open Shared.Typ in
   let Tree.{typ; _} = Eval_tree.get_meta tree rule_name in
   match typ with
-  | Some (Number (Some unit)) ->
+  | Some (TNumber (Some unit)) ->
       Some (Stdlib.Format.asprintf "%a" Shared.Units.pp unit)
   | _ ->
       None
 
 let from_rule_type (tree : Tree.t) (rule_name : Rule_name.t) =
-  let open Shared.Typ in
   let Tree.{typ; _} = Eval_tree.get_meta tree rule_name in
   match typ with
-  | Some (Number _) ->
-      Tlist [Tstr "number"]
-  | Some (Literal String) ->
-      Tlist [Tstr "text"]
-  | Some (Literal Bool) ->
-      Tlist [Tstr "boolean"]
-  | Some (Literal Date) ->
-      Tlist [Tstr "date"]
-  | Some (Symbol value) ->
-      Tlist [Tstr (Stdlib.Format.asprintf "\"%s\"" value)]
-  | Some (Enum values) ->
-      let values =
-        List.map values ~f:Utils.Pos.value
-        |> List.map ~f:(Stdlib.Format.asprintf "\"%s\"")
-      in
-      let value = String.concat ~sep:" | " values in
-      Tlist [Tstr value]
+  | Some typ ->
+      let typ_str = Typ.to_string typ ~sep:"|" in
+      Tlist [Tstr typ_str]
   | None ->
-      Tstr "unknown"
+      Tlist [Tstr "unknown"]
 
 let from_op : Shared.Shared_ast.binary_op -> tvalue = function
   | Shared.Shared_ast.Add ->
