@@ -216,6 +216,7 @@ let mk ast =
       let refs =
         find_references only_in_chainable context_stack current_rule value
       in
+      (*  iter refs[i].replaced_by -> ajouter un edge *)
       List.iter refs ~f:(fun (referenced_node, referenced_pos) ->
           let ref_name, ref_ctx_stack = referenced_node in
           G.add_vertex graph referenced_node ;

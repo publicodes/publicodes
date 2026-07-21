@@ -11,7 +11,8 @@
   eval_tree
   hashed_tree
   yaml_parser
-  dependency_graph)
+  dependency_graph
+  replacement_graph)
  (modules :standard)
  (preprocess
   (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))
