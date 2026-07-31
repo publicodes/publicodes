@@ -6,7 +6,6 @@ date: 2026-05-13
 tags: modelisation
 featured: true
 draft: true
-
 ---
 
 <script>
@@ -51,7 +50,7 @@ Le résultat est fonctionnel, plutôt propre, mais pose trois problèmes fondame
 
 **2. Code fragile.** Les chaînes de caractères sont en dur, les types inexistants. Un `>= 25` au lieu de `<= 25`, une faute de frappe dans `'reserve'` plutôt que `'réserve'`, et la condition s'inverse ou ne s'applique plus sans que rien ne lève d'erreur.
 
-**3. Code invérifiable.** La seule façon de s'assurer que les règles sont bonnes, c'est de **relire ligne par ligne** et de tester tous les cas à la main. Exercice long, fastidieux, et surtout pas exhaustif. Le LLM a-t-il halluciné une condition qui n'existe pas dans le texte officiel ? Pour le savoir, il faut avoir lu le texte officiel soi-même, puis comparer chaque `if/else` une par une. On en revient au point de départ et on prie pour ne rien rater.
+**3. Code invérifiable.** La seule façon de s'assurer que les règles sont bonnes, c'est de **relire ligne par ligne** et de tester tous les cas à la main. Exercice long, fastidieux, et surtout pas exhaustif. Le LLM a-t-il halluciné une condition qui n'existe pas dans le texte officiel ? Pour le savoir, il faut avoir lu le texte officiel soi-même, puis comparer chaque `if/else` un par un. On en revient au point de départ et on prie pour ne rien rater.
 
 ## Un défi qui dépasse largement la sphère publique
 
@@ -99,7 +98,7 @@ aide réserviste . montant:
 
 Le code Publicodes se lit comme du français. Un juriste, un chargé de mission, un gestionnaire n'importe qui ayant déjà écrit une formule dans un tableur peut comprendre chaque règle sans être développeur. Chaque condition est une phrase. Les noms de variables ne sont pas en `camelCaseIllisible` mais en français naturel : `déjà permis B valide`, `jours activité réserviste`. Pas de `if/else` imbriqués, pas de retours anticipés, pas de `!` qui inverse silencieusement la logique.
 
-Mais cette lisibilité n'est pas qu'une affaire de syntaxe. C'est aussi une question de **structure**. Un LLM qui génère du JavaScript dispose d'une liberté infinie : fonctions fléchées, ternaires, boucles, closures. Chaque degré de liberté est une opportunité d'hallucination ou, plus vicieux, de _presque correct_ que personne ne remarquera. Publicodes impose un vocabulaire métier restreint et explicite (`toutes ces conditions`, `applicable si`, `somme`, `produit`, `remplace`). Pas de boucles, pas d'assignation, pas de types arbitraires. Résultat : le code généré est **structurellement prévisible**, et donc vérifiable par un humain comme par un validateur automatique.
+Mais cette lisibilité n'est pas qu'une affaire de syntaxe. C'est aussi une question de **structure**. Un LLM qui génère du JavaScript dispose d'une liberté infinie : fonctions fléchées, ternaires, boucles, closures. Chaque degré de liberté est une opportunité d'hallucination ou, plus vicieux, de _presque correct_ que personne ne remarquera. Publicodes impose un vocabulaire métier restreint et explicite (`toutes ces conditions`, `applicable si`, `somme`, `produit`, `remplace`). Pas de boucles, pas d'assignation, pas de types arbitraires. Résultat : le code généré est **prévisible**, et donc vérifiable par un humain comme par un validateur automatique.
 
 ### La documentation est l'audit littéralement
 
@@ -113,24 +112,8 @@ Le code JavaScript généré par le LLM mélange logique métier et préoccupati
 
 Publicodes, lui, impose cette séparation par construction : le modèle contient **uniquement** la logique métier. Il se compile en une fonction JavaScript pure, se publie comme [paquet npm](/bibliotheque), s'expose en API REST. L'interface applicative ne touche jamais aux règles directement. Changez la règle, remplacez le modèle l'applicatif ne bouge pas.
 
-## À quoi ressemblerait flux de développement LLM × Publicodes × Métier ?
+## Ressouder la chaîne de responsabilité
 
-Aujourd'hui, le développeur est le goulot d'étranglement : c'est lui qui traduit les besoins métier en code. L'expert connaît la règle mais ne peut ni la coder ni vérifier le code. Avec un LLM, la traduction va plus vite mais la vérification reste bloquée au même endroit.
+À l'heure où la majorité du code est générée par des modèles, remettre de la **validation** et de l'**ownership** sur ce code n'est plus une option. Sans verrou humain au bout de la chaîne, le code « presque bon » s'accumule en production et finit toujours par coûter cher.
 
-Voici comment Publicodes redistribue les rôles :
-
-1. Vous rassemblez les documents décrivant le dispositif (texte de loi, page service-public, convention collective, barème...)
-2. Le LLM les interprète et génère une **première version du modèle en Publicodes**
-3. L'expert métier ouvre la page d'explication autogénérée, lit chaque règle en français, et identifie les erreurs ou les imprécisions
-4. Il corrige directement le fichier YAML ou ajuste le prompt et relance la génération puis revérifie. Le cycle génération/relecture peut tourner plusieurs fois
-5. Une fois le modèle validé, il est intégré **directement** dans l'applicatif : le YAML est le code exécuté, sans retraduction par un développeur
-
-Ce qui change fondamentalement, c'est que **l'expert métier devient le signataire du modèle**, pas seulement son prescripteur. L'IA propose, l'expert dispose, le résultat part en production et chaque règle est auditable par la personne la plus légitime pour le faire. C'est du _vibe coding_ pour experts métier, avec une différence de taille : on ne prie pas pour que ça marche, on le vérifie.
-
-À terme, ce workflow pourrait être outillé par une interface SaaS dédiée où l'expert génère, relit, corrige et valide son modèle sans jamais ouvrir un IDE ni un terminal.
-
-Bonne nouvelle : les LLM actuels sont déjà plutôt bons en Publicodes. Et pour cause, la documentation en ligne est complète, et les dépôts GitHub open source cumulent des centaines de milliers de lignes de règles en français, structurées, versionnées, publiques depuis 2020. Un corpus d'entraînement hors norme pour un langage de niche, possiblement déjà digéré par la plupart des modèles.
-
----
-
-**Vous utilisez Publicodes avec un LLM ? Vous avez des idées, des retours, des critiques sur cette approche ?** [Rejoignez la discussion sur Matrix](https://matrix.to/#/#publicodes:matrix.org) ou [ouvrez une issue GitHub](https://github.com/publicodes/publicodes/discussions).
+Publicodes n'est pas la solution miracle à ce problème. Mais en imposant par construction que la règle reste lisible, vérifiable, validable par l'expert qui en a la compétence (et pas seulement par celle ou celui qui a tapé le prompt), il offre un outil concret pour **ressouder les maillons de la chaîne de responsabilité**, et éviter la catastrophe.
