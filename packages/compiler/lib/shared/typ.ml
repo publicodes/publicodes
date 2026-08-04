@@ -51,12 +51,9 @@ let to_string ~sep : t -> string = function
       "boolean"
   | TDate ->
       "date"
-  | TNumber (Some unit) ->
-      Stdlib.Format.asprintf "%a" Units.pp unit
-  | TNumber None ->
+  | TNumber _ ->
       "number"
   | TEnum values ->
       List.map values ~f:Utils.Mark.remove
       |> List.map ~f:literal_to_string
-      |> List.map ~f:(Stdlib.Format.asprintf "'%s'")
       |> String.concat ~sep

@@ -18,7 +18,7 @@ g:
       alors: 'bar'
     - si: b > 40
       alors: 'toot'
-h: g = 'nak' # not part of the enum
+h: g = 'nak' # add this enumeration
 
 i:
   valeur: super = bien # not the same

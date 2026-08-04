@@ -100,6 +100,8 @@ let binop_max ~pos = mk_binop ~pos Shared_ast.Max
 
 let binop_min ~pos = mk_binop ~pos Shared_ast.Min
 
+let binop_pow ~pos = mk_binop ~pos Shared_ast.Pow
+
 let mk_condition ~cond ~then_ ~else_ = Condition (cond, then_, else_)
 
 let mk_exclusive_replacement ~target ~replacements =
