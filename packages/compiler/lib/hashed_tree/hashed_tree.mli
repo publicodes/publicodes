@@ -10,7 +10,7 @@
 
 type t = Tree.t
 
-val from_typed_tree : Shared.Typ.t Eval_tree.t -> t
+val from_typed_tree : Shared.Typ.t option Eval_tree.t -> t
 (** [from_typed_tree typed_tree] returns a hashed tree generated from
     [typed_tree]. *)
 

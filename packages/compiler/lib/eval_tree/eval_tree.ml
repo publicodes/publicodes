@@ -7,7 +7,7 @@ let from_typed_ast ~(replacement_graph : Replacement_graph.Rule_graph.t)
   ~(make_not_applicable_graph : Replacement_graph.Rule_graph.t)
   (ast :
   Shared_ast.typed) :
-    Typ.t Tree.t Output.t =
+    Typ.t option Tree.t Output.t =
   let eval_tree =
     Hashtbl.create
       (module Shared.Rule_name)
