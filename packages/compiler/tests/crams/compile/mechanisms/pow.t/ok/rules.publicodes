@@ -1,0 +1,6 @@
+a:
+  valeur: b ** 2
+  public: oui
+b:
+  valeur: 4 euros
+  public: oui

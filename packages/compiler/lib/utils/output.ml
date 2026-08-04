@@ -126,6 +126,30 @@ let all_keep_logs ?default (ts : 'a t list) : 'a list t =
           return ~logs:(logs acc @ log) xs )
       >>| List.rev
 
+let all_okay (ts : 'a t list) : 'a list t =
+  List.fold ts ~init:(return []) ~f:(fun (acc_res, acc_logs) (res, log) ->
+      let logs = acc_logs @ log in
+      match (acc_res, res) with
+      | None, Some _ | Some _, None | None, None ->
+          (None, logs)
+      | Some acc_res, Some res ->
+          (Some (acc_res @ [res]), logs) )
+
+let rec fold l ~init ~(f : _ -> _ -> _) =
+  match l with
+  | [] ->
+      return init
+  | a :: l ->
+      let* r = f init a in
+      fold l ~init:r ~f
+
+let fold_right l ~(f : _ -> _ -> _) ~init =
+  match l with
+  | [] ->
+      return init (* avoid the allocation of [~f] below *)
+  | _ ->
+      fold ~f:(fun a b -> f b a) ~init (List.rev l) [@nontail]
+
 let to_exn (output : 'a t) =
   match output with Some x, _ -> x | None, _ -> failwith (sprintf_logs output)
 

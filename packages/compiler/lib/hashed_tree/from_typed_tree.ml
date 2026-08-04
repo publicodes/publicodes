@@ -8,7 +8,8 @@ open Utils
   - We want to avoid traversing the tree twice
 *)
 
-let rec transform_to_hash_and_type value : Tree.value =
+let rec transform_to_hash_and_type (value : Shared.Typ.t option Eval_tree.value)
+    : Tree.value =
   let Eval_tree.{value; meta= typ; pos} = value in
   let transform_naked_value = function
     | Eval_tree.Const const ->
@@ -88,7 +89,7 @@ let rec transform_to_hash_and_type value : Tree.value =
         (Eval_tree.Round (rounding, precision', expr'), hash)
   in
   let new_value, hash = transform_naked_value value in
-  {value= new_value; meta= {typ= Some typ; hash}; pos}
+  {value= new_value; meta= {typ; hash}; pos}
 
-let from_typed_tree (tree : Shared.Typ.t Eval_tree.t) : Tree.t =
+let from_typed_tree (tree : Shared.Typ.t option Eval_tree.t) : Tree.t =
   Hashtbl.map tree ~f:transform_to_hash_and_type

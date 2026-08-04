@@ -48,8 +48,8 @@ let transform ~(replacement_graph : Replacement_graph.Rule_graph.t)
     ~(make_not_applicable_graph : Replacement_graph.Rule_graph.t) rule value =
   let logs = ref [] in
   (* Apply rule replacements to an evaluation tree *)
-  let rec apply_to_node ~(rule : Rule_name.t) (node : 'a Tree.value) :
-      'a Tree.value =
+  let rec apply_to_node ~(rule : Rule_name.t) (node : 'a option Tree.value) :
+      'a option Tree.value =
     let pos = node.pos in
     let meta = node.meta in
     match node.value with

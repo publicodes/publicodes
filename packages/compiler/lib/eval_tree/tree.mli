@@ -76,6 +76,8 @@ val binop_max : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
 val binop_min : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
+val binop_pow : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
+
 val mk_condition :
      cond:'meta value
   -> then_:'meta value

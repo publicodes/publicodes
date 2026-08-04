@@ -36,7 +36,7 @@ type unary_op = Neg [@@deriving equal, compare, show, sexp]
 
 type rounding = Up | Down | Nearest [@@deriving equal, compare, show, sexp]
 
-type typed_mark = {pos: Pos.t; typ: Typ.t}
+type typed_mark = {pos: Pos.t; typ: Typ.t option}
 [@@deriving equal, compare, show, sexp]
 
 type ('ref, 'mark) naked_expr =
@@ -117,13 +117,26 @@ type ('ref, 'mark) t = ('ref, 'mark) rule_def list [@@deriving equal, show]
 
 type resolved_rule_def = (Rule_name.t, Mark.pos_mark) rule_def
 
+type resolved_value_mechanism = (Rule_name.t, Mark.pos_mark) value_mechanism
+
+type resolved_chainable_mechanism =
+  (Rule_name.t, Mark.pos_mark) chainable_mechanism
+
 type resolved_value = (Rule_name.t, Mark.pos_mark) value
+
+type resolved_expr = (Rule_name.t, Mark.pos_mark) expr
 
 type resolved = (Rule_name.t, Mark.pos_mark) t [@@deriving equal, show]
 
 type typed_value = (Rule_name.t, typed_mark) value
 
 type typed_rule_def = (Rule_name.t, typed_mark) rule_def
+
+type typed_expr = (Rule_name.t, typed_mark) expr
+
+type typed_value_mechanism = (Rule_name.t, typed_mark) value_mechanism
+
+type typed_chainable_mechanism = (Rule_name.t, typed_mark) chainable_mechanism
 
 type typed = (Rule_name.t, typed_mark) t [@@deriving equal, show]
 
