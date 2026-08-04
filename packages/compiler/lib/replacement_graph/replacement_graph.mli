@@ -9,4 +9,10 @@ val find_replacements :
   -> Rule_graph.t
   -> (Shared.Rule_name.t * Rule_graph.replace_meta Utils.Mark.pos) list
 
+val find_transitive_replacements :
+     from:Rule_graph.vertex
+  -> rule:Rule_graph.vertex
+  -> Rule_graph.t
+  -> (Shared.Rule_name.t * Rule_graph.replace_meta Utils.Mark.pos) list
+
 module Rule_graph = Rule_graph

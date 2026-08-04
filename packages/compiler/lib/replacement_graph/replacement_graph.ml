@@ -17,3 +17,17 @@ let find_replacements ~(from : Rule_name.t) ~(rule : Rule_name.t)
     in
     List.filter replaces ~f:(Rule_graph.is_replacement_eligible ~rule:from)
   else []
+
+let find_transitive_replacements ~(from : Rule_name.t) ~(rule : Rule_name.t)
+    (graph : Rule_graph.t) =
+  let rec loop ~acc ~todo =
+    match todo with
+    | [] ->
+        acc
+    | rule :: todo ->
+        let replaces = find_replacements ~from ~rule graph in
+        let acc = acc @ replaces in
+        let todo = todo @ List.map replaces ~f:fst in
+        loop ~acc ~todo
+  in
+  loop ~acc:[] ~todo:[rule]
