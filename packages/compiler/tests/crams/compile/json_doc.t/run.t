@@ -1380,7 +1380,7 @@ Valid json doc :
   $ publicodes compile ok -o - | ../../scripts/get_functions.awk
   
   function _a(ctx, params) {
-    return /** @type {number} */ (
+    return /** @type {10.000000} */ (
       $ret("dfb3c6796b344957f44c2e7300f71dff", ctx, 10.)
     )
   
@@ -1399,7 +1399,7 @@ Valid json doc :
     )
   
   function _b_·_c(ctx, params) {
-    return /** @type {number} */ (
+    return /** @type {55.000000} */ (
       $ret("233d46a39aa61b1b99cbe5c01e0fbf81", ctx, 55.)
     )
   
@@ -1445,12 +1445,12 @@ Valid json doc :
     )
   
   function _g_·_here(ctx, params) {
-    return /** @type {number} */ (
+    return /** @type {5.000000} */ (
       $ret("96e452abcb8db5630752b6bc7c8adb61", ctx, 5.)
     )
   
   function _h(ctx, params) {
-    return /** @type {number} */ (
+    return /** @type {30.000000} */ (
       $ret("04ff0686e92917b8722d8a3c065e58bd", ctx, $cond(
         $ret("04ff0686e92917b8722d8a3c065e58bd", ctx, $or(
           $ret("04ff0686e92917b8722d8a3c065e58bd", ctx, (isNotDefined($ret("c5977727da2862f6fbc361dcbd49fbd7", ctx, $gt(
@@ -1470,7 +1470,7 @@ Valid json doc :
     )
   
   function _i(ctx, params) {
-    return /** @type {number} */ (
+    return /** @type {30.000000} */ (
       $ret("1d4170a008fe7e9a5550e66144d9fbc1", ctx, $cond(
         $ret("1d4170a008fe7e9a5550e66144d9fbc1", ctx, $or(
           $ret("1d4170a008fe7e9a5550e66144d9fbc1", ctx, (isNotDefined($ret("a5c8dd1f526a4d376bbfcd7cd54231c4", ctx, $gt(
@@ -1496,7 +1496,7 @@ Valid json doc :
     )
   
   function _k(ctx, params) {
-    return /** @type {number} */ (
+    return /** @type {2.300000} */ (
       $ret("24d865e5b12c5b69db0cc0fe177cd3d1", ctx, $cond(
         $ret("24d865e5b12c5b69db0cc0fe177cd3d1", ctx, $and(
           $ret("24d865e5b12c5b69db0cc0fe177cd3d1", ctx, $neq(
@@ -1508,7 +1508,7 @@ Valid json doc :
     )
   
   function _l(ctx, params) {
-    return /** @type {number} */ (
+    return /** @type {3.000000} */ (
       $ret("24216a81fc80214620c7a3b2d78493ad", ctx, $cond(
         $ret("24216a81fc80214620c7a3b2d78493ad", ctx, $and(
           $ret("24216a81fc80214620c7a3b2d78493ad", ctx, $neq(
@@ -1521,26 +1521,26 @@ Valid json doc :
   
   function _m(ctx, params) {
     return /** @type {number} */ (
-      $ret("27d84601f4a2a551e2ac5cc994c3add6", ctx, $round("nearest", $ret("27d84601f4a2a551e2ac5cc994c3add6", ctx, $get("m", ctx, params)), () => $ret("d79f36416fece81425e0870cd85b023c", ctx, 2.3)))
+      $ret("f3a20b788a484e0ae8daf1d8f8347ad8", ctx, $round("nearest", $ret("27d84601f4a2a551e2ac5cc994c3add6", ctx, $get("m", ctx, params)), () => $ret("d79f36416fece81425e0870cd85b023c", ctx, 2.3)))
     )
   
   function _n(ctx, params) {
     return /** @type {number} */ (
-      $ret("f7a4534321d211a5fef78a02cf4f31c1", ctx, $round("down", $ret("f7a4534321d211a5fef78a02cf4f31c1", ctx, $get("n", ctx, params)), () => $ret("9a1277fc15ed4ef68174aca2db3341e2", ctx, 2.3)))
+      $ret("48814d0d42e81b1835e2a955336e4aee", ctx, $round("down", $ret("f7a4534321d211a5fef78a02cf4f31c1", ctx, $get("n", ctx, params)), () => $ret("9a1277fc15ed4ef68174aca2db3341e2", ctx, 2.3)))
     )
   
   function _o(ctx, params) {
     return /** @type {number} */ (
-      $ret("63087e876b62b228ce1ca32f323fa133", ctx, $round("up", $ret("63087e876b62b228ce1ca32f323fa133", ctx, $get("o", ctx, params)), () => $ret("9eefb1d8169ec53b896ee6369c28130a", ctx, 2.3)))
+      $ret("40a75ee6698b4089c983662b9d877196", ctx, $round("up", $ret("63087e876b62b228ce1ca32f323fa133", ctx, $get("o", ctx, params)), () => $ret("9eefb1d8169ec53b896ee6369c28130a", ctx, 2.3)))
     )
   
   function _p(ctx, params) {
-    return /** @type {"foo"} */ (
+    return /** @type {'foo'} */ (
       $ret("7a4b65152797006a36e155d3959e6250", ctx, "foo")
     )
   
   function _q(ctx, params) {
-    return /** @type {"foo" | "bar"} */ (
+    return /** @type {('bar'|'foo')} */ (
       $ret("89129915ff64e38296ff0bdd95661c13", ctx, $cond(
         $ret("89129915ff64e38296ff0bdd95661c13", ctx, $eq(
           $ret("1413f4e83de89a540b748b90f97dccea", ctx, true),
@@ -1551,7 +1551,7 @@ Valid json doc :
     )
   
   function _r(ctx, params) {
-    return /** @type {"foo" | "bar"} */ (
+    return /** @type {('foo'|'bar')} */ (
       $ret("8651138b0c019be4c49df4a7cadc8238", ctx, $cond(
         $ret("8651138b0c019be4c49df4a7cadc8238", ctx, $eq(
           $ret("10c0223705b199c5ec39541449b8b44b", ctx, $eq(

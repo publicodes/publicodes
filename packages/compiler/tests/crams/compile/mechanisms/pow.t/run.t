@@ -14,8 +14,8 @@ Ok puissance :
        */
       evaluate: (params = {}, options) =>
         $evaluate(_a, params, options),
-      /** @type {number} */
-      type: 'number',
+      /** @type {"number"} */
+      type: "number",
       /** @type {"euros"} */
       unit: "euros",
       /**
@@ -33,12 +33,14 @@ Ok puissance :
       /**
        * Evaluate "b" with evaluation trace, and information on
        * missing and needed parameters.
-       * @type {(params?: bParams, options?: {Options}) => {value: 4.000000euros, needed: Array<keyof bParams>, missing: Array<keyof bParams>, trace: {Trace}}}
+       * @type {(params?: bParams, options?: {Options}) => {value: 4.000000, needed: Array<keyof bParams>, missing: Array<keyof bParams>, trace: {Trace}}}
        */
       evaluate: (params = {}, options) =>
         $evaluate(_b, params, options),
-      /** @type {4.000000euros} */
-      type: '4.000000euros',
+      /** @type {"number"} */
+      type: "number",
+      /** @type {"euros"} */
+      unit: "euros",
       /**
        * Parameter list for "b"
        * @type {Array<keyof bParams>}
