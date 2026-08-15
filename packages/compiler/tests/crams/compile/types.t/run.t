@@ -120,159 +120,20 @@ Should have error when type don't match:
 
   $ publicodes compile ./errors/type_mismatch/ -o -
   
-  E040
-  le symbole 'super' ne fait pas partie de l'énumération [type
-  error]
-       ╒══  ./errors/type_mismatch/rules.publicodes:38:5 ══
-    37 │   type:
-    38 │     une possibilité:
-       │     ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar', 'toot']
-       ╒══  ./errors/type_mismatch/rules.publicodes:39:9 ══
-    38 │     une possibilité:
-    39 │       - 'foo'
-       │         ˘˘˘˘˘ avec ce symbole 'foo'
-       ╒══  ./errors/type_mismatch/rules.publicodes:40:9 ══
-    39 │       - 'foo'
-    40 │       - 'bar'
-       │         ˘˘˘˘˘ avec ce symbole 'bar'
-       ╒══  ./errors/type_mismatch/rules.publicodes:41:9 ══
-    40 │       - 'bar'
-    41 │       - 'toot'
-       │         ˘˘˘˘˘˘ avec ce symbole 'toot'
-       ╒══  ./errors/type_mismatch/rules.publicodes:42:3 ══
-    41 │       - 'toot'
-    42 │   variations:
-       │   ˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'super']
-       ╒══  ./errors/type_mismatch/rules.publicodes:44:14 ══
-    43 │     - si: 20 = 50
-    44 │       alors: 'foo'
-       │              ˘˘˘˘˘ avec ce symbole 'foo'
-       ╒══  ./errors/type_mismatch/rules.publicodes:46:14 ══
-    45 │     - si: 20 > 50
-    46 │       alors: 'super' # not part of "une possibilité"
-       │              ˘˘˘˘˘˘˘˘ avec ce symbole 'super'
-  
-  
-  E040
-  le symbole 'tata' ne fait pas partie de l'énumération [type
-  error]
-       ╒══  ./errors/type_mismatch/rules.publicodes:38:5 ══
-    37 │   type:
-    38 │     une possibilité:
-       │     ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar', 'toot']
-       ╒══  ./errors/type_mismatch/rules.publicodes:39:9 ══
-    38 │     une possibilité:
-    39 │       - 'foo'
-       │         ˘˘˘˘˘ avec ce symbole 'foo'
-       ╒══  ./errors/type_mismatch/rules.publicodes:40:9 ══
-    39 │       - 'foo'
-    40 │       - 'bar'
-       │         ˘˘˘˘˘ avec ce symbole 'bar'
-       ╒══  ./errors/type_mismatch/rules.publicodes:41:9 ══
-    40 │       - 'bar'
-    41 │       - 'toot'
-       │         ˘˘˘˘˘˘ avec ce symbole 'toot'
-       ╒══  ./errors/type_mismatch/rules.publicodes:47:13 ══
-    46 │       alors: 'super' # not part of "une possibilité"
-    47 │ test k: k = 'tata' # not part of "une possibilité"
-       │             ˘˘˘˘˘˘˘ est le symbole 'tata'
-  
-  
-  E040
-  le symbole 'nak' ne fait pas partie de l'énumération [type
-  error]
-       ╒══  ./errors/type_mismatch/rules.publicodes:14:3 ══
-    13 │ g:
-    14 │   variations:
-       │   ˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar', 'toot']
-       ╒══  ./errors/type_mismatch/rules.publicodes:16:14 ══
-    15 │     - si: b > 50
-    16 │       alors: 'foo'
-       │              ˘˘˘˘˘ avec ce symbole 'foo'
-       ╒══  ./errors/type_mismatch/rules.publicodes:18:14 ══
-    17 │     - si: b > 40
-    18 │       alors: 'bar'
-       │              ˘˘˘˘˘ avec ce symbole 'bar'
-       ╒══  ./errors/type_mismatch/rules.publicodes:20:14 ══
-    19 │     - si: b > 40
-    20 │       alors: 'toot'
-       │              ˘˘˘˘˘˘ avec ce symbole 'toot'
-       ╒══  ./errors/type_mismatch/rules.publicodes:21:8 ══
-    20 │       alors: 'toot'
-    21 │ h: g = 'nak' # not part of the enum
-       │        ˘˘˘˘˘˘ est le symbole 'nak'
-  
-  
-  E040
-  le symbole 'toot' ne fait pas partie de l'énumération [type
-  error]
-       ╒══  ./errors/type_mismatch/rules.publicodes:63:5 ══
-    62 │   type:
-    63 │     une possibilité:
-       │     ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar']
-       ╒══  ./errors/type_mismatch/rules.publicodes:64:9 ══
-    63 │     une possibilité:
-    64 │       - 'foo'
-       │         ˘˘˘˘˘ avec ce symbole 'foo'
-       ╒══  ./errors/type_mismatch/rules.publicodes:65:9 ══
-    64 │       - 'foo'
-    65 │       - 'bar'
-       │         ˘˘˘˘˘ avec ce symbole 'bar'
-       ╒══  ./errors/type_mismatch/rules.publicodes:72:3 ══
-    71 │       remplace: m . b
-    72 │   variations:
-       │   ˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'toot', 'bar']
-       ╒══  ./errors/type_mismatch/rules.publicodes:67:8 ══
-    66 │   avec:
-    67 │     a: 'foo'
-       │        ˘˘˘˘˘ avec ce symbole 'foo'
-       ╒══  ./errors/type_mismatch/rules.publicodes:70:15 ══
-    69 │     c:
-    70 │       valeur: 'toot' # not part of "une possibilité"
-       │               ˘˘˘˘˘˘˘ avec ce symbole 'toot'
-       ╒══  ./errors/type_mismatch/rules.publicodes:68:8 ══
-    67 │     a: 'foo'
-    68 │     b: 'bar'
-       │        ˘˘˘˘˘ avec ce symbole 'bar'
-  
-  
-  E040
-  les symboles 'super', 'tata' ne font pas partie de l'énumération
-  [type error]
-       ╒══  ./errors/type_mismatch/rules.publicodes:51:5 ══
-    50 │   type:
-    51 │     une possibilité:
-       │     ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar', 'toot']
-       ╒══  ./errors/type_mismatch/rules.publicodes:52:9 ══
-    51 │     une possibilité:
-    52 │       - 'foo'
-       │         ˘˘˘˘˘ avec ce symbole 'foo'
-       ╒══  ./errors/type_mismatch/rules.publicodes:53:9 ══
-    52 │       - 'foo'
-    53 │       - 'bar'
-       │         ˘˘˘˘˘ avec ce symbole 'bar'
-       ╒══  ./errors/type_mismatch/rules.publicodes:54:9 ══
-    53 │       - 'bar'
-    54 │       - 'toot'
-       │         ˘˘˘˘˘˘ avec ce symbole 'toot'
-       ╒══  ./errors/type_mismatch/rules.publicodes:55:3 ══
-    54 │       - 'toot'
-    55 │   variations: # no intersection with "une possibilité"
-       │   ˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['super', 'tata']
-       ╒══  ./errors/type_mismatch/rules.publicodes:57:14 ══
-    56 │     - si: 20 = 50
-    57 │       alors: 'super'
-       │              ˘˘˘˘˘˘˘ avec ce symbole 'super'
-       ╒══  ./errors/type_mismatch/rules.publicodes:59:14 ══
-    58 │     - si: 20 > 50
-    59 │       alors: 'tata'
-       │              ˘˘˘˘˘˘ avec ce symbole 'tata'
+  E023 types non cohérents entre eux [type error]
+       ╒══  ./errors/type_mismatch/rules.publicodes:1:4 ══
+     1 │ a: "Test"
+       │    ˘˘˘˘˘˘ est le texte "Test"
+       ╒══  ./errors/type_mismatch/rules.publicodes:3:4 ══
+     2 │ 
+     3 │ b: 12
+       │    ˘˘ est le nombre 12.u0
   
   
   E023 types non cohérents entre eux [type error]
        ╒══  ./errors/type_mismatch/rules.publicodes:1:4 ══
      1 │ a: "Test"
-       │    ˘˘˘˘˘˘ est un texte
+       │    ˘˘˘˘˘˘ est le texte "Test"
        ╒══  ./errors/type_mismatch/rules.publicodes:9:4 ══
      8 │ 
      9 │ e: 'Test'
@@ -290,35 +151,103 @@ Should have error when type don't match:
        │           ˘˘˘˘˘˘ est le symbole 'bien'
   
   
-  E023 types non cohérents entre eux [type error]
-       ╒══  ./errors/type_mismatch/rules.publicodes:1:4 ══
-     1 │ a: "Test"
-       │    ˘˘˘˘˘˘ est un texte
-       ╒══  ./errors/type_mismatch/rules.publicodes:3:4 ══
-     2 │ 
-     3 │ b: 12
-       │    ˘˘ est un nombre
+  E040
+  le symbole 'super' ne fait pas partie de l'énumération [type
+  error]
+       ╒══  ./errors/type_mismatch/rules.publicodes:38:5 ══
+    37 │   type:
+    38 │     une possibilité:
+       │     ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar', 'toot']
+       ╒══  ./errors/type_mismatch/rules.publicodes:39:9 ══
+    38 │     une possibilité:
+    39 │       - 'foo'
+       │         ˘˘˘˘˘ avec le symbole 'foo'
+       ╒══  ./errors/type_mismatch/rules.publicodes:40:9 ══
+    39 │       - 'foo'
+    40 │       - 'bar'
+       │         ˘˘˘˘˘ avec le symbole 'bar'
+       ╒══  ./errors/type_mismatch/rules.publicodes:41:9 ══
+    40 │       - 'bar'
+    41 │       - 'toot'
+       │         ˘˘˘˘˘˘ avec le symbole 'toot'
+       ╒══  ./errors/type_mismatch/rules.publicodes:42:3 ══
+    41 │       - 'toot'
+    42 │   variations:
+       │   ˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'super']
+       ╒══  ./errors/type_mismatch/rules.publicodes:44:14 ══
+    43 │     - si: 20 = 50
+    44 │       alors: 'foo'
+       │              ˘˘˘˘˘ avec le symbole 'foo'
+       ╒══  ./errors/type_mismatch/rules.publicodes:46:14 ══
+    45 │     - si: 20 > 50
+    46 │       alors: 'super' # not part of "une possibilité"
+       │              ˘˘˘˘˘˘˘˘ avec le symbole 'super'
+  
+  
+  E040
+  les symboles 'super', 'tata' ne font pas partie de l'énumération
+  [type error]
+       ╒══  ./errors/type_mismatch/rules.publicodes:51:5 ══
+    50 │   type:
+    51 │     une possibilité:
+       │     ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar', 'toot']
+       ╒══  ./errors/type_mismatch/rules.publicodes:52:9 ══
+    51 │     une possibilité:
+    52 │       - 'foo'
+       │         ˘˘˘˘˘ avec le symbole 'foo'
+       ╒══  ./errors/type_mismatch/rules.publicodes:53:9 ══
+    52 │       - 'foo'
+    53 │       - 'bar'
+       │         ˘˘˘˘˘ avec le symbole 'bar'
+       ╒══  ./errors/type_mismatch/rules.publicodes:54:9 ══
+    53 │       - 'bar'
+    54 │       - 'toot'
+       │         ˘˘˘˘˘˘ avec le symbole 'toot'
+       ╒══  ./errors/type_mismatch/rules.publicodes:55:3 ══
+    54 │       - 'toot'
+    55 │   variations: # no intersection with "une possibilité"
+       │   ˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['super', 'tata']
+       ╒══  ./errors/type_mismatch/rules.publicodes:57:14 ══
+    56 │     - si: 20 = 50
+    57 │       alors: 'super'
+       │              ˘˘˘˘˘˘˘ avec le symbole 'super'
+       ╒══  ./errors/type_mismatch/rules.publicodes:59:14 ══
+    58 │     - si: 20 > 50
+    59 │       alors: 'tata'
+       │              ˘˘˘˘˘˘ avec le symbole 'tata'
   
   
   E040
   le symbole 'toot' ne fait pas partie de l'énumération [type
   error]
-       ╒══  ./errors/type_mismatch/rules.publicodes:31:5 ══
-    30 │   type:
-    31 │     une possibilité:
+       ╒══  ./errors/type_mismatch/rules.publicodes:63:5 ══
+    62 │   type:
+    63 │     une possibilité:
        │     ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar']
-       ╒══  ./errors/type_mismatch/rules.publicodes:32:9 ══
-    31 │     une possibilité:
-    32 │       - 'foo'
-       │         ˘˘˘˘˘ avec ce symbole 'foo'
-       ╒══  ./errors/type_mismatch/rules.publicodes:33:9 ══
-    32 │       - 'foo'
-    33 │       - 'bar'
-       │         ˘˘˘˘˘ avec ce symbole 'bar'
-       ╒══  ./errors/type_mismatch/rules.publicodes:34:13 ══
-    33 │       - 'bar'
-    34 │ test j: j = 'toot' # not part of "une possibilité"
-       │             ˘˘˘˘˘˘˘ est le symbole 'toot'
+       ╒══  ./errors/type_mismatch/rules.publicodes:64:9 ══
+    63 │     une possibilité:
+    64 │       - 'foo'
+       │         ˘˘˘˘˘ avec le symbole 'foo'
+       ╒══  ./errors/type_mismatch/rules.publicodes:65:9 ══
+    64 │       - 'foo'
+    65 │       - 'bar'
+       │         ˘˘˘˘˘ avec le symbole 'bar'
+       ╒══  ./errors/type_mismatch/rules.publicodes:72:3 ══
+    71 │       remplace: m . b
+    72 │   variations:
+       │   ˘˘˘˘˘˘˘˘˘˘˘ est l'énum ['foo', 'bar', 'toot']
+       ╒══  ./errors/type_mismatch/rules.publicodes:67:8 ══
+    66 │   avec:
+    67 │     a: 'foo'
+       │        ˘˘˘˘˘ avec le symbole 'foo'
+       ╒══  ./errors/type_mismatch/rules.publicodes:68:8 ══
+    67 │     a: 'foo'
+    68 │     b: 'bar'
+       │        ˘˘˘˘˘ avec le symbole 'bar'
+       ╒══  ./errors/type_mismatch/rules.publicodes:70:15 ══
+    69 │     c:
+    70 │       valeur: 'toot' # not part of "une possibilité"
+       │               ˘˘˘˘˘˘˘ avec le symbole 'toot'
   
   [123]
 
@@ -368,13 +297,13 @@ Should allow to specify type with `type` key:
   $ publicodes compile type_key -o -
   
   E023 types non cohérents entre eux [type error]
+       ╒══  type_key/rules.publicodes:8:11 ══
+     7 │ c:
+     8 │   valeur: a > b
+       │           ˘˘˘˘˘ est un booléan
        ╒══  type_key/rules.publicodes:9:9 ══
      8 │   valeur: a > b
      9 │   type: texte # erreur
        │         ˘˘˘˘˘˘ est un texte
-       ╒══  type_key/rules.publicodes:8:11 ══
-     7 │ c:
-     8 │   valeur: a > b
-       │           ˘˘˘˘˘ est un booléen (oui / non)
   
   [123]

@@ -8,6 +8,20 @@ Bad types for arrondi :
        │            valeur attendue ici
   
   
+  E022 type invalide détecté [type error]
+       ╒══  type_error/rules.publicodes:2:12 ══
+     1 │ a:
+     2 │   arrondi: "non"
+       │            ˘˘˘˘˘ est le texte "non"
+   Hint: arrondi doit être un nombre ou un booléen
+  
+  E022 type invalide détecté [type error]
+       ╒══  type_error/rules.publicodes:6:12 ══
+     5 │ b:
+     6 │   arrondi: 01/2025
+       │            ˘˘˘˘˘˘˘ est la date 2025-01
+   Hint: arrondi doit être un nombre ou un booléen
+  
   E025 unités non compatibles [type error]
        ╒══  type_error/rules.publicodes:9:11 ══
      8 │ c:
@@ -23,28 +37,14 @@ Bad types for arrondi :
        ╒══  type_error/rules.publicodes:14:3 ══
     13 │   valeur: 5€
     14 │   arrondi:
-       │   ˘˘˘˘˘˘˘˘
+       │   ˘˘˘˘˘˘˘˘ est n'importe quelle valeur
    Hint: arrondi doit être un nombre ou un booléen
   
   E022 type invalide détecté [type error]
-       ╒══  type_error/rules.publicodes:19:12 ══
-    18 │   valeur: 5€
-    19 │   arrondi: x
-       │            ˘
-   Hint: arrondi doit être un nombre ou un booléen
-  
-  E022 type invalide détecté [type error]
-       ╒══  type_error/rules.publicodes:6:12 ══
-     5 │ b:
-     6 │   arrondi: 01/2025
-       │            ˘˘˘˘˘˘˘
-   Hint: arrondi doit être un nombre ou un booléen
-  
-  E022 type invalide détecté [type error]
-       ╒══  type_error/rules.publicodes:2:12 ══
-     1 │ a:
-     2 │   arrondi: "non"
-       │            ˘˘˘˘˘
+       ╒══  type_error/rules.publicodes:16:1 ══
+    15 │ 
+    16 │ x:
+       │ ˘˘ est n'importe quelle valeur
    Hint: arrondi doit être un nombre ou un booléen
   [123]
 
