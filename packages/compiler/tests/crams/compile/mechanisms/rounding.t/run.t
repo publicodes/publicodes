@@ -9,42 +9,42 @@ Bad types for arrondi :
   
   
   E025 unités non compatibles [type error]
-       ╒══  type_error/rules.publicodes:9:11 ══
-     8 │ c:
-     9 │   valeur: 4 $
-       │           ˘˘˘ unité: $
        ╒══  type_error/rules.publicodes:10:12 ══
      9 │   valeur: 4 $
     10 │   arrondi: 0.1 €
        │            ˘˘˘˘˘ unité: €
+       ╒══  type_error/rules.publicodes:9:11 ══
+     8 │ c:
+     9 │   valeur: 4 $
+       │           ˘˘˘ unité: $
   
   
   E022 type invalide détecté [type error]
        ╒══  type_error/rules.publicodes:14:3 ══
     13 │   valeur: 5€
     14 │   arrondi:
-       │   ˘˘˘˘˘˘˘˘
+       │   ˘˘˘˘˘˘˘˘ est n'importe quelle valeur
    Hint: arrondi doit être un nombre ou un booléen
   
   E022 type invalide détecté [type error]
-       ╒══  type_error/rules.publicodes:19:12 ══
-    18 │   valeur: 5€
-    19 │   arrondi: x
-       │            ˘
+       ╒══  type_error/rules.publicodes:16:1 ══
+    15 │ 
+    16 │ x:
+       │ ˘˘ est n'importe quelle valeur
    Hint: arrondi doit être un nombre ou un booléen
   
   E022 type invalide détecté [type error]
        ╒══  type_error/rules.publicodes:6:12 ══
      5 │ b:
      6 │   arrondi: 01/2025
-       │            ˘˘˘˘˘˘˘
+       │            ˘˘˘˘˘˘˘ est la date 2025-01
    Hint: arrondi doit être un nombre ou un booléen
   
   E022 type invalide détecté [type error]
        ╒══  type_error/rules.publicodes:2:12 ══
      1 │ a:
      2 │   arrondi: "non"
-       │            ˘˘˘˘˘
+       │            ˘˘˘˘˘ est le texte "non"
    Hint: arrondi doit être un nombre ou un booléen
   [123]
 

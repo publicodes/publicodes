@@ -156,14 +156,14 @@ Type mismatch :
   $ publicodes compile type_mismatch  -t debug_eval_tree -o -
   
   E025 unités non compatibles [type error]
-       ╒══  type_mismatch/rules.publicodes:2:11 ══
-     1 │ a:
-     2 │   valeur: 4 €
-       │           ˘˘˘ unité: €
        ╒══  type_mismatch/rules.publicodes:5:4 ══
      4 │ 
      5 │ b: 5 mois
        │    ˘˘˘˘˘˘ unité: mois
+       ╒══  type_mismatch/rules.publicodes:2:11 ══
+     1 │ a:
+     2 │   valeur: 4 €
+       │           ˘˘˘ unité: €
   
   [123]
 

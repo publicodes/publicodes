@@ -15,12 +15,12 @@ Simple addition unit with unit :
   $ publicodes compile simple-addition
   
   E025 unités non compatibles [type error]
-       ╒══  simple-addition/rules.publicodes:1:26 ══
-     1 │ simple expression: 12€ + 5$
-       │                          ˘˘ unité: $
        ╒══  simple-addition/rules.publicodes:1:20 ══
      1 │ simple expression: 12€ + 5$
        │                    ˘˘˘˘ unité: €
+       ╒══  simple-addition/rules.publicodes:1:26 ══
+     1 │ simple expression: 12€ + 5$
+       │                          ˘˘ unité: $
   
   
   E025 unités non compatibles [type error]
@@ -28,10 +28,10 @@ Simple addition unit with unit :
      3 │ rule 2:
      4 │   somme:
        │   ˘˘˘˘˘˘ unité: €
-       ╒══  simple-addition/rules.publicodes:6:9 ══
+       ╒══  simple-addition/rules.publicodes:6:7 ══
      5 │     - 4 €
      6 │     - -(4 kg/m)
-       │         ˘˘˘˘˘˘˘ unité: kg/m
+       │       ˘˘˘˘˘˘˘˘˘ unité: kg/m
   
   [123]
 
@@ -54,24 +54,24 @@ Unit inference :
   $ publicodes compile unit_inference
   
   E025 unités non compatibles [type error]
-       ╒══  unit_inference/rules.publicodes:7:7 ══
-     6 │ z:
-     7 │ test: x + 9 mois # KO car z est inféré à "mois" et x à "€"
-       │       ˘˘˘˘˘˘˘˘˘˘˘ unité: mois
        ╒══  unit_inference/rules.publicodes:4:4 ══
      3 │ 
-     4 │ x: z * 4€/mois
+     4 │ e: g * 4€/mois
        │    ˘˘˘˘˘˘˘˘˘˘˘ unité: €
+       ╒══  unit_inference/rules.publicodes:7:8 ══
+     6 │ g:
+     7 │ h: e + 9 mois # KO car g est inféré à "mois" et e à "€"
+       │        ˘˘˘˘˘˘˘ unité: mois
   
   
   E025 unités non compatibles [type error]
-       ╒══  unit_inference/rules.publicodes:2:4 ══
-     1 │ a: 5€
-     2 │ b: a + 4kg # KO
-       │    ˘˘˘˘˘˘˘˘ unité: kg
        ╒══  unit_inference/rules.publicodes:1:4 ══
      1 │ a: 5€
        │    ˘˘ unité: €
+       ╒══  unit_inference/rules.publicodes:2:8 ══
+     1 │ a: 5€
+     2 │ b: a + 4kg # KO
+       │        ˘˘˘˘ unité: kg
   
   [123]
 
@@ -80,14 +80,14 @@ Unit with percent :
   $ publicodes compile percent
   
   E025 unités non compatibles [type error]
-       ╒══  percent/rules.publicodes:14:12 ══
-    13 │ # should have error
-    14 │ e: 5%/an + 4€/an
-       │            ˘˘˘˘˘ unité: €/an
        ╒══  percent/rules.publicodes:14:4 ══
     13 │ # should have error
     14 │ e: 5%/an + 4€/an
        │    ˘˘˘˘˘˘ unité: %/an
+       ╒══  percent/rules.publicodes:14:12 ══
+    13 │ # should have error
+    14 │ e: 5%/an + 4€/an
+       │            ˘˘˘˘˘ unité: €/an
   
   [123]
 
@@ -96,14 +96,14 @@ Add unit information with `unité` mechanism :
   $ publicodes compile mechanism
   
   E025 unités non compatibles [type error]
-       ╒══  mechanism/rules.publicodes:13:13 ══
-    12 │ 
-    13 │ test b: b + 4 € # KO
-       │             ˘˘˘˘ unité: €
        ╒══  mechanism/rules.publicodes:11:9 ══
     10 │   valeur: 5
     11 │   unité:
        │          unité: aucune
+       ╒══  mechanism/rules.publicodes:13:13 ══
+    12 │ 
+    13 │ test b: b + 4 € # KO
+       │             ˘˘˘˘ unité: €
   
   
   E025 unités non compatibles [type error]
@@ -122,10 +122,10 @@ Add unit information with `unité` mechanism :
     29 │   valeur: d
     30 │   unité: kg # KO
        │          ˘˘˘ unité: kg
-       ╒══  mechanism/rules.publicodes:27:10 ══
-    26 │   valeur: d
-    27 │   unité: €
-       │          ˘ unité: €
+       ╒══  mechanism/rules.publicodes:24:4 ══
+    23 │ # Incompatible infered unit
+    24 │ d: 12
+       │    ˘˘ unité: €
   
   
   E025 unités non compatibles [type error]
