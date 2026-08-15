@@ -16,10 +16,10 @@ Bad types for arrondi :
   
   
   E025 unités non compatibles [type error]
-       ╒══  type_error/rules.publicodes:6:3 ══
-     5 │ b:
+       ╒══  type_error/rules.publicodes:7:7 ══
      6 │   le maximum de:
-       │   ˘˘˘˘˘˘˘˘˘˘˘˘˘˘ unité: €
+     7 │     - 5 €
+       │       ˘˘˘ unité: €
        ╒══  type_error/rules.publicodes:8:7 ══
      7 │     - 5 €
      8 │     - 4 tomates
