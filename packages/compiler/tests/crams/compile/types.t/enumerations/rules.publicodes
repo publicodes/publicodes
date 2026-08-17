@@ -1,0 +1,41 @@
+a1: # type enum 10 | 20
+  valeur: b1
+  public: oui
+b1:
+  valeur: 10 euros
+c1: # unit euros
+  valeur: 20
+  remplace: b1
+  public: oui
+
+a2: # type enum 10 | 20 | 30
+  public: oui
+  variations:
+    - si: oui
+      alors: 10
+    - si: oui
+      alors: 20
+    - sinon: 30
+
+a3: # type enum 10 | 20
+  valeur: 10
+  par défaut: 20
+  public: oui
+
+a4: # type "foo"
+  valeur: c4
+  public: oui
+b4: # type 42
+  valeur: c4
+  public: oui
+c4: # type unknown
+d4:
+  valeur: "foo"
+  remplace:
+    références à: c4
+    dans: a4
+e4:
+  valeur: 42
+  remplace:
+    références à: c4
+    dans: b4

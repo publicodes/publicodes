@@ -1,0 +1,29 @@
+a1: # type: number unité euros
+  public: oui
+b1: a1 = 42 euros
+
+a2: # type: bool
+  public: oui
+b2: a2 = oui
+
+a3: # type: text
+  public: oui
+b3: a3 = "toto"
+
+a4: # type: enum 'toto' | 'tutu'
+  public: oui
+b4: a4 = 'toto'
+c4: a4 = 'tutu'
+
+a5: # type: date
+  public: oui
+b5: a5 = 01/01/2026
+
+a6: # type: enum 'foo' | 'bar'
+  public: oui
+b6:
+  valeur: a6
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
