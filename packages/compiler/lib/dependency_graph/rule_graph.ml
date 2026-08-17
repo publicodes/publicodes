@@ -186,7 +186,7 @@ and find_references_in_value (only_in_chainable : bool)
       in
       variation_refs @ else_refs
 
-let mk ast =
+let mk ast ~replacement_graph =
   let graph = G.create () in
   let visited_node = ref [] in
   let rec add_rule_dependencies
@@ -210,8 +210,16 @@ let mk ast =
       in
       let refs =
         find_references only_in_chainable context_stack current_rule value
+        |> List.concat_map ~f:(fun reference ->
+            let ref_name, ref_context_stack = Mark.remove reference in
+            let replacements =
+              Replacement_graph.find_replacements replacement_graph
+                ~from:current_rule ~rule:ref_name
+              |> List.map ~f:(fun (replaced_by, edge) ->
+                  Mark.copy edge (replaced_by, ref_context_stack) )
+            in
+            reference :: replacements )
       in
-      (*  iter refs[i].replaced_by -> ajouter un edge *)
       List.iter refs ~f:(fun (ref_node, {pos= ref_pos}) ->
           let ref_name, ref_ctx_stack = ref_node in
           G.add_vertex graph ref_node ;
@@ -221,4 +229,5 @@ let mk ast =
       )
   in
   List.iter ast ~f:(fun rule_def -> add_rule_dependencies rule_def []) ;
+  output_dot graph ;
   graph

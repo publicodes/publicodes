@@ -136,8 +136,10 @@ module Oper : sig
   include Graph.Oper.S with type g = t
 end
 
-val mk : Shared_ast.resolved -> t
-(** [mk ast] creates a dependency graph from the given resolved [ast].
+val mk :
+  Shared_ast.resolved -> replacement_graph:Replacement_graph.Rule_graph.t -> t
+(** [mk ast ~replacement_graph] creates a dependency graph from the given
+    resolved [ast] and [replacement_graph].
 
     The graph is constructed based on the rules defined in the AST, where each
     rule is represented as a vertex in the graph. Edges are created between
