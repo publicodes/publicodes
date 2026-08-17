@@ -3,13 +3,7 @@ open Utils
 open Base
 
 (** Metadata for rule replacements, including priority and scope limitations *)
-type replace_meta =
-  { only_in: Rule_name.t Mark.pos list
-        (** Rules where this replacement applies. If empty, applies to all rules *)
-  ; except_in: Rule_name.t Mark.pos list
-        (** Rules where this replacement doesn't apply *)
-  ; exclusive: bool  (** Boolean flag to assume multiple replace exclusive**) }
-[@@deriving show, compare]
+type replacement = Rule_name.t Shared_ast.replace [@@deriving show, compare]
 
 (** Module for rule vertices in the replacement graph *)
 module Rule_vertex : sig
@@ -20,7 +14,7 @@ end
 
 (** Module for edges between rules in the replacement graph *)
 module Replacement_edge : sig
-  type t = replace_meta Mark.pos [@@deriving show, compare]
+  type t = replacement Mark.pos [@@deriving show, compare]
 
   val hash : t -> int
 
