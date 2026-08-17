@@ -1,7 +1,7 @@
 a: 5€
 b: a + 4kg # KO
 
-e: g * 4€/mois
-f: g + 3 mois
-g:
-h: e + 9 mois # KO car g est inféré à "mois" et e à "€"
+x: z * 4€/mois
+y: z + 3 mois
+z:
+test: x + 9 mois # KO car z est inféré à "mois" et x à "€"

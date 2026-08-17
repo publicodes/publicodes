@@ -1114,6 +1114,11 @@ and check_rule_def ~replaces ~(ast : Ast.wip_tree) ?contexts
 let type_check ~replaces (ast : Ast.wip_tree) : unit Output.t =
   let* _ =
     Hashtbl.to_alist ast |> List.map ~f:snd
+    |> List.sort
+         ~compare:(fun
+             ({Shared_ast.name= _, {Mark.pos= p1}; _}, _)
+             ({Shared_ast.name= _, {Mark.pos= p2}; _}, _)
+           -> Pos.compare p1 p2 )
     |> List.map ~f:(fun (rule_def, status) ->
         if Ast.is_todo !status then check_rule_def ~replaces ~ast rule_def
         else return () )

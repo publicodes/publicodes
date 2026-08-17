@@ -213,7 +213,12 @@ let to_rule_def (rule_def : Ast.wip_rule_def) :
 
 let to_typed (ast : Ast.wip_tree) : Shared_ast.typed Output.t =
   let* rule_defs =
-    Hashtbl.to_alist ast |> List.map ~f:snd |> List.map ~f:fst
-    |> List.map ~f:to_rule_def |> all_keep_logs
+    Hashtbl.to_alist ast |> List.map ~f:snd
+    |> List.sort
+         ~compare:(fun
+             ({Shared_ast.name= _, {Mark.pos= p1}; _}, _)
+             ({Shared_ast.name= _, {Mark.pos= p2}; _}, _)
+           -> Pos.compare p1 p2 )
+    |> List.map ~f:fst |> List.map ~f:to_rule_def |> all_keep_logs
   in
   return rule_defs
