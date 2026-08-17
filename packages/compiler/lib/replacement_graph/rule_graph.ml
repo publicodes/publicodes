@@ -3,13 +3,7 @@ open Utils
 open Base
 
 (** Metadata for rule replacements, including priority and scope limitations *)
-type replace_meta =
-  { only_in: Rule_name.t Mark.pos list
-        (** Rules where this replacement applies. If empty, applies to all rules *)
-  ; except_in: Rule_name.t Mark.pos list
-        (** Rules where this replacement doesn't apply *)
-  ; exclusive: bool  (** Boolean flag to assume multiple replace exclusive**) }
-[@@deriving show, compare]
+type replacement = Rule_name.t Shared_ast.replace [@@deriving show, compare]
 
 (** Module for rule vertices in the replacement graph *)
 module Rule_vertex = struct
@@ -20,12 +14,18 @@ end
 
 (** Module for edges between rules in the replacement graph *)
 module Replacement_edge = struct
-  type t = replace_meta Mark.pos [@@deriving show, compare]
+  type t = replacement Mark.pos [@@deriving show, compare]
 
   let hash = Hashtbl.hash
 
   let default =
-    Mark.mk_pos ~pos:Pos.dummy {only_in= []; except_in= []; exclusive= false}
+    let pos = Pos.dummy in
+    Mark.mk_pos ~pos
+      Shared_ast.
+        { reference= Mark.mk_pos ~pos Rule_name.dummy
+        ; only_in= []
+        ; except_in= []
+        ; exclusive= false }
 end
 
 (* Create the graph module using the functors *)
@@ -50,13 +50,10 @@ let mk
   let process_rule_def rule_def =
     List.iter (get_replacement_rules rule_def) ~f:(fun replace ->
         let replaced_rule = replace.reference in
-        let replace_meta =
-          Mark.copy replaced_rule
-            { only_in= replace.only_in
-            ; except_in= replace.except_in
-            ; exclusive= replace.exclusive }
-        in
-        add_replacement ~rule:(Mark.remove replaced_rule) ~replace_meta
+        let replace_meta = Mark.copy replaced_rule replace in
+        add_replacement
+          ~rule:(Mark.remove replaced_rule)
+          ~replace_meta
           ~replaced_by:(Mark.remove rule_def.name) )
   in
   List.iter ast ~f:process_rule_def ;
@@ -70,7 +67,7 @@ let is_replacement_eligible ~(rule : Rule_name.t)
   if equal (fst replacement) rule then false
   else
     let _, meta = replacement in
-    let {only_in; except_in; _} = Mark.remove meta in
+    let Shared_ast.{only_in; except_in; _} = Mark.remove meta in
     (* We don't replace  *)
     let except_in = List.map ~f:Mark.remove except_in in
     let only_in = List.map ~f:Mark.remove only_in in

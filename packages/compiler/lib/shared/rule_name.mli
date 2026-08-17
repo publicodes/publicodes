@@ -46,6 +46,9 @@ end
 
 (** {2 Rule name utilities} *)
 
+val dummy : t
+(** [dummy] empty rule name *)
+
 val create_exn : string list -> t
 (** [create_exn dotted_name] creates a rule name from a list of strings
 		representing the segments of the name.
