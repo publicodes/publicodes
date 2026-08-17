@@ -69,10 +69,13 @@ let resolve ~rule_names ~current name =
   match matched_rule with
   | Some x ->
       Some x
-  (* If no matching, we check if the current rule is a match *)
   | None ->
-      let parent = List.hd_exn parent_paths in
-      if String.equal (to_string current) (to_string parent) then Some current
+      (* If there is direct match, checks if the current rule is a relative
+         reference to a parent rule, sibling or child rule. *)
+      let potential_matches =
+        List.map parent_paths ~f:(fun parent -> parent @ name)
+      in
+      if List.exists potential_matches ~f:(equal current) then Some current
       else None
 
 let make_reserved uid = [Printf.sprintf "__%s" uid]
