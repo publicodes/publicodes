@@ -27,3 +27,15 @@ b6:
     une possibilité:
       - 'foo'
       - 'bar'
+
+a7: # type number
+  public: oui
+b7:
+  remplace: a7
+  valeur: 10
+
+c8: # type enum 'toto'
+  public: oui
+d8:
+  remplace: c8
+  valeur: 'toto'

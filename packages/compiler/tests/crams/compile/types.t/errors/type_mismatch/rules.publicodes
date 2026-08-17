@@ -66,11 +66,10 @@ m:
   avec:
     a: 'foo'
     b: 'bar'
-    c:
-      valeur: 'toot' # not part of "une possibilité"
-      remplace: m . b
+    c: 'toot'
   variations:
     - si: oui
       alors: m . a
     - si: oui
       alors: m . b
+    - sinon: m . c

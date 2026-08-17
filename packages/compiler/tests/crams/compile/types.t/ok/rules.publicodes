@@ -58,9 +58,7 @@ h:
   avec:
     a: 'foo'
     b: 'bar'
-    c:
-      valeur: 'toot'
-      remplace: b
+    c: 'toot'
   variations:
     - si: oui
       alors: a

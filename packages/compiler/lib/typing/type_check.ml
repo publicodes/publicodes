@@ -1105,17 +1105,38 @@ and check_rule_def ~replaces ~(ast : Ast.wip_tree) ?contexts
     | Some contexts ->
         contexts
   in
-  let {Shared_ast.value; name= current, _; _} = rule_def in
+  let {Shared_ast.value; name= current, _; replace; _} = rule_def in
   let res =
     let* _ = check_value ~replaces ~current ~ast ~contexts value in
     let _, mark = value in
     (* TODO: better pos to notice this? *)
-    match List.hd rule_def.make_not_applicable with
-    | None ->
-        return ()
-    | Some hd ->
-        let typ = Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in
-        check_union typ mark.typ
+    let* _ =
+      match List.hd rule_def.make_not_applicable with
+      | None ->
+          return ()
+      | Some hd ->
+          let typ = Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in
+          check_union typ mark.typ
+    in
+    let* _ =
+      Output.fold ~init:() replace ~f:(fun _ {Shared_ast.reference; _} ->
+          let ref = Mark.remove reference in
+          let rule_def, status = Hashtbl.find_exn ast ref in
+          let* _ =
+            match !status with
+            | Todo ->
+                check_rule_def ~replaces ~ast ~contexts rule_def
+            | Error ->
+                empty
+            | _ ->
+                return ()
+          in
+          let {Shared_ast.value; _} = rule_def in
+          let _, nmark = value in
+          let* _ = check_generalize nmark.typ mark.typ in
+          return () )
+    in
+    return ()
   in
   match res with
   | None, logs ->
