@@ -3,7 +3,7 @@ open Utils
 open Shared
 
 module Rule_vertex = struct
-  type t = Rule_name.t * Rule_context.t list [@@deriving equal, compare]
+  type t = Rule_name.t * Rule_context.stack [@@deriving equal, compare]
 
   let hash = Hashtbl.hash
 
@@ -186,12 +186,29 @@ and find_references_in_value (only_in_chainable : bool)
       in
       variation_refs @ else_refs
 
-let mk ast =
+let find_replacements_references replacement_graph ~reference ~current_rule =
+  let ref_name, ref_context_stack = Mark.remove reference in
+  if Rule_context.stack_contains ref_context_stack ref_name then
+    (* If the reference is already defined in the context stack, we don't want to
+       consider replacements, as the value of the reference is overridden by the
+       context. *)
+    []
+  else
+    (* TODO: if we want to have the same exhaustive error messages for all the
+       reference chains, we shouldn't directly use the transitive replacements,
+       but rather recursively find the replacements by calling
+       [add_rule_dependencies] on the replacement rules. *)
+    Replacement_graph.find_transitive_replacements replacement_graph
+      ~from:current_rule ~rule:ref_name
+    |> List.map ~f:(fun (replaced_by, _) ->
+        Mark.copy reference (replaced_by, ref_context_stack) )
+
+let mk ast ~replacement_graph =
   let graph = G.create () in
   let visited_node = ref [] in
   let rec add_rule_dependencies
       ({name; value; _} : Shared_ast.resolved_rule_def)
-      (context_stack : Rule_context.t list) =
+      (context_stack : Rule_context.stack) =
     let current_rule = Mark.remove name in
     let current_node = (current_rule, context_stack) in
     if List.exists !visited_node ~f:(Rule_vertex.equal current_node) then
@@ -204,15 +221,18 @@ let mk ast =
         (* If the current rule is already defined by a context in the stack,
           we only want to consider references in chainable mechanisms, as the
           value of the current rule is overridden by the context. *)
-        List.exists context_stack ~f:(fun c ->
-            Rule_context.rules_without_pos c
-            |> List.exists ~f:(Rule_name.equal current_rule) )
+        Rule_context.stack_contains context_stack current_rule
       in
-      let refs =
+      let references =
         find_references only_in_chainable context_stack current_rule value
+        |> List.concat_map ~f:(fun reference ->
+            let replacements =
+              find_replacements_references replacement_graph ~reference
+                ~current_rule
+            in
+            reference :: replacements )
       in
-      (*  iter refs[i].replaced_by -> ajouter un edge *)
-      List.iter refs ~f:(fun (ref_node, {pos= ref_pos}) ->
+      List.iter references ~f:(fun (ref_node, {pos= ref_pos}) ->
           let ref_name, ref_ctx_stack = ref_node in
           G.add_vertex graph ref_node ;
           let edge = (current_node, ref_pos, ref_node) in

@@ -4,6 +4,8 @@ open Shared
 
 type t = Id.t * Rule_name.t Mark.pos list [@@deriving equal, compare]
 
+type stack = t list [@@deriving equal, compare]
+
 let mk current_rule rules pos =
   let id = Id.hash current_rule pos in
   (id, rules)
@@ -16,8 +18,11 @@ let rules_without_pos (_, rules) = List.map rules ~f:Mark.remove
 
 let equal (id1, _) (id2, _) = Id.equal id1 id2
 
-let contains rule_name (_, rules) =
+let contains (_, rules) rule_name =
   List.exists rules ~f:(fun (rule, _) -> Rule_name.equal rule rule_name)
+
+let stack_contains ctx_stack rule_name =
+  List.exists ctx_stack ~f:(fun ctx -> contains ctx rule_name)
 
 let to_string (id, rules) =
   let rules_str =
