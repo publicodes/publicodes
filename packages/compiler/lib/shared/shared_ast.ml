@@ -36,9 +36,6 @@ type unary_op = Neg [@@deriving equal, compare, show, sexp]
 
 type rounding = Up | Down | Nearest [@@deriving equal, compare, show, sexp]
 
-type typed_mark = {pos: Pos.t; typ: Typ.t option}
-[@@deriving equal, compare, show, sexp]
-
 type ('ref, 'mark) naked_expr =
   | Const of constant
   | Ref of 'ref
@@ -103,7 +100,7 @@ type 'ref replace =
   ; only_in: 'ref Mark.pos list
   ; except_in: 'ref Mark.pos list
   ; exclusive: bool }
-[@@deriving equal, show, sexp]
+[@@deriving equal, show, sexp, compare]
 
 type ('ref, 'mark) rule_def =
   { name: Rule_name.t Mark.pos
@@ -113,7 +110,11 @@ type ('ref, 'mark) rule_def =
   ; make_not_applicable: 'ref replace list }
 [@@deriving equal, show]
 
+(** {1} AST type definitions *)
+
 type ('ref, 'mark) t = ('ref, 'mark) rule_def list [@@deriving equal, show]
+
+(** {2} AST with resolved rule names *)
 
 type resolved_rule_def = (Rule_name.t, Mark.pos_mark) rule_def
 
@@ -127,6 +128,11 @@ type resolved_value = (Rule_name.t, Mark.pos_mark) value
 type resolved_expr = (Rule_name.t, Mark.pos_mark) expr
 
 type resolved = (Rule_name.t, Mark.pos_mark) t [@@deriving equal, show]
+
+(** {2} AST with resolved rule names and type informations in the {!Mark.ed} *)
+
+type typed_mark = {pos: Pos.t; typ: Typ.t option}
+[@@deriving equal, compare, show, sexp]
 
 type typed_value = (Rule_name.t, typed_mark) value
 

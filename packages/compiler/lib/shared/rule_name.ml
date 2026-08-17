@@ -40,6 +40,8 @@ let create_exn ref =
   | _ :: _ ->
       ref
 
+let dummy = [""]
+
 let parent = function
   | [] | [_] ->
       None
