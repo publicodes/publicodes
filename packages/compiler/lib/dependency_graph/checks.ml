@@ -80,7 +80,7 @@ let illegal_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
      - the deepest context containing [ctx_rule] is the same as the [current_ctx].
    *)
 let is_rule_used_in_deps ctx_rule (current_ctx : Rule_context.t)
-    (deps : (Rule_name.t * Rule_context.t list) list) : bool =
+    (deps : (Rule_name.t * Rule_context.stack) list) : bool =
   let deps_using_ctx_rule =
     List.filter deps ~f:(fun (dep_rule, dep_ctx_stack) ->
         if Rule_name.equal ctx_rule dep_rule then
@@ -88,7 +88,8 @@ let is_rule_used_in_deps ctx_rule (current_ctx : Rule_context.t)
             (* NOTE: this works because the context stack in the [Rule_graph] is
                ordered from the deepest context to the shallowest one, so the
                first context containing [ctx_rule] is the deepest one. *)
-            List.find dep_ctx_stack ~f:(Rule_context.contains ctx_rule)
+            List.find dep_ctx_stack ~f:(fun ctx_stack ->
+                Rule_context.contains ctx_stack ctx_rule )
           with
           | Some c ->
               Rule_context.equal current_ctx c
@@ -128,8 +129,8 @@ let unused_context_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
             in
             Log.error ~labels ~kind:`Syntax ~code message ) )
 
-let mk_and_checks ast =
-  let graph = Rule_graph.mk ast in
+let mk_and_checks ast ~replacement_graph =
+  let graph = Rule_graph.mk ast ~replacement_graph in
   let cycle_logs = cycle_check graph in
   let access_logs = illegal_check ast graph in
   let context_logs = unused_context_check ast graph in
