@@ -1,4 +1,7 @@
-val mk_and_checks : Shared.Shared_ast.resolved -> Rule_graph.t Utils.Output.t
+val mk_and_checks :
+     Shared.Shared_ast.resolved
+  -> replacement_graph:Replacement_graph.Rule_graph.t
+  -> Rule_graph.t Utils.Output.t
 (** [mk_and_checks ~ast ~eval_tree] creates a dependency graph from the given
     resolved [ast] and performs verifications on it, such as cycle detection and
     valid access checks. It returns the updated dependency graph along with any
