@@ -18,7 +18,7 @@ let extract_parameters rule_name ~(graph : Rule_graph.t)
   let parameter_rules =
     List.filter successor_rules ~f:(fun (dep_rule_name, dep_context_stack) ->
         let is_overridden_by_context =
-          List.exists dep_context_stack ~f:(Rule_context.contains dep_rule_name)
+          Rule_context.stack_contains dep_context_stack dep_rule_name
         in
         (not is_overridden_by_context) && is_parameter dep_rule_name ~ast )
     |> List.map ~f:fst
