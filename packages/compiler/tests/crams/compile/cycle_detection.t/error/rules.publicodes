@@ -45,3 +45,30 @@ avec remplacements:
     plafond bis: # should fail
       remplace: plafond
       valeur: cotisation
+
+avec remplacements transitifs:
+  avec:
+    cotisation:
+      valeur: 10
+      plafond: plafond
+
+    plafond:
+      # There should not be a cycle because plafond is set with contexte and is
+      # not undefined
+      valeur: cotisation
+      contexte:
+        plafond: 10
+
+    plafond bis proxy:
+      remplace: plafond
+      valeur: 10
+
+    plafond bis: # should fail
+      remplace: plafond bis proxy
+      valeur: cotisation
+
+    plafond bis bis: # should not fail
+      remplace:
+        références à: plafond bis
+        sauf dans: cotisation
+      valeur: cotisation
