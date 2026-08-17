@@ -375,7 +375,6 @@ Should generalize the least precise side:
       /**
        * Parameters of "a1"
        * @typedef {{
-       *  'a1'?: number
        * }} a1Params
        */
       /**
@@ -393,13 +392,12 @@ Should generalize the least precise side:
        * Parameter list for "a1"
        * @type {Array<keyof a1Params>}
        */
-      params: ['a1'],
+      params: [],
     },
     'a2': {
       /**
        * Parameters of "a2"
        * @typedef {{
-       *  'a2'?: boolean
        * }} a2Params
        */
       /**
@@ -415,13 +413,12 @@ Should generalize the least precise side:
        * Parameter list for "a2"
        * @type {Array<keyof a2Params>}
        */
-      params: ['a2'],
+      params: [],
     },
     'a3': {
       /**
        * Parameters of "a3"
        * @typedef {{
-       *  'a3'?: text
        * }} a3Params
        */
       /**
@@ -437,13 +434,12 @@ Should generalize the least precise side:
        * Parameter list for "a3"
        * @type {Array<keyof a3Params>}
        */
-      params: ['a3'],
+      params: [],
     },
     'a4': {
       /**
        * Parameters of "a4"
        * @typedef {{
-       *  'a4'?: ('tutu'|'toto')
        * }} a4Params
        */
       /**
@@ -459,13 +455,12 @@ Should generalize the least precise side:
        * Parameter list for "a4"
        * @type {Array<keyof a4Params>}
        */
-      params: ['a4'],
+      params: [],
     },
     'a5': {
       /**
        * Parameters of "a5"
        * @typedef {{
-       *  'a5'?: date
        * }} a5Params
        */
       /**
@@ -481,13 +476,12 @@ Should generalize the least precise side:
        * Parameter list for "a5"
        * @type {Array<keyof a5Params>}
        */
-      params: ['a5'],
+      params: [],
     },
     'a6': {
       /**
        * Parameters of "a6"
        * @typedef {{
-       *  'a6'?: ('foo'|'bar')
        * }} a6Params
        */
       /**
@@ -503,7 +497,7 @@ Should generalize the least precise side:
        * Parameter list for "a6"
        * @type {Array<keyof a6Params>}
        */
-      params: ['a6'],
+      params: [],
     }
   }
   export const parameters = {
@@ -675,7 +669,6 @@ Replaces should cause enumerations:
       /**
        * Parameters of "c4"
        * @typedef {{
-       *  'c4'?: unknown
        * }} c4Params
        */
       /**
@@ -691,7 +684,7 @@ Replaces should cause enumerations:
        * Parameter list for "c4"
        * @type {Array<keyof c4Params>}
        */
-      params: ['c4'],
+      params: [],
     }
   }
   export const parameters = {

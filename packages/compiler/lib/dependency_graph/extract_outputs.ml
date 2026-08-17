@@ -14,6 +14,8 @@ let extract_parameters rule_name ~(graph : Rule_graph.t)
   in
   let successor_rules =
     Rule_graph.succ transitive_dependencies (rule_name, [])
+    |> List.filter ~f:(fun (rule_name2, _) ->
+        Rule_name.equal rule_name rule_name2 |> not )
   in
   let parameter_rules =
     List.filter successor_rules ~f:(fun (dep_rule_name, dep_context_stack) ->

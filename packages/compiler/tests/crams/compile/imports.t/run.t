@@ -54,7 +54,6 @@ Check root exports :
       /**
        * Parameters of "module c . regle c"
        * @typedef {{
-       *  'module c . regle c'?: number
        * }} module_c_·_regle_cParams
        */
       /**
@@ -72,7 +71,7 @@ Check root exports :
        * Parameter list for "module c . regle c"
        * @type {Array<keyof module_c_·_regle_cParams>}
        */
-      params: ['module c . regle c'],
+      params: [],
     }
   }
   export const parameters = {

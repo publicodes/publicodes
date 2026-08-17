@@ -4,7 +4,7 @@ Should correclty extract parameters from stacked contexts:
     'out':
       params: ['c'],
     'c':
-      params: ['c'],
+      params: [],
 
 Should correctly extract parameters from chained mechanisms, even when the rule
 is overridden by a context:
@@ -26,19 +26,19 @@ is overridden by a context:
                'd',
                'c'],
     'h':
-      params: ['h'],
+      params: [],
     'g':
-      params: ['g'],
+      params: [],
     'f':
-      params: ['f'],
+      params: [],
     'e':
-      params: ['e'],
+      params: [],
     'd':
-      params: ['d'],
+      params: [],
     'c':
-      params: ['c'],
+      params: [],
     'x':
-      params: ['x'],
+      params: [],
 
 
 Should correctly extract parameters from a complex context redefinition:
@@ -47,4 +47,4 @@ Should correctly extract parameters from a complex context redefinition:
     'a':
       params: ['c'],
     'c':
-      params: ['c'],
+      params: [],

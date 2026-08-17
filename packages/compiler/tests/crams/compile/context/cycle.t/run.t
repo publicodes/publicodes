@@ -30,7 +30,6 @@ Valid :
       /**
        * Parameters of "c"
        * @typedef {{
-       *  'c'?: number
        * }} cParams
        */
       /**
@@ -48,7 +47,7 @@ Valid :
        * Parameter list for "c"
        * @type {Array<keyof cParams>}
        */
-      params: ['c'],
+      params: [],
     }
   }
   export const parameters = {
