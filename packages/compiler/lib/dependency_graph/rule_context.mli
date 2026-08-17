@@ -10,6 +10,8 @@ open Shared
 
 type t [@@deriving equal, compare]
 
+type stack = t list [@@deriving equal, compare]
+
 val mk : Rule_name.t -> Rule_name.t Utils.Mark.pos list -> Utils.Pos.t -> t
 (** [mk current_rule rules pos] creates a new context with a unique identifier
     based on the [current_rule] and its position [pos], along with a list of
@@ -30,9 +32,13 @@ val equal : t -> t -> bool
 (** [equal ctx1 ctx2] checks if two contexts are equal based on their unique
     identifiers. *)
 
-val contains : Rule_name.t -> t -> bool
-(** [contains rule_name ctx] checks if the context [ctx] contains the rule
+val contains : t -> Rule_name.t -> bool
+(** [contains  ctx rule_name] checks if the context [ctx] contains the rule
     [rule_name]. *)
+
+val stack_contains : stack -> Rule_name.t -> bool
+(** [stack_contains ctx_stack rule_name ] checks if any context in the
+    [ctx_stack] contains the rule [rule_name]. *)
 
 val to_string : t -> string
 (** [to_string ctx] converts the context [ctx] to a string representation. *)

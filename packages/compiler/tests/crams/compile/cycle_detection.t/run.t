@@ -37,6 +37,17 @@ Without context, the cycle is detected:
   
   
   E027 cycle de dépendance détecté [cycle warning]
+       ╒══  ./error/rules.publicodes:47:15 ══
+    46 │       remplace: plafond
+    47 │       valeur: cotisation
+       │               ˘˘˘˘˘˘˘˘˘˘ règle 'avec remplacements . cotisation' référencée ici
+       ╒══  ./error/rules.publicodes:36:16 ══
+    35 │       valeur: 10
+    36 │       plafond: plafond
+       │                ˘˘˘˘˘˘˘ règle 'avec remplacements . plafond bis' référencée de nouveau
+  
+  
+  E027 cycle de dépendance détecté [cycle warning]
        ╒══  ./error/rules.publicodes:6:15 ══
      5 │     plafond:
      6 │       valeur: cotisation
@@ -45,6 +56,17 @@ Without context, the cycle is detected:
      2 │   valeur: 10% * salaire brut
      3 │   plafond: plafond
        │            ˘˘˘˘˘˘˘ règle 'cotisation . plafond' référencée de nouveau
+  
+  
+  E027 cycle de dépendance détecté [cycle warning]
+       ╒══  ./error/rules.publicodes:68:15 ══
+    67 │       remplace: plafond bis proxy
+    68 │       valeur: cotisation
+       │               ˘˘˘˘˘˘˘˘˘˘ règle 'avec remplacements chaînés . cotisation' référencée ici
+       ╒══  ./error/rules.publicodes:53:16 ══
+    52 │       valeur: 10
+    53 │       plafond: plafond
+       │                ˘˘˘˘˘˘˘ règle 'avec remplacements chaînés . plafond bis' référencée de nouveau
   
   
   E027 cycle de dépendance détecté [cycle warning]
