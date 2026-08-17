@@ -1,0 +1,37 @@
+a1: # type: unknoan
+b1: # type: unknown
+d1: # type: number
+  remplace: a1
+  valeur: 10
+e1: # type: 'toto'
+  remplace: b1
+  valeur: 'toto'
+c1: a1 = b1 # erreur: pas possible de comparer un [10] avec ['toto']
+
+a2:
+  valeur: 10 euros
+b2: a2
+c2:
+  remplace: a2
+  valeur: 10 kg # erreur: pas possible de remplacer un 'euros' par 'kg'.
+
+a3: # type: euros
+  valeur: 10 euros
+b3: a3
+c3:
+  valeur: 20 # type: euros
+  remplace: a3
+d3:
+  remplace: c3
+  valeur: 30 kg # erreur: pas possible de remplacer un 'euros' par 'kg'
+
+a5: # type: euros
+  valeur: 10
+b5: # type: kg
+  valeur: a5 * 10 kg/euros
+  unité: kg
+c5: # type: euros
+  remplace: a5
+  valeur: 20
+d5:
+  valeur: c5 + 10 kg # erreur: impossible d'additionner des 'euros' avec des 'kg'.
