@@ -106,6 +106,10 @@ Symbol checks:
   $ publicodes compile ./symbol/ -o - -t debug_eval_tree
   
   E023 types non cohérents entre eux [type error]
+       ╒══  ./symbol/rules.publicodes:3:6 ══
+     2 │ b: a = 'foo' # ack
+     3 │ c: a = 'bar' # nack
+       │      ˘˘˘˘˘˘˘˘ Point de départ
        ╒══  ./symbol/rules.publicodes:1:4 ══
      1 │ a: 'foo'
        │    ˘˘˘˘˘ est le symbole 'foo'
@@ -121,6 +125,10 @@ Should have error when type don't match:
   $ publicodes compile ./errors/type_mismatch/ -o -
   
   E023 types non cohérents entre eux [type error]
+       ╒══  ./errors/type_mismatch/rules.publicodes:5:4 ══
+     4 │ 
+     5 │ c: a > b
+       │    ˘˘˘˘˘ Point de départ
        ╒══  ./errors/type_mismatch/rules.publicodes:1:4 ══
      1 │ a: "Test"
        │    ˘˘˘˘˘˘ est le texte "Test"
@@ -131,6 +139,10 @@ Should have error when type don't match:
   
   
   E023 types non cohérents entre eux [type error]
+       ╒══  ./errors/type_mismatch/rules.publicodes:11:6 ══
+    10 │ 
+    11 │ f: a = e
+       │      ˘˘˘ Point de départ
        ╒══  ./errors/type_mismatch/rules.publicodes:1:4 ══
      1 │ a: "Test"
        │    ˘˘˘˘˘˘ est le texte "Test"
@@ -141,6 +153,10 @@ Should have error when type don't match:
   
   
   E023 types non cohérents entre eux [type error]
+       ╒══  ./errors/type_mismatch/rules.publicodes:24:17 ══
+    23 │ i:
+    24 │   valeur: super = bien # not the same
+       │                 ˘˘˘˘˘˘˘ Point de départ
        ╒══  ./errors/type_mismatch/rules.publicodes:26:12 ══
     25 │   avec:
     26 │     super: 'super'
@@ -356,6 +372,10 @@ Should allow to specify type with `type` key:
   $ publicodes compile type_key -o -
   
   E023 types non cohérents entre eux [type error]
+       ╒══  type_key/rules.publicodes:9:9 ══
+     8 │   valeur: a > b
+     9 │   type: texte # erreur
+       │         ˘˘˘˘˘˘ Point de départ
        ╒══  type_key/rules.publicodes:8:11 ══
      7 │ c:
      8 │   valeur: a > b

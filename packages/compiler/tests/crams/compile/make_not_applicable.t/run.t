@@ -131,6 +131,9 @@ Type error
   $ publicodes compile type_error  -t debug_eval_tree -o -
   
   E023 types non cohérents entre eux [type error]
+       ╒══  type_error/rules.publicodes:1:1 ══
+     1 │ a:
+       │ ˘˘ Point de départ
        ╒══  type_error/rules.publicodes:2:24 ══
      1 │ a:
      2 │   rend non applicable: b

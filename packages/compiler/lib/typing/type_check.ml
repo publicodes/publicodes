@@ -34,11 +34,12 @@ let to_labels (u1 : Ast.typ) (u2 : Ast.typ) =
       Pos.compare p1 p2 )
   |> List.map ~f:to_label |> List.concat
 
-let error_typ_mismatch (u1 : Ast.typ) (u2 : Ast.typ) =
+let error_typ_mismatch ~pos (u1 : Ast.typ) (u2 : Ast.typ) =
   let p1 = UnionFind.get u1 |> Mark.pos in
   let _p2 = UnionFind.get u2 |> Mark.pos in
   let code, message = Err.type_incoherence in
-  let labels = to_labels u1 u2 in
+  let loc = Mark.mk_pos ~pos "Point de départ" in
+  let labels = loc :: to_labels u1 u2 in
   fatal_error ~pos:p1 ~kind:`Type ~code ~labels message
 
 let error_typ_invalid ?(hints = []) (u1 : Ast.typ) =
@@ -58,7 +59,7 @@ let error_missing_enums enums (u1 : Ast.typ) (u2 : Ast.typ) =
   fatal_error ~pos:p1 ~kind:`Type ~code ~labels message
 
 (* TODO: pass pos and add a lavel error here *)
-let check_union (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
+let check_union ~pos (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   let m1 = UnionFind.get u1 in
   let m2 = UnionFind.get u2 in
   let t1, {Mark.pos= pos1} = m1 in
@@ -193,10 +194,10 @@ let check_union (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
       if List.is_empty missing then return ()
       else error_missing_enums missing u1 u2
   | _, _ ->
-      error_typ_mismatch u1 u2
+      error_typ_mismatch ~pos u1 u2
 
 (* checks but keeps the least precise side general *)
-let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
+let check_generalize ~pos (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   let t1, {Mark.pos= pos1} = UnionFind.get u1 in
   let t2, {Mark.pos= pos2} = UnionFind.get u2 in
   match (t1, t2) with
@@ -340,7 +341,7 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
       return ()
   (* Check symbols *)
   | Ast.Literal (LSymbol s1, _), Ast.Literal (LSymbol s2, _) ->
-      if String.equal s1 s2 then return () else error_typ_mismatch u1 u2
+      if String.equal s1 s2 then return () else error_typ_mismatch ~pos u1 u2
   (* Check Dates *)
   | Ast.Any _, Ast.TDate
   | Ast.Any _, Ast.Literal (LDate _, _)
@@ -388,7 +389,7 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
       if List.is_empty missing then return ()
       else error_missing_enums missing u1 u2
   | _, _ ->
-      error_typ_mismatch u1 u2
+      error_typ_mismatch ~pos u1 u2
 
 let check_multiply ~pos u1 u2 : Ast.typ Output.t =
   let t1, _ = UnionFind.get u1 in
@@ -676,7 +677,7 @@ let check_enumerate ~pos u1 u2 : Ast.typ Output.t =
       let enum = Ast.mk_enum ~pos (lits1 @ lits2) in
       return enum
   | _, _ ->
-      error_typ_mismatch u1 u2
+      error_typ_mismatch ~pos u1 u2
 
 let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
     ~(ptyp : Ast.typ) (expr : Ast.wip_expr) : unit Output.t =
@@ -686,7 +687,7 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
   let* _ =
     match expr with
     | Const _ ->
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union ~pos mark.typ ptyp in
         return ()
     | Ref ref ->
         let* _ =
@@ -730,20 +731,20 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
                 let _, mark = value in
                 check_enumerate ~pos ptyp mark.typ )
           in
-          let* _ = check_union typ ptyp in
+          let* _ = check_union ~pos typ ptyp in
           return ()
         in
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union ~pos mark.typ ptyp in
         return ()
     | Binary_op (op, ((_, left_mark) as left), ((_, right_mark) as right)) -> (
         let {Ast.pos= left_pos; _} = left_mark in
         let {Ast.pos= right_pos; _} = right_mark in
         match fst op with
         | And | Or ->
-            let* _ = Ast.mk_bool ~pos |> check_union mark.typ in
+            let* _ = Ast.mk_bool ~pos |> check_union ~pos mark.typ in
             let* _ = check_expression ~ptyp:mark.typ left in
             let* _ = check_expression ~ptyp:mark.typ right in
-            let* _ = check_union mark.typ ptyp in
+            let* _ = check_union ~pos mark.typ ptyp in
             return ()
         | Add | Sub | Max | Min ->
             (* check both are any number, and unify units *)
@@ -757,11 +758,11 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
               let* _ = check_expression ~ptyp:wip right in
               return wip
             in
-            let* _ = check_generalize left right in
+            let* _ = check_generalize ~pos left right in
             let wip = Ast.mk_number_no_unit ~pos in
-            let* _ = check_union left wip in
-            let* _ = check_union wip mark.typ in
-            let* _ = check_union mark.typ ptyp in
+            let* _ = check_union ~pos left wip in
+            let* _ = check_union ~pos wip mark.typ in
+            let* _ = check_union ~pos mark.typ ptyp in
             return ()
         | Mul ->
             (* check both are any number *)
@@ -776,9 +777,9 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
             (* we are TNumber *)
             let* wip = check_multiply ~pos left_mark.typ right_mark.typ in
             (* apply to union *)
-            let* _ = check_union mark.typ wip in
+            let* _ = check_union ~pos mark.typ wip in
             (* check against ptyp *)
-            let* _ = check_union mark.typ ptyp in
+            let* _ = check_union ~pos mark.typ ptyp in
             return ()
         | Div ->
             (* check both are any number *)
@@ -793,9 +794,9 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
             (* we are TNumber *)
             let* wip = check_divide ~pos left_mark.typ right_mark.typ in
             (* apply to mark *)
-            let* _ = check_union mark.typ wip in
+            let* _ = check_union ~pos mark.typ wip in
             (* check against ptyp *)
-            let* _ = check_union mark.typ ptyp in
+            let* _ = check_union ~pos mark.typ ptyp in
             return ()
         | Pow ->
             (* check both are any number *)
@@ -811,8 +812,8 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
             (* we are TNumber *)
             let wip2 = Ast.mk_number_no_unit ~pos in
             (* gather unit *)
-            let* _ = check_union wip1 wip2 in
-            let* _ = check_union wip2 mark.typ in
+            let* _ = check_union ~pos wip1 wip2 in
+            let* _ = check_union ~pos wip2 mark.typ in
             return ()
         | Gt | Lt | GtEq | LtEq | Eq | NotEq ->
             let* left =
@@ -826,9 +827,9 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
               return wip
             in
             (* TODO: restrict possible types? *)
-            let* _ = check_generalize left right in
+            let* _ = check_generalize ~pos left right in
             let wip = Ast.mk_bool ~pos in
-            let* _ = check_union wip ptyp in
+            let* _ = check_union ~pos wip ptyp in
             return () )
     | Unary_op ((Neg, _), expr) ->
         (* check is a number *)
@@ -837,11 +838,11 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
         (* we are TNumber *)
         let wip2 = Ast.mk_number_no_unit ~pos in
         (* gather unit *)
-        let* _ = check_union wip1 wip2 in
+        let* _ = check_union ~pos wip1 wip2 in
         (* merge *)
-        let* _ = check_union mark.typ wip2 in
+        let* _ = check_union ~pos mark.typ wip2 in
         (* check against ptyp *)
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union ~pos mark.typ ptyp in
         return ()
   in
   return ()
@@ -887,10 +888,10 @@ and check_value_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
         let wip = Ast.mk_number_no_unit ~pos in
         (* gather unit *)
         let* _ =
-          List.map values ~f:(fun (_, value) -> check_union wip value.typ)
+          List.map values ~f:(fun (_, value) -> check_union ~pos wip value.typ)
           |> all_okay
         in
-        let* _ = check_union wip mark.typ in
+        let* _ = check_union ~pos wip mark.typ in
         return ()
     | Product values ->
         let* _ =
@@ -912,7 +913,7 @@ and check_value_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
               Output.fold ~init rest ~f:(fun wip value ->
                   check_multiply ~pos wip (Mark.get value).typ )
         in
-        let* _ = check_union wip mark.typ in
+        let* _ = check_union ~pos wip mark.typ in
         return ()
     | All_of values | One_of values ->
         let* _ =
@@ -922,7 +923,7 @@ and check_value_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
           |> all_okay
         in
         let wip = Ast.mk_bool ~pos in
-        let* _ = check_union wip mark.typ in
+        let* _ = check_union ~pos wip mark.typ in
         return ()
     | Not_defined ->
         return ()
@@ -947,7 +948,7 @@ and check_value_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
               let* _ = check_value ~ptyp:wip2 else_ in
               check_enumerate ~pos wip wip2
         in
-        let* _ = check_union wip mark.typ in
+        let* _ = check_union ~pos wip mark.typ in
         return ()
   in
   return ()
@@ -962,26 +963,26 @@ and check_chainable_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
     match chainable with
     | Context _ ->
         (* already done in check_contexts *)
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union ~pos mark.typ ptyp in
         return ()
     | Applicable_if value | Not_applicable_if value ->
         let* _ =
           let wip = Ast.mk_any_bool ~pos in
           check_value ~ptyp:wip value
         in
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union ~pos mark.typ ptyp in
         return ()
     | Type (typ, {Mark.pos}) ->
         let wip = Ast.mk_typ ~pos typ in
-        let* _ = check_generalize wip ptyp in
-        let* _ = check_union wip mark.typ in
+        let* _ = check_generalize ~pos wip ptyp in
+        let* _ = check_union ~pos wip mark.typ in
         return ()
     | Default value ->
         let wip = Ast.mk_any ~pos in
         let* _ = check_value ~ptyp:wip value in
         let* wip = check_enumerate ~pos wip ptyp in
-        let* _ = check_union wip mark.typ in
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union ~pos wip mark.typ in
+        let* _ = check_union ~pos mark.typ ptyp in
         return ()
     | Ceiling value | Floor value ->
         let* wip =
@@ -989,8 +990,8 @@ and check_chainable_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
           let* _ = check_value ~ptyp:wip value in
           return wip
         in
-        let* _ = check_union wip mark.typ in
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union ~pos wip mark.typ in
+        let* _ = check_union ~pos mark.typ ptyp in
         return ()
     | Round (_, value) ->
         let* _ = check_value value in
@@ -1011,13 +1012,13 @@ and check_chainable_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
               let concrete = Number_unit.to_concrete unit in
               if Units.equal concrete (Units.parse_unit "décimales") then
                 return ()
-              else check_union value_mark.typ wip
+              else check_union ~pos value_mark.typ wip
           | _ ->
               let hints = ["arrondi doit être un nombre ou un booléen"] in
               error_typ_invalid ~hints value_mark.typ
         in
-        let* _ = check_union wip mark.typ in
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union ~pos wip mark.typ in
+        let* _ = check_union ~pos mark.typ ptyp in
         return ()
   in
   return ()
@@ -1031,7 +1032,7 @@ and check_contexts ~replaces ~current
         match chainable with
         | Context values ->
             let* _ =
-              List.map values ~f:(fun ((ref, _), value) ->
+              List.map values ~f:(fun ((ref, {Mark.pos}), value) ->
                   let* cont_typ =
                     let rule_def, status = Hashtbl.find_exn ast ref in
                     let* _ =
@@ -1050,7 +1051,7 @@ and check_contexts ~replaces ~current
                     let _, value_mark = value in
                     return value_mark.typ
                   in
-                  let* _ = check_generalize cont_typ val_typ in
+                  let* _ = check_generalize ~pos cont_typ val_typ in
                   Hashtbl.set contexts ~key:ref ~data:value ;
                   return () )
               |> all_okay
@@ -1070,6 +1071,7 @@ and check_value ~replaces ~current ~(ast : Ast.wip_tree) ~contexts ?ptyp
   in
   let* _ = check_value_mechanism ~replaces ~current ~ast ~contexts value in
   let _, mark = value in
+  let pos = mark.pos in
   let* typ =
     List.sort chainable_mechanisms ~compare:(fun (a, _) (b, _) ->
         Shared_ast.compare_chainable_mechanism Shared.Rule_name.compare
@@ -1082,13 +1084,13 @@ and check_value ~replaces ~current ~(ast : Ast.wip_tree) ~contexts ?ptyp
         let _, mark = chainable in
         return mark.typ )
   in
-  let* _ = check_union typ root.typ in
+  let* _ = check_union ~pos typ root.typ in
   let* _ =
     match ptyp with
     | None ->
         return ()
     | Some ptyp ->
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union ~pos mark.typ ptyp in
         return ()
   in
   return ()
@@ -1106,6 +1108,8 @@ and check_rule_def ~replaces ~(ast : Ast.wip_tree) ?contexts
         contexts
   in
   let {Shared_ast.value; name= current, _; _} = rule_def in
+  let _, mark = value in
+  let pos = mark.pos in
   let res =
     let* _ = check_value ~replaces ~current ~ast ~contexts value in
     let _, mark = value in
@@ -1115,7 +1119,7 @@ and check_rule_def ~replaces ~(ast : Ast.wip_tree) ?contexts
         return ()
     | Some hd ->
         let typ = Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in
-        check_union typ mark.typ
+        check_union ~pos typ mark.typ
   in
   match res with
   | None, logs ->
