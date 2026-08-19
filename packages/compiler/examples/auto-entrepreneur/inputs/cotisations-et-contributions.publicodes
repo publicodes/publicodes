@@ -27,7 +27,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC:
       Fiche service-public.fr: https://www.service-public.fr/professionnels-entreprises/vosdroits/F32847
 
 dirigeant . auto-entrepreneur . cotisations et contributions . TFC . commerce:
-  applicable si: entreprise . activité . nature = 'commerciale'
+  applicable si: entreprise . activité . nature = "commerciale"
   somme:
     - produit:
         - entreprise . chiffre d'affaires . service BIC
@@ -46,7 +46,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . commerce:
 
 dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers:
   unité: €/an
-  applicable si: entreprise . activité . nature = 'artisanale'
+  applicable si: entreprise . activité . nature = "artisanale"
   somme:
     - produit:
         - entreprise . chiffre d'affaires . service BIC
@@ -70,16 +70,20 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers:
 dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Alsace:
   par défaut: non
   une de ces conditions:
-    - établissement . commune . département = 'Bas-Rhin'
-    - établissement . commune . département = 'Haut-Rhin'
+    - établissement . commune . département = "Bas-Rhin"
+    - établissement . commune . département = "Haut-Rhin"
 
   avec:
     taux service:
-      remplace: taux service
+      remplace:
+        références à: taux service
+        exclusif: oui
       valeur: 0.65%
 
     taux vente:
-      remplace: taux vente
+      remplace:
+        références à: taux vente
+        exclusif: oui
       valeur: 0.29%
   meta:
 
@@ -88,19 +92,19 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . 
 
 dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . taux Moselle:
   par défaut: non
-  valeur: établissement . commune . département = 'Moselle'
+  valeur: établissement . commune . département = "Moselle"
 
   avec:
     taux service:
       remplace:
         références à: taux service
-        priorité: 1
+        exclusif: oui
       valeur: 0.83%
 
     taux vente:
       remplace:
         références à: taux vente
-        priorité: 1
+        exclusif: oui
       valeur: 0.37%
   meta:
 
@@ -120,7 +124,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . CFP:
     - produit:
         - entreprise . chiffre d'affaires . BIC
         - variations:
-            - si: entreprise . activité . nature = 'artisanale'
+            - si: entreprise . activité . nature = "artisanale"
               alors: 0.3%
             - sinon: 0.1%
     - produit:

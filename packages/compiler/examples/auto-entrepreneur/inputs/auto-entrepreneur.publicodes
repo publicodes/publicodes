@@ -1,5 +1,5 @@
 dirigeant . auto-entrepreneur:
-  valeur: régime social = 'auto-entrepreneur'
+  valeur: régime social = "auto-entrepreneur"
   par défaut: non
   description: |
     L’auto-entreprise est une entreprise individuelle simplifiée. À l’origine connu
@@ -68,7 +68,7 @@ dirigeant . auto-entrepreneur . Cipav:
   une de ces conditions:
     - entreprise . activité . nature . libérale . réglementée
     - toutes ces conditions:
-        - entreprise . activité . nature = 'libérale'
+        - entreprise . activité . nature = "libérale"
         - entreprise . date de création < 01/2018
         - adhérent = oui
   avec:
