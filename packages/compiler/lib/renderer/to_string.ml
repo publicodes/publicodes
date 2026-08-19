@@ -6,10 +6,10 @@ open Jg_types
 let from_rule_name (rule_name : Rule_name.t) =
   Tstr (Rule_name.to_string rule_name)
 
-let get_rule_str_unit (tree : Tree.t) (rule_name : Rule_name.t) : string option
-    =
+let get_rule_str_unit (tree : Typ.t option Eval_tree.t) (rule_name : Rule_name.t)
+    : string option =
   let open Shared.Typ in
-  let Tree.{typ; _} = Eval_tree.get_meta tree rule_name in
+  let typ = Eval_tree.get_meta tree rule_name in
   match typ with
   | Some (TNumber (Some unit))
   | Some (Literal (LNumber (_, Some unit), _))
@@ -18,8 +18,8 @@ let get_rule_str_unit (tree : Tree.t) (rule_name : Rule_name.t) : string option
   | _ ->
       None
 
-let from_rule_type (tree : Tree.t) (rule_name : Rule_name.t) =
-  let Tree.{typ; _} = Eval_tree.get_meta tree rule_name in
+let from_rule_type (tree : Typ.t option Eval_tree.t) (rule_name : Rule_name.t) =
+  let typ = Eval_tree.get_meta tree rule_name in
   let from_lit lit =
     match lit with
     | Typ.LBool value ->
@@ -222,7 +222,7 @@ let node_of_exclusive_replacement id (target : string)
   @@ Tobj [("target", Tstr target); ("replacements", Tlist replacements)]
 
 let rec node_of_tree_val (name : Shared.Rule_name.t)
-    ({value; pos; _} : Tree.value) =
+    ({value; pos; _} : Typ.t option Eval_tree.value) =
   let id = Shared.Id.hash name pos in
   let node_of_tree_val = node_of_tree_val name in
   match value with
@@ -268,10 +268,10 @@ let rec node_of_tree_val (name : Shared.Rule_name.t)
       let replacements = List.map replacements ~f:Rule_name.to_string in
       node_of_exclusive_replacement id target replacements
 
-let from_rules hashed_tree =
+let from_rules eval_tree =
   let rules =
-    Base.Hashtbl.fold hashed_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
-        let rule_type = from_rule_type hashed_tree rule in
+    Base.Hashtbl.fold eval_tree ~init:[] ~f:(fun ~key:rule ~data acc ->
+        let rule_type = from_rule_type eval_tree rule in
         let rule_name = from_rule_name rule in
         let rule_node = node_of_tree_val rule data in
         (rule_type, rule_name, rule_node) :: acc )
@@ -285,26 +285,26 @@ let from_rules hashed_tree =
            ; ("rule_name", rule_name)
            ; ("rule_node", rule_node) ] ) )
 
-let from_output hashed_tree
+let from_output eval_tree
     Model_output.{rule_name; parameters; meta; is_output; _} =
-  let rule_type = from_rule_type hashed_tree rule_name in
+  let rule_type = from_rule_type eval_tree rule_name in
   let title =
     find_title meta |> function None -> Tnull | Some str -> Tstr str
   in
   let description =
     find_description meta |> function None -> Tnull | Some str -> Tstr str
   in
-  let return_type = from_rule_type hashed_tree rule_name in
+  let return_type = from_rule_type eval_tree rule_name in
   let metas = metas_of_meta meta in
   let params =
     Tlist
       (List.map parameters ~f:(fun p ->
            Tobj
-             [ ("param_type", from_rule_type hashed_tree p)
+             [ ("param_type", from_rule_type eval_tree p)
              ; ("param_value", Tstr (Rule_name.to_string p)) ] ) )
   in
   let unit =
-    get_rule_str_unit hashed_tree rule_name
+    get_rule_str_unit eval_tree rule_name
     |> function None -> Tnull | Some str -> Tstr str
   in
   Tobj
@@ -331,10 +331,10 @@ let models ?with_runtime tree outputs =
   | None ->
       model
 
-let to_js tree outputs =
-  let model = models tree outputs ~with_runtime:Template_js.runtime in
+let to_js eval_tree outputs =
+  let model = models eval_tree outputs ~with_runtime:Template_js.runtime in
   Utils.Template.from_template Template_js.template model
 
-let to_debug tree outputs =
-  let model = models tree outputs in
+let to_debug eval_tree outputs =
+  let model = models eval_tree outputs in
   Utils.Template.from_template Template_debug.template model

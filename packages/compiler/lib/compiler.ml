@@ -21,17 +21,16 @@ let compile {input_files; module_path; output_type; default_to_public} =
     Eval_tree.from_typed_ast ~replacement_graph ~make_not_applicable_graph
       typed_ast
   in
-  let hashed_tree = Hashed_tree.from_typed_tree eval_tree in
   let* outputs =
     Dependency_graph.extract_outputs dependency_graph ~ast:resolved_ast
-      ~eval_tree:hashed_tree ~warn_types:(not default_to_public)
+      ~eval_tree ~warn_types:(not default_to_public)
   in
   let output_str =
     match output_type with
     | Debug_eval_tree ->
-        Hashed_tree.to_debug_str hashed_tree outputs
+        Renderer.to_debug_str eval_tree outputs
     | Js ->
-        Hashed_tree.to_js_str hashed_tree outputs
+        Renderer.to_js_str eval_tree outputs
     | Json_doc ->
         Shared.To_json_doc.to_str resolved_ast
   in

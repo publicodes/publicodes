@@ -6,7 +6,7 @@
   base
   dependency_graph
   eval_tree
-  hashed_tree
+  renderer
   parser
   replacement_graph
   resolver

@@ -1,7 +1,7 @@
 (library
  (inline_tests)
- (name hashed_tree)
- (public_name publicodes.hashed_tree)
+ (name renderer)
+ (public_name publicodes.renderer)
  (libraries base eval_tree shared jingoo)
  (modules :standard)
  (preprocess

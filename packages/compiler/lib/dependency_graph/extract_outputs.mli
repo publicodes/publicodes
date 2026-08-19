@@ -3,7 +3,7 @@ open Shared
 
 val extract_outputs :
      ast:Shared_ast.resolved
-  -> eval_tree:Hashed_tree.t
+  -> eval_tree:Typ.t option Eval_tree.t
   -> warn_types:bool
   -> Rule_graph.t
   -> Model_output.t list Output.t
