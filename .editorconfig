@@ -10,7 +10,7 @@ indent_style = tab
 insert_final_newline = true
 max_line_length = 80
 
-[**.{yml,yaml}]
+[**.{yml,yaml,publicodes}]
 # Spaces are mandatory for yaml files:
 indent_style = space
 indent_size = 2
@@ -20,3 +20,9 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = false
 
+[*.t]
+trim_trailing_whitespace = false
+
+[*.{ml,mli}]
+indent_style = space
+indent_size = 2

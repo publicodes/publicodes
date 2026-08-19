@@ -1,0 +1,3 @@
+a: 'foo'
+b: a = 'foo' # ack
+c: a = 'bar' # nack

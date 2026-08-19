@@ -1,0 +1,76 @@
+a: "Test"
+
+b: 12
+
+c: a > b
+
+d: a = "pas Test"
+
+e: 'Test'
+
+f: a = e
+
+g:
+  variations:
+    - si: b > 50
+      alors: 'foo'
+    - si: b > 40
+      alors: 'bar'
+    - si: b > 40
+      alors: 'toot'
+h: g = 'nak' # not part of the enum
+
+i:
+  valeur: super = bien # not the same
+  avec:
+    super: 'super'
+    bien: 'bien'
+
+j:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+test j: j = 'toot' # not part of "une possibilité"
+
+k:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+      - 'toot'
+  variations:
+    - si: 20 = 50
+      alors: 'foo'
+    - si: 20 > 50
+      alors: 'super' # not part of "une possibilité"
+test k: k = 'tata' # not part of "une possibilité"
+
+l:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+      - 'toot'
+  variations: # no intersection with "une possibilité"
+    - si: 20 = 50
+      alors: 'super'
+    - si: 20 > 50
+      alors: 'tata'
+
+m:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+  avec:
+    a: 'foo'
+    b: 'bar'
+    c:
+      valeur: 'toot' # not part of "une possibilité"
+      remplace: m . b
+  variations:
+    - si: oui
+      alors: m . a
+    - si: oui
+      alors: m . b

@@ -1,0 +1,21 @@
+a:
+  variations:
+    - si: oui
+      alors: 200
+      sinon: 300 #KO
+
+b:
+  variations:
+    - si: oui
+      alors: 200
+    - si: 300 # KO
+
+c:
+  variations:
+    - sinon: 200 # KO
+    - si: oui
+      alors: 200
+
+d:
+  variations:
+    - sinon: 340 # KO

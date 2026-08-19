@@ -5,7 +5,8 @@
 	"workspaces": [
 		"website",
 		"packages/*",
-		"examples/*"
+		"packages/compiler/tests/runtimes/JS",
+		"packages/compiler/examples"
 	],
 	"type": "module",
 	"scripts": {
@@ -14,9 +15,9 @@
 		"test:type": "turbo run test:type",
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=\\{./packages/*\\}",
-		"eslint": "eslint --cache --flag unstable_config_lookup_from_file",
-		"lint": "prettier --check . && run build:packages && run eslint . && turbo run lint --parallel",
-		"format": "run build:packages  && run eslint --fix . && prettier --write . && turbo run format --parallel",
+		"eslint": "eslint --cache --flag v10_config_lookup_from_file",
+		"lint": "prettier --check . && run build:packages && run eslint . --quiet && turbo run lint --parallel",
+		"format": "run build:packages && run eslint --fix . && prettier --write . && turbo run format --parallel",
 		"dev": "turbo run dev --filter=\"website...\"",
 		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\" \"**/.turbo\"",
 		"release": "run prepack && changeset publish --provenance",
@@ -29,7 +30,8 @@
 		"@changesets/changelog-github": "^0.5.0",
 		"@changesets/cli": "^2.30.0",
 		"@eslint/js": "^9.16.0",
-		"eslint": "^9.16.0",
+		"changeset": "^0.2.6",
+		"eslint": "^9.36.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-react": "latest",
 		"globals": "^15.13.0",
@@ -37,11 +39,11 @@
 		"prettier-plugin-svelte": "^3.2.4",
 		"prettier-plugin-tailwindcss": "^0.6.5",
 		"rimraf": "^3.0.2",
-		"turbo": "^2.2.3",
+		"turbo": "^2.9.3",
 		"typescript-eslint": "^8.16.0"
 	},
+	"packageManager": "yarn@4.13.0",
 	"engines": {
 		"node": ">= 22"
-	},
-	"packageManager": "yarn@4.13.0"
+	}
 }
