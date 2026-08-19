@@ -1559,3 +1559,186 @@ Valid json doc :
             $ret("a3fa8ec07fbbbb942570db231be8b1d5", ctx, 1.))),
           $ret("8651138b0c019be4c49df4a7cadc8238", ctx, true))), () => $ret("0b0b83cdf2e9428ceeb71c11604b9c79", ctx, "foo"), () => $ret("8651138b0c019be4c49df4a7cadc8238", ctx, NotApplicable)))
     )
+
+  $ publicodes compile ok --without-trace -o - | ../../scripts/get_functions.awk
+  
+  function _a(ctx, params) {
+    return /** @type {10.000000} */ (
+      10.
+    )
+  
+  function _b(ctx, params) {
+    return /** @type {number} */ (
+      $add(
+        $ref("a", _a, ctx, params),
+        $add(
+          $ref("b . c", _b_·_c, ctx, params),
+          ((ctx) => $ref("a", _a, ctx, params))(
+          			{
+          				...ctx,
+          					"a": 30.,
+          			}
+          		)))
+    )
+  
+  function _b_·_c(ctx, params) {
+    return /** @type {55.000000} */ (
+      55.
+    )
+  
+  function _d(ctx, params) {
+    return /** @type {number} */ (
+      $cond(
+        $eq(
+          $gt(
+            $ref("a", _a, ctx, params),
+            () => 20.),
+          true), () => 20., () => $cond(
+          $eq(
+            $gt(
+              $ref("a", _a, ctx, params),
+              () => 5.),
+            true), () => 5., () => 0.))
+    )
+  
+  function _e(ctx, params) {
+    return /** @type {number} */ (
+      $add(
+        $ref("a", _a, ctx, params),
+        $ref("b", _b, ctx, params))
+    )
+  
+  function _f(ctx, params) {
+    return /** @type {number} */ (
+      (-$ref("e", _e, ctx, params))
+    )
+  
+  function _g(ctx, params) {
+    return /** @type {number} */ (
+      ((ctx) => $add(
+        $ref("b", _b, ctx, params),
+        $ref("g . here", _g_·_here, ctx, params)))(
+      			{
+      				...ctx,
+      					"a": 2.,
+      					"b . c": 3.,
+      					"g . here": 9.,
+      			}
+      		)
+    )
+  
+  function _g_·_here(ctx, params) {
+    return /** @type {5.000000} */ (
+      5.
+    )
+  
+  function _h(ctx, params) {
+    return /** @type {30.000000} */ (
+      $cond(
+        $or(
+          (isNotDefined($gt(
+            $ref("g", _g, ctx, params),
+            () => 20.))),
+          () => $or(
+            $eq(
+              $gt(
+                $ref("g", _g, ctx, params),
+                () => 20.),
+              false),
+            () => $eq(
+              $gt(
+                $ref("g", _g, ctx, params),
+                () => 20.),
+              NotApplicable))), () => NotApplicable, () => 30.)
+    )
+  
+  function _i(ctx, params) {
+    return /** @type {30.000000} */ (
+      $cond(
+        $or(
+          (isNotDefined($gt(
+            $ref("g", _g, ctx, params),
+            () => 20.))),
+          () => $or(
+            $eq(
+              $gt(
+                $ref("g", _g, ctx, params),
+                () => 20.),
+              false),
+            () => $eq(
+              $gt(
+                $ref("g", _g, ctx, params),
+                () => 20.),
+              NotApplicable))), () => 30., () => NotApplicable)
+    )
+  
+  function _j(ctx, params) {
+    return /** @type {number} */ (
+      $cond(
+        (isNotDefined($get("j", ctx, params))), () => 20., () => $get("j", ctx, params))
+    )
+  
+  function _k(ctx, params) {
+    return /** @type {2.300000} */ (
+      $cond(
+        $and(
+          $neq(
+            2.3,
+            NotApplicable),
+          () => $gt(
+            4.,
+            () => 2.3)), () => 2.3, () => 4.)
+    )
+  
+  function _l(ctx, params) {
+    return /** @type {3.000000} */ (
+      $cond(
+        $and(
+          $neq(
+            3.,
+            NotApplicable),
+          () => $lt(
+            2.,
+            () => 3.)), () => 3., () => 2.)
+    )
+  
+  function _m(ctx, params) {
+    return /** @type {number} */ (
+      $round("nearest", $get("m", ctx, params), () => 2.3)
+    )
+  
+  function _n(ctx, params) {
+    return /** @type {number} */ (
+      $round("down", $get("n", ctx, params), () => 2.3)
+    )
+  
+  function _o(ctx, params) {
+    return /** @type {number} */ (
+      $round("up", $get("o", ctx, params), () => 2.3)
+    )
+  
+  function _p(ctx, params) {
+    return /** @type {'foo'} */ (
+      "foo"
+    )
+  
+  function _q(ctx, params) {
+    return /** @type {('bar'|'foo')} */ (
+      $cond(
+        $eq(
+          true,
+          true), () => "foo", () => $cond(
+          $eq(
+            false,
+            true), () => "bar", () => NotApplicable))
+    )
+  
+  function _r(ctx, params) {
+    return /** @type {('foo'|'bar')} */ (
+      $cond(
+        $eq(
+          $eq(
+            5.,
+            1.),
+          true), () => "foo", () => NotApplicable)
+    )

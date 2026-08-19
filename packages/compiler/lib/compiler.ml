@@ -4,11 +4,13 @@ type t =
   { input_files: string list
   ; module_path: string
   ; output_type: target_type
-  ; default_to_public: bool }
+  ; default_to_public: bool
+  ; without_trace: bool }
 
 and target_type = Js | Debug_eval_tree | Json_doc
 
-let compile {input_files; module_path; output_type; default_to_public} =
+let compile
+    {input_files; module_path; output_type; default_to_public; without_trace} =
   let open Output in
   let* ast = Parser.parse_files ~default_to_public ~module_path input_files in
   let* resolved_ast = Resolver.to_resolved_ast ast in
@@ -30,7 +32,7 @@ let compile {input_files; module_path; output_type; default_to_public} =
     | Debug_eval_tree ->
         Renderer.to_debug_str eval_tree outputs
     | Js ->
-        Renderer.to_js_str eval_tree outputs
+        Renderer.to_js_str ~without_trace eval_tree outputs
     | Json_doc ->
         Shared.To_json_doc.to_str resolved_ast
   in
