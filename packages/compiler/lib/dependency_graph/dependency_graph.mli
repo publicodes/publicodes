@@ -6,7 +6,7 @@ val mk_and_checks : Shared.Shared_ast.resolved -> Rule_graph.t Utils.Output.t
 
 val extract_outputs :
      ast:Shared.Shared_ast.resolved
-  -> eval_tree:Hashed_tree.t
+  -> eval_tree:Shared.Typ.t option Eval_tree.t
   -> warn_types:bool
   -> Rule_graph.t
   -> Shared.Model_output.t list Utils.Output.t
