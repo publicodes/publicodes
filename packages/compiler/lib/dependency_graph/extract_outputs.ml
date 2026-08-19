@@ -33,7 +33,7 @@ let add_self_dependencies_for_parameters ~(graph : Rule_graph.t)
         Rule_graph.add_edge graph (rule_name, []) (rule_name, []) )
 
 let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t)
-    ~(eval_tree : Hashed_tree.t) : Log.t option =
+    ~(eval_tree : Typ.t option Eval_tree.t) : Log.t option =
   match typ with
   | None ->
       let code, message = Err.missing_output_type in
@@ -55,15 +55,16 @@ let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t)
   | Some _ ->
       None
 
-let extract_outputs ~(ast : Shared_ast.resolved) ~(eval_tree : Hashed_tree.t)
-    ~(warn_types : bool) (graph : Rule_graph.t) : Model_output.t list Output.t =
+let extract_outputs ~(ast : Shared_ast.resolved)
+    ~(eval_tree : Typ.t option Eval_tree.t) ~(warn_types : bool)
+    (graph : Rule_graph.t) : Model_output.t list Output.t =
   let graph = Rule_graph.copy graph in
   add_self_dependencies_for_parameters ~graph ~ast ;
   let wrap_meta ~is_output (rule_name, parameters) =
     Model_output.
       { rule_name
       ; parameters
-      ; typ= (Eval_tree.get_meta eval_tree rule_name).typ
+      ; typ= Eval_tree.get_meta eval_tree rule_name
       ; meta= (Shared_ast.find_exn rule_name ast).meta
       ; is_output }
   in
