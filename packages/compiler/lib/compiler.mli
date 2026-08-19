@@ -12,7 +12,8 @@ type t =
   { input_files: string list
   ; module_path: string
   ; output_type: target_type
-  ; default_to_public: bool }
+  ; default_to_public: bool
+  ; without_trace: bool }
 
 (** The different output types that the compiler can generate:
     - {!Js}: generates a JS file corresponding to the Publicodes model with the
