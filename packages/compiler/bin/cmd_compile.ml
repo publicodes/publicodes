@@ -33,6 +33,10 @@ let default_to_public =
   in
   Arg.(value & flag & info ["default-to-public"] ~doc)
 
+let without_trace =
+  let doc = "Disable evaluation trace generation on runtimes." in
+  Arg.(value & flag & info ["without-trace"] ~doc)
+
 let cmd =
   let doc = "Compile a Publicodes program from file or stdin." in
   let exits =
@@ -44,7 +48,8 @@ let cmd =
   let+ input = input
   and+ output_file = output_file
   and+ default_to_public = default_to_public
-  and+ output_type = output_type in
+  and+ output_type = output_type
+  and+ without_trace = without_trace in
   let target =
     let* input_files, module_path =
       if String.equal input "-" then Ok (["-"], "./")
@@ -61,7 +66,9 @@ let cmd =
         | Ok files ->
             Ok (files, input)
     in
-    Ok Compiler.{input_files; module_path; output_type; default_to_public}
+    Ok
+      Compiler.
+        {input_files; module_path; output_type; default_to_public; without_trace}
   in
   let output_path =
     if String.equal output_file "" then

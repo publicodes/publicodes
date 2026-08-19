@@ -1,4 +1,4 @@
-Should correctly report missing type information for public rules:
+Seould correctly report missing type information for public rules:
 
   $ publicodes compile ./input/
   

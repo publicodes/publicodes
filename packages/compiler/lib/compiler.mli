@@ -7,12 +7,16 @@
       input files).
     - [output_type]: the type of output to generate.
     - [default_to_public]: a boolean flag indicating whether rules without an
-      explicit visibility tag should be treated as public or private. *)
+      explicit visibility tag should be treated as public or private.
+    - [without_trace]: a boolean flag indicating whether to include evaluation
+      trace information in the generated output (only applicable for JS output
+      type).   *)
 type t =
   { input_files: string list
   ; module_path: string
   ; output_type: target_type
-  ; default_to_public: bool }
+  ; default_to_public: bool
+  ; without_trace: bool }
 
 (** The different output types that the compiler can generate:
     - {!Js}: generates a JS file corresponding to the Publicodes model with the

@@ -321,18 +321,24 @@ let from_output eval_tree
 let from_outputs hashed_tree outputs =
   Tlist (List.map outputs ~f:(from_output hashed_tree))
 
-let models ?with_runtime tree outputs =
+let models ?with_runtime ?(without_trace = false) tree outputs =
   let rules = from_rules tree in
   let outputs = from_outputs tree outputs in
   let model = [("rules", rules); ("outputs", outputs)] in
-  match with_runtime with
-  | Some runtime ->
-      ("runtime", Tstr runtime) :: model
-  | None ->
-      model
+  let runtime =
+    match with_runtime with
+    | Some runtime ->
+        [("runtime", Tstr runtime)]
+    | None ->
+        []
+  in
+  let trace = [("trace", Tbool (not without_trace))] in
+  runtime @ model @ trace
 
-let to_js eval_tree outputs =
-  let model = models eval_tree outputs ~with_runtime:Template_js.runtime in
+let to_js ?(without_trace = false) eval_tree outputs =
+  let model =
+    models eval_tree outputs ~with_runtime:Template_js.runtime ~without_trace
+  in
   Utils.Template.from_template Template_js.template model
 
 let to_debug eval_tree outputs =

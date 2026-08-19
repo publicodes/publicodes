@@ -137,7 +137,8 @@
 
 {%- macro fmt_node (rule) -%}
 	{%- set node_type, node_value, node_id = (rule.node_type, rule.node_value, rule.node_id) -%}
-	$ret("{{ node_id }}", ctx, {% switch node_type %}
+	{%- if trace %}$ret("{{ node_id }}", ctx, {% endif %}
+	{%- switch node_type %}
 	{%- case "number" -%}
 		{{ node_value.number }}
 	{%- case "text" -%}
@@ -209,7 +210,7 @@
 	{%- default -%}
 		>>>> Templating error: unknown rule type "{{ rule_type }}" <<<<
 	{%- endswitch -%}
-	)
+	{%- if trace %}){% endif %}
 {%- endmacro %}
 
 {%- for rule_type, rule_name, rule_node in rules %}
