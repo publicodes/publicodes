@@ -741,7 +741,7 @@ function $exclusive_replacement(target, replacements, ctx, params) {
 	})
 	switch (applicableReplacements.length) {
 		case 0:
-			return target()
+			return target(ctx, params)
 		case 1:
 			const replacement = applicableReplacements[0]
 			return $ref(replacement[0], replacement[1], ctx, params)
