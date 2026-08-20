@@ -130,7 +130,10 @@ let metas_of_meta (meta : Shared_ast.rule_meta list) =
          | Public ->
              None
          | Module_id _ ->
-             None ) )
+             None
+         | Applicable_on_namespace ->
+             Some (meta_of_type_value "applicable_on_namespace" @@ Tbool true) )
+    )
 
 let node_of (id : Shared.Id.t) (type_ : string) (value : tvalue) =
   let id = Shared.Id.to_string id in
@@ -204,6 +207,9 @@ let node_of_neg_op id (arg : tvalue) = node_of_unary_op id "neg_op" arg
 let node_of_is_not_defined_op id (arg : tvalue) =
   node_of_unary_op id "is_not_defined_op" arg
 
+let node_of_is_not_applicable_op id (arg : tvalue) =
+  node_of_unary_op id "is_not_applicable_op" arg
+
 let node_of_ref id (name : string) = node_of id "ref" @@ Tstr name
 
 let node_of_get_ctx id (name : string) = node_of id "get_ctx" @@ Tstr name
@@ -253,6 +259,8 @@ let rec node_of_tree_val (name : Shared.Rule_name.t)
       node_of_neg_op id (node_of_tree_val comp)
   | Unary_op ((Is_not_defined, _), comp) ->
       node_of_is_not_defined_op id (node_of_tree_val comp)
+  | Unary_op ((Is_not_applicable, _), comp) ->
+      node_of_is_not_applicable_op id (node_of_tree_val comp)
   | Ref rule_name ->
       node_of_ref id (Rule_name.to_string rule_name)
   | Get_context rule_name ->
