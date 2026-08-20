@@ -84,7 +84,7 @@ let to_string ~sep : t -> string = function
 
 (* Definitions *)
 
-type typ = t Mark.pos UnionFind.elem
+type typ = t Mark.pos ref ref
 
 type wip_mark = {pos: Pos.t; typ: typ}
 
@@ -114,7 +114,7 @@ type wip_tree = (wip_rule_def * wip_state ref) Rule_name.Hashtbl.t
 
 let from_mark {Mark.pos} typ = {typ; pos}
 
-let mk ~pos typ : typ = UnionFind.make (Mark.mk_pos ~pos typ)
+let mk ~pos typ : typ = ref @@ ref (Mark.mk_pos ~pos typ)
 
 let mk_any ~pos = mk ~pos (Any (Any.mk ()))
 

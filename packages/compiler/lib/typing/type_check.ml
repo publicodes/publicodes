@@ -4,7 +4,7 @@ open Utils
 open Output
 
 let to_label (typ : Ast.typ) =
-  let typ, {Mark.pos} = UnionFind.get typ in
+  let typ, {Mark.pos} = !(!typ) in
   match typ with
   | TEnum enum ->
       let msg =
@@ -29,27 +29,27 @@ let to_label (typ : Ast.typ) =
 let to_labels (u1 : Ast.typ) (u2 : Ast.typ) =
   [u1; u2]
   |> List.sort ~compare:(fun u1 u2 ->
-      let _, {Mark.pos= p1} = UnionFind.get u1 in
-      let _, {Mark.pos= p2} = UnionFind.get u2 in
+      let _, {Mark.pos= p1} = !(!u1) in
+      let _, {Mark.pos= p2} = !(!u2) in
       Pos.compare p1 p2 )
   |> List.map ~f:to_label |> List.concat
 
 let error_typ_mismatch (u1 : Ast.typ) (u2 : Ast.typ) =
-  let p1 = UnionFind.get u1 |> Mark.pos in
-  let _p2 = UnionFind.get u2 |> Mark.pos in
+  let p1 = !(!u1) |> Mark.pos in
+  let _p2 = !(!u2) |> Mark.pos in
   let code, message = Err.type_incoherence in
   let labels = to_labels u1 u2 in
   fatal_error ~pos:p1 ~kind:`Type ~code ~labels message
 
 let error_typ_invalid ?(hints = []) (u1 : Ast.typ) =
-  let p1 = UnionFind.get u1 |> Mark.pos in
+  let p1 = !(!u1) |> Mark.pos in
   let code, message = Err.type_invalid_type in
   let labels = to_label u1 in
   fatal_error ~pos:p1 ~hints ~kind:`Type ~code ~labels message
 
 let error_missing_enums enums (u1 : Ast.typ) (u2 : Ast.typ) =
-  let p1 = UnionFind.get u1 |> Mark.pos in
-  let _p2 = UnionFind.get u2 |> Mark.pos in
+  let p1 = !(!u1) |> Mark.pos in
+  let _p2 = !(!u2) |> Mark.pos in
   let enums =
     Ast.sort_enum enums |> List.map ~f:fst |> List.map ~f:Ast.literal_to_string
   in
@@ -59,21 +59,21 @@ let error_missing_enums enums (u1 : Ast.typ) (u2 : Ast.typ) =
 
 (* TODO: pass pos and add a lavel error here *)
 let check_union (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
-  let m1 = UnionFind.get u1 in
-  let m2 = UnionFind.get u2 in
+  let m1 = !(!u1) in
+  let m2 = !(!u2) in
   let t1, {Mark.pos= pos1} = m1 in
   let t2, {Mark.pos= pos2} = m2 in
   match (t1, t2) with
   (* Merge Anys *)
   | Ast.Any _, Ast.Any _ ->
       (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
+      u1 := !u2 ;
       return ()
   | Ast.Any _, _ ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      u1 := !u2 ;
       return ()
   | _, Ast.Any _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      u2 := !u1 ;
       return ()
   (* Check Any Number *)
   | Ast.Any_number unit1, Ast.Any_number unit2
@@ -81,58 +81,58 @@ let check_union (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   | TNumber unit1, Ast.Any_number unit2
   | TEnum ((LNumber (_, unit1), _) :: _), Ast.Any_number unit2 ->
       let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      u2 := !u1 ;
       return ()
   | Ast.Any_number unit1, Ast.Literal (LNumber (_, unit2), _)
   | Ast.Any_number unit1, TNumber unit2
   | Ast.Any_number unit1, TEnum ((LNumber (_, unit2), _) :: _) ->
       let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      u1 := !u2 ;
       return ()
   (* Check Any Bool *)
   | Ast.Any_bool _, Ast.Any_bool _ ->
       (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
+      u1 := !u2 ;
       return ()
   | Ast.Literal (LBool _, _), Ast.Any_bool _
   | TBool, Ast.Any_bool _
   | TEnum ((LBool _, _) :: _), Ast.Any_bool _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      u2 := !u1 ;
       return ()
   | Ast.Any_bool _, Ast.Literal (LBool _, _)
   | Ast.Any_bool _, TBool
   | Ast.Any_bool _, TEnum ((LBool _, _) :: _) ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      u1 := !u2 ;
       return ()
   (* Check Any String *)
   | Ast.Any_string _, Ast.Any_string _ ->
       (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
+      u1 := !u2 ;
       return ()
   | Ast.Literal (LString _, _), Ast.Any_string _
   | TString, Ast.Any_string _
   | TEnum ((LString _, _) :: _), Ast.Any_string _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      u2 := !u1 ;
       return ()
   | Ast.Any_string _, Ast.Literal (LString _, _)
   | Ast.Any_string _, TString
   | Ast.Any_string _, TEnum ((LString _, _) :: _) ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      u1 := !u2 ;
       return ()
   (* Check Any Date *)
   | Ast.Any_date _, Ast.Any_date _ ->
       (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
+      u1 := !u2 ;
       return ()
   | Ast.Literal (LDate _, _), Ast.Any_date _
   | TDate, Ast.Any_date _
   | TEnum ((LDate _, _) :: _), Ast.Any_date _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      u2 := !u1 ;
       return ()
   | Ast.Any_date _, Ast.Literal (LDate _, _)
   | Ast.Any_date _, TDate
   | Ast.Any_date _, TEnum ((LDate _, _) :: _) ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      u1 := !u2 ;
       return ()
   (* Check Strings *)
   | Ast.Literal (LString _, _), Ast.Literal (LString _, _)
@@ -197,8 +197,9 @@ let check_union (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
 
 (* checks but keeps the least precise side general *)
 let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
-  let t1, {Mark.pos= pos1} = UnionFind.get u1 in
-  let t2, {Mark.pos= pos2} = UnionFind.get u2 in
+  Stdlib.Printf.eprintf "\ncheck_generalize\n" ;
+  let t1, {Mark.pos= pos1} = !(!u1) in
+  let t2, {Mark.pos= pos2} = !(!u2) in
   match (t1, t2) with
   (* Merge Anys *)
   | Ast.Any _, Ast.Any _
@@ -206,37 +207,40 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   | Ast.Any_string _, Ast.Any_string _
   | Ast.Any_date _, Ast.Any_date _ ->
       (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
+      u1 := !u2 ;
       return ()
   | Ast.Any_number unit1, Ast.Any_number unit2 ->
       (* Merge them *)
       let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
-      let _ = UnionFind.union u1 u2 in
+      u1 := !u2 ;
       return ()
   | Ast.Any _, Ast.Any_number _
   | Ast.Any _, Ast.Any_bool _
   | Ast.Any _, Ast.Any_string _
   | Ast.Any _, Ast.Any_date _ ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      u1 := !u2 ;
       return ()
   | Ast.Any_number _, Ast.Any _
   | Ast.Any_bool _, Ast.Any _
   | Ast.Any_string _, Ast.Any _
   | Ast.Any_date _, Ast.Any _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      u2 := !u1 ;
       return ()
   (* Check Numbers *)
   | Ast.Any _, Ast.TNumber unit
   | Ast.Any _, Ast.Literal (LNumber (_, unit), _)
   | Ast.Any _, Ast.TEnum ((LNumber (_, unit), _) :: _) ->
+      Stdlib.Printf.eprintf "\nhere we are?\n" ;
       let typ = Ast.Any_number unit in
-      let _ = UnionFind.set u1 (Mark.mk_pos ~pos:pos1 typ) in
+      u1 := ref (Mark.mk_pos ~pos:pos1 typ) ;
+      Stdlib.Printf.eprintf "\nhere we are %s?\n"
+        (Ast.to_string ~sep:"|" (fst !(!u1))) ;
       return ()
   | Ast.TNumber unit, Ast.Any _
   | Ast.Literal (LNumber (_, unit), _), Ast.Any _
   | Ast.TEnum ((LNumber (_, unit), _) :: _), Ast.Any _ ->
       let typ = Ast.Any_number unit in
-      let _ = UnionFind.set u2 (Mark.mk_pos ~pos:pos2 typ) in
+      u2 := ref @@ Mark.mk_pos ~pos:pos2 typ ;
       return ()
   | Ast.Any_number unit1, Ast.Literal (LNumber (_, unit2), _)
   | Ast.Literal (LNumber (_, unit1), _), Ast.TEnum ((LNumber (_, unit2), _) :: _)
@@ -260,13 +264,13 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   | Ast.Any _, Ast.Literal (LBool _, _)
   | Ast.Any _, Ast.TEnum ((LBool _, _) :: _) ->
       let typ = Ast.mk_any_bool ~pos:pos1 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u1 in
+      u1 := !typ ;
       return ()
   | Ast.TBool, Ast.Any _
   | Ast.Literal (LBool _, _), Ast.Any _
   | Ast.TEnum ((LBool _, _) :: _), Ast.Any _ ->
       let typ = Ast.mk_any_bool ~pos:pos2 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u2 in
+      u2 := !typ ;
       return ()
   | Ast.TBool, Ast.TBool
   | Ast.Any_bool _, Ast.TBool
@@ -289,13 +293,13 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   | Ast.Any _, Ast.Literal (LString _, _)
   | Ast.Any _, Ast.TEnum ((LString _, _) :: _) ->
       let typ = Ast.mk_any_string ~pos:pos1 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u1 in
+      u1 := !typ ;
       return ()
   | Ast.TString, Ast.Any _
   | Ast.Literal (LString _, _), Ast.Any _
   | Ast.TEnum ((LString _, _) :: _), Ast.Any _ ->
       let typ = Ast.mk_any_string ~pos:pos2 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u2 in
+      u2 := !typ ;
       return ()
   | Ast.TString, Ast.TString
   | Ast.Any_string _, Ast.TString
@@ -316,27 +320,27 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   (* Enumerate symbols *)
   | Ast.Any _, Ast.Literal ((LSymbol _, _) as literal) ->
       let typ = Ast.TEnum [literal] in
-      let _ = UnionFind.set u1 (Mark.mk_pos ~pos:pos1 typ) in
+      u1 := ref @@ Mark.mk_pos ~pos:pos1 typ ;
       return ()
   | Ast.Literal ((LSymbol _, _) as literal), Ast.Any _ ->
       let typ = Ast.TEnum [literal] in
-      let _ = UnionFind.set u2 (Mark.mk_pos ~pos:pos2 typ) in
+      u2 := ref @@ Mark.mk_pos ~pos:pos2 typ ;
       return ()
   | Ast.Any _, TEnum ((LSymbol _, _) :: _) ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      u1 := !u2 ;
       return ()
   | TEnum ((LSymbol _, _) :: _), Ast.Any _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      u2 := !u1 ;
       return ()
   | ( TEnum ((LSymbol _, _) :: _ as symbols)
     , Ast.Literal ((LSymbol _, _) as literal) ) ->
       let typ = Ast.TEnum (literal :: symbols) in
-      let _ = UnionFind.set u1 (Mark.mk_pos ~pos:pos1 typ) in
+      u1 := ref @@ Mark.mk_pos ~pos:pos1 typ ;
       return ()
   | ( Ast.Literal ((LSymbol _, _) as literal)
     , TEnum ((LSymbol _, _) :: _ as symbols) ) ->
       let typ = Ast.TEnum (literal :: symbols) in
-      let _ = UnionFind.set u2 (Mark.mk_pos ~pos:pos2 typ) in
+      u2 := ref @@ Mark.mk_pos ~pos:pos2 typ ;
       return ()
   (* Check symbols *)
   | Ast.Literal (LSymbol s1, _), Ast.Literal (LSymbol s2, _) ->
@@ -346,13 +350,13 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   | Ast.Any _, Ast.Literal (LDate _, _)
   | Ast.Any _, Ast.TEnum ((LDate _, _) :: _) ->
       let typ = Ast.mk_any_date ~pos:pos1 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u1 in
+      u2 := !typ ;
       return ()
   | Ast.TDate, Ast.Any _
   | Ast.Literal (LDate _, _), Ast.Any _
   | Ast.TEnum ((LDate _, _) :: _), Ast.Any _ ->
       let typ = Ast.mk_any_date ~pos:pos2 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u2 in
+      u2 := !typ ;
       return ()
   | Ast.TDate, Ast.TDate
   | Ast.Any_date _, Ast.TDate
@@ -391,8 +395,8 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
       error_typ_mismatch u1 u2
 
 let check_multiply ~pos u1 u2 : Ast.typ Output.t =
-  let t1, _ = UnionFind.get u1 in
-  let t2, _ = UnionFind.get u2 in
+  let t1, _ = !(!u1) in
+  let t2, _ = !(!u2) in
   match (t1, t2) with
   (* Check Number *)
   | Ast.Literal (LNumber (_, unit1), _), Ast.Literal (LNumber (_, unit2), _)
@@ -420,8 +424,8 @@ let check_multiply ~pos u1 u2 : Ast.typ Output.t =
       failwith msg
 
 let check_divide ~pos u1 u2 : Ast.typ Output.t =
-  let t1, _ = UnionFind.get u1 in
-  let t2, _ = UnionFind.get u2 in
+  let t1, _ = !(!u1) in
+  let t2, _ = !(!u2) in
   match (t1, t2) with
   (* Check Number *)
   | Ast.Literal (LNumber (_, unit1), _), Ast.Literal (LNumber (_, unit2), _)
@@ -448,27 +452,27 @@ let check_divide ~pos u1 u2 : Ast.typ Output.t =
       let msg = Stdlib.Format.asprintf "Can't divide '%s' '%s'" msg1 msg2 in
       failwith msg
 
-let check_enumerate ~pos u1 u2 : Ast.typ Output.t =
-  let t1, {Mark.pos= pos1} = UnionFind.get u1 in
-  let t2, {Mark.pos= pos2} = UnionFind.get u2 in
+let check_enumerate ~pos (u1 : Ast.typ) (u2 : Ast.typ) : Ast.typ Output.t =
+  let t1, {Mark.pos= pos1} = !(!u1) in
+  let t2, {Mark.pos= pos2} = !(!u2) in
   match (t1, t2) with
   (* Merge Anys *)
   | Ast.Any _, Ast.Any _ ->
       (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
+      u1 := !u2 ;
       return u1
   (* Numbers *)
   (* Merge them *)
   | Ast.Any_number unit1, Ast.Any_number unit2 ->
       let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
-      let _ = UnionFind.union u1 u2 in
+      u1 := !u2 ;
       return u1
   (* Generalize the other side *)
   | Ast.Any _, Ast.TNumber _ | Ast.Any _, Ast.Any_number _ ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      u1 := !u2 ;
       return u1
   | Ast.TNumber _, Ast.Any _ | Ast.Any_number _, Ast.Any _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      u2 := !u1 ;
       return u2
   (* Start enumerating *)
   | Ast.Any _, Ast.Literal ((LNumber _, _) as literal)
@@ -515,14 +519,14 @@ let check_enumerate ~pos u1 u2 : Ast.typ Output.t =
   (* Strings *)
   (* Merge them *)
   | Ast.Any_string _, Ast.Any_string _ ->
-      let _ = UnionFind.union u1 u2 in
+      u1 := !u2 ;
       return u1
   (* Generalize the other side *)
   | Ast.Any _, Ast.TString | Ast.Any_string _, Ast.TString ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      u1 := !u2 ;
       return u1
   | Ast.TString, Ast.Any _ | Ast.TString, Ast.Any_string _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      u2 := !u1 ;
       return u2
   (* Start enumerating *)
   | Ast.Any _, Ast.Literal ((LString _, _) as literal)
@@ -564,14 +568,14 @@ let check_enumerate ~pos u1 u2 : Ast.typ Output.t =
   (* Bools *)
   (* Merge them *)
   | Ast.Any_bool _, Ast.Any_bool _ ->
-      let _ = UnionFind.union u1 u2 in
+      u1 := !u2 ;
       return u1
   (* Generalize the other side *)
   | Ast.Any _, Ast.TBool | Ast.Any_bool _, Ast.TBool ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      u1 := !u2 ;
       return u1
   | Ast.TBool, Ast.Any _ | Ast.TBool, Ast.Any_bool _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      u2 := !u1 ;
       return u2
   (* Start enumerating *)
   | Ast.Any _, Ast.Literal ((LBool _, _) as literal)
@@ -611,14 +615,14 @@ let check_enumerate ~pos u1 u2 : Ast.typ Output.t =
   (* Dates *)
   (* Merge them *)
   | Ast.Any_date _, Ast.Any_date _ ->
-      let _ = UnionFind.union u1 u2 in
+      u1 := !u2 ;
       return u1
   (* Generalize the other side *)
   | Ast.Any _, Ast.TDate | Ast.Any_date _, Ast.TDate ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      u1 := !u2 ;
       return u1
   | Ast.TDate, Ast.Any _ | Ast.TDate, Ast.Any_date _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      u2 := !u1 ;
       return u2
   (* Start enumerating *)
   | Ast.Any _, Ast.Literal ((LDate _, _) as literal)
@@ -827,8 +831,12 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
             in
             (* TODO: restrict possible types? *)
             let* _ = check_generalize left right in
+            Stdlib.Printf.eprintf "\nhere we are 2 %s?\n"
+              (Ast.to_string ~sep:"|" (fst !(!left))) ;
             let wip = Ast.mk_bool ~pos in
             let* _ = check_union wip ptyp in
+            Stdlib.Printf.eprintf "\nhere we are 3 %s?\n"
+              (Ast.to_string ~sep:"|" (fst !(!left))) ;
             return () )
     | Unary_op ((Neg, _), expr) ->
         (* check is a number *)
@@ -995,7 +1003,7 @@ and check_chainable_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
     | Round (_, value) ->
         let* _ = check_value value in
         let _, value_mark = value in
-        let typ, {Mark.pos} = UnionFind.get value_mark.typ in
+        let typ, {Mark.pos} = !(!(value_mark.typ)) in
         let wip = Ast.mk_number_no_unit ~pos in
         let* _ =
           match typ with
@@ -1106,6 +1114,7 @@ and check_rule_def ~replaces ~(ast : Ast.wip_tree) ?contexts
         contexts
   in
   let {Shared_ast.value; name= current, _; _} = rule_def in
+  Stdlib.Printf.eprintf "check_rule_def %s\n" (Rule_name.show current) ;
   let res =
     let* _ = check_value ~replaces ~current ~ast ~contexts value in
     let _, mark = value in

@@ -72,7 +72,7 @@ let transform_typ typ =
 let rec to_expr (expr : Ast.wip_expr) : Shared_ast.typed_expr Output.t =
   let expr, mark = expr in
   let {Ast.pos; typ} = mark in
-  let typ, _ = UnionFind.get typ in
+  let typ, _ = !(!typ) in
   let typ = transform_typ typ in
   match expr with
   | Const (Number _) as expr ->
@@ -192,7 +192,7 @@ and to_value (value : Ast.wip_value) : Shared_ast.typed_value Output.t =
   let* value =
     let value, mark = value in
     let {Ast.pos; typ} = mark in
-    let typ, _ = UnionFind.get typ in
+    let typ, _ = !(!typ) in
     let* value = to_value_mechanism value in
     let typ = transform_typ typ in
     return (value, {Shared_ast.pos; typ})
@@ -201,7 +201,7 @@ and to_value (value : Ast.wip_value) : Shared_ast.typed_value Output.t =
     List.map chainable_mechanisms ~f:(fun chainable ->
         let chainable, mark = chainable in
         let {Ast.pos; typ} = mark in
-        let typ, _ = UnionFind.get typ in
+        let typ, _ = !(!typ) in
         let* chainable = to_chainable_mechanism chainable in
         let typ = transform_typ typ in
         return (chainable, {Shared_ast.pos; typ}) )
@@ -209,7 +209,7 @@ and to_value (value : Ast.wip_value) : Shared_ast.typed_value Output.t =
   in
   let {Ast.pos; typ} = mark in
   let typ =
-    let typ, _ = UnionFind.get typ in
+    let typ, _ = !(!typ) in
     transform_typ typ
   in
   return ({Shared_ast.value; chainable_mechanisms}, {Shared_ast.pos; typ})
