@@ -91,6 +91,18 @@ lodeom applicable:
   est applicable: exonérations . lodeom
 ```
 
+## `applicabilité étendue à l'espace de nom`
+
+Propage la non-applicabilité aux rêgles enfant de cet espace de nom.
+
+```publicodes title="Exemple"
+exonérations:
+  applicabilité étendue à l'espace de nom: oui
+  valeur: oui
+
+exonérations . lodeom: oui
+```
+
 ## `une de ces conditions`
 
 Renvoie `oui` si l’une des règles listées est _applicable_.

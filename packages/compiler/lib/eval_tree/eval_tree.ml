@@ -17,7 +17,7 @@ let from_typed_ast ~(replacement_graph : Replacement_graph.Rule_graph.t)
         Transform_value.transform ~undefined:(Get_context rule_name) value
       in
       let value =
-        Replacements.transform ~replacement_graph ~make_not_applicable_graph
+        Replacements.transform ~replacement_graph ~make_not_applicable_graph ast
           rule_name value
       in
       let _ = Hashtbl.add eval_tree ~key:rule_name ~data:value in
