@@ -186,6 +186,8 @@
 			(-{{ fmt_node(node_value.arg) }})
 		{%- case "is_not_defined_op" -%}
 			(isNotDefined({{ fmt_node(node_value.arg) }}))
+		{%- case "is_not_applicable_op" -%}
+			(isNotApplicable({{ fmt_node(node_value.arg) }}))
 		{%- endswitch -%}
 	{%- case "ref" -%}
 		$ref("{{ node_value }}", {{ fmt_method(node_value) }}, ctx, params)
