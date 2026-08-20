@@ -4,7 +4,13 @@ open Shared.Shared_ast
 open Yaml_parser
 open Parser_utils
 
-let reserved_meta = ["description"; "titre"; "public"; "meta"; "note"]
+let reserved_meta =
+  [ "description"
+  ; "titre"
+  ; "public"
+  ; "meta"
+  ; "note"
+  ; "applicabilité étendue à l'espace de nom" ]
 
 let parse_custom_meta ~pos yaml =
   match yaml with
@@ -28,7 +34,7 @@ let parse_custom_meta ~pos yaml =
             ~f:(fun k ->
               let pos = Mark.pos k in
               let key = Yaml_parser.get_value k in
-              Mark.mk_pos ~pos:pos key )
+              Mark.mk_pos ~pos key )
             reserved_keys
         in
         fatal_error ~pos ~code ~kind:`Syntax ~labels:reserved_keys_label
@@ -64,11 +70,23 @@ let parse mapping =
         if not (String.equal value "oui" || String.equal value "") then
           let code, message = Err.invalid_value in
           fatal_error ~pos ~code ~kind:`Syntax message
-            ~labels:[Mark.mk_pos ~pos:pos "doit valoir `oui` ou être vide"]
+            ~labels:[Mark.mk_pos ~pos "doit valoir `oui` ou être vide"]
             ~hints:
               [ Printf.sprintf "Remplacez `%s` par `oui` ou supprimez la clée"
                   value ]
         else return Public
+    | "applicabilité étendue à l'espace de nom" ->
+        let* value = scalar_value () in
+        let pos = Mark.pos value in
+        let value = get_value value in
+        if not (String.equal value "oui" || String.equal value "") then
+          let code, message = Err.invalid_value in
+          fatal_error ~pos ~code ~kind:`Syntax message
+            ~labels:[Mark.mk_pos ~pos "doit valoir `oui` ou être vide"]
+            ~hints:
+              [ Printf.sprintf "Remplacez `%s` par `oui` ou supprimez la clée"
+                  value ]
+        else return Applicable_on_namespace
     | _ ->
         empty
   in
