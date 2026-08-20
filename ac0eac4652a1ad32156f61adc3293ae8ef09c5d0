@@ -1,6 +1,23 @@
 {
   "comments": [
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "466a2312_fe4e735d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-08-20T16:57:53Z",
+      "side": 1,
+      "message": "Je ne comprend pas cette erreur :\n\n```\n» cat tests/crams/compile/cycle_detection.t/error/rules.publicodes\ncotisation:\n  valeur: 10\n  plafond: plafond\n\nplafond:\n  # There should not be a cycle because plafond is set with contexte and is\n  # not undefined\n  valeur: cotisation\n  contexte:\n    plafond: 10\n\nplafond bis: # should fail\n  rend non applicable: plafond\n  valeur: plafond\npublicodes/packages/compiler.HEAD(18aaa25) ~?+37-86 node(v24.16.0) ocaml(v5.3.0, compiler*)\n» dune exec publicodes -- compile tests/crams/compile/cycle_detection.t/error/ \n                                       \nE023 types non cohérents entre eux [type error]\n     ╒══  tests/crams/compile/cycle_detection.t/error/rules.publicodes:2:11 ══\n   1 │ cotisation:\n   2 │   valeur: 10\n     │           ˘˘ est le nombre 10.u1\n     ╒══  tests/crams/compile/cycle_detection.t/error/rules.publicodes:13:24 ══\n  12 │ plafond bis: # should fail\n  13 │   rend non applicable: plafond\n     │                        ˘˘˘˘˘˘˘ est n\u0027importe quel booléan\n```",
+      "revId": "ac0eac4652a1ad32156f61adc3293ae8ef09c5d0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "55599afe_fd33530d",
