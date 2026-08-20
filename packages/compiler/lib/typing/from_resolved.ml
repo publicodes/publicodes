@@ -56,6 +56,9 @@ and transform_value_mechanism (value : Shared_ast.resolved_value_mechanism) :
   | Product values ->
       let values = List.map values ~f:transform_value in
       Product values
+  | Average values ->
+      let values = List.map values ~f:transform_value in
+      Average values
   | All_of values ->
       let values = List.map values ~f:transform_value in
       All_of values

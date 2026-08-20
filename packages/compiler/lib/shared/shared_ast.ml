@@ -56,6 +56,7 @@ type ('ref, 'mark) value_mechanism =
   | Is_not_applicable of ('ref, 'mark) value
   | Sum of ('ref, 'mark) value list
   | Product of ('ref, 'mark) value list
+  | Average of ('ref, 'mark) value list
   | All_of of ('ref, 'mark) value list
   | Min_of of ('ref, 'mark) value list
   | Max_of of ('ref, 'mark) value list

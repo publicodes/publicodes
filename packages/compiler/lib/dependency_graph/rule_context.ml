@@ -68,6 +68,7 @@ let from_rule_def (rule_def : Shared_ast.resolved_rule_def) : t list =
         contexts_in_else @ contexts_in_variations @ acc
     | Sum values
     | Product values
+    | Average values
     | All_of values
     | Min_of values
     | Max_of values
