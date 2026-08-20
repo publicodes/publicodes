@@ -17,6 +17,7 @@ let compile {input_files; module_path; output_type; default_to_public} =
   in
   let* dependency_graph =
     Dependency_graph.mk_and_checks resolved_ast ~replacement_graph
+      ~make_not_applicable_graph
   in
   let* typed_ast = Typing.type_check ~replaces:replacement_graph resolved_ast in
   let* eval_tree =

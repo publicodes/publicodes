@@ -1,11 +1,12 @@
 val mk_and_checks :
      Shared.Shared_ast.resolved
   -> replacement_graph:Replacement_graph.Rule_graph.t
+  -> make_not_applicable_graph:Replacement_graph.Rule_graph.t
   -> Rule_graph.t Utils.Output.t
-(** [mk_and_checks ~ast ~eval_tree] creates a dependency graph from the given
-    resolved [ast] and performs verifications on it, such as cycle detection and
-    valid access checks. It returns the updated dependency graph along with any
-    logs generated during the checks. *)
+(** [mk_and_checks ast ~replacement_graph ~make_not_applicable_graph] constructs a
+    dependency graph from the resolved AST and performs checks on it. It returns
+    the constructed dependency graph if all checks pass, or an error if any
+    check fails. *)
 
 val extract_outputs :
      ast:Shared.Shared_ast.resolved
