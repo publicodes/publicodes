@@ -176,7 +176,13 @@ and find_references_in_value (only_in_chainable : bool)
       find_references v
   | Is_applicable v | Is_not_applicable v ->
       find_references v
-  | Sum vs | Product vs | All_of vs | Min_of vs | Max_of vs | One_of vs ->
+  | Sum vs
+  | Product vs
+  | Average vs
+  | All_of vs
+  | Min_of vs
+  | Max_of vs
+  | One_of vs ->
       List.concat_map vs ~f:find_references
   | Variations (variations, else_opt) ->
       let variation_refs =

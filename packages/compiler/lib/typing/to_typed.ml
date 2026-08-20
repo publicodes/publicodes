@@ -118,6 +118,9 @@ and to_value_mechanism (value : Ast.wip_value_mechanism) :
   | Product values ->
       let+ values = List.map values ~f:to_value |> all_keep_logs in
       Shared_ast.Product values
+  | Average values ->
+      let+ values = List.map values ~f:to_value |> all_keep_logs in
+      Shared_ast.Average values
   | All_of values ->
       let+ values = List.map values ~f:to_value |> all_keep_logs in
       Shared_ast.All_of values

@@ -864,7 +864,7 @@ and check_value_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
     | Is_applicable _ | Is_not_applicable _ ->
         (* TODO: handle this when Not_applicable is a type *)
         return ()
-    | Sum values | Min_of values | Max_of values ->
+    | Sum values | Average values | Min_of values | Max_of values ->
         (* check all number *)
         let* _ =
           match values with
