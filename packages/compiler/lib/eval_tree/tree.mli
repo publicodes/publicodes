@@ -72,6 +72,8 @@ val binop_add : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
 val binop_mul : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
+val binop_div : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
+
 val binop_max : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
 val binop_min : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
@@ -94,5 +96,7 @@ val const_not_defined : 'meta naked_value
 val const_false : 'meta naked_value
 
 val const_true : 'meta naked_value
+
+val const_number : ?unit:Units.t -> Base.float -> 'meta naked_value
 
 val get_contexts : 'a value -> Rule_name.t Utils.Mark.pos Base.list

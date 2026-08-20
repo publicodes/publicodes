@@ -143,6 +143,9 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
       | Product values ->
           let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
           Product mapped_values
+      | Average values ->
+          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          Average mapped_values
       | All_of values ->
           let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
           All_of mapped_values

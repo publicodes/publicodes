@@ -22,6 +22,10 @@ let value_mechanisms =
       , fun ~pos ~parse value ->
           let+ nodes = parse_array ~pos ~parse value in
           Product nodes )
+    ; ( "moyenne"
+      , fun ~pos ~parse value ->
+          let+ nodes = parse_array ~pos ~parse value in
+          Average nodes )
     ; ( "une de ces conditions"
       , fun ~pos ~parse value ->
           let+ nodes = parse_array ~pos ~parse value in
@@ -97,13 +101,13 @@ let parse_value_mechanism ~pos ~parse mapping :
   in
   match mechanism with
   | None ->
-      return (Mark.mk_pos ~pos:pos Not_defined)
+      return (Mark.mk_pos ~pos Not_defined)
   | Some (key, value) ->
       let mechanism_name = get_value key in
       let mechanism_fn = Hashtbl.find_exn value_mechanisms mechanism_name in
       let pos = Mark.pos key in
       let+ result = mechanism_fn ~pos ~parse value in
-      Mark.mk_pos ~pos:pos result
+      Mark.mk_pos ~pos result
 
 let parse_chainable_mechanisms ~parse mapping :
     ('a, 'mark) chainable_mechanism Mark.pos list Output.t =
@@ -117,6 +121,6 @@ let parse_chainable_mechanisms ~parse mapping :
       let mechanism_fn = Hashtbl.find_exn chainable_mechanisms mechanism_name in
       let pos = Mark.pos key in
       let+ value = mechanism_fn ~pos ~parse value in
-      Mark.mk_pos ~pos:pos value )
+      Mark.mk_pos ~pos value )
     chainable_mechanism_entries
   |> all_keep_logs
