@@ -26,30 +26,6 @@ Check root exports :
 
   $ publicodes compile subjects/ok -t js -o - | ../../scripts/get_rules.awk
   const rules = {
-    'module c . regle c': {
-      /**
-       * Parameters of "module c . regle c"
-       * @typedef {{
-       *  'module c . regle c'?: number
-       * }} module_c_·_regle_cParams
-       */
-      /**
-       * Evaluate "module c . regle c" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: module_c_·_regle_cParams, options?: {Options}) => {value: number, needed: Array<keyof module_c_·_regle_cParams>, missing: Array<keyof module_c_·_regle_cParams>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_module_c_·_regle_c, params, options),
-      /** @type {"number"} */
-      type: "number",
-      /** @type {"aucune"} */
-      unit: "aucune",
-      /**
-       * Parameter list for "module c . regle c"
-       * @type {Array<keyof module_c_·_regle_cParams>}
-       */
-      params: ['module c . regle c'],
-    },
     'result': {
       /**
        * Parameters of "result"
@@ -71,6 +47,30 @@ Check root exports :
       /**
        * Parameter list for "result"
        * @type {Array<keyof resultParams>}
+       */
+      params: ['module c . regle c'],
+    },
+    'module c . regle c': {
+      /**
+       * Parameters of "module c . regle c"
+       * @typedef {{
+       *  'module c . regle c'?: number
+       * }} module_c_·_regle_cParams
+       */
+      /**
+       * Evaluate "module c . regle c" with evaluation trace, and information on
+       * missing and needed parameters.
+       * @type {(params?: module_c_·_regle_cParams, options?: {Options}) => {value: number, needed: Array<keyof module_c_·_regle_cParams>, missing: Array<keyof module_c_·_regle_cParams>, trace: {Trace}}}
+       */
+      evaluate: (params = {}, options) =>
+        $evaluate(_module_c_·_regle_c, params, options),
+      /** @type {"number"} */
+      type: "number",
+      /** @type {"aucune"} */
+      unit: "aucune",
+      /**
+       * Parameter list for "module c . regle c"
+       * @type {Array<keyof module_c_·_regle_cParams>}
        */
       params: ['module c . regle c'],
     }

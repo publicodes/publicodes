@@ -328,18 +328,6 @@ Should correctly report missing type information for public rules:
   
   E024
   information de type manquante pour ce résultat [type warning]
-       ╒══  ./errors/missing_type/rules.publicodes:8:1 ══
-     7 │ 
-     8 │ résultat paramètre:
-       │ ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
-   Hint: Spécifiez le type de la règle.
-   Hint: Par exemple :
-         
-         résultat paramètre:
-           type: nombre
-  
-  E024
-  information de type manquante pour ce résultat [type warning]
        ╒══  ./errors/missing_type/rules.publicodes:6:11 ══
      5 │   public: oui
      6 │   valeur: résultat paramètre
@@ -348,6 +336,18 @@ Should correctly report missing type information for public rules:
    Hint: Par exemple :
          
          résultat:
+           type: nombre
+  
+  E024
+  information de type manquante pour ce résultat [type warning]
+       ╒══  ./errors/missing_type/rules.publicodes:8:1 ══
+     7 │ 
+     8 │ résultat paramètre:
+       │ ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
+   Hint: Spécifiez le type de la règle.
+   Hint: Par exemple :
+         
+         résultat paramètre:
            type: nombre
 
 Should allow to specify type with `type` key:
@@ -504,149 +504,9 @@ Should generalize the least precise side:
        * @type {Array<keyof a6Params>}
        */
       params: ['a6'],
-    },
-    'a1': {
-      /**
-       * Parameters of "a1"
-       * @typedef {{
-       *  'a1'?: number
-       * }} a1Params
-       */
-      /**
-       * Evaluate "a1" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a1Params, options?: {Options}) => {value: number, needed: Array<keyof a1Params>, missing: Array<keyof a1Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a1, params, options),
-      /** @type {"number"} */
-      type: "number",
-      /** @type {"euros"} */
-      unit: "euros",
-      /**
-       * Parameter list for "a1"
-       * @type {Array<keyof a1Params>}
-       */
-      params: ['a1'],
-    },
-    'a2': {
-      /**
-       * Parameters of "a2"
-       * @typedef {{
-       *  'a2'?: boolean
-       * }} a2Params
-       */
-      /**
-       * Evaluate "a2" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a2Params, options?: {Options}) => {value: boolean, needed: Array<keyof a2Params>, missing: Array<keyof a2Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a2, params, options),
-      /** @type {"boolean"} */
-      type: "boolean",
-      /**
-       * Parameter list for "a2"
-       * @type {Array<keyof a2Params>}
-       */
-      params: ['a2'],
-    },
-    'a3': {
-      /**
-       * Parameters of "a3"
-       * @typedef {{
-       *  'a3'?: text
-       * }} a3Params
-       */
-      /**
-       * Evaluate "a3" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a3Params, options?: {Options}) => {value: text, needed: Array<keyof a3Params>, missing: Array<keyof a3Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a3, params, options),
-      /** @type {"text"} */
-      type: "text",
-      /**
-       * Parameter list for "a3"
-       * @type {Array<keyof a3Params>}
-       */
-      params: ['a3'],
-    },
-    'a4': {
-      /**
-       * Parameters of "a4"
-       * @typedef {{
-       *  'a4'?: ('tutu'|'toto')
-       * }} a4Params
-       */
-      /**
-       * Evaluate "a4" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a4Params, options?: {Options}) => {value: ('tutu'|'toto'), needed: Array<keyof a4Params>, missing: Array<keyof a4Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a4, params, options),
-      /** @type {"symbol"} */
-      type: "symbol",
-      /**
-       * Parameter list for "a4"
-       * @type {Array<keyof a4Params>}
-       */
-      params: ['a4'],
-    },
-    'a5': {
-      /**
-       * Parameters of "a5"
-       * @typedef {{
-       *  'a5'?: date
-       * }} a5Params
-       */
-      /**
-       * Evaluate "a5" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a5Params, options?: {Options}) => {value: date, needed: Array<keyof a5Params>, missing: Array<keyof a5Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a5, params, options),
-      /** @type {"date"} */
-      type: "date",
-      /**
-       * Parameter list for "a5"
-       * @type {Array<keyof a5Params>}
-       */
-      params: ['a5'],
-    },
-    'a6': {
-      /**
-       * Parameters of "a6"
-       * @typedef {{
-       *  'a6'?: ('foo'|'bar')
-       * }} a6Params
-       */
-      /**
-       * Evaluate "a6" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a6Params, options?: {Options}) => {value: ('foo'|'bar'), needed: Array<keyof a6Params>, missing: Array<keyof a6Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a6, params, options),
-      /** @type {"symbol"} */
-      type: "symbol",
-      /**
-       * Parameter list for "a6"
-       * @type {Array<keyof a6Params>}
-       */
-      params: ['a6'],
     }
   }
   export const parameters = {
-    'a1': rules['a1'],
-    'a2': rules['a2'],
-    'a3': rules['a3'],
-    'a4': rules['a4'],
-    'a5': rules['a5'],
-    'a6': rules['a6'],
   }
   export const outputs = {
     'a1': rules['a1'],
@@ -673,28 +533,6 @@ Replaces should cause enumerations:
          c4:
            type: nombre
   const rules = {
-    'c4': {
-      /**
-       * Parameters of "c4"
-       * @typedef {{
-       *  'c4'?: unknown
-       * }} c4Params
-       */
-      /**
-       * Evaluate "c4" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: c4Params, options?: {Options}) => {value: unknown, needed: Array<keyof c4Params>, missing: Array<keyof c4Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_c4, params, options),
-      /** @type {"unknown"} */
-      type: "unknown",
-      /**
-       * Parameter list for "c4"
-       * @type {Array<keyof c4Params>}
-       */
-      params: ['c4'],
-    },
     'a1': {
       /**
        * Parameters of "a1"
@@ -830,6 +668,28 @@ Replaces should cause enumerations:
       /**
        * Parameter list for "b4"
        * @type {Array<keyof b4Params>}
+       */
+      params: ['c4'],
+    },
+    'c4': {
+      /**
+       * Parameters of "c4"
+       * @typedef {{
+       *  'c4'?: unknown
+       * }} c4Params
+       */
+      /**
+       * Evaluate "c4" with evaluation trace, and information on
+       * missing and needed parameters.
+       * @type {(params?: c4Params, options?: {Options}) => {value: unknown, needed: Array<keyof c4Params>, missing: Array<keyof c4Params>, trace: {Trace}}}
+       */
+      evaluate: (params = {}, options) =>
+        $evaluate(_c4, params, options),
+      /** @type {"unknown"} */
+      type: "unknown",
+      /**
+       * Parameter list for "c4"
+       * @type {Array<keyof c4Params>}
        */
       params: ['c4'],
     }

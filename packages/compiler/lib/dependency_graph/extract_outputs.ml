@@ -82,7 +82,13 @@ let extract_outputs ~(ast : Shared_ast.resolved) ~(eval_tree : Hashed_tree.t)
     |> List.map ~f:(extract_parameters ~graph ~ast)
     |> List.map ~f:(wrap_meta ~is_output:false)
   in
-  let rules = parameters @ outputs in
+  let rules =
+    outputs @ parameters
+    |> List.stable_dedup
+         ~compare:(fun
+             {Model_output.rule_name= a; _} {Model_output.rule_name= b; _} ->
+           Rule_name.compare a b )
+  in
   if warn_types then
     let warnings =
       List.stable_dedup rules ~compare:(fun a b ->

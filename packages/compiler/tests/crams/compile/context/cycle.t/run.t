@@ -2,30 +2,6 @@ Valid :
 
   $ publicodes compile input -o - | ../../../scripts/get_rules.awk
   const rules = {
-    'c': {
-      /**
-       * Parameters of "c"
-       * @typedef {{
-       *  'c'?: number
-       * }} cParams
-       */
-      /**
-       * Evaluate "c" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: cParams, options?: {Options}) => {value: number, needed: Array<keyof cParams>, missing: Array<keyof cParams>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_c, params, options),
-      /** @type {"number"} */
-      type: "number",
-      /** @type {"aucune"} */
-      unit: "aucune",
-      /**
-       * Parameter list for "c"
-       * @type {Array<keyof cParams>}
-       */
-      params: ['c'],
-    },
     'out': {
       /**
        * Parameters of "out"
@@ -47,6 +23,30 @@ Valid :
       /**
        * Parameter list for "out"
        * @type {Array<keyof outParams>}
+       */
+      params: ['c'],
+    },
+    'c': {
+      /**
+       * Parameters of "c"
+       * @typedef {{
+       *  'c'?: number
+       * }} cParams
+       */
+      /**
+       * Evaluate "c" with evaluation trace, and information on
+       * missing and needed parameters.
+       * @type {(params?: cParams, options?: {Options}) => {value: number, needed: Array<keyof cParams>, missing: Array<keyof cParams>, trace: {Trace}}}
+       */
+      evaluate: (params = {}, options) =>
+        $evaluate(_c, params, options),
+      /** @type {"number"} */
+      type: "number",
+      /** @type {"aucune"} */
+      unit: "aucune",
+      /**
+       * Parameter list for "c"
+       * @type {Array<keyof cParams>}
        */
       params: ['c'],
     }
