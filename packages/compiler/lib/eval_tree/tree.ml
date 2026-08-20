@@ -14,7 +14,7 @@ type constant =
 
 type binary_op = Shared_ast.binary_op [@@deriving show]
 
-type unary_op = Neg | Is_not_defined [@@deriving show]
+type unary_op = Neg | Is_not_defined | Is_not_applicable [@@deriving show]
 
 type 'meta naked_value =
   | Const of constant
@@ -80,6 +80,9 @@ let mk_binop ~pos op left right = Binary_op (Mark.mk_pos ~pos op, left, right)
 
 let unop_is_not_defined ~pos comp =
   Unary_op (Mark.mk_pos ~pos Is_not_defined, comp)
+
+let unop_is_not_applicable ~pos comp =
+  Unary_op (Mark.mk_pos ~pos Is_not_applicable, comp)
 
 let binop_or ~pos = mk_binop ~pos Shared_ast.Or
 

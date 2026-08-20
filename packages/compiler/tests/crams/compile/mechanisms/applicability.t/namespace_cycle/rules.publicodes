@@ -1,0 +1,8 @@
+a:
+  valeur: 10
+  non applicable si: b
+  applicabilité étendue: oui
+  avec:
+    b: oui
+
+x: a
