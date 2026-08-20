@@ -130,7 +130,10 @@ let metas_of_meta (meta : Shared_ast.rule_meta list) =
          | Public ->
              None
          | Module_id _ ->
-             None ) )
+             None
+         | Applicable_on_namespace ->
+             Some (meta_of_type_value "applicable_on_namespace" @@ Tbool true) )
+    )
 
 let node_of (id : Shared.Id.t) (type_ : string) (value : tvalue) =
   let id = Shared.Id.to_string id in
