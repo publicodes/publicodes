@@ -180,3 +180,47 @@ Rend non applicable take precedence over exclusive remplace
     if (@b = not_applicable) || ((is_not_defined @b) || (@b = false))
     then exclusive_replacement(@c, [@a', @a])
     else not_applicable
+
+Applicabilité étendue à l'espace de nom :
+
+  $ publicodes compile namespace_applicability --without-trace -o -  | ../../scripts/get_functions.awk
+  
+  function _a(ctx, params) {
+    return /** @type {unknown} */ (
+      $get("a", ctx, params)
+    )
+  
+  function _a_·_b(ctx, params) {
+    return /** @type {42.000000} */ (
+      $cond(
+        $eq(
+          $ref("a", _a, ctx, params),
+          NotApplicable), () => NotApplicable, () => 42.)
+    )
+  
+  function _a1(ctx, params) {
+    return /** @type {unknown} */ (
+      $get("a1", ctx, params)
+    )
+  
+  function _a1_·_b1(ctx, params) {
+    return /** @type {42.000000} */ (
+      $cond(
+        $eq(
+          $cond(
+            $or(
+              $eq(
+                $ref("c1", _c1, ctx, params),
+                NotApplicable),
+              () => $or(
+                (isNotDefined($ref("c1", _c1, ctx, params))),
+                () => $eq(
+                  $ref("c1", _c1, ctx, params),
+                  false))), () => $ref("a1", _a1, ctx, params), () => NotApplicable),
+          NotApplicable), () => NotApplicable, () => 42.)
+    )
+  
+  function _c1(ctx, params) {
+    return /** @type {true} */ (
+      true
+    )

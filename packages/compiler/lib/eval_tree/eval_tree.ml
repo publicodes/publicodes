@@ -23,7 +23,7 @@ let from_typed_ast ~(replacement_graph : Replacement_graph.Rule_graph.t)
         (** NOTE: logs gestions could it be smarter? *)
         let logs =
             let value, logs =
-              Replacements.transform ~replacement_graph ~make_not_applicable_graph rule_name value
+              Replacements.transform ~replacement_graph ~make_not_applicable_graph ast rule_name value
             in
             let _ =
               match value with
