@@ -4,6 +4,7 @@
 	"private": true,
 	"workspaces": [
 		"website",
+		"website-v1",
 		"packages/*",
 		"packages/compiler/tests/runtimes/JS",
 		"packages/compiler/examples"
