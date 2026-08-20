@@ -37,6 +37,32 @@ Without context, the cycle is detected:
   
   
   E027 cycle de dépendance détecté [cycle warning]
+       ╒══  ./error/rules.publicodes:83:15 ══
+    82 │     plafond: # should fail
+    83 │       valeur: cotisation
+       │               ˘˘˘˘˘˘˘˘˘˘ règle 'avec rend non applicable . cotisation' référencée ici
+       ╒══  ./error/rules.publicodes:80:16 ══
+    79 │       valeur: 10
+    80 │       plafond: plafond
+       │                ˘˘˘˘˘˘˘ règle 'avec rend non applicable . plafond bis' référencée ici
+       ╒══  ./error/rules.publicodes:87:15 ══
+    86 │       rend non applicable: plafond
+    87 │       valeur: plafond = 10
+       │               ˘˘˘˘˘˘˘˘ règle 'avec rend non applicable . plafond' référencée de nouveau
+  
+  
+  E027 cycle de dépendance détecté [cycle warning]
+       ╒══  ./error/rules.publicodes:83:15 ══
+    82 │     plafond: # should fail
+    83 │       valeur: cotisation
+       │               ˘˘˘˘˘˘˘˘˘˘ règle 'avec rend non applicable . cotisation' référencée ici
+       ╒══  ./error/rules.publicodes:80:16 ══
+    79 │       valeur: 10
+    80 │       plafond: plafond
+       │                ˘˘˘˘˘˘˘ règle 'avec rend non applicable . plafond' référencée de nouveau
+  
+  
+  E027 cycle de dépendance détecté [cycle warning]
        ╒══  ./error/rules.publicodes:47:15 ══
     46 │       remplace: plafond
     47 │       valeur: cotisation
