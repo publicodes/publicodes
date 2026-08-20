@@ -16,7 +16,7 @@ type binary_op = Shared_ast.binary_op [@@deriving show]
 (** We need to have a specific unary operator to check if a value is not defined
     to avoid propagating the [Not_defined] value (which would happen if we used
     the binop [Eq]). *)
-type unary_op = Neg | Is_not_defined [@@deriving show]
+type unary_op = Neg | Is_not_defined | Is_not_applicable [@@deriving show]
 
 type 'meta naked_value =
   | Const of constant
@@ -54,6 +54,8 @@ val map_value : f:('meta value -> 'meta value) -> 'meta value -> 'meta value
 (** {1 Constructors for naked values} *)
 
 val unop_is_not_defined : pos:Pos.t -> 'meta value -> 'meta naked_value
+
+val unop_is_not_applicable : pos:Pos.t -> 'meta value -> 'meta naked_value
 
 val binop_or : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
