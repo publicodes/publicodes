@@ -72,3 +72,16 @@ avec remplacements transitifs:
         références à: plafond bis
         sauf dans: cotisation
       valeur: cotisation
+
+avec rend non applicable:
+  avec:
+    cotisation:
+      valeur: 10
+      plafond: plafond
+
+    plafond: # should fail
+      valeur: cotisation
+
+    plafond bis: # should fail
+      rend non applicable: plafond
+      valeur: plafond = 10
