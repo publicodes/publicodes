@@ -5,7 +5,13 @@ open Shared.Shared_ast
 open Yaml_parser
 open Parser_utils
 
-let reserved_meta = ["description"; "titre"; "public"; "meta"; "note"]
+let reserved_meta =
+  [ "description"
+  ; "titre"
+  ; "public"
+  ; "meta"
+  ; "note"
+  ; "applicabilité étendue à l'espace de nom" ]
 
 let parse_custom_meta ~pos yaml =
   match yaml with
@@ -64,6 +70,9 @@ let parse mapping =
     | "public" ->
         let* _ = Parser_utils.check_boolean ~pos value in
         ret Public
+    | "applicabilité étendue à l'espace de nom" ->
+        let* _ = Parser_utils.check_boolean ~pos value in
+        ret Applicable_on_namespace
     | _ ->
         Output.empty
   in
