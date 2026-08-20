@@ -1,0 +1,13 @@
+# dot -Tsvg schema1.dot > schema1.svg
+strict digraph {
+  rankdir="LR";
+
+  a [shape=rect];
+  b [shape=rect];
+  c [shape=rect];
+  d [shape=rect];
+
+  a -> b
+  b -> c [color=red]
+  b -> d [color=red]
+}
