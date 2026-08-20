@@ -40,18 +40,17 @@ let mk
        Shared_ast.resolved_rule_def -> Rule_name.t Shared_ast.replace list )
     (ast : Shared_ast.resolved) : G.t =
   let graph = G.create () in
-  (* Add a replacement edge to the graph *)
-  let add_replacement ~rule ~replace_meta ~replaced_by =
+  let add_replacement_edge ~rule ~replace_meta ~replaced_by =
     G.add_vertex graph rule ;
     G.add_vertex graph replaced_by ;
     G.add_edge_e graph (rule, replace_meta, replaced_by)
   in
-  (* Process a single rule definition *)
   let process_rule_def rule_def =
-    List.iter (get_replacement_rules rule_def) ~f:(fun replace ->
+    let replacement_rules = get_replacement_rules rule_def in
+    List.iter replacement_rules ~f:(fun replace ->
         let replaced_rule = replace.reference in
         let replace_meta = Mark.copy replaced_rule replace in
-        add_replacement
+        add_replacement_edge
           ~rule:(Mark.remove replaced_rule)
           ~replace_meta
           ~replaced_by:(Mark.remove rule_def.name) )
