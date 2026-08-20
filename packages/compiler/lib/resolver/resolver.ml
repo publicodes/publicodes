@@ -133,40 +133,34 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
       (mechanism_mark :
         ((string list, Mark.pos_mark) value_mechanism, Mark.pos_mark) Mark.ed )
       =
+    let map_values values =
+      List.map values ~f:map_value |> Output.all_keep_logs
+    in
     let+ mechanism =
       match Mark.remove mechanism_mark with
       | Expr expr ->
           let mapped_expr = map_expr expr >>| fun e -> Expr e in
           Output.default_to ~default:Not_defined mapped_expr
       | Sum values ->
-          let+ mapped_values =
-            List.map values ~f:map_value |> Output.all_keep_logs
-          in
+          let+ mapped_values = map_values values in
           Sum mapped_values
       | Product values ->
-          let+ mapped_values =
-            List.map values ~f:map_value |> Output.all_keep_logs
-          in
+          let+ mapped_values = map_values values in
           Product mapped_values
+      | Average values ->
+          let+ mapped_values = map_values values in
+          Average mapped_values
       | All_of values ->
-          let+ mapped_values =
-            List.map values ~f:map_value |> Output.all_keep_logs
-          in
+          let+ mapped_values = map_values values in
           All_of mapped_values
       | One_of values ->
-          let+ mapped_values =
-            List.map values ~f:map_value |> Output.all_keep_logs
-          in
+          let+ mapped_values = map_values values in
           One_of mapped_values
       | Max_of values ->
-          let+ mapped_values =
-            List.map values ~f:map_value |> Output.all_keep_logs
-          in
+          let+ mapped_values = map_values values in
           Max_of mapped_values
       | Min_of values ->
-          let+ mapped_values =
-            List.map values ~f:map_value |> Output.all_keep_logs
-          in
+          let+ mapped_values = map_values values in
           Min_of mapped_values
       | Value value ->
           let+ value = map_value value in

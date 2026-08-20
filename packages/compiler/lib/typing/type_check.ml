@@ -498,9 +498,9 @@ and check_value_mechanism (value : Ast.typing_marked_value_mechanism) ~ctx =
   | Is_applicable _ | Is_not_applicable _ ->
       (* TODO: handle this when Not_applicable is a type *)
       Output.return ()
-  | Sum [] | Min_of [] | Max_of [] | Product [] ->
+  | Average [] | Sum [] | Min_of [] | Max_of [] | Product [] ->
       Output.return ()
-  | Sum values | Min_of values | Max_of values ->
+  | Average values | Sum values | Min_of values | Max_of values ->
       let* _ = check_each values ~mk_wip:(fun () -> Ast.mk_any_number ~pos) in
       let fst_pos = Ast.get_first_element_pos_exn values in
       let sum_typ = Ast.mk_number ~unit:None ~pos:fst_pos in

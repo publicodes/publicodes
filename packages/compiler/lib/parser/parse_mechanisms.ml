@@ -22,6 +22,10 @@ let value_mechanisms =
       , fun ~pos ~parse value ->
           let+ nodes = parse_array ~pos ~parse value in
           Product nodes )
+    ; ( "moyenne"
+      , fun ~pos ~parse value ->
+          let+ nodes = parse_array ~pos ~parse value in
+          Average nodes )
     ; ( "une de ces conditions"
       , fun ~pos ~parse value ->
           let+ nodes = parse_array ~pos ~parse value in

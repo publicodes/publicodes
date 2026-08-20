@@ -56,6 +56,7 @@ let rec to_expr (expr : Ast.typing_expr) : Shared_ast.typed_expr Output.t =
 
 and to_value_mechanism (value : Ast.typing_value_mechanism) :
     Shared_ast.typed_value_mechanism Output.t =
+  let to_values values = List.map values ~f:to_value |> Output.all_keep_logs in
   match value with
   | Expr expr ->
       let+ expr = to_expr expr in
@@ -70,22 +71,25 @@ and to_value_mechanism (value : Ast.typing_value_mechanism) :
       let+ value = to_value value in
       Shared_ast.Is_not_applicable value
   | Sum values ->
-      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
+      let+ values = to_values values in
       Shared_ast.Sum values
   | Product values ->
-      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
+      let+ values = to_values values in
       Shared_ast.Product values
+  | Average values ->
+      let+ values = to_values values in
+      Shared_ast.Average values
   | All_of values ->
-      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
+      let+ values = to_values values in
       Shared_ast.All_of values
   | Min_of values ->
-      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
+      let+ values = to_values values in
       Shared_ast.Min_of values
   | Max_of values ->
-      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
+      let+ values = to_values values in
       Shared_ast.Max_of values
   | One_of values ->
-      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
+      let+ values = to_values values in
       Shared_ast.One_of values
   | Not_defined ->
       Output.return Shared_ast.Not_defined

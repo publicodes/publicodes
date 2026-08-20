@@ -97,6 +97,8 @@ let binop_add ~pos = mk_binop ~pos Shared_ast.Add
 
 let binop_mul ~pos = mk_binop ~pos Shared_ast.Mul
 
+let binop_div ~pos = mk_binop ~pos Shared_ast.Div
+
 let binop_max ~pos = mk_binop ~pos Shared_ast.Max
 
 let binop_min ~pos = mk_binop ~pos Shared_ast.Min
@@ -115,6 +117,8 @@ let const_not_defined = Const Not_defined
 let const_false = Const (Bool false)
 
 let const_true = Const (Bool true)
+
+let const_number ?unit f = Const (Number (f, unit))
 
 let get_contexts ({value; _} : 'a value) : Rule_name.t Mark.pos list =
   match value with

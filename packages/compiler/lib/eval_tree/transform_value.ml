@@ -108,6 +108,8 @@ and transform_mechanism_value
       transform_sum ~pos ~typ sum
   | Product product ->
       transform_product ~pos ~typ product
+  | Average average ->
+      transform_average ~pos ~typ average
   | One_of any_of ->
       transform_any_of ~pos ~typ any_of
   | All_of all_of ->
@@ -175,6 +177,49 @@ and transform_product ~pos ~typ nodes =
       List.fold_right nodes ~init:value ~f:(fun node acc ->
           Tree.mk_value ~pos ~meta:typ
             (Tree.binop_mul ~pos (transform node) acc) )
+
+and transform_average ~pos ~typ nodes =
+  let p = Tree.mk_value ~pos in
+  (* if applicable then 1. else 0. *)
+  let count_applicable node =
+    let cond =
+      p ~meta:(Some Typ.TBool)
+        (binop_neq ~pos node
+           (p ~meta:(Some Typ.TBool) Tree.const_not_applicable) )
+    in
+    let then_ =
+      let meta =
+        Some (Typ.Literal (Mark.mk_pos ~pos (Typ.LNumber (1., None))))
+      in
+      p ~meta (Tree.const_number 1.)
+    in
+    let else_ =
+      let meta =
+        Some (Typ.Literal (Mark.mk_pos ~pos (Typ.LNumber (0., None))))
+      in
+      p ~meta (Tree.const_number 0.)
+    in
+    p ~meta:(Some (Typ.TNumber None)) (mk_condition ~cond ~then_ ~else_)
+  in
+  match nodes with
+  | [] ->
+      p (* FIXME: is missing the type NotApplicable *)
+        ~meta:(Some Typ.TBool) Tree.const_not_applicable
+  | n :: nodes ->
+      let value = transform n in
+      let nodes = List.map nodes ~f:transform in
+      let sum =
+        let init = value in
+        List.fold_right nodes ~init ~f:(fun node acc ->
+            p ~meta:typ (Tree.binop_add ~pos node acc) )
+      in
+      let count =
+        let init = count_applicable value in
+        let counts = List.map nodes ~f:count_applicable in
+        List.fold_right counts ~init ~f:(fun node acc ->
+            p ~meta:typ (Tree.binop_add ~pos node acc) )
+      in
+      p ~meta:typ (Tree.binop_div ~pos sum count)
 
 and transform_any_of ~pos ~typ nodes =
   match nodes with

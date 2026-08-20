@@ -114,6 +114,12 @@ let rec to_value_mec name value_mecha : Yojson.Basic.t =
             (`List
                (List.map values ~f:(function value ->
                    `Assoc (to_mecs name value) )) ) )
+    | Average values ->
+        ( "average"
+        , Some
+            (`List
+               (List.map values ~f:(function value ->
+                   `Assoc (to_mecs name value) )) ) )
     | All_of values ->
         ( "all_of"
         , Some

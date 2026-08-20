@@ -71,6 +71,7 @@ let from_rule_def (rule_def : Shared_ast.resolved_rule_def) : t list =
           match else_ with Some else_ -> get_contexts [] else_ | None -> []
         in
         contexts_in_else @ contexts_in_variations @ acc
+    | Average values
     | Sum values
     | Product values
     | All_of values
