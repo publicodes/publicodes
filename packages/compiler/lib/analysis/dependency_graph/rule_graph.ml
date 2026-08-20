@@ -231,8 +231,17 @@ let mk ast ~replacement_graph ~make_not_applicable_graph =
           value of the current rule is overridden by the context. *)
         Rule_context.stack_contains context_stack current_rule
       in
+      let parents_applicable_on_namespace : Rule_vertex.t Mark.pos list =
+        Shared_ast.parents_applicable_on_namespace ast current_rule
+        |> List.map ~f:(fun (parent : Shared_ast.resolved_rule_def) ->
+            let name = Mark.remove parent.name in
+            let pos = Mark.get parent.name in
+            (* FIXME: position to the mecanism when we store those *)
+            Mark.add pos (name, context_stack) )
+      in
       let references =
         find_references only_in_chainable context_stack current_rule value
+        |> List.append parents_applicable_on_namespace
         |> List.concat_map ~f:(fun reference ->
             let replacements =
               find_replacements_references replacement_graph ~reference

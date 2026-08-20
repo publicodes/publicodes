@@ -42,6 +42,8 @@ let to_meta meta =
       None
   | Custom_meta meta ->
       Some ("meta", Yojson.Safe.to_basic meta)
+  | Applicable_on_namespace ->
+      Some ("applicable_on_namespace", `Bool true)
 
 (** TODO: handle enums and literal values *)
 let to_type (typ : Typ.t) =
