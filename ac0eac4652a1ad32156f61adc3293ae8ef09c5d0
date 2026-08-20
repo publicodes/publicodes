@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55599afe_fd33530d",
+        "filename": "packages/compiler/lib/typing/typing.mli",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-08-20T16:41:19Z",
+      "side": 1,
+      "message": "Pourquoi ne prendre en compte uniquement les remplacements et pas les rend non applicable ?\n\nJe me demande s\u0027y on ne pourrait pas avoir un unique graphe d\u0027ailleurs 🤔",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 2
+      },
+      "revId": "ac0eac4652a1ad32156f61adc3293ae8ef09c5d0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
