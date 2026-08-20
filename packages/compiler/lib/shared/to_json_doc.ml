@@ -38,6 +38,8 @@ let to_meta meta =
       Some ("public", `Bool true)
   | Module_id _ ->
       None
+  | Applicable_on_namespace ->
+      Some ("applicable_on_namespace", `Bool true)
   | Custom_meta meta ->
       Some ("meta", Yojson.Safe.to_basic meta)
 
