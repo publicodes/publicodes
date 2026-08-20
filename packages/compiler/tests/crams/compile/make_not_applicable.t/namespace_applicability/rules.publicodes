@@ -1,0 +1,12 @@
+a:
+  applicabilité étendue à l'espace de nom: oui
+  avec:
+    b: 42
+
+a1:
+  applicabilité étendue à l'espace de nom: oui
+  avec:
+    b1: 42
+c1:
+  valeur: oui
+  rend non applicable: a1
