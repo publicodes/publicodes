@@ -30,6 +30,15 @@ let create_make_not_applicable_node ~pos ~meta ~condition_node ~node =
                        (p (binop_eq ~pos condition_node (p const_false))) ) ) ) )
          ~then_:node ~else_:(p const_not_applicable) ) )
 
+let create_namespace_applicable_node ~pos ~meta ~condition_node ~node =
+  let p = Tree.mk_value ~pos ~meta in
+  (* if (condition_node = not_applicable) then not_applicable else node *)
+  Tree.(
+    p
+      (mk_condition
+         ~cond:(p (binop_eq ~pos condition_node (p const_not_applicable)))
+         ~then_:(p const_not_applicable) ~else_:node ) )
+
 let create_replace_node ~pos ~meta ~replacing_node ~node =
   let p = Tree.mk_value ~pos ~meta in
   (* if replacement != null then replacement else node *)
@@ -45,49 +54,80 @@ let create_exclusive_replacement_node ~pos ~replacement_list ~node =
 
 (* Apply rule replacements to a tree *)
 let transform ~(replacement_graph : Replacement_graph.Rule_graph.t)
-    ~(make_not_applicable_graph : Replacement_graph.Rule_graph.t) rule value =
+    ~(make_not_applicable_graph : Replacement_graph.Rule_graph.t) ast rule value
+    =
   let logs = ref [] in
   (* Apply rule replacements to an evaluation tree *)
   let rec apply_to_node ~(rule : Rule_name.t) (node : 'a option Tree.value) :
       'a option Tree.value =
     let pos = node.pos in
     let meta = node.meta in
-    match node.value with
-    | Ref reference ->
-        let replacement_list =
-          find_eligible_replacements ~rule ~reference replacement_graph
-        in
-        let node =
-          match replacement_list with
-          | [] ->
-              node
-          | [hd] ->
-              let replacing_node =
-                apply_to_node ~rule (Tree.mk_value ~pos ~meta (Ref hd))
-              in
-              create_replace_node ~pos ~meta ~replacing_node ~node
-          | _ ->
-              create_exclusive_replacement_node ~pos ~meta ~replacement_list
-                ~node:reference
-        in
-        let make_not_applicable_list =
-          find_eligible_make_not_applicable ~rule ~reference
-            make_not_applicable_graph
-        in
-        let node =
-          List.fold make_not_applicable_list ~init:node
+    let value =
+      match node.value with
+      | Ref reference ->
+          let replacement_list =
+            find_eligible_replacements ~rule ~reference replacement_graph
+          in
+          let node =
+            match replacement_list with
+            | [] ->
+                node
+            | [hd] ->
+                let replacing_node =
+                  apply_to_node ~rule (Tree.mk_value ~pos ~meta (Ref hd))
+                in
+                create_replace_node ~pos ~meta ~replacing_node ~node
+            | _ ->
+                create_exclusive_replacement_node ~pos ~meta ~replacement_list
+                  ~node:reference
+          in
+          let make_not_applicable_list =
+            find_eligible_make_not_applicable ~rule ~reference
+              make_not_applicable_graph
+          in
+          let node =
+            List.fold make_not_applicable_list ~init:node
+              ~f:(fun node_acc condition_rule ->
+                (* Apply make not applicable recursively (to handle transitivity) *)
+                let condition_node =
+                  apply_to_node ~rule
+                    (Tree.mk_value ~meta ~pos (Ref condition_rule))
+                in
+                create_make_not_applicable_node ~pos ~meta ~condition_node
+                  ~node:node_acc )
+          in
+          node
+      | _ ->
+          node
+    in
+    let parents_applicable_on_namespace =
+      List.drop (Rule_name.parents rule) 1
+      |> List.map ~f:(fun rule -> Shared_ast.find_exn rule ast)
+      |> List.filter ~f:Shared_ast.has_applicable_on_namespace_tag
+      |> List.map ~f:(fun (rule_def : Shared_ast.typed_rule_def) ->
+          Mark.remove rule_def.name )
+    in
+    (* Use them all to correctly list eligible make_not_applicable, even
+       if this cause multiple checks *)
+    List.fold parents_applicable_on_namespace ~init:value
+      ~f:(fun node_acc parent ->
+        let condition_node =
+          let make_not_applicable_list =
+            find_eligible_make_not_applicable ~rule ~reference:parent
+              make_not_applicable_graph
+          in
+          let init = Tree.mk_value ~meta ~pos (Ref parent) in
+          List.fold make_not_applicable_list ~init
             ~f:(fun node_acc condition_rule ->
               (* Apply make not applicable recursively (to handle transitivity) *)
               let condition_node =
-                apply_to_node ~rule
-                  (Tree.mk_value ~meta ~pos (Ref condition_rule))
+                Tree.mk_value ~meta ~pos (Ref condition_rule)
               in
               create_make_not_applicable_node ~pos ~meta ~condition_node
                 ~node:node_acc )
         in
-        node
-    | _ ->
-        node
+        create_namespace_applicable_node ~pos ~meta ~condition_node
+          ~node:node_acc )
   in
   let updated_tree = Tree.map_value value ~f:(apply_to_node ~rule) in
   return ~logs:!logs updated_tree

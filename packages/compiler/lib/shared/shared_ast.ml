@@ -97,6 +97,7 @@ type rule_meta =
   | Public
   | Custom_meta of Yojson.Safe.t
   | Module_id of Module_id.t
+  | Applicable_on_namespace
 [@@deriving equal, show]
 
 type 'ref replace =
@@ -180,6 +181,11 @@ let mk_expr mark expr = Mark.add mark expr
 (** Map expression *)
 let has_public_tag rule_def =
   List.exists ~f:(function Public -> true | _ -> false) rule_def.meta
+
+let has_applicable_on_namespace_tag rule_def =
+  List.exists
+    ~f:(function Applicable_on_namespace -> true | _ -> false)
+    rule_def.meta
 
 let get_module_id_exn rule_def =
   List.find_map_exn rule_def.meta ~f:(fun meta ->
