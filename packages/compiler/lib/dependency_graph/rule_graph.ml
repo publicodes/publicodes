@@ -203,7 +203,7 @@ let find_replacements_references replacement_graph ~reference ~current_rule =
     |> List.map ~f:(fun (replaced_by, _) ->
         Mark.copy reference (replaced_by, ref_context_stack) )
 
-let mk ast ~replacement_graph =
+let mk ast ~replacement_graph ~make_not_applicable_graph =
   let graph = G.create () in
   let visited_node = ref [] in
   let rec add_rule_dependencies
@@ -230,7 +230,11 @@ let mk ast ~replacement_graph =
               find_replacements_references replacement_graph ~reference
                 ~current_rule
             in
-            reference :: replacements )
+            let make_not_applicable =
+              find_replacements_references make_not_applicable_graph ~reference
+                ~current_rule
+            in
+            (reference :: replacements) @ make_not_applicable )
       in
       List.iter references ~f:(fun (ref_node, {pos= ref_pos}) ->
           let ref_name, ref_ctx_stack = ref_node in
@@ -241,4 +245,5 @@ let mk ast ~replacement_graph =
       )
   in
   List.iter ast ~f:(fun rule_def -> add_rule_dependencies rule_def []) ;
+  output_dot graph ;
   graph
