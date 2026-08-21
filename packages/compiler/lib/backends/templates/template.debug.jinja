@@ -122,6 +122,12 @@ with: {
 {%- endfor %}
 } in
 {{ fmt_node(node_value.expr) }}
+{%- case "root_finding" -%}
+root_finding(@{{ node_value.rule }}, [
+	{%- for c in node_value.with_ -%}
+		@{{ c }}{%- if !loop.last -%}, {% endif -%}
+	{%- endfor -%}
+	], {{ node_value.min }}, {{ node_value.max }}, {{ node_value.tolerance }})
 {%- endswitch %}
 {%- endmacro %}
 
