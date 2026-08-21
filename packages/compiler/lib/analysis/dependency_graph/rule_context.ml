@@ -24,6 +24,13 @@ let contains (_, rules) rule_name =
 let stack_contains ctx_stack rule_name =
   List.exists ctx_stack ~f:(fun ctx -> contains ctx rule_name)
 
+let stack_concat stack1 stack2 =
+  stack1 @ stack2
+  |> List.stable_dedup ~compare:(fun (id1, _) (id2, _) -> Id.compare id1 id2)
+
+let stack_append stack ctx =
+  if List.exists stack ~f:(equal ctx) then stack else ctx :: stack
+
 let to_string (id, rules) =
   let rules_str =
     List.map rules ~f:(fun (r, _) -> Rule_name.to_string r)
@@ -84,6 +91,8 @@ let from_rule_def (rule_def : Shared_ast.resolved_rule_def) : t list =
     | One_of values ->
         List.concat_map values ~f:(get_contexts []) @ acc
     | Expr _ | Not_defined ->
+        acc
+    | Root_finding _ ->
         acc
   in
   get_contexts [] rule_def.value
