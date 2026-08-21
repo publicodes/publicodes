@@ -121,10 +121,7 @@ let rec find_references (only_in_chainable : bool)
   let context_stack =
     match get_context current_rule chainable_mechanisms with
     | Some ctx ->
-        let already_visited =
-          List.exists context_stack ~f:(Rule_context.equal ctx)
-        in
-        if not already_visited then ctx :: context_stack else context_stack
+        Rule_context.stack_append context_stack ctx
     | None ->
         context_stack
   in
@@ -136,7 +133,7 @@ let rec find_references (only_in_chainable : bool)
   else
     let value_refs =
       find_references_in_value only_in_chainable context_stack current_rule
-        (Mark.remove value)
+        value
     in
     value_refs @ chainable_refs
 
@@ -160,7 +157,9 @@ and find_references_in_chainable (context_stack : Rule_context.t list)
 
 and find_references_in_value (only_in_chainable : bool)
     (context_stack : Rule_context.t list) (current_rule : Rule_name.t)
-    (value : (Rule_name.t, 'mark) Shared_ast.value_mechanism) =
+    ((value, {pos}) :
+      ((Rule_name.t, 'mark) Shared_ast.value_mechanism, Mark.pos_mark) Mark.ed
+      ) =
   let find_references =
     find_references only_in_chainable context_stack current_rule
   in
@@ -193,6 +192,15 @@ and find_references_in_value (only_in_chainable : bool)
         match else_opt with Some else_ -> find_references else_ | None -> []
       in
       variation_refs @ else_refs
+  | Root_finding {with_; _} ->
+      let context_stack =
+        let ctx =
+          Rule_context.mk current_rule [Mark.mk_pos ~pos current_rule] pos
+        in
+        Rule_context.stack_append context_stack ctx
+      in
+      with_
+      |> List.map ~f:(Mark.map ~f:(fun ref_name -> (ref_name, context_stack)))
 
 let find_replacements_references replacement_graph ~reference ~current_rule =
   let ref_name, ref_context_stack = Mark.remove reference in
@@ -263,7 +271,6 @@ let mk ast ~replacement_graph ~make_not_applicable_graph =
       )
   in
   List.iter ast ~f:(fun rule_def -> add_rule_dependencies rule_def []) ;
-  output_dot graph ;
   graph
 
 let transitive_dependencies graph : t =
