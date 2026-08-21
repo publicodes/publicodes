@@ -36,6 +36,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "10946d1c_7ac56e0e",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-08-21T07:45:16Z",
+      "side": 1,
+      "message": "Ok je vois, il faudrait effectivement avoir un message d\u0027erreur dédié du style : une règle ne peut rendre non applicable une autre règle uniquement si elle est de type booléen. Je rajoute le cas dans l\u0027issue.",
+      "parentUuid": "729e5533_90bd94cc",
+      "revId": "ac0eac4652a1ad32156f61adc3293ae8ef09c5d0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "55599afe_fd33530d",
@@ -97,6 +115,30 @@
       "side": 1,
       "message": "s/qui remplace quoi/qui rend non applicable quoi/",
       "parentUuid": "c6b45041_bb952303",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 2
+      },
+      "revId": "ac0eac4652a1ad32156f61adc3293ae8ef09c5d0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9dae28cb_a1c1f772",
+        "filename": "packages/compiler/lib/typing/typing.mli",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-08-21T07:45:16Z",
+      "side": 1,
+      "message": "Oui, je vois. On en aura besoin pour gérer plus finement les types `NotApplicable` `NotDefined` en revanche du coup.",
+      "parentUuid": "4950dcd1_b24fd1b3",
       "range": {
         "startLine": 4,
         "startChar": 0,
