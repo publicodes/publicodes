@@ -115,6 +115,8 @@ module Rule_vertex : sig
   type t = Rule_name.t * Rule_context.stack [@@deriving equal, compare]
 
   val hash : t -> int
+
+  val mk_root : Rule_name.t -> t
 end
 
 module Ref_edge : sig

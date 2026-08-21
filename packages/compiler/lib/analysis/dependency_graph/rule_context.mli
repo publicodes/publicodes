@@ -40,6 +40,12 @@ val stack_contains : stack -> Rule_name.t -> bool
 (** [stack_contains ctx_stack rule_name ] checks if any context in the
     [ctx_stack] contains the rule [rule_name]. *)
 
+val stack_concat : stack -> stack -> stack
+(** [stack_concat stack1 stack2 ] concat two deduplicated stacks. *)
+
+val stack_append : stack -> t -> stack
+(** [stack_append stack ctx ] append a context to a stack if not already there. *)
+
 val to_string : t -> string
 (** [to_string ctx] converts the context [ctx] to a string representation. *)
 

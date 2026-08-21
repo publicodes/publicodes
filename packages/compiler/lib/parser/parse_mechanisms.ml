@@ -85,7 +85,8 @@ let value_mechanisms =
         ; fn=
             (fun ~pos ~parse value ->
               let+ value = parse ~pos value in
-              Is_not_defined value ) } ) ]
+              Is_not_defined value ) } )
+    ; ("inversion numérique", {on_root= true; fn= Mecha_root_finding.parse}) ]
 
 let chainable_mechanisms =
   Hashtbl.of_alist_exn

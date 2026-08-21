@@ -1,0 +1,10 @@
+a: d + 10 # params b, d, e
+b: c - 10 + e # params a, d, e
+c: d # params a, b, e
+d: # params a, b, e
+  inversion numérique:
+    - a
+    - b
+e: # params e
+f: a # params b, d, e
+g: d # params a, b, e

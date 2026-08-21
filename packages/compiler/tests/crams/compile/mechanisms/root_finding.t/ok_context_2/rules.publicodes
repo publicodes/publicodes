@@ -1,0 +1,11 @@
+a: # does not produce error
+  valeur: c + 10
+  contexte:
+   c: 15
+b: c + 10 # solves c
+c:
+  inversion numérique:
+    avec:
+      - b
+    min: 0
+    max: 100000
