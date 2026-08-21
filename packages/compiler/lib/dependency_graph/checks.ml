@@ -128,10 +128,36 @@ let unused_context_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
             in
             Log.error ~labels ~kind:`Syntax ~code message ) )
 
+let root_finding_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
+    Log.t list =
+  let graph = Rule_graph.Oper.transitive_closure graph in
+  Rule_graph.fold_vertex
+    (fun (rule_name, ctxs) acc ->
+      let rule_def = Shared_ast.find_exn rule_name ast in
+      let value, _ = rule_def.value in
+      let value, _ = value.value in
+      match value with
+      | Root_finding {with_; _} ->
+          let missing =
+            List.fold with_ ~init:[] ~f:(fun acc rule ->
+                let from = Mark.remove rule in
+                if Rule_graph.mem_edge graph (from, ctxs) (rule_name, ctxs) then
+                  acc
+                else rule :: acc )
+          in
+          acc
+          @ List.map missing ~f:(fun (_, {Mark.pos}) ->
+              let code, message = Err.invalid_root_finding in
+              Log.error ~kind:`Syntax ~pos ~code message )
+      | _ ->
+          acc )
+    graph []
+
 let mk_and_checks ast =
   let graph = Rule_graph.mk ast in
   let cycle_logs = cycle_check graph in
   let access_logs = illegal_check ast graph in
   let context_logs = unused_context_check ast graph in
-  let logs = cycle_logs @ access_logs @ context_logs in
+  let root_finding_logs = root_finding_check ast graph in
+  let logs = cycle_logs @ access_logs @ context_logs @ root_finding_logs in
   break ~logs graph

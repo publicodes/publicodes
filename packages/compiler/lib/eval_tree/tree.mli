@@ -28,10 +28,15 @@ type 'meta naked_value =
   | Set_context of 'meta context
   | Round of (Shared_ast.rounding * 'meta value * 'meta value)
   | Exclusive_replacement of (Rule_name.t * Rule_name.t list)
+  | Root_finding of 'meta root_finding
 [@@deriving show]
 
 and 'meta context =
   {context: (Rule_name.t Mark.pos * 'meta value) list; value: 'meta value}
+[@@deriving show]
+
+and 'meta root_finding =
+  {with_: Rule_name.t list; tolerance: float; min: float; max: float}
 [@@deriving show]
 
 and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.t}
@@ -88,6 +93,13 @@ val mk_condition :
 
 val mk_exclusive_replacement :
   target:Rule_name.t -> replacements:Rule_name.t list -> 'meta naked_value
+
+val mk_root_finding :
+     with_:Rule_name.t list
+  -> tolerance:float
+  -> min:float
+  -> max:float
+  -> 'meta naked_value
 
 val const_not_applicable : 'meta naked_value
 

@@ -126,6 +126,10 @@ and transform_mechanism_value
       transform_is_applicable ~pos ~typ value
   | Is_not_applicable value ->
       transform_is_not_applicable ~pos ~typ value
+  | Root_finding {with_; tolerance; min; max} ->
+      let with_ = List.map with_ ~f:Mark.remove in
+      Tree.mk_value ~pos ~meta:typ
+        (Tree.mk_root_finding ~with_ ~tolerance ~min ~max)
 
 and unfold_chainable_mechanism ~init mechanisms =
   mechanisms

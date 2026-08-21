@@ -38,7 +38,9 @@ type context =
 let rec parse_rule ~default_to_public ~ctx (name, yaml) =
   let* name, {pos} = parse_ref name in
   let name = ctx.current_rule_name @ name in
-  let* value = Parse_value.parse_value ~error_if_undefined:false ~pos yaml in
+  let* value =
+    Parse_value.parse_value ~error_if_undefined:false ~is_root:true ~pos yaml
+  in
   let default_meta = if default_to_public then [Public] else [] in
   let module_id = Module_id ctx.current_module_id in
   let parsed_rule =

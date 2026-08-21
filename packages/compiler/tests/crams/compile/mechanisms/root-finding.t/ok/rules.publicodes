@@ -1,0 +1,16 @@
+a: b + 10
+b:
+  inversion numérique:
+    avec:
+      - a
+    min: 0
+    max: 100000
+
+a1: b1 + 10
+b1:
+  inversion numérique: a1
+
+a2: b2 + 10
+b2:
+  inversion numérique:
+    - a2

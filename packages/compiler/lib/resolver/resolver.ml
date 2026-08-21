@@ -188,6 +188,14 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
                 return None
           in
           Variations (variations, else_)
+      | Root_finding {with_; tolerance; min; max} ->
+          let+ with_ =
+            List.map with_ ~f:(fun (ref_name, {Mark.pos}) ->
+                let* rule = resolve_ref ~pos ref_name in
+                return @@ Mark.mk_pos ~pos rule )
+            |> all_keep_logs
+          in
+          Root_finding {with_; tolerance; min; max}
     in
     Mark.copy mechanism_mark mechanism
   and map_replace (replace : 'a replace) =

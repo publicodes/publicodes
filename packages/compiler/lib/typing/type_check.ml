@@ -678,7 +678,51 @@ let check_enumerate ~pos u1 u2 : Ast.typ Output.t =
   | _, _ ->
       error_typ_mismatch u1 u2
 
-let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
+let rec get_ref_typ ~(ast : Ast.wip_tree) ~replaces ~current ~contexts ~pos ref
+    =
+  let* value =
+    match Hashtbl.find contexts ref with
+    | Some value ->
+        return value
+    | None ->
+        let rule_def, status = Hashtbl.find_exn ast ref in
+        let* _ =
+          match !status with
+          | Todo ->
+              check_rule_def ~replaces ~ast ~contexts rule_def
+          | Error ->
+              empty
+          | _ ->
+              return ()
+        in
+        let {Shared_ast.value; _} = rule_def in
+        return value
+  in
+  let _, mark = value in
+  let replacements =
+    Replacement_graph.find_transitive_replacements ~from:current ~rule:ref
+      replaces
+    |> List.map ~f:fst
+  in
+  let* typ =
+    Output.fold replacements ~init:mark.typ ~f:(fun ptyp ref ->
+        let rule_def, status = Hashtbl.find_exn ast ref in
+        let* _ =
+          match !status with
+          | Todo ->
+              check_rule_def ~replaces ~ast ~contexts rule_def
+          | Error ->
+              empty
+          | _ ->
+              return ()
+        in
+        let {Shared_ast.value; _} = rule_def in
+        let _, mark = value in
+        check_enumerate ~pos ptyp mark.typ )
+  in
+  return typ
+
+and check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
     ~(ptyp : Ast.typ) (expr : Ast.wip_expr) : unit Output.t =
   let check_expression = check_expression ~replaces ~current ~ast ~contexts in
   let expr, mark = expr in
@@ -690,46 +734,7 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
         return ()
     | Ref ref ->
         let* _ =
-          let* value =
-            match Hashtbl.find contexts ref with
-            | Some value ->
-                return value
-            | None ->
-                let rule_def, status = Hashtbl.find_exn ast ref in
-                let* _ =
-                  match !status with
-                  | Todo ->
-                      check_rule_def ~replaces ~ast ~contexts rule_def
-                  | Error ->
-                      empty
-                  | _ ->
-                      return ()
-                in
-                let {Shared_ast.value; _} = rule_def in
-                return value
-          in
-          let _, mark = value in
-          let replacements =
-            Replacement_graph.find_transitive_replacements ~from:current
-              ~rule:ref replaces
-            |> List.map ~f:fst
-          in
-          let* typ =
-            Output.fold replacements ~init:mark.typ ~f:(fun ptyp ref ->
-                let rule_def, status = Hashtbl.find_exn ast ref in
-                let* _ =
-                  match !status with
-                  | Todo ->
-                      check_rule_def ~replaces ~ast ~contexts rule_def
-                  | Error ->
-                      empty
-                  | _ ->
-                      return ()
-                in
-                let {Shared_ast.value; _} = rule_def in
-                let _, mark = value in
-                check_enumerate ~pos ptyp mark.typ )
-          in
+          let* typ = get_ref_typ ~replaces ~current ~ast ~contexts ~pos ref in
           let* _ = check_union typ ptyp in
           return ()
         in
@@ -946,6 +951,38 @@ and check_value_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
               let wip2 = Ast.mk_any ~pos in
               let* _ = check_value ~ptyp:wip2 else_ in
               check_enumerate ~pos wip wip2
+        in
+        let* _ = check_union wip mark.typ in
+        return ()
+    | Root_finding {with_; _} ->
+        let* with_ =
+          List.map with_ ~f:Mark.remove
+          |> List.map ~f:(get_ref_typ ~contexts ~ast ~current ~replaces ~pos)
+          |> all_okay
+        in
+        (* check all number *)
+        let* _ =
+          match with_ with
+          | [] ->
+              return ()
+          | hd :: rest ->
+              let* init =
+                let wip = Ast.mk_any_number ~pos in
+                let* _ = check_union wip hd in
+                return wip
+              in
+              let* _ =
+                Output.fold ~init rest ~f:(fun wip value ->
+                    let* _ = check_union wip value in
+                    return wip )
+              in
+              return ()
+        in
+        (* we are TNumber *)
+        let wip = Ast.mk_number_no_unit ~pos in
+        (* gather unit *)
+        let* _ =
+          List.map with_ ~f:(fun typ -> check_union wip typ) |> all_okay
         in
         let* _ = check_union wip mark.typ in
         return ()

@@ -63,10 +63,15 @@ type ('ref, 'mark) value_mechanism =
   | One_of of ('ref, 'mark) value list
   | Not_defined
   | Variations of (('ref, 'mark) variation list * ('ref, 'mark) value option)
+  | Root_finding of ('ref, 'mark) root_finding
 [@@deriving equal, compare, show, sexp]
 
 and ('ref, 'mark) variation =
   {if_: ('ref, 'mark) value; then_: ('ref, 'mark) value}
+[@@deriving equal, compare, show, sexp]
+
+and ('ref, 'mark) root_finding =
+  {with_: 'ref Mark.pos list; tolerance: float; min: float; max: float}
 [@@deriving equal, compare, show, sexp]
 
 (* The order of chainable mechanisms matters here: it is used to determine the

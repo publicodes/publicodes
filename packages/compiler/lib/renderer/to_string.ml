@@ -223,6 +223,15 @@ let node_of_exclusive_replacement id (target : string)
   node_of id "exclusive_replacement"
   @@ Tobj [("target", Tstr target); ("replacements", Tlist replacements)]
 
+let node_of_root_finding id rule with_ tolerance min max =
+  node_of id "root_finding"
+  @@ Tobj
+       [ ("rule", Tstr (Rule_name.show rule))
+       ; ("with_", with_)
+       ; ("tolerance", Tfloat tolerance)
+       ; ("min", Tfloat min)
+       ; ("max", Tfloat max) ]
+
 let rec node_of_tree_val (name : Shared.Rule_name.t)
     ({value; pos; _} : Typ.t option Eval_tree.value) =
   let id = Shared.Id.hash name pos in
@@ -269,6 +278,11 @@ let rec node_of_tree_val (name : Shared.Rule_name.t)
       let target = Rule_name.to_string target in
       let replacements = List.map replacements ~f:Rule_name.to_string in
       node_of_exclusive_replacement id target replacements
+  | Root_finding {with_; tolerance; min; max} ->
+      let with_ =
+        List.map with_ ~f:(fun with_ -> Tstr (Rule_name.to_string with_))
+      in
+      node_of_root_finding id name (Tlist with_) tolerance min max
 
 let from_rules eval_tree =
   let rules =

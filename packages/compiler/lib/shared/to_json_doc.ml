@@ -164,6 +164,19 @@ let rec to_value_mec name value_mecha : Yojson.Basic.t =
               ; ("else", `Assoc (to_mecs name else_)) ]
         in
         ("variations", Some (`Assoc value))
+    | Root_finding {with_; tolerance; min; max} ->
+        let with_ =
+          List.map with_ ~f:Mark.remove
+          |> List.map ~f:Rule_name.show
+          |> List.map ~f:(fun with_ -> `String with_)
+        in
+        ( "root_finding"
+        , Some
+            (`Assoc
+               [ ("with", `List with_)
+               ; ("tolerance", `Float tolerance)
+               ; ("min", `Float min)
+               ; ("max", `Float max) ] ) )
   in
   let parameters =
     match parameters with

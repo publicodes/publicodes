@@ -26,10 +26,15 @@ type 'meta naked_value =
   | Set_context of 'meta context
   | Round of (Shared_ast.rounding * 'meta value * 'meta value)
   | Exclusive_replacement of (Rule_name.t * Rule_name.t list)
+  | Root_finding of 'meta root_finding
 [@@deriving show]
 
 and 'meta context =
   {context: (Rule_name.t Mark.pos * 'meta value) list; value: 'meta value}
+[@@deriving show]
+
+and 'meta root_finding =
+  {with_: Rule_name.t list; tolerance: float; min: float; max: float}
 [@@deriving show]
 
 (** NOTE: do we really need to have a generic meta type here as we only build
@@ -70,6 +75,8 @@ let rec map_value ~(f : 'a value -> 'a value) (c : 'a value) : 'a value =
         Round (rounding, map_value ~f precision, map_value ~f value)
     | Ref _ | Const _ | Get_context _ | Exclusive_replacement _ ->
         c.value
+    | Root_finding {with_; tolerance; min; max} ->
+        Root_finding {with_; tolerance; min; max}
   in
   f {c with value= new_value}
 
@@ -108,6 +115,9 @@ let mk_condition ~cond ~then_ ~else_ = Condition (cond, then_, else_)
 
 let mk_exclusive_replacement ~target ~replacements =
   Exclusive_replacement (target, replacements)
+
+let mk_root_finding ~with_ ~tolerance ~min ~max =
+  Root_finding {with_; tolerance; min; max}
 
 let const_not_applicable = Const Not_applicable
 

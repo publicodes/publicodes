@@ -18,8 +18,11 @@ let get_scalar ~pos (value : yaml) =
 
 let parse_array ~pos
     ~(parse :
-       ?error_if_undefined:bool -> pos:Pos.t -> yaml -> Ast.value Output.t )
-    (yaml : yaml) =
+          ?error_if_undefined:bool
+       -> ?is_root:bool
+       -> pos:Pos.t
+       -> yaml
+       -> Ast.value Output.t ) (yaml : yaml) =
   match yaml with
   | `A seq ->
       let* parsed_nodes = seq |> List.map ~f:(parse ~pos) |> all_keep_logs in
@@ -56,7 +59,7 @@ let parse_ref s =
   | Some expr, _ -> (
     match Mark.remove expr with
     | Ref rule_name ->
-        return (Mark.mk_pos ~pos:pos rule_name)
+        return (Mark.mk_pos ~pos rule_name)
     | _ ->
         let code, message = Err.invalid_rule_name in
         fatal_error ~pos ~kind:`Syntax ~code message
@@ -79,8 +82,7 @@ let parse_refs ~pos yaml =
 
 let find_value key mapping =
   List.find_map mapping ~f:(fun (k, value) ->
-      if String.equal (get_value k) key then Some (Mark.copy k value)
-      else None )
+      if String.equal (get_value k) key then Some (Mark.copy k value) else None )
 
 let check_authorized_keys ~keys ?(hints = []) mapping =
   let logs =
@@ -106,3 +108,13 @@ let parse_one_or_many ~f yaml =
   | _ ->
       let+ value = f yaml in
       [value]
+
+let get_float ~pos value =
+  match Float.of_string_opt value with
+  | Some value ->
+      return value
+  | None ->
+      let code, message = Err.invalid_value in
+      fatal_error ~pos ~kind:`Syntax ~code
+        ~hints:["valeure flotante invalide"]
+        message

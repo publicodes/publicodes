@@ -755,6 +755,248 @@ function $exclusive_replacement(target, replacements, ctx, params) {
 	}
 }
 
+/**
+ * Copied from https://gist.github.com/borgar/3317728
+ *
+ * Searches the interval from <tt>lowerLimit</tt> to <tt>upperLimit</tt>
+ * for a root (i.e., zero) of the function <tt>func</tt> with respect to
+ * its first argument using Brent's method root-finding algorithm.
+ *
+ * Translated from zeroin.c in http://www.netlib.org/c/brent.shar.
+ *
+ * Copyright (c) 2012 Borgar Thorsteinsson <borgar@borgar.net>
+ * MIT License, http://www.opensource.org/licenses/mit-license.php
+ *
+ * @param {Function} func
+ * @param lowerLimit the lower point of the interval to be searched.
+ * @param upperLimit the upper point of the interval to be searched.
+ * @param errorTol the desired accuracy (convergence tolerance).
+ * @param maxIter the maximum number of iterations.
+ * @param acceptableErrorTol return a result even if errorTol isn't reached after maxIter.
+ * @returns an estimate for the root within accuracy.
+ */
+function uniroot(
+	func,
+	lowerLimit,
+	upperLimit,
+	errorTol = 0,
+	maxIter = 100,
+	acceptableErrorTol = 0,
+) {
+	let a = lowerLimit,
+		b = upperLimit,
+		c = a,
+		fa = func(a),
+		fb = func(b),
+		fc = fa,
+		actualTolerance = undefined,
+		newStep = 0, // Step at this iteration
+		prevStep = 0, // Distance from the last but one to the last approximation
+		p = 0, // Interpolation step is calculated in the form p/q; division is delayed until the last moment
+		q = 0,
+		fallback = undefined
+
+	while (maxIter-- > 0) {
+		prevStep = b - a
+
+		if (Math.abs(fc) < Math.abs(fb)) {
+			// Swap data for b to be the best approximation
+			;((a = b), (b = c), (c = a))
+			;((fa = fb), (fb = fc), (fc = fa))
+		}
+
+		actualTolerance = 1e-15 * Math.abs(b) + errorTol / 2
+		newStep = (c - b) / 2
+
+		if (Math.abs(newStep) <= actualTolerance || fb === 0) {
+			return b // Acceptable approx. is found
+		}
+
+		// Decide if the interpolation can be tried
+		if (Math.abs(prevStep) >= actualTolerance && Math.abs(fa) > Math.abs(fb)) {
+			// If prevStep was large enough and was in true direction, Interpolatiom may be tried
+			let t1 = 0,
+				t2 = 0
+			const cb = c - b
+			if (a === c) {
+				// If we have only two distinct points linear interpolation can only be applied
+				t1 = fb / fa
+				p = cb * t1
+				q = 1.0 - t1
+			} else {
+				// Quadric inverse interpolation
+				;((q = fa / fc), (t1 = fb / fc), (t2 = fb / fa))
+				p = t2 * (cb * q * (q - t1) - (b - a) * (t1 - 1))
+				q = (q - 1) * (t1 - 1) * (t2 - 1)
+			}
+
+			if (p > 0) {
+				q = -q // p was calculated with the opposite sign; make p positive
+			} else {
+				p = -p // and assign possible minus to q
+			}
+
+			if (
+				p < 0.75 * cb * q - Math.abs(actualTolerance * q) / 2 &&
+				p < Math.abs((prevStep * q) / 2)
+			) {
+				// If (b + p / q) falls in [b,c] and isn't too large it is accepted
+				newStep = p / q
+			}
+
+			// If p/q is too large then the bissection procedure can reduce [b,c] range to more extent
+		}
+
+		if (Math.abs(newStep) < actualTolerance) {
+			// Adjust the step to be not less than tolerance
+			newStep = newStep > 0 ? actualTolerance : -actualTolerance
+		}
+
+		;((a = b), (fa = fb)) // Save the previous approx.
+		;((b += newStep), (fb = func(b))) // Do step to a new approxim.
+
+		if ((fb > 0 && fc > 0) || (fb < 0 && fc < 0)) {
+			;((c = a), (fc = fa)) // Adjust c for it to have a sign opposite to that of b
+		}
+		if (Math.abs(fb) < errorTol) {
+			return b
+		}
+		if (Math.abs(fb) < acceptableErrorTol) {
+			fallback = b
+		}
+	}
+	return fallback
+}
+
+/**
+ * Returns the root-finding solution for a rule, given a list of candidate,
+ * and some options. The evaluation function will look at the available
+ * value of these candidates, and use the first one that is defined as its
+ * "goal" for the inversion.
+ *
+ * @param {RuleName} ruleToInverse
+ * @param {[RuleName, Function][]} candidates
+ * @param {number} min
+ * @param {number} max
+ * @param {number} errorTolerance
+ *
+ * @param {() => Value} target
+ * @param {[RuleName, Function][]} replacements
+ * @param {Context} initCtx
+ * @param {RuleName[]} params
+ * @returns {Value}
+ *
+ * @throws {RuntimeError} no canditate has a value to resolve the inversion
+ */
+function $root_finding(
+	ruleToInverse,
+	candidates,
+	min,
+	max,
+	errorTolerance,
+	initCtx,
+	params,
+) {
+	const copyCtx = (ctx) => {
+		return JSON.parse(JSON.stringify(ctx))
+	}
+	const res = candidates.find((candidate) => {
+		const ctx = copyCtx(initCtx)
+		if ($get(candidate[0], ctx, params) === NotDefined) {
+			return false
+		}
+		delete ctx._global[candidate[0]]
+		ctx[ruleToInverse] = 1
+		if ($ref(candidate[0], candidate[1], ctx, params) === NotDefined) {
+			return false
+		}
+		return true
+	})
+	if (res === undefined) {
+		const refs = candidates.map((candidate) => candidate[0])
+		throw new RuntimeError(
+			`No available candidate with value for root-finding, expecting either ${refs.join(', ')}`,
+		)
+	}
+	let ref, fn
+	;[ref, fn] = res
+
+	const goal = $get(ref, initCtx, params)
+	let numberOfIteration = 0
+
+	const ctx = copyCtx(initCtx)
+	delete ctx._global[ref]
+
+	let lastEvaluation
+	const evaluateWithValue = (n) => {
+		numberOfIteration++
+		ctx[ruleToInverse] = n
+		delete ctx[ref]
+		lastEvaluation = $ref(ref, fn, ctx, params)
+
+		return lastEvaluation
+	}
+
+	let value = NotDefined
+
+	// We do some blind attempts here to avoid using the default minimum and
+	// maximum of +/- 10^8 that are required by the `uniroot` function. For the
+	// first attempt we use the goal value as a very rough first approximation.
+	// For the second attempt we do a proportionality coefficient with the result
+	// from the first try and the goal value. The two attempts are then used in
+	// the following way:
+	// - if both results are `undefined` we assume that the inversion is impossible
+	//   because of missing variables
+	// - otherwise, we calculate the missing variables of the node as the union of
+	//   the missings variables of our two attempts
+	// - we cache the result of our two attempts so that `uniroot` doesn't
+	//   recompute them
+	const x1 = goal
+	const y1 = evaluateWithValue(x1)
+	const coeff = y1 > goal ? 0.9 : 1.2 // here
+	const x2 = y1 !== NotDefined ? (x1 * goal * coeff) / y1 : 2000
+	const y2 = evaluateWithValue(x2)
+
+	const maxIterations = ctx._options.inversionMaxIterations ?? 10
+
+	if (y1 !== NotDefined || y2 !== NotDefined) {
+		// The `uniroot` function parameter. It will be called with its `min` and
+		// `max` arguments, so we can use our cached nodes if the function is called
+		// with the already computed x1 or x2.
+		const test = (x) => {
+			const y =
+				x === x1 ? y1
+				: x === x2 ? y2
+				: evaluateWithValue(x)
+			return y - goal
+		}
+
+		const nearestBelowGoal =
+			y2 !== NotDefined && y2 < goal && (y2 > y1 || y1 > goal) ? x2
+			: y1 !== NotDefined && y1 < goal && (y1 > y2 || y2 > goal) ? x1
+			: min
+		const nearestAboveGoal =
+			y2 !== NotDefined && y2 > goal && (y2 < y1 || y1 < goal) ? x2
+			: y1 !== NotDefined && y1 > goal && (y1 < y2 || y2 < goal) ? x1
+			: max
+
+		value = uniroot(
+			test,
+			nearestBelowGoal,
+			nearestAboveGoal,
+			errorTolerance,
+			maxIterations,
+			1,
+		)
+
+		if (value == NotDefined || value < min || value > max) {
+			throw new RuntimeError(`Root-finding failure`)
+		}
+	}
+
+	return value
+}
+
 export const p = {
 	NotDefined,
 	NotApplicable,

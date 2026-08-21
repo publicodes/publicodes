@@ -76,5 +76,7 @@ let from_rule_def (rule_def : Shared_ast.resolved_rule_def) : t list =
         List.concat_map values ~f:(get_contexts []) @ acc
     | Expr _ | Not_defined ->
         acc
+    | Root_finding _ ->
+        acc
   in
   get_contexts [] rule_def.value

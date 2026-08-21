@@ -90,6 +90,8 @@ and transform_value_mechanism (value : Shared_ast.resolved_value_mechanism) :
             Some value
       in
       Variations (variations, value)
+  | Root_finding {with_; tolerance; min; max} ->
+      Root_finding {with_; tolerance; min; max}
 
 and transform_chainable_mechanism
     (chainable : Shared_ast.resolved_chainable_mechanism) :

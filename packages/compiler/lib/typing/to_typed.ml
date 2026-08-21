@@ -153,6 +153,8 @@ and to_value_mechanism (value : Ast.wip_value_mechanism) :
             Some value
       in
       Shared_ast.Variations (variations, value)
+  | Root_finding {with_; tolerance; min; max} ->
+      return @@ Shared_ast.Root_finding {with_; tolerance; min; max}
 
 and to_chainable_mechanism (chainable : Ast.wip_chainable_mechanism) :
     Shared_ast.typed_chainable_mechanism Output.t =
