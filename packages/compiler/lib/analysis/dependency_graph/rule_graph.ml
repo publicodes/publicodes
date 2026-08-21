@@ -193,6 +193,8 @@ and find_references_in_value (only_in_chainable : bool)
         match else_opt with Some else_ -> find_references else_ | None -> []
       in
       variation_refs @ else_refs
+  | Root_finding _ ->
+      []
 
 let find_replacements_references replacement_graph ~reference ~current_rule =
   let ref_name, ref_context_stack = Mark.remove reference in

@@ -19,8 +19,11 @@ let get_scalar ~pos (value : yaml) =
 
 let parse_array ~pos
     ~(parse :
-       ?error_if_undefined:bool -> pos:Pos.t -> yaml -> Ast.value Output.t )
-    (yaml : yaml) =
+          ?error_if_undefined:bool
+       -> ?is_root:bool
+       -> pos:Pos.t
+       -> yaml
+       -> Ast.value Output.t ) (yaml : yaml) =
   match yaml with
   | `A seq ->
       let* parsed_nodes =
@@ -110,3 +113,13 @@ let parse_one_or_many ~f yaml =
   | _ ->
       let+ value = f yaml in
       [value]
+
+let get_float ~pos value =
+  match Float.of_string_opt value with
+  | Some value ->
+      Output.return value
+  | None ->
+      let code, message = Err.invalid_value in
+      Output.fatal_error ~pos ~kind:`Syntax ~code
+        ~hints:["valeure flotante invalide"]
+        message
