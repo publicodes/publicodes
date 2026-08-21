@@ -16,6 +16,14 @@ let extract_parameters rule_name ~graph ~ast : Rule_name.t * Rule_name.t list =
         is_parameter dep_rule_name ~ast )
     |> List.map ~f:fst
   in
+  let parameter_rules =
+    let rule_def = Shared_ast.find_exn rule_name ast in
+    match Shared_ast.get_extra_parameters rule_def with
+    | None ->
+        parameter_rules
+    | Some parameters ->
+        parameters @ parameter_rules
+  in
   (rule_name, List.stable_dedup parameter_rules ~compare:Rule_name.compare)
 
 let add_self_dependencies_for_parameters ~(graph : Dependency_graph.t)

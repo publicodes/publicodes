@@ -347,9 +347,7 @@ let check_enumerate ~pos typ1 typ2 : Ast.typ Output.t =
   | _, _ ->
       error_typ_mismatch typ1 typ2
 
-let rec check_expression (expr : Ast.typing_expr) ~ctx =
-  let expr, mark = expr in
-  let pos = mark.pos in
+let rec get_ref_typ ~pos ~ctx ref =
   let get_checked_rule_def ref =
     let rule_def, status = Hashtbl.find_exn ctx.ast ref in
     let* _ =
@@ -363,6 +361,40 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
     in
     Output.return rule_def
   in
+  let* value =
+    match Hashtbl.find ctx.rules_type ref with
+    | Some value ->
+        Output.return value
+    | None ->
+        let* rule_def = get_checked_rule_def ref in
+        Output.return rule_def.value
+  in
+  let value_mark = Mark.get value in
+  let replacements =
+    match ctx.current_rule with
+    | Some from ->
+        Replacement_graph.find_transitive_replacements ctx.replacements ~from
+          ~rule:ref
+        |> List.map ~f:Mark.remove
+    | None ->
+        []
+  in
+  let* typ =
+    Output.fold_no_interrupt replacements ~init:value_mark.typ
+      ~f:(fun ptyp ref ->
+        (* TODO: we should have a dedicated type error for replacements. *)
+        let* rule_def = get_checked_rule_def ref in
+        let mark = Mark.get rule_def.value in
+        (* We need to verify that the type of the replacement is
+                 compatible with the type of the original value (i.e. at least
+                 as precise). *)
+        check_enumerate ~pos ptyp mark.typ )
+  in
+  Output.return typ
+
+and check_expression (expr : Ast.typing_expr) ~ctx =
+  let expr, mark = expr in
+  let pos = mark.pos in
   let check_expression_is_any_number expr ~pos =
     let typ = Ast.mk_any_number ~pos in
     let* _ = check_expression expr ~ctx:{ctx with parent_typ= Some typ} in
@@ -373,38 +405,12 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
       check_union_with_parent_typ ~ctx mark.typ
   | Ref ref ->
       let* _ =
-        let* value =
-          match Hashtbl.find ctx.rules_type ref with
-          | Some value ->
-              Output.return value
-          | None ->
-              let* rule_def = get_checked_rule_def ref in
-              Output.return rule_def.value
-        in
-        let value_mark = Mark.get value in
-        let replacements =
-          match ctx.current_rule with
-          | Some from ->
-              Replacement_graph.find_transitive_replacements ctx.replacements
-                ~from ~rule:ref
-              |> List.map ~f:Mark.remove
-          | None ->
-              []
-        in
-        let* typ =
-          Output.fold_no_interrupt replacements ~init:value_mark.typ
-            ~f:(fun ptyp ref ->
-              (* TODO: we should have a dedicated type error for replacements. *)
-              let* rule_def = get_checked_rule_def ref in
-              let mark = Mark.get rule_def.value in
-              (* We need to verify that the type of the replacement is
-                 compatible with the type of the original value (i.e. at least
-                 as precise). *)
-              check_enumerate ~pos ptyp mark.typ )
-        in
-        check_union_with_parent_typ ~ctx typ
+        let* typ = get_ref_typ ~pos ~ctx ref in
+        let* _ = check_union typ (Option.value_exn ctx.parent_typ) in
+        Output.return ()
       in
-      check_union_with_parent_typ ~ctx mark.typ
+      let* _ = check_union mark.typ (Option.value_exn ctx.parent_typ) in
+      Output.return ()
   | Binary_op (op, ((_, left_mark) as left), ((_, right_mark) as right)) -> (
       let Ast.{pos= left_pos; _} = left_mark in
       let Ast.{pos= right_pos; _} = right_mark in
@@ -560,6 +566,38 @@ and check_value_mechanism (value : Ast.typing_marked_value_mechanism) ~ctx =
             check_branch_and_enumerate else_ variations_typ
       in
       check_union variations_with_else_typ mark.typ
+  | Root_finding {with_; _} ->
+      let* with_ =
+        List.map with_ ~f:Mark.remove
+        |> List.map ~f:(get_ref_typ ~ctx ~pos)
+        |> Output.all_okay
+      in
+      (* check all number *)
+      let* _ =
+        match with_ with
+        | [] ->
+            Output.return ()
+        | hd :: rest ->
+            let* init =
+              let wip = Ast.mk_any_number ~pos in
+              let* _ = check_union wip hd in
+              Output.return wip
+            in
+            let* _ =
+              Output.fold ~init rest ~f:(fun wip value ->
+                  let* _ = check_union wip value in
+                  Output.return wip )
+            in
+            Output.return ()
+      in
+      (* we are TNumber *)
+      let wip = Ast.mk_number ~unit:None ~pos in
+      (* gather unit *)
+      let* _ =
+        List.map with_ ~f:(fun typ -> check_union wip typ) |> Output.all_okay
+      in
+      let* _ = check_union wip mark.typ in
+      Output.return ()
 
 and check_chainable_mechanism
     (chainable : Ast.typing_marked_chainable_mechanism) ~ctx =
