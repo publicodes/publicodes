@@ -64,17 +64,6 @@ let check_union (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   let t1, {Mark.pos= pos1} = m1 in
   let t2, {Mark.pos= pos2} = m2 in
   match (t1, t2) with
-  (* Merge Anys *)
-  | Ast.Any _, Ast.Any _ ->
-      (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
-      return ()
-  | Ast.Any _, _ ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return ()
-  | _, Ast.Any _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return ()
   (* Check Any Number *)
   | Ast.Any_number unit1, Ast.Any_number unit2
   | Ast.Literal (LNumber (_, unit1), _), Ast.Any_number unit2
@@ -88,81 +77,6 @@ let check_union (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   | Ast.Any_number unit1, TEnum ((LNumber (_, unit2), _) :: _) ->
       let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
       let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return ()
-  (* Check Any Bool *)
-  | Ast.Any_bool _, Ast.Any_bool _ ->
-      (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
-      return ()
-  | Ast.Literal (LBool _, _), Ast.Any_bool _
-  | TBool, Ast.Any_bool _
-  | TEnum ((LBool _, _) :: _), Ast.Any_bool _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return ()
-  | Ast.Any_bool _, Ast.Literal (LBool _, _)
-  | Ast.Any_bool _, TBool
-  | Ast.Any_bool _, TEnum ((LBool _, _) :: _) ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return ()
-  (* Check Any String *)
-  | Ast.Any_string _, Ast.Any_string _ ->
-      (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
-      return ()
-  | Ast.Literal (LString _, _), Ast.Any_string _
-  | TString, Ast.Any_string _
-  | TEnum ((LString _, _) :: _), Ast.Any_string _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return ()
-  | Ast.Any_string _, Ast.Literal (LString _, _)
-  | Ast.Any_string _, TString
-  | Ast.Any_string _, TEnum ((LString _, _) :: _) ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return ()
-  (* Check Any Date *)
-  | Ast.Any_date _, Ast.Any_date _ ->
-      (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
-      return ()
-  | Ast.Literal (LDate _, _), Ast.Any_date _
-  | TDate, Ast.Any_date _
-  | TEnum ((LDate _, _) :: _), Ast.Any_date _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return ()
-  | Ast.Any_date _, Ast.Literal (LDate _, _)
-  | Ast.Any_date _, TDate
-  | Ast.Any_date _, TEnum ((LDate _, _) :: _) ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return ()
-  (* Check Strings *)
-  | Ast.Literal (LString _, _), Ast.Literal (LString _, _)
-  | Ast.TString, Ast.TString
-  | Ast.TString, Ast.Literal (LString _, _)
-  | Ast.Literal (LString _, _), Ast.TString
-  | Ast.TEnum ((LString _, _) :: _), Ast.TString
-  | Ast.TEnum ((LString _, _) :: _), Ast.Literal (LString _, _)
-  | Ast.TString, Ast.TEnum ((LString _, _) :: _)
-  | Ast.Literal (LString _, _), Ast.TEnum ((LString _, _) :: _) ->
-      return ()
-  (* Check Bools *)
-  | Ast.Literal (LBool _, _), Ast.Literal (LBool _, _)
-  | Ast.TBool, Ast.TBool
-  | Ast.TBool, Ast.Literal (LBool _, _)
-  | Ast.Literal (LBool _, _), Ast.TBool
-  | TEnum ((LBool _, _) :: _), Ast.Literal (LBool _, _)
-  | TEnum ((LBool _, _) :: _), Ast.TBool
-  | Ast.Literal (LBool _, _), TEnum ((LBool _, _) :: _)
-  | Ast.TBool, TEnum ((LBool _, _) :: _) ->
-      return ()
-  (* Check Date *)
-  | Ast.Literal (LDate _, _), Ast.Literal (LDate _, _)
-  | Ast.TDate, Ast.TDate
-  | Ast.TDate, Ast.Literal (LDate _, _)
-  | Ast.Literal (LDate _, _), Ast.TDate
-  | Ast.TEnum ((LDate _, _) :: _), Ast.TDate
-  | Ast.TEnum ((LDate _, _) :: _), Ast.Literal (LDate _, _)
-  | Ast.TDate, Ast.TEnum ((LDate _, _) :: _)
-  | Ast.Literal (LDate _, _), Ast.TEnum ((LDate _, _) :: _) ->
       return ()
   (* Check Number *)
   | Ast.Literal (LNumber (_, u1), _), Ast.Literal (LNumber (_, u2), _)
@@ -192,6 +106,38 @@ let check_union (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
       in
       if List.is_empty missing then return ()
       else error_missing_enums missing u1 u2
+  | ty1, ty2 when Ast.is_any_equal ty1 ty2 ->
+      let _ = UnionFind.union u1 u2 in
+      return ()
+  | Ast.Any _, _ ->
+      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      return ()
+  | _, Ast.Any _ ->
+      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      return ()
+  (* Check Any String *)
+  | ty, Ast.Any_string _ when Ast.is_specialized_string ty ->
+      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      return ()
+  | Ast.Any_string _, ty when Ast.is_specialized_string ty ->
+      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      return ()
+  (* Check Any Bool *)
+  | ty, Ast.Any_bool _ when Ast.is_specialized_bool ty ->
+      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      return ()
+  | Ast.Any_bool _, ty when Ast.is_specialized_bool ty ->
+      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      return ()
+  (* Check Any Date *)
+  | ty, Ast.Any_date _ when Ast.is_specialized_date ty ->
+      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+      return ()
+  | Ast.Any_date _, ty when Ast.is_specialized_date ty ->
+      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      return ()
+  | type1, type2 when Ast.equal_type type1 type2 ->
+      return ()
   | _, _ ->
       error_typ_mismatch u1 u2
 
@@ -201,28 +147,18 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   let t2, {Mark.pos= pos2} = UnionFind.get u2 in
   match (t1, t2) with
   (* Merge Anys *)
-  | Ast.Any _, Ast.Any _
-  | Ast.Any_bool _, Ast.Any_bool _
-  | Ast.Any_string _, Ast.Any_string _
-  | Ast.Any_date _, Ast.Any_date _ ->
-      (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
-      return ()
   | Ast.Any_number unit1, Ast.Any_number unit2 ->
       (* Merge them *)
       let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
       let _ = UnionFind.union u1 u2 in
       return ()
-  | Ast.Any _, Ast.Any_number _
-  | Ast.Any _, Ast.Any_bool _
-  | Ast.Any _, Ast.Any_string _
-  | Ast.Any _, Ast.Any_date _ ->
+  | t1, t2 when Ast.is_any_equal t1 t2 ->
+      let _ = UnionFind.union u1 u2 in
+      return ()
+  | Ast.Any _, ty when Ast.is_any ty ->
       let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
       return ()
-  | Ast.Any_number _, Ast.Any _
-  | Ast.Any_bool _, Ast.Any _
-  | Ast.Any_string _, Ast.Any _
-  | Ast.Any_date _, Ast.Any _ ->
+  | ty, Ast.Any _ when Ast.is_any ty ->
       let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
       return ()
   (* Check Numbers *)
@@ -255,63 +191,40 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
       (* Gather units, leave any_number alone *)
       let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
       return ()
+  | ty1, ty2 when Ast.equal_type ty1 ty2 ->
+      return ()
   (* Check Bools *)
-  | Ast.Any _, Ast.TBool
-  | Ast.Any _, Ast.Literal (LBool _, _)
-  | Ast.Any _, Ast.TEnum ((LBool _, _) :: _) ->
+  | Ast.Any _, ty when Ast.is_specialized_bool ty ->
       let typ = Ast.mk_any_bool ~pos:pos1 in
       let _ = UnionFind.merge (fun a _ -> a) typ u1 in
       return ()
-  | Ast.TBool, Ast.Any _
-  | Ast.Literal (LBool _, _), Ast.Any _
-  | Ast.TEnum ((LBool _, _) :: _), Ast.Any _ ->
+  | ty, Ast.Any _ when Ast.is_specialized_bool ty ->
       let typ = Ast.mk_any_bool ~pos:pos2 in
       let _ = UnionFind.merge (fun a _ -> a) typ u2 in
       return ()
-  | Ast.TBool, Ast.TBool
-  | Ast.Any_bool _, Ast.TBool
-  | Ast.Any_bool _, Ast.Literal (LBool _, _)
-  | Ast.Any_bool _, Ast.TEnum ((LBool _, _) :: _)
-  | Ast.TBool, Ast.Any_bool _
-  | Ast.Literal (LBool _, _), Ast.Any_bool _
-  | Ast.TEnum ((LBool _, _) :: _), Ast.Any_bool _
-  | Ast.TBool, Ast.Literal (LBool _, _)
-  | Ast.Literal (LBool _, _), Ast.TBool
-  | Ast.Literal (LBool _, _), Ast.TEnum ((LBool _, _) :: _)
-  | Ast.TBool, Ast.TEnum ((LBool _, _) :: _)
-  | Ast.TEnum ((LBool _, _) :: _), Ast.TBool
-  | Ast.TEnum ((LBool _, _) :: _), Ast.Literal (LBool _, _)
-  | Ast.Literal (LBool _, _), Ast.Literal (LBool _, _) ->
-      (* Ok *)
+  | ty1, ty2 when Ast.is_bool ty1 && Ast.is_bool ty2 ->
       return ()
   (* Check Strings *)
-  | Ast.Any _, Ast.TString
-  | Ast.Any _, Ast.Literal (LString _, _)
-  | Ast.Any _, Ast.TEnum ((LString _, _) :: _) ->
+  | Ast.Any _, ty when Ast.is_specialized_string ty ->
       let typ = Ast.mk_any_string ~pos:pos1 in
       let _ = UnionFind.merge (fun a _ -> a) typ u1 in
       return ()
-  | Ast.TString, Ast.Any _
-  | Ast.Literal (LString _, _), Ast.Any _
-  | Ast.TEnum ((LString _, _) :: _), Ast.Any _ ->
+  | ty, Ast.Any _ when Ast.is_specialized_string ty ->
       let typ = Ast.mk_any_string ~pos:pos2 in
       let _ = UnionFind.merge (fun a _ -> a) typ u2 in
       return ()
-  | Ast.TString, Ast.TString
-  | Ast.Any_string _, Ast.TString
-  | Ast.Any_string _, Ast.Literal (LString _, _)
-  | Ast.Any_string _, Ast.TEnum ((LString _, _) :: _)
-  | Ast.TString, Ast.Any_string _
-  | Ast.Literal (LString _, _), Ast.Any_string _
-  | Ast.TEnum ((LString _, _) :: _), Ast.Any_string _
-  | Ast.TString, Ast.Literal (LString _, _)
-  | Ast.TString, Ast.TEnum ((LString _, _) :: _)
-  | Ast.Literal (LString _, _), Ast.TEnum ((LString _, _) :: _)
-  | Ast.Literal (LString _, _), Ast.TString
-  | Ast.TEnum ((LString _, _) :: _), Ast.TString
-  | Ast.TEnum ((LString _, _) :: _), Ast.Literal (LString _, _)
-  | Ast.Literal (LString _, _), Ast.Literal (LString _, _) ->
-      (* Ok *)
+  | ty, ty2 when Ast.is_string ty && Ast.is_string ty2 ->
+      return ()
+  (* Check Dates *)
+  | Ast.Any _, ty when Ast.is_specialized_date ty ->
+      let typ = Ast.mk_any_date ~pos:pos1 in
+      let _ = UnionFind.merge (fun a _ -> a) typ u1 in
+      return ()
+  | ty, Ast.Any _ when Ast.is_specialized_date ty ->
+      let typ = Ast.mk_any_date ~pos:pos2 in
+      let _ = UnionFind.merge (fun a _ -> a) typ u2 in
+      return ()
+  | ty1, ty2 when Ast.is_date ty1 && Ast.is_date ty2 ->
       return ()
   (* Enumerate symbols *)
   | Ast.Any _, Ast.Literal ((LSymbol _, _) as literal) ->
@@ -341,35 +254,6 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   (* Check symbols *)
   | Ast.Literal (LSymbol s1, _), Ast.Literal (LSymbol s2, _) ->
       if String.equal s1 s2 then return () else error_typ_mismatch u1 u2
-  (* Check Dates *)
-  | Ast.Any _, Ast.TDate
-  | Ast.Any _, Ast.Literal (LDate _, _)
-  | Ast.Any _, Ast.TEnum ((LDate _, _) :: _) ->
-      let typ = Ast.mk_any_date ~pos:pos1 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u1 in
-      return ()
-  | Ast.TDate, Ast.Any _
-  | Ast.Literal (LDate _, _), Ast.Any _
-  | Ast.TEnum ((LDate _, _) :: _), Ast.Any _ ->
-      let typ = Ast.mk_any_date ~pos:pos2 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u2 in
-      return ()
-  | Ast.TDate, Ast.TDate
-  | Ast.Any_date _, Ast.TDate
-  | Ast.Any_date _, Ast.Literal (LDate _, _)
-  | Ast.Any_date _, Ast.TEnum ((LDate _, _) :: _)
-  | Ast.TDate, Ast.Any_date _
-  | Ast.Literal (LDate _, _), Ast.Any_date _
-  | Ast.TEnum ((LDate _, _) :: _), Ast.Any_date _
-  | Ast.TDate, Ast.Literal (LDate _, _)
-  | Ast.Literal (LDate _, _), Ast.TDate
-  | Ast.Literal (LDate _, _), Ast.TEnum ((LDate _, _) :: _)
-  | Ast.TDate, Ast.TEnum ((LDate _, _) :: _)
-  | Ast.TEnum ((LDate _, _) :: _), Ast.TDate
-  | Ast.TEnum ((LDate _, _) :: _), Ast.Literal (LDate _, _)
-  | Ast.Literal (LDate _, _), Ast.Literal (LDate _, _) ->
-      (* Ok *)
-      return ()
   (* Check Enums (second fit in first) *)
   | TEnum (_ as lits1), TEnum (_ as lits2) ->
       let* _ =
@@ -390,26 +274,23 @@ let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
   | _, _ ->
       error_typ_mismatch u1 u2
 
+let get_number_unit_opt = function
+  | Ast.Literal (LNumber (_, unit), _) ->
+      Some unit
+  | Ast.TNumber unit ->
+      Some unit
+  | Ast.Any_number unit ->
+      Some unit
+  | TEnum ((LNumber (_, unit), _) :: _) ->
+      Some unit
+  | _ ->
+      None
+
 let check_multiply ~pos u1 u2 : Ast.typ Output.t =
   let t1, _ = UnionFind.get u1 in
   let t2, _ = UnionFind.get u2 in
-  match (t1, t2) with
-  (* Check Number *)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.Literal (LNumber (_, unit2), _)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.TNumber unit2
-  | Ast.TNumber unit1, Ast.Literal (LNumber (_, unit2), _)
-  | Ast.TNumber unit1, Ast.TNumber unit2
-  | Ast.Any_number unit1, Ast.Any_number unit2
-  | Ast.Any_number unit1, Ast.Literal (LNumber (_, unit2), _)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.Any_number unit2
-  | Ast.Any_number unit1, Ast.TNumber unit2
-  | Ast.TNumber unit1, Ast.Any_number unit2
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.Literal (LNumber (_, unit2), _)
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.TNumber unit2
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.Any_number unit2
-  | Ast.Literal (LNumber (_, unit1), _), TEnum ((LNumber (_, unit2), _) :: _)
-  | Ast.TNumber unit1, TEnum ((LNumber (_, unit2), _) :: _)
-  | Ast.Any_number unit1, TEnum ((LNumber (_, unit2), _) :: _) ->
+  match (get_number_unit_opt t1, get_number_unit_opt t2) with
+  | Some unit1, Some unit2 ->
       let t = Number_unit.multiply unit1 unit2 in
       let m = Ast.mk ~pos (TNumber t) in
       return m
@@ -422,23 +303,8 @@ let check_multiply ~pos u1 u2 : Ast.typ Output.t =
 let check_divide ~pos u1 u2 : Ast.typ Output.t =
   let t1, _ = UnionFind.get u1 in
   let t2, _ = UnionFind.get u2 in
-  match (t1, t2) with
-  (* Check Number *)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.Literal (LNumber (_, unit2), _)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.TNumber unit2
-  | Ast.TNumber unit1, Ast.Literal (LNumber (_, unit2), _)
-  | Ast.TNumber unit1, Ast.TNumber unit2
-  | Ast.Any_number unit1, Ast.Any_number unit2
-  | Ast.Any_number unit1, Ast.Literal (LNumber (_, unit2), _)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.Any_number unit2
-  | Ast.Any_number unit1, Ast.TNumber unit2
-  | Ast.TNumber unit1, Ast.Any_number unit2
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.Literal (LNumber (_, unit2), _)
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.TNumber unit2
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.Any_number unit2
-  | Ast.Literal (LNumber (_, unit1), _), TEnum ((LNumber (_, unit2), _) :: _)
-  | Ast.TNumber unit1, TEnum ((LNumber (_, unit2), _) :: _)
-  | Ast.Any_number unit1, TEnum ((LNumber (_, unit2), _) :: _) ->
+  match (get_number_unit_opt t1, get_number_unit_opt t2) with
+  | Some unit1, Some unit2 ->
       let t = Number_unit.divide unit1 unit2 in
       let m = Ast.mk ~pos (TNumber t) in
       return m
@@ -678,8 +544,8 @@ let check_enumerate ~pos u1 u2 : Ast.typ Output.t =
   | _, _ ->
       error_typ_mismatch u1 u2
 
-let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
-    ~(ptyp : Ast.typ) (expr : Ast.wip_expr) : unit Output.t =
+let rec check_expression ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
+    ~(ptyp : Ast.typ) (expr : Ast.typing_expr) : unit Output.t =
   let check_expression = check_expression ~replaces ~current ~ast ~contexts in
   let expr, mark = expr in
   let pos = mark.pos in
@@ -697,7 +563,7 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
             | None ->
                 let rule_def, status = Hashtbl.find_exn ast ref in
                 let* _ =
-                  match !status with
+                  match status with
                   | Todo ->
                       check_rule_def ~replaces ~ast ~contexts rule_def
                   | Error ->
@@ -718,7 +584,7 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
             Output.fold replacements ~init:mark.typ ~f:(fun ptyp ref ->
                 let rule_def, status = Hashtbl.find_exn ast ref in
                 let* _ =
-                  match !status with
+                  match status with
                   | Todo ->
                       check_rule_def ~replaces ~ast ~contexts rule_def
                   | Error ->
@@ -846,8 +712,8 @@ let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
   in
   return ()
 
-and check_value_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
-    (value : Ast.wip_marked_value_mechanism) : unit Output.t =
+and check_value_mechanism ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
+    (value : Ast.typing_marked_value_mechanism) : unit Output.t =
   let check_value = check_value ~replaces ~current ~ast ~contexts in
   let value, mark = value in
   let pos = mark.pos in
@@ -952,9 +818,9 @@ and check_value_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
   in
   return ()
 
-and check_chainable_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
-    ~(ptyp : Ast.typ) (chainable : Ast.wip_marked_chainable_mechanism) :
-    unit Output.t =
+and check_chainable_mechanism ~replaces ~current ~(ast : Ast.typing_tree)
+    ~contexts ~(ptyp : Ast.typ)
+    (chainable : Ast.typing_marked_chainable_mechanism) : unit Output.t =
   let check_value = check_value ~replaces ~current ~ast ~contexts in
   let chainable, mark = chainable in
   let pos = mark.pos in
@@ -998,23 +864,17 @@ and check_chainable_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
         let typ, {Mark.pos} = UnionFind.get value_mark.typ in
         let wip = Ast.mk_number_no_unit ~pos in
         let* _ =
-          match typ with
-          | Any_bool _
-          | Ast.Literal (LBool _, _)
-          | TEnum ((LBool _, _) :: _)
-          | TBool ->
-              return ()
-          | Ast.Any_number unit
-          | Ast.Literal (LNumber (_, unit), _)
-          | TEnum ((LNumber (_, unit), _) :: _)
-          | TNumber unit ->
-              let concrete = Number_unit.to_concrete unit in
-              if Units.equal concrete (Units.parse_unit "décimales") then
-                return ()
-              else check_union value_mark.typ wip
-          | _ ->
-              let hints = ["arrondi doit être un nombre ou un booléen"] in
-              error_typ_invalid ~hints value_mark.typ
+          if Ast.is_bool typ then return ()
+          else
+            match get_number_unit_opt typ with
+            | Some unit ->
+                let concrete = Number_unit.to_concrete unit in
+                if Units.equal concrete (Units.parse_unit "décimales") then
+                  return ()
+                else check_union value_mark.typ wip
+            | None ->
+                let hints = ["arrondi doit être un nombre ou un booléen"] in
+                error_typ_invalid ~hints value_mark.typ
         in
         let* _ = check_union wip mark.typ in
         let* _ = check_union mark.typ ptyp in
@@ -1024,36 +884,37 @@ and check_chainable_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
 
 (* Also fill contexts *)
 and check_contexts ~replaces ~current
-    ~(contexts : Ast.wip_value Rule_name.Hashtbl.t) ~(ast : Ast.wip_tree)
-    (chainables : Ast.wip_marked_chainable_mechanism list) : unit Output.t =
+    ~(contexts : Ast.typing_value Rule_name.Hashtbl.t) ~(ast : Ast.typing_tree)
+    (chainables : Ast.typing_marked_chainable_mechanism list) : unit Output.t =
+  let check_context_entry ref_name value =
+    let* cont_typ =
+      let rule_def, status = Hashtbl.find_exn ast ref_name in
+      let* _ =
+        if Ast.is_todo status then
+          check_rule_def ~replaces ~ast ~contexts rule_def
+        else return ()
+      in
+      let {Shared_ast.value; _} = rule_def in
+      let _, cont_mark = value in
+      return cont_mark.typ
+    in
+    let* val_typ =
+      let* _ = check_value ~replaces ~current ~ast ~contexts value in
+      let _, value_mark = value in
+      return value_mark.typ
+    in
+    let* _ = check_generalize cont_typ val_typ in
+    Hashtbl.set contexts ~key:ref_name ~data:value ;
+    return ()
+  in
   let* _ =
     List.map chainables ~f:(fun (chainable, _) ->
         match chainable with
         | Context values ->
             let* _ =
-              List.map values ~f:(fun ((ref, _), value) ->
-                  let* cont_typ =
-                    let rule_def, status = Hashtbl.find_exn ast ref in
-                    let* _ =
-                      if Ast.is_todo !status then
-                        check_rule_def ~replaces ~ast ~contexts rule_def
-                      else return ()
-                    in
-                    let {Shared_ast.value; _} = rule_def in
-                    let _, cont_mark = value in
-                    return cont_mark.typ
-                  in
-                  let* val_typ =
-                    let* _ =
-                      check_value ~replaces ~current ~ast ~contexts value
-                    in
-                    let _, value_mark = value in
-                    return value_mark.typ
-                  in
-                  let* _ = check_generalize cont_typ val_typ in
-                  Hashtbl.set contexts ~key:ref ~data:value ;
-                  return () )
-              |> all_okay
+              all_okay
+                (List.map values ~f:(fun ((ref, _), value) ->
+                     check_context_entry ref value ) )
             in
             return ()
         | _ ->
@@ -1062,8 +923,8 @@ and check_contexts ~replaces ~current
   in
   return ()
 
-and check_value ~replaces ~current ~(ast : Ast.wip_tree) ~contexts ?ptyp
-    (value : Ast.wip_value) : unit Output.t =
+and check_value ~replaces ~current ~(ast : Ast.typing_tree) ~contexts ?ptyp
+    (value : Ast.typing_value) : unit Output.t =
   let {Shared_ast.value; chainable_mechanisms}, root = value in
   let* _ =
     check_contexts ~replaces ~current ~contexts ~ast chainable_mechanisms
@@ -1073,7 +934,7 @@ and check_value ~replaces ~current ~(ast : Ast.wip_tree) ~contexts ?ptyp
   let* typ =
     List.sort chainable_mechanisms ~compare:(fun (a, _) (b, _) ->
         Shared_ast.compare_chainable_mechanism Shared.Rule_name.compare
-          Ast.compare_wip_mark a b )
+          Ast.compare_typing_mark a b )
     |> Output.fold ~init:mark.typ ~f:(fun ptyp chainable ->
         let* _ =
           check_chainable_mechanism ~replaces ~current ~ast ~contexts ~ptyp
@@ -1093,39 +954,41 @@ and check_value ~replaces ~current ~(ast : Ast.wip_tree) ~contexts ?ptyp
   in
   return ()
 
-and check_rule_def ~replaces ~(ast : Ast.wip_tree) ?contexts
-    (rule_def : Ast.wip_rule_def) : unit Output.t =
-  let _, status = Hashtbl.find_exn ast (Mark.remove rule_def.name) in
-  if not (Ast.is_todo !status) then failwith "already done" ;
-  status := Ast.Doing ;
-  let contexts =
-    match contexts with
-    | None ->
-        Hashtbl.create (module Shared.Rule_name) ~growth_allowed:true
-    | Some contexts ->
-        contexts
-  in
-  let {Shared_ast.value; name= current, _; _} = rule_def in
-  let res =
-    let* _ = check_value ~replaces ~current ~ast ~contexts value in
-    let _, mark = value in
-    (* TODO: better pos to notice this? *)
-    match List.hd rule_def.make_not_applicable with
-    | None ->
-        return ()
-    | Some hd ->
-        let typ = Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in
-        check_union typ mark.typ
-  in
-  match res with
-  | None, logs ->
-      status := Ast.Error ;
-      break ~logs ()
-  | Some _, logs ->
-      status := Ast.Done ;
-      break ~logs ()
+and check_rule_def ~replaces ~(ast : Ast.typing_tree) ?contexts
+    (rule_def : Ast.typing_rule_def) : unit Output.t =
+  let rule_name = Mark.remove rule_def.name in
+  let _, typing_state = Hashtbl.find_exn ast rule_name in
+  if not (Ast.is_todo typing_state) then return ()
+  else (
+    Ast.set_typing_state ast rule_def Ast.Doing ;
+    let contexts =
+      match contexts with
+      | None ->
+          Hashtbl.create (module Shared.Rule_name) ~growth_allowed:true
+      | Some contexts ->
+          contexts
+    in
+    let {Shared_ast.value; name= current, _; _} = rule_def in
+    let res =
+      let* _ = check_value ~replaces ~current ~ast ~contexts value in
+      let _, mark = value in
+      (* TODO: better pos to notice this? *)
+      match List.hd rule_def.make_not_applicable with
+      | None ->
+          return ()
+      | Some hd ->
+          let typ = Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in
+          check_union typ mark.typ
+    in
+    match res with
+    | None, logs ->
+        Ast.set_typing_state ast rule_def Ast.Error ;
+        break ~logs ()
+    | Some _, logs ->
+        Ast.set_typing_state ast rule_def Ast.Done ;
+        break ~logs () )
 
-let type_check ~replaces (ast : Ast.wip_tree) : unit Output.t =
+let type_check ~replaces (ast : Ast.typing_tree) : unit Output.t =
   let* _ =
     Hashtbl.to_alist ast |> List.map ~f:snd
     |> List.sort
@@ -1134,7 +997,7 @@ let type_check ~replaces (ast : Ast.wip_tree) : unit Output.t =
              ({Shared_ast.name= _, {Mark.pos= p2}; _}, _)
            -> Pos.compare p1 p2 )
     |> List.map ~f:(fun (rule_def, status) ->
-        if Ast.is_todo !status then check_rule_def ~replaces ~ast rule_def
+        if Ast.is_todo status then check_rule_def ~replaces ~ast rule_def
         else return () )
     |> all_okay
   in

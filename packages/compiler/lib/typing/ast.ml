@@ -86,29 +86,31 @@ let to_string ~sep : t -> string = function
 
 type typ = t Mark.pos UnionFind.elem
 
-type wip_mark = {pos: Pos.t; typ: typ}
+type typing_mark = {pos: Pos.t; typ: typ}
 
-type wip_value = (Rule_name.t, wip_mark) Shared_ast.value
+type typing_value = (Rule_name.t, typing_mark) Shared_ast.value
 
-type wip_rule_def = (Rule_name.t, wip_mark) Shared_ast.rule_def
+type typing_rule_def = (Rule_name.t, typing_mark) Shared_ast.rule_def
 
-type wip_value_mechanism = (Rule_name.t, wip_mark) Shared_ast.value_mechanism
+type typing_value_mechanism =
+  (Rule_name.t, typing_mark) Shared_ast.value_mechanism
 
-type wip_marked_value_mechanism = (wip_value_mechanism, wip_mark) Mark.ed
+type typing_marked_value_mechanism =
+  (typing_value_mechanism, typing_mark) Mark.ed
 
-type wip_expr = (Rule_name.t, wip_mark) Shared_ast.expr
+type typing_expr = (Rule_name.t, typing_mark) Shared_ast.expr
 
-type wip = (Rule_name.t, wip_mark) Shared_ast.t
+type typing = (Rule_name.t, typing_mark) Shared_ast.t
 
-type wip_chainable_mechanism =
-  (Rule_name.t, wip_mark) Shared_ast.chainable_mechanism
+type typing_chainable_mechanism =
+  (Rule_name.t, typing_mark) Shared_ast.chainable_mechanism
 
-type wip_marked_chainable_mechanism =
-  (wip_chainable_mechanism, wip_mark) Mark.ed
+type typing_marked_chainable_mechanism =
+  (typing_chainable_mechanism, typing_mark) Mark.ed
 
-type wip_state = Todo | Doing | Done | Error
+type typing_state = Todo | Doing | Done | Error
 
-type wip_tree = (wip_rule_def * wip_state ref) Rule_name.Hashtbl.t
+type typing_tree = (typing_rule_def * typing_state) Rule_name.Hashtbl.t
 
 (* Constructors *)
 
@@ -208,7 +210,7 @@ let mk_typ ~pos (typ : Typ.t) =
 
 (* Methods *)
 
-let compare_wip_mark _ _ = 0
+let compare_typing_mark _ _ = 0
 
 let equal_literal l1 l2 =
   match l1 with
@@ -224,3 +226,74 @@ let equal_literal l1 l2 =
     match l2 with LDate v2 -> Typ.equal_date v1 v2 | _ -> false )
 
 let is_todo = function Todo -> true | _ -> false
+
+let set_typing_state typing_tree (rule_def : typing_rule_def)
+    (status : typing_state) =
+  let rule_name = Mark.remove rule_def.name in
+  Hashtbl.set typing_tree ~key:rule_name ~data:(rule_def, status)
+
+let equal_type t1 t2 =
+  match (t1, t2) with
+  | Any _, Any _
+  | Any_number _, Any_number _
+  | Any_bool _, Any_bool _
+  | Any_string _, Any_string _
+  | Any_date _, Any_date _
+  | TString, TString
+  | TBool, TBool
+  | TDate, TDate ->
+      true
+  | Literal (l1, _), Literal (l2, _) ->
+      equal_literal l1 l2
+  | TNumber u1, TNumber u2 ->
+      Number_unit.equal u1 u2
+  | TEnum v1, TEnum v2 ->
+      List.length v1 = List.length v2
+      && List.for_all2_exn v1 v2 ~f:(fun (l1, _) (l2, _) ->
+          equal_literal l1 l2 )
+  | _ ->
+      false
+
+let is_any_equal t1 t2 =
+  match (t1, t2) with
+  | Any _, Any _
+  | Any_number _, Any_number _
+  | Any_bool _, Any_bool _
+  | Any_string _, Any_string _
+  | Any_date _, Any_date _ ->
+      true
+  | _ ->
+      false
+
+let is_any = function
+  | Any _ | Any_number _ | Any_bool _ | Any_string _ | Any_date _ ->
+      true
+  | _ ->
+      false
+
+let is_specialized_string = function
+  | Literal (LString _, _) | TEnum ((LString _, _) :: _) | TString ->
+      true
+  | _ ->
+      false
+
+let is_string ty =
+  match ty with Any_string _ -> true | _ -> is_specialized_string ty
+
+let is_specialized_bool = function
+  | Literal (LBool _, _) | TEnum ((LBool _, _) :: _) | TBool ->
+      true
+  | _ ->
+      false
+
+let is_bool ty =
+  match ty with Any_bool _ -> true | _ -> is_specialized_bool ty
+
+let is_specialized_date = function
+  | Literal (LDate _, _) | TEnum ((LDate _, _) :: _) | TDate ->
+      true
+  | _ ->
+      false
+
+let is_date ty =
+  match ty with Any_date _ -> true | _ -> is_specialized_date ty
