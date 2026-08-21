@@ -1,0 +1,9 @@
+a:
+  valeur: b + 10
+b:
+  inversion numérique:
+    avec:
+      - a
+    min: 0
+    max: 100000
+  plafond: a # real cycle

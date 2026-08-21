@@ -626,8 +626,6 @@ TVA:
 
 ## `inversion numérique`
 
-TODO: pas encore implementé en version 2.0
-
 **Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
 Il est souhaitable de rédiger les règles de calcul
@@ -653,8 +651,11 @@ soient toutes suffisamment proches des objectifs. La tolérance entre le choix e
 a: b + 10
 b:
   inversion numérique:
+    avec:
       - a
-    tolérance d'erreur: 1
+    min: 0
+    max: 100000
+    tolérance: 1
 ```
 
 <Callout type="caution" title="Améliorer les performances">

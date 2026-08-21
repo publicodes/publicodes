@@ -4,26 +4,61 @@ open Utils
 open Utils.Output
 module Rule_context = Dependency_graph.Rule_context
 module Dependency_graph = Dependency_graph.Rule_graph
+open Dependency_graph
 
-let is_parameter rule_name ~ast =
-  let rule_def = Shared_ast.find_exn rule_name ast in
-  not (Shared_ast.has_value rule_def)
-
-let extract_parameters rule_name ~graph ~ast : Rule_name.t * Rule_name.t list =
-  let parameter_rules =
-    Dependency_graph.succ graph (rule_name, [])
-    |> List.filter ~f:(fun (dep_rule_name, _) ->
-        is_parameter dep_rule_name ~ast )
-    |> List.map ~f:fst
-  in
-  (rule_name, List.dedup_and_sort parameter_rules ~compare:Rule_name.compare)
-
-let add_self_dependencies_for_parameters ~(graph : Dependency_graph.t)
-    ~(ast : Shared_ast.typed) : unit =
-  List.iter ast ~f:(fun rule_def ->
-      let rule_name = Mark.remove rule_def.name in
-      if is_parameter rule_name ~ast then
-        Dependency_graph.add_edge graph (rule_name, []) (rule_name, []) )
+(* TODO: Optimization: do not re-compute same nodes. *)
+let rec extract_parameters ?(done_ = []) ((rule_name, ctxs) as cur_vertex)
+    ~graph ~ast : Rule_name.t * Rule_name.t list =
+  if List.exists done_ ~f:(Rule_vertex.equal cur_vertex) then (rule_name, [])
+  else
+    let done_ = cur_vertex :: done_ in
+    let successors = Dependency_graph.succ graph cur_vertex in
+    let rule_dep =
+      let rule_def = Shared_ast.find_exn rule_name ast in
+      let self_dep =
+        if
+          (not (Shared_ast.has_value rule_def))
+          && not (Rule_context.stack_contains ctxs rule_name)
+        then [rule_name]
+        else []
+      in
+      let root_finding_withs =
+        let value = Mark.remove rule_def.value in
+        match Mark.remove value.value with
+        | Root_finding root_finding ->
+            List.map root_finding.with_ ~f:Mark.remove
+        | _ ->
+            []
+      in
+      let root_finding_reverts =
+        List.filter_map successors ~f:(fun (succ_rule_name, _) ->
+            let rule_def = Shared_ast.find_exn succ_rule_name ast in
+            let value = Mark.remove rule_def.value in
+            match Mark.remove value.value with
+            | Root_finding root_finding ->
+                if
+                  List.map root_finding.with_ ~f:Mark.remove
+                  |> List.exists ~f:(fun a ->
+                      List.map done_ ~f:fst
+                      |> List.exists ~f:(fun b -> Rule_name.equal a b) )
+                then Some succ_rule_name
+                else None
+            | _ ->
+                None )
+      in
+      self_dep @ root_finding_withs @ root_finding_reverts
+    in
+    let parameter_rules =
+      successors
+      |> List.concat_map ~f:(fun dep_vertex ->
+          extract_parameters ~done_ dep_vertex ~graph ~ast |> snd )
+      |> List.filter ~f:(fun this -> not (Rule_name.equal rule_name this))
+    in
+    let dependencies =
+      rule_dep @ parameter_rules
+      |> List.dedup_and_sort ~compare:Rule_name.compare
+    in
+    (rule_name, dependencies)
 
 let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t) ~ast :
     Log.t option =
@@ -50,8 +85,6 @@ let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t) ~ast :
 
 let extract_outputs (graph : Dependency_graph.t) ~(ast : Shared_ast.typed)
     ~(warn_types : bool) : Model_output.t list Output.t =
-  let graph = Dependency_graph.transitive_dependencies graph in
-  add_self_dependencies_for_parameters ~graph ~ast ;
   let wrap_meta ~is_output (rule_name, parameters) =
     let Shared_ast.{meta; value; _} = Shared_ast.find_exn rule_name ast in
     let Shared_ast.{typ; _} = Mark.get value in
@@ -64,14 +97,19 @@ let extract_outputs (graph : Dependency_graph.t) ~(ast : Shared_ast.typed)
         if
           Shared_ast.has_public_tag rule_def
           && Module_id.is_root rule_def.module_id
-        then Some (extract_parameters rule_name ~graph ~ast)
+        then
+          Some
+            (extract_parameters
+               (Dependency_graph.root_vertex rule_name)
+               ~graph ~ast )
         else None )
   in
   let outputs = List.map ~f:(wrap_meta ~is_output:true) output_parameters in
   let parameters =
     List.concat_map ~f:snd output_parameters
     |> List.stable_dedup ~compare:Rule_name.compare
-    |> List.map ~f:(extract_parameters ~graph ~ast)
+    |> List.map ~f:(fun rule_name ->
+        extract_parameters (Dependency_graph.root_vertex rule_name) ~graph ~ast )
     |> List.map ~f:(wrap_meta ~is_output:false)
   in
   let rules =
