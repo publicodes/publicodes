@@ -1,9 +1,0 @@
-a:
-
-b:
-  valeur: 12
-  type: nombre # ok
-
-c:
-  valeur: a > b
-  type: texte # erreur

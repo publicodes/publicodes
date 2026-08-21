@@ -18,7 +18,7 @@ type t = log Mark.pos [@@deriving equal]
 
 let mk ~level ?(kind = `Global) ?(pos = Pos.dummy) ?(hints = []) ?(labels = [])
     ?(code = None) message =
-  Mark.mk_pos ~pos:pos {kind; level; message; hints; labels; code}
+  Mark.mk_pos ~pos {kind; level; message; hints; labels; code}
 
 let error ~code = mk ~level:`Error ~code:(Some code)
 
@@ -29,3 +29,11 @@ let debug ~code = mk ~level:`Debug ~code:(Some code)
 let message log = (Mark.remove log).message
 
 let level log = (Mark.remove log).level
+
+let equal_err log (err_code, _) =
+  let log = Mark.remove log in
+  match log.code with
+  | Some code ->
+      Err.Code.equal code err_code
+  | None ->
+      false

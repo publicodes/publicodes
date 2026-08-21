@@ -1,0 +1,47 @@
+simple value:
+  public: oui
+  type:
+    une possibilité:
+      - 'foo'
+      - 'toot'
+  valeur: 'toot'
+
+infered enum:
+  public: oui
+  type:
+    une possibilité:
+      - 'foo'
+      - 'toot'
+  valeur:
+    variations:
+      - si: 20 = 50
+        alors: 'foo'
+      - si: 20 > 50
+        alors: 'toot'
+
+default value:
+  public: oui
+  type:
+    une possibilité:
+      - 'foo'
+      - 'toot'
+  par défaut: 'foo'
+
+with replacement:
+  public: oui
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar' # FIXME: should type check even with the ['foo', 'toot'] type
+      - 'toot'
+  valeur:
+    variations:
+      - si: oui
+        alors: 'foo'
+      - si: oui
+        alors: b
+  avec:
+    b: 'bar'
+    c:
+      remplace: b
+      valeur: 'toot'

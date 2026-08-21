@@ -1540,7 +1540,7 @@ Valid json doc :
     )
   
   function _q(ctx, params) {
-    return /** @type {('bar'|'foo')} */ (
+    return /** @type {('foo'|'bar')} */ (
       $ret("89129915ff64e38296ff0bdd95661c13", ctx, $cond(
         $ret("89129915ff64e38296ff0bdd95661c13", ctx, $eq(
           $ret("1413f4e83de89a540b748b90f97dccea", ctx, true),

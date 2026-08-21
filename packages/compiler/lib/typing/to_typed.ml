@@ -7,69 +7,25 @@ let transform_typ typ =
   match typ with
   | Ast.Any _ ->
       None
-  | Ast.Any_number u ->
-      Some (Typ.TNumber (Some (Number_unit.to_concrete u)))
-  | Ast.Any_bool _ ->
-      Some Typ.TBool
-  | Ast.Any_string _ ->
-      Some Typ.TString
-  | Ast.Any_date _ ->
-      Some Typ.TDate
-  | Ast.Literal (Ast.LNumber (f, u), pos) ->
-      let lit = Typ.LNumber (f, Some (Number_unit.to_concrete u)) in
-      Some (Typ.Literal (lit, pos))
-  | Ast.Literal (Ast.LBool b, pos) ->
-      let lit = Typ.LBool b in
-      Some (Typ.Literal (lit, pos))
-  | Ast.Literal (Ast.LString s, pos) ->
-      let lit = Typ.LString s in
-      Some (Typ.Literal (lit, pos))
-  | Ast.Literal (Ast.LSymbol s, pos) ->
-      let lit = Typ.LSymbol s in
-      Some (Typ.Literal (lit, pos))
-  | Ast.Literal (Ast.LDate d, pos) ->
-      let lit = Typ.LDate d in
-      Some (Typ.Literal (lit, pos))
-  | Ast.TString ->
-      Some Typ.TString
-  | Ast.TBool ->
-      Some Typ.TBool
-  | Ast.TDate ->
-      Some Typ.TDate
-  | Ast.TNumber unit ->
-      Some (Typ.TNumber (Some (Number_unit.to_concrete unit)))
-  | Ast.TEnum [value] ->
-      let lit, pos =
-        match value with
-        | LNumber (f, u), pos ->
-            (Typ.LNumber (f, Some (Number_unit.to_concrete u)), pos)
-        | LBool b, pos ->
-            (Typ.LBool b, pos)
-        | LString s, pos ->
-            (Typ.LString s, pos)
-        | LSymbol s, pos ->
-            (Typ.LSymbol s, pos)
-        | LDate d, pos ->
-            (Typ.LDate d, pos)
-      in
-      Some (Typ.Literal (lit, pos))
-  | Ast.TEnum values ->
-      let values =
-        List.map values ~f:(function
-          | LNumber (f, u), pos ->
-              (Typ.LNumber (f, Some (Number_unit.to_concrete u)), pos)
-          | LBool b, pos ->
-              (Typ.LBool b, pos)
-          | LString s, pos ->
-              (Typ.LString s, pos)
-          | LSymbol s, pos ->
-              (Typ.LSymbol s, pos)
-          | LDate d, pos ->
-              (Typ.LDate d, pos) )
-      in
+  | Ast.Typed (kind, (Any_kind _ | General)) -> (
+    match kind with
+    | KNumber u ->
+        Some (Typ.TNumber (Some (Number_unit.to_concrete u)))
+    | KBool ->
+        Some Typ.TBool
+    | KString ->
+        Some Typ.TString
+    | KDate ->
+        Some Typ.TDate
+    | KSymbol ->
+        Some (Typ.TEnum []) )
+  | Ast.Typed (_, (Literal lit | Enum [lit])) ->
+      Some (Typ.Literal (Ast.literal_to_shared_typ lit))
+  | Ast.Typed (_, Enum values) ->
+      let values = List.map values ~f:Ast.literal_to_shared_typ in
       Some (Typ.TEnum values)
 
-let rec to_expr (expr : Ast.wip_expr) : Shared_ast.typed_expr Output.t =
+let rec to_expr (expr : Ast.typing_expr) : Shared_ast.typed_expr Output.t =
   let expr, mark = expr in
   let {Ast.pos; typ} = mark in
   let typ, _ = UnionFind.get typ in
@@ -97,7 +53,7 @@ let rec to_expr (expr : Ast.wip_expr) : Shared_ast.typed_expr Output.t =
       let* value = to_expr value in
       return (Shared_ast.Unary_op (op, value), {Shared_ast.pos; typ})
 
-and to_value_mechanism (value : Ast.wip_value_mechanism) :
+and to_value_mechanism (value : Ast.typing_value_mechanism) :
     Shared_ast.typed_value_mechanism Output.t =
   match value with
   | Expr expr ->
@@ -151,7 +107,7 @@ and to_value_mechanism (value : Ast.wip_value_mechanism) :
       in
       Shared_ast.Variations (variations, value)
 
-and to_chainable_mechanism (chainable : Ast.wip_chainable_mechanism) :
+and to_chainable_mechanism (chainable : Ast.typing_chainable_mechanism) :
     Shared_ast.typed_chainable_mechanism Output.t =
   match chainable with
   | Context values ->
@@ -184,7 +140,7 @@ and to_chainable_mechanism (chainable : Ast.wip_chainable_mechanism) :
       let+ value = to_value value in
       Shared_ast.Round (rounding, value)
 
-and to_value (value : Ast.wip_value) : Shared_ast.typed_value Output.t =
+and to_value (value : Ast.typing_value) : Shared_ast.typed_value Output.t =
   let {Shared_ast.value; chainable_mechanisms}, mark = value in
   let* value =
     let value, mark = value in
@@ -211,20 +167,14 @@ and to_value (value : Ast.wip_value) : Shared_ast.typed_value Output.t =
   in
   return ({Shared_ast.value; chainable_mechanisms}, {Shared_ast.pos; typ})
 
-let to_rule_def (rule_def : Ast.wip_rule_def) :
+let to_rule_def (rule_def : Ast.typing_rule_def) :
     Shared_ast.typed_rule_def Output.t =
   let {Shared_ast.value; _} = rule_def in
   let* value = to_value value in
   return {rule_def with value}
 
-let to_typed (ast : Ast.wip_tree) : Shared_ast.typed Output.t =
+let to_typed (ast : Ast.typing_tree) : Shared_ast.typed Output.t =
   let* rule_defs =
-    Hashtbl.to_alist ast |> List.map ~f:snd
-    |> List.sort
-         ~compare:(fun
-             ({Shared_ast.name= _, {Mark.pos= p1}; _}, _)
-             ({Shared_ast.name= _, {Mark.pos= p2}; _}, _)
-           -> Pos.compare p1 p2 )
-    |> List.map ~f:fst |> List.map ~f:to_rule_def |> all_keep_logs
+    Ast.get_sorted_rule_defs ast |> List.map ~f:to_rule_def |> all_keep_logs
   in
   return rule_defs

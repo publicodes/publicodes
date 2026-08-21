@@ -3,27 +3,42 @@ open Shared
 open Utils
 open Output
 
+(** Factorizes all the data needed for the typing pass.
+
+    @note The [parent_typ] has in reality two purposes: allowing to unify types
+    with the parent one, and also to narrow the expected type. We might want to
+    separate this clearly. *)
+type typing_context =
+  { ast: Ast.typing_tree
+  ; replacements: Replacement_graph.Rule_graph.t
+  ; rules_type: Ast.typing_value Rule_name.Hashtbl.t
+  ; current_rule: Rule_name.t option
+  ; parent_typ: Ast.typ option }
+
+let get_init_context ~ast ~replacements =
+  { ast
+  ; replacements
+  ; rules_type= Hashtbl.create (module Shared.Rule_name) ~growth_allowed:true
+  ; current_rule= None
+  ; parent_typ= None }
+
+let reset_context ?current_rule ?parent_typ ctx =
+  Hashtbl.clear ctx.rules_type ;
+  {ctx with current_rule; parent_typ}
+
 let to_label (typ : Ast.typ) =
-  let typ, {Mark.pos} = UnionFind.get typ in
+  let typ, Mark.{pos} = UnionFind.get typ in
   match typ with
-  | TEnum enum ->
-      let msg =
-        Ast.to_string ~sep:", " typ |> Stdlib.Format.asprintf "est %s"
-      in
+  | Typed (_, Enum enum) ->
+      let msg = Ast.to_string typ |> Stdlib.Format.asprintf "est %s" in
       let msgs =
-        Ast.sort_enum enum
-        |> List.map ~f:(fun (lit, {Mark.pos}) ->
-            let msg =
-              Ast.to_string ~sep:"" (Ast.Literal (Mark.mk_pos ~pos lit))
-              |> Stdlib.Format.asprintf "avec %s"
-            in
+        List.map enum ~f:(fun (lit, Mark.{pos}) ->
+            let msg = Printf.sprintf "avec %s" (Ast.literal_to_string lit) in
             Mark.mk_pos ~pos msg )
       in
       Mark.mk_pos ~pos msg :: msgs
   | _ ->
-      let msg =
-        Ast.to_string ~sep:", " typ |> Stdlib.Format.asprintf "est %s"
-      in
+      let msg = Ast.to_string typ |> Stdlib.Format.asprintf "est %s" in
       [Mark.mk_pos ~pos msg]
 
 let to_labels (u1 : Ast.typ) (u2 : Ast.typ) =
@@ -36,9 +51,9 @@ let to_labels (u1 : Ast.typ) (u2 : Ast.typ) =
 
 let error_typ_mismatch (u1 : Ast.typ) (u2 : Ast.typ) =
   let p1 = UnionFind.get u1 |> Mark.pos in
-  let _p2 = UnionFind.get u2 |> Mark.pos in
   let code, message = Err.type_incoherence in
   let labels = to_labels u1 u2 in
+  (* FIXME: we don't want type errors to be fatal *)
   fatal_error ~pos:p1 ~kind:`Type ~code ~labels message
 
 let error_typ_invalid ?(hints = []) (u1 : Ast.typ) =
@@ -47,1095 +62,653 @@ let error_typ_invalid ?(hints = []) (u1 : Ast.typ) =
   let labels = to_label u1 in
   fatal_error ~pos:p1 ~hints ~kind:`Type ~code ~labels message
 
+let error_pow_exponent_with_unit (typ : Ast.typ) ~(pos : Pos.t) =
+  let elem = UnionFind.get typ in
+  let code, message = Err.pow_exponent_with_unit in
+  let labels =
+    match Mark.remove elem with
+    | Ast.Typed (Ast.KNumber u, _) ->
+        let inferred_typ_pos = Mark.pos elem in
+        let main_label =
+          Mark.mk_pos ~pos
+            (Printf.sprintf "unité: %s" (Number_unit.to_string u))
+        in
+        if Pos.equal pos inferred_typ_pos then [main_label]
+        else [main_label; Mark.mk_pos ~pos:inferred_typ_pos "définie ici"]
+    | _ ->
+        []
+  in
+  fatal_error ~pos ~kind:`Type ~code ~labels message
+
+(** FIXME: should be an incompatible type error instead of missing enums and
+    should point to the problematic operation instead of the loc of the type
+    defs. *)
 let error_missing_enums enums (u1 : Ast.typ) (u2 : Ast.typ) =
   let p1 = UnionFind.get u1 |> Mark.pos in
-  let _p2 = UnionFind.get u2 |> Mark.pos in
   let enums =
-    Ast.sort_enum enums |> List.map ~f:fst |> List.map ~f:Ast.literal_to_string
+    List.map enums ~f:Mark.remove |> List.map ~f:Ast.literal_to_string_short
   in
   let code, message = Err.type_missing_enums enums in
   let labels = to_labels u1 u2 in
   fatal_error ~pos:p1 ~kind:`Type ~code ~labels message
 
-(* TODO: pass pos and add a lavel error here *)
-let check_union (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
-  let m1 = UnionFind.get u1 in
-  let m2 = UnionFind.get u2 in
+(** [is_unifiable_precisions expected actual] returns true if [actual] is at
+    least as precise as [expected]. *)
+let is_unifiable_precisions expected actual =
+  match (expected, actual) with
+  | Ast.Any_kind _, (Ast.Any_kind _ | Ast.General | Ast.Enum _ | Ast.Literal _)
+    ->
+      true
+  | Ast.General, (Ast.General | Ast.Enum _ | Ast.Literal _) ->
+      true
+  | Ast.Enum e1, Ast.Enum e2 ->
+      Ast.is_enum_subset e2 e1
+  | Ast.Enum _, Ast.Literal _ ->
+      true
+  | Ast.Literal (l1, _), Ast.Literal (l2, _) ->
+      Ast.equal_literal l1 l2
+  | _ ->
+      false
+
+let unify_number_units ~pos1 ~pos2 typ1 typ2 =
+  match (typ1, typ2) with
+  | Ast.Typed (Ast.KNumber u1, _), Ast.Typed (Ast.KNumber u2, _) ->
+      let* _ = Number_unit.unify ~pos1 ~pos2 u1 u2 in
+      return ()
+  | _ ->
+      return ()
+
+let return_error_if_missing_literals typ1 typ2 e1 e2 =
+  let missing = Ast.get_missing_literals e1 e2 in
+  if List.is_empty missing then return ()
+  else error_missing_enums missing typ1 typ2
+
+(** [check_union typ1 typ2] tries to merge [typ1] and [typ2] by keeping the most
+    precise one and returns an error if the types are incompatible (not the same
+    kind, or precisions*)
+let check_union (typ1 : Ast.typ) (typ2 : Ast.typ) : unit Output.t =
+  let unify_enums p1 p2 =
+    match (p1, p2) with
+    | Ast.Enum e1, Ast.Enum e2 ->
+        return_error_if_missing_literals typ1 typ2 e1 e2
+    | _ ->
+        return ()
+  in
+  let unify_precisions p1 p2 =
+    if is_unifiable_precisions p1 p2 then
+      let* _ = unify_enums p1 p2 in
+      let _ = UnionFind.merge (fun _ snd -> snd) typ1 typ2 in
+      return ()
+    else if is_unifiable_precisions p2 p1 then
+      let* _ = unify_enums p2 p1 in
+      let _ = UnionFind.merge (fun fst _ -> fst) typ1 typ2 in
+      return ()
+    else return ()
+  in
+  let m1 = UnionFind.get typ1 in
+  let m2 = UnionFind.get typ2 in
   let t1, {Mark.pos= pos1} = m1 in
   let t2, {Mark.pos= pos2} = m2 in
   match (t1, t2) with
-  (* Merge Anys *)
-  | Ast.Any _, Ast.Any _ ->
-      (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
-      return ()
   | Ast.Any _, _ ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+      let _ = UnionFind.merge (fun _ snd -> snd) typ1 typ2 in
       return ()
-  | _, Ast.Any _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+  | _, Any _ ->
+      let _ = UnionFind.merge (fun fst _ -> fst) typ1 typ2 in
       return ()
-  (* Check Any Number *)
-  | Ast.Any_number unit1, Ast.Any_number unit2
-  | Ast.Literal (LNumber (_, unit1), _), Ast.Any_number unit2
-  | TNumber unit1, Ast.Any_number unit2
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.Any_number unit2 ->
-      let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+  | Typed (KNumber _, p1), Typed (KNumber _, p2) ->
+      let* _ = unify_number_units ~pos1 ~pos2 t1 t2 in
+      let* _ = unify_enums p1 p2 in
+      ( match (p1, p2) with
+      | Any_kind _, Any_kind _ ->
+          ignore (UnionFind.union typ1 typ2)
+      | Any_kind _, _ ->
+          ignore (UnionFind.merge (fun _ snd -> snd) typ1 typ2)
+      | _, Any_kind _ ->
+          ignore (UnionFind.merge (fun fst _ -> fst) typ1 typ2)
+      | _ ->
+          () ) ;
       return ()
-  | Ast.Any_number unit1, Ast.Literal (LNumber (_, unit2), _)
-  | Ast.Any_number unit1, TNumber unit2
-  | Ast.Any_number unit1, TEnum ((LNumber (_, unit2), _) :: _) ->
-      let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return ()
-  (* Check Any Bool *)
-  | Ast.Any_bool _, Ast.Any_bool _ ->
-      (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
-      return ()
-  | Ast.Literal (LBool _, _), Ast.Any_bool _
-  | TBool, Ast.Any_bool _
-  | TEnum ((LBool _, _) :: _), Ast.Any_bool _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return ()
-  | Ast.Any_bool _, Ast.Literal (LBool _, _)
-  | Ast.Any_bool _, TBool
-  | Ast.Any_bool _, TEnum ((LBool _, _) :: _) ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return ()
-  (* Check Any String *)
-  | Ast.Any_string _, Ast.Any_string _ ->
-      (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
-      return ()
-  | Ast.Literal (LString _, _), Ast.Any_string _
-  | TString, Ast.Any_string _
-  | TEnum ((LString _, _) :: _), Ast.Any_string _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return ()
-  | Ast.Any_string _, Ast.Literal (LString _, _)
-  | Ast.Any_string _, TString
-  | Ast.Any_string _, TEnum ((LString _, _) :: _) ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return ()
-  (* Check Any Date *)
-  | Ast.Any_date _, Ast.Any_date _ ->
-      (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
-      return ()
-  | Ast.Literal (LDate _, _), Ast.Any_date _
-  | TDate, Ast.Any_date _
-  | TEnum ((LDate _, _) :: _), Ast.Any_date _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return ()
-  | Ast.Any_date _, Ast.Literal (LDate _, _)
-  | Ast.Any_date _, TDate
-  | Ast.Any_date _, TEnum ((LDate _, _) :: _) ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return ()
-  (* Check Strings *)
-  | Ast.Literal (LString _, _), Ast.Literal (LString _, _)
-  | Ast.TString, Ast.TString
-  | Ast.TString, Ast.Literal (LString _, _)
-  | Ast.Literal (LString _, _), Ast.TString
-  | Ast.TEnum ((LString _, _) :: _), Ast.TString
-  | Ast.TEnum ((LString _, _) :: _), Ast.Literal (LString _, _)
-  | Ast.TString, Ast.TEnum ((LString _, _) :: _)
-  | Ast.Literal (LString _, _), Ast.TEnum ((LString _, _) :: _) ->
-      return ()
-  (* Check Bools *)
-  | Ast.Literal (LBool _, _), Ast.Literal (LBool _, _)
-  | Ast.TBool, Ast.TBool
-  | Ast.TBool, Ast.Literal (LBool _, _)
-  | Ast.Literal (LBool _, _), Ast.TBool
-  | TEnum ((LBool _, _) :: _), Ast.Literal (LBool _, _)
-  | TEnum ((LBool _, _) :: _), Ast.TBool
-  | Ast.Literal (LBool _, _), TEnum ((LBool _, _) :: _)
-  | Ast.TBool, TEnum ((LBool _, _) :: _) ->
-      return ()
-  (* Check Date *)
-  | Ast.Literal (LDate _, _), Ast.Literal (LDate _, _)
-  | Ast.TDate, Ast.TDate
-  | Ast.TDate, Ast.Literal (LDate _, _)
-  | Ast.Literal (LDate _, _), Ast.TDate
-  | Ast.TEnum ((LDate _, _) :: _), Ast.TDate
-  | Ast.TEnum ((LDate _, _) :: _), Ast.Literal (LDate _, _)
-  | Ast.TDate, Ast.TEnum ((LDate _, _) :: _)
-  | Ast.Literal (LDate _, _), Ast.TEnum ((LDate _, _) :: _) ->
-      return ()
-  (* Check Number *)
-  | Ast.Literal (LNumber (_, u1), _), Ast.Literal (LNumber (_, u2), _)
-  | Ast.TNumber u1, Ast.TNumber u2
-  | Ast.Literal (LNumber (_, u1), _), Ast.TNumber u2
-  | Ast.TNumber u1, Ast.Literal (LNumber (_, u2), _)
-  | TEnum ((LNumber (_, u1), _) :: _), Ast.TNumber u2
-  | TEnum ((LNumber (_, u1), _) :: _), Ast.Literal (LNumber (_, u2), _)
-  | Ast.TNumber u1, TEnum ((LNumber (_, u2), _) :: _)
-  | Ast.Literal (LNumber (_, u1), _), TEnum ((LNumber (_, u2), _) :: _) ->
-      let* _ = Number_unit.unify ~pos1 ~pos2 u1 u2 in
-      return ()
-  (* Check Enums (second fit in first) *)
-  | TEnum (_ as lits1), TEnum (_ as lits2) ->
-      let* _ =
-        match (lits1, lits2) with
-        | (LNumber (_, u1), _) :: _, (LNumber (_, u2), _) :: _ ->
-            Number_unit.unify ~pos1 ~pos2 u1 u2
-        | _, _ ->
-            return ()
-      in
-      (* TODO: unify numbers *)
-      let missing =
-        List.filter lits2 ~f:(fun (lit2, _) ->
-            List.exists lits1 ~f:(fun (lit1, _) -> Ast.equal_literal lit1 lit2)
-            |> not )
-      in
-      if List.is_empty missing then return ()
-      else error_missing_enums missing u1 u2
+  | Typed (k1, p1), Typed (k2, p2) when Ast.is_kind_equal k1 k2 ->
+      unify_precisions p1 p2
   | _, _ ->
-      error_typ_mismatch u1 u2
+      error_typ_mismatch typ1 typ2
 
-(* checks but keeps the least precise side general *)
-let check_generalize (u1 : Ast.typ) (u2 : Ast.typ) : unit Output.t =
-  let t1, {Mark.pos= pos1} = UnionFind.get u1 in
-  let t2, {Mark.pos= pos2} = UnionFind.get u2 in
+let check_union_with_parent_typ ~ctx typ =
+  match ctx.parent_typ with
+  | Some ptyp ->
+      let* _ = check_union typ ptyp in
+      return ()
+  | None ->
+      return ()
+
+let get_literals_from_precision = function
+  | Ast.Enum lits ->
+      lits
+  | Ast.Literal lit ->
+      [lit]
+  | _ ->
+      []
+
+(** [check_generalize typ1 typ2 ~grow] tries to generalize [typ1] and [typ2] by
+    keeping the most general one and returns an error if the types are
+    incompatible (not the same kind, or precisions).
+
+    If [grow] is true, it will also grow the enumerations to include all
+    literals from both types. For now, this is only true for symbols.
+
+    @note If [grow] is false, [typ1] is the expected type and [typ2] is the
+    actual type, and will return an error if [typ2] is not a subset of [typ1]. *)
+let check_generalize ?(grow = true) (typ1 : Ast.typ) (typ2 : Ast.typ) :
+    unit Output.t =
+  let t1, {Mark.pos= pos1} = UnionFind.get typ1 in
+  let t2, {Mark.pos= pos2} = UnionFind.get typ2 in
+  let set_typ1 typ =
+    let _ = UnionFind.set typ1 (Mark.mk_pos ~pos:pos1 typ) in
+    return ()
+  in
+  let set_typ2 typ =
+    let _ = UnionFind.set typ2 (Mark.mk_pos ~pos:pos2 typ) in
+    return ()
+  in
+  let symbolize_any kind precision =
+    match (kind, precision) with
+    | Ast.KSymbol, Ast.Literal lit ->
+        Ast.Typed (Ast.KSymbol, Ast.mk_enum_precision [lit])
+    | Ast.KSymbol, Ast.Enum e ->
+        Ast.Typed (Ast.KSymbol, Ast.mk_enum_precision e)
+    | _ ->
+        Ast.Typed (kind, Ast.Any_kind (Ast.Any.mk ()))
+  in
+  (* Try to unify number units first
+     NOTE: the only reason to try it first is to factorize the following pattern
+     matching and to avoid to handle KNumber differently. *)
+  let* _ = unify_number_units ~pos1 ~pos2 t1 t2 in
   match (t1, t2) with
-  (* Merge Anys *)
-  | Ast.Any _, Ast.Any _
-  | Ast.Any_bool _, Ast.Any_bool _
-  | Ast.Any_string _, Ast.Any_string _
-  | Ast.Any_date _, Ast.Any_date _ ->
-      (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
+  | Ast.Any _, Ast.Any _ ->
+      let _ = UnionFind.union typ1 typ2 in
       return ()
-  | Ast.Any_number unit1, Ast.Any_number unit2 ->
-      (* Merge them *)
-      let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
-      let _ = UnionFind.union u1 u2 in
+  | Ast.Any _, Ast.Typed (k, p) ->
+      set_typ1 (symbolize_any k p)
+  | Ast.Typed (k, p), Ast.Any _ ->
+      set_typ2 (symbolize_any k p)
+  | Ast.Typed (Ast.KSymbol, p1), Ast.Typed (Ast.KSymbol, p2) -> (
+    match (p1, p2) with
+    | Ast.Literal (Ast.LSymbol s1, _), Ast.Literal (Ast.LSymbol s2, _) ->
+        if String.equal s1 s2 then return () else error_typ_mismatch typ1 typ2
+    | Ast.Enum e, Ast.Literal lit ->
+        if grow then
+          set_typ1 Ast.(Typed (KSymbol, mk_enum_precision (e @ [lit])))
+        else return_error_if_missing_literals typ2 typ1 [lit] e
+    | Ast.Literal lit, Ast.Enum e ->
+        if grow then
+          set_typ2 Ast.(Typed (KSymbol, mk_enum_precision (e @ [lit])))
+        else return_error_if_missing_literals typ1 typ2 e [lit]
+    | Ast.Enum e1, Ast.Enum e2 ->
+        if grow then
+          let merged =
+            Ast.Typed (Ast.KSymbol, Ast.mk_enum_precision (e1 @ e2))
+          in
+          let _ = set_typ1 merged in
+          set_typ2 merged
+        else return_error_if_missing_literals typ2 typ1 e2 e1
+    | _ ->
+        error_typ_mismatch typ1 typ2 )
+  | Ast.Typed (k1, _), Ast.Typed (k2, _) when Ast.is_kind_equal k1 k2 ->
       return ()
-  | Ast.Any _, Ast.Any_number _
-  | Ast.Any _, Ast.Any_bool _
-  | Ast.Any _, Ast.Any_string _
-  | Ast.Any _, Ast.Any_date _ ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return ()
-  | Ast.Any_number _, Ast.Any _
-  | Ast.Any_bool _, Ast.Any _
-  | Ast.Any_string _, Ast.Any _
-  | Ast.Any_date _, Ast.Any _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return ()
-  (* Check Numbers *)
-  | Ast.Any _, Ast.TNumber unit
-  | Ast.Any _, Ast.Literal (LNumber (_, unit), _)
-  | Ast.Any _, Ast.TEnum ((LNumber (_, unit), _) :: _) ->
-      let typ = Ast.Any_number unit in
-      let _ = UnionFind.set u1 (Mark.mk_pos ~pos:pos1 typ) in
-      return ()
-  | Ast.TNumber unit, Ast.Any _
-  | Ast.Literal (LNumber (_, unit), _), Ast.Any _
-  | Ast.TEnum ((LNumber (_, unit), _) :: _), Ast.Any _ ->
-      let typ = Ast.Any_number unit in
-      let _ = UnionFind.set u2 (Mark.mk_pos ~pos:pos2 typ) in
-      return ()
-  | Ast.Any_number unit1, Ast.Literal (LNumber (_, unit2), _)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.TEnum ((LNumber (_, unit2), _) :: _)
-  | Ast.Any_number unit1, Ast.TEnum ((LNumber (_, unit2), _) :: _)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.Any_number unit2
-  | Ast.TEnum ((LNumber (_, unit1), _) :: _), Ast.Any_number unit2
-  | Ast.TNumber unit1, Ast.Any_number unit2
-  | Ast.TNumber unit1, Ast.Literal (LNumber (_, unit2), _)
-  | Ast.TNumber unit1, Ast.TEnum ((LNumber (_, unit2), _) :: _)
-  | Ast.Any_number unit1, Ast.TNumber unit2
-  | Ast.TNumber unit1, Ast.TNumber unit2
-  | Ast.Literal (LNumber (_, unit1), _), Ast.TNumber unit2
-  | Ast.TEnum ((LNumber (_, unit1), _) :: _), Ast.TNumber unit2
-  | Ast.TEnum ((LNumber (_, unit1), _) :: _), Ast.Literal (LNumber (_, unit2), _)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.Literal (LNumber (_, unit2), _) ->
-      (* Gather units, leave any_number alone *)
-      let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
-      return ()
-  (* Check Bools *)
-  | Ast.Any _, Ast.TBool
-  | Ast.Any _, Ast.Literal (LBool _, _)
-  | Ast.Any _, Ast.TEnum ((LBool _, _) :: _) ->
-      let typ = Ast.mk_any_bool ~pos:pos1 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u1 in
-      return ()
-  | Ast.TBool, Ast.Any _
-  | Ast.Literal (LBool _, _), Ast.Any _
-  | Ast.TEnum ((LBool _, _) :: _), Ast.Any _ ->
-      let typ = Ast.mk_any_bool ~pos:pos2 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u2 in
-      return ()
-  | Ast.TBool, Ast.TBool
-  | Ast.Any_bool _, Ast.TBool
-  | Ast.Any_bool _, Ast.Literal (LBool _, _)
-  | Ast.Any_bool _, Ast.TEnum ((LBool _, _) :: _)
-  | Ast.TBool, Ast.Any_bool _
-  | Ast.Literal (LBool _, _), Ast.Any_bool _
-  | Ast.TEnum ((LBool _, _) :: _), Ast.Any_bool _
-  | Ast.TBool, Ast.Literal (LBool _, _)
-  | Ast.Literal (LBool _, _), Ast.TBool
-  | Ast.Literal (LBool _, _), Ast.TEnum ((LBool _, _) :: _)
-  | Ast.TBool, Ast.TEnum ((LBool _, _) :: _)
-  | Ast.TEnum ((LBool _, _) :: _), Ast.TBool
-  | Ast.TEnum ((LBool _, _) :: _), Ast.Literal (LBool _, _)
-  | Ast.Literal (LBool _, _), Ast.Literal (LBool _, _) ->
-      (* Ok *)
-      return ()
-  (* Check Strings *)
-  | Ast.Any _, Ast.TString
-  | Ast.Any _, Ast.Literal (LString _, _)
-  | Ast.Any _, Ast.TEnum ((LString _, _) :: _) ->
-      let typ = Ast.mk_any_string ~pos:pos1 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u1 in
-      return ()
-  | Ast.TString, Ast.Any _
-  | Ast.Literal (LString _, _), Ast.Any _
-  | Ast.TEnum ((LString _, _) :: _), Ast.Any _ ->
-      let typ = Ast.mk_any_string ~pos:pos2 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u2 in
-      return ()
-  | Ast.TString, Ast.TString
-  | Ast.Any_string _, Ast.TString
-  | Ast.Any_string _, Ast.Literal (LString _, _)
-  | Ast.Any_string _, Ast.TEnum ((LString _, _) :: _)
-  | Ast.TString, Ast.Any_string _
-  | Ast.Literal (LString _, _), Ast.Any_string _
-  | Ast.TEnum ((LString _, _) :: _), Ast.Any_string _
-  | Ast.TString, Ast.Literal (LString _, _)
-  | Ast.TString, Ast.TEnum ((LString _, _) :: _)
-  | Ast.Literal (LString _, _), Ast.TEnum ((LString _, _) :: _)
-  | Ast.Literal (LString _, _), Ast.TString
-  | Ast.TEnum ((LString _, _) :: _), Ast.TString
-  | Ast.TEnum ((LString _, _) :: _), Ast.Literal (LString _, _)
-  | Ast.Literal (LString _, _), Ast.Literal (LString _, _) ->
-      (* Ok *)
-      return ()
-  (* Enumerate symbols *)
-  | Ast.Any _, Ast.Literal ((LSymbol _, _) as literal) ->
-      let typ = Ast.TEnum [literal] in
-      let _ = UnionFind.set u1 (Mark.mk_pos ~pos:pos1 typ) in
-      return ()
-  | Ast.Literal ((LSymbol _, _) as literal), Ast.Any _ ->
-      let typ = Ast.TEnum [literal] in
-      let _ = UnionFind.set u2 (Mark.mk_pos ~pos:pos2 typ) in
-      return ()
-  | Ast.Any _, TEnum ((LSymbol _, _) :: _) ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return ()
-  | TEnum ((LSymbol _, _) :: _), Ast.Any _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return ()
-  | ( TEnum ((LSymbol _, _) :: _ as symbols)
-    , Ast.Literal ((LSymbol _, _) as literal) ) ->
-      let typ = Ast.TEnum (literal :: symbols) in
-      let _ = UnionFind.set u1 (Mark.mk_pos ~pos:pos1 typ) in
-      return ()
-  | ( Ast.Literal ((LSymbol _, _) as literal)
-    , TEnum ((LSymbol _, _) :: _ as symbols) ) ->
-      let typ = Ast.TEnum (literal :: symbols) in
-      let _ = UnionFind.set u2 (Mark.mk_pos ~pos:pos2 typ) in
-      return ()
-  (* Check symbols *)
-  | Ast.Literal (LSymbol s1, _), Ast.Literal (LSymbol s2, _) ->
-      if String.equal s1 s2 then return () else error_typ_mismatch u1 u2
-  (* Check Dates *)
-  | Ast.Any _, Ast.TDate
-  | Ast.Any _, Ast.Literal (LDate _, _)
-  | Ast.Any _, Ast.TEnum ((LDate _, _) :: _) ->
-      let typ = Ast.mk_any_date ~pos:pos1 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u1 in
-      return ()
-  | Ast.TDate, Ast.Any _
-  | Ast.Literal (LDate _, _), Ast.Any _
-  | Ast.TEnum ((LDate _, _) :: _), Ast.Any _ ->
-      let typ = Ast.mk_any_date ~pos:pos2 in
-      let _ = UnionFind.merge (fun a _ -> a) typ u2 in
-      return ()
-  | Ast.TDate, Ast.TDate
-  | Ast.Any_date _, Ast.TDate
-  | Ast.Any_date _, Ast.Literal (LDate _, _)
-  | Ast.Any_date _, Ast.TEnum ((LDate _, _) :: _)
-  | Ast.TDate, Ast.Any_date _
-  | Ast.Literal (LDate _, _), Ast.Any_date _
-  | Ast.TEnum ((LDate _, _) :: _), Ast.Any_date _
-  | Ast.TDate, Ast.Literal (LDate _, _)
-  | Ast.Literal (LDate _, _), Ast.TDate
-  | Ast.Literal (LDate _, _), Ast.TEnum ((LDate _, _) :: _)
-  | Ast.TDate, Ast.TEnum ((LDate _, _) :: _)
-  | Ast.TEnum ((LDate _, _) :: _), Ast.TDate
-  | Ast.TEnum ((LDate _, _) :: _), Ast.Literal (LDate _, _)
-  | Ast.Literal (LDate _, _), Ast.Literal (LDate _, _) ->
-      (* Ok *)
-      return ()
-  (* Check Enums (second fit in first) *)
-  | TEnum (_ as lits1), TEnum (_ as lits2) ->
-      let* _ =
-        match (lits1, lits2) with
-        | (LNumber (_, u1), _) :: _, (LNumber (_, u2), _) :: _ ->
-            Number_unit.unify ~pos1 ~pos2 u1 u2
-        | _, _ ->
-            return ()
-      in
-      (* TODO: unify numbers *)
-      let missing =
-        List.filter lits2 ~f:(fun (lit2, _) ->
-            List.exists lits1 ~f:(fun (lit1, _) -> Ast.equal_literal lit1 lit2)
-            |> not )
-      in
-      if List.is_empty missing then return ()
-      else error_missing_enums missing u1 u2
-  | _, _ ->
-      error_typ_mismatch u1 u2
+  | _ ->
+      error_typ_mismatch typ1 typ2
+
+let get_number_unit_opt = function
+  | Ast.Typed (KNumber unit, _) ->
+      Some unit
+  | _ ->
+      None
 
 let check_multiply ~pos u1 u2 : Ast.typ Output.t =
   let t1, _ = UnionFind.get u1 in
   let t2, _ = UnionFind.get u2 in
-  match (t1, t2) with
-  (* Check Number *)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.Literal (LNumber (_, unit2), _)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.TNumber unit2
-  | Ast.TNumber unit1, Ast.Literal (LNumber (_, unit2), _)
-  | Ast.TNumber unit1, Ast.TNumber unit2
-  | Ast.Any_number unit1, Ast.Any_number unit2
-  | Ast.Any_number unit1, Ast.Literal (LNumber (_, unit2), _)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.Any_number unit2
-  | Ast.Any_number unit1, Ast.TNumber unit2
-  | Ast.TNumber unit1, Ast.Any_number unit2
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.Literal (LNumber (_, unit2), _)
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.TNumber unit2
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.Any_number unit2
-  | Ast.Literal (LNumber (_, unit1), _), TEnum ((LNumber (_, unit2), _) :: _)
-  | Ast.TNumber unit1, TEnum ((LNumber (_, unit2), _) :: _)
-  | Ast.Any_number unit1, TEnum ((LNumber (_, unit2), _) :: _) ->
+  match (get_number_unit_opt t1, get_number_unit_opt t2) with
+  | Some unit1, Some unit2 ->
       let t = Number_unit.multiply unit1 unit2 in
-      let m = Ast.mk ~pos (TNumber t) in
+      let m = Ast.mk_general ~pos Ast.(KNumber t) in
       return m
   | _, _ ->
-      let msg1 = Ast.to_string ~sep:", " t1 in
-      let msg2 = Ast.to_string ~sep:", " t2 in
+      let msg1 = Ast.to_string t1 in
+      let msg2 = Ast.to_string t2 in
       let msg = Stdlib.Format.asprintf "Can't multiply '%s' '%s'" msg1 msg2 in
       failwith msg
 
 let check_divide ~pos u1 u2 : Ast.typ Output.t =
   let t1, _ = UnionFind.get u1 in
   let t2, _ = UnionFind.get u2 in
-  match (t1, t2) with
-  (* Check Number *)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.Literal (LNumber (_, unit2), _)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.TNumber unit2
-  | Ast.TNumber unit1, Ast.Literal (LNumber (_, unit2), _)
-  | Ast.TNumber unit1, Ast.TNumber unit2
-  | Ast.Any_number unit1, Ast.Any_number unit2
-  | Ast.Any_number unit1, Ast.Literal (LNumber (_, unit2), _)
-  | Ast.Literal (LNumber (_, unit1), _), Ast.Any_number unit2
-  | Ast.Any_number unit1, Ast.TNumber unit2
-  | Ast.TNumber unit1, Ast.Any_number unit2
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.Literal (LNumber (_, unit2), _)
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.TNumber unit2
-  | TEnum ((LNumber (_, unit1), _) :: _), Ast.Any_number unit2
-  | Ast.Literal (LNumber (_, unit1), _), TEnum ((LNumber (_, unit2), _) :: _)
-  | Ast.TNumber unit1, TEnum ((LNumber (_, unit2), _) :: _)
-  | Ast.Any_number unit1, TEnum ((LNumber (_, unit2), _) :: _) ->
+  match (get_number_unit_opt t1, get_number_unit_opt t2) with
+  | Some unit1, Some unit2 ->
       let t = Number_unit.divide unit1 unit2 in
-      let m = Ast.mk ~pos (TNumber t) in
+      let m = Ast.mk_general ~pos Ast.(KNumber t) in
       return m
   | _, _ ->
-      let msg1 = Ast.to_string ~sep:", " t1 in
-      let msg2 = Ast.to_string ~sep:", " t2 in
+      let msg1 = Ast.to_string t1 in
+      let msg2 = Ast.to_string t2 in
       let msg = Stdlib.Format.asprintf "Can't divide '%s' '%s'" msg1 msg2 in
       failwith msg
 
-let check_enumerate ~pos u1 u2 : Ast.typ Output.t =
-  let t1, {Mark.pos= pos1} = UnionFind.get u1 in
-  let t2, {Mark.pos= pos2} = UnionFind.get u2 in
+let check_enumerate ~pos typ1 typ2 : Ast.typ Output.t =
+  let t1, {Mark.pos= pos1} = UnionFind.get typ1 in
+  let t2, {Mark.pos= pos2} = UnionFind.get typ2 in
+  let merge_typ1 () =
+    let _ = UnionFind.merge (fun fst _ -> fst) typ1 typ2 in
+    return typ1
+  in
+  let merge_typ2 () =
+    let _ = UnionFind.merge (fun _ snd -> snd) typ1 typ2 in
+    return typ2
+  in
+  (* Try to unify number units first
+     NOTE: the only reason to try it first is to factorize the following pattern
+     matching and to avoid to handle KNumber differently. *)
+  let* _ = unify_number_units ~pos1 ~pos2 t1 t2 in
   match (t1, t2) with
   (* Merge Anys *)
   | Ast.Any _, Ast.Any _ ->
-      (* Merge them *)
-      let _ = UnionFind.union u1 u2 in
-      return u1
-  (* Numbers *)
-  (* Merge them *)
-  | Ast.Any_number unit1, Ast.Any_number unit2 ->
-      let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
-      let _ = UnionFind.union u1 u2 in
-      return u1
-  (* Generalize the other side *)
-  | Ast.Any _, Ast.TNumber _ | Ast.Any _, Ast.Any_number _ ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return u1
-  | Ast.TNumber _, Ast.Any _ | Ast.Any_number _, Ast.Any _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return u2
-  (* Start enumerating *)
-  | Ast.Any _, Ast.Literal ((LNumber _, _) as literal)
-  | Ast.Any_number _, Ast.Literal ((LNumber _, _) as literal) ->
-      let enum = Ast.mk_enum ~pos [literal] in
+      let _ = UnionFind.union typ1 typ2 in
+      return typ1
+  | Ast.Typed (k1, Any_kind _), Ast.Typed (k2, Any_kind _)
+    when Ast.is_kind_equal k1 k2 ->
+      let _ = UnionFind.union typ1 typ2 in
+      return typ1
+  | Ast.Any _, Ast.Typed (_, (Any_kind _ | General)) ->
+      merge_typ2 ()
+  | Ast.Typed (_, (Any_kind _ | General)), Ast.Any _ ->
+      merge_typ1 ()
+  | Ast.Typed (_, ((Literal _ | Enum _) as p)), Ast.Any _
+  | Ast.Any _, Ast.Typed (_, ((Literal _ | Enum _) as p)) ->
+      let lits = get_literals_from_precision p in
+      let enum = Ast.mk_enum ~pos lits in
       return enum
-  | Ast.Literal ((LNumber _, _) as literal), Ast.Any _
-  | Ast.Literal ((LNumber _, _) as literal), Ast.Any_number _ ->
-      let enum = Ast.mk_enum ~pos [literal] in
-      return enum
-  | ( Ast.Literal ((LNumber (_, u1), _) as l1)
-    , Ast.Literal ((LNumber (_, u2), _) as l2) ) ->
-      let* _ = Number_unit.unify ~pos1 ~pos2 u1 u2 in
-      let enum = Ast.mk_enum ~pos [l1; l2] in
-      return enum
-  | Ast.Any _, TEnum ((LNumber _, _) :: _ as literals)
-  | Ast.Any_number _, TEnum ((LNumber _, _) :: _ as literals)
-  | TEnum ((LNumber _, _) :: _ as literals), Ast.Any _
-  | TEnum ((LNumber _, _) :: _ as literals), Ast.Any_number _ ->
-      let enum = Ast.mk_enum ~pos literals in
-      return enum
-  (* Fill *)
-  | ( TEnum ((LNumber (_, u1), _) :: _ as literals)
-    , Ast.Literal ((LNumber (_, u2), _) as literal) )
-  | ( Ast.Literal ((LNumber (_, u2), _) as literal)
-    , TEnum ((LNumber (_, u1), _) :: _ as literals) ) ->
-      let* _ = Number_unit.unify ~pos1 ~pos2 u1 u2 in
-      let enum = Ast.mk_enum ~pos (literal :: literals) in
-      return enum
-  | ( TEnum ((LNumber (_, u1), _) :: _ as lits1)
-    , TEnum ((LNumber (_, u2), _) :: _ as lits2) ) ->
-      let* _ = Number_unit.unify ~pos1 ~pos2 u1 u2 in
-      let enum = Ast.mk_enum ~pos (lits1 @ lits2) in
-      return enum
-  (* Generalize *)
-  | TEnum ((LNumber (_, u1), _) :: _), Ast.TNumber u2
-  | Ast.TNumber u1, TEnum ((LNumber (_, u2), _) :: _)
-  | Ast.Literal (LNumber (_, u1), _), Ast.TNumber u2
-  | Ast.TNumber u1, Ast.Literal (LNumber (_, u2), _)
-  | Ast.TNumber u1, Ast.TNumber u2 ->
-      let* _ = Number_unit.unify ~pos1 ~pos2 u1 u2 in
-      let typ = Ast.mk ~pos (TNumber u1) in
-      return typ
-  (* Strings *)
-  (* Merge them *)
-  | Ast.Any_string _, Ast.Any_string _ ->
-      let _ = UnionFind.union u1 u2 in
-      return u1
-  (* Generalize the other side *)
-  | Ast.Any _, Ast.TString | Ast.Any_string _, Ast.TString ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return u1
-  | Ast.TString, Ast.Any _ | Ast.TString, Ast.Any_string _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return u2
-  (* Start enumerating *)
-  | Ast.Any _, Ast.Literal ((LString _, _) as literal)
-  | Ast.Any_string _, Ast.Literal ((LString _, _) as literal) ->
-      let enum = Ast.mk_enum ~pos [literal] in
-      return enum
-  | Ast.Literal ((LString _, _) as literal), Ast.Any _
-  | Ast.Literal ((LString _, _) as literal), Ast.Any_string _ ->
-      let enum = Ast.mk_enum ~pos [literal] in
-      return enum
-  | Ast.Literal ((LString _, _) as l1), Ast.Literal ((LString _, _) as l2) ->
-      let enum = Ast.mk_enum ~pos [l1; l2] in
-      return enum
-  | Ast.Any _, TEnum ((LString _, _) :: _ as literals)
-  | Ast.Any_string _, TEnum ((LString _, _) :: _ as literals)
-  | TEnum ((LString _, _) :: _ as literals), Ast.Any _
-  | TEnum ((LString _, _) :: _ as literals), Ast.Any_string _ ->
-      let enum = Ast.mk_enum ~pos literals in
-      return enum
-  (* Fill *)
-  | ( TEnum ((LString _, _) :: _ as literals)
-    , Ast.Literal ((LString _, _) as literal) )
-  | ( Ast.Literal ((LString _, _) as literal)
-    , TEnum ((LString _, _) :: _ as literals) ) ->
-      let enum = Ast.mk_enum ~pos (literal :: literals) in
-      return enum
-  | TEnum ((LString _, _) :: _ as lits1), TEnum ((LString _, _) :: _ as lits2)
-    ->
-      let enum = Ast.mk_enum ~pos (lits1 @ lits2) in
-      return enum
-  (* Generalize *)
-  | TEnum ((LString _, _) :: _), Ast.TString
-  | Ast.TString, TEnum ((LString _, _) :: _)
-  | Ast.Literal (LString _, _), Ast.TString
-  | Ast.TString, Ast.Literal (LString _, _)
-  | Ast.TString, Ast.TString ->
-      let typ = Ast.mk ~pos TString in
-      return typ
-  (* Bools *)
-  (* Merge them *)
-  | Ast.Any_bool _, Ast.Any_bool _ ->
-      let _ = UnionFind.union u1 u2 in
-      return u1
-  (* Generalize the other side *)
-  | Ast.Any _, Ast.TBool | Ast.Any_bool _, Ast.TBool ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return u1
-  | Ast.TBool, Ast.Any _ | Ast.TBool, Ast.Any_bool _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return u2
-  (* Start enumerating *)
-  | Ast.Any _, Ast.Literal ((LBool _, _) as literal)
-  | Ast.Any_bool _, Ast.Literal ((LBool _, _) as literal) ->
-      let enum = Ast.mk_enum ~pos [literal] in
-      return enum
-  | Ast.Literal ((LBool _, _) as literal), Ast.Any _
-  | Ast.Literal ((LBool _, _) as literal), Ast.Any_bool _ ->
-      let enum = Ast.mk_enum ~pos [literal] in
-      return enum
-  | Ast.Literal ((LBool _, _) as l1), Ast.Literal ((LBool _, _) as l2) ->
-      let enum = Ast.mk_enum ~pos [l1; l2] in
-      return enum
-  | Ast.Any _, TEnum ((LBool _, _) :: _ as literals)
-  | Ast.Any_bool _, TEnum ((LBool _, _) :: _ as literals)
-  | TEnum ((LBool _, _) :: _ as literals), Ast.Any _
-  | TEnum ((LBool _, _) :: _ as literals), Ast.Any_bool _ ->
-      let enum = Ast.mk_enum ~pos literals in
-      return enum
-  (* Fill *)
-  | TEnum ((LBool _, _) :: _ as literals), Ast.Literal ((LBool _, _) as literal)
-  | Ast.Literal ((LBool _, _) as literal), TEnum ((LBool _, _) :: _ as literals)
-    ->
-      let enum = Ast.mk_enum ~pos (literal :: literals) in
-      return enum
-  | TEnum ((LBool _, _) :: _ as lits1), TEnum ((LBool _, _) :: _ as lits2) ->
-      let enum = Ast.mk_enum ~pos (lits1 @ lits2) in
-      return enum
-  (* Generalize *)
-  | TEnum ((LBool _, _) :: _), Ast.TBool
-  | Ast.TBool, TEnum ((LBool _, _) :: _)
-  | Ast.Literal (LBool _, _), Ast.TBool
-  | Ast.TBool, Ast.Literal (LBool _, _)
-  | Ast.TBool, Ast.TBool ->
-      let typ = Ast.mk ~pos TBool in
-      return typ
-  (* Dates *)
-  (* Merge them *)
-  | Ast.Any_date _, Ast.Any_date _ ->
-      let _ = UnionFind.union u1 u2 in
-      return u1
-  (* Generalize the other side *)
-  | Ast.Any _, Ast.TDate | Ast.Any_date _, Ast.TDate ->
-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
-      return u1
-  | Ast.TDate, Ast.Any _ | Ast.TDate, Ast.Any_date _ ->
-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
-      return u2
-  (* Start enumerating *)
-  | Ast.Any _, Ast.Literal ((LDate _, _) as literal)
-  | Ast.Any_date _, Ast.Literal ((LDate _, _) as literal) ->
-      let enum = Ast.mk_enum ~pos [literal] in
-      return enum
-  | Ast.Literal ((LDate _, _) as literal), Ast.Any _
-  | Ast.Literal ((LDate _, _) as literal), Ast.Any_date _ ->
-      let enum = Ast.mk_enum ~pos [literal] in
-      return enum
-  | Ast.Literal ((LDate _, _) as l1), Ast.Literal ((LDate _, _) as l2) ->
-      let enum = Ast.mk_enum ~pos [l1; l2] in
-      return enum
-  | Ast.Any _, TEnum ((LDate _, _) :: _ as literals)
-  | Ast.Any_date _, TEnum ((LDate _, _) :: _ as literals)
-  | TEnum ((LDate _, _) :: _ as literals), Ast.Any _
-  | TEnum ((LDate _, _) :: _ as literals), Ast.Any_date _ ->
-      let enum = Ast.mk_enum ~pos literals in
-      return enum
-  (* Fill *)
-  | TEnum ((LDate _, _) :: _ as literals), Ast.Literal ((LDate _, _) as literal)
-  | Ast.Literal ((LDate _, _) as literal), TEnum ((LDate _, _) :: _ as literals)
-    ->
-      let enum = Ast.mk_enum ~pos (literal :: literals) in
-      return enum
-  | TEnum ((LDate _, _) :: _ as lits1), TEnum ((LDate _, _) :: _ as lits2) ->
-      let enum = Ast.mk_enum ~pos (lits1 @ lits2) in
-      return enum
-  (* Generalize *)
-  | TEnum ((LDate _, _) :: _), Ast.TDate
-  | Ast.TDate, TEnum ((LDate _, _) :: _)
-  | Ast.Literal (LDate _, _), Ast.TDate
-  | Ast.TDate, Ast.Literal (LDate _, _)
-  | Ast.TDate, Ast.TDate ->
-      let typ = Ast.mk ~pos TDate in
-      return typ
-  (* Symbols *)
-  (* Start enumerating *)
-  | Ast.Any _, Ast.Literal ((LSymbol _, _) as l1)
-  | Ast.Literal ((LSymbol _, _) as l1), Ast.Any _ ->
-      let enum = Ast.mk_enum ~pos [l1] in
-      return enum
-  | Ast.Literal ((LSymbol _, _) as l1), Ast.Literal ((LSymbol _, _) as l2) ->
-      let enum = Ast.mk_enum ~pos [l1; l2] in
-      return enum
-  (* Fill *)
-  | ( TEnum ((LSymbol _, _) :: _ as literals)
-    , Ast.Literal ((LSymbol _, _) as literal) )
-  | ( Ast.Literal ((LSymbol _, _) as literal)
-    , TEnum ((LSymbol _, _) :: _ as literals) ) ->
-      let enum = Ast.mk_enum ~pos (literal :: literals) in
-      return enum
-  | TEnum ((LSymbol _, _) :: _ as lits1), TEnum ((LSymbol _, _) :: _ as lits2)
-    ->
-      let enum = Ast.mk_enum ~pos (lits1 @ lits2) in
-      return enum
+  (* Fills *)
+  | Ast.Typed (k1, p1), Ast.Typed (k2, p2) when Ast.is_kind_equal k1 k2 -> (
+    match (p1, p2) with
+    | General, _ | _, General ->
+        return (Ast.mk_general ~pos k1)
+    | Any_kind _, Any_kind _ ->
+        let _ = UnionFind.union typ1 typ2 in
+        return typ1
+    | (Literal _ | Enum _), (Literal _ | Enum _) ->
+        let lits1 = get_literals_from_precision p1 in
+        let lits2 = get_literals_from_precision p2 in
+        return (Ast.mk_enum ~pos (lits1 @ lits2))
+    | Any_kind _, ((Literal _ | Enum _) as p)
+    | ((Literal _ | Enum _) as p), Any_kind _ ->
+        let lits = get_literals_from_precision p in
+        let enum = Ast.mk_enum ~pos lits in
+        return enum )
   | _, _ ->
-      error_typ_mismatch u1 u2
+      error_typ_mismatch typ1 typ2
 
-let rec check_expression ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
-    ~(ptyp : Ast.typ) (expr : Ast.wip_expr) : unit Output.t =
-  let check_expression = check_expression ~replaces ~current ~ast ~contexts in
+let rec check_expression (expr : Ast.typing_expr) ~ctx =
   let expr, mark = expr in
   let pos = mark.pos in
-  let* _ =
-    match expr with
-    | Const _ ->
-        let* _ = check_union mark.typ ptyp in
-        return ()
-    | Ref ref ->
-        let* _ =
-          let* value =
-            match Hashtbl.find contexts ref with
-            | Some value ->
-                return value
-            | None ->
-                let rule_def, status = Hashtbl.find_exn ast ref in
-                let* _ =
-                  match !status with
-                  | Todo ->
-                      check_rule_def ~replaces ~ast ~contexts rule_def
-                  | Error ->
-                      empty
-                  | _ ->
-                      return ()
-                in
-                let {Shared_ast.value; _} = rule_def in
-                return value
-          in
-          let _, mark = value in
-          let replacements =
-            Replacement_graph.find_transitive_replacements ~from:current
-              ~rule:ref replaces
-            |> List.map ~f:fst
-          in
-          let* typ =
-            Output.fold replacements ~init:mark.typ ~f:(fun ptyp ref ->
-                let rule_def, status = Hashtbl.find_exn ast ref in
-                let* _ =
-                  match !status with
-                  | Todo ->
-                      check_rule_def ~replaces ~ast ~contexts rule_def
-                  | Error ->
-                      empty
-                  | _ ->
-                      return ()
-                in
-                let {Shared_ast.value; _} = rule_def in
-                let _, mark = value in
-                check_enumerate ~pos ptyp mark.typ )
-          in
-          let* _ = check_union typ ptyp in
+  let get_checked_rule_def ref =
+    let rule_def, status = Hashtbl.find_exn ctx.ast ref in
+    let* _ =
+      match status with
+      | Todo ->
+          check_rule_def rule_def ~ctx
+      | Error ->
+          empty
+      | _ ->
           return ()
-        in
-        let* _ = check_union mark.typ ptyp in
-        return ()
-    | Binary_op (op, ((_, left_mark) as left), ((_, right_mark) as right)) -> (
-        let {Ast.pos= left_pos; _} = left_mark in
-        let {Ast.pos= right_pos; _} = right_mark in
-        match fst op with
-        | And | Or ->
-            let* _ = Ast.mk_bool ~pos |> check_union mark.typ in
-            let* _ = check_expression ~ptyp:mark.typ left in
-            let* _ = check_expression ~ptyp:mark.typ right in
-            let* _ = check_union mark.typ ptyp in
-            return ()
-        | Add | Sub | Max | Min ->
-            (* check both are any number, and unify units *)
-            let* left =
-              let wip = Ast.mk_any_number ~pos:left_pos in
-              let* _ = check_expression ~ptyp:wip left in
-              return wip
-            in
-            let* right =
-              let wip = Ast.mk_any_number ~pos:right_pos in
-              let* _ = check_expression ~ptyp:wip right in
-              return wip
-            in
-            let* _ = check_generalize left right in
-            let wip = Ast.mk_number_no_unit ~pos in
-            let* _ = check_union left wip in
-            let* _ = check_union wip mark.typ in
-            let* _ = check_union mark.typ ptyp in
-            return ()
-        | Mul ->
-            (* check both are any number *)
-            let* _ =
-              let wip = Ast.mk_any_number ~pos:left_pos in
-              check_expression ~ptyp:wip left
-            in
-            let* _ =
-              let wip = Ast.mk_any_number ~pos:right_pos in
-              check_expression ~ptyp:wip right
-            in
-            (* we are TNumber *)
-            let* wip = check_multiply ~pos left_mark.typ right_mark.typ in
-            (* apply to union *)
-            let* _ = check_union mark.typ wip in
-            (* check against ptyp *)
-            let* _ = check_union mark.typ ptyp in
-            return ()
-        | Div ->
-            (* check both are any number *)
-            let* _ =
-              let wip = Ast.mk_any_number ~pos:left_pos in
-              check_expression ~ptyp:wip left
-            in
-            let* _ =
-              let wip = Ast.mk_any_number ~pos:right_pos in
-              check_expression ~ptyp:wip right
-            in
-            (* we are TNumber *)
-            let* wip = check_divide ~pos left_mark.typ right_mark.typ in
-            (* apply to mark *)
-            let* _ = check_union mark.typ wip in
-            (* check against ptyp *)
-            let* _ = check_union mark.typ ptyp in
-            return ()
-        | Pow ->
-            (* check both are any number *)
-            let* wip1 =
-              let wip = Ast.mk_any_number ~pos:left_pos in
-              let* _ = check_expression ~ptyp:wip left in
-              return wip
-            in
-            let* _ =
-              let wip = Ast.mk_any_number ~pos:right_pos in
-              check_expression ~ptyp:wip right
-            in
-            (* we are TNumber *)
-            let wip2 = Ast.mk_number_no_unit ~pos in
-            (* gather unit *)
-            let* _ = check_union wip1 wip2 in
-            let* _ = check_union wip2 mark.typ in
-            return ()
-        | Gt | Lt | GtEq | LtEq | Eq | NotEq ->
-            let* left =
-              let wip = Ast.mk_any ~pos:left_pos in
-              let* _ = check_expression ~ptyp:wip left in
-              return wip
-            in
-            let* right =
-              let wip = Ast.mk_any ~pos:right_pos in
-              let* _ = check_expression ~ptyp:wip right in
-              return wip
-            in
-            (* TODO: restrict possible types? *)
-            let* _ = check_generalize left right in
-            let wip = Ast.mk_bool ~pos in
-            let* _ = check_union wip ptyp in
-            return () )
-    | Unary_op ((Neg, _), expr) ->
-        (* check is a number *)
-        let wip1 = Ast.mk_any_number ~pos in
-        let* _ = check_expression ~ptyp:wip1 expr in
-        (* we are TNumber *)
-        let wip2 = Ast.mk_number_no_unit ~pos in
-        (* gather unit *)
-        let* _ = check_union wip1 wip2 in
-        (* merge *)
-        let* _ = check_union mark.typ wip2 in
-        (* check against ptyp *)
-        let* _ = check_union mark.typ ptyp in
-        return ()
+    in
+    return rule_def
   in
-  return ()
+  let check_expression_is_any_number expr ~pos =
+    let typ = Ast.mk_any_number ~pos in
+    let* _ = check_expression expr ~ctx:{ctx with parent_typ= Some typ} in
+    return typ
+  in
+  match expr with
+  | Const _ ->
+      check_union_with_parent_typ ~ctx mark.typ
+  | Ref ref ->
+      let* _ =
+        let* value =
+          match Hashtbl.find ctx.rules_type ref with
+          | Some value ->
+              return value
+          | None ->
+              let* rule_def = get_checked_rule_def ref in
+              return rule_def.value
+        in
+        let value_mark = Mark.get value in
+        let replacements =
+          match ctx.current_rule with
+          | Some from ->
+              Replacement_graph.find_transitive_replacements ctx.replacements
+                ~from ~rule:ref
+              |> List.map ~f:Mark.remove
+          | None ->
+              []
+        in
+        let* typ =
+          Output.fold replacements ~init:value_mark.typ ~f:(fun ptyp ref ->
+              let* rule_def = get_checked_rule_def ref in
+              let mark = Mark.get rule_def.value in
+              check_enumerate ~pos ptyp mark.typ )
+        in
+        check_union_with_parent_typ ~ctx typ
+      in
+      check_union_with_parent_typ ~ctx mark.typ
+  | Binary_op (op, ((_, left_mark) as left), ((_, right_mark) as right)) -> (
+      let Ast.{pos= left_pos; _} = left_mark in
+      let Ast.{pos= right_pos; _} = right_mark in
+      match Mark.remove op with
+      | And | Or ->
+          let* _ = Ast.mk_bool ~pos |> check_union mark.typ in
+          let* _ =
+            check_expression left ~ctx:{ctx with parent_typ= Some mark.typ}
+          in
+          let* _ =
+            check_expression right ~ctx:{ctx with parent_typ= Some mark.typ}
+          in
+          check_union_with_parent_typ ~ctx mark.typ
+      | Add | Sub | Max | Min ->
+          let* left = check_expression_is_any_number left ~pos:left_pos in
+          let* right = check_expression_is_any_number right ~pos:right_pos in
+          let* _ = check_generalize left right in
+          let _ =
+            (* Operation on number must generalize from literals to number *)
+            let number_with_unit = Ast.literal_to_general left in
+            UnionFind.set mark.typ (Mark.mk_pos ~pos number_with_unit)
+          in
+          check_union_with_parent_typ ~ctx mark.typ
+      | Mul ->
+          let* _ = check_expression_is_any_number left ~pos:left_pos in
+          let* _ = check_expression_is_any_number right ~pos:right_pos in
+          let* mul_typ = check_multiply ~pos left_mark.typ right_mark.typ in
+          let* _ = check_union mark.typ mul_typ in
+          check_union_with_parent_typ ~ctx mark.typ
+      | Div ->
+          let* _ = check_expression_is_any_number left ~pos:left_pos in
+          let* _ = check_expression_is_any_number right ~pos:right_pos in
+          let* div_typ = check_divide ~pos left_mark.typ right_mark.typ in
+          let* _ = check_union mark.typ div_typ in
+          check_union_with_parent_typ ~ctx mark.typ
+      | Pow ->
+          let* _ = check_expression_is_any_number left ~pos:left_pos in
+          let* _ =
+            let* exponent_typ =
+              check_expression_is_any_number right ~pos:right_pos
+            in
+            if Ast.is_typ_number_with_unit exponent_typ then
+              error_pow_exponent_with_unit exponent_typ ~pos:right_pos
+            else return ()
+          in
+          (* Power operation aren't handle by the unit system, so we need to
+                 remove the unit from the expression. *)
+          UnionFind.set mark.typ (Mark.mk_pos ~pos Ast.number_without_unit) ;
+          check_union_with_parent_typ ~ctx mark.typ
+      | Gt | Lt | GtEq | LtEq | Eq | NotEq ->
+          let* left =
+            let left_typ = Ast.mk_any ~pos:left_pos in
+            let* _ =
+              check_expression left ~ctx:{ctx with parent_typ= Some left_typ}
+            in
+            return left_typ
+          in
+          let* right =
+            let right_typ = Ast.mk_any ~pos:right_pos in
+            let* _ =
+              check_expression right ~ctx:{ctx with parent_typ= Some right_typ}
+            in
+            return right_typ
+          in
+          (* TODO: restrict possible types? *)
+          let* _ = check_generalize left right in
+          check_union_with_parent_typ ~ctx (Ast.mk_bool ~pos) )
+  | Unary_op ((Neg, _), expr) ->
+      let expr_typ = Ast.mk_number ~unit:None ~pos in
+      let* _ =
+        check_expression expr ~ctx:{ctx with parent_typ= Some expr_typ}
+      in
+      let* _ = check_union mark.typ expr_typ in
+      check_union_with_parent_typ ~ctx expr_typ
 
-and check_value_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
-    (value : Ast.wip_marked_value_mechanism) : unit Output.t =
-  let check_value = check_value ~replaces ~current ~ast ~contexts in
+and check_value_mechanism (value : Ast.typing_marked_value_mechanism) ~ctx =
   let value, mark = value in
   let pos = mark.pos in
-  let* _ =
-    match value with
-    | Expr expr ->
-        let* _ =
-          check_expression ~replaces ~current ~ast ~contexts ~ptyp:mark.typ expr
-        in
-        return ()
-    | Value value ->
-        let* _ = check_value ~ptyp:mark.typ value in
-        return ()
-    | Is_applicable _ | Is_not_applicable _ ->
-        (* TODO: handle this when Not_applicable is a type *)
-        return ()
-    | Sum values | Min_of values | Max_of values ->
-        (* check all number *)
-        let* _ =
-          match values with
-          | [] ->
-              return ()
-          | hd :: rest ->
-              let* init =
-                let wip = Ast.mk_any_number ~pos in
-                let* _ = check_value ~ptyp:wip hd in
-                return wip
-              in
-              let* _ =
-                Output.fold ~init rest ~f:(fun wip value ->
-                    let* _ = check_value ~ptyp:wip value in
-                    return wip )
-              in
-              return ()
-        in
-        (* we are TNumber *)
-        let wip = Ast.mk_number_no_unit ~pos in
-        (* gather unit *)
-        let* _ =
-          List.map values ~f:(fun (_, value) -> check_union wip value.typ)
-          |> all_okay
-        in
-        let* _ = check_union wip mark.typ in
-        return ()
-    | Product values ->
-        let* _ =
-          List.map values ~f:(fun value ->
-              let wip = Ast.mk_any_number ~pos in
-              check_value ~ptyp:wip value )
-          |> all_okay
-        in
-        let* wip =
-          match values with
-          | [] ->
-              failwith "reachable?"
-          | hd :: rest ->
-              let* init =
-                let wip = Ast.mk_any_number ~pos in
-                let* _ = check_value ~ptyp:wip hd in
-                return wip
-              in
-              Output.fold ~init rest ~f:(fun wip value ->
-                  check_multiply ~pos wip (Mark.get value).typ )
-        in
-        let* _ = check_union wip mark.typ in
-        return ()
-    | All_of values | One_of values ->
-        let* _ =
-          List.map values ~f:(fun value ->
-              let wip = Ast.mk_any_bool ~pos in
-              check_value ~ptyp:wip value )
-          |> all_okay
-        in
-        let wip = Ast.mk_bool ~pos in
-        let* _ = check_union wip mark.typ in
-        return ()
-    | Not_defined ->
-        return ()
-    | Variations (variations, value) ->
-        let wip = Ast.mk_any ~pos in
-        let* wip =
-          Output.fold ~init:wip variations ~f:(fun wip {if_; then_} ->
-              let* _ =
-                let wip2 = Ast.mk_any_bool ~pos in
-                check_value ~ptyp:wip2 if_
-              in
-              let wip2 = Ast.mk_any ~pos in
-              let* _ = check_value ~ptyp:wip2 then_ in
-              check_enumerate ~pos wip wip2 )
-        in
-        let* wip =
-          match value with
-          | None ->
-              return wip
-          | Some else_ ->
-              let wip2 = Ast.mk_any ~pos in
-              let* _ = check_value ~ptyp:wip2 else_ in
-              check_enumerate ~pos wip wip2
-        in
-        let* _ = check_union wip mark.typ in
-        return ()
+  let check_each values ~mk_wip:mk_typ : Ast.typ list Output.t =
+    List.map values ~f:(fun value ->
+        let typ = mk_typ () in
+        let* _ = check_value value ~ctx:{ctx with parent_typ= Some typ} in
+        return typ )
+    |> all_okay
   in
-  return ()
+  match value with
+  | Expr expr ->
+      check_expression expr ~ctx:{ctx with parent_typ= Some mark.typ}
+  | Value value ->
+      check_value value ~ctx:{ctx with parent_typ= Some mark.typ}
+  | Is_applicable _ | Is_not_applicable _ ->
+      (* TODO: handle this when Not_applicable is a type *)
+      return ()
+  | Sum [] | Min_of [] | Max_of [] | Product [] ->
+      return ()
+  | Sum values | Min_of values | Max_of values ->
+      let* _ = check_each values ~mk_wip:(fun () -> Ast.mk_any_number ~pos) in
+      let fst_pos = Ast.get_first_element_pos_exn values in
+      let sum_typ = Ast.mk_number ~unit:None ~pos:fst_pos in
+      let* _ =
+        List.map values ~f:(fun (_, value_mark) ->
+            check_union sum_typ value_mark.typ )
+        |> all_okay
+      in
+      check_union sum_typ mark.typ
+  | Product values ->
+      let* typs =
+        check_each values ~mk_wip:(fun () -> Ast.mk_any_number ~pos)
+      in
+      let* product_typ =
+        match typs with
+        | hd :: rest ->
+            Output.fold rest ~init:hd ~f:(check_multiply ~pos)
+        | [] ->
+            failwith "unreachable"
+      in
+      check_union product_typ mark.typ
+  | All_of values | One_of values ->
+      let* _ =
+        List.map values
+          ~f:
+            (check_value
+               ~ctx:{ctx with parent_typ= Some (Ast.mk_any_bool ~pos)} )
+        |> all_okay
+      in
+      let bool_typ = Ast.mk_bool ~pos in
+      check_union bool_typ mark.typ
+  | Not_defined ->
+      return ()
+  | Variations (variations, value) ->
+      let any_typ = Ast.mk_any ~pos in
+      let check_branch_and_enumerate branch_value prev_typ =
+        let branch_typ = Ast.mk_any ~pos in
+        let* _ =
+          check_value branch_value ~ctx:{ctx with parent_typ= Some branch_typ}
+        in
+        check_enumerate ~pos prev_typ branch_typ
+      in
+      let* variations_typ =
+        Output.fold variations ~init:any_typ ~f:(fun prev_typ {if_; then_} ->
+            let* _ =
+              check_value if_
+                ~ctx:{ctx with parent_typ= Some (Ast.mk_any_bool ~pos)}
+            in
+            check_branch_and_enumerate then_ prev_typ )
+      in
+      let* variations_with_else_typ =
+        match value with
+        | None ->
+            return variations_typ
+        | Some else_ ->
+            check_branch_and_enumerate else_ variations_typ
+      in
+      check_union variations_with_else_typ mark.typ
 
-and check_chainable_mechanism ~replaces ~current ~(ast : Ast.wip_tree) ~contexts
-    ~(ptyp : Ast.typ) (chainable : Ast.wip_marked_chainable_mechanism) :
-    unit Output.t =
-  let check_value = check_value ~replaces ~current ~ast ~contexts in
+and check_chainable_mechanism
+    (chainable : Ast.typing_marked_chainable_mechanism) ~ctx =
   let chainable, mark = chainable in
   let pos = mark.pos in
-  let* _ =
-    match chainable with
-    | Context _ ->
-        (* already done in check_contexts *)
-        let* _ = check_union mark.typ ptyp in
+  let with_value_typ f =
+    match ctx.parent_typ with
+    | Some ptyp ->
+        let* _ = f ptyp in
         return ()
-    | Applicable_if value | Not_applicable_if value ->
-        let* _ =
-          let wip = Ast.mk_any_bool ~pos in
-          check_value ~ptyp:wip value
-        in
-        let* _ = check_union mark.typ ptyp in
-        return ()
-    | Type (typ, {Mark.pos}) ->
-        let wip = Ast.mk_typ ~pos typ in
-        let* _ = check_generalize wip ptyp in
-        let* _ = check_union wip mark.typ in
-        return ()
-    | Default value ->
-        let wip = Ast.mk_any ~pos in
-        let* _ = check_value ~ptyp:wip value in
-        let* wip = check_enumerate ~pos wip ptyp in
-        let* _ = check_union wip mark.typ in
-        let* _ = check_union mark.typ ptyp in
-        return ()
-    | Ceiling value | Floor value ->
-        let* wip =
-          let wip = Ast.mk_any_number ~pos in
-          let* _ = check_value ~ptyp:wip value in
-          return wip
-        in
-        let* _ = check_union wip mark.typ in
-        let* _ = check_union mark.typ ptyp in
-        return ()
-    | Round (_, value) ->
-        let* _ = check_value value in
-        let _, value_mark = value in
-        let typ, {Mark.pos} = UnionFind.get value_mark.typ in
-        let wip = Ast.mk_number_no_unit ~pos in
-        let* _ =
-          match typ with
-          | Any_bool _
-          | Ast.Literal (LBool _, _)
-          | TEnum ((LBool _, _) :: _)
-          | TBool ->
-              return ()
-          | Ast.Any_number unit
-          | Ast.Literal (LNumber (_, unit), _)
-          | TEnum ((LNumber (_, unit), _) :: _)
-          | TNumber unit ->
+    | None ->
+        failwith
+          "check_chainable_mechanism: type checking without parent type \
+           (corresponding to the value mechanism type). This should not \
+           happen."
+  in
+  match chainable with
+  | Context _ ->
+      (* Contexts needs to be checked before the value mechanism. *)
+      check_union_with_parent_typ ~ctx mark.typ
+  | Applicable_if value | Not_applicable_if value ->
+      let* _ =
+        check_value value ~ctx:{ctx with parent_typ= Some (Ast.mk_any_bool ~pos)}
+      in
+      check_union_with_parent_typ ~ctx mark.typ
+  | Type (typ, {Mark.pos}) ->
+      let type_def_typ = Ast.mk_typ ~pos typ in
+      with_value_typ (fun ptyp ->
+          let* _ = check_generalize type_def_typ ptyp ~grow:false in
+          check_union type_def_typ mark.typ )
+  | Default value ->
+      let default_typ = Ast.mk_any ~pos in
+      let* _ = check_value value ~ctx:{ctx with parent_typ= Some default_typ} in
+      with_value_typ (fun ptyp ->
+          let* default_typ = check_enumerate ~pos default_typ ptyp in
+          let* _ = check_union default_typ mark.typ in
+          check_union mark.typ ptyp )
+  | Ceiling value | Floor value ->
+      let* value_typ =
+        let value_typ = Ast.mk_any_number ~pos in
+        let* _ = check_value value ~ctx:{ctx with parent_typ= Some value_typ} in
+        return value_typ
+      in
+      let* _ = check_union value_typ mark.typ in
+      check_union_with_parent_typ ~ctx mark.typ
+  | Round (_, value) ->
+      let* _ = check_value value ~ctx:{ctx with parent_typ= None} in
+      let _, value_mark = value in
+      let typ, {Mark.pos} = UnionFind.get value_mark.typ in
+      let wip = Ast.mk_number ~unit:None ~pos in
+      let* _ =
+        if Ast.is_bool typ then return ()
+        else
+          match get_number_unit_opt typ with
+          | Some unit ->
               let concrete = Number_unit.to_concrete unit in
               if Units.equal concrete (Units.parse_unit "décimales") then
                 return ()
               else check_union value_mark.typ wip
-          | _ ->
+          | None ->
               let hints = ["arrondi doit être un nombre ou un booléen"] in
               error_typ_invalid ~hints value_mark.typ
-        in
-        let* _ = check_union wip mark.typ in
-        let* _ = check_union mark.typ ptyp in
-        return ()
-  in
-  return ()
+      in
+      let* _ = check_union wip mark.typ in
+      check_union_with_parent_typ ~ctx mark.typ
 
-(* Also fill contexts *)
-and check_contexts ~replaces ~current
-    ~(contexts : Ast.wip_value Rule_name.Hashtbl.t) ~(ast : Ast.wip_tree)
-    (chainables : Ast.wip_marked_chainable_mechanism list) : unit Output.t =
-  let* _ =
-    List.map chainables ~f:(fun (chainable, _) ->
-        match chainable with
-        | Context values ->
-            let* _ =
-              List.map values ~f:(fun ((ref, _), value) ->
-                  let* cont_typ =
-                    let rule_def, status = Hashtbl.find_exn ast ref in
-                    let* _ =
-                      if Ast.is_todo !status then
-                        check_rule_def ~replaces ~ast ~contexts rule_def
-                      else return ()
-                    in
-                    let {Shared_ast.value; _} = rule_def in
-                    let _, cont_mark = value in
-                    return cont_mark.typ
-                  in
-                  let* val_typ =
-                    let* _ =
-                      check_value ~replaces ~current ~ast ~contexts value
-                    in
-                    let _, value_mark = value in
-                    return value_mark.typ
-                  in
-                  let* _ = check_generalize cont_typ val_typ in
-                  Hashtbl.set contexts ~key:ref ~data:value ;
-                  return () )
-              |> all_okay
-            in
-            return ()
-        | _ ->
-            return () )
-    |> all_okay
+and check_contexts (chainables : Ast.typing_marked_chainable_mechanism list)
+    ~ctx =
+  let check_context_entry ref_name value =
+    let* ref_rule_typ =
+      let rule_def, _ = Hashtbl.find_exn ctx.ast ref_name in
+      let* _ = check_rule_def rule_def ~ctx in
+      let value_mark = Mark.get rule_def.value in
+      return value_mark.typ
+    in
+    let* val_typ =
+      let* _ = check_value value ~ctx:{ctx with parent_typ= None} in
+      let _, value_mark = value in
+      return value_mark.typ
+    in
+    let* _ = check_generalize ref_rule_typ val_typ in
+    Hashtbl.set ctx.rules_type ~key:ref_name ~data:value ;
+    return ()
   in
-  return ()
+  List.map chainables ~f:(fun (chainable, _) ->
+      match chainable with
+      | Context values ->
+          let* _ =
+            List.map values ~f:(fun ((ref, _), value) ->
+                check_context_entry ref value )
+            |> all_okay
+          in
+          return ()
+      | _ ->
+          return () )
+  |> all_okay
 
-and check_value ~replaces ~current ~(ast : Ast.wip_tree) ~contexts ?ptyp
-    (value : Ast.wip_value) : unit Output.t =
-  let {Shared_ast.value; chainable_mechanisms}, root = value in
-  let* _ =
-    check_contexts ~replaces ~current ~contexts ~ast chainable_mechanisms
+and check_value value ~ctx =
+  let Shared_ast.{value= value_mecha; chainable_mechanisms}, value_mark =
+    value
   in
-  let* _ = check_value_mechanism ~replaces ~current ~ast ~contexts value in
-  let _, mark = value in
-  let* typ =
-    List.sort chainable_mechanisms ~compare:(fun (a, _) (b, _) ->
-        Shared_ast.compare_chainable_mechanism Shared.Rule_name.compare
-          Ast.compare_wip_mark a b )
-    |> Output.fold ~init:mark.typ ~f:(fun ptyp chainable ->
+  (* We need to check the contexts first, because this can narrow the expected
+     type of references in the value mechanism. *)
+  let* _ = check_contexts chainable_mechanisms ~ctx in
+  let* _ = check_value_mechanism value_mecha ~ctx in
+  let _, value_mecha_mark = value_mecha in
+  let* chainable_typ =
+    Ast.get_sorted_chainable_mechanisms chainable_mechanisms
+    |> Output.fold ~init:value_mecha_mark.typ ~f:(fun value_typ chainable ->
         let* _ =
-          check_chainable_mechanism ~replaces ~current ~ast ~contexts ~ptyp
-            chainable
+          check_chainable_mechanism chainable
+            ~ctx:{ctx with parent_typ= Some value_typ}
         in
         let _, mark = chainable in
         return mark.typ )
   in
-  let* _ = check_union typ root.typ in
-  let* _ =
-    match ptyp with
-    | None ->
-        return ()
-    | Some ptyp ->
-        let* _ = check_union mark.typ ptyp in
-        return ()
-  in
-  return ()
+  let* _ = check_union chainable_typ value_mark.typ in
+  check_union_with_parent_typ ~ctx value_mark.typ
 
-and check_rule_def ~replaces ~(ast : Ast.wip_tree) ?contexts
-    (rule_def : Ast.wip_rule_def) : unit Output.t =
-  let _, status = Hashtbl.find_exn ast (Mark.remove rule_def.name) in
-  if not (Ast.is_todo !status) then failwith "already done" ;
-  status := Ast.Doing ;
-  let contexts =
-    match contexts with
-    | None ->
-        Hashtbl.create (module Shared.Rule_name) ~growth_allowed:true
-    | Some contexts ->
-        contexts
-  in
-  let {Shared_ast.value; name= current, _; _} = rule_def in
-  let res =
-    let* _ = check_value ~replaces ~current ~ast ~contexts value in
-    let _, mark = value in
-    (* TODO: better pos to notice this? *)
-    match List.hd rule_def.make_not_applicable with
-    | None ->
-        return ()
-    | Some hd ->
-        let typ = Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in
-        check_union typ mark.typ
-  in
-  match res with
-  | None, logs ->
-      status := Ast.Error ;
-      break ~logs ()
-  | Some _, logs ->
-      status := Ast.Done ;
-      break ~logs ()
+and check_make_not_applicable
+    (make_not_applicable : 'ref Shared_ast.replace list) ~ptyp =
+  match make_not_applicable with
+  | [] ->
+      return ()
+  | hd :: _ ->
+      let typ = Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in
+      check_union typ ptyp
 
-let type_check ~replaces (ast : Ast.wip_tree) : unit Output.t =
+and check_rule_def rule_def ~ctx =
+  let rule_name = Mark.remove rule_def.name in
+  let _, typing_state = Hashtbl.find_exn ctx.ast rule_name in
+  if not (Ast.is_todo typing_state) then return ()
+  else (
+    Ast.set_typing_state ctx.ast rule_def Ast.Doing ;
+    let Shared_ast.{value; name= current_rule, _; _} = rule_def in
+    let res =
+      let* _ =
+        let ctx = reset_context ctx ~current_rule in
+        check_value value ~ctx
+      in
+      let _, mark = value in
+      check_make_not_applicable rule_def.make_not_applicable ~ptyp:mark.typ
+    in
+    match res with
+    | None, logs ->
+        Ast.set_typing_state ctx.ast rule_def Ast.Error ;
+        break ~logs ()
+    | Some _, logs ->
+        Ast.set_typing_state ctx.ast rule_def Ast.Done ;
+        break ~logs () )
+
+let type_check ~replaces ast =
+  let ctx = get_init_context ~ast ~replacements:replaces in
   let* _ =
-    Hashtbl.to_alist ast |> List.map ~f:snd
-    |> List.sort
-         ~compare:(fun
-             ({Shared_ast.name= _, {Mark.pos= p1}; _}, _)
-             ({Shared_ast.name= _, {Mark.pos= p2}; _}, _)
-           -> Pos.compare p1 p2 )
-    |> List.map ~f:(fun (rule_def, status) ->
-        if Ast.is_todo !status then check_rule_def ~replaces ~ast rule_def
-        else return () )
+    Ast.get_sorted_rule_defs ast
+    |> List.map ~f:(check_rule_def ~ctx)
     |> all_okay
   in
   return ()

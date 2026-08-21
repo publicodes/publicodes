@@ -1,0 +1,27 @@
+type nombre:
+  avec:
+    number without unit:
+      type: nombre
+      valeur: 12
+
+    number with unit:
+      type: nombre
+      valeur: 12 €
+
+
+not compatible type should fail:
+  type: texte
+  valeur: 10 > 2
+
+# NOTE: is it really wanted
+can't declare literal type:
+  avec:
+    symbol:
+      type: 'foo'
+
+    number:
+      type: 10
+
+    texte:
+      type: "foo"
+

@@ -52,6 +52,7 @@ module Code = struct
     | Unused_context
     | Parsing_no_rules
     | Type_missing_enums
+    | Type_exponent_with_unit
   [@@deriving equal, enum, show]
 
   let show = fun code -> Stdlib.Format.sprintf "E%03d" (to_enum code)
@@ -182,3 +183,7 @@ let unused_context =
 
 let no_rules =
   (Code.Parsing_no_rules, "aucune règle trouvée dans le fichier ou le stream")
+
+let pow_exponent_with_unit =
+  ( Code.Type_exponent_with_unit
+  , "l'exposant d'une puissance ne devrait pas avoir d'unité" )
