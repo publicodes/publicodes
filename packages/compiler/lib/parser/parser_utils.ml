@@ -141,3 +141,13 @@ let map_value ~pos ~f ?default (mapping : mapping) key =
         let code, message = Err.parsing_invalid_mechanism in
         let hint = Stdlib.Format.asprintf "clef `%s` attendue" key in
         Output.fatal_error ~pos ~kind:`Syntax ~code message ~hints:[hint] )
+
+let get_float ~pos value =
+  match Float.of_string_opt value with
+  | Some value ->
+      Output.return value
+  | None ->
+      let code, message = Err.invalid_value in
+      Output.fatal_error ~pos ~kind:`Syntax ~code
+        ~hints:["valeure flotante invalide"]
+        message
