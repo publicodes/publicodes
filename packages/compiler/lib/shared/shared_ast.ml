@@ -62,10 +62,15 @@ type ('ref, 'mark) value_mechanism =
   | One_of of ('ref, 'mark) value list
   | Not_defined
   | Variations of (('ref, 'mark) variation list * ('ref, 'mark) value option)
+  | Root_finding of ('ref, 'mark) root_finding
 [@@deriving equal, compare, show, sexp]
 
 and ('ref, 'mark) variation =
   {if_: ('ref, 'mark) value; then_: ('ref, 'mark) value}
+[@@deriving equal, compare, show, sexp]
+
+and ('ref, 'mark) root_finding =
+  {with_: 'ref Mark.pos list; tolerance: float; min: float; max: float}
 [@@deriving equal, compare, show, sexp]
 
 (* The order of chainable mechanisms matters here: it is used to determine the
@@ -218,3 +223,12 @@ let get_applicable_on_namespace_exn rule_def =
   List.find_exn
     ~f:(function Applicable_on_namespace, _ -> true | _ -> false)
     rule_def.meta
+
+let get_extra_parameters rule_def =
+  let value = Mark.remove rule_def.value in
+  match Mark.remove value.value with
+  | Root_finding root_finding ->
+      let with_ = List.map root_finding.with_ ~f:Mark.remove in
+      Some with_
+  | _ ->
+      None
