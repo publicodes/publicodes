@@ -1,0 +1,143 @@
+diff --git a/packages/compiler/lib/typing/type_check.ml b/packages/compiler/lib/typing/type_check.ml
+index 9cdd784f2f..003b1a840a 100644
+--- a/packages/compiler/lib/typing/type_check.ml
++++ b/packages/compiler/lib/typing/type_check.ml
+@@ -64,17 +64,6 @@
+   let t1, {Mark.pos= pos1} = m1 in
+   let t2, {Mark.pos= pos2} = m2 in
+   match (t1, t2) with
+-  (* Merge Anys *)
+-  | Ast.Any _, Ast.Any _ ->
+-      (* Merge them *)
+-      let _ = UnionFind.union u1 u2 in
+-      return ()
+-  | Ast.Any _, _ ->
+-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+-      return ()
+-  | _, Ast.Any _ ->
+-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+-      return ()
+   (* Check Any Number *)
+   | Ast.Any_number unit1, Ast.Any_number unit2
+   | Ast.Literal (LNumber (_, unit1), _), Ast.Any_number unit2
+@@ -89,81 +78,6 @@
+       let* _ = Number_unit.unify ~pos1 ~pos2 unit1 unit2 in
+       let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+       return ()
+-  (* Check Any Bool *)
+-  | Ast.Any_bool _, Ast.Any_bool _ ->
+-      (* Merge them *)
+-      let _ = UnionFind.union u1 u2 in
+-      return ()
+-  | Ast.Literal (LBool _, _), Ast.Any_bool _
+-  | TBool, Ast.Any_bool _
+-  | TEnum ((LBool _, _) :: _), Ast.Any_bool _ ->
+-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+-      return ()
+-  | Ast.Any_bool _, Ast.Literal (LBool _, _)
+-  | Ast.Any_bool _, TBool
+-  | Ast.Any_bool _, TEnum ((LBool _, _) :: _) ->
+-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+-      return ()
+-  (* Check Any String *)
+-  | Ast.Any_string _, Ast.Any_string _ ->
+-      (* Merge them *)
+-      let _ = UnionFind.union u1 u2 in
+-      return ()
+-  | Ast.Literal (LString _, _), Ast.Any_string _
+-  | TString, Ast.Any_string _
+-  | TEnum ((LString _, _) :: _), Ast.Any_string _ ->
+-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+-      return ()
+-  | Ast.Any_string _, Ast.Literal (LString _, _)
+-  | Ast.Any_string _, TString
+-  | Ast.Any_string _, TEnum ((LString _, _) :: _) ->
+-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+-      return ()
+-  (* Check Any Date *)
+-  | Ast.Any_date _, Ast.Any_date _ ->
+-      (* Merge them *)
+-      let _ = UnionFind.union u1 u2 in
+-      return ()
+-  | Ast.Literal (LDate _, _), Ast.Any_date _
+-  | TDate, Ast.Any_date _
+-  | TEnum ((LDate _, _) :: _), Ast.Any_date _ ->
+-      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
+-      return ()
+-  | Ast.Any_date _, Ast.Literal (LDate _, _)
+-  | Ast.Any_date _, TDate
+-  | Ast.Any_date _, TEnum ((LDate _, _) :: _) ->
+-      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
+-      return ()
+-  (* Check Strings *)
+-  | Ast.Literal (LString _, _), Ast.Literal (LString _, _)
+-  | Ast.TString, Ast.TString
+-  | Ast.TString, Ast.Literal (LString _, _)
+-  | Ast.Literal (LString _, _), Ast.TString
+-  | Ast.TEnum ((LString _, _) :: _), Ast.TString
+-  | Ast.TEnum ((LString _, _) :: _), Ast.Literal (LString _, _)
+-  | Ast.TString, Ast.TEnum ((LString _, _) :: _)
+-  | Ast.Literal (LString _, _), Ast.TEnum ((LString _, _) :: _) ->
+-      return ()
+-  (* Check Bools *)
+-  | Ast.Literal (LBool _, _), Ast.Literal (LBool _, _)
+-  | Ast.TBool, Ast.TBool
+-  | Ast.TBool, Ast.Literal (LBool _, _)
+-  | Ast.Literal (LBool _, _), Ast.TBool
+-  | TEnum ((LBool _, _) :: _), Ast.Literal (LBool _, _)
+-  | TEnum ((LBool _, _) :: _), Ast.TBool
+-  | Ast.Literal (LBool _, _), TEnum ((LBool _, _) :: _)
+-  | Ast.TBool, TEnum ((LBool _, _) :: _) ->
+-      return ()
+-  (* Check Date *)
+-  | Ast.Literal (LDate _, _), Ast.Literal (LDate _, _)
+-  | Ast.TDate, Ast.TDate
+-  | Ast.TDate, Ast.Literal (LDate _, _)
+-  | Ast.Literal (LDate _, _), Ast.TDate
+-  | Ast.TEnum ((LDate _, _) :: _), Ast.TDate
+-  | Ast.TEnum ((LDate _, _) :: _), Ast.Literal (LDate _, _)
+-  | Ast.TDate, Ast.TEnum ((LDate _, _) :: _)
+-  | Ast.Literal (LDate _, _), Ast.TEnum ((LDate _, _) :: _) ->
+-      return ()
+   (* Check Number *)
+   | Ast.Literal (LNumber (_, u1), _), Ast.Literal (LNumber (_, u2), _)
+   | Ast.TNumber u1, Ast.TNumber u2
+@@ -192,6 +106,38 @@
+       in
+       if List.is_empty missing then return ()
+       else error_missing_enums missing u1 u2
++  | ty1, ty2 when Ast.is_any_equal ty1 ty2 ->
++      let _ = UnionFind.union u1 u2 in
++      return ()
++  | Ast.Any _, _ ->
++      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
++      return ()
++  | _, Ast.Any _ ->
++      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
++      return ()
++  (* Check Any String *)
++  | ty, Ast.Any_string _ when Ast.is_any_string ty ->
++      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
++      return ()
++  | Ast.Any_string _, ty when Ast.is_any_string ty ->
++      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
++      return ()
++  (* Check Any Bool *)
++  | ty, Ast.Any_bool _ when Ast.is_any_bool ty ->
++      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
++      return ()
++  | Ast.Any_bool _, ty when Ast.is_any_bool ty ->
++      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
++      return ()
++  (* Check Any Date *)
++  | ty, Ast.Any_date _ when Ast.is_any_date ty ->
++      let _ = UnionFind.merge (fun a _ -> a) u1 u2 in
++      return ()
++  | Ast.Any_date _, ty when Ast.is_any_date ty ->
++      let _ = UnionFind.merge (fun _ b -> b) u1 u2 in
++      return ()
++  | type1, type2 when Ast.equal_type type1 type2 ->
++      return ()
+   | _, _ ->
+       error_typ_mismatch u1 u2
+ 

@@ -141,3 +141,11 @@ let to_string t =
           "1"
       | parts ->
           String.concat ~sep:"." parts )
+
+let equal (u1 : t) (u2 : t) =
+  let n1 = normalize u1 in
+  let n2 = normalize u2 in
+  Units.equal n1.concrete n2.concrete
+  && List.for_all n1.elem ~f:(fun e1 ->
+      List.exists n2.elem ~f:(UnionFind.eq e1) )
+  && List.for_all n1.inv ~f:(fun e1 -> List.exists n2.inv ~f:(UnionFind.eq e1))
