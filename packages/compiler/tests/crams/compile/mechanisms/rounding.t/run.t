@@ -41,10 +41,10 @@ Bad types for arrondi :
    Hint: arrondi doit être un nombre ou un booléen
   
   E022 type invalide détecté [type error]
-       ╒══  type_error/rules.publicodes:16:1 ══
-    15 │ 
-    16 │ x:
-       │ ˘˘ est n'importe quelle valeur
+       ╒══  type_error/rules.publicodes:19:12 ══
+    18 │   valeur: 5€
+    19 │   arrondi: x
+       │            ˘ est n'importe quelle valeur
    Hint: arrondi doit être un nombre ou un booléen
   [123]
 

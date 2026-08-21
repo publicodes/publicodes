@@ -16,8 +16,8 @@ Ok puissance :
         $evaluate(_a, params, options),
       /** @type {"number"} */
       type: "number",
-      /** @type {"euros"} */
-      unit: "euros",
+      /** @type {"aucune"} */
+      unit: "aucune",
       /**
        * Parameter list for "a"
        * @type {Array<keyof aParams>}

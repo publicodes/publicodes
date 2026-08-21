@@ -231,6 +231,7 @@ let print (log : Log.t) =
          | [] ->
              [format_code_excerpt ~pos:position level_tag]
          | labels ->
+             (* FIXME: should show the position too *)
              List.map
                ~f:(fun label ->
                  let message = Mark.remove label in

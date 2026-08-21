@@ -72,3 +72,6 @@ val message : t -> string
 
 val level : t -> level
 (** [level log] gets the severity level of a log entry. *)
+
+val equal_err : t -> Err.t -> bool
+(** [equal_err log err] checks if the log entry corresponds to the given error code. *)

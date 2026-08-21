@@ -25,6 +25,7 @@ let parse_possibility ~pos (mapping : Yaml_parser.mapping) =
       match Mark.remove value with
       | `A consts ->
           let* symbols =
+            (* FIXME: we should handle all the literals here, not just symbols. *)
             List.map consts ~f:(parse_symbol ~pos) |> all_keep_logs
           in
           return (Shared_ast.Type (Mark.mk_pos ~pos (TEnum symbols)))
