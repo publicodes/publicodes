@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "58f4b492_1faf4d38",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-08-21T06:36:05Z",
+      "side": 1,
+      "message": "J\u0027ai retiré l\u0027affichage des unités des nombres lors des erreurs de type checking.",
+      "revId": "ad7274a37ed8feacbcc946951dae7fd5561d7f4a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}

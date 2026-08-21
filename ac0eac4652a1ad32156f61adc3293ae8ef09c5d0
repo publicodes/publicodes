@@ -18,6 +18,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "729e5533_90bd94cc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-08-21T06:36:05Z",
+      "side": 1,
+      "message": "Oui c\u0027est parce qu\u0027une règle qui en rend une autre non applicable doit être un booléen. Considérons:\n\n```yaml\na:\n  rend non applicable: b\n  valeur: \"foo\"\nb: 12\n```\n\n```\nE023 types non cohérents entre eux [type error]\n     ╒══  src/main.publicodes:2:24 ══\n   1 │ a:\n   2 │   rend non applicable: b\n     │                        ˘ est n\u0027importe quel booléan\n     ╒══  src/main.publicodes:3:11 ══\n   2 │   rend non applicable: b\n   3 │   valeur: \"foo\"\n     │           ˘˘˘˘˘ est le texte \"foo\"\n```\n\nJ\u0027avais mis un TODO parce que je m\u0027étais faite la même remarque:\n\n```\n    (* TODO: better pos to notice this? *)\n    match List.hd rule_def.make_not_applicable with\n    | None -\u003e\n        return ()\n    | Some hd -\u003e\n        let typ \u003d Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in\n        check_union typ mark.typ\n```\n\nPositionner l\u0027erreur sur la valeur n\u0027aide pas du tout:\n\n```\nE023 types non cohérents entre eux [type error]\n     ╒══  src/main.publicodes:1:1 ══\n   1 │ a:\n     │ ˘˘ est n\u0027importe quel booléan\n     ╒══  src/main.publicodes:3:11 ══\n   2 │   rend non applicable: b\n   3 │   valeur: \"foo\"\n     │           ˘˘˘˘˘ est le texte \"foo\"\n```\n\nUne fois encore, ajouter un label de ce qu\u0027on chercher à évaluer, ici le \"rend non applicable\" suffirait je pense.",
+      "parentUuid": "466a2312_fe4e735d",
+      "revId": "ac0eac4652a1ad32156f61adc3293ae8ef09c5d0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "55599afe_fd33530d",
@@ -31,6 +49,30 @@
       "writtenOn": "2026-08-20T16:41:19Z",
       "side": 1,
       "message": "Pourquoi ne prendre en compte uniquement les remplacements et pas les rend non applicable ?\n\nJe me demande s\u0027y on ne pourrait pas avoir un unique graphe d\u0027ailleurs 🤔",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 2
+      },
+      "revId": "ac0eac4652a1ad32156f61adc3293ae8ef09c5d0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c6b45041_bb952303",
+        "filename": "packages/compiler/lib/typing/typing.mli",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-08-21T06:36:05Z",
+      "side": 1,
+      "message": "En fait on a pas vraiment besoin de savoir qui remplace quoi. Tout ce qu\u0027on a peux actuellement faire c\u0027est typer les règles avec des \"rend non applicable\" en booléen, et on a déjà cette information avec les rule_defs.",
+      "parentUuid": "55599afe_fd33530d",
       "range": {
         "startLine": 4,
         "startChar": 0,
