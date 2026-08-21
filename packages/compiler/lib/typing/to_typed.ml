@@ -69,7 +69,7 @@ let transform_typ typ =
       in
       Some (Typ.TEnum values)
 
-let rec to_expr (expr : Ast.wip_expr) : Shared_ast.typed_expr Output.t =
+let rec to_expr (expr : Ast.typing_expr) : Shared_ast.typed_expr Output.t =
   let expr, mark = expr in
   let {Ast.pos; typ} = mark in
   let typ, _ = UnionFind.get typ in
@@ -97,7 +97,7 @@ let rec to_expr (expr : Ast.wip_expr) : Shared_ast.typed_expr Output.t =
       let* value = to_expr value in
       return (Shared_ast.Unary_op (op, value), {Shared_ast.pos; typ})
 
-and to_value_mechanism (value : Ast.wip_value_mechanism) :
+and to_value_mechanism (value : Ast.typing_value_mechanism) :
     Shared_ast.typed_value_mechanism Output.t =
   match value with
   | Expr expr ->
@@ -151,7 +151,7 @@ and to_value_mechanism (value : Ast.wip_value_mechanism) :
       in
       Shared_ast.Variations (variations, value)
 
-and to_chainable_mechanism (chainable : Ast.wip_chainable_mechanism) :
+and to_chainable_mechanism (chainable : Ast.typing_chainable_mechanism) :
     Shared_ast.typed_chainable_mechanism Output.t =
   match chainable with
   | Context values ->
@@ -184,7 +184,7 @@ and to_chainable_mechanism (chainable : Ast.wip_chainable_mechanism) :
       let+ value = to_value value in
       Shared_ast.Round (rounding, value)
 
-and to_value (value : Ast.wip_value) : Shared_ast.typed_value Output.t =
+and to_value (value : Ast.typing_value) : Shared_ast.typed_value Output.t =
   let {Shared_ast.value; chainable_mechanisms}, mark = value in
   let* value =
     let value, mark = value in
@@ -211,13 +211,13 @@ and to_value (value : Ast.wip_value) : Shared_ast.typed_value Output.t =
   in
   return ({Shared_ast.value; chainable_mechanisms}, {Shared_ast.pos; typ})
 
-let to_rule_def (rule_def : Ast.wip_rule_def) :
+let to_rule_def (rule_def : Ast.typing_rule_def) :
     Shared_ast.typed_rule_def Output.t =
   let {Shared_ast.value; _} = rule_def in
   let* value = to_value value in
   return {rule_def with value}
 
-let to_typed (ast : Ast.wip_tree) : Shared_ast.typed Output.t =
+let to_typed (ast : Ast.typing_tree) : Shared_ast.typed Output.t =
   let* rule_defs =
     Hashtbl.to_alist ast |> List.map ~f:snd
     |> List.sort
