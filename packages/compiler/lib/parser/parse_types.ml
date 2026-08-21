@@ -4,12 +4,17 @@ open Yaml_parser
 
     - [error_if_undefined]: optional flag to control error reporting for undefined values
     - [pos]: the position in the source file for error reporting
+    - [is_root]: checks that the mechanism is defined as rule root
     - [yaml]: the YAML value to parse
 
     And returns the parsed AST value wrapped in an [Output.t] for error handling.
 *)
 type parse_value_fn =
-  ?error_if_undefined:bool -> pos:Pos.t -> yaml -> Ast.value Output.t
+     ?error_if_undefined:bool
+  -> ?is_root:bool
+  -> pos:Pos.t
+  -> yaml
+  -> Ast.value Output.t
 
 (** Type for parsing mechanism functions.
 
