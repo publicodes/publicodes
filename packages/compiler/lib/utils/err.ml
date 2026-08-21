@@ -53,6 +53,7 @@ module Code = struct
     | Parsing_no_rules
     | Type_missing_enums
     | Type_exponent_with_unit
+    | Invalid_root_finding
   [@@deriving equal, enum, show]
 
   let show = fun code -> Stdlib.Format.sprintf "E%03d" (to_enum code)
@@ -180,6 +181,11 @@ let import_cycle = (Code.Cycle_detected, "cycle d'import détecté")
 
 let unused_context =
   (Code.Unused_context, "certaines règles du contexte sont non utilisées")
+
+let invalid_root_finding =
+  ( Code.Invalid_root_finding
+  , "la rêgle fournie pour résoudre l'inversion numérique ne dépends pas en \
+     retour de la rêgle" )
 
 let no_rules =
   (Code.Parsing_no_rules, "aucune règle trouvée dans le fichier ou le stream")

@@ -8,8 +8,8 @@ open Expr
 (* Parse a value (mechanisms or scalar) *)
 
 (** FIXME: should handle creating value with dummy mark *)
-let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
-    Ast.value Output.t =
+let rec parse_value ?(error_if_undefined = true) ?(is_root = false) ~pos
+    (yaml : yaml) : Ast.value Output.t =
   match yaml with
   | `Scalar ({value; style}, {pos= value_pos}) -> (
     match style with
@@ -49,7 +49,8 @@ let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
       let* value =
         (* NOTE: pourquoi avoir la fonction parse comme arguement si c'est
 				 toujours la même ? *)
-        Parse_mechanisms.parse_value_mechanism ~pos ~parse:parse_value mapping
+        Parse_mechanisms.parse_value_mechanism ~pos ~parse:parse_value ~is_root
+          mapping
       in
       let* chainable_mechanisms =
         Parse_mechanisms.parse_chainable_mechanisms ~parse:parse_value mapping

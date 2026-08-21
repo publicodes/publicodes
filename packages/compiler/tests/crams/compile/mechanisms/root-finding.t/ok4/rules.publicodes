@@ -1,0 +1,14 @@
+a:
+  valeur: b + c + d + 10
+  contexte:
+    b: 10
+b:
+c:
+d:
+  inversion numérique:
+    avec:
+      - a
+    min: 0
+    max: 100000
+  contexte:
+    c: 10

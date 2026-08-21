@@ -207,6 +207,12 @@
 		["{{ r }}", {{ fmt_method(r) }}]{%- if !loop.last -%}, {% endif -%}
 		{%- endfor -%}
 	], ctx, params)
+	{%- case "root_finding" -%}
+		$root_finding("{{ node_value.rule }}", [
+			{%- for c in node_value.with_ -%}
+				["{{ c }}", {{ fmt_method(c) }}]{%- if !loop.last -%}, {% endif -%}
+			{%- endfor -%}
+		], {{ node_value.min }}, {{ node_value.max }}, {{ node_value.tolerance }}, ctx, params)
 	{%- default -%}
 		>>>> Templating error: unknown rule type "{{ rule_type }}" <<<<
 	{%- endswitch -%}
