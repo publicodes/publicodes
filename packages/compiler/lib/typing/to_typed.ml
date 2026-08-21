@@ -117,6 +117,8 @@ and to_value_mechanism (value : Ast.typing_value_mechanism) :
             Some value
       in
       Shared_ast.Variations (variations, value)
+  | Root_finding {with_; tolerance; min; max} ->
+      Output.return @@ Shared_ast.Root_finding {with_; tolerance; min; max}
 
 and to_chainable_mechanism (chainable : Ast.typing_chainable_mechanism) :
     Shared_ast.typed_chainable_mechanism Output.t =
