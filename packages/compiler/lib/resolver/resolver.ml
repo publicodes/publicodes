@@ -219,7 +219,7 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
   in
   return {rule with value; replace; make_not_applicable}
 
-let to_resolved_ast (ast : Parser.Ast.t) : resolved Output.t =
+let from_surface_ast (ast : Parser.Ast.t) : resolved Output.t =
   let rule_names =
     Set.of_list
       (module Rule_name)

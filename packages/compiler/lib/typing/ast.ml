@@ -43,7 +43,7 @@ let sort_enum enum =
   List.sort enum ~compare:(fun (_, {Mark.pos= p1}) (_, {Mark.pos= p2}) ->
       Pos.compare p1 p2 )
 
-let to_string ~sep : t -> string = function
+let to_string ?(sep = ",") = function
   | Any _ ->
       "n'importe quelle valeur"
   | Any_number _ ->

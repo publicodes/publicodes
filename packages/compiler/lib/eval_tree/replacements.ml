@@ -1,7 +1,5 @@
 open Base
 open Shared
-open Utils
-open Output
 
 (* Find all eligible replacements for a rule reference *)
 let find_eligible_replacements ~rule ~reference graph =
@@ -46,7 +44,6 @@ let create_exclusive_replacement_node ~pos ~replacement_list ~node =
 (* Apply rule replacements to a tree *)
 let transform ~(replacement_graph : Replacement_graph.Rule_graph.t)
     ~(make_not_applicable_graph : Replacement_graph.Rule_graph.t) rule value =
-  let logs = ref [] in
   (* Apply rule replacements to an evaluation tree *)
   let rec apply_to_node ~(rule : Rule_name.t) (node : 'a option Tree.value) :
       'a option Tree.value =
@@ -89,5 +86,4 @@ let transform ~(replacement_graph : Replacement_graph.Rule_graph.t)
     | _ ->
         node
   in
-  let updated_tree = Tree.map_value value ~f:(apply_to_node ~rule) in
-  return ~logs:!logs updated_tree
+  Tree.map_value value ~f:(apply_to_node ~rule)

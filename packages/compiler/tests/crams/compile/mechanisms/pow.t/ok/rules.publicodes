@@ -1,6 +1,7 @@
 a:
+  public: oui
   valeur: b ** 2
-  public: oui
+
 b:
-  valeur: 4 euros
   public: oui
+  valeur: 4 euros

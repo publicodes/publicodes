@@ -328,10 +328,10 @@ Should correctly report missing type information for public rules:
   
   E024
   information de type manquante pour ce résultat [type warning]
-       ╒══  ./errors/missing_type/rules.publicodes:6:11 ══
-     5 │   public: oui
-     6 │   valeur: résultat paramètre
-       │           ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
+       ╒══  ./errors/missing_type/rules.publicodes:4:1 ══
+     3 │ 
+     4 │ résultat:
+       │ ˘˘˘˘˘˘˘˘˘
    Hint: Spécifiez le type de la règle.
    Hint: Par exemple :
          
@@ -443,7 +443,7 @@ Replaces should cause enumerations:
 Should correctly infer types from context usage:
   $ publicodes compile ./context/ok -o - | ../../scripts/get_rule_types.awk
   'simple ok':
-    value: 4.000000
+    value: number
     type: "number",
     unit: "euros",
   'simple ok . ref':
@@ -455,7 +455,7 @@ Should correctly infer types from context usage:
     type: "number",
     unit: "euros",
   'nested ok . ref':
-    value: number
+    value: 4.000000
     type: "number",
     unit: "euros",
 

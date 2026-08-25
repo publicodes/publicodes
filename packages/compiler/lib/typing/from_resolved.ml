@@ -146,7 +146,7 @@ let transform_rule_def (rule_def : Shared_ast.resolved_rule_def) :
 let from_resolved (ast : Shared_ast.resolved) : Ast.typing_tree =
   List.map ast ~f:transform_rule_def
   |> List.map ~f:(fun rule_def ->
-      let {Shared_ast.name; _} = rule_def in
+      let Shared_ast.{name; _} = rule_def in
       (Mark.remove name, (rule_def, Ast.Todo)) )
   |> List.stable_dedup ~compare:(fun (name1, _) (name2, _) ->
       Rule_name.compare name1 name2 )
