@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "55279746_dc6be39f",
+        "filename": "packages/compiler/lib/compiler.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-08-25T18:34:28Z",
+      "side": 1,
+      "message": "Je ne suis pas sûre que ce soit le meilleur endroit pour le mettre mais je n\u0027ai rien trouvé de meilleur pour l\u0027instant.",
+      "range": {
+        "startLine": 22,
+        "startChar": 4,
+        "endLine": 22,
+        "endChar": 28
+      },
+      "revId": "8a2f9eee2be8c4e051413bf90646c9c45e6fec06",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
