@@ -92,6 +92,15 @@ val all_keep_logs : ?default:'a -> 'a t list -> 'a list t
 val all_okay : 'a t list -> 'a list t
 
 val fold : 'a list -> init:'b -> f:('b -> 'a -> 'b t) -> 'b t
+(** [fold lst ~init ~f] folds over the list [lst] with the function [f],
+    starting from the initial value [init]. If [f] returns an error, the computation
+    is interrupted and the logs are returned. *)
+
+val fold_no_interrupt : 'a list -> init:'b -> f:('b -> 'a -> 'b t) -> 'b t
+(** [fold_no_interrupt lst ~init ~f] folds over the list [lst] with the function [f],
+    starting from the initial value [init]. Unlike {!fold}, this function does not
+    interrupt the computation if [f] returns an error. Instead, it collects all logs
+    and continues folding over the rest of the list. *)
 
 val fold_right : 'a list -> f:('a -> 'b -> 'b t) -> init:'b -> 'b t
 
