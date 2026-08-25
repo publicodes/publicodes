@@ -5,10 +5,7 @@
     that the [typing_tree] is updated in place and enriched with the inferred
     types. *)
 
-val type_check :
-     replaces:Replacement_graph.Rule_graph.t
-  -> Ast.typing_tree
-  -> Base.unit Utils.Output.t
-(** [type_check ~replaces typing_tree] infers types of the internal
+val type_check : Ast.typing_tree -> Replacement_graph.t -> unit Utils.Output.t
+(** [type_check typing_tree replacement_graph] infers types of the internal
     [typing_tree] and returns possible type errors as the [typing_tree] is
     updated in place. *)

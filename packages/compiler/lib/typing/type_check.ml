@@ -710,8 +710,8 @@ and check_rule_def rule_def ~ctx =
         Ast.set_typing_state ctx.ast rule_def Ast.Done ;
         Output.break ~logs () )
 
-let type_check ~replaces ast =
-  let ctx = get_init_context ~ast ~replacements:replaces in
+let type_check ast replacements : unit Output.t =
+  let ctx = get_init_context ~ast ~replacements in
   let* _ =
     Ast.get_sorted_rule_defs ast
     |> List.map ~f:(check_rule_def ~ctx)

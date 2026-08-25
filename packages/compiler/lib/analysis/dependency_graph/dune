@@ -1,8 +1,7 @@
 (library
- (inline_tests)
  (name dependency_graph)
- (public_name publicodes.dependency_graph)
- (libraries base replacement_graph eval_tree ocamlgraph utils shared)
+ (public_name publicodes.analysis.dependency_graph)
+ (libraries replacement_graph utils shared base ocamlgraph)
  (modules :standard)
  (preprocess
   (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

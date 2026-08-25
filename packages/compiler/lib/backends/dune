@@ -1,7 +1,7 @@
 (library
  (inline_tests)
- (name renderer)
- (public_name publicodes.renderer)
+ (name backends)
+ (public_name publicodes.backends)
  (libraries base eval_tree shared jingoo)
  (modules :standard)
  (preprocess
