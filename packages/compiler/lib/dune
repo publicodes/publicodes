@@ -3,17 +3,15 @@
  (name compiler)
  (public_name publicodes.compiler)
  (libraries
-  base
-  dependency_graph
-  eval_tree
-  renderer
-  parser
-  replacement_graph
+  surface
   resolver
+  analysis
 	typing
+  eval_tree
+  backends
   utils
-  yaml
-  yaml_parser)
+  base
+  yaml)
  (modules :standard)
  (preprocess
   (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

@@ -2,7 +2,7 @@
  (inline_tests)
  (name resolver)
  (public_name publicodes.resolver)
- (libraries base parser expr shared)
+ (libraries base surface expr shared)
  (modules :standard)
  (preprocess
   (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

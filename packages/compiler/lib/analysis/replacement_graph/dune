@@ -1,7 +1,6 @@
 (library
- (inline_tests)
  (name replacement_graph)
- (public_name publicodes.replacement_graph)
+ (public_name publicodes.analysis.replacement_graph)
  (libraries base ocamlgraph utils shared)
  (modules :standard)
  (preprocess

@@ -9,7 +9,7 @@ let from_rule_name (rule_name : Rule_name.t) =
 let get_rule_str_unit (tree : Typ.t option Eval_tree.t) (rule_name : Rule_name.t)
     : string option =
   let open Shared.Typ in
-  let typ = Eval_tree.get_meta tree rule_name in
+  let typ = Eval_tree.get_meta_exn tree rule_name in
   match typ with
   | Some (TNumber (Some unit))
   | Some (Literal (LNumber (_, Some unit), _))
@@ -19,7 +19,7 @@ let get_rule_str_unit (tree : Typ.t option Eval_tree.t) (rule_name : Rule_name.t
       None
 
 let from_rule_type (tree : Typ.t option Eval_tree.t) (rule_name : Rule_name.t) =
-  let typ = Eval_tree.get_meta tree rule_name in
+  let typ = Eval_tree.get_meta_exn tree rule_name in
   let from_lit lit =
     match lit with
     | Typ.LBool value ->

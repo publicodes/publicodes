@@ -1,8 +1,7 @@
 (library
- (inline_tests)
- (name parser)
- (public_name publicodes.parser)
- (libraries yaml_parser base utils expr shared)
+ (name analysis)
+ (public_name publicodes.analysis)
+ (libraries replacement_graph dependency_graph utils shared base)
  (modules :standard)
  (preprocess
   (pps
