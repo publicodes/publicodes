@@ -13,7 +13,6 @@ let result (x, _) = x
 
 let logs (_, logs) = logs
 
-(* Bind operation *)
 let bind (x_opt, logs1) ~f =
   match x_opt with
   | Some x ->
@@ -23,7 +22,6 @@ let bind (x_opt, logs1) ~f =
       (* Propagate None, keep existing logs *)
       (None, logs1)
 
-(* Map operation *)
 let map ~f (x_opt, logs) =
   match x_opt with
   | Some x ->
@@ -134,13 +132,28 @@ let all_okay (ts : 'a t list) : 'a list t =
       | Some acc_res, Some res ->
           (Some (acc_res @ [res]), logs) )
 
-let rec fold l ~init ~(f : _ -> _ -> _) =
+let rec fold l ~init ~f =
   match l with
   | [] ->
       return init
-  | a :: l ->
-      let* r = f init a in
-      fold l ~init:r ~f
+  | hd :: rest ->
+      let* r = f init hd in
+      fold rest ~init:r ~f
+
+let fold_no_interrupt l ~init ~f =
+  let rec aux l ~init ~logs =
+    match l with
+    | [] ->
+        return ~logs init
+    | hd :: rest -> (
+        let hd_val, hd_logs = f init hd in
+        match hd_val with
+        | None ->
+            aux rest ~init ~logs:(logs @ hd_logs)
+        | Some a_val ->
+            aux rest ~init:a_val ~logs:(logs @ hd_logs) )
+  in
+  aux l ~init ~logs:[]
 
 let fold_right l ~(f : _ -> _ -> _) ~init =
   match l with

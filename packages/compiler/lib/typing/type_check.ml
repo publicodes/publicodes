@@ -198,7 +198,7 @@ let get_literals_from_precision = function
     literals from both types. For now, this is only true for symbols.
 
     @note If [grow] is false, [typ1] is the expected type and [typ2] is the
-    actual type, and will return an error if [typ2] is not a subset of [typ1]. *)
+    actual type, and will Output.return an error if [typ2] is not a subset of [typ1]. *)
 let check_generalize ?(grow = true) (typ1 : Ast.typ) (typ2 : Ast.typ) :
     unit Output.t =
   let t1, {Mark.pos= pos1} = UnionFind.get typ1 in
@@ -392,9 +392,14 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
               []
         in
         let* typ =
-          Output.fold replacements ~init:value_mark.typ ~f:(fun ptyp ref ->
+          Output.fold_no_interrupt replacements ~init:value_mark.typ
+            ~f:(fun ptyp ref ->
+              (* TODO: we should have a dedicated type error for replacements. *)
               let* rule_def = get_checked_rule_def ref in
               let mark = Mark.get rule_def.value in
+              (* We need to verify that the type of the replacement is
+                 compatible with the type of the original value (i.e. at least
+                 as precise). *)
               check_enumerate ~pos ptyp mark.typ )
         in
         check_union_with_parent_typ ~ctx typ

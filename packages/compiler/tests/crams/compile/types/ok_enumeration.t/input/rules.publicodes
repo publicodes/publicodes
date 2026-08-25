@@ -40,6 +40,66 @@ e4:
     références à: c4
     dans: b4
 
+simple replacement:
+  avec:
+    a: # type enum 10 | 20
+      public: oui
+      valeur: b
+    b:
+      valeur: 10 euros
+    c: # unit euros
+      public: oui
+      valeur: 20
+      remplace: b
+
+simple variation: # type enum 10 | 20 | 30
+  public: oui
+  variations:
+    - si: oui
+      alors: 10
+    - si: oui
+      alors: 20
+    - sinon: 30
+
+# TODO(Emile): we should probably have a warning when trying to define a default
+# value for a rule tht is already defined.
+by default: # type enum 10 | 20
+  public: oui
+  valeur: 10
+  par défaut: 20
+
+same rule replaced with different types:
+  avec:
+    a: # type "foo"
+      public: oui
+      valeur: c
+    b: # type 42
+      public: oui
+      valeur: c
+    c: # type unknown
+    d:
+      valeur: "foo"
+      remplace:
+        références à: c
+        dans: a
+    e:
+      valeur: 42
+      remplace:
+        références à: c
+        dans: b
+
+generalization of an enum:
+  avec:
+    simple literal:
+      public: oui
+      valeur: 01
+
+    sum:
+      public: oui
+      somme:
+        - 1
+        - 2
+
 inferred enum could be a subset of the explicit type:
   public: oui
   type:
@@ -83,4 +143,3 @@ inferred enum from variation with context:
     enum:
       public: oui
       par défaut: 'default'
-

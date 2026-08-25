@@ -53,4 +53,26 @@ Should have error when replaces don't match:
     37 │   valeur: c5 + 10 kg # erreur: impossible d'additionner des 'euros' avec des 'kg'.
        │                ˘˘˘˘˘˘ unité: kg
   
+  
+  E023 types non cohérents entre eux [type error]
+       ╒══  ./input/rules.publicodes:42:10 ══
+    41 │   avec:
+    42 │     num: 10
+       │          ˘˘ est le nombre 10.
+       ╒══  ./input/rules.publicodes:51:13 ══
+    50 │     replace num with text typed def:
+    51 │       type: texte
+       │             ˘˘˘˘˘ est un texte
+  
+  
+  E023 types non cohérents entre eux [type error]
+       ╒══  ./input/rules.publicodes:42:10 ══
+    41 │   avec:
+    42 │     num: 10
+       │          ˘˘ est le nombre 10.
+       ╒══  ./input/rules.publicodes:48:15 ══
+    47 │         exclusif: oui
+    48 │       valeur: "toto"
+       │               ˘˘˘˘˘˘ est le texte "toto"
+  
   [123]

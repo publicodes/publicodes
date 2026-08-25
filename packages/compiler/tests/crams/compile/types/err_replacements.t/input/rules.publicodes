@@ -35,3 +35,20 @@ c5: # type: euros
   valeur: 20
 d5:
   valeur: c5 + 10 kg # erreur: impossible d'additionner des 'euros' avec des 'kg'.
+
+could replace only with coherent types:
+  valeur: num
+  avec:
+    num: 10
+
+    replace num with text:
+      remplace:
+        références à: num
+        exclusif: oui
+      valeur: "toto"
+
+    replace num with text typed def:
+      type: texte
+      remplace:
+        références à: num
+        exclusif: oui
