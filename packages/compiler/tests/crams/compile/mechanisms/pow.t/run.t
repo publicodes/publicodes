@@ -1,4 +1,4 @@
-Ok puissance :
+Pow mechanism should be correctly parsed:
   $ publicodes compile ok -o - | ../../../scripts/get_rules.awk
   const rules = {
     'a': {

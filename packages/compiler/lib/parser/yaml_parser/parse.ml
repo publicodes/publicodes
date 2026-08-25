@@ -5,19 +5,20 @@ let starts_with = String.starts_with
 open Utils
 open Base
 open Ast
+open Output.Let_syntax
 
 (*
- This module will parse YAML content and produce YAML AST with position information.
+This module will parse YAML content and produce YAML AST with position information.
 
- We are parsing the following grammar:
-   stream ::= STREAM-START document* STREAM-END
-   document ::= DOCUMENT-START node DOCUMENT-END
-   node ::= ALIAS | SCALAR | sequence | mapping
-   sequence ::= SEQUENCE-START node* SEQUENCE-END
-   mapping ::= MAPPING-START (node node)* MAPPING-END
+We are parsing the following grammar:
+  stream ::= STREAM-START document* STREAM-END
+  document ::= DOCUMENT-START node DOCUMENT-END
+  node ::= ALIAS | SCALAR | sequence | mapping
+  sequence ::= SEQUENCE-START node* SEQUENCE-END
+  mapping ::= MAPPING-START (node node)* MAPPING-END
 
- Cf https://ocaml.org/p/yaml/3.2.0/doc/Yaml/Stream/Event/index.html
- *)
+Cf https://ocaml.org/p/yaml/3.2.0/doc/Yaml/Stream/Event/index.html
+*)
 
 (* Better error message *)
 let message_traduction =
@@ -65,7 +66,6 @@ let print_token =
       "Nothing"
 
 let parse (filename : string) (content : string) : yaml Output.t =
-  let open Output.Let_syntax in
   (* Create a parser from the content *)
   let pos_from_mark Event.{start_mark; end_mark} =
     Pos.

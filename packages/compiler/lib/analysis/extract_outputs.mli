@@ -2,8 +2,7 @@ open Utils
 open Shared
 
 val extract_outputs :
-     ast:Shared_ast.resolved
-  -> eval_tree:Typ.t option Eval_tree.t
+     Dependency_graph.t
+  -> ast:Shared_ast.typed
   -> warn_types:bool
-  -> Rule_graph.t
   -> Model_output.t list Output.t

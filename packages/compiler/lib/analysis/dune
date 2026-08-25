@@ -1,7 +1,7 @@
 (library
- (name parser)
- (public_name publicodes.parser)
- (libraries yaml_parser expr shared base utils)
+ (name analysis)
+ (public_name publicodes.analysis)
+ (libraries replacement_graph dependency_graph utils shared base)
  (modules :standard)
  (preprocess
   (pps

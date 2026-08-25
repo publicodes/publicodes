@@ -42,7 +42,7 @@ let literal_to_string : literal -> string = function
   | LNumber (n, None) ->
       Stdlib.Format.asprintf "%f" n
 
-let to_string ~sep : t -> string = function
+let to_string ?(sep = ";") : t -> string = function
   | Literal (lit, _) ->
       literal_to_string lit
   | TString ->

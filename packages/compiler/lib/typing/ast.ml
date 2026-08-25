@@ -93,7 +93,7 @@ let literal_to_string_short : literal -> string = function
       (* TODO: why not print the unit? *)
       Stdlib.Format.asprintf "%s" (Float.to_string n)
 
-let to_string ?(sep = ", ") : t -> string = function
+let to_string ?(sep = ", ") = function
   | Any _ ->
       "n'importe quelle valeur"
   | Typed (KNumber _, Any_kind _) ->
@@ -152,7 +152,7 @@ type typing_chainable_mechanism =
 type typing_marked_chainable_mechanism =
   (typing_chainable_mechanism, typing_mark) Mark.ed
 
-type typing_state = Todo | Doing | Done | Error
+type typing_state = Todo | Doing | Done | Error [@@deriving show]
 
 type typing_tree = (typing_rule_def * typing_state) Rule_name.Hashtbl.t
 
