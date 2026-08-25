@@ -439,3 +439,48 @@ Replaces should cause enumerations:
   'same rule replaced with different types . c':
     value: unknown
     type: "unknown",
+
+Should correctly infer types from context usage:
+  $ publicodes compile ./context/ok -o - | ../../scripts/get_rule_types.awk
+  'simple ok':
+    value: 4.000000
+    type: "number",
+    unit: "euros",
+  'simple ok . ref':
+    value: number
+    type: "number",
+    unit: "euros",
+  'nested ok':
+    value: number
+    type: "number",
+    unit: "euros",
+  'nested ok . ref':
+    value: number
+    type: "number",
+    unit: "euros",
+
+
+Should return a type error when context usage is inconsistent:
+  $ publicodes compile ./context/error -o - | ../../scripts/get_rule_types.awk
+  
+  E023 types non cohérents entre eux [type error]
+       ╒══  ./context/error/main.publicodes:5:10 ══
+     4 │   contexte:
+     5 │     ref: 4 euros
+       │          ˘˘˘˘˘˘˘ est le nombre 4.
+       ╒══  ./context/error/main.publicodes:9:15 ══
+     8 │       public: oui
+     9 │       valeur: oui
+       │               ˘˘˘ est le booléan oui
+  
+  
+  E025 unités non compatibles [type error]
+       ╒══  ./context/error/main.publicodes:20:16 ══
+    19 │         contexte:
+    20 │           ref: 2 euro
+       │                ˘˘˘˘˘˘ unité: euro
+       ╒══  ./context/error/main.publicodes:22:5 ══
+    21 │   avec:
+    22 │     ref:
+       │     ˘˘˘˘ unité: euros
+  
