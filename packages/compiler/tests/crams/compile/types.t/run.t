@@ -353,14 +353,14 @@ Should correctly report missing type information for public rules:
 Should allow to specify type with `type` key:
 (FIXME: should have better positions for the rule `c`)
 
-  $ publicodes compile type_key -o -
+  $ publicodes compile ./type_annotation/ -o -
   
   E023 types non cohérents entre eux [type error]
-       ╒══  type_key/rules.publicodes:8:11 ══
+       ╒══  ./type_annotation/rules.publicodes:8:11 ══
      7 │ c:
      8 │   valeur: a > b
        │           ˘˘˘˘˘ est un booléan
-       ╒══  type_key/rules.publicodes:9:9 ══
+       ╒══  ./type_annotation/rules.publicodes:9:9 ══
      8 │   valeur: a > b
      9 │   type: texte # erreur
        │         ˘˘˘˘˘˘ est un texte
@@ -369,339 +369,73 @@ Should allow to specify type with `type` key:
 
 Should generalize the least precise side:
 
-  $ publicodes compile generalization -o - | ../../scripts/get_rules.awk
-  const rules = {
-    'a1': {
-      /**
-       * Parameters of "a1"
-       * @typedef {{
-       *  'a1'?: number
-       * }} a1Params
-       */
-      /**
-       * Evaluate "a1" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a1Params, options?: {Options}) => {value: number, needed: Array<keyof a1Params>, missing: Array<keyof a1Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a1, params, options),
-      /** @type {"number"} */
-      type: "number",
-      /** @type {"euros"} */
-      unit: "euros",
-      /**
-       * Parameter list for "a1"
-       * @type {Array<keyof a1Params>}
-       */
-      params: ['a1'],
-    },
-    'a2': {
-      /**
-       * Parameters of "a2"
-       * @typedef {{
-       *  'a2'?: boolean
-       * }} a2Params
-       */
-      /**
-       * Evaluate "a2" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a2Params, options?: {Options}) => {value: boolean, needed: Array<keyof a2Params>, missing: Array<keyof a2Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a2, params, options),
-      /** @type {"boolean"} */
-      type: "boolean",
-      /**
-       * Parameter list for "a2"
-       * @type {Array<keyof a2Params>}
-       */
-      params: ['a2'],
-    },
-    'a3': {
-      /**
-       * Parameters of "a3"
-       * @typedef {{
-       *  'a3'?: text
-       * }} a3Params
-       */
-      /**
-       * Evaluate "a3" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a3Params, options?: {Options}) => {value: text, needed: Array<keyof a3Params>, missing: Array<keyof a3Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a3, params, options),
-      /** @type {"text"} */
-      type: "text",
-      /**
-       * Parameter list for "a3"
-       * @type {Array<keyof a3Params>}
-       */
-      params: ['a3'],
-    },
-    'a4': {
-      /**
-       * Parameters of "a4"
-       * @typedef {{
-       *  'a4'?: ('tutu'|'toto')
-       * }} a4Params
-       */
-      /**
-       * Evaluate "a4" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a4Params, options?: {Options}) => {value: ('tutu'|'toto'), needed: Array<keyof a4Params>, missing: Array<keyof a4Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a4, params, options),
-      /** @type {"symbol"} */
-      type: "symbol",
-      /**
-       * Parameter list for "a4"
-       * @type {Array<keyof a4Params>}
-       */
-      params: ['a4'],
-    },
-    'a5': {
-      /**
-       * Parameters of "a5"
-       * @typedef {{
-       *  'a5'?: date
-       * }} a5Params
-       */
-      /**
-       * Evaluate "a5" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a5Params, options?: {Options}) => {value: date, needed: Array<keyof a5Params>, missing: Array<keyof a5Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a5, params, options),
-      /** @type {"date"} */
-      type: "date",
-      /**
-       * Parameter list for "a5"
-       * @type {Array<keyof a5Params>}
-       */
-      params: ['a5'],
-    },
-    'a6': {
-      /**
-       * Parameters of "a6"
-       * @typedef {{
-       *  'a6'?: ('foo'|'bar')
-       * }} a6Params
-       */
-      /**
-       * Evaluate "a6" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a6Params, options?: {Options}) => {value: ('foo'|'bar'), needed: Array<keyof a6Params>, missing: Array<keyof a6Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a6, params, options),
-      /** @type {"symbol"} */
-      type: "symbol",
-      /**
-       * Parameter list for "a6"
-       * @type {Array<keyof a6Params>}
-       */
-      params: ['a6'],
-    }
-  }
-  export const parameters = {
-  }
-  export const outputs = {
-    'a1': rules['a1'],
-    'a2': rules['a2'],
-    'a3': rules['a3'],
-    'a4': rules['a4'],
-    'a5': rules['a5'],
-    'a6': rules['a6'],
-  }
+  $ publicodes compile generalization -o - | ../../scripts/get_rule_types.awk
+  'a1':
+    value: number
+    type: "number",
+    unit: "euros",
+  'a2':
+    value: boolean
+    type: "boolean",
+  'a3':
+    value: text
+    type: "text",
+  'a4':
+    value: ('tutu'|'toto')
+    type: "symbol",
+  'a5':
+    value: date
+    type: "date",
+  'a6':
+    value: ('foo'|'bar')
+    type: "symbol",
 
 Replaces should cause enumerations:
 
-  $ publicodes compile enumerations -o - | ../../scripts/get_rules.awk
+  $ publicodes compile enumerations -o - | ../../scripts/get_rule_types.awk
   
   E024
   information de type manquante pour ce résultat [type warning]
-       ╒══  enumerations/rules.publicodes:31:1 ══
-    30 │   public: oui
-    31 │ c4: # type unknown
-       │ ˘˘˘
+       ╒══  enumerations/rules.publicodes:38:5 ══
+    37 │       valeur: c
+    38 │     c: # type unknown
+       │     ˘˘
    Hint: Spécifiez le type de la règle.
    Hint: Par exemple :
          
-         c4:
+         same rule replaced with different types . c:
            type: nombre
-  const rules = {
-    'a1': {
-      /**
-       * Parameters of "a1"
-       * @typedef {{
-       * }} a1Params
-       */
-      /**
-       * Evaluate "a1" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a1Params, options?: {Options}) => {value: (10.000000|20.000000), needed: Array<keyof a1Params>, missing: Array<keyof a1Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a1, params, options),
-      /** @type {"number"} */
-      type: "number",
-      /** @type {"euros"} */
-      unit: "euros",
-      /**
-       * Parameter list for "a1"
-       * @type {Array<keyof a1Params>}
-       */
-      params: [],
-    },
-    'c1': {
-      /**
-       * Parameters of "c1"
-       * @typedef {{
-       * }} c1Params
-       */
-      /**
-       * Evaluate "c1" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: c1Params, options?: {Options}) => {value: 20.000000, needed: Array<keyof c1Params>, missing: Array<keyof c1Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_c1, params, options),
-      /** @type {"number"} */
-      type: "number",
-      /** @type {"euros"} */
-      unit: "euros",
-      /**
-       * Parameter list for "c1"
-       * @type {Array<keyof c1Params>}
-       */
-      params: [],
-    },
-    'a2': {
-      /**
-       * Parameters of "a2"
-       * @typedef {{
-       * }} a2Params
-       */
-      /**
-       * Evaluate "a2" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a2Params, options?: {Options}) => {value: (30.000000|20.000000|10.000000), needed: Array<keyof a2Params>, missing: Array<keyof a2Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a2, params, options),
-      /** @type {"number"} */
-      type: "number",
-      /** @type {"aucune"} */
-      unit: "aucune",
-      /**
-       * Parameter list for "a2"
-       * @type {Array<keyof a2Params>}
-       */
-      params: [],
-    },
-    'a3': {
-      /**
-       * Parameters of "a3"
-       * @typedef {{
-       * }} a3Params
-       */
-      /**
-       * Evaluate "a3" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a3Params, options?: {Options}) => {value: (20.000000|10.000000), needed: Array<keyof a3Params>, missing: Array<keyof a3Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a3, params, options),
-      /** @type {"number"} */
-      type: "number",
-      /** @type {"aucune"} */
-      unit: "aucune",
-      /**
-       * Parameter list for "a3"
-       * @type {Array<keyof a3Params>}
-       */
-      params: [],
-    },
-    'a4': {
-      /**
-       * Parameters of "a4"
-       * @typedef {{
-       *  'c4'?: unknown
-       * }} a4Params
-       */
-      /**
-       * Evaluate "a4" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: a4Params, options?: {Options}) => {value: "foo", needed: Array<keyof a4Params>, missing: Array<keyof a4Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_a4, params, options),
-      /** @type {"text"} */
-      type: "text",
-      /**
-       * Parameter list for "a4"
-       * @type {Array<keyof a4Params>}
-       */
-      params: ['c4'],
-    },
-    'b4': {
-      /**
-       * Parameters of "b4"
-       * @typedef {{
-       *  'c4'?: unknown
-       * }} b4Params
-       */
-      /**
-       * Evaluate "b4" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: b4Params, options?: {Options}) => {value: 42.000000, needed: Array<keyof b4Params>, missing: Array<keyof b4Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_b4, params, options),
-      /** @type {"number"} */
-      type: "number",
-      /** @type {"aucune"} */
-      unit: "aucune",
-      /**
-       * Parameter list for "b4"
-       * @type {Array<keyof b4Params>}
-       */
-      params: ['c4'],
-    },
-    'c4': {
-      /**
-       * Parameters of "c4"
-       * @typedef {{
-       *  'c4'?: unknown
-       * }} c4Params
-       */
-      /**
-       * Evaluate "c4" with evaluation trace, and information on
-       * missing and needed parameters.
-       * @type {(params?: c4Params, options?: {Options}) => {value: unknown, needed: Array<keyof c4Params>, missing: Array<keyof c4Params>, trace: {Trace}}}
-       */
-      evaluate: (params = {}, options) =>
-        $evaluate(_c4, params, options),
-      /** @type {"unknown"} */
-      type: "unknown",
-      /**
-       * Parameter list for "c4"
-       * @type {Array<keyof c4Params>}
-       */
-      params: ['c4'],
-    }
-  }
-  export const parameters = {
-    'c4': rules['c4'],
-  }
-  export const outputs = {
-    'a1': rules['a1'],
-    'c1': rules['c1'],
-    'a2': rules['a2'],
-    'a3': rules['a3'],
-    'a4': rules['a4'],
-    'b4': rules['b4'],
-  }
+  'simple replacement . a':
+    value: (10.000000|20.000000)
+    type: "number",
+    unit: "euros",
+  'simple replacement . c':
+    value: 20.000000
+    type: "number",
+    unit: "euros",
+  'simple variation':
+    value: (30.000000|20.000000|10.000000)
+    type: "number",
+    unit: "aucune",
+  'by default':
+    value: (20.000000|10.000000)
+    type: "number",
+    unit: "aucune",
+  'same rule replaced with different types . a':
+    value: "foo"
+    type: "text",
+  'same rule replaced with different types . b':
+    value: 42.000000
+    type: "number",
+    unit: "aucune",
+  'generalization of an enum . simple literal':
+    value: 1.000000
+    type: "number",
+    unit: "aucune",
+  'generalization of an enum . sum':
+    value: number
+    type: "number",
+    unit: "aucune",
+  'same rule replaced with different types . c':
+    value: unknown
+    type: "unknown",
