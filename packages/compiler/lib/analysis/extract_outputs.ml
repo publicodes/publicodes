@@ -2,18 +2,19 @@ open Base
 open Shared
 open Utils
 open Utils.Output
+module Rule_context = Dependency_graph.Rule_context
+module Dependency_graph = Dependency_graph.Rule_graph
 
-let is_parameter rule_name ~(ast : Shared_ast.resolved) : bool =
+let is_parameter rule_name ~ast =
   let rule_def = Shared_ast.find_exn rule_name ast in
   not (Shared_ast.has_value rule_def)
 
-let extract_parameters rule_name ~(graph : Rule_graph.t)
-    ~(ast : Shared_ast.resolved) : Rule_name.t * Rule_name.t list =
+let extract_parameters rule_name ~graph ~ast : Rule_name.t * Rule_name.t list =
   let transitive_dependencies =
-    Rule_graph.Oper.transitive_closure ~reflexive:false graph
+    Dependency_graph.Oper.transitive_closure ~reflexive:false graph
   in
   let successor_rules =
-    Rule_graph.succ transitive_dependencies (rule_name, [])
+    Dependency_graph.succ transitive_dependencies (rule_name, [])
   in
   let parameter_rules =
     List.filter successor_rules ~f:(fun (dep_rule_name, dep_context_stack) ->
@@ -25,19 +26,19 @@ let extract_parameters rule_name ~(graph : Rule_graph.t)
   in
   (rule_name, List.stable_dedup parameter_rules ~compare:Rule_name.compare)
 
-let add_self_dependencies_for_parameters ~(graph : Rule_graph.t)
-    ~(ast : Shared_ast.resolved) : unit =
+let add_self_dependencies_for_parameters ~(graph : Dependency_graph.t)
+    ~(ast : Shared_ast.typed) : unit =
   List.iter ast ~f:(fun rule_def ->
       let rule_name = Mark.remove rule_def.name in
       if is_parameter rule_name ~ast then
-        Rule_graph.add_edge graph (rule_name, []) (rule_name, []) )
+        Dependency_graph.add_edge graph (rule_name, []) (rule_name, []) )
 
-let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t)
-    ~(eval_tree : Typ.t option Eval_tree.t) : Log.t option =
+let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t) ~ast :
+    Log.t option =
   match typ with
   | None ->
       let code, message = Err.missing_output_type in
-      let pos = Eval_tree.get_pos eval_tree rule_name in
+      let pos = Shared_ast.get_pos_exn ast rule_name in
       Some
         (Log.warning ~code ~pos ~kind:`Type
            ~hints:
@@ -47,7 +48,7 @@ let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t)
            message )
   | Some (TNumber None) ->
       let code, message = Err.missing_output_type in
-      let pos = Eval_tree.get_pos eval_tree rule_name in
+      let pos = Shared_ast.get_pos_exn ast rule_name in
       Some
         (Log.warning ~code ~pos ~kind:`Type
            ~hints:["Spécifiez l'unité de la règle. Par exemple : `unité: €`"]
@@ -55,18 +56,17 @@ let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t)
   | Some _ ->
       None
 
-let extract_outputs ~(ast : Shared_ast.resolved)
-    ~(eval_tree : Typ.t option Eval_tree.t) ~(warn_types : bool)
-    (graph : Rule_graph.t) : Model_output.t list Output.t =
-  let graph = Rule_graph.copy graph in
+let extract_outputs (graph : Dependency_graph.t) ~(ast : Shared_ast.typed)
+    ~(warn_types : bool) : Model_output.t list Output.t =
+  let graph = Dependency_graph.copy graph in
   add_self_dependencies_for_parameters ~graph ~ast ;
   let wrap_meta ~is_output (rule_name, parameters) =
-    Model_output.
-      { rule_name
-      ; parameters
-      ; typ= Eval_tree.get_meta eval_tree rule_name
-      ; meta= (Shared_ast.find_exn rule_name ast).meta
-      ; is_output }
+    let Shared_ast.{meta; value; _} = Shared_ast.find_exn rule_name ast in
+    let Shared_ast.{typ; _} = Mark.get value in
+    (* Stdlib.Printf.printf "\ntype: %s for value:\n%s\n" *)
+    (*   (match typ with None -> "None" | Some t -> Typ.to_string t) *)
+    (*   (Shared_ast.show_value Rule_name.pp Shared_ast.pp_typed_mark value) ; *)
+    Model_output.{rule_name; parameters; typ; meta; is_output}
   in
   let output_parameters =
     List.filter_map ast ~f:(fun rule_def ->
@@ -84,17 +84,15 @@ let extract_outputs ~(ast : Shared_ast.resolved)
     |> List.map ~f:(wrap_meta ~is_output:false)
   in
   let rules =
-    outputs @ parameters
-    |> List.stable_dedup
-         ~compare:(fun
-             {Model_output.rule_name= a; _} {Model_output.rule_name= b; _} ->
-           Rule_name.compare a b )
+    (* FIXME: this seems hacky and highly reliant on wich comes first between
+       outputs and parameters. Outputs that are also paramters will only be
+       considered as parameters. *)
+    List.stable_dedup (outputs @ parameters) ~compare:(fun a b ->
+        Rule_name.compare a.rule_name b.rule_name )
   in
   if warn_types then
     let warnings =
-      List.stable_dedup rules ~compare:(fun a b ->
-          Rule_name.compare a.rule_name b.rule_name )
-      |> List.filter_map ~f:(get_missing_type_warnings_opt ~eval_tree)
+      List.filter_map rules ~f:(get_missing_type_warnings_opt ~ast)
     in
     return ~logs:warnings rules
   else return rules

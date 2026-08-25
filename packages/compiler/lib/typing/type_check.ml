@@ -544,15 +544,17 @@ let check_enumerate ~pos u1 u2 : Ast.typ Output.t =
   | _, _ ->
       error_typ_mismatch u1 u2
 
-let rec check_expression ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
-    ~(ptyp : Ast.typ) (expr : Ast.typing_expr) : unit Output.t =
-  let check_expression = check_expression ~replaces ~current ~ast ~contexts in
-  let expr, mark = expr in
-  let pos = mark.pos in
+let rec check_expression (expr : Ast.typing_expr) ~replacement_graph ~current
+    ~(ast : Ast.typing_tree) ~contexts ~ptyp : unit Output.t =
+  let check_expression =
+    check_expression ~replacement_graph ~current ~ast ~contexts
+  in
+  let expr, expr_mark = expr in
+  let expr_pos = expr_mark.pos in
   let* _ =
     match expr with
     | Const _ ->
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union expr_mark.typ ptyp in
         return ()
     | Ref ref ->
         let* _ =
@@ -561,55 +563,41 @@ let rec check_expression ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
             | Some value ->
                 return value
             | None ->
-                let rule_def, status = Hashtbl.find_exn ast ref in
+                let rule_def, _ = Hashtbl.find_exn ast ref in
                 let* _ =
-                  match status with
-                  | Todo ->
-                      check_rule_def ~replaces ~ast ~contexts rule_def
-                  | Error ->
-                      empty
-                  | _ ->
-                      return ()
+                  check_rule_def rule_def ~replacement_graph ~ast ~contexts
                 in
-                let {Shared_ast.value; _} = rule_def in
-                return value
+                return rule_def.value
           in
-          let _, mark = value in
+          let mark = Mark.get value in
           let replacements =
-            Replacement_graph.find_transitive_replacements ~from:current
-              ~rule:ref replaces
+            Replacement_graph.find_transitive_replacements replacement_graph
+              ~from:current ~rule:ref
             |> List.map ~f:fst
           in
           let* typ =
             Output.fold replacements ~init:mark.typ ~f:(fun ptyp ref ->
-                let rule_def, status = Hashtbl.find_exn ast ref in
+                let rule_def, _ = Hashtbl.find_exn ast ref in
                 let* _ =
-                  match status with
-                  | Todo ->
-                      check_rule_def ~replaces ~ast ~contexts rule_def
-                  | Error ->
-                      empty
-                  | _ ->
-                      return ()
+                  check_rule_def rule_def ~replacement_graph ~ast ~contexts
                 in
-                let {Shared_ast.value; _} = rule_def in
-                let _, mark = value in
-                check_enumerate ~pos ptyp mark.typ )
+                let mark = Mark.get rule_def.value in
+                check_enumerate ~pos:expr_pos ptyp mark.typ )
           in
           let* _ = check_union typ ptyp in
           return ()
         in
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union expr_mark.typ ptyp in
         return ()
     | Binary_op (op, ((_, left_mark) as left), ((_, right_mark) as right)) -> (
         let {Ast.pos= left_pos; _} = left_mark in
         let {Ast.pos= right_pos; _} = right_mark in
         match fst op with
         | And | Or ->
-            let* _ = Ast.mk_bool ~pos |> check_union mark.typ in
-            let* _ = check_expression ~ptyp:mark.typ left in
-            let* _ = check_expression ~ptyp:mark.typ right in
-            let* _ = check_union mark.typ ptyp in
+            let* _ = Ast.mk_bool ~pos:expr_pos |> check_union expr_mark.typ in
+            let* _ = check_expression ~ptyp:expr_mark.typ left in
+            let* _ = check_expression ~ptyp:expr_mark.typ right in
+            let* _ = check_union expr_mark.typ ptyp in
             return ()
         | Add | Sub | Max | Min ->
             (* check both are any number, and unify units *)
@@ -624,10 +612,10 @@ let rec check_expression ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
               return wip
             in
             let* _ = check_generalize left right in
-            let wip = Ast.mk_number_no_unit ~pos in
+            let wip = Ast.mk_number_no_unit ~pos:expr_pos in
             let* _ = check_union left wip in
-            let* _ = check_union wip mark.typ in
-            let* _ = check_union mark.typ ptyp in
+            let* _ = check_union wip expr_mark.typ in
+            let* _ = check_union expr_mark.typ ptyp in
             return ()
         | Mul ->
             (* check both are any number *)
@@ -640,11 +628,13 @@ let rec check_expression ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
               check_expression ~ptyp:wip right
             in
             (* we are TNumber *)
-            let* wip = check_multiply ~pos left_mark.typ right_mark.typ in
+            let* wip =
+              check_multiply ~pos:expr_pos left_mark.typ right_mark.typ
+            in
             (* apply to union *)
-            let* _ = check_union mark.typ wip in
+            let* _ = check_union expr_mark.typ wip in
             (* check against ptyp *)
-            let* _ = check_union mark.typ ptyp in
+            let* _ = check_union expr_mark.typ ptyp in
             return ()
         | Div ->
             (* check both are any number *)
@@ -657,28 +647,30 @@ let rec check_expression ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
               check_expression ~ptyp:wip right
             in
             (* we are TNumber *)
-            let* wip = check_divide ~pos left_mark.typ right_mark.typ in
+            let* wip =
+              check_divide ~pos:expr_pos left_mark.typ right_mark.typ
+            in
             (* apply to mark *)
-            let* _ = check_union mark.typ wip in
+            let* _ = check_union expr_mark.typ wip in
             (* check against ptyp *)
-            let* _ = check_union mark.typ ptyp in
+            let* _ = check_union expr_mark.typ ptyp in
             return ()
         | Pow ->
             (* check both are any number *)
-            let* wip1 =
-              let wip = Ast.mk_any_number ~pos:left_pos in
-              let* _ = check_expression ~ptyp:wip left in
-              return wip
+            let* left_typ =
+              let left_typ = Ast.mk_any_number ~pos:left_pos in
+              let* _ = check_expression ~ptyp:left_typ left in
+              return left_typ
             in
             let* _ =
-              let wip = Ast.mk_any_number ~pos:right_pos in
-              check_expression ~ptyp:wip right
+              let right_typ = Ast.mk_any_number ~pos:right_pos in
+              check_expression ~ptyp:right_typ right
             in
             (* we are TNumber *)
-            let wip2 = Ast.mk_number_no_unit ~pos in
+            let expr_typ = Ast.mk_number_no_unit ~pos:expr_pos in
             (* gather unit *)
-            let* _ = check_union wip1 wip2 in
-            let* _ = check_union wip2 mark.typ in
+            let* _ = check_union left_typ expr_typ in
+            let* _ = check_union expr_typ expr_mark.typ in
             return ()
         | Gt | Lt | GtEq | LtEq | Eq | NotEq ->
             let* left =
@@ -693,39 +685,39 @@ let rec check_expression ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
             in
             (* TODO: restrict possible types? *)
             let* _ = check_generalize left right in
-            let wip = Ast.mk_bool ~pos in
+            let wip = Ast.mk_bool ~pos:expr_pos in
             let* _ = check_union wip ptyp in
             return () )
     | Unary_op ((Neg, _), expr) ->
         (* check is a number *)
-        let wip1 = Ast.mk_any_number ~pos in
+        let wip1 = Ast.mk_any_number ~pos:expr_pos in
         let* _ = check_expression ~ptyp:wip1 expr in
         (* we are TNumber *)
-        let wip2 = Ast.mk_number_no_unit ~pos in
+        let wip2 = Ast.mk_number_no_unit ~pos:expr_pos in
         (* gather unit *)
         let* _ = check_union wip1 wip2 in
         (* merge *)
-        let* _ = check_union mark.typ wip2 in
+        let* _ = check_union expr_mark.typ wip2 in
         (* check against ptyp *)
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union expr_mark.typ ptyp in
         return ()
   in
   return ()
 
-and check_value_mechanism ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
-    (value : Ast.typing_marked_value_mechanism) : unit Output.t =
-  let check_value = check_value ~replaces ~current ~ast ~contexts in
-  let value, mark = value in
-  let pos = mark.pos in
+and check_value_mechanism (value : Ast.typing_marked_value_mechanism)
+    ~replacement_graph ~current ~ast ~contexts : unit Output.t =
+  let check_value = check_value ~replacement_graph ~current ~ast ~contexts in
+  let value, Ast.{typ= value_typ; pos= value_pos} = value in
   let* _ =
     match value with
     | Expr expr ->
         let* _ =
-          check_expression ~replaces ~current ~ast ~contexts ~ptyp:mark.typ expr
+          check_expression expr ~replacement_graph ~current ~ast ~contexts
+            ~ptyp:value_typ
         in
         return ()
     | Value value ->
-        let* _ = check_value ~ptyp:mark.typ value in
+        let* _ = check_value ~ptyp:value_typ value in
         return ()
     | Is_applicable _ | Is_not_applicable _ ->
         (* TODO: handle this when Not_applicable is a type *)
@@ -738,7 +730,7 @@ and check_value_mechanism ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
               return ()
           | hd :: rest ->
               let* init =
-                let wip = Ast.mk_any_number ~pos in
+                let wip = Ast.mk_any_number ~pos:value_pos in
                 let* _ = check_value ~ptyp:wip hd in
                 return wip
               in
@@ -750,18 +742,18 @@ and check_value_mechanism ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
               return ()
         in
         (* we are TNumber *)
-        let wip = Ast.mk_number_no_unit ~pos in
+        let wip = Ast.mk_number_no_unit ~pos:value_pos in
         (* gather unit *)
         let* _ =
           List.map values ~f:(fun (_, value) -> check_union wip value.typ)
           |> all_okay
         in
-        let* _ = check_union wip mark.typ in
+        let* _ = check_union wip value_typ in
         return ()
     | Product values ->
         let* _ =
           List.map values ~f:(fun value ->
-              let wip = Ast.mk_any_number ~pos in
+              let wip = Ast.mk_any_number ~pos:value_pos in
               check_value ~ptyp:wip value )
           |> all_okay
         in
@@ -771,63 +763,66 @@ and check_value_mechanism ~replaces ~current ~(ast : Ast.typing_tree) ~contexts
               failwith "reachable?"
           | hd :: rest ->
               let* init =
-                let wip = Ast.mk_any_number ~pos in
+                let wip = Ast.mk_any_number ~pos:value_pos in
                 let* _ = check_value ~ptyp:wip hd in
                 return wip
               in
               Output.fold ~init rest ~f:(fun wip value ->
-                  check_multiply ~pos wip (Mark.get value).typ )
+                  check_multiply ~pos:value_pos wip (Mark.get value).typ )
         in
-        let* _ = check_union wip mark.typ in
+        let* _ = check_union wip value_typ in
         return ()
     | All_of values | One_of values ->
         let* _ =
           List.map values ~f:(fun value ->
-              let wip = Ast.mk_any_bool ~pos in
+              let wip = Ast.mk_any_bool ~pos:value_pos in
               check_value ~ptyp:wip value )
           |> all_okay
         in
-        let wip = Ast.mk_bool ~pos in
-        let* _ = check_union wip mark.typ in
+        let wip = Ast.mk_bool ~pos:value_pos in
+        let* _ = check_union wip value_typ in
         return ()
     | Not_defined ->
         return ()
     | Variations (variations, value) ->
-        let wip = Ast.mk_any ~pos in
+        let wip = Ast.mk_any ~pos:value_pos in
         let* wip =
           Output.fold ~init:wip variations ~f:(fun wip {if_; then_} ->
               let* _ =
-                let wip2 = Ast.mk_any_bool ~pos in
+                let wip2 = Ast.mk_any_bool ~pos:value_pos in
                 check_value ~ptyp:wip2 if_
               in
-              let wip2 = Ast.mk_any ~pos in
+              let wip2 = Ast.mk_any ~pos:value_pos in
               let* _ = check_value ~ptyp:wip2 then_ in
-              check_enumerate ~pos wip wip2 )
+              check_enumerate ~pos:value_pos wip wip2 )
         in
         let* wip =
           match value with
           | None ->
               return wip
           | Some else_ ->
-              let wip2 = Ast.mk_any ~pos in
+              let wip2 = Ast.mk_any ~pos:value_pos in
               let* _ = check_value ~ptyp:wip2 else_ in
-              check_enumerate ~pos wip wip2
+              check_enumerate ~pos:value_pos wip wip2
         in
-        let* _ = check_union wip mark.typ in
+        let* _ = check_union wip value_typ in
         return ()
   in
   return ()
 
-and check_chainable_mechanism ~replaces ~current ~(ast : Ast.typing_tree)
-    ~contexts ~(ptyp : Ast.typ)
+and check_chainable_mechanism ~replacement_graph ~current
+    ~(ast : Ast.typing_tree) ~contexts ~(ptyp : Ast.typ)
     (chainable : Ast.typing_marked_chainable_mechanism) : unit Output.t =
-  let check_value = check_value ~replaces ~current ~ast ~contexts in
+  let check_value = check_value ~replacement_graph ~current ~ast ~contexts in
   let chainable, mark = chainable in
   let pos = mark.pos in
   let* _ =
     match chainable with
-    | Context _ ->
-        (* already done in check_contexts *)
+    | Context context_entries ->
+        let* _ =
+          check_contexts context_entries ~replacement_graph ~current ~contexts
+            ~ast
+        in
         let* _ = check_union mark.typ ptyp in
         return ()
     | Applicable_if value | Not_applicable_if value ->
@@ -883,102 +878,85 @@ and check_chainable_mechanism ~replaces ~current ~(ast : Ast.typing_tree)
   return ()
 
 (* Also fill contexts *)
-and check_contexts ~replaces ~current
+and check_contexts context_entries ~replacement_graph ~current
     ~(contexts : Ast.typing_value Rule_name.Hashtbl.t) ~(ast : Ast.typing_tree)
-    (chainables : Ast.typing_marked_chainable_mechanism list) : unit Output.t =
+    : unit Output.t =
   let check_context_entry ref_name value =
-    let* cont_typ =
-      let rule_def, status = Hashtbl.find_exn ast ref_name in
-      let* _ =
-        if Ast.is_todo status then
-          check_rule_def ~replaces ~ast ~contexts rule_def
-        else return ()
-      in
-      let {Shared_ast.value; _} = rule_def in
-      let _, cont_mark = value in
-      return cont_mark.typ
+    let* ref_typ =
+      let rule_def, _ = Hashtbl.find_exn ast ref_name in
+      let* _ = check_rule_def rule_def ~replacement_graph ~ast ~contexts in
+      let ref_mark = Mark.get rule_def.value in
+      return ref_mark.typ
     in
     let* val_typ =
-      let* _ = check_value ~replaces ~current ~ast ~contexts value in
-      let _, value_mark = value in
+      let* _ = check_value value ~replacement_graph ~current ~ast ~contexts in
+      let value_mark = Mark.get value in
       return value_mark.typ
     in
-    let* _ = check_generalize cont_typ val_typ in
+    let* _ = check_generalize ref_typ val_typ in
     Hashtbl.set contexts ~key:ref_name ~data:value ;
     return ()
   in
   let* _ =
-    List.map chainables ~f:(fun (chainable, _) ->
-        match chainable with
-        | Context values ->
-            let* _ =
-              all_okay
-                (List.map values ~f:(fun ((ref, _), value) ->
-                     check_context_entry ref value ) )
-            in
-            return ()
-        | _ ->
-            return () )
+    context_entries
+    |> List.map ~f:(fun ((ref, _), value) -> check_context_entry ref value)
     |> all_okay
   in
   return ()
 
-and check_value ~replaces ~current ~(ast : Ast.typing_tree) ~contexts ?ptyp
-    (value : Ast.typing_value) : unit Output.t =
-  let {Shared_ast.value; chainable_mechanisms}, root = value in
+and check_value ~replacement_graph ~current ~(ast : Ast.typing_tree) ~contexts
+    ?ptyp (value : Ast.typing_value) : unit Output.t =
+  let Shared_ast.{value; chainable_mechanisms}, root_mark = value in
   let* _ =
-    check_contexts ~replaces ~current ~contexts ~ast chainable_mechanisms
+    check_value_mechanism ~replacement_graph ~current ~ast ~contexts value
   in
-  let* _ = check_value_mechanism ~replaces ~current ~ast ~contexts value in
-  let _, mark = value in
+  let value_mark = Mark.get value in
   let* typ =
     List.sort chainable_mechanisms ~compare:(fun (a, _) (b, _) ->
         Shared_ast.compare_chainable_mechanism Shared.Rule_name.compare
           Ast.compare_typing_mark a b )
-    |> Output.fold ~init:mark.typ ~f:(fun ptyp chainable ->
+    |> Output.fold ~init:value_mark.typ ~f:(fun ptyp chainable ->
         let* _ =
-          check_chainable_mechanism ~replaces ~current ~ast ~contexts ~ptyp
-            chainable
+          check_chainable_mechanism ~replacement_graph ~current ~ast ~contexts
+            ~ptyp chainable
         in
-        let _, mark = chainable in
+        let mark = Mark.get chainable in
         return mark.typ )
   in
-  let* _ = check_union typ root.typ in
+  let* _ = check_union typ root_mark.typ in
   let* _ =
     match ptyp with
     | None ->
         return ()
     | Some ptyp ->
-        let* _ = check_union mark.typ ptyp in
+        let* _ = check_union value_mark.typ ptyp in
         return ()
   in
   return ()
 
-and check_rule_def ~replaces ~(ast : Ast.typing_tree) ?contexts
-    (rule_def : Ast.typing_rule_def) : unit Output.t =
+and check_make_not_applicable (rule_def : Ast.typing_rule_def) =
+  let value_mark = Mark.get rule_def.value in
+  (* TODO: better pos to notice this? *)
+  match List.hd rule_def.make_not_applicable with
+  | None ->
+      return ()
+  | Some hd ->
+      let typ = Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in
+      check_union typ value_mark.typ
+
+and check_rule_def
+    ?(contexts = Hashtbl.create (module Shared.Rule_name) ~growth_allowed:true)
+    (rule_def : Ast.typing_rule_def) ~replacement_graph ~ast =
   let rule_name = Mark.remove rule_def.name in
   let _, typing_state = Hashtbl.find_exn ast rule_name in
   if not (Ast.is_todo typing_state) then return ()
   else (
     Ast.set_typing_state ast rule_def Ast.Doing ;
-    let contexts =
-      match contexts with
-      | None ->
-          Hashtbl.create (module Shared.Rule_name) ~growth_allowed:true
-      | Some contexts ->
-          contexts
-    in
-    let {Shared_ast.value; name= current, _; _} = rule_def in
+    let Shared_ast.{value; name= current, _; _} = rule_def in
     let res =
-      let* _ = check_value ~replaces ~current ~ast ~contexts value in
-      let _, mark = value in
-      (* TODO: better pos to notice this? *)
-      match List.hd rule_def.make_not_applicable with
-      | None ->
-          return ()
-      | Some hd ->
-          let typ = Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in
-          check_union typ mark.typ
+      let* _ = check_value value ~replacement_graph ~current ~ast ~contexts in
+      let* _ = check_make_not_applicable rule_def in
+      return ()
     in
     match res with
     | None, logs ->
@@ -988,17 +966,14 @@ and check_rule_def ~replaces ~(ast : Ast.typing_tree) ?contexts
         Ast.set_typing_state ast rule_def Ast.Done ;
         break ~logs () )
 
-let type_check ~replaces (ast : Ast.typing_tree) : unit Output.t =
+let type_check ast ~replacement_graph : unit Output.t =
   let* _ =
     Hashtbl.to_alist ast |> List.map ~f:snd
     |> List.sort
-         ~compare:(fun
-             ({Shared_ast.name= _, {Mark.pos= p1}; _}, _)
-             ({Shared_ast.name= _, {Mark.pos= p2}; _}, _)
-           -> Pos.compare p1 p2 )
-    |> List.map ~f:(fun (rule_def, status) ->
-        if Ast.is_todo status then check_rule_def ~replaces ~ast rule_def
-        else return () )
+         ~compare:(fun Shared_ast.({name; _}, _) ({name= name'; _}, _) ->
+           Pos.compare (Mark.pos name) (Mark.pos name') )
+    |> List.map ~f:(fun (rule_def, _) ->
+        check_rule_def rule_def ~replacement_graph ~ast )
     |> all_okay
   in
   return ()

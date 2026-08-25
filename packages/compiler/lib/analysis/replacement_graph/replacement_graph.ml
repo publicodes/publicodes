@@ -2,6 +2,8 @@ open Base
 open Shared
 module Rule_graph = Rule_graph
 
+type t = Rule_graph.t
+
 type replacement = Rule_graph.replacement
 
 let mk_and_checks = Checks.mk_and_checks

@@ -45,9 +45,10 @@ let get_value eval_tree rule_name = Hashtbl.find_exn eval_tree rule_name
 
 let mk_value ~pos ~meta value = {value; pos; meta}
 
-let get_meta eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).meta
+let get_meta_exn eval_tree rule_name =
+  (Hashtbl.find_exn eval_tree rule_name).meta
 
-let get_pos eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).pos
+let get_pos_exn eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).pos
 
 let rec map_value ~(f : 'a value -> 'a value) (c : 'a value) : 'a value =
   let new_value =

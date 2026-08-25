@@ -2,7 +2,7 @@
  (inline_tests)
  (name eval_tree)
  (public_name publicodes.eval_tree)
- (libraries base shared utils replacement_graph unionFind)
+ (libraries analysis shared utils base unionFind)
  (modules :standard)
  (preprocess
   (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

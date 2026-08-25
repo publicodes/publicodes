@@ -1,7 +1,7 @@
 open Shared
 
 val type_check :
-     replaces:Replacement_graph.Rule_graph.t
+     replacement_graph:Replacement_graph.t
   -> Shared_ast.resolved
   -> Shared_ast.typed Utils.Output.t
 (** [type_check resolved] type-checks the resolved AST by returning a typed AST

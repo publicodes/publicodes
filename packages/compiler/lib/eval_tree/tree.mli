@@ -45,10 +45,9 @@ val get_value : 'meta t -> Rule_name.t -> 'meta value
 
 val mk_value : pos:Pos.t -> meta:'meta -> 'meta naked_value -> 'meta value
 
-val get_meta : 'meta t -> Rule_name.t -> 'meta
-(** FIXME: should be _exn *)
+val get_meta_exn : 'meta t -> Rule_name.t -> 'meta
 
-val get_pos : 'meta t -> Rule_name.t -> Pos.t
+val get_pos_exn : 'meta t -> Rule_name.t -> Pos.t
 
 val map_value : f:('meta value -> 'meta value) -> 'meta value -> 'meta value
 

@@ -270,17 +270,6 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
     ~f:(fun acc program -> Ast.merge acc program)
     ~init:[] unresolved_programs
 
-and parse_root ~default_to_public ~module_path input_files =
-  let ctx =
-    { current_rule_name= []
-    ; files= []
-    ; current_module_id= Shared.Module_id.empty
-    ; next_module_id= ref 0
-    ; current_package= None
-    ; current_module= module_path }
-  in
-  parse_files ~default_to_public ~ctx input_files
-
 and parse_replace mapping =
   let replace = find_value "remplace" mapping in
   match replace with
@@ -317,14 +306,13 @@ and parse_rules ~default_to_public ~pos ~ctx yaml =
       let code, message = Err.parsing_should_be_object in
       fatal_error ~pos ~code ~kind:`Syntax message
 
-let parse ~filename ?(default_to_public = false) (yaml : yaml) : Ast.t Output.t
-    =
+let from_files ~default_to_public ~module_path input_files =
   let ctx =
     { current_rule_name= []
-    ; files= [filename]
+    ; files= []
     ; current_module_id= Shared.Module_id.empty
     ; next_module_id= ref 0
     ; current_package= None
-    ; current_module= "" }
+    ; current_module= module_path }
   in
-  parse_rules ~default_to_public ~pos:(Pos.beginning_of_file filename) ~ctx yaml
+  parse_files ~default_to_public ~ctx input_files
