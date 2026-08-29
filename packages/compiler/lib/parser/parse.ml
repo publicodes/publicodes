@@ -264,7 +264,7 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
                 { ctx with
                   files= ctx.files @ [filename]
                 ; current_module_id= new_module_id } )
-    |> all_keep_logs
+    |> all_okay
   in
   List.fold
     ~f:(fun acc program -> Ast.merge acc program)
@@ -309,8 +309,7 @@ and parse_rules ~default_to_public ~pos ~ctx yaml =
       fatal_error ~code ~pos ~kind:`Syntax message
   | `O mapping ->
       let+ rules =
-        List.map ~f:(parse_rule ~default_to_public ~ctx) mapping
-        |> all_keep_logs
+        List.map ~f:(parse_rule ~default_to_public ~ctx) mapping |> all_okay
       in
       List.concat rules
   | _ ->
