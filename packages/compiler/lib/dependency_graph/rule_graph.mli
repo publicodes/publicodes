@@ -154,3 +154,7 @@ val root_vertex : Rule_name.t -> Rule_vertex.t
 val output_dot : ?file_path:string -> t -> unit
 (** [output_dot ~file_path graph] outputs the given dependency [graph] to a DOT
     file at the specified [file_path], which can be used for debugging. *)
+
+val transitive_dependencies : t -> t
+(** [dependencies graph] build a dependency graph copy that include the same
+    edges without the ones filles by contexts. *)
