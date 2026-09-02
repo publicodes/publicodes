@@ -252,3 +252,14 @@ let mk ast ~replacement_graph ~make_not_applicable_graph =
   in
   List.iter ast ~f:(fun rule_def -> add_rule_dependencies rule_def []) ;
   graph
+
+let transitive_dependencies graph : t =
+  let graph = copy graph |> Oper.transitive_closure ~reflexive:false in
+  iter_edges
+    (fun (from, fromctx) (to_, toctx) ->
+      let matching =
+        List.exists toctx ~f:(fun ctx -> Rule_context.contains ctx to_)
+      in
+      if matching then remove_edge graph (from, fromctx) (to_, toctx) )
+    graph ;
+  graph

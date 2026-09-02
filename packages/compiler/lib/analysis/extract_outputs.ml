@@ -10,18 +10,10 @@ let is_parameter rule_name ~ast =
   not (Shared_ast.has_value rule_def)
 
 let extract_parameters rule_name ~graph ~ast : Rule_name.t * Rule_name.t list =
-  let transitive_dependencies =
-    Dependency_graph.Oper.transitive_closure ~reflexive:false graph
-  in
-  let successor_rules =
-    Dependency_graph.succ transitive_dependencies (rule_name, [])
-  in
   let parameter_rules =
-    List.filter successor_rules ~f:(fun (dep_rule_name, dep_context_stack) ->
-        let is_overridden_by_context =
-          Rule_context.stack_contains dep_context_stack dep_rule_name
-        in
-        (not is_overridden_by_context) && is_parameter dep_rule_name ~ast )
+    Dependency_graph.succ graph (rule_name, [])
+    |> List.filter ~f:(fun (dep_rule_name, _) ->
+        is_parameter dep_rule_name ~ast )
     |> List.map ~f:fst
   in
   (rule_name, List.stable_dedup parameter_rules ~compare:Rule_name.compare)
@@ -58,7 +50,7 @@ let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t) ~ast :
 
 let extract_outputs (graph : Dependency_graph.t) ~(ast : Shared_ast.typed)
     ~(warn_types : bool) : Model_output.t list Output.t =
-  let graph = Dependency_graph.copy graph in
+  let graph = Dependency_graph.transitive_dependencies graph in
   add_self_dependencies_for_parameters ~graph ~ast ;
   let wrap_meta ~is_output (rule_name, parameters) =
     let Shared_ast.{meta; value; _} = Shared_ast.find_exn rule_name ast in
