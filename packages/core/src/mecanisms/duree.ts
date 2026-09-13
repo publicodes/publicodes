@@ -71,8 +71,8 @@ const evaluate: EvaluationFunction<'durée'> = function (node) {
 	}
 }
 
-const today = defaultNode(convertToString(new Date()))
 export default (v, context) => {
+	const today = defaultNode(convertToString(new Date()))
 	const explanation = {
 		depuis: parse(v.depuis ?? today, context),
 		"jusqu'à": parse(v["jusqu'à"] ?? today, context),
