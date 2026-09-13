@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import {
 	getDifferenceInMonths,
 	getDifferenceInYears,
@@ -8,11 +8,11 @@ import {
 
 describe('Date', () => {
 	describe('normalizeDate', () => {
+		afterEach(() => vi.unstubAllEnvs())
+
 		it('accepte le 1er janvier 1970, même quand il vaut exactement 0 (UTC)', () => {
-			const tz = process.env.TZ
-			process.env.TZ = 'UTC'
+			vi.stubEnv('TZ', 'UTC')
 			expect(normalizeDate(1970, 1, 1)).to.equal('01/01/1970')
-			process.env.TZ = tz
 		})
 	})
 
