@@ -15,7 +15,7 @@ export function normalizeDate(
 	day: number,
 ): string {
 	const date = new Date(+year, +month - 1, +day)
-	if (!+date || date.getDate() !== +day) {
+	if (Number.isNaN(+date) || date.getDate() !== +day) {
 		throw new PublicodesError(
 			'SyntaxError',
 			`La date ${day}/${month}/${year} n'est pas valide`,

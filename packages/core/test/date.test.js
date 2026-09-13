@@ -3,9 +3,19 @@ import {
 	getDifferenceInMonths,
 	getDifferenceInYears,
 	getTrimestreCivil,
+	normalizeDate,
 } from '../src/date'
 
 describe('Date', () => {
+	describe('normalizeDate', () => {
+		it('accepte le 1er janvier 1970, même quand il vaut exactement 0 (UTC)', () => {
+			const tz = process.env.TZ
+			process.env.TZ = 'UTC'
+			expect(normalizeDate(1970, 1, 1)).to.equal('01/01/1970')
+			process.env.TZ = tz
+		})
+	})
+
 	describe('getDifferenceInMonths', () => {
 		it('should compute the difference for one full month', () => {
 			expect(getDifferenceInMonths('01/01/2020', '31/01/2020')).toBe(1)
