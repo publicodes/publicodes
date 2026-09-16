@@ -19,7 +19,7 @@
 		"format": "run build:packages  && run eslint --fix . && prettier --write . && turbo run format --parallel",
 		"dev": "turbo run dev --filter=\"website...\"",
 		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\" \"**/.turbo\"",
-		"release": "run prepack && changeset publish --provenance",
+		"release": "run prepack && changeset publish",
 		"version": "changeset version && prettier --write '**/CHANGELOG.md'"
 	},
 	"dependencies": {
