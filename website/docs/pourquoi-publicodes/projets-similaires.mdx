@@ -1,0 +1,106 @@
+---
+sidebar_position: 3
+title: Projets similaires
+---
+
+# Projets similaires
+
+Le champ des problèmes ciblés par Publicodes est vaste. Il est donc important de ne pas tomber dans le travers "une solution pour tous les problèmes" : en fonction de votre besoin, Publicodes pourra être adapté, ou pas, et de nombreuses autres solutions existent.
+
+Voici quelques exemples de langages et bibliothèques qui répondent à des problèmes similaires. Alors pourquoi Publicodes alors que X existe ?
+
+## X = n'importe quel langage de programmation complet
+
+Toutes les applications de Publicodes auraient assurément pu être codées directement en Javascript, en Python, en Clojure...
+
+Ces langages permettent de tout faire, mais c'est aussi leur défaut, comme nous l'expliquons dans la page [pourquoi YAML](/docs/pourquoi-publicodes/pourquoi-yaml).
+
+En pratique, n'importe quel projet qui développe un modèle de calcul aura besoin, pour être pérenne et maintenable, de définir ses propres fichiers de configuration (pour faciliter la tâche mentale du développeur, fiabiliser les tests, publier les données, intégrer des experts métiers non-dev...), qui deviennent alors souvent des DSL : des langages personnalisés dédiées au domaine en question.
+
+> Ecobalyse est un bon exemple de projet calculatoire [ayant développé son projet moteur de calcul](https://github.com/MTES-MCT/ecobalyse/blob/master/src/Data/Food/Process.elm), en Elm. Quite à partir sur un langage de programmation complet, il est en effet intéressant d'en choisir un fortement typé.
+
+Les projets passent souvent par d'autres phases incontournables, comme la gestion des conversions temporelles ou unités de calcul, etc.
+
+Nous pensons que Publicodes répond à un certain nombres de ces besoins, en
+particulier pour les projet de code qui comportent des algorithmes d'intérêt
+public qu'on ne peut pas se permettre de cacher au fin donc d'un code complexe,
+inaccessible si l'on n'est pas développeur expérimenté.
+
+Pourtant, les cas où Publicodes n'est pas adapté sont nombreux. Une base de code
+très simple en Javascript, ou bien typée en Typescript, peut être un choix
+pertinent en fonction de votre domaine métier.
+
+## X = Un tableur LibreOffice, Excel ou Google Spreadsheet
+
+Une façon de voir Publicodes, c'est qu'il s'agit d'un langage permettant de versionner des tableurs calculatoires dans lesquels les variables ont été nommées.
+
+Par exemple dans un tableur, une case `=SOMME` sera précédée d'une case au texte en gras `Total`, et fera appel à une autre case de `=MIN`, etc. Dans Publicodes, ces cases sont des règles qui comportent les attributs standards `titre`, `description`, `notes`, `formule` faisant appel à d'autres règles.
+
+Bien sûr, les tableurs gardent leur avantage incontournable : une vue 2D d'un calcul qui permet notamment de manipuler facilement de grands tableaux, de ne pas s'embetter à nommer certaines variables, de ne pas avoir à écrire du code source dans un fichier texte, etc.
+
+Si les tableurs sont un super moyen pour commencer à travailler sur un projet calculatoire, par exemple un modèle de calcul du coût d'un trajet en voiture, **ses avantages sont précisément ses limites**.
+
+Impossibilité de s'y retrouver 6 mois après dans des variables non nommées, liste d'onglets comme principale organisation haut niveau, référence à d'autres tableurs souvent introuvables, versionnage dans le nom de fichier (CalculCoutVoiture3.4-revision-Cyril.xlsx) et collaboration très difficile, etc.
+
+On notera en particulier que collaborer sur un projet Publicodes, comme sur n'importe quel projet de code source texte, permet d'utiliser [la praticité éprouvée](/docs/pourquoi-publicodes/standard-modeles-ouverts) des forges en ligne telles que Github ou Gitlab et leurs _issues_, _pull requests_, _milestones_, _kanban_, etc.
+
+## X = Moteurs de calcul numérique statistique, comme OpenFisca
+
+---
+
+Il existe aujourd'hui un certain nombre de simulateurs numériques du système social français. Par exemple INES, développé par l'INSEE. OpenFisca, ouvert, relativement étendu et _collaboratif_ en est un représentant inédit. [^1]
+
+OpenFisca permet aujourd'hui de faire des simulations économiques (menant à des rapports de politique publique, ou à des travaux de recherche), et des services numériques de type simulateur en ligne, tels que [Mes aides](https://mes-aides.1jeune1solution.beta.gouv.fr). C'est un calculateur numérique : on lui donne une situation (ex. une famille avec deux parents salariés ayant un certain revenu brut et un enfant scolarisé), on lui demande des variables de sortie (ex. le revenu net, le revenu après impôts), et on en obtient les résultats sous forme de liste de couples variable = valeur (ex. revenu du ménage après impôts = 3000€).
+
+OpenFisca est bâti comme le sont beaucoup de serveurs : du code métier (ex. comment votre cotisation de retraite est calculée), et une API Web pour servir des interfaces. Une particularité cependant : le moteur (OpenFisca Core) est (de mieux en mieux) séparé du code métier du pays initial (OpenFisca France), ce qui a permis à d'autres pays ou régions d'ébaucher le code de leur système socio-fiscal (pour l'instant, la Tunisie, le Sénégal, la Catalogne).
+
+Le code métier, comme le moteur d'exécution, est écrit en Python, langage très commun, et en Numpy [^2]. Ces choix historiques entraînent ces limitations importantes :
+
+- les règles (le code représentant la législation) ne sont pas réutilisables en dehors d'OpenFisca (il est très spécifique et surtout difficile à _parser_)
+- en conséquence, le moteur est destiné (et limité) à fournir des résultats purement numériques, sauf circonvolutions importantes.
+- il faut être développeur expérimenté, de préférence habitué au calcul vectoriel imposé par Numpy et au moins développeur Python, pour lire ou modifier ces règles. En bref, l'objectif est la rapidité, mais les règles et le moteur sont bien plus complexes.
+
+Le développement de toute une gamme d'applications est fortement compliqué par ces limitations [^3]. Un simulateur Web devra recopier la liste des lignes d'une fiche de paie, pourtant présente dans le moteur, pour en afficher les valeurs numériques dans l'interface; on ne peut construire facilement une vue pédagogique dans le navigateur qui explique les calculs; le code métier est ouvert (disponible en ligne) mais très complexe, même pour un développeur; les outils d'exploration de la législation sont très coûteux à construire et maintenir; etc.
+
+Une simplification a été faite dans cet exposé : le code métier est aujourd'hui en partie externalisé dans des paramètres contenant les nombres historisés utilisés par les règles de calcul. Par exemple, les valeurs historisées de votre taux de cotisation de retraite complémentaire, ou celles du SMIC. Contrairement au code métier, ces paramètres sont théoriquement de la donnée facilement exploitable par d'autres applications : on peut par exemple les visualiser sous forme de tableaux. Malheureusement, la loi n'est que rarement si simple, et l'on s'en apercevra vite : les paramètres sont eux même paramétrés... par exemple, il y a deux retraites complémentaires dans le régime général : pour les cadres et les non-cadres. Il y a donc de la logique incrustée dans ces paramètres (liste historique des taux cadres, liste historique des taux non-cadre), exploitée par le code métier pour pouvoir calculer la bonne valeur de votre cotisation retraite.
+
+L'idée de Publicodes est de prendre clairement le parti d'inscrire toute la logique métier sous forme déclarative dans de la donnée. Dans notre exemple, c'est toute la description de la retraite et son calcul (des références législatives, un barème à taux marginal, des exceptions etc.) qui seront inscrits dans une base de règles lisible. Différents moteurs d'exécution pourront exploiter cette donnée pour construire les applications aujourd'hui manquantes. Il faut donc définir une nouvelle syntaxe, un format de données interprétable par un programme et assez expressif pour être lisible et agréable à écrire.
+
+Pour aller plus loin, voici [un exemple d'implémentation d'une fonction de calcul dans ces deux plateformes](/docs/pourquoi-Publicodes/coder-un-barème).
+
+[^1]: il couvre notamment les 3 grands domaines impôts sur le revenu, prestations sociales et prélèvements sur les salaires. Ceci grâce au travail de l'Institut des Politiques Publiques, d'Étalab et de l'Incubateur des Services numériques, services de l'État, ainsi qu'un certain nombre d'autres acteurs.
+[^2]: Numpy est une brique logicielle qui permet en théorie au moteur de simuler des populations entières (millions d'individus) dix fois plus rapidement. Eh oui, les processeurs qui font tourner nos ordinateurs et smartphones sont souvent mal exploités !
+[^3]: Il est pour l'instant dans notre ère beaucoup trop complexe, voir tout simplement impossible, d'écrire un programme qui analyse une base de règles et la transforme en quelque chose de plus lisible.
+
+## X = Créateurs de simulateurs
+
+### G6K
+
+G6K : Générateur de simulateurs de calcul utilisé par [service-public.fr](http://service-public.fr/).
+
+- Code du générateur : https://github.com/eureka2/G6K
+- Code généré de plusieurs formulaires de Service-public.fr : https://gitlab.com/pidila/sp-simulateurs-data/tree/master
+
+Outil utilisé par la DILA pour générer plusieurs de ses simulateurs, dont carte grise et gratification minimale d'un stagiaire.
+
+Sa valeur réside dans le fait qu'il permet de créer des simulateurs dans une interface graphique, c'est-à-dire sans coder (enfin presque, une formation est évidemment nécessaire), ce qui le rend très intéressant pour un certain nombre de services. Il permet de charger ou d'utiliser des APIs ou bases de données (voir un tableur), de définir les variables du système, d'éditer graphiquement des requêtes sur ces données en fonction des variables, puis les écrans et champs de l'interface (saisie ou résultat), et finalement de définir des règles de calcul.
+
+La grosse différence est dans l'objectif : le but de G6K est de créer des formulaires sur des sujets différents et restreints, mais pas d'exposer une base de règle publique, ni de constituer une grande base de règles (base documentaire lisible et calculable) d'un domaine législatif (comme les cotisations sociales), ce qui implique forcément de travailler sur une base de code source lisible.
+
+Une autre différence importante est que les formulaires sont à renseigner entièrement à la main : on construit l'interface de saisie champ par champ, étape par étape. Ici à l'inverse, le formulaire est construit automatiquement à partir des règles législatives.
+
+## X = Catala
+
+Le [langage Catala](https://catala-lang.org/) a beaucoup de similarité avec Publicodes. Il diffère notamment dans son objectif premier, qui est de couvrir le domaine métier de la loi française.
+
+À compléter.
+
+## X = Créateurs de formulaires
+
+Ces outils se concentre davantage sur le recueil de données : leur capacité de faire des calculs est limitée ou absente.
+
+- l'outil de GDS, les services publics anglais : un DSL Ruby qui produit des formulaires (je ne retrouve pas le lien !).
+
+- TypeForm, l'éditeur de formulaire en ligne, est très utile et très facile d'utilisation, mais ses fonctionnalités numériques et conditionnelles sont payantes. Il est intéressant de noter que TypeForm a commencé avec une interface "boutons", et s'est ensuite dirigé vers une interface incluant une sorte de code source de configuration.
+
+- [Démarches simplifiées](https://www.demarches-simplifiees.fr/). Un intermédiaire entre G6K et TypeForm, hosté, mais très peu voir pas calculatoire ni conditionné.
