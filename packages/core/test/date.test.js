@@ -10,7 +10,7 @@ describe('Date', () => {
 	describe('normalizeDate', () => {
 		afterEach(() => vi.unstubAllEnvs())
 
-		it('accepte le 1er janvier 1970, même quand il vaut exactement 0 (UTC)', () => {
+		it('should accept January 1st 1970, even when it is exactly 0 (UTC)', () => {
 			vi.stubEnv('TZ', 'UTC')
 			expect(normalizeDate(1970, 1, 1)).to.equal('01/01/1970')
 		})
