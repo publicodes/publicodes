@@ -1,5 +1,11 @@
 # publicodes
 
+## 1.10.3
+
+### Patch Changes
+
+- [#862](https://github.com/publicodes/publicodes/pull/862) [`61140a1`](https://github.com/publicodes/publicodes/commit/61140a12fe58a3c73291b29e68501d5b130bc717) Thanks [@zhouzi](https://github.com/zhouzi)! - fix(core): fix today validation and initialization
+
 ## 1.10.1
 
 ### Patch Changes
