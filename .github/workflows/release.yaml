@@ -9,6 +9,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
   contents: write
+  pull-requests: write
   id-token: write # Required for OIDC
 
 jobs:
@@ -35,5 +36,3 @@ jobs:
         with:
           publish: yarn release
           version: yarn run version
-        env:
-          GITHUB_TOKEN: ${{ secrets.SECRET_GITHUB }}
