@@ -1,0 +1,4 @@
+rule vendored a:
+  valeur: rule vendored b
+  public: oui
+  importer: vendored b

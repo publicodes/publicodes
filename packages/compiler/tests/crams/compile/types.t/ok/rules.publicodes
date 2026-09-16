@@ -1,0 +1,93 @@
+a:
+  type: nombre
+test a: a = 42
+b:
+  type: date
+test b: b = 11/01/2000
+c:
+  type: texte
+test c: c = "foo"
+d:
+  variations:
+    - si: a > 50
+      alors: 'foo'
+    - si: a > 40
+      alors: 'bar'
+test d: d = 'foo' # part of the enum
+
+e:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+test e: e = 'bar'
+
+f:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+      - 'toot'
+  variations:
+    - si: 20 = 50
+      alors: 'foo'
+    - si: 20 > 50
+      alors: 'bar'
+test f: f = 'toot'
+
+g:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+  avec:
+    a: 'foo'
+    b: 'bar'
+  variations:
+    - si: oui
+      alors: a
+    - si: oui
+      alors: b
+
+h:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+      - 'toot'
+  avec:
+    a: 'foo'
+    b: 'bar'
+    c:
+      valeur: 'toot'
+      remplace: b
+  variations:
+    - si: oui
+      alors: a
+    - si: oui
+      alors: b
+
+i:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+      - 'super'
+      - 'toot'
+  avec:
+    a: 'foo'
+    b: 'bar'
+    c: 'super'
+    d: 'toot'
+  variations:
+    - si: oui
+      alors: a
+    - si: oui
+      alors: b
+    - si: oui
+      alors:
+        variations:
+          - si: oui
+            alors: c
+          - si: oui
+            alors: d

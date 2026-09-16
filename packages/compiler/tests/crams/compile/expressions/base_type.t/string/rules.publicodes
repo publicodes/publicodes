@@ -1,0 +1,3 @@
+a: "bla"
+b: "'foo'bar'"
+c: "bla\"foo"

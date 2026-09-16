@@ -1,0 +1,3 @@
+regle e:
+  valeur: module b . regle b
+  public: oui

@@ -1,0 +1,10 @@
+a: # c in needed parameters, not b
+  public: oui
+  valeur: b
+  contexte:
+    b:
+      applicable si: c
+      valeur: 3
+
+b:
+c:

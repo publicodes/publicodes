@@ -1,0 +1,20 @@
+a:
+  remplace:
+    - références à: b
+      exclusif: oui
+    - références à: x
+    - références à: c
+      sauf dans: x
+
+a':
+  non applicable si: oui
+  remplace:
+    - références à: b
+      exclusif: oui
+
+b:
+
+c: b
+
+x: c
+y: c + x

@@ -1,0 +1,10 @@
+a:
+  valeur: b
+  contexte:
+    c: 1  # doit lever une erreur
+b:
+  valeur: c
+  contexte:
+    c: 2  # override
+c:
+

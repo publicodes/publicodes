@@ -1,0 +1,24 @@
+a: # seul x ne devrait pas être dans les paramètres
+  public: oui
+  valeur: b
+  contexte:
+    b: 10
+
+b:
+  public: oui
+  applicable si: c
+  non applicable si: d
+  arrondi: e
+  plafond: f
+  plancher: g
+  par défaut: h
+  valeur: x
+
+x:
+c:
+d:
+f:
+g:
+h:
+e:
+  type: nombre

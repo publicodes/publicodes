@@ -12,6 +12,8 @@ import { Rule } from '../src/rule'
 import { parseUnit } from '../src/units'
 import testSuites from './mécanismes/index'
 
+/* eslint-disable vitest/no-conditional-expect */
+
 testSuites.forEach(([suiteName, suite]) => {
 	// if (suiteName !== 'durée') return
 	describe(`Mécanisme ${suiteName}`, () => {
