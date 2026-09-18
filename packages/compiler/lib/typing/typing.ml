@@ -1,6 +1,6 @@
 open Shared
 open Utils
-open Output
+open Output.Let_syntax
 
 (** [type_check ~replaces resolved] infers a typed AST from [resolved] with
     possible type errors. *)

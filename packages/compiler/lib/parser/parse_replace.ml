@@ -1,6 +1,6 @@
 open Base
 open Utils
-open Output
+open Output.Let_syntax
 open Parser_utils
 open Shared.Shared_ast
 
@@ -9,7 +9,7 @@ exception Invalid_rule_name of string
 let parse_context_references ~key mapping =
   match find_value key mapping with
   | None ->
-      return []
+      Output.return []
   | Some (value, Mark.{pos}) -> (
     match value with
     | `Scalar ref ->
@@ -19,29 +19,29 @@ let parse_context_references ~key mapping =
         parse_refs ~pos refs
     | `O _ ->
         let code, message = Err.parsing_should_not_be_object in
-        fatal_error ~pos ~kind:`Syntax ~code message )
+        Output.fatal_error ~pos ~kind:`Syntax ~code message )
 
 let parse_exclusive mapping =
   match find_value "exclusif" mapping with
   | None ->
-      return false
+      Output.return false
   | Some (value, Mark.{pos}) -> (
       let* scalar = get_scalar ~pos value in
       let value = get_value scalar in
       match value with
       | "oui" ->
-          return true
+          Output.return true
       | "non" ->
-          return false
+          Output.return false
       | _ ->
           let code, message = Err.parsing_invalid_mechanism in
-          fatal_error ~pos ~kind:`Syntax ~code
+          Output.fatal_error ~pos ~kind:`Syntax ~code
             ~hints:["doit valoir « oui » ou « non »"]
             message )
 
 let no_reference_error ~pos =
   let code, message = Err.parsing_invalid_mechanism in
-  fatal_error ~pos ~kind:`Syntax ~code
+  Output.fatal_error ~pos ~kind:`Syntax ~code
     ~hints:
       [ "Il manque la règle à remplacer"
       ; "Précisez-la avec « références à: ... »" ]
@@ -49,7 +49,7 @@ let no_reference_error ~pos =
 
 let multiple_references_error ~pos =
   let code, message = Err.parsing_invalid_mechanism in
-  fatal_error ~pos ~kind:`Syntax ~code
+  Output.fatal_error ~pos ~kind:`Syntax ~code
     ~hints:
       [ "Une seule règle peut être référencée à la fois dans un « références à »"
       ; "Utilisez plusieurs « références à: » au sein du « remplace » pour \
@@ -84,12 +84,12 @@ let parse_replace ~pos yaml =
       let except_in = parse_context_references ~key:"sauf dans" mapping in
       let exclusive = parse_exclusive mapping in
       let+ reference, only_in, except_in, exclusive =
-        combine_4 reference only_in except_in exclusive
+        Output.combine_4 reference only_in except_in exclusive
       in
       {reference; only_in; except_in; exclusive}
   | `A _ ->
       let code, message = Err.parsing_should_not_be_array in
-      fatal_error ~pos ~kind:`Syntax ~code message
+      Output.fatal_error ~pos ~kind:`Syntax ~code message
 
 let parse_make_not_applicable ~pos yaml =
   match yaml with
@@ -106,9 +106,9 @@ let parse_make_not_applicable ~pos yaml =
       let only_in = parse_context_references ~key:"dans" mapping in
       let except_in = parse_context_references ~key:"sauf dans" mapping in
       let+ reference, only_in, except_in =
-        combine_3 reference only_in except_in
+        Output.combine_3 reference only_in except_in
       in
       {reference; only_in; except_in; exclusive= false}
   | `A _ ->
       let code, message = Err.parsing_should_not_be_array in
-      fatal_error ~pos ~kind:`Syntax ~code message
+      Output.fatal_error ~pos ~kind:`Syntax ~code message

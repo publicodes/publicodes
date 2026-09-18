@@ -1,7 +1,7 @@
 open Shared.Shared_ast
 open Yaml_parser
 open Utils
-open Utils.Output
+open Utils.Output.Let_syntax
 open Parser_utils
 open Expr
 
@@ -14,14 +14,14 @@ let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
   | `Scalar ({value; style}, {pos= value_pos}) -> (
     match style with
     | `Single_quoted ->
-        return
+        Output.return
           (Mark.mk_pos ~pos
              { value=
                  Mark.mk_pos ~pos
                    (Expr (Mark.mk_pos ~pos:value_pos (Const (Symbol value))))
              ; chainable_mechanisms= [] } )
     | `Double_quoted ->
-        return
+        Output.return
           (Mark.mk_pos ~pos
              { value=
                  Mark.mk_pos ~pos
@@ -35,12 +35,12 @@ let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
                 ~labels:[Mark.mk_pos ~pos:value_pos "valeur attendue ici"] ]
           else []
         in
-        return ~logs
+        Output.return ~logs
           (Mark.mk_pos ~pos
              {value= Mark.mk_pos ~pos Not_defined; chainable_mechanisms= []} )
     | _ ->
         let* expr = parse_expression ~pos:value_pos value in
-        return
+        Output.return
           (Mark.mk_pos ~pos:value_pos
              { value= Mark.mk_pos ~pos:value_pos (Expr expr)
              ; chainable_mechanisms= [] } ) )
@@ -65,7 +65,7 @@ let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
         | _ ->
             []
       in
-      return ~logs (Mark.mk_pos ~pos {value; chainable_mechanisms})
+      Output.return ~logs (Mark.mk_pos ~pos {value; chainable_mechanisms})
   | `A _ ->
       let logs =
         let code, message = Err.parsing_should_be_array in
@@ -74,6 +74,6 @@ let rec parse_value ?(error_if_undefined = true) ~pos (yaml : yaml) :
               [ "Peut-être avez-vous oublié d'ajouter le nom du mécanisme (par \
                  exemple « somme : »)" ] ]
       in
-      return ~logs
+      Output.return ~logs
         (Mark.mk_pos ~pos
            {value= Mark.mk_pos ~pos Not_defined; chainable_mechanisms= []} )

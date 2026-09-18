@@ -1,5 +1,7 @@
 open Base
-open Utils.Output
+open Utils
+open Output.Let_syntax
+open Output.Infix
 open Shared.Shared_ast
 open Yaml_parser
 open Parser_utils
@@ -50,7 +52,7 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
   in
   match yaml with
   | `Scalar _ ->
-      return [parsed_rule]
+      Output.return [parsed_rule]
   | `O yaml ->
       let* _ =
         Parser_utils.check_authorized_keys ~keys:authorized_keys
@@ -73,7 +75,7 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
       in
       let* replace = parse_replace yaml in
       let* make_not_applicable = parse_make_not_applicable yaml in
-      return
+      Output.return
         ( [ { name= Mark.mk_pos ~pos (Shared.Rule_name.create_exn name)
             ; value
             ; meta= module_id :: meta
@@ -82,13 +84,13 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
         @ with_ @ import )
   | `A _ ->
       (* Should not happen because already checked by parse_value*)
-      empty
+      Output.empty
 
 and parse_with ~default_to_public ~ctx mapping =
   let rules = find_value "avec" mapping in
   match rules with
   | None ->
-      return []
+      Output.return []
   | Some (rules, {pos}) ->
       parse_rules ~default_to_public ~pos ~ctx rules
 
@@ -99,7 +101,7 @@ and parse_import ~default_to_public ~ctx mapping =
     let pos = Mark.pos scalar in
     if not (Utils.File.is_valid_import value) then
       let code, message = Err.invalid_path in
-      fatal_error ~pos ~code ~kind:`Syntax message
+      Output.fatal_error ~pos ~code ~kind:`Syntax message
         ~hints:
           [ Stdlib.Format.sprintf "'%s' n'est pas une valeur de paquet valide"
               value ]
@@ -113,7 +115,7 @@ and parse_import ~default_to_public ~ctx mapping =
             List.map paths ~f:(Stdlib.Format.sprintf "'%s'")
             |> String.concat ~sep:", "
           in
-          fatal_error ~pos ~code ~kind:`Syntax message
+          Output.fatal_error ~pos ~code ~kind:`Syntax message
             ~hints:
               [ Stdlib.Format.sprintf
                   "le dossier n'a pas été trouvé dans aucun des emplacements \
@@ -121,14 +123,14 @@ and parse_import ~default_to_public ~ctx mapping =
                   paths ]
       | Error Absent_env ->
           let code, message = Err.invalid_config in
-          fatal_error ~pos ~code ~kind:`Syntax message
+          Output.fatal_error ~pos ~code ~kind:`Syntax message
             ~hints:
               [ Stdlib.Format.sprintf
                   "la variable d'environnement PUBLICODESPATH n'est pas \
                    configurée" ]
       | Error Empty_env ->
           let code, message = Err.invalid_config in
-          fatal_error ~pos ~code ~kind:`Syntax message
+          Output.fatal_error ~pos ~code ~kind:`Syntax message
             ~hints:
               [ Stdlib.Format.sprintf
                   "la variable d'environnement PUBLICODESPATH est vide" ]
@@ -138,49 +140,50 @@ and parse_import ~default_to_public ~ctx mapping =
             List.map parts ~f:(Stdlib.Format.sprintf "'%s'")
             |> String.concat ~sep:", "
           in
-          fatal_error ~pos ~code ~kind:`Syntax message
+          Output.fatal_error ~pos ~code ~kind:`Syntax message
             ~hints:
               [ Stdlib.Format.sprintf
                   "certains composants de PUBLICODESPATH ne sont pas valide : \
                    %s"
                   parts ]
       | Ok package ->
-          return package
+          Output.return package
   in
   match find_value "importer" mapping with
   | None ->
-      return []
+      Output.return []
   | Some (value, {pos}) ->
       let* package, (module_, pos) =
         match value with
         | `A _ ->
             let code, message = Err.parsing_should_not_be_array in
-            fatal_error ~pos ~code ~kind:`Syntax message
+            Output.fatal_error ~pos ~code ~kind:`Syntax message
         | `Scalar scalar ->
-            return (ctx.current_package, (get_value scalar, Mark.pos scalar))
+            Output.return
+              (ctx.current_package, (get_value scalar, Mark.pos scalar))
         | `O mapping -> (
             let* module_ =
               let code, message = Err.parsing_missing_value "module" in
               let log = Log.error ~pos ~code ~kind:`Syntax message in
-              let* value = find_value "module" mapping |> of_opt ~log in
+              let* value = find_value "module" mapping |> Output.of_opt ~log in
               let* scalar = get_scalar ~pos (Mark.remove value) in
               let value = get_value scalar in
               let pos = Mark.pos scalar in
-              return (value, pos)
+              Output.return (value, pos)
             in
             match find_value "package" mapping with
             | None ->
-                return (ctx.current_package, module_)
+                Output.return (ctx.current_package, module_)
             | Some (package, {pos}) ->
                 let* package = parse_package package pos in
-                return (Some package, module_) )
+                Output.return (Some package, module_) )
       in
       let* module_ =
         let module_ = Utils.File.relativize ctx.current_module module_ in
-        if Utils.File.is_valid_import module_ then return module_
+        if Utils.File.is_valid_import module_ then Output.return module_
         else
           let code, message = Err.invalid_path in
-          fatal_error ~pos ~code ~kind:`Syntax message
+          Output.fatal_error ~pos ~code ~kind:`Syntax message
             ~hints:
               [ Stdlib.Format.sprintf
                   "'%s' n'est pas une valeur de module valide" module_ ]
@@ -191,20 +194,20 @@ and parse_import ~default_to_public ~ctx mapping =
             failwith "unreachable" (* validated before *)
         | Error (Not_found path) ->
             let code, message = Err.no_file_or_directory in
-            fatal_error ~pos ~code ~kind:`Syntax message
+            Output.fatal_error ~pos ~code ~kind:`Syntax message
               ~hints:[Stdlib.Format.sprintf "le chemin '%s' n'existe pas" path]
         | Error (Is_not_directory path) ->
             let code, message = Err.no_file_or_directory in
-            fatal_error ~pos ~code ~kind:`Syntax message
+            Output.fatal_error ~pos ~code ~kind:`Syntax message
               ~hints:
                 [ Stdlib.Format.sprintf "le chemin '%s' n'est pas un dossier"
                     path ]
         | Error (Empty_directory path) ->
             let code, message = Err.no_file_or_directory in
-            fatal_error ~pos ~code ~kind:`Syntax message
+            Output.fatal_error ~pos ~code ~kind:`Syntax message
               ~hints:[Stdlib.Format.sprintf "le dossier '%s' est vide" path]
         | Ok files ->
-            return files
+            Output.return files
       in
       let input_files = List.map ~f:(fun value -> value) input_files in
       parse_files ~default_to_public ~pos
@@ -224,7 +227,7 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
     in
     match circular_file with
     | None ->
-        return []
+        Output.return []
     | Some (circular_i, circular_file) ->
         let labels =
           let module_ids =
@@ -250,7 +253,7 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
               Mark.mk_pos ~pos msg )
         in
         let code, message = Err.import_cycle in
-        fatal_error ~pos ~labels ~code ~kind:`Syntax message
+        Output.fatal_error ~pos ~labels ~code ~kind:`Syntax message
   in
   let+ unresolved_programs =
     List.map input_files ~f:(fun filename ->
@@ -264,7 +267,7 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
                 { ctx with
                   files= ctx.files @ [filename]
                 ; current_module_id= new_module_id } )
-    |> all_keep_logs
+    |> Output.all_keep_logs
   in
   List.fold
     ~f:(fun acc program -> Ast.merge acc program)
@@ -285,7 +288,7 @@ and parse_replace mapping =
   let replace = find_value "remplace" mapping in
   match replace with
   | None ->
-      return []
+      Output.return []
   | Some (replace, {pos}) ->
       parse_one_or_many ~f:(Parse_replace.parse_replace ~pos) replace
 
@@ -293,7 +296,7 @@ and parse_make_not_applicable mapping =
   let make_not_applicable = find_value "rend non applicable" mapping in
   match make_not_applicable with
   | None ->
-      return []
+      Output.return []
   | Some (make_not_applicable, {pos}) ->
       parse_one_or_many
         ~f:(Parse_replace.parse_make_not_applicable ~pos)
@@ -306,16 +309,16 @@ and parse_rules ~default_to_public ~pos ~ctx yaml =
         if List.is_empty ctx.current_rule_name then Err.yaml_empty_file
         else Err.parsing_should_be_object
       in
-      fatal_error ~code ~pos ~kind:`Syntax message
+      Output.fatal_error ~code ~pos ~kind:`Syntax message
   | `O mapping ->
       let+ rules =
         List.map ~f:(parse_rule ~default_to_public ~ctx) mapping
-        |> all_keep_logs
+        |> Output.all_keep_logs
       in
       List.concat rules
   | _ ->
       let code, message = Err.parsing_should_be_object in
-      fatal_error ~pos ~code ~kind:`Syntax message
+      Output.fatal_error ~pos ~code ~kind:`Syntax message
 
 let parse ~filename ?(default_to_public = false) (yaml : yaml) : Ast.t Output.t
     =

@@ -1,7 +1,7 @@
 open Base
 open Shared
 open Utils
-open Output
+open Output.Let_syntax
 
 (** Factorizes all the data needed for the typing pass.
 
@@ -54,13 +54,13 @@ let error_typ_mismatch (u1 : Ast.typ) (u2 : Ast.typ) =
   let code, message = Err.type_incoherence in
   let labels = to_labels u1 u2 in
   (* FIXME: we don't want type errors to be fatal *)
-  fatal_error ~pos:p1 ~kind:`Type ~code ~labels message
+  Output.fatal_error ~pos:p1 ~kind:`Type ~code ~labels message
 
 let error_typ_invalid ?(hints = []) (u1 : Ast.typ) =
   let p1 = UnionFind.get u1 |> Mark.pos in
   let code, message = Err.type_invalid_type in
   let labels = to_label u1 in
-  fatal_error ~pos:p1 ~hints ~kind:`Type ~code ~labels message
+  Output.fatal_error ~pos:p1 ~hints ~kind:`Type ~code ~labels message
 
 let error_pow_exponent_with_unit (typ : Ast.typ) ~(pos : Pos.t) =
   let elem = UnionFind.get typ in
@@ -78,7 +78,7 @@ let error_pow_exponent_with_unit (typ : Ast.typ) ~(pos : Pos.t) =
     | _ ->
         []
   in
-  fatal_error ~pos ~kind:`Type ~code ~labels message
+  Output.fatal_error ~pos ~kind:`Type ~code ~labels message
 
 (** FIXME: should be an incompatible type error instead of missing enums and
     should point to the problematic operation instead of the loc of the type
@@ -90,7 +90,7 @@ let error_missing_enums enums (u1 : Ast.typ) (u2 : Ast.typ) =
   in
   let code, message = Err.type_missing_enums enums in
   let labels = to_labels u1 u2 in
-  fatal_error ~pos:p1 ~kind:`Type ~code ~labels message
+  Output.fatal_error ~pos:p1 ~kind:`Type ~code ~labels message
 
 (** [is_unifiable_precisions expected actual] returns true if [actual] is at
     least as precise as [expected]. *)
@@ -114,13 +114,13 @@ let unify_number_units ~pos1 ~pos2 typ1 typ2 =
   match (typ1, typ2) with
   | Ast.Typed (Ast.KNumber u1, _), Ast.Typed (Ast.KNumber u2, _) ->
       let* _ = Number_unit.unify ~pos1 ~pos2 u1 u2 in
-      return ()
+      Output.return ()
   | _ ->
-      return ()
+      Output.return ()
 
 let return_error_if_missing_literals typ1 typ2 e1 e2 =
   let missing = Ast.get_missing_literals e1 e2 in
-  if List.is_empty missing then return ()
+  if List.is_empty missing then Output.return ()
   else error_missing_enums missing typ1 typ2
 
 (** [check_union typ1 typ2] tries to merge [typ1] and [typ2] by keeping the most
@@ -132,18 +132,18 @@ let check_union (typ1 : Ast.typ) (typ2 : Ast.typ) : unit Output.t =
     | Ast.Enum e1, Ast.Enum e2 ->
         return_error_if_missing_literals typ1 typ2 e1 e2
     | _ ->
-        return ()
+        Output.return ()
   in
   let unify_precisions p1 p2 =
     if is_unifiable_precisions p1 p2 then
       let* _ = unify_enums p1 p2 in
       let _ = UnionFind.merge (fun _ snd -> snd) typ1 typ2 in
-      return ()
+      Output.return ()
     else if is_unifiable_precisions p2 p1 then
       let* _ = unify_enums p2 p1 in
       let _ = UnionFind.merge (fun fst _ -> fst) typ1 typ2 in
-      return ()
-    else return ()
+      Output.return ()
+    else Output.return ()
   in
   let m1 = UnionFind.get typ1 in
   let m2 = UnionFind.get typ2 in
@@ -152,10 +152,10 @@ let check_union (typ1 : Ast.typ) (typ2 : Ast.typ) : unit Output.t =
   match (t1, t2) with
   | Ast.Any _, _ ->
       let _ = UnionFind.merge (fun _ snd -> snd) typ1 typ2 in
-      return ()
+      Output.return ()
   | _, Any _ ->
       let _ = UnionFind.merge (fun fst _ -> fst) typ1 typ2 in
-      return ()
+      Output.return ()
   | Typed (KNumber _, p1), Typed (KNumber _, p2) ->
       let* _ = unify_number_units ~pos1 ~pos2 t1 t2 in
       let* _ = unify_enums p1 p2 in
@@ -168,7 +168,7 @@ let check_union (typ1 : Ast.typ) (typ2 : Ast.typ) : unit Output.t =
           ignore (UnionFind.merge (fun fst _ -> fst) typ1 typ2)
       | _ ->
           () ) ;
-      return ()
+      Output.return ()
   | Typed (k1, p1), Typed (k2, p2) when Ast.is_kind_equal k1 k2 ->
       unify_precisions p1 p2
   | _, _ ->
@@ -178,9 +178,9 @@ let check_union_with_parent_typ ~ctx typ =
   match ctx.parent_typ with
   | Some ptyp ->
       let* _ = check_union typ ptyp in
-      return ()
+      Output.return ()
   | None ->
-      return ()
+      Output.return ()
 
 let get_literals_from_precision = function
   | Ast.Enum lits ->
@@ -205,11 +205,11 @@ let check_generalize ?(grow = true) (typ1 : Ast.typ) (typ2 : Ast.typ) :
   let t2, {Mark.pos= pos2} = UnionFind.get typ2 in
   let set_typ1 typ =
     let _ = UnionFind.set typ1 (Mark.mk_pos ~pos:pos1 typ) in
-    return ()
+    Output.return ()
   in
   let set_typ2 typ =
     let _ = UnionFind.set typ2 (Mark.mk_pos ~pos:pos2 typ) in
-    return ()
+    Output.return ()
   in
   let symbolize_any kind precision =
     match (kind, precision) with
@@ -227,7 +227,7 @@ let check_generalize ?(grow = true) (typ1 : Ast.typ) (typ2 : Ast.typ) :
   match (t1, t2) with
   | Ast.Any _, Ast.Any _ ->
       let _ = UnionFind.union typ1 typ2 in
-      return ()
+      Output.return ()
   | Ast.Any _, Ast.Typed (k, p) ->
       set_typ1 (symbolize_any k p)
   | Ast.Typed (k, p), Ast.Any _ ->
@@ -235,7 +235,8 @@ let check_generalize ?(grow = true) (typ1 : Ast.typ) (typ2 : Ast.typ) :
   | Ast.Typed (Ast.KSymbol, p1), Ast.Typed (Ast.KSymbol, p2) -> (
     match (p1, p2) with
     | Ast.Literal (Ast.LSymbol s1, _), Ast.Literal (Ast.LSymbol s2, _) ->
-        if String.equal s1 s2 then return () else error_typ_mismatch typ1 typ2
+        if String.equal s1 s2 then Output.return ()
+        else error_typ_mismatch typ1 typ2
     | Ast.Enum e, Ast.Literal lit ->
         if grow then
           set_typ1 Ast.(Typed (KSymbol, mk_enum_precision (e @ [lit])))
@@ -255,7 +256,7 @@ let check_generalize ?(grow = true) (typ1 : Ast.typ) (typ2 : Ast.typ) :
     | _ ->
         error_typ_mismatch typ1 typ2 )
   | Ast.Typed (k1, _), Ast.Typed (k2, _) when Ast.is_kind_equal k1 k2 ->
-      return ()
+      Output.return ()
   | _ ->
       error_typ_mismatch typ1 typ2
 
@@ -272,7 +273,7 @@ let check_multiply ~pos u1 u2 : Ast.typ Output.t =
   | Some unit1, Some unit2 ->
       let t = Number_unit.multiply unit1 unit2 in
       let m = Ast.mk_general ~pos Ast.(KNumber t) in
-      return m
+      Output.return m
   | _, _ ->
       let msg1 = Ast.to_string t1 in
       let msg2 = Ast.to_string t2 in
@@ -286,7 +287,7 @@ let check_divide ~pos u1 u2 : Ast.typ Output.t =
   | Some unit1, Some unit2 ->
       let t = Number_unit.divide unit1 unit2 in
       let m = Ast.mk_general ~pos Ast.(KNumber t) in
-      return m
+      Output.return m
   | _, _ ->
       let msg1 = Ast.to_string t1 in
       let msg2 = Ast.to_string t2 in
@@ -298,11 +299,11 @@ let check_enumerate ~pos typ1 typ2 : Ast.typ Output.t =
   let t2, {Mark.pos= pos2} = UnionFind.get typ2 in
   let merge_typ1 () =
     let _ = UnionFind.merge (fun fst _ -> fst) typ1 typ2 in
-    return typ1
+    Output.return typ1
   in
   let merge_typ2 () =
     let _ = UnionFind.merge (fun _ snd -> snd) typ1 typ2 in
-    return typ2
+    Output.return typ2
   in
   (* Try to unify number units first
      NOTE: the only reason to try it first is to factorize the following pattern
@@ -312,11 +313,11 @@ let check_enumerate ~pos typ1 typ2 : Ast.typ Output.t =
   (* Merge Anys *)
   | Ast.Any _, Ast.Any _ ->
       let _ = UnionFind.union typ1 typ2 in
-      return typ1
+      Output.return typ1
   | Ast.Typed (k1, Any_kind _), Ast.Typed (k2, Any_kind _)
     when Ast.is_kind_equal k1 k2 ->
       let _ = UnionFind.union typ1 typ2 in
-      return typ1
+      Output.return typ1
   | Ast.Any _, Ast.Typed (_, (Any_kind _ | General)) ->
       merge_typ2 ()
   | Ast.Typed (_, (Any_kind _ | General)), Ast.Any _ ->
@@ -325,24 +326,24 @@ let check_enumerate ~pos typ1 typ2 : Ast.typ Output.t =
   | Ast.Any _, Ast.Typed (_, ((Literal _ | Enum _) as p)) ->
       let lits = get_literals_from_precision p in
       let enum = Ast.mk_enum ~pos lits in
-      return enum
+      Output.return enum
   (* Fills *)
   | Ast.Typed (k1, p1), Ast.Typed (k2, p2) when Ast.is_kind_equal k1 k2 -> (
     match (p1, p2) with
     | General, _ | _, General ->
-        return (Ast.mk_general ~pos k1)
+        Output.return (Ast.mk_general ~pos k1)
     | Any_kind _, Any_kind _ ->
         let _ = UnionFind.union typ1 typ2 in
-        return typ1
+        Output.return typ1
     | (Literal _ | Enum _), (Literal _ | Enum _) ->
         let lits1 = get_literals_from_precision p1 in
         let lits2 = get_literals_from_precision p2 in
-        return (Ast.mk_enum ~pos (lits1 @ lits2))
+        Output.return (Ast.mk_enum ~pos (lits1 @ lits2))
     | Any_kind _, ((Literal _ | Enum _) as p)
     | ((Literal _ | Enum _) as p), Any_kind _ ->
         let lits = get_literals_from_precision p in
         let enum = Ast.mk_enum ~pos lits in
-        return enum )
+        Output.return enum )
   | _, _ ->
       error_typ_mismatch typ1 typ2
 
@@ -356,16 +357,16 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
       | Todo ->
           check_rule_def rule_def ~ctx
       | Error ->
-          empty
+          Output.empty
       | _ ->
-          return ()
+          Output.return ()
     in
-    return rule_def
+    Output.return rule_def
   in
   let check_expression_is_any_number expr ~pos =
     let typ = Ast.mk_any_number ~pos in
     let* _ = check_expression expr ~ctx:{ctx with parent_typ= Some typ} in
-    return typ
+    Output.return typ
   in
   match expr with
   | Const _ ->
@@ -375,10 +376,10 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
         let* value =
           match Hashtbl.find ctx.rules_type ref with
           | Some value ->
-              return value
+              Output.return value
           | None ->
               let* rule_def = get_checked_rule_def ref in
-              return rule_def.value
+              Output.return rule_def.value
         in
         let value_mark = Mark.get value in
         let replacements =
@@ -442,7 +443,7 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
             in
             if Ast.is_typ_number_with_unit exponent_typ then
               error_pow_exponent_with_unit exponent_typ ~pos:right_pos
-            else return ()
+            else Output.return ()
           in
           (* Power operation aren't handle by the unit system, so we need to
                  remove the unit from the expression. *)
@@ -454,14 +455,14 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
             let* _ =
               check_expression left ~ctx:{ctx with parent_typ= Some left_typ}
             in
-            return left_typ
+            Output.return left_typ
           in
           let* right =
             let right_typ = Ast.mk_any ~pos:right_pos in
             let* _ =
               check_expression right ~ctx:{ctx with parent_typ= Some right_typ}
             in
-            return right_typ
+            Output.return right_typ
           in
           (* TODO: restrict possible types? *)
           let* _ = check_generalize left right in
@@ -481,8 +482,8 @@ and check_value_mechanism (value : Ast.typing_marked_value_mechanism) ~ctx =
     List.map values ~f:(fun value ->
         let typ = mk_typ () in
         let* _ = check_value value ~ctx:{ctx with parent_typ= Some typ} in
-        return typ )
-    |> all_okay
+        Output.return typ )
+    |> Output.all_okay
   in
   match value with
   | Expr expr ->
@@ -491,9 +492,9 @@ and check_value_mechanism (value : Ast.typing_marked_value_mechanism) ~ctx =
       check_value value ~ctx:{ctx with parent_typ= Some mark.typ}
   | Is_applicable _ | Is_not_applicable _ ->
       (* TODO: handle this when Not_applicable is a type *)
-      return ()
+      Output.return ()
   | Sum [] | Min_of [] | Max_of [] | Product [] ->
-      return ()
+      Output.return ()
   | Sum values | Min_of values | Max_of values ->
       let* _ = check_each values ~mk_wip:(fun () -> Ast.mk_any_number ~pos) in
       let fst_pos = Ast.get_first_element_pos_exn values in
@@ -501,7 +502,7 @@ and check_value_mechanism (value : Ast.typing_marked_value_mechanism) ~ctx =
       let* _ =
         List.map values ~f:(fun (_, value_mark) ->
             check_union sum_typ value_mark.typ )
-        |> all_okay
+        |> Output.all_okay
       in
       check_union sum_typ mark.typ
   | Product values ->
@@ -522,12 +523,12 @@ and check_value_mechanism (value : Ast.typing_marked_value_mechanism) ~ctx =
           ~f:
             (check_value
                ~ctx:{ctx with parent_typ= Some (Ast.mk_any_bool ~pos)} )
-        |> all_okay
+        |> Output.all_okay
       in
       let bool_typ = Ast.mk_bool ~pos in
       check_union bool_typ mark.typ
   | Not_defined ->
-      return ()
+      Output.return ()
   | Variations (variations, value) ->
       let any_typ = Ast.mk_any ~pos in
       let check_branch_and_enumerate branch_value prev_typ =
@@ -548,7 +549,7 @@ and check_value_mechanism (value : Ast.typing_marked_value_mechanism) ~ctx =
       let* variations_with_else_typ =
         match value with
         | None ->
-            return variations_typ
+            Output.return variations_typ
         | Some else_ ->
             check_branch_and_enumerate else_ variations_typ
       in
@@ -562,7 +563,7 @@ and check_chainable_mechanism
     match ctx.parent_typ with
     | Some ptyp ->
         let* _ = f ptyp in
-        return ()
+        Output.return ()
     | None ->
         failwith
           "check_chainable_mechanism: type checking without parent type \
@@ -594,7 +595,7 @@ and check_chainable_mechanism
       let* value_typ =
         let value_typ = Ast.mk_any_number ~pos in
         let* _ = check_value value ~ctx:{ctx with parent_typ= Some value_typ} in
-        return value_typ
+        Output.return value_typ
       in
       let* _ = check_union value_typ mark.typ in
       check_union_with_parent_typ ~ctx mark.typ
@@ -604,13 +605,13 @@ and check_chainable_mechanism
       let typ, {Mark.pos} = UnionFind.get value_mark.typ in
       let wip = Ast.mk_number ~unit:None ~pos in
       let* _ =
-        if Ast.is_bool typ then return ()
+        if Ast.is_bool typ then Output.return ()
         else
           match get_number_unit_opt typ with
           | Some unit ->
               let concrete = Number_unit.to_concrete unit in
               if Units.equal concrete (Units.parse_unit "décimales") then
-                return ()
+                Output.return ()
               else check_union value_mark.typ wip
           | None ->
               let hints = ["arrondi doit être un nombre ou un booléen"] in
@@ -626,16 +627,16 @@ and check_contexts (chainables : Ast.typing_marked_chainable_mechanism list)
       let rule_def, _ = Hashtbl.find_exn ctx.ast ref_name in
       let* _ = check_rule_def rule_def ~ctx in
       let value_mark = Mark.get rule_def.value in
-      return value_mark.typ
+      Output.return value_mark.typ
     in
     let* val_typ =
       let* _ = check_value value ~ctx:{ctx with parent_typ= None} in
       let _, value_mark = value in
-      return value_mark.typ
+      Output.return value_mark.typ
     in
     let* _ = check_generalize ref_rule_typ val_typ in
     Hashtbl.set ctx.rules_type ~key:ref_name ~data:value ;
-    return ()
+    Output.return ()
   in
   List.map chainables ~f:(fun (chainable, _) ->
       match chainable with
@@ -643,12 +644,12 @@ and check_contexts (chainables : Ast.typing_marked_chainable_mechanism list)
           let* _ =
             List.map values ~f:(fun ((ref, _), value) ->
                 check_context_entry ref value )
-            |> all_okay
+            |> Output.all_okay
           in
-          return ()
+          Output.return ()
       | _ ->
-          return () )
-  |> all_okay
+          Output.return () )
+  |> Output.all_okay
 
 and check_value value ~ctx =
   let Shared_ast.{value= value_mecha; chainable_mechanisms}, value_mark =
@@ -667,7 +668,7 @@ and check_value value ~ctx =
             ~ctx:{ctx with parent_typ= Some value_typ}
         in
         let _, mark = chainable in
-        return mark.typ )
+        Output.return mark.typ )
   in
   let* _ = check_union chainable_typ value_mark.typ in
   check_union_with_parent_typ ~ctx value_mark.typ
@@ -676,7 +677,7 @@ and check_make_not_applicable
     (make_not_applicable : 'ref Shared_ast.replace list) ~ptyp =
   match make_not_applicable with
   | [] ->
-      return ()
+      Output.return ()
   | hd :: _ ->
       let typ = Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in
       check_union typ ptyp
@@ -684,7 +685,7 @@ and check_make_not_applicable
 and check_rule_def rule_def ~ctx =
   let rule_name = Mark.remove rule_def.name in
   let _, typing_state = Hashtbl.find_exn ctx.ast rule_name in
-  if not (Ast.is_todo typing_state) then return ()
+  if not (Ast.is_todo typing_state) then Output.return ()
   else (
     Ast.set_typing_state ctx.ast rule_def Ast.Doing ;
     let Shared_ast.{value; name= current_rule, _; _} = rule_def in
@@ -699,16 +700,16 @@ and check_rule_def rule_def ~ctx =
     match res with
     | None, logs ->
         Ast.set_typing_state ctx.ast rule_def Ast.Error ;
-        break ~logs ()
+        Output.break ~logs ()
     | Some _, logs ->
         Ast.set_typing_state ctx.ast rule_def Ast.Done ;
-        break ~logs () )
+        Output.break ~logs () )
 
 let type_check ~replaces ast =
   let ctx = get_init_context ~ast ~replacements:replaces in
   let* _ =
     Ast.get_sorted_rule_defs ast
     |> List.map ~f:(check_rule_def ~ctx)
-    |> all_okay
+    |> Output.all_okay
   in
-  return ()
+  Output.return ()
