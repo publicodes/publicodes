@@ -1,5 +1,6 @@
 open Base
-open Utils.Output
+open Utils
+open Output.Let_syntax
 open Yaml_parser
 
 let get_value = Yaml_parser.get_value
@@ -7,10 +8,10 @@ let get_value = Yaml_parser.get_value
 let get_scalar ~pos (value : yaml) =
   match value with
   | `Scalar s ->
-      return s
+      Output.return s
   | _ ->
       let code, message = Err.parsing_should_be_scalar in
-      fatal_error ~pos ~kind:`Syntax ~code message
+      Output.fatal_error ~pos ~kind:`Syntax ~code message
         ~hints:
           [ "Une chaine de caractères simple est attendue, mais un objet ou un \
              tableau a été trouvé."
@@ -22,11 +23,13 @@ let parse_array ~pos
     (yaml : yaml) =
   match yaml with
   | `A seq ->
-      let* parsed_nodes = seq |> List.map ~f:(parse ~pos) |> all_keep_logs in
-      return parsed_nodes
+      let* parsed_nodes =
+        seq |> List.map ~f:(parse ~pos) |> Output.all_keep_logs
+      in
+      Output.return parsed_nodes
   | _ ->
       let code, message = Err.parsing_should_be_array in
-      fatal_error ~pos ~kind:`Syntax ~code message
+      Output.fatal_error ~pos ~kind:`Syntax ~code message
 
 let remove_double (mapping : mapping) : mapping Output.t =
   let seen_keys = ref (Set.empty (module String)) in
@@ -46,7 +49,7 @@ let remove_double (mapping : mapping) : mapping Output.t =
       else (
         seen_keys := Set.add !seen_keys key_value ;
         result_mapping := (key, value) :: !result_mapping ) ) ;
-  return ~logs:!logs (List.rev !result_mapping)
+  Output.return ~logs:!logs (List.rev !result_mapping)
 
 let parse_ref s =
   let value = get_value s in
@@ -56,31 +59,32 @@ let parse_ref s =
   | Some expr, _ -> (
     match Mark.remove expr with
     | Ref rule_name ->
-        return (Mark.mk_pos ~pos:pos rule_name)
+        Output.return (Mark.mk_pos ~pos rule_name)
     | _ ->
         let code, message = Err.invalid_rule_name in
-        fatal_error ~pos ~kind:`Syntax ~code message
+        Output.fatal_error ~pos ~kind:`Syntax ~code message
           ~hints:
             [ Printf.sprintf
                 "un nom de règle doit être de la forme suivante : `mon \
                  namespace . ma règle` ou `ma règle`" ] )
   | _ ->
       let code, message = Err.invalid_rule_name in
-      fatal_error ~pos ~kind:`Syntax ~code message
+      Output.fatal_error ~pos ~kind:`Syntax ~code message
         ~hints:
           [ Printf.sprintf
               "un nom de règle doit être de la forme suivante : `mon namespace \
                . ma règle` ou `ma règle`" ]
 
 let parse_refs ~pos yaml =
-  let* scalars = yaml |> List.map ~f:(get_scalar ~pos) |> all_keep_logs in
-  let* refs = List.map ~f:parse_ref scalars |> all_keep_logs in
-  return refs
+  let* scalars =
+    yaml |> List.map ~f:(get_scalar ~pos) |> Output.all_keep_logs
+  in
+  let* refs = List.map ~f:parse_ref scalars |> Output.all_keep_logs in
+  Output.return refs
 
 let find_value key mapping =
   List.find_map mapping ~f:(fun (k, value) ->
-      if String.equal (get_value k) key then Some (Mark.copy k value)
-      else None )
+      if String.equal (get_value k) key then Some (Mark.copy k value) else None )
 
 let check_authorized_keys ~keys ?(hints = []) mapping =
   let logs =
@@ -97,12 +101,12 @@ let check_authorized_keys ~keys ?(hints = []) mapping =
                message )
         else None )
   in
-  return ~logs ()
+  Output.return ~logs ()
 
 let parse_one_or_many ~f yaml =
   match yaml with
   | `A yaml ->
-      List.map ~f yaml |> all_keep_logs
+      List.map ~f yaml |> Output.all_keep_logs
   | _ ->
       let+ value = f yaml in
       [value]

@@ -36,7 +36,7 @@ let message_traduction =
     , ("caractère `:` non valide à cet endroit", []) ) ]
 
 let make_scalar pos (scalar : Yaml.scalar) =
-  Mark.mk_pos ~pos:pos Ast.{value= scalar.value; style= scalar.style}
+  Mark.mk_pos ~pos Ast.{value= scalar.value; style= scalar.style}
 
 let print_token =
   let open Event in
@@ -65,7 +65,7 @@ let print_token =
       "Nothing"
 
 let parse (filename : string) (content : string) : yaml Output.t =
-  let open Output in
+  let open Output.Let_syntax in
   (* Create a parser from the content *)
   let pos_from_mark Event.{start_mark; end_mark} =
     Pos.
@@ -89,7 +89,8 @@ let parse (filename : string) (content : string) : yaml Output.t =
               if starts_with ~prefix err then Some value else None )
           |> Option.value ~default:(err, [])
         in
-        fatal_error message ~pos ~kind:`Yaml ~code:Err.Code.Yaml_parsing ~hints
+        Output.fatal_error message ~pos ~kind:`Yaml ~code:Err.Code.Yaml_parsing
+          ~hints
   in
   let* parser = Yaml.Stream.parser content |> transform_error in
   let* first_token = Yaml.Stream.do_parse parser |> transform_error in
@@ -97,7 +98,7 @@ let parse (filename : string) (content : string) : yaml Output.t =
   (* Create an error message based on the position of the last parsed token *)
   let fatal_error_from_current_token (code, message) =
     let _, mark = !current_token in
-    fatal_error ~pos:(pos_from_mark mark) ~kind:`Yaml message ~code
+    Output.fatal_error ~pos:(pos_from_mark mark) ~kind:`Yaml message ~code
   in
   let unexpected_token_error token expected =
     fatal_error_from_current_token
@@ -110,7 +111,7 @@ let parse (filename : string) (content : string) : yaml Output.t =
       |> transform_error ~pos:(pos_from_mark (snd !current_token))
     in
     current_token := token ;
-    return token
+    Output.return token
   in
   let rec parse_stream () =
     let stream_start, _ = !current_token in
@@ -120,7 +121,7 @@ let parse (filename : string) (content : string) : yaml Output.t =
         let* stream_end, _ = next () in
         match stream_end with
         | Event.Stream_end ->
-            return result
+            Output.return result
         | token ->
             unexpected_token_error token "the end of stream" )
     | _ ->
@@ -134,7 +135,7 @@ let parse (filename : string) (content : string) : yaml Output.t =
         let* document_end, _ = next () in
         match document_end with
         | Event.Document_end _ ->
-            return result
+            Output.return result
         | token ->
             unexpected_token_error token "the end of file" )
     | _ ->
@@ -144,7 +145,7 @@ let parse (filename : string) (content : string) : yaml Output.t =
     match event with
     | Event.Scalar scalar ->
         let pos = pos_from_mark pos in
-        return (`Scalar (make_scalar pos scalar))
+        Output.return (`Scalar (make_scalar pos scalar))
     | Event.Sequence_start _ ->
         parse_sequence []
     | Event.Mapping_start _ ->
@@ -159,7 +160,7 @@ let parse (filename : string) (content : string) : yaml Output.t =
     let* event = next () in
     match event with
     | Event.Sequence_end, _ ->
-        return (`A (List.rev seq))
+        Output.return (`A (List.rev seq))
     | _ ->
         let* node = parse_node () in
         parse_sequence (node :: seq)
@@ -167,7 +168,7 @@ let parse (filename : string) (content : string) : yaml Output.t =
     let* event, _ = next () in
     match event with
     | Event.Mapping_end ->
-        return (`O (List.rev mapping))
+        Output.return (`O (List.rev mapping))
     | _ ->
         let* key = parse_key () in
         let* _ = next () in
@@ -178,7 +179,7 @@ let parse (filename : string) (content : string) : yaml Output.t =
     match event with
     | Event.Scalar scalar ->
         let pos = pos_from_mark pos in
-        return (make_scalar pos scalar)
+        Output.return (make_scalar pos scalar)
     | token ->
         unexpected_token_error token "une chaine de caractères"
   in

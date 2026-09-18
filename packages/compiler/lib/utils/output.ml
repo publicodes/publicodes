@@ -88,8 +88,6 @@ module Infix = struct
   let ( >>| ) m f = map ~f m
 end
 
-include Infix
-
 module Let_syntax = struct
   let return = return
 
@@ -98,7 +96,8 @@ module Let_syntax = struct
   let ( let* ) m f = bind m ~f
 end
 
-include Let_syntax
+open Infix
+open Let_syntax
 
 (* Print functions *)
 

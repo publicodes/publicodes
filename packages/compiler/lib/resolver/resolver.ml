@@ -2,7 +2,8 @@ open Base
 open Utils
 open Shared
 open Shared.Shared_ast
-open Utils.Output
+open Output.Let_syntax
+open Output.Infix
 
 let check_orphan_rules ~rule_names ast =
   let warn_if_orphan rule =
@@ -63,13 +64,13 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
         let code, message = Err.missing_rule in
         let missing_rule_name = Rule_name.create_exn ref in
         (* TODO: add to suggest closest rule name *)
-        fatal_error ~pos ~kind:`Syntax ~code message
+        Output.fatal_error ~pos ~kind:`Syntax ~code message
           ~hints:
             [ Stdlib.Format.asprintf "Ajoutez la règle `%a` manquante"
                 Rule_name.pp missing_rule_name
             ; "Vérifiez les erreurs de typos dans le nom de la règle" ]
     | Some ref ->
-        return ref
+        Output.return ref
   in
   let rec map_expr
       (((expr, {pos; _}) : (string list, Mark.pos_mark) expr) as expr_mark) =
@@ -83,7 +84,7 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
           let+ mapped_operand = map_expr operand in
           Unary_op (op, mapped_operand)
       | Const c ->
-          return (Const c)
+          Output.return (Const c)
       | Ref r ->
           let+ ref_value = resolve_ref ~pos r in
           Ref ref_value
@@ -115,7 +116,7 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
                 let* rule = resolve_ref ~pos ref_name in
                 let+ value = map_value value in
                 (Mark.mk_pos ~pos rule, value) )
-            |> all_keep_logs
+            |> Output.all_keep_logs
           in
           Context context
       | Default value ->
@@ -125,7 +126,7 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
           let+ precision = map_value precision in
           Round (rounding, precision)
       | Type t ->
-          return (Type t)
+          Output.return (Type t)
     in
     Mark.copy mechanism_mark mechanism
   and map_value_mechanism
@@ -138,22 +139,34 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
           let mapped_expr = map_expr expr >>| fun e -> Expr e in
           Output.default_to ~default:Not_defined mapped_expr
       | Sum values ->
-          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          let+ mapped_values =
+            List.map values ~f:map_value |> Output.all_keep_logs
+          in
           Sum mapped_values
       | Product values ->
-          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          let+ mapped_values =
+            List.map values ~f:map_value |> Output.all_keep_logs
+          in
           Product mapped_values
       | All_of values ->
-          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          let+ mapped_values =
+            List.map values ~f:map_value |> Output.all_keep_logs
+          in
           All_of mapped_values
       | One_of values ->
-          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          let+ mapped_values =
+            List.map values ~f:map_value |> Output.all_keep_logs
+          in
           One_of mapped_values
       | Max_of values ->
-          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          let+ mapped_values =
+            List.map values ~f:map_value |> Output.all_keep_logs
+          in
           Max_of mapped_values
       | Min_of values ->
-          let+ mapped_values = List.map values ~f:map_value |> all_keep_logs in
+          let+ mapped_values =
+            List.map values ~f:map_value |> Output.all_keep_logs
+          in
           Min_of mapped_values
       | Value value ->
           let+ value = map_value value in
@@ -165,7 +178,7 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
           let+ value = map_value value in
           Is_not_applicable value
       | Not_defined ->
-          return Not_defined
+          Output.return Not_defined
       | Variations (variations, else_) ->
           let* variations =
             List.map
@@ -174,7 +187,7 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
                 let+ then_ = map_value then_ in
                 {if_; then_} )
               variations
-            |> all_keep_logs
+            |> Output.all_keep_logs
           in
           let+ else_ =
             match else_ with
@@ -182,7 +195,7 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
                 let+ else_ = map_value else_ in
                 Some else_
             | None ->
-                return None
+                Output.return None
           in
           Variations (variations, else_)
     in
@@ -194,12 +207,14 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
       Mark.mk_pos ~pos ref
     in
     let reference = resolve_ref replace.reference in
-    let only_in = List.map replace.only_in ~f:resolve_ref |> all_keep_logs in
+    let only_in =
+      List.map replace.only_in ~f:resolve_ref |> Output.all_keep_logs
+    in
     let except_in =
-      List.map replace.except_in ~f:resolve_ref |> all_keep_logs
+      List.map replace.except_in ~f:resolve_ref |> Output.all_keep_logs
     in
     let+ reference, only_in, except_in =
-      combine_3 reference only_in except_in
+      Output.combine_3 reference only_in except_in
     in
     {reference; only_in; except_in; exclusive= replace.exclusive}
   and map_value (v : (string list, Mark.pos_mark) value) =
@@ -208,16 +223,16 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
     let+ chainable_mechanisms =
       node.chainable_mechanisms
       |> List.map ~f:map_chainable_mechanism
-      |> all_keep_logs
+      |> Output.all_keep_logs
     in
     Mark.copy v {value; chainable_mechanisms}
   in
   let* value = map_value rule.value in
-  let* replace = List.map ~f:map_replace rule.replace |> all_keep_logs in
+  let* replace = List.map ~f:map_replace rule.replace |> Output.all_keep_logs in
   let* make_not_applicable =
-    List.map ~f:map_replace rule.make_not_applicable |> all_keep_logs
+    List.map ~f:map_replace rule.make_not_applicable |> Output.all_keep_logs
   in
-  return {rule with value; replace; make_not_applicable}
+  Output.return {rule with value; replace; make_not_applicable}
 
 let to_resolved_ast (ast : Parser.Ast.t) : resolved Output.t =
   let rule_names =
@@ -230,7 +245,7 @@ let to_resolved_ast (ast : Parser.Ast.t) : resolved Output.t =
   let+ ast =
     ast
     |> List.map ~f:(resolve_rule ~rule_names)
-    |> all_keep_logs
-    |> add_logs ~logs:(orphan_logs @ duplicate_logs)
+    |> Output.all_keep_logs
+    |> Output.add_logs ~logs:(orphan_logs @ duplicate_logs)
   in
   ast

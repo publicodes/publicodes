@@ -1,7 +1,7 @@
 open Base
 open Shared
 open Utils
-open Output
+open Output.Let_syntax
 
 let transform_typ typ =
   match typ with
@@ -32,26 +32,27 @@ let rec to_expr (expr : Ast.typing_expr) : Shared_ast.typed_expr Output.t =
   let typ = transform_typ typ in
   match expr with
   | Const (Number _) as expr ->
-      return (expr, {Shared_ast.pos; typ})
+      Output.return (expr, {Shared_ast.pos; typ})
   | Const (Bool _) as expr ->
-      return (expr, {Shared_ast.pos; typ})
+      Output.return (expr, {Shared_ast.pos; typ})
   | Const (String _) as expr ->
-      return (expr, {Shared_ast.pos; typ})
+      Output.return (expr, {Shared_ast.pos; typ})
   | Const (Symbol _) as expr ->
-      return (expr, {Shared_ast.pos; typ})
+      Output.return (expr, {Shared_ast.pos; typ})
   | Const (Date (Day _)) as expr ->
-      return (expr, {Shared_ast.pos; typ})
+      Output.return (expr, {Shared_ast.pos; typ})
   | Const (Date (Month _)) as expr ->
-      return (expr, {Shared_ast.pos; typ})
+      Output.return (expr, {Shared_ast.pos; typ})
   | Ref _ as expr ->
-      return (expr, {Shared_ast.pos; typ})
+      Output.return (expr, {Shared_ast.pos; typ})
   | Binary_op (op, left, right) ->
       let* left = to_expr left in
       let* right = to_expr right in
-      return (Shared_ast.Binary_op (op, left, right), {Shared_ast.pos; typ})
+      Output.return
+        (Shared_ast.Binary_op (op, left, right), {Shared_ast.pos; typ})
   | Unary_op (op, value) ->
       let* value = to_expr value in
-      return (Shared_ast.Unary_op (op, value), {Shared_ast.pos; typ})
+      Output.return (Shared_ast.Unary_op (op, value), {Shared_ast.pos; typ})
 
 and to_value_mechanism (value : Ast.typing_value_mechanism) :
     Shared_ast.typed_value_mechanism Output.t =
@@ -69,25 +70,25 @@ and to_value_mechanism (value : Ast.typing_value_mechanism) :
       let+ value = to_value value in
       Shared_ast.Is_not_applicable value
   | Sum values ->
-      let+ values = List.map values ~f:to_value |> all_keep_logs in
+      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
       Shared_ast.Sum values
   | Product values ->
-      let+ values = List.map values ~f:to_value |> all_keep_logs in
+      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
       Shared_ast.Product values
   | All_of values ->
-      let+ values = List.map values ~f:to_value |> all_keep_logs in
+      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
       Shared_ast.All_of values
   | Min_of values ->
-      let+ values = List.map values ~f:to_value |> all_keep_logs in
+      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
       Shared_ast.Min_of values
   | Max_of values ->
-      let+ values = List.map values ~f:to_value |> all_keep_logs in
+      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
       Shared_ast.Max_of values
   | One_of values ->
-      let+ values = List.map values ~f:to_value |> all_keep_logs in
+      let+ values = List.map values ~f:to_value |> Output.all_keep_logs in
       Shared_ast.One_of values
   | Not_defined ->
-      return Shared_ast.Not_defined
+      Output.return Shared_ast.Not_defined
   | Variations (variations, value) ->
       let* variations =
         List.map variations ~f:(fun variation ->
@@ -95,12 +96,12 @@ and to_value_mechanism (value : Ast.typing_value_mechanism) :
             let* if_ = to_value if_ in
             let+ then_ = to_value then_ in
             {Shared_ast.if_; then_} )
-        |> all_keep_logs
+        |> Output.all_keep_logs
       in
       let+ value =
         match value with
         | None ->
-            return None
+            Output.return None
         | Some value ->
             let+ value = to_value value in
             Some value
@@ -115,8 +116,8 @@ and to_chainable_mechanism (chainable : Ast.typing_chainable_mechanism) :
         List.map values ~f:(fun value ->
             let ref, value = value in
             let* value = to_value value in
-            return (ref, value) )
-        |> all_keep_logs
+            Output.return (ref, value) )
+        |> Output.all_keep_logs
       in
       Shared_ast.Context values
   | Applicable_if value ->
@@ -126,7 +127,7 @@ and to_chainable_mechanism (chainable : Ast.typing_chainable_mechanism) :
       let+ value = to_value value in
       Shared_ast.Not_applicable_if value
   | Type typ ->
-      return (Shared_ast.Type typ)
+      Output.return (Shared_ast.Type typ)
   | Default value ->
       let+ value = to_value value in
       Shared_ast.Default value
@@ -148,7 +149,7 @@ and to_value (value : Ast.typing_value) : Shared_ast.typed_value Output.t =
     let typ, _ = UnionFind.get typ in
     let* value = to_value_mechanism value in
     let typ = transform_typ typ in
-    return (value, {Shared_ast.pos; typ})
+    Output.return (value, {Shared_ast.pos; typ})
   in
   let* chainable_mechanisms =
     List.map chainable_mechanisms ~f:(fun chainable ->
@@ -157,24 +158,25 @@ and to_value (value : Ast.typing_value) : Shared_ast.typed_value Output.t =
         let typ, _ = UnionFind.get typ in
         let* chainable = to_chainable_mechanism chainable in
         let typ = transform_typ typ in
-        return (chainable, {Shared_ast.pos; typ}) )
-    |> all_keep_logs
+        Output.return (chainable, {Shared_ast.pos; typ}) )
+    |> Output.all_keep_logs
   in
   let {Ast.pos; typ} = mark in
   let typ =
     let typ, _ = UnionFind.get typ in
     transform_typ typ
   in
-  return ({Shared_ast.value; chainable_mechanisms}, {Shared_ast.pos; typ})
+  Output.return ({Shared_ast.value; chainable_mechanisms}, {Shared_ast.pos; typ})
 
 let to_rule_def (rule_def : Ast.typing_rule_def) :
     Shared_ast.typed_rule_def Output.t =
   let {Shared_ast.value; _} = rule_def in
   let* value = to_value value in
-  return {rule_def with value}
+  Output.return {rule_def with value}
 
 let to_typed (ast : Ast.typing_tree) : Shared_ast.typed Output.t =
   let* rule_defs =
-    Ast.get_sorted_rule_defs ast |> List.map ~f:to_rule_def |> all_keep_logs
+    Ast.get_sorted_rule_defs ast
+    |> List.map ~f:to_rule_def |> Output.all_keep_logs
   in
-  return rule_defs
+  Output.return rule_defs

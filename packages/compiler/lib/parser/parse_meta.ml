@@ -1,5 +1,6 @@
 open Base
-open Utils.Output
+open Utils
+open Output.Let_syntax
 open Shared.Shared_ast
 open Yaml_parser
 open Parser_utils
@@ -10,7 +11,7 @@ let parse_custom_meta ~pos yaml =
   match yaml with
   | `A _ | `Scalar _ ->
       let code, err = Err.parsing_should_be_object in
-      fatal_error ~pos ~code ~kind:`Syntax err
+      Output.fatal_error ~pos ~code ~kind:`Syntax err
   | `O mapping ->
       let reserved_keys =
         List.filter_map
@@ -28,10 +29,10 @@ let parse_custom_meta ~pos yaml =
             ~f:(fun k ->
               let pos = Mark.pos k in
               let key = Yaml_parser.get_value k in
-              Mark.mk_pos ~pos:pos key )
+              Mark.mk_pos ~pos key )
             reserved_keys
         in
-        fatal_error ~pos ~code ~kind:`Syntax ~labels:reserved_keys_label
+        Output.fatal_error ~pos ~code ~kind:`Syntax ~labels:reserved_keys_label
           ~hints:
             [ ( match reserved_keys_label with
               | [_] ->
@@ -40,7 +41,7 @@ let parse_custom_meta ~pos yaml =
                   "Ces métas doivent être déplacées à la racine de la règle" )
             ]
           err
-      else return (Custom_meta (Yaml_parser.to_json (`O mapping)))
+      else Output.return (Custom_meta (Yaml_parser.to_json (`O mapping)))
 
 let parse mapping =
   let parse_key (key, value) =
@@ -48,13 +49,13 @@ let parse mapping =
     match get_value key with
     | "description" ->
         let* value = scalar_value () in
-        return (Description (get_value value))
+        Output.return (Description (get_value value))
     | "titre" ->
         let* value = scalar_value () in
-        return (Title (get_value value))
+        Output.return (Title (get_value value))
     | "note" ->
         let* value = scalar_value () in
-        return (Note (get_value value))
+        Output.return (Note (get_value value))
     | "meta" ->
         parse_custom_meta ~pos:(Mark.pos key) value
     | "public" ->
@@ -63,13 +64,13 @@ let parse mapping =
         let value = get_value value in
         if not (String.equal value "oui" || String.equal value "") then
           let code, message = Err.invalid_value in
-          fatal_error ~pos ~code ~kind:`Syntax message
-            ~labels:[Mark.mk_pos ~pos:pos "doit valoir `oui` ou être vide"]
+          Output.fatal_error ~pos ~code ~kind:`Syntax message
+            ~labels:[Mark.mk_pos ~pos "doit valoir `oui` ou être vide"]
             ~hints:
               [ Printf.sprintf "Remplacez `%s` par `oui` ou supprimez la clée"
                   value ]
-        else return Public
+        else Output.return Public
     | _ ->
-        empty
+        Output.empty
   in
-  List.map ~f:parse_key mapping |> all_keep_logs
+  List.map ~f:parse_key mapping |> Output.all_keep_logs
