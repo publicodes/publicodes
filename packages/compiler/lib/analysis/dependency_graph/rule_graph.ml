@@ -251,5 +251,4 @@ let mk ast ~replacement_graph ~make_not_applicable_graph =
       )
   in
   List.iter ast ~f:(fun rule_def -> add_rule_dependencies rule_def []) ;
-  output_dot graph ;
   graph

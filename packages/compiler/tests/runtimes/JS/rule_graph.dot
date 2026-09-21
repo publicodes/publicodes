@@ -1,6 +1,0 @@
-digraph G {
-  "a" [shape=ellipse, label="a, []", ];
-  
-  
-  
-  }
