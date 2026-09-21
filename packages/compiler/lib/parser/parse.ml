@@ -10,12 +10,11 @@ let authorized_keys =
   Parse_meta.reserved_meta
   @ Hashtbl.keys Parse_mechanisms.chainable_mechanisms
   @ Hashtbl.keys Parse_mechanisms.value_mechanisms
-  @ ["remplace"; "avec"; "rend non applicable"; "importer"]
+  @ ["remplace"; "avec"; "rend non applicable"; "importer"; "moyenne"]
   (* To implement *)
   @ [ "barème"
     ; "grille"
     ; "inversion numérique"
-    ; "moyenne"
     ; "est défini"
     ; "est applicable"
     ; "est non applicable"
@@ -24,7 +23,6 @@ let authorized_keys =
     ; "durée"
     ; "texte"
     ; "résoudre la référence circulaire"
-    ; "une possibilité"
     ; "formule"
     ; "privé"
     ; "logarithme" ]
