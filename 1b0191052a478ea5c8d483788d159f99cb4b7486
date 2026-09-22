@@ -69,6 +69,24 @@
       "parentUuid": "e9428db9_f95ab30b",
       "revId": "1b0191052a478ea5c8d483788d159f99cb4b7486",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "aed2130b_1a905de3",
+        "filename": "packages/compiler/tests/crams/compile/mechanisms/applicability.t/run.t",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-22T13:19:25Z",
+      "side": 1,
+      "message": "On a besoin d\u0027avoir une opération de runtime dédiée pour la vérification de la définition d\u0027une règle car si on utilise une simple comparaison, `@condition \u003d not_defined` sera toujours vrai quelque soit la valeur de `@condition`. C\u0027est du à la propagation des `not_applicable` et `not_defined` par certaines opérations.",
+      "parentUuid": "97e61847_1db8713e",
+      "revId": "1b0191052a478ea5c8d483788d159f99cb4b7486",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }

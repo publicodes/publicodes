@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "082134c7_0c364de4",
+        "filename": "packages/compiler/tests/crams/compile/mechanisms/definition.t/est_defini/rules.publicodes",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-22T13:19:25Z",
+      "side": 1,
+      "message": "On est `est applicable` alors que le fichier parle de `est defini`. \n\n(Nitpicks, pour l\u0027instant la convention est d\u0027utiliser l\u0027anglais pour les noms de fichiers de tests).",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 2
+      },
+      "revId": "cd633a522da6f5f2a2f30a13c9ff3b48373785d9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
