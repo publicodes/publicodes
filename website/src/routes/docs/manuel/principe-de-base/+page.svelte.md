@@ -10,15 +10,17 @@ title: Principes de base
 La syntaxe de Publicodes est basée sur le langage
 [Yaml](https://en.wikipedia.org/wiki/YAML).
 
-Un fichier Publicodes contient une liste de _règles_ identifiées par leur _nom_ et
-possédant une _valeur_ :
+Un modèle Publicodes est un dossier contenant des fichiers avec l'extension
+`.publicodes`. Un fichier Publicodes contient une liste de _règles_
+identifiées par leur _nom_ et possédant une _valeur_ :
 
 ```publicodes
 prix d'un repas: 10 €
 ```
 
-Une formule de calcul peut faire _référence_ à d'autres règles.
-Dans l'exemple suivant la règle `prix total` aura pour valeur 50 (= 5 \* 10)
+Une formule de calcul peut faire _référence_ à d'autres règles provenant
+du même modèle. Dans l'exemple suivant la règle `prix total` aura pour
+valeur 50 (= 5 \* 10)
 
 ```publicodes
 prix d'un repas: 10 €
