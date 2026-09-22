@@ -153,7 +153,10 @@ Si on change la valeur de la règle `nouveau salarié` à `non`, alors la réfé
 
 <Callout type="info" title="Note">
 
-La syntaxe `rend non applicable` fonctionne de la même manière que le remplacement : elle rend non applicable toutes les références à la règle choisie.
+La syntaxe `rend non applicable` fonctionne de la même manière que le
+remplacement : elle rend non applicable toutes les références à la règle
+choisie et ce, en prenant le pas sur les remplaces. **Une règle rendue non
+applicable ne peut pas être remplacée.**
 
 **[En savoir plus sur le remplacement](/docs/manuel#remplacement)**
 </Callout>
@@ -264,13 +267,15 @@ code interprété comme nombre: "12.34Z"
 
 ## Remplacement
 
-Certaines règles ne s'appliquent parfois que dans quelques situations
-particulières et modifier la définition des règles générales pour prendre en
-compte ces particularités pose des problèmes de maintenabilité de la base de
-règles.
+Les remplacements sont un moyen de simplifier l'expression
+d'exceptions. Modifier une règle pour lui ajouter des conditions, avec par
+exemple une [`variation`](/docs/mecanismes#variations), va la complexifier,
+l'alourdir, et poser des problèmes de maintenabilité.
 
-Publicodes dispose d'un mécanisme de remplacement qui permet d'amender n'importe
-quelle règle existante sans avoir besoin de la modifier :
+Publicodes dispose d'un mécanisme de remplacement qui permet d'amender
+n'importe quelle règle existante, sans avoir besoin de la modifier. Dans cet
+exemple, toutes les références à la règle `frais de repas` seront
+remplacées par une références à `cafés-restaurants . frais de repas` :
 
 ```publicodes
 frais de repas: 5 €/repas
@@ -278,17 +283,13 @@ frais de repas: 5 €/repas
 cafés-restaurants: oui
 
 cafés-restaurants . frais de repas:
-  remplace:
-    références à: frais de repas
+  remplace: frais de repas
   valeur: 6 €/repas
 
 montant repas mensuels: 20 repas * frais de repas
 ```
 
-Dans cet exemple, toutes les références à la règle `frais de repas` seront remplacées par une références à `cafés-restaurants . frais de repas`.
-Il est possible d'alléger le code en écrivant directement : `remplace: frais de repas`.
-
-On peut également choisir de remplacer dans un contexte donné :
+Il est possible de restreindre le remplacement à une règle précise :
 
 ```publicodes
 foo: 0
@@ -308,18 +309,19 @@ foo remplacé dans autres résultats:
 résultat 1: foo # vaut 2
 résultat 2: foo # vaut 3
 résultat 3: foo # vaut 3
-
 ```
 
 <Callout type="warning" title="Attention">
 
 Un remplacement modifie **les références**, et non la règle elle-même.
-Dans l'exemple ci-dessus, **la règle `foo` n'est pas modifiée** : ce sont ses références qui le sont (dans `résultat 1` et `résultat 2`).
+Dans l'exemple ci-dessus, **la règle `foo` n'est pas modifiée** : ce sont
+ses références qui le sont (dans `résultat 1` et `résultat 2`).
 </Callout>
 
 ### Remplacement non applicable
 
-Si le remplacement est défini dans une règle dont la valeur est `non applicable`, alors ce dernier n'est pas appliqué :
+Le remplacement est ignoré si la règle est `non applicable`. Cela permet
+de conditionner le remplacement :
 
 ```publicodes
 a: 1
@@ -347,11 +349,35 @@ résultat: a # vaut non car b est applicable
 
 </Callout>
 
-### Ordre de priorité
+### Remplacements exclusifs
 
-Lorsque plusieurs remplacements sont applicables pour une référence, l'ordre de priorité est le suivant :
+Lorsque plusieurs remplacements sont applicables pour une même référence,
+alors il faut qu'ils soient exclusifs. Alternativement, il faudra utiliser
+les [remplacement chainés](#remplacements-chain%C3%A9s).
 
-1. Le remplacement avec la `priorité` la plus haute est utilisée
+Il est necessaire de préciser que les remplacements sont exclusif avec
+l'attribut `exclusif: oui` :
+
+```publicodes
+a: 1
+b:
+  non applicable si:
+    est défini: c
+  remplace:
+    références à: a
+    exclusif: oui
+  valeur: 5
+c:
+  remplace:
+    références à: a
+    exclusif: oui
+  valeur: 10
+
+résultat: a
+# est remplacé par `c` car `c` est défini rendant `b` non applicable.
+```
+
+Une erreur sera levée à l'execution si l'exclusivité n'est pas vérifié :
 
 ```publicodes
 a: 1
@@ -359,31 +385,35 @@ a: 1
 b:
   remplace:
     références à: a
-    priorité: 2
+    exclusif: oui
   valeur: 5
 
 c:
-  remplace: a
+  remplace:
+    références à: a
+    exclusif: oui
   valeur: 10
 
-résultat: a
-# est remplacé par `b` car ce remplacement a une priorité
-# plus élevée que celui de `c` (par défaut à zéro)
+# Ce cas produit une erreur.
 ```
 
-2. Sinon, c'est le nom de la règle de définition qui est utilisé (comparaison lexicographique)
+### Remplacements chainés
+
+Lorsque les remplacements ne sont pas exclusifs, alors il faut préciser lesquels
+sont prioritaires sur les autres. Il faut pour ce faire utiliser les
+remplacements chainés, ou transitifs :
 
 ```publicodes
 a: 1
 b:
   remplace: a
   valeur: 5
-b . c:
-  remplace: a
+c:
+  remplace: b
   valeur: 10
 
 résultat: a
-# est remplacé par `b . c` car il est situé après `b` dans l'ordre alphabétique
+# est remplacé par `b` puis par `c`, donc vaut 10
 ```
 
 ## Définir des règles imbriquées
