@@ -90,19 +90,19 @@ Cycle imports :
        ╒══  subjects/cycle/main.publicodes:2:13 ══
      1 │ cycle a:
      2 │   importer: cycle a
-       │             ˘˘˘˘˘˘˘ module 'cycle a' importé ici
+       │             ˘˘˘˘˘˘˘ modèle 'cycle a' importé ici
        ╒══  cycle a/rules.publicodes:2:13 ══
      1 │ cycle b:
      2 │   importer: cycle b
-       │             ˘˘˘˘˘˘˘ module 'cycle b' importé ici, début du cycle
+       │             ˘˘˘˘˘˘˘ modèle 'cycle b' importé ici, début du cycle
        ╒══  cycle b/rules.publicodes:2:13 ══
      1 │ cycle c:
      2 │   importer: cycle c
-       │             ˘˘˘˘˘˘˘ module 'cycle c' importé ici
+       │             ˘˘˘˘˘˘˘ modèle 'cycle c' importé ici
        ╒══  cycle c/rules.publicodes:2:13 ══
      1 │ cycle a:
      2 │   importer: cycle a
-       │             ˘˘˘˘˘˘˘ module 'cycle a' importé à nouveau ici
+       │             ˘˘˘˘˘˘˘ modèle 'cycle a' importé à nouveau ici
   
   [123]
 
@@ -165,22 +165,22 @@ Missing reference :
          vide
   
   E033 la resource est introuvable [syntax error]
-       ╒══  subjects/missing/rules.publicodes:10:14 ══
+       ╒══  subjects/missing/rules.publicodes:10:13 ══
      9 │   importer:
-    10 │     package: package missing
-       │              ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
+    10 │     paquet: package missing
+       │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
    Hint: le dossier n'a pas été trouvé dans aucun des
          emplacements suivants : 'vendor/package missing'
   
   E033 la resource est introuvable [syntax error]
        ╒══  subjects/missing/rules.publicodes:17:13 ══
-    16 │     package: package a
-    17 │     module: vendored missing
+    16 │     paquet: package a
+    17 │     modèle: vendored missing
        │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
    Hint: le chemin 'vendor/package a/vendored missing'
          n'existe pas
   
-  E034 champ manquant : module [syntax error]
+  E034 champ manquant : modèle [syntax error]
        ╒══  subjects/missing/rules.publicodes:21:3 ══
     20 │   valeur: rule vendored c + 3
     21 │   importer:
@@ -207,38 +207,38 @@ Vendor invalid reference :
      2 │   valeur: rule vendored a + 3
      3 │   importer: foo/../bar # invalide
        │             ˘˘˘˘˘˘˘˘˘˘˘
-   Hint: 'foo/../bar' n'est pas une valeur de module
+   Hint: 'foo/../bar' n'est pas une valeur de modèle
          valide
   
   E035 chemin invalide [syntax error]
-       ╒══  subjects/vendored invalid/main.publicodes:8:14 ══
+       ╒══  subjects/vendored invalid/main.publicodes:8:13 ══
      7 │   importer:
-     8 │     package: ../node_modules/foo # invalide
-       │              ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
+     8 │     paquet: ../node_modules/foo # invalide
+       │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
    Hint: '../node_modules/foo' n'est pas une valeur de
          paquet valide
   
   E035 chemin invalide [syntax error]
        ╒══  subjects/vendored invalid/main.publicodes:15:13 ══
-    14 │     package: package a
-    15 │     module: bar/../toot # invalide
+    14 │     paquet: package a
+    15 │     modèle: bar/../toot # invalide
        │             ˘˘˘˘˘˘˘˘˘˘˘˘
-   Hint: 'bar/../toot' n'est pas une valeur de module
+   Hint: 'bar/../toot' n'est pas une valeur de modèle
          valide
   
   E035 chemin invalide [syntax error]
        ╒══  subjects/vendored invalid/main.publicodes:21:13 ══
-    20 │     package: package a
-    21 │     module: bar/./toot # invalide
+    20 │     paquet: package a
+    21 │     modèle: bar/./toot # invalide
        │             ˘˘˘˘˘˘˘˘˘˘˘
-   Hint: 'bar/./toot' n'est pas une valeur de module
+   Hint: 'bar/./toot' n'est pas une valeur de modèle
          valide
   
   E035 chemin invalide [syntax error]
-       ╒══  subjects/vendored invalid/main.publicodes:26:14 ══
+       ╒══  subjects/vendored invalid/main.publicodes:26:13 ══
     25 │   importer:
-    26 │     package: ./foo # invalide
-       │              ˘˘˘˘˘˘
+    26 │     paquet: ./foo # invalide
+       │             ˘˘˘˘˘˘
    Hint: './foo' n'est pas une valeur de paquet valide
   [123]
 
