@@ -5,9 +5,9 @@ out:
 out2:
   valeur: regle relative
   importer:
-    module: ./module relative
+    modèle: ./module relative
 
 out3:
   valeur: regle relative
   importer:
-    module: relative
+    modèle: relative

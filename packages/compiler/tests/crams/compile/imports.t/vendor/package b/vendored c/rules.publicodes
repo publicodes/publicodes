@@ -2,5 +2,5 @@ rule vendored d:
   valeur: rule vendored e
   public: oui
   importer:
-    module: vendored d
-    package: package d
+    modèle: vendored d
+    paquet: package d
