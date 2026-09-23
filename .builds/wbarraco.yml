@@ -1,0 +1,39 @@
+image: alpine/latest
+oauth: pages.sr.ht/PAGES:RW
+packages:
+  - hut
+  - yarn
+environment:
+  site: calinou.willowbarraco.fr
+sources:
+  - https://git.sr.ht/~stacyharper/publicodes
+submitter:
+  hub.sr.ht:
+    enabled: false
+  git.sr.ht:
+    enabled: true
+    allow-refs:
+      - refs/heads/wbarraco/website
+triggers:
+  - action: email
+    condition: failure
+    to: '~stacyharper/ci-jobs@lists.sr.ht'
+tasks:
+  - environment: |
+      cd publicodes
+      if [ "$(git remote get-url origin)" != "https://git.sr.ht/~stacyharper/publicodes" ]
+      then
+        complete-build
+      fi
+  - install: |
+      cd publicodes/website
+      yarn install
+  - build: |
+      cd publicodes
+      yarn run turbo run 'website#build'
+  - package: |
+      cd publicodes/website
+      tar -C build/ -cvz . > site.tar.gz
+  - upload: |
+      cd publicodes/website
+      hut pages publish -d $site site.tar.gz
