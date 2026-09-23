@@ -3,8 +3,9 @@ sidebar_position: 2
 title: Types et opérations
 ---
 
-Il existe quatre types de données en publicodes : [les nombres](#nombres),
-[les booléens](#booléens), [les textes](#textes) et [les dates](#dates).
+Il existe cinq types de données en publicodes : [les nombres](#nombres),
+[les booléens](#booléens), [les textes](#textes), [les symboles](#symboles) et
+[les dates](#dates).
 
 ## Nombres
 
@@ -73,14 +74,33 @@ mineur: majeur = non
 
 ## Textes
 
-Une règle peut contenir un texte (ou chaine de charactère). Les textes
-sont délimités par des guillemets doubles `"` :
+Une règle peut contenir un texte (ou chaine de charactère). Les textes sont
+délimités par des guillemets doubles `"` (et **non** des guillemets simples
+`'`, voir [symboles](#symboles)) :
 
 ```publicodes
 # Utiliser des guillemets imbriqués
 a: "Bonjour"
 b: |
     "Bonjour"
+```
+
+## Symboles
+
+Les symboles ont la particularité de s'énumerer deux mêmes, simplement
+en les utilisants. Contrairement aux textes, ils sont délimités par des
+guillemets simples `'`. Les symboles ne sont pas des textes, et les deux ne sont
+donc pas interchangables :
+
+```publicodes
+majorité civile: # ('mineur' | 'majeur')
+
+peut acheter de l'alcool:
+  variations:
+      - si: majorité civile = 'mineur'
+        alors: oui
+      - si: majorité civile = 'majeur'
+        alors: non
 ```
 
 ### Une possibilité
