@@ -228,47 +228,6 @@ aides occitanie:
 aides occitanie . subvention vélo : 500 €
 ```
 
-## Chaînes de caractères littérales
-
-Pour qu'une valeur soit interprétée comme une chaîne de caractères littérale et
-non comme une référence à une autre règle, il faut que la chaîne de caractères
-soit encadrée d'apostrophes `'` ou de guillemets `"`. Ces symboles doivent être
-échappés dans certaines situations, pour qu'ils ne soient pas ignorés comme
-faisant partie de la syntaxe Yaml (cas notable : à la définition d'une règle
-avec pour valeur une chaîne de caractères).
-
-L'exemple suivant montre plusieurs façons de définir et d'utiliser des chaînes
-de caractères littérales :
-
-```publicodes
-région: '"Nouvelle-Aquitaine"'
-région 2: "'Provence-Alpes-Côte d'Azur'"
-région 3: |
-  "Occitanie"
-région 4:
-  texte: Grand Est
-```
-
-Lors de comparaisons de chaînes de caractères, la syntaxe yaml échappe automatiquement les guillemets. Ces deux formulations sont donc équivalentes :
-
-```publicodes
-région:
-comparaison 1: région = "Nouvelle-Aquitaine"
-comparaison 2: 'région = "Nouvelle-Aquitaine"'
-```
-
-<Callout type="warning" title="Attention">
-
-Dans une définition, encadrer une valeur par de simples guillemets ne définit pas une chaîne de caractères littérale
-
-```publicodes
-région interprétée comme référence: "Bretagne"
-Bretagne:
-code interprété comme nombre: "12.34Z"
-```
-
-</Callout>
-
 ## Remplacement
 
 Les remplacements sont un moyen de simplifier l'expression
