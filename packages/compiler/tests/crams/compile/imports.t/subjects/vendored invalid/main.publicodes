@@ -5,23 +5,23 @@ out:
 out1:
   valeur: rule vendored a + 3
   importer:
-    package: ../node_modules/foo # invalide
-    module: bar
+    paquet: ../node_modules/foo # invalide
+    modèle: bar
 
 out2:
   valeur: rule vendored a + 3
   importer:
-    package: package a
-    module: bar/../toot # invalide
+    paquet: package a
+    modèle: bar/../toot # invalide
 
 out3:
   valeur: rule vendored a + 3
   importer:
-    package: package a
-    module: bar/./toot # invalide
+    paquet: package a
+    modèle: bar/./toot # invalide
 
 out4:
   valeur: rule vendored a + 3
   importer:
-    package: ./foo # invalide
-    module: bar
+    paquet: ./foo # invalide
+    modèle: bar
