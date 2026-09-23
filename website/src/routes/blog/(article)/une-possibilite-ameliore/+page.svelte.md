@@ -33,7 +33,7 @@ Il est maintenant possible de :
         - 20%
     ```
 
-> [👉 Voir toutes les nouveautés dans la page de documentation dédiée](/docs/manuel/une-possibilite)
+> 👉 Voir toutes les nouveautés dans la page de documentation dédiée
 
 `une possibilité` est un mécanisme historique de Publicodes, **présent dans pratiquement toutes les bases de règles**. Pourtant, jusqu'à maintenant, la documentation n'en parlait que très peu.
 

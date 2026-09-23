@@ -1,11 +1,12 @@
 ---
 sidebar_position: 2
-title: Types et opérations
+title: Types, opérations et énumérations
 ---
 
-Il existe cinq types de données en publicodes : [les nombres](#nombres),
-[les booléens](#booléens), [les textes](#textes), [les symboles](#symboles) et
-[les dates](#dates).
+Il existe cinq types de données en publicodes : [les nombres](#nombres), [les
+booléens](#booléens), [les textes](#textes), [les symboles](#symboles)
+et [les dates](#dates). Il est possible de manipuler des
+[énumérations](#%C3%A9num%C3%A9ration-de-types) pour chacun de ces types.
 
 ## Nombres
 
@@ -103,38 +104,6 @@ peut acheter de l'alcool:
         alors: non
 ```
 
-### Une possibilité
-
-Actuellement, le type texte est utilisé pour représenter les options, ou possibilité. Ainsi, pour proposer des choix à l'utilisateur, on utilise l'écriture suivante :
-
-```publicodes
-langue:
-  une possibilité:
-    - français
-    - anglais
-    - espagnol
-  avec:
-    français:
-    anglais:
-    espagnol:
-  par défaut: "'français'"
-
-salution:
-  variations:
-    - si: langue = 'français'
-      alors: "'Bonjour'"
-    - si: langue = 'anglais'
-      alors: "'Hello'"
-    - si: langue = 'espagnol'
-      alors: "'Hola'"
-```
-
-<Callout type="info">
-
-Cette façon de définir les options est très limitée (très verbeuse et pas de vérification statique). Elle sera amenée à évoluer dans les prochaines versions de publicodes.
-
-</Callout>
-
 ## Dates
 
 Les dates sont définies avec le format `JJ/MM/AAAA`. On peut uniquement préciser le mois et l'année `MM/AAAA`. Dans ce cas, le jour est automatiquement fixé au premier du mois.
@@ -149,6 +118,53 @@ date 2: 04/2024 # revient à écrire 01/04/2024
 Il est possible de comparer des dates entre elles avec les opérateurs `>`, `>=`, `<`, `<=`, `=` ou `!=`.
 
 Pour connaître la durée entre deux dates, il faut utiliser le mécanisme [`durée`](/docs/mecanismes#durée).
+
+## Énumération de types
+
+Une énumération est une restriction des valeurs possibles pour une rêgle. Chacun
+des cinq types primaires peut être énuméré, mais les [symboles](#symboles) ont
+quelques particularités.
+
+Les énumérations de valeurs sont calculées avec
+les [variations](/docs/mecanismes#variations) et les
+[remplacements](/docs/manuel/principe-de-base#remplacement) :
+
+```publicodes
+a: # (10 | 20 | 30)
+  variations:
+    - si: oui
+      alors: 10
+    - si: oui
+      alors: 20
+    - sinon: 30
+
+b: # (10 | 20)
+  valeur: 10
+c:
+  valeur: 20
+  remplace: b
+```
+
+Le compilateur se chargera de vérifier que ces valeurs énumérés sont
+compatibles avec les types définis. Ici `b` est une énumération de `10 |
+20 | 30`, ce qui n'est pas compatible avec le type défini `100 | 200`. Une
+erreur sera donc levée au moment de la compilation :
+
+```publicodes
+a:
+  valeur: b
+  type:
+    une possibilité:
+      - 100
+      - 200
+b:
+  variations:
+    - si: oui
+      alors: 10
+    - si: oui
+      alors: 20
+    - sinon: 30
+```
 
 ---
 
