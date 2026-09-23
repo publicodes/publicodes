@@ -3,7 +3,8 @@ sidebar_position: 2
 title: Types et opérations
 ---
 
-Il existe quatre types de données en publicodes : [les nombres](#nombres), [les booléens](#booléens), [les textes](#texte) et [les dates](#dates).
+Il existe quatre types de données en publicodes : [les nombres](#nombres),
+[les booléens](#booléens), [les textes](#textes) et [les dates](#dates).
 
 ## Nombres
 
@@ -70,42 +71,16 @@ mineur: majeur = non
 
 </Callout>
 
-## Texte
+## Textes
 
-Une règle peut contenir un texte (ou chaine de charactère). Les textes sont délimités par des guillemets simples `'` ou doubles `"`.
-
-<Callout type="caution" title="Définir un texte">
-
-Dans une définition, encadrer un texte par de simples ne fonctionnera pas. Cela vient du langage de sérialisation utilisé par publicodes (YAML) qui supprime les guillemets.
-
-Plusieurs solutions de contournement existent :
+Une règle peut contenir un texte (ou chaine de charactère). Les textes
+sont délimités par des guillemets doubles `"` :
 
 ```publicodes
 # Utiliser des guillemets imbriqués
-a: "'Bonjour'"
-# Utiliser une chaîne de caractères sur plusieurs lignes
+a: "Bonjour"
 b: |
-    'Bonjour'
-# Utiliser le mécanisme `texte`
-c:
-  texte: Bonjour
-
-```
-
-Ce comportement devrait être corrigé dans les prochaines versions de publicodes.
-
-</Callout>
-
-### Concaténation de texte
-
-Il est possible de concaténer des textes avec [le mécanisme texte](/docs/mecanismes#texte).
-
-```publicodes
-prénom: "'Lyra'"
-nom: "'Belacqua'"
-
-salutation:
-  texte: Bonjour {{ prénom }} {{ nom }} !
+    "Bonjour"
 ```
 
 ### Une possibilité

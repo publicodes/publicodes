@@ -567,7 +567,8 @@ aide vélo:
 
 <Callout type="tip" title="Éviter les doubles quotes">
 
-On peut utiliser ce mécanisme pour éviter d’avoir à [échapper les doubles quotes](/docs/manuel/types#texte) dans un texte.
+On peut utiliser ce mécanisme pour éviter d’avoir à [échapper les
+doubles quotes](/docs/manuel/types#textes) dans un texte.
 
 ```publicodes
 # ces deux règles sont équivalentes :
