@@ -204,12 +204,13 @@ c: a . b
 
 ### Désactivation de branche
 
-Il est possible de désactiver l'ensemble des règles définies dans un espace de nom.
-
-Toutes les règles possèdent une dépendance implicite à leur parent. Si ce dernier vaut à _non_ ou est _non applicable_ alors toutes les règles enfants seront _non applicables_
+Il est possible de désactiver l'ensemble des règles définies dans un
+espace de nom, en l'indiquant avec `applicabilité étendue à l'espace de nom`:
 
 ```publicodes
-CDD: non
+CDD:
+  valeur: non
+  applicabilité étendue à l'espace de nom: oui
 CDD . indemnité de précarité: 1500€ # non applicable
 
 indemnités:
@@ -223,6 +224,7 @@ région: '"Centre"'
 
 aides occitanie:
   applicable si: région = 'Occitanie'
+  applicabilité étendue à l'espace de nom: oui
 aides occitanie . subvention vélo : 500 €
 ```
 
