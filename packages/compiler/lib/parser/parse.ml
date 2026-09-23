@@ -165,15 +165,15 @@ and parse_import ~default_to_public ~ctx mapping =
               (ctx.current_package, (get_value scalar, Mark.pos scalar))
         | `O mapping -> (
             let* module_ =
-              let code, message = Err.parsing_missing_value "module" in
+              let code, message = Err.parsing_missing_value "modèle" in
               let log = Log.error ~pos ~code ~kind:`Syntax message in
-              let* value = find_value "module" mapping |> Output.of_opt ~log in
+              let* value = find_value "modèle" mapping |> Output.of_opt ~log in
               let* scalar = get_scalar ~pos (Mark.remove value) in
               let value = get_value scalar in
               let pos = Mark.pos scalar in
               Output.return (value, pos)
             in
-            match find_value "package" mapping with
+            match find_value "paquet" mapping with
             | None ->
                 Output.return (ctx.current_package, module_)
             | Some (package, {pos}) ->
@@ -188,7 +188,7 @@ and parse_import ~default_to_public ~ctx mapping =
           Output.fatal_error ~pos ~code ~kind:`Syntax message
             ~hints:
               [ Stdlib.Format.sprintf
-                  "'%s' n'est pas une valeur de module valide" module_ ]
+                  "'%s' n'est pas une valeur de modèle valide" module_ ]
       in
       let* input_files =
         match Utils.File.gather_module ?package module_ with
@@ -246,11 +246,11 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
                   let dir = File.dirname file in
                   if i = circular_i then
                     Stdlib.Format.sprintf
-                      "module '%s' importé ici, début du cycle" dir
-                  else Stdlib.Format.sprintf "module '%s' importé ici" dir
+                      "modèle '%s' importé ici, début du cycle" dir
+                  else Stdlib.Format.sprintf "modèle '%s' importé ici" dir
                 else
                   let dir = File.dirname circular_file in
-                  Stdlib.Format.sprintf "module '%s' importé à nouveau ici" dir
+                  Stdlib.Format.sprintf "modèle '%s' importé à nouveau ici" dir
               in
               Mark.mk_pos ~pos msg )
         in
