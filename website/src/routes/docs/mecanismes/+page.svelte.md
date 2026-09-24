@@ -283,6 +283,42 @@ arrondi:
   valeur: 2 / 3
 ```
 
+## `arrondi à l'inférieur`
+
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
+
+Arrondit à l’entier inférieur, ou à une précision donnée.
+
+```publicodes title="Exemple"
+arrondi:
+  arrondi à l'inférieur: oui
+  valeur: 12.45
+```
+
+```publicodes title="Nombre de décimales"
+arrondi:
+  arrondi à l'inférieur: 2 décimales
+  valeur: 2 / 3
+```
+
+## `arrondi au supérieur`
+
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
+
+Arrondit à l’entier supérieur, ou à une précision donnée.
+
+```publicodes title="Exemple"
+arrondi:
+  arrondi au supérieur: oui
+  valeur: 12.45
+```
+
+```publicodes title="Nombre de décimales"
+arrondi:
+  arrondi au supérieur: 2 décimales
+  valeur: 2 / 3
+```
+
 ## `contexte`
 
 Spécifie le contexte d'évaluation d'une règle.
