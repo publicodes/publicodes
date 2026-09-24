@@ -25,8 +25,14 @@ if (!existsSync(binPath)) {
 // Forward all arguments except "node" and this script itself
 const args = process.argv.slice(2)
 
+const env = {
+	...process.env,
+	PUBLICODESPATH: './node_modules:node_modules',
+}
+
 const child = spawn(binPath, args, {
 	stdio: 'inherit',
+	env: env,
 })
 
 child.on('error', (err) => {
