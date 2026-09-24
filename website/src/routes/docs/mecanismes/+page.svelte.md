@@ -308,6 +308,8 @@ cotisations pour un SMIC:
 
 ## `barème`
 
+TODO: pas encore implementé en version 2.0
+
 par son utilisation dans le calcul de l’impôt sur le revenu.
 
 L’assiette est décomposée en plusieurs tranches, qui sont multipliées par un
@@ -352,6 +354,8 @@ cotisation retraite:
 
 ## `grille`
 
+TODO: pas encore implementé en version 2.0
+
 C’est un barème sous la forme d’une grille de correspondance simple. C’est
 le mécanisme de calcul de l’impôt neutre, aussi appelé impôt non
 personnalisé.
@@ -379,6 +383,8 @@ trimestres validés:
 ```
 
 ## `taux progressif`
+
+TODO: pas encore implementé en version 2.0
 
 Ce mécanisme permet de calculer un taux progressif. On spécifie pour chaque
 tranche le plafond et le taux associé. Le taux effectif renvoyé est calculé
@@ -408,6 +414,8 @@ taux réduction de cotisation:
 ```
 
 ## `abattement`
+
+TODO: pas encore implementé en version 2.0
 
 **Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
@@ -465,6 +473,8 @@ déduction fiscale:
 ```
 
 ## `durée`
+
+TODO: pas encore implementé en version 2.0
 
 Permet de calculer la durée entre deux dates (la dernière date est exclue)
 
@@ -538,52 +548,9 @@ TVA:
   par défaut: 20%
 ```
 
-## `texte`
-
-Permet de mettre en forme un texte avec des expressions évaluée dynamiquement.
-Ce principe est connu en informatique sous le nom d’interpolation de chaine de
-caractères.
-
-### Exemple
-
-```publicodes title="Texte documentation dynamique" selectedRuleInDoc="aide vélo"
-aide vélo:
-  texte: >
-    La région subventionne l’achat d’un vélo à hauteur de
-    {{ prise en charge }} et jusqu’à un plafond de {{ plafond }}.
-    Les éventuelles aides locales déjà perçues sont déduites de
-    ce montant.
-
-    Par exemple, pour un vélo de {{ exemple }}, la région vous
-    versera {{
-      exemple * prise en charge
-    }}.
-
-  avec:
-    prise en charge: 50%
-    plafond: 500 €
-    '[privé] exemple': 250 €
-```
-
-<Callout type="tip" title="Éviter les doubles quotes">
-
-On peut utiliser ce mécanisme pour éviter d’avoir à [échapper les
-doubles quotes](/docs/manuel/types#textes) dans un texte.
-
-```publicodes
-# ces deux règles sont équivalentes :
-
-exemple 1:
-  valeur: "'Ministère de la transition écologique et solidaire'"
-
-exemple 2:
-  texte: Ministère de la transition écologique et solidaire
-
-```
-
-</Callout>
-
 ## `inversion numérique`
+
+TODO: pas encore implementé en version 2.0
 
 **Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
@@ -641,6 +608,8 @@ manquantes.
 
 ## résoudre la référence circulaire
 
+TODO: pas encore implementé en version 2.0
+
 Active le calcul itératif pour trouver la valeur de la règle qui résout
 la référence circulaire.
 
@@ -676,6 +645,8 @@ revenu professionnel:
 ```
 
 ## `logarithme`
+
+TODO: pas encore implementé en version 2.0
 
 Calcule le logarithme népérien (ou logarithme naturel).
 
