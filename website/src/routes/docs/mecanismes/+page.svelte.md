@@ -570,6 +570,34 @@ salaire:
   unité: €/mois
 ```
 
+## `type`
+
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
+
+Permet de typer explicitement une règle. Les types primaires sont `texte`,
+`booléen`, `date`, `nombre`.
+
+Affiche une erreur si la valeur n'est pas du type indiqué.
+
+```publicodes title="Exemple"
+salaire:
+  valeur: 35
+  type: nombre
+```
+
+Il est également possible de limiter les valeurs possibles, en définissant une
+énumération.
+
+```publicodes title="Exemple"
+tva:
+  type:
+    une possibilité:
+      - 20
+      - 10
+      - 5.5
+      - 2.1
+```
+
 ## `par défaut`
 
 **Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
