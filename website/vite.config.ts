@@ -7,7 +7,8 @@ export default defineConfig({
 		exclude: [
 			'svelte-codemirror-editor',
 			'codemirror',
-			'@codemirror/language-yaml' /* ... */
+			'@codemirror/language-yaml'
+			/* ... */
 		]
 	},
 	server: {
