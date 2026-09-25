@@ -22,6 +22,30 @@
       },
       "revId": "cd633a522da6f5f2a2f30a13c9ff3b48373785d9",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "26e510b5_b66b0dae",
+        "filename": "packages/compiler/tests/crams/compile/mechanisms/definition.t/est_defini/rules.publicodes",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-09-25T07:52:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "082134c7_0c364de4",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 2
+      },
+      "revId": "cd633a522da6f5f2a2f30a13c9ff3b48373785d9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
