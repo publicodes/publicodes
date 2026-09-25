@@ -1,0 +1,31 @@
+string lit: "Test"
+
+number lit: 12
+
+can't compare string with number:
+  valeur: string lit > number lit
+
+d: string lit = "pas Test"
+
+symbol lit: 'Test'
+
+can't compare string with symbol:
+  valeur: string lit = symbol lit
+
+symbol enum:
+  variations:
+    - si: number lit > 50
+      alors: 'foo'
+    - si: number lit > 40
+      alors: 'bar'
+    - si:  number lit > 40
+      alors: 'toot'
+
+enum should include literal to compare:
+  valeur: symbol enum = 'nak' # add this enumeration
+
+can't compare two literals with different values:
+  valeur: super = bien
+  avec:
+    super: 'super'
+    bien: 'bien'

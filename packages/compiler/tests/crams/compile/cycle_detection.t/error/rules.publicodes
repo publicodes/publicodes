@@ -1,0 +1,87 @@
+cotisation:
+  valeur: 10% * salaire brut
+  plafond: plafond
+  avec:
+    plafond:
+      valeur: cotisation
+
+cotisation bis:
+  valeur: 10% * salaire brut
+  plafond: plafond bis
+  avec:
+    plafond bis:
+      valeur: cotisation bis
+      contexte: # should fail while 'plafond bis' or 'cotisation bis' aren't defined in the contexte.
+        salaire brut: 1000 €
+
+salaire brut: 10000 €
+
+avec indirection:
+  avec:
+    a:
+      valeur: 10% * b
+      plafond: c
+    c:
+      valeur: d
+    b: 10000 €
+    d: a
+
+auto-référencée:
+  valeur: auto-référencée
+
+avec remplacements:
+  avec:
+    cotisation:
+      valeur: 10
+      plafond: plafond
+
+    plafond:
+      # There should not be a cycle because plafond is set with contexte and is
+      # not undefined
+      valeur: cotisation
+      contexte:
+        plafond: 10
+
+    plafond bis: # should fail
+      remplace: plafond
+      valeur: cotisation
+
+avec remplacements transitifs:
+  avec:
+    cotisation:
+      valeur: 10
+      plafond: plafond
+
+    plafond:
+      # There should not be a cycle because plafond is set with contexte and is
+      # not undefined
+      valeur: cotisation
+      contexte:
+        plafond: 10
+
+    plafond bis proxy:
+      remplace: plafond
+      valeur: 10
+
+    plafond bis: # should fail
+      remplace: plafond bis proxy
+      valeur: cotisation
+
+    plafond bis bis: # should not fail
+      remplace:
+        références à: plafond bis
+        sauf dans: cotisation
+      valeur: cotisation
+
+avec rend non applicable:
+  avec:
+    cotisation:
+      valeur: 10
+      plafond: plafond
+
+    plafond: # should fail
+      valeur: cotisation
+
+    plafond bis: # should fail
+      rend non applicable: plafond
+      valeur: plafond = 10

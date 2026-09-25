@@ -1,0 +1,6 @@
+(executable
+ (public_name publicodes)
+ (name main)
+ (libraries unix cmdliner compiler yaml fpath yojson)
+ (preprocess
+  (pps config.ppx)))

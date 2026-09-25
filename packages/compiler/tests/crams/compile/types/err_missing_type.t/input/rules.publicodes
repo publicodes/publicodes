@@ -1,0 +1,8 @@
+paramètre seul: # manque l'information de type
+  public: oui
+
+résultat:
+  public: oui
+  valeur: résultat paramètre
+
+résultat paramètre:

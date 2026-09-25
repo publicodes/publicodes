@@ -1,0 +1,18 @@
+# Only title, description, and notes are allowed at root
+
+a:
+  public: oui
+  titre: Mon titre
+  description: "Voici une description."
+  note: |
+    Attention, cette règle est importante.
+  valeur: 5
+
+b:
+  public: oui
+  valeur: 5 €
+  titre: bla
+  meta:
+    custom field: true
+    nested field:
+      titre: test

@@ -1,0 +1,128 @@
+open Base
+open Utils
+open Shared
+
+type constant =
+  | Number of float * Units.t option
+  | Bool of bool
+  | String of string
+  | Symbol of string
+  | Date of Shared_ast.date
+  | Not_defined
+  | Not_applicable
+[@@deriving show]
+
+type binary_op = Shared_ast.binary_op [@@deriving show]
+
+type unary_op = Neg | Is_not_defined [@@deriving show]
+
+type 'meta naked_value =
+  | Const of constant
+  | Condition of 'meta value * 'meta value * 'meta value
+  | Binary_op of binary_op Mark.pos * 'meta value * 'meta value
+  | Unary_op of unary_op Mark.pos * 'meta value
+  | Ref of Rule_name.t
+  | Get_context of Rule_name.t
+  | Set_context of 'meta context
+  | Round of (Shared_ast.rounding * 'meta value * 'meta value)
+  | Exclusive_replacement of (Rule_name.t * Rule_name.t list)
+[@@deriving show]
+
+and 'meta context =
+  {context: (Rule_name.t Mark.pos * 'meta value) list; value: 'meta value}
+[@@deriving show]
+
+(** NOTE: do we really need to have a generic meta type here as we only build
+    the eval tree with meta = Shared.Typ.t? *)
+and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.t}
+[@@deriving show]
+
+type 'meta mk_value_fn = pos:Pos.t -> 'meta naked_value -> 'meta value
+
+type 'meta t = 'meta value Rule_name.Hashtbl.t [@@deriving show]
+
+let get_value eval_tree rule_name = Hashtbl.find_exn eval_tree rule_name
+
+let mk_value ~pos ~meta value = {value; pos; meta}
+
+let get_meta_exn eval_tree rule_name =
+  (Hashtbl.find_exn eval_tree rule_name).meta
+
+let get_pos_exn eval_tree rule_name = (Hashtbl.find_exn eval_tree rule_name).pos
+
+let rec map_value ~(f : 'a value -> 'a value) (c : 'a value) : 'a value =
+  let new_value =
+    match c.value with
+    | Condition (cond, then_comp, else_comp) ->
+        Condition
+          (map_value ~f cond, map_value ~f then_comp, map_value ~f else_comp)
+    | Binary_op (op, left, right) ->
+        Binary_op (op, map_value ~f left, map_value ~f right)
+    | Unary_op (op, comp) ->
+        Unary_op (op, map_value ~f comp)
+    | Set_context {context; value} ->
+        let context =
+          List.map context ~f:(fun (rule_name, comp) ->
+              (rule_name, map_value ~f comp) )
+        in
+        let value = map_value ~f value in
+        Set_context {context; value}
+    | Round (rounding, precision, value) ->
+        Round (rounding, map_value ~f precision, map_value ~f value)
+    | Ref _ | Const _ | Get_context _ | Exclusive_replacement _ ->
+        c.value
+  in
+  f {c with value= new_value}
+
+(** {1 Constructors for naked values} *)
+
+let mk_binop ~pos op left right = Binary_op (Mark.mk_pos ~pos op, left, right)
+
+let unop_is_not_defined ~pos comp =
+  Unary_op (Mark.mk_pos ~pos Is_not_defined, comp)
+
+let binop_or ~pos = mk_binop ~pos Shared_ast.Or
+
+let binop_and ~pos = mk_binop ~pos Shared_ast.And
+
+let binop_eq ~pos = mk_binop ~pos Shared_ast.Eq
+
+let binop_neq ~pos = mk_binop ~pos Shared_ast.NotEq
+
+let binop_lt ~pos = mk_binop ~pos Shared_ast.Lt
+
+let binop_gt ~pos = mk_binop ~pos Shared_ast.Gt
+
+let binop_add ~pos = mk_binop ~pos Shared_ast.Add
+
+let binop_mul ~pos = mk_binop ~pos Shared_ast.Mul
+
+let binop_div ~pos = mk_binop ~pos Shared_ast.Div
+
+let binop_max ~pos = mk_binop ~pos Shared_ast.Max
+
+let binop_min ~pos = mk_binop ~pos Shared_ast.Min
+
+let binop_pow ~pos = mk_binop ~pos Shared_ast.Pow
+
+let mk_condition ~cond ~then_ ~else_ = Condition (cond, then_, else_)
+
+let mk_exclusive_replacement ~target ~replacements =
+  Exclusive_replacement (target, replacements)
+
+let const_not_applicable = Const Not_applicable
+
+let const_not_defined = Const Not_defined
+
+let const_false = Const (Bool false)
+
+let const_true = Const (Bool true)
+
+let const_number ?unit f = Const (Number (f, unit))
+
+let get_contexts ({value; _} : 'a value) : Rule_name.t Mark.pos list =
+  match value with
+  | Set_context {context; _} ->
+      List.map context ~f:(fun (key, _) -> key)
+  | _ ->
+      []

@@ -1,0 +1,12 @@
+regle a: 10
+regle a: 20
+
+module b:
+  importer: module b
+  avec:
+    regle b: 20
+
+regle c . regle d: 20
+regle c:
+  avec:
+    regle d: 30

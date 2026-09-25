@@ -1,0 +1,9 @@
+a:
+  remplace: c
+  valeur: oui
+b:
+  rend non applicable: c
+  valeur: oui
+
+c:
+x: c

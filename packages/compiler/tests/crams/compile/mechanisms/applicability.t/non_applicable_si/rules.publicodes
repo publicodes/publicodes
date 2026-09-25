@@ -1,0 +1,5 @@
+test:
+  applicable si: condition
+  valeur: 10
+
+condition:

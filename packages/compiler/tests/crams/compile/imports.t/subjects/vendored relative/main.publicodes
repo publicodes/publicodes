@@ -1,0 +1,5 @@
+out:
+  valeur: rule vendored d
+  importer:
+    package: package b
+    module: vendored c

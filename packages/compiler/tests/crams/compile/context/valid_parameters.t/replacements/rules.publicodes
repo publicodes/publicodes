@@ -1,0 +1,23 @@
+output:
+  public: oui
+  valeur: param 1
+
+param 1:
+  type: nombre
+
+param 2:
+  type: nombre
+  remplace:
+    références à: param 1
+    exclusif: oui
+
+param 3:
+  type: nombre
+  remplace: param 2
+
+not param:
+  type: nombre
+  remplace:
+    références à: param 1
+    sauf dans: output
+    exclusif: oui

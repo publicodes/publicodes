@@ -1,0 +1,19 @@
+# should be %
+a: 5% * 15
+
+# should be €
+b: 10% * 50 €
+
+# should be %
+c: 5 %/étoile * 5 étoile
+
+# should be €
+d: 4 € / 85%
+
+# should have error
+e: 5%/an + 4€/an
+
+
+# Simplification
+#
+f: 5% * 4€

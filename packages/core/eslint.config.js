@@ -1,6 +1,15 @@
 import eslintBaseConfig from '../../eslint.config.js'
+import vitest from '@vitest/eslint-plugin'
+
 export default [
 	...eslintBaseConfig,
+	{
+		files: ['**/*.test.ts'],
+		plugins: {
+			vitest,
+		},
+		rules: vitest.configs.recommended.rules,
+	},
 	{
 		rules: {
 			'@typescript-eslint/no-explicit-any': 'warn',

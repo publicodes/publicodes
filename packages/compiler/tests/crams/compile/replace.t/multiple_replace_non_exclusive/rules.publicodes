@@ -1,0 +1,13 @@
+a: 10
+
+b:
+  remplace:
+    références à: a
+  valeur: 5
+
+c:
+  remplace:
+    références à: a
+  valeur: 10
+
+x: a
