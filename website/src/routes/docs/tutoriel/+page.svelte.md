@@ -90,18 +90,18 @@ console.log(rules['x'].evaluate(context).missing);
 Cette information est utile pour intégrer Publicodes à votre application.
 
 <!--
-Il est aussi possible d'utiliser des valeurs par défaut. Dans ce cas la règle
-sera calculée avec la valeur par défaut de sa dépendance, mais cette dernière
-apparaîtra tout de même dans les `missingVariables`. Cette fonctionnalité est
-utile pour réaliser des simulateurs où l'on veut proposer un résultat sans
-attendre que l'utilisateur ait répondu à l'intégralité des questions tout en
-utilisant la liste des variables manquantes pour déterminer les questions
-restant à poser. -->
+Il est aussi possible d'utiliser des valeurs par défaut. Dans ce cas la
+règle sera calculée avec la valeur par défaut de sa dépendance, mais
+cette dernière apparaîtra tout de même dans les `missingVariables`. Cette
+fonctionnalité est utile pour réaliser des simulateurs avec lesquels on
+veut proposer un résultat sans attendre que l'utilisateur ait répondu
+à l'intégralité des questions tout en utilisant la liste des variables
+manquantes pour déterminer les questions restant à poser. -->
 
 <Callout type="info">
 
 Les variables manquantes sont calculées lors de l'évaluation. Si une variable
-apparaît dans la formule de calcul d'une règle elle ne sera rapportée que si
+apparaît dans la formule de calcul d'une règle, elle ne sera rapportée que si
 elle est effectivement nécessaire au calcul. Si elle est présente dans une
 portion non active de l'évaluation (par exemple dans un bloc condition non
 actif, ou la tranche d'un barème non actif) elle sera filtrée et n'apparaîtra
