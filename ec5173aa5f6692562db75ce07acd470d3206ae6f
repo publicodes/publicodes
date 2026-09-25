@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1aff3198_cac16778",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-25T17:30:15Z",
+      "side": 1,
+      "message": "Je pense que ça vaudrait le coup de rajouter plus de tests pour être sûre que l\u0027on couvre tous les principaux cas (remplacements, contexte, mauvaise syntaxes, erreurs de types, etc...).",
+      "revId": "ec5173aa5f6692562db75ce07acd470d3206ae6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0669f77d_79caf709",
+        "filename": "packages/compiler/tests/crams/compile/mechanisms/applicability.t/est_applicable/rules.publicodes",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-25T17:30:15Z",
+      "side": 1,
+      "message": "On devrait tester `est applicable` ici + uniformiser le nom des fichiers pour utiliser l\u0027anglais.",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 2
+      },
+      "revId": "ec5173aa5f6692562db75ce07acd470d3206ae6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "073eaa73_74693232",
+        "filename": "packages/compiler/tests/crams/compile/mechanisms/applicability.t/est_non_applicable/rules.publicodes",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-25T17:30:15Z",
+      "side": 1,
+      "message": "Pareil",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 2
+      },
+      "revId": "ec5173aa5f6692562db75ce07acd470d3206ae6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8e8fbe74_f29f9ea1",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/est-défini.test.ts",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-25T17:30:15Z",
+      "side": 1,
+      "message": "Il faudrait tester explicitement le comportement du `non` également",
+      "range": {
+        "startLine": 10,
+        "startChar": 3,
+        "endLine": 10,
+        "endChar": 6
+      },
+      "revId": "ec5173aa5f6692562db75ce07acd470d3206ae6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
