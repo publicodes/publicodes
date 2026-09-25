@@ -9,6 +9,7 @@
 		"./website-v1",
 		"./packages/codemod",
 		"./packages/cli/",
+		"./packages/core/",
 		"./packages/compiler/**"
 	],
 	"hidePageHeader": true,
