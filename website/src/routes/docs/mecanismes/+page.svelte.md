@@ -108,7 +108,7 @@ est majeur:
 
 ## `toutes ces conditions`
 
-Renvoie `oui` si toutes toutes les règles listées sont _applicables_.
+Renvoie `oui` si toutes les règles listées sont _applicables_.
 
 Équivaut à un `et` logique.
 
@@ -125,7 +125,7 @@ peut voter:
 
 Produit des facteurs de la liste.
 
-Si un des facteur n’est pas applicable, le produit est non applicable.
+Si un des facteurs n’est pas applicable, le produit est non applicable.
 
 ### Utilisation
 
@@ -346,7 +346,7 @@ cotisations pour un SMIC:
 
 TODO: pas encore implementé en version 2.0
 
-par son utilisation dans le calcul de l’impôt sur le revenu.
+Par son utilisation dans le calcul de l’impôt sur le revenu.
 
 L’assiette est décomposée en plusieurs tranches, qui sont multipliées par un
 taux spécifique et enfin additionnées pour donner le résultat.
@@ -427,7 +427,7 @@ tranche le plafond et le taux associé. Le taux effectif renvoyé est calculé
 en lissant la différence de taux entre la borne inférieure et supérieure de
 l’assiette.
 
-Par exemple, si nous nous avons les tranches suivantes :
+Par exemple, si nous avons les tranches suivantes :
 
 - taux: 50% / plafond: 0
 - taux: 100% / plafond: 1000
@@ -523,7 +523,7 @@ Il est possible de spécifier une unité pour le calcul de la durée. Les valeur
 - `trimestre` : trimestres entre les deux dates (nombre de mois / 3)
 - `an` : année complète (prend en compte les années bissextiles)
 - `année civile` : nombre d'années civiles écoulées entre les deux dates
-- `trimestre civil` : nombre de trimestres civils écoulées entre les deux dates
+- `trimestre civil` : nombre de trimestres civils écoulé entre les deux dates
 
 ### Exemple
 
@@ -624,7 +624,7 @@ interprétations administratives ou juridiques existantes. En conséquence,
 certaines variables n’auront donc pas de méthode de calcul clairement
 explicitée, il s’agira donc de la déduire des autres valeurs renseignées.
 
-De façon simplifiée, il s’agira donc, à partir d’une règle existante
+Éxprimé d'une autre manière, il s’agira donc, à partir d’une règle existante
 explicitant `y = ƒ(x)` de calculer `x` à partir de `y`.
 
 L’inversion numérique permet d’estimer la valeur de la variable en question
@@ -645,9 +645,12 @@ b:
     tolérance d'erreur: 1
 ```
 
-<Callout type="caution" title="Améliorer les performance">
+<Callout type="caution" title="Améliorer les performances">
 
-L'inversion est un mécanisme couteux en temps de calcul. Afin d'optimiser ses performances, il est possible d'utiliser le champ `min` (par défaut: `-1000000`) et/ou `max` (par défault: `100000000`) afin de limiter à une certaine plage la valeur au hasard choisi en début de calcul.
+L'inversion est un mécanisme couteux en temps de calcul. Afin d'optimiser
+ses performances, il est possible d'utiliser le champ `min` (par défaut:
+`-1000000`) et/ou `max` (par défault: `100000000`) pour limiter la plage de
+valeurs choisie au hasard en début de calcul.
 
 Par exemple, si on sait qu'une valeur est forcément positive, on peut préciser `min: 0`.
 
