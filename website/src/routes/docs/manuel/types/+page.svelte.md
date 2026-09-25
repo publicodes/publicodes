@@ -35,7 +35,7 @@ puissance: 2 ** 10
 
 Publicodes défini deux valeurs booléennes `oui` et `non`. Les comparaisons de valeur (`>`, `>=`, `<`, `<=`, `=` ou `!=`) retournent un booléen.
 
-Les valeur booléennes peuvent être utilisées dans certains mécanismes comme [`variations`](/docs/mecanismes#variations).
+Les valeurs booléennes peuvent être utilisées dans certains mécanismes comme [`variations`](/docs/mecanismes#variations).
 
 ```publicodes
 ma condition: oui
