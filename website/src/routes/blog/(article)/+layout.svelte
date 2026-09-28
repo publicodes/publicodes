@@ -12,7 +12,7 @@
 <Seo type="article" {title} subTitle="Blog" {description} {image} />
 
 <article class="lg:py-18 flex justify-center px-6 py-14">
-	<div class="flex flex-col lg:grid lg:grid-cols-5">
+	<div class="flex min-w-0 flex-col lg:grid lg:grid-cols-5">
 		<div
 			class="col-span-1 mb-12 inline-flex max-h-4 justify-start lg:sticky lg:top-32 lg:justify-start">
 			<a
