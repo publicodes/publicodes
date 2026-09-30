@@ -1,3 +1,5 @@
+open Utils
+
 (** This is the driver module for the Publicodes compiler. *)
 
 (** Compiler configuration context, which includes:
@@ -12,8 +14,8 @@
       trace information in the generated output (only applicable for JS output
       type).   *)
 type t =
-  { input_files: string list
-  ; module_path: string
+  { input_files: File.t list
+  ; module_path: File.t
   ; output_type: target_type
   ; default_to_public: bool
   ; without_trace: bool }
