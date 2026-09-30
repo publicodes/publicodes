@@ -16,8 +16,8 @@ jobs:
             os: ubuntu-latest
           - platform: macos
             os: macos-latest
-          - platform: windows
-            os: windows-latest
+          #- platform: windows
+          #  os: windows-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
