@@ -7,9 +7,9 @@
 }
 
 # Print the type of the rule
-/^\s+type: "/ { print "  type: " $2 }
+/^[ \t]+type: "/ { print "  type: " $2 }
 
-/^\s+unit: "/ { print "  unit: " $2 }
+/^[ \t]+unit: "/ { print "  unit: " $2 }
 
 /=> \{value:/ {
     match($0, /\{value: [^,}]+/)
