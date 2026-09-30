@@ -65,11 +65,11 @@ let print_token =
   | Nothing ->
       "Nothing"
 
-let parse (filename : string) (content : string) : yaml Output.t =
+let parse (file : File.t) (content : string) : yaml Output.t =
   (* Create a parser from the content *)
   let pos_from_mark Event.{start_mark; end_mark} =
     Pos.
-      { file= filename
+      { file
       ; start_pos=
           { index= start_mark.index
           ; line= start_mark.line + 1
@@ -79,7 +79,7 @@ let parse (filename : string) (content : string) : yaml Output.t =
           ; line= end_mark.line + 1
           ; column= end_mark.column + 1 } }
   in
-  let transform_error ?(pos = Pos.beginning_of_file filename) result =
+  let transform_error ?(pos = Pos.beginning_of_file file) result =
     match result with
     | Ok result ->
         Output.return result

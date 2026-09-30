@@ -10,13 +10,13 @@ let cmd_exit (logs : Log.t list) : Cmd.Exit.code =
   in
   if contains_error logs then Cmd.Exit.some_error else Cmd.Exit.ok
 
-let compile_target target output_path =
+let compile_target target output_file =
   let output = Compiler.compile target in
   print_logs output ;
   match result output with
   | Some content ->
       let exit_code = cmd_exit (logs output) in
-      if exit_code = Cmd.Exit.ok then File.write_file ~path:output_path ~content ;
+      if exit_code = Cmd.Exit.ok then File.write_file ~content output_file ;
       exit_code
   | None ->
       Cmd.Exit.some_error
