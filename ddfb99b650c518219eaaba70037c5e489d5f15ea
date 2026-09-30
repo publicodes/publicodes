@@ -1,0 +1,216 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e152fdd7_6a08a336",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-30T14:24:11Z",
+      "side": 1,
+      "message": "Il faudrait documenter quelque part la spécification du mécanisme et ajouter l\u0027ensemble des tests correspondants (ex: comportement et priorité avec les remplacements, vérifier la bonne récupération des `needed` et `missing` parameters, etc..).\n\n---\n\nJe pense que l\u0027on va pouvoir raccourcir la syntaxe en quelque chose du style `propage l\u0027applicabilité` ou `applicabilité étendue` car écrire `applicabilité étendue à l\u0027espace de nom` est vraiment pas plaisant à écrire 😅. (Ca pourrait être une proposition d\u0027interaction pour la présentation de la v2 en proposant aux personnes présentes de choisir parmi quelques propositions).\n\n---\n\nIl y a une erreur interne lorsqu\u0027une règle possédant le nouveau mécanisme est marquée public (que ce soit via `public: oui` ou le flag `--default-to-public`)\n\n```\npublicodes: internal error, uncaught exception:\n            Failure(\"type error: jg_replace(string, string, bool)\")\n            Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n            Called from Stdlib__List.fold_left in file \"list.ml\", line 123, characters 24-34\n            Called from Jingoo__Jg_interp.nargs_of.(fun) in file \"src/jg_interp.ml\", line 128, characters 20-45\n```",
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4082870a_81abde86",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-30T14:24:11Z",
+      "side": 1,
+      "message": "Je suis pour garder le même nom que le constructeur, ici `create_applicable_on_namespace_node`.",
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e6ed8c7b_7ed11249",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-30T14:24:11Z",
+      "side": 1,
+      "message": "C\u0027est plus `parent_rule` ici que `condition_node`.",
+      "range": {
+        "startLine": 32,
+        "startChar": 49,
+        "endLine": 32,
+        "endChar": 63
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3caf47a9_58817a46",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-30T14:24:11Z",
+      "side": 1,
+      "message": "Avec cette implémentation et l\u0027utilisation de l\u0027égalité du runtime, si la règle propageant l\u0027applicabilité est non définie, alors tous ces enfants le seront (ex: pour ton cas de test, évaluer `a . b` et `a1 . b1` retourne la valeur `non définie`).\n\nOr, on souhaite que `a . b` et `a1 . b1` s\u0027évaluent à `42` tant que les règles `a` et `a1` ne sont pas explicitement égal à `non applicable`. \n\nJe pense que par soucis de rétrocompatibilité, on souhaite garder le même comportement que pour la v1 de manière générale.",
+      "range": {
+        "startLine": 38,
+        "startChar": 19,
+        "endLine": 38,
+        "endChar": 27
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a42889d7_23598c25",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-30T14:24:11Z",
+      "side": 1,
+      "message": "Pourquoi drop le premier élément ici ?",
+      "range": {
+        "startLine": 99,
+        "startChar": 6,
+        "endLine": 99,
+        "endChar": 42
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "68373209_415b8b6a",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-30T14:24:11Z",
+      "side": 1,
+      "message": "Ca vaudrait le coup de factoriser ce code dans une fonction dédiée pour clairement isoler l\u0027intention.",
+      "range": {
+        "startLine": 98,
+        "startChar": 4,
+        "endLine": 125,
+        "endChar": 26
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4f348806_d8d3ee85",
+        "filename": "packages/compiler/lib/parser/parse_meta.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-30T14:24:11Z",
+      "side": 1,
+      "message": "Le corps de cette branche pourrait être factorisé avec celui de `public` et plus généralement pour tous les mécanismes booléens.\n\nJe me demande d\u0027ailleurs pourquoi on ne voudrait pas laisser la possibilité d\u0027avoir `public: non` ou `applicabilité étendue à l\u0027espace de nom: non` ?",
+      "range": {
+        "startLine": 81,
+        "startChar": 5,
+        "endLine": 86,
+        "endChar": 48
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "73f7d920_7a5c5e05",
+        "filename": "packages/compiler/tests/crams/compile/make_not_applicable.t/namespace_applicability/rules.publicodes",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-30T14:24:11Z",
+      "side": 1,
+      "message": "Je pense que ça vaut le coup de séparer les tests de ce mécanisme dans un dossier .t dédié.",
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ecd697d5_741edf88",
+        "filename": "packages/compiler/tests/crams/compile/make_not_applicable.t/namespace_applicability/rules.publicodes",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-30T14:24:11Z",
+      "side": 1,
+      "message": "Il y a une régression sur le comportement de `rend non applicable` par rapport à la v1. Ici on ne \"rend non applicable\" que les références à `a1` or dans la v1 c\u0027est la règle en elle-même qui en rendue non applicable.\n\nSi c\u0027est voulu, ça vaudrait le coup de le notifier dans les changements cassants (il faudrait peut-être une page dédiée à la migration v1 -\u003e v2 dans la doc je me dis d\u0027ailleurs).",
+      "range": {
+        "startLine": 12,
+        "startChar": 2,
+        "endLine": 12,
+        "endChar": 25
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e373dd76_679ae69e",
+        "filename": "packages/compiler/tests/crams/compile/make_not_applicable.t/run.t",
+        "patchSetId": 4
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-09-30T14:24:11Z",
+      "side": 1,
+      "message": "Pourquoi ne pas utiliser `-t debug_eval_tree` ici ?",
+      "range": {
+        "startLine": 186,
+        "startChar": 0,
+        "endLine": 186,
+        "endChar": 2
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
