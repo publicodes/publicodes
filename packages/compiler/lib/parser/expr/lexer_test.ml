@@ -6,7 +6,12 @@ open Utils.Output
 open Lexer
 open Utils
 
-let lexstr str = str |> Utf8.from_string |> lex_one
+let lexstr str =
+  let lexbuf = str |> Utf8.from_string in
+  let filename = File.std |> File.to_intern in
+  (* Must have a valid filename. *)
+  Sedlexing.set_filename lexbuf filename ;
+  lex_one lexbuf
 
 let%test_unit "Lex '+'" = [%test_eq: Tokens.t] ADD (Mark.remove (lexstr "+"))
 
