@@ -83,12 +83,17 @@ let rec lex_one (lexbuf : lexbuf) : Tokens.t Mark.pos =
   let with_pos token =
     let start_pos, end_pos = Sedlexing.lexing_positions lexbuf in
     let pos =
+      let file =
+        (* Comes from some tests *)
+        if String.is_empty start_pos.pos_fname then File.std
+        else File.of_string_exn start_pos.pos_fname
+      in
       Pos.
-        { file= start_pos.pos_fname
+        { file
         ; start_pos= Pos.Point.of_position start_pos
         ; end_pos= Pos.Point.of_position end_pos }
     in
-    Mark.mk_pos ~pos:pos token
+    Mark.mk_pos ~pos token
   in
   match%sedlex lexbuf with
   | space_plus ->
@@ -182,9 +187,9 @@ let lex (source : string Mark.pos) : Tokens.t Mark.pos list Output.t =
   let publicodes = Mark.remove source in
   let pos = Mark.pos source in
   let lexbuf = Utf8.from_string publicodes in
-  let file = pos.file in
-  Sedlexing.set_position lexbuf (Pos.Point.to_position ~file pos.start_pos) ;
-  Sedlexing.set_filename lexbuf file ;
+  let point = Pos.Point.to_position ~file:pos.file pos.start_pos in
+  Sedlexing.set_position lexbuf point ;
+  Sedlexing.set_filename lexbuf point.pos_fname ;
   let rec lex_loop acc =
     try
       let token = lex_one lexbuf in
@@ -197,7 +202,7 @@ let lex (source : string Mark.pos) : Tokens.t Mark.pos list Output.t =
       let token_pos =
         let start_pos, end_pos = Sedlexing.lexing_positions lexbuf in
         Pos.
-          { file
+          { file= pos.file
           ; start_pos= Pos.Point.of_position start_pos
           ; end_pos= Pos.Point.of_position end_pos }
       in

@@ -29,11 +29,11 @@ let authorized_keys =
 
 type context =
   { current_rule_name: string list (* the rule name currently parsed *)
-  ; files: string list (* list of parsed files paths to detect cycles *)
+  ; files: File.t list (* list of parsed files paths to detect cycles *)
   ; current_module_id: Shared.Module_id.t (* the module id genealogy *)
   ; next_module_id: int ref (* the next module id to be assigned *)
-  ; current_package: string option (* the current package path *)
-  ; current_module: string (* the current module path *) }
+  ; current_package: File.t option (* the current package path *)
+  ; current_module: File.t (* the current module path *) }
 
 let rec parse_rule ~default_to_public ~ctx (name, yaml) =
   let* name, {pos} = parse_ref name in
@@ -97,7 +97,7 @@ and parse_import ~default_to_public ~ctx mapping =
     let* scalar = get_scalar ~pos value in
     let value = get_value scalar in
     let pos = Mark.pos scalar in
-    if not (Utils.File.is_valid_import value) then
+    if not (Utils.File.is_valid_import_str value) then
       let code, message = Err.invalid_path in
       Output.fatal_error ~pos ~code ~kind:`Syntax message
         ~hints:
@@ -110,7 +110,8 @@ and parse_import ~default_to_public ~ctx mapping =
       | Error (Not_found paths) ->
           let code, message = Err.no_file_or_directory in
           let paths =
-            List.map paths ~f:(Stdlib.Format.sprintf "'%s'")
+            List.map paths ~f:File.to_intern
+            |> List.map ~f:(Stdlib.Format.sprintf "'%s'")
             |> String.concat ~sep:", "
           in
           Output.fatal_error ~pos ~code ~kind:`Syntax message
@@ -152,13 +153,25 @@ and parse_import ~default_to_public ~ctx mapping =
       Output.return []
   | Some (value, {pos}) ->
       let* package, (module_, pos) =
+        let check_module value =
+          match Utils.File.of_string value with
+          | Ok value ->
+              Output.return value
+          | Error _ ->
+              let code, message = Err.invalid_path in
+              Output.fatal_error ~pos ~code ~kind:`Syntax message
+                ~hints:
+                  [ Stdlib.Format.sprintf
+                      "'%s' n'est pas une valeur de module valide" value ]
+        in
         match value with
         | `A _ ->
             let code, message = Err.parsing_should_not_be_array in
             Output.fatal_error ~pos ~code ~kind:`Syntax message
         | `Scalar scalar ->
-            Output.return
-              (ctx.current_package, (get_value scalar, Mark.pos scalar))
+            let value = get_value scalar in
+            let* module_ = check_module value in
+            Output.return (ctx.current_package, (module_, Mark.pos scalar))
         | `O mapping -> (
             let* module_ =
               let code, message = Err.parsing_missing_value "module" in
@@ -167,7 +180,8 @@ and parse_import ~default_to_public ~ctx mapping =
               let* scalar = get_scalar ~pos (Mark.remove value) in
               let value = get_value scalar in
               let pos = Mark.pos scalar in
-              Output.return (value, pos)
+              let* module_ = check_module value in
+              Output.return (module_, pos)
             in
             match find_value "package" mapping with
             | None ->
@@ -181,27 +195,32 @@ and parse_import ~default_to_public ~ctx mapping =
         if Utils.File.is_valid_import module_ then Output.return module_
         else
           let code, message = Err.invalid_path in
+          let module_ = File.to_intern module_ in
           Output.fatal_error ~pos ~code ~kind:`Syntax message
             ~hints:
               [ Stdlib.Format.sprintf
                   "'%s' n'est pas une valeur de module valide" module_ ]
       in
       let* input_files =
-        match Utils.File.gather_module ?package module_ with
+        let path = Utils.File.to_intern module_ in
+        match Utils.File.gather_module ?package path with
         | Error (Invalid_path _) ->
             failwith "unreachable" (* validated before *)
         | Error (Not_found path) ->
             let code, message = Err.no_file_or_directory in
+            let path = Utils.File.to_intern path in
             Output.fatal_error ~pos ~code ~kind:`Syntax message
               ~hints:[Stdlib.Format.sprintf "le chemin '%s' n'existe pas" path]
         | Error (Is_not_directory path) ->
             let code, message = Err.no_file_or_directory in
+            let path = Utils.File.to_intern path in
             Output.fatal_error ~pos ~code ~kind:`Syntax message
               ~hints:
                 [ Stdlib.Format.sprintf "le chemin '%s' n'est pas un dossier"
                     path ]
         | Error (Empty_directory path) ->
             let code, message = Err.no_file_or_directory in
+            let path = Utils.File.to_intern path in
             Output.fatal_error ~pos ~code ~kind:`Syntax message
               ~hints:[Stdlib.Format.sprintf "le dossier '%s' est vide" path]
         | Ok files ->
@@ -221,7 +240,7 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
   let* _ =
     let circular_file =
       List.find_map input_files ~f:(fun input_file ->
-          List.findi ctx.files ~f:(fun _ file -> String.equal input_file file) )
+          List.findi ctx.files ~f:(fun _ file -> File.equal input_file file) )
     in
     match circular_file with
     | None ->
@@ -239,13 +258,13 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
                   let _, file =
                     List.findi_exn ctx.files ~f:(fun y _ -> y = i + 1)
                   in
-                  let dir = File.dirname file in
+                  let dir = File.dirname file |> File.to_intern in
                   if i = circular_i then
                     Stdlib.Format.sprintf
                       "module '%s' importé ici, début du cycle" dir
                   else Stdlib.Format.sprintf "module '%s' importé ici" dir
                 else
-                  let dir = File.dirname circular_file in
+                  let dir = File.dirname circular_file |> File.to_intern in
                   Stdlib.Format.sprintf "module '%s' importé à nouveau ici" dir
               in
               Mark.mk_pos ~pos msg )
@@ -254,16 +273,16 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
         Output.fatal_error ~pos ~labels ~code ~kind:`Syntax message
   in
   let+ unresolved_programs =
-    List.map input_files ~f:(fun filename ->
+    List.map input_files ~f:(fun file ->
         (* Read the file content *)
-        let file_content = File.read_file filename in
+        let file_content = File.read_file file in
         (* Parse the file content *)
-        to_yaml ~filename file_content
+        to_yaml ~file file_content
         >>= parse_rules ~default_to_public
-              ~pos:(Pos.beginning_of_file filename)
+              ~pos:(Pos.beginning_of_file file)
               ~ctx:
                 { ctx with
-                  files= ctx.files @ [filename]
+                  files= ctx.files @ [file]
                 ; current_module_id= new_module_id } )
     |> Output.all_keep_logs
   in
