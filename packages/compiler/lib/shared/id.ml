@@ -10,7 +10,7 @@ let hash name (pos : Utils.Pos.t) =
     ; pos.end_pos.index
     ; pos.end_pos.line
     ; pos.end_pos.column ]
-  |> List.append [Rule_name.show name; pos.file]
+  |> List.append [Rule_name.show name; Utils.File.to_intern pos.file]
   |> String.concat |> Stdlib.Digest.string |> Stdlib.Digest.to_hex
 
 let equal = String.equal

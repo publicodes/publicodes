@@ -29,11 +29,11 @@ let authorized_keys =
 
 type context =
   { current_rule_name: string list (* the rule name currently parsed *)
-  ; files: string list (* list of parsed files paths to detect cycles *)
+  ; files: File.t list (* list of parsed files paths to detect cycles *)
   ; current_module_id: Shared.Module_id.t (* the module id genealogy *)
   ; next_module_id: int ref (* the next module id to be assigned *)
-  ; current_package: string option (* the current package path *)
-  ; current_module: string (* the current module path *) }
+  ; current_package: File.t option (* the current package path *)
+  ; current_module: File.t (* the current module path *) }
 
 let rec parse_rule ~default_to_public ~ctx (name, yaml) =
   let* name, {pos} = parse_ref name in
@@ -97,20 +97,20 @@ and parse_import ~default_to_public ~ctx mapping =
     let* scalar = get_scalar ~pos value in
     let value = get_value scalar in
     let pos = Mark.pos scalar in
-    if not (Utils.File.is_valid_import value) then
+    if not (File.is_valid_import_str value) then
       let code, message = Err.invalid_path in
       Output.fatal_error ~pos ~code ~kind:`Syntax message
         ~hints:
           [ Stdlib.Format.sprintf "'%s' n'est pas une valeur de paquet valide"
               value ]
     else
-      match Utils.File.find_package ctx.current_package value with
+      match File.find_package ctx.current_package value with
       | Error (Invalid_path _) ->
           failwith "unreachable" (* validated before *)
       | Error (Not_found paths) ->
           let code, message = Err.no_file_or_directory in
           let paths =
-            List.map paths ~f:(Stdlib.Format.sprintf "'%s'")
+            List.map paths ~f:(Stdlib.Format.asprintf "%a" File.pp)
             |> String.concat ~sep:", "
           in
           Output.fatal_error ~pos ~code ~kind:`Syntax message
@@ -152,13 +152,26 @@ and parse_import ~default_to_public ~ctx mapping =
       Output.return []
   | Some (value, {pos}) ->
       let* package, (module_, pos) =
+        let check_module value =
+          match File.of_string value with
+          | Ok value ->
+              Output.return value
+          | Error _ ->
+              let code, message = Err.invalid_path in
+              Output.fatal_error ~pos ~code ~kind:`Syntax message
+                ~hints:
+                  [ Stdlib.Format.asprintf
+                      "%a n'est pas une valeur de module valide" String.pp value
+                  ]
+        in
         match value with
         | `A _ ->
             let code, message = Err.parsing_should_not_be_array in
             Output.fatal_error ~pos ~code ~kind:`Syntax message
         | `Scalar scalar ->
-            Output.return
-              (ctx.current_package, (get_value scalar, Mark.pos scalar))
+            let value = get_value scalar in
+            let* module_ = check_module value in
+            Output.return (ctx.current_package, (module_, Mark.pos scalar))
         | `O mapping -> (
             let* module_ =
               let code, message = Err.parsing_missing_value "modèle" in
@@ -167,7 +180,8 @@ and parse_import ~default_to_public ~ctx mapping =
               let* scalar = get_scalar ~pos (Mark.remove value) in
               let value = get_value scalar in
               let pos = Mark.pos scalar in
-              Output.return (value, pos)
+              let* module_ = check_module value in
+              Output.return (module_, pos)
             in
             match find_value "paquet" mapping with
             | None ->
@@ -177,33 +191,36 @@ and parse_import ~default_to_public ~ctx mapping =
                 Output.return (Some package, module_) )
       in
       let* module_ =
-        let module_ = Utils.File.relativize ctx.current_module module_ in
-        if Utils.File.is_valid_import module_ then Output.return module_
+        let module_ = File.relativize ctx.current_module module_ in
+        if File.is_valid_import module_ then Output.return module_
         else
           let code, message = Err.invalid_path in
           Output.fatal_error ~pos ~code ~kind:`Syntax message
             ~hints:
-              [ Stdlib.Format.sprintf
-                  "'%s' n'est pas une valeur de modèle valide" module_ ]
+              [ Stdlib.Format.asprintf
+                  "%a n'est pas une valeur de modèle valide" File.pp module_ ]
       in
       let* input_files =
-        match Utils.File.gather_module ?package module_ with
+        let path = File.to_intern module_ in
+        match File.gather_module ?package path with
         | Error (Invalid_path _) ->
             failwith "unreachable" (* validated before *)
         | Error (Not_found path) ->
             let code, message = Err.no_file_or_directory in
             Output.fatal_error ~pos ~code ~kind:`Syntax message
-              ~hints:[Stdlib.Format.sprintf "le chemin '%s' n'existe pas" path]
+              ~hints:
+                [Stdlib.Format.asprintf "le chemin %a n'existe pas" File.pp path]
         | Error (Is_not_directory path) ->
             let code, message = Err.no_file_or_directory in
             Output.fatal_error ~pos ~code ~kind:`Syntax message
               ~hints:
-                [ Stdlib.Format.sprintf "le chemin '%s' n'est pas un dossier"
-                    path ]
+                [ Stdlib.Format.asprintf "le chemin %a n'est pas un dossier"
+                    File.pp path ]
         | Error (Empty_directory path) ->
             let code, message = Err.no_file_or_directory in
             Output.fatal_error ~pos ~code ~kind:`Syntax message
-              ~hints:[Stdlib.Format.sprintf "le dossier '%s' est vide" path]
+              ~hints:
+                [Stdlib.Format.asprintf "le dossier %a est vide" File.pp path]
         | Ok files ->
             Output.return files
       in
@@ -221,7 +238,7 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
   let* _ =
     let circular_file =
       List.find_map input_files ~f:(fun input_file ->
-          List.findi ctx.files ~f:(fun _ file -> String.equal input_file file) )
+          List.findi ctx.files ~f:(fun _ file -> File.equal input_file file) )
     in
     match circular_file with
     | None ->
@@ -241,12 +258,14 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
                   in
                   let dir = File.dirname file in
                   if i = circular_i then
-                    Stdlib.Format.sprintf
-                      "modèle '%s' importé ici, début du cycle" dir
-                  else Stdlib.Format.sprintf "modèle '%s' importé ici" dir
+                    Stdlib.Format.asprintf
+                      "modèle %a importé ici, début du cycle" File.pp dir
+                  else
+                    Stdlib.Format.asprintf "modèle %a importé ici" File.pp dir
                 else
                   let dir = File.dirname circular_file in
-                  Stdlib.Format.sprintf "modèle '%s' importé à nouveau ici" dir
+                  Stdlib.Format.asprintf "modèle %a importé à nouveau ici"
+                    File.pp dir
               in
               Mark.mk_pos ~pos msg )
         in

@@ -10,7 +10,7 @@ let to_point (point : Utils.Pos.Point.t) =
 let to_pos (pos : Utils.Pos.t) =
   ( "position"
   , `Assoc
-      [ ("file", `String pos.file)
+      [ ("file", `String (File.to_intern pos.file))
       ; ("start", `Assoc (to_point pos.start_pos))
       ; ("end", `Assoc (to_point pos.end_pos)) ] )
 
