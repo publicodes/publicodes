@@ -1,13 +1,6 @@
 Bad types for arrondi :
   $ publicodes compile type_error -t debug_eval_tree -o -
   
-  E014 valeur manquante [syntax error]
-       ╒══  type_error/rules.publicodes:14:11 ══
-    13 │   valeur: 5€
-    14 │   arrondi:
-       │            valeur attendue ici
-  
-  
   E022 type invalide détecté [type error]
        ╒══  type_error/rules.publicodes:2:12 ══
      1 │ a:
@@ -31,6 +24,13 @@ Bad types for arrondi :
      9 │   valeur: 4 $
     10 │   arrondi: 0.1 €
        │            ˘˘˘˘˘ unité: €
+  
+  
+  E014 valeur manquante [syntax error]
+       ╒══  type_error/rules.publicodes:14:11 ══
+    13 │   valeur: 5€
+    14 │   arrondi:
+       │            valeur attendue ici
   
   
   E022 type invalide détecté [type error]
