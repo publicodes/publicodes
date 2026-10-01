@@ -31,6 +31,8 @@ type log =
 
 type t = log Mark.pos [@@deriving equal]
 
+val compare : t -> t -> int
+
 val error :
      code:Err.Code.t
   -> ?kind:kind
