@@ -6,7 +6,6 @@
 	"exclude": [
 		"./examples/**",
 		"./website",
-		"./website-v1",
 		"./packages/codemod",
 		"./packages/cli/",
 		"./packages/compiler/**"
