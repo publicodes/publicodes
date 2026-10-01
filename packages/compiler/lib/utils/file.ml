@@ -13,7 +13,7 @@ let read_file file_path =
   | "-" ->
       binary_stdin () ; read In_channel.stdin
   | file ->
-      In_channel.with_open_bin file read
+      In_channel.with_open_text file read
 
 let write_file ~path ~content =
   let write s oc = Out_channel.output_string oc s in
