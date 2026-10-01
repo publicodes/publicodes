@@ -100,7 +100,8 @@ open Let_syntax
 (* Print functions *)
 
 let print_logs (output : 'a t) =
-  List.iter ~f:(fun log -> Log_formatter.print log) (logs output)
+  List.sort ~compare:Log.compare (logs output)
+  |> List.iter ~f:(fun log -> Log_formatter.print log)
 
 let sprintf_logs (output : 'a t) =
   output |> logs
