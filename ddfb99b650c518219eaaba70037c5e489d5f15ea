@@ -58,6 +58,48 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7072b696_611e7d47",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-02T10:34:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e6ed8c7b_7ed11249",
+      "range": {
+        "startLine": 32,
+        "startChar": 49,
+        "endLine": 32,
+        "endChar": 63
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2725f91a_c6b664a7",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-02T10:34:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4082870a_81abde86",
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "3caf47a9_58817a46",
@@ -71,6 +113,30 @@
       "writtenOn": "2026-09-30T14:24:11Z",
       "side": 1,
       "message": "Avec cette implémentation et l\u0027utilisation de l\u0027égalité du runtime, si la règle propageant l\u0027applicabilité est non définie, alors tous ces enfants le seront (ex: pour ton cas de test, évaluer `a . b` et `a1 . b1` retourne la valeur `non définie`).\n\nOr, on souhaite que `a . b` et `a1 . b1` s\u0027évaluent à `42` tant que les règles `a` et `a1` ne sont pas explicitement égal à `non applicable`. \n\nJe pense que par soucis de rétrocompatibilité, on souhaite garder le même comportement que pour la v1 de manière générale.",
+      "range": {
+        "startLine": 38,
+        "startChar": 19,
+        "endLine": 38,
+        "endChar": 27
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df3ac42a_404a33d4",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-02T10:34:48Z",
+      "side": 1,
+      "message": "J\u0027ai du mal à saisir le cas qui pose soucis.\n\n\u003e Avec cette implémentation et l\u0027utilisation de l\u0027égalité du runtime, si la règle propageant l\u0027applicabilité est non définie, alors tous ces enfants le seront\n\nIl me semble que non? Avec cette implem, si `a` est non définie, alors ce n\u0027est pas égal à `NotApplicable`, donc `a . b` sera applicable. Donc c\u0027est bon?",
+      "parentUuid": "3caf47a9_58817a46",
       "range": {
         "startLine": 38,
         "startChar": 19,
@@ -106,6 +172,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "8fe5a9d3_d37ad928",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-02T10:34:48Z",
+      "side": 1,
+      "message": "parce que le premier c\u0027est la rêgle elle même, et que sa propre applicabilité est déjà traité",
+      "parentUuid": "a42889d7_23598c25",
+      "range": {
+        "startLine": 99,
+        "startChar": 6,
+        "endLine": 99,
+        "endChar": 42
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "68373209_415b8b6a",
         "filename": "packages/compiler/lib/eval_tree/replacements.ml",
         "patchSetId": 4
@@ -117,6 +207,30 @@
       "writtenOn": "2026-09-30T14:24:11Z",
       "side": 1,
       "message": "Ca vaudrait le coup de factoriser ce code dans une fonction dédiée pour clairement isoler l\u0027intention.",
+      "range": {
+        "startLine": 98,
+        "startChar": 4,
+        "endLine": 125,
+        "endChar": 26
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f2217bbf_1f76333e",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-02T10:34:48Z",
+      "side": 1,
+      "message": "Pourquoi faire? on ne l\u0027utilise que ici, c\u0027est déjà une fonction nommée, et on comprends déja clairement l\u0027intention",
+      "parentUuid": "68373209_415b8b6a",
       "range": {
         "startLine": 98,
         "startChar": 4,
