@@ -173,6 +173,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3715828b_a67f8c7f",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-02T14:08:19Z",
+      "side": 1,
+      "message": "J\u0027ai ajouté un unary_op Is_not_applicable, similaire a Is_not_defined. Ainsi on vérifie que la valeur est vraiment non applicable.",
+      "parentUuid": "82eecf14_ff2b93f1",
+      "range": {
+        "startLine": 38,
+        "startChar": 19,
+        "endLine": 38,
+        "endChar": 27
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a42889d7_23598c25",
         "filename": "packages/compiler/lib/eval_tree/replacements.ml",
         "patchSetId": 4
@@ -341,6 +365,30 @@
       "writtenOn": "2026-09-30T14:24:11Z",
       "side": 1,
       "message": "Pourquoi ne pas utiliser `-t debug_eval_tree` ici ?",
+      "range": {
+        "startLine": 186,
+        "startChar": 0,
+        "endLine": 186,
+        "endChar": 2
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8fda42f5_7c3bdedf",
+        "filename": "packages/compiler/tests/crams/compile/make_not_applicable.t/run.t",
+        "patchSetId": 4
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-02T14:08:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e373dd76_679ae69e",
       "range": {
         "startLine": 186,
         "startChar": 0,
