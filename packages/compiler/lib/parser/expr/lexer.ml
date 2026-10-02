@@ -88,7 +88,7 @@ let rec lex_one (lexbuf : lexbuf) : Tokens.t Mark.pos =
         ; start_pos= Pos.Point.of_position start_pos
         ; end_pos= Pos.Point.of_position end_pos }
     in
-    Mark.mk_pos ~pos:pos token
+    Mark.mk_pos ~pos token
   in
   match%sedlex lexbuf with
   | space_plus ->

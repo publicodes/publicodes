@@ -12,7 +12,8 @@ let%test_unit "Lex '+'" = [%test_eq: Tokens.t] ADD (Mark.remove (lexstr "+"))
 
 let%test_unit "Lex '>='" = [%test_eq: Tokens.t] GTE (Mark.remove (lexstr ">="))
 
-let%test_unit "Lex ' . '" = [%test_eq: Tokens.t] DOT (Mark.remove (lexstr " . "))
+let%test_unit "Lex ' . '" =
+  [%test_eq: Tokens.t] DOT (Mark.remove (lexstr " . "))
 
 let%test_unit "Lex Date" =
   [%test_eq: Tokens.t]
@@ -51,8 +52,10 @@ let%test_unit "Lex symbol" =
   [%test_eq: Tokens.t] (SYMBOL "1239") (Mark.remove (lexstr "'1239'"))
 
 let%test_unit "Lex Rule Name" =
-  [%test_eq: Tokens.t] (RULE_NAME "rule_name") (Mark.remove (lexstr "rule_name")) ;
-  [%test_eq: Tokens.t] (RULE_NAME "rule name") (Mark.remove (lexstr "rule name")) ;
+  [%test_eq: Tokens.t] (RULE_NAME "rule_name")
+    (Mark.remove (lexstr "rule_name")) ;
+  [%test_eq: Tokens.t] (RULE_NAME "rule name")
+    (Mark.remove (lexstr "rule name")) ;
   [%test_eq: Tokens.t] (RULE_NAME "rule « '$n+ame 12 mo#éè °")
     (Mark.remove (lexstr "rule « '$n+ame 12 mo#éè °")) ;
   [%test_eq: Tokens.t] (RULE_NAME "rule oui da")
@@ -80,7 +83,9 @@ let%test_unit "Lex Expressions" =
     ; EOF ]
 
 let%test_unit "Lex Expressions with" =
-  let tokens = lex (Mark.mk_pos ~pos:Pos.dummy "12 . az . mo / oui") |> to_exn in
+  let tokens =
+    lex (Mark.mk_pos ~pos:Pos.dummy "12 . az . mo / oui") |> to_exn
+  in
   [%test_eq: Tokens.t list]
     (List.map ~f:Mark.remove tokens)
     [ NUMBER (12., None)
