@@ -49,19 +49,19 @@ Wrongly formatted variations :
          alors: »
   
   E017 mécanisme invalide [syntax error]
-       ╒══  ./syntax_error/rules.publicodes:15:7 ══
-    14 │   variations:
-    15 │     - sinon: 200 # KO
-       │       ˘˘˘˘˘˘
-   Hint: La clé `sinon` n'est pas valide
-  
-  E017 mécanisme invalide [syntax error]
        ╒══  ./syntax_error/rules.publicodes:14:3 ══
     13 │ c:
     14 │   variations:
        │   ˘˘˘˘˘˘˘˘˘˘˘
    Hint: Une variation doit contenir « si: » et «
          alors: »
+  
+  E017 mécanisme invalide [syntax error]
+       ╒══  ./syntax_error/rules.publicodes:15:7 ══
+    14 │   variations:
+    15 │     - sinon: 200 # KO
+       │       ˘˘˘˘˘˘
+   Hint: La clé `sinon` n'est pas valide
   
   E017 mécanisme invalide [syntax error]
        ╒══  ./syntax_error/rules.publicodes:20:3 ══

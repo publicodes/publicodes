@@ -8,13 +8,6 @@ Bad types for arrondi :
        │   ˘˘˘˘˘˘˘˘˘˘˘˘˘˘
   
   
-  E014 valeur manquante [syntax error]
-       ╒══  type_error/rules.publicodes:12:6 ══
-    11 │   le maximum de:
-    12 │     -
-       │       valeur attendue ici
-  
-  
   E025 unités non compatibles [type error]
        ╒══  type_error/rules.publicodes:7:7 ══
      6 │   le maximum de:
@@ -24,6 +17,13 @@ Bad types for arrondi :
      7 │     - 5 €
      8 │     - 4 tomates
        │       ˘˘˘˘˘˘˘˘˘ unité: tomates
+  
+  
+  E014 valeur manquante [syntax error]
+       ╒══  type_error/rules.publicodes:12:6 ══
+    11 │   le maximum de:
+    12 │     -
+       │       valeur attendue ici
   
   [123]
 

@@ -12,23 +12,20 @@ module Point : sig
 
   val of_position : Lexing.position -> t
 
-  val to_position : t -> file:string -> Lexing.position
+  val to_position : t -> file:File.t -> Lexing.position
 
   val dummy : t
   (** A dummy position used when no position information is available. *)
 end
 
-type t = {file: string; start_pos: Point.t; end_pos: Point.t}
+type t = {file: File.t; start_pos: Point.t; end_pos: Point.t}
 [@@deriving equal, compare, show, sexp]
 
-val beginning_of_file : string -> t
+val beginning_of_file : File.t -> t
 (** [beginning_of_file file] returns a position at the beginning of the file. *)
 
 val dummy : t
 (** A dummy position used when no position information is available. *)
-
-val is_empty_file : t -> bool
-(** [is_empty_file pos] returns true if the file is empty. *)
 
 val add : ?len:int -> ?line:int -> t -> t
 

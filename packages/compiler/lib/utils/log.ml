@@ -16,6 +16,11 @@ type log =
 
 type t = log Mark.pos [@@deriving equal]
 
+let compare one two =
+  let one = Mark.pos one in
+  let two = Mark.pos two in
+  Pos.compare one two
+
 let mk ~level ?(kind = `Global) ?(pos = Pos.dummy) ?(hints = []) ?(labels = [])
     ?(code = None) message =
   Mark.mk_pos ~pos {kind; level; message; hints; labels; code}

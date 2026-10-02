@@ -45,6 +45,7 @@ let handle_tag formatter tag content =
 
 (* Helper function to read file content *)
 let read_file_lines filename =
+  let filename = File.to_system filename in
   try
     In_channel.with_open_text filename In_channel.input_lines
     |> fun lines -> Some lines
@@ -52,9 +53,9 @@ let read_file_lines filename =
 
 (* Stdlib.Format a position as "filename:line:column" for IDE clickability *)
 let format_position (pos : Pos.t) =
-  if Pos.is_empty_file pos then text "<unknown>"
+  if File.equal pos.file File.std then text "<unknown>"
   else
-    let file = pos.file in
+    let file = File.to_intern pos.file in
     let start_line = pos.start_pos.line in
     let start_col = pos.start_pos.column in
     (* let end_line = pos.end_pos.line in
@@ -63,7 +64,7 @@ let format_position (pos : Pos.t) =
 
 (* Stdlib.Format code excerpt with the problematic part tagged based on level *)
 let format_code_excerpt ?message ~(pos : Pos.t) level =
-  if Pos.is_empty_file pos then text "<no source available>"
+  if File.equal pos.file File.std then text "<no source available>"
   else
     let location =
       hbox

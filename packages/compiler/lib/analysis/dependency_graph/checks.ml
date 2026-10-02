@@ -21,7 +21,8 @@ let cycle_check (graph : Rule_graph.t) : Log.t list =
               (pos, b) )
         in
         let labels =
-          List.mapi edges ~f:(fun i (pos, (ref, _)) ->
+          List.sort edges ~compare:(fun (p1, _) (p2, _) -> Pos.compare p1 p2)
+          |> List.mapi ~f:(fun i (pos, (ref, _)) ->
               let is_last = i = List.length edges - 1 in
               let label =
                 Printf.sprintf "règle '%s' référencée "
