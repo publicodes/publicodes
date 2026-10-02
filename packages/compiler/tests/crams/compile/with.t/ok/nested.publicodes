@@ -1,0 +1,12 @@
+a:
+  avec:
+    a:
+      avec:
+        a: a # must be resolved to 'a . a'
+
+b:
+  avec:
+    b:
+      valeur: b # must be resolved to 'b . b . b'
+      avec:
+        b:

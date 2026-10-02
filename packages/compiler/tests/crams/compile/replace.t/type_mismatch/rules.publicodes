@@ -1,0 +1,7 @@
+a:
+  valeur: 4 €
+  remplace: b
+
+b: 5 mois
+
+c: b

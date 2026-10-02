@@ -1,0 +1,10 @@
+a:
+  valeur: b + c + d
+
+b:
+
+a . b:
+
+a . c:
+
+d:
