@@ -23,7 +23,7 @@
 {%- endmacro %}
 
 {%- macro fmt_identifier (name) -%}
-	{{ name
+	{{ printf("%s", name)
 		| replace("_", "___")
 		| replace(" ", "_")
 		| replace("\\.", "·")
@@ -115,7 +115,7 @@
 {%- endmacro -%}
 
 {%- macro fmt_esc (input) -%}
-	{{ input
+	{{ printf("%s", input)
 		| replace ("'", "\\'")
 		| replace ("\n", "\\n")
 		| replace ("\t", "\\t") }}
