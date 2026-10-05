@@ -14,6 +14,8 @@
 		"prepack": "run build",
 		"test:type": "turbo run test:type",
 		"build": "turbo run build",
+		"build:compiler": "turbo run build:compiler",
+		"test:compiler": "turbo run test:compiler",
 		"build:packages": "turbo run build --filter=\\{./packages/*\\}",
 		"eslint": "eslint --cache --flag v10_config_lookup_from_file",
 		"lint": "prettier --check . && run build:packages && run eslint . --quiet && turbo run lint --parallel",

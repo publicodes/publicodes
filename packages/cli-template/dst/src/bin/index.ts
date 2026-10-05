@@ -5,11 +5,10 @@ import { spawn } from 'child_process'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { existsSync } from 'fs'
-import { getPublicodesBinName } from '../platform'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-const binPath = join(__dirname, 'compiler', getPublicodesBinName())
+const binPath = join(__dirname, 'compiler')
 
 // Check if the binary exists before trying to spawn it
 if (!existsSync(binPath)) {

@@ -23,6 +23,8 @@
 				"model.publicodes.json"
 			]
 		},
+		"build:compiler": {},
+		"test:compiler": {},
 		"prepack": {
 			"dependsOn": ["build"]
 		},

@@ -6,13 +6,12 @@
 	"type": "module",
 	"license": "MIT",
 	"devDependencies": {
-		"@publicodes/cli": "workspace:^",
 		"@vitest/eslint-plugin": "^1.6.14",
 		"typescript": "^5.9.2"
 	},
 	"scripts": {
 		"lint": "bunx eslint .",
-		"test": "bun test --concurrent --only-failures",
+		"test:compiler": "bun test --concurrent --only-failures",
 		"test:type": "tsc --noEmit"
 	},
 	"dependencies": {

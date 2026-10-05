@@ -2,10 +2,21 @@
 	"$schema": "https://unpkg.com/@changesets/config@3.0.3/schema.json",
 	"changelog": [
 		"@changesets/changelog-github",
-		{ "repo": "publicodes/publicodes" }
+		{
+			"repo": "publicodes/publicodes"
+		}
 	],
 	"commit": false,
-	"fixed": [],
+	"fixed": [
+		[
+			"@publicodes/cli",
+			"@publicodes/cli-darwin-x64",
+			"@publicodes/cli-darwin-arm64",
+			"@publicodes/cli-linux-x64",
+			"@publicodes/cli-linux-arm64",
+			"@publicodes/cli-win32-x64"
+		]
+	],
 	"linked": [
 		[
 			"publicodes",

@@ -17,6 +17,9 @@ inputs:
   platform:
     description: 'The name of the platform to compile to'
     required: true
+  cli:
+    description: 'The name suffix of the platform generated cli'
+    required: true
 
 runs:
   using: 'composite'
@@ -36,6 +39,10 @@ runs:
       uses: ocaml/setup-ocaml@v3
       with:
         ocaml-compiler: 5.3
+    - name: Install node
+      uses: ./.github/actions/install-node
+    - name: Install bun
+      uses: oven-sh/setup-bun@v2
 
     - name: Install dependencies
       if: steps.cache-build-restore.outputs.cache-hit != 'true'
@@ -45,39 +52,46 @@ runs:
 
     - name: Build
       if: steps.cache-build-restore.outputs.cache-hit != 'true'
-      run: opam exec -- dune build
+      run: opam exec -- dune build --release
       shell: bash
       working-directory: ${{ inputs.compiler-path }}
+
+    - name: Build cli packages
+      run: yarn run build:compiler
+      shell: bash
 
     - name: Run tests
       if: steps.cache-build-restore.outputs.cache-hit != 'true'
-      run: |
-        opam exec -- dune runtest ;
-        opam exec -- dune test
+      run: opam exec -- dune runtest
       shell: bash
       working-directory: ${{ inputs.compiler-path }}
 
-    - name: Rename executable
+    - name: Run runtime tests
       if: steps.cache-build-restore.outputs.cache-hit != 'true'
-      run: |
-        mv  ./_build/install/default/bin/publicodes  ./_build/install/default/bin/publicodes-${{ inputs.platform }}${{ inputs.platform == 'windows' && '.exe' || '' }}
+      run: yarn run test:compiler
       shell: bash
-      working-directory: ${{ inputs.compiler-path }}
 
     - name: Save cached build
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
       id: cache-build-save
       uses: actions/cache/save@v4
       with:
         path: ${{ inputs.compiler-path }}/_build
         key: ${{ steps.cache-build-restore.outputs.cache-primary-key }}
 
+    # Tar to preserve permissions and paths
+    - name: Tar build artifact
+      run: tar -zcvf ${{ inputs.cli }}.tar.gz packages/cli-${{ inputs.cli }}/bin
+      shell: bash
+
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v3
       with:
-        subject-path: ${{ inputs.compiler-path }}/_build/install/default/bin/
+        subject-path: ${{ inputs.cli }}.tar.gz
 
     - name: Upload the build artifact
       uses: actions/upload-artifact@v4
       with:
-        name: publicodes-${{ inputs.platform }}
-        path: ${{ inputs.compiler-path }}/_build/install/default/bin/
+        name: publicodes-cli-${{ inputs.cli }}
+        path: ${{ inputs.cli }}.tar.gz
+        archive: false

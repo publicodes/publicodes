@@ -13,17 +13,38 @@ permissions:
 
 jobs:
   build-compiler:
-    name: Ocaml compiler
-    runs-on: ubuntu-latest
+    name: Ocaml compiler (${{ matrix.name }})
     strategy:
       matrix:
-        platform: [linux, macos, windows]
+        # https://github.com/actions/runner-images
+        include:
+          - name: linux x64
+            platform: ubuntu-latest
+            cli: linux-x64
+          - name: linux arm64
+            platform: ubuntu-24.04-arm
+            cli: linux-arm64
+          - name: macos x64
+            platform: macos-26-intel
+            cli: darwin-x64
+          - name: macos arm64
+            platform: macos-26
+            cli: darwin-arm64
+          - name: windows x64
+            platform: windows-latest
+            cli: win32-x64
+          # not supported by opam
+          #- name: windows arm64
+          #  platform: windows-11-arm
+          #  cli: win32-arm64
+    runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
       - name: Build and test the ocaml compiler
         uses: ./.github/actions/build-compiler
         with:
           platform: ${{ matrix.platform }}
+          cli: ${{ matrix.cli }}
 
   release:
     needs: build-compiler
@@ -43,6 +64,12 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --immutable
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: publicodes-cli-*
+      - name: Untar builds artifacts
+        run: find . -name '*.tar.gz' -maxdepth 1 -exec tar -xvf {} \;
 
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v1.7.0

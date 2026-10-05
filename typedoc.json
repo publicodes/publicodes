@@ -7,7 +7,8 @@
 		"./examples/**",
 		"./website",
 		"./packages/codemod",
-		"./packages/cli/",
+		"./packages/cli*",
+		"./packages/compiler",
 		"./packages/compiler/**"
 	],
 	"hidePageHeader": true,
