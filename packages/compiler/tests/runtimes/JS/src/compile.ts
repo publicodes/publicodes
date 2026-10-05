@@ -4,7 +4,8 @@ import { Context, Evaluated, Options } from '../../../../runtimes/runtime'
 
 export { p } from '../../../../runtimes/runtime'
 
-const COMPILER_PATH = env.PUBLICODES_COMPILER_PATH ?? 'publicodes2'
+const COMPILER_PATH =
+	env.PUBLICODES_COMPILER_PATH ?? '../../../_build/default/bin/main.exe'
 
 export async function compilePublicodesToJS(
 	yaml: string,

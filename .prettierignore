@@ -18,4 +18,4 @@ packages/compiler/docs/debugging tree/*
 
 website/src/routes/docs/api/**/*.md
 
-packages/cli/bin
+packages/cli-*/bin
