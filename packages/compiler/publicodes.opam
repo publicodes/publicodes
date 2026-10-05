@@ -5,10 +5,14 @@ synopsis: "Compiler for the Publicodes language"
 description:
   "A compiler for the Publicodes, a programming language for public interest algorithms."
 maintainer: [
-  "Johan Girod <dev@johangirod.com>" "Emile Rolley <emile@calinou.coop>"
+  "Johan Girod <dev@johangirod.com>"
+  "Emile Rolley <emile@calinou.coop>"
+  "Willow Barraco <contact@willowbarraco.fr"
 ]
 authors: [
-  "Johan Girod <dev@johangirod.com>" "Emile Rolley <emile@calinou.coop>"
+  "Johan Girod <dev@johangirod.com>"
+  "Emile Rolley <emile@calinou.coop>"
+  "Willow Barraco <contact@willowbarraco.fr"
 ]
 license: "MIT"
 tags: [

@@ -11,11 +11,13 @@
 
 (authors
 	"Johan Girod <dev@johangirod.com>"
-	"Emile Rolley <emile@calinou.coop>")
+	"Emile Rolley <emile@calinou.coop>"
+	"Willow Barraco <contact@willowbarraco.fr")
 
 (maintainers
 	"Johan Girod <dev@johangirod.com>"
-	"Emile Rolley <emile@calinou.coop>")
+	"Emile Rolley <emile@calinou.coop>"
+	"Willow Barraco <contact@willowbarraco.fr")
 
 (license MIT)
 
