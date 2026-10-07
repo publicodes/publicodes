@@ -111,18 +111,10 @@ const commonPackageFields: Partial<PackageJson> = {
 	devDependencies: basePackageJson.devDependencies,
 }
 
-function pickStaticFields({
-	license,
-	name,
-	version,
-	author,
-	description,
-}: PackageJson) {
+function pickStaticFields({ name, version, description }: PackageJson) {
 	return {
-		license,
 		name,
 		version,
-		author,
 		description,
 	}
 }
