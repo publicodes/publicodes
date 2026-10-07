@@ -2,3 +2,4 @@ publicodes.yaml
 *.publicodes.js
 rule_graph.dot
 rule_graph.png
+*.install
