@@ -36,7 +36,6 @@ runs:
       uses: ocaml/setup-ocaml@v3
       with:
         ocaml-compiler: 5.3
-        dune-cache: true
 
     - name: Install dependencies
       if: steps.cache-build-restore.outputs.cache-hit != 'true'
