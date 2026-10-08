@@ -380,6 +380,7 @@ export class Engine<RuleNames extends string = string> {
 						:	value,
 				},
 				this.context,
+				{ mutateParsedRules: true },
 			),
 		)
 		this.checkExperimentalRule(this.context.parsedRules['$EVALUATION'])
@@ -443,15 +444,26 @@ export class Engine<RuleNames extends string = string> {
 	 *
 	 * @returns a new Engine instance with the same baseContext, context, publicParsedRules, publicSituation and cache attributes.
 	 */
-	shallowCopy(): Engine<RuleNames> {
+	shallowCopy({
+		copyCache = true,
+		inherit = false,
+	}: {
+		copyCache?: boolean
+		inherit?: boolean
+	} = {}): Engine<RuleNames> {
 		const newEngine = new Engine<RuleNames>()
-		newEngine.baseContext = copyContext(this.baseContext)
-		newEngine.context = copyContext(this.context)
+		newEngine.baseContext = Object.assign({}, this.baseContext, {
+			warn: weakCopyObj(this.baseContext.warn),
+			strict: weakCopyObj(this.baseContext.strict),
+			flag: weakCopyObj(this.baseContext.flag),
+			subEngines: new Map(),
+		})
+		newEngine.context = copyContext(this.context, { inherit })
 		newEngine.publicParsedRules = this.publicParsedRules
 		newEngine.publicSituation = weakCopyObj(this.publicSituation)
 		newEngine.cache = {
 			...emptyCache(),
-			nodes: new Map(this.cache.nodes),
+			nodes: copyCache ? new Map(this.cache.nodes) : new Map(),
 		}
 		return newEngine
 	}
@@ -520,7 +532,9 @@ export class Engine<RuleNames extends string = string> {
 			]),
 		) as RawPublicodes<RuleNames>
 		try {
-			const newContext = parsePublicodes(situationToParse, this.context)
+			const newContext = parsePublicodes(situationToParse, this.context, {
+				mutateParsedRules: true,
+			})
 			this.context = Object.assign(this.context, newContext)
 			return false
 		} catch (error) {
