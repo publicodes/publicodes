@@ -1,5 +1,4 @@
 ---
-'@publicodes/runtime': patch
 '@publicodes/cli': patch
 ---
 
