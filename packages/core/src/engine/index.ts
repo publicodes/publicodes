@@ -448,7 +448,19 @@ export class Engine<RuleNames extends string = string> {
 		copyCache = true,
 		inherit = false,
 	}: {
+		/**
+		 * Copy the evaluation cache. Can be disabled if the copy calls
+		 * {@link setSituation} right away, as it resets the cache.
+		 * @default true
+		 */
 		copyCache?: boolean
+		/**
+		 * Inherit the parsed rules and references maps of this engine instead of
+		 * copying them. Only safe if this engine is not modified while the copy is
+		 * used. Iterating on them then only gives the new values.
+		 * @default false
+		 * @internal
+		 */
 		inherit?: boolean
 	} = {}): Engine<RuleNames> {
 		const newEngine = new Engine<RuleNames>()
