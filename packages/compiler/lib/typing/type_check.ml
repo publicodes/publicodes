@@ -594,9 +594,8 @@ and check_chainable_mechanism
       let default_typ = Ast.mk_any ~pos in
       let* _ = check_value value ~ctx:{ctx with parent_typ= Some default_typ} in
       with_value_typ (fun ptyp ->
-          let* default_typ = check_enumerate ~pos default_typ ptyp in
-          let* _ = check_union default_typ mark.typ in
-          check_union mark.typ ptyp )
+          let* _ = check_generalize default_typ ptyp ~grow:false in
+          check_union default_typ mark.typ )
   | Ceiling value | Floor value ->
       let* value_typ =
         let value_typ = Ast.mk_any_number ~pos in
