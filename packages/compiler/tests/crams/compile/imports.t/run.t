@@ -298,3 +298,11 @@ Vendor relative import :
   
   out . rule vendored d . rule vendored e:
     40.
+
+Vendor distant :
+  $ publicodes compile -C "subjects/distant/src" main -t debug_eval_tree -o -
+  module a:
+    get_context(module a)
+  
+  module a . rule a:
+    10.
