@@ -24,7 +24,7 @@ function formatBoolean(value: boolean): string {
 
 function formatDate(value: string | Date): string {
 	const date = typeof value === 'string' ? new Date(value) : value
-	return date.toLocaleDateString()
+	return date.toLocaleDateString('fr-FR')
 }
 
 export function formatValue(

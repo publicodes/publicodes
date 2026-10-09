@@ -1,0 +1,57 @@
+{
+	"title": "Choose the visual world",
+	"question": "Safer hand: three grounded directions from the conventional end, plus the category standard. No roll this round — you pick.",
+	"options": [
+		{
+			"id": "candidate-decompte",
+			"label": "Le décompte détaillé",
+			"lineage": "the payslip and the accountant's columnar pad, deracinated from money",
+			"thesis": "Every line declares where it came from, the reader's own figure is marked as theirs, and the total is ruled off.",
+			"palette": ["#ffffff", "#1a1a1a", "#1f4e8c", "#d8d8d4"],
+			"materials": ["ruled columns", "tabular figures", "origin column", "heavy total rule"],
+			"viewport": "A boxed header carrying the rule and its question, then the computation as lines in labelled columns — quantity, factor, emissions — with each emission factor's source cited on the line that uses it, the reader's own input marked as theirs, and the total on a heavy rule at the foot beside its normalised twin.",
+			"risk": "A table of figures with a total is the most familiar shape in the world, and familiarity is what makes it disappear — the notation has to earn attention somewhere, and the citation column is where it must.",
+			"html": ".impeccable/mocks/decision/candidate-decompte.html"
+		},
+		{
+			"id": "candidate-etiquette",
+			"label": "L’étiquette nutritionnelle",
+			"lineage": "the nutrition declaration panel",
+			"thesis": "The same computation declared in two contexts side by side, with a reference scale to say whether the number is a lot.",
+			"palette": ["#ffffff", "#14110f", "#1b7f4c", "#f0c419", "#c8442b"],
+			"materials": ["boxed declaration panel", "two-context columns", "thick separator rules", "functional scale colour only"],
+			"viewport": "A boxed declaration panel with two columns — per festivalier and per day against the whole event — the postes listed under it with a “dont” nest, thick rules separating declared values from the reference scale, and the emission factor of each line printed beneath it in small type.",
+			"risk": "Carries two contexts better than anything else here, but a label is a fixed panel: it has no way to show a chain six references deep without becoming a table again.",
+			"html": ".impeccable/mocks/decision/candidate-etiquette.html"
+		},
+		{
+			"id": "candidate-service-public",
+			"label": "La fiche service-public.fr",
+			"lineage": "the French government fiche and the gov.uk guidance page",
+			"thesis": "The document is a frame the state already taught every reader how to use, and the computation is set inside it as a plain table.",
+			"palette": ["#ffffff", "#1e1e1e", "#000091", "#e3e3fd"],
+			"materials": ["En bref summary card", "anchor menu", "Pour qui / Comment sections", "Textes de référence"],
+			"viewport": "An “En bref” card answering the reader's question in three lines, an anchor menu down the side, the computation set as a plain table under a plain heading, and the emission factors' sources gathered into “Textes de référence” at the foot.",
+			"risk": "The cleanest frame on the table and the weakest carrier of the mechanism — government web has never had to render a nested computation, so it explains figures in prose, which is the failure this product exists to refuse.",
+			"html": ".impeccable/mocks/decision/candidate-service-public.html"
+		}
+	],
+	"reroll": {
+		"registers": ["safer", "bolder"]
+	},
+	"steer": true,
+	"canon": true,
+	"canonCard": {
+		"label": "The category standard",
+		"thesis": "Sidebar of rule names, breadcrumb, the rule's title and prose, then the computation as an indented tree of labelled boxes — executed impeccably, benchmarked against gov.uk, the ADEME Base Empreinte documentation, and mon-entreprise's current v1 rule page.",
+		"palette": ["#ffffff", "#111827", "#2563eb"],
+		"materials": ["clean grid", "hairline borders", "system sans", "benchmarked against gov.uk", "Base Empreinte", "mon-entreprise v1"],
+		"viewport": "A left rail listing rules, the rule's title and description, and under it a bordered box holding an indented tree of mechanism labels in grey small caps with values right-aligned.",
+		"risk": "Indistinguishable from the competition by design. mon-entreprise already ships it, and the brief ruled out the shape.",
+		"html": ".impeccable/mocks/decision/canon.html"
+	},
+	"buildPath": {
+		"value": "code",
+		"toggle": false
+	}
+}

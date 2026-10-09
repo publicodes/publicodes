@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Le bulletin de paie — dirigeant . auto-entrepreneur . revenu net</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1a1a; --rule:#d8d8d4; --box:#8f8f88;
+    --admin-blue:#1f4e8c; --supplied:#7a4a12;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{
+    width:1440px;height:900px;background:#e9e9e6;color:var(--ink);
+    font-family:'Public Sans',system-ui,sans-serif;
+    display:grid;place-items:center;overflow:hidden;
+    font-variant-numeric:tabular-nums;
+  }
+  .sheet{width:1400px;height:860px;background:#fff;
+    border:1px solid #bdbdb8;display:grid;grid-template-columns:204px 1fr}
+
+  /* ── nav: the payslip has no sidebar, but the reader needs to stand somewhere ── */
+  nav{border-right:1px solid var(--rule);padding:26px 20px;display:flex;flex-direction:column;gap:26px}
+  nav h2{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#84847e;font-weight:600}
+  nav ul{list-style:none;font-size:12.5px;line-height:1.95}
+  nav li{color:#5a5a55}
+  nav li[aria-current]{color:var(--ink);font-weight:600}
+  nav li[aria-current]::before{content:"— ";color:var(--admin-blue)}
+  nav .id{font-family:'Roboto Mono';font-size:11px;color:#84847e;line-height:1.7}
+  nav .foot{margin-top:auto;border-top:1px solid var(--rule);padding-top:12px}
+
+  /* ── the document ── */
+  main{padding:30px 40px 0;display:flex;flex-direction:column;min-width:0}
+
+  /* boxed header — the payslip's employer block, carrying identity + context */
+  .header{display:grid;grid-template-columns:1fr 340px;border:1.5px solid var(--ink)}
+  .header > *{padding:16px 18px}
+  .header .who{border-right:1.5px solid var(--ink)}
+  .header .who h1{font-size:31px;font-weight:700;letter-spacing:-.015em;line-height:1.06}
+  .header .who .dotted{font-family:'Roboto Mono';font-size:11.5px;color:#5a5a55;
+    margin-top:7px;font-weight:400}
+  .header .who .role{margin-top:14px;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--admin-blue);font-weight:600}
+  .header .ctx h2,.header .who .role + *{margin-top:0}
+  .header .ctx h2{font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+    color:#84847e;font-weight:600;margin-bottom:9px}
+  .header .ctx dl{display:grid;grid-template-columns:104px 1fr;gap:5px 12px;font-size:12.5px}
+  .header .ctx dt{color:#5a5a55}
+  .header .ctx dd{font-weight:600;text-align:right}
+
+  /* the model's question, in the position a payslip gives to its message */
+  .question{margin:20px 0 6px;padding:12px 18px;background:#f4f6fa;
+    border-left:3px solid var(--admin-blue);font-size:14.5px;line-height:1.45}
+  .question b{font-weight:600}
+  .question .from{display:block;margin-top:5px;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--admin-blue);font-weight:600}
+
+  /* ── the ruled lines: label / origin / amount ── */
+  table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+  thead th{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#84847e;
+    font-weight:600;text-align:left;padding:0 0 8px;border-bottom:1px solid var(--ink)}
+  thead th.num{text-align:right}
+  tbody td{padding:8px 0;border-bottom:1px solid var(--rule);vertical-align:baseline}
+  tbody td.num{text-align:right;font-weight:500;white-space:nowrap}
+  tbody tr.sub td:first-child{padding-left:26px;color:#5a5a55}
+  tbody tr.sub td.num{font-weight:400;color:#5a5a55}
+  .origin{font-size:11.5px;color:#84847e;letter-spacing:.02em;white-space:nowrap}
+  .origin.you{color:var(--supplied);font-weight:600}
+  .term{display:flex;align-items:baseline;gap:9px}
+  .term .balloon{display:inline-flex;align-items:center;justify-content:center;
+    width:17px;height:17px;flex:none;border:1px solid var(--box);border-radius:50%;
+    font-size:10px;font-weight:700;color:#5a5a55;transform:translateY(1px)}
+  .term .balloon.you{border-color:var(--supplied);color:var(--supplied);border-radius:2px}
+  /* the untaken branches: ruled out, struck through in the margin, still legible */
+  tbody tr.untaken td:first-child::after{content:" — branche non empruntée";
+    font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#a8a8a2}
+  tbody tr.untaken td.num{color:#a8a8a2}
+
+  /* the heavy total rule */
+  tfoot td{padding:15px 0 0;border:none}
+  tfoot tr.total td{border-top:2.5px solid var(--ink);padding-top:14px}
+  tfoot .label{font-size:21px;font-weight:700;letter-spacing:-.01em}
+  tfoot .num{text-align:right;font-size:40px;font-weight:700;letter-spacing:-.02em;
+    line-height:1;white-space:nowrap}
+  tfoot .num .unit{font-size:14px;font-weight:500;color:#5a5a55;margin-left:7px;letter-spacing:0}
+
+  /* the fine print: where the model's own words and sources live */
+  .mentions{margin-top:auto;border-top:1px solid var(--rule);padding:13px 0 18px;
+    display:grid;grid-template-columns:1fr 1fr;gap:34px;font-size:11.5px;color:#5a5a55;line-height:1.55}
+  .mentions h3{font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+    color:#84847e;font-weight:600;margin-bottom:5px}
+
+  /* what the reader actually supplied — the payslip's cumuls block */
+  .supplied-block{margin-top:22px;border-top:1.5px solid var(--ink);padding-top:13px}
+  .supplied-block h3{font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+    color:#84847e;font-weight:600;margin-bottom:11px}
+  .supplied-block dl{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 40px}
+  .supplied-block .pair{display:flex;justify-content:space-between;gap:12px;
+    font-size:12.5px;padding-bottom:5px;border-bottom:1px dotted var(--rule)}
+  .supplied-block .pair dt{color:#5a5a55}
+  .supplied-block .pair dd{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .supplied-block .gap{margin-top:13px;font-size:12.5px;color:#5a5a55}
+  .supplied-block .gap b{color:var(--supplied)}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <nav>
+    <div>
+      <h2>Revenu net</h2>
+      <ul>
+        <li aria-current="page">revenu net</li>
+        <li>cotisations et contributions</li>
+        <li>TFC</li>
+        <li>chiffre d’affaires</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Entrées</h2>
+      <ul>
+        <li>activité . nature</li>
+        <li>chiffre d’affaires . BIC</li>
+        <li>date de création</li>
+      </ul>
+    </div>
+    <div class="foot">
+      <h2>Référence</h2>
+      <p class="id">auto-entrepreneur-net</p>
+    </div>
+  </nav>
+
+  <main>
+    <div class="header">
+      <div class="who">
+        <h1>Revenu net</h1>
+        <div class="dotted">dirigeant . auto-entrepreneur . revenu net</div>
+        <div class="role">Avant impôt</div>
+      </div>
+      <div class="ctx">
+        <h2>Contexte de calcul</h2>
+        <dl>
+          <dt>Activité</dt><dd>Libérale</dd>
+          <dt>Chiffre d’affaires</dt><dd>10 000 €</dd>
+          <dt>Unité</dt><dd>€ / an</dd>
+          <dt>Type</dt><dd>Nombre</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="question">
+      <b>Quel revenu avant impôt voulez-vous toucher ?</b>
+      <span class="from">Question posée par le modèle</span>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Libellé</th>
+          <th scope="col">Origine</th>
+          <th scope="col" class="num">Montant</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="term"><span class="balloon you">A</span>Chiffre d’affaires</span></td>
+          <td><span class="origin you">Fourni par vous</span></td>
+          <td class="num">10 000,00</td>
+        </tr>
+        <tr>
+          <td>Cotisations et contributions</td>
+          <td><span class="origin">Calculé</span></td>
+          <td class="num">10,00</td>
+        </tr>
+        <tr class="sub untaken">
+          <td>Cotisations</td>
+          <td><span class="origin">Calculé</span></td>
+          <td class="num">0,00</td>
+        </tr>
+        <tr class="sub untaken">
+          <td>T.F.C.</td>
+          <td><span class="origin">Calculé</span></td>
+          <td class="num">0,00</td>
+        </tr>
+        <tr class="sub">
+          <td>C.F.P.</td>
+          <td><span class="origin">Calculé</span></td>
+          <td class="num">10,00</td>
+        </tr>
+        <tr style="border-bottom:none">
+          <td style="padding-top:12px">Total des cotisations</td>
+          <td></td>
+          <td class="num" style="padding-top:12px">−&nbsp;10,00</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="total">
+          <td class="label">Revenu net</td>
+          <td></td>
+          <td class="num">9 990,00<span class="unit">€ / an</span></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="supplied-block">
+      <h3>Vos données</h3>
+      <dl>
+        <div class="pair"><dt>Chiffre d’affaires . BIC</dt><dd>10 000 €</dd></div>
+        <div class="pair"><dt>Activité . nature</dt><dd>Libérale</dd></div>
+        <div class="pair"><dt>Service BIC</dt><dd>0 €</dd></div>
+        <div class="pair"><dt>Service BNC</dt><dd>0 €</dd></div>
+        <div class="pair"><dt>Vente restauration hébergement</dt><dd>0 €</dd></div>
+        <div class="pair"><dt>Période</dt><dd>Non renseignée</dd></div>
+      </dl>
+      <p class="gap">Quatre entrées ne sont pas renseignées et n’ont pas été utilisées :
+        <b>date de création</b>, <b>date</b>, <b>activité . nature . libérale . réglementée</b>,
+        <b>établissement . commune . département . outre-mer</b>.</p>
+    </div>
+
+    <div class="mentions">
+      <div>
+        <h3>Définition</h3>
+        Il s’agit du revenu après déductions des cotisations, avant le paiement de l’impôt sur le revenu.
+      </div>
+      <div>
+        <h3>Source</h3>
+        inputs/auto-entrepreneur.publicodes — ligne 52.<br>
+        Aucune référence légale renseignée pour cette règle.
+      </div>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

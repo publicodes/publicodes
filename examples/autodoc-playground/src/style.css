@@ -1,3 +1,6 @@
+/* The playground's shell. It paints its own chrome and takes every colour,
+   size and face from the library's tokens, so the two cannot drift apart. */
+
 *,
 *::before,
 *::after {
@@ -7,62 +10,113 @@
 }
 
 html {
-	font-family: system-ui, sans-serif;
-	font-size: 16px;
+	font-family: var(--publicodes-font);
+	font-size: var(--publicodes-size-body);
 	line-height: 1.5;
-	color: #1a1a1a;
-	background: #fafafa;
+	color: var(--publicodes-ink);
+	background: var(--publicodes-paper-shade);
 }
 
-body {
-	max-width: 960px;
-	margin: 0 auto;
-	padding: 2rem;
+/* the models this playground can show */
+.doc-models {
+	display: flex;
+	gap: 18px;
+	padding: 14px 24px;
+	border-bottom: 1px solid var(--publicodes-rule);
 }
-
-h1 {
-	font-size: 1.75rem;
+.doc-models button {
+	font: inherit;
+	font-size: var(--publicodes-size-figure);
+	background: none;
+	border: 0;
+	padding: 0;
+	cursor: pointer;
+	color: var(--publicodes-blue);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+.doc-models button.on {
+	color: var(--publicodes-ink);
 	font-weight: 700;
-	margin-bottom: 1rem;
-}
-
-h2 {
-	font-size: 1.25rem;
-	font-weight: 600;
-	margin: 2rem 0 0.5rem;
-}
-
-a {
-	color: #2563eb;
 	text-decoration: none;
 }
 
-a:hover {
-	text-decoration: underline;
+.doc-shell {
+	display: grid;
+	grid-template-columns: 220px minmax(0, 1fr);
+	gap: 44px;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 26px 24px 64px;
+	align-items: start;
 }
 
-ul {
+.doc-index {
+	font-size: var(--publicodes-size-figure);
+}
+.doc-index .doc-title {
+	font-weight: 700;
+	color: var(--publicodes-ink);
+	margin: 0 0 4px;
+}
+.doc-index .doc-group {
+	font-size: var(--publicodes-size-label);
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--publicodes-muted);
+	margin: 18px 0 6px;
+}
+.doc-index ul {
 	list-style: none;
-	padding: 0;
+}
+.doc-index button {
+	display: block;
+	width: 100%;
+	text-align: left;
+	font: inherit;
+	background: none;
+	border: 0;
+	border-left: 2px solid transparent;
+	padding: 6px 0 6px 10px;
+	cursor: pointer;
+	color: var(--publicodes-blue);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+.doc-index button:hover {
+	text-decoration-thickness: 2px;
+}
+.doc-index button.on {
+	color: var(--publicodes-ink);
+	font-weight: 700;
+	text-decoration: none;
+	border-left-color: var(--publicodes-ink);
+}
+/* the fiche opens beside the index rather than over it */
+.doc-index .publicodes-fiche__panel {
+	left: 100%;
+	bottom: auto;
+	top: 0;
+	margin-left: 10px;
 }
 
-li {
-	margin-bottom: 0.25rem;
-}
-
-hr {
-	border: none;
-	border-top: 1px solid #e5e5e5;
-	margin: 2rem 0;
-}
-
-.demo-block {
-	margin: 2rem 0;
-	padding: 1rem;
-	border: 1px solid #e5e5e5;
-	border-radius: 6px;
-	background: #fff;
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
+/* the shell is one column on a phone: the index would crush the column */
+@media (max-width: 940px) {
+	.doc-shell {
+		grid-template-columns: 1fr;
+		gap: 0;
+		padding: 20px 18px 48px;
+	}
+	.doc-index {
+		border-bottom: 1px solid var(--publicodes-rule);
+		padding-bottom: 18px;
+		margin-bottom: 26px;
+	}
+	.doc-index .publicodes-fiche__panel {
+		left: 0;
+		right: 0;
+		width: auto;
+		margin-left: 0;
+	}
 }

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { formatValue } from './format-value'
+import { NotApplicable, NotDefined } from './trace'
 
 describe('formatValue', () => {
 	describe('number', () => {
@@ -42,13 +43,13 @@ describe('formatValue', () => {
 		})
 	})
 
-	describe('edge cases', () => {
-		it('returns "non défini" for undefined', () => {
-			expect(formatValue(undefined, { type: 'number' })).toBe('non défini')
+	describe('absence', () => {
+		it('names NotDefined in full', () => {
+			expect(formatValue(NotDefined, { type: 'number' })).toBe('non défini')
 		})
 
-		it('returns "-" for null', () => {
-			expect(formatValue(null, { type: 'text' })).toBe('-')
+		it('names NotApplicable as a dash', () => {
+			expect(formatValue(NotApplicable, { type: 'text' })).toBe('-')
 		})
 	})
 })

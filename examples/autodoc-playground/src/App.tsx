@@ -1,112 +1,91 @@
+import type { PublicodeAST } from '@publicodes/autodoc-core/ast'
+import type { TraceValue } from '@publicodes/autodoc-core'
 import { useState } from 'react'
-import { ExprMechanismPage } from './pages/ExprMechanismPage'
-import { ValueMechanismPage } from './pages/ValueMechanismPage'
-import { IsApplicableMechanismPage } from './pages/IsApplicableMechanismPage'
-import { SumMechanismPage } from './pages/SumMechanismPage'
-import { ProductMechanismPage } from './pages/ProductMechanismPage'
-import { AllOfMechanismPage } from './pages/AllOfMechanismPage'
-import { OneOfMechanismPage } from './pages/OneOfMechanismPage'
-import { MinOfMechanismPage } from './pages/MinOfMechanismPage'
-import { MaxOfMechanismPage } from './pages/MaxOfMechanismPage'
-import { VariationsMechanismPage } from './pages/VariationsMechanismPage'
-import { ApplicableIfMechanismPage } from './pages/ApplicableIfMechanismPage'
-import { NotApplicableIfMechanismPage } from './pages/NotApplicableIfMechanismPage'
-import { ContextMechanismPage } from './pages/ContextMechanismPage'
-import { DefaultMechanismPage } from './pages/DefaultMechanismPage'
-import { CeilingMechanismPage } from './pages/CeilingMechanismPage'
-import { FloorMechanismPage } from './pages/FloorMechanismPage'
-import { RoundUpMechanismPage } from './pages/RoundUpMechanismPage'
-import { RoundDownMechanismPage } from './pages/RoundDownMechanismPage'
-import { RoundNearestMechanismPage } from './pages/RoundNearestMechanismPage'
-import { AutoEntrepeneurExamplePage } from './pages/AutoEntrepreneurExamplePage'
-import { SimpleTJMExamplePage } from './pages/SimpleTJMExamplePage'
+import autoAst from './fixtures/auto-entrepreneur.autodoc.json'
+import tjmAst from './fixtures/simple-TJM.autodoc.json'
+import autoRules, {
+	outputs as autoOutputs,
+	parameters as autoParameters,
+} from '../../../packages/compiler/examples/auto-entrepreneur/model.publicodes.js'
+import tjmRules, {
+	outputs as tjmOutputs,
+	parameters as tjmParameters,
+} from '../../../packages/compiler/examples/simple-TJM/model.publicodes.js'
+import { DocumentationPage, type DocumentationPageProps } from './pages/DocumentationPage'
 
-const PAGES = {
-	home: { label: 'Accueil', component: HomePage },
-	expr: { label: 'ExprMechanism', component: ExprMechanismPage },
-	value: { label: 'ValueMechanism', component: ValueMechanismPage },
-	is_applicable: {
-		label: 'IsApplicableMechanism',
-		component: IsApplicableMechanismPage,
-	},
-	sum: { label: 'SumMechanism', component: SumMechanismPage },
-	product: { label: 'ProductMechanism', component: ProductMechanismPage },
-	all_of: { label: 'AllOfMechanism', component: AllOfMechanismPage },
-	one_of: { label: 'OneOfMechanism', component: OneOfMechanismPage },
-	min_of: { label: 'MinOfMechanism', component: MinOfMechanismPage },
-	max_of: { label: 'MaxOfMechanism', component: MaxOfMechanismPage },
-	variations: {
-		label: 'VariationsMechanism',
-		component: VariationsMechanismPage,
-	},
-	applicable_if: {
-		label: 'ApplicableIfMechanism',
-		component: ApplicableIfMechanismPage,
-	},
-	not_applicable_if: {
-		label: 'NotApplicableIfMechanism',
-		component: NotApplicableIfMechanismPage,
-	},
-	context: { label: 'ContextMechanism', component: ContextMechanismPage },
-	default: { label: 'DefaultMechanism', component: DefaultMechanismPage },
-	ceiling: { label: 'CeilingMechanism', component: CeilingMechanismPage },
-	floor: { label: 'FloorMechanism', component: FloorMechanismPage },
-	round_up: { label: 'RoundUpMechanism', component: RoundUpMechanismPage },
-	round_down: {
-		label: 'RoundDownMechanism',
-		component: RoundDownMechanismPage,
-	},
-	round_nearest: {
-		label: 'RoundNearestMechanism',
-		component: RoundNearestMechanismPage,
-	},
-	tjm_example: {
-		label: 'Exemple : simple TJM',
-		component: SimpleTJMExamplePage,
-	},
-	autoentrepreneur_example: {
-		label: 'Exemple : auto-entrepreneur',
-		component: AutoEntrepeneurExamplePage,
-	},
-} as const
+const autoContext: Record<string, TraceValue> = {
+	"entreprise . chiffre d'affaires . BIC": 10000,
+	"entreprise . chiffre d'affaires . service BIC": 5000,
+	"entreprise . chiffre d'affaires . service BNC": 0,
+	"entreprise . chiffre d'affaires . vente restauration hébergement": 0,
+	'entreprise . activité . nature': 'libérale',
+	date: new Date('2024-06-01'),
+	'dirigeant . auto-entrepreneur . Cipav . adhérent': false,
+}
 
-type PageKey = keyof typeof PAGES
+const tjmContext: Record<string, TraceValue> = {
+	"chiffre d'affaires . nombre de jour": 5,
+}
 
-function HomePage() {
-	return (
-		<>
-			<h1>Autodoc Playground</h1>
-			<p>Composants de documentation auto-générée pour Publicodes.</p>
-		</>
-	)
+const MODELS: Record<string, DocumentationPageProps> = {
+	'auto-entrepreneur': {
+		title: 'auto-entrepreneur',
+		ast: autoAst as PublicodeAST,
+		outputs: autoOutputs,
+		parameters: autoParameters,
+		start: 'dirigeant . auto-entrepreneur . revenu net',
+		context: autoContext,
+		...(() => {
+			const evaluation = autoRules[
+				'dirigeant . auto-entrepreneur . revenu net'
+			].evaluate(autoContext, { trace: true })
+			return {
+				trace: evaluation.trace,
+				usedParameters: evaluation.needed,
+				missing: evaluation.missing,
+				evaluatedRule: 'dirigeant . auto-entrepreneur . revenu net',
+			}
+		})(),
+	},
+	'simple-TJM': {
+		title: 'simple TJM',
+		ast: tjmAst as PublicodeAST,
+		outputs: tjmOutputs,
+		parameters: tjmParameters,
+		start: 'exemples . CA élevé',
+		context: tjmContext,
+		...(() => {
+			const evaluation = tjmRules['exemples . CA élevé'].evaluate(tjmContext, {
+				trace: true,
+			})
+			return {
+				trace: evaluation.trace,
+				usedParameters: evaluation.needed,
+				missing: evaluation.missing,
+				evaluatedRule: 'dirigeant . auto-entrepreneur . revenu net',
+			}
+		})(),
+	},
 }
 
 export function App() {
-	const [page, setPage] = useState<PageKey>('home')
-
-	const PageComponent = PAGES[page].component
+	const [model, setModel] = useState<keyof typeof MODELS>('auto-entrepreneur')
 
 	return (
 		<main>
-			<nav>
-				<ul>
-					{Object.entries(PAGES).map(([key, { label }]) => (
-						<li key={key}>
-							<a
-								href="#"
-								onClick={(e) => {
-									e.preventDefault()
-									setPage(key as PageKey)
-								}}
-							>
-								{label}
-							</a>
-						</li>
-					))}
-				</ul>
+			<nav className="doc-models">
+				{Object.keys(MODELS).map((name) => (
+					<button
+						key={name}
+						type="button"
+						className={name === model ? 'on' : ''}
+						onClick={() => setModel(name)}
+					>
+						{name}
+					</button>
+				))}
 			</nav>
-			<hr />
-			<PageComponent />
+			<DocumentationPage key={model} {...MODELS[model]} />
 		</main>
 	)
 }

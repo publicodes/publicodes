@@ -1,0 +1,140 @@
+{
+	"title": "Choose the visual world",
+	"question": "The roll assigned candidate 6 of 7 — Le plan de montage. Keep it, take an alternate, or re-roll.",
+	"options": [
+		{
+			"id": "assigned",
+			"label": "Le plan de montage",
+			"kicker": "THE ROLL",
+			"lineage": "the engineering parts drawing — ruled sheet, title block, balloons on leader lines, section hatching",
+			"thesis": "The computation is drawn as an assembly: every mark is a convention and none is decoration.",
+			"palette": ["#f4f1e8", "#17181a", "#8c99a6", "#b4432c"],
+			"materials": ["ruled sheet frame", "line-weight discipline", "balloon and leader line", "title block"],
+			"viewport": "A ruled sheet: the rule's name and the model author's notes top-left, the computation sectioned down the field, the answer in the title block bottom-right beside its unit and the context it was resolved in.",
+			"risk": "Can read as technical — the reader is a spreadsheet user, not a drafter, and collapses into a developer tool if the drafting conventions are shown rather than used.",
+			"raised": [
+				{
+					"from": "challenger-sneaker-stacks",
+					"raise": "An unopened reference must be readable from the side, end-label first, so the collapsed state still informs."
+				},
+				{
+					"from": "challenger-zine",
+					"raise": "One deliberate mark where the applied branch is — never a frame drawn around every element."
+				},
+				{
+					"from": "challenger-dumbar",
+					"raise": "Order comes from a module every part snaps to, never from ornament."
+				}
+			],
+			"html": ".impeccable/mocks/decision/assigned.html"
+		},
+		{
+			"id": "model-pick",
+			"label": "Le bulletin de paie",
+			"kicker": "IMPECCABLE’S PICK",
+			"lineage": "the French payslip and the accountant's columnar pad",
+			"thesis": "The one computation document every working adult in France already reads and already trusts with money.",
+			"palette": ["#ffffff", "#1a1a1a", "#1f4e8c", "#d8d8d4"],
+			"materials": ["ruled columns", "tabular figures", "boxed header", "heavy total rule"],
+			"viewport": "A ruled header box carrying the rule's name and its question, then the computation as lines in labelled columns — base, rate, amount — with the reader's own supplied figures set apart in the first column and the result on a heavy rule at the foot.",
+			"risk": "Familiar to the point of invisibility, which is exactly where most runs in this category land.",
+			"html": ".impeccable/mocks/decision/model-pick.html"
+		},
+		{
+			"id": "challenger-daylight-section",
+			"label": "The Daylight Section",
+			"verdict": "competitive",
+			"lineage": "architectural inhabitable-space daylight studies",
+			"thesis": "One continuous section through the whole computation, with the applied branch as the travelling band.",
+			"palette": ["#eae6dd", "#2b2f36", "#d8a13a", "#4a5f7a"],
+			"materials": ["limewash ground", "section poche", "travelling active band"],
+			"viewport": "The computation laid as a single long vertical section; the applied path drawn as a warm band that travels down through it, untaken branches left standing in a cold withdrawn grey.",
+			"case": "Fuses cleanly: one section through nested levels is exactly what six-deep nesting needs, and a moving active band marks the applied branch without colouring anything. Loses on audience — the reader does not inhabit this world.",
+			"risk": "The sun-and-glare apparatus is costume the moment it is taken literally.",
+			"html": ".impeccable/mocks/decision/challenger-daylight-section.html",
+			"hero": "https://impeccable.style/worlds/cards/architecture-inhabitable-space-daylight-section-hero.webp",
+			"board": "https://impeccable.style/worlds/cards/architecture-inhabitable-space-daylight-section.webp"
+		},
+		{
+			"id": "challenger-cutting-bench",
+			"label": "The Select Rail",
+			"verdict": "competitive",
+			"lineage": "a film cutting bench, flattened into a sheet",
+			"thesis": "State is a mark, not a hue — and nothing set aside is ever deleted.",
+			"palette": ["#0d0d0d", "#e2621f", "#f2f0ec"],
+			"materials": ["one ink on true black", "punched white windows", "flag orange at a third of the screen"],
+			"viewport": "A perforated rail crossing the sheet at a fixed height; the computation strung along it as frames, the applied branch flagged with a folded tape marker, untaken branches hanging on pins in an open bin below the rail.",
+			"case": "Fuses powerfully: a rigorous state vocabulary made of marks rather than colours, deferred branches that stay visible and reachable, and rank expressed by extent rather than type size. Loses on audience — nobody here cuts film.",
+			"risk": "The orange commitment is unmistakable and may be more identity than a restyleable default can carry.",
+			"html": ".impeccable/mocks/decision/challenger-cutting-bench.html",
+			"hero": "https://impeccable.style/worlds/cards/operate-a-cutting-bench-select-rail-hero.webp",
+			"board": "https://impeccable.style/worlds/cards/operate-a-cutting-bench-select-rail.webp"
+		},
+		{
+			"id": "challenger-ice-press",
+			"label": "The Ice Press",
+			"verdict": "competitive",
+			"lineage": "a newspaper hand-set and printed on the ice through a polar winter",
+			"thesis": "One ink, an uneven pull, and the errors left standing because there was no second chance.",
+			"palette": ["#e8e2d4", "#1b1a17", "#6f6a60"],
+			"materials": ["single black ink", "damp-warped rag", "uneven hand-pulled plate"],
+			"viewport": "A hand-set measure holding steady while the margins crop; the rule's provenance and its unresolved states set as standing uncorrected lines rather than hidden.",
+			"case": "Fuses well: absence declared in the setting instead of papered over, and per-context variation made visible as uneven pressure. Loses on audience — the world is 300 miles from anyone.",
+			"risk": "Romanticises the incomplete model, which is a defect to fix rather than a tradition to honour.",
+			"html": ".impeccable/mocks/decision/challenger-ice-press.html",
+			"hero": "https://impeccable.style/worlds/cards/graphic-worlds-publishing-expedition-ice-press-hero.webp",
+			"board": "https://impeccable.style/worlds/cards/graphic-worlds-publishing-expedition-ice-press.webp"
+		},
+		{
+			"id": "challenger-sneaker-stacks",
+			"label": "The Box Wall",
+			"verdict": "declined",
+			"lineage": "a sneaker archive wall of stacked boxes",
+			"palette": ["#c2571f", "#16130f", "#f6f4ef"],
+			"materials": ["box board", "silhouette line art", "tissue interior"],
+			"case": "Fuses poorly: browsing a stack is not verifying a calculation, and a box inside a box is the incumbent's failure restated.",
+			"kept": "The end label as the index — a stack readable from the side without opening anything.",
+			"hero": "https://impeccable.style/worlds/cards/textiles-weave-drape-fashion-sneaker-box-stacks-hero.webp"
+		},
+		{
+			"id": "challenger-zine",
+			"label": "The Marker Zine",
+			"verdict": "declined",
+			"lineage": "hand-drawn technical zines and napkin explainers",
+			"palette": ["#f7f1e2", "#1c1a17", "#f2d13c", "#e8608a", "#2fa8a0"],
+			"materials": ["cream paper", "marker ink", "flat highlighter accents"],
+			"case": "Fuses poorly: a mascot explaining a diagram is telling rather than showing, which is the failure this product exists to refuse.",
+			"kept": "One highlighter swipe marking the single line that matters.",
+			"hero": "https://impeccable.style/worlds/cards/hand-drawn-zine-explainer-hero.webp"
+		},
+		{
+			"id": "challenger-dumbar",
+			"label": "The Modular Identity",
+			"verdict": "declined",
+			"lineage": "Studio Dumbar's photographed-reality-meets-vector-bars identity systems",
+			"palette": ["#00b6d6", "#e5007d", "#ffd400", "#00a651", "#9aa3a8"],
+			"materials": ["saturated blocks", "photographic depth", "vector fragments"],
+			"case": "Fuses poorly: the system's centre of gravity is saturated colour doing the organising, and meaning here may not ride on anything a host will replace.",
+			"kept": "Hard bars snapping to an invisible module, so order comes from alignment rather than decoration.",
+			"hero": "https://impeccable.style/worlds/cards/studio-dumbar-identity-hero.webp"
+		}
+	],
+	"reroll": {
+		"registers": ["safer", "bolder"]
+	},
+	"steer": true,
+	"canon": true,
+	"canonCard": {
+		"label": "The category standard",
+		"thesis": "Sidebar of rule names, breadcrumb, prose paragraph, then the computation as an indented tree of labelled boxes — executed impeccably.",
+		"palette": ["#ffffff", "#111827", "#2563eb"],
+		"materials": ["clean grid", "hairline borders", "system sans"],
+		"viewport": "A left rail listing rules, the rule's title and description, and under it a bordered box holding an indented tree of mechanism labels in grey small caps.",
+		"risk": "Indistinguishable from the competition by design — and it is the shape the brief already ruled out.",
+		"html": ".impeccable/mocks/decision/canon.html"
+	},
+	"buildPath": {
+		"value": "code",
+		"toggle": false
+	}
+}

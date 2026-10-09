@@ -20,7 +20,10 @@ export function needsParens(
 	side: 'left' | 'right',
 ): boolean {
 	const parentPrec = PRECEDENCE[parentKind] ?? -1
-	const childPrec = PRECEDENCE[childKind] ?? -1
+	const childPrec = PRECEDENCE[childKind]
+	// A reference and a constant are atoms: they never need wrapping, and
+	// treating them as lowest precedence wrapped every one of them.
+	if (childPrec === undefined) return false
 
 	if (childPrec < parentPrec) return true
 	if (childPrec > parentPrec) return false

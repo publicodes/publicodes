@@ -4,18 +4,6 @@
 	--publicodes-font-mono: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo,
 		Consolas, 'Liberation Mono', monospace;
 
-	--publicodes-color-blue: #1c7ed6;
-	--publicodes-color-violet: #7048e8;
-	--publicodes-color-violet-light: #9775fa;
-	--publicodes-color-teal: #0ca678;
-	--publicodes-color-cyan: #1098ad;
-	--publicodes-color-green: #37b24d;
-	--publicodes-color-amber: #d9770e;
-	--publicodes-color-fuchsia: #ae3ec9;
-	--publicodes-color-orange: #e8590c;
-	--publicodes-color-yellow: #f2c200;
-	--publicodes-color-red: #f03e3e;
-	--publicodes-color-gray: #868e96;
 
 	--publicodes-text: #212529;
 	--publicodes-bg: #ffffff;
@@ -34,19 +22,7 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--publicodes-color-blue: #4dabf7;
-		--publicodes-color-violet: #9775fa;
-		--publicodes-color-violet-light: #b197fc;
-		--publicodes-color-teal: #38d9a9;
-		--publicodes-color-cyan: #3bc9db;
-		--publicodes-color-green: #69db7c;
-		--publicodes-color-amber: #ffc078;
-		--publicodes-color-fuchsia: #da77f2;
-		--publicodes-color-orange: #ffa94d;
-		--publicodes-color-yellow: #ffe066;
-		--publicodes-color-red: #ff8787;
-		--publicodes-color-gray: #adb5bd;
-
+												
 		--publicodes-text: #e9ecef;
 		--publicodes-bg: #1a1b1e;
 		--publicodes-neutral: #ced4da;
@@ -55,58 +31,21 @@
 	}
 }
 
-.publicodes-expr {
-	--publicodes-accent: var(--publicodes-color-blue);
-}
 .publicodes-sum,
-.publicodes-product {
-	--publicodes-accent: var(--publicodes-color-violet);
-}
 .publicodes-all_of,
-.publicodes-one_of {
-	--publicodes-accent: var(--publicodes-color-teal);
-}
 .publicodes-min_of,
-.publicodes-max_of {
-	--publicodes-accent: var(--publicodes-color-cyan);
-}
 .publicodes-applicable_if,
-.publicodes-is_applicable {
-	--publicodes-accent: var(--publicodes-color-green);
-}
 .publicodes-not_applicable_if,
-.publicodes-is_not_applicable {
-	--publicodes-accent: var(--publicodes-color-amber);
-}
-.publicodes-variations {
-	--publicodes-accent: var(--publicodes-color-fuchsia);
-}
-.publicodes-context {
-	--publicodes-accent: var(--publicodes-color-orange);
-}
 .publicodes-ceiling,
 .publicodes-floor,
 .publicodes-round_up,
 .publicodes-round_down,
 .publicodes-round_nearest,
-.publicodes-default {
-	--publicodes-accent: var(--publicodes-color-yellow);
-}
-.publicodes-not_defined {
-	--publicodes-accent: var(--publicodes-color-gray);
-}
-.publicodes-value {
-	--publicodes-accent: var(--publicodes-color-gray);
-}
-.publicodes-type_def {
-	--publicodes-accent: var(--publicodes-color-violet-light);
-}
 
 .publicodes-mechanism {
 	font-family: var(--publicodes-font-sans);
 	font-size: var(--publicodes-font-size);
 	color: var(--publicodes-text);
-	border-left: var(--publicodes-border-width) solid var(--publicodes-accent);
 }
 .publicodes-mechanism.publicodes-expr {
 	display: inline;
@@ -155,7 +94,6 @@
 	color: var(--publicodes-neutral);
 	white-space: nowrap;
 	text-decoration: underline;
-	text-decoration-color: var(--publicodes-accent);
 	text-underline-offset: 0.2em;
 	margin-right: var(--publicodes-gap);
 }
@@ -241,27 +179,7 @@ button.publicodes-expression--ref {
 	font-weight: 700;
 }
 
-.publicodes-type-tooltip {
-	position: absolute;
-	position-area: top left;
-	position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
-	inset: auto;
-	margin: 0 0 4px 0;
-	padding: 0.15em 0.5em;
-	background: var(--publicodes-text);
-	color: var(--publicodes-bg);
-	border: none;
-	border-radius: var(--publicodes-radius);
-	box-shadow: 0 1px 4px color-mix(in srgb, var(--publicodes-text) 20%, transparent);
-	font-family: var(--publicodes-font-sans);
-	font-size: 0.75em;
-	white-space: nowrap;
-}
 
-.publicodes-trace-value {
-	font-family: var(--publicodes-font-mono);
-	opacity: 0.7;
-}
 
 .publicodes-mechanism:not(:has(.publicodes-mechanism:hover)):hover {
     background: var(--publicodes-hover-bg);

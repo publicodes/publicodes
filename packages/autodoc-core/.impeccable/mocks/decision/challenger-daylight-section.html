@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>The Daylight Section — dirigeant . auto-entrepreneur . revenu net</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;1,500&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --limewash:#eae6dd; --poche:#2b2f36; --sunbeam:#d8a13a;
+    --shadow:#4a5f7a; --withdrawn:#a9b2ba;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{
+    width:1440px;height:900px;background:var(--limewash);color:var(--poche);
+    font-family:Barlow,system-ui,sans-serif;font-size:14px;
+    display:grid;grid-template-rows:auto 1fr;overflow:hidden;
+  }
+
+  /* ── the frame: title + opening, drawn as the section's own caption ── */
+  header{padding:30px 46px 20px;display:grid;grid-template-columns:1fr 320px;gap:44px;
+    align-items:flex-start;border-bottom:1px solid #cdc8bd}
+  h1{font-family:'Barlow Condensed';font-size:44px;font-weight:600;line-height:1;
+    letter-spacing:.01em;text-transform:uppercase}
+  h1 em{font-style:italic;font-weight:500;text-transform:none;font-size:19px;
+    letter-spacing:0;display:block;margin-top:10px;color:var(--shadow)}
+  .opening{font-size:14px;line-height:1.6;color:#4b5057;border-left:2px solid var(--shadow);
+    padding-left:15px}
+  .opening .resume{font-family:'Barlow Condensed';font-size:15px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--poche);margin-bottom:4px}
+
+  /* ── the sheet: a fixed section, annotations pinned along the rail ── */
+  .sheet{display:grid;grid-template-columns:186px 1fr 300px;overflow:hidden}
+
+  .rail{border-right:1px solid #cdc8bd;padding:24px 20px;display:flex;flex-direction:column;gap:22px}
+  .rail h2{font-family:'Barlow Condensed';font-size:11px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--shadow)}
+  .rail dl{display:grid;gap:11px;font-family:'Barlow Condensed';font-size:12.5px}
+  .rail dt{color:var(--shadow);letter-spacing:.04em}
+  .rail dd{font-weight:600;font-variant-numeric:tabular-nums}
+  .rail .nav{margin-top:auto;border-top:1px solid #cdc8bd;padding-top:13px}
+  .rail .nav ul{list-style:none;font-family:'Barlow Condensed';font-size:13px;line-height:1.9}
+  .rail .nav li{color:#6d747c}
+  .rail .nav li[aria-current]{color:var(--poche);font-weight:600}
+  .rail .nav li[aria-current]::before{content:"◗ ";color:var(--sunbeam)}
+
+  /* ── the section: rooms as openings, scopes as solid poche ── */
+  .section{padding:26px 30px;position:relative;display:flex;flex-direction:column}
+  .scope{background:var(--poche);padding:9px;position:relative}
+  .scope + .scope{margin-top:9px}
+  .room{background:var(--limewash);padding:12px 16px 12px 22px;position:relative}
+  .room .cap{display:flex;align-items:baseline;justify-content:space-between;gap:18px}
+  .room .name{font-family:'Barlow Condensed';font-size:22px;font-weight:600;letter-spacing:.01em}
+  .room .kind{font-family:'Barlow Condensed';font-style:italic;font-size:13px;color:var(--shadow);
+    letter-spacing:.03em}
+  .room .figure{font-family:'Barlow Condensed';font-size:25px;font-weight:600;
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  .room .figure small{font-size:13px;font-weight:500;color:var(--shadow);margin-left:5px}
+
+  /* the travelling sunbeam: the applied path, as a lit band along the section */
+  .room.applied::before{content:"";position:absolute;left:0;top:0;bottom:0;width:9px;
+    background:var(--sunbeam)}
+  .room.applied{box-shadow:inset 46px 0 34px -34px rgba(216,161,58,.55)}
+  /* withdrawn hours: the branch that did not run, still standing in cold light */
+  .room.withdrawn{background:#dfe2e3;color:#7b848d}
+  .room.withdrawn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:9px;
+    background:var(--withdrawn)}
+  .room.withdrawn .name,.room.withdrawn .figure{font-weight:500;color:#7b848d}
+  .room.withdrawn .kind::after{content:" · non emprunté";color:var(--withdrawn)}
+  /* deeper scopes sit inward, as rooms do on a section */
+  .scope .scope{margin-left:26px}
+  .scope .scope .scope{margin-left:26px}
+  .plan{font-family:'Barlow Condensed';font-size:12px;letter-spacing:.08em;
+    text-transform:uppercase;color:#8b9298;padding:8px 0 0 2px}
+
+  /* ── the result, read off the section like a dimension line ── */
+  .datum{border-left:1px solid #cdc8bd;padding:24px 26px;display:flex;flex-direction:column;gap:20px}
+  .datum h2{font-family:'Barlow Condensed';font-size:11px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--shadow)}
+  .dim{display:flex;align-items:baseline;gap:12px}
+  .dim .tick{flex:none;width:1px;height:34px;background:var(--poche);position:relative}
+  .dim .tick::before,.dim .tick::after{content:"";position:absolute;left:-4px;width:9px;height:1px;
+    background:var(--poche)}
+  .dim .tick::before{top:0}.dim .tick::after{bottom:0}
+  .dim .val{font-family:'Barlow Condensed';font-size:58px;font-weight:600;line-height:.9;
+    font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .dim .unit{font-family:'Barlow Condensed';font-size:17px;color:var(--shadow)}
+  .datum .note{font-size:13px;line-height:1.6;color:#4b5057}
+  .datum .stock{margin-top:auto;border-top:1px solid #cdc8bd;padding-top:14px;
+    font-family:'Barlow Condensed';font-size:12.5px;line-height:1.75;color:#6d747c}
+  .datum .stock b{color:var(--poche);font-weight:600}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Revenu net
+    <em>dirigeant . auto-entrepreneur . revenu net — coupe au chemin emprunté</em>
+  </h1>
+  <div class="opening">
+    <div class="resume">Avant impôt</div>
+    Il s’agit du revenu après déductions des cotisations, avant le paiement de l’impôt sur le revenu.
+  </div>
+</header>
+
+<div class="sheet">
+
+  <aside class="rail">
+    <div>
+      <h2>Contexte de l’étude</h2>
+      <dl>
+        <dt>Activité</dt><dd>Libérale</dd>
+        <dt>Chiffre d’affaires . BIC</dt><dd>10 000 €</dd>
+        <dt>Unité</dt><dd>€ / an</dd>
+        <dt>Référence</dt><dd>auto-entrepreneur-net</dd>
+      </dl>
+    </div>
+    <div class="nav">
+      <h2>Coupes voisines</h2>
+      <ul>
+        <li>chiffre d’affaires</li>
+        <li>cotisations et contributions</li>
+        <li>TFC</li>
+        <li aria-current="page">revenu net</li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- the section itself: outermost scope holds the whole computation -->
+  <main class="section">
+    <div class="scope">
+      <div class="room applied">
+        <div class="cap">
+          <div><span class="name">Revenu net</span>
+            <span class="kind">soustraction</span></div>
+          <div class="figure">9 990<small>€/an</small></div>
+        </div>
+      </div>
+
+      <div class="scope" style="margin-top:9px">
+        <div class="room applied">
+          <div class="cap">
+            <div><span class="name">Chiffre d’affaires</span>
+              <span class="kind">somme · fourni</span></div>
+            <div class="figure">10 000<small>€/an</small></div>
+          </div>
+        </div>
+        <div class="scope" style="margin-top:9px">
+          <div class="room applied">
+            <div class="cap">
+              <div><span class="name">Cotisations et contributions</span>
+                <span class="kind">somme</span></div>
+              <div class="figure">10<small>€/an</small></div>
+            </div>
+          </div>
+          <div class="scope" style="margin-top:9px">
+            <div class="room withdrawn">
+              <div class="cap">
+                <div><span class="name">Cotisations</span></div>
+                <div class="figure">0<small>€/an</small></div>
+              </div>
+            </div>
+            <div class="scope" style="margin-top:9px">
+              <div class="room withdrawn">
+                <div class="cap">
+                  <div><span class="name">T.F.C.</span></div>
+                  <div class="figure">0<small>€/an</small></div>
+                </div>
+              </div>
+              <div class="scope" style="margin-top:9px">
+                <div class="room applied">
+                  <div class="cap">
+                    <div><span class="name">C.F.P.</span></div>
+                    <div class="figure">10<small>€/an</small></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="plan">Coupe arrêtée au chemin emprunté · 2 espaces non empruntés, laissés debout</div>
+  </main>
+
+  <aside class="datum">
+    <div>
+      <h2>Cote du résultat</h2>
+      <div class="dim">
+        <div class="tick"></div>
+        <div class="val">9 990</div>
+        <div class="unit">€ / an</div>
+      </div>
+    </div>
+    <p class="note">Le chiffre d’affaires est repris tel que vous l’avez fourni ; les cotisations retenues se limitent à la contribution à la formation professionnelle.</p>
+    <div class="stock">
+      <b>Provenance</b><br>
+      inputs/auto-entrepreneur.publicodes, ligne 52<br>
+      <b>Non emprunté</b><br>
+      Cotisations · T.F.C. — conditions non vérifiées dans ce contexte
+    </div>
+  </aside>
+
+</div>
+</body>
+</html>

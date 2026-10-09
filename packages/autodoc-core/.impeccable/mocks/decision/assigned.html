@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Le plan de montage — dirigeant . auto-entrepreneur . revenu net</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Narrow:wght@500;600;700&family=Chivo+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f1e8; --ink:#17181a; --construction:#8c99a6;
+    --red-pencil:#b4432c; --rule:#c9c4b4;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{
+    width:1440px;height:900px;background:#dedbd0;color:var(--ink);
+    font-family:Archivo,system-ui,sans-serif;font-size:14px;
+    display:grid;place-items:center;overflow:hidden;
+  }
+  /* ---- the sheet: a ruled drawing frame, double border ---- */
+  .sheet{
+    width:1376px;height:852px;background:var(--paper);
+    border:1px solid var(--ink);outline:1px solid var(--ink);outline-offset:3px;
+    display:grid;grid-template-columns:150px 1fr;grid-template-rows:1fr 176px;
+    position:relative;
+  }
+  /* ---- zone 1: the sheet index (nav) ---- */
+  .index{border-right:1px solid var(--rule);padding:20px 14px;display:flex;flex-direction:column;gap:18px}
+  .index h2{font-family:'Archivo Narrow';font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--construction);font-weight:600}
+  .index ol{list-style:none;font-size:11.5px;line-height:1.75;font-family:'Chivo Mono'}
+  .index li{color:#5c5f66;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .index li[aria-current]{color:var(--ink);font-weight:700}
+  .index li[aria-current]::before{content:"▸ ";color:var(--red-pencil)}
+  .index .sep{height:1px;background:var(--rule);margin:2px 0}
+  .index .titre{font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--construction);font-family:'Archivo Narrow';font-weight:600}
+
+  /* ---- zone 2: the field, carrying the section ---- */
+  .field{padding:22px 28px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+  /* a detail view: the drafting convention for what will not fit in the main view */
+  .detail{margin-top:auto;border:1px solid var(--ink);padding-bottom:4px}
+  .detail > h3{display:flex;align-items:baseline;gap:10px;padding:7px 12px;
+    border-bottom:1px solid var(--ink);background:#efeade;
+    font-family:'Archivo Narrow';font-size:11px;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase}
+  .detail > h3 b{font-family:'Chivo Mono';font-size:11px;font-weight:500;
+    letter-spacing:0;text-transform:none;color:#5c5f66;margin-left:auto}
+  .detail .d-row{display:grid;grid-template-columns:74px 1fr 150px 176px;
+    align-items:baseline;padding:8px 12px 8px 0;font-size:13.5px;
+    font-family:'Chivo Mono'}
+  .detail .d-row + .d-row{border-top:1px dotted #d5d0c0}
+  .detail .d-row .term{padding-left:30px}
+  .detail .why{font-family:Archivo;font-size:12.5px;color:#5c5f66;font-style:italic}
+  .detail .amount{text-align:right;font-variant-numeric:tabular-nums;color:#5c5f66}
+  .detail .op{text-align:center;color:var(--construction);font-weight:700}
+  .head{display:flex;align-items:flex-start;justify-content:space-between;gap:40px}
+  h1{font-family:'Archivo Narrow';font-weight:700;font-size:34px;letter-spacing:-.01em;line-height:1.05}
+  h1 span{display:block;font-family:'Chivo Mono';font-size:12px;font-weight:400;
+    letter-spacing:.02em;color:var(--construction);margin-top:6px;text-transform:none}
+  /* the notes block: the drafting convention for the author's own words */
+  .notes{width:396px;border-left:3px double var(--ink);padding-left:14px;flex:none}
+  .notes h3{font-family:'Archivo Narrow';font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--construction);font-weight:600;margin-bottom:5px}
+  .notes .resume{font-family:'Chivo Mono';font-size:13px;font-weight:500;margin-bottom:5px}
+  .notes p{font-size:12.5px;line-height:1.5;color:#3b3e44}
+
+  /* ---- the section: nested rows, line weight does all the work ---- */
+  .section{margin-top:26px;font-family:'Chivo Mono';font-size:15px}
+  .row{display:grid;grid-template-columns:74px 1fr 176px;align-items:baseline;
+    padding:10px 0;position:relative}
+  .row + .row{border-top:1px dotted #d5d0c0}
+  /* witness line: the vertical rule each operand hangs from */
+  .witness{border-left:1px solid var(--construction)}
+  .row .term{position:relative;padding-left:16px}
+  .row .term::before{content:"";position:absolute;left:0;top:50%;width:10px;height:1px;background:var(--construction)}
+  .row .amount{text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
+  .row .op{color:var(--construction);font-weight:700}
+  .row .marker{color:var(--construction);font-size:12px;padding-left:16px}
+  /* applied path: the thick contour weight */
+  .row.applied{border-top:1.5px solid var(--ink)}
+  .row.applied .term{font-weight:700}
+  .row.applied .term::before{height:1.5px;background:var(--ink)}
+  /* nested operands: indented to the right of their witness line */
+  .nested{margin-left:26px;border-left:1px solid var(--construction);padding-left:0}
+  .nested .row:first-child{border-top:none}
+  .nested .nested{margin-left:30px}
+  /* the balloon: a reference that leaves the sheet, or a supplied figure */
+  .balloon{display:inline-flex;align-items:center;justify-content:center;
+    width:19px;height:19px;border:1.25px solid var(--ink);border-radius:50%;
+    font-size:10.5px;font-weight:700;margin-right:8px;flex:none;
+    font-family:'Archivo Narrow'}
+  .balloon.supplied{border-color:var(--red-pencil);color:var(--red-pencil);border-radius:2px}
+  .row.untaken{color:#9aa2a8}
+  .row.untaken .term::before{background:var(--construction)}
+  .row.untaken .amount{font-weight:400}
+  .cut{display:flex;align-items:center;gap:11px;margin:20px 0 6px}
+  .cut::before,.cut::after{content:"";flex:1;border-top:1px dashed var(--construction)}
+  .cut span{font-family:'Archivo Narrow';font-size:11px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--construction);white-space:nowrap}
+  .legend{margin-top:10px}
+  .legend .term{color:#3b3e44}
+  .legend .amount{color:#3b3e44}
+
+  /* ---- zone 3: the title block — identity, unit, context, and the answer ---- */
+  .block{grid-column:1/-1;border-top:1.5px solid var(--ink);
+    display:grid;grid-template-columns:150px 1fr 268px 300px;font-size:11.5px}
+  .block > div{padding:11px 16px;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:5px}
+  .block > div:last-child{border-right:none}
+  .block h4{font-family:'Archivo Narrow';font-size:10px;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--construction);font-weight:600}
+  .block .v{font-family:'Chivo Mono';font-size:12.5px;line-height:1.5}
+  .block .v b{font-weight:700}
+  .answer{background:#efeade;align-items:flex-end;text-align:right;justify-content:center}
+  .answer h4{align-self:flex-end}
+  .answer .num{font-family:'Archivo Narrow';font-size:46px;font-weight:700;
+    letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+  .answer .unit{font-family:'Chivo Mono';font-size:13px;color:#3b3e44}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ── the sheet index: where the reader stands ───────────────── -->
+  <nav class="index">
+    <div>
+      <h2>Planches</h2>
+      <ol>
+        <li>revenu net</li>
+        <li>cotisations et contributions</li>
+        <li>TFC</li>
+        <li>cotisations</li>
+        <li>chiffre d’affaires</li>
+      </ol>
+    </div>
+    <div>
+      <div class="sep"></div>
+      <p class="titre" style="margin-top:12px">Entrées</p>
+      <ol>
+        <li>activité . nature</li>
+        <li>CA . BIC</li>
+        <li>CA . service BIC</li>
+        <li>date de création</li>
+      </ol>
+    </div>
+    <div style="margin-top:auto">
+      <div class="sep"></div>
+      <p class="titre" style="margin-top:12px">Contexte</p>
+      <ol><li>libérale</li><li>BIC 10 000 €</li></ol>
+    </div>
+  </nav>
+
+  <!-- ── the field: the computation, sectioned ──────────────────── -->
+  <main class="field">
+    <div class="head">
+      <h1>Revenu net
+        <span>dirigeant . auto-entrepreneur . revenu net</span>
+      </h1>
+      <div class="notes">
+        <h3>Notes du modèle</h3>
+        <div class="resume">Avant impôt</div>
+        <p>Il s’agit du revenu après déductions des cotisations, avant le paiement de l’impôt sur le revenu.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="row applied">
+        <div><span class="op">=</span></div>
+        <div class="term">Revenu net</div>
+        <div class="amount">9 990 €/an</div>
+      </div>
+
+      <div class="nested">
+        <div class="row">
+          <div></div>
+          <div class="term"><span class="balloon supplied">A</span>Chiffre d’affaires</div>
+          <div class="amount">10 000</div>
+        </div>
+        <div class="row applied">
+          <div><span class="op">−</span></div>
+          <div class="term">Cotisations et contributions</div>
+          <div class="amount">10</div>
+        </div>
+        <div class="nested">
+          <div class="row untaken">
+            <div></div>
+            <div class="term">Cotisations</div>
+            <div class="amount">0</div>
+          </div>
+          <div class="row untaken">
+            <div></div>
+            <div class="term">TFC</div>
+            <div class="amount">0</div>
+          </div>
+          <div class="row applied">
+            <div><span class="op">+</span></div>
+            <div class="term"><span class="balloon">B</span>CFP</div>
+            <div class="amount">10</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cut"><span>coupe au chemin emprunté — 2 branches non empruntées</span></div>
+
+      <div class="legend">
+        <div class="row" style="border-top:none;padding:7px 0">
+          <div class="marker">A</div>
+          <div class="term">entreprise . chiffre d’affaires . BIC — fourni par vous</div>
+          <div class="amount">10 000</div>
+        </div>
+        <div class="row" style="border-top:none;padding:7px 0">
+          <div class="marker">B</div>
+          <div class="term">Cotisation foncière des entreprises — calculée</div>
+          <div class="amount">10</div>
+        </div>
+      </div>
+
+      <div class="detail">
+        <h3>Détail — branches non empruntées
+          <b>coupe par défaut : chemin emprunté · coupe rétablie : 2 branches</b>
+        </h3>
+        <div class="d-row">
+          <div class="op">+</div>
+          <div class="term">Cotisations</div>
+          <div class="why">condition non vérifiée</div>
+          <div class="amount">0</div>
+        </div>
+        <div class="d-row">
+          <div class="op">+</div>
+          <div class="term">T.F.C.</div>
+          <div class="why">condition non vérifiée</div>
+          <div class="amount">0</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── the title block: the sheet's answer ────────────────────── -->
+  <div class="block">
+    <div>
+      <h4>Échelle</h4>
+      <div class="v"><b>1:1</b><br>contexte complet</div>
+    </div>
+    <div>
+      <h4>Provenance</h4>
+      <div class="v">inputs/auto-entrepreneur.publicodes<br>
+      <span style="color:#5c5f66">L. 52, col. 1 — dirigeant . auto-entrepreneur</span></div>
+    </div>
+    <div>
+      <h4>Unité · Type</h4>
+      <div class="v">€/an<br>nombre<br>
+      <span style="color:#5c5f66">auto-entrepreneur-net</span></div>
+    </div>
+    <div class="answer">
+      <h4>Résultat</h4>
+      <div class="num">9 990</div>
+      <div class="unit">€ par an</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
