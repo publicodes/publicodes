@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>The Select Rail — dirigeant . auto-entrepreneur . revenu net</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0d0d0d; --flag:#e2621f; --white:#f2f0ec; --grease:#0d0d0d;
+    --hairline:rgba(242,240,236,.34);
+  }
+  *{box-sizing:border-box;margin:0}
+  /* one size of condensed grotesk throughout; rank is cell count, never size */
+  body{
+    width:1440px;height:900px;background:var(--black);color:var(--white);
+    font-family:'Saira Condensed',system-ui,sans-serif;font-size:15px;
+    display:grid;grid-template-rows:352px 1fr;overflow:hidden;
+  }
+  .cap{font-weight:600;letter-spacing:.17em;text-transform:uppercase}
+
+  /* ── the orange field: the rail lives here, holding a third of the screen ── */
+  .field{background:var(--flag);color:var(--grease);position:relative;
+    padding:26px 40px 0;display:grid;grid-template-rows:auto 1fr auto}
+  .slate{display:flex;justify-content:space-between;align-items:flex-start;gap:40px}
+  /* running copy sits only in punched white windows */
+  .window{background:var(--white);padding:13px 17px}
+  .window h1{font-size:33px;font-weight:700;letter-spacing:.005em;line-height:1.02;
+    text-transform:uppercase}
+  .window .dotted{font-size:13px;font-weight:500;letter-spacing:.08em;margin-top:6px;
+    color:rgba(13,13,13,.62)}
+  .window .role{font-size:12px;letter-spacing:.17em;text-transform:uppercase;
+    margin-top:9px;font-weight:600}
+  .tally{display:flex;gap:26px;text-align:right}
+  .tally div{display:flex;flex-direction:column;gap:1px}
+  .tally dt{font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+    color:rgba(13,13,13,.66);font-weight:600}
+  .tally dd{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.15}
+
+  /* the rail: one perforated strip at a fixed height, frames strung along it */
+  .strip{position:relative;display:grid;grid-template-columns:repeat(12,1fr);gap:7px;
+    align-self:end;padding:30px 0 14px}
+  .strip::before{content:"";position:absolute;left:0;right:0;top:9px;height:4px;
+    background:repeating-linear-gradient(90deg,var(--grease) 0 3px,transparent 3px 9px)}
+  .frame{background:var(--white);padding:11px 13px;display:flex;flex-direction:column;
+    justify-content:space-between;min-height:92px;position:relative;
+    border-top:3px solid var(--grease)}
+  .frame::before{content:"";position:absolute;top:-19px;left:19px;width:3px;height:19px;
+    background:var(--grease)}
+  /* the committed band: the applied path, marked not hued */
+  .frame.committed{background:var(--black);color:var(--white);border-top-color:var(--white)}
+  .frame.committed .k{color:rgba(242,240,236,.62)}
+  /* the folded tape flag: where the reader stopped */
+  .frame.here::after{content:"";position:absolute;top:-16px;left:50%;transform:translateX(-50%);
+    width:16px;height:16px;background:var(--grease);
+    clip-path:polygon(0 0,100% 0,100% 100%,50% 72%,0 100%)}
+  .frame .k{font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    color:rgba(13,13,13,.6)}
+  .frame .n{font-size:17px;font-weight:600;line-height:1.12;margin-top:5px}
+  .frame .v{font-size:25px;font-weight:700;font-variant-numeric:tabular-nums;
+    line-height:1.1;margin-top:auto}
+  .frame .v small{font-size:12px;font-weight:500;letter-spacing:.05em;
+    color:rgba(13,13,13,.6);margin-left:5px}
+  .frame.committed .v small{color:rgba(242,240,236,.62)}
+
+  /* ── the bin: everything set aside still hangs on pins, never deleted ── */
+  .bin{padding:24px 40px 0;display:grid;grid-template-columns:1fr 396px;gap:44px;min-height:0}
+  .bin h2{font-size:11px;letter-spacing:.17em;text-transform:uppercase;
+    color:var(--hairline);font-weight:600;margin-bottom:16px}
+  .hung{display:flex;gap:9px;flex-wrap:wrap}
+  .pin{background:rgba(242,240,236,.07);border-top:2px solid var(--hairline);
+    padding:12px 15px 13px;position:relative}
+  .pin::before{content:"";position:absolute;top:-7px;left:16px;width:3px;height:7px;
+    background:var(--hairline)}
+  .pin .n{font-size:15px;font-weight:600;color:rgba(242,240,236,.82)}
+  .pin .v{font-size:19px;font-weight:600;color:rgba(242,240,236,.55);
+    font-variant-numeric:tabular-nums;margin-top:3px}
+  .pin .why{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--hairline);margin-top:7px}
+  /* the grease cross: done, struck through, still legible */
+  .pin.crossed .n{position:relative}
+  .pin.crossed .n::after{content:"";position:absolute;left:-4px;right:-4px;top:52%;height:2px;
+    background:var(--flag);transform:rotate(-3.4deg)}
+  /* punched corner: unavailable in this context */
+  .pin.unavailable::after{content:"";position:absolute;right:0;bottom:0;
+    border:15px solid transparent;border-right-color:var(--black);border-bottom-color:var(--black)}
+
+  /* why each trim was set aside — the reader's own check on the cut */
+  .conds{margin-top:30px;max-width:920px}
+  .conds ul{list-style:none;display:grid;gap:9px}
+  .conds li{font-size:13.5px;line-height:1.5;color:rgba(242,240,236,.66);
+    padding-left:19px;position:relative}
+  .conds li::before{content:"—";position:absolute;left:0;color:var(--flag)}
+  .conds li b{color:var(--white);font-weight:600}
+  .conds .reopen{margin-top:13px;font-size:12.5px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--flag);font-weight:600}
+
+  /* the readout: the result, plus the way forward */
+  .readout{border-left:1px solid var(--hairline);padding-left:34px;display:flex;
+    flex-direction:column;gap:15px}
+  .readout .now{font-size:11px;letter-spacing:.17em;text-transform:uppercase;
+    color:var(--hairline);font-weight:600}
+  .readout .big{font-size:64px;font-weight:700;line-height:.9;letter-spacing:-.01em;
+    font-variant-numeric:tabular-nums}
+  .readout .big small{font-size:17px;font-weight:500;letter-spacing:.04em;
+    color:var(--hairline);margin-left:9px}
+  /* rank is cell count: the result spans the column, nothing grows */
+  .ticks{display:flex;gap:3px;height:9px;align-items:flex-end}
+  .ticks i{flex:1;background:rgba(242,240,236,.28);display:block}
+  .ticks i.on{background:var(--flag)}
+  .readout .note{font-size:13.5px;line-height:1.5;color:rgba(242,240,236,.72)}
+  .readout .next{margin-top:auto;padding-top:13px;border-top:1px solid var(--hairline);
+    font-size:12.5px;line-height:1.7;color:rgba(242,240,236,.6)}
+  .readout .next b{color:var(--white);font-weight:600}
+</style>
+</head>
+<body>
+
+<section class="field">
+  <div class="slate">
+    <div class="window">
+      <h1>Revenu net</h1>
+      <div class="dotted">dirigeant . auto-entrepreneur . revenu net</div>
+      <div class="role">Avant impôt</div>
+    </div>
+    <dl class="tally">
+      <div><dt>Contexte</dt><dd>Libérale</dd></div>
+      <div><dt>CA . BIC</dt><dd>10 000 €</dd></div>
+      <div><dt>Unité</dt><dd>€ / an</dd></div>
+    </dl>
+    <div class="window" style="padding:13px 19px">
+      <div class="dotted" style="margin:0 0 5px">Quel revenu avant impôt voulez-vous toucher ?</div>
+      <div class="role" style="margin:0">Question du modèle</div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <div class="frame committed" style="grid-column:span 4">
+      <div><div class="k">Résultat</div><div class="n">Revenu net</div></div>
+      <div class="v">9 990<small>€/an</small></div>
+    </div>
+    <div class="frame here" style="grid-column:span 3">
+      <div><div class="k">Fourni par vous</div><div class="n">Chiffre d’affaires</div></div>
+      <div class="v">10 000<small>€/an</small></div>
+    </div>
+    <div class="frame" style="grid-column:span 3">
+      <div><div class="k">Somme</div><div class="n">Cotisations et contributions</div></div>
+      <div class="v">10<small>€/an</small></div>
+    </div>
+    <div class="frame committed" style="grid-column:span 2">
+      <div><div class="k">Retenue</div><div class="n">C.F.P.</div></div>
+      <div class="v">10<small>€/an</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="bin">
+  <div>
+    <h2>Écarté au montage — conservé sur broche</h2>
+    <div class="hung">
+      <div class="pin crossed">
+        <div class="n">Cotisations</div><div class="v">0 €/an</div>
+        <div class="why">rayée · condition non vérifiée</div>
+      </div>
+      <div class="pin crossed">
+        <div class="n">T.F.C.</div><div class="v">0 €/an</div>
+        <div class="why">rayée · condition non vérifiée</div>
+      </div>
+      <div class="pin unavailable">
+        <div class="n">Cipav . adhérent</div><div class="v">—</div>
+        <div class="why">coin perforé · non fourni</div>
+      </div>
+      <div class="pin unavailable">
+        <div class="n">date de création</div><div class="v">—</div>
+        <div class="why">coin perforé · non fourni</div>
+      </div>
+    </div>
+
+    <div class="conds">
+      <h2>Conditions non vérifiées</h2>
+      <ul>
+        <li><b>Cotisations</b> — le taux dépend de la nature de l’activité et du régime ;
+          la condition n’a pas été appelée dans ce contexte.</li>
+        <li><b>T.F.C.</b> — le taux dépend de la commune de l’établissement ;
+          la condition n’a pas été appelée dans ce contexte.</li>
+        <li><b>Cipav . adhérent</b> et <b>date de création</b> — aucune valeur fournie ;
+          la règle les atteint mais ne s’en sert pas ici.</li>
+      </ul>
+      <p class="reopen">Défaire la coupe pour remonter les deux branches rayées</p>
+    </div>
+  </div>
+
+  <div class="readout">
+    <div class="now">Piste sélectionnée</div>
+    <div class="big">9 990<small>€ / an</small></div>
+    <div class="ticks" aria-hidden="true">
+      <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+      <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i>
+      <i class="on"></i><i class="on"></i><i></i><i></i>
+    </div>
+    <p class="note">Le chiffre d’affaires est repris tel que vous l’avez fourni. Les cotisations retenues se limitent à la contribution à la formation professionnelle.</p>
+    <div class="next">
+      <b>Vous étiez ici</b> — la bande revient sur ce repère.<br>
+      <b>Défaire la coupe</b> — remonter les deux branches rayées.<br>
+      <b>Planche suivante</b> — cotisations et contributions.
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

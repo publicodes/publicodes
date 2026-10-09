@@ -1,4 +1,4 @@
-import { ChainedValue, ContextMechanism } from '../dist/ast'
+import { ChainedValue, ContextMechanism } from './ast'
 
 export function getContextMechanism(
 	node: ChainedValue,

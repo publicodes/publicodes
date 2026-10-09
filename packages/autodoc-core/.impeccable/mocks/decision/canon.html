@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>The category standard — Bilan Carbone de mon évènement</title>
+<style>
+  :root{
+    --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --line-strong:#d1d5db;
+    --accent:#2563eb; --rail:#fafafa; --chip:#f3f4f6;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{
+    width:1440px;height:900px;background:#fff;color:var(--ink);
+    font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    font-size:15px;line-height:1.6;display:grid;grid-template-columns:300px 1fr;overflow:hidden;
+    font-variant-numeric:tabular-nums;
+  }
+  .dotted,.val,.kind{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+  aside{background:var(--rail);border-right:1px solid var(--line);padding:22px 0;min-height:0}
+  .brand{padding:0 22px 18px;border-bottom:1px solid var(--line)}
+  .brand b{font-size:15px;font-weight:650;letter-spacing:-.01em}
+  .brand span{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+  .search{margin:16px 22px;padding:8px 11px;border:1px solid var(--line-strong);
+    border-radius:6px;font-size:13px;color:var(--muted);background:#fff}
+  .tree{padding:4px 10px;font-size:13.5px}
+  .tree .row{display:flex;align-items:center;gap:7px;padding:5px 12px;border-radius:5px;
+    color:#374151;white-space:nowrap;font-family:inherit}
+  .tree .row.d2{padding-left:30px}
+  .tree .row.d3{padding-left:48px}
+  .tree .row.on{background:#eff6ff;color:var(--accent);font-weight:600}
+  .tree .caret{color:#9ca3af;font-size:10px;width:9px;flex:none}
+
+  main{padding:30px 56px 0;min-width:0;overflow:hidden}
+  .crumbs{font-size:12.5px;color:var(--muted)}
+  h1{font-size:31px;font-weight:650;letter-spacing:-.022em;line-height:1.16;margin:12px 0 0}
+  .dotted{font-size:12.5px;color:var(--muted);margin-top:7px}
+  .badges{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap}
+  .badge{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;
+    background:var(--chip);color:#4b5563}
+  .badge.q{background:#eff6ff;color:var(--accent)}
+  .badge.warn{background:#fef3c7;color:#92400e}
+  .summary{font-size:16.5px;color:#374151;margin:18px 0 0;padding-bottom:20px;
+    border-bottom:1px solid var(--line)}
+  h2.sec{font-size:12px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--muted);margin:20px 0 12px}
+
+  .calc{border:1px solid var(--line);border-radius:9px;padding:6px}
+  .mech{border:1px solid var(--line);border-radius:7px;padding:9px 12px;background:#fff}
+  .mech + .mech{margin-top:6px}
+  .head{display:flex;align-items:baseline;gap:10px}
+  .kind{font-size:10.5px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;
+    color:#6b7280;background:var(--chip);border-radius:4px;padding:2px 6px;flex:none}
+  .label{font-size:14.5px;font-weight:550}
+  .val{margin-left:auto;font-size:14px;font-weight:550}
+  .val .u{color:var(--muted);font-weight:400;margin-left:3px}
+  .kids{margin-top:7px;padding-left:14px;border-left:1px solid var(--line-strong)}
+  .ref{color:var(--accent);text-decoration:none}
+  .cite{display:block;font-size:11.5px;color:var(--muted);margin-top:3px;
+    font-family:inherit;font-weight:400}
+  .skipped .label,.skipped .val{color:#9ca3af}
+  .skipped .kind{color:#d1d5db;background:#fafafa}
+  .untaken{margin-top:7px;font-size:12.5px;color:#9ca3af}
+  .untaken summary{cursor:pointer;list-style:none}
+  .untaken summary::before{content:"▸ "}
+  .untaken[open] summary::before{content:"▾ "}
+  footer{margin-top:16px;padding-top:13px;border-top:1px solid var(--line);
+    display:flex;gap:30px;font-size:12.5px;color:var(--muted)}
+  footer b{color:#374151;font-weight:600;display:block;margin-bottom:3px;
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<aside>
+  <div class="brand">
+    <b>Documentation</b>
+    <span>ekofest — bilan carbone</span>
+  </div>
+  <div class="search">Rechercher une règle…</div>
+  <nav class="tree">
+    <div class="row"><span class="caret">▾</span>resultats</div>
+    <div class="row d2 on"><span class="caret"></span>bilan total</div>
+    <div class="row d2"><span class="caret"></span>bilan par festivalier</div>
+    <div class="row"><span class="caret">▾</span>transport</div>
+    <div class="row d2"><span class="caret"></span>public</div>
+    <div class="row d2"><span class="caret"></span>artistes</div>
+    <div class="row d2"><span class="caret"></span>voiture . empreinte par km</div>
+    <div class="row"><span class="caret">▸</span>alimentation</div>
+    <div class="row"><span class="caret">▸</span>hébergement</div>
+    <div class="row"><span class="caret">▸</span>énergie</div>
+    <div class="row"><span class="caret">▸</span>communication</div>
+  </nav>
+</aside>
+
+<main>
+  <div class="crumbs">Documentation / resultats / bilan total</div>
+  <h1>Bilan Carbone de mon évènement</h1>
+  <div class="dotted">resultats . bilan total</div>
+
+  <div class="badges">
+    <span class="badge">kgCO2e</span>
+    <span class="badge">Somme de 6 postes</span>
+    <span class="badge warn">Aucune description rédigée</span>
+  </div>
+
+  <p class="summary">
+    Le modèle ne rédige aucune description pour cette règle. Son intitulé et son unité
+    suffisent à l’identifier ; les six postes qui la composent portent, eux, une
+    description rédigée par l’auteur.
+  </p>
+
+  <h2 class="sec">Calcul dans le scénario « grand festival urbain »</h2>
+
+  <div class="calc">
+    <div class="mech">
+      <div class="head">
+        <span class="kind">Somme</span>
+        <span class="label">Bilan total</span>
+        <span class="val">3 802 542<span class="u">kgCO2e</span></span>
+      </div>
+      <div class="kids">
+        <div class="mech">
+          <div class="head">
+            <span class="kind">Somme</span>
+            <a class="ref" href="#">transport</a>
+            <span class="val">2 567 542<span class="u">kgCO2e</span></span>
+          </div>
+          <div class="kids">
+            <div class="mech">
+              <div class="head">
+                <span class="kind">Produit</span>
+                <span class="label">voiture</span>
+                <span class="val">2 541 000<span class="u">kgCO2e</span></span>
+              </div>
+              <div class="kids">
+                <div class="mech">
+                  <div class="head">
+                    <span class="kind">Valeur</span>
+                    <span class="label">distance parcourue</span>
+                    <span class="val">11 000 000<span class="u">km</span></span>
+                  </div>
+                  <div class="untaken" style="margin-left:12px">fourni par vous</div>
+                </div>
+                <div class="mech">
+                  <div class="head">
+                    <span class="kind">Valeur</span>
+                    <span class="label">empreinte par km</span>
+                    <span class="val">0,231<span class="u">kgCO2e/km</span></span>
+                  </div>
+                  <div class="untaken" style="margin-left:12px">
+                    Base Empreinte — « Voiture/Motorisation moyenne/2018 »
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mech skipped">
+              <div class="head">
+                <span class="kind">Produit</span>
+                <span class="label">avion</span>
+                <span class="val">22 440<span class="u">kgCO2e</span></span>
+              </div>
+            </div>
+            <div class="mech">
+              <div class="head">
+                <span class="kind">Moyenne</span>
+                <span class="label">train . empreinte par km</span>
+                <span class="val">0,00293<span class="u">kgCO2e/km</span></span>
+              </div>
+              <div class="kids">
+                <div class="mech"><div class="head">
+                  <span class="kind">Valeur</span><span class="label">TGV</span>
+                  <span class="val">0,00293<span class="u">kgCO2e/km</span></span>
+                </div></div>
+                <div class="mech"><div class="head">
+                  <span class="kind">Valeur</span><span class="label">TER</span>
+                  <span class="val">0,00496<span class="u">kgCO2e/km</span></span>
+                </div></div>
+              </div>
+            </div>
+          </div>
+          <details class="untaken">
+            <summary>2 branches non empruntées dans ce scénario</summary>
+          </details>
+        </div>
+
+        <div class="mech">
+          <div class="head">
+            <span class="kind">Somme</span>
+            <a class="ref" href="#">alimentation</a>
+            <span class="val">600 000<span class="u">kgCO2e</span></span>
+          </div>
+          <div class="untaken" style="margin-left:12px">
+            repas, petits déjeuners, boissons, ecocups, déchets, artistes
+          </div>
+        </div>
+        <div class="mech">
+          <div class="head">
+            <span class="kind">Somme</span>
+            <a class="ref" href="#">infrastructures</a>
+            <span class="val">320 000<span class="u">kgCO2e</span></span>
+          </div>
+        </div>
+        <div class="mech">
+          <div class="head">
+            <span class="kind">Somme</span>
+            <a class="ref" href="#">hébergement</a>
+            <span class="val">180 000<span class="u">kgCO2e</span></span>
+          </div>
+        </div>
+        <div class="mech">
+          <div class="head">
+            <span class="kind">Somme</span>
+            <a class="ref" href="#">énergie</a>
+            <span class="val">90 000<span class="u">kgCO2e</span></span>
+          </div>
+        </div>
+        <div class="mech">
+          <div class="head">
+            <span class="kind">Somme</span>
+            <a class="ref" href="#">communication</a>
+            <span class="val">45 000<span class="u">kgCO2e</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div><b>Dérivé</b>resultats . bilan par festivalier</div>
+    <div><b>Contexte</b>grand festival urbain — 100 000 festivaliers, 3 jours</div>
+    <div><b>Entrées manquantes</b>3</div>
+    <div><b>Totaux par poste</b>illustratifs dans cette maquette</div>
+  </footer>
+</main>
+
+</body>
+</html>

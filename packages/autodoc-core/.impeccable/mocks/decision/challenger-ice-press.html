@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>The Ice Press — dirigeant . auto-entrepreneur . revenu net</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Besley:ital,wght@0,500;0,700;0,800;1,500&family=Petrona:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --rag:#e8e2d4; --ink:#1b1a17; --grey:#6f6a60; --faint:#c3bbaa;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{
+    width:1440px;height:900px;background:var(--rag);color:var(--ink);
+    font-family:Petrona,Georgia,serif;font-size:15px;
+    display:grid;grid-template-rows:auto 1fr;overflow:hidden;
+    /* the damp warp: the sheet is not flat */
+    background-image:radial-gradient(120% 70% at 30% 12%,rgba(255,255,255,.5),transparent 60%),
+      radial-gradient(90% 60% at 84% 88%,rgba(111,106,96,.09),transparent 62%);
+  }
+
+  /* ── masthead: hand-set, rules struck above and below ── */
+  header{padding:26px 52px 0}
+  .rule-top{height:5px;background:var(--ink)}
+  .rule-thin{height:1px;background:var(--ink);margin-top:3px}
+  .masthead{display:flex;align-items:baseline;justify-content:space-between;gap:36px;
+    padding:13px 0 11px}
+  .masthead h1{font-family:Besley;font-weight:800;font-size:60px;line-height:.92;
+    letter-spacing:-.012em}
+  .masthead h1 em{font-family:Petrona;font-style:italic;font-weight:400;font-size:16px;
+    letter-spacing:0;display:block;margin-top:9px;color:var(--grey)}
+  .issue{text-align:right;font-size:12.5px;line-height:1.75;color:var(--grey);
+    font-style:italic;white-space:nowrap}
+  .issue b{font-style:normal;font-weight:600;color:var(--ink);letter-spacing:.04em}
+  .rule-bottom{height:1px;background:var(--ink)}
+  .rule-bottom.thick{height:3px;margin-top:4px}
+
+  /* ── the sheet: margins crop, the measure holds ── */
+  .sheet{display:grid;grid-template-columns:196px minmax(0,1fr) 296px;gap:38px;
+    padding:24px 52px 0;min-height:0}
+
+  .conditions{font-size:12.5px;line-height:1.7;color:var(--grey)}
+  .conditions h2{font-family:Besley;font-size:11px;font-weight:700;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--ink);padding-bottom:7px;
+    border-bottom:1px solid var(--faint);margin-bottom:11px}
+  .conditions dl{display:grid;gap:9px}
+  .conditions dt{font-style:italic}
+  .conditions dd{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+  .conditions .nav{margin-top:26px}
+  .conditions .nav ul{list-style:none;line-height:2.05}
+  .conditions .nav li{color:var(--grey)}
+  .conditions .nav li[aria-current]{color:var(--ink);font-weight:600}
+  .conditions .nav li[aria-current]::before{content:"❧ ";color:var(--grey)}
+
+  /* the column: a hand-set measure, holding while the margins crop */
+  .column{max-width:62ch;min-width:0}
+  .standfirst{font-size:17.5px;line-height:1.52;font-style:italic;color:#3a3730;
+    padding-bottom:16px;border-bottom:1px solid var(--faint);margin-bottom:6px}
+  .standfirst b{font-style:normal;font-weight:600;color:var(--ink)}
+  .lede{font-size:15.5px;line-height:1.62;margin:14px 0 20px;color:#312e28}
+
+  table{width:100%;border-collapse:collapse;font-size:15px;
+    font-variant-numeric:tabular-nums}
+  thead th{font-family:Besley;font-size:10.5px;font-weight:700;letter-spacing:.19em;
+    text-transform:uppercase;text-align:left;padding:0 0 8px;color:var(--ink);
+    border-bottom:2px solid var(--ink)}
+  thead th.num{text-align:right}
+  tbody td{padding:9px 0;border-bottom:1px solid var(--faint);vertical-align:baseline}
+  tbody td.num{text-align:right;white-space:nowrap}
+  tbody tr.branch td:first-child{padding-left:24px;color:var(--grey);font-style:italic}
+  tbody tr.branch td.num{color:var(--grey)}
+  .who{font-size:11.5px;font-style:italic;color:var(--grey);letter-spacing:.03em}
+  /* the uneven pull: ink sits differently on every line */
+  tbody tr:nth-child(1) td{border-bottom-color:#b6ad9b}
+  tbody tr:nth-child(3) td{opacity:.94}
+  tbody tr:nth-child(4) td{opacity:.9}
+  tbody tr:nth-child(5) td{opacity:.97}
+
+  tfoot td{padding-top:16px;border:none}
+  tfoot .total{border-top:4px solid var(--ink);border-bottom:1px solid var(--ink);
+    padding:13px 0}
+  tfoot .label{font-family:Besley;font-weight:700;font-size:23px;letter-spacing:-.01em}
+  tfoot .num{text-align:right;font-family:Besley;font-weight:800;font-size:40px;
+    line-height:1;white-space:nowrap}
+  tfoot .num small{font-family:Petrona;font-size:14px;font-weight:400;
+    font-style:italic;color:var(--grey);margin-left:8px}
+
+  /* ── standing matter: unresolved states printed, never papered over ── */
+  .standing{margin-top:20px;padding-top:13px;border-top:1px solid var(--faint)}
+  .standing h2{font-family:Besley;font-size:10.5px;font-weight:700;letter-spacing:.2em;
+    text-transform:uppercase;margin-bottom:9px}
+  .standing ul{list-style:none;font-size:13.5px;line-height:1.95;color:var(--grey)}
+  .standing li{padding-left:17px;position:relative;font-style:italic}
+  /* the compositor's error mark, left standing */
+  .standing li::before{content:"✗";position:absolute;left:0;color:var(--ink);
+    font-style:normal;font-weight:700}
+  .standing li b{font-style:normal;font-weight:600;color:var(--ink)}
+
+  /* the tipped-in plate: the one figure in the issue */
+  .plate{border:1px solid var(--ink);padding:15px;align-self:start;
+    background:rgba(255,255,255,.3);display:flex;flex-direction:column;gap:13px}
+  .plate h2{font-family:Besley;font-size:10.5px;font-weight:700;letter-spacing:.2em;
+    text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--faint)}
+  .plate .fig{display:flex;align-items:baseline;gap:10px}
+  .plate .fig .n{font-family:Besley;font-size:54px;font-weight:800;line-height:.9;
+    font-variant-numeric:tabular-nums}
+  .plate .fig .u{font-size:14px;font-style:italic;color:var(--grey)}
+  .plate p{font-size:13px;line-height:1.62;color:#3a3730}
+  .plate .prov{font-size:11.5px;font-style:italic;color:var(--grey);
+    border-top:1px solid var(--faint);padding-top:11px;line-height:1.7}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="rule-top"></div>
+  <div class="rule-thin"></div>
+  <div class="masthead">
+    <h1>Revenu net
+      <em>dirigeant . auto-entrepreneur . revenu net · planche unique, tirée à la main</em>
+    </h1>
+    <div class="issue">
+      <b>Nº 52</b> — inputs/auto-entrepreneur.publicodes<br>
+      Contexte : activité libérale · chiffre d’affaires 10 000 €<br>
+      Unité €/an · réf. auto-entrepreneur-net
+    </div>
+  </div>
+  <div class="rule-bottom"></div>
+  <div class="rule-bottom thick"></div>
+</header>
+
+<div class="sheet">
+
+  <aside class="conditions">
+    <h2>Conditions du tirage</h2>
+    <dl>
+      <dt>Nature de l’activité</dt><dd>Libérale</dd>
+      <dt>Chiffre d’affaires . BIC</dt><dd>10 000 €</dd>
+      <dt>Service BIC / BNC</dt><dd>0 €</dd>
+      <dt>Vente restauration</dt><dd>0 €</dd>
+    </dl>
+    <nav class="nav">
+      <h2>Autres tirages</h2>
+      <ul>
+        <li>chiffre d’affaires</li>
+        <li>cotisations et contributions</li>
+        <li>TFC</li>
+        <li aria-current="page">revenu net</li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="column">
+    <p class="standfirst">
+      <b>Avant impôt.</b> Il s’agit du revenu après déductions des cotisations, avant le
+      paiement de l’impôt sur le revenu.
+    </p>
+    <p class="lede">
+      Sur un chiffre d’affaires de 10 000 € déclaré en bénéfices industriels et commerciaux,
+      une seule retenue a été mise au tirage : la contribution à la formation professionnelle.
+      Les deux autres n’ont pas été appelées dans ce contexte.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Libellé</th>
+          <th scope="col">Tirage</th>
+          <th scope="col" class="num">Montant</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Chiffre d’affaires</td>
+          <td><span class="who">tiré de votre contexte</span></td>
+          <td class="num">10 000,00</td>
+        </tr>
+        <tr>
+          <td>Cotisations et contributions</td>
+          <td><span class="who">calculé</span></td>
+          <td class="num">10,00</td>
+        </tr>
+        <tr class="branch">
+          <td>Cotisations — non appelée</td>
+          <td></td>
+          <td class="num">0,00</td>
+        </tr>
+        <tr class="branch">
+          <td>T.F.C. — non appelée</td>
+          <td></td>
+          <td class="num">0,00</td>
+        </tr>
+        <tr>
+          <td>C.F.P.</td>
+          <td><span class="who">calculé</span></td>
+          <td class="num">10,00</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="total">
+          <td class="label">Revenu net</td>
+          <td></td>
+          <td class="num">9 990,00<small>€ / an</small></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="standing">
+      <h2>Laissé tel quel au tirage</h2>
+      <ul>
+        <li>Les branches <b>Cotisations</b> et <b>T.F.C.</b> apparaissent ici parce que le
+          document les montre ; elles n’ont pas été appelées.</li>
+        <li>Trois entrées ne sont pas renseignées : <b>date de création</b>,
+          <b>activité . nature . libérale . réglementée</b>, <b>Cipav . adhérent</b>.</li>
+      </ul>
+    </div>
+  </main>
+
+  <aside class="plate">
+    <h2>Planche</h2>
+    <div class="fig"><span class="n">9 990</span><span class="u">€ / an</span></div>
+    <p>Revenu net retenu, tiré sur un unique passage. La retenue de 10 € correspond
+      intégralement à la contribution à la formation professionnelle.</p>
+    <div class="prov">
+      Noir unique sur chiffon humide.<br>
+      Tirage inégal : la pression varie d’un filet à l’autre.<br>
+      Page mise à la main, non corrigée après coup.
+    </div>
+  </aside>
+
+</div>
+</body>
+</html>

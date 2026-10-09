@@ -26,9 +26,6 @@ export function AutodocEvaluationTraceProvider({
 			navContext.contextStackId
 		:	evaluationContextStackId
 
-	console.log('contextStackId:', contextStackId)
-	console.log('contextId:', contextId)
-
 	return (
 		<AutodocEvaluationTraceContext.Provider
 			value={{

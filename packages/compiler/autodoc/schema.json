@@ -16,8 +16,29 @@
 			"type": "object",
 			"allOf": [
 				{ "$ref": "#/$defs/compiler_metadata" },
-				{ "$ref": "#/$defs/evaluable" }
+				{ "$ref": "#/$defs/evaluable" },
+				{ "$ref": "#/$defs/authored_metadata" },
+				{ "$ref": "#/$defs/rule_graph" }
 			]
+		},
+		"rule_graph": {
+			"title": "Rule graph",
+			"description": "Where a rule sits in the dependency graph, computed by the compiler. The renderer reads these and must never recompute them by walking the tree.",
+			"type": "object",
+			"properties": {
+				"referenced_by": {
+					"title": "Referenced by",
+					"description": "The rules whose computation references this one.",
+					"type": "array",
+					"items": { "type": "string" }
+				},
+				"parameters": {
+					"title": "Parameters",
+					"description": "The parameter rules this rule transitively depends on: rules with no computation of their own, whose value the context must supply.",
+					"type": "array",
+					"items": { "type": "string" }
+				}
+			}
 		},
 		"evaluable": {
 			"title": "Chained value",
@@ -90,6 +111,37 @@
 							"$ref": "#/$defs/position"
 						}
 					}
+				}
+			}
+		},
+		"authored_metadata": {
+			"title": "Authored metadata",
+			"description": "What the model author wrote about a rule, as opposed to what the compiler inferred. Every field is optional: a rule may carry none of them, and a model without prose is valid.",
+			"type": "object",
+			"properties": {
+				"public": {
+					"title": "Public rule",
+					"description": "Whether the author declared this rule part of the model's public API.",
+					"type": "boolean"
+				},
+				"title": {
+					"title": "Title",
+					"description": "Short human-readable name, standing in for the dotted name.",
+					"type": "string"
+				},
+				"description": {
+					"title": "Description",
+					"type": "string"
+				},
+				"note": {
+					"title": "Note",
+					"type": "string"
+				},
+				"meta": {
+					"title": "Meta bag",
+					"description": "Metadata owned by the model author, carried through uninterpreted. Neither the keys nor the shape of their values is known in advance: any JSON value may appear under any key. A consumer may recognise a key by convention, but nothing here is guaranteed to be present, and no key is reserved.",
+					"type": "object",
+					"additionalProperties": true
 				}
 			}
 		},

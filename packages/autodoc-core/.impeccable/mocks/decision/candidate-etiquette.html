@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>L’étiquette nutritionnelle — Bilan carbone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Chivo+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14110f; --hair:#8a8a84; --rule:#dcdcd6;
+    --scale-green:#1b7f4c; --scale-amber:#f0c419; --scale-red:#c8442b;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{
+    width:1440px;height:900px;background:#f0efec;color:var(--ink);
+    font-family:Archivo,system-ui,sans-serif;font-variant-numeric:tabular-nums;
+    display:grid;place-items:center;overflow:hidden;font-size:14px;
+  }
+  .sheet{width:1400px;height:860px;background:#fff;border:1px solid #c9c9c3;
+    display:grid;grid-template-columns:1fr 372px}
+
+  main{padding:30px 40px 0;min-width:0;display:flex;flex-direction:column}
+
+  /* ── the declaration panel: thick rules, two contexts, one reference ── */
+  .panel{border:3px solid var(--ink);padding:0}
+  .panel h1{font-size:27px;font-weight:800;letter-spacing:-.02em;line-height:1.05;
+    padding:14px 18px 12px;border-bottom:9px solid var(--ink)}
+  .panel h1 em{display:block;font-style:normal;font-size:11px;font-weight:600;
+    letter-spacing:.15em;text-transform:uppercase;color:#5a5751;margin-top:7px}
+  .cols{display:grid;grid-template-columns:1fr 150px 196px;font-size:14.5px}
+  .cols .head{padding:9px 18px;border-bottom:1px solid var(--ink);font-size:9.5px;
+    font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#5a5751}
+  .cols .head.num{text-align:right}
+  .cols .head.per{text-align:right;font-size:10px}
+  .rowline{display:contents}
+  .lbl{padding:8px 18px 8px 18px;border-bottom:1px solid var(--rule);font-weight:600}
+  .lbl.sub{padding-left:38px;font-weight:400;font-size:13.5px}
+  .lbl .fe{display:block;font-size:10.5px;font-weight:400;color:#6f6b64;
+    font-family:'Chivo Mono';margin-top:3px}
+  .v1,.v2{padding:8px 18px;border-bottom:1px solid var(--rule);text-align:right;
+    font-weight:600;font-variant-numeric:tabular-nums}
+  .v1{font-size:16px;font-weight:700}
+  .v2{font-size:12.5px;font-weight:400;color:#6f6b64}
+  .v1 .u,.v2 .u{font-size:10px;font-weight:400;color:#8a8a84;margin-left:3px}
+
+  /* the two declared values above the rule, the reference below */
+  .declared{padding:11px 18px;display:grid;grid-template-columns:1fr 150px 196px;
+    align-items:baseline;border-bottom:3px solid var(--ink)}
+  .declared .k{font-size:17px;font-weight:800;letter-spacing:-.01em}
+  .declared .k small{display:block;font-size:10.5px;font-weight:500;color:#5a5751;
+    letter-spacing:.03em;margin-top:3px}
+  .declared .v1{font-size:26px;font-weight:800;letter-spacing:-.02em;border:none;padding:0}
+  .declared .v2{font-size:15px;font-weight:600;border:none;padding:0;color:#3a3733}
+
+  /* ── the reference scale: colour does real work and nothing else does ── */
+  .ref{padding:14px 18px 16px;display:grid;grid-template-columns:1fr;gap:11px}
+  .ref h2{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+    color:#5a5751}
+  .ref .said{font-size:14px;line-height:1.45}
+  .ref .said b{font-weight:800}
+  .scale{position:relative;height:34px;display:grid;grid-template-columns:repeat(3,1fr)}
+  .scale i{display:block}
+  .scale .g{background:var(--scale-green)}
+  .scale .a{background:var(--scale-amber)}
+  .scale .r{background:var(--scale-red)}
+  .scale .mark{position:absolute;top:-9px;bottom:-9px;left:22.7%;width:3px;background:var(--ink)}
+  .scale .mark::after{content:"12,7";position:absolute;top:-17px;left:50%;
+    transform:translateX(-50%);font-size:11px;font-weight:700;white-space:nowrap}
+  .scale .budget{position:absolute;top:0;bottom:0;left:9.8%;border-left:2px dashed #fff}
+  .axis{display:flex;justify-content:space-between;font-size:10.5px;color:#6f6b64;
+    font-family:'Chivo Mono'}
+
+  /* the ingredients register: what each figure is made of */
+  .ing{margin-top:auto;border-top:1px solid var(--rule);padding:12px 0 14px;
+    display:grid;grid-template-columns:1fr 1fr;gap:30px;font-size:11.5px;color:#5a5751;line-height:1.55}
+  .ing h3{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    margin-bottom:4px}
+  .ing code{font-family:'Chivo Mono';font-size:11px;color:#3a3733}
+
+  /* ── the rail: where the reader stands, and the way forward ── */
+  aside{border-left:1px solid var(--rule);padding:30px 26px;display:flex;flex-direction:column;gap:22px}
+  aside h2{font-size:9.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#6f6b64}
+  aside ul{list-style:none;font-size:13.5px;line-height:2}
+  aside li{color:#5a5751}
+  aside li[aria-current]{color:var(--ink);font-weight:700}
+  aside li[aria-current]::before{content:"▸ ";font-weight:400}
+  aside .nb{font-size:12.5px;line-height:1.6;color:#5a5751}
+  aside .nb b{color:var(--ink)}
+  aside .prov{margin-top:auto;border-top:1px solid var(--rule);padding-top:13px;
+    font-size:11px;line-height:1.7;color:#6f6b64}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <main>
+    <div class="panel">
+      <h1>Bilan carbone — déclaration
+        <em>resultats . bilan total · unité kgCO2e</em>
+      </h1>
+
+      <div class="cols">
+        <div class="head">Poste d’émissions</div>
+        <div class="head num per">Pour 1 festivalier<br>et par jour</div>
+        <div class="head num">Évènement entier<br>100 000 × 3 jours</div>
+      </div>
+
+      <div class="rowline">
+        <div class="lbl sub">Transport
+          <span class="fe">0,231 kgCO2e/km · voie routière</span></div>
+        <div class="v1">8,6<span class="u">kg</span></div>
+        <div class="v2">2 567 542<span class="u">kg</span></div>
+      </div>
+      <div class="rowline">
+        <div class="lbl sub">Alimentation
+          <span class="fe">repas, boissons, déchets</span></div>
+        <div class="v1">2,0<span class="u">kg</span></div>
+        <div class="v2">600 000<span class="u">kg</span></div>
+      </div>
+      <div class="rowline">
+        <div class="lbl sub">Infrastructures
+          <span class="fe">bâtiments, scénographie, toilettes</span></div>
+        <div class="v1">1,1<span class="u">kg</span></div>
+        <div class="v2">320 000<span class="u">kg</span></div>
+      </div>
+      <div class="rowline">
+        <div class="lbl sub">Hébergement
+          <span class="fe">public, artistes, bénévoles</span></div>
+        <div class="v1">0,6<span class="u">kg</span></div>
+        <div class="v2">180 000<span class="u">kg</span></div>
+      </div>
+      <div class="rowline">
+        <div class="lbl sub">Énergie
+          <span class="fe">0,0461 kgCO2e/kWh · mix français</span></div>
+        <div class="v1">0,30<span class="u">kg</span></div>
+        <div class="v2">90 000<span class="u">kg</span></div>
+      </div>
+      <div class="rowline">
+        <div class="lbl sub" style="border-bottom:none">Communication
+          <span class="fe">impressions, numérique, merchandising</span></div>
+        <div class="v1" style="border-bottom:none">0,15<span class="u">kg</span></div>
+        <div class="v2" style="border-bottom:none">45 000<span class="u">kg</span></div>
+      </div>
+
+      <div class="declared">
+        <div class="k">Bilan du festival
+          <small>somme des six postes</small></div>
+        <div class="v1">12,7<span class="u">kg</span></div>
+        <div class="v2">3 802 542<span class="u">kgCO2e</span></div>
+      </div>
+
+      <div class="ref">
+        <h2>Repère</h2>
+        <p class="said">Chaque festivalier et par jour émet <b>2,3 fois</b> le budget carbone
+          quotidien d’une personne.</p>
+        <div class="scale" role="img"
+          aria-label="12,7 kgCO2e par festivalier et par jour, soit 2,3 fois le budget de 5,5 kgCO2e par jour">
+          <i class="g"></i><i class="a"></i><i class="r"></i>
+          <span class="budget" aria-hidden="true"></span>
+          <span class="mark" aria-hidden="true"></span>
+        </div>
+        <div class="axis">
+          <span>0</span>
+          <span>budget 2 tCO2e/an ≈ 5,5 kg/jour</span>
+          <span>20 kgCO2e</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ing">
+      <div>
+        <h3>Facteurs d’émission employés</h3>
+        <code>voiture 0,231</code> · Base Empreinte « Voiture/Motorisation moyenne/2018 »<br>
+        <code>avion 0,187</code> · « Avion passagers/Moyen courrier, 2018/AVEC trainées »<br>
+        <code>train 0,00293</code> · moyenne TGV / TER
+      </div>
+      <div>
+        <h3>Réserves</h3>
+        Les totaux par poste sont <b>illustratifs</b> dans cette maquette ; les facteurs
+        d’émission et le nombre de festivaliers sont les valeurs réelles du modèle.
+        Le repère de 2 tCO2e/an est une référence extérieure au modèle, affichée comme telle.
+      </div>
+    </div>
+  </main>
+
+  <aside>
+    <div>
+      <h2>Résultats</h2>
+      <ul>
+        <li aria-current="page">bilan total</li>
+        <li>bilan par festivalier</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Postes</h2>
+      <ul>
+        <li>transport</li>
+        <li>alimentation</li>
+        <li>infrastructures</li>
+        <li>hébergement</li>
+        <li>énergie</li>
+        <li>communication</li>
+      </ul>
+    </div>
+    <p class="nb"><b>12,7 kgCO2e</b> par festivalier et par jour, sur un évènement de
+      100 000 personnes et 3 jours.</p>
+    <div class="prov">
+      resultats . bilan total —<br>
+      somme de alimentation, transport,<br>
+      infrastructures, hébergement,<br>
+      énergie, communication.<br><br>
+      Scénario : grand festival urbain.
+    </div>
+  </aside>
+
+</div>
+</body>
+</html>

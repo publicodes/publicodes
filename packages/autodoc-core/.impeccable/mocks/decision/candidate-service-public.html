@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>La fiche service-public.fr — Bilan carbone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1e1e1e; --grey:#666666; --blue:#000091; --blue-light:#e3e3fd;
+    --rule:#dddddd; --rule-dark:#929292;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{
+    width:1440px;height:900px;background:#fff;color:var(--ink);
+    font-family:'Public Sans',system-ui,sans-serif;font-size:16px;line-height:1.5;
+    overflow:hidden;font-variant-numeric:tabular-nums;
+  }
+  /* the state blue rail across the top: the one committed block of colour */
+  .band{height:5px;background:var(--blue)}
+  .masthead{border-bottom:1px solid var(--rule);padding:13px 40px;display:flex;
+    align-items:center;gap:9px;font-size:13.5px;font-weight:600}
+  .masthead .mark{width:19px;height:19px;background:var(--blue);border-radius:2px;
+    display:inline-grid;place-items:center;color:#fff;font-size:11px;font-weight:700}
+  .masthead .spacer{flex:1}
+  .masthead .who{font-weight:400;color:var(--grey);font-size:13px}
+  .search{border:1px solid var(--ink);padding:5px 11px;font-size:12.5px;color:var(--grey);
+    min-width:212px}
+
+  .wrap{display:grid;grid-template-columns:242px minmax(0,1fr) 300px;gap:40px;padding:26px 40px 0}
+
+  /* the anchor menu: the fiche's wayfinding, a plain bordered list */
+  .anchors{border:1px solid var(--rule);padding:14px 16px;align-self:start}
+  .anchors h2{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--grey);margin-bottom:9px;font-weight:600}
+  .anchors ul{list-style:none;font-size:14px;line-height:1.95}
+  .anchors li{color:var(--grey)}
+  .anchors li[aria-current]{color:var(--blue);font-weight:600}
+  .anchors li[aria-current]::before{content:"— ";font-weight:400}
+
+  main{min-width:0;max-width:720px}
+  .crumbs{font-size:13px;color:var(--grey);margin-bottom:11px}
+  h1{font-size:32px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+  .sub{color:var(--grey);font-size:14.5px;margin-top:9px}
+
+  /* En bref: the summary card every fiche opens with */
+  .bref{background:var(--blue-light);border-left:5px solid var(--blue);padding:17px 19px;
+    margin:22px 0 0}
+  .bref h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);
+    font-weight:700;margin-bottom:9px}
+  .bref dl{display:grid;grid-template-columns:1fr auto;gap:5px 20px;font-size:15.5px}
+  .bref dt{color:#3a3a3a}
+  .bref dd{font-weight:700;white-space:nowrap}
+  .bref .note{font-size:13px;color:#3a3a3a;margin-top:11px;line-height:1.45}
+
+  h2.sec{font-size:21px;font-weight:700;letter-spacing:-.012em;margin:28px 0 11px;
+    padding-bottom:7px;border-bottom:2px solid var(--blue)}
+  p.body{color:#2b2b2b;font-size:15.5px;margin-bottom:11px}
+  ul.plain{list-style:none;font-size:15.5px;line-height:1.9}
+  ul.plain li{padding-left:17px;position:relative;color:#2b2b2b}
+  ul.plain li::before{content:"—";position:absolute;left:0;color:var(--grey)}
+
+  /* the computation, set as the plain table the state would print */
+  table{width:100%;border-collapse:collapse;margin-top:13px;font-size:14.5px}
+  caption{text-align:left;font-size:13px;color:var(--grey);padding-bottom:8px}
+  thead th{font-size:12.5px;font-weight:700;text-align:left;padding:8px 10px;
+    background:#f6f6f6;border-bottom:2px solid var(--ink)}
+  thead th.num{text-align:right}
+  tbody td{padding:9px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+  tbody td.num{text-align:right;font-weight:600;white-space:nowrap}
+  tbody tr[data-level="2"] td:first-child{padding-left:28px;color:#4a4a4a;font-weight:400}
+  tbody tr[data-level="2"] td.num{font-weight:400;color:#4a4a4a}
+  tbody tr.sum td{border-bottom:none;padding-top:12px;font-weight:700}
+  tfoot td{border-top:3px solid var(--ink);padding:12px 10px;font-size:15px}
+  tfoot .num{text-align:right;font-weight:700;font-size:22px;letter-spacing:-.01em;white-space:nowrap}
+  tfoot .unit{font-size:13px;font-weight:400;color:var(--grey);margin-left:6px}
+  .src{display:block;font-size:12.5px;color:var(--grey);margin-top:4px;font-weight:400}
+  .you{color:var(--blue);font-weight:600;font-size:12.5px}
+
+  aside{border-left:1px solid var(--rule);padding-left:26px;align-self:start}
+  aside h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey);
+    font-weight:600;margin-bottom:10px}
+  /* Textes de référence: where the state gathers its citations, and where the
+     emission factors' own sources belong */
+  aside ul{list-style:none;font-size:13.5px;line-height:1.55}
+  aside li{margin-bottom:11px;color:#2b2b2b}
+  aside li a{color:var(--blue)}
+  aside .aside-block{margin-bottom:26px}
+  aside .warn{border-left:4px solid #b34000;padding-left:12px;font-size:13.5px;color:#2b2b2b}
+  aside .warn b{color:#b34000}
+</style>
+</head>
+<body>
+
+<div class="band"></div>
+<div class="masthead">
+  <span class="mark">R</span>
+  <span>République<br>Française</span>
+  <span class="who">Documentation du modèle</span>
+  <span class="spacer"></span>
+  <span class="search">Rechercher un poste, un facteur…</span>
+</div>
+
+<div class="wrap">
+
+  <nav class="anchors">
+    <h2>Dans cette page</h2>
+    <ul>
+      <li aria-current="page">Bilan total</li>
+      <li>De quoi est-il composé</li>
+      <li>Comment est-il calculé</li>
+      <li>Textes de référence</li>
+      <li>Postes détaillés</li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="crumbs">Accueil &gt; Documentation &gt; resultats</div>
+    <h1>Bilan Carbone de mon évènement</h1>
+    <p class="sub">resultats . bilan total — unité kgCO2e</p>
+
+    <div class="bref">
+      <h2>En bref</h2>
+      <dl>
+        <dt>Bilan total de l’évènement</dt><dd>3 802 542 kgCO2e</dd>
+        <dt>Par festivalier et par jour</dt><dd>12,7 kgCO2e</dd>
+        <dt>Poste le plus émetteur</dt><dd>Transport — 68 %</dd>
+      </dl>
+      <p class="note">Ces valeurs correspondent au scénario <b>grand festival urbain</b> :
+        100 000 festivaliers sur 3 jours, accessible en transports en commun.</p>
+    </div>
+
+    <h2 class="sec">De quoi est-il composé</h2>
+    <p class="body">Le bilan est la somme de six postes d’émissions. Chacun est calculé à partir
+      de quantités que vous renseignez et d’un facteur d’émission publié.</p>
+    <ul class="plain">
+      <li>alimentation — repas, petits déjeuners, boissons, ecocups, déchets</li>
+      <li>transport — public et artistes</li>
+      <li>infrastructures — bâtiments, scénographie, toilettes</li>
+      <li>hébergement — public, artistes, bénévoles</li>
+      <li>énergie — groupes électrogènes et consommation électrique</li>
+      <li>communication — impressions, numérique, merchandising</li>
+    </ul>
+
+    <h2 class="sec">Comment est-il calculé</h2>
+    <table>
+      <caption>Détail du poste transport dans votre contexte</caption>
+      <thead>
+        <tr>
+          <th scope="col">Ligne</th>
+          <th scope="col" class="num">Quantité</th>
+          <th scope="col" class="num">Facteur</th>
+          <th scope="col" class="num">Émissions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Voiture <span class="src">Base Empreinte — « Voiture/Motorisation moyenne/2018 »</span></td>
+          <td class="num">11 000 000 km <span class="you">fourni</span></td>
+          <td class="num">0,231</td>
+          <td class="num">2 541 000</td>
+        </tr>
+        <tr>
+          <td>Avion <span class="src">« Avion passagers/Moyen courrier, 2018/AVEC trainées »</span></td>
+          <td class="num">120 000 km</td>
+          <td class="num">0,187</td>
+          <td class="num">22 440</td>
+        </tr>
+        <tr>
+          <td>Train <span class="src">Moyenne TGV / TER — « TGV/2022 »</span></td>
+          <td class="num">1 400 000 km</td>
+          <td class="num">0,00293</td>
+          <td class="num">4 102</td>
+        </tr>
+        <tr data-level="2">
+          <td>Le facteur du train est une moyenne</td>
+          <td class="num">TGV, TER</td>
+          <td class="num">—</td>
+          <td class="num">—</td>
+        </tr>
+        <tr class="sum">
+          <td>Sous-total transport</td><td></td><td></td><td class="num">2 567 542</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Bilan total — six postes</td>
+          <td></td><td></td>
+          <td class="num">3 802 542<span class="unit">kgCO2e</span></td>
+        </tr>
+      </tfoot>
+    </table>
+  </main>
+
+  <aside>
+    <div class="aside-block">
+      <h2>Textes de référence</h2>
+      <ul>
+        <li><a href="#">Base Empreinte — Voiture/Motorisation moyenne/2018</a></li>
+        <li><a href="#">Base Empreinte — Avion passagers/Moyen courrier, 2018</a></li>
+        <li><a href="#">Base Empreinte — Électricité/2025, mix moyen, consommation</a></li>
+        <li><a href="#">Ecoinvent 3.12 — market for electricity, medium voltage</a></li>
+      </ul>
+    </div>
+    <div class="aside-block warn">
+      <h2 style="margin-bottom:6px">Valeurs illustratives</h2>
+      Les totaux par poste de cette maquette sont illustratifs. Les facteurs d’émission
+      et le nombre de festivaliers sont les valeurs réelles du modèle.
+    </div>
+    <div class="aside-block">
+      <h2>Entrées manquantes</h2>
+      <ul>
+        <li>infrastructures . scénographie . nombre de grandes scènes</li>
+        <li>hébergement . bénévoles</li>
+        <li>communication . numérique</li>
+      </ul>
+    </div>
+  </aside>
+
+</div>
+</body>
+</html>
