@@ -195,14 +195,18 @@ and parse_import ~default_to_public ~ctx mapping =
                 Output.return (Some package, module_) )
       in
       let* module_ =
-        let module_ = File.relativize ctx.current_module module_ in
-        if File.is_valid_import module_ then Output.return module_
-        else
-          let code, message = Err.invalid_path in
-          Output.fatal_error ~pos ~code ~kind:`Syntax message
-            ~hints:
-              [ Stdlib.Format.asprintf
-                  "%a n'est pas une valeur de modèle valide" File.pp module_ ]
+        match File.relativize ctx.current_module module_ with
+        | Some module_ ->
+            Output.return module_
+        | None ->
+            if File.is_valid_import module_ then Output.return module_
+            else
+              let code, message = Err.invalid_path in
+              Output.fatal_error ~pos ~code ~kind:`Syntax message
+                ~hints:
+                  [ Stdlib.Format.asprintf
+                      "%a n'est pas une valeur de modèle valide" File.pp module_
+                  ]
       in
       let* input_files =
         let path = File.to_intern module_ in
