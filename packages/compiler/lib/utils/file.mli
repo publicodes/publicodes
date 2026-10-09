@@ -46,9 +46,10 @@ val is_valid_import : t -> bool
 (** [is_valid_import ~path] checks that a value is a valid Publicode module or
   package *)
 
-val relativize : t -> t -> t
+val relativize : t -> t -> t option
 (** [relativize ~dir ~path] in case of relative path, concats the two
-  path to build a relative directory path. *)
+  path to build a relative directory path. Returns None if the path is
+  not a relative (prefix "./") *)
 
 type gather_module_error =
   | Invalid_path of string

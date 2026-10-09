@@ -62,11 +62,12 @@ let is_valid_import_str path =
       is_valid_import path
 
 let relativize dir path =
-  if Fpath.segs path |> List.is_empty then path
+  if Fpath.segs path |> List.is_empty then None
   else if Fpath.segs path |> List.hd_exn |> String.equal "." then
     let rem = Fpath.segs path |> List.tl_exn in
-    List.fold rem ~init:dir ~f:Fpath.add_seg
-  else path
+    let path = List.fold rem ~init:dir ~f:Fpath.add_seg in
+    Some path
+  else None
 
 type gather_module_error =
   | Invalid_path of string
@@ -155,7 +156,8 @@ let find_package current_package path =
     | None ->
         vendors
     | Some current_package ->
-        List.map vendors ~f:(relativize current_package)
+        List.map vendors ~f:(fun vendor ->
+            relativize current_package vendor |> Option.value ~default:vendor )
   in
   let paths = List.map rel_vendors ~f:(fun loc -> Fpath.append loc path) in
   let existing_dirs =
