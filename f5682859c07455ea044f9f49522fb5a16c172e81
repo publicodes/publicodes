@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32be1eeb_a2e5dfe7",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-10-09T14:04:47Z",
+      "side": 1,
+      "message": "Maybe it’s out of scope, but could we have a more precise error ? \n- detect typo\n- detect when the user thought it was relative to the file itself, instead of the compile command, and propose to use relative imports (./)\n\nMaybe add as a hint the full path resolved by the import command, so that the user has a grasp on the logic?",
+      "revId": "f5682859c07455ea044f9f49522fb5a16c172e81",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
