@@ -1,7 +1,7 @@
 include Ast
 include Utils
 
-let to_yaml ~(filename : string) (content : string) : yaml Output.t =
+let to_yaml ~(filename : File.t) (content : string) : yaml Output.t =
   Parse.parse filename content
 
 let to_json = To_json.to_json

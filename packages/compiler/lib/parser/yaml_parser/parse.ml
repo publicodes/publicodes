@@ -65,7 +65,7 @@ let print_token =
   | Nothing ->
       "Nothing"
 
-let parse (filename : string) (content : string) : yaml Output.t =
+let parse (filename : File.t) (content : string) : yaml Output.t =
   (* Create a parser from the content *)
   let pos_from_mark Event.{start_mark; end_mark} =
     Pos.
