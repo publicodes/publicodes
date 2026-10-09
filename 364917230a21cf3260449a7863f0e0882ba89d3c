@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1accb329_a7947c99",
+        "filename": "packages/compiler/bin/cmd_compile.ml",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-10-09T14:00:43Z",
+      "side": 1,
+      "message": "Does this means that it is stateful ? That the cwd is changed after the command ? If so I think it might be better to revert it at the end, what do you think ?",
+      "revId": "364917230a21cf3260449a7863f0e0882ba89d3c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
