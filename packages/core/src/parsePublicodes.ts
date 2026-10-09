@@ -121,6 +121,38 @@ class InheritedMap<K, V> extends Map<K, V> {
 	has(key: K): boolean {
 		return super.has(key) || this.parent.has(key)
 	}
+	get size(): number {
+		let size = this.parent.size
+		for (const key of super.keys()) {
+			if (!this.parent.has(key)) size++
+		}
+		return size
+	}
+	*entries(): MapIterator<[K, V]> {
+		for (const [key, value] of this.parent.entries()) {
+			yield [key, super.has(key) ? (super.get(key) as V) : value]
+		}
+		for (const [key, value] of super.entries()) {
+			if (!this.parent.has(key)) yield [key, value]
+		}
+	}
+	*keys(): MapIterator<K> {
+		for (const [key] of this.entries()) yield key
+	}
+	*values(): MapIterator<V> {
+		for (const [, value] of this.entries()) yield value
+	}
+	[Symbol.iterator](): MapIterator<[K, V]> {
+		return this.entries()
+	}
+	forEach(
+		callback: (value: V, key: K, map: Map<K, V>) => void,
+		thisArg?: unknown,
+	): void {
+		for (const [key, value] of this.entries()) {
+			callback.call(thisArg, value, key, this)
+		}
+	}
 }
 
 export function copyContext<C extends Context>(

@@ -99,7 +99,7 @@ export class Engine<RuleNames extends string = string> {
 			...initialContext,
 			...parsePublicodes(rules as RawPublicodes<RuleNames>, initialContext),
 		})
-		this.context = copyContext(this.baseContext)
+		this.context = copyContext(this.baseContext, { inherit: true })
 
 		this.publicParsedRules = {} as ParsedRules<RuleNames>
 		for (const name in this.baseContext.parsedRules) {
@@ -183,7 +183,7 @@ export class Engine<RuleNames extends string = string> {
 		})
 
 		if (!keepPreviousSituation) {
-			this.context = copyContext(this.baseContext)
+			this.context = copyContext(this.baseContext, { inherit: true })
 			this.publicSituation = {}
 		}
 

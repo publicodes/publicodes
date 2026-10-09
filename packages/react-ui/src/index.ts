@@ -39,7 +39,7 @@ export function getDocumentationSiteMap({
 	engine: Engine
 	documentationPath: string
 }): Record<string, string> {
-	const parsedRules = engine.context.parsedRules
+	const parsedRules = engine.baseContext.parsedRules
 	return Object.fromEntries(
 		Object.keys(parsedRules)
 			.filter(
