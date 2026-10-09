@@ -1,5 +1,11 @@
 # publicodes
 
+## 1.10.4
+
+### Patch Changes
+
+- [#872](https://github.com/publicodes/publicodes/pull/872) [`b685447`](https://github.com/publicodes/publicodes/commit/b685447379a38e16fcc084c8ac72b2ea2d9d6b98) Thanks [@Catwallon](https://github.com/Catwallon)! - Improve performance of `setSituation` and `evaluate`
+
 ## 1.10.3
 
 ### Patch Changes
