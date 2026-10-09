@@ -1,0 +1,1 @@
+../cli-template/dst/rolldown.config.js

@@ -1,5 +1,6 @@
 open Base
 open Cmdliner
+open Utils
 open Utils.Result
 open Cmdliner.Term.Syntax
 
@@ -37,6 +38,10 @@ let without_trace =
   let doc = "Disable evaluation trace generation on runtimes." in
   Arg.(value & flag & info ["without-trace"] ~doc)
 
+let change_directory =
+  let doc = "Change to directory $(docv) before compiling." in
+  Arg.(value & opt string "" & info ["C"; "directory"] ~doc ~docv:"dir")
+
 let cmd =
   let doc = "Compile a Publicodes program from file or stdin." in
   let exits =
@@ -49,43 +54,67 @@ let cmd =
   and+ output_file = output_file
   and+ default_to_public = default_to_public
   and+ output_type = output_type
-  and+ without_trace = without_trace in
-  let target =
-    let* input_files, module_path =
-      if String.equal input "-" then Ok (["-"], "./")
-      else
-        match Utils.File.gather_module input with
-        | Error (Invalid_path _) ->
-            Error (`Msg "Path is invalid")
-        | Error (Not_found _) ->
-            Error (`Msg "Path does not exists")
-        | Error (Is_not_directory _) ->
-            Error (`Msg "Path is not a directory")
-        | Error (Empty_directory _) ->
-            Error (`Msg "Directory does not contains Publicodes files")
-        | Ok files ->
-            Ok (files, input)
+  and+ without_trace = without_trace
+  and+ change_directory = change_directory in
+  match
+    let* _ =
+      if String.is_empty change_directory then Ok ()
+      else if not (Stdlib.Sys.file_exists change_directory) then
+        Error (`Msg "Directory does not exists")
+      else if not (Stdlib.Sys.is_directory change_directory) then
+        Error (`Msg "Directory is not a directory")
+      else (
+        Stdlib.Sys.chdir change_directory ;
+        Ok () )
     in
-    Ok
-      Compiler.
-        {input_files; module_path; output_type; default_to_public; without_trace}
-  in
-  let output_path =
-    if String.equal output_file "" then
-      "model.publicodes"
-      ^
-      match output_type with
-      | Debug_eval_tree ->
-          ".eval_tree.debug"
-      | Js ->
-          ".js"
-      | Json_doc ->
-          ".json"
-    else output_file
-  in
-  match target with
-  | Ok target ->
-      Compile.compile_target target output_path
+    let* target =
+      let* input_files, module_path =
+        if String.equal input "-" then Ok ([File.std], File.of_string_exn "./")
+        else
+          match Utils.File.gather_module input with
+          | Error (Invalid_path _) ->
+              Error (`Msg "Path is invalid")
+          | Error (Not_found _) ->
+              Error (`Msg "Path does not exists")
+          | Error (Is_not_directory _) ->
+              Error (`Msg "Path is not a directory")
+          | Error (Empty_directory _) ->
+              Error (`Msg "Directory does not contains Publicodes files")
+          | Ok files ->
+              Ok (files, File.of_string_exn input)
+      in
+      Ok
+        Compiler.
+          { input_files
+          ; module_path
+          ; output_type
+          ; default_to_public
+          ; without_trace }
+    in
+    let* output_path =
+      match output_file with
+      | "-" ->
+          Ok File.std
+      | "" ->
+          let default =
+            "model.publicodes"
+            ^
+            match output_type with
+            | Debug_eval_tree ->
+                ".eval_tree.debug"
+            | Js ->
+                ".js"
+            | Json_doc ->
+                ".json"
+          in
+          Ok (File.of_string_exn default)
+      | _ ->
+          File.of_string output_file
+    in
+    Ok (Compile.compile_target target output_path)
+  with
+  | Ok code ->
+      code
   | Error (`Msg msg) ->
       Stdlib.Format.eprintf "Error: %s\n%!" msg ;
       Cmd.Exit.cli_error

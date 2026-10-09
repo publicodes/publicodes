@@ -12,8 +12,8 @@
       trace information in the generated output (only applicable for JS output
       type).   *)
 type t =
-  { input_files: string list
-  ; module_path: string
+  { input_files: Utils.File.t list
+  ; module_path: Utils.File.t
   ; output_type: target_type
   ; default_to_public: bool
   ; without_trace: bool }

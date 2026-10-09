@@ -8,23 +8,39 @@ permissions:
 
 jobs:
   build-compiler:
-    name: Ocaml compiler (${{ matrix.platform }})
+    name: Ocaml compiler (${{ matrix.name }})
     strategy:
+      fail-fast: false
       matrix:
+        # https://github.com/actions/runner-images
         include:
-          - platform: linux
-            os: ubuntu-latest
-          - platform: macos
-            os: macos-latest
-          #- platform: windows
-          #  os: windows-latest
-    runs-on: ${{ matrix.os }}
+          - name: linux x64
+            platform: ubuntu-latest
+            cli: linux-x64
+          - name: linux arm64
+            platform: ubuntu-24.04-arm
+            cli: linux-arm64
+          - name: macos x64
+            platform: macos-26-intel
+            cli: darwin-x64
+          - name: macos arm64
+            platform: macos-26
+            cli: darwin-arm64
+          - name: windows x64
+            platform: windows-latest
+            cli: win32-x64
+          # not supported by opam
+          #- name: windows arm64
+          #  platform: windows-11-arm
+          #  cli: win32-arm64
+    runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
       - name: Build and test the ocaml compiler
         uses: ./.github/actions/build-compiler
         with:
           platform: ${{ matrix.platform }}
+          cli: ${{ matrix.cli }}
 
   build:
     name: Build
@@ -33,10 +49,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/install-node
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         with:
-          path: ./packages/cli/bin/compiler
+          pattern: publicodes-cli-*
           merge-multiple: true
+      - name: Untar builds artifacts
+        run: find . -name '*.tar.gz' -maxdepth 1 -exec tar -xvf {} \;
       - run: yarn build
       - name: Continuously Release
         run: npx pkg-pr-new publish './packages/*'
@@ -51,12 +69,5 @@ jobs:
         uses: ./.github/actions/install-node
       - name: Install bun
         uses: oven-sh/setup-bun@v2
-      - uses: actions/download-artifact@v5
-        with:
-          path: ./packages/cli/bin/compiler
-          merge-multiple: true
-
-      - name: Make artifacts executable
-        run: chmod +x ./packages/cli/bin/compiler/*
       - name: Yarn tests
         run: yarn run test

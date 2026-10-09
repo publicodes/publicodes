@@ -14,14 +14,17 @@
 		"prepack": "run build",
 		"test:type": "turbo run test:type",
 		"build": "turbo run build",
+		"build:compiler": "turbo run build:compiler",
+		"test:compiler": "turbo run test:compiler",
 		"build:packages": "turbo run build --filter=\\{./packages/*\\}",
 		"eslint": "eslint --cache --flag v10_config_lookup_from_file",
 		"lint": "prettier --check . && run build:packages && run eslint . --quiet && turbo run lint --parallel",
 		"format": "run build:packages && run eslint --fix . && prettier --write . && turbo run format --parallel",
 		"dev": "turbo run dev --filter=\"website...\"",
 		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\" \"**/.turbo\"",
+		"cligen": "./packages/cli-generate.sh",
 		"release": "run prepack && changeset publish --provenance",
-		"version": "changeset version && prettier --write '**/CHANGELOG.md'"
+		"version": "changeset version && run cligen && prettier --write '**/CHANGELOG.md'"
 	},
 	"dependencies": {
 		"changeset": "^0.2.6"
