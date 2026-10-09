@@ -38,6 +38,10 @@ let without_trace =
   let doc = "Disable evaluation trace generation on runtimes." in
   Arg.(value & flag & info ["without-trace"] ~doc)
 
+let change_directory =
+  let doc = "Change to directory $(docv) before compiling." in
+  Arg.(value & opt string "" & info ["C"; "directory"] ~doc ~docv:"dir")
+
 let cmd =
   let doc = "Compile a Publicodes program from file or stdin." in
   let exits =
@@ -50,8 +54,19 @@ let cmd =
   and+ output_file = output_file
   and+ default_to_public = default_to_public
   and+ output_type = output_type
-  and+ without_trace = without_trace in
+  and+ without_trace = without_trace
+  and+ change_directory = change_directory in
   match
+    let* _ =
+      if String.is_empty change_directory then Ok ()
+      else if not (Stdlib.Sys.file_exists change_directory) then
+        Error (`Msg "Directory does not exists")
+      else if not (Stdlib.Sys.is_directory change_directory) then
+        Error (`Msg "Directory is not a directory")
+      else (
+        Stdlib.Sys.chdir change_directory ;
+        Ok () )
+    in
     let* target =
       let* input_files, module_path =
         if String.equal input "-" then Ok ([File.std], File.of_string_exn "./")
