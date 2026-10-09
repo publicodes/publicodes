@@ -1,0 +1,3 @@
+rule a:
+  valeur: 10
+  public: oui
