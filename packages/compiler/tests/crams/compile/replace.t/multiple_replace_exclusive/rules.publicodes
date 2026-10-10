@@ -1,0 +1,17 @@
+a: 10
+
+b:
+  remplace:
+    références à: a
+    exclusif: oui
+  valeur: 5
+
+c:
+  non applicable si:
+    est applicable: b
+  remplace:
+    références à: a
+    exclusif: oui
+  valeur: 10
+
+x: a

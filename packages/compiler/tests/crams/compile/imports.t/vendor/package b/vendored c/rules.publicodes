@@ -1,0 +1,6 @@
+rule vendored d:
+  valeur: rule vendored e
+  public: oui
+  importer:
+    modèle: vendored d
+    paquet: package d

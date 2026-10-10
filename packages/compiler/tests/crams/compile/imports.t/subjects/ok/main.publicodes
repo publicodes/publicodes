@@ -1,0 +1,10 @@
+module a:
+  importer: module a
+module b:
+  importer: module b
+module c:
+  importer: module c
+
+result:
+  valeur: module c . regle c
+  public: oui

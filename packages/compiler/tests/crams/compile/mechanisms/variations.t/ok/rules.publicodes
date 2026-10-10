@@ -1,0 +1,29 @@
+simple:
+  variations:
+    - si: cond1
+      alors: 200
+    - sinon: 300
+
+sans sinon:
+  variations:
+    - si: cond1
+      alors: 200
+
+multiple:
+  variations:
+    - si: cond1
+      alors: 200
+    - si: cond2
+      alors: 300
+    - si: cond3
+      alors: 400
+    - sinon: 500
+
+cond1:
+  type: booléen
+
+cond2:
+  type: booléen
+
+cond3:
+  type: booléen

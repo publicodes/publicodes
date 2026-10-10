@@ -1,0 +1,72 @@
+inferred from comparison:
+  avec:
+    number with unit:
+      public: oui
+      avec:
+        comp: number with unit = 42 euros
+
+    boolean:
+      public: oui
+      avec:
+        comp: boolean = oui
+
+    texte:
+      public: oui
+      avec:
+        comp: texte = "toto"
+
+    enum:
+      public: oui
+      avec:
+        comp1: enum = 'toto'
+        comp2: enum = 'tutu'
+
+
+    date:
+      public: oui
+      avec:
+        comp: date = 01/01/2026
+
+    enum 2:
+      public: oui
+      avec:
+        comp:
+          type:
+            une possibilité:
+              - 'foo'
+              - 'bar'
+          valeur: enum 2
+
+generalize to number:
+  avec:
+    sum:
+      public: oui
+      valeur:
+        somme:
+          - 10 l
+          - 20 l
+          - 30 l
+
+    addition:
+      public: oui
+      valeur: 10 l + 20 l
+
+    product:
+      public: oui
+      valeur:
+        produit:
+          - 10 l
+          - 20 l
+          - 30 l
+
+    max of:
+      public: oui
+      valeur:
+        le maximum de:
+          - 10
+          - 20
+          - 30
+
+    power with unit:
+      public: oui
+      valeur: 10 l ** 2

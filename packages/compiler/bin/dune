@@ -1,0 +1,16 @@
+(executable
+ (enabled_if (<> %{system} linux))
+ (public_name publicodes)
+ (name main)
+ (libraries unix cmdliner compiler yaml fpath yojson)
+ (preprocess
+  (pps config.ppx)))
+
+(executable
+ (enabled_if (= %{system} linux))
+ (public_name publicodes)
+ (name main)
+ (libraries unix cmdliner compiler yaml fpath yojson)
+ (flags (:standard -cclib -static -cclib -no-pie))
+ (preprocess
+  (pps config.ppx)))

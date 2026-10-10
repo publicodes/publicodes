@@ -1,0 +1,14 @@
+test:
+  public: oui
+  valeur: 10
+
+z:
+  public: oui
+  valeur:
+    somme:
+      - 10
+      - valeur: test
+        contexte:
+          test: 30
+  contexte:
+    test: 20 # non utilisé

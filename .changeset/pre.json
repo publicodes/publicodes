@@ -1,0 +1,25 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@publicodes/cli": "2.0.0-alpha.0",
+    "@publicodes/codemod": "1.1.0",
+    "publicodes": "1.9.1",
+    "@publicodes/forms": "0.6.0",
+    "@publicodes/react-ui": "1.9.1",
+    "@publicodes/rest-api": "1.5.3",
+    "@publicodes/runtime": "2.0.0-alpha.0",
+    "@publicodes/tools": "1.8.0",
+    "website": "2.0.0-alpha.0",
+    "@publicodes/cli-darwin-arm64": "2.0.0-alpha.0",
+    "@publicodes/cli-darwin-x64": "2.0.0-alpha.0",
+    "@publicodes/cli-linux-arm64": "2.0.0-alpha.0",
+    "@publicodes/cli-linux-x64": "2.0.0-alpha.0",
+    "@publicodes/cli-win32-x64": "2.0.0-alpha.0",
+    "compiler-examples": "2.0.0-alpha.0",
+    "compiler-runtimes-js-test": "2.0.0-alpha.0"
+  },
+  "changesets": [
+    "fancy-ideas-tan"
+  ]
+}

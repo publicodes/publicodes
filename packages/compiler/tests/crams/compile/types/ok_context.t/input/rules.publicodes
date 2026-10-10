@@ -1,0 +1,23 @@
+simple ok:
+  public: oui
+  valeur: ref
+  contexte:
+    ref: 4 euros
+  avec:
+    ref:
+      public: oui
+
+nested ok:
+  public: oui
+  valeur:
+    somme:
+      - valeur: ref
+        contexte:
+          ref: 4 euros
+      - valeur: ref
+        contexte:
+          ref:
+            valeur: 2 euros
+  avec:
+    ref:
+      public: oui

@@ -1,0 +1,13 @@
+(library
+ (name analysis)
+ (public_name publicodes.analysis)
+ (libraries replacement_graph dependency_graph utils shared base)
+ (modules :standard)
+ (preprocess
+  (pps
+   ppx_inline_test
+   ppx_sexp_conv
+   ppx_deriving.show
+   ppx_compare
+   sedlex.ppx
+   ppx_assert)))
