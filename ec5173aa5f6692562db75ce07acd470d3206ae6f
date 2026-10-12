@@ -18,6 +18,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "ca8ba848_b40aada1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-12T08:53:46Z",
+      "side": 1,
+      "message": "J\u0027ai ajouté plusieurs tests. Je vois pas ce qu\u0027on peux tester comme mauvaise syntaxes.",
+      "parentUuid": "1aff3198_cac16778",
+      "revId": "ec5173aa5f6692562db75ce07acd470d3206ae6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0669f77d_79caf709",
@@ -31,6 +49,30 @@
       "writtenOn": "2026-09-25T17:30:15Z",
       "side": 1,
       "message": "On devrait tester `est applicable` ici + uniformiser le nom des fichiers pour utiliser l\u0027anglais.",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 2
+      },
+      "revId": "ec5173aa5f6692562db75ce07acd470d3206ae6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebb179ca_36632422",
+        "filename": "packages/compiler/tests/crams/compile/mechanisms/applicability.t/est_applicable/rules.publicodes",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-12T08:53:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0669f77d_79caf709",
       "range": {
         "startLine": 2,
         "startChar": 0,
@@ -64,6 +106,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "492bfb47_93dce338",
+        "filename": "packages/compiler/tests/crams/compile/mechanisms/applicability.t/est_non_applicable/rules.publicodes",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-12T08:53:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "073eaa73_74693232",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 2
+      },
+      "revId": "ec5173aa5f6692562db75ce07acd470d3206ae6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8e8fbe74_f29f9ea1",
@@ -77,6 +143,30 @@
       "writtenOn": "2026-09-25T17:30:15Z",
       "side": 1,
       "message": "Il faudrait tester explicitement le comportement du `non` également",
+      "range": {
+        "startLine": 10,
+        "startChar": 3,
+        "endLine": 10,
+        "endChar": 6
+      },
+      "revId": "ec5173aa5f6692562db75ce07acd470d3206ae6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c5890fd_a323de03",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/est-défini.test.ts",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-12T08:53:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8e8fbe74_f29f9ea1",
       "range": {
         "startLine": 10,
         "startChar": 3,
