@@ -36,7 +36,7 @@ export type InversionNode = {
 export const evaluateInversion: EvaluationFunction<'inversion'> = function (
 	node,
 ) {
-	const inversionEngine = this.shallowCopy()
+	const inversionEngine = this.shallowCopy({ inherit: true })
 	inversionEngine.context.warn.experimentalRules = false
 
 	if (

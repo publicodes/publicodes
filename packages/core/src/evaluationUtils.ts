@@ -5,23 +5,36 @@ export const collectNodeMissing = (
 ): Record<string, number> =>
 	'missingVariables' in node ? node.missingVariables : {}
 
-export const bonus = (missings: Record<string, number> = {}) =>
-	Object.fromEntries(
-		Object.entries(missings).map(([key, value]) => [key, value + 1]),
-	)
+export const bonus = (missings: Record<string, number> = {}) => {
+	const result: Record<string, number> = {}
+	for (const key in missings) {
+		result[key] = missings[key] + 1
+	}
+	return result
+}
+
+const addMissing = (
+	target: Record<string, number>,
+	source: Record<string, number>,
+) => {
+	for (const key in source) {
+		target[key] = (target[key] ?? 0) + source[key]
+	}
+	return target
+}
+
 export const mergeMissing = (
 	left: Record<string, number> | undefined = {},
 	right: Record<string, number> | undefined = {},
-): Record<string, number> =>
-	Object.fromEntries(
-		[...Object.keys(left), ...Object.keys(right)].map((key) => [
-			key,
-			(left[key] ?? 0) + (right[key] ?? 0),
-		]),
-	)
+): Record<string, number> => addMissing(addMissing({}, left), right)
 
-export const mergeAllMissing = (missings: Array<EvaluatedNode | ASTNode>) =>
-	missings.map(collectNodeMissing).reduce(mergeMissing, {})
+export const mergeAllMissing = (missings: Array<EvaluatedNode | ASTNode>) => {
+	const result: Record<string, number> = {}
+	for (const node of missings) {
+		addMissing(result, collectNodeMissing(node))
+	}
+	return result
+}
 
 export const defaultNode = (nodeValue: Evaluation) =>
 	({

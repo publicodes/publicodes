@@ -9,7 +9,16 @@ import { remarkHeadings } from './src/lib/utils/remark-headings.js';
 
 const highlighter = await getSingletonHighlighter({
 	themes: ['one-light'],
-	langs: ['yaml', 'javascript', 'typescript', 'html', 'jsx', 'bash', 'elm']
+	langs: [
+		'yaml',
+		'javascript',
+		'typescript',
+		'html',
+		'jsx',
+		'bash',
+		'elm',
+		'json'
+	]
 });
 
 /** @type {import('mdsvex').MdsvexOptions}*/

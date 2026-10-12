@@ -10,7 +10,7 @@ import { FlagOptions, WarnOptions } from './engine/types'
 import { PublicodesError } from './error'
 import inferNodeType, { NodesTypes } from './inferNodeType'
 import { ReplacementRule, inlineReplacements } from './parseReplacement'
-import { Rule, parseRules } from './rule'
+import { Rule, RuleNode, parseRules } from './rule'
 import {
 	disambiguateReferenceNode,
 	updateReferencesMapsFromReferenceNode,
@@ -111,13 +111,74 @@ export function createContext<RuleNames extends string>(
 	}
 }
 
-export function copyContext<C extends Context>(context: C): C {
+class InheritedMap<K, V> extends Map<K, V> {
+	constructor(private parent: Map<K, V>) {
+		super()
+	}
+	get(key: K): V | undefined {
+		return super.has(key) ? super.get(key) : this.parent.get(key)
+	}
+	has(key: K): boolean {
+		return super.has(key) || this.parent.has(key)
+	}
+	get size(): number {
+		let size = this.parent.size
+		for (const key of super.keys()) {
+			if (!this.parent.has(key)) size++
+		}
+		return size
+	}
+	*entries(): MapIterator<[K, V]> {
+		for (const [key, value] of this.parent.entries()) {
+			yield [key, super.has(key) ? (super.get(key) as V) : value]
+		}
+		for (const [key, value] of super.entries()) {
+			if (!this.parent.has(key)) yield [key, value]
+		}
+	}
+	*keys(): MapIterator<K> {
+		for (const [key] of this.entries()) yield key
+	}
+	*values(): MapIterator<V> {
+		for (const [, value] of this.entries()) yield value
+	}
+	[Symbol.iterator](): MapIterator<[K, V]> {
+		return this.entries()
+	}
+	forEach(
+		callback: (value: V, key: K, map: Map<K, V>) => void,
+		thisArg?: unknown,
+	): void {
+		for (const [key, value] of this.entries()) {
+			callback.call(thisArg, value, key, this)
+		}
+	}
+}
+
+export function copyContext<C extends Context>(
+	context: C,
+	{
+		inherit = false,
+	}: {
+		inherit?: boolean
+	} = {},
+): C {
+	const { referencesIn, rulesThatUse } = context.referencesMaps
 	return Object.assign({}, context, {
-		parsedRules: weakCopyObj(context.parsedRules),
-		referencesMaps: {
-			referencesIn: new Map(context.referencesMaps.referencesIn),
-			rulesThatUse: new Map(context.referencesMaps.rulesThatUse),
-		},
+		parsedRules:
+			inherit ?
+				(Object.create(context.parsedRules) as C['parsedRules'])
+			:	weakCopyObj(context.parsedRules),
+		referencesMaps:
+			inherit ?
+				{
+					referencesIn: new InheritedMap(referencesIn),
+					rulesThatUse: new InheritedMap(rulesThatUse),
+				}
+			:	{
+					referencesIn: new Map(referencesIn),
+					rulesThatUse: new Map(rulesThatUse),
+				},
 		subEngines: new Map(),
 		warn: weakCopyObj(context.warn),
 		strict: weakCopyObj(context.strict),
@@ -142,6 +203,11 @@ export default function parsePublicodes<
 >(
 	rawRules: RawPublicodes<NewRulesNames>,
 	partialContext: PartialContext<ContextNames> = createContext({}),
+	{
+		mutateParsedRules = false,
+	}: {
+		mutateParsedRules?: boolean
+	} = {},
 ): Pick<
 	Context<ContextNames | NewRulesNames>,
 	'parsedRules' | 'nodesTypes' | 'referencesMaps' | 'rulesReplacements'
@@ -164,14 +230,53 @@ export default function parsePublicodes<
 	context.parsedRules = {} as ParsedRules<ContextNames>
 	parseRules(rules, context)
 
-	let parsedRules = {} as ParsedRules<NewRulesNames | ContextNames>
-	for (const dottedName in previousParsedRules) {
-		parsedRules[dottedName] = previousParsedRules[dottedName]
-	}
-	for (const dottedName in context.parsedRules) {
-		parsedRules[dottedName] = context.parsedRules[dottedName]
+	let parsedRules: ParsedRules<NewRulesNames | ContextNames>
+	const overwrittenRules = new Map<string, RuleNode | undefined>()
+	if (mutateParsedRules) {
+		parsedRules = previousParsedRules as ParsedRules<
+			NewRulesNames | ContextNames
+		>
+		for (const dottedName in context.parsedRules) {
+			overwrittenRules.set(
+				dottedName,
+				dottedName in parsedRules ? parsedRules[dottedName] : undefined,
+			)
+			parsedRules[dottedName] = context.parsedRules[dottedName]
+		}
+	} else {
+		parsedRules = {} as ParsedRules<NewRulesNames | ContextNames>
+		for (const dottedName in previousParsedRules) {
+			parsedRules[dottedName] = previousParsedRules[dottedName]
+		}
+		for (const dottedName in context.parsedRules) {
+			parsedRules[dottedName] = context.parsedRules[dottedName]
+		}
 	}
 
+	try {
+		return parseNewRules(context, parsedRules)
+	} catch (error) {
+		overwrittenRules.forEach((rule, dottedName) => {
+			if (rule === undefined) {
+				delete parsedRules[dottedName]
+			} else {
+				parsedRules[dottedName] = rule
+			}
+		})
+		throw error
+	}
+}
+
+function parseNewRules<
+	ContextNames extends string,
+	NewRulesNames extends string,
+>(
+	context: Context<ContextNames>,
+	parsedRules: ParsedRules<NewRulesNames | ContextNames>,
+): Pick<
+	Context<ContextNames | NewRulesNames>,
+	'parsedRules' | 'nodesTypes' | 'referencesMaps' | 'rulesReplacements'
+> {
 	// STEP 3: Disambiguate reference
 	const [newRules, referencesMaps] =
 		disambiguateReferencesAndCollectDependencies(
@@ -182,9 +287,7 @@ export default function parsePublicodes<
 		)
 
 	// STEP 4: Inline replacements
-	let rulesReplacements
-		// eslint-disable-next-line prefer-const
-	;[parsedRules, rulesReplacements] = inlineReplacements<
+	const [inlinedRules, rulesReplacements] = inlineReplacements<
 		NewRulesNames,
 		ContextNames
 	>({
@@ -197,12 +300,12 @@ export default function parsePublicodes<
 	// STEP 5: type inference
 	const nodesTypes = inferNodeType(
 		Object.keys(newRules),
-		parsedRules,
+		inlinedRules,
 		context.nodesTypes,
 	)
 
 	return {
-		parsedRules,
+		parsedRules: inlinedRules,
 		nodesTypes,
 		referencesMaps,
 		rulesReplacements,

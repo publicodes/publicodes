@@ -1,11 +1,21 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import {
 	getDifferenceInMonths,
 	getDifferenceInYears,
 	getTrimestreCivil,
+	normalizeDate,
 } from '../src/date'
 
 describe('Date', () => {
+	describe('normalizeDate', () => {
+		afterEach(() => vi.unstubAllEnvs())
+
+		it('should accept January 1st 1970, even when it is exactly 0 (UTC)', () => {
+			vi.stubEnv('TZ', 'UTC')
+			expect(normalizeDate(1970, 1, 1)).to.equal('01/01/1970')
+		})
+	})
+
 	describe('getDifferenceInMonths', () => {
 		it('should compute the difference for one full month', () => {
 			expect(getDifferenceInMonths('01/01/2020', '31/01/2020')).toBe(1)

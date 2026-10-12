@@ -99,7 +99,7 @@ export class Engine<RuleNames extends string = string> {
 			...initialContext,
 			...parsePublicodes(rules as RawPublicodes<RuleNames>, initialContext),
 		})
-		this.context = copyContext(this.baseContext)
+		this.context = copyContext(this.baseContext, { inherit: true })
 
 		this.publicParsedRules = {} as ParsedRules<RuleNames>
 		for (const name in this.baseContext.parsedRules) {
@@ -183,7 +183,7 @@ export class Engine<RuleNames extends string = string> {
 		})
 
 		if (!keepPreviousSituation) {
-			this.context = copyContext(this.baseContext)
+			this.context = copyContext(this.baseContext, { inherit: true })
 			this.publicSituation = {}
 		}
 
@@ -380,6 +380,7 @@ export class Engine<RuleNames extends string = string> {
 						:	value,
 				},
 				this.context,
+				{ mutateParsedRules: true },
 			),
 		)
 		this.checkExperimentalRule(this.context.parsedRules['$EVALUATION'])
@@ -443,15 +444,38 @@ export class Engine<RuleNames extends string = string> {
 	 *
 	 * @returns a new Engine instance with the same baseContext, context, publicParsedRules, publicSituation and cache attributes.
 	 */
-	shallowCopy(): Engine<RuleNames> {
+	shallowCopy({
+		copyCache = true,
+		inherit = false,
+	}: {
+		/**
+		 * Copy the evaluation cache. Can be disabled if the copy calls
+		 * {@link setSituation} right away, as it resets the cache.
+		 * @default true
+		 */
+		copyCache?: boolean
+		/**
+		 * Inherit the parsed rules and references maps of this engine instead of
+		 * copying them. Only safe if this engine is not modified while the copy is
+		 * used. Iterating on them then only gives the new values.
+		 * @default false
+		 * @internal
+		 */
+		inherit?: boolean
+	} = {}): Engine<RuleNames> {
 		const newEngine = new Engine<RuleNames>()
-		newEngine.baseContext = copyContext(this.baseContext)
-		newEngine.context = copyContext(this.context)
+		newEngine.baseContext = Object.assign({}, this.baseContext, {
+			warn: weakCopyObj(this.baseContext.warn),
+			strict: weakCopyObj(this.baseContext.strict),
+			flag: weakCopyObj(this.baseContext.flag),
+			subEngines: new Map(),
+		})
+		newEngine.context = copyContext(this.context, { inherit })
 		newEngine.publicParsedRules = this.publicParsedRules
 		newEngine.publicSituation = weakCopyObj(this.publicSituation)
 		newEngine.cache = {
 			...emptyCache(),
-			nodes: new Map(this.cache.nodes),
+			nodes: copyCache ? new Map(this.cache.nodes) : new Map(),
 		}
 		return newEngine
 	}
@@ -520,7 +544,9 @@ export class Engine<RuleNames extends string = string> {
 			]),
 		) as RawPublicodes<RuleNames>
 		try {
-			const newContext = parsePublicodes(situationToParse, this.context)
+			const newContext = parsePublicodes(situationToParse, this.context, {
+				mutateParsedRules: true,
+			})
 			this.context = Object.assign(this.context, newContext)
 			return false
 		} catch (error) {

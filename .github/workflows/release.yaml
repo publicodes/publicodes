@@ -9,6 +9,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
   contents: write
+  pull-requests: write
   id-token: write # Required for OIDC
 
 jobs:
@@ -58,7 +59,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v6
         with:
-          node-version: 22.x
+          node-version: 24
           cache: yarn
           registry-url: 'https://registry.npmjs.org'
 
@@ -76,5 +77,3 @@ jobs:
         with:
           publish: yarn release
           version: yarn run version
-        env:
-          GITHUB_TOKEN: ${{ secrets.SECRET_GITHUB }}

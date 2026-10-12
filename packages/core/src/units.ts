@@ -272,41 +272,73 @@ function areEquivalentSerializedUnit(
 	)
 }
 
+type UnitConversion = {
+	factorTo: number
+	factorFrom: number
+	numeratorsFactor: number
+	denominatorsFactor: number
+}
+
+const unitConversionsCache = new WeakMap<Unit, WeakMap<Unit, UnitConversion>>()
+
+function getUnitConversion(from: Unit, to: Unit | undefined): UnitConversion {
+	const [fromSimplified, factorTo] = simplifyUnitWithValue(from)
+	const [toSimplified, factorFrom] = simplifyUnitWithValue(to || noUnit)
+	return {
+		factorTo,
+		factorFrom,
+		numeratorsFactor: unitsConversionFactor(
+			fromSimplified.numerators,
+			toSimplified.numerators,
+		),
+		denominatorsFactor: unitsConversionFactor(
+			toSimplified.denominators,
+			fromSimplified.denominators,
+		),
+	}
+}
+
 export function convertUnit<ValType extends Evaluation<number>>(
 	from: Unit | undefined,
 	to: Unit | undefined,
 	value: ValType,
 ): ValType {
-	const serializedFrom = serializeUnit(from)
-	const serializedTo = serializeUnit(to)
-	if (
-		!areEquivalentSerializedUnit(serializedFrom, serializedTo) &&
-		!areUnitConvertible(from, to)
-	) {
-		throw new PublicodesError(
-			'EngineError',
-			`Impossible de convertir l'unité '${serializedFrom}' en '${serializedTo}'`,
-			{},
-		)
-	}
-	if (!value) {
+	let conversion = from && to && unitConversionsCache.get(from)?.get(to)
+	if (!conversion) {
+		const serializedFrom = serializeUnit(from)
+		const serializedTo = serializeUnit(to)
+		if (
+			!areEquivalentSerializedUnit(serializedFrom, serializedTo) &&
+			!areUnitConvertible(from, to)
+		) {
+			throw new PublicodesError(
+				'EngineError',
+				`Impossible de convertir l'unité '${serializedFrom}' en '${serializedTo}'`,
+				{},
+			)
+		}
+		if (!value) {
+			return value
+		}
+		if (from === undefined) {
+			return value
+		}
+		conversion = getUnitConversion(from, to)
+		if (to) {
+			let fromCache = unitConversionsCache.get(from)
+			if (!fromCache) {
+				fromCache = new WeakMap()
+				unitConversionsCache.set(from, fromCache)
+			}
+			fromCache.set(to, conversion)
+		}
+	} else if (!value) {
 		return value
 	}
-	if (from === undefined) {
-		return value
-	}
-	const [fromSimplified, factorTo] = simplifyUnitWithValue(from || noUnit)
-	const [toSimplified, factorFrom] = simplifyUnitWithValue(to || noUnit)
 	return round(
-		((value * factorTo) / factorFrom) *
-			unitsConversionFactor(
-				fromSimplified.numerators,
-				toSimplified.numerators,
-			) *
-			unitsConversionFactor(
-				toSimplified.denominators,
-				fromSimplified.denominators,
-			),
+		((value * conversion.factorTo) / conversion.factorFrom) *
+			conversion.numeratorsFactor *
+			conversion.denominatorsFactor,
 	) as any
 }
 

@@ -1,5 +1,6 @@
 import type { ProduitSlug } from './produits';
 
+// TODO: handle deprecated packages (e.g. @betagouv/aides-velo).
 export const publicodesPackages: readonly PublicodesPackage[] = [
 	{
 		npm: '@incubateur-ademe/nosgestesclimat',
@@ -64,6 +65,12 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
 		npm: 'mesaidesreno',
 		maintainer: 'mes-aides-reno',
 		description: "Aides et coût d'une rénovation thermique"
+	},
+	{
+		npm: '@abc-transitionbascarbone/calculateur-tourisme',
+		maintainer: 'abc',
+		description:
+			"Le modèle de calcul d'empreinte climat de tourisme, fork du modèle de calcul Nos Gestes Climat"
 	}
 ];
 

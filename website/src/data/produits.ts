@@ -6,6 +6,8 @@ import monEmpreinteEauImg from './logos/mon-empreinte-eau.webp';
 import troopay from './logos/troopay.png';
 import jagisImg from './logos/jagis.webp';
 import teeImg from './logos/TEE.webp';
+import abcImg from './logos/ABC.png';
+import plusFraisAuTravailImg from './logos/plus-frais-au-travail.png';
 
 const rawProduits = [
 	{
@@ -141,9 +143,25 @@ const rawProduits = [
 		slug: 'troopay',
 		name: 'Troopay',
 		description:
-			'Troopay utilise publicodes pour calculer un bulletin de paie pour les entrepreneurs',
+			'Troopay utilise Publicodes pour calculer un bulletin de paie pour les entrepreneurs.',
 		url: 'https://www.troopay.com/',
 		img: troopay
+	},
+	{
+		slug: 'abc',
+		name: 'L’Association pour la transition Bas Carbone (ABC)',
+		description:
+			'L’Association pour la transition Bas Carbone (ABC) utilise Publicodes pour leurs simulateurs d’empreinte carbone pour différents secteurs d’activité (salles de cinéma, écoles, etc...).',
+		url: 'https://abc-transitionbascarbone.fr/',
+		img: abcImg
+	},
+	{
+		slug: 'plus-frais-au-travail',
+		name: 'Plus frais au travail',
+		description:
+			'Plus frais au travail aide les employeurs à agir concrètement face aux risques liés à la chaleur et améliorer les conditions de travail.',
+		url: 'https://plusfraisautravail.beta.gouv.fr/',
+		img: plusFraisAuTravailImg
 	},
 	{
 		slug: 'calinou',
