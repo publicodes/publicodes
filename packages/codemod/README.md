@@ -20,4 +20,4 @@ npx @publicodes/codemod <path-to-publicode-folder>
 
 4. **You'll need to update manually call to `evaluate` with publicodes expression** in your codebase, if needed.
 
-See the [migration guide](https://publi.codes/docs/guides/migration-v1) for more details.
+See the [migration guide](https://v1.publi.codes/docs/guides/migration-v1) for more details.

@@ -1,8 +1,6 @@
 # Changelog
 
-- [CHANGELOG de `publicodes`](./packages/core/CHANGELOG.md)
-- [CHANGELOG de `@publicodes/react-ui`](./packages/react-ui/CHANGELOG.md)
-- [CHANGELOG de `@publicodes/rest-api`](./packages/rest-api/CHANGELOG.md)
+- [CHANGELOG de `publicodes`](./packages/cli/CHANGELOG.md)
 
 <details>
 <summary>

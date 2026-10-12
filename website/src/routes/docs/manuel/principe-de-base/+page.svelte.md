@@ -126,7 +126,7 @@ Par exemple le mécanisme `somme` comptera une prime non applicable comme valant
 
 <Callout type="caution" title="La valeur `non` est applicable">
 
-Publicodes différencie la valeur booléenne `non` d'une valeur _non applicable_. Cela permet par exemple de cacher les questions non applicable [dans un formulaire](/docs/guides/formulaire) tout en affichant les questions dont la réponse est `non`.
+Publicodes différencie la valeur booléenne `non` d'une valeur _non applicable_.
 
 </Callout>
 
@@ -458,6 +458,7 @@ b: c + 3
 c: a + 4
 ```
 
-Pour lever une exception plutôt qu'un warning, on peut utiliser l'option [`noCycleRuntime`](/docs/api/publicodes/type-aliases/StrictOptions)
+Pour lever une exception plutôt qu'un warning, on peut utiliser l'option
+[`noCycleRuntime`](https://v1.publi.codes/docs/api/publicodes/type-aliases/StrictOptions)
 
 Il est possible de résoudre une référence circulaire avec le mécanisme [`résoudre la référence circulaire`](/docs/mecanismes#résoudre-la-référence-circulaire).

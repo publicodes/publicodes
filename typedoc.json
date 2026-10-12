@@ -4,10 +4,9 @@
 	"entryFileName": "index",
 	"entryPointStrategy": "packages",
 	"exclude": [
-		"./examples/**",
 		"./website",
 		"./packages/codemod",
-		"./packages/cli*",
+		"./packages/cli-*",
 		"./packages/compiler",
 		"./packages/compiler/**"
 	],

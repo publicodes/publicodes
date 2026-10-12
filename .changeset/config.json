@@ -18,12 +18,7 @@
 		]
 	],
 	"linked": [
-		[
-			"publicodes",
-			"@publicodes/react-ui",
-			"@publicodes/rest-api",
-			"@publicodes/tools"
-		]
+		[]
 	],
 	"access": "public",
 	"baseBranch": "master",

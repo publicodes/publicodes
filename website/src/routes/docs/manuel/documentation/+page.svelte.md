@@ -31,8 +31,6 @@ prix:
 
 Pour parcourir la documentation d’un jeu de règles, vous pouvez utiliser [l'éditeur en ligne](https://publi.codes/studio).
 
-Si vous souhaitez publier une documentation directement sur votre site web, vous pouvez vous référer aux guides [Next.JS](/docs/guides/nextjs) ou [Svelte](/docs/guides/svelte).
-
 </Callout>
 
 La documentation automatique de publicodes génère une page web par règle. Cette règle contient l'explication des calculs, ainsi que des métadonnées standardisées qui sont définies directement dans le code :

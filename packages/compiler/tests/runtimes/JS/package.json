@@ -6,15 +6,14 @@
 	"type": "module",
 	"license": "MIT",
 	"devDependencies": {
+		"@types/jest": "^30.0.0",
 		"@vitest/eslint-plugin": "^1.6.14",
+		"bun": "^1.3.8",
 		"typescript": "^5.9.2"
 	},
 	"scripts": {
 		"lint": "bunx eslint .",
 		"test:compiler": "bun test --concurrent --only-failures",
 		"test:type": "tsc --noEmit"
-	},
-	"dependencies": {
-		"bun": "^1.3.8"
 	}
 }

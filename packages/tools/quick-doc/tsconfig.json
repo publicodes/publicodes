@@ -1,8 +1,0 @@
-{
-	"extends": "../../../tsconfig.json",
-	"compilerOptions": {
-		"lib": ["es2024", "dom"],
-		"jsx": "react-jsx",
-		"jsxImportSource": "react"
-	}
-}

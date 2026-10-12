@@ -31,12 +31,6 @@
 		>.
 	</p>
 	<p>
-		Pour tout savoir sur comment <strong
-			>créer et publier un paquet publicodes</strong
-		>, vous pouvez
-		<a href="/docs/guides/model-template/">consulter le guide dédié.</a>
-	</p>
-	<p>
 		Si vous souhaitez <strong
 			>ajouter votre paquet publicodes à cette liste</strong
 		>, vous pouvez

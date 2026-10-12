@@ -56,7 +56,7 @@
 			"cache": false
 		},
 		"website#doc": {
-			"dependsOn": ["^build", "@publicodes/rest-api#build"],
+			"dependsOn": ["^build"],
 			"inputs": [
 				"../packages/**/*.{ts,tsx}",
 				"../typedoc.json",
