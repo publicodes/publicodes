@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://publi.codes/sitemap.xml
+Sitemap: https://v1.publi.codes/sitemap.xml

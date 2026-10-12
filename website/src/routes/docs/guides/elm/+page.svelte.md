@@ -26,7 +26,7 @@ manipulées dans le code Elm est connu à la compilation et ne permet pas de
 représenter des valeurs de type `any` ou `unknown` comme en JS.
 
 De plus, la librairie
-[`@publicodes/react-ui`](https://publi.codes/docs/api/react-ui) qui permet de
+[`@publicodes/react-ui`](https://v1.publi.codes/docs/api/react-ui) qui permet de
 générer une documentation interactive des règles d'un modèle Publicodes est une
 librairie React, et il n'est **pas possible d'utiliser directement des composants
 React depuis une application Elm**.
@@ -101,7 +101,7 @@ vous pouvez utilisez la fonction
 du package [`@publicodes/tools`](https://publicodes.github.io/tools/).
 
 > **Astuce** : si vous souhaitez publier votre modèle sur NPM, vous pouvez
-> suivre le [guide dédié](https://publi.codes/docs/guides/model-template/).
+> suivre le [guide dédié](https://v1.publi.codes/docs/guides/model-template/).
 
 #### Initialisation du code JS
 
@@ -394,7 +394,7 @@ app.ports.evaluateAll.subscribe((rules: RuleName[]) => {
 ## Utilisation de `@publicodes/react-ui` pour la documentation
 
 Publicodes propose une librairie React
-[`@publicodes/react-ui`](https://publi.codes/docs/api/react-ui) qui permet
+[`@publicodes/react-ui`](https://v1.publi.codes/docs/api/react-ui) qui permet
 d'afficher [une documentation interactive](https://ekofest.fr/documentation) des
 règles du modèle. Malheureusement, on ne peut **pas utiliser directement des
 composants React depuis une application Elm**.

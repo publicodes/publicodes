@@ -126,7 +126,7 @@ console.log(`J'ai dépensé ${formatValue(depensesParJour)}.`);
 **Conversion d'unité**
 
 Pour faire une conversion d'unité, il faut
-indiquer l'unité désirée via le mécanisme [`unité`](https://publi.codes/documentation/mécanismes#unité) :
+indiquer l'unité désirée via le mécanisme [`unité`](https://v1.publi.codes/documentation/mécanismes#unité) :
 
 ```js
 // on va au marché une fois par semaine en moyenne, combien dépense-t-on par mois ?

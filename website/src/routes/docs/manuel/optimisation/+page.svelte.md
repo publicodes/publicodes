@@ -23,7 +23,7 @@ implémentés pour être le plus transparent et intelligible possible pour le pl
 grand nombre.
 Cela implique de détailler au maximum les calculs, ce qui peut conduire à une
 complexité importante des modèles. Cependant, cette complexité n'est justifiée
-que pour la [documentation](https://publi.codes/docs/api/react-ui/) et non pour le calcul en lui-même.
+que pour la [documentation](https://v1.publi.codes/docs/api/react-ui/) et non pour le calcul en lui-même.
 
 Par exemple, considérons les règles suivantes :
 

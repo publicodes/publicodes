@@ -55,7 +55,7 @@
 				class="inline-flex shrink-0 items-center gap-2 text-xl font-light hover:text-primary-400"
 				href="/">
 				<img src={Logo} class="h-7" alt="Logo de publicodes" />
-				Publicodes
+				Publicodes 1.0
 			</a>
 			<div class="hidden sm:block">
 				{@render Menu()}
@@ -203,7 +203,7 @@
 						<li>
 							<a
 								target="_blank"
-								href="https://dashboard.simpleanalytics.com/publi.codes"
+								href="https://dashboard.simpleanalytics.com/v1.publi.codes"
 								aria-label="Statistiques de consultation, nouvelle fenêtre"
 								>Statistiques</a>
 						</li>

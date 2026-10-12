@@ -42,10 +42,10 @@
 	<meta property="og:image" content={image} />
 	<meta property="og:locale" content="fr_FR" />
 
-	<meta property="twitter:domain" content="publi.codes" />
+	<meta property="twitter:domain" content="v1.publi.codes" />
 	<meta
 		property="twitter:url"
-		content="https://publi.codes{page.url.pathname.toString()}" />
+		content="https://v1.publi.codes{page.url.pathname.toString()}" />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
 	<meta name="twitter:image" content={image} />
@@ -54,6 +54,6 @@
    "@context": "https://schema.org",
    "@type": "Website",
    "name": "${title}",
-   "url": "https//www.publi.codes${page.url.pathname}",
+   "url": "https//v1.publi.codes${page.url.pathname}",
    "logo": ${image}  }</script>`}
 </svelte:head>
