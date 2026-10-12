@@ -166,6 +166,8 @@
 					</span>
 				{/if}
 			</NavTab>
+
+			<NavTab href="https://v1.publi.codes/">Version 1</NavTab>
 		</ul>
 	</nav>
 {/snippet}
