@@ -9,7 +9,7 @@ de pouvoir importer des règles d'un autre modèle.
 
 Pour ce faire nous avons défini une macro `importer!` qui permet de spécifier
 une liste de règles à importer depuis un fichier JSON d'un [modèle
-compilé](./compilation). Par défaut, le fichier JSON est recherché dans le
+compilé](../compilation/). Par défaut, le fichier JSON est recherché dans le
 package NPM du modèle ou bien il est possible de spécifier un chemin vers un
 fichier local.
 
@@ -21,7 +21,7 @@ L'API d'import/export de règles est en cours de réécriture, et va changer de 
 
 <Callout type="caution">
 
-La macro `importer!` est une macro de compilation. Pour qu'elle puisse fonctionner, le modèle doit être compilé avec [@publicodes/tools](./compilation)
+La macro `importer!` est une macro de compilation. Pour qu'elle puisse fonctionner, le modèle doit être compilé avec [@publicodes/tools](../compilation/)
 
 </Callout>
 
@@ -60,7 +60,7 @@ Avec :
   des attributs à écraser pour chaque règle (optionnel)
 
 Par défaut, si aucune `source` n'est spécifiée, le modèle est supposé être
-[compilé](./compilation) dans le fichier `<package_name>.model.json` à la racine
+[compilé](../compilation/) dans le fichier `<package_name>.model.json` à la racine
 du package NPM. Le package NPM du modèle à utiliser doit donc **être publié sur
 NPM** et être **ajouté aux dépendances du projet** courant.
 Il est également possible de spécifier le chemin vers un fichier local avec
