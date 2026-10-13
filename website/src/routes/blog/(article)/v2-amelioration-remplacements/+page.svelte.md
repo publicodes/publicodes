@@ -35,7 +35,7 @@ reviendra sur les enjeux techniques levés pour la refonte de la documentation.
 
 ## Rappel
 
-Le [remplacement](https://publi.codes/docs/manuel/principe-de-base#remplacement)
+Le [remplacement](https://publi.codes/docs/manuel/principe-de-base/#remplacement)
 est un concept central de Publicodes qui permet de facilement modéliser des
 algorithmes issues de textes législatifs. En effet, le mécanisme `remplace`
 permet de substituer les référence d'une règle par une autre en fonction du
