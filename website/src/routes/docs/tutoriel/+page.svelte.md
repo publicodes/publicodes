@@ -24,7 +24,7 @@ permet de bénéficier de l'autocomplétion et de la documentation des règles.
 
 > Le language serveur est en cours de réécriture, il est possible qu'il ne
 > fonctionne pas correctement. En particulier, si vous utilisez le [sytème
-> d'import de règles](/docs/manuel/importer-des-regles).
+> d'import de règles](/docs/manuel/importer-des-regles/).
 
 [➡ Installer
 l'extension](https://marketplace.visualstudio.com/items?itemName=EmileRolley.publicodes-language-server)
