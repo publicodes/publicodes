@@ -26,7 +26,7 @@ export function getMarkdownPagesInfo<Metadata>(
 				.replace(/\(.*?\)\//g, '');
 			return {
 				slug: path.split('/').pop() as string,
-				path,
+				path: path.concat('/'),
 				metadata
 			};
 		})

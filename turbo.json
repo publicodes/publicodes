@@ -65,6 +65,7 @@
 			"outputs": ["./website/src/routes/docs/api"]
 		},
 		"website#build": {
+			"env": ["WEBSITE_ADAPTER"],
 			"dependsOn": ["^build", "doc"]
 		},
 		"website#dev": {
