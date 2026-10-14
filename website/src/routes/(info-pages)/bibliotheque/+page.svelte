@@ -26,7 +26,7 @@
 		Vous pouvez <strong>réutiliser les calculs</strong> d'un modèle
 		<strong>dans votre projet</strong>
 		grâce à
-		<a href="./docs/manuel/importer-des-regles"
+		<a href="/docs/manuel/importer-des-regles/"
 			>la macro <code>importer!</code></a
 		>.
 	</p>
@@ -34,7 +34,7 @@
 		Pour tout savoir sur comment <strong
 			>créer et publier un paquet publicodes</strong
 		>, vous pouvez
-		<a href="./docs/guides/model-template">consulter le guide dédié.</a>
+		<a href="/docs/guides/model-template/">consulter le guide dédié.</a>
 	</p>
 	<p>
 		Si vous souhaitez <strong

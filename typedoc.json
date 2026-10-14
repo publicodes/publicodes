@@ -40,7 +40,6 @@
 		"typedoc-plugin-frontmatter",
 		"./.typedoc/markdown-plugin.mjs"
 	],
-
 	"readme": "none",
 	"sanitizeComments": false,
 	"tableColumnSettings": {
