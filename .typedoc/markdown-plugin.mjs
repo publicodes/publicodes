@@ -1,5 +1,6 @@
 // @ts-check
 
+import { ReflectionKind } from 'typedoc'
 import {
 	MarkdownPageEvent,
 	MarkdownRendererEvent,
@@ -11,11 +12,11 @@ import {
 
 export function load(app) {
 	app.renderer.on(MarkdownRendererEvent.BEGIN, (renderer) => {
-		renderer.urls?.forEach((url) => {
-			if (url.url.includes('index.md')) {
-				url.url = url.url.replace(/index\.md$/, '+page.svelte.md')
+		renderer.pages?.forEach((page) => {
+			if (page.url.includes('index.md')) {
+				page.url = page.url.replace(/index\.md$/, '+page.svelte.md')
 			} else {
-				url.url = url.url.replace(/(.*?)\.md$/, '$1/+page.svelte.md')
+				page.url = page.url.replace(/(.*?)\.md$/, '$1/+page.svelte.md')
 			}
 		})
 	})
@@ -30,16 +31,26 @@ export function load(app) {
 	})
 
 	app.renderer.on(MarkdownPageEvent.END, (page) => {
+		switch (page.model?.kind) {
+			case ReflectionKind.Project:
+			case ReflectionKind.Module:
+			case ReflectionKind.Namespace:
+				page.contents = page.contents.replaceAll(
+					/\[(.*?)\]\((?!http)(?!#)(.*?)\)/g,
+					`[$1](${page.url.split('/').at(-2) ?? '.'}/$2)`,
+				)
+				break
+			default:
+				page.contents = page.contents.replaceAll(
+					/\[(.*?)\]\((?!http)(?!#)(.*?)\)/g,
+					`[$1](${page.url.split('/').at(-2) ?? '.'}/../$2)`,
+				)
+				break
+		}
 		page.contents = page.contents
 			?.replaceAll('/index.md', '')
 			.replaceAll('(index.md)', '(.)')
 			.replaceAll('.md', '')
-			// The link should work when the page is not `my-page/index.md` but just `/my-page`
-			.replaceAll(
-				/\[(.*?)\]\((?!http)(.*?)\)/g,
-				`[$1](${page.url.split('/').at(-2) ?? '.'}/$2)`,
-			)
-			.replaceAll('(../', '(')
 			// Fix escaping of < , > and { }
 			.replaceAll('\\<', '&amp;lt;')
 			.replaceAll('\\>', '&amp;gt;')
