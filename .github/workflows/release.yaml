@@ -11,6 +11,7 @@ permissions:
   contents: write
   pull-requests: write
   id-token: write # Required for OIDC
+  attestations: write
 
 jobs:
   build-compiler:
