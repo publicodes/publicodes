@@ -70,6 +70,7 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
           pattern: publicodes-cli-*
+          merge-multiple: true
       - name: Untar builds artifacts
         run: find . -name '*.tar.gz' -maxdepth 1 -exec tar -xvf {} \;
 
