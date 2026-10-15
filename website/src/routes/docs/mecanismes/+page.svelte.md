@@ -108,7 +108,7 @@ est majeur:
 
 ## `toutes ces conditions`
 
-Renvoie `oui` si toutes toutes les règles listées sont _applicables_.
+Renvoie `oui` si toutes les règles listées sont _applicables_.
 
 Équivaut à un `et` logique.
 
@@ -125,7 +125,7 @@ peut voter:
 
 Produit des facteurs de la liste.
 
-Si un des facteur n’est pas applicable, le produit est non applicable.
+Si un des facteurs n’est pas applicable, le produit est non applicable.
 
 ### Utilisation
 
@@ -283,6 +283,42 @@ arrondi:
   valeur: 2 / 3
 ```
 
+## `arrondi à l'inférieur`
+
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
+
+Arrondit à l’entier inférieur, ou à une précision donnée.
+
+```publicodes title="Exemple"
+arrondi:
+  arrondi à l'inférieur: oui
+  valeur: 12.45
+```
+
+```publicodes title="Nombre de décimales"
+arrondi:
+  arrondi à l'inférieur: 2 décimales
+  valeur: 2 / 3
+```
+
+## `arrondi au supérieur`
+
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
+
+Arrondit à l’entier supérieur, ou à une précision donnée.
+
+```publicodes title="Exemple"
+arrondi:
+  arrondi au supérieur: oui
+  valeur: 12.45
+```
+
+```publicodes title="Nombre de décimales"
+arrondi:
+  arrondi au supérieur: 2 décimales
+  valeur: 2 / 3
+```
+
 ## `contexte`
 
 Spécifie le contexte d'évaluation d'une règle.
@@ -308,7 +344,9 @@ cotisations pour un SMIC:
 
 ## `barème`
 
-par son utilisation dans le calcul de l’impôt sur le revenu.
+TODO: pas encore implementé en version 2.0
+
+Par son utilisation dans le calcul de l’impôt sur le revenu.
 
 L’assiette est décomposée en plusieurs tranches, qui sont multipliées par un
 taux spécifique et enfin additionnées pour donner le résultat.
@@ -352,6 +390,8 @@ cotisation retraite:
 
 ## `grille`
 
+TODO: pas encore implementé en version 2.0
+
 C’est un barème sous la forme d’une grille de correspondance simple. C’est
 le mécanisme de calcul de l’impôt neutre, aussi appelé impôt non
 personnalisé.
@@ -380,12 +420,14 @@ trimestres validés:
 
 ## `taux progressif`
 
+TODO: pas encore implementé en version 2.0
+
 Ce mécanisme permet de calculer un taux progressif. On spécifie pour chaque
 tranche le plafond et le taux associé. Le taux effectif renvoyé est calculé
 en lissant la différence de taux entre la borne inférieure et supérieure de
 l’assiette.
 
-Par exemple, si nous nous avons les tranches suivantes :
+Par exemple, si nous avons les tranches suivantes :
 
 - taux: 50% / plafond: 0
 - taux: 100% / plafond: 1000
@@ -408,6 +450,8 @@ taux réduction de cotisation:
 ```
 
 ## `abattement`
+
+TODO: pas encore implementé en version 2.0
 
 **Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
@@ -466,6 +510,8 @@ déduction fiscale:
 
 ## `durée`
 
+TODO: pas encore implementé en version 2.0
+
 Permet de calculer la durée entre deux dates (la dernière date est exclue)
 
 Lorsqu'une des dates est omise, la date du jour est utilisée.
@@ -477,7 +523,7 @@ Il est possible de spécifier une unité pour le calcul de la durée. Les valeur
 - `trimestre` : trimestres entre les deux dates (nombre de mois / 3)
 - `an` : année complète (prend en compte les années bissextiles)
 - `année civile` : nombre d'années civiles écoulées entre les deux dates
-- `trimestre civil` : nombre de trimestres civils écoulées entre les deux dates
+- `trimestre civil` : nombre de trimestres civils écoulé entre les deux dates
 
 ### Exemple
 
@@ -524,6 +570,34 @@ salaire:
   unité: €/mois
 ```
 
+## `type`
+
+**Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
+
+Permet de typer explicitement une règle. Les types primaires sont `texte`,
+`booléen`, `date`, `nombre`.
+
+Affiche une erreur si la valeur n'est pas du type indiqué.
+
+```publicodes title="Exemple"
+salaire:
+  valeur: 35
+  type: nombre
+```
+
+Il est également possible de limiter les valeurs possibles, en définissant une
+énumération.
+
+```publicodes title="Exemple"
+tva:
+  type:
+    une possibilité:
+      - 20
+      - 10
+      - 5.5
+      - 2.1
+```
+
 ## `par défaut`
 
 **Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
@@ -538,51 +612,9 @@ TVA:
   par défaut: 20%
 ```
 
-## `texte`
-
-Permet de mettre en forme un texte avec des expressions évaluée dynamiquement.
-Ce principe est connu en informatique sous le nom d’interpolation de chaine de
-caractères.
-
-### Exemple
-
-```publicodes title="Texte documentation dynamique" selectedRuleInDoc="aide vélo"
-aide vélo:
-  texte: >
-    La région subventionne l’achat d’un vélo à hauteur de
-    {{ prise en charge }} et jusqu’à un plafond de {{ plafond }}.
-    Les éventuelles aides locales déjà perçues sont déduites de
-    ce montant.
-
-    Par exemple, pour un vélo de {{ exemple }}, la région vous
-    versera {{
-      exemple * prise en charge
-    }}.
-
-  avec:
-    prise en charge: 50%
-    plafond: 500 €
-    '[privé] exemple': 250 €
-```
-
-<Callout type="tip" title="Éviter les doubles quotes">
-
-On peut utiliser ce mécanisme pour éviter d’avoir à [échapper les doubles quotes](/docs/manuel/types#texte) dans un texte.
-
-```publicodes
-# ces deux règles sont équivalentes :
-
-exemple 1:
-  valeur: "'Ministère de la transition écologique et solidaire'"
-
-exemple 2:
-  texte: Ministère de la transition écologique et solidaire
-
-```
-
-</Callout>
-
 ## `inversion numérique`
+
+TODO: pas encore implementé en version 2.0
 
 **Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
@@ -592,7 +624,7 @@ interprétations administratives ou juridiques existantes. En conséquence,
 certaines variables n’auront donc pas de méthode de calcul clairement
 explicitée, il s’agira donc de la déduire des autres valeurs renseignées.
 
-De façon simplifiée, il s’agira donc, à partir d’une règle existante
+Éxprimé d'une autre manière, il s’agira donc, à partir d’une règle existante
 explicitant `y = ƒ(x)` de calculer `x` à partir de `y`.
 
 L’inversion numérique permet d’estimer la valeur de la variable en question
@@ -613,9 +645,12 @@ b:
     tolérance d'erreur: 1
 ```
 
-<Callout type="caution" title="Améliorer les performance">
+<Callout type="caution" title="Améliorer les performances">
 
-L'inversion est un mécanisme couteux en temps de calcul. Afin d'optimiser ses performances, il est possible d'utiliser le champ `min` (par défaut: `-1000000`) et/ou `max` (par défault: `100000000`) afin de limiter à une certaine plage la valeur au hasard choisi en début de calcul.
+L'inversion est un mécanisme couteux en temps de calcul. Afin d'optimiser
+ses performances, il est possible d'utiliser le champ `min` (par défaut:
+`-1000000`) et/ou `max` (par défault: `100000000`) pour limiter la plage de
+valeurs choisie au hasard en début de calcul.
 
 Par exemple, si on sait qu'une valeur est forcément positive, on peut préciser `min: 0`.
 
@@ -639,6 +674,8 @@ de celle-ci. Sinon, ces possibilités d’inversions seront listées comme
 manquantes.
 
 ## résoudre la référence circulaire
+
+TODO: pas encore implementé en version 2.0
 
 Active le calcul itératif pour trouver la valeur de la règle qui résout
 la référence circulaire.
@@ -675,6 +712,8 @@ revenu professionnel:
 ```
 
 ## `logarithme`
+
+TODO: pas encore implementé en version 2.0
 
 Calcule le logarithme népérien (ou logarithme naturel).
 

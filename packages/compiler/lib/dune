@@ -1,0 +1,17 @@
+(library
+ (inline_tests)
+ (name compiler)
+ (public_name publicodes.compiler)
+ (libraries
+  parser
+  resolver
+  analysis
+	typing
+  eval_tree
+  backends
+  utils
+  base
+  yaml)
+ (modules :standard)
+ (preprocess
+  (pps ppx_inline_test ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

@@ -6,3 +6,4 @@ yarn.lock
 .netlify
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+src/routes/docs/api/**/*.md

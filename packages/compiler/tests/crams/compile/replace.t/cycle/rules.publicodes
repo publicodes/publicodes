@@ -1,0 +1,11 @@
+a:
+  valeur: 4
+  remplace: b
+
+b:
+  valeur: 5
+  remplace: c
+
+c:
+  valeur: 9
+  remplace: a

@@ -1,0 +1,26 @@
+exponent can't have a unit:
+  public: oui
+  valeur: 10 l ** 2 kg
+
+exponent can't have a unit via ref:
+  public: oui
+  valeur: 10 l ** exponent
+  avec:
+    exponent: 10 kg
+
+exponent can't have a unit via remplacement:
+  public: oui
+  valeur: 10 l ** exponent
+  avec:
+    exponent: 10
+    replace:
+      remplace: exponent
+      valeur: 2 kg
+
+exponent can't have a unit via context:
+  public: oui
+  valeur: 10 l ** exponent
+  contexte:
+    exponent: 10 kg
+  avec:
+    exponent: 10

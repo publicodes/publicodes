@@ -28,7 +28,7 @@ Vous pouvez installer TurboRepo avec `npm install -g turbo`. L'autre solution es
 
 Si vous souhaitez uniquement travailler un package / workspace en particulier, vous pouvez lancer la commande `turbo run dev` depuis le dossier du package en question.
 
-Plus globalement, vous pouvez utiliser `turbo run <command>` pour lancer une commande dans un package en particulier. Par exemple pour lancer le type-checking dans `@publicodes/react-ui` : `turbo run test:type`. Cela compilera automatiquement les dépendances nécessaires (`publicodes` dans ce cas).
+Plus globalement, vous pouvez utiliser `turbo run <command>` pour lancer une commande dans un package en particulier.
 
 Pour en savoir plus, [voir la doc de TurboRepo](https://turbo.build/repo)
 
@@ -51,10 +51,6 @@ Les mécanismes sont les briques de base du langage publicodes. Il y en existe p
 
 Pour chaque mécanisme, il est nécessaire d'écrire des tests. Ils sont au format publicodes, et sont stockés dans le dossier [`test/mécanismes`](https://github.com/betagouv/publicodes/blob/master/packages/core/test/m%C3%A9canismes/)
 
-### Explications (`@publicodes/react-ui`)
-
-Créer un composant React pour expliquer le mécanisme. Il s'agit d'un composant qui prend en entrée un `ASTNode` et qui retourne un composant React. Il est stocké dans le dossier [`react-ui/src/mecanisms`](https://github.com/betagouv/publicodes/blob/master/packages/react-ui/src/mecanisms/)
-
 ### Documentation / outils
 
 - [Documenter le mécanisme sur le site](https://github.com/betagouv/publicodes/blob/master/website/src/routes/docs/mecanismes/+page.svelte.md)
@@ -65,5 +61,8 @@ Créer un composant React pour expliquer le mécanisme. Il s'agit d'un composant
 > changeset est un outil qui permet d'automatiser le versioning et la publication des packages dans un monorepo.
 
 Toute PR qui modifie le code d'un `package` de base doit être accompagnée d'un changeset. Pour cela, il suffit de lancer `yarn changeset` et de suivre les instructions.
+
+Les PR qui modifient le compilateur (`packages/compiler/`) doivent être
+accompagnée d'un changeset pour le _package_ `@publicodes/cli`.
 
 Une fois votre PR validée et mergée, vos changements seront automatiquement ajoutées à une PR « Version Packages ». La validation de cette PR déclenchera la publication des packages modifiés, avec la bonne montée de version.

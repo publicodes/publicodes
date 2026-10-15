@@ -1,0 +1,14 @@
+(library
+ (inline_tests)
+ (name shared)
+ (public_name publicodes.shared)
+ (libraries base utils yojson)
+ (modules :standard)
+ (preprocess
+  (pps
+   ppx_inline_test
+   ppx_sexp_conv
+   ppx_deriving.show
+   ppx_compare
+   sedlex.ppx
+   ppx_assert)))

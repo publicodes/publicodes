@@ -1,5 +1,0 @@
- importer!:
-  depuis:
-    source: './my-external-package.model.json'
-  les règles:
-     - complex

@@ -1,0 +1,12 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"build:compiler": {
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"$TURBO_ROOT/packages/compiler/_build/default/bin/main.exe"
+			],
+			"outputs": ["bin/compiler", "bin/publicodes.js"]
+		}
+	}
+}

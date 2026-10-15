@@ -1,0 +1,19 @@
+a:
+  public: oui
+  est défini: b
+b: oui
+
+a1:
+  public: oui
+  est non défini: b1
+b1: oui
+
+a2:
+  public: oui
+  est applicable: b2
+b2: oui
+
+a3:
+  public: oui
+  est non applicable: b3
+b3: oui

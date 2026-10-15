@@ -1,0 +1,16 @@
+a:
+  remplace:
+    références à: c
+    exclusif: oui
+  valeur: oui
+a':
+  remplace:
+    références à: c
+    exclusif: oui
+  valeur: non
+b:
+  rend non applicable: c
+  valeur: oui
+
+c:
+x: c

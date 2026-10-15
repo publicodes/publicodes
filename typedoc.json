@@ -3,7 +3,13 @@
 	"cleanOutputDir": false,
 	"entryFileName": "index",
 	"entryPointStrategy": "packages",
-	"exclude": ["./examples/**", "./website", "./packages/codemod"],
+	"exclude": [
+		"./website",
+		"./packages/codemod",
+		"./packages/cli-*",
+		"./packages/compiler",
+		"./packages/compiler/**"
+	],
 	"hidePageHeader": true,
 	"hidePageTitle": true,
 	"includeVersion": true,
