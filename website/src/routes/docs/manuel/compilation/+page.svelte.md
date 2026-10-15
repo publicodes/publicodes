@@ -10,7 +10,7 @@ règles Publicodes attend en entrée un objet JSON regroupant l'ensemble des
 règles à évaluer. Ainsi, les fichiers de règles (`.publicodes` ou `.yaml`)
 doivent être compilés en un objet JSON avant d'être utilisés.
 
-Par ailleurs, cette étape permet de résoudre les [imports de règles](../importer-des-regles/) depuis des paquets NPM via la macro `importer!`.
+Par ailleurs, cette étape permet de résoudre les [imports de règles](./importer-des-regles) depuis des paquets NPM via la macro `importer!`.
 
 Enfin, la compilation permet de générer des types TypeScript pour le modèle, facilitant ainsi son utilisation dans un projet TypeScript.
 

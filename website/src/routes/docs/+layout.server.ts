@@ -21,7 +21,7 @@ export function load({ url }) {
 		(page) => page.path === url.pathname
 	)?.metadata;
 	return {
-		menuEntries: docPages.filter((page) => page.path.split('/').length <= 5),
+		menuEntries: docPages.filter((page) => page.path.split('/').length <= 4),
 		...metadata
 	};
 }

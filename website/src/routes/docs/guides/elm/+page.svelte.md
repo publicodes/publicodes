@@ -101,7 +101,7 @@ vous pouvez utilisez la fonction
 du package [`@publicodes/tools`](https://publicodes.github.io/tools/).
 
 > **Astuce** : si vous souhaitez publier votre modèle sur NPM, vous pouvez
-> suivre le [guide dédié](https://publi.codes/docs/guides/model-template/).
+> suivre le [guide dédié](https://publi.codes/docs/guides/model-template).
 
 #### Initialisation du code JS
 
