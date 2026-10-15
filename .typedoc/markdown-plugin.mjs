@@ -35,11 +35,15 @@ export function load(app) {
 			case ReflectionKind.Project:
 			case ReflectionKind.Module:
 			case ReflectionKind.Namespace:
+				page.contents = page.contents.replaceAll(
+					/\[(.*?)\]\((?!http)(?!#)(.*?)\)/g,
+					`[$1](${page.url.split('/').at(-2) ?? '.'}/$2)`,
+				)
 				break
 			default:
 				page.contents = page.contents.replaceAll(
 					/\[(.*?)\]\((?!http)(?!#)(.*?)\)/g,
-					`[$1](../$2)`,
+					`[$1](${page.url.split('/').at(-2) ?? '.'}/../$2)`,
 				)
 				break
 		}

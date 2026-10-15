@@ -39,13 +39,13 @@ Il est maintenant possible de :
 
 Pourquoi ? Nous n'étions pas totalement convaincus de son implémentation et de sa sémantique.
 
-[Les retours de la communauté](../state-of-publicodes-2024/) ont été clairs : **l'amélioration du langage est la priorité absolue**. Nous avons donc exploré l'ajout d'un [véritable type enum](https://fr.wikipedia.org/wiki/Type_%C3%A9num%C3%A9r%C3%A9) dans Publicodes. Après un [premier brouillon d'une nouvelle syntaxe](https://github.com/publicodes/publicodes/discussions/571), nous avons réalisé que le mécanisme existant avait de bonnes bases et pouvait être enrichi et mieux spécifié, et cela **en gardant la même syntaxe**.
+[Les retours de la communauté](./state-of-publicodes-2024) ont été clairs : **l'amélioration du langage est la priorité absolue**. Nous avons donc exploré l'ajout d'un [véritable type enum](https://fr.wikipedia.org/wiki/Type_%C3%A9num%C3%A9r%C3%A9) dans Publicodes. Après un [premier brouillon d'une nouvelle syntaxe](https://github.com/publicodes/publicodes/discussions/571), nous avons réalisé que le mécanisme existant avait de bonnes bases et pouvait être enrichi et mieux spécifié, et cela **en gardant la même syntaxe**.
 
 Le gros avantage ? **Pas besoin de migrer les modèles existants** pour profiter des améliorations !
 
 Dans cette version 1.7, nous avons conservé le mécanisme `une possibilité` identique - même l'AST reste compatible ! - tout en ajoutant de nouvelles fonctionnalités :
 
-- Une nouvelle méthode [`getPossibilitiesFor`](/docs/api/publicodes/classes/Engine/#getpossibilitiesfor) pour faciliter l'affichage et la manipulation des possibilités dans vos simulateurs et formulaires
+- Une nouvelle méthode [`getPossibilitiesFor`](/docs/api/publicodes/classes/Engine#getpossibilitiesfor) pour faciliter l'affichage et la manipulation des possibilités dans vos simulateurs et formulaires
 - Une option stricte [`checkPossibleValues`](https://publi.codes/docs/api/publicodes/type-aliases/strictoptions) qui détecte les valeurs non listées dans les possibilités
 - Le support de nouveaux types dans la liste des possibilités : nombres, textes, et même définition directe de règles
 - L'évaluation de l'applicabilité des possibilités (et la sélection automatique de la valeur si une seule possibilité est applicable)

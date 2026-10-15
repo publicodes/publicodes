@@ -26,7 +26,7 @@
 					(a.metadata.sidebar_position as number)
 			);
 	}
-	const entryPages = getChildPage('/docs/');
+	const entryPages = getChildPage('/docs');
 	let showMobileMenuLeft = $state(false);
 	let showMobileMenuRight = $state(false);
 
