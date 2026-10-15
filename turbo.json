@@ -1,6 +1,6 @@
 {
-	"$schema": "https://turbo.build/schema.json",
-	"ui": "tui",
+	"$schema": "https://v2-9-3.turborepo.dev/schema.json",
+	"ui": "stream",
 	"tasks": {
 		"codegen:validate": {},
 		"codegen": {
@@ -17,9 +17,14 @@
 				".docusaurus/**",
 				".netlify/**",
 				"build/**",
-				"public/**"
+				"public/**",
+				"bin/**",
+				"publicodes-build/**",
+				"model.publicodes.json"
 			]
 		},
+		"build:compiler": {},
+		"test:compiler": {},
 		"prepack": {
 			"dependsOn": ["build"]
 		},
@@ -27,7 +32,7 @@
 			"dependsOn": ["^build", "codegen"]
 		},
 		"test": {
-			"dependsOn": ["test:type"]
+			"dependsOn": ["^build", "codegen"]
 		},
 		"format": {
 			"inputs": ["./**/*.{json,yml,yaml,js,jsx,ts,tsx,md,html}"],

@@ -66,4 +66,7 @@ Créer un composant React pour expliquer le mécanisme. Il s'agit d'un composant
 
 Toute PR qui modifie le code d'un `package` de base doit être accompagnée d'un changeset. Pour cela, il suffit de lancer `yarn changeset` et de suivre les instructions.
 
+Les PR qui modifient le compilateur (`packages/compiler/`) doivent être
+accompagnée d'un changeset pour le _package_ `@publicodes/cli`.
+
 Une fois votre PR validée et mergée, vos changements seront automatiquement ajoutées à une PR « Version Packages ». La validation de cette PR déclenchera la publication des packages modifiés, avec la bonne montée de version.

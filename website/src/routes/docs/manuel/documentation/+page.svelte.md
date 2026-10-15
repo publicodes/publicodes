@@ -39,9 +39,7 @@ La documentation automatique de publicodes génère une page web par règle. Cet
 
 - `titre` : si défini, il est utilisé à la place du nom de la règle dans l'interface utilisateur.
 - `description` : elle est affichée comme paragraphe d'introduction sur la documentation
-- `icônes` : permet d'ajouter des emojis qui sont affichées à côté du titre (mais pas dans l'explication des calculs).
 - `note` : on l'utilise pour ajouter des informations complémentaires à la règle, généralement les détails d'implémentation ou des informations techniques. Elle est affichée en bas de la page de documentation.
-- `question` : utilisée pour la [génération automatique de formulaire](/docs/guides/formulaire). Elle est affichée dans la page de documentation en l'absence de la métadonnée `description`.
 - `références` : utilisée pour ajouter des liens vers des sources externes. Elle est affichée en bas de la page de documentation.
 
 **Exemple :**
@@ -50,16 +48,11 @@ La documentation automatique de publicodes génère une page web par règle. Cet
 
 pesanteur:
   valeur: 9.80665 m/s2
-  icônes: 🌍
   titre: Accélération de la pesanteur terrestre
   description: |
     L'accélération de la pesanteur terrestre est la force exercée par la Terre sur un objet en chute libre.
   note: |
     On utilise une précision de 5 chiffres après la virgule, suffisante pour la plupart des applications.
-
-  références:
-    Article wikipedia: https://fr.wikipedia.org/wikiAcc%C3%A9l%C3%A9ration_normale_de_la_pesanteur_terrestre
-
 ```
 
 <Callout type="info" title="Extension VSCode">
@@ -75,29 +68,9 @@ Il est possible d'ajouter des métadonnées personnalisées à vos règles. Vous
 ```publicodes
 notif zéro déchet:
   type: notification
-  message: "Vous avez atteint le zéro déchet !"
-```
-
-<Callout type="warning">
-
-Les mécanismes et les métadonnées étant définis au même niveau d'indentation, il y a un risque de changement cassant lorsqu'un nouveau mécanisme est introduit dans le langage.
-
-Pour éviter ce problème, il est recommandé de :
-
-- Préfixer les métadonnées personnalisées avec `_`
-- Rassembler toutes les métadonnées personnalisées dans le même objet ayant pour clé un nom spécifique à votre domaine.
-
-**Exemple :**
-
-```publicodes
-notif zéro déchet:
-  _NGC:
-    type: notification
+  meta:
     message: "Vous avez atteint le zéro déchet !"
-
 ```
-
-</Callout>
 
 ### Accéder aux métadonnées dans le code
 

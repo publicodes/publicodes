@@ -1,0 +1,97 @@
+# .github/actions/build_compiler/action.yaml
+#
+# Needs to be run with :
+#
+#   permissions:
+#     contents: read
+#     id-token: write
+#     attestations: write
+
+name: 'Build Compiler'
+description: 'Builds the OCaml compiler for multiple platforms'
+inputs:
+  compiler-path:
+    description: 'Compiler directory'
+    required: true
+    default: 'packages/compiler'
+  platform:
+    description: 'The name of the platform to compile to'
+    required: true
+  cli:
+    description: 'The name suffix of the platform generated cli'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Restore cached build
+      id: cache-build-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ inputs.compiler-path }}/_build
+        key: ${{ inputs.platform }}-${{ hashFiles(
+          format('{0}/**/*',  inputs.compiler-path),
+          format('!{0}/_build/**/*',  inputs.compiler-path)
+          ) }}-build
+
+    - name: Set-up OCaml
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
+      uses: ocaml/setup-ocaml@v3
+      with:
+        ocaml-compiler: 5.3
+    - name: Install node
+      uses: ./.github/actions/install-node
+    - name: Install bun
+      uses: oven-sh/setup-bun@v2
+
+    - name: Install dependencies
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
+      run: opam install . --deps-only --with-test
+      shell: bash
+      working-directory: ${{ inputs.compiler-path }}
+
+    - name: Build
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
+      run: opam exec -- dune build --release
+      shell: bash
+      working-directory: ${{ inputs.compiler-path }}
+
+    - name: Build cli packages
+      run: yarn run build:compiler
+      shell: bash
+
+    - name: Run tests
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
+      run: opam exec -- dune runtest
+      shell: bash
+      working-directory: ${{ inputs.compiler-path }}
+
+    - name: Run runtime tests
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
+      run: yarn run test:compiler
+      shell: bash
+
+    - name: Save cached build
+      if: steps.cache-build-restore.outputs.cache-hit != 'true'
+      id: cache-build-save
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ inputs.compiler-path }}/_build
+        key: ${{ steps.cache-build-restore.outputs.cache-primary-key }}
+
+    # Tar to preserve permissions and paths
+    - name: Tar build artifact
+      run: tar -zcvf ${{ inputs.cli }}.tar.gz packages/cli-${{ inputs.cli }}/bin
+      shell: bash
+
+    - name: Generate artifact attestation
+      uses: actions/attest-build-provenance@v3
+      with:
+        subject-path: ${{ inputs.cli }}.tar.gz
+
+    - name: Upload the build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: publicodes-cli-${{ inputs.cli }}
+        path: ${{ inputs.cli }}.tar.gz
+        archive: false

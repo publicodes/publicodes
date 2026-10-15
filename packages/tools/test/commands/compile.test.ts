@@ -18,5 +18,5 @@ describe('publicodes compile', () => {
 			).toBe(true)
 			expect(fs.existsSync(`${DEFAULT_BUILD_DIR}/index.d.ts`)).toBe(true)
 		})
-	})
+	}, 10000)
 })

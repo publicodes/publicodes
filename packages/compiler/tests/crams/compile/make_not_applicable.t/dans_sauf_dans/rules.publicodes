@@ -1,0 +1,19 @@
+a:
+  rend non applicable:
+    références à: c
+    sauf dans:
+      - x
+      - y
+
+b:
+  rend non applicable:
+    références à: c
+    dans: x
+
+c:
+
+x: c
+
+y: c
+
+z: c

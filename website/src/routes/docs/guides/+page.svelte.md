@@ -1,4 +1,4 @@
 ---
 sidebar_position: 3
-title: Guides
+title: Guides (pas à jour)
 ---

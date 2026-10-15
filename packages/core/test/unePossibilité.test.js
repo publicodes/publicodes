@@ -10,12 +10,12 @@ describe('une possibilité', () => {
 		beforeAll(() => {
 			engine = engineFromYaml(
 				`
-a: 
+a:
   une possibilité:
     - b
     - c
   par défaut: "'b'"
-  avec: 
+  avec:
     b:
     c:
 `,
@@ -81,7 +81,7 @@ a:
   par défaut: "'b . a'"
 
 b:
-b . a: 
+b . a:
 c:
 `,
 			)
@@ -147,7 +147,7 @@ a:
 a:
   une possibilité:
     - b:
-  avec: 
+  avec:
     b:
 `,
 				),
@@ -176,7 +176,7 @@ a:
   une possibilité:
     - b:
     - "'c'"
-  
+
 `,
 				),
 			).toThrow('Erreur syntaxique')
@@ -199,7 +199,7 @@ a:
 			expect(() =>
 				engineFromYaml(
 					`
-b: 
+b:
 a:
   une possibilité:
     - b:

@@ -1,0 +1,73 @@
+a:
+  valeur: 10 €
+  titre: A
+  description: la valeur A
+b:
+  somme:
+    -
+      valeur: a
+      contexte:
+        a: 30
+    - a
+    - c
+  avec:
+    c: 55
+d:
+  type: nombre
+  variations:
+    - si: a > 20
+      alors: 20 €
+    - si: a > 5
+      alors: 5 €
+    - sinon: 0
+e:
+  public: oui
+  meta:
+    une meta: 23
+    une autre meta: 42
+  valeur: a + b
+f: -e
+g:
+  valeur: b + here
+  avec:
+    here: 5
+  contexte:
+    a: 2
+    b . c: 3
+    here: 9
+h:
+  valeur: 30
+  applicable si: g > 20
+i:
+  valeur: 30
+  non applicable si: g > 20
+j:
+  type: nombre
+  par défaut: 20
+k:
+  valeur: 4
+  plafond: 2.3
+l:
+  valeur: 2
+  plancher: 3
+m:
+  arrondi: 2.3
+n:
+  arrondi à l'inférieur: 2.3
+o:
+  arrondi au supérieur: 2.3
+p: 'foo'
+q:
+  variations:
+    - si: oui
+      alors: 'foo'
+    - si: non
+      alors: 'bar'
+r:
+  type:
+    une possibilité:
+      - 'foo'
+      - 'bar'
+  variations:
+    - si: 5 = 1
+      alors: 'foo'

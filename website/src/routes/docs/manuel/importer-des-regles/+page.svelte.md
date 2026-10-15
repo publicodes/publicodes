@@ -4,115 +4,144 @@ title: Imports de règles
 hide_table_of_contents: false
 ---
 
-Afin de pouvoir réutiliser des règles d'un modèle à un autre, il est nécessaire
-de pouvoir importer des règles d'un autre modèle.
+## Modèles publicodes
 
-Pour ce faire nous avons défini une macro `importer!` qui permet de spécifier
-une liste de règles à importer depuis un fichier JSON d'un [modèle
-compilé](./compilation). Par défaut, le fichier JSON est recherché dans le
-package NPM du modèle ou bien il est possible de spécifier un chemin vers un
-fichier local.
+Les projets Publicodes v2 sont structurés par dossier que l'on appelle
+modèle. Le mécanisme `importer` permet d'importer un modèle depuis un autre.
+Structurer un projet en plusieurs modèles permet de factoriser des expressions
+pour, par exemple, les réutiliser.
 
-<Callout type="warning" title="Fonctionnalité en cours de développement">
+Lorsque le paquet n'est pas précisé, les modèles sont recherchés depuis
+le paquet courant, ou depuis l'espace de travail courant dans le cas du paquet
+racine (détails [plus loin](#paquets-publicodes)). Seules les rêgles
+qui sont publiques, ou qui sont des dépendances d'autres rêgles publiques,
+sont référencable via l'import.
 
-L'API d'import/export de règles est en cours de réécriture, et va changer de spécification dans une prochaine version de [@publicodes/tools](/docs/api/tools).
-
-</Callout>
-
-<Callout type="caution">
-
-La macro `importer!` est une macro de compilation. Pour qu'elle puisse fonctionner, le modèle doit être compilé avec [@publicodes/tools](./compilation)
-
-</Callout>
-
-## Importer des règles depuis un modèle compilé
-
-Pour pouvoir utiliser un ensemble de règles d'un autre modèle, il faut spécifier
-la macro `importer!` au début d'un fichier publicodes.
-
-### Usage
-
-La macro `importer!` possède la syntaxe suivante :
-
-```yaml
-importer!:
-  depuis:
-  	nom: <npm_package_name>
-	source: <path_to_the_model_file> (optional)
-	url: <url_to_the_package_documentation> (optional)
-  dans: <namespace> (optional)
-  les règles:
-    - <rule_name_from_the_npm_package>
-    - <rule_name_from_the_npm_package>:
-      <attr_to_overwrite>: <value>
-      ...
-    ...
+```publicodes title="./src/main.publicodes"
+modèle 1:
+  importer: modèle 1
+rêgle a:
+  valeur: modèle 1 . rêgle b
 ```
 
-Avec :
+```publicodes title="./modèle 1/rules.publicodes"
+modèle 2:
+  importer: modèle 1/modèle 2
+rêgle b:
+  valeur: modèle 2 . rêgle c
+  public: oui
+```
 
-- `depuis` : les informations sur le modèle à importer
-    - `nom` : le nom du package NPM du modèle à importer
-    - `source` : le chemin vers le fichier JSON du modèle à importer (optionnel)
-    - `url` : l'URL vers la documentation du modèle à importer (optionnel)
-- `dans` : le namespace dans lequel importer les règles (optionnel)
-- `les règles` : la liste des règles à importer. Il est possible de spécifier
-  des attributs à écraser pour chaque règle (optionnel)
+```publicodes title="./modèle 2/rules.publicodes"
+rêgle c:
+  valeur: 10
+  public: oui
+```
 
-Par défaut, si aucune `source` n'est spécifiée, le modèle est supposé être
-[compilé](./compilation) dans le fichier `<package_name>.model.json` à la racine
-du package NPM. Le package NPM du modèle à utiliser doit donc **être publié sur
-NPM** et être **ajouté aux dépendances du projet** courant.
-Il est également possible de spécifier le chemin vers un fichier local avec
-`source`.
+## Paquets publicodes
 
-Si `dans` n'est pas spécifié, les règles seront importées dans le namespace
-correspondant au nom du package NPM (`nom`).
+Les paquets Publicodes permettent de réutiliser des modèles publicodes
+dans plusieurs projets. La forme la plus verbeuse de `importer` permet
+d'importer un modèle depuis un autre paquet.
 
-<Callout type="info" title="Fonctionnement">
+<Callout type="info">
 
-A la compilation, chaque macro `importer!` est remplacée par les règles
-importées **ainsi que leurs dépendances**.
+Le système de recherche de paquets est pensé pour s'intégrer avec la
+pluparts des systèmes de distributions. Le compilateur utilise la variable
+d'environnement `PUBLICODESPATH` pour trouver les paquets. Cette variable
+spécifie une liste de chemin, séparé par des `:`, auquel le compilateur va
+attacher le chemin du paquet qu'il recherche. Lorsque le paquet est trouvé,
+le compilateur importe alors le modèle ciblé. Ce paquet devient le nouveau
+paquet courant, et les imports qu'il contient seront relatifs à celui-ci.
 
 </Callout>
 
-#### Exemple
+Ici un exemple avec `PUBLICODESPATH=vendor` :
 
-```yaml title="nosgestesclimat/data/logement/piscine.publicodes"
-importer!:
-    depuis:
-        nom: futureco-data
-        url: https://github.com/laem/futureco-data
-    dans: logement
-    les règles:
-        - piscine . empreinte eau froide
-        - piscine . traitement chimique
-        - piscine . construction
-        - piscine . surface:
-              applicable si: piscine . présent
-              question: Quelle est la taille de votre piscine ?
-              description: |
-                  💡 Pensez à prendre en compte **les consommations d'énergie de la piscine dans celles de votre logement**. Votre facture devrait d'ailleurs être fortement impactée si votre piscine est chauffée !
-              unité: m2
-              suggestions:
-                  3 x 5 mètres: 15
-                  5 x 5 mètres: 20
-                  5 x 8 mètres: 40
+```publicodes title="./src/main.publicodes"
+modèle 1:
+  importer:
+    #  Forme verbeuse pour importer depuis un autre paquet
+    #  ici la cible "vendor/paquet 1/modèle 1/".
+    modèle: modèle 1
+    paquet: paquet 1
+rêgle a:
+  valeur: modèle 1 . regle b
 ```
 
-## Liste des modèles publiés
+```publicodes title="./vendor/paquet 1/modèle 1/rules.publicodes"
+modèle 2:
+  # Forme non-verbeuse pour importer depuis le même paquet
+  # ici "vendor/paquet 1/modèle 2/"
+  importer: modèle 2
+rêgle b:
+  valeur: modèle 2 . rêgle c
+  public: oui
+```
 
-- [`futureco-data`](https://github.com/laem/futureco-data)
-    - _modèle de [futur.eco](https://futur.eco)._
-- [`@incubateur-ademe/nosgestesclimat`](https://github.com/incubateur-ademe/nosgestesclimat)
-    - _modèle de [Nos Gestes Climat](https://nosgestesclimat.fr)._
-- [`@incubateur-ademe/publicodes-impact-livraison`](https://github.com/incubateur-ademe/publicodes-impact-livraison)
-    - _modèle du simulateur Impact Livraison de [Impact
-      CO2](https://impactco2.fr)._
-- [`@incubateur-ademe/publicodes-negaoctet`](https://github.com/incubateur-ademe/publicodes-negaoctet)
-    - _modèle publicodes de la base de données de
-      [NegaOctet](https://negaoctet.org/en/home/#Donnees) utilisé par [Impact
-      CO2](https://impactco2.fr)._
-- [`@incubateur-ademe/publicodes-commun`](https://github.com/incubateur-ademe/publicodes-commun)
-    - _ensemble de règles communes utilisées pour l'implémentation des modèles
-      publicodes de l'incubateur de l'ADEME._
+```publicodes title="./vendor/paquet 1/modèle 2/rules.publicodes"
+rêgle c:
+  valeur: 10
+  public: oui
+```
+
+## Sucres syntaxiques
+
+Il est possible d'utiliser le préfixe `./` dans le nom d'un modèle pour le
+rechercher depuis le dossier du modèle courant. Ce sucre syntaxique permet
+de racourcir le chemin des modèles, dans le cas d'arborescences plus profondes.
+
+```publicodes title="./src/main.publicodes"
+modèle 1:
+  importer: modèle 1
+rêgle a:
+  valeur: modèle 1 . rêgle b
+```
+
+```publicodes title="./modèle 1/rules.publicodes"
+modèle 2:
+  importer: ./modèle 2
+rêgle b:
+  valeur: modèle 2 . rêgle c
+  public: oui
+```
+
+```publicodes title="./modèle 1/modèle 2/rules.publicodes"
+rêgle c:
+  valeur: 10
+  public: oui
+```
+
+## Vendors imbriqués
+
+Ce préfixe `./` peut aussi être utilisé avec les chemins du `PUBLICODESPATH`,
+et cela permet de rechercher les paquets de manière imbriquée. Par exemple
+pour supporter les `node_modules` en mode _nested_, avec
+`PUBLICODESPATH=./node_modules:node_modules`:
+
+```publicodes title="./src/main.publicodes"
+modèle 1:
+  importer:
+    modèle: modèle 1
+    paquet: paquet 1
+rêgle a:
+  valeur: modèle 1 . regle b
+```
+
+```publicodes title="./mode_modules/paquet 1/modèle 1/rules.publicodes"
+modèle 2:
+  importer:
+    # Ce paquet contient son propre dossier "node_modules",
+    # et celui-ci contient un paquet "paquet 2".
+    modèle: modèle 2
+    paquet: paquet 2
+rêgle b:
+  valeur: modèle 2 . rêgle c
+  public: oui
+```
+
+```publicodes title="./mode_modules/paquet 1/mode_modules/paquet 2/modèle 2/rules.publicodes"
+rêgle c:
+  valeur: 10
+  public: oui
+```

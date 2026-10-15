@@ -1,0 +1,25 @@
+
+
+a:
+  le maximum de:
+    - 5
+    - 4
+    - 3
+
+b:
+  le maximum de:
+    - 1
+
+
+c:
+  le maximum de:
+    - 5
+    - le maximum de:
+      - 3 * 2
+      - 1
+      - 2
+      - 3 €
+      - 4
+      - 5
+      - 6
+      - 122

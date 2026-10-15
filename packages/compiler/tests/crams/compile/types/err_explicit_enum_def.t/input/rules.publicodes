@@ -1,0 +1,114 @@
+defined enum should include literal to compare:
+  valeur: enum = 'toot'
+  avec:
+    enum:
+      type:
+        une possibilité:
+          - 'foo'
+          - 'bar'
+
+infered value type should match the explicit type:
+  valeur: enum = 'tata' # error: 'tata' is not part of "une possibilité"
+  avec:
+    enum:
+      type:
+        une possibilité:
+          - 'foo'
+          - 'bar'
+          - 'toot'
+      variations:
+        - si: 20 = 50
+          alors: 'foo'
+        - si: 20 > 50
+          alors: 'super' # error: 'super' is not part of "une possibilité"
+
+all infered values should match the explicit type:
+  avec:
+    simple:
+      type:
+        une possibilité:
+          - 'foo'
+          - 'bar'
+          - 'toot'
+      valeur:
+        variations:
+          - si: 20 = 50
+            alors: 'super'
+          - si: 20 > 50
+            alors: 'tata'
+
+    with replacement:
+      type:
+        une possibilité:
+          - 'foo'
+          - 'bar'
+      valeur:
+        variations:
+          - si: oui
+            alors: a
+          - si: oui
+            alors: b
+      avec:
+        a: 'foo'
+        b: 'bar'
+        c:
+          valeur: 'toot'
+          remplace: b
+
+with context:
+  public: oui
+  valeur: enum = 'bar'
+  contexte:
+    enum: 'foo'
+  avec:
+    enum:
+      type:
+        une possibilité:
+          - 'foo'
+          - 'bar'
+      public: oui
+
+# FIXME: should fail
+should be commutative ko:
+  avec:
+    test1: a = b
+    test2: b = a
+    a:
+      type:
+        une possibilité:
+          - 'foo'
+          - 'bar'
+          - 'toot'
+    b:
+      type:
+        une possibilité:
+          - 'foo'
+# FIXME: should fail
+should be commutative ko 2:
+  avec:
+    test1: a = b
+    test2: b = a
+    a:
+      valeur:
+        variations:
+          - si: oui
+            alors: 'foo'
+          - si: oui
+            alors: 'bar'
+          - sinon: 'toot'
+    b:
+      valeur: 'zoo'
+
+should be ok:
+  avec:
+    a:
+      valeur:
+        variations:
+          - si: oui
+            alors: 'foo'
+          - si: oui
+            alors: 'bar'
+          - sinon: 'toot'
+    b:
+    b inferred a: b = a
+    b inferred zoo: b = 'zoo'

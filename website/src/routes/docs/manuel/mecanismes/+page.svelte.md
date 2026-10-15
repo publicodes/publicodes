@@ -120,15 +120,3 @@ b:
 ## Mécanismes personnalisés (_non implémentés_)
 
 À noter : il n'est pas encore possible de définir de nouveaux mécanismes personnalisés directement dans Publicodes. Si vous avez besoin d'une fonctionnalité qui n'existe pas, vous pouvez ouvrir une [issue sur Github](https://github.com/publicodes/publicodes/issues).
-
-## `formule` (_déprécié_)
-
-Le mécanisme `formule` permet d'ajouter un niveau d'indentation avant de spécifier les mécanismes à appliquer. Il est équivalent au mécanisme `valeur` mais ne peut être utilisé qu'au premier niveau d'indentation.
-
-```publicodes
-a:
-  formule:
-    somme:
-      - 10
-      - 20
-```
