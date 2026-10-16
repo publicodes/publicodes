@@ -17,6 +17,9 @@
 	--publicodes-blue: #1a48bc;
 	--publicodes-red: #b63325;
 	--publicodes-rule: #dadee6;
+	/* le fond d'un mot du langage : l'encre voilée, la surface la plus légère qui se
+	   détache du blanc sans devenir un gris de plus */
+	--publicodes-tint: rgba(23, 27, 34, 0.045);
 	/* the same filet between two rows: a dot every 4px */
 	--publicodes-rule-dots: repeating-linear-gradient(
 		to right,
@@ -31,8 +34,7 @@
 	--publicodes-size-section: 19px;
 	--publicodes-size-body: 16px;
 	--publicodes-size-figure: 15px;
-	--publicodes-size-sign: 14px;
-	--publicodes-size-label: 12px;
+	--publicodes-size-label: 13px;
 
 	--publicodes-gutter: 4.5rem;
 	/* The spacing inside a sheet: a row's own vertical padding, the gap between an
@@ -104,17 +106,6 @@
 	margin-top: 8px;
 	word-break: break-word;
 }
-.publicodes-public {
-	display: inline-block;
-	margin-top: 10px;
-	font-size: var(--publicodes-size-label);
-	font-weight: 600;
-	letter-spacing: 0.04em;
-	font-variant-caps: all-small-caps;
-	text-transform: uppercase;
-	border-bottom: 2px solid var(--publicodes-ink);
-	padding-bottom: 2px;
-}
 
 .publicodes-rule-description {
 	margin: 18px 0 0;
@@ -181,16 +172,10 @@
 	height: 1px;
 	background: var(--publicodes-rule-dots);
 }
-/* where the expression ends and its annotations begin: a plain filet, against the dotted
-   one every line carries — the lines above it are the terms of the value, the ones below
-   are what it is worth */
-.publicodes-row--first-modifier::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: var(--publicodes-paper-inset);
-	right: 0;
-	height: 1px;
+/* where the value mechanism ends and its chain begins: the last line of the value carries a
+   plain filet, where every other line carries a dotted one. A value the chain opens on has
+   no such line, and the sheet's own frame already separates it from what follows. */
+.publicodes-row--last-value::after {
 	background: var(--publicodes-rule);
 }
 .publicodes-row__term {
@@ -222,32 +207,37 @@
 	text-align: inherit;
 	cursor: pointer;
 }
-/* the operator column's mark: one label, whether the line carries an operator or a
-   mechanism's word. A sign is set one step under the notation it separates, a word at
-   the label's own size, and both take the corner of a control. The box, though, is the
-   same one: a fixed height, so two marks side by side read as the same object whatever
-   their text measures — the height the fold's count already has. */
-.publicodes-row__label {
-	display: inline-flex;
-	align-items: center;
-	height: 18px;
-	vertical-align: middle;
+/* ── une pastille : ce qu'un signe, un mot du langage et le « par défaut » devant une
+   figure portent en commun ──
+   Un voile, un coin, l'encre, la notation : pas de filet — c'est le filet qui fait un bouton,
+   et un mot du langage ne s'ouvre pas, ne mène nulle part, ne se survole pas. Ce qui distingue
+   les pastilles entre elles est le corps et la graisse, et rien d'autre. */
+.publicodes-row__label,
+.publicodes-value__label {
+	display: inline-block;
+	line-height: 20px;
+	padding: 0 6px;
+	background: var(--publicodes-tint);
+	border-radius: 4px;
+	/* la notation : la face est celle de la surface, pas d'une sorte de pastille */
 	font-family: 'Noto Sans Mono', var(--publicodes-figure);
-	font-size: var(--publicodes-size-sign);
-	font-weight: 700;
-	font-variant-caps: all-small-caps;
-	text-transform: uppercase;
-	line-height: 1.2;
 	color: var(--publicodes-muted);
 	white-space: nowrap;
-	padding: 0 4px;
-	border: 1px solid var(--publicodes-rule);
-	border-radius: 6px;
 }
-/* a word of the language: small capitals, one step down from the notation, so a word
-   never outweighs the sign beside it */
-.publicodes-row__label--word {
+/* une marque de la colonne des opérateurs : posée à la mi-hauteur de la ligne, pour qu'un
+   signe et un mot d'une même ligne se rejoignent au pixel près */
+.publicodes-row__label {
+	vertical-align: middle;
+	/* un signe : la taille de la notation, et son accent */
+	font-size: var(--publicodes-size-figure);
+	font-weight: 600;
+}
+/* un mot : la notation, un cran sous le signe, et la casse de l'auteur — c'est la pastille et
+   la taille qui le détachent, pas une capitale qu'il n'a pas écrite */
+.publicodes-row__label--word,
+.publicodes-value__label {
 	font-size: var(--publicodes-size-label);
+	font-weight: 600;
 }
 /* the row is the button. Its target is a sheet the size of the row, so the line
    answers anywhere, and nothing nests: a control of its own stays a sibling of
@@ -258,6 +248,17 @@
 	/* the row, not the name: the nearest positioned ancestor is the line */
 	inset: 0;
 }
+/* la ligne qui nomme une table de valeurs : sa gouttière garde la largeur des autres lignes,
+   sinon les colonnes qu'elle nomme ne tombent plus sur celles des entrées. Le mot, lui, est
+   aligné contre la colonne comme un opérateur : plus large, il déborde à gauche, dans la
+   marge, jamais sur les colonnes. */
+.publicodes-row--header {
+	grid-template-columns: var(--publicodes-gutter) minmax(0, 1fr) auto;
+}
+.publicodes-row--header .publicodes-row__gutter {
+	justify-content: flex-end;
+}
+
 /* a row that opens something answers the pointer, wherever on the line it is
    caught. The surface is the width of the sheet the row is written on, so it never
    reaches past it. Hover only where hovering is a thing: a tap must not leave a mark
@@ -296,13 +297,7 @@
 	/* the dotted line is the only mark: it says a parameter, the title says which */
 	cursor: help;
 }
-/* a default is the author's figure: still bold, and paler */
-.publicodes-value[data-parameter='par défaut'] .publicodes-value__figure {
-	color: var(--publicodes-muted);
-}
-/* a word set beside a figure: it keeps the words' own face and tone, never the
-   figure's marks */
-.publicodes-value__label,
+/* un mot posé près d'une figure : il en prend la pastille, jamais les marques du chiffre */
 .publicodes-qualifier {
 	font-family: var(--publicodes-font);
 	font-size: var(--publicodes-size-label);
@@ -310,6 +305,9 @@
 	color: var(--publicodes-muted);
 }
 .publicodes-value__label {
+	/* sa pastille est celle de la colonne des opérateurs, dite plus haut ; posée dans une
+	   ligne de texte, elle prend son air en padding — un padding vertical ne grandit pas la
+	   ligne, il ne fait que peindre la surface autour du mot */
 	margin-right: 8px;
 	text-decoration: none;
 }
@@ -398,9 +396,9 @@
    one half-gap in — the distance between that sheet's edge and the name column of
    the row above, so a level's words line up with the word that names it */
 .publicodes-detail {
-	margin-left: calc(
-		var(--publicodes-paper-inset) + var(--publicodes-inset) / 2
-	);
+	/* le bord de la feuille, et rien de plus : le papier commence lui-même à la colonne des
+	   noms, et le retrait de la fiche est donné par la gouttière de ses propres lignes */
+	margin-left: var(--publicodes-paper-inset);
 }
 /* ── the page's small controls ──
    One look for both: the fold, which holds terms back, and the way to a rule's
@@ -505,42 +503,29 @@
 	outline-offset: 2px;
 }
 
-/* ── the context: one style, the state as a quiet qualifier ──
-   The page's own block, and the table a `contexte` mechanism opens, print the same
-   entries: the name on the left, what it is worth on the right. Its header is a line of
-   the computation like any other — the same height, the same filet under it — and its
-   two words keep the label's own contour, which a plain cell cannot round. */
+/* ── the context: the page's own block ──
+   What a `contexte` mechanism binds is not printed here: those values are lines of the
+   computation, so `Equation` renders them like any other line. This table is the block
+   that lists the evaluation's own inputs, with the state of each as a quiet qualifier. */
 .publicodes-context {
 	width: 100%;
-	border-collapse: separate;
-	border-spacing: 0;
+	border-collapse: collapse;
 	font-size: var(--publicodes-size-figure);
 }
 .publicodes-context th {
 	text-align: left;
-	padding: 7px 0;
-	line-height: 1.7;
-	vertical-align: middle;
-	background-image: var(--publicodes-rule-dots);
-	background-repeat: no-repeat;
-	background-position: bottom left;
-	background-size: 100% 1px;
+	font-size: var(--publicodes-size-label);
+	font-weight: 700;
+	color: var(--publicodes-muted);
+	font-variant-caps: all-small-caps;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	padding-bottom: 6px;
+	border-bottom: 1px solid var(--publicodes-ink);
 }
 .publicodes-context th:last-child,
 .publicodes-context td:last-child {
 	text-align: right;
-}
-/* the mechanism's word, in the column the operators take: the gutter's width plus its
-   gap, its chip set against the gutter like every other mark of the column — and no filet
-   of its own: the word is outside the sheet, like the operators are */
-.publicodes-context .publicodes-context__label {
-	width: calc(var(--publicodes-gutter) + var(--publicodes-inset));
-	padding: 7px var(--publicodes-inset) 7px 0;
-	line-height: 1.7;
-	vertical-align: middle;
-	text-align: right;
-	background-image: none;
-	border-bottom: 0;
 }
 .publicodes-context td {
 	padding: 8px 0;

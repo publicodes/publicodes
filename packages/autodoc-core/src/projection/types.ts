@@ -110,7 +110,7 @@ export interface OperandView {
 	fold: FoldView | null
 	/** Had no effect on the result: shown only when the reader asks for it. */
 	inert: boolean
-	/** An annotation on the value above it, rather than a term of the expression. */
+	/** An annotation the chain adds to the value above, rather than a term of the expression. */
 	modifier: boolean
 }
 
@@ -131,8 +131,6 @@ export interface EquationView {
 	fold: FoldView | null
 	/** A sentence in place of rows, for a computation that has none to show. */
 	note: string | null
-	/** The values a `contexte` mechanism binds, where a sheet prints them instead of lines. */
-	context: ContextEntryView[] | null
 	/**
 	 * The `contexte` mechanism these lines are read under, when one governs them: a
 	 * navigation from inside them keeps the stack that mechanism pushed.
@@ -142,6 +140,12 @@ export interface EquationView {
 	depth: number
 	/** The sheet the lines are written on: the papers alternate with depth. */
 	paper: 'white' | 'shade'
+	/**
+	 * The words that head a table sheet, when the sheet is a list of named values rather than
+	 * a computation — what it is, what a line names, and what it is worth. A `contexte` opens
+	 * the only such sheet there is.
+	 */
+	header: readonly [string, string, string] | null
 }
 
 /**

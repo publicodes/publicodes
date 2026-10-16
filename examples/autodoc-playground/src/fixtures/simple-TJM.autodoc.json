@@ -1435,5 +1435,196 @@
 			"chiffre d'affaires . TJM",
 			"auto-entrepreneur"
 		]
+	},
+	"exemples . TJM doublé": {
+		"type": "number",
+		"unit": "€",
+		"id": "f59d281c015b2353623035d3a4f51b1e",
+		"position": {
+			"file": "inputs/TJM.publicodes",
+			"start": {
+				"index": 710,
+				"line": 46,
+				"column": 1
+			},
+			"end": {
+				"index": 731,
+				"line": 46,
+				"column": 22
+			}
+		},
+		"public": true,
+		"value_mechanism": {
+			"kind": "value",
+			"type": "unknown",
+			"id": "a0d02a82c8f619e70ee10e460a4f718a",
+			"position": {
+				"file": "inputs/TJM.publicodes",
+				"start": {
+					"index": 749,
+					"line": 48,
+					"column": 3
+				},
+				"end": {
+					"index": 755,
+					"line": 48,
+					"column": 9
+				}
+			},
+			"parameters": {
+				"value_mechanism": {
+					"kind": "expr",
+					"type": "number",
+					"unit": "€",
+					"id": "69159b228ff842a160bec9441ebf5e2f",
+					"position": {
+						"file": "inputs/TJM.publicodes",
+						"start": {
+							"index": 757,
+							"line": 48,
+							"column": 11
+						},
+						"end": {
+							"index": 767,
+							"line": 48,
+							"column": 21
+						}
+					},
+					"parameters": {
+						"kind": "ref",
+						"type": "number",
+						"unit": "€",
+						"parameters": "revenu net",
+						"id": "69159b228ff842a160bec9441ebf5e2f",
+						"position": {
+							"file": "inputs/TJM.publicodes",
+							"start": {
+								"index": 757,
+								"line": 48,
+								"column": 11
+							},
+							"end": {
+								"index": 767,
+								"line": 48,
+								"column": 21
+							}
+						}
+					}
+				},
+				"chained_mechanisms": []
+			}
+		},
+		"chained_mechanisms": [
+			{
+				"kind": "context",
+				"type": "number",
+				"unit": "€",
+				"id": "bb49e580fe53c65eb2d70abbaf509d72",
+				"position": {
+					"file": "inputs/TJM.publicodes",
+					"start": {
+						"index": 770,
+						"line": 49,
+						"column": 3
+					},
+					"end": {
+						"index": 778,
+						"line": 49,
+						"column": 11
+					}
+				},
+				"parameters": {
+					"chiffre d'affaires . TJM": {
+						"value_mechanism": {
+							"kind": "expr",
+							"type": "unknown",
+							"id": "5f0de36a7ecf6b1750c26a22aaa08438",
+							"position": {
+								"file": "inputs/TJM.publicodes",
+								"start": {
+									"index": 810,
+									"line": 50,
+									"column": 31
+								},
+								"end": {
+									"index": 838,
+									"line": 50,
+									"column": 59
+								}
+							},
+							"parameters": {
+								"kind": "mul",
+								"type": "unknown",
+								"parameters": {
+									"left": {
+										"kind": "ref",
+										"type": "unknown",
+										"parameters": "chiffre d'affaires . TJM",
+										"id": "7f82cfff247ad6eb580037e2423a47ef",
+										"position": {
+											"file": "inputs/TJM.publicodes",
+											"start": {
+												"index": 810,
+												"line": 50,
+												"column": 31
+											},
+											"end": {
+												"index": 834,
+												"line": 50,
+												"column": 55
+											}
+										}
+									},
+									"right": {
+										"kind": "constant",
+										"type": "unknown",
+										"parameters": {
+											"kind": "const_number",
+											"value": 2
+										},
+										"id": "be9e4e9f8425fcd0f72b7262a3b28ec0",
+										"position": {
+											"file": "inputs/TJM.publicodes",
+											"start": {
+												"index": 837,
+												"line": 50,
+												"column": 58
+											},
+											"end": {
+												"index": 838,
+												"line": 50,
+												"column": 59
+											}
+										}
+									}
+								},
+								"id": "5f0de36a7ecf6b1750c26a22aaa08438",
+								"position": {
+									"file": "inputs/TJM.publicodes",
+									"start": {
+										"index": 810,
+										"line": 50,
+										"column": 31
+									},
+									"end": {
+										"index": 838,
+										"line": 50,
+										"column": 59
+									}
+								}
+							}
+						},
+						"chained_mechanisms": []
+					}
+				}
+			}
+		],
+		"referenced_by": [],
+		"parameters": [
+			"charges",
+			"chiffre d'affaires . nombre de jour",
+			"chiffre d'affaires . TJM",
+			"auto-entrepreneur"
+		]
 	}
 }

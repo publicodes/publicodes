@@ -42,3 +42,9 @@ exemples . CA élevé:
   valeur: revenu net
   contexte:
     chiffre d'affaires . TJM: 600 €/jour
+
+exemples . TJM doublé:
+  public: oui
+  valeur: revenu net
+  contexte:
+    chiffre d'affaires . TJM: chiffre d'affaires . TJM * 2

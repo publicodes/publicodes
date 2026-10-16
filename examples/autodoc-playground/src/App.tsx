@@ -11,7 +11,10 @@ import tjmRules, {
 	outputs as tjmOutputs,
 	parameters as tjmParameters,
 } from '../../../packages/compiler/examples/simple-TJM/model.publicodes.js'
-import { DocumentationPage, type DocumentationPageProps } from './pages/DocumentationPage'
+import {
+	DocumentationPage,
+	type DocumentationPageProps,
+} from './pages/DocumentationPage'
 
 const autoContext: Record<string, TraceValue> = {
 	"entreprise . chiffre d'affaires . BIC": 10000,
@@ -25,6 +28,7 @@ const autoContext: Record<string, TraceValue> = {
 
 const tjmContext: Record<string, TraceValue> = {
 	"chiffre d'affaires . nombre de jour": 5,
+	"chiffre d'affaires . TJM": 600,
 }
 
 const MODELS: Record<string, DocumentationPageProps> = {
@@ -35,19 +39,7 @@ const MODELS: Record<string, DocumentationPageProps> = {
 		parameters: autoParameters,
 		start: 'dirigeant . auto-entrepreneur . revenu net',
 		context: autoContext,
-		...(() => {
-			const evaluation = autoRules[
-				'dirigeant . auto-entrepreneur . revenu net'
-			].evaluate(autoContext, { trace: true })
-			return {
-				evaluation: {
-					trace: evaluation.trace,
-					usedParameters: evaluation.needed,
-					missing: evaluation.missing,
-					evaluatedRule: 'dirigeant . auto-entrepreneur . revenu net',
-				},
-			}
-		})(),
+		rules: autoRules,
 	},
 	'simple-TJM': {
 		title: 'simple TJM',
@@ -56,19 +48,7 @@ const MODELS: Record<string, DocumentationPageProps> = {
 		parameters: tjmParameters,
 		start: 'exemples . CA élevé',
 		context: tjmContext,
-		...(() => {
-			const evaluation = tjmRules['exemples . CA élevé'].evaluate(tjmContext, {
-				trace: true,
-			})
-			return {
-				evaluation: {
-					trace: evaluation.trace,
-					usedParameters: evaluation.needed,
-					missing: evaluation.missing,
-					evaluatedRule: 'exemples . CA élevé',
-				},
-			}
-		})(),
+		rules: tjmRules,
 	},
 }
 

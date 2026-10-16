@@ -84,6 +84,13 @@ Chaque entrée y apparaît une fois, avec son nom lisible (`title` ou dernier se
 
 Une ligne de compte ouvre le bloc : combien de fournies, de valeurs par défaut, de manquantes.
 
+**Ce qu'un `contexte` lie s'écrit comme des lignes du calcul, pas comme une table de plus** :
+chaque règle liée a sa ligne, son nom, sa valeur, et s'ouvre d'un clic sur le calcul qui l'a
+produite — la flèche vers sa page quand elle en a une, rien quand elle ne porte qu'une
+constante. Le langage ne restreint pas ce qui peut être lié — `contexte: { b: b + 10 }` comme
+`contexte: { salaire brut: SMIC brut }` — et la valeur liée est évaluée en dehors du contexte
+qu'elle ouvre.
+
 **Aucun nom de scénario.** Aucun fichier du modèle ne porte le nom d'un contexte ; si l'hôte en
 a un, c'est lui qui le fournit et lui qui le nomme. Sans lui, le bloc se contente des comptes.
 
@@ -236,34 +243,35 @@ l'on montre, pas la catégorie.
 - **`unit`** accompagne la valeur, toujours.
 - **`type`** n'apparaît que là où l'unité ne dit rien : une règle de texte, de booléen ou de
   date le montre auprès de son nom ; une règle numérique dont l'unité suffit ne le répète pas.
-- **`public`** se marque auprès du nom : c'est la déclaration d'API de l'auteur, et c'est elle
-  qui donne à la règle son chemin. Un lecteur n'en a pas besoin ; un intégrateur, si.
+- **`public`** ne se marque pas : la vue le porte (`isPublic`) et l'hôte en fait ce qu'il veut — c'est
+  la déclaration d'API de l'auteur, et elle donne à la règle son chemin dans l'index. Le lecteur,
+  lui, n'en a pas besoin.
 
 **Un modificateur n'est pas une équation : c'est une annotation sur la valeur qu'il change.**
 Il s'écrit sur la ligne du résultat, mot-clé du langage d'abord, et marqué pris effet ou sans
-effet. La première d'entre elles est séparée des termes de l'expression par un **filet plein**,
-là où une ligne de calcul porte un pointillé : les lignes au-dessus composent la valeur, celles
-en dessous disent ce qu'elle vaut.
+effet. **La dernière ligne du mécanisme de valeur porte un filet plein**, là où toutes les autres
+portent un pointillé : au-dessus d'elle, ce qui compose la valeur ; en dessous, ce que la chaîne
+y ajoute — un `par défaut`, un `plancher`, un `contexte`.
 
 ```
 valeur
   Distance moyenne aller/retour            100 km
-  ────────────────────────────────────────   ← le filet plein, quand des termes précèdent
+  ────────────────────────────────────────   ← le filet plein
   par défaut 100 km — pris effet, rien n'a été saisi
   plancher 0 km
 ```
 
-**`contexte` ne change pas la valeur : il dit sous quel contexte elle a été calculée.** Il
-s'écrit comme la **première ligne du tableau qu'il ouvre** — son mot dans la colonne des
-opérateurs, `Paramètre` et `Valeur` en face de lui, à l'aplomb des noms et des figures du
-calcul — et ce tableau est imprimé sans qu'on ait à l'ouvrir : ce qui décide de ce que la règle
-vaut ne se cache pas. C'est le seul mécanisme enchaîné dont l'explication ne soit pas un calcul.
+**`contexte` ne change pas la valeur : il dit sous quel contexte elle a été calculée.** Son mot
+ouvre l'en-tête du tableau qu'il annonce — `contexte`, `paramètre`, `valeur`, sur une ligne — et
+ce tableau est imprimé sans qu'on ait à le déplier : ce qui décide de ce que la règle vaut ne se
+cache pas. Ses lignes sont les règles liées, chacune avec sa valeur, comme n'importe quelle ligne
+du calcul. C'est le seul mécanisme enchaîné dont l'explication ne soit pas un calcul.
 
 **Un mécanisme sans opérateur se nomme.** Une somme s'écrit avec ses `+`, un produit avec ses
 `×` ; `variations`, `toutes ces conditions`, `une de ces conditions`, `le plus petit de` et `le
 plus grand de` n'ont pas d'opérateur à eux, et une ligne repliée porte donc leur nom. Sans
 lui, le lecteur n'a qu'un chiffre sans l'opération qui l'a produit. Ce nom s'écrit comme tous
-les mots du langage : étiquette, petites capitales, en gris.
+les mots du langage : la pastille de l'étiquette, la notation, et la casse de l'auteur.
 
 **L'opérateur porte le même contour.** `+`, `−` et `×` sont des signes, pas des mots : ils
 partagent le contour de l'étiquette — un filet, une seule encre — mais pas sa taille. Un signe
@@ -361,8 +369,9 @@ Trois. Chacune est décrite par ce qu'elle montre, ce qu'elle cache, et ce qu'el
 ### I1 — Aller à une règle
 
 - **Déclencheur** : un nom dans l'index de la page, dans la liste des règles qui consomment
-  celle-ci, ou le petit contrôle qui suit le nom d'une règle dont la fiche est ouverte, quand
-  cette règle a une page. Une ligne fermée, elle, ne navigue jamais : son nom déplie (I2).
+  celle-ci, ou le petit contrôle qui suit le nom d'une règle qui a une page — que sa fiche soit
+  ouverte ou non : il mène ailleurs, il n'ouvre rien. Une ligne fermée, sinon, ne navigue jamais :
+  son nom déplie (I2).
 - **Montre** : la page entière de la règle visée.
 - **Cache** : la page courante. La place du lecteur est préservée par l'hôte (historique, ou
   pile de navigation) — c'est son affaire, pas celle de la bibliothèque.

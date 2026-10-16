@@ -73,8 +73,8 @@ export function finishEquation(
 		fold,
 		// a sheet that prints no line says so, rather than opening on nothing at all
 		note: printed.length === 0 ? EMPTY_EQUATION : null,
-		context: null,
 		contextId: null,
+		header: null,
 		depth: ctx.depth,
 		paper: ctx.depth % 2 === 0 ? 'shade' : 'white',
 	}
@@ -116,10 +116,9 @@ export function finishRow(
 	const rule = raw.address !== null ? ctx.projectRule(raw.address, inner) : null
 	const fiche = rule?.equation ?? raw.detail
 	const label = raw.name ?? term
-	// a reference says what it is whether or not it computes; a mechanism opens where it
-	// prints lines, or where its sheet holds the context it binds
-	const prints = fiche !== null && (fiche.size > 0 || fiche.context !== null)
-	const opens = raw.address !== null || prints
+	// a reference says what it is whether or not it computes; a mechanism only opens
+	// where it prints lines
+	const opens = raw.address !== null || (fiche !== null && fiche.size > 0)
 	const detail = opens && key !== null && ctx.expanded.has(key) ? fiche : null
 	return {
 		gutter: keyword ?? operator ?? '',
@@ -136,9 +135,10 @@ export function finishRow(
 		value: raw.value,
 		paper: ctx.depth % 2 === 0 ? 'shade' : 'white',
 		address: raw.address,
-		// the way to the rule's own page, when it has one and the reader has it open
+		// the way to the rule's own page, when it has one: offered on the line itself, whether
+		// the line is open or not, since it leads somewhere rather than opening something
 		page:
-			detail !== null && rule?.isPublic === true && raw.address !== null ?
+			rule?.isPublic === true && raw.address !== null ?
 				{ address: raw.address, name: rule.name }
 			:	null,
 		description: raw.description,

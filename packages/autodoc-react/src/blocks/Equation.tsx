@@ -2,7 +2,6 @@ import type { EquationView, OperandView } from '@publicodes/autodoc-core'
 import type { ReactElement } from 'react'
 import { useAutodocInteraction } from '../components/AutodocInteractionContext'
 import { AutodocEvaluationTraceProvider } from '../components/AutodocEvaluationTraceContext'
-import { ContextTable } from './ContextTable'
 import { FoldControl } from './FoldControl'
 import { RulePageLink } from './RulePageLink'
 import { Value } from './Value'
@@ -20,16 +19,20 @@ const indentOf = (depth: number): string => '\n' + '\t'.repeat(depth)
  * and what opens under it.
  */
 export function Equation({ view }: { view: EquationView }): ReactElement {
-	// the first annotation is where the expression ends: it opens the group, and the lines
-	// under it are read as what the value above is worth rather than as its own terms. An
-	// annotation the sheet opens on separates nothing, and carries no filet of its own.
-	const first = view.rows.findIndex((row) => row.modifier)
-	const firstModifier = first > 0 ? first : -1
+	// the lines of the value mechanism end where the chain begins: the last of them carries a
+	// plain filet, and the lines under it are what the chain adds rather than its terms
+	const firstChained = view.rows.findIndex((row) => row.modifier)
+	const lastValue = firstChained > 0 ? firstChained - 1 : -1
 	const lines = (
 		<>
+			{view.header !== null && <HeaderLine header={view.header} />}
 			{view.head && <Row view={view.head} head />}
 			{view.rows.map((row, index) => (
-				<Row key={index} view={row} firstModifier={index === firstModifier} />
+				<Row
+					key={index}
+					view={row}
+					lastValue={index === lastValue && !row.modifier}
+				/>
 			))}
 			{view.note !== null && (
 				<p className="publicodes-detail__note">{view.note}</p>
@@ -50,14 +53,38 @@ export function Equation({ view }: { view: EquationView }): ReactElement {
 	)
 }
 
+/**
+ * Les mots qui nomment une table de valeurs — ce qu'un `contexte` lie : le mot du mécanisme
+ * dans la colonne des opérateurs, puis ce qu'une ligne nomme et ce qu'elle vaut. C'est une
+ * ligne du calcul comme une autre, avec la même grille : les entrées, sous elle, tombent juste.
+ */
+function HeaderLine({
+	header: [what, name, worth],
+}: {
+	header: readonly [string, string, string]
+}): ReactElement {
+	const word = (label: string) => (
+		<span className="publicodes-row__label publicodes-row__label--word">
+			{label}
+		</span>
+	)
+	return (
+		<div className="publicodes-row publicodes-row--header">
+			<span className="publicodes-row__gutter">{word(what)}</span>
+			<span className="publicodes-row__term">{word(name)}</span>
+			<span className="publicodes-value">{word(worth)}</span>
+		</div>
+	)
+}
+
 function Row({
 	view,
 	head = false,
-	firstModifier = false,
+	lastValue = false,
 }: {
 	view: OperandView
 	head?: boolean
-	firstModifier?: boolean
+	lastValue?: boolean
 }): ReactElement {
 	const { toggleRow } = useAutodocInteraction()
 	const label = view.label ?? ''
@@ -80,7 +107,7 @@ function Row({
 				(view.inert ? ' publicodes-row--inert' : '') +
 				(view.open ? ' publicodes-row--open' : '') +
 				(view.key !== null ? ' publicodes-row--unfoldable' : '') +
-				(firstModifier ? ' publicodes-row--first-modifier' : '')
+				(lastValue ? ' publicodes-row--last-value' : '')
 			}
 		>
 			{indentOf(view.depth)}
@@ -145,12 +172,19 @@ function Row({
 	// the answer line is not written on a sheet of its own
 	if (head) return line
 
-	// what a `contexte` binds is not a line with an explanation under it: the table is the
-	// line, and its word takes the operator column, so the header is read with the word
-	if (view.detail !== null && view.detail.context !== null) {
+	// une ligne qui n'imprime rien d'elle-même n'est que la feuille qu'elle ouvre : le mot qui
+	// la nomme ouvre cette feuille plutôt que de tenir une ligne à lui tout seul
+	const silent =
+		view.term === null &&
+		view.label === null &&
+		view.control === null &&
+		view.value.state === 'absent'
+	if (silent && view.detail !== null) {
 		return (
 			<div className="publicodes-block" data-paper={view.paper}>
-				<ContextTable label={view.gutter} entries={view.detail.context} />
+				<div className="publicodes-detail">
+					<Equation view={view.detail} />
+				</div>
 			</div>
 		)
 	}
@@ -167,9 +201,7 @@ function Row({
 			{line}
 			{view.detail && (
 				<div className="publicodes-detail">
-					{view.detail.context === null ?
-						<Equation view={view.detail} />
-					:	<ContextTable entries={view.detail.context} />}
+					<Equation view={view.detail} />
 				</div>
 			)}
 		</div>

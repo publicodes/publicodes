@@ -1,14 +1,19 @@
 import type * as Ast from '../ast'
 import type { TraceValue } from '../trace'
 import type {
-	ContextEntryView,
 	Ctx,
 	EquationView,
 	MechanismView,
 	OperandView,
 	ValueView,
 } from './types'
-import { finishEquation, finishRow, projectOperand } from './operand'
+import {
+	finishEquation,
+	finishRow,
+	parameterState,
+	projectOperand,
+} from './operand'
+import { CONTEXT_COLUMNS } from './copy'
 import { ABSENT, lookupValue, unitOf } from './value'
 import { displayName } from './names'
 
@@ -83,27 +88,42 @@ export function valueOfChain(
 }
 
 /**
- * What a `contexte` mechanism binds, as the evaluation context a reader knows: each
- * rule it gives a value to, with that value. The bindings are written at the caller's
- * side of the stack the mechanism pushes.
+ * What a `contexte` mechanism binds, as the lines a reader already knows: one per bound
+ * rule, named after that rule, worth what the binding is worth, opening onto the
+ * computation that produced it. They are built like any other line, because that is what
+ * they are — the same click, the same sheet, the same mark beside the name.
  */
-export function boundContext(
+export function boundRows(
 	mechanism: Ast.ContextMechanism,
-	ctx: Ctx,
-): ContextEntryView[] {
+	caller: Ctx,
+): OperandView[] {
 	return Object.entries(mechanism.parameters).map(([address, bound]) => {
-		const target = ctx.ast[address]?.value_mechanism ?? bound.value_mechanism
+		const target = caller.ast[address]?.value_mechanism ?? bound.value_mechanism
+		// la ligne de la liaison décide de ce qu'elle ouvre : une constante n'ouvre rien
+		const row = projectOperand(bound, caller, null, null)
+		const given = lookupValue(
+			caller,
+			bound.value_mechanism.id,
+			target.type,
+			unitOf(target),
+		)
 		return {
-			name: displayName(ctx.ast, address),
+			...row,
+			// la ligne se nomme comme la règle liée, non comme l'expression qui la calcule
+			term: null,
+			termIsMechanism: false,
+			named: null,
+			label: displayName(caller.ast, address),
 			address,
-			state: 'fournie' as const,
-			qualifier: null,
-			value: lookupValue(
-				ctx,
-				bound.value_mechanism.id,
-				target.type,
-				unitOf(target),
-			),
+			// ce que la règle liée vaut, à son type et à son unité : c'est elle qu'on lit
+			value: given.state === 'absent' ? row.value : given,
+			// et sa page, quand elle en a une : la flèche mène où le nom mène ailleurs
+			page:
+				caller.ast[address]?.public === true ?
+					{ address, name: displayName(caller.ast, address) }
+				:	null,
+			parameter: parameterState(address, caller),
+			description: caller.ast[address]?.description ?? null,
 		}
 	})
 }
@@ -122,16 +142,15 @@ export function contextModifier(
 ): OperandView | null {
 	const mechanism = contextOf(node)
 	if (mechanism === undefined) return null
-	const entries = boundContext(mechanism, caller)
+	// la feuille du contexte est une équation comme une autre : ses lignes sont ce qu'il lie,
+	// sous les mots qui la nomment — le mécanisme, ce qu'une ligne nomme, ce qu'elle vaut
 	const sheet: EquationView = {
 		...finishEquation(
-			NO_MECHANISM,
+			{ ...NO_MECHANISM, operands: boundRows(mechanism, caller) },
 			{ ...under, depth: under.depth + 1 },
 			mechanism.id,
 		),
-		// the table is what the sheet prints; there is no missing line to apologise for
-		note: null,
-		context: entries,
+		header: [KEYWORDS.context, ...CONTEXT_COLUMNS],
 	}
 	const row = finishRow(
 		{
@@ -149,7 +168,14 @@ export function contextModifier(
 		null,
 		KEYWORDS.context,
 	)
-	return { ...row, key: null, control: null, detail: sheet, open: true }
+	return {
+		...row,
+		key: null,
+		control: null,
+		detail: sheet,
+		open: true,
+		modifier: true,
+	}
 }
 
 /**

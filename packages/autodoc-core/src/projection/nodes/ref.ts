@@ -13,6 +13,9 @@ export function projectRef(
 	ctx: Ctx,
 ): RawOperand {
 	const name = displayName(ctx.ast, expression.parameters)
+	// une référence vaut ce que vaut la règle qu'elle nomme, type et unité compris : le
+	// compilateur ne les écrit pas toujours sur le nœud, notamment dans ce qu'un `contexte` lie
+	const target = ctx.ast[expression.parameters]?.value_mechanism
 	return {
 		id: null,
 		name,
@@ -21,7 +24,12 @@ export function projectRef(
 		parameter: parameterState(expression.parameters, ctx),
 		term: name,
 		named: null,
-		value: lookupValue(ctx, expression.id, expression.type, unitOf(expression)),
+		value: lookupValue(
+			ctx,
+			expression.id,
+			target?.type ?? expression.type,
+			target === undefined ? unitOf(expression) : unitOf(target),
+		),
 		detail: null,
 	}
 }

@@ -150,11 +150,26 @@ describe('the page of an opened rule', () => {
 		return rendered
 	}
 
-	it('offers the way there beside the name, once the row is open', () => {
-		const { container } = openFirstRow()
-		const link = container.querySelector('.publicodes-page-link')
-		expect(link).not.toBeNull()
-		expect(link?.textContent).toBe('Ouvrir la page de Part')
+	it('offers the way there beside the name, whether the row is open or not', () => {
+		const rendered = render(
+			<AutodocButtonNavigationContext.Provider
+				value={{ rule: 'total', contextStackId: '', onNavigate: () => {} }}
+			>
+				<RulePage
+					ast={publicAst}
+					rule="total"
+					evaluation={{ trace }}
+					context={context}
+				/>
+			</AutodocButtonNavigationContext.Provider>,
+		)
+		const link = () => rendered.container.querySelector('.publicodes-page-link')
+		expect(link()).not.toBeNull()
+		expect(link()?.textContent).toBe('Ouvrir la page de Part')
+		fireEvent.click(
+			rendered.container.querySelector('button.publicodes-row__control')!,
+		)
+		expect(link()).not.toBeNull()
 	})
 
 	it('goes where the host says, with the rule and the context stack', () => {
@@ -195,6 +210,16 @@ describe('the documented class names are the override contract', () => {
 		const { container } = renderPage()
 		expect(container.querySelector('.publicodes-row--head .publicodes-value')?.textContent).toBe('15 €')
 		expect(container.textContent?.split('15 €').length).toBe(2)
+	})
+
+	it('says the name and the address, and nothing about the model’s API', () => {
+		// `public` est la déclaration de l'auteur, que la vue porte pour un hôte ; un lecteur qui
+		// a la page sous les yeux n'a pas besoin qu'on lui dise qu'elle existe
+		const { container } = renderPage()
+		const header = container.querySelector('.publicodes-rule-header')
+		expect(header?.querySelector('h1')?.textContent).toBe('Total')
+		expect(header?.querySelector('.publicodes-address')?.textContent).toBe('total')
+		expect(header?.textContent).toBe('Totaltotal')
 	})
 })
 
@@ -553,7 +578,10 @@ describe('the sheet a `contexte` opens', () => {
 					type: 'number',
 					unit: '€',
 					position,
-					parameters: { taux: expr('e10', constant('c10', 20)) },
+					parameters: {
+						taux: expr('e10', constant('c10', 20)),
+						forfait: expr('e11', ref('r11', 'base')),
+					},
 				},
 			],
 		},
@@ -579,6 +607,17 @@ describe('the sheet a `contexte` opens', () => {
 			value_mechanism: { kind: 'not_defined', id: 'n10', type: 'number', unit: '%', position },
 			chained_mechanisms: [],
 		},
+		forfait: {
+			type: 'number',
+			unit: '€',
+			id: 'n11',
+			position,
+			title: 'Forfait',
+			referenced_by: ['honoraire'],
+			parameters: [],
+			value_mechanism: { kind: 'not_defined', id: 'n11', type: 'number', unit: '€', position },
+			chained_mechanisms: [],
+		},
 	} as unknown as PublicodeAST
 
 	const contextTrace = {
@@ -587,30 +626,67 @@ describe('the sheet a `contexte` opens', () => {
 		r9: { '-ctx1': 40 },
 		e10: { '': 20 },
 		c10: { '': 20 },
+		e11: { '': 5 },
+		r11: { '': 5 },
 	} as unknown as Trace
 
 	const renderContextPage = () =>
 		render(<RulePage ast={contextAst} rule="honoraire" evaluation={{ trace: contextTrace }} />)
 
-	/** La table du contexte : la seule du calcul. */
-	const contextTable = (container: HTMLElement): Element | null =>
-		container.querySelector('.publicodes-context')
+	/** Une ligne liée, repérée à son nom : c'est le terme de la ligne. */
+	const boundLine = (container: HTMLElement, name: string): Element | undefined =>
+		Array.from(container.querySelectorAll('.publicodes-row')).find(
+			(row) =>
+				row.querySelector('.publicodes-row__term')?.textContent === name,
+		)
 
-	it('reads its word on the header line, with the columns it opens', () => {
+	it('names the table it opens, on one line', () => {
 		const { container } = renderContextPage()
-		const head = contextTable(container)?.querySelector('tr')
+		const header = container.querySelector('.publicodes-row--header')
+		expect(header).not.toBeNull()
+		// le mot du mécanisme, puis ce qu'une ligne nomme et ce qu'elle vaut
 		expect(
-			Array.from(head?.querySelectorAll('th, td') ?? []).map(
-				(cell) => cell.textContent,
+			Array.from(header?.querySelectorAll('.publicodes-row__label--word') ?? []).map(
+				(word) => word.textContent,
 			),
-		).toEqual(['contexte', 'Paramètre', 'Valeur'])
+		).toEqual(['contexte', 'paramètre', 'valeur'])
+		// et le mot ne tient plus de ligne à lui seul : la ligne du mécanisme a disparu
+		expect(
+			Array.from(container.querySelectorAll('.publicodes-row__gutter')).filter(
+				(gutter) => gutter.textContent === 'contexte',
+			).length,
+		).toBe(1)
 	})
 
-	it('prints the values it binds without being asked, and carries no control', () => {
+	it('prints what it binds without being asked, on lines of the computation', () => {
 		const { container } = renderContextPage()
-		expect(contextTable(container)?.textContent).toContain('Taux')
-		expect(contextTable(container)?.textContent).toContain('20 %')
-		expect(contextTable(container)?.querySelector('button')).toBeNull()
+		// la feuille est imprimée d'elle-même : il n'y a pas de ligne de mécanisme à ouvrir
+		expect(container.querySelector('.publicodes-detail')).not.toBeNull()
+		// et ses lignes portent le nom de la règle liée et sa valeur, comme toute ligne
+		expect(
+			boundLine(container, 'Taux')?.querySelector('.publicodes-value')
+				?.textContent,
+		).toBe('20 %')
+		expect(
+			boundLine(container, 'Forfait')?.querySelector('.publicodes-value')
+				?.textContent,
+		).toBe('5 €')
+	})
+
+	it('opens the computation a bound value holds, from the line itself', () => {
+		const { container } = renderContextPage()
+		// `forfait` lie la référence `base` : sa ligne s'ouvre comme une référence du calcul
+		const line = boundLine(container, 'Forfait')
+		const control = line?.querySelector('button.publicodes-row__control')
+		expect(control).not.toBeNull()
+		expect(control?.getAttribute('aria-expanded')).toBe('false')
+		fireEvent.click(control!)
+		expect(line?.parentElement?.querySelector('.publicodes-detail')).not.toBeNull()
+	})
+
+	it('offers no control where the binding holds nothing but a constant', () => {
+		const { container } = renderContextPage()
+		expect(boundLine(container, 'Taux')?.querySelector('button')).toBeNull()
 	})
 
 	it('keeps the stack of the context in the navigations it offers', () => {
@@ -636,7 +712,7 @@ describe('the sheet a `contexte` opens', () => {
 	})
 })
 
-describe('the first annotation of a value', () => {
+describe('the line a value ends on', () => {
 	// `total` ne change pas : on lui ajoute un arrondi, qui suit ses termes
 	const annotatedAst = {
 		...ast,
@@ -659,9 +735,8 @@ describe('the first annotation of a value', () => {
 		e5: { '': 2 },
 		c4: { '': 2 },
 	} as unknown as Trace
-
-	it('is separated from the terms of the expression', () => {
-		const { container } = render(
+	const renderAnnotated = () =>
+		render(
 			<RulePage
 				ast={annotatedAst}
 				rule="total"
@@ -669,20 +744,25 @@ describe('the first annotation of a value', () => {
 				context={context}
 			/>,
 		)
-		const annotations = container.querySelectorAll('.publicodes-row--first-modifier')
-		expect(annotations.length).toBe(1)
-		expect(
-			annotations[0]
-				.querySelector('.publicodes-row__gutter')
-				?.textContent,
-		).toBe('arrondi')
+
+	it('is the one just before the chain, and carries the plain filet', () => {
+		const { container } = renderAnnotated()
+		const rows = Array.from(container.querySelectorAll('.publicodes-row'))
+		const marked = rows.findIndex((row) =>
+			row.classList.contains('publicodes-row--last-value'),
+		)
+		const chained = rows.findIndex(
+			(row) => row.querySelector('.publicodes-row__gutter')?.textContent === 'arrondi',
+		)
+		expect(marked).toBeGreaterThanOrEqual(0)
+		expect(chained - marked).toBe(1)
 	})
 
-	it('carries no filet when the sheet opens on one: there is nothing to separate', () => {
+	it('is none when the sheet opens on the chain: there is nothing above to separate', () => {
 		// `forfait` ne porte qu'un `par défaut`
 		const { container } = render(
 			<RulePage ast={ast} rule="forfait" evaluation={{ trace }} context={context} />,
 		)
-		expect(container.querySelector('.publicodes-row--first-modifier')).toBeNull()
+		expect(container.querySelector('.publicodes-row--last-value')).toBeNull()
 	})
 })

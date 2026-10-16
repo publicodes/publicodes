@@ -6,7 +6,7 @@ Ce document est le registre. Une valeur qui n'y figure pas n'existe pas.
 une couleur, une taille responsive n'est pas une taille. Ajouter un rôle, c'est ajouter une
 ligne ici **et** un jeton dans `blocks.css` : le nombre de lignes est le budget.
 
-## Typographie — 7 tailles, 3 graisses, 2 familles
+## Typographie — 6 tailles, 3 graisses, 2 familles
 
 | # | Rôle | Jeton | Usage |
 |---|---|---|---|
@@ -14,38 +14,39 @@ ligne ici **et** un jeton dans `blocks.css` : le nombre de lignes est le budget.
 | 2 | Réponse | `--publicodes-size-answer` (28) | la valeur de la règle, à la ligne de résultat |
 | 3 | Sous-titre | `--publicodes-size-section` (19) | titres de blocs, terme de la ligne de résultat |
 | 4 | Corps | `--publicodes-size-body` (16) | la prose de l'auteur, les entrées du contexte |
-| 5 | Figure | `--publicodes-size-figure` (15) | valeurs, unités, termes du calcul, liens |
-| 6 | Signe | `--publicodes-size-sign` (14) | les opérateurs `+`, `−`, `×`, `÷` de la colonne de gauche |
-| 7 | Étiquette | `--publicodes-size-label` (12) | les mots du langage, adresses, en-têtes, qualificatifs, comptes, la note d'une fiche |
+| 5 | Figure | `--publicodes-size-figure` (15) | valeurs, unités, termes du calcul, liens, les signes de la colonne de gauche |
+| 6 | Étiquette | `--publicodes-size-label` (13) | les mots du langage, adresses, en-têtes, qualificatifs, comptes, la note d'une fiche |
 
 Les mots du langage — `si`, `alors`, `sinon`, `arrondi`, `variations`, `contexte` — et les
-opérateurs — `+`, `−`, `×` — portent le **même contour** : un filet au coin de 6px comme les
-contrôles, une seule encre, une graisse. Ils ne font pas la même taille pour autant : un
+opérateurs — `+`, `−`, `×` — portent la **même pastille** : le même voile, le même coin de 4px, la
+même encre atténuée, et **pas de filet** — c'est le filet qui fait un bouton, et un mot du
+langage ne s'ouvre pas. Un seul trait les distingue l'un de l'autre, et il est typographique :
+la face, le corps, la graisse. Ils ne font pas la même taille pour autant : un
 opérateur est un signe, il se lit un cran sous la notation qu'il sépare et toujours au-dessus du
-mot ; un mot se lit à celle de l'étiquette. La **boîte**, elle, est la même pour les deux —
-18px de haut, posée à la mi-hauteur de la ligne — pour qu'un signe et un mot d'une même ligne
-se rejoignent au pixel près, quelles que soient leurs tailles. La capitale pleine du premier mot
-et les petites des suivantes détachent les mots des figures et de la prose qu'ils côtoient, sans
-changer ni taille ni graisse.
+mot ; un mot se lit un cran sous lui, à celle de l'étiquette. La **boîte**, elle, est la même —
+20px de haut, posée à la mi-hauteur de la ligne — pour qu'un signe et un mot d'une même ligne
+se rejoignent au pixel près, quelles que soient leurs tailles. Les deux s'écrivent dans la
+notation ; ce qui les sépare est le corps — 15 contre 13 — et la graisse — l'accent plein contre
+l'accent léger. Rien d'autre : ni couleur, ni casse.
 
 Graisses : `400` (texte), `600` (accent léger), `700` (accent). Rien d'autre.
 Familles : `--publicodes-font` (sans) et `--publicodes-figure` (mono, pour la notation).
 
-Les mots du langage — et les rares mots que la page met en capitales — s'écrivent en **petites
-capitales**, d'une seule taille : `font-variant-caps: all-small-caps`, avec
-`text-transform: uppercase` pour qu'une police sans petites capitales retombe sur des
-capitales plutôt que sur rien.
+Les mots du langage gardent la **casse de l'auteur** : `sinon`, `arrondi`, `contexte` s'écrivent
+comme le modèle les écrit, jamais transformés. Ce qui les détache d'une figure, c'est la
+pastille et la taille.
 
-## Couleur — 4 couleurs, 1 papier, 1 filet
+## Couleur — 4 couleurs, 1 papier, 1 filet, 1 voile
 
 | # | Rôle | Jeton | Usage |
 |---|---|---|---|
 | 1 | Encre | `--publicodes-ink` (#171b22) | le texte, et les filets d'emphase |
-| 2 | Encre atténuée | `--publicodes-muted` (#636975) | unités, adresses, étiquettes, qualificatifs, le contrôle de repli, son chevron et le cercle qui compte |
+| 2 | Encre atténuée | `--publicodes-muted` (#636975) | unités, adresses, qualificatifs, le contrôle de repli, son chevron et le cercle qui compte, les mots du langage et les signes sur leur pastille |
 | 3 | Bleu | `--publicodes-blue` (#1a48bc) | liens, filets de section, anneau de focus, le contrôle de page |
 | 4 | Rouge | `--publicodes-red` (#b63325) | l'absence : non défini, non applicable, non renseignée |
 | — | Papier | `--publicodes-paper-white` (#ffffff) | la feuille qu'une ligne ouvre, et le fond de la page |
 | — | Filet | `--publicodes-rule` (#dadee6) | séparateurs et hairlines, le contour du contrôle survolé, le pied d'une feuille ouverte ; entre deux lignes de calcul, en pointillé (`--publicodes-rule-dots`, un point d'1px tous les 4px) |
+| — | Voile | `--publicodes-tint` (l'encre à 4,5 %) | le fond des pastilles de mots du langage |
 
 **Une seule teinte porte l'ensemble.** Le bleu est la teinte de référence, 264° : les neutres en
 sont la version désaturée (chroma ≤ 0,02) et lui la version saturée (0,19). La clarté ne sert
@@ -53,6 +54,9 @@ qu'à les ranger : 0,22 pour l'encre, 0,52 pour l'atténué, 0,90 pour le filet,
 papier. L'absence est la seule autre teinte (30°), au même chroma à un cheveu près, et à la
 clarté qu'il faut pour rester lisible sur blanc — les deux accents se valent donc en intensité,
 et ne diffèrent que par ce qu'ils disent.
+
+**Le voile n'est pas un gris de plus** : c'est l'encre à 4,5 %, qui prend la teinte du papier
+qu'elle couvre. Il ne remplit qu'un mot du langage, jamais une ligne.
 
 **Une seule feuille, blanche comme la page.** Rien ne la détache pour l'instant : l'alternance
 est une donnée de la vue (`data-paper` sur le bloc), que rien ne peint. Le survol ne remplit rien
@@ -80,7 +84,7 @@ l'hôte. La prose, elle, se mesure en caractères, et pas autrement.
 
 ```sh
 cd packages/autodoc-core
-grep -oE 'font-size: [^;]+' src/styles/autodoc.css | sort -u | wc -l   # 7
+grep -oE 'font-size: [^;]+' src/styles/autodoc.css | sort -u | wc -l   # 6
 grep -oE '#[0-9a-fA-F]{3,8}' src/styles/autodoc.css | sort -u | wc -l  # 6, toutes dans :root
 # l'hôte n'ajoute aucune teinte : il ne peint qu'avec les jetons
 grep -oE '#[0-9a-fA-F]{3,8}' ../../examples/autodoc-playground/src/style.css | wc -l  # 0

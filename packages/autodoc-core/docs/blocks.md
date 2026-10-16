@@ -86,8 +86,9 @@ does not move, so a reader who unfolds keeps their place.
 
 Navigation is not the computation's job: the index and the used-by list carry blue links. A row
 carries none of its own — the whole line is its target, and the underline of its name under the
-pointer is its only affordance — except when the fiche beside it is a rule with a page, and a
-small blue mark then waits next to the opened name. Four rules govern the unfold:
+pointer is its only affordance — except when the rule it names has a page, and a small blue mark
+then waits next to that name, whether the fiche is open or not: it leads elsewhere rather than
+opening anything. Four rules govern the unfold:
 
 - **It changes the line's name and its sheet, not its layout.** The sheet is a layer behind the
   block, starting where the name column does and ending at the row's right edge. It cannot be the
