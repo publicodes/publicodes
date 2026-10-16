@@ -1,1 +1,3 @@
-../cli-template/dst/README.md
+# `@publicodes/cli` (platform specific)
+
+This packages is a platform specific dependency for `@publicodes/cli`.
