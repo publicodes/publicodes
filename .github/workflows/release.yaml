@@ -78,4 +78,4 @@ jobs:
         uses: changesets/action@v1.7.0
         with:
           publish: yarn release
-          version: .changeset/version.sh
+          version: .github/bin/version.sh
