@@ -16,18 +16,21 @@
 	--publicodes-muted: #636975;
 	--publicodes-blue: #1a48bc;
 	--publicodes-red: #b63325;
-	--publicodes-rule: #dadee6;
 	/* le fond d'un mot du langage : l'encre voilée, la surface la plus légère qui se
 	   détache du blanc sans devenir un gris de plus */
 	--publicodes-tint: rgba(23, 27, 34, 0.045);
-	/* the same filet between two rows: a dot every 4px */
+	/* l'encre d'un mot du langage sur sa pastille : elle porte la teinte du texte, mais
+	   s'en détache par la taille et la notation — jamais par la seule couleur */
+	--publicodes-label-ink: #636975;
+	/* the same filet between two rows: a dot every 4px, in the same ink as the line it
+	   replaces — the gap lightens it, not its colour */
 	--publicodes-rule-dots: repeating-linear-gradient(
 		to right,
 		var(--publicodes-muted) 0 1px,
 		transparent 1px 4px
 	);
 	/* one paper, for now: the sheets alternate by depth in the view, not in the paint */
-	--publicodes-paper-white: #ffffff;
+	--publicodes-paper: #ffffff;
 
 	--publicodes-size-title: 34px;
 	--publicodes-size-answer: 28px;
@@ -56,6 +59,24 @@
 	--publicodes-width: 48rem;
 	/* 65 to 75 characters: the longest a reader holds without losing the line */
 	--publicodes-measure: 68ch;
+}
+
+/* Le thème suit le système, et ne change que des clartés : la teinte reste 264°, les rôles
+   restent les mêmes, le contraste reste celui du clair. Ce qu'un hôte doit peindre, c'est le
+   fond de sa page avec `--publicodes-paper` : ici comme en clair, une feuille n'a pas de
+   surface à elle. */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--publicodes-ink: #e3e8f2;
+		--publicodes-muted: #999fa9;
+		--publicodes-blue: #6e9bfb;
+		--publicodes-red: #e68677;
+		--publicodes-tint: rgba(227, 232, 242, 0.07);
+		/* le voile ne détache plus assez le mot du papier : la pastille remonte donc à
+		   mi-chemin de l'atténuée et de l'encre — plus lisible, sans peser comme la valeur */
+		--publicodes-label-ink: #bfc4ce;
+		--publicodes-paper: #111419;
+	}
 }
 
 .publicodes-rule-page {
@@ -176,7 +197,7 @@
    plain filet, where every other line carries a dotted one. A value the chain opens on has
    no such line, and the sheet's own frame already separates it from what follows. */
 .publicodes-row--last-value::after {
-	background: var(--publicodes-rule);
+	background: var(--publicodes-muted);
 }
 .publicodes-row__term {
 	min-width: 0;
@@ -187,9 +208,9 @@
 	text-align: right;
 	white-space: nowrap;
 }
-/* the operator column: its mark ends the column, and lives in the line's own flow — the
-   sign and the word of a line are placed by one rule, so two marks always meet at the same
-   height, whatever their text measures */
+/* the operator column: its mark ends the column, against the name it applies to — the sign
+   and the word of a line are placed by one rule, so two marks always meet at the same height,
+   whatever their text measures */
 .publicodes-row__gutter {
 	text-align: right;
 }
@@ -221,7 +242,7 @@
 	border-radius: 4px;
 	/* la notation : la face est celle de la surface, pas d'une sorte de pastille */
 	font-family: 'Noto Sans Mono', var(--publicodes-figure);
-	color: var(--publicodes-muted);
+	color: var(--publicodes-label-ink);
 	white-space: nowrap;
 }
 /* une marque de la colonne des opérateurs : posée à la mi-hauteur de la ligne, pour qu'un
@@ -248,15 +269,12 @@
 	/* the row, not the name: the nearest positioned ancestor is the line */
 	inset: 0;
 }
-/* la ligne qui nomme une table de valeurs : sa gouttière garde la largeur des autres lignes,
-   sinon les colonnes qu'elle nomme ne tombent plus sur celles des entrées. Le mot, lui, est
-   aligné contre la colonne comme un opérateur : plus large, il déborde à gauche, dans la
-   marge, jamais sur les colonnes. */
+/* la ligne qui nomme une table : sa première colonne est celle des autres lignes, et non la
+   largeur de son mot — sinon les colonnes qu'elle nomme ne tombent plus sur celles des entrées.
+   Le mot est aligné comme un opérateur ; plus large que la colonne, il déborde dans la marge.
+   Sous 940px, la règle des lignes étroites reprend la main plus bas. */
 .publicodes-row--header {
 	grid-template-columns: var(--publicodes-gutter) minmax(0, 1fr) auto;
-}
-.publicodes-row--header .publicodes-row__gutter {
-	justify-content: flex-end;
 }
 
 /* a row that opens something answers the pointer, wherever on the line it is
@@ -274,7 +292,7 @@
 	}
 	/* a control answers the pointer on its own outline, not by covering the sheet */
 	.publicodes-control:hover {
-		border-color: var(--publicodes-rule);
+		border-color: var(--publicodes-muted);
 	}
 	.publicodes-fold:hover {
 		color: var(--publicodes-ink);
@@ -286,14 +304,14 @@
 	text-align: right;
 	white-space: nowrap;
 }
-/* the dotted line marks the parameter, whatever its state, so it is drawn in ink
-   and stays legible under a default's paler figure */
+/* the dotted line marks the parameter, whatever its state: it is drawn in the same
+   attenuated ink as the filet between two lines */
 .publicodes-value[data-parameter] .publicodes-value__figure {
 	/* above the row's own target: a dotted figure answers the pointer by itself */
 	position: relative;
 	text-decoration: underline dotted;
 	text-underline-offset: 4px;
-	text-decoration-color: var(--publicodes-ink);
+	text-decoration-color: var(--publicodes-muted);
 	/* the dotted line is the only mark: it says a parameter, the title says which */
 	cursor: help;
 }
@@ -366,7 +384,7 @@
 	bottom: 0;
 	left: var(--publicodes-paper-inset);
 	right: 0;
-	background: var(--publicodes-paper-white);
+	background: var(--publicodes-paper);
 }
 /* the sheet's foot: it closes on a line of its own width, plain — the dotted filet
    separates two lines of a computation, it does not close a surface. Drawn as a
@@ -379,7 +397,7 @@
 	right: 0;
 	bottom: 0;
 	height: 1px;
-	background: var(--publicodes-rule);
+	background: var(--publicodes-muted);
 }
 /* the line and its detail paint above the sheet */
 .publicodes-block > * {
@@ -529,7 +547,7 @@
 }
 .publicodes-context td {
 	padding: 8px 0;
-	border-bottom: 1px solid var(--publicodes-rule);
+	border-bottom: 1px solid var(--publicodes-muted);
 }
 .publicodes-rule-used-by ul {
 	list-style: none;
@@ -538,7 +556,7 @@
 }
 .publicodes-rule-used-by li {
 	padding: 8px 0;
-	border-bottom: 1px solid var(--publicodes-rule);
+	border-bottom: 1px solid var(--publicodes-muted);
 	font-size: var(--publicodes-size-figure);
 }
 .publicodes-rule-navigation ul {
@@ -548,7 +566,7 @@
 	font-size: var(--publicodes-size-figure);
 }
 .publicodes-rule-provenance {
-	border-top: 1px solid var(--publicodes-rule);
+	border-top: 1px solid var(--publicodes-muted);
 	margin-top: 40px;
 	padding-top: 14px;
 	font-size: var(--publicodes-size-label);

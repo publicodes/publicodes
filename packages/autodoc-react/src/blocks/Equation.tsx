@@ -55,8 +55,9 @@ export function Equation({ view }: { view: EquationView }): ReactElement {
 
 /**
  * Les deux mots qui nomment une table de valeurs — ce qu'un `contexte` lie : le mot du
- * mécanisme dans la colonne des opérateurs, et ce qu'une ligne vaut dans celle des valeurs. Les noms, entre les deux, se lisent seuls. C'est une ligne du calcul comme une
- * autre, avec la même grille : les entrées, sous elle, tombent juste.
+ * mécanisme dans la colonne des opérateurs, et ce qu'une ligne vaut dans celle des valeurs. Les
+ * noms, entre les deux, se lisent seuls. C'est une ligne du calcul comme une autre, avec la
+ * même grille : les entrées, sous elle, tombent juste.
  */
 function HeaderLine({
 	header: [what, worth],

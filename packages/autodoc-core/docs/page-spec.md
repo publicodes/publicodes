@@ -263,8 +263,7 @@ valeur
 
 **`contexte` ne change pas la valeur : il dit sous quel contexte elle a été calculée.** Son mot
 ouvre l'en-tête du tableau qu'il annonce — `contexte`, `valeur du paramètre`, sur une ligne —
-et
-ce tableau est imprimé sans qu'on ait à le déplier : ce qui décide de ce que la règle vaut ne se
+et ce tableau est imprimé sans qu'on ait à le déplier : ce qui décide de ce que la règle vaut ne se
 cache pas. Ses lignes sont les règles liées, chacune avec sa valeur, comme n'importe quelle ligne
 du calcul — et sans état : la valeur vient du modèle, pas du lecteur, donc elle ne porte pas la
 marque d'un paramètre. C'est le seul mécanisme enchaîné dont l'explication ne soit pas un calcul.
@@ -333,6 +332,10 @@ pas et ne s'affichent pas pareil. Aucune ne ressemble à zéro.
   la description de l'auteur, et rien qui ressemble à un résultat.
 - **non renseignée** — vue depuis le contexte du calcul : l'entrée manque, et c'est sur elle que
   le lecteur peut agir.
+
+Ce qu'une ligne ne peut pas écrire, elle le tait dans sa forme en ligne : un opérande sans
+forme écrite — un mécanisme, dont le nom n'est pas une écriture — y laisse un `…`. `BIC ×` se
+lirait comme une troncature ; `BIC × …` dit qu'il y a un terme de plus, écrit sous la ligne.
 
 La ligne de résultat d'une équation porte l'état qui convient, en toutes lettres. Jamais un
 filet vide, jamais un tiret : une absence nommée est une information, une case vide est un bug
@@ -463,6 +466,11 @@ calcul liste les entrées sans état fourni ; les équations montrent leur struc
 opérateurs. La ligne de résultat d'une équation sans valeur montre l'état d'absence de la règle
 — `non défini`, `non applicable` — et jamais un filet vide ni un tiret. Aucune seconde mise en
 page, aucune version dégradée : c'est la même, moins remplie.
+
+Rien n'y est marqué : sans évaluation, aucune ligne n'a rien fait ni rien subi, donc aucune
+n'est éteinte, et rien n'est retenu en repli. Et une ligne qui n'aurait rien à dire d'elle-même
+s'ouvre d'emblée — celle qui porte le nom de son mécanisme, celle qui référence une règle dont
+la valeur est un choix. Sans valeur à montrer, leur feuille *est* leur explication.
 
 ---
 

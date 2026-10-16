@@ -36,16 +36,16 @@ Les mots du langage gardent la **casse de l'auteur** : `sinon`, `arrondi`, `cont
 comme le modèle les écrit, jamais transformés. Ce qui les détache d'une figure, c'est la
 pastille et la taille.
 
-## Couleur — 4 couleurs, 1 papier, 1 filet, 1 voile
+## Couleur — 5 encres, 1 papier, 1 voile
 
 | # | Rôle | Jeton | Usage |
 |---|---|---|---|
 | 1 | Encre | `--publicodes-ink` (#171b22) | le texte, et les filets d'emphase |
-| 2 | Encre atténuée | `--publicodes-muted` (#636975) | unités, adresses, qualificatifs, le contrôle de repli, son chevron et le cercle qui compte, les mots du langage et les signes sur leur pastille |
-| 3 | Bleu | `--publicodes-blue` (#1a48bc) | liens, filets de section, anneau de focus, le contrôle de page |
-| 4 | Rouge | `--publicodes-red` (#b63325) | l'absence : non défini, non applicable, non renseignée |
-| — | Papier | `--publicodes-paper-white` (#ffffff) | la feuille qu'une ligne ouvre, et le fond de la page |
-| — | Filet | `--publicodes-rule` (#dadee6) | séparateurs et hairlines, le contour du contrôle survolé, le pied d'une feuille ouverte ; entre deux lignes de calcul, en pointillé (`--publicodes-rule-dots`, un point d'1px tous les 4px) |
+| 2 | Encre atténuée | `--publicodes-muted` (#636975, sombre #999fa9) | unités, adresses, qualificatifs, le contrôle de repli, son chevron et le cercle qui compte, la place d'un terme qu'on n'écrit pas, et les filets : les séparateurs, les hairlines, le contour du contrôle survolé, le pied d'une feuille ouverte. Entre deux lignes de calcul, le même filet en pointillé — un point d'1px tous les 4px (`--publicodes-rule-dots`) |
+| 3 | Encre d'une pastille | `--publicodes-label-ink` (#636975, sombre #bfc4ce) | le texte d'un mot du langage, d'un signe et d'un « par défaut », sur leur voile |
+| 4 | Bleu | `--publicodes-blue` (#1a48bc) | liens, filets de section, anneau de focus, le contrôle de page |
+| 5 | Rouge | `--publicodes-red` (#b63325) | l'absence : non défini, non applicable, non renseignée |
+| — | Papier | `--publicodes-paper` (#ffffff) | la feuille qu'une ligne ouvre, et le fond de la page |
 | — | Voile | `--publicodes-tint` (l'encre à 4,5 %) | le fond des pastilles de mots du langage |
 
 **Une seule teinte porte l'ensemble.** Le bleu est la teinte de référence, 264° : les neutres en
@@ -54,6 +54,13 @@ qu'à les ranger : 0,22 pour l'encre, 0,52 pour l'atténué, 0,90 pour le filet,
 papier. L'absence est la seule autre teinte (30°), au même chroma à un cheveu près, et à la
 clarté qu'il faut pour rester lisible sur blanc — les deux accents se valent donc en intensité,
 et ne diffèrent que par ce qu'ils disent.
+
+**Le thème suit le système.** Sous `prefers-color-scheme: dark`, les mêmes rôles changent de
+clarté et rien d'autre : la teinte reste 264°, l'absence reste la seconde teinte, et les
+contrastes restent ceux du clair — l'encre 0,93, l'atténué 0,70, le papier 0,19, le bleu 0,70,
+le rouge 0,72. C'est une seconde palette, pas des rôles de plus : le budget est
+toujours de quatre couleurs, un papier et un voile. Les filets ne sont pas une couleur de plus :
+c'est l'encre atténuée, et le pointillé n'est que ce même filet à l'écart de son point.
 
 **Le voile n'est pas un gris de plus** : c'est l'encre à 4,5 %, qui prend la teinte du papier
 qu'elle couvre. Il ne remplit qu'un mot du langage, jamais une ligne.

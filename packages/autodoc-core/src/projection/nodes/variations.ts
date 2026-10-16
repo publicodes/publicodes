@@ -51,8 +51,9 @@ export function projectVariations(
 	)
 	// a branch opens a sheet of its own, one level in
 	const sheet = { ...ctx, depth: ctx.depth + 1 }
-	const unresolved =
-		result.state === 'not_defined' || result.state === 'not_applicable'
+	// « lu » se dit sur la valeur du mécanisme, pas sur la présence d'une trace : une trace
+	// qui ne le couvre pas ne dit rien de ses conditions
+	const unresolved = result.state !== 'value'
 	const operands: OperandView[] = []
 	let settled = false
 	let retainedTerm: string | null = null

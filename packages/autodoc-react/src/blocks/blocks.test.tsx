@@ -250,6 +250,15 @@ describe('terms that had no effect', () => {
 	})
 })
 
+describe('a page nobody evaluated', () => {
+	it('marks nothing and holds nothing back', () => {
+		// rien n'a rien fait ni rien subi : aucune ligne n'est éteinte, rien n'est retenu
+		const { container } = render(<RulePage ast={ast} rule="total" context={context} />)
+		expect(container.querySelectorAll('.publicodes-row--inert').length).toBe(0)
+		expect(container.querySelectorAll('.publicodes-fold').length).toBe(0)
+	})
+})
+
 describe('unfolding a reference', () => {
 	const openFirstSheet = () => {
 		const rendered = renderPage()

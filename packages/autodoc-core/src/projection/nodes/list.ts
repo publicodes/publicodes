@@ -86,9 +86,11 @@ export function projectList(
 			null
 		:	operands
 				.map((operand, index) => {
-					// a mechanism's own word is not a written form: the value stands for it
+					// a mechanism's own word is not a written form: the value stands for it.
+					// sans valeur non plus, la place reste tenue : un opérateur sans second
+					// terme se lit comme une troncature, pas comme un terme manquant
 					const written = operand.termIsMechanism ? null : operand.term
-					const text = written ?? textOf(operand.value) ?? ''
+					const text = written ?? textOf(operand.value) ?? '…'
 					return `${signs[index]}${text}`
 				})
 				.join(' ')

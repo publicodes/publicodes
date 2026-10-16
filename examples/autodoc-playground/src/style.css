@@ -14,8 +14,8 @@ html {
 	font-size: var(--publicodes-size-body);
 	line-height: 1.5;
 	color: var(--publicodes-ink);
-	/* the page is the white surface: a sheet opens in the shaded one */
-	background: var(--publicodes-paper-white);
+	/* the page is the paper: here as in the library, a sheet has no surface of its own */
+	background: var(--publicodes-paper);
 }
 
 /* the models this playground can show */
@@ -23,7 +23,7 @@ html {
 	display: flex;
 	gap: 18px;
 	padding: 14px 24px;
-	border-bottom: 1px solid var(--publicodes-rule);
+	border-bottom: 1px solid var(--publicodes-muted);
 }
 .doc-models button {
 	font: inherit;
@@ -110,7 +110,7 @@ html {
 		padding: 20px 18px 48px;
 	}
 	.doc-index {
-		border-bottom: 1px solid var(--publicodes-rule);
+		border-bottom: 1px solid var(--publicodes-muted);
 		padding-bottom: 18px;
 		margin-bottom: 26px;
 	}

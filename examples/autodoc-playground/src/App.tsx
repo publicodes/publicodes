@@ -19,9 +19,9 @@ import {
 const autoContext: Record<string, TraceValue> = {
 	"entreprise . chiffre d'affaires . BIC": 10000,
 	"entreprise . chiffre d'affaires . service BIC": 5000,
-	"entreprise . chiffre d'affaires . service BNC": 0,
-	"entreprise . chiffre d'affaires . vente restauration hébergement": 0,
-	'entreprise . activité . nature': 'libérale',
+	"entreprise . chiffre d'affaires . service BNC": 200,
+	"entreprise . chiffre d'affaires . vente restauration hébergement": 1000,
+	'entreprise . activité . nature': 'artisanale',
 	date: new Date('2024-06-01'),
 	'dirigeant . auto-entrepreneur . Cipav . adhérent': false,
 }

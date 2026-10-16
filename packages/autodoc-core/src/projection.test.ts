@@ -109,6 +109,18 @@ describe('projectRule — branches', () => {
 		)
 	})
 
+	it('reads nothing, marks nothing and holds nothing back without an evaluation', () => {
+		const [name] = variationsIn(true)!
+		const sheet = projectRule(doc, name).equation
+		// la condition n'a pas été examinée : elle n'a pas de valeur, et surtout pas « non »
+		expect(sheet?.rows.find((row) => row.gutter === 'si')?.value.state).toBe(
+			'absent',
+		)
+		// rien n'a rien fait : aucune ligne n'est éteinte, donc aucune n'est retenue
+		expect(sheet?.rows.filter((row) => row.inert)).toHaveLength(0)
+		expect(sheet?.fold).toBeNull()
+	})
+
 	it('applies no branch when the mechanism itself did not resolve', () => {
 		const [, definition] = variationsIn(true)!
 		const id = definition.value_mechanism.id
@@ -325,6 +337,49 @@ describe('a mechanism a row cannot write out', () => {
 		expect(view.equation?.rows[1]?.termIsMechanism).toBe(true)
 		// the sum's own written form is its operands, not the words of a mechanism
 		expect(view.equation?.inlineTerm).not.toContain('variations')
+	})
+
+	it('opens on what explains it when no evaluation can', () => {
+		// la ligne du mécanisme porte son nom : repliée, elle ne dirait rien
+		const view = projectRule(inline, 'total')
+		const row = view.equation?.rows[1]
+		expect(row?.termIsMechanism).toBe(true)
+		expect(row?.detail).not.toBeNull()
+		// avec une évaluation, elle se replie : sa valeur dit ce qu'elle vaut
+		const evaluated = projectRule(inline, 'total', {
+			evaluation: { trace: { s: { '': 10 }, v: { '': 6 } } },
+		})
+		expect(evaluated.equation?.rows[1]?.detail).toBeNull()
+	})
+
+	it('opens what a rule references when that rule chose its value', () => {
+		// une règle dont la valeur est une `variations` : la ligne qui la référence n'a ni
+		// forme écrite ni valeur à montrer, donc elle s'ouvre
+		const [name, definition] = Object.entries(doc).find(
+			([, rule]) => rule.value_mechanism.kind === 'variations',
+		)!
+		const parent = Object.entries(doc).find(([, rule]) =>
+			JSON.stringify(rule).includes(`"${name}"`),
+		)
+		expect(parent).toBeDefined()
+		const row = (view: ReturnType<typeof projectRule>) =>
+			[
+				...(view.equation?.rows ?? []),
+				...(view.equation?.rows ?? []).flatMap((r) => r.detail?.rows ?? []),
+			].find((r) => r.address === name)
+		const opened = row(projectRule(doc, parent![0], {}))
+		expect(opened?.detail).not.toBeNull()
+		// et avec une évaluation elle se replie : c'est la valeur qui parle
+		const folded = row(projectRule(doc, parent![0], evaluated))
+		expect(folded?.detail).toBeNull()
+		expect(definition.value_mechanism.kind).toBe('variations')
+	})
+
+	it('keeps the place of what it cannot write', () => {
+		// sans forme écrite ni valeur, la place reste tenue : `4 +` tout court se lirait
+		// comme une troncature
+		const view = projectRule(inline, 'total')
+		expect(view.equation?.inlineTerm).toBe('4 € + …')
 	})
 
 	it('leaves an operator its word', () => {

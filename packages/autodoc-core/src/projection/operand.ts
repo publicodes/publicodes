@@ -43,7 +43,11 @@ export function finishEquation(
 	ctx: Ctx,
 	id: string,
 ): EquationView {
-	const rows = [...mechanism.operands, ...mechanism.modifiers]
+	const all = [...mechanism.operands, ...mechanism.modifiers]
+	// un mécanisme sans valeur n'a rien lu : ses lignes n'ont rien fait ni rien subi. Une
+	// absence lue, elle, est un résultat d'évaluation — elle garde ce qu'elle a tranché
+	const read = mechanism.result.state !== 'absent'
+	const rows = read ? all : all.map((r) => ({ ...r, inert: false }))
 	const held = rows.filter((row) => row.inert)
 	// the reader's choice first; failing one, terms that had no effect are held back —
 	// unless the mechanism asks for them, or the page has no situation to read them
@@ -116,17 +120,29 @@ export function finishRow(
 	const rule = raw.address !== null ? ctx.projectRule(raw.address, inner) : null
 	const fiche = rule?.equation ?? raw.detail
 	const label = raw.name ?? term
+	// a mechanism with no written form goes by its name, and its line is what explains it
+	const byName = term !== null && term === raw.named
 	// a reference says what it is whether or not it computes; a mechanism only opens
 	// where it prints lines
 	const opens = raw.address !== null || (fiche !== null && fiche.size > 0)
-	const detail = opens && key !== null && ctx.expanded.has(key) ? fiche : null
+	// la règle qu'une ligne référence décide elle-même d'une branche : aucun opérateur ne
+	// l'écrit, et sa valeur est un choix parmi d'autres
+	const chosen =
+		raw.address !== null &&
+		ctx.ast[raw.address]?.value_mechanism.kind === 'variations'
+	// sans évaluation, une ligne qui n'a rien à dire d'elle-même s'ouvre d'emblée : ni forme
+	// écrite — elle porte le nom de son mécanisme — ni valeur, ce qu'elle ouvre étant un choix
+	const unfolded =
+		ctx.expanded.has(key ?? '') ||
+		(ctx.trace === undefined && (byName || chosen))
+	const detail = opens && key !== null && unfolded ? fiche : null
 	return {
 		gutter: keyword ?? operator ?? '',
 		gutterIsMechanism: keyword !== null,
 		key: opens ? key : null,
 		depth: ctx.depth,
 		term,
-		termIsMechanism: term !== null && term === raw.named,
+		termIsMechanism: byName,
 		control:
 			!opens ? null
 			: label !== null ? 'term'
