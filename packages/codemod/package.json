@@ -7,7 +7,7 @@
 		"node": ">=22.0.0"
 	},
 	"dependencies": {
-		"yaml": "^2.3.4"
+		"yaml": "^2.6.0"
 	},
 	"scripts": {
 		"build": "rolldown -c",
@@ -17,8 +17,9 @@
 	"files": [
 		"bin"
 	],
-	"bin": "./bin/update-v2.js",
+	"bin": "./bin/codemod-v2.js",
 	"devDependencies": {
+		"rimraf": "^3.0.2",
 		"rolldown": "1.0.0-beta.40"
 	}
 }

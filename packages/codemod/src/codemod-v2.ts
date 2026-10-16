@@ -2,6 +2,8 @@
 /* eslint-disable no-console */
 
 import fs from 'fs/promises'
+import { extname, join } from 'node:path'
+import process from 'node:process'
 import yaml, { Scalar, YAMLMap, YAMLOMap, isMap } from 'yaml'
 
 // Authorized keys that should not be moved to the `meta` object
@@ -52,8 +54,55 @@ const authorizedKeys = [
 	'logarithme',
 ]
 
-// Get files from command line arguments
-const yamlFiles = process.argv.slice(2)
+const publicodesExtension = '.publicodes'
+
+/** Returns the `.publicodes` files contained in the given directory, recursively. */
+async function findPublicodesFiles(directory: string): Promise<string[]> {
+	const entries = await fs.readdir(directory, { withFileTypes: true })
+	entries.sort((a, b) => a.name.localeCompare(b.name))
+	const files: string[] = []
+	for (const entry of entries) {
+		const path = join(directory, entry.name)
+		if (entry.isDirectory()) {
+			files.push(...(await findPublicodesFiles(path)))
+		} else if (entry.isFile() && extname(entry.name) === publicodesExtension) {
+			files.push(path)
+		}
+	}
+	return files
+}
+
+const targets = process.argv.slice(2)
+
+if (targets.length === 0) {
+	console.error('Usage: @publicodes/codemod <path>...')
+	console.error(
+		'  <path> can be a directory (walked recursively) or a file to process',
+	)
+	process.exit(1)
+}
+
+const yamlFiles: string[] = []
+let failed = false
+
+for (const target of targets) {
+	const stats = await fs.stat(target).catch(() => null)
+	if (stats === null) {
+		console.error(`Codemod: no such file or directory: ${target}`)
+		failed = true
+	} else if (stats.isDirectory()) {
+		yamlFiles.push(...(await findPublicodesFiles(target)))
+	} else if (stats.isFile()) {
+		yamlFiles.push(target)
+	}
+}
+
+if (yamlFiles.length === 0) {
+	console.error('Codemod: no file to process')
+	process.exit(1)
+}
+
+console.log(`Codemod: processing ${yamlFiles.length} file(s)`)
 
 for (const yamlFile of yamlFiles) {
 	// Read YAML file
@@ -75,6 +124,9 @@ console.log(
 	"All done! Don't forget to update the version number of publicodes packages in package.json",
 )
 
+if (failed) {
+	process.exit(1)
+}
 /**
  * Removes unnecessary double quotes from string values.
  * Transforms "'xxx'" to "xxx" and '"yyy"' to 'yyy'
@@ -83,19 +135,22 @@ function removeDoubleQuotes(doc: yaml.Document) {
 	yaml.visit(doc, {
 		Scalar(_, node) {
 			const value = node.value
+			if (typeof value !== 'string') {
+				return node
+			}
+			const firstChar = value[0]
+			const lastChar = value[value.length - 1]
 			if (
-				typeof value === 'string' &&
-				value.length >= 2 &&
-				node.type !== 'PLAIN'
+				(firstChar === "'" && lastChar === "'") ||
+				(firstChar === '"' && lastChar === '"')
 			) {
-				const firstChar = value[0]
-				const lastChar = value[value.length - 1]
-				if (
-					(firstChar === "'" && lastChar === "'") ||
-					(firstChar === '"' && lastChar === '"')
-				) {
-					node.value = value.slice(1, -1)
-				}
+				node.value = value.slice(1, -1)
+			}
+			// change type: 'QUOTE_SINGLE' to type: DOUBLE_QUOTE and type: 'QUOTE_DOUBLE' to type: SINGLE_QUOTE
+			if (node.type === 'QUOTE_SINGLE') {
+				node.type = 'QUOTE_DOUBLE'
+			} else if (node.type === 'QUOTE_DOUBLE') {
+				node.type = 'QUOTE_SINGLE'
 			}
 		},
 	})
