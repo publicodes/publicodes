@@ -649,7 +649,7 @@ describe('the sheet a `contexte` opens', () => {
 			Array.from(header?.querySelectorAll('.publicodes-row__label--word') ?? []).map(
 				(word) => word.textContent,
 			),
-		).toEqual(['contexte', 'paramètre', 'valeur'])
+		).toEqual(['contexte', 'valeur du paramètre'])
 		// et le mot ne tient plus de ligne à lui seul : la ligne du mécanisme a disparu
 		expect(
 			Array.from(container.querySelectorAll('.publicodes-row__gutter')).filter(

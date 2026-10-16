@@ -116,7 +116,7 @@ describe('the line a `contexte` gets', () => {
 
 	it('names the columns of what it binds', () => {
 		const sheet = contextRow(projectRule(doc, RULE, evaluated))?.detail
-		expect(sheet?.header).toEqual(['contexte', 'paramètre', 'valeur'])
+		expect(sheet?.header).toEqual(['contexte', 'valeur du paramètre'])
 		// et une feuille de calcul n'en a pas : ses lignes ne sont pas nommées, elles se lisent
 		expect(sheetOf(everythingOpen().equation, 'revenu net')?.header).toBeNull()
 	})
@@ -133,6 +133,8 @@ describe('the line a `contexte` gets', () => {
 		])
 		expect(lines[0].key).toBeNull()
 		expect(lines[0].detail).toBeNull()
+		// et pas de marque de paramètre : c'est le modèle qui donne cette valeur, pas le lecteur
+		expect(lines[0].parameter).toBeNull()
 	})
 })
 

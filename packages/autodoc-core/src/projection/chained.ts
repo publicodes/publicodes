@@ -7,13 +7,8 @@ import type {
 	OperandView,
 	ValueView,
 } from './types'
-import {
-	finishEquation,
-	finishRow,
-	parameterState,
-	projectOperand,
-} from './operand'
-import { CONTEXT_COLUMNS } from './copy'
+import { finishEquation, finishRow, projectOperand } from './operand'
+import { CONTEXT_VALUE } from './copy'
 import { ABSENT, lookupValue, unitOf } from './value'
 import { displayName } from './names'
 
@@ -122,7 +117,9 @@ export function boundRows(
 				caller.ast[address]?.public === true ?
 					{ address, name: displayName(caller.ast, address) }
 				:	null,
-			parameter: parameterState(address, caller),
+			// la valeur vient du modèle, pas du lecteur : pas de marque de paramètre — la ligne
+			// qui nomme le contexte dit déjà d'où elle vient
+			parameter: null,
 			description: caller.ast[address]?.description ?? null,
 		}
 	})
@@ -150,7 +147,7 @@ export function contextModifier(
 			{ ...under, depth: under.depth + 1 },
 			mechanism.id,
 		),
-		header: [KEYWORDS.context, ...CONTEXT_COLUMNS],
+		header: [KEYWORDS.context, CONTEXT_VALUE],
 	}
 	const row = finishRow(
 		{

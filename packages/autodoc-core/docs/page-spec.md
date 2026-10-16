@@ -262,10 +262,12 @@ valeur
 ```
 
 **`contexte` ne change pas la valeur : il dit sous quel contexte elle a été calculée.** Son mot
-ouvre l'en-tête du tableau qu'il annonce — `contexte`, `paramètre`, `valeur`, sur une ligne — et
+ouvre l'en-tête du tableau qu'il annonce — `contexte`, `valeur du paramètre`, sur une ligne —
+et
 ce tableau est imprimé sans qu'on ait à le déplier : ce qui décide de ce que la règle vaut ne se
 cache pas. Ses lignes sont les règles liées, chacune avec sa valeur, comme n'importe quelle ligne
-du calcul. C'est le seul mécanisme enchaîné dont l'explication ne soit pas un calcul.
+du calcul — et sans état : la valeur vient du modèle, pas du lecteur, donc elle ne porte pas la
+marque d'un paramètre. C'est le seul mécanisme enchaîné dont l'explication ne soit pas un calcul.
 
 **Un mécanisme sans opérateur se nomme.** Une somme s'écrit avec ses `+`, un produit avec ses
 `×` ; `variations`, `toutes ces conditions`, `une de ces conditions`, `le plus petit de` et `le

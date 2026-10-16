@@ -142,10 +142,10 @@ export interface EquationView {
 	paper: 'white' | 'shade'
 	/**
 	 * The words that head a table sheet, when the sheet is a list of named values rather than
-	 * a computation — what it is, what a line names, and what it is worth. A `contexte` opens
-	 * the only such sheet there is.
+	 * a computation: what it is, and what a line is worth — the names need no heading of their
+	 * own. A `contexte` opens the only such sheet there is.
 	 */
-	header: readonly [string, string, string] | null
+	header: readonly [string, string] | null
 }
 
 /**

@@ -12,8 +12,8 @@ export const PARAMETER_NOTES: Record<ParameterState, string> = {
 	'non renseignée': 'Paramètre du modèle : aucune valeur n’a été fournie.',
 }
 
-/** Ce qu'un contexte lie : ce qu'une ligne nomme, et ce qu'elle vaut. */
-export const CONTEXT_COLUMNS = ['paramètre', 'valeur'] as const
+/** Ce qu'une ligne d'un contexte vaut : le nom de la colonne qui le dit. */
+export const CONTEXT_VALUE = 'valeur du paramètre'
 
 /** A rule the model does not compute where it is read. */
 export const NO_COMPUTATION =

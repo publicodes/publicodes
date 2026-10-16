@@ -54,14 +54,14 @@ export function Equation({ view }: { view: EquationView }): ReactElement {
 }
 
 /**
- * Les mots qui nomment une table de valeurs — ce qu'un `contexte` lie : le mot du mécanisme
- * dans la colonne des opérateurs, puis ce qu'une ligne nomme et ce qu'elle vaut. C'est une
- * ligne du calcul comme une autre, avec la même grille : les entrées, sous elle, tombent juste.
+ * Les deux mots qui nomment une table de valeurs — ce qu'un `contexte` lie : le mot du
+ * mécanisme dans la colonne des opérateurs, et ce qu'une ligne vaut dans celle des valeurs. Les noms, entre les deux, se lisent seuls. C'est une ligne du calcul comme une
+ * autre, avec la même grille : les entrées, sous elle, tombent juste.
  */
 function HeaderLine({
-	header: [what, name, worth],
+	header: [what, worth],
 }: {
-	header: readonly [string, string, string]
+	header: readonly [string, string]
 }): ReactElement {
 	const word = (label: string) => (
 		<span className="publicodes-row__label publicodes-row__label--word">
@@ -71,7 +71,7 @@ function HeaderLine({
 	return (
 		<div className="publicodes-row publicodes-row--header">
 			<span className="publicodes-row__gutter">{word(what)}</span>
-			<span className="publicodes-row__term">{word(name)}</span>
+			<span className="publicodes-row__term" />
 			<span className="publicodes-value">{word(worth)}</span>
 		</div>
 	)
