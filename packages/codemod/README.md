@@ -2,13 +2,25 @@ This package contains a codemod script that you can use to update your codebase 
 
 ## Usage
 
-```
-yarn @publicodes/codemod <path-to-publicode-folder>
+```sh
+npx @publicodes/codemod <path>...
 ```
 
+```sh
+yarn codemod <path>...
 ```
-npx @publicodes/codemod <path-to-publicode-folder>
+
+```sh
+pnpm codemod <path>...
 ```
+
+Each `<path>` is either:
+
+- a directory, which is walked recursively: every `.publicodes` file it contains is processed;
+- a file, which is processed as-is (whatever its extension).
+
+> [!WARNING]
+> Files are modified **in place**, without any backup. Commit (or stash) your changes before running the codemod.
 
 ## Caveats
 
