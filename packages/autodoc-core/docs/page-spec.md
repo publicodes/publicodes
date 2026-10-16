@@ -192,7 +192,9 @@ propre trait.
 
 Le papier n'a pas de bord supérieur : le trait de la ligne ouverte le fait, et il
 couvre toute la largeur du papier — c'est pourquoi la première ligne d'une fiche
-n'a pas de trait à elle. Son bord inférieur, lui, est à lui et couvre la même
+n'a pas de trait à elle. Ce trait-là est toujours en tirets, comme les autres :
+sous un titre, c'est un titre qu'on sépare, même quand la ligne ouverte est la
+dernière valeur de son calcul. Son bord inférieur, lui, est à lui et couvre la même
 largeur, si bien qu'une fiche est un cadre fermé dont les traits intérieurs
 restent en retrait.
 
@@ -211,7 +213,7 @@ quoi que ce soit : le lecteur qui cherche l'origine d'un nombre n'a pas à cliqu
 pour découvrir qu'il n'y en a pas.
 
 Le fait est porté par le chiffre lui-même, et par lui seul : un paramètre s'écrit
-avec un souligné pointillé, et l'infobulle du chiffre dit ce que cela veut dire —
+avec un souligné en tirets, et l'infobulle du chiffre dit ce que cela veut dire —
 « Paramètre du modèle : cette valeur n'est pas calculée ici. » C'est la même
 phrase, mot pour mot, que la fiche affiche quand la règle n'a pas de calcul à
 montrer : un fait, une formulation, deux moments. Les deux autres états en changent
@@ -221,21 +223,21 @@ la valeur, pas la nature de la règle. Rien ne marque la ligne à côté de son 
 
 | État | Le chiffre | À côté du chiffre |
 |---|---|---|
-| *fournie* | encre, souligné pointillé | — |
-| *par défaut* | gris, souligné pointillé | le mot `par défaut` |
+| *fournie* | encre, souligné en tirets | — |
+| *par défaut* | gris, souligné en tirets | le mot `par défaut` |
 | *non renseignée* | — | `non défini`, en rouge |
 
 Le **poids** du chiffre ne dit rien de tout cela : il suit celui du nom de la
 ligne. Une ligne est en gras exactement quand son explication est ouverte, et son
 chiffre avec elle ; fermée, la ligne s'écrit en poids normal. Le gris et le
-pointillé disent le reste.
+en tirets disent le reste.
 
-Le souligné pointillé marque le paramètre, pas son état : il est tracé à l'encre,
+Le souligné en tirets marque le paramètre, pas son état : il est tracé à l'encre,
 pour rester lisible sous un chiffre gris. Le mot qui précède le chiffre est un mot
 et non une valeur : il ne prend jamais les marques du chiffre.
 
 Une règle déclarée paramètre de l'API mais qui **calcule** sa valeur ne porte ni
-pointillé ni infobulle : c'est le fait — « cette valeur vient du contexte » — que
+ni tirets ni infobulle : c'est le fait — « cette valeur vient du contexte » — que
 l'on montre, pas la catégorie.
 
 ### Ce que portent le nom et l'en-tête
@@ -249,14 +251,14 @@ l'on montre, pas la catégorie.
 
 **Un modificateur n'est pas une équation : c'est une annotation sur la valeur qu'il change.**
 Il s'écrit sur la ligne du résultat, mot-clé du langage d'abord, et marqué pris effet ou sans
-effet. **La dernière ligne du mécanisme de valeur porte un filet plein**, là où toutes les autres
-portent un pointillé : au-dessus d'elle, ce qui compose la valeur ; en dessous, ce que la chaîne
+effet. **La dernière ligne du mécanisme de valeur porte un trait plein**, là où toutes les autres
+portent des tirets : au-dessus d'elle, ce qui compose la valeur ; en dessous, ce que la chaîne
 y ajoute — un `par défaut`, un `plancher`, un `contexte`.
 
 ```
 valeur
   Distance moyenne aller/retour            100 km
-  ────────────────────────────────────────   ← le filet plein
+  ────────────────────────────────────────   ← le trait plein
   par défaut 100 km — pris effet, rien n'a été saisi
   plancher 0 km
 ```
@@ -395,6 +397,10 @@ Trois. Chacune est décrite par ce qu'elle montre, ce qu'elle cache, et ce qu'el
   prend le relais dès qu'une fiche est ouverte.
 - **Un seul contrôle par référence**, quoi qu'il y ait derrière : en avoir deux selon ce que la
   règle porte rendrait leur présence arbitraire aux yeux du lecteur.
+- **Un seul frère déplié à la fois** : ouvrir une ligne referme celles de sa fiche. Leur propre
+  dépliement n'est pas perdu pour autant — il reste en mémoire, et rouvrir l'une la rend telle
+  qu'elle était, ses fiches intérieures comprises. La règle vaut à chaque niveau : ce qui est
+  choisi se choisit parmi des voisines, pas dans une pile qu'on empile.
 - **Montre** : le calcul de cette règle dans ce contexte, sous la ligne, dans la même mise en
   page qu'un cran plus loin. Le pli est la fiche : il n'ouvre aucun panneau et ne remplace rien.
 - **Ne déplace rien.** Une ligne dépliée garde sa grille, son retrait et sa marge : seuls le

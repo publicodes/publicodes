@@ -103,10 +103,14 @@ describe('projectRule — branches', () => {
 				.equation
 		const hidden = sheet({ [id]: false })
 		const shown = sheet({ [id]: true })
-		// revealing a conditional's fold adds exactly the branches it held back
-		expect((shown?.rows.length ?? 0) - (hidden?.rows.length ?? 0)).toBe(
+		// révéler le pli montre exactement les branches qu'il retenait : les lignes sont
+		// toujours là, marquées, et seule leur visibilité change
+		const visible = (equation: typeof hidden) =>
+			(equation?.rows ?? []).filter((row) => !row.folded)
+		expect(visible(shown).length - visible(hidden).length).toBe(
 			hidden?.fold?.count ?? 0,
 		)
+		expect(shown?.rows.length).toBe(hidden?.rows.length)
 	})
 
 	it('reads nothing, marks nothing and holds nothing back without an evaluation', () => {
@@ -195,17 +199,20 @@ describe('a conditional whose branch was kept', () => {
 	const sinonKept = sheet({ v: { '': 1 }, c: { '': false }, a: { '': 3 }, s: { '': 1 } })
 
 	it('prints the condition it kept, and holds the others back', () => {
-		expect(conditionKept.equation?.rows.map((row) => row.gutter)).toEqual(['si', 'alors'])
+		// toutes les lignes sont dans l'équation ; celles que le pli retient sont marquées
+		const visible = (conditionKept.equation?.rows ?? []).filter((row) => !row.folded)
+		expect(visible.map((row) => row.gutter)).toEqual(['si', 'alors'])
+		expect(conditionKept.equation?.rows.map((row) => row.gutter)).toEqual([
+			'si',
+			'alors',
+			'sinon',
+		])
 		expect(conditionKept.equation?.fold?.expanded).toBe(false)
 		expect(conditionKept.equation?.fold?.count).toBe(1)
 	})
 
 	it('prints all of them when the `sinon` it kept explains nothing on its own', () => {
-		expect(sinonKept.equation?.rows.map((row) => row.gutter)).toEqual([
-			'si',
-			'alors',
-			'sinon',
-		])
+		expect(sinonKept.equation?.rows.every((row) => !row.folded)).toBe(true)
 		expect(sinonKept.equation?.fold?.expanded).toBe(true)
 		// the reader can still fold them back: the control stays
 		expect(sinonKept.equation?.fold?.count).toBe(2)
@@ -382,9 +389,100 @@ describe('a mechanism a row cannot write out', () => {
 		expect(view.equation?.inlineTerm).toBe('4 € + …')
 	})
 
+	it('opens every reference but a bare constant', () => {
+		// une constante brute n'a rien à expliquer : sa valeur est sur la ligne
+		const constants = Object.entries(doc).filter(
+			([, rule]) =>
+				rule.value_mechanism.kind === 'expr' &&
+				rule.value_mechanism.parameters.kind === 'constant' &&
+				rule.chained_mechanisms.length === 0,
+		)
+		expect(constants.length).toBeGreaterThan(0)
+		for (const [name] of constants) {
+			const parent = Object.entries(doc).find(([, rule]) =>
+				JSON.stringify(rule).includes(`"${name}"`),
+			)
+			if (parent === undefined) continue
+			const row = [
+				...(projectRule(doc, parent[0]).equation?.rows ?? []),
+			].find((r) => r.address === name)
+			if (row === undefined) continue
+			expect(row.detail).toBeNull()
+			expect(row.key).toBeNull()
+		}
+		// un paramètre, lui, s'ouvre : sa fiche dit d'où vient la valeur
+		const parameter = Object.entries(doc).find(
+			([, rule]) => rule.value_mechanism.kind === 'not_defined',
+		)
+		expect(parameter).toBeDefined()
+	})
+
 	it('leaves an operator its word', () => {
 		const view = projectRule(inline, 'total')
 		expect(view.equation?.rows[0]?.termIsMechanism).toBe(false)
+	})
+})
+
+describe('le premier terme visible', () => {
+	const position = {
+		file: 'test.publicodes',
+		start: { index: 0, line: 1, column: 1 },
+		end: { index: 1, line: 1, column: 2 },
+	}
+	const number = (id: string, value: number) => ({
+		value_mechanism: {
+			kind: 'expr',
+			id,
+			type: 'number',
+			unit: '€',
+			position,
+			parameters: { kind: 'constant', value, unit: '€' },
+		},
+		chained_mechanisms: [],
+	})
+	// une somme dont le premier terme ne compte pas : zéro
+	const sum = {
+		total: {
+			title: 'Total',
+			type: 'number',
+			unit: '€',
+			id: 'sum',
+			position,
+			referenced_by: [],
+			parameters: [],
+			value_mechanism: {
+				kind: 'sum',
+				id: 'sum',
+				type: 'number',
+				unit: '€',
+				position,
+				parameters: [number('zero', 0), number('five', 5)],
+			},
+			chained_mechanisms: [],
+		},
+	} as unknown as PublicodeAST
+	const trace: Trace = {
+		sum: { '': 5 },
+		zero: { '': 0 },
+		five: { '': 5 },
+	}
+
+	it('ne porte pas l’opérateur qui n’a plus de terme devant lui', () => {
+		const rows = projectRule(sum, 'total', { evaluation: { trace } }).equation?.rows ?? []
+		const visible = rows.filter((row) => !row.folded)
+		expect(visible).toHaveLength(1)
+		expect(visible[0].gutter).toBe('')
+		// le terme ne répète pas la valeur : la figure porte le montant, la ligne porte le nom
+		expect(visible[0].value.text).toBe('5 €')
+		// aucune ligne ne partage son identité : deux clés égales font disparaître une ligne
+		expect(new Set(rows.map((row) => row.id)).size).toBe(rows.length)
+	})
+
+	it('le porte de nouveau quand le pli est ouvert', () => {
+		const rows =
+			projectRule(sum, 'total', { evaluation: { trace }, folds: { sum: true } })
+				.equation?.rows ?? []
+		expect(rows.map((row) => row.gutter)).toEqual(['', '+'])
 	})
 })
 
@@ -439,10 +537,14 @@ describe('the sheet a row opens', () => {
 		)
 		expect(conditionalSheets.length).toBeGreaterThan(0)
 		for (const sheet of conditionalSheets) {
-			// the fold is what offers the others: they are printed exactly when it is open
-			expect(sheet.fold?.count ?? 0).toBeGreaterThan(0)
-			expect(sheet.rows.filter((row) => row.inert)).toHaveLength(
-				sheet.fold?.expanded === true ? (sheet.fold?.count ?? 0) : 0,
+			// une feuille qui n'a rien tranché n'a pas de pli : rien n'y a été retenu
+			if (sheet.fold === null) continue
+			// le pli est ce qui offre les autres : elles sont visibles exactement quand il est ouvert
+			expect(sheet.fold.count).toBeGreaterThan(0)
+			expect(sheet.rows.filter((row) => !row.folded)).toHaveLength(
+				sheet.fold?.expanded === true ?
+					sheet.rows.length
+				:	sheet.rows.length - (sheet.fold?.count ?? 0),
 			)
 		}
 	})

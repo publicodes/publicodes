@@ -84,6 +84,35 @@ const keysOf = (
 	return out
 }
 
+describe('deux lignes sœurs', () => {
+	// « revenu net » = chiffre d'affaires − cotisations − charges : trois sœurs dans la fiche
+	const ouvrir = (key: string, expanded?: ReadonlySet<string>) =>
+		openRow(doc, RULE, key, expanded === undefined ? {} : { expanded })
+
+	it('n’en laisse qu’une dépliée à la fois', () => {
+		const page = ouvrir('revenu net')
+		const premiere = ouvrir(`chiffre d'affaires`, page)
+		expect(premiere.has(`chiffre d'affaires`)).toBe(true)
+		const seconde = ouvrir('charges', premiere)
+		expect(seconde.has('charges')).toBe(true)
+		expect(seconde.has(`chiffre d'affaires`)).toBe(false)
+	})
+
+	it('se souvient de ce qu’une sœur refermée avait ouvert', () => {
+		const page = ouvrir('revenu net')
+		const premiere = ouvrir(`chiffre d'affaires`, page)
+		const sonInterne = ouvrir(`chiffre d'affaires . TJM`, premiere)
+		expect(sonInterne.has(`chiffre d'affaires . TJM`)).toBe(true)
+		const seconde = ouvrir('charges', sonInterne)
+		// la première s'est refermée ; ce qu'elle avait ouvert, non
+		expect(seconde.has(`chiffre d'affaires`)).toBe(false)
+		expect(seconde.has(`chiffre d'affaires . TJM`)).toBe(true)
+		// la rouvrir la rend telle qu'on l'avait laissée
+		const rouverte = ouvrir(`chiffre d'affaires`, seconde)
+		expect(rouverte.has(`chiffre d'affaires . TJM`)).toBe(true)
+	})
+})
+
 describe('a rule evaluated under a `contexte`', () => {
 	it('answers with the value the engine returned, not the one under its stack', () => {
 		const view = projectRule(doc, RULE, evaluated)
@@ -114,9 +143,9 @@ describe('the line a `contexte` gets', () => {
 		expect(row?.value.state).toBe('absent')
 	})
 
-	it('names the columns of what it binds', () => {
+	it('names the column of what it binds', () => {
 		const sheet = contextRow(projectRule(doc, RULE, evaluated))?.detail
-		expect(sheet?.header).toEqual(['contexte', 'valeur du paramètre'])
+		expect(sheet?.header).toBe('valeur du paramètre')
 		// et une feuille de calcul n'en a pas : ses lignes ne sont pas nommées, elles se lisent
 		expect(sheetOf(everythingOpen().equation, 'revenu net')?.header).toBeNull()
 	})

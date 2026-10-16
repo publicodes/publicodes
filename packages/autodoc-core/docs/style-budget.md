@@ -36,17 +36,32 @@ Les mots du langage gardent la **casse de l'auteur** : `sinon`, `arrondi`, `cont
 comme le modèle les écrit, jamais transformés. Ce qui les détache d'une figure, c'est la
 pastille et la taille.
 
-## Couleur — 5 encres, 1 papier, 1 voile
+## Couleur — 5 encres, 1 papier, 1 filet, 1 voile
 
 | # | Rôle | Jeton | Usage |
 |---|---|---|---|
 | 1 | Encre | `--publicodes-ink` (#171b22) | le texte, et les filets d'emphase |
-| 2 | Encre atténuée | `--publicodes-muted` (#636975, sombre #999fa9) | unités, adresses, qualificatifs, le contrôle de repli, son chevron et le cercle qui compte, la place d'un terme qu'on n'écrit pas, et les filets : les séparateurs, les hairlines, le contour du contrôle survolé, le pied d'une feuille ouverte. Entre deux lignes de calcul, le même filet en pointillé — un point d'1px tous les 4px (`--publicodes-rule-dots`) |
+| 2 | Encre atténuée | `--publicodes-muted` (#636975, sombre #999fa9) | unités, adresses, qualificatifs, le contrôle de repli, son chevron et le cercle qui compte, le soulignement d'un paramètre, une ligne sans effet |
 | 3 | Encre d'une pastille | `--publicodes-label-ink` (#636975, sombre #bfc4ce) | le texte d'un mot du langage, d'un signe et d'un « par défaut », sur leur voile |
 | 4 | Bleu | `--publicodes-blue` (#1a48bc) | liens, filets de section, anneau de focus, le contrôle de page |
 | 5 | Rouge | `--publicodes-red` (#b63325) | l'absence : non défini, non applicable, non renseignée |
+| — | Filet | `--publicodes-rule` (#dadee6, sombre #2b2e34) | tous les traits : les séparateurs de lignes de calcul, les hairlines des tableaux, le contour du contrôle survolé, le pied d'une feuille ouverte. Deux formes — entre deux lignes d'un calcul, le même gris en tirets de 3px tous les 6px (`--publicodes-rule-dashes`) ; là où une valeur s'arrête et où une feuille se ferme, le trait plein |
 | — | Papier | `--publicodes-paper` (#ffffff) | la feuille qu'une ligne ouvre, et le fond de la page |
 | — | Voile | `--publicodes-tint` (l'encre à 4,5 %) | le fond des pastilles de mots du langage |
+
+## Mouvement — 1 durée, 1 courbe, 1 descente, 1 voile
+
+| Rôle | Jeton | Usage |
+|---|---|---|
+| Durée | `--publicodes-motion-duration` (320ms) | les deux sens du pli, et le retrait d'une ligne cachée |
+| Courbe | `--publicodes-motion` | `ease-out` franc, la courbe de toute la page |
+| Descente | `--publicodes-fold-shift` (-4px) | ce que le contenu remonte en se repliant |
+| Voile | `--publicodes-fold-fade` (0,7) | ce qu'il garde d'opacité |
+
+**Un seul mouvement.** Une ligne qui se replie, une fiche qui se ferme, la fiche d'une ligne
+repliée : la même piste de grille, la même durée, la même courbe, la même descente. `height:
+auto` n'y est jamais animé — seules les pistes de grille le sont, partout, par tous les
+navigateurs.
 
 **Une seule teinte porte l'ensemble.** Le bleu est la teinte de référence, 264° : les neutres en
 sont la version désaturée (chroma ≤ 0,02) et lui la version saturée (0,19). La clarté ne sert
@@ -58,9 +73,8 @@ et ne diffèrent que par ce qu'ils disent.
 **Le thème suit le système.** Sous `prefers-color-scheme: dark`, les mêmes rôles changent de
 clarté et rien d'autre : la teinte reste 264°, l'absence reste la seconde teinte, et les
 contrastes restent ceux du clair — l'encre 0,93, l'atténué 0,70, le papier 0,19, le bleu 0,70,
-le rouge 0,72. C'est une seconde palette, pas des rôles de plus : le budget est
-toujours de quatre couleurs, un papier et un voile. Les filets ne sont pas une couleur de plus :
-c'est l'encre atténuée, et le pointillé n'est que ce même filet à l'écart de son point.
+le rouge 0,72, le filet 0,30 — à 1,35:1 du papier clair comme 1,36:1 du sombre. C'est une seconde palette, pas des rôles de plus : le budget est
+toujours de quatre couleurs, un papier, un filet et un voile.
 
 **Le voile n'est pas un gris de plus** : c'est l'encre à 4,5 %, qui prend la teinte du papier
 qu'elle couvre. Il ne remplit qu'un mot du langage, jamais une ligne.

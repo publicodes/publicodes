@@ -31,10 +31,14 @@ export interface ProjectionOptions {
 const NOTHING_OPEN: ReadonlySet<string> = new Set()
 
 /**
- * The rows a click on `key` leaves open: the line itself, and the chain of single lines
- * it uncovers. A sheet that prints one line gives the reader nothing to choose, so that
- * line opens with it — and if its own sheet prints one line too, so on, until a sheet
- * prints two lines, or a line prints nothing. The reader can close any of them again.
+ * The rows a click on `key` leaves open: the line itself, the chain of single lines it
+ * uncovers, and nothing else — opening a line closes its siblings. A sheet that prints
+ * one line gives the reader nothing to choose, so that line opens with it — and if its own
+ * sheet prints one line too, so on, until a sheet prints two lines, or a line prints
+ * nothing. The reader can close any of them again.
+ *
+ * A closed sibling keeps everything it had opened: it leaves the set only by its own key,
+ * so opening it again prints its sheets as the reader had left them.
  */
 export function openRow(
 	ast: Ast.PublicodeAST,
@@ -43,6 +47,13 @@ export function openRow(
 	options: ProjectionOptions = {},
 ): ReadonlySet<string> {
 	const opened = new Set(options.expanded ?? NOTHING_OPEN)
+	// un seul frère déplié à la fois : ouvrir une ligne referme les siennes. Leur dépliement
+	// interne reste dans l'ensemble — les rouvrir les rend telles qu'elles étaient.
+	const before = projectRule(ast, ruleName, {
+		...options,
+		expanded: opened,
+	}).equation
+	for (const sibling of siblingsOf(before, key) ?? []) opened.delete(sibling)
 	let line: string | null = key
 	let chained = false
 	while (line !== null && !opened.has(line)) {
@@ -82,6 +93,27 @@ export function openedWithPage(
 /** The sheet the page prints under a row, wherever it printed that row. */
 const sheetOf = (view: RuleView, key: string): EquationView | null =>
 	findRow(view.equation, key)?.detail ?? null
+
+/**
+ * The lines that share an equation with `key` — its siblings. `null` when that equation
+ * does not hold the line: the walk goes on, one sheet down.
+ */
+const siblingsOf = (
+	equation: EquationView | null,
+	key: string,
+): readonly string[] | null => {
+	if (equation === null) return null
+	if (equation.rows.some((row) => row.key === key)) {
+		return equation.rows
+			.map((row) => row.key)
+			.filter((other): other is string => other !== null && other !== key)
+	}
+	for (const row of equation.rows) {
+		const deeper = siblingsOf(row.detail, key)
+		if (deeper !== null) return deeper
+	}
+	return null
+}
 
 /** The row a key names, wherever the page printed it: under a line, or under its sheet. */
 const findRow = (
@@ -211,6 +243,7 @@ const answer = (
 	result: ValueView,
 	equation: EquationView,
 ): OperandView => ({
+	id: name,
 	gutter: '',
 	gutterIsMechanism: false,
 	key: null,
@@ -220,6 +253,7 @@ const answer = (
 	control: null,
 	label: name,
 	value: result,
+	folded: false,
 	paper: equation.paper,
 	address: null,
 	page: null,

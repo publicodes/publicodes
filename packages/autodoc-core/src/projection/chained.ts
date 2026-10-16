@@ -140,14 +140,14 @@ export function contextModifier(
 	const mechanism = contextOf(node)
 	if (mechanism === undefined) return null
 	// la feuille du contexte est une équation comme une autre : ses lignes sont ce qu'il lie,
-	// sous les mots qui la nomment — le mécanisme, ce qu'une ligne nomme, ce qu'elle vaut
+	// nommées par un seul mot — ce qu'une ligne vaut. Le mot du mécanisme est sur sa ligne
 	const sheet: EquationView = {
 		...finishEquation(
 			{ ...NO_MECHANISM, operands: boundRows(mechanism, caller) },
 			{ ...under, depth: under.depth + 1 },
 			mechanism.id,
 		),
-		header: [KEYWORDS.context, CONTEXT_VALUE],
+		header: CONTEXT_VALUE,
 	}
 	const row = finishRow(
 		{

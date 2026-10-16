@@ -66,12 +66,27 @@ export function finishEquation(
 				expanded,
 			}
 		:	null
+	// ce que le pli cache reste dans l'équation : une ligne retirée du document ne peut pas se
+	// fermer, et sa disparition remonterait celles qui la suivent
 	const printed = expanded ? rows : rows.filter((row) => !row.inert)
+	// le premier terme visible ne porte pas l'opérateur qui le sépare du précédent : il n'y a
+	// pas de précédent. Le `−` d'une négation reste : lui, c'est la ligne qu'il qualifie
+	const opening = printed[0]
 	return {
 		keyword: mechanism.keyword,
 		inlineTerm: mechanism.inlineTerm,
 		head: null,
-		rows: printed,
+		rows: rows.map((row, index) => ({
+			...row,
+			// toute ligne a une identité : les raws synthétiques n'en portent pas — une constante,
+			// une référence — et deux identités vides se confondent au rendu, qui en perd une
+			id: row.id === '' ? `${id}-${index}` : row.id,
+			folded: !printed.includes(row),
+			gutter:
+				row === opening && !row.gutterIsMechanism && row.gutter !== '−' ?
+					''
+				:	row.gutter,
+		})),
 		size: rows.length,
 		result: mechanism.result,
 		fold,
@@ -122,9 +137,20 @@ export function finishRow(
 	const label = raw.name ?? term
 	// a mechanism with no written form goes by its name, and its line is what explains it
 	const byName = term !== null && term === raw.named
-	// a reference says what it is whether or not it computes; a mechanism only opens
-	// where it prints lines
-	const opens = raw.address !== null || (fiche !== null && fiche.size > 0)
+	// une référence s'ouvre pour montrer ce qu'elle est — sauf une constante brute, dont la
+	// valeur est déjà sur la ligne et qui n'a rien à expliquer. Un paramètre, lui, s'ouvre :
+	// sa fiche dit d'où vient la valeur et ce que le lecteur peut y changer. Un mécanisme ne
+	// s'ouvre que là où il imprime des lignes.
+	const node = raw.address !== null ? ctx.ast[raw.address] : undefined
+	const mechanism = node?.value_mechanism
+	// le compilateur écrit une constante comme une expression sans opérateur
+	const constant =
+		mechanism !== undefined &&
+		mechanism.kind === 'expr' &&
+		mechanism.parameters.kind === 'constant' &&
+		(node?.chained_mechanisms.length ?? 0) === 0
+	const opens =
+		(raw.address !== null && !constant) || (fiche !== null && fiche.size > 0)
 	// la règle qu'une ligne référence décide elle-même d'une branche : aucun opérateur ne
 	// l'écrit, et sa valeur est un choix parmi d'autres
 	const chosen =
@@ -138,6 +164,7 @@ export function finishRow(
 	const detail = opens && key !== null && unfolded ? fiche : null
 	return {
 		gutter: keyword ?? operator ?? '',
+		id: raw.id ?? raw.address ?? '',
 		gutterIsMechanism: keyword !== null,
 		key: opens ? key : null,
 		depth: ctx.depth,
@@ -165,6 +192,7 @@ export function finishRow(
 		open: detail !== null,
 		fold: detail?.fold ?? null,
 		inert: false,
+		folded: false,
 		modifier: false,
 	}
 }

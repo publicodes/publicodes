@@ -79,6 +79,8 @@ export interface OperandView {
 	gutterIsMechanism: boolean
 	/** What opens or closes this row, when a click does anything. */
 	key: string | null
+	/** L'identité du nœud : stable d'un rendu à l'autre, contrairement à sa place. */
+	id: string
 	/** Its distance from the page's computation: the copy's indentation. */
 	depth: number
 	/** The middle column: a name, a written form, or a mechanism's own word. */
@@ -110,6 +112,8 @@ export interface OperandView {
 	fold: FoldView | null
 	/** Had no effect on the result: shown only when the reader asks for it. */
 	inert: boolean
+	/** Retirée par le pli de son équation : la ligne reste dans le document, fermée. */
+	folded: boolean
 	/** An annotation the chain adds to the value above, rather than a term of the expression. */
 	modifier: boolean
 }
@@ -145,7 +149,7 @@ export interface EquationView {
 	 * a computation: what it is, and what a line is worth — the names need no heading of their
 	 * own. A `contexte` opens the only such sheet there is.
 	 */
-	header: readonly [string, string] | null
+	header: string | null
 }
 
 /**

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render } from '@testing-library/react'
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import { readFileSync } from 'node:fs'
 import type { PublicodeAST } from '@publicodes/autodoc-core/ast'
 import type { Trace, TraceValue } from '@publicodes/autodoc-core'
@@ -229,13 +229,16 @@ describe('terms that had no effect', () => {
 		const fold = container.querySelector('.publicodes-fold')
 		expect(fold?.getAttribute('aria-label')).toBe('Afficher 1 terme sans effet')
 		expect(fold?.querySelector('.publicodes-fold__count')?.textContent).toBe('1')
-		expect(container.querySelector('.publicodes-row--inert')).toBeNull()
-		expect(container.querySelectorAll('.publicodes-row').length).toBe(3)
+		// la ligne retenue est dans le document, fermée : c'est ce qui la rend animable
+		expect(container.querySelectorAll('.publicodes-row--folded').length).toBe(1)
+		expect(container.querySelector('.publicodes-row--inert')).not.toBeNull()
+		expect(container.querySelectorAll('.publicodes-row').length).toBe(4)
 	})
 
 	it('shows them again when asked', () => {
 		const { container } = renderPage()
 		fireEvent.click(container.querySelector('.publicodes-fold')!)
+		expect(container.querySelectorAll('.publicodes-row--folded').length).toBe(0)
 		expect(container.querySelectorAll('.publicodes-row--inert').length).toBe(1)
 		expect(container.querySelector('.publicodes-fold__count')).toBeNull()
 	})
@@ -349,10 +352,23 @@ describe('unfolding a reference', () => {
 		expect(container.querySelector('.publicodes-block')?.getAttribute('data-paper')).toBe('shade')
 	})
 
-	it('closes again from the line that opened it', () => {
+	it('keeps a computation sheet at its own cran, with no table mark', () => {
+		const { container } = openFirstSheet()
+		const fiche = container.querySelector('.publicodes-detail')
+		expect(fiche).not.toBeNull()
+		expect(fiche?.hasAttribute('data-table')).toBe(false)
+	})
+
+	it('closes again from the line that opened it, after folding', async () => {
 		const { container } = openFirstSheet()
 		fireEvent.click(container.querySelector('button.publicodes-row__control')!)
-		expect(container.querySelector('.publicodes-detail')).toBeNull()
+		// la fiche reste montée pendant son repli : c'est ce qui permet au style de l'animer
+		const folding = container.querySelector('.publicodes-detail')
+		expect(folding).not.toBeNull()
+		expect(folding?.getAttribute('data-open')).toBe('false')
+		await waitFor(() =>
+			expect(container.querySelector('.publicodes-detail')).toBeNull(),
+		)
 	})
 })
 
@@ -551,12 +567,16 @@ describe('a fiche that prints a single line', () => {
 		expect(sheets[1].textContent).toContain('Part')
 	})
 
-	it('leaves that line a control, which closes it again on its own', () => {
+	it('leaves that line a control, which closes it again on its own', async () => {
 		const { container } = renderPage()
 		expect(lines(container)[1].getAttribute('aria-expanded')).toBe('true')
 		fireEvent.click(lines(container)[1])
 		expect(lines(container)[1].getAttribute('aria-expanded')).toBe('false')
-		expect(container.querySelectorAll('.publicodes-detail').length).toBe(1)
+		// deux fiches le temps du repli, une seule une fois le pli fini
+		expect(container.querySelectorAll('.publicodes-detail').length).toBe(2)
+		await waitFor(() =>
+			expect(container.querySelectorAll('.publicodes-detail').length).toBe(1),
+		)
 	})
 })
 
@@ -649,22 +669,30 @@ describe('the sheet a `contexte` opens', () => {
 				row.querySelector('.publicodes-row__term')?.textContent === name,
 		)
 
-	it('names the table it opens, on one line', () => {
+	it('names the column it opens, and carries its own word on its line', () => {
 		const { container } = renderContextPage()
-		const header = container.querySelector('.publicodes-row--header')
-		expect(header).not.toBeNull()
-		// le mot du mécanisme, puis ce qu'une ligne nomme et ce qu'elle vaut
+		// le mot de la colonne est sur la ligne du mécanisme, pas sur une ligne à lui
+		expect(container.querySelector('.publicodes-row--header')).toBeNull()
+		const mot = Array.from(
+			container.querySelectorAll('.publicodes-row__gutter'),
+		).find((g) => g.textContent === 'contexte')
+		expect(mot).toBeDefined()
+		// le mot du mécanisme tient sa propre ligne, dans l'équation de la règle : il n'est
+		// plus escamoté au profit de sa fiche, qui l'aurait indenté d'un cran
+		const ligne = (mot as Element).closest('.publicodes-row')
+		expect(ligne?.className).toContain('publicodes-row--open')
 		expect(
-			Array.from(header?.querySelectorAll('.publicodes-row__label--word') ?? []).map(
+			Array.from(ligne?.querySelectorAll('.publicodes-row__label--word') ?? []).map(
 				(word) => word.textContent,
 			),
 		).toEqual(['contexte', 'valeur du paramètre'])
-		// et le mot ne tient plus de ligne à lui seul : la ligne du mécanisme a disparu
+		// et la fiche de cette ligne-là se range dans les colonnes de la règle
 		expect(
-			Array.from(container.querySelectorAll('.publicodes-row__gutter')).filter(
-				(gutter) => gutter.textContent === 'contexte',
-			).length,
-		).toBe(1)
+			ligne?.nextElementSibling?.getAttribute('data-table'),
+		).toBe('true')
+		// et l'attribut ne s'écrit jamais « false » : React l'écrirait quand même, et un
+		// sélecteur de présence emporterait alors toutes les fiches de calcul
+		expect(container.querySelector('.publicodes-detail[data-table="false"]')).toBeNull()
 	})
 
 	it('prints what it binds without being asked, on lines of the computation', () => {

@@ -1,5 +1,5 @@
 import type { EquationView, OperandView } from '@publicodes/autodoc-core'
-import type { ReactElement } from 'react'
+import { useEffect, useState, type ReactElement } from 'react'
 import { useAutodocInteraction } from '../components/AutodocInteractionContext'
 import { AutodocEvaluationTraceProvider } from '../components/AutodocEvaluationTraceContext'
 import { FoldControl } from './FoldControl'
@@ -25,11 +25,10 @@ export function Equation({ view }: { view: EquationView }): ReactElement {
 	const lastValue = firstChained > 0 ? firstChained - 1 : -1
 	const lines = (
 		<>
-			{view.header !== null && <HeaderLine header={view.header} />}
 			{view.head && <Row view={view.head} head />}
 			{view.rows.map((row, index) => (
 				<Row
-					key={index}
+					key={row.id}
 					view={row}
 					lastValue={index === lastValue && !row.modifier}
 				/>
@@ -54,29 +53,10 @@ export function Equation({ view }: { view: EquationView }): ReactElement {
 }
 
 /**
- * Les deux mots qui nomment une table de valeurs — ce qu'un `contexte` lie : le mot du
- * mécanisme dans la colonne des opérateurs, et ce qu'une ligne vaut dans celle des valeurs. Les
- * noms, entre les deux, se lisent seuls. C'est une ligne du calcul comme une autre, avec la
- * même grille : les entrées, sous elle, tombent juste.
+ * Le repli d'une fiche dure le temps de son mouvement : assez pour qu'on le voie, pas plus.
+ * La même durée est écrite dans la règle `publicodes-detail` de la feuille de style.
  */
-function HeaderLine({
-	header: [what, worth],
-}: {
-	header: readonly [string, string]
-}): ReactElement {
-	const word = (label: string) => (
-		<span className="publicodes-row__label publicodes-row__label--word">
-			{label}
-		</span>
-	)
-	return (
-		<div className="publicodes-row publicodes-row--header">
-			<span className="publicodes-row__gutter">{word(what)}</span>
-			<span className="publicodes-row__term" />
-			<span className="publicodes-value">{word(worth)}</span>
-		</div>
-	)
-}
+const FOLD_MS = 200
 
 function Row({
 	view,
@@ -88,6 +68,22 @@ function Row({
 	lastValue?: boolean
 }): ReactElement {
 	const { toggleRow } = useAutodocInteraction()
+	// la fiche reste montée le temps de se replier : React ne peut pas animer un nœud qu'il
+	// retire, et le papier doit se refermer sous la ligne qui l'a ouvert
+	const [kept, setKept] = useState(view.detail)
+	const open = view.detail !== null
+	useEffect(() => {
+		if (open) {
+			setKept(view.detail)
+			return
+		}
+		const timer = setTimeout(() => setKept(null), FOLD_MS)
+		return () => clearTimeout(timer)
+	}, [open, view.detail])
+	const sheet = open ? view.detail : kept
+	// une fiche qui nomme sa colonne est une table : son mot se lit sur la ligne qui l'ouvre,
+	// pas sur une ligne à elle, et ses entrées se rangent dans les colonnes de la règle
+	const table = sheet?.header ?? null
 	const label = view.label ?? ''
 	const control = (className: string) => (
 		<button
@@ -106,6 +102,7 @@ function Row({
 				'publicodes-row' +
 				(head ? ' publicodes-row--head' : '') +
 				(view.inert ? ' publicodes-row--inert' : '') +
+				(view.folded ? ' publicodes-row--folded' : '') +
 				(view.open ? ' publicodes-row--open' : '') +
 				(view.key !== null ? ' publicodes-row--unfoldable' : '') +
 				(lastValue ? ' publicodes-row--last-value' : '')
@@ -146,7 +143,14 @@ function Row({
 				)}
 			</span>
 			{'\t'}
-			{view.control === 'value' ?
+			{table !== null ?
+				// le mot de la table est la valeur de cette ligne-là : une seule cellule
+				<span className="publicodes-value">
+					<span className="publicodes-row__label publicodes-row__label--word">
+						{table}
+					</span>
+				</span>
+			: view.control === 'value' ?
 				// the figure itself is the control, so it must be printed inside it
 				<button
 					type="button"
@@ -173,36 +177,23 @@ function Row({
 	// the answer line is not written on a sheet of its own
 	if (head) return line
 
-	// une ligne qui n'imprime rien d'elle-même n'est que la feuille qu'elle ouvre : le mot qui
-	// la nomme ouvre cette feuille plutôt que de tenir une ligne à lui tout seul
-	const silent =
-		view.term === null &&
-		view.label === null &&
-		view.control === null &&
-		view.value.state === 'absent'
-	if (silent && view.detail !== null) {
-		return (
-			<div className="publicodes-block" data-paper={view.paper}>
-				<div className="publicodes-detail">
-					<Equation view={view.detail} />
-				</div>
-			</div>
-		)
-	}
-
 	// a line that opens nothing is no block: the block exists for the sheet a line opens,
 	// and is the only thing that carries a paper. The wrapper stays anonymous rather than
 	// appearing on the first unfold — React would replace the line's node, and the reader
 	// would lose the focus and the place they had it in.
 	return (
 		<div
-			className={view.detail ? 'publicodes-block' : undefined}
-			data-paper={view.detail ? view.paper : undefined}
+			className={sheet ? 'publicodes-block' : undefined}
+			data-paper={sheet ? view.paper : undefined}
 		>
 			{line}
-			{view.detail && (
-				<div className="publicodes-detail">
-					<Equation view={view.detail} />
+			{sheet && (
+				<div
+					className="publicodes-detail"
+					data-open={open}
+					data-table={table === null ? undefined : 'true'}
+				>
+					<Equation view={sheet} />
 				</div>
 			)}
 		</div>
