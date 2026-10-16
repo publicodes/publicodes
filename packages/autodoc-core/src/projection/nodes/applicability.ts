@@ -1,24 +1,31 @@
 import type * as Ast from '../../ast'
-import type { Ctx, EquationView } from '../types'
-import { contextInside, projectModifiers } from '../chained'
+import type { Ctx, MechanismView } from '../types'
+import { projectModifiers } from '../chained'
 import { projectOperand } from '../operand'
 import { lookupValue, unitOf } from '../value'
 
 export function projectApplicability(
 	node: Ast.ChainedValue,
-	mechanism: Ast.IsApplicableMechanism | Ast.IsNotApplicableMechanism,
+	mechanism:
+		| Ast.IsApplicableMechanism
+		| Ast.IsNotApplicableMechanism
+		| Ast.IsDefinedMechanism
+		| Ast.IsNotDefinedMechanism,
 	ctx: Ctx,
 	keyword: string,
-): EquationView {
-	const result = lookupValue(ctx, mechanism.id, mechanism.type, unitOf(mechanism))
-	const inner = contextInside(node, ctx)
-	const operand = projectOperand(mechanism.parameters, inner, null, null)
+): MechanismView {
+	const result = lookupValue(
+		ctx,
+		mechanism.id,
+		mechanism.type,
+		unitOf(mechanism),
+	)
+	const operand = projectOperand(mechanism.parameters, ctx, null, null)
 	return {
 		keyword,
 		inlineTerm: operand.term,
 		operands: [operand],
 		modifiers: projectModifiers(node, ctx, result),
 		result,
-		inertCount: 0,
 	}
 }

@@ -14,16 +14,22 @@ et la projection d'une règle (`projectRule`) sont des fonctions pures de
 `(ast, trace?, contexte?)`. Le choix de la branche prise, la substitution des valeurs, les
 quatre absences, le graphe des références et l'ensemble des chemins en découlent tous.
 
-Vitest, contre les deux modèles compilés réels — `auto-entrepreneur` (138 règles, 24 avec une
-description rédigée, chaîne de références la plus profonde de six) et `ekofest` (bilan carbone,
-facteurs d'émission cités, `par défaut` et `plancher` dominants) — et non contre des arbres
-construits à la main.
+Vitest, sur des **fixtures de deux à cinq règles**, construites par le test lui-même
+(`src/test-helpers/fixtures.ts`) : chaque test énonce le mécanisme qu'il exerce, et rien d'autre. Les
+identifiants viennent du chemin qui mène au nœud — `total` pour la valeur de la règle,
+`total.0` pour son premier terme — donc la trace tient dans le test, écrite à la main :
+`{ total: { '': 12 }, 'total.0': { '': 8 } }`.
 
-**La trace vient d'une évaluation réelle avec un contexte fixé**, jamais d'un JSON recopié :
-« quelle branche a été prise » doit être affirmé contre ce que le moteur a produit. Les
-fixtures AST sont commises ; un script les régénère depuis les exemples du compilateur, parce
-que `model.publicodes.js` est un artefact de build ignoré par git et que les tests ne doivent
-pas dépendre d'une toolchain OCaml.
+C'est le contraire d'un gros modèle. Une fixture prise sur le compilateur ne dit pas ce qu'elle
+exerce, dérive avec lui, et oblige à versionner un instantané de la trace — qu'il faut ensuite
+régénérer, et dont l'écart avec le moteur ne se voit nulle part. Un test doit tenir dans sa
+lecture.
+
+**Le modèle réel reste, mais à sa place** : `src/projection/modele.test.ts` projette le JSON que le
+compilateur écrit (`packages/compiler/examples/*/model.publicodes.json`, cible
+`build-autodoc-example` du Makefile) règle par règle, sans évaluation. C'est le seul accord
+qu'une fixture ne peut pas donner — et que le cast `as PublicodeAST` vérifie déjà : il casse si
+le compilateur écrit une forme que `schema.json` ne décrit pas.
 
 Antécédent : les tests de fonctions pures déjà présents dans `autodoc-core`
 (`rule-display-name`, `binary-expression`, `format-value`).
@@ -34,12 +40,10 @@ fois, dont un factuellement.
 
 ## Couture secondaire — `autodoc-react`, tests de composants
 
-Ce qu'une fonction pure ne peut pas exprimer : qu'une fiche s'ouvre au clavier, que le focus y
-entre et en revient, qu'elle est nommée pour la règle qu'elle décrit et reliée à son
-déclencheur ; que les noms de classe documentés — qui sont le contrat de surcharge — sont
-présents. Affirmer ces noms-là, c'est affirmer l'API, pas un détail d'implémentation.
-
-Antécédent : le test de `ChainedValue`, qui affirme déjà ses propres noms de classe.
+Ce qu'une fonction pure ne peut pas exprimer : qu'une ligne se déplie au clavier et
+porte `aria-expanded` ; que les noms de classe documentés — qui sont le contrat de
+surcharge — sont présents. Affirmer ces noms-là, c'est affirmer l'API, pas un détail
+d'implémentation.
 
 ## Vérification visuelle — le playground
 

@@ -64,7 +64,13 @@ export function projectContext(
 				unit,
 			)
 		})()
-		return { name: displayName(ctx.ast, address), address, state, value }
+		return {
+			name: displayName(ctx.ast, address),
+			address,
+			state,
+			qualifier: state === 'par défaut' ? '(par défaut)' : null,
+			value,
+		}
 	})
 
 	return entries.sort((a, b) => ORDER[a.state] - ORDER[b.state])

@@ -89,6 +89,10 @@ $(SIMPLE_TJM_DIR)/model.publicodes.js: $(SIMPLE_TJM_DEPS) $(COMPILER_PATH)
 	@echo "Recompiling new model.publicodes.js for simple-TJM..."
 	$(COMPILER_PATH) compile -C $(SIMPLE_TJM_DIR) inputs
 
+$(SIMPLE_TJM_DIR)/model.publicodes.json: $(SIMPLE_TJM_DEPS) $(COMPILER_PATH)
+	@echo "Recompiling new model.publicodes.json for simple-TJM..."
+	$(COMPILER_PATH) compile -t json -C $(SIMPLE_TJM_DIR) inputs
+
 #> bench-simple-TJM         | Run the benchmark for the simple-TJM example
 bench-simple-TJM: build $(SIMPLE_TJM_DIR)/publicodes-build/index.js $(SIMPLE_TJM_DIR)/model.publicodes.js
 	@echo "Running benchmark for simple-TJM..."
@@ -102,6 +106,10 @@ $(AUTO_ENTREPRENEUR_DIR)/model.publicodes.js: $(AUTO_ENTREPRENEUR_DEPS) $(COMPIL
 	@echo "Recompiling new model.publicodes.js for auto-entrepreneur..."
 	$(COMPILER_PATH) compile -C $(AUTO_ENTREPRENEUR_DIR) inputs
 
+$(AUTO_ENTREPRENEUR_DIR)/model.publicodes.json: $(AUTO_ENTREPRENEUR_DEPS) $(COMPILER_PATH)
+	@echo "Recompiling new model.publicodes.json for auto-entrepreneur..."
+	$(COMPILER_PATH) compile -t json -C $(AUTO_ENTREPRENEUR_DIR) inputs
+
 #> bench-auto-entrepreneur  | Run the benchmark for the auto-entrepreneur example
 bench-auto-entrepreneur: build $(AUTO_ENTREPRENEUR_DIR)/publicodes-build/index.js $(AUTO_ENTREPRENEUR_DIR)/model.publicodes.js
 	@echo "Running benchmark for auto-entrepreneur..."
@@ -109,3 +117,8 @@ bench-auto-entrepreneur: build $(AUTO_ENTREPRENEUR_DIR)/publicodes-build/index.j
 
 #> bench-all                | Run all benchmarks
 bench-all: bench-simple-TJM bench-auto-entrepreneur
+
+build-autodoc-example: build $(AUTO_ENTREPRENEUR_DIR)/model.publicodes.json \
+	$(AUTO_ENTREPRENEUR_DIR)/model.publicodes.js \
+	$(SIMPLE_TJM_DIR)/model.publicodes.json \
+	$(SIMPLE_TJM_DIR)/model.publicodes.js

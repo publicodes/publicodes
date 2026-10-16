@@ -1,5 +1,12 @@
 import type * as Ast from '../../ast'
-import type { Ctx, EquationView, OperandView } from '../types'
+import type { Ctx, EquationView, MechanismView, RawOperand } from '../types'
+import { finishEquation } from '../operand'
+import {
+	contextInside,
+	contextModifier,
+	contextOf,
+	valueOfChain,
+} from '../chained'
 import { projectAllOf } from './all-of'
 import { projectApplicability } from './applicability'
 import { projectBinary } from './binary'
@@ -21,33 +28,88 @@ import { projectVariations } from './variations'
  * and the default is unreachable, so a new mechanism kind is a compile error
  * here rather than a silent gap on the page.
  */
-export function projectNode(node: Ast.ChainedValue, ctx: Ctx): EquationView | null {
+export function projectNode(
+	node: Ast.ChainedValue,
+	ctx: Ctx,
+): EquationView | null {
 	const mechanism = node.value_mechanism
+	// The engine applies a chain in one order, and a `contexte` pushes a stack of its own:
+	// the value and everything under it is traced there, while what the mechanism binds
+	// stays on the caller's side. One push, then every projector reads where it was written.
+	const under = contextInside(node, ctx)
+	// the mechanism whose stack the lines below are read under, for a navigation from them
+	const contextId = contextOf(node)?.id ?? null
+	const done = (
+		view: MechanismView | null,
+		id: string,
+	): EquationView | null => {
+		if (view === null) return null
+		const bound = contextModifier(node, under, ctx)
+		const equation = finishEquation(
+			{
+				...view,
+				result: valueOfChain(node, under, ctx) ?? view.result,
+				modifiers: bound === null ? view.modifiers : [...view.modifiers, bound],
+			},
+			ctx,
+			id,
+		)
+		return contextId === null ? equation : { ...equation, contextId }
+	}
 	switch (mechanism.kind) {
 		case 'sum':
-			return projectSum(node, mechanism, ctx)
+			return done(projectSum(node, mechanism, under), mechanism.id)
 		case 'product':
-			return projectProduct(node, mechanism, ctx)
+			return done(projectProduct(node, mechanism, under), mechanism.id)
 		case 'all_of':
-			return projectAllOf(node, mechanism, ctx)
+			return done(projectAllOf(node, mechanism, under), mechanism.id)
 		case 'one_of':
-			return projectOneOf(node, mechanism, ctx)
+			return done(projectOneOf(node, mechanism, under), mechanism.id)
 		case 'min_of':
-			return projectMinOf(node, mechanism, ctx)
+			return done(projectMinOf(node, mechanism, under), mechanism.id)
 		case 'max_of':
-			return projectMaxOf(node, mechanism, ctx)
+			return done(projectMaxOf(node, mechanism, under), mechanism.id)
 		case 'variations':
-			return projectVariations(node, mechanism, ctx)
+			return done(projectVariations(node, mechanism, under), mechanism.id)
 		case 'expr':
-			return projectExpr(node, mechanism, ctx)
+			return done(projectExpr(node, mechanism, under), mechanism.id)
 		case 'value':
-			return projectValueMechanism(node, mechanism, ctx)
+			return done(projectValueMechanism(node, mechanism, under), mechanism.id)
 		case 'not_defined':
-			return projectNotDefined(node, mechanism, ctx)
+			return done(projectNotDefined(node, mechanism, under), mechanism.id)
 		case 'is_applicable':
-			return projectApplicability(node, mechanism, ctx, 'est applicable')
+			return done(
+				projectApplicability(node, mechanism, under, 'est applicable'),
+				mechanism.id,
+			)
 		case 'is_not_applicable':
-			return projectApplicability(node, mechanism, ctx, 'n’est pas applicable')
+			return done(
+				projectApplicability(
+					node,
+					mechanism,
+					under,
+					'n’est pas applicable',
+				),
+				mechanism.id,
+			)
+		case 'is_defined':
+			return done(
+				projectApplicability(node, mechanism, under, 'est défini'),
+				mechanism.id,
+			)
+		case 'is_not_defined':
+			return done(
+				projectApplicability(
+					node,
+					mechanism,
+					under,
+					'n’est pas défini',
+				),
+				mechanism.id,
+			)
+		case 'average':
+			// @todo
+			return null
 		default:
 			return mechanism satisfies never
 	}
@@ -56,16 +118,11 @@ export function projectNode(node: Ast.ChainedValue, ctx: Ctx): EquationView | nu
 export function projectExpression(
 	expression: Ast.Expression,
 	ctx: Ctx,
-	operator: string | null,
-): OperandView {
-	switch (expression.kind) {
-		case 'constant':
-			return projectConstant(expression, ctx, operator)
-		case 'ref':
-			return projectRef(expression, ctx, operator)
-		case 'neg':
-			return projectUnary(expression, ctx, operator)
-		default:
-			return projectBinary(expression, ctx, operator)
-	}
+): RawOperand {
+	return (
+		expression.kind === 'constant' ? projectConstant(expression, ctx)
+		: expression.kind === 'ref' ? projectRef(expression, ctx)
+		: expression.kind === 'neg' ? projectUnary(expression, ctx)
+		: projectBinary(expression, ctx)
+	)
 }

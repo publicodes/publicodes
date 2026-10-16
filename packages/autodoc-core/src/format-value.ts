@@ -14,8 +14,16 @@ function formatNumber(value: number, unit?: string): string {
 	return unit ? `${formatted} ${unit}` : formatted
 }
 
-function formatText(value: string): string {
-	return value
+/**
+ * A node the compiler left untyped reads as text, and text can hold anything: a figure
+ * keeps its figure's writing, a date its date's, rather than the string of a value the
+ * reader would have to parse.
+ */
+function formatText(value: unknown): string {
+	if (typeof value === 'number') return formatNumber(value)
+	if (typeof value === 'boolean') return formatBoolean(value)
+	if (value instanceof Date) return formatDate(value)
+	return String(value)
 }
 
 function formatBoolean(value: boolean): string {
@@ -42,7 +50,7 @@ export function formatValue(
 		case 'number':
 			return formatNumber(value as number, spec.unit)
 		case 'text':
-			return formatText(value as string)
+			return formatText(value)
 		case 'boolean':
 			return formatBoolean(value as boolean)
 		case 'date':

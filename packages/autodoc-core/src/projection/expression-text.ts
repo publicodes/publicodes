@@ -29,6 +29,8 @@ const constantText = (
 			return parameters.value ? 'oui' : 'non'
 		case 'const_text':
 			return `« ${parameters.value} »`
+		case 'const_symbol':
+			return parameters.value
 		case 'const_date':
 			return parameters.value
 		case 'const_number':

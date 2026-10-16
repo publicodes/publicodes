@@ -1,24 +1,15 @@
 import type { RuleView } from '@publicodes/autodoc-core'
 import type { ReactElement } from 'react'
 import { Equation } from './Equation'
-import type { Env } from './types'
 
-export function RuleComputation({
-	view,
-	env,
-}: {
-	view: RuleView
-	env: Env
-}): ReactElement | null {
-	if (!view.equation) return null
+export function RuleComputation({ view }: { view: RuleView }): ReactElement | null {
+	if (view.equation === null) return null
 	return (
 		<section className="publicodes-rule-computation">
-			{view.fill === 'generic' && (
-				<p className="publicodes-note">
-					Aucun contexte n’a été fourni : les valeurs ne sont pas calculées.
-				</p>
+			{view.fillNote !== null && (
+				<p className="publicodes-note">{view.fillNote}</p>
 			)}
-			<Equation equation={view.equation} env={env} head={view.name} />
+			<Equation view={view.equation} />
 		</section>
 	)
 }

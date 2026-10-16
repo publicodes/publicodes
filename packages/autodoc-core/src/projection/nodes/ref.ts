@@ -1,6 +1,7 @@
 import type * as Ast from '../../ast'
 import { displayName } from '../names'
-import type { Ctx, OperandView } from '../types'
+import { parameterState } from '../operand'
+import type { Ctx, RawOperand } from '../types'
 import { lookupValue, unitOf } from '../value'
 
 /**
@@ -10,21 +11,25 @@ import { lookupValue, unitOf } from '../value'
 export function projectRef(
 	expression: Ast.ReferenceExpression,
 	ctx: Ctx,
-	operator: string | null,
-): OperandView {
+): RawOperand {
 	const name = displayName(ctx.ast, expression.parameters)
-	const view: OperandView = {
-		operator,
-		kind: 'ref',
+	// une référence vaut ce que vaut la règle qu'elle nomme, type et unité compris : le
+	// compilateur ne les écrit pas toujours sur le nœud, notamment dans ce qu'un `contexte` lie
+	const target = ctx.ast[expression.parameters]?.value_mechanism
+	return {
+		id: null,
 		name,
 		address: expression.parameters,
+		description: ctx.ast[expression.parameters]?.description ?? null,
+		parameter: parameterState(expression.parameters, ctx),
 		term: name,
-		unit: unitOf(ctx.ast[expression.parameters]) ?? null,
-		value: lookupValue(ctx, expression.id, expression.type, unitOf(expression)),
-		equation: null,
-		keyword: null,
-		applied: null,
-		inert: false,
+		named: null,
+		value: lookupValue(
+			ctx,
+			expression.id,
+			target?.type ?? expression.type,
+			target === undefined ? unitOf(expression) : unitOf(target),
+		),
+		detail: null,
 	}
-	return view
 }

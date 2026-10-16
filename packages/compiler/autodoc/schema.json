@@ -79,6 +79,7 @@
 								{ "const": "symbol" },
 								{ "const": "boolean" },
 								{ "const": "date" },
+								{ "const": "enum" },
 								{ "const": "unknown" }
 							]
 						}
@@ -199,6 +200,12 @@
 				},
 				{
 					"$ref": "#/$defs/mechanisms/is_not_applicable"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/is_defined"
+				},
+				{
+					"$ref": "#/$defs/mechanisms/is_not_defined"
 				},
 				{
 					"$ref": "#/$defs/mechanisms/sum"
@@ -349,8 +356,47 @@
 					}
 				]
 			},
+			"is_defined": {
+				"title": "Is defined mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "is_defined"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
+			"is_not_defined": {
+				"title": "Is not defined mechanism",
+				"allOf": [
+					{
+						"required": ["kind", "parameters"],
+						"properties": {
+							"kind": {
+								"const": "is_not_defined"
+							},
+							"parameters": {
+								"$ref": "#/$defs/evaluable"
+							}
+						}
+					},
+					{
+						"$ref": "#/$defs/compiler_metadata"
+					}
+				]
+			},
 			"type_def": {
 				"title": "Type def",
+				"description": "The type a rule declares, with the unit it is expressed in",
 				"allOf": [
 					{
 						"required": ["kind", "parameters"],
@@ -359,25 +405,7 @@
 								"const": "type_def"
 							},
 							"parameters": {
-								"required": ["value"],
-								"properties": {
-									"value": {
-										"anyOf": [
-											{
-												"const": "number"
-											},
-											{
-												"const": "text"
-											},
-											{
-												"const": "boolean"
-											},
-											{
-												"const": "date"
-											}
-										]
-									}
-								}
+								"$ref": "#/$defs/publicodes_type"
 							}
 						}
 					},

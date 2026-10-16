@@ -1,5 +1,4 @@
 export * from '@publicodes/autodoc-core/ast'
-export { useEvaluableValue } from '@publicodes/autodoc-core'
 
 export {
 	AutodocButtonNavigationContext,
@@ -15,7 +14,6 @@ export {
 } from './components/AutodocEvaluationTraceContext'
 
 export {
-	Fiche,
 	RuleComputation,
 	RuleDescription,
 	RuleHeader,

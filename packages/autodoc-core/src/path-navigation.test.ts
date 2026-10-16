@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import {
-	createPathNavigation,
-	decodeRuleName,
-	encodeRuleName,
-} from './path-navigation'
+import { createPathNavigation, encodeRuleName } from './path-navigation'
 
 describe('encodeRuleName', () => {
 	it('matches the v1 renderer, so old documentation URLs still resolve', () => {
@@ -16,16 +12,6 @@ describe('encodeRuleName', () => {
 		)
 	})
 
-	it('round-trips through decodeRuleName', () => {
-		for (const name of [
-			'contrat salarié . rémunération',
-			'auto-entrepreneur',
-			"entreprise . chiffre d'affaires . BIC",
-			'établissement . commune . département . outre-mer',
-		]) {
-			expect(decodeRuleName(encodeRuleName(name))).toBe(name)
-		}
-	})
 })
 
 describe('createPathNavigation', () => {

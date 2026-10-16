@@ -1,9 +1,10 @@
 import type * as Ast from '../../ast'
-import type { Ctx, EquationView } from '../types'
+import type { Ctx, MechanismView } from '../types'
+import { MECHANISM_NAMES } from '../mechanism-name'
 import { projectList } from './list'
 
 export const projectMinOf = (
 	node: Ast.ChainedValue,
 	mechanism: Ast.MinOfMechanism,
 	ctx: Ctx,
-): EquationView => projectList(node, mechanism, ctx, 'le plus petit de', '')
+): MechanismView => projectList(node, mechanism, ctx, MECHANISM_NAMES.min_of, '')

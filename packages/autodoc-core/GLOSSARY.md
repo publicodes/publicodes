@@ -33,13 +33,19 @@ _Avoid_: public rule, export, result
 
 **Context**:
 The values a rule is evaluated against. Supplied by the reader at the root of an
-evaluation, and overridden by `avec le contexte` as evaluation descends.
+evaluation, and overridden by `contexte` as evaluation descends.
 _Avoid_: situation, state, environment, inputs
 
 **Context stack**:
 The chain of context overrides in force at one point in an evaluation. The same
 mechanism can be evaluated under more than one. Never shortened to "context".
 _Avoid_: scope, context
+
+**Evaluation**:
+One run of a rule against a context: the value it returned, the trace of the
+mechanisms that ran, the parameters it consulted and those it found nothing for.
+The words apply to the rule that was evaluated, and to no other.
+_Avoid_: result, run, computation
 
 **Evaluation trace**:
 The record of which mechanisms were evaluated to produce a value, and what each

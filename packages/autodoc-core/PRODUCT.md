@@ -137,8 +137,8 @@ notation, and the incumbent `@publicodes/react-ui` rendering it replaces.
 - Real models with compiled ASTs: `auto-entrepreneur` (138 rules, 24 with authored
   descriptions, 60 leaves, deepest reference chain six) and `simple-TJM` (10 rules).
 - Real evaluation traces from those models, produced with a fixed situation.
-- `examples/autodoc-playground`: a harness rendering every mechanism kind plus the two models,
-  with a hand-rolled navigation shell and no design system.
+- `examples/autodoc-playground`: a documentation browser for the two models, with a
+  hand-rolled navigation shell and no design system.
 - The v1 renderer (`@publicodes/react-ui`) as the incumbent, and mon-entreprise's integration
   with it as the record of what a real host has to override.
 - Absences to respect: there is no design system, no PRODUCT/DESIGN documentation, no ADR

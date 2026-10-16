@@ -1,4 +1,4 @@
-import './blocks.css'
+import '@publicodes/autodoc-core/styles/autodoc.css'
 
 export { RulePage } from './RulePage'
 export type { RulePageProps } from './RulePage'
@@ -10,5 +10,6 @@ export { RuleParameters } from './RuleParameters'
 export { RuleProvenance } from './RuleProvenance'
 export { RuleUsedBy } from './RuleUsedBy'
 export { Equation } from './Equation'
+export { FoldControl } from './FoldControl'
+export { RulePageLink } from './RulePageLink'
 export { RuleLink } from './RuleLink'
-export { Fiche } from './Fiche'

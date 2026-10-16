@@ -1,11 +1,11 @@
 import type { PublicodeAST } from '@publicodes/autodoc-core/ast'
-import type { Trace, TraceValue } from '@publicodes/autodoc-core'
+import type { Evaluation, Trace, TraceValue } from '@publicodes/autodoc-core'
 import { createPathNavigation, displayName } from '@publicodes/autodoc-core'
 import {
 	AutodocButtonNavigationContext,
 	RulePage,
 } from '@publicodes/autodoc-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 export interface DocumentationPageProps {
 	title: string
@@ -14,10 +14,16 @@ export interface DocumentationPageProps {
 	parameters: Record<string, unknown>
 	start: string
 	context: Record<string, TraceValue>
-	trace: Trace
-	usedParameters: readonly string[]
-	missing: readonly string[]
-	evaluatedRule: string
+	/** Les règles compilées du modèle : c'est la page qui évalue celle qu'elle affiche. */
+	rules: Record<string, unknown>
+}
+
+/** Ce qu'une règle compilée sait faire : s'évaluer, et rendre de quoi lire sa trace. */
+type CompiledRule = {
+	evaluate?: (
+		params?: Record<string, TraceValue>,
+		options?: { trace?: boolean },
+	) => { trace: Trace; needed: string[]; missing: string[], value: unknown }
 }
 
 /**
@@ -31,14 +37,24 @@ export function DocumentationPage({
 	parameters,
 	start,
 	context,
-	trace,
-	usedParameters,
-	missing,
-	evaluatedRule,
+	rules,
 }: DocumentationPageProps) {
 	const [current, setCurrent] = useState(start)
 	const [contextStackId, setContextStackId] = useState('')
-	const navigation = createPathNavigation({ outputs, parameters, basePath: title })
+	const navigation = createPathNavigation({
+		outputs,
+		parameters,
+		basePath: title,
+	})
+	// la page montre l'évaluation de la règle qu'elle affiche, et d'aucune autre : une règle
+	// que cette évaluation n'a pas atteinte n'a rien à lire
+	const evaluation = useMemo((): Evaluation | undefined => {
+		const { evaluate } = (rules[current] ?? {}) as CompiledRule
+		if (evaluate === undefined) return undefined
+		const { trace, needed, missing, value } = evaluate(context, { trace: true })
+		console.log(current, value)
+		return { trace, usedParameters: needed, missing, evaluatedRule: current }
+	}, [rules, current, context])
 
 	return (
 		<AutodocButtonNavigationContext.Provider
@@ -87,12 +103,9 @@ export function DocumentationPage({
 				<RulePage
 					ast={ast}
 					rule={current}
-					trace={trace}
+					evaluation={evaluation}
 					context={context}
 					contextStackId={contextStackId}
-					usedParameters={usedParameters}
-					missing={missing}
-					evaluatedRule={evaluatedRule}
 				/>
 			</div>
 		</AutodocButtonNavigationContext.Provider>

@@ -1,8 +1,8 @@
 import type { PublicodeAST } from '@publicodes/autodoc-core/ast'
 import type { TraceValue } from '@publicodes/autodoc-core'
 import { useState } from 'react'
-import autoAst from './fixtures/auto-entrepreneur.autodoc.json'
-import tjmAst from './fixtures/simple-TJM.autodoc.json'
+import autoAst from '../../../packages/compiler/examples/auto-entrepreneur/model.publicodes.json'
+import tjmAst from '../../../packages/compiler/examples/simple-TJM/model.publicodes.json'
 import autoRules, {
 	outputs as autoOutputs,
 	parameters as autoParameters,
@@ -11,20 +11,24 @@ import tjmRules, {
 	outputs as tjmOutputs,
 	parameters as tjmParameters,
 } from '../../../packages/compiler/examples/simple-TJM/model.publicodes.js'
-import { DocumentationPage, type DocumentationPageProps } from './pages/DocumentationPage'
+import {
+	DocumentationPage,
+	type DocumentationPageProps,
+} from './pages/DocumentationPage'
 
 const autoContext: Record<string, TraceValue> = {
 	"entreprise . chiffre d'affaires . BIC": 10000,
 	"entreprise . chiffre d'affaires . service BIC": 5000,
-	"entreprise . chiffre d'affaires . service BNC": 0,
-	"entreprise . chiffre d'affaires . vente restauration hébergement": 0,
-	'entreprise . activité . nature': 'libérale',
+	"entreprise . chiffre d'affaires . service BNC": 200,
+	"entreprise . chiffre d'affaires . vente restauration hébergement": 1000,
+	'entreprise . activité . nature': 'artisanale',
 	date: new Date('2024-06-01'),
 	'dirigeant . auto-entrepreneur . Cipav . adhérent': false,
 }
 
 const tjmContext: Record<string, TraceValue> = {
 	"chiffre d'affaires . nombre de jour": 5,
+	"chiffre d'affaires . TJM": 600,
 }
 
 const MODELS: Record<string, DocumentationPageProps> = {
@@ -35,17 +39,7 @@ const MODELS: Record<string, DocumentationPageProps> = {
 		parameters: autoParameters,
 		start: 'dirigeant . auto-entrepreneur . revenu net',
 		context: autoContext,
-		...(() => {
-			const evaluation = autoRules[
-				'dirigeant . auto-entrepreneur . revenu net'
-			].evaluate(autoContext, { trace: true })
-			return {
-				trace: evaluation.trace,
-				usedParameters: evaluation.needed,
-				missing: evaluation.missing,
-				evaluatedRule: 'dirigeant . auto-entrepreneur . revenu net',
-			}
-		})(),
+		rules: autoRules,
 	},
 	'simple-TJM': {
 		title: 'simple TJM',
@@ -54,17 +48,7 @@ const MODELS: Record<string, DocumentationPageProps> = {
 		parameters: tjmParameters,
 		start: 'exemples . CA élevé',
 		context: tjmContext,
-		...(() => {
-			const evaluation = tjmRules['exemples . CA élevé'].evaluate(tjmContext, {
-				trace: true,
-			})
-			return {
-				trace: evaluation.trace,
-				usedParameters: evaluation.needed,
-				missing: evaluation.missing,
-				evaluatedRule: 'dirigeant . auto-entrepreneur . revenu net',
-			}
-		})(),
+		rules: tjmRules,
 	},
 }
 

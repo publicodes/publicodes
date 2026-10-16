@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { needsParens, PRECEDENCE } from './binary-expression'
+import { flattens, inverts, needsParens, PRECEDENCE } from './binary-expression'
 
 describe('needsParens', () => {
 	it('add + mul : no parens needed (mul > add)', () => {
@@ -46,5 +46,37 @@ describe('needsParens', () => {
 		for (const op of operators) {
 			expect(PRECEDENCE[op], op).toBeDefined()
 		}
+	})
+})
+
+describe('flattens', () => {
+	it('opens a chain of the same precedence, in both directions of its family', () => {
+		expect(flattens('add', 'add')).toBe(true)
+		expect(flattens('add', 'sub')).toBe(true)
+		expect(flattens('sub', 'add')).toBe(true)
+		expect(flattens('sub', 'sub')).toBe(true)
+		expect(flattens('mul', 'div')).toBe(true)
+		expect(flattens('div', 'mul')).toBe(true)
+	})
+
+	it('keeps a power and a comparison nested: their nesting is the meaning', () => {
+		expect(flattens('pow', 'pow')).toBe(false)
+		expect(flattens('eq', 'eq')).toBe(false)
+		expect(flattens('lt', 'lt')).toBe(false)
+	})
+
+	it('keeps a different precedence nested', () => {
+		expect(flattens('add', 'mul')).toBe(false)
+		expect(flattens('mul', 'add')).toBe(false)
+		expect(flattens('and', 'or')).toBe(false)
+	})
+})
+
+describe('inverts', () => {
+	it('turns the operators of the line a subtraction or a division opens', () => {
+		expect(inverts('sub')).toBe(true)
+		expect(inverts('div')).toBe(true)
+		expect(inverts('add')).toBe(false)
+		expect(inverts('mul')).toBe(false)
 	})
 })
