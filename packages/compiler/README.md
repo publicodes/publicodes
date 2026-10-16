@@ -129,7 +129,7 @@ chmox +x "$(git rev-parse --git-dir)/hooks/commit-msg"
 Usage:
 
 ```sh
-git push gerrit HEAD:refs/for/2.0
+git push gerrit HEAD:refs/for/master
 ```
 
 #### With Jujutsu
