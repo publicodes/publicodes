@@ -1,8 +1,12 @@
 > 🇬🇧 Most of the documentation (including issues and commit messages) is written in French, please raise an [issue](https://github.com/publicodes/publicodes/issues/new) if you are interested and do not speak French. We intend to translate the language and the documentation in the coming weeks.
 
-## Publicodes
+## Publicodes (1.O)
 
-[![Npm version](https://img.shields.io/npm/v/publicodes)](https://www.npmjs.com/package/publicodes)
+La branche `1.x` sert de maintenance pour Publicode 1.0.
+
+## Publicodes (2.O)
+
+[![Npm version](https://img.shields.io/npm/v/publicodes)](https://www.npmjs.com/package/publicodes/cli)
 [![Matrix](https://img.shields.io/matrix/publicodes%3Amatrix.org)](https://app.element.io/#/room/#publicodes:matrix.org)
 
 Publicodes est un langage déclaratif pour encoder les algorithmes d'intérêt
@@ -20,7 +24,7 @@ progressivement le résultat affiché, et d'exposer une documentation du calcul 
 ## Installation
 
 ```
-npm install publicodes
+npm add @publicodes/cli
 ```
 
 ## Documentation
