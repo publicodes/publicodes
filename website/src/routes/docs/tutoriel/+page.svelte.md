@@ -15,7 +15,7 @@ ce tutoriel, nous allons utiliser le paquet npm pour générer des modèles
 Javascript.
 
 ```bash
-$ npm install publicodes
+$ npm add @publicodes/cli
 ```
 
 ## Premiers pas
