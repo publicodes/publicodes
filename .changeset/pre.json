@@ -14,6 +14,7 @@
     "compiler-runtimes-js-test": "2.0.0-alpha.0"
   },
   "changesets": [
-    "fancy-ideas-tan"
+    "fancy-ideas-tan",
+    "late-symbols-knock"
   ]
 }
