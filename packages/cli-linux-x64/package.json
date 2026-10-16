@@ -9,6 +9,11 @@
 	"cpu": [
 		"x64"
 	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/publicodes/publicodes.git",
+		"directory": "packages/cli-linux-x64"
+	},
 	"bin": {
 		"publicodes2": "./bin/publicodes.js"
 	},
