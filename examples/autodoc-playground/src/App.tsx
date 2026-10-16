@@ -40,10 +40,12 @@ const MODELS: Record<string, DocumentationPageProps> = {
 				'dirigeant . auto-entrepreneur . revenu net'
 			].evaluate(autoContext, { trace: true })
 			return {
-				trace: evaluation.trace,
-				usedParameters: evaluation.needed,
-				missing: evaluation.missing,
-				evaluatedRule: 'dirigeant . auto-entrepreneur . revenu net',
+				evaluation: {
+					trace: evaluation.trace,
+					usedParameters: evaluation.needed,
+					missing: evaluation.missing,
+					evaluatedRule: 'dirigeant . auto-entrepreneur . revenu net',
+				},
 			}
 		})(),
 	},
@@ -59,10 +61,12 @@ const MODELS: Record<string, DocumentationPageProps> = {
 				trace: true,
 			})
 			return {
-				trace: evaluation.trace,
-				usedParameters: evaluation.needed,
-				missing: evaluation.missing,
-				evaluatedRule: 'dirigeant . auto-entrepreneur . revenu net',
+				evaluation: {
+					trace: evaluation.trace,
+					usedParameters: evaluation.needed,
+					missing: evaluation.missing,
+					evaluatedRule: 'exemples . CA élevé',
+				},
 			}
 		})(),
 	},

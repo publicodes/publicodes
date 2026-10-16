@@ -1,5 +1,11 @@
 import type * as Ast from '../../ast'
-import type { Ctx, EquationView, OperandView } from '../types'
+import type {
+	Ctx,
+	EquationView,
+	MechanismView,
+	RawOperand,
+} from '../types'
+import { finishEquation } from '../operand'
 import { projectAllOf } from './all-of'
 import { projectApplicability } from './applicability'
 import { projectBinary } from './binary'
@@ -23,31 +29,39 @@ import { projectVariations } from './variations'
  */
 export function projectNode(node: Ast.ChainedValue, ctx: Ctx): EquationView | null {
 	const mechanism = node.value_mechanism
+	const done = (view: MechanismView | null, id: string) =>
+		view === null ? null : finishEquation(view, ctx, id)
 	switch (mechanism.kind) {
 		case 'sum':
-			return projectSum(node, mechanism, ctx)
+			return done(projectSum(node, mechanism, ctx), mechanism.id)
 		case 'product':
-			return projectProduct(node, mechanism, ctx)
+			return done(projectProduct(node, mechanism, ctx), mechanism.id)
 		case 'all_of':
-			return projectAllOf(node, mechanism, ctx)
+			return done(projectAllOf(node, mechanism, ctx), mechanism.id)
 		case 'one_of':
-			return projectOneOf(node, mechanism, ctx)
+			return done(projectOneOf(node, mechanism, ctx), mechanism.id)
 		case 'min_of':
-			return projectMinOf(node, mechanism, ctx)
+			return done(projectMinOf(node, mechanism, ctx), mechanism.id)
 		case 'max_of':
-			return projectMaxOf(node, mechanism, ctx)
+			return done(projectMaxOf(node, mechanism, ctx), mechanism.id)
 		case 'variations':
-			return projectVariations(node, mechanism, ctx)
+			return done(projectVariations(node, mechanism, ctx), mechanism.id)
 		case 'expr':
-			return projectExpr(node, mechanism, ctx)
+			return done(projectExpr(node, mechanism, ctx), mechanism.id)
 		case 'value':
-			return projectValueMechanism(node, mechanism, ctx)
+			return done(projectValueMechanism(node, mechanism, ctx), mechanism.id)
 		case 'not_defined':
-			return projectNotDefined(node, mechanism, ctx)
+			return done(projectNotDefined(node, mechanism, ctx), mechanism.id)
 		case 'is_applicable':
-			return projectApplicability(node, mechanism, ctx, 'est applicable')
+			return done(
+				projectApplicability(node, mechanism, ctx, 'est applicable'),
+				mechanism.id,
+			)
 		case 'is_not_applicable':
-			return projectApplicability(node, mechanism, ctx, 'n’est pas applicable')
+			return done(
+				projectApplicability(node, mechanism, ctx, 'n’est pas applicable'),
+				mechanism.id,
+			)
 		default:
 			return mechanism satisfies never
 	}
@@ -56,16 +70,9 @@ export function projectNode(node: Ast.ChainedValue, ctx: Ctx): EquationView | nu
 export function projectExpression(
 	expression: Ast.Expression,
 	ctx: Ctx,
-	operator: string | null,
-): OperandView {
-	switch (expression.kind) {
-		case 'constant':
-			return projectConstant(expression, ctx, operator)
-		case 'ref':
-			return projectRef(expression, ctx, operator)
-		case 'neg':
-			return projectUnary(expression, ctx, operator)
-		default:
-			return projectBinary(expression, ctx, operator)
-	}
+): RawOperand {
+	return expression.kind === 'constant' ? projectConstant(expression, ctx)
+		: expression.kind === 'ref' ? projectRef(expression, ctx)
+		: expression.kind === 'neg' ? projectUnary(expression, ctx)
+		: projectBinary(expression, ctx)
 }

@@ -2,7 +2,7 @@ import { cpSync, mkdirSync } from 'node:fs'
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-	entry: ['src/index.ts', 'src/ast/index.ts', 'src/examples/index.ts'],
+	entry: ['src/index.ts', 'src/ast/index.ts'],
 	format: ['cjs', 'esm'],
 	sourcemap: true,
 	clean: true,

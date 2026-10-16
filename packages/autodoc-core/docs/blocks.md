@@ -69,7 +69,6 @@ must not be handed the second.
 | Block | Reads | Renders |
 |---|---|---|
 | `RuleUsedBy` | the whole model, scanning for references to this rule | the rules that consume this one — for a parameter, the levers it moves |
-| `RuleSiblings` | the whole model, grouping by dotted name | the rules sharing this rule's namespace |
 
 ### The frame
 
@@ -79,12 +78,17 @@ must not be handed the second.
 
 ## The unfold
 
-A reference in the computation shows its name — a link — and its unit. Behind the name is the
-referenced rule's own computation, opened under the line: the same rows one gutter further in,
-on a paper of its own. The line does not move, so a reader who unfolds keeps their place.
+A row of the computation shows its term and its value. Behind the term is whatever explains
+the value: the referenced rule's own computation, or the mechanism's operands. Opening puts it
+under the line — the same rows, placed inside the sheet that line opens: from the sheet's edge,
+and one sheet inset further in, so a fiche's content never straddles its own frame. The line
+does not move, so a reader who unfolds keeps their place.
 
-The unfold is the only disclosure in the computation, and it is the one the reader asks for by
-name. Two rules govern it:
+Navigation is not the computation's job: the index and the used-by list carry blue links. A row
+carries none of its own — the whole line is its target, and the veil under the pointer is its
+only affordance — except when the fiche beside it is a rule with a page, and a small blue mark
+then waits next to the opened name. Two
+rules govern the unfold:
 
 - **It changes the line's background, not its layout.** The paper is a layer behind the block,
   reaching from the operator's column to the row's right edge. It cannot be the block's own
@@ -108,8 +112,7 @@ name. Two rules govern it:
 ```
 
 `RuleDescription` précède `RuleComputation` : deux phrases sur ce dont on parle avant de rendre
-le nombre. `RuleSiblings` sits in the frame rather than the column in the default arrangement.
-That is the default page's decision, not the block's.
+le nombre.
 
 ## What the library does not provide
 

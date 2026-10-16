@@ -1,33 +1,30 @@
 import type * as Ast from '../../ast'
 import { formatValue } from '../../format-value'
-import type { Ctx, OperandView } from '../types'
+import type { Ctx, RawOperand } from '../types'
 import { expressionText } from '../expression-text'
 import { lookupValue, unitOf } from '../value'
 
+/** A literal is worth what it says; there is nothing else to decide about it. */
 export function projectConstant(
 	expression: Ast.ConstantExpression,
 	ctx: Ctx,
-	operator: string | null,
-): OperandView {
+): RawOperand {
 	const parameters = expression.parameters
 	const unit =
 		parameters && 'unit' in parameters ? (parameters.unit ?? null) : null
 	const term = expressionText(ctx.ast, expression)
-	const view: OperandView = {
-		operator,
-		kind: 'constant',
+	return {
+		id: null,
 		name: null,
 		address: null,
+		description: null,
+		parameter: null,
 		term:
 			parameters?.kind === 'const_number' ?
 				formatValue(parameters.value, { type: 'number', unit: unit ?? undefined })
 			:	term,
-		unit,
+		named: null,
 		value: lookupValue(ctx, expression.id, expression.type, unitOf(expression)),
 		equation: null,
-		keyword: null,
-		applied: null,
-		inert: false,
 	}
-	return view
 }

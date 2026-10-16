@@ -1,9 +1,10 @@
 import type * as Ast from '../../ast'
-import type { Ctx, EquationView } from '../types'
+import type { Ctx, MechanismView } from '../types'
+import { MECHANISM_NAMES } from '../mechanism-name'
 import { projectList } from './list'
 
 export const projectAllOf = (
 	node: Ast.ChainedValue,
 	mechanism: Ast.AllOfMechanism,
 	ctx: Ctx,
-): EquationView => projectList(node, mechanism, ctx, 'toutes ces conditions', 'et')
+): MechanismView => projectList(node, mechanism, ctx, MECHANISM_NAMES.all_of, 'et')

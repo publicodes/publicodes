@@ -24,8 +24,8 @@ export function RuleParameters({ view }: { view: RuleView }): ReactElement | nul
 									<span className="publicodes-absence">non renseignée</span>
 								:	<>
 										<Value value={entry.value} />
-										{entry.state === 'par défaut' && (
-											<span className="publicodes-qualifier"> (par défaut)</span>
+										{entry.qualifier !== null && (
+											<span className="publicodes-qualifier"> {entry.qualifier}</span>
 										)}
 									</>
 								}

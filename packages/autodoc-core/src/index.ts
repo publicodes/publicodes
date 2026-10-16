@@ -1,24 +1,28 @@
-export { useEvaluableValue } from './components/chained-value'
 
 export { formatValue } from './format-value'
 export type { FormatType } from './format-value'
 export * from './trace'
-export { needsParens, PRECEDENCE } from './binary-expression'
-export { getContextMechanism } from './node-accessors'
 export {
 	createPathNavigation,
 	encodeRuleName,
-	decodeRuleName,
 } from './path-navigation'
 export type { PathNavigation, PathNavigationRoute } from './path-navigation'
-export { projectRule, displayName, leafName } from './projection'
+export { projectRule, displayName } from './projection'
+export {
+	GENERIC_FILL,
+	NO_COMPUTATION,
+	PARAMETER_NOTES,
+} from './projection'
 export type {
-	Absence,
 	ContextEntryView,
 	EquationView,
+	Evaluation,
 	FillLevel,
-	ModifierView,
+	FoldView,
+	MechanismView,
+	RelatedRuleView,
 	OperandView,
+	ParameterState,
 	ProjectionOptions,
 	RuleView,
 	ValueView,

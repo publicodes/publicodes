@@ -1,6 +1,7 @@
 import type * as Ast from '../../ast'
-import type { Ctx, EquationView, OperandView } from '../types'
+import type { Ctx, MechanismView, RawOperand } from '../types'
 import { expressionText } from '../expression-text'
+import { finishRow } from '../operand'
 import { lookupValue, unitOf } from '../value'
 
 const OPERATORS: Record<Ast.BinaryOperationExpression['kind'], string> = {
@@ -24,35 +25,36 @@ const OPERATORS: Record<Ast.BinaryOperationExpression['kind'], string> = {
 export function projectBinary(
 	expression: Ast.BinaryOperationExpression,
 	ctx: Ctx,
-	operator: string | null,
-): OperandView {
-	const left = ctx.projectExpression(expression.parameters.left, ctx, null)
-	const right = ctx.projectExpression(
-		expression.parameters.right,
+): RawOperand {
+	const left = finishRow(
+		ctx.projectExpression(expression.parameters.left, ctx),
+		ctx,
+		null,
+		null,
+	)
+	const right = finishRow(
+		ctx.projectExpression(expression.parameters.right, ctx),
 		ctx,
 		OPERATORS[expression.kind],
+		null,
 	)
 	const result = lookupValue(ctx, expression.id, expression.type, unitOf(expression))
-	const equation: EquationView = {
+	const equation: MechanismView = {
 		keyword: 'expression',
 		inlineTerm: expressionText(ctx.ast, expression),
 		operands: [left, right],
 		modifiers: [],
 		result,
-		inertCount: 0,
 	}
-	const view: OperandView = {
-		operator,
-		kind: 'equation',
+	return {
+		id: expression.id,
 		name: null,
 		address: null,
+		description: null,
+		parameter: null,
 		term: expressionText(ctx.ast, expression),
-		unit: unitOf(expression) ?? null,
+		named: null,
 		value: result,
 		equation,
-		keyword: null,
-		applied: null,
-		inert: false,
 	}
-	return view
 }

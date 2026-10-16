@@ -1,5 +1,6 @@
 /* The autodoc's default theme: French-state documentation discipline.
-   One functional blue, one red for absence, no shadow, no radius past 2px.
+   One functional blue, one red for absence, no shadow, and two roundnesses: the
+   corner of a control, and the pill that counts what a fold holds back.
    Meaning rides on type, alignment, notation and the paper a rule is on —
    never on colour a host may replace. */
 
@@ -11,6 +12,8 @@
 	--publicodes-blue: #000091;
 	--publicodes-red: #b34000;
 	--publicodes-rule: #dddddd;
+	/* the ink, veiled: the surface a row lights up with under the pointer */
+	--publicodes-tint: rgba(30, 30, 30, 0.045);
 	--publicodes-paper-white: #ffffff;
 	--publicodes-paper-shade: #fafafa;
 
@@ -22,18 +25,24 @@
 	--publicodes-size-label: 13px;
 
 	--publicodes-gutter: 4.5rem;
-	/* What separates an operator from the name it applies to */
-	--publicodes-column-gap: 14px;
-	/* An operator fits the gutter; a keyword like « non applicable si » or
-	   « arrondi au supérieur » does not. A row may widen its own gutter up to
-	   this, past which the keyword overflows what it can be given. */
-	--publicodes-gutter-max: 9rem;
-	/* Where a paper starts. `0` puts the operator on the paper; the gutter
-	   leaves the operator on the parent's colour and starts the paper after it. */
-	--publicodes-paper-inset: var(--publicodes-gutter);
+	/* The spacing inside a sheet: a row's own padding, the gap between an operator and
+	   the name it applies to, the clearance a label keeps from the paper's frame, the
+	   air inside a tag. One value, so everything that starts or stops at a sheet's
+	   edge measures the same. */
+	--publicodes-inset: 10px;
+	/* Where a paper's edge falls: past the operator's column, and halfway across
+	   the gap that separates the operator from the name it applies to. */
+	--publicodes-paper-inset: calc(
+		var(--publicodes-gutter) + var(--publicodes-inset) / 2
+	);
 
 	--publicodes-font: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 	--publicodes-figure: ui-monospace, SFMono-Regular, Menlo, monospace;
+	/* the computation is a table, so its width is a layout value, not a text measure:
+	   a stable one, the width documentation pages have settled on. The prose the model
+	   carries keeps a measure of its own, below. */
+	--publicodes-width: 48rem;
+	/* 65 to 75 characters: the longest a reader holds without losing the line */
 	--publicodes-measure: 68ch;
 }
 
@@ -43,7 +52,7 @@
 	line-height: 1.55;
 	color: var(--publicodes-ink);
 	font-variant-numeric: tabular-nums;
-	max-width: var(--publicodes-measure);
+	max-width: var(--publicodes-width);
 }
 
 /* ── a button that is a link: same affordance, host-owned routing ── */
@@ -91,6 +100,7 @@
 	font-size: var(--publicodes-size-label);
 	font-weight: 600;
 	letter-spacing: 0.04em;
+	font-variant-caps: all-small-caps;
 	text-transform: uppercase;
 	border-bottom: 2px solid var(--publicodes-ink);
 	padding-bottom: 2px;
@@ -98,6 +108,8 @@
 
 .publicodes-rule-description {
 	margin: 18px 0 0;
+	/* the author's prose, and not the computation: it keeps its reading measure */
+	max-width: var(--publicodes-measure);
 }
 .publicodes-rule-description p {
 	font-size: var(--publicodes-size-body);
@@ -118,11 +130,10 @@
 	border-bottom: 2px solid var(--publicodes-blue);
 	margin: 40px 0 14px;
 }
+/* the same shape as a fiche's note: the sentence carries itself, no bar */
 .publicodes-note {
 	font-size: var(--publicodes-size-figure);
 	color: var(--publicodes-muted);
-	border-left: 3px solid var(--publicodes-ink);
-	padding: 2px 0 2px 12px;
 	margin: 0 0 16px;
 }
 
@@ -140,40 +151,49 @@
 	/* sized to the operator, grown only as far as the keyword needs */
 	grid-template-columns: minmax(var(--publicodes-gutter), max-content) minmax(0, 1fr) auto;
 	align-items: baseline;
-	column-gap: var(--publicodes-column-gap);
-	padding: 7px 10px;
-	/* the bleed: a row's rule reaches the full width of the page's rows */
-	margin: 0 -10px;
+	column-gap: var(--publicodes-inset);
+	padding: 7px var(--publicodes-inset);
+	/* tall enough for the tallest thing a line can carry — its name, or a control
+	   beside it — so a control never moves the line it sits on */
+	line-height: 1.7;
+	/* the bleed: the row reaches the paper's edge by giving back exactly the padding
+	   it was given, whatever depth it is written at */
+	margin: 0 calc(-1 * var(--publicodes-inset));
 	position: relative;
 }
-/* the rule is inset by the row's padding, so it measures what the paper covers */
+
+/* the rule under a line: a row's own. Its inset keeps the operator column clear,
+   so it stops short of the paper's frame — the frame's foot, below, does not. */
 .publicodes-row::after {
 	content: '';
 	position: absolute;
-	/* the rule spans the row it belongs to, not the paper: it is the row's own
-	   edge, so it must not move when the row opens */
-	left: 10px;
-	right: 10px;
+	/* starts past the row's own operator column and runs to its right edge, so a
+	   keyword in that column is never crossed */
+	left: calc(var(--publicodes-inset) + var(--publicodes-paper-inset));
+	right: 0;
 	bottom: 0;
 	height: 1px;
 	background: var(--publicodes-rule);
 }
-
-.publicodes-row__gutter {
-	/* past this the keyword overflows what it is given, which is the limit */
-	max-width: var(--publicodes-gutter-max);
+.publicodes-row__term {
+	min-width: 0;
+}
+.publicodes-value {
 	font-family: var(--publicodes-figure);
-	font-size: var(--publicodes-size-label);
-	font-weight: 700;
-	color: var(--publicodes-muted);
+	font-weight: 400;
 	text-align: right;
 	white-space: nowrap;
+}
+.publicodes-row__gutter {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
 }
 .publicodes-row__term {
 	min-width: 0;
 }
-/* the row's text opens its detail: in ink, with a quiet underline, because it
-   is a disclosure rather than a link to another page */
+/* the name is plain text: the row is the target, and the name stays a button
+   only so the keyboard has one */
 .publicodes-row__control {
 	font: inherit;
 	color: inherit;
@@ -182,29 +202,120 @@
 	padding: 0;
 	text-align: inherit;
 	cursor: pointer;
-	text-decoration: underline;
-	text-decoration-color: var(--publicodes-rule);
-	text-underline-offset: 3px;
 }
-.publicodes-row__control:hover {
-	text-decoration-color: currentColor;
+/* a word of the language, as a label: small capitals, one size throughout, and
+   uppercase where a face carries none to put them in */
+.publicodes-row__gutter,
+.publicodes-row__mechanism {
+	font-family: 'Noto Sans Mono', var(--publicodes-figure);
+	font-size: var(--publicodes-size-label);
+	font-weight: 700;
+	font-variant-caps: all-small-caps;
+	text-transform: uppercase;
+	line-height: 1.2;
+	color: var(--publicodes-muted);
+	white-space: nowrap;
+}
+.publicodes-row__mechanism {
+	/* the other edge of the column it shares with the operators, taken by force: this
+	   margin is what pushes the tag to the start of a column packed to the end */
+	margin-right: auto;
+	padding: 0 4px;
+	border: 1px solid var(--publicodes-rule);
+	border-radius: 4px;
+}
+/* the row is the button. Its target is a sheet the size of the row, so the line
+   answers anywhere, and nothing nests: a control of its own stays a sibling of
+   this button, which is what keeps the markup valid and the gestures distinct. */
+.publicodes-row__control::after {
+	content: '';
+	position: absolute;
+	/* the row, not the name: the nearest positioned ancestor is the line */
+	inset: 0;
+}
+/* a row that opens something answers the pointer, wherever on the line it is
+   caught. The surface is the width of the paper the row is written on, so it
+   never reaches past the sheet it belongs to. Hover only where hovering is a
+   thing: a tap must not leave a highlight the reader never asked for. */
+@media (hover: hover) {
+	.publicodes-row--unfoldable {
+		cursor: pointer;
+	}
+	.publicodes-row--unfoldable::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: var(--publicodes-tint);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 120ms cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	.publicodes-row--unfoldable:hover::before {
+		opacity: 1;
+	}
+	/* a level's own box starts half a gap left of its sheet's edge; the veil marks the
+	   sheet, so it begins there rather than at the box */
+	.publicodes-detail .publicodes-row--unfoldable::before {
+		left: calc(var(--publicodes-inset) / 2);
+	}
+	/* a sheet of its own under the pointer: the control rises off the paper. Its
+	   colour is left alone, so a link stays blue and only the chevron darkens */
+	.publicodes-control:hover {
+		background: var(--publicodes-paper-white);
+		border-color: var(--publicodes-rule);
+	}
+	.publicodes-fold:hover {
+		color: var(--publicodes-ink);
+	}
 }
 .publicodes-value {
 	font-family: var(--publicodes-figure);
-	font-weight: 700;
+	font-weight: 400;
 	text-align: right;
 	white-space: nowrap;
 }
+/* the dotted line marks the parameter, whatever its state, so it is drawn in ink
+   and stays legible under a default's paler figure */
+.publicodes-value[data-parameter] .publicodes-value__figure {
+	/* above the row's own target: a dotted figure answers the pointer by itself */
+	position: relative;
+	text-decoration: underline dotted;
+	text-underline-offset: 4px;
+	text-decoration-color: var(--publicodes-ink);
+	/* the dotted line is the only mark: it says a parameter, the title says which */
+	cursor: help;
+}
+/* a default is the author's figure: still bold, and paler */
+.publicodes-value[data-parameter='par défaut'] .publicodes-value__figure {
+	color: var(--publicodes-muted);
+}
+/* a word set beside a figure: it keeps the words' own face and tone, never the
+   figure's marks */
+.publicodes-value__label,
+.publicodes-qualifier {
+	font-family: var(--publicodes-font);
+	font-size: var(--publicodes-size-label);
+	font-weight: 400;
+	color: var(--publicodes-muted);
+}
+.publicodes-value__label {
+	margin-right: 8px;
+	text-decoration: none;
+}
 .publicodes-absence {
 	color: var(--publicodes-red);
-	font-weight: 600;
+	font-weight: 400;
 }
+
 /* the rule's own value is the answer, and the only place it appears */
 .publicodes-row--head {
 	grid-template-columns: minmax(0, 1fr) auto;
 	padding-bottom: 13px;
 }
 .publicodes-row--head::after {
+	/* the answer's separator is the page's, not a paper's edge */
+	left: 0;
+	right: 0;
 	height: 3px;
 	background: var(--publicodes-ink);
 }
@@ -213,6 +324,8 @@
 	font-weight: 600;
 }
 .publicodes-row--head .publicodes-value {
+	/* the answer's name is semi-bold, so its figure is too */
+	font-weight: 600;
 	font-size: var(--publicodes-size-answer);
 	letter-spacing: -0.02em;
 	line-height: 1;
@@ -225,26 +338,6 @@
 	color: var(--publicodes-muted);
 	font-weight: 400;
 }
-.publicodes-row--modifier .publicodes-row__gutter {
-	font-size: var(--publicodes-size-label);
-}
-
-/* the fold and whatever a fiche ends with share one line: the fold under the
-   terms it belongs to, the actions at the right edge */
-.publicodes-foot {
-	display: flex;
-	align-items: baseline;
-	justify-content: flex-end;
-	gap: 14px;
-	padding: 8px 10px 2px 0;
-}
-/* the fold keeps the left of that line, and its own indent, whether or not the
-   fiche's actions share it */
-.publicodes-fold {
-	margin: 0 auto 0 calc(var(--publicodes-gutter) + var(--publicodes-column-gap));
-	font-size: var(--publicodes-size-label);
-}
-
 
 /* ── an unfolded rule: the paper opens behind the line, not around it ──
    Opening a line changes two things: the paper behind it, and the weight of its
@@ -257,7 +350,6 @@
 	   grid it had: the paper is a layer behind it, and reaches from the
 	   operator's column to the right bleed of the row */
 	position: relative;
-	margin-bottom: 8px;
 }
 .publicodes-block::before {
 	content: '';
@@ -265,7 +357,14 @@
 	top: 0;
 	bottom: 0;
 	left: var(--publicodes-paper-inset);
-	right: -10px;
+	/* the row's own margin, so the paper reaches the edge of its box */
+	right: calc(-1 * var(--publicodes-inset));
+	/* drawn inside the paper's box, so it marks the sheet without moving it. Its top
+	   and its bottom are the rules of the lines it holds: the row that opened it,
+	   and its last row. A third line at either edge would double one of them. */
+	border: 1px solid var(--publicodes-rule);
+	border-top: 0;
+	border-bottom: 0;
 }
 .publicodes-block[data-paper='white']::before {
 	background: var(--publicodes-paper-white);
@@ -273,41 +372,142 @@
 .publicodes-block[data-paper='shade']::before {
 	background: var(--publicodes-paper-shade);
 }
+/* the paper's foot, corner to corner: the sheet closes on a line of its own width.
+   Drawn as a background, like every other rule here — a border would be snapped to
+   device pixels, and at a fractional line height the two would split in two. */
+.publicodes-block::after {
+	content: '';
+	position: absolute;
+	left: var(--publicodes-paper-inset);
+	right: calc(-1 * var(--publicodes-inset));
+	bottom: 0;
+	height: 1px;
+	background: var(--publicodes-rule);
+}
+/* no paper until the row opens: the block is only a wrapper then, and it must
+   take no room of its own — no sheet, and no foot */
+.publicodes-block--closed::before,
+.publicodes-block--closed::after {
+	content: none;
+}
 /* the line and its detail paint above the paper */
 .publicodes-block > * {
 	position: relative;
 }
-.publicodes-row--open .publicodes-row__term {
+/* the line is bold exactly when its explanation is open, and its figure with it:
+   the weight belongs to the line, not to the figure or to the absence it shows */
+.publicodes-row--open .publicodes-row__term,
+.publicodes-row--open .publicodes-value,
+.publicodes-row--open .publicodes-absence {
 	font-weight: 600;
 }
-/* the explanation is the same layout one gutter further in, so a fiche opened
-   inside a fiche is one more step of the same indentation */
+/* the explanation keeps the root's layout, placed inside the sheet that opens it,
+   one half-gap in — the distance between that sheet's edge and the name column of
+   the row above, so a level's words line up with the word that names it */
 .publicodes-detail {
-	margin-left: var(--publicodes-gutter);
-	padding-bottom: 4px;
+	margin-left: calc(
+		var(--publicodes-paper-inset) + var(--publicodes-inset) / 2
+	);
 }
-.publicodes-detail__tools {
-	display: flex;
-	justify-content: flex-end;
-	gap: 14px;
-}
-/* the computation's small controls, the fold among them: quiet, and one size */
-.publicodes-detail__tools a,
-.publicodes-detail__tools .publicodes-link,
-.publicodes-detail__close,
-.publicodes-fold button {
-	font: inherit;
-	font-size: var(--publicodes-size-label);
-	color: var(--publicodes-muted);
+/* ── the page's small controls ──
+   One look for both: the fold, which holds terms back, and the way to a rule's
+   own page. Each of them says where it sits; the look is not theirs to decide. */
+.publicodes-control {
+	display: inline-flex;
+	align-items: center;
+	height: 24px;
+	padding: 0 7px;
 	background: none;
-	border: 0;
-	padding: 0;
+	/* reserved, so hovering moves nothing */
+	border: 1px solid transparent;
+	border-radius: 6px;
+	color: var(--publicodes-muted);
 	cursor: pointer;
-	text-decoration: underline;
-	text-underline-offset: 2px;
+	/* the control is a chip, whatever a link class may say about its own shape */
+	text-decoration: none;
+	/* a control is not part of the computation a reader copies */
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+	transition:
+		background-color 140ms cubic-bezier(0.16, 1, 0.3, 1),
+		border-color 140ms cubic-bezier(0.16, 1, 0.3, 1),
+		color 140ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+.publicodes-control:active {
+	background: var(--publicodes-rule);
+}
+.publicodes-control__icon {
+	flex: none;
+	width: 18px;
+	height: 18px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+/* the fold: past the row's right edge, in the margin, so it costs no place */
+.publicodes-fold {
+	position: absolute;
+	top: 50%;
+	left: calc(100% + 3px);
+	transform: translateY(-50%);
+}
+.publicodes-fold .publicodes-control__icon {
+	transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.publicodes-fold[aria-expanded='true'] .publicodes-control__icon {
+	transform: rotate(180deg);
+}
+.publicodes-fold__count {
+	display: grid;
+	place-items: center;
+	min-width: 18px;
+	height: 18px;
+	/* its own gap, so it holds the chevron off the figure */
+	margin-left: 5px;
+	padding: 0 4px;
+	/* a quiet pill: the figure is what a reader reads, the pill only holds it */
+	background: var(--publicodes-muted);
+	border-radius: 999px;
+	font-family: var(--publicodes-figure);
+	font-size: var(--publicodes-size-label);
+	/* a count that changes keeps its place */
+	font-variant-numeric: tabular-nums;
+	line-height: 1;
+	color: var(--publicodes-paper-white);
+	line-height: 1;
+}
+/* the page of the rule whose fiche is open: beside its name, the same size as the
+   other control. On the line's middle rather than its baseline: a box this tall
+   standing on the baseline would lift the line it belongs to. */
+.publicodes-page-link {
+	position: relative;
+	margin-left: 6px;
+	vertical-align: middle;
+	color: var(--publicodes-blue);
+}
+/* a name a control needs to carry without showing it */
+.publicodes-visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+	.publicodes-control,
+	.publicodes-control__icon,
+	.publicodes-fold__count,
+	.publicodes-row--unfoldable::before {
+		transition: none;
+	}
+}
+/* a fiche without a computation ends on a sentence, and the paper closes on it */
 .publicodes-detail__note {
-	padding: 10px 12px;
+	padding: 10px var(--publicodes-inset);
 	font-size: var(--publicodes-size-label);
 	color: var(--publicodes-muted);
 }
@@ -316,50 +516,6 @@
 .publicodes-rule-page :focus-visible {
 	outline: 3px solid var(--publicodes-blue);
 	outline-offset: 2px;
-}
-
-/* ── the fiche: on hover, and on focus, as an overlay ── */
-.publicodes-fiche {
-	position: relative;
-	display: inline;
-}
-.publicodes-fiche__panel {
-	position: absolute;
-	left: 0;
-	bottom: calc(100% + 8px);
-	z-index: 9;
-	width: 44ch;
-	background: var(--publicodes-paper-white);
-	border: 1px solid var(--publicodes-ink);
-	border-left: 4px solid var(--publicodes-blue);
-	padding: 12px 14px;
-	text-align: left;
-	font-size: var(--publicodes-size-label);
-	line-height: 1.5;
-	font-weight: 400;
-	color: var(--publicodes-ink);
-}
-.publicodes-fiche__doc {
-	display: -webkit-box;
-	-webkit-line-clamp: 4;
-	line-clamp: 4;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
-}
-.publicodes-fiche__value {
-	display: block;
-	margin-top: 6px;
-}
-.publicodes-fiche__value .publicodes-value {
-	font-size: var(--publicodes-size-figure);
-}
-.publicodes-fiche__address {
-	display: block;
-	margin-top: 8px;
-	font-family: var(--publicodes-figure);
-	font-size: var(--publicodes-size-label);
-	color: var(--publicodes-muted);
-	word-break: break-word;
 }
 
 /* ── the context: one style, the state as a quiet qualifier ── */
@@ -373,6 +529,7 @@
 	font-size: var(--publicodes-size-label);
 	font-weight: 700;
 	color: var(--publicodes-muted);
+	font-variant-caps: all-small-caps;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 	padding-bottom: 6px;
@@ -386,13 +543,6 @@
 	padding: 8px 0;
 	border-bottom: 1px solid var(--publicodes-rule);
 }
-.publicodes-qualifier {
-	color: var(--publicodes-muted);
-	font-family: var(--publicodes-font);
-	font-weight: 400;
-	font-size: var(--publicodes-size-label);
-}
-
 .publicodes-rule-used-by ul {
 	list-style: none;
 	margin: 0;
@@ -422,6 +572,7 @@
 	margin: 0 0 8px;
 	padding: 0;
 	font-size: var(--publicodes-size-label);
+	font-variant-caps: all-small-caps;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
 }
@@ -431,10 +582,10 @@
 		--publicodes-gutter: 3.4rem;
 	}
 	.publicodes-row {
-		grid-template-columns: var(--publicodes-gutter) minmax(0, 1fr);
-		gap: 2px 9px;
+		grid-template-columns: minmax(var(--publicodes-gutter), max-content) minmax(0, 1fr);
+		gap: 2px var(--publicodes-inset);
 		/* the horizontal inset is the row's, at every width */
-		padding: 9px 10px;
+		padding: 9px var(--publicodes-inset);
 	}
 	.publicodes-row .publicodes-value {
 		grid-column: 2;
@@ -443,15 +594,11 @@
 	.publicodes-row--head {
 		grid-template-columns: minmax(0, 1fr) auto;
 	}
-	.publicodes-row--head .publicodes-value {
-		font-size: var(--publicodes-size-answer);
-	}
-	/* the sheet keeps its bleed: it is the same paper as the row that opened */
-	.publicodes-fiche__panel {
-		position: fixed;
-		left: 12px;
-		right: 12px;
-		width: auto;
-		bottom: 12px;
+	/* no margin to hang in: the control takes a line of its own */
+	.publicodes-fold {
+		position: static;
+		transform: none;
+		grid-column: 1 / -1;
+		justify-self: end;
 	}
 }

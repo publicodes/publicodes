@@ -34,12 +34,10 @@ fois, dont un factuellement.
 
 ## Couture secondaire — `autodoc-react`, tests de composants
 
-Ce qu'une fonction pure ne peut pas exprimer : qu'une fiche s'ouvre au clavier, que le focus y
-entre et en revient, qu'elle est nommée pour la règle qu'elle décrit et reliée à son
-déclencheur ; que les noms de classe documentés — qui sont le contrat de surcharge — sont
-présents. Affirmer ces noms-là, c'est affirmer l'API, pas un détail d'implémentation.
-
-Antécédent : le test de `ChainedValue`, qui affirme déjà ses propres noms de classe.
+Ce qu'une fonction pure ne peut pas exprimer : qu'une ligne se déplie au clavier et
+porte `aria-expanded` ; que les noms de classe documentés — qui sont le contrat de
+surcharge — sont présents. Affirmer ces noms-là, c'est affirmer l'API, pas un détail
+d'implémentation.
 
 ## Vérification visuelle — le playground
 

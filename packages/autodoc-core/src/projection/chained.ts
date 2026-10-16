@@ -1,7 +1,6 @@
 import type * as Ast from '../ast'
 import type { TraceValue } from '../trace'
-import { getContextMechanism } from '../node-accessors'
-import type { Ctx, ModifierView, ValueView } from './types'
+import type { Ctx, OperandView, ValueView } from './types'
 import { projectOperand } from './operand'
 import { lookupValue, unitOf } from './value'
 
@@ -26,8 +25,8 @@ export function projectModifiers(
 	node: Ast.ChainedValue,
 	ctx: Ctx,
 	result: ValueView,
-): ModifierView[] {
-	const modifiers: ModifierView[] = []
+): OperandView[] {
+	const modifiers: OperandView[] = []
 	for (const mechanism of node.chained_mechanisms) {
 		switch (mechanism.kind) {
 			case 'default':
@@ -48,12 +47,7 @@ export function projectModifiers(
 					KEYWORDS[mechanism.kind],
 				)
 				const applied = decided(mechanism.kind, argument.value, result)
-				modifiers.push({
-					keyword: KEYWORDS[mechanism.kind],
-					applied,
-					inert: !applied,
-					condition: { ...argument, applied, inert: !applied },
-				})
+				modifiers.push({ ...argument, inert: !applied })
 				break
 			}
 			case 'context':
@@ -96,8 +90,19 @@ function decided(kind: ModifierKind, argument: ValueView, result: ValueView): bo
  * engine evaluated those nodes under, so their own traced values are still read
  * at the caller's stack.
  */
+/**
+ * The `contexte` mechanism of a node, when it has one.
+ */
+function contextMechanism(
+	node: Ast.ChainedValue,
+): Ast.ContextMechanism | undefined {
+	return node.chained_mechanisms.find(
+		(mechanism) => mechanism.kind === 'context',
+	)
+}
+
 export function contextInside(node: Ast.ChainedValue, ctx: Ctx): Ctx {
-	const context = getContextMechanism(node)
+	const context = contextMechanism(node)
 	if (context === undefined) return ctx
 	const bound: Record<string, TraceValue> = { ...ctx.context }
 	for (const [address, value] of Object.entries(context.parameters)) {

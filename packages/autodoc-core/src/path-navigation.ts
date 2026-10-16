@@ -17,15 +17,6 @@ export function encodeRuleName(dottedName: string): string {
 		.replace(/\s/g, '-')
 }
 
-/**
- * The inverse of {@link encodeRuleName}.
- */
-export function decodeRuleName(encoded: string): string {
-	return encoded
-		.replace(/\//g, ' . ')
-		.replace(/-/g, ' ')
-		.replace(/\u2011/g, '-')
-}
 
 export interface PathNavigationRoute {
 	rule: string

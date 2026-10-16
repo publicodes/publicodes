@@ -1,25 +1,18 @@
-import type { PublicodeAST } from '@publicodes/autodoc-core/ast'
-import { displayName } from '@publicodes/autodoc-core'
+import type { RuleView } from '@publicodes/autodoc-core'
 import type { ReactElement } from 'react'
 import { RuleLink } from './RuleLink'
 
-export function RuleNavigation({
-	ast,
-	current,
-}: {
-	ast: PublicodeAST
-	current: string
-}): ReactElement {
-	const parent = current.split(' . ').slice(0, -1).join(' . ')
-	const siblings = Object.keys(ast).filter(
-		(name) => name.split(' . ').slice(0, -1).join(' . ') === parent,
-	)
+/** Where the reader stands among the rules written beside this one. */
+export function RuleNavigation({ view }: { view: RuleView }): ReactElement {
 	return (
 		<nav className="publicodes-rule-navigation">
 			<ul>
-				{siblings.map((name) => (
-					<li key={name} aria-current={name === current ? 'page' : undefined}>
-						<RuleLink address={name}>{displayName(ast, name)}</RuleLink>
+				{view.siblings.map((sibling) => (
+					<li
+						key={sibling.address}
+						aria-current={sibling.address === view.address ? 'page' : undefined}
+					>
+						<RuleLink address={sibling.address}>{sibling.name}</RuleLink>
 					</li>
 				))}
 			</ul>

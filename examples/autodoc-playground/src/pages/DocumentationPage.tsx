@@ -1,5 +1,5 @@
 import type { PublicodeAST } from '@publicodes/autodoc-core/ast'
-import type { Trace, TraceValue } from '@publicodes/autodoc-core'
+import type { Evaluation, TraceValue } from '@publicodes/autodoc-core'
 import { createPathNavigation, displayName } from '@publicodes/autodoc-core'
 import {
 	AutodocButtonNavigationContext,
@@ -14,10 +14,7 @@ export interface DocumentationPageProps {
 	parameters: Record<string, unknown>
 	start: string
 	context: Record<string, TraceValue>
-	trace: Trace
-	usedParameters: readonly string[]
-	missing: readonly string[]
-	evaluatedRule: string
+	evaluation: Evaluation
 }
 
 /**
@@ -31,10 +28,7 @@ export function DocumentationPage({
 	parameters,
 	start,
 	context,
-	trace,
-	usedParameters,
-	missing,
-	evaluatedRule,
+	evaluation,
 }: DocumentationPageProps) {
 	const [current, setCurrent] = useState(start)
 	const [contextStackId, setContextStackId] = useState('')
@@ -87,12 +81,9 @@ export function DocumentationPage({
 				<RulePage
 					ast={ast}
 					rule={current}
-					trace={trace}
+					evaluation={evaluation}
 					context={context}
 					contextStackId={contextStackId}
-					usedParameters={usedParameters}
-					missing={missing}
-					evaluatedRule={evaluatedRule}
 				/>
 			</div>
 		</AutodocButtonNavigationContext.Provider>

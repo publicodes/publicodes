@@ -154,6 +154,66 @@ pour 412 000 kgCO2e ». Déplié, le reste apparaît dans le même ordre et avec
 opérateurs. Quatre est ce qu'un lecteur tient en tête d'un coup ; la somme repliée garde
 l'équation exacte sans la rendre longue.
 
+### Où commence un trait de séparation
+
+Un trait commence au bord de la colonne des noms de la ligne à laquelle il
+appartient, jamais avant : la colonne qui porte `−`, `arrondi`, `si` ou `alors`
+reste libre, à toute profondeur. Les traits de deux niveaux ne sont donc pas
+alignés entre eux — chacun l'est avec le texte de sa propre ligne.
+
+Ce qui décide n'est ni le papier ni l'indentation, mais le nom de la ligne : une
+ligne ouverte, une ligne de la liste racine et une ligne écrite sur une fiche
+obéissent à la même règle, et une règle qui déplie une fiche ne déplace pas son
+propre trait.
+
+Le papier n'a pas de bord supérieur : le trait de la ligne ouverte le fait, et il
+couvre toute la largeur du papier — c'est pourquoi la première ligne d'une fiche
+n'a pas de trait à elle. Son bord inférieur, lui, est à lui et couvre la même
+largeur, si bien qu'une fiche est un cadre fermé dont les traits intérieurs
+restent en retrait.
+
+### Copier le calcul en texte brut
+
+Copier un calcul garde sa forme : une tabulation par niveau d'indentation, une
+tabulation entre le nom et sa valeur, et un retour à la ligne par ligne. Ces
+tabulations vivent dans le DOM comme nœuds de texte — une grille ignore les nœuds
+faits d'espaces — donc l'écran ne change pas et rien n'est reconstruit au moment
+de la copie.
+
+### Une valeur que le modèle ne calcule pas ici
+
+Un chiffre qui n'est pas calculé là où il s'affiche doit se voir sans qu'on ouvre
+quoi que ce soit : le lecteur qui cherche l'origine d'un nombre n'a pas à cliquer
+pour découvrir qu'il n'y en a pas.
+
+Le fait est porté par le chiffre lui-même, et par lui seul : un paramètre s'écrit
+avec un souligné pointillé, et l'infobulle du chiffre dit ce que cela veut dire —
+« Paramètre du modèle : cette valeur n'est pas calculée ici. » C'est la même
+phrase, mot pour mot, que la fiche affiche quand la règle n'a pas de calcul à
+montrer : un fait, une formulation, deux moments. Les deux autres états en changent
+la seconde moitié : « valeur par défaut, que vous pouvez remplacer », et « aucune
+valeur n'a été fournie ». Le mot `par défaut` devant le chiffre reste : lui qualifie
+la valeur, pas la nature de la règle. Rien ne marque la ligne à côté de son nom.
+
+| État | Le chiffre | À côté du chiffre |
+|---|---|---|
+| *fournie* | encre, souligné pointillé | — |
+| *par défaut* | gris, souligné pointillé | le mot `par défaut` |
+| *non renseignée* | — | `non défini`, en rouge |
+
+Le **poids** du chiffre ne dit rien de tout cela : il suit celui du nom de la
+ligne. Une ligne est en gras exactement quand son explication est ouverte, et son
+chiffre avec elle ; fermée, la ligne s'écrit en poids normal. Le gris et le
+pointillé disent le reste.
+
+Le souligné pointillé marque le paramètre, pas son état : il est tracé à l'encre,
+pour rester lisible sous un chiffre gris. Le mot qui précède le chiffre est un mot
+et non une valeur : il ne prend jamais les marques du chiffre.
+
+Une règle déclarée paramètre de l'API mais qui **calcule** sa valeur ne porte ni
+pointillé ni infobulle : c'est le fait — « cette valeur vient du contexte » — que
+l'on montre, pas la catégorie.
+
 ### Ce que portent le nom et l'en-tête
 
 - **`unit`** accompagne la valeur, toujours.
@@ -172,6 +232,13 @@ valeur
   par défaut 100 km — pris effet, rien n'a été saisi
   plancher 0 km
 ```
+
+**Un mécanisme sans opérateur se nomme.** Une somme s'écrit avec ses `+`, un produit avec ses
+`×` ; `variations`, `toutes ces conditions`, `une de ces conditions`, `le plus petit de` et `le
+plus grand de` n'ont pas d'opérateur à eux, et une ligne repliée porte donc leur nom. Sans
+lui, le lecteur n'a qu'un chiffre sans l'opération qui l'a produit. Ce nom s'écrit comme tous
+les mots du langage : étiquette, petites capitales, en gris — que l'opérateur de la ligne
+occupe la gouttière ou qu'il n'y en ait pas.
 
 **Une condition s'écrit avec les mots du langage**, `si`, `alors`, `sinon`, et la branche prise
 est marquée ; les autres sont cachées par défaut avec leur nombre, et révélées par
@@ -257,31 +324,47 @@ expression
 
 Trois. Chacune est décrite par ce qu'elle montre, ce qu'elle cache, et ce qu'elle change.
 
-### I1 — Suivre une référence
+### I1 — Aller à une règle
 
-- **Déclencheur** : le nom d'une règle référencée, qui est un lien.
-- **Montre** : la page entière de la règle référencée.
+- **Déclencheur** : un nom dans l'index de la page, dans la liste des règles qui consomment
+  celle-ci, ou le petit contrôle qui suit le nom d'une règle dont la fiche est ouverte, quand
+  cette règle a une page. Une ligne fermée, elle, ne navigue jamais : son nom déplie (I2).
+- **Montre** : la page entière de la règle visée.
 - **Cache** : la page courante. La place du lecteur est préservée par l'hôte (historique, ou
   pile de navigation) — c'est son affaire, pas celle de la bibliothèque.
-- **Change** : l'URL. C'est la navigation de chemin, disponible seulement pour les règles de
-  l'API déclarée ; ailleurs le nom n'est pas un lien.
+- **Change** : l'URL quand l'hôte en donne une, sinon l'état de sa navigation. Le lien est
+  bleu ; rien d'autre sur la page ne l'est.
 
 ### I2 — Déplier une référence
 
-- **Déclencheur** : le nom d'une règle référencée.
-- **Montre** : le calcul de cette règle dans ce contexte, sous la ligne, dans la même mise en
-  page qu'un cran plus loin. Le pli est la fiche : il n'ouvre aucun panneau et ne remplace rien.
+- **Déclencheur** : la ligne entière. Le nom, la valeur, la colonne de l'opérateur et la marge
+  répondent au même clic. Le nom reste un bouton, pour que le clavier ait son contrôle, mais il
+  s'écrit comme du texte : ni lien, ni souligné, rien qui le désigne.
+- **L'affordance est le survol, et le survol seulement** : sous le pointeur, la ligne se voile
+  d'encre — 4,5 %, l'encre elle-même plutôt qu'un gris de plus — et seulement si elle ouvre
+  quelque chose. Au repos, aucune marque ne décore la ligne. Un lecteur au doigt n'a donc aucun
+  indice tant que la fiche est fermée ; c'est le prix de la ligne nue, et le contrôle de repli
+  prend le relais dès qu'une fiche est ouverte.
 - **Un seul contrôle par référence**, quoi qu'il y ait derrière : en avoir deux selon ce que la
   règle porte rendrait leur présence arbitraire aux yeux du lecteur.
+- **Montre** : le calcul de cette règle dans ce contexte, sous la ligne, dans la même mise en
+  page qu'un cran plus loin. Le pli est la fiche : il n'ouvre aucun panneau et ne remplace rien.
 - **Ne déplace rien.** Une ligne dépliée garde sa grille, son retrait et sa marge : seuls son
-  fond et le poids de son nom changent. Le lecteur suit sa ligne des yeux sans la rattraper.
+  fond et le poids de son nom changent. Le lecteur suit sa ligne des yeux sans la rattraper, et
+  il ne la perd pas non plus : la ligne est le même nœud avant et après le pli, donc le focus
+  reste où il était.
 - **Le papier** mesure le bloc : il part de la colonne de l'opérateur — le `−`, le `+`, le `×`,
   ou le mot du mécanisme, `si`, `alors`, `sinon`, `arrondi` — et va jusqu'au bord droit de la
   ligne, sur la ligne et sur le calcul qu'elle ouvre. À gauche du papier, la couleur du parent.
-- **L'explication** a la mise en page du calcul racine : même gouttière, un cran de plus. Une
-  fiche ouverte dans une fiche part donc d'un cran de plus encore, et la profondeur se lit au
-  bord gauche du papier.
+- **L'explication** a la mise en page du calcul racine, posée dans la feuille qu'elle ouvre :
+  à partir du bord de cette feuille — là où s'arrête le trait de la ligne du dessus — et d'un
+  retrait de feuille encore, pour que le contenu d'une fiche ne chevauche jamais son propre
+  cadre. Une fiche ouverte dans une fiche part donc d'un cran de plus encore, et la profondeur
+  se lit au bord gauche du papier.
 - **Le papier alterne** avec la profondeur, pour qu'un pli dans un pli se voie.
+- **Le même geste pour un mécanisme** : le terme écrit d'une expression, ou la valeur d'une
+  ligne dont le terme est la valeur, déplie ses opérandes comme un nom déplie sa règle. Un
+  contrôle, une apparence, quel que soit ce qu'il y a derrière.
 - **Change** : la profondeur du calcul affiché. Repliable par le même contrôle. La profondeur
   n'est pas bornée ; chaque niveau déplié est une équation complète et le lecteur décide seul
   jusqu'où descendre.
@@ -289,9 +372,18 @@ Trois. Chacune est décrite par ce qu'elle montre, ce qu'elle cache, et ce qu'el
 
 ### I3 — Rétablir la coupe
 
-- **Déclencheur** : un contrôle sur une équation conditionnelle (`variations`, `applicable si`).
-- **Montre** : les branches qui n'ont pas été prises, avec leur valeur ou leur absence.
-- **Cache** : rien. Par défaut ces branches sont cachées et leur nombre est indiqué ; c'est le
+- **Déclencheur** : le contrôle de repli, sur la ligne dont l'équation cache des termes — la
+  ligne du résultat pour le calcul de la règle, celle de la référence ou du mécanisme quand
+  c'est sa fiche qui cache.
+- **Forme** : un double chevron, vers le bas pour révéler, vers le haut pour replier, et une
+  pastille qui donne le nombre de termes cachés. Le libellé — « Afficher 2 termes sans effet »
+  — vit dans l'infobulle et dans le nom accessible, jamais sur la ligne.
+- **Place** : à l'extrémité droite de sa ligne, au-delà du bord de celle-ci, dans la marge
+  vide : le calcul ne lui cède aucune place, et aucune ligne de plus ne sépare rien. Sur un
+  écran étroit, il prend une ligne à lui, aligné à droite.
+- **Montre** : les termes qui n'ont pas joué — les branches non prises, les modificateurs sans
+  effet — à leur place et dans l'ordre du modèle.
+- **Cache** : rien. Par défaut ces termes sont cachés et leur nombre est indiqué ; c'est le
   lecteur qui décide de vérifier que la règle ne fait rien d'autre.
 - **Change** : la longueur de l'équation, pas sa valeur.
 

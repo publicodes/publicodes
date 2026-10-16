@@ -1,12 +1,11 @@
-import { describe, expect, it } from 'vitest'
-import { act, fireEvent, render } from '@testing-library/react'
-import { afterEach, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import { fireEvent, render } from '@testing-library/react'
+import { readFileSync } from 'node:fs'
 import type { PublicodeAST } from '@publicodes/autodoc-core/ast'
 import type { Trace, TraceValue } from '@publicodes/autodoc-core'
-import { projectRule } from '@publicodes/autodoc-core'
 import { AutodocButtonNavigationContext } from '../components/AutodocNavigationContext'
-import { Fiche } from './Fiche'
 import { RulePage } from './RulePage'
+import { Value } from './Value'
 
 const position = {
 	file: 'test.publicodes',
@@ -126,7 +125,58 @@ const trace = {
 } as unknown as Trace
 
 const renderPage = () =>
-	render(<RulePage ast={ast} rule="total" trace={trace} context={context} />)
+	render(<RulePage ast={ast} rule="total" evaluation={{ trace }} context={context} />)
+
+describe('the page of an opened rule', () => {
+	// `part` is a parameter the API exposes, so it has a page of its own
+	const publicAst = {
+		...ast,
+		part: { ...ast.part, public: true },
+	} as unknown as PublicodeAST
+	const openFirstRow = (document_ = publicAst, onNavigate = () => {}) => {
+		const rendered = render(
+			<AutodocButtonNavigationContext.Provider
+				value={{ rule: 'total', contextStackId: '', onNavigate }}
+			>
+				<RulePage
+					ast={document_}
+					rule="total"
+					evaluation={{ trace }}
+					context={context}
+				/>
+			</AutodocButtonNavigationContext.Provider>,
+		)
+		fireEvent.click(rendered.container.querySelector('button.publicodes-row__control')!)
+		return rendered
+	}
+
+	it('offers the way there beside the name, once the row is open', () => {
+		const { container } = openFirstRow()
+		const link = container.querySelector('.publicodes-page-link')
+		expect(link).not.toBeNull()
+		expect(link?.textContent).toBe('Ouvrir la page de Part')
+	})
+
+	it('goes where the host says, with the rule and the context stack', () => {
+		const onNavigate = vi.fn()
+		const { container } = openFirstRow(publicAst, onNavigate)
+		fireEvent.click(container.querySelector('.publicodes-page-link')!)
+		expect(onNavigate).toHaveBeenCalledWith('part', '')
+	})
+
+	it('stays bare without a navigation to offer', () => {
+		const rendered = render(
+			<RulePage ast={publicAst} rule="total" evaluation={{ trace }} context={context} />,
+		)
+		fireEvent.click(rendered.container.querySelector('button.publicodes-row__control')!)
+		expect(rendered.container.querySelector('.publicodes-page-link')).toBeNull()
+	})
+
+	it('stays bare when the rule has no page of its own', () => {
+		const { container } = openFirstRow(ast)
+		expect(container.querySelector('.publicodes-page-link')).toBeNull()
+	})
+})
 
 describe('the documented class names are the override contract', () => {
 	it('renders one block per documented class name', () => {
@@ -151,17 +201,28 @@ describe('the documented class names are the override contract', () => {
 })
 
 describe('terms that had no effect', () => {
-	it('folds them away and says how many', () => {
+	it('holds them back behind a control that counts them', () => {
 		const { container } = renderPage()
-		const fold = container.querySelector('.publicodes-fold button')
-		expect(fold?.textContent).toBe('Afficher 1 terme sans effet')
+		const fold = container.querySelector('.publicodes-fold')
+		expect(fold?.getAttribute('aria-label')).toBe('Afficher 1 terme sans effet')
+		expect(fold?.querySelector('.publicodes-fold__count')?.textContent).toBe('1')
 		expect(container.querySelector('.publicodes-row--inert')).toBeNull()
 		expect(container.querySelectorAll('.publicodes-row').length).toBe(3)
 	})
 
 	it('shows them again when asked', () => {
 		const { container } = renderPage()
-		fireEvent.click(container.querySelector('.publicodes-fold button')!)
+		fireEvent.click(container.querySelector('.publicodes-fold')!)
+		expect(container.querySelectorAll('.publicodes-row--inert').length).toBe(1)
+		expect(container.querySelector('.publicodes-fold__count')).toBeNull()
+	})
+
+	it('keeps the row it sits on open: the two gestures are not the same', () => {
+		const { container } = renderPage()
+		fireEvent.click(container.querySelector('button.publicodes-row__control')!)
+		fireEvent.click(container.querySelector('.publicodes-fold')!)
+		// the fiche is still unfolded, and the terms came out
+		expect(container.querySelector('.publicodes-block')).not.toBeNull()
 		expect(container.querySelectorAll('.publicodes-row--inert').length).toBe(1)
 	})
 })
@@ -169,39 +230,79 @@ describe('terms that had no effect', () => {
 describe('unfolding a reference', () => {
 	const openFirstSheet = () => {
 		const rendered = renderPage()
-		fireEvent.click(rendered.container.querySelector('button.publicodes-link')!)
+		fireEvent.click(rendered.container.querySelector('button.publicodes-row__control')!)
 		return rendered
 	}
 
-	it('is a button that reads as a link', () => {
+	it('is a button that reads as the row’s disclosure', () => {
 		const { container } = renderPage()
-		const link = container.querySelector('button.publicodes-link')
+		const link = container.querySelector('button.publicodes-row__control')
 		expect(link).not.toBeNull()
 		expect(link?.getAttribute('aria-expanded')).toBe('false')
 	})
 
-	it('unfolds as one block: the row and its detail, with the actions at the foot', () => {
+	it('makes the line its target, and nests no control in it', () => {
+		const { container } = renderPage()
+		const row = container.querySelector('div.publicodes-row--unfoldable')
+		expect(row).not.toBeNull()
+		// the name is the row's control; the fold chip is a sibling of that button,
+		// never a button inside it
+		const others = Array.from(row!.querySelectorAll('button')).filter(
+			(button) =>
+				!button.classList.contains('publicodes-row__control') &&
+				!button.classList.contains('publicodes-fold'),
+		)
+		expect(others).toEqual([])
+	})
+
+	it('stretches the name’s target over the whole line', () => {
+		// the row is the button through this rule, so the rule is the contract
+		const css = readFileSync('src/blocks/blocks.css', 'utf8')
+		const rule = css.slice(css.indexOf('.publicodes-row__control::after'))
+		expect(rule.slice(0, rule.indexOf('}'))).toContain('inset: 0')
+	})
+
+	it('gives the pointer and the keyboard the same rows', () => {
+		const { container } = renderPage()
+		const controls = Array.from(
+			container.querySelectorAll('button.publicodes-row__control'),
+		)
+		expect(controls.length).toBeGreaterThan(0)
+		for (const control of controls) {
+			expect(control.closest('.publicodes-row--unfoldable')).not.toBeNull()
+		}
+		// and some rows open nothing, so they stay plain text
+		const rows = Array.from(container.querySelectorAll('.publicodes-row'))
+		expect(
+			rows.some(
+				(row) => !row.classList.contains('publicodes-row--unfoldable'),
+			),
+		).toBe(true)
+	})
+
+	it('unfolds as one block: the row and its detail', () => {
 		const { container } = openFirstSheet()
-		const block = container.querySelector('.publicodes-block')
+		const block = container.querySelector(
+			'.publicodes-block:not(.publicodes-block--closed)',
+		)
 		expect(block).not.toBeNull()
 		// the block covers the line that opened and the detail it opened
 		expect(block?.querySelector('.publicodes-row')).not.toBeNull()
 		expect(block?.querySelector('.publicodes-detail')).not.toBeNull()
-		expect(block?.querySelector('.publicodes-detail__close')).not.toBeNull()
 	})
 
-	it('carries a link to the rule when the host offers navigation', () => {
+	it('leaves going elsewhere to the host: a row only unfolds', () => {
 		const rendered = render(
 			<AutodocButtonNavigationContext.Provider
 				value={{ rule: 'total', contextStackId: '', onNavigate: () => {} }}
 			>
-				<RulePage ast={ast} rule="total" trace={trace} context={context} />
+				<RulePage ast={ast} rule="total" evaluation={{ trace }} context={context} />
 			</AutodocButtonNavigationContext.Provider>,
 		)
-		fireEvent.click(rendered.container.querySelector('button.publicodes-link')!)
-		expect(
-			rendered.container.querySelector('.publicodes-detail__tools .publicodes-link'),
-		).not.toBeNull()
+		fireEvent.click(rendered.container.querySelector('button.publicodes-row__control')!)
+		const detail = rendered.container.querySelector('.publicodes-detail')
+		expect(detail).not.toBeNull()
+		expect(detail?.querySelector('a')).toBeNull()
 	})
 
 	it('alternates the paper the block is written on', () => {
@@ -209,61 +310,136 @@ describe('unfolding a reference', () => {
 		expect(container.querySelector('.publicodes-block')?.getAttribute('data-paper')).toBe('white')
 	})
 
-	it('closes again', () => {
+	it('closes again from the line that opened it', () => {
 		const { container } = openFirstSheet()
-		fireEvent.click(container.querySelector('.publicodes-detail__close')!)
+		fireEvent.click(container.querySelector('button.publicodes-row__control')!)
 		expect(container.querySelector('.publicodes-detail')).toBeNull()
 	})
 })
 
-describe('the fiche (kept exported, not wired into the page for now)', () => {
-	afterEach(() => {
-		vi.useRealTimers()
+describe('a value the model does not compute here', () => {
+	const figure = { state: 'value', value: 5000, text: '5 000 €/an' } as const
+	const figureOf = (container: HTMLElement) =>
+		container.querySelector('.publicodes-value__figure')?.textContent
+
+	it('carries the state, so the figure’s dotted line follows the parameter', () => {
+		const { container } = render(<Value value={figure} parameter="fournie" />)
+		const value = container.querySelector('.publicodes-value')
+		expect(value?.getAttribute('data-parameter')).toBe('fournie')
+		expect(container.querySelector('.publicodes-value__label')).toBeNull()
+		expect(figureOf(container)).toBe('5 000 €/an')
 	})
 
-	const hovered = (): HTMLElement => {
-		vi.useFakeTimers()
-		const view = projectRule(ast, 'part', { trace, context })
-		const { container } = render(
-			<Fiche view={view}>
-				<span>Part</span>
-			</Fiche>,
-		)
-		expect(container.querySelector('[role="tooltip"]')).toBeNull()
-		fireEvent.mouseEnter(container.querySelector('.publicodes-fiche')!)
-		act(() => {
-			vi.advanceTimersByTime(500)
-		})
-		const tooltip = container.querySelector('[role="tooltip"]')
-		if (!tooltip) throw new Error('the fiche did not open')
-		return tooltip as HTMLElement
-	}
-
-	it('opens half a second after the pointer rests, not before', () => {
-		expect(hovered()).not.toBeNull()
+	it('explains itself on the figure, in one line and with the word paramètre', () => {
+		const { container } = render(<Value value={figure} parameter="fournie" />)
+		const tooltip = container
+			.querySelector('.publicodes-value__figure')
+			?.getAttribute('title')
+		expect(tooltip).toContain('Paramètre du modèle')
+		expect(tooltip).toContain('n’est pas calculée ici')
+		expect(tooltip?.split(' ').length).toBeLessThan(12)
 	})
 
-	it('carries what the model says, the value, and the address', () => {
-		const tooltip = hovered()
-		expect(tooltip.querySelector('.publicodes-fiche__doc')).not.toBeNull()
-		expect(tooltip.querySelector('.publicodes-fiche__value')).not.toBeNull()
-		expect(tooltip.querySelector('.publicodes-fiche__address')?.textContent).toBe(
-			'part',
+	it('says a default can be replaced, and a missing value was never given', () => {
+		const { container } = render(<Value value={figure} parameter="par défaut" />)
+		expect(
+			container.querySelector('.publicodes-value__figure')?.getAttribute('title'),
+		).toBe('Paramètre du modèle : valeur par défaut, que vous pouvez remplacer.')
+		const missing = render(<Value value={figure} parameter="non renseignée" />)
+		expect(
+			missing.container
+				.querySelector('.publicodes-value__figure')
+				?.getAttribute('title'),
+		).toBe('Paramètre du modèle : aucune valeur n’a été fournie.')
+	})
+
+	it('names the default in front of the figure, outside the figure element', () => {
+		const { container } = render(<Value value={figure} parameter="par défaut" />)
+		const label = container.querySelector('.publicodes-value__label')
+		expect(label?.textContent).toBe('par défaut')
+		expect(container.querySelector('.publicodes-value__figure')?.contains(label!)).toBe(
+			false,
 		)
 	})
 })
 
-describe('the context of the computation', () => {
-	it('shows a supplied value plainly and a defaulted one with a quiet qualifier', () => {
-		const { container } = renderPage()
-		const rows = Array.from(
-			container.querySelectorAll('.publicodes-rule-parameters tbody tr'),
+describe('a mechanism no row can write out', () => {
+	const variations = {
+		value_mechanism: {
+			kind: 'variations', id: 'v', type: 'number', unit: '€', position,
+			parameters: {
+				conditions: [
+					{
+						if: expr('e-if', constant('c-if', 1)),
+						then: expr('e-then', constant('c-then', 6)),
+					},
+				],
+				else: expr('e-else', constant('c-else', 6)),
+			},
+		},
+		chained_mechanisms: [],
+	}
+	const inlineAst = {
+		total: {
+			title: 'Total', type: 'number', unit: '€', id: 's', position,
+			referenced_by: [], parameters: [],
+			value_mechanism: {
+				kind: 'sum', id: 's', type: 'number', unit: '€', position,
+				parameters: [expr('e-4', constant('c-4', 4)), variations],
+			},
+			chained_mechanisms: [],
+		},
+	} as unknown as PublicodeAST
+
+	const inlineTrace = Object.fromEntries(
+		['s', 'e-4', 'c-4', 'v', 'e-if', 'c-if', 'e-then', 'c-then', 'e-else', 'c-else'].map(
+			(id) => [id, { '': id === 's' ? 10 : 6 }],
+		),
+	) as unknown as Trace
+
+	it('names it in the row, since no operator stands for it', () => {
+		const { container } = render(
+			<RulePage ast={inlineAst} rule="total" evaluation={{ trace: inlineTrace }} />,
 		)
-		const part = rows.find((row) => row.textContent?.includes('Part'))
-		const forfait = rows.find((row) => row.textContent?.includes('Forfait'))
-		expect(part?.textContent).toContain('10 €')
-		expect(part?.querySelector('.publicodes-qualifier')).toBeNull()
-		expect(forfait?.textContent).toContain('5 €')
-		expect(forfait?.querySelector('.publicodes-qualifier')?.textContent).toBe(' (par défaut)')
+		const label = container.querySelector('.publicodes-row__mechanism')
+		expect(label?.textContent).toBe('variations')
+	})
+})
+
+describe('a fiche that would open onto nothing else', () => {
+	// `part` computes one term that had no effect: opened and folded, its paper
+	// would be empty, so its terms are shown instead
+	const inertAst = {
+		total: {
+			title: 'Total', type: 'number', unit: '€', id: 's', position,
+			referenced_by: [], parameters: [],
+			value_mechanism: {
+				kind: 'sum', id: 's', type: 'number', unit: '€', position,
+				parameters: [expr('e-1', ref('r-1', 'part'))],
+			},
+			chained_mechanisms: [],
+		},
+		part: {
+			title: 'Part', type: 'number', unit: '€', id: 'n', position,
+			referenced_by: ['total'], parameters: [],
+			value_mechanism: {
+				kind: 'sum', id: 'n', type: 'number', unit: '€', position,
+				parameters: [expr('e-0', constant('c-0', 0))],
+			},
+			chained_mechanisms: [],
+		},
+	} as unknown as PublicodeAST
+	const inertTrace = Object.fromEntries(
+		['s', 'e-1', 'r-1', 'n', 'e-0', 'c-0'].map((id) => [id, { '': 0 }]),
+	) as unknown as Trace
+
+	it('shows the terms that had no effect, rather than an empty paper', () => {
+		const { container } = render(
+			<RulePage ast={inertAst} rule="total" evaluation={{ trace: inertTrace }} />,
+		)
+		fireEvent.click(container.querySelector('button.publicodes-row__control')!)
+		const block = container.querySelector('.publicodes-block')
+		expect(block).not.toBeNull()
+		expect(block?.querySelector('.publicodes-row--inert')).not.toBeNull()
 	})
 })

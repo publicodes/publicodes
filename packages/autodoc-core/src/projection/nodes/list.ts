@@ -1,5 +1,5 @@
 import type * as Ast from '../../ast'
-import type { Ctx, EquationView, OperandView, ValueView } from '../types'
+import type { Ctx, MechanismView, OperandView, ValueView } from '../types'
 import { contextInside, projectModifiers } from '../chained'
 import { projectOperand } from '../operand'
 import { lookupValue, textOf, unitOf } from '../value'
@@ -34,15 +34,13 @@ export function projectList(
 	ctx: Ctx,
 	keyword: string,
 	operator: string,
-): EquationView {
+): MechanismView {
 	const result = lookupValue(ctx, mechanism.id, mechanism.type, unitOf(mechanism))
 	const inner = contextInside(node, ctx)
-	let inertCount = 0
 
 	const operands: OperandView[] = mechanism.parameters.map((operand, index) => {
 		const view = projectOperand(operand, inner, index === 0 ? null : operator, null)
 		const inert = hadNoEffect(keyword, view.value)
-		if (inert) inertCount += 1
 		return { ...view, inert }
 	})
 
@@ -51,7 +49,10 @@ export function projectList(
 			null
 		:	operands
 				.map((operand, index) => {
-					const text = operand.term ?? textOf(operand.value) ?? ''
+					// a mechanism's own word is not a written form: the value stands for it
+					const written =
+						operand.termIsMechanism ? null : operand.term
+					const text = written ?? textOf(operand.value) ?? ''
 					return index === 0 ? text : `${operator} ${text}`
 				})
 				.join(' ')
@@ -62,6 +63,5 @@ export function projectList(
 		operands,
 		modifiers: projectModifiers(node, ctx, result),
 		result,
-		inertCount,
 	}
 }
