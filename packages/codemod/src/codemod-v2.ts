@@ -4,7 +4,7 @@
 import fs from 'fs/promises'
 import { extname, join } from 'node:path'
 import process from 'node:process'
-import yaml, { Scalar, YAMLMap, YAMLOMap, isMap } from 'yaml'
+import yaml, { Scalar, YAMLMap, YAMLOMap, isMap, isScalar, isSeq } from 'yaml'
 
 // Authorized keys that should not be moved to the `meta` object
 const authorizedKeys = [
@@ -109,13 +109,18 @@ for (const yamlFile of yamlFiles) {
 	console.log('Processing file', yamlFile)
 	const yamlInput = await fs.readFile(yamlFile, 'utf8')
 	// Load YAML input
-	const doc = yaml.parseDocument(yamlInput, { keepSourceTokens: true })
+	const doc = yaml.parseDocument(yamlInput, {
+		keepSourceTokens: true,
+	})
 	// Apply modifications
-	removeDoubleQuotes(doc)
 	renameFormuleToValeur(doc)
 	moveNonAuthorizedKeysToMeta(doc)
+	removeDoubleQuotes(doc)
+	processPossibilitesToEnum(doc)
 	// Convert modified data back to YAML
-	const yamlOutput = yaml.stringify(doc, { keepSourceTokens: true })
+	const yamlOutput = yaml.stringify(doc, {
+		keepSourceTokens: true,
+	})
 	// Write YAML output
 	await fs.writeFile(yamlFile, yamlOutput)
 }
@@ -127,6 +132,7 @@ console.log(
 if (failed) {
 	process.exit(1)
 }
+
 /**
  * Removes unnecessary double quotes from string values.
  * Transforms "'xxx'" to "xxx" and '"yyy"' to 'yyy'
@@ -250,4 +256,35 @@ function processRuleMap(map: YAMLOMap) {
 			}
 		})
 	}
+}
+
+/**
+ * Processes `une possibilité` fields and transforms them into enum `type`.
+ */
+function processPossibilitesToEnum(doc: yaml.Document) {
+	yaml.visit(doc, {
+		Map(_, map) {
+			if (isMap(map)) {
+				const unePossibiliteItem = map.items.find(
+					(item) => (item.key as Scalar).value === 'une possibilité',
+				)
+				if (unePossibiliteItem) {
+					// Create new key node
+					const typeKey = new Scalar('type')
+					// Add quotes to the possibilities
+					if (isSeq(unePossibiliteItem.value)) {
+						unePossibiliteItem.value.items.forEach((item) => {
+							if (isScalar(item)) {
+								item.type = 'QUOTE_SINGLE'
+							}
+						})
+					}
+					// Add the new key-value pair
+					map.add({ key: typeKey, value: unePossibiliteItem })
+					// Remove the old key-value pair
+					map.delete('une possibilité')
+				}
+			}
+		},
+	})
 }
