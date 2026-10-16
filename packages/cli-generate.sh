@@ -3,7 +3,7 @@
 # PLATFORMS aix darwin freebsd linux openbsd sunos win32
 # ARCHS arm arm64 ia32 loong64 mips mipsel ppc64 riscv64 s390 s390x x64
 targets() {
-	cat <<-EOF
+	sort -n <<-EOF
 		darwin x64
 		darwin arm64
 		linux x64

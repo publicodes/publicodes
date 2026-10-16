@@ -10,10 +10,10 @@
 	"fixed": [
 		[
 			"@publicodes/cli",
-			"@publicodes/cli-darwin-x64",
 			"@publicodes/cli-darwin-arm64",
-			"@publicodes/cli-linux-x64",
+			"@publicodes/cli-darwin-x64",
 			"@publicodes/cli-linux-arm64",
+			"@publicodes/cli-linux-x64",
 			"@publicodes/cli-win32-x64"
 		]
 	],
