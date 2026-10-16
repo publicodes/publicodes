@@ -8,11 +8,17 @@ export const ABSENT: ValueView = { state: 'absent', value: null, text: null }
 export const textOf = (value: ValueView): string | null =>
 	value.state === 'absent' ? null : value.text
 
-/** `unit` only exists on the number member of the type union. */
+/**
+ * The unit a node carries, when it has one to show. `aucune` is the language's word for a
+ * number that is not measured — not a unit to print.
+ */
 export const unitOf = (node: {
 	type: string
 	unit?: string
-}): string | undefined => (node.type === 'number' ? node.unit : undefined)
+}): string | undefined => {
+	if (node.type !== 'number') return undefined
+	return node.unit === undefined || node.unit === 'aucune' ? undefined : node.unit
+}
 
 const formatTypeOf = (type: string, unit?: string): FormatType => {
 	if (type === 'number') return { type: 'number', unit }

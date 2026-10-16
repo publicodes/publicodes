@@ -1,0 +1,99 @@
+{
+	"rule": "exemples . CA élevé",
+	"context": {
+		"chiffre d'affaires . nombre de jour": 5
+	},
+	"value": 1350,
+	"trace": {
+		"1b45ee9f467096c51546509455686a7e": {
+			"": 600
+		},
+		"3ada8abbcec88657ea41e30c4d452258": {
+			"-5b201ca29ccd469d5db7734829d2da40": "@@not_defined"
+		},
+		"07087200e9b4e366fb40ab82b18d3ad9": {
+			"-5b201ca29ccd469d5db7734829d2da40": false
+		},
+		"b2abd8d2ab5a0694664ddc6f374753c9": {
+			"-5b201ca29ccd469d5db7734829d2da40": false
+		},
+		"ad8d8914dd18a6be7470e14b7e5274e1": {
+			"-5b201ca29ccd469d5db7734829d2da40": false
+		},
+		"b7ef0fcdd647aa030568a7e1b126f8af": {
+			"-5b201ca29ccd469d5db7734829d2da40": 45
+		},
+		"7e1389c5a7a7e582116170564f6b99cd": {
+			"-5b201ca29ccd469d5db7734829d2da40": 45
+		},
+		"7298059aab2c18d47afd65f2e489378a": {
+			"-5b201ca29ccd469d5db7734829d2da40": 45
+		},
+		"7c24ef4af345c1947dc7b01980ed96b1": {
+			"-5b201ca29ccd469d5db7734829d2da40": 5
+		},
+		"bff08b0285952c9a782ea62f02379688": {
+			"-5b201ca29ccd469d5db7734829d2da40": 600
+		},
+		"21745ec96f8fc51c411b2d3add0d77c6": {
+			"-5b201ca29ccd469d5db7734829d2da40": 3000
+		},
+		"3902cf80e504dbf10a6f69d4750b682c": {
+			"-5b201ca29ccd469d5db7734829d2da40": 3000
+		},
+		"657454251ca2d5268e2f7463467c6465": {
+			"-5b201ca29ccd469d5db7734829d2da40": 1350
+		},
+		"2b3b179d25c10d84c461fc1be6afca09": {
+			"-5b201ca29ccd469d5db7734829d2da40": 1350
+		},
+		"f48b0738aa1ad4dead8453689d770275": {
+			"-5b201ca29ccd469d5db7734829d2da40": -1350
+		},
+		"80cfff3eef476cd61c306cda0f0a7efc": {
+			"-5b201ca29ccd469d5db7734829d2da40": false
+		},
+		"a33f28a0b2880bfd4b0ff905dd5f15c2": {
+			"-5b201ca29ccd469d5db7734829d2da40": 300
+		},
+		"3961a95a958c3b0d4a3877931762fb32": {
+			"-5b201ca29ccd469d5db7734829d2da40": "@@not_defined"
+		},
+		"40902d96fd48af55fbab7b4f05f62149": {
+			"-5b201ca29ccd469d5db7734829d2da40": 300
+		},
+		"59a6753fbb8b3dfb872e5115dc987028": {
+			"-5b201ca29ccd469d5db7734829d2da40": 100
+		},
+		"81c77746f89b5da71fa1ca690b872fd4": {
+			"-5b201ca29ccd469d5db7734829d2da40": 300
+		},
+		"d72fddff53afdd2746e25afa79be9331": {
+			"-5b201ca29ccd469d5db7734829d2da40": 10
+		},
+		"6f83bad8b3b6e413f7852fa9d21a9117": {
+			"-5b201ca29ccd469d5db7734829d2da40": 3000
+		},
+		"82b9ff67b1be0fd5843da84c888dc6d1": {
+			"-5b201ca29ccd469d5db7734829d2da40": 300
+		},
+		"cc5750b8626b05006d7c592d87ce2461": {
+			"-5b201ca29ccd469d5db7734829d2da40": 300
+		},
+		"cfc09a22fc2af63833f3a9615dcfe03e": {
+			"-5b201ca29ccd469d5db7734829d2da40": -300
+		},
+		"dd4be13730781eb98db9e08624c4a767": {
+			"-5b201ca29ccd469d5db7734829d2da40": 3000
+		},
+		"c52eb9f15e824f6538cdd0d3b34712a3": {
+			"-5b201ca29ccd469d5db7734829d2da40": 1350
+		},
+		"750fc5d050fd43ebce5f1327c6046bf5": {
+			"-5b201ca29ccd469d5db7734829d2da40": 1350
+		},
+		"5b201ca29ccd469d5db7734829d2da40": {
+			"": 1350
+		}
+	}
+}

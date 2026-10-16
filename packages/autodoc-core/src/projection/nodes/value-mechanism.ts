@@ -1,6 +1,6 @@
 import type * as Ast from '../../ast'
 import type { Ctx, MechanismView } from '../types'
-import { contextInside, projectModifiers } from '../chained'
+import { projectModifiers } from '../chained'
 import { lookupValue, unitOf } from '../value'
 
 /** `valeur` says what it holds: same mechanism, with its own modifiers. */
@@ -9,9 +9,14 @@ export function projectValueMechanism(
 	mechanism: Ast.Value,
 	ctx: Ctx,
 ): MechanismView | null {
-	const inner = ctx.projectNode(mechanism.parameters, contextInside(node, ctx))
+	const inner = ctx.projectNode(mechanism.parameters, ctx)
 	if (!inner) return null
-	const result = lookupValue(ctx, mechanism.id, mechanism.type, unitOf(mechanism))
+	const result = lookupValue(
+		ctx,
+		mechanism.id,
+		mechanism.type,
+		unitOf(mechanism),
+	)
 	return {
 		keyword: inner.keyword,
 		inlineTerm: inner.inlineTerm,

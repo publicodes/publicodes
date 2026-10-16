@@ -7,7 +7,7 @@ export {
 	encodeRuleName,
 } from './path-navigation'
 export type { PathNavigation, PathNavigationRoute } from './path-navigation'
-export { projectRule, displayName } from './projection'
+export { projectRule, openRow, openedWithPage, displayName } from './projection'
 export {
 	GENERIC_FILL,
 	NO_COMPUTATION,

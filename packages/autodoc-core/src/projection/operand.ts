@@ -6,8 +6,9 @@ import type {
 	OperandView,
 	ParameterState,
 	RawOperand,
+	ValueView,
 } from './types'
-import { PARAMETER_NOTES, foldLabel } from './copy'
+import { EMPTY_EQUATION, PARAMETER_NOTES, foldLabel } from './copy'
 import { mechanismName } from './mechanism-name'
 import { ABSENT } from './value'
 
@@ -24,7 +25,9 @@ export function parameterState(
 		return null
 	}
 	if (ctx.context?.[address] !== undefined) return 'fournie'
-	if (rule.chained_mechanisms.some((mechanism) => mechanism.kind === 'default')) {
+	if (
+		rule.chained_mechanisms.some((mechanism) => mechanism.kind === 'default')
+	) {
 		return 'par défaut'
 	}
 	return 'non renseignée'
@@ -42,42 +45,49 @@ export function finishEquation(
 ): EquationView {
 	const rows = [...mechanism.operands, ...mechanism.modifiers]
 	const held = rows.filter((row) => row.inert)
-	// the reader's choice first; failing one, terms that had no effect are held back
-	// unless holding them back would leave the fiche with nothing else to show
+	// the reader's choice first; failing one, terms that had no effect are held back —
+	// unless the mechanism asks for them, or the page has no situation to read them
+	// against, or holding them back would leave the fiche with nothing else to show
 	const expanded =
 		ctx.folds[id] ??
-		(ctx.trace === undefined || (held.length > 0 && held.length === rows.length))
+		(mechanism.expandedByDefault === true ||
+			ctx.trace === undefined ||
+			(held.length > 0 && held.length === rows.length))
 	const fold =
 		held.length > 0 ?
-			{ id, count: held.length, label: foldLabel(held.length, expanded), expanded }
+			{
+				id,
+				count: held.length,
+				label: foldLabel(held.length, expanded),
+				expanded,
+			}
 		:	null
+	const printed = expanded ? rows : rows.filter((row) => !row.inert)
 	return {
 		keyword: mechanism.keyword,
 		inlineTerm: mechanism.inlineTerm,
 		head: null,
-		rows: expanded ? rows : rows.filter((row) => !row.inert),
+		rows: printed,
 		size: rows.length,
 		result: mechanism.result,
 		fold,
-		note: null,
+		// a sheet that prints no line says so, rather than opening on nothing at all
+		note: printed.length === 0 ? EMPTY_EQUATION : null,
+		context: null,
+		contextId: null,
 		depth: ctx.depth,
-		paper: ctx.depth % 2 === 0 ? 'white' : 'shade',
+		paper: ctx.depth % 2 === 0 ? 'shade' : 'white',
 	}
 }
 
 /**
- * A row hands over what it opens in the shape the finisher takes. The round trip is
- * what keeps one place — the finisher — deciding which lines are printed.
+ * The language's word for what a value is worth, when the value is a yes or a no: a flag
+ * written `oui` says no more than the figure beside it.
  */
-export function asMechanism(equation: EquationView): MechanismView {
-	return {
-		keyword: equation.keyword,
-		inlineTerm: equation.inlineTerm,
-		operands: equation.rows,
-		modifiers: [],
-		result: equation.result,
-	}
-}
+const booleanWordOf = (value: ValueView): string | null =>
+	typeof value.value !== 'boolean' && typeof value.value !== 'number' ? null
+	: value.value ? 'oui'
+	: 'non'
 
 /**
  * Finishes a row: what its gutter says, where its control sits, which paper it is
@@ -90,33 +100,41 @@ export function finishRow(
 	operator: string | null,
 	keyword: string | null,
 ): OperandView {
-	// a term that only repeats the value is not printed twice; a mechanism with no
-	// written form goes by its name instead of leaving the middle column empty
+	// a term that only repeats the value is not printed twice — neither in its own words
+	// nor in the language's words for what it is worth. A mechanism with no written form
+	// goes by its name instead of leaving the middle column empty
 	const term =
-		raw.term !== null && raw.term !== raw.value.text ? raw.term : raw.named
+		raw.term !== null &&
+		raw.term !== raw.value.text &&
+		raw.term !== booleanWordOf(raw.value) ?
+			raw.term
+		:	raw.named
 	const key = raw.address ?? raw.id
-	// what a fiche holds is one gutter further in, so it is projected that way
+	// what a row opens is one gutter further in, and is projected by whoever holds the
+	// node: a rule here, a mechanism where its operand was read
 	const inner = { ...ctx, depth: ctx.depth + 1 }
 	const rule = raw.address !== null ? ctx.projectRule(raw.address, inner) : null
-	const folder =
-		rule?.equation ??
-		(raw.equation !== null && raw.id !== null ?
-			finishEquation(raw.equation, ctx, raw.id)
-		:	null)
-	const detail = key !== null && ctx.expanded.has(key) ? folder : null
+	const fiche = rule?.equation ?? raw.detail
 	const label = raw.name ?? term
-	const opens = raw.address !== null || folder !== null
+	// a reference says what it is whether or not it computes; a mechanism opens where it
+	// prints lines, or where its sheet holds the context it binds
+	const prints = fiche !== null && (fiche.size > 0 || fiche.context !== null)
+	const opens = raw.address !== null || prints
+	const detail = opens && key !== null && ctx.expanded.has(key) ? fiche : null
 	return {
 		gutter: keyword ?? operator ?? '',
 		gutterIsMechanism: keyword !== null,
-		key: key !== null && (raw.address !== null || opens) ? key : null,
+		key: opens ? key : null,
 		depth: ctx.depth,
 		term,
 		termIsMechanism: term !== null && term === raw.named,
-		control: !opens ? null : label !== null ? 'term' : 'value',
+		control:
+			!opens ? null
+			: label !== null ? 'term'
+			: 'value',
 		label,
 		value: raw.value,
-		paper: ctx.depth % 2 === 0 ? 'white' : 'shade',
+		paper: ctx.depth % 2 === 0 ? 'shade' : 'white',
 		address: raw.address,
 		// the way to the rule's own page, when it has one and the reader has it open
 		page:
@@ -131,6 +149,7 @@ export function finishRow(
 		open: detail !== null,
 		fold: detail?.fold ?? null,
 		inert: false,
+		modifier: false,
 	}
 }
 
@@ -145,7 +164,7 @@ export function projectOperand(
 	operator: string | null,
 	keyword: string | null,
 ): OperandView {
-	const equation = ctx.projectNode(child, ctx)
+	const equation = ctx.projectNode(child, { ...ctx, depth: ctx.depth + 1 })
 	const value = equation?.result ?? ABSENT
 	// a bare reference keeps its name and its address, so the row leads to it rather
 	// than unfolding an equation that holds a single line
@@ -164,7 +183,7 @@ export function projectOperand(
 			term: single?.term ?? equation?.inlineTerm ?? null,
 			named,
 			value,
-			equation: equation === null ? null : asMechanism(equation),
+			detail: single === null ? equation : null,
 		},
 		ctx,
 		operator,

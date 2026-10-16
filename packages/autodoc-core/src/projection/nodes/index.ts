@@ -1,11 +1,12 @@
 import type * as Ast from '../../ast'
-import type {
-	Ctx,
-	EquationView,
-	MechanismView,
-	RawOperand,
-} from '../types'
+import type { Ctx, EquationView, MechanismView, RawOperand } from '../types'
 import { finishEquation } from '../operand'
+import {
+	contextInside,
+	contextModifier,
+	contextOf,
+	valueOfChain,
+} from '../chained'
 import { projectAllOf } from './all-of'
 import { projectApplicability } from './applicability'
 import { projectBinary } from './binary'
@@ -27,39 +28,63 @@ import { projectVariations } from './variations'
  * and the default is unreachable, so a new mechanism kind is a compile error
  * here rather than a silent gap on the page.
  */
-export function projectNode(node: Ast.ChainedValue, ctx: Ctx): EquationView | null {
+export function projectNode(
+	node: Ast.ChainedValue,
+	ctx: Ctx,
+): EquationView | null {
 	const mechanism = node.value_mechanism
-	const done = (view: MechanismView | null, id: string) =>
-		view === null ? null : finishEquation(view, ctx, id)
+	// The engine applies a chain in one order, and a `contexte` pushes a stack of its own:
+	// the value and everything under it is traced there, while what the mechanism binds
+	// stays on the caller's side. One push, then every projector reads where it was written.
+	const under = contextInside(node, ctx)
+	// the mechanism whose stack the lines below are read under, for a navigation from them
+	const contextId = contextOf(node)?.id ?? null
+	const done = (
+		view: MechanismView | null,
+		id: string,
+	): EquationView | null => {
+		if (view === null) return null
+		const bound = contextModifier(node, under, ctx)
+		const equation = finishEquation(
+			{
+				...view,
+				result: valueOfChain(node, under, ctx) ?? view.result,
+				modifiers: bound === null ? view.modifiers : [...view.modifiers, bound],
+			},
+			ctx,
+			id,
+		)
+		return contextId === null ? equation : { ...equation, contextId }
+	}
 	switch (mechanism.kind) {
 		case 'sum':
-			return done(projectSum(node, mechanism, ctx), mechanism.id)
+			return done(projectSum(node, mechanism, under), mechanism.id)
 		case 'product':
-			return done(projectProduct(node, mechanism, ctx), mechanism.id)
+			return done(projectProduct(node, mechanism, under), mechanism.id)
 		case 'all_of':
-			return done(projectAllOf(node, mechanism, ctx), mechanism.id)
+			return done(projectAllOf(node, mechanism, under), mechanism.id)
 		case 'one_of':
-			return done(projectOneOf(node, mechanism, ctx), mechanism.id)
+			return done(projectOneOf(node, mechanism, under), mechanism.id)
 		case 'min_of':
-			return done(projectMinOf(node, mechanism, ctx), mechanism.id)
+			return done(projectMinOf(node, mechanism, under), mechanism.id)
 		case 'max_of':
-			return done(projectMaxOf(node, mechanism, ctx), mechanism.id)
+			return done(projectMaxOf(node, mechanism, under), mechanism.id)
 		case 'variations':
-			return done(projectVariations(node, mechanism, ctx), mechanism.id)
+			return done(projectVariations(node, mechanism, under), mechanism.id)
 		case 'expr':
-			return done(projectExpr(node, mechanism, ctx), mechanism.id)
+			return done(projectExpr(node, mechanism, under), mechanism.id)
 		case 'value':
-			return done(projectValueMechanism(node, mechanism, ctx), mechanism.id)
+			return done(projectValueMechanism(node, mechanism, under), mechanism.id)
 		case 'not_defined':
-			return done(projectNotDefined(node, mechanism, ctx), mechanism.id)
+			return done(projectNotDefined(node, mechanism, under), mechanism.id)
 		case 'is_applicable':
 			return done(
-				projectApplicability(node, mechanism, ctx, 'est applicable'),
+				projectApplicability(node, mechanism, under, 'est applicable'),
 				mechanism.id,
 			)
 		case 'is_not_applicable':
 			return done(
-				projectApplicability(node, mechanism, ctx, 'n’est pas applicable'),
+				projectApplicability(node, mechanism, under, 'n’est pas applicable'),
 				mechanism.id,
 			)
 		default:
@@ -71,8 +96,10 @@ export function projectExpression(
 	expression: Ast.Expression,
 	ctx: Ctx,
 ): RawOperand {
-	return expression.kind === 'constant' ? projectConstant(expression, ctx)
+	return (
+		expression.kind === 'constant' ? projectConstant(expression, ctx)
 		: expression.kind === 'ref' ? projectRef(expression, ctx)
 		: expression.kind === 'neg' ? projectUnary(expression, ctx)
 		: projectBinary(expression, ctx)
+	)
 }

@@ -31,6 +31,73 @@ export interface ProjectionOptions {
 const NOTHING_OPEN: ReadonlySet<string> = new Set()
 
 /**
+ * The rows a click on `key` leaves open: the line itself, and the chain of single lines
+ * it uncovers. A sheet that prints one line gives the reader nothing to choose, so that
+ * line opens with it — and if its own sheet prints one line too, so on, until a sheet
+ * prints two lines, or a line prints nothing. The reader can close any of them again.
+ */
+export function openRow(
+	ast: Ast.PublicodeAST,
+	ruleName: string,
+	key: string,
+	options: ProjectionOptions = {},
+): ReadonlySet<string> {
+	const opened = new Set(options.expanded ?? NOTHING_OPEN)
+	let line: string | null = key
+	let chained = false
+	while (line !== null && !opened.has(line)) {
+		opened.add(line)
+		const view = projectRule(ast, ruleName, { ...options, expanded: opened })
+		const sheet = sheetOf(view, line)
+		// a line the reader did not ask for is kept only where it prints lines of its own:
+		// the chain reaches for the next computation, not for the sentence of an absence
+		if (chained && (sheet === null || sheet.rows.length === 0)) {
+			opened.delete(line)
+			break
+		}
+		chained = true
+		line = sheet !== null && sheet.rows.length === 1 ? sheet.rows[0].key : null
+	}
+	return opened
+}
+
+/**
+ * The rows a page opens on its own: its own computation prints a single line, and there is
+ * nothing to choose between one line and none, so that line comes opened — along the chain
+ * of single lines under it, exactly as a click would open it. The page keeps them, so the
+ * reader closes them like any other row.
+ */
+export function openedWithPage(
+	ast: Ast.PublicodeAST,
+	ruleName: string,
+	options: ProjectionOptions = {},
+): ReadonlySet<string> {
+	const own = projectRule(ast, ruleName, options).equation?.rows ?? []
+	const only = own.length === 1 ? own[0] : null
+	return only?.key != null ?
+			openRow(ast, ruleName, only.key, options)
+		:  new Set(options.expanded ?? NOTHING_OPEN)
+}
+
+/** The sheet the page prints under a row, wherever it printed that row. */
+const sheetOf = (view: RuleView, key: string): EquationView | null =>
+	findRow(view.equation, key)?.detail ?? null
+
+/** The row a key names, wherever the page printed it: under a line, or under its sheet. */
+const findRow = (
+	equation: EquationView | null,
+	key: string,
+): OperandView | null => {
+	if (equation === null) return null
+	for (const row of equation.rows) {
+		if (row.key === key) return row
+		const found = findRow(row.detail, key)
+		if (found !== null) return found
+	}
+	return null
+}
+
+/**
  * Projects one rule into the view model its page renders — the rules the reader has
  * opened under it included, so a block renders what it is given and projects
  * nothing itself. Same rule, same options, same page.
@@ -96,7 +163,9 @@ function projectRuleAt(
 				...projected,
 				result,
 				head: page ? answer(name, result, projected) : null,
-				note: projected.size > 0 ? null : noteFor(state),
+				// a mechanism that holds nothing at all is a rule with no computation: the
+				// sentence says where its value comes from rather than what is missing here
+				note: projected.size > 0 ? projected.note : noteFor(state),
 			}
 		)
 	return {
@@ -161,6 +230,7 @@ const answer = (
 	open: false,
 	fold: equation.fold,
 	inert: false,
+	modifier: false,
 })
 
 /** What a fiche says when it has no line to show, in place of showing none. */

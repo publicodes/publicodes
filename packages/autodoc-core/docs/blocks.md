@@ -58,7 +58,7 @@ at a documentation URL, and the rest of the page is identical for both.
 
 The context's **name** is the host's, never the library's: no rule carries one, so a host that
 has one passes it in and a host that does not gets the counts alone. The line must not
-enumerate the values — that is `RuleParameters`' job, one block below.
+enumerate the values — that is `RuleParameters`' job.
 
 `note` is not rendered. It is the model author's working space, and in the same model it
 holds both a figure's provenance and a list of things to add in a future version. A reader
@@ -85,15 +85,30 @@ and one sheet inset further in, so a fiche's content never straddles its own fra
 does not move, so a reader who unfolds keeps their place.
 
 Navigation is not the computation's job: the index and the used-by list carry blue links. A row
-carries none of its own — the whole line is its target, and the veil under the pointer is its
-only affordance — except when the fiche beside it is a rule with a page, and a small blue mark
-then waits next to the opened name. Two
-rules govern the unfold:
+carries none of its own — the whole line is its target, and the underline of its name under the
+pointer is its only affordance — except when the fiche beside it is a rule with a page, and a
+small blue mark then waits next to the opened name. Four rules govern the unfold:
 
-- **It changes the line's background, not its layout.** The paper is a layer behind the block,
-  reaching from the operator's column to the row's right edge. It cannot be the block's own
-  background: that would widen the line's containing block and shift its value. The name goes
-  to semi-bold, and nothing else about the line changes.
+- **It changes the line's name and its sheet, not its layout.** The sheet is a layer behind the
+  block, starting where the name column does and ending at the row's right edge. It cannot be the
+  block's own background: that would widen the line's containing block and shift its value. The
+  name goes to semi-bold, and nothing else about the line changes.
+- **A sheet that prints one line opens it.** There is nothing to choose between one line and
+  two, so opening a row opens the single line its sheet prints — and so on down the chain,
+  while each sheet prints one line. The chain follows lines that print lines of their own: a
+  fiche that holds nothing is left for the reader to ask for, and says so in a sentence
+  rather than opening empty. It seeds the state rather than deriving the view: the reader can
+  close any of those lines again. A page whose own computation prints one line comes open the
+  same way, the chain under it included.
+- **A sheet is a block; a line that opens nothing is not.** The block exists for the sheet a
+  line opens, and it is the only element that carries a paper: a host styles lines and sheets,
+  and never a block that draws nothing.
+- **A line is a control only where it has something to open.** A reference always has: the
+  rule says what it is whether or not it computes. A mechanism opens only where it prints
+  lines, so a figure on its own is plain text — its value is the whole of it.
+- **A mechanism's sheet is projected like a reference's: one level in.** The papers therefore
+  alternate at every depth, and a fiche reads at the same distance from the page whatever
+  opened it, a rule or a mechanism.
 - **It is a disclosure, not a hover.** It carries `aria-expanded`, is reachable by keyboard,
   and is announced. PRODUCT.md leaves the accessibility requirement open and names the risk: a
   computation tree whose meaning lives behind hover is unusable by keyboard and screen reader.
@@ -102,14 +117,13 @@ rules govern the unfold:
 ## The default page
 
 ```tsx
-<RuleNavigation />
 <RuleHeader />
 <RuleDescription />
 <RuleComputation />
-<RuleParameters />
-<RuleUsedBy />
-<RuleProvenance />
 ```
+
+Four exported blocks are not in this composition for now: `RuleNavigation`, `RuleParameters`,
+`RuleUsedBy`, `RuleProvenance`.
 
 `RuleDescription` précède `RuleComputation` : deux phrases sur ce dont on parle avant de rendre
 le nombre.
@@ -138,3 +152,10 @@ names the notation gives them. Custom properties carry surface values.
 
 A host restyling a block writes CSS against that one class. It never reaches into a block's
 internals, and no block's appearance depends on descendant selectors matching its children.
+
+The table a `contexte` mechanism prints in its sheet is `publicodes-context`, and the page's own
+context block prints the same one: restyling the context styles both.
+
+The default theme is `@publicodes/autodoc-core/styles/autodoc.css`, which the React entry
+imports: a host that wants none of it overrides the custom properties after that import, and a
+host that wants none of the classes writes its own sheet against them.

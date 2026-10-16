@@ -19,6 +19,9 @@ description rédigée, chaîne de références la plus profonde de six) et `ekof
 facteurs d'émission cités, `par défaut` et `plancher` dominants) — et non contre des arbres
 construits à la main.
 
+Un troisième modèle, `simple-TJM`, porte la pile de contexte : c'est le seul dont une règle
+publique est évaluée sous un `contexte` (`projection.context-stack.test.ts`).
+
 **La trace vient d'une évaluation réelle avec un contexte fixé**, jamais d'un JSON recopié :
 « quelle branche a été prise » doit être affirmé contre ce que le moteur a produit. Les
 fixtures AST sont commises ; un script les régénère depuis les exemples du compilateur, parce

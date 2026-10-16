@@ -22,6 +22,6 @@ export function projectRef(
 		term: name,
 		named: null,
 		value: lookupValue(ctx, expression.id, expression.type, unitOf(expression)),
-		equation: null,
+		detail: null,
 	}
 }

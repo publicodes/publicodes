@@ -1,31 +1,43 @@
 import type * as Ast from '../../ast'
-import type { Ctx, RawOperand } from '../types'
+import type { Ctx, MechanismView, RawOperand } from '../types'
 import { expressionText } from '../expression-text'
-import { finishRow } from '../operand'
+import { finishEquation, finishRow } from '../operand'
 import { lookupValue, unitOf } from '../value'
+
+/**
+ * A negation as a mechanism, kept apart from the row for the same reason an operation
+ * is: an expression wrapping one takes it as its own.
+ */
+export function unaryMechanism(
+	expression: Ast.UnaryOperationExpression,
+	ctx: Ctx,
+): MechanismView {
+	const text = expressionText(ctx.ast, expression)
+	return {
+		keyword: null,
+		inlineTerm: text,
+		operands: [
+			finishRow(ctx.projectExpression(expression.parameters, ctx), ctx, null, null),
+		],
+		modifiers: [],
+		result: lookupValue(ctx, expression.id, expression.type, unitOf(expression)),
+	}
+}
 
 export function projectUnary(
 	expression: Ast.UnaryOperationExpression,
 	ctx: Ctx,
 ): RawOperand {
-	const inner = ctx.projectExpression(expression.parameters, ctx)
-	const result = lookupValue(ctx, expression.id, expression.type, unitOf(expression))
-	const text = expressionText(ctx.ast, expression)
+	const equation = unaryMechanism(expression, ctx)
 	return {
 		id: expression.id,
 		name: null,
 		address: null,
 		description: null,
 		parameter: null,
-		term: text,
+		term: equation.inlineTerm,
 		named: null,
-		value: result,
-		equation: {
-			keyword: null,
-			inlineTerm: text,
-			operands: [finishRow(inner, ctx, null, null)],
-			modifiers: [],
-			result,
-		},
+		value: equation.result,
+		detail: finishEquation(equation, { ...ctx, depth: ctx.depth + 1 }, expression.id),
 	}
 }

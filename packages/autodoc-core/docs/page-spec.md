@@ -58,6 +58,9 @@ plus. Une page ne montre jamais rien qui vienne de `meta`.
 5. **Où cette valeur sert.** Les règles qui consomment celle-ci.
 6. **La provenance.** Le fichier et la ligne.
 
+*Pour l'instant, la page par défaut s'arrête au calcul : les blocs 4, 5 et 6 sont exportés mais
+la page ne les compose pas. Le contexte est en réécriture.*
+
 Pourquoi cet ordre : le lecteur arrive avec un nombre à vérifier. Le nom lui dit où il est, la
 description de quoi on parle en deux phrases, et le calcul lui rend son nombre à la première
 ligne — avant même ses opérandes. Le contexte détaillé vient ensuite, pour celui qui veut
@@ -104,6 +107,20 @@ une fois au-dessus d'elle — pas un préfixe de ligne.
 valeur de la règle à l'échelle d'un titre, son unité, et l'état du contexte. Il n'existe pas de
 bloc « résultat » séparé : en avoir un reviendrait à imprimer le même nombre deux fois.
 
+**Une négation dans une somme est une soustraction.** `somme: [a, -b, -c]` s'écrit `a − b − c` :
+le signe est l'opérateur de la ligne, le terme garde son nom et sa valeur. Il n'y a rien à
+ouvrir sous la négation — `-b` n'est pas un calcul, c'est `b` avec un signe devant.
+
+**Une chaîne de même précédence est une seule équation.** `a + b + c` s'écrit sur trois lignes,
+pas une somme dans une somme. Une parenthèse de même précédence s'ouvre aussi, en retournant les
+opérateurs qu'elle portait : `a − (b + c)` s'écrit `a − b − c`, et `a − (b − c)` s'écrit
+`a − b + c`. Un exposant et une comparaison, eux, ne s'aplatissent pas : leur imbrication est ce
+qu'ils disent.
+
+**Ce qui ne s'imprime pas.** L'unité `aucune` du compilateur — un nombre qui n'est pas mesuré
+n'a pas d'unité à montrer — et le mot d'un drapeau quand la figure le dit déjà : la ligne d'un
+`arrondi` porte `ARRONDI` et sa valeur, jamais `ARRONDI oui 1 aucune`.
+
 ### Le vocabulaire clos de la bibliothèque
 
 Tout ce que montre la page est cité du modèle, sauf deux listes fermées. Y ajouter est une
@@ -121,7 +138,7 @@ contexte du calcul.
 `variations`, `si`, `alors`, `sinon`, `applicable si`, `non applicable si`, `par défaut`,
 `plafond`, `plancher`, `arrondi`, `arrondi à l'inférieur`, `arrondi au supérieur`,
 `toutes ces conditions`, `une de ces conditions`, `une possibilité`, `moyenne`,
-`avec le contexte`, `type`. Jamais paraphrasés.
+`contexte`, `type`. Jamais paraphrasés.
 
 ```
 somme                                    ← l'intitulé de l'équation
@@ -224,25 +241,37 @@ l'on montre, pas la catégorie.
 
 **Un modificateur n'est pas une équation : c'est une annotation sur la valeur qu'il change.**
 Il s'écrit sur la ligne du résultat, mot-clé du langage d'abord, et marqué pris effet ou sans
-effet :
+effet. La première d'entre elles est séparée des termes de l'expression par un **filet plein**,
+là où une ligne de calcul porte un pointillé : les lignes au-dessus composent la valeur, celles
+en dessous disent ce qu'elle vaut.
 
 ```
 valeur
   Distance moyenne aller/retour            100 km
+  ────────────────────────────────────────   ← le filet plein, quand des termes précèdent
   par défaut 100 km — pris effet, rien n'a été saisi
   plancher 0 km
 ```
+
+**`contexte` ne change pas la valeur : il dit sous quel contexte elle a été calculée.** Il
+s'écrit comme la **première ligne du tableau qu'il ouvre** — son mot dans la colonne des
+opérateurs, `Paramètre` et `Valeur` en face de lui, à l'aplomb des noms et des figures du
+calcul — et ce tableau est imprimé sans qu'on ait à l'ouvrir : ce qui décide de ce que la règle
+vaut ne se cache pas. C'est le seul mécanisme enchaîné dont l'explication ne soit pas un calcul.
 
 **Un mécanisme sans opérateur se nomme.** Une somme s'écrit avec ses `+`, un produit avec ses
 `×` ; `variations`, `toutes ces conditions`, `une de ces conditions`, `le plus petit de` et `le
 plus grand de` n'ont pas d'opérateur à eux, et une ligne repliée porte donc leur nom. Sans
 lui, le lecteur n'a qu'un chiffre sans l'opération qui l'a produit. Ce nom s'écrit comme tous
-les mots du langage : étiquette, petites capitales, en gris — que l'opérateur de la ligne
-occupe la gouttière ou qu'il n'y en ait pas.
+les mots du langage : étiquette, petites capitales, en gris.
+
+**L'opérateur porte le même contour.** `+`, `−` et `×` sont des signes, pas des mots : ils
+partagent le contour de l'étiquette — un filet, une seule encre — mais pas sa taille. Un signe
+se lit à la taille de la notation, un mot à celle de l'étiquette.
 
 **Une condition s'écrit avec les mots du langage**, `si`, `alors`, `sinon`, et la branche prise
-est marquée ; les autres sont cachées par défaut avec leur nombre, et révélées par
-l'interaction I3 :
+est marquée ; les autres sont cachées par défaut avec leur nombre, et révélées par le pli de
+la fiche (I3) :
 
 ```
 variations
@@ -252,6 +281,11 @@ variations
   ──────────────────────────────────────────────────
   = taux BIC                                  0,1 %
 ```
+
+Quand c'est une condition qui est retenue, elle vient avec sa conséquence, et les autres
+restent cachées. Quand c'est le `sinon`, la fiche s'ouvre sur **toutes** ses branches : un
+`sinon` seul afficherait un taux que rien n'explique, alors que ce sont les conditions écartées
+qui le justifient. Le pli reste là pour les refermer.
 
 **Une énumération liste son domaine** et marque le membre retenu :
 
@@ -340,19 +374,19 @@ Trois. Chacune est décrite par ce qu'elle montre, ce qu'elle cache, et ce qu'el
 - **Déclencheur** : la ligne entière. Le nom, la valeur, la colonne de l'opérateur et la marge
   répondent au même clic. Le nom reste un bouton, pour que le clavier ait son contrôle, mais il
   s'écrit comme du texte : ni lien, ni souligné, rien qui le désigne.
-- **L'affordance est le survol, et le survol seulement** : sous le pointeur, la ligne se voile
-  d'encre — 4,5 %, l'encre elle-même plutôt qu'un gris de plus — et seulement si elle ouvre
-  quelque chose. Au repos, aucune marque ne décore la ligne. Un lecteur au doigt n'a donc aucun
+- **L'affordance est le survol, et le survol seulement** : sous le pointeur, le nom de la ligne
+  se souligne, et seulement si la ligne ouvre quelque chose. Rien ne change de fond, rien ne
+  s'éclaire. Au repos, aucune marque ne décore la ligne. Un lecteur au doigt n'a donc aucun
   indice tant que la fiche est fermée ; c'est le prix de la ligne nue, et le contrôle de repli
   prend le relais dès qu'une fiche est ouverte.
 - **Un seul contrôle par référence**, quoi qu'il y ait derrière : en avoir deux selon ce que la
   règle porte rendrait leur présence arbitraire aux yeux du lecteur.
 - **Montre** : le calcul de cette règle dans ce contexte, sous la ligne, dans la même mise en
   page qu'un cran plus loin. Le pli est la fiche : il n'ouvre aucun panneau et ne remplace rien.
-- **Ne déplace rien.** Une ligne dépliée garde sa grille, son retrait et sa marge : seuls son
-  fond et le poids de son nom changent. Le lecteur suit sa ligne des yeux sans la rattraper, et
-  il ne la perd pas non plus : la ligne est le même nœud avant et après le pli, donc le focus
-  reste où il était.
+- **Ne déplace rien.** Une ligne dépliée garde sa grille, son retrait et sa marge : seuls le
+  poids de son nom et le filet qui ferme sa feuille changent. Le lecteur suit sa ligne des yeux
+  sans la rattraper, et il ne la perd pas non plus : la ligne est le même nœud avant et après le
+  pli, donc le focus reste où il était.
 - **Le papier** mesure le bloc : il part de la colonne de l'opérateur — le `−`, le `+`, le `×`,
   ou le mot du mécanisme, `si`, `alors`, `sinon`, `arrondi` — et va jusqu'au bord droit de la
   ligne, sur la ligne et sur le calcul qu'elle ouvre. À gauche du papier, la couleur du parent.
@@ -363,28 +397,42 @@ Trois. Chacune est décrite par ce qu'elle montre, ce qu'elle cache, et ce qu'el
   se lit au bord gauche du papier.
 - **Le papier alterne** avec la profondeur, pour qu'un pli dans un pli se voie.
 - **Le même geste pour un mécanisme** : le terme écrit d'une expression, ou la valeur d'une
-  ligne dont le terme est la valeur, déplie ses opérandes comme un nom déplie sa règle. Un
-  contrôle, une apparence, quel que soit ce qu'il y a derrière.
+  ligne dont le terme est la valeur, déplie ses opérandes comme un nom déplie sa règle. Une
+  seule apparence pour un contrôle, qu'il ouvre une règle ou un mécanisme — et aucun contrôle
+  là où il n'y a rien à déplier : un chiffre qui n'a que lui-même s'écrit comme du texte.
+- **Une fiche qui n'imprime qu'une seule ligne ne pose aucune question** : l'ouvrir ouvre
+  aussi cette ligne, et de même tant que chaque fiche n'imprime qu'une ligne, jusqu'à une
+  fiche qui en imprime deux. La chaîne suit les lignes qui ont des lignes à imprimer : une
+  fiche vide reste à la demande du lecteur, et le dit en une phrase plutôt que de s'ouvrir sur
+  rien. Elle s'arrête là où il y a un choix à faire, et chaque ligne qu'elle a ouverte reste
+  repliable pour elle-même : l'ouverture est un état du lecteur, pas une déduction de la vue.
+  **La règle vaut aussi pour la page** : un calcul racine qui n'imprime qu'une ligne arrive
+  ouvert, cette ligne et sa chaîne comprises.
 - **Change** : la profondeur du calcul affiché. Repliable par le même contrôle. La profondeur
   n'est pas bornée ; chaque niveau déplié est une équation complète et le lecteur décide seul
-  jusqu'où descendre.
-- **Sans calcul propre** : la fiche le dit, plutôt que de montrer une équation vide.
+  jusqu'où descendre, la ligne unique d'une fiche exceptée.
+- **Sans calcul propre** : la fiche le dit, plutôt que de montrer une équation vide. Une fiche
+  vidée de ses termes par le lecteur se termine de même sur « Aucun terme à montrer. »
 
 ### I3 — Rétablir la coupe
 
 - **Déclencheur** : le contrôle de repli, sur la ligne dont l'équation cache des termes — la
   ligne du résultat pour le calcul de la règle, celle de la référence ou du mécanisme quand
   c'est sa fiche qui cache.
-- **Forme** : un double chevron, vers le bas pour révéler, vers le haut pour replier, et une
-  pastille qui donne le nombre de termes cachés. Le libellé — « Afficher 2 termes sans effet »
-  — vit dans l'infobulle et dans le nom accessible, jamais sur la ligne.
+- **Forme** : un double chevron, vers le bas pour révéler, vers le haut pour replier, et un
+  nombre encerclé qui donne le compte des termes cachés — un contour, jamais un fond plein. Le
+  libellé — « Afficher 2 termes sans effet » — vit dans l'infobulle et dans le nom accessible,
+  jamais sur la ligne.
 - **Place** : à l'extrémité droite de sa ligne, au-delà du bord de celle-ci, dans la marge
   vide : le calcul ne lui cède aucune place, et aucune ligne de plus ne sépare rien. Sur un
   écran étroit, il prend une ligne à lui, aligné à droite.
 - **Montre** : les termes qui n'ont pas joué — les branches non prises, les modificateurs sans
-  effet — à leur place et dans l'ordre du modèle.
-- **Cache** : rien. Par défaut ces termes sont cachés et leur nombre est indiqué ; c'est le
-  lecteur qui décide de vérifier que la règle ne fait rien d'autre.
+  effet — à leur place et dans l'ordre du modèle. Les branches d'une condition s'y trouvent,
+  avec le pli de sa propre fiche.
+- **Cache** : rien. Par défaut ces termes sont cachés et leur nombre est indiqué — sauf les
+  conditions d'un `sinon` retenu, que la fiche ouvre avec elle (voir « une condition s'écrit
+  avec les mots du langage »). C'est le lecteur qui décide de vérifier que la règle ne fait rien
+  d'autre.
 - **Change** : la longueur de l'équation, pas sa valeur.
 
 ### Ce qui n'est pas une interaction

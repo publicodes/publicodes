@@ -33,7 +33,7 @@ _Avoid_: public rule, export, result
 
 **Context**:
 The values a rule is evaluated against. Supplied by the reader at the root of an
-evaluation, and overridden by `avec le contexte` as evaluation descends.
+evaluation, and overridden by `contexte` as evaluation descends.
 _Avoid_: situation, state, environment, inputs
 
 **Context stack**:

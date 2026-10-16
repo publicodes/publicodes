@@ -25,8 +25,11 @@ export interface RawOperand {
 	/** The mechanism's own word, when the row has no written form of its own. */
 	named: string | null
 	value: ValueView
-	/** What it opens onto, when that is a mechanism's own lines. */
-	equation: MechanismView | null
+	/**
+	 * What it opens onto, when that is a mechanism's own lines. Projected one level in,
+	 * like the fiche of a reference, so a row never decides the paper of its fiche.
+	 */
+	detail: EquationView | null
 }
 
 /**
@@ -40,6 +43,12 @@ export interface MechanismView {
 	operands: OperandView[]
 	modifiers: OperandView[]
 	result: ValueView
+	/**
+	 * The terms it holds back are printed with it, unless the reader folds them back: what
+	 * the mechanism prints alone would not say why it applies. A conditional that kept its
+	 * `sinon` is the one case — its conditions are then the whole of its explanation.
+	 */
+	expandedByDefault?: boolean
 }
 
 /**
@@ -63,7 +72,10 @@ export interface FoldView {
 export interface OperandView {
 	/** The keyword or the operator, in the operator column. Empty when neither. */
 	gutter: string
-	/** That word is a mechanism's own, and is set as a label rather than a sign. */
+	/**
+	 * That mark is a word of the language, not an operator: it takes the label's own
+	 * size, where a sign takes the size of the notation it belongs to.
+	 */
 	gutterIsMechanism: boolean
 	/** What opens or closes this row, when a click does anything. */
 	key: string | null
@@ -78,7 +90,7 @@ export interface OperandView {
 	/** What that control says. */
 	label: string | null
 	value: ValueView
-	/** The sheet this line is written on. */
+	/** The sheet this line is written on: the papers alternate with depth. */
 	paper: 'white' | 'shade'
 	/** The rule this row stands for, when it stands for one. */
 	address: string | null
@@ -98,6 +110,8 @@ export interface OperandView {
 	fold: FoldView | null
 	/** Had no effect on the result: shown only when the reader asks for it. */
 	inert: boolean
+	/** An annotation on the value above it, rather than a term of the expression. */
+	modifier: boolean
 }
 
 export interface EquationView {
@@ -117,9 +131,16 @@ export interface EquationView {
 	fold: FoldView | null
 	/** A sentence in place of rows, for a computation that has none to show. */
 	note: string | null
+	/** The values a `contexte` mechanism binds, where a sheet prints them instead of lines. */
+	context: ContextEntryView[] | null
+	/**
+	 * The `contexte` mechanism these lines are read under, when one governs them: a
+	 * navigation from inside them keeps the stack that mechanism pushed.
+	 */
+	contextId: string | null
 	/** Its distance from the page's own computation, which sets the paper. */
 	depth: number
-	/** The sheet the lines are written on. */
+	/** The sheet the lines are written on: the papers alternate with depth. */
 	paper: 'white' | 'shade'
 }
 

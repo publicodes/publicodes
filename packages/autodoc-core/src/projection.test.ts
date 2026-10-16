@@ -2,10 +2,12 @@ import { describe, it, expect } from 'vitest'
 import type { PublicodeAST, RuleDefinition } from './ast'
 import type { Trace, TraceValue } from './trace'
 import { NotApplicable, NotDefined } from './trace'
-import { projectRule } from './projection'
+import type { EquationView, RuleView } from './projection/types'
+import { openRow, openedWithPage, projectRule } from './projection'
 import { capitalizeFirst } from './projection/names'
 import astFixture from './fixtures/auto-entrepreneur.autodoc.json'
 import traceFixture from './fixtures/auto-entrepreneur.trace.json'
+import tjm from './fixtures/simple-TJM.autodoc.json'
 
 const doc = astFixture as unknown as PublicodeAST
 const RULE = 'dirigeant . auto-entrepreneur . revenu net'
@@ -92,18 +94,109 @@ describe('projectRule — branches', () => {
 		expect(branches.filter((branch) => !branch.inert)).toHaveLength(1)
 	})
 
+	it('offers the branches it did not retain through its fold', () => {
+		const [name, definition] = variationsIn(true)!
+		const id = definition.value_mechanism.id
+		const stack = stackOf(id, true)
+		const sheet = (folds: Record<string, boolean>) =>
+			projectRule(doc, name, { ...evaluated, contextStackId: stack, folds })
+				.equation
+		const hidden = sheet({ [id]: false })
+		const shown = sheet({ [id]: true })
+		// revealing a conditional's fold adds exactly the branches it held back
+		expect((shown?.rows.length ?? 0) - (hidden?.rows.length ?? 0)).toBe(
+			hidden?.fold?.count ?? 0,
+		)
+	})
+
 	it('applies no branch when the mechanism itself did not resolve', () => {
 		const [, definition] = variationsIn(true)!
 		const id = definition.value_mechanism.id
 		const unresolved: Trace = { [id]: { '': NotDefined } }
-		const view = projectRule(doc, 'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . taux', {
-			evaluation: { trace: unresolved },
-			context,
-		})
+		const view = projectRule(
+			doc,
+			'dirigeant . auto-entrepreneur . cotisations et contributions . cotisations . service BIC . taux',
+			{ evaluation: { trace: unresolved }, context },
+		)
 		expect(view.equation?.result.state).toBe('not_defined')
 		expect(
 			(view.equation?.rows ?? []).filter((row) => !row.inert),
 		).toHaveLength(0)
+	})
+})
+
+describe('a conditional whose branch was kept', () => {
+	const position = {
+		file: 'test.publicodes',
+		start: { index: 0, line: 1, column: 1 },
+		end: { index: 1, line: 1, column: 2 },
+	}
+	const chained = (value_mechanism: unknown) => ({
+		value_mechanism,
+		chained_mechanisms: [],
+	})
+	const expr = (id: string, value: number) => ({
+		kind: 'expr',
+		id,
+		type: 'number',
+		unit: '%',
+		position,
+		parameters: {
+			kind: 'constant',
+			id: `${id}-value`,
+			type: 'number',
+			unit: '%',
+			position,
+			parameters: { kind: 'const_number', value, unit: '%' },
+		},
+	})
+	// one condition, one `sinon`: whichever holds is the branch the sheet prints
+	const taux = {
+		taux: {
+			title: 'Taux',
+			type: 'number',
+			unit: '%',
+			id: 'v',
+			position,
+			referenced_by: [],
+			parameters: [],
+			value_mechanism: {
+				kind: 'variations',
+				id: 'v',
+				type: 'number',
+				unit: '%',
+				position,
+				parameters: {
+					conditions: [
+						{ if: chained(expr('c', 3)), then: chained(expr('a', 3)) },
+					],
+					else: chained(expr('s', 1)),
+				},
+			},
+			chained_mechanisms: [],
+		},
+	} as unknown as PublicodeAST
+	const sheet = (trace: Trace) => projectRule(taux, 'taux', { evaluation: { trace } })
+	// the condition held: `0,3 %` is `si` and `alors`, and the `sinon` is held back
+	const conditionKept = sheet({ v: { '': 3 }, c: { '': true }, a: { '': 3 }, s: { '': 1 } })
+	// the `sinon` held: nothing says why, so the conditions come with it
+	const sinonKept = sheet({ v: { '': 1 }, c: { '': false }, a: { '': 3 }, s: { '': 1 } })
+
+	it('prints the condition it kept, and holds the others back', () => {
+		expect(conditionKept.equation?.rows.map((row) => row.gutter)).toEqual(['si', 'alors'])
+		expect(conditionKept.equation?.fold?.expanded).toBe(false)
+		expect(conditionKept.equation?.fold?.count).toBe(1)
+	})
+
+	it('prints all of them when the `sinon` it kept explains nothing on its own', () => {
+		expect(sinonKept.equation?.rows.map((row) => row.gutter)).toEqual([
+			'si',
+			'alors',
+			'sinon',
+		])
+		expect(sinonKept.equation?.fold?.expanded).toBe(true)
+		// the reader can still fold them back: the control stays
+		expect(sinonKept.equation?.fold?.count).toBe(2)
 	})
 })
 
@@ -237,5 +330,297 @@ describe('a mechanism a row cannot write out', () => {
 	it('leaves an operator its word', () => {
 		const view = projectRule(inline, 'total')
 		expect(view.equation?.rows[0]?.termIsMechanism).toBe(false)
+	})
+})
+
+describe('the sheet a row opens', () => {
+	const sheetsOf = (equation: EquationView | null, out: EquationView[] = []) => {
+		if (equation === null) return out
+		out.push(equation)
+		for (const row of equation.rows) sheetsOf(row.detail, out)
+		return out
+	}
+
+	const keysOf = (equation: EquationView | null, out: string[] = []): string[] => {
+		for (const row of equation?.rows ?? []) {
+			if (row.key !== null) out.push(row.key)
+			keysOf(row.detail, out)
+		}
+		return out
+	}
+
+	// everything opened, so every sheet this page can print is printed
+	const everythingOpen = (): RuleView => {
+		let expanded = new Set<string>()
+		let view = projectRule(doc, RULE, { ...evaluated, expanded })
+		for (let pass = 0; pass < 20; pass++) {
+			const fresh = keysOf(view.equation).filter((key) => !expanded.has(key))
+			if (fresh.length === 0) break
+			expanded = new Set([...expanded, ...fresh])
+			view = projectRule(doc, RULE, { ...evaluated, expanded })
+		}
+		return view
+	}
+
+	const walk = (equation: EquationView | null): void => {
+		if (equation === null) return
+		for (const row of equation.rows) {
+			// a line is written on its sheet and opens the next one, whatever it opens
+			expect(row.depth).toBe(equation.depth)
+			if (row.detail === null) continue
+			expect(row.detail.depth).toBe(equation.depth + 1)
+			expect(row.detail.paper).not.toBe(equation.paper)
+			walk(row.detail)
+		}
+	}
+
+	it('is one level in, so the papers alternate at every depth', () => {
+		walk(everythingOpen().equation)
+	})
+
+	it('carries the fold of the branches a conditional did not retain', () => {
+		const conditionalSheets = sheetsOf(everythingOpen().equation).filter((sheet) =>
+			sheet.rows.some((row) => ['alors', 'sinon'].includes(row.gutter)),
+		)
+		expect(conditionalSheets.length).toBeGreaterThan(0)
+		for (const sheet of conditionalSheets) {
+			// the fold is what offers the others: they are printed exactly when it is open
+			expect(sheet.fold?.count ?? 0).toBeGreaterThan(0)
+			expect(sheet.rows.filter((row) => row.inert)).toHaveLength(
+				sheet.fold?.expanded === true ? (sheet.fold?.count ?? 0) : 0,
+			)
+		}
+	})
+})
+
+describe('a chain of the same precedence', () => {
+	const position = {
+		file: 'test.publicodes',
+		start: { index: 0, line: 1, column: 1 },
+		end: { index: 1, line: 1, column: 2 },
+	}
+	const ref = (name: string) => ({
+		kind: 'ref',
+		id: `r-${name}`,
+		type: 'number',
+		unit: '€',
+		position,
+		parameters: name,
+	})
+	const expr = (id: string, parameters: unknown) => ({
+		kind: 'expr',
+		id,
+		type: 'number',
+		unit: '€',
+		position,
+		parameters,
+	})
+	// the compiler nests a chain on the right: `a + b + c` is `add(a, add(b, c))`
+	const chain = (kinds: string[], [first, ...rest]: string[]): unknown => ({
+		kind: kinds[0],
+		type: 'number',
+		unit: '€',
+		id: `b-${kinds[0]}-${first}`,
+		position,
+		parameters: {
+			left: ref(first),
+			right: rest.length === 1 ? ref(rest[0]) : chain(kinds.slice(1), rest),
+		},
+	})
+	const rule = (id: string, value_mechanism: unknown) => ({
+		title: id,
+		type: 'number',
+		unit: '€',
+		id,
+		position,
+		referenced_by: [],
+		parameters: [],
+		value_mechanism,
+		chained_mechanisms: [],
+	})
+	const leaf = (name: string) =>
+		rule(name, {
+			kind: 'not_defined',
+			id: `n-${name}`,
+			type: 'number',
+			unit: '€',
+			position,
+		})
+	const inline = {
+		a: leaf('a'),
+		b: leaf('b'),
+		c: leaf('c'),
+		chaîne: rule('chaîne', expr('e1', chain(['add', 'add'], ['a', 'b', 'c']))),
+		parenthèses: rule('parenthèses', expr('e2', chain(['sub', 'sub'], ['a', 'b', 'c']))),
+		soustraction: rule('soustraction', expr('e3', chain(['sub', 'add'], ['a', 'b', 'c']))),
+		produit: rule('produit', expr('e4', chain(['mul', 'div'], ['a', 'b', 'c']))),
+		puissance: rule('puissance', expr('e5', chain(['pow', 'pow'], ['a', 'b', 'c']))),
+		comparaison: rule('comparaison', expr('e6', chain(['lt', 'lt'], ['a', 'b', 'c']))),
+		mélange: rule('mélange', expr('e7', chain(['add', 'mul'], ['a', 'b', 'c']))),
+	} as unknown as PublicodeAST
+
+	const guttersOf = (name: string) =>
+		(projectRule(inline, name).equation?.rows ?? []).map((row) => row.gutter)
+
+	it('writes a chain as one equation, on one level', () => {
+		expect(guttersOf('chaîne')).toEqual(['', '+', '+'])
+		expect(guttersOf('produit')).toEqual(['', '×', '÷'])
+	})
+
+	it('turns the operators of the line it opens', () => {
+		// `a − (b + c)` is `a − b − c`, and `a − (b − c)` is `a − b + c`
+		expect(guttersOf('soustraction')).toEqual(['', '−', '−'])
+		expect(guttersOf('parenthèses')).toEqual(['', '−', '+'])
+	})
+
+	it('keeps the nesting that carries a meaning', () => {
+		// a power is right-associative and a comparison does not chain: the line keeps its
+		// own sheet, and the multiplication under a sum is a term, not a line
+		expect(guttersOf('puissance')).toEqual(['', '^'])
+		expect(guttersOf('comparaison')).toEqual(['', '<'])
+		expect(guttersOf('mélange')).toEqual(['', '+'])
+		const term = projectRule(inline, 'mélange').equation?.rows[1]
+		expect(term?.term).toBe('B × C')
+		expect(term?.key).not.toBeNull()
+	})
+})
+
+describe('a sum of negations', () => {
+	it('writes the signs on the lines, not in the terms', () => {
+		const view = projectRule(
+			tjm as unknown as PublicodeAST,
+			'revenu net',
+		)
+		expect(view.equation?.inlineTerm).toBe(
+			"Chiffre d'affaires − Cotisations − Charges",
+		)
+		expect(
+			(view.equation?.rows ?? []).map((row) => [row.gutter, row.term]),
+		).toEqual([
+			['', "Chiffre d'affaires"],
+			['−', 'Cotisations'],
+			['−', 'Charges'],
+		])
+	})
+})
+
+describe('opening a row', () => {
+	const position = {
+		file: 'test.publicodes',
+		start: { index: 0, line: 1, column: 1 },
+		end: { index: 1, line: 1, column: 2 },
+	}
+	const chained = (value_mechanism: unknown) => ({
+		value_mechanism,
+		chained_mechanisms: [],
+	})
+	const ref = (id: string, address: string) => ({
+		kind: 'ref',
+		id,
+		type: 'number',
+		unit: '€',
+		position,
+		parameters: address,
+	})
+	const expr = (id: string, parameters: unknown) => ({
+		kind: 'expr',
+		id,
+		type: 'number',
+		unit: '€',
+		position,
+		parameters,
+	})
+	const constant = (id: string, value: number) => ({
+		kind: 'constant',
+		id,
+		type: 'number',
+		unit: '€',
+		position,
+		parameters: { kind: 'const_number', value, unit: '€' },
+	})
+	const sum = (id: string, parameters: unknown[]) => ({
+		kind: 'sum',
+		id,
+		type: 'number',
+		unit: '€',
+		position,
+		parameters,
+	})
+	const rule = (id: string, title: string, value_mechanism: unknown) => ({
+		title,
+		type: 'number',
+		unit: '€',
+		id,
+		position,
+		referenced_by: [],
+		parameters: [],
+		value_mechanism,
+		chained_mechanisms: [],
+	})
+	// two rules hop from the page to a sheet that prints two lines: `enveloppe` prints
+	// one line, `pot` one line, `total` two, and `solo` a figure that opens nothing
+	const inline = {
+		enveloppe: rule(
+			's4',
+			'Enveloppe',
+			sum('s4', [
+				chained(expr('e4', ref('r4', 'pot'))),
+				chained(expr('e5', ref('r5', 'solo'))),
+			]),
+		),
+		pot: rule('s3', 'Pot', sum('s3', [chained(expr('e3', ref('r3', 'total')))])),
+		solo: rule('s2', 'Solo', sum('s2', [chained(expr('e2', constant('c2', 5)))])),
+		total: rule(
+			's1',
+			'Total',
+			sum('s1', [
+				chained(expr('e1', ref('r1', 'part'))),
+				chained(expr('e6', constant('c6', 5))),
+			]),
+		),
+		part: rule('n1', 'Part', {
+			kind: 'not_defined',
+			id: 'n1',
+			type: 'number',
+			unit: '€',
+			position,
+		}),
+	} as unknown as PublicodeAST
+
+	it('opens the single line a sheet prints, and the chain under it', () => {
+		// `pot`'s fiche prints the line `Total`, whose own fiche prints two lines
+		expect([...openRow(inline, 'enveloppe', 'pot')].sort()).toEqual(['pot', 'total'])
+	})
+
+	it('leaves a single line that opens nothing closed', () => {
+		// `solo`'s fiche prints one line, a figure no click answers
+		expect([...openRow(inline, 'enveloppe', 'solo')]).toEqual(['solo'])
+	})
+
+	it('keeps the rows already open', () => {
+		// the answer is the whole state, which the page hands straight back
+		const opened = openRow(inline, 'enveloppe', 'pot', {
+			expanded: new Set(['part']),
+		})
+		expect([...opened].sort()).toEqual(['part', 'pot', 'total'])
+	})
+
+	it('comes open on a page whose own computation prints a single line', () => {
+		// the page of `pot` prints `Total` alone, so the page opens it — and nothing else,
+		// since the sheet of `Total` prints its two lines
+		expect([...openedWithPage(inline, 'pot')]).toEqual(['total'])
+	})
+
+	it('opens nothing on a page with several lines to choose from', () => {
+		expect([...openedWithPage(inline, 'enveloppe')]).toEqual([])
+	})
+
+	it('opens nothing for a literal, which has no line of its own', () => {
+		const view = projectRule(inline, 'solo', { expanded: new Set(['e2']) })
+		const row = view.equation?.rows[0]
+		// the figure is the whole of it: there is nothing a click could open
+		expect(row?.detail).toBeNull()
+		expect(row?.key).toBeNull()
+		expect(row?.control).toBeNull()
 	})
 })

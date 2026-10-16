@@ -1,8 +1,10 @@
 import type * as Ast from '../../ast'
 import type { Ctx, MechanismView } from '../types'
-import { contextInside, projectModifiers } from '../chained'
+import { projectModifiers } from '../chained'
 import { finishRow } from '../operand'
 import { expressionText } from '../expression-text'
+import { binaryMechanism, isBinaryOperation } from './binary'
+import { unaryMechanism } from './unary'
 import { lookupValue, unitOf } from '../value'
 
 export function projectExpr(
@@ -10,23 +12,29 @@ export function projectExpr(
 	mechanism: Ast.ExpressionMechanism,
 	ctx: Ctx,
 ): MechanismView {
-	const result = lookupValue(ctx, mechanism.id, mechanism.type, unitOf(mechanism))
-	const inner = contextInside(node, ctx)
-	const only = ctx.projectExpression(mechanism.parameters, inner)
+	const own = lookupValue(ctx, mechanism.id, mechanism.type, unitOf(mechanism))
 	// the mechanism only wraps an expression the parameter already is: taking that
 	// mechanism as this one saves a level that says nothing, and its own modifiers
 	// hang under the value they change like any others
-	if (only.equation !== null) {
+	const wrapped =
+		isBinaryOperation(mechanism.parameters) ?
+			binaryMechanism(mechanism.parameters, ctx)
+		: mechanism.parameters.kind === 'neg' ?
+			unaryMechanism(mechanism.parameters, ctx)
+		:	null
+	if (wrapped !== null) {
+		// an `expr` node exists to be compiled: where the engine wrote none for it, what
+		// the row is worth is what the operation it carries is worth
+		const value = own.state === 'absent' ? wrapped.result : own
 		return {
-			...only.equation,
-			modifiers: [
-				...only.equation.modifiers,
-				...projectModifiers(node, ctx, result),
-			],
-			result,
+			...wrapped,
+			modifiers: [...wrapped.modifiers, ...projectModifiers(node, ctx, value)],
+			result: value,
 		}
 	}
+	const only = ctx.projectExpression(mechanism.parameters, ctx)
 	const inlineTerm = expressionText(ctx.ast, mechanism.parameters)
+	const value = own.state === 'absent' ? only.value : own
 	// a single literal that reads as the expression itself decomposes into nothing,
 	// so the row keeps its value and opens onto nothing
 	const literal =
@@ -35,7 +43,7 @@ export function projectExpr(
 		keyword: 'expression',
 		inlineTerm,
 		operands: literal ? [] : [finishRow(only, ctx, null, null)],
-		modifiers: projectModifiers(node, ctx, result),
-		result,
+		modifiers: projectModifiers(node, ctx, value),
+		result: value,
 	}
 }

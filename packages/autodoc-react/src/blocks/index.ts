@@ -1,4 +1,4 @@
-import './blocks.css'
+import '@publicodes/autodoc-core/styles/autodoc.css'
 
 export { RulePage } from './RulePage'
 export type { RulePageProps } from './RulePage'

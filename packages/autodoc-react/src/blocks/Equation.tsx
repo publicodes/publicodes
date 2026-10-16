@@ -1,6 +1,8 @@
 import type { EquationView, OperandView } from '@publicodes/autodoc-core'
 import type { ReactElement } from 'react'
 import { useAutodocInteraction } from '../components/AutodocInteractionContext'
+import { AutodocEvaluationTraceProvider } from '../components/AutodocEvaluationTraceContext'
+import { ContextTable } from './ContextTable'
 import { FoldControl } from './FoldControl'
 import { RulePageLink } from './RulePageLink'
 import { Value } from './Value'
@@ -18,15 +20,32 @@ const indentOf = (depth: number): string => '\n' + '\t'.repeat(depth)
  * and what opens under it.
  */
 export function Equation({ view }: { view: EquationView }): ReactElement {
-	return (
-		<div className="publicodes-equation">
+	// the first annotation is where the expression ends: it opens the group, and the lines
+	// under it are read as what the value above is worth rather than as its own terms. An
+	// annotation the sheet opens on separates nothing, and carries no filet of its own.
+	const first = view.rows.findIndex((row) => row.modifier)
+	const firstModifier = first > 0 ? first : -1
+	const lines = (
+		<>
 			{view.head && <Row view={view.head} head />}
 			{view.rows.map((row, index) => (
-				<Row key={index} view={row} />
+				<Row key={index} view={row} firstModifier={index === firstModifier} />
 			))}
 			{view.note !== null && (
 				<p className="publicodes-detail__note">{view.note}</p>
 			)}
+		</>
+	)
+	// a `contexte` mechanism pushes a stack of its own, and its lines are read under it:
+	// what a reader opens from inside them stays in that context
+	return (
+		<div className="publicodes-equation">
+			{view.contextId === null ?
+				lines
+			:	<AutodocEvaluationTraceProvider contextId={view.contextId}>
+					{lines}
+				</AutodocEvaluationTraceProvider>
+			}
 		</div>
 	)
 }
@@ -34,9 +53,11 @@ export function Equation({ view }: { view: EquationView }): ReactElement {
 function Row({
 	view,
 	head = false,
+	firstModifier = false,
 }: {
 	view: OperandView
 	head?: boolean
+	firstModifier?: boolean
 }): ReactElement {
 	const { toggleRow } = useAutodocInteraction()
 	const label = view.label ?? ''
@@ -58,17 +79,27 @@ function Row({
 				(head ? ' publicodes-row--head' : '') +
 				(view.inert ? ' publicodes-row--inert' : '') +
 				(view.open ? ' publicodes-row--open' : '') +
-				(view.key !== null ? ' publicodes-row--unfoldable' : '')
+				(view.key !== null ? ' publicodes-row--unfoldable' : '') +
+				(firstModifier ? ' publicodes-row--first-modifier' : '')
 			}
 		>
 			{indentOf(view.depth)}
-			{/* the answer line has no operator column: two cells, its name and its figure */}
+			{/* the operator column: one label, whether the line carries an operator or a
+			    mechanism's word. A sign is set at the notation's size, a word at the
+			    label's, so the two read as what they are */}
 			{!head && (
 				<>
 					<span className="publicodes-row__gutter">
-						{view.gutterIsMechanism ?
-							<span className="publicodes-row__mechanism">{view.gutter}</span>
-						:	view.gutter}
+						{view.gutter !== '' && (
+							<span
+								className={
+									'publicodes-row__label' +
+									(view.gutterIsMechanism ? ' publicodes-row__label--word' : '')
+								}
+							>
+								{view.gutter}
+							</span>
+						)}
 					</span>
 					{'\t'}
 				</>
@@ -77,7 +108,9 @@ function Row({
 				{view.control === 'term' ?
 					control(
 						'publicodes-row__control' +
-							(view.termIsMechanism ? ' publicodes-row__mechanism' : ''),
+							(view.termIsMechanism ?
+								' publicodes-row__label publicodes-row__label--word'
+							:	''),
 					)
 				:	view.label}
 				{view.page && (
@@ -112,21 +145,31 @@ function Row({
 	// the answer line is not written on a sheet of its own
 	if (head) return line
 
-	// the paper is the block's own background, so it covers the line and the detail
-	// both, and the line itself keeps the row's own box. The wrapper is rendered
-	// either way: were it to appear only once open, React would replace the row's
-	// node on every unfold, and the line would lose its focus and blink.
+	// what a `contexte` binds is not a line with an explanation under it: the table is the
+	// line, and its word takes the operator column, so the header is read with the word
+	if (view.detail !== null && view.detail.context !== null) {
+		return (
+			<div className="publicodes-block" data-paper={view.paper}>
+				<ContextTable label={view.gutter} entries={view.detail.context} />
+			</div>
+		)
+	}
+
+	// a line that opens nothing is no block: the block exists for the sheet a line opens,
+	// and is the only thing that carries a paper. The wrapper stays anonymous rather than
+	// appearing on the first unfold — React would replace the line's node, and the reader
+	// would lose the focus and the place they had it in.
 	return (
 		<div
-			className={
-				'publicodes-block' + (view.detail ? '' : ' publicodes-block--closed')
-			}
-			data-paper={view.paper}
+			className={view.detail ? 'publicodes-block' : undefined}
+			data-paper={view.detail ? view.paper : undefined}
 		>
 			{line}
 			{view.detail && (
 				<div className="publicodes-detail">
-					<Equation view={view.detail} />
+					{view.detail.context === null ?
+						<Equation view={view.detail} />
+					:	<ContextTable entries={view.detail.context} />}
 				</div>
 			)}
 		</div>

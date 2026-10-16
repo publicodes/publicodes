@@ -10,8 +10,6 @@ export function projectConstant(
 	ctx: Ctx,
 ): RawOperand {
 	const parameters = expression.parameters
-	const unit =
-		parameters && 'unit' in parameters ? (parameters.unit ?? null) : null
 	const term = expressionText(ctx.ast, expression)
 	return {
 		id: null,
@@ -21,10 +19,13 @@ export function projectConstant(
 		parameter: null,
 		term:
 			parameters?.kind === 'const_number' ?
-				formatValue(parameters.value, { type: 'number', unit: unit ?? undefined })
+				formatValue(parameters.value, {
+					type: 'number',
+					unit: unitOf(expression),
+				})
 			:	term,
 		named: null,
 		value: lookupValue(ctx, expression.id, expression.type, unitOf(expression)),
-		equation: null,
+		detail: null,
 	}
 }

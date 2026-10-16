@@ -179,15 +179,13 @@ describe('the page of an opened rule', () => {
 })
 
 describe('the documented class names are the override contract', () => {
-	it('renders one block per documented class name', () => {
+	it('renders each block of the default page under its documented class name', () => {
 		const { container } = renderPage()
 		for (const name of [
 			'publicodes-rule-page',
 			'publicodes-rule-header',
 			'publicodes-rule-description',
 			'publicodes-rule-computation',
-			'publicodes-rule-parameters',
-			'publicodes-rule-provenance',
 		]) {
 			expect(container.querySelector(`.${name}`), name).not.toBeNull()
 		}
@@ -257,7 +255,7 @@ describe('unfolding a reference', () => {
 
 	it('stretches the name’s target over the whole line', () => {
 		// the row is the button through this rule, so the rule is the contract
-		const css = readFileSync('src/blocks/blocks.css', 'utf8')
+		const css = readFileSync('../autodoc-core/src/styles/autodoc.css', 'utf8')
 		const rule = css.slice(css.indexOf('.publicodes-row__control::after'))
 		expect(rule.slice(0, rule.indexOf('}'))).toContain('inset: 0')
 	})
@@ -282,13 +280,19 @@ describe('unfolding a reference', () => {
 
 	it('unfolds as one block: the row and its detail', () => {
 		const { container } = openFirstSheet()
-		const block = container.querySelector(
-			'.publicodes-block:not(.publicodes-block--closed)',
-		)
+		const block = container.querySelector('.publicodes-block')
 		expect(block).not.toBeNull()
 		// the block covers the line that opened and the detail it opened
 		expect(block?.querySelector('.publicodes-row')).not.toBeNull()
 		expect(block?.querySelector('.publicodes-detail')).not.toBeNull()
+	})
+
+	it('is no block at all until it opens', () => {
+		// a line that opens nothing is a plain row: a host styles lines and sheets, and
+		// never has to think about a block that draws nothing
+		const { container } = renderPage()
+		expect(container.querySelector('.publicodes-block')).toBeNull()
+		expect(container.querySelectorAll('.publicodes-row').length).toBeGreaterThan(0)
 	})
 
 	it('leaves going elsewhere to the host: a row only unfolds', () => {
@@ -305,9 +309,10 @@ describe('unfolding a reference', () => {
 		expect(detail?.querySelector('a')).toBeNull()
 	})
 
-	it('alternates the paper the block is written on', () => {
+	it('takes the shaded paper for the sheet a row opens', () => {
+		// the page is the white surface, so the sheet it reveals is the shaded one
 		const { container } = openFirstSheet()
-		expect(container.querySelector('.publicodes-block')?.getAttribute('data-paper')).toBe('white')
+		expect(container.querySelector('.publicodes-block')?.getAttribute('data-paper')).toBe('shade')
 	})
 
 	it('closes again from the line that opened it', () => {
@@ -357,7 +362,7 @@ describe('a value the model does not compute here', () => {
 		const { container } = render(<Value value={figure} parameter="par défaut" />)
 		const label = container.querySelector('.publicodes-value__label')
 		expect(label?.textContent).toBe('par défaut')
-		expect(container.querySelector('.publicodes-value__figure')?.contains(label!)).toBe(
+		expect(container.querySelector('.publicodes-value__figure')?.contains(label)).toBe(
 			false,
 		)
 	})
@@ -401,7 +406,7 @@ describe('a mechanism no row can write out', () => {
 		const { container } = render(
 			<RulePage ast={inlineAst} rule="total" evaluation={{ trace: inlineTrace }} />,
 		)
-		const label = container.querySelector('.publicodes-row__mechanism')
+		const label = container.querySelector('.publicodes-row__term .publicodes-row__label')
 		expect(label?.textContent).toBe('variations')
 	})
 })
@@ -434,12 +439,250 @@ describe('a fiche that would open onto nothing else', () => {
 	) as unknown as Trace
 
 	it('shows the terms that had no effect, rather than an empty paper', () => {
+		// the page's own computation prints a single line, so it comes opened
 		const { container } = render(
 			<RulePage ast={inertAst} rule="total" evaluation={{ trace: inertTrace }} />,
 		)
-		fireEvent.click(container.querySelector('button.publicodes-row__control')!)
 		const block = container.querySelector('.publicodes-block')
 		expect(block).not.toBeNull()
 		expect(block?.querySelector('.publicodes-row--inert')).not.toBeNull()
+	})
+
+	it('says so when the reader hides the last term of a sheet', () => {
+		const { container } = render(
+			<RulePage ast={inertAst} rule="total" evaluation={{ trace: inertTrace }} />,
+		)
+		// the fold of the fiche, not the one on the page's own line
+		fireEvent.click(container.querySelector('.publicodes-block .publicodes-fold')!)
+		expect(container.querySelector('.publicodes-detail__note')?.textContent).toBe(
+			'Aucun terme à montrer.',
+		)
+		// the control that hid them is still on the line, so they can be asked for again
+		expect(container.querySelector('.publicodes-block .publicodes-fold')).not.toBeNull()
+	})
+})
+
+describe('a fiche that prints a single line', () => {
+	const sum = (id: string, parameters: unknown[]) => ({
+		kind: 'sum',
+		id,
+		type: 'number',
+		unit: '€',
+		position,
+		parameters,
+	})
+	// `enveloppe` prints one line, `Pot`, whose fiche prints one line too, `Total`,
+	// whose fiche prints two: the chain stops where the reader has something to choose
+	const chainedAst = {
+		...ast,
+		enveloppe: {
+			title: 'Enveloppe', type: 'number', unit: '€', id: 's-3', position,
+			referenced_by: [], parameters: [],
+			value_mechanism: sum('s-3', [expr('e-3', ref('r-3', 'pot'))]),
+			chained_mechanisms: [],
+		},
+		pot: {
+			title: 'Pot', type: 'number', unit: '€', id: 's-2', position,
+			referenced_by: ['enveloppe'], parameters: [],
+			value_mechanism: sum('s-2', [expr('e-2', ref('r-2', 'total'))]),
+			chained_mechanisms: [],
+		},
+	} as unknown as PublicodeAST
+	const chainedTrace = {
+		...trace,
+		's-3': { '': 15 },
+		'e-3': { '': 15 },
+		'r-3': { '': 15 },
+		's-2': { '': 15 },
+		'e-2': { '': 15 },
+		'r-2': { '': 15 },
+	} as unknown as Trace
+	const renderPage = () =>
+		render(
+			<RulePage
+				ast={chainedAst}
+				rule="enveloppe"
+				evaluation={{ trace: chainedTrace }}
+				context={context}
+			/>,
+		)
+	const lines = (container: HTMLElement) =>
+		Array.from(container.querySelectorAll('button.publicodes-row__control'))
+
+	it('opens the line it prints, without the reader asking', () => {
+		// the page's computation prints `Pot` alone, so the page opens its chain
+		const { container } = renderPage()
+		const sheets = container.querySelectorAll('.publicodes-detail')
+		expect(sheets.length).toBe(2)
+		expect(sheets[1].textContent).toContain('Part')
+	})
+
+	it('leaves that line a control, which closes it again on its own', () => {
+		const { container } = renderPage()
+		expect(lines(container)[1].getAttribute('aria-expanded')).toBe('true')
+		fireEvent.click(lines(container)[1])
+		expect(lines(container)[1].getAttribute('aria-expanded')).toBe('false')
+		expect(container.querySelectorAll('.publicodes-detail').length).toBe(1)
+	})
+})
+
+describe('the sheet a `contexte` opens', () => {
+	// `honoraire` vaut `base` sous un contexte qui donne `taux` : l'engine trace la
+	// référence interne sous la pile du mécanisme, et ce qu'il lie à la pile appelante
+	const contextAst = {
+		honoraire: {
+			type: 'number',
+			unit: '€',
+			id: 's9',
+			position,
+			title: 'Honoraire',
+			referenced_by: [],
+			parameters: [],
+			value_mechanism: {
+				kind: 'value',
+				id: 'v9',
+				type: 'number',
+				unit: '€',
+				position,
+				parameters: expr('e9', ref('r9', 'base')),
+			},
+			chained_mechanisms: [
+				{
+					kind: 'context',
+					id: 'ctx1',
+					type: 'number',
+					unit: '€',
+					position,
+					parameters: { taux: expr('e10', constant('c10', 20)) },
+				},
+			],
+		},
+		base: {
+			type: 'number',
+			unit: '€',
+			id: 'n9',
+			position,
+			title: 'Base',
+			referenced_by: ['honoraire'],
+			parameters: [],
+			value_mechanism: { kind: 'not_defined', id: 'n9', type: 'number', unit: '€', position },
+			chained_mechanisms: [],
+		},
+		taux: {
+			type: 'number',
+			unit: '%',
+			id: 'n10',
+			position,
+			title: 'Taux',
+			referenced_by: ['honoraire'],
+			parameters: [],
+			value_mechanism: { kind: 'not_defined', id: 'n10', type: 'number', unit: '%', position },
+			chained_mechanisms: [],
+		},
+	} as unknown as PublicodeAST
+
+	const contextTrace = {
+		ctx1: { '': 40 },
+		e9: { '-ctx1': 40 },
+		r9: { '-ctx1': 40 },
+		e10: { '': 20 },
+		c10: { '': 20 },
+	} as unknown as Trace
+
+	const renderContextPage = () =>
+		render(<RulePage ast={contextAst} rule="honoraire" evaluation={{ trace: contextTrace }} />)
+
+	/** La table du contexte : la seule du calcul. */
+	const contextTable = (container: HTMLElement): Element | null =>
+		container.querySelector('.publicodes-context')
+
+	it('reads its word on the header line, with the columns it opens', () => {
+		const { container } = renderContextPage()
+		const head = contextTable(container)?.querySelector('tr')
+		expect(
+			Array.from(head?.querySelectorAll('th, td') ?? []).map(
+				(cell) => cell.textContent,
+			),
+		).toEqual(['contexte', 'Paramètre', 'Valeur'])
+	})
+
+	it('prints the values it binds without being asked, and carries no control', () => {
+		const { container } = renderContextPage()
+		expect(contextTable(container)?.textContent).toContain('Taux')
+		expect(contextTable(container)?.textContent).toContain('20 %')
+		expect(contextTable(container)?.querySelector('button')).toBeNull()
+	})
+
+	it('keeps the stack of the context in the navigations it offers', () => {
+		const onNavigate = vi.fn()
+		const publicBase = {
+			...contextAst,
+			base: { ...contextAst.base, public: true },
+		} as unknown as PublicodeAST
+		const { container } = render(
+			<AutodocButtonNavigationContext.Provider
+				value={{ rule: 'honoraire', contextStackId: '', onNavigate }}
+			>
+				<RulePage
+					ast={publicBase}
+					rule="honoraire"
+					evaluation={{ trace: contextTrace }}
+				/>
+			</AutodocButtonNavigationContext.Provider>,
+		)
+		fireEvent.click(container.querySelector('button.publicodes-row__control')!)
+		fireEvent.click(container.querySelector('.publicodes-page-link')!)
+		expect(onNavigate).toHaveBeenCalledWith('base', '-ctx1')
+	})
+})
+
+describe('the first annotation of a value', () => {
+	// `total` ne change pas : on lui ajoute un arrondi, qui suit ses termes
+	const annotatedAst = {
+		...ast,
+		total: {
+			...ast.total,
+			chained_mechanisms: [
+				{
+					kind: 'round_nearest',
+					id: 'arrondi1',
+					type: 'number',
+					unit: '€',
+					position,
+					parameters: expr('e5', constant('c4', 2)),
+				},
+			],
+		},
+	} as unknown as PublicodeAST
+	const annotatedTrace = {
+		...trace,
+		e5: { '': 2 },
+		c4: { '': 2 },
+	} as unknown as Trace
+
+	it('is separated from the terms of the expression', () => {
+		const { container } = render(
+			<RulePage
+				ast={annotatedAst}
+				rule="total"
+				evaluation={{ trace: annotatedTrace }}
+				context={context}
+			/>,
+		)
+		const annotations = container.querySelectorAll('.publicodes-row--first-modifier')
+		expect(annotations.length).toBe(1)
+		expect(
+			annotations[0]
+				.querySelector('.publicodes-row__gutter')
+				?.textContent,
+		).toBe('arrondi')
+	})
+
+	it('carries no filet when the sheet opens on one: there is nothing to separate', () => {
+		// `forfait` ne porte qu'un `par défaut`
+		const { container } = render(
+			<RulePage ast={ast} rule="forfait" evaluation={{ trace }} context={context} />,
+		)
+		expect(container.querySelector('.publicodes-row--first-modifier')).toBeNull()
 	})
 })

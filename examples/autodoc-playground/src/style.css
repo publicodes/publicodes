@@ -14,7 +14,8 @@ html {
 	font-size: var(--publicodes-size-body);
 	line-height: 1.5;
 	color: var(--publicodes-ink);
-	background: var(--publicodes-paper-shade);
+	/* the page is the white surface: a sheet opens in the shaded one */
+	background: var(--publicodes-paper-white);
 }
 
 /* the models this playground can show */

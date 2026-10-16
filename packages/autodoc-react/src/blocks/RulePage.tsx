@@ -4,16 +4,13 @@ import type {
 	Evaluation,
 	TraceValue,
 } from '@publicodes/autodoc-core'
-import { projectRule } from '@publicodes/autodoc-core'
+import { openRow, openedWithPage, projectRule } from '@publicodes/autodoc-core'
 import { useContext, useState, type ReactElement } from 'react'
 import { AutodocInteractionContext } from '../components/AutodocInteractionContext'
 import { AutodocEvaluationTraceContext } from '../components/AutodocEvaluationTraceContext'
 import { RuleComputation } from './RuleComputation'
 import { RuleDescription } from './RuleDescription'
 import { RuleHeader } from './RuleHeader'
-import { RuleParameters } from './RuleParameters'
-import { RuleProvenance } from './RuleProvenance'
-import { RuleUsedBy } from './RuleUsedBy'
 
 export interface RulePageProps {
 	ast: PublicodeAST
@@ -26,9 +23,9 @@ export interface RulePageProps {
 
 /**
  * The default page: the blocks, in the order the specification gives them, rendered
- * from one projection. The library's whole state is here — which rows the reader
- * opened, and which held-back terms they asked for — and the projection turns it
- * into a view, so no block holds any.
+ * from one projection. The library's whole state is here — which rows are open, the
+ * reader's own and the ones the page opened for them, and which held-back terms they
+ * asked for — and the projection turns it into a view, so no block holds any.
  */
 export function RulePage({
 	ast,
@@ -39,23 +36,34 @@ export function RulePage({
 }: RulePageProps): ReactElement {
 	const inherited = useContext(AutodocEvaluationTraceContext)
 	const stack = contextStackId ?? inherited.contextStackId
-	const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set())
+	const [expanded, setExpanded] = useState<ReadonlySet<string>>(() =>
+		openedWithPage(ast, rule, { evaluation, contextStackId: stack, context }),
+	)
+	// what the page opened on its own is a state change, not a view the render derives
+	// again: the reader closes those rows like any other, and keeps them closed
+	const [page, setPage] = useState({ rule, stack })
 	const [folds, setFolds] = useState<Readonly<Record<string, boolean>>>({})
-	const view = projectRule(ast, rule, {
+	const options = {
 		evaluation,
 		contextStackId: stack,
 		context,
-		expanded,
 		folds,
-	})
+	}
+	if (page.rule !== rule || page.stack !== stack) {
+		setPage({ rule, stack })
+		setExpanded(
+			(previous) =>
+				new Set([...previous, ...openedWithPage(ast, rule, options)]),
+		)
+	}
+	const view = projectRule(ast, rule, { ...options, expanded })
 	const interaction = {
 		toggleRow: (key: string) =>
-			setExpanded((previous) => {
-				const next = new Set(previous)
-				if (next.has(key)) next.delete(key)
-				else next.add(key)
-				return next
-			}),
+			setExpanded((previous) =>
+				previous.has(key) ?
+					new Set([...previous].filter((open) => open !== key))
+				: openRow(ast, rule, key, { ...options, expanded: previous }),
+			),
 		toggleFold: (id: string, open: boolean) =>
 			setFolds((previous) => ({ ...previous, [id]: open })),
 	}
@@ -68,9 +76,6 @@ export function RulePage({
 					<RuleHeader view={view} />
 					<RuleDescription view={view} />
 					<RuleComputation view={view} />
-					<RuleParameters view={view} />
-					<RuleUsedBy view={view} />
-					<RuleProvenance view={view} />
 				</div>
 			</AutodocEvaluationTraceContext.Provider>
 		</AutodocInteractionContext.Provider>
