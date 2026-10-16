@@ -6,7 +6,7 @@ permissions:
 
 jobs:
   build-compiler:
-    name: Build and publish review
+    name: Build, publish, and deploy website
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,3 +34,22 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/website:${{ steps.build-version.outputs.version }}
+      - name: Map the Dokploy application id
+        id: map-application
+        run: |
+          case "${{ github.ref_name }}" in
+            "master")
+              printf a3JQoOpbyJuKAsm8_nzmb
+              ;;
+            "1.x")
+              printf nzvvdzvZK3FpyYW9Zm6zT
+              ;;
+          esac | xargs -r0 printf 'application_id=%s' >> "$GITHUB_OUTPUT"
+      - name: Dokploy Deployment
+        if: steps.map-application.outputs.application_id
+        uses: benbristow/dokploy-deploy-action@0.2.2
+        with:
+          api_token: ${{ secrets.DOKPLOY_API_KEY }}
+          application_id: ${{ steps.map-application.outputs.application_id }}
+          dokploy_url: https://dokploy.calinou.coop
+          service_type: application
