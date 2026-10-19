@@ -1,0 +1,5 @@
+---
+'@publicodes/cli': patch
+---
+
+test
