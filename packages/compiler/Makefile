@@ -87,7 +87,7 @@ $(SIMPLE_TJM_DIR)/publicodes-build/index.js: $(SIMPLE_TJM_DEPS)
 
 $(SIMPLE_TJM_DIR)/model.publicodes.js: $(SIMPLE_TJM_DEPS) $(COMPILER_PATH)
 	@echo "Recompiling new model.publicodes.js for simple-TJM..."
-	cd $(SIMPLE_TJM_DIR) && ../../$(COMPILER_PATH) compile inputs
+	$(COMPILER_PATH) compile -C $(SIMPLE_TJM_DIR) inputs
 
 #> bench-simple-TJM         | Run the benchmark for the simple-TJM example
 bench-simple-TJM: build $(SIMPLE_TJM_DIR)/publicodes-build/index.js $(SIMPLE_TJM_DIR)/model.publicodes.js
@@ -100,7 +100,7 @@ $(AUTO_ENTREPRENEUR_DIR)/publicodes-build/index.js: $(AUTO_ENTREPRENEUR_DEPS)
 
 $(AUTO_ENTREPRENEUR_DIR)/model.publicodes.js: $(AUTO_ENTREPRENEUR_DEPS) $(COMPILER_PATH)
 	@echo "Recompiling new model.publicodes.js for auto-entrepreneur..."
-	cd $(AUTO_ENTREPRENEUR_DIR) && ../../$(COMPILER_PATH) compile inputs
+	$(COMPILER_PATH) compile -C $(AUTO_ENTREPRENEUR_DIR) inputs
 
 #> bench-auto-entrepreneur  | Run the benchmark for the auto-entrepreneur example
 bench-auto-entrepreneur: build $(AUTO_ENTREPRENEUR_DIR)/publicodes-build/index.js $(AUTO_ENTREPRENEUR_DIR)/model.publicodes.js
