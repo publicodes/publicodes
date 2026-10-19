@@ -1,9 +1,6 @@
 name: Release
 
-on:
-  push:
-    branches:
-      - 1.x
+on: [push]
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
