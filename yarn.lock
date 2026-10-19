@@ -1969,6 +1969,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@publicodes/first-package@workspace:examples/first-package":
+  version: 0.0.0-use.local
+  resolution: "@publicodes/first-package@workspace:examples/first-package"
+  languageName: unknown
+  linkType: soft
+
 "@publicodes/react-ui@npm:^1.0":
   version: 1.10.0
   resolution: "@publicodes/react-ui@npm:1.10.0"

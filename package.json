@@ -6,7 +6,8 @@
 		"website",
 		"packages/*",
 		"packages/compiler/tests/runtimes/JS",
-		"packages/compiler/examples"
+		"packages/compiler/examples",
+		"examples/first-package/"
 	],
 	"type": "module",
 	"scripts": {
