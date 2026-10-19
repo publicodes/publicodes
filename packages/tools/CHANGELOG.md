@@ -1,5 +1,11 @@
 # @publicodes/tools
 
+## 1.10.6
+
+### Patch Changes
+
+- [#892](https://github.com/publicodes/publicodes/pull/892) [`fdda625`](https://github.com/publicodes/publicodes/commit/fdda6254e64713e069a5293b3bb6c2635c11918f) Thanks [@stacyharper](https://github.com/stacyharper)! - Rebuild with changesets 3.x
+
 ## 1.10.5
 
 ### Patch Changes
