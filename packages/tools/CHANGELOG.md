@@ -1,5 +1,11 @@
 # @publicodes/tools
 
+## 1.10.5
+
+### Patch Changes
+
+- [`d36f2ca`](https://github.com/publicodes/publicodes/commit/d36f2cae333045028f576b226e4e727991b38cf2) Thanks [@stacyharper](https://github.com/stacyharper)! - Publish from the CI
+
 ## 1.10.2
 
 ### Patch Changes

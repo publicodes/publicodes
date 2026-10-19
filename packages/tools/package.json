@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/tools",
-	"version": "1.10.2",
+	"version": "1.10.5",
 	"description": "A CLI tool for Publicodes",
 	"keywords": [
 		"compilation",
