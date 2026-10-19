@@ -4,6 +4,7 @@
 		"@changesets/changelog-github",
 		{ "repo": "publicodes/publicodes" }
 	],
+	"baseBranch": "1.x",
 	"commit": false,
 	"fixed": [],
 	"linked": [
@@ -17,7 +18,6 @@
 	"access": "public",
 	"baseBranch": "master",
 	"updateInternalDependencies": "patch",
-	"ignore": [],
 	"___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
 		"onlyUpdatePeerDependentsWhenOutOfRange": true
 	}
