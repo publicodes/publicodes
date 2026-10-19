@@ -195,6 +195,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7313e849_42e5cfda",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-10-19T09:00:17Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "3715828b_a67f8c7f",
+      "range": {
+        "startLine": 38,
+        "startChar": 19,
+        "endLine": 38,
+        "endChar": 27
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a42889d7_23598c25",
@@ -244,6 +268,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "741d0496_44da0f0d",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-10-19T09:00:17Z",
+      "side": 1,
+      "message": "Est-ce que ce n\u0027est pas un problème de la sémantique de `Rule_name.parents` dans ce cas là ? Est-ce que ça fait sens d\u0027avoir une règle comme propre parent d\u0027elle-même ?",
+      "parentUuid": "8fe5a9d3_d37ad928",
+      "range": {
+        "startLine": 99,
+        "startChar": 6,
+        "endLine": 99,
+        "endChar": 42
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "68373209_415b8b6a",
         "filename": "packages/compiler/lib/eval_tree/replacements.ml",
         "patchSetId": 4
@@ -279,6 +327,30 @@
       "side": 1,
       "message": "Pourquoi faire? on ne l\u0027utilise que ici, c\u0027est déjà une fonction nommée, et on comprends déja clairement l\u0027intention",
       "parentUuid": "68373209_415b8b6a",
+      "range": {
+        "startLine": 98,
+        "startChar": 4,
+        "endLine": 125,
+        "endChar": 26
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b9ee03db_e0430691",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-10-19T09:00:17Z",
+      "side": 1,
+      "message": "On pourrait simplement avoir une fonction `check_parent_applicability_on_namespace` et ainsi avoir qu\u0027un appel de fonction qui par son nom explicite ce qui est fait et éviter de rallonger une fonction interne. On pourrait également avoir une fonction `Shared_ast.get_parents_applicable_on_namespace`. \n\nAprès j\u0027ai conscience que c\u0027est de la pure organisation de code/\"bonnes\" pratiques donc si c\u0027est trop divergent avec tes pratiques à toi c\u0027est pas bloquant par rapport au fait de rajouter des tests 👍",
+      "parentUuid": "f2217bbf_1f76333e",
       "range": {
         "startLine": 98,
         "startChar": 4,
