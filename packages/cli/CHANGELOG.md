@@ -1,5 +1,11 @@
 # @publicodes/cli
 
+## 2.0.0-alpha.3
+
+### Patch Changes
+
+- [`6ec297b`](https://github.com/publicodes/publicodes/commit/6ec297b6f4c26ce9a1fa88673e12b9a8b6b291be) Thanks [@stacyharper](https://github.com/stacyharper)! - test
+
 ## 2.0.0-alpha.2
 
 ### Patch Changes
