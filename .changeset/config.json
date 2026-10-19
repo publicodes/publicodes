@@ -6,6 +6,7 @@
 			"repo": "publicodes/publicodes"
 		}
 	],
+	"baseBranch": "master",
 	"commit": false,
 	"fixed": [
 		[
@@ -23,7 +24,6 @@
 	"access": "public",
 	"baseBranch": "master",
 	"updateInternalDependencies": "patch",
-	"ignore": [],
 	"___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
 		"onlyUpdatePeerDependentsWhenOutOfRange": true
 	}
