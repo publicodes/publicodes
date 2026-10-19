@@ -57,7 +57,7 @@ dev:
 #> test-js                  | Run JavaScript tests using yarn
 test-js: build
 	@echo "Running JavaScript tests..."
-	PUBLICODES_COMPILER_PATH=../../../$(COMPILER_PATH) yarn --cwd $(JS_TESTS_DIR) test $(TEST)
+	PUBLICODES_COMPILER_PATH=../../../$(COMPILER_PATH) yarn --cwd $(JS_TESTS_DIR) test:compiler $(TEST)
 
 #> test-ocaml               | Run OCaml unit and cram tests using dune
 test-ocaml:
