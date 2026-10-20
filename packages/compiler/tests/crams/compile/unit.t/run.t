@@ -77,19 +77,44 @@ Unit inference :
 
 Unit with percent :
 
-  $ publicodes compile percent
+  $ publicodes compile -t debug_eval_tree -o - percent 
+  a:
+    5. % * 15.
+  
+  b:
+    (10. % * 50. €) * 0.01
+  
+  c:
+    5. %/étoile * 5. étoile
+  
+  d:
+    (4. € / 85. %) * 100.
+  
+  simplification:
+    get_context(simplification)
+  
+  simplification . inline:
+    (5. % * 4. €) * 0.01
+  
+  simplification . mechanism:
+    (4. € * 5. %) * 0.01
+
+Unit with percent error:
+
+  $ publicodes compile percent-error
   
   E025 unités non compatibles [type error]
-       ╒══  percent/rules.publicodes:14:4 ══
-    13 │ # should have error
-    14 │ e: 5%/an + 4€/an
+       ╒══  percent-error/rules.publicodes:3:4 ══
+     2 │ # should have error
+     3 │ e: 5%/an + 4€/an
        │    ˘˘˘˘˘˘ unité: %/an
-       ╒══  percent/rules.publicodes:14:12 ══
-    13 │ # should have error
-    14 │ e: 5%/an + 4€/an
+       ╒══  percent-error/rules.publicodes:3:12 ══
+     2 │ # should have error
+     3 │ e: 5%/an + 4€/an
        │            ˘˘˘˘˘ unité: €/an
   
   [123]
+
 
 Add unit information with `unité` mechanism :
 
