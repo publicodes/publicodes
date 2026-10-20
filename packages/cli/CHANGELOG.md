@@ -1,5 +1,11 @@
 # @publicodes/cli
 
+## 2.0.0-alpha.3
+
+### Patch Changes
+
+- [#897](https://github.com/publicodes/publicodes/pull/897) [`138af03`](https://github.com/publicodes/publicodes/commit/138af0395f7d2b379b149e3745da428d0bdefa98) Thanks [@stacyharper](https://github.com/stacyharper)! - Fix the --version argument
+
 ## 2.0.0-alpha.2
 
 ### Patch Changes
