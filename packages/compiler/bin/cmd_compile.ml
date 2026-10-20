@@ -48,7 +48,7 @@ let cmd =
     Cmd.Exit.info Cli.exit_parsing_err ~doc:"on parsing error"
     :: Cmd.Exit.defaults
   in
-  Cmd.v (Cmd.info "compile" ~doc ~version:"%%VERSION%%" ~exits)
+  Cmd.v (Cmd.info "compile" ~doc ~exits)
   @@
   let+ input = input
   and+ output_file = output_file

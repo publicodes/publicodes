@@ -14,3 +14,9 @@
  (flags (:standard -cclib -static -cclib -no-pie))
  (preprocess
   (pps config.ppx)))
+
+(rule
+ (targets version.ml)
+ (action
+  (with-stdout-to %{targets}
+   (echo "let version = \"%{version:publicodes}\""))))
