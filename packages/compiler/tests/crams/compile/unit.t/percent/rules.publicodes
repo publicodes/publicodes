@@ -10,10 +10,11 @@ c: 5 %/étoile * 5 étoile
 # should be €
 d: 4 € / 85%
 
-# should have error
-e: 5%/an + 4€/an
+simplification:
+  avec:
+    inline: 5% * 4€
 
-
-# Simplification
-#
-f: 5% * 4€
+    mechanism:
+      produit:
+        - 5%
+        - 4€

@@ -69,4 +69,31 @@ multiplication:
 		expect(d.evaluate().value).toEqual(100)
 		expect(d.unit).toBe('%')
 	})
+
+	it('simplify over exception', async () => {
+		const { c } = await yaml`
+    a: 20 %
+    b:
+      remplace: a
+      valeur: 10%
+    c: 100€ * a
+
+    `
+		expect(c.evaluate().value).toEqual(10)
+		expect(c.unit).toBe('€')
+	})
+
+
+		it('simplify over product', async () => {
+			const { a } = await yaml`
+    a:
+      produit:
+        - 10€
+        - 10%
+    `
+			expect(a.evaluate().value).toEqual(1)
+			expect(a.unit).toBe('€')
+		})
+
+
 })

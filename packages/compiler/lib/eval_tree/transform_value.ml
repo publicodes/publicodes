@@ -17,6 +17,50 @@ let convert_constant expr_const =
   | Date d ->
       Date d
 
+let get_unit_exn typ =
+  match typ with
+  | Some (Typ.TNumber (Some unit))
+  | Some (Typ.Literal (LNumber (_, Some unit), _))
+  | Some (Typ.TEnum ((LNumber (_, Some unit), _) :: _)) ->
+      unit
+  | _ ->
+      failwith "No unit"
+
+let transform_decimal ~pos ~typ expr from_unit to_unit =
+  let percent_pow_from = Map.find from_unit "%" |> Option.value ~default:0 in
+  let percent_pow_to = Map.find to_unit "%" |> Option.value ~default:0 in
+  Tree.mk_value ~pos ~meta:typ
+    (Binary_op
+       ( Mark.mk_pos ~pos Shared_ast.Mul
+       , expr
+       , Tree.mk_value ~pos ~meta:(Some (Typ.TNumber (Some Units.empty)))
+           (Const
+              (Number
+                 ( 100. **. Float.of_int (percent_pow_to - percent_pow_from)
+                 , None ) ) ) ) )
+
+let transform_percent typ pos op left_value right_value =
+  let unit = get_unit_exn typ in
+  let right_typ = left_value.meta in
+  let left_typ = right_value.meta in
+  let right_unit = get_unit_exn right_typ in
+  let left_unit = get_unit_exn left_typ in
+  let op_unit =
+    match op with
+    | Shared_ast.Mul, _ ->
+        Units.mul right_unit left_unit
+    | Shared_ast.Div, _ ->
+        Units.mul right_unit (Units.inv left_unit)
+    | _ ->
+        failwith "Unexpected operator"
+  in
+  let expr : Typ.t option value =
+    Tree.mk_value ~meta:typ ~pos (Binary_op (op, left_value, right_value))
+  in
+  if not (Units.equal op_unit unit) then
+    transform_decimal ~pos ~typ expr op_unit unit
+  else expr
+
 let rec transform ?(undefined = Tree.const_not_defined)
     (value : Shared_ast.typed_value) : Typ.t option Tree.value =
   let node, _ = value in
@@ -31,28 +75,6 @@ let rec transform ?(undefined = Tree.const_not_defined)
   in
   unfold_chainable_mechanism ~init:value node.chainable_mechanisms
 
-and get_unit_exn typ =
-  match typ with
-  | Some (Typ.TNumber (Some unit))
-  | Some (Typ.Literal (LNumber (_, Some unit), _))
-  | Some (Typ.TEnum ((LNumber (_, Some unit), _) :: _)) ->
-      unit
-  | _ ->
-      failwith "No unit"
-
-and transform_decimal ~pos ~typ expr from_unit to_unit =
-  let percent_pow_from = Map.find from_unit "%" |> Option.value ~default:0 in
-  let percent_pow_to = Map.find to_unit "%" |> Option.value ~default:0 in
-  Tree.mk_value ~pos ~meta:typ
-    (Binary_op
-       ( Mark.mk_pos ~pos Shared_ast.Mul
-       , expr
-       , Tree.mk_value ~pos ~meta:(Some (Typ.TNumber (Some Units.empty)))
-           (Const
-              (Number
-                 ( 100. **. Float.of_int (percent_pow_to - percent_pow_from)
-                 , None ) ) ) ) )
-
 and transform_expr
     ((expr, {pos; typ}) :
       (Shared.Rule_name.t, Shared_ast.typed_mark) Shared_ast.expr ) =
@@ -60,33 +82,11 @@ and transform_expr
   match expr with
   | Const value ->
       mk_value (Const (convert_constant value))
-  | Binary_op
-      ( (((Shared_ast.Mul as op_kind), _) as op)
-      , ((_, {Shared_ast.typ= right_typ; _}) as left)
-      , ((_, {Shared_ast.typ= left_typ; _}) as right) )
-  | Binary_op
-      ( (((Shared_ast.Div as op_kind), _) as op)
-      , ((_, {Shared_ast.typ= right_typ; _}) as left)
-      , ((_, {Shared_ast.typ= left_typ; _}) as right) ) ->
-      let unit = get_unit_exn typ in
-      let right_unit = get_unit_exn right_typ in
-      let left_unit = get_unit_exn left_typ in
-      let open Units in
-      let op_unit =
-        match op_kind with
-        | Shared_ast.Mul ->
-            mul right_unit left_unit
-        | Shared_ast.Div ->
-            mul right_unit (inv left_unit)
-        | _ ->
-            failwith "Unexpected operator"
-      in
-      let expr : Typ.t option value =
-        mk_value (Binary_op (op, transform_expr left, transform_expr right))
-      in
-      if not (equal op_unit unit) then
-        transform_decimal ~pos ~typ expr op_unit unit
-      else expr
+  | Binary_op (((Shared_ast.Mul, _) as op), left, right)
+  | Binary_op (((Shared_ast.Div, _) as op), left, right) ->
+      let left_value = transform_expr left in
+      let right_value = transform_expr right in
+      transform_percent typ pos op left_value right_value
   | Binary_op (op, left, right) ->
       mk_value (Binary_op (op, transform_expr left, transform_expr right))
   | Unary_op ((Neg, {pos}), expr) ->
@@ -172,15 +172,15 @@ and transform_sum ~pos ~typ nodes =
             (Tree.binop_add ~pos (transform node) acc) )
 
 and transform_product ~pos ~typ nodes =
+  let op = Mark.mk_pos Shared_ast.Mul ~pos in
   match nodes with
   | [] ->
-      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
-        ~meta:(Some Typ.TBool) ~pos Tree.const_not_applicable
+      (* FIXME: is missing the type NotApplicable *)
+      Tree.mk_value ~meta:(Some Typ.TBool) ~pos Tree.const_not_applicable
   | n :: nodes ->
       let value = transform n in
-      List.fold_right nodes ~init:value ~f:(fun node acc ->
-          Tree.mk_value ~pos ~meta:typ
-            (Tree.binop_mul ~pos (transform node) acc) )
+      List.fold nodes ~init:value ~f:(fun acc node ->
+          transform_percent typ pos op (transform node) acc )
 
 and transform_average ~pos ~typ nodes =
   let p = Tree.mk_value ~pos in
