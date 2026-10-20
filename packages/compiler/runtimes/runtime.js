@@ -735,16 +735,18 @@ function $ret(id, ctx, value) {
  * @throws {RuntimeError} supposed exclusive replacements are not (2 or + are applicable)
  */
 function $exclusive_replacement(target, replacements, ctx, params) {
-	const applicableReplacements = replacements.filter((r) => {
-		const value = $ref(r[0], r[1], ctx, params)
-		return !isNotApplicable(value)
+	const evaluatedReplacements = replacements.map((r) => {
+		return [r[0], $ref(r[0], r[1], ctx, params)]
 	})
+	const applicableReplacements = evaluatedReplacements.filter(
+		([_, val]) => !isNotApplicable(val),
+	)
+
 	switch (applicableReplacements.length) {
 		case 0:
 			return target(ctx, params)
 		case 1:
-			const replacement = applicableReplacements[0]
-			return $ref(replacement[0], replacement[1], ctx, params)
+			return evaluatedReplacements[0][1]
 		default:
 			const applicableReplacementsRuleNames = applicableReplacements.map(
 				(r) => r[0],
