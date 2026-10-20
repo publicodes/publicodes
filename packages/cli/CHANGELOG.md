@@ -1,5 +1,11 @@
 # @publicodes/cli
 
+## 2.0.0-alpha.4
+
+### Patch Changes
+
+- [#900](https://github.com/publicodes/publicodes/pull/900) [`ffb274c`](https://github.com/publicodes/publicodes/commit/ffb274c1b83ed0f16962cd2428f8076f8b8cc04b) Thanks [@stacyharper](https://github.com/stacyharper)! - Triggers a rebuild
+
 ## 2.0.0-alpha.3
 
 ### Patch Changes
