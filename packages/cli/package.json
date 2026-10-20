@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/cli",
-	"version": "2.0.0-alpha.3",
+	"version": "2.0.0-alpha.4",
 	"description": "A CLI tool for Publicodes",
 	"type": "module",
 	"repository": {
@@ -9,10 +9,10 @@
 		"directory": "packages/cli"
 	},
 	"optionalDependencies": {
-		"@publicodes/cli-darwin-arm64": "2.0.0-alpha.3",
-		"@publicodes/cli-darwin-x64": "2.0.0-alpha.3",
-		"@publicodes/cli-linux-arm64": "2.0.0-alpha.3",
-		"@publicodes/cli-linux-x64": "2.0.0-alpha.3",
-		"@publicodes/cli-win32-x64": "2.0.0-alpha.3"
+		"@publicodes/cli-darwin-arm64": "2.0.0-alpha.4",
+		"@publicodes/cli-darwin-x64": "2.0.0-alpha.4",
+		"@publicodes/cli-linux-arm64": "2.0.0-alpha.4",
+		"@publicodes/cli-linux-x64": "2.0.0-alpha.4",
+		"@publicodes/cli-win32-x64": "2.0.0-alpha.4"
 	}
 }
