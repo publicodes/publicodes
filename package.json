@@ -24,7 +24,7 @@
 		"dev": "turbo run dev --filter=\"website...\"",
 		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\" \"**/.turbo\"",
 		"release": "run prepack && changeset publish",
-		"version": "changeset version && prettier --write '**/CHANGELOG.md' && yarn install --refresh-lockfile"
+		"version": "./.changeset/version.sh"
 	},
 	"dependencies": {
 		"changeset": "^0.2.6"

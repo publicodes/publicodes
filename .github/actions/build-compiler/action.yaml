@@ -24,12 +24,20 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Fetch the compiler version
+      id: build-version
+      shell: bash
+      working-directory: ${{ inputs.compiler-path }}
+      run: |
+        version=$(awk '/^version: ".*"$/ { gsub(/"/, "", $2); printf $2 }' publicodes.opam)
+        printf 'version=%s' "$version" >> "$GITHUB_OUTPUT"
     - name: Restore cached build
       id: cache-build-restore
       uses: actions/cache/restore@v4
       with:
         path: ${{ inputs.compiler-path }}/_build
-        key: ${{ inputs.platform }}-${{ hashFiles(
+        key:
+          ${{ inputs.platform }}-${{ steps.build-version.outputs.version }}-${{ hashFiles(
           format('{0}/**/*',  inputs.compiler-path),
           format('!{0}/_build/**/*',  inputs.compiler-path)
           ) }}-build
