@@ -73,6 +73,8 @@ jobs:
           merge-multiple: true
       - name: Untar builds artifacts
         run: find . -name '*.tar.gz' -maxdepth 1 -exec tar -xvf {} \;
+      - name: Inspect extracted bins
+        run: ls -lh packages/cli-*/bin
 
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v2

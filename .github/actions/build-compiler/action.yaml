@@ -87,6 +87,10 @@ runs:
         path: ${{ inputs.compiler-path }}/_build
         key: ${{ steps.cache-build-restore.outputs.cache-primary-key }}
 
+    - name: Inspect built bin
+      run: ls -lh packages/cli-${{ inputs.cli }}/bin
+      shell: bash
+
     # Tar to preserve permissions and paths
     - name: Tar build artifact
       run: tar -zcvf ${{ inputs.cli }}.tar.gz packages/cli-${{ inputs.cli }}/bin

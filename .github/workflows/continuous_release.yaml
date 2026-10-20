@@ -55,6 +55,8 @@ jobs:
           merge-multiple: true
       - name: Untar builds artifacts
         run: find . -name '*.tar.gz' -maxdepth 1 -exec tar -xvf {} \;
+      - name: Inspect extracted bins
+        run: ls -lh packages/cli-*/bin
       - run: yarn build
       - name: Continuously Release
         run: npx pkg-pr-new publish './packages/*'
