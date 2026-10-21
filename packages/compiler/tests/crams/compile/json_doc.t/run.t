@@ -1387,15 +1387,15 @@ Valid json doc :
   function _b(ctx, params) {
     return /** @type {number} */ (
       $ret("42af92aad66aef67de55ea117b04b7bb", ctx, $add(
-        $ret("fdf43fcb0f9e59345833e87010cf2284", ctx, $ref("a", _a, ctx, params)),
         $ret("42af92aad66aef67de55ea117b04b7bb", ctx, $add(
-          $ret("7645595219f544844a979bd48abe21fa", ctx, $ref("b . c", _b_·_c, ctx, params)),
           $ret("cf6b772cd42698f02d7e852a34313551", ctx, ((ctx) => $ret("22e546e7e75af96371f69ad2d8af2964", ctx, $ref("a", _a, ctx, params)))(
           			{
           				...ctx,
           					"a": $ret("df39a19cbe24fa860540eb7e75d9de92", ctx, 30.),
           			}
-          		))))))
+          		)),
+          $ret("fdf43fcb0f9e59345833e87010cf2284", ctx, $ref("a", _a, ctx, params)))),
+        $ret("7645595219f544844a979bd48abe21fa", ctx, $ref("b . c", _b_·_c, ctx, params))))
     )
   
   function _b_·_c(ctx, params) {
@@ -1570,15 +1570,15 @@ Valid json doc :
   function _b(ctx, params) {
     return /** @type {number} */ (
       $add(
-        $ref("a", _a, ctx, params),
         $add(
-          $ref("b . c", _b_·_c, ctx, params),
           ((ctx) => $ref("a", _a, ctx, params))(
           			{
           				...ctx,
           					"a": 30.,
           			}
-          		)))
+          		),
+          $ref("a", _a, ctx, params)),
+        $ref("b . c", _b_·_c, ctx, params))
     )
   
   function _b_·_c(ctx, params) {

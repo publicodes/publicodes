@@ -83,17 +83,14 @@ multiplication:
 		expect(c.unit).toBe('€')
 	})
 
-
-		it('simplify over product', async () => {
-			const { a } = await yaml`
+	it('simplify over product', async () => {
+		const { a } = await yaml`
     a:
       produit:
         - 10€
         - 10%
     `
-			expect(a.evaluate().value).toEqual(1)
-			expect(a.unit).toBe('€')
-		})
-
-
+		expect(a.evaluate().value).toEqual(1)
+		expect(a.unit).toBe('€')
+	})
 })

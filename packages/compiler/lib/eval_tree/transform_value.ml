@@ -26,19 +26,13 @@ let get_unit_exn typ =
   | _ ->
       failwith "No unit"
 
-let transform_decimal ~pos ~typ expr from_unit to_unit =
-  let percent_pow_from = Map.find from_unit "%" |> Option.value ~default:0 in
-  let percent_pow_to = Map.find to_unit "%" |> Option.value ~default:0 in
-  Tree.mk_value ~pos ~meta:typ
-    (Binary_op
-       ( Mark.mk_pos ~pos Shared_ast.Mul
-       , expr
-       , Tree.mk_value ~pos ~meta:(Some (Typ.TNumber (Some Units.empty)))
-           (Const
-              (Number
-                 ( 100. **. Float.of_int (percent_pow_to - percent_pow_from)
-                 , None ) ) ) ) )
+(** [transform_percent typ pos op left_value right_value] transforms a
+    binary operation and handles the case where there is a percentage involved
+    by multiplying by 100 to convert to the correct unit.
 
+
+    For example the [10 % * 20 €] expression will be transformed into
+    [(10 % * 20 €) * 0.01]. *)
 let transform_percent typ pos op left_value right_value =
   let unit = get_unit_exn typ in
   let right_typ = left_value.meta in
@@ -54,12 +48,19 @@ let transform_percent typ pos op left_value right_value =
     | _ ->
         failwith "Unexpected operator"
   in
-  let expr : Typ.t option value =
-    Tree.mk_value ~meta:typ ~pos (Binary_op (op, left_value, right_value))
-  in
-  if not (Units.equal op_unit unit) then
-    transform_decimal ~pos ~typ expr op_unit unit
-  else expr
+  let expr = Binary_op (op, left_value, right_value) in
+  if Units.equal op_unit unit then expr
+  else
+    let percent_pow_from = Map.find op_unit "%" |> Option.value ~default:0 in
+    let percent_pow_to = Map.find unit "%" |> Option.value ~default:0 in
+    Binary_op
+      ( Mark.mk_pos ~pos Shared_ast.Mul
+      , Tree.mk_value ~meta:typ ~pos expr
+      , Tree.mk_value ~pos ~meta:(Some (Typ.TNumber (Some Units.empty)))
+          (Const
+             (Number
+                (100. **. Float.of_int (percent_pow_to - percent_pow_from), None)
+             ) ) )
 
 let rec transform ?(undefined = Tree.const_not_defined)
     (value : Shared_ast.typed_value) : Typ.t option Tree.value =
@@ -86,7 +87,10 @@ and transform_expr
   | Binary_op (((Shared_ast.Div, _) as op), left, right) ->
       let left_value = transform_expr left in
       let right_value = transform_expr right in
-      transform_percent typ pos op left_value right_value
+      let with_transformed_percent =
+        transform_percent typ pos op left_value right_value
+      in
+      mk_value with_transformed_percent
   | Binary_op (op, left, right) ->
       mk_value (Binary_op (op, transform_expr left, transform_expr right))
   | Unary_op ((Neg, {pos}), expr) ->
@@ -104,20 +108,36 @@ and transform_mechanism_value
       Tree.mk_value ~pos ~meta:typ (Const Not_defined)
   | Expr expr ->
       transform_expr expr
-  | Sum sum ->
-      transform_sum ~pos ~typ sum
-  | Product product ->
-      transform_product ~pos ~typ product
-  | Average average ->
-      transform_average ~pos ~typ average
-  | One_of any_of ->
-      transform_any_of ~pos ~typ any_of
-  | All_of all_of ->
-      transform_all_of ~pos ~typ all_of
-  | Min_of all_of ->
-      transform_min_of ~pos ~typ all_of
-  | Max_of all_of ->
-      transform_max_of ~pos ~typ all_of
+  | Sum values ->
+      transform_fold values ~pos ~typ ~f:(fun left right ->
+          Tree.binop_add ~pos left right )
+  | Product values ->
+      let op = Mark.mk_pos Shared_ast.Mul ~pos in
+      transform_fold values ~pos ~typ ~f:(transform_percent typ pos op)
+  | Average values ->
+      transform_average ~pos ~typ values
+  | One_of values ->
+      let init =
+        Tree.mk_value ~pos
+          ~meta:(Some (Typ.Literal (Mark.mk_pos ~pos Typ.(LBool false))))
+          Tree.const_false
+      in
+      transform_fold values ~pos ~typ ~init ~f:(fun left right ->
+          Tree.binop_or ~pos left right )
+  | All_of values ->
+      let init =
+        Tree.mk_value ~pos
+          ~meta:(Some (Typ.Literal (Mark.mk_pos ~pos Typ.(LBool true))))
+          Tree.const_true
+      in
+      transform_fold values ~pos ~typ ~init ~f:(fun left right ->
+          Tree.binop_and ~pos left right )
+  | Min_of values ->
+      transform_fold values ~pos ~typ ~f:(fun left right ->
+          Tree.binop_min ~pos left right )
+  | Max_of values ->
+      transform_fold values ~pos ~typ ~f:(fun left right ->
+          Tree.binop_max ~pos left right )
   | Value value ->
       transform value
   | Variations variations ->
@@ -159,28 +179,25 @@ and unfold_chainable_mechanism ~init mechanisms =
          | Round round ->
              transform_round ~pos ~typ round acc )
 
-(* TODO: a lot of factorisation possible here! *)
-and transform_sum ~pos ~typ nodes =
-  match nodes with
-  | [] ->
-      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
-        ~meta:(Some Typ.TBool) ~pos Tree.const_not_applicable
-  | n :: nodes ->
-      let value = transform n in
-      List.fold_right nodes ~init:value ~f:(fun node acc ->
-          Tree.mk_value ~pos ~meta:typ
-            (Tree.binop_add ~pos (transform node) acc) )
+(** [transform_fold ~pos ~typ ?init ~f values] returns [f (... f (f (f init e1) e2) e3...) en],
+    where [e1..en] are the transformed elements of [values] and [init] is the
+    initial value (by default the first transformed element of [values]).
 
-and transform_product ~pos ~typ nodes =
-  let op = Mark.mk_pos Shared_ast.Mul ~pos in
-  match nodes with
+    If [values] is empty, returns the constant [NotApplicable] with the given
+    [pos] and [typ]. *)
+and transform_fold ~pos ~typ ?init ~f values =
+  match values with
   | [] ->
       (* FIXME: is missing the type NotApplicable *)
-      Tree.mk_value ~meta:(Some Typ.TBool) ~pos Tree.const_not_applicable
-  | n :: nodes ->
-      let value = transform n in
-      List.fold nodes ~init:value ~f:(fun acc node ->
-          transform_percent typ pos op (transform node) acc )
+      Tree.mk_value ~meta:typ ~pos Tree.const_not_applicable
+  | hd :: tl ->
+      let values = if Option.is_none init then tl else values in
+      let init = match init with Some init -> init | None -> transform hd in
+      List.fold ~init
+        ~f:(fun acc node ->
+          let naked_value = f acc (transform node) in
+          Tree.mk_value ~pos ~meta:typ naked_value )
+        values
 
 and transform_average ~pos ~typ nodes =
   let p = Tree.mk_value ~pos in
@@ -210,71 +227,19 @@ and transform_average ~pos ~typ nodes =
       p (* FIXME: is missing the type NotApplicable *)
         ~meta:(Some Typ.TBool) Tree.const_not_applicable
   | n :: nodes ->
-      let value = transform n in
+      let first_value = transform n in
       let nodes = List.map nodes ~f:transform in
       let sum =
-        let init = value in
-        List.fold_right nodes ~init ~f:(fun node acc ->
-            p ~meta:typ (Tree.binop_add ~pos node acc) )
+        List.fold nodes ~init:first_value ~f:(fun acc node ->
+            p ~meta:typ (Tree.binop_add ~pos acc node) )
       in
       let count =
-        let init = count_applicable value in
+        let init = count_applicable first_value in
         let counts = List.map nodes ~f:count_applicable in
-        List.fold_right counts ~init ~f:(fun node acc ->
-            p ~meta:typ (Tree.binop_add ~pos node acc) )
+        List.fold counts ~init ~f:(fun acc node ->
+            p ~meta:typ (Tree.binop_add ~pos acc node) )
       in
       p ~meta:typ (Tree.binop_div ~pos sum count)
-
-and transform_any_of ~pos ~typ nodes =
-  match nodes with
-  | [] ->
-      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
-        ~meta:(Some Typ.TBool) ~pos Tree.const_not_applicable
-  | nodes ->
-      let init =
-        Tree.mk_value ~pos
-          ~meta:(Some (Typ.Literal (Mark.mk_pos ~pos Typ.(LBool false))))
-          Tree.const_false
-      in
-      List.fold_right nodes ~init ~f:(fun node acc ->
-          Tree.mk_value ~pos ~meta:typ (Tree.binop_or ~pos (transform node) acc) )
-
-and transform_all_of ~pos ~typ nodes =
-  match nodes with
-  | [] ->
-      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
-        ~meta:(Some Typ.TBool) ~pos Tree.const_not_applicable
-  | nodes ->
-      let init =
-        Tree.mk_value ~pos
-          ~meta:(Some (Typ.Literal (Mark.mk_pos ~pos Typ.(LBool true))))
-          Tree.const_true
-      in
-      List.fold_right nodes ~init ~f:(fun node acc ->
-          Tree.mk_value ~pos ~meta:typ
-            (Tree.binop_and ~pos (transform node) acc) )
-
-and transform_max_of ~pos ~typ nodes =
-  match nodes with
-  | [] ->
-      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
-        ~meta:(Some Typ.TBool) ~pos Tree.const_not_applicable
-  | n :: nodes ->
-      let value = transform n in
-      List.fold_right nodes ~init:value ~f:(fun node acc ->
-          Tree.mk_value ~pos ~meta:typ
-            (Tree.binop_max ~pos (transform node) acc) )
-
-and transform_min_of ~pos ~typ nodes =
-  match nodes with
-  | [] ->
-      Tree.mk_value (* FIXME: is missing the type NotApplicable *)
-        ~meta:(Some Typ.TBool) ~pos Tree.const_not_applicable
-  | n :: nodes ->
-      let value = transform n in
-      List.fold_right nodes ~init:value ~f:(fun node acc ->
-          Tree.mk_value ~pos ~meta:typ
-            (Tree.binop_min ~pos (transform node) acc) )
 
 and transform_applicable_if ~pos ~typ condition value =
   (* FIXME: each node probably need it's own type, not just the condition *)
