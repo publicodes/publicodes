@@ -10,7 +10,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { insertDocsearch } from '$lib/search/insert-docsearch';
 	import NavTab from '$lib/ui/nav-tab.svelte';
-	import { MenuIcon } from 'lucide-svelte';
+	import { ArrowRight, MenuIcon } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 
 	import {
@@ -55,7 +55,7 @@
 				class="inline-flex shrink-0 items-center gap-2 text-xl font-light hover:text-primary-400"
 				href="/">
 				<img src={Logo} class="h-7" alt="Logo de publicodes" />
-				Publicodes 2.0
+				Publicodes 2
 			</a>
 			<div class="hidden sm:block">
 				{@render Menu()}
@@ -132,8 +132,30 @@
 	</div>
 {/if}
 
+<aside
+	class="mt-16 flex items-center justify-between border-y border-orange-300 bg-orange-200 px-2 py-0.5 text-black">
+	<div
+		class="container mx-auto flex flex-col items-start gap-3 px-6
+			py-1 text-left sm:flex-row
+    sm:items-center sm:justify-center sm:text-left md:px-8">
+		<div class="flex flex-row items-center gap-2 text-xs text-orange-900">
+			Vous êtes sur le site de la version alpha de Publicodes 2
+			<a
+				href="https://v1.publi.codes"
+				target="_blank"
+				class="border-1 background flex w-fit cursor-pointer items-center whitespace-nowrap rounded-full border border-orange-600 bg-white bg-gradient-to-r px-2.5 py-1 font-sans text-xs font-medium leading-none text-orange-600 duration-100 ease-in-out hover:bg-orange-600 hover:text-white [&:hover_svg]:translate-x-1">
+				Voir la v1
+				<ArrowRight
+					class="ml-1 inline transition-transform"
+					strokeWidth={2}
+					size={14} />
+			</a>
+		</div>
+	</div>
+</aside>
+
 <div
-	class="flex h-full flex-col pt-16"
+	class="flex h-full flex-col"
 	class:blur-sm={showMobileMenu}
 	class:opacity-50={showMobileMenu}>
 	<div class="flex-1">
@@ -166,8 +188,6 @@
 					</span>
 				{/if}
 			</NavTab>
-
-			<NavTab href="https://v1.publi.codes/">Version 1</NavTab>
 		</ul>
 	</nav>
 {/snippet}
