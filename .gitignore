@@ -52,4 +52,7 @@ dist-ssr
 
 # From master
 _build
+_opam
 packages/cli-*/bin/
+packages/compiler
+packages/compiler/_opam
