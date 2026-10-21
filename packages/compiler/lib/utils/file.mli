@@ -8,10 +8,10 @@ val of_string_exn : string -> t
   when path is invalid. *)
 
 val to_system : t -> string
-(** [to_system path] converts [path] as t to string, for Publicodes rendering. *)
+(** [to_system path] converts [path] as t to string, for system usage. *)
 
 val to_intern : t -> string
-(** [to_intern path] converts [path] as t to string, for system usage. *)
+(** [to_intern path] converts [path] as t to string, for Publicodes rendering. *)
 
 val pp_system : Format.formatter -> t -> unit
 
