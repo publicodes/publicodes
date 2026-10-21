@@ -50,7 +50,7 @@
 				class="inline-flex shrink-0 items-center gap-2 text-xl font-light hover:text-primary-400"
 				href="/">
 				<img src={Logo} class="h-7" alt="Logo de publicodes" />
-				Publicodes 1.0
+				Publicodes
 			</a>
 			<div class="hidden sm:block">
 				{@render Menu()}
@@ -146,7 +146,6 @@
 			<NavTab href="/realisations">Réalisations</NavTab>
 			<NavTab href="/studio">Studio</NavTab>
 			<NavTab href="https://publi.codes/blog">Blog</NavTab>
-			<NavTab href="https://publi.codes/">Version 2</NavTab>
 		</ul>
 	</nav>
 {/snippet}
