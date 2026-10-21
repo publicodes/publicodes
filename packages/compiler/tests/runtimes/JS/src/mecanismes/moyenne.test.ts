@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { yaml } from '../compile'
+import { p, yaml } from '../compile'
 
 describe('Mécanisme > moyenne', () => {
 	test('simple', async () => {
@@ -34,5 +34,23 @@ c:
 `
 		expect(a.evaluate().value).toBe(5)
 		expect(a.unit).toBe('kg')
+	})
+
+	test('valeur non définie correctement propagée', async () => {
+		const { a } = await yaml`
+a:
+  moyenne:
+    - 10
+    - b
+b:
+  unité: €
+`
+		expect(a.evaluate()).toEqual({
+			value: p.NotDefined,
+			missing: ['b'],
+			needed: ['b'],
+			trace: {},
+		})
+		expect(a.unit).toBe('€')
 	})
 })

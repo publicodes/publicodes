@@ -97,7 +97,7 @@ Unit with percent :
     (5. % * 4. €) * 0.01
   
   simplification . mechanism:
-    (4. € * 5. %) * 0.01
+    (5. % * 4. €) * 0.01
 
 Unit with percent error:
 
