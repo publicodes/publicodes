@@ -48,7 +48,7 @@ let parent = function
   | rule_name ->
       Some (List.sub ~pos:0 ~len:(List.length rule_name - 1) rule_name)
 
-let parents rule_name =
+let parts rule_name =
   List.fold
     ~f:(fun (acc, parents) rule ->
       let current = acc @ [rule] in
@@ -56,10 +56,32 @@ let parents rule_name =
     ~init:([], []) rule_name
   |> snd
 
+let%test_unit "parts" =
+  let subj = parts (create_exn ["a"; "b"; "c"]) in
+  [%test_eq: int] (List.length subj) 3 ;
+  [%test_eq: string list] (List.nth_exn subj 0) ["a"; "b"; "c"] ;
+  [%test_eq: string list] (List.nth_exn subj 1) ["a"; "b"] ;
+  [%test_eq: string list] (List.nth_exn subj 2) ["a"] ;
+  let subj = parts (create_exn ["a"]) in
+  [%test_eq: int] (List.length subj) 1 ;
+  [%test_eq: string list] (List.nth_exn subj 0) ["a"]
+
+let parents rule_name =
+  List.rev rule_name
+  |> fun rule_name -> List.drop rule_name 1 |> List.rev |> parts
+
+let%test_unit "parents" =
+  let subj = parents (create_exn ["a"; "b"; "c"]) in
+  [%test_eq: int] (List.length subj) 2 ;
+  [%test_eq: string list] (List.nth_exn subj 0) ["a"; "b"] ;
+  [%test_eq: string list] (List.nth_exn subj 1) ["a"] ;
+  let subj = parents (create_exn ["a"]) in
+  [%test_eq: int] (List.length subj) 0
+
 let to_string rule_name = String.concat ~sep:" . " rule_name
 
 let resolve ~rule_names ~current name =
-  let parent_paths = parents current @ [[]] in
+  let parent_paths = parts current @ [[]] in
   let matched_rule =
     List.find_map parent_paths ~f:(fun parent ->
         let rule = parent @ name in
