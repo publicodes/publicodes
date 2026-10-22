@@ -65,6 +65,16 @@ val parent : t -> t option
 				parent [] = None
 			]} *)
 
+val parts : t -> t list
+(** [parts rule_name] returns all the parts of a dotted name, from the last
+			child to the top-level parent.
+
+		{[
+			parts ["a"; "b"; "c"] = [["a"; "b"; "c"]; ["a"; "b"]; ["a"]]
+			parts ["a"] = ["a"]
+			parts [] = []
+		]} *)
+
 val parents : t -> t list
 (** [parents rule_name] returns all the parents of a dotted name, from the immediate
 		parent to the top-level parent.
