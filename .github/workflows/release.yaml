@@ -78,4 +78,4 @@ jobs:
         uses: changesets/action@v1.7.0
         with:
           publish: yarn release
-          version: .github/bin/version.sh
+          version: sh -c "YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn run version"
