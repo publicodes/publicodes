@@ -1962,10 +1962,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@publicodes/codemod@workspace:packages/codemod"
   dependencies:
+    rimraf: "npm:^3.0.2"
     rolldown: "npm:1.0.0-beta.40"
-    yaml: "npm:^2.3.4"
+    yaml: "npm:^2.6.0"
   bin:
-    codemod: ./bin/update-v2.js
+    codemod: ./bin/codemod-v2.js
   languageName: unknown
   linkType: soft
 
