@@ -21,6 +21,10 @@ inputs:
     description: 'The name suffix of the platform generated cli'
     required: true
 
+env:
+  # Changing this could break cache invalidation
+  PUBLICODESPATH: ./node_modules:node_modules
+
 runs:
   using: 'composite'
   steps:
