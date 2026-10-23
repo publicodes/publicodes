@@ -22,7 +22,7 @@ const config = defineConfig({
 		trace: 'on-first-retry',
 	},
 	webServer: {
-		command: 'yarn dev',
+		command: 'pnpm run dev',
 		url: 'http://localhost:5173',
 	},
 })

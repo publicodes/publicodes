@@ -6,9 +6,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@v4
+    - uses: pnpm/setup@v3
       with:
-        node-version: ${{ inputs.node-version }}
-        cache: yarn
-    - run: yarn install --refresh-lockfile --immutable
-      shell: bash
+        runtime: node@${{ inputs.node-version }}
+        cache: true

@@ -3,6 +3,7 @@
 	"cleanOutputDir": false,
 	"entryFileName": "index",
 	"entryPointStrategy": "packages",
+	"entryPoints": ["website", "packages/*", "examples/*"],
 	"exclude": ["./examples/**", "./website", "./packages/codemod"],
 	"hidePageHeader": true,
 	"hidePageTitle": true,

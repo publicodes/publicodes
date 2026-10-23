@@ -3,7 +3,7 @@
 	"version": "1.2.0",
 	"private": true,
 	"scripts": {
-		"doc": "svelte-kit sync && typedoc --options ../typedoc.json --out ./src/routes/docs/api ..",
+		"doc": "svelte-kit sync && typedoc --options ../typedoc.json --out ./src/routes/docs/api",
 		"clean": "rimraf -rfg ./src/routes/docs/api/\\*\\*/\\*.md ./vite.config.ts.\\* ../svelte-kit ./build",
 		"dev": "vite dev",
 		"build": "vite build",

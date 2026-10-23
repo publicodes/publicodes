@@ -19,7 +19,7 @@
 		"test:type": "tsc --noEmit",
 		"test:swagger": "swagger-cli validate ./src/openapi.yaml",
 		"dev": "codegen:dev && tsup-node --shims --watch & NODE_PATH=./ nodemon -d 500ms ./example.ts",
-		"build": "tsup-node --shims && run copy:openapi",
+		"build": "tsup-node --shims && \"$npm_execpath\" run copy:openapi",
 		"copy:openapi": "cp ./src/openapi.codegen.json ./dist/",
 		"codegen": "swagger-cli bundle ./src/openapi.yaml -o ./src/openapi.codegen.json",
 		"codegen:validate": "swagger-cli validate ./src/openapi.yaml",
