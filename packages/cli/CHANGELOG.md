@@ -1,5 +1,15 @@
 # @publicodes/cli
 
+## 2.0.0-alpha.5
+
+### Patch Changes
+
+- [#904](https://github.com/publicodes/publicodes/pull/904) [`08cf638`](https://github.com/publicodes/publicodes/commit/08cf638779ee96121d8b70efdbee1e88d219cdaa) Thanks [@EmileRolley](https://github.com/EmileRolley)! - Fix - use default values for mechanisms with empty list (`une de ces conditions` and `toutes ces conditions`)
+
+- [#904](https://github.com/publicodes/publicodes/pull/904) [`1b6f671`](https://github.com/publicodes/publicodes/commit/1b6f67119137bed78851290dc6821eef807f7fab) Thanks [@EmileRolley](https://github.com/EmileRolley)! - Fix - correctly handle percentage in the `produit` mechanism
+
+- [`6fac2e0`](https://github.com/publicodes/publicodes/commit/6fac2e0850053e30e524d97f5fb65bc134416c89) Thanks [@EmileRolley](https://github.com/EmileRolley)! - Avoid duplicated evaluations of exclusive replacements in the JS runtime.
+
 ## 2.0.0-alpha.4
 
 ### Patch Changes
