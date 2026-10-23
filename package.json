@@ -2,24 +2,19 @@
 	"name": "publicodes-monorepo",
 	"version": "",
 	"private": true,
-	"workspaces": [
-		"website",
-		"packages/*",
-		"examples/*"
-	],
 	"type": "module",
 	"scripts": {
 		"test": "turbo run test",
-		"prepack": "run build",
+		"prepack": "\"$npm_execpath\" run build",
 		"test:type": "turbo run test:type",
 		"build": "turbo run build",
 		"build:packages": "turbo run build --filter=\\{./packages/*\\}",
 		"eslint": "eslint --cache --flag unstable_config_lookup_from_file",
-		"lint": "prettier --check . && run build:packages && run eslint . && turbo run lint --parallel",
-		"format": "run build:packages  && run eslint --fix . && prettier --write . && turbo run format --parallel",
+		"lint": "prettier --check . && \"$npm_execpath\" run build:packages && \"$npm_execpath\" run eslint . && turbo run lint --parallel",
+		"format": "\"$npm_execpath\" run build:packages  && \"$npm_execpath\" run eslint --fix . && prettier --write . && turbo run format --parallel",
 		"dev": "turbo run dev --filter=\"website...\"",
 		"clean": "turbo run clean --parallel && rimraf \"**/node_modules\" \"**/dist\" \"**/*.codegen.*\" \"**/.turbo\"",
-		"release": "run prepack && changeset publish",
+		"release": "\"$npm_execpath\" run prepack && changeset publish",
 		"version": "changeset version && prettier --write '**/CHANGELOG.md'"
 	},
 	"dependencies": {
@@ -40,8 +35,8 @@
 		"turbo": "^2.2.3",
 		"typescript-eslint": "^8.16.0"
 	},
+	"packageManager": "pnpm@12.15.0",
 	"engines": {
 		"node": ">= 22"
-	},
-	"packageManager": "yarn@4.13.0"
+	}
 }

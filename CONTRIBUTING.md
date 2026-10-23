@@ -18,7 +18,10 @@ Vous pouvez proposer une amélioration directement en ouvrant une Pull Request. 
 
 ## Développement local
 
-Pour développer en local, il faut installer les dépendances avec `yarn` puis lancer `yarn dev`. Le site de la doc sera alors disponible en local et tous les changements de `publicodes` et `@publicodes/react` seront automatiquement recompilés.
+Pour développer en local, il faut installer les dépendances avec `pnpm`
+puis lancer `pnpm run dev`. Le site de la doc sera alors disponible en local
+et tous les changements de `publicodes` et `@publicodes/react` seront
+automatiquement recompilés.
 
 ### TurboRepo
 
@@ -64,6 +67,8 @@ Créer un composant React pour expliquer le mécanisme. Il s'agit d'un composant
 
 > changeset est un outil qui permet d'automatiser le versioning et la publication des packages dans un monorepo.
 
-Toute PR qui modifie le code d'un `package` de base doit être accompagnée d'un changeset. Pour cela, il suffit de lancer `yarn changeset` et de suivre les instructions.
+Toute PR qui modifie le code d'un `package` de base doit être accompagnée
+d'un changeset. Pour cela, il suffit de lancer `pnpm run changeset` et de suivre
+les instructions.
 
 Une fois votre PR validée et mergée, vos changements seront automatiquement ajoutées à une PR « Version Packages ». La validation de cette PR déclenchera la publication des packages modifiés, avec la bonne montée de version.

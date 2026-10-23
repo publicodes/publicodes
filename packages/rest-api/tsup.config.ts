@@ -7,6 +7,6 @@ export default defineConfig([
 		target: 'es2020',
 		clean: true,
 		dts: true,
-		onSuccess: 'yarn copy:openapi',
+		onSuccess: 'pnpm run copy:openapi',
 	},
 ])

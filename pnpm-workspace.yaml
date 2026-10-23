@@ -1,0 +1,14 @@
+packages:
+  - website
+  - packages/*
+  - examples/*
+allowBuilds:
+  bun: true
+  core-js: true
+  core-js-pure: true
+  esbuild: true
+  msw: true
+  svelte-preprocess: true
+  unrs-resolver: true
+resolvePeersFromWorkspaceRoot: false
+nodeLinker: hoisted
