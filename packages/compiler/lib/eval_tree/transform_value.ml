@@ -187,9 +187,13 @@ and unfold_chainable_mechanism ~init mechanisms =
     [pos] and [typ]. *)
 and transform_fold ~pos ~typ ?init ~f values =
   match values with
-  | [] ->
-      (* FIXME: is missing the type NotApplicable *)
-      Tree.mk_value ~meta:typ ~pos Tree.const_not_applicable
+  | [] -> (
+    match init with
+    | Some init ->
+        init
+    | None ->
+        (* FIXME: is missing the type NotApplicable *)
+        Tree.mk_value ~meta:typ ~pos Tree.const_not_applicable )
   | hd :: tl ->
       let values = if Option.is_none init then tl else values in
       let init = match init with Some init -> init | None -> transform hd in

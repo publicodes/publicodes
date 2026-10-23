@@ -1,0 +1,27 @@
+should be not applicable:
+  avec:
+    average:
+      moyenne: []
+
+    product:
+      produit: []
+
+    sum:
+      somme: []
+
+    max of:
+      le maximum de: []
+
+    min of:
+      le minimum de: []
+
+# FIXME: it's the v1 behavior, however it should be evaluated to false?
+should default to true:
+  avec:
+    all of:
+      toutes ces conditions: []
+
+should default to false:
+  avec:
+    one of:
+      une de ces conditions: []
