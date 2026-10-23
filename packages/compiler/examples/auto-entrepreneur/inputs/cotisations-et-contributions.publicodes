@@ -75,12 +75,14 @@ dirigeant . auto-entrepreneur . cotisations et contributions . TFC . métiers . 
 
   avec:
     taux service:
+      applicable si: taux Alsace
       remplace:
         références à: taux service
         exclusif: oui
       valeur: 0.65%
 
     taux vente:
+      applicable si: taux Alsace
       remplace:
         références à: taux vente
         exclusif: oui

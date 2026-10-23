@@ -1,0 +1,75 @@
+import type { PublicodeAST } from '@publicodes/autodoc-core/ast'
+import type { TraceValue } from '@publicodes/autodoc-core'
+import { useState } from 'react'
+import autoAst from '../../../packages/compiler/examples/auto-entrepreneur/model.publicodes.json'
+import tjmAst from '../../../packages/compiler/examples/simple-TJM/model.publicodes.json'
+import autoRules, {
+	outputs as autoOutputs,
+	parameters as autoParameters,
+} from '../../../packages/compiler/examples/auto-entrepreneur/model.publicodes.js'
+import tjmRules, {
+	outputs as tjmOutputs,
+	parameters as tjmParameters,
+} from '../../../packages/compiler/examples/simple-TJM/model.publicodes.js'
+import {
+	DocumentationPage,
+	type DocumentationPageProps,
+} from './pages/DocumentationPage'
+
+const autoContext: Record<string, TraceValue> = {
+	"entreprise . chiffre d'affaires . BIC": 10000,
+	"entreprise . chiffre d'affaires . service BIC": 5000,
+	"entreprise . chiffre d'affaires . service BNC": 200,
+	"entreprise . chiffre d'affaires . vente restauration hébergement": 1000,
+	'entreprise . activité . nature': 'artisanale',
+	date: new Date('2024-06-01'),
+	'dirigeant . auto-entrepreneur . Cipav . adhérent': false,
+}
+
+const tjmContext: Record<string, TraceValue> = {
+	"chiffre d'affaires . nombre de jour": 5,
+	"chiffre d'affaires . TJM": 600,
+}
+
+const MODELS: Record<string, DocumentationPageProps> = {
+	'auto-entrepreneur': {
+		title: 'auto-entrepreneur',
+		ast: autoAst as PublicodeAST,
+		outputs: autoOutputs,
+		parameters: autoParameters,
+		start: 'dirigeant . auto-entrepreneur . revenu net',
+		context: autoContext,
+		rules: autoRules,
+	},
+	'simple-TJM': {
+		title: 'simple TJM',
+		ast: tjmAst as PublicodeAST,
+		outputs: tjmOutputs,
+		parameters: tjmParameters,
+		start: 'exemples . CA élevé',
+		context: tjmContext,
+		rules: tjmRules,
+	},
+}
+
+export function App() {
+	const [model, setModel] = useState<keyof typeof MODELS>('auto-entrepreneur')
+
+	return (
+		<main>
+			<nav className="doc-models">
+				{Object.keys(MODELS).map((name) => (
+					<button
+						key={name}
+						type="button"
+						className={name === model ? 'on' : ''}
+						onClick={() => setModel(name)}
+					>
+						{name}
+					</button>
+				))}
+			</nav>
+			<DocumentationPage key={model} {...MODELS[model]} />
+		</main>
+	)
+}
