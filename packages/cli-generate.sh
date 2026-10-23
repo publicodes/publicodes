@@ -28,8 +28,8 @@ optional_dependencies() {
 			printf ", "
 		fi
 		first=
-		printf "\"%s-%s-%s\": \"%s\"" \
-			"$NAME" "$PLATFORM" "$ARCH" "$VERSION"
+		printf "\"%s-%s-%s\": \"workspace:*\"" \
+			"$NAME" "$PLATFORM" "$ARCH"
 	done
 }
 

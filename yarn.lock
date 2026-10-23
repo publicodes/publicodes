@@ -1875,7 +1875,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@publicodes/cli-darwin-arm64@npm:2.0.0-alpha.4, @publicodes/cli-darwin-arm64@workspace:packages/cli-darwin-arm64":
+"@publicodes/cli-darwin-arm64@workspace:*, @publicodes/cli-darwin-arm64@workspace:packages/cli-darwin-arm64":
   version: 0.0.0-use.local
   resolution: "@publicodes/cli-darwin-arm64@workspace:packages/cli-darwin-arm64"
   dependencies:
@@ -1887,7 +1887,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@publicodes/cli-darwin-x64@npm:2.0.0-alpha.4, @publicodes/cli-darwin-x64@workspace:packages/cli-darwin-x64":
+"@publicodes/cli-darwin-x64@workspace:*, @publicodes/cli-darwin-x64@workspace:packages/cli-darwin-x64":
   version: 0.0.0-use.local
   resolution: "@publicodes/cli-darwin-x64@workspace:packages/cli-darwin-x64"
   dependencies:
@@ -1899,7 +1899,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@publicodes/cli-linux-arm64@npm:2.0.0-alpha.4, @publicodes/cli-linux-arm64@workspace:packages/cli-linux-arm64":
+"@publicodes/cli-linux-arm64@workspace:*, @publicodes/cli-linux-arm64@workspace:packages/cli-linux-arm64":
   version: 0.0.0-use.local
   resolution: "@publicodes/cli-linux-arm64@workspace:packages/cli-linux-arm64"
   dependencies:
@@ -1911,7 +1911,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@publicodes/cli-linux-x64@npm:2.0.0-alpha.4, @publicodes/cli-linux-x64@workspace:packages/cli-linux-x64":
+"@publicodes/cli-linux-x64@workspace:*, @publicodes/cli-linux-x64@workspace:packages/cli-linux-x64":
   version: 0.0.0-use.local
   resolution: "@publicodes/cli-linux-x64@workspace:packages/cli-linux-x64"
   dependencies:
@@ -1923,7 +1923,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@publicodes/cli-win32-x64@npm:2.0.0-alpha.4, @publicodes/cli-win32-x64@workspace:packages/cli-win32-x64":
+"@publicodes/cli-win32-x64@workspace:*, @publicodes/cli-win32-x64@workspace:packages/cli-win32-x64":
   version: 0.0.0-use.local
   resolution: "@publicodes/cli-win32-x64@workspace:packages/cli-win32-x64"
   dependencies:
@@ -1939,11 +1939,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@publicodes/cli@workspace:packages/cli"
   dependencies:
-    "@publicodes/cli-darwin-arm64": "npm:2.0.0-alpha.4"
-    "@publicodes/cli-darwin-x64": "npm:2.0.0-alpha.4"
-    "@publicodes/cli-linux-arm64": "npm:2.0.0-alpha.4"
-    "@publicodes/cli-linux-x64": "npm:2.0.0-alpha.4"
-    "@publicodes/cli-win32-x64": "npm:2.0.0-alpha.4"
+    "@publicodes/cli-darwin-arm64": "workspace:*"
+    "@publicodes/cli-darwin-x64": "workspace:*"
+    "@publicodes/cli-linux-arm64": "workspace:*"
+    "@publicodes/cli-linux-x64": "workspace:*"
+    "@publicodes/cli-win32-x64": "workspace:*"
   dependenciesMeta:
     "@publicodes/cli-darwin-arm64":
       optional: true
