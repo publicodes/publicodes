@@ -48,4 +48,23 @@ condition:
 			p.isNotApplicable(engine.test.evaluate({ test: 10 }).value),
 		).toBeTrue()
 	})
+
+	test('avec une liste vide pour une de ces conditions', async () => {
+		const engine = await yaml`
+test:
+  applicable si:
+    une de ces conditions: []
+`
+		expect(p.isNotApplicable(engine.test.evaluate({}).value)).toBeTrue()
+	})
+
+	test('avec une liste vide pour toutes ces conditions', async () => {
+		const engine = await yaml`
+test:
+  applicable si:
+    toutes ces conditions: []
+  valeur: 10
+`
+		expect(engine.test.evaluate({}).value).toEqual(10)
+	})
 })

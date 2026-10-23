@@ -31,7 +31,12 @@ a:
     - b
 b:
 `
-		expect(p.isNotDefined(a.evaluate().value)).toBeTrue()
+		expect(a.evaluate()).toEqual({
+			value: p.NotDefined,
+			missing: ['b'],
+			needed: ['b'],
+			trace: {},
+		})
 		expect(b.unit).toBe('€')
 	})
 
@@ -46,5 +51,20 @@ b:
   non applicable si: oui
 `
 		expect(a.evaluate().value).toBe(10)
+	})
+
+	it('toutes les valeurs sont non applicables', async () => {
+		const { a } = await yaml`
+a:
+  le maximum de:
+    - b
+    - c
+b:
+  non applicable si: oui
+
+c:
+  non applicable si: oui
+`
+		expect(p.isNotApplicable(a.evaluate().value)).toBeTrue()
 	})
 })
