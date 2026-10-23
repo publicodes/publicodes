@@ -1,0 +1,7 @@
+- Galère les types ? Visiblement bcp sont privés
+- Galere de formattage pour les quotes
+- Comment importer qque chose non applicable
+- Import de facteurs de base non publics
+- Bug unité inférées depuis une somme lointaine / pb avec la valeur par défaut
+- Pb avec les divisions inline successives
+- Pb avec les %
