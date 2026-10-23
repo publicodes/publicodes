@@ -79,5 +79,5 @@ jobs:
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v2
         with:
-          publish-script: yarn release
-          version-script: sh -c "YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn run version"
+          publish-script: yarn run release
+          version-script: yarn run version
