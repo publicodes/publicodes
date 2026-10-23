@@ -20,11 +20,11 @@ AUTO_ENTREPRENEUR_DEPS = \
 help:
 	@echo "Available targets:"
 	@echo "  install                  | Install OCaml dependencies using opam"
-	@echo "  install-js               | Install JavaScript dependencies using yarn"
+	@echo "  install-js               | Install JavaScript dependencies using pnpm"
 	@echo "  build                    | Build the compiler using dune"
 	@echo "  dev                      | Run the dune build in watch mode for development (needed for LSP server)"
 	@echo "  test-all                 | Run all tests (JavaScript and OCaml)"
-	@echo "  test-js                  | Run JavaScript tests using yarn"
+	@echo "  test-js                  | Run JavaScript tests using pnpm"
 	@echo "  test-ocaml               | Run OCaml unit and cram tests using dune"
 	@echo "  test-ocaml-promote       | Run OCaml tests and promote cram test outputs"
 	@echo "  bench-all                | Run all benchmarks"
@@ -36,10 +36,10 @@ install:
 	@echo "Installing dependencies..."
 	opam switch create . --deps-only --with-test --with-dev-setup
 
-#> install-js               | Install JavaScript dependencies using yarn
+#> install-js               | Install JavaScript dependencies using pnpm
 install-js:
 	@echo "Installing JavaScript dependencies..."
-	yarn --cwd $(EXAMPLES_DIR) install
+	pnpm -C $(EXAMPLES_DIR) install
 
 #> build                    | Build the compiler using dune
 build:
@@ -54,10 +54,10 @@ dev:
 # Tests
 #
 
-#> test-js                  | Run JavaScript tests using yarn
+#> test-js                  | Run JavaScript tests using pnpm
 test-js: build
 	@echo "Running JavaScript tests..."
-	PUBLICODES_COMPILER_PATH=../../../$(COMPILER_PATH) yarn --cwd $(JS_TESTS_DIR) test:compiler $(TEST)
+	PUBLICODES_COMPILER_PATH=../../../$(COMPILER_PATH) pnpm -C $(JS_TESTS_DIR) test:compiler $(TEST)
 
 #> test-ocaml               | Run OCaml unit and cram tests using dune
 test-ocaml:
@@ -83,7 +83,7 @@ test-all: test-ocaml test-js test-json-schemas
 
 $(SIMPLE_TJM_DIR)/publicodes-build/index.js: $(SIMPLE_TJM_DEPS)
 	@echo "Recompiling legacy publicodes-build for simple-TJM..."
-	yarn --cwd $(SIMPLE_TJM_DIR) run publicodes compile 'inputs/*.publicodes'
+	cd $(SIMPLE_TJM_DIR) && pnpm exec publicodes compile 'inputs/*.publicodes'
 
 $(SIMPLE_TJM_DIR)/model.publicodes.js: $(SIMPLE_TJM_DEPS) $(COMPILER_PATH)
 	@echo "Recompiling new model.publicodes.js for simple-TJM..."
@@ -92,11 +92,11 @@ $(SIMPLE_TJM_DIR)/model.publicodes.js: $(SIMPLE_TJM_DEPS) $(COMPILER_PATH)
 #> bench-simple-TJM         | Run the benchmark for the simple-TJM example
 bench-simple-TJM: build $(SIMPLE_TJM_DIR)/publicodes-build/index.js $(SIMPLE_TJM_DIR)/model.publicodes.js
 	@echo "Running benchmark for simple-TJM..."
-	yarn --cwd $(SIMPLE_TJM_DIR) run bun --expose-gc benchmark.ts
+	cd $(SIMPLE_TJM_DIR) && pnpm exec bun --expose-gc benchmark.ts
 
 $(AUTO_ENTREPRENEUR_DIR)/publicodes-build/index.js: $(AUTO_ENTREPRENEUR_DEPS)
 	@echo "Recompiling legacy publicodes-build for auto-entrepreneur..."
-	yarn --cwd $(AUTO_ENTREPRENEUR_DIR) run publicodes compile 'inputs/*.publicodes'
+	cd $(AUTO_ENTREPRENEUR_DIR) && pnpm exec publicodes compile 'inputs/*.publicodes'
 
 $(AUTO_ENTREPRENEUR_DIR)/model.publicodes.js: $(AUTO_ENTREPRENEUR_DEPS) $(COMPILER_PATH)
 	@echo "Recompiling new model.publicodes.js for auto-entrepreneur..."
@@ -105,7 +105,7 @@ $(AUTO_ENTREPRENEUR_DIR)/model.publicodes.js: $(AUTO_ENTREPRENEUR_DEPS) $(COMPIL
 #> bench-auto-entrepreneur  | Run the benchmark for the auto-entrepreneur example
 bench-auto-entrepreneur: build $(AUTO_ENTREPRENEUR_DIR)/publicodes-build/index.js $(AUTO_ENTREPRENEUR_DIR)/model.publicodes.js
 	@echo "Running benchmark for auto-entrepreneur..."
-	yarn --cwd $(AUTO_ENTREPRENEUR_DIR) run bun --expose-gc benchmark.ts
+	cd $(AUTO_ENTREPRENEUR_DIR) && pnpm exec bun --expose-gc benchmark.ts
 
 #> bench-all                | Run all benchmarks
 bench-all: bench-simple-TJM bench-auto-entrepreneur

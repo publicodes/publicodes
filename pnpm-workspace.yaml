@@ -1,0 +1,12 @@
+packages:
+  - website
+  - packages/*
+  - packages/compiler/tests/runtimes/JS
+  - packages/compiler/examples
+  - examples/first-package/
+allowBuilds:
+  bun: true
+  esbuild: true
+  svelte-preprocess: true
+resolvePeersFromWorkspaceRoot: false
+nodeLinker: hoisted

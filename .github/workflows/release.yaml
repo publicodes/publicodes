@@ -57,15 +57,13 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v6
 
-      - name: Install node
-        uses: actions/setup-node@v6
+      - uses: pnpm/setup@v1
         with:
-          node-version: 24
-          cache: yarn
-          registry-url: 'https://registry.npmjs.org'
+          runtime: node@24
+          cache: true
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: pnpm install --frozen-lockfile
 
       - uses: actions/download-artifact@v8
         with:
@@ -79,5 +77,5 @@ jobs:
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v2
         with:
-          publish-script: yarn release
-          version-script: sh -c "YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn run version"
+          publish-script: pnpm run release
+          version-script: pnpm run version
