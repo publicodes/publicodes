@@ -65,7 +65,7 @@ runs:
       working-directory: ${{ inputs.compiler-path }}
 
     - name: Build cli packages
-      run: yarn run build:compiler
+      run: pnpm run build:compiler
       shell: bash
 
     - name: Run tests
@@ -76,7 +76,7 @@ runs:
 
     - name: Run runtime tests
       if: steps.cache-build-restore.outputs.cache-hit != 'true'
-      run: yarn run test:compiler
+      run: pnpm run test:compiler
       shell: bash
 
     - name: Save cached build

@@ -57,7 +57,7 @@ jobs:
         run: find . -name '*.tar.gz' -maxdepth 1 -exec tar -xvf {} \;
       - name: Inspect extracted bins
         run: ls -lh packages/cli-*/bin
-      - run: yarn build
+      - run: pnpm run build
       - name: Continuously Release
         run: npx pkg-pr-new publish './packages/*'
 
@@ -71,5 +71,5 @@ jobs:
         uses: ./.github/actions/install-node
       - name: Install bun
         uses: oven-sh/setup-bun@v2
-      - name: Yarn tests
-        run: yarn run test
+      - name: Pnpm tests
+        run: pnpm run test
