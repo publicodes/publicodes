@@ -41,15 +41,13 @@ Should correctly transform `non applicable si` mechanism:
 Should correctly detect namespace cycle:
 
   $ publicodes compile ./namespace_cycle -t debug_eval_tree -o -
-  
-  E027 cycle de dépendance détecté [cycle warning]
-       ╒══  ./namespace_cycle/rules.publicodes:3:22 ══
-     2 │   valeur: 10
-     3 │   non applicable si: b
-       │                      ˘ règle 'a . b' référencée ici
-       ╒══  ./namespace_cycle/rules.publicodes:4:3 ══
-     3 │   non applicable si: b
-     4 │   applicabilité étendue: oui
-       │   ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ règle 'a' référencée de nouveau
+  error[E027]: cycle de dépendance détecté
+      ╒══ ./namespace_cycle/rules.publicodes:3:22
+    2 │    valeur: 10
+    3 │    non applicable si: b
+      │                       ^ règle 'a . b' référencée ici
+    4 │    applicabilité étendue: oui
+      │    ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ règle 'a' référencée de nouveau
+    5 │    avec:
   
   [123]

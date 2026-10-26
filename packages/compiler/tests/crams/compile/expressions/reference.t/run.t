@@ -46,13 +46,13 @@ over siblings:
 Should throw an error if a reference to an non-existing rule is made:
 
   $ publicodes compile ./error/unknown-reference/ -o -
+  error[E020]: cette règle n'existe pas
+      ╒══ ./error/unknown-reference/main.publicodes:2:11
+    1 │  a:
+    2 │    valeur: b
+      │            ^ cette règle n'existe pas
+    3 │  
+      = Ajoutez la règle `b` manquante
+      = Vérifiez les erreurs de typos dans le nom de la règle
   
-  E020 cette règle n'existe pas [syntax error]
-       ╒══  ./error/unknown-reference/main.publicodes:2:11 ══
-     1 │ a:
-     2 │   valeur: b
-       │           ˘
-   Hint: Ajoutez la règle `b` manquante
-   Hint: Vérifiez les erreurs de typos dans le nom de la
-         règle
   [123]
