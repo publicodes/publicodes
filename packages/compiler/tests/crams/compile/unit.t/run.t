@@ -14,18 +14,18 @@ Simple addition unit with unit :
 
   $ publicodes compile simple-addition
   error[E025]: unités non compatibles
-      ╒══ simple-addition/rules.publicodes:1:20
+      ╒══ simple-addition/rules.publicodes:1:26
     1 │  simple expression: 12€ + 5$
-      │                     ^^^   ˘˘ unité: $
+      │                     ˘˘˘   ˘˘ unité: $
       │                     │
       │                     unité: €
     2 │  
   
   error[E025]: unités non compatibles
-      ╒══ simple-addition/rules.publicodes:5:7
+      ╒══ simple-addition/rules.publicodes:6:7
     4 │    somme:
     5 │      - 4 €
-      │        ^^^ unité: €
+      │        ˘˘˘ unité: €
     6 │      - -(4 kg/m)
       │        ˘˘˘˘˘˘˘˘ unité: kg/m
     7 │  
@@ -36,9 +36,9 @@ Simple multiplication with unit :
 
   $ publicodes compile simple-multiplication
   error[E025]: unités non compatibles
-      ╒══ simple-multiplication/rules.publicodes:1:25
+      ╒══ simple-multiplication/rules.publicodes:1:40
     1 │  simple expression ko:  (5kg * 5€/kg) = 12$
-      │                          ^^^^^^^^^^^    ˘˘˘ unité: $
+      │                          ˘˘˘˘˘˘˘˘˘˘˘    ˘˘˘ unité: $
       │                          │
       │                          unité: €
     2 │  simple expression ok:  (5kg * 5€/kg) = 12€
@@ -49,18 +49,18 @@ Unit inference :
 
   $ publicodes compile unit_inference
   error[E025]: unités non compatibles
-      ╒══ unit_inference/rules.publicodes:1:4
+      ╒══ unit_inference/rules.publicodes:2:8
     1 │  a: 5€
-      │     ^^ unité: €
+      │     ˘˘ unité: €
     2 │  b: a + 4kg # KO
       │         ˘˘˘ unité: kg
     3 │  
   
   error[E025]: unités non compatibles
-      ╒══ unit_inference/rules.publicodes:4:4
+      ╒══ unit_inference/rules.publicodes:7:11
     3 │  
     4 │  x: z * 4€/mois
-      │     ^^^^^^^^^^^ unité: €
+      │     ˘˘˘˘˘˘˘˘˘˘˘ unité: €
     5 │  y: z + 3 mois
     6 │  z:
     7 │  test: x + 9 mois # KO car z est inféré à "mois" et x à "€"
@@ -97,10 +97,10 @@ Unit with percent error:
 
   $ publicodes compile percent-error
   error[E025]: unités non compatibles
-      ╒══ percent-error/rules.publicodes:3:4
+      ╒══ percent-error/rules.publicodes:3:12
     2 │  # should have error
     3 │  e: 5%/an + 4€/an
-      │     ^^^^^   ˘˘˘˘˘ unité: €/an
+      │     ˘˘˘˘˘   ˘˘˘˘˘ unité: €/an
       │     │
       │     unité: %/an
     4 │  
@@ -112,46 +112,46 @@ Add unit information with `unité` mechanism :
 
   $ publicodes compile mechanism
   error[E025]: unités non compatibles
-      ╒══ mechanism/rules.publicodes:4:10
+      ╒══ mechanism/rules.publicodes:6:13
     3 │    valeur: 5
     4 │    unité: '%'
-      │           ^^^ unité: %
+      │    ˘˘˘˘˘ unité: %
     5 │  
     6 │  test a: a > 4 € # KO
       │              ˘˘˘ unité: €
     7 │  
   
   error[E025]: unités non compatibles
-      ╒══ mechanism/rules.publicodes:11:9
+      ╒══ mechanism/rules.publicodes:13:13
    10 │    valeur: 5
    11 │    unité:
-      │          ^ unité: aucune
+      │    ˘˘˘˘˘ unité: aucune
    12 │  
    13 │  test b: b + 4 € # KO
       │              ˘˘˘ unité: €
    14 │  
   
   error[E025]: unités non compatibles
-      ╒══ mechanism/rules.publicodes:17:4
+      ╒══ mechanism/rules.publicodes:20:3
    16 │  # Incompatible unit
    17 │  c: 12 €
-      │     ^^^^ unité: €
+      │     ˘˘˘˘ unité: €
    18 │  test c:
    19 │    valeur: c
    20 │    unité: kg # KO
-      │           ˘˘ unité: kg
+      │    ˘˘˘˘˘ unité: kg
    21 │  
   
   error[E025]: unités non compatibles
-      ╒══ mechanism/rules.publicodes:24:4
+      ╒══ mechanism/rules.publicodes:30:3
    23 │  # Incompatible infered unit
    24 │  d: 12
-      │     ^^ unité: €
+      │     ˘˘ unité: €
    25 │  d 2:
       ·  
    29 │    valeur: d
    30 │    unité: kg # KO
-      │           ˘˘ unité: kg
+      │    ˘˘˘˘˘ unité: kg
    31 │  
   
   [123]
@@ -161,10 +161,10 @@ Infer composed `unit` with contexte :
 
   $ publicodes compile unit-inference-with-contexte
   error[E025]: unités non compatibles
-      ╒══ unit-inference-with-contexte/rules.publicodes:3:3
+      ╒══ unit-inference-with-contexte/rules.publicodes:41:31
     2 │    unité: €
     3 │    produit:
-      │    ^^^^^^^ unité: €/jour
+      │    ˘˘˘˘˘˘˘ unité: €/jour
     4 │      - TJM
       ·  
    40 │    contexte:

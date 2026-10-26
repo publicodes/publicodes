@@ -38,7 +38,7 @@ Wrongly formatted variations :
     5 │        sinon: 300 #KO
       │        ^^^^^ mécanisme invalide
     6 │  
-      = La clé `sinon` n'est pas valide
+      = (aide) La clé `sinon` n'est pas valide
   
   error[E017]: mécanisme invalide
       ╒══ ./syntax_error/rules.publicodes:8:3
@@ -46,7 +46,7 @@ Wrongly formatted variations :
     8 │    variations:
       │    ^^^^^^^^^^ mécanisme invalide
     9 │      - si: oui
-      = Une variation doit contenir « si: » et « alors: »
+      = (aide) Une variation doit contenir « si: » et « alors: »
   
   error[E017]: mécanisme invalide
       ╒══ ./syntax_error/rules.publicodes:14:3
@@ -54,7 +54,7 @@ Wrongly formatted variations :
    14 │    variations:
       │    ^^^^^^^^^^ mécanisme invalide
    15 │      - sinon: 200 # KO
-      = Une variation doit contenir « si: » et « alors: »
+      = (aide) Une variation doit contenir « si: » et « alors: »
   
   error[E017]: mécanisme invalide
       ╒══ ./syntax_error/rules.publicodes:15:7
@@ -62,7 +62,7 @@ Wrongly formatted variations :
    15 │      - sinon: 200 # KO
       │        ^^^^^ mécanisme invalide
    16 │      - si: oui
-      = La clé `sinon` n'est pas valide
+      = (aide) La clé `sinon` n'est pas valide
   
   error[E017]: mécanisme invalide
       ╒══ ./syntax_error/rules.publicodes:20:3
@@ -70,6 +70,6 @@ Wrongly formatted variations :
    20 │    variations:
       │    ^^^^^^^^^^ mécanisme invalide
    21 │      - sinon: 340 # KO
-      = Il doit y avoir au moins une variation en plus de la clause « sinon »
+      = (aide) Il doit y avoir au moins une variation en plus de la clause « sinon »
   
   [123]

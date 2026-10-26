@@ -28,11 +28,11 @@ valid simple replacement :
 replacement with cycle :
 
   $ publicodes compile cycle  -t debug_eval_tree -o -
-  error[E029]: cycle de remplacement détecté
-      ╒══ cycle/rules.publicodes:3:13
+  warning[E029]: cycle de remplacement détecté
+      ╒══ cycle/rules.publicodes:11:13
     2 │    valeur: 4
     3 │    remplace: b
-      │              ^ règle 'b' référencée ici
+      │              ˘ règle 'b' référencée ici
     4 │  
     5 │  b:
     6 │    valeur: 5
@@ -129,8 +129,8 @@ Multiple definitions :
     3 │      - références à:
       │        ^^^^^^^^^^^^ mécanisme invalide
     4 │          - b
-      = Une seule règle peut être référencée à la fois dans un « références à »
-      = Utilisez plusieurs « références à: » au sein du « remplace » pour remplacer plusieurs règles
+      = (aide) Une seule règle peut être référencée à la fois dans un « références à »
+      = (aide) Utilisez plusieurs « références à: » au sein du « remplace » pour remplacer plusieurs règles
   
   [123]
 
@@ -165,10 +165,10 @@ Type mismatch :
 
   $ publicodes compile type_mismatch  -t debug_eval_tree -o -
   error[E025]: unités non compatibles
-      ╒══ type_mismatch/rules.publicodes:2:11
+      ╒══ type_mismatch/rules.publicodes:5:4
     1 │  a:
     2 │    valeur: 4 €
-      │            ^^^ unité: €
+      │            ˘˘˘ unité: €
     3 │    remplace: b
     4 │  
     5 │  b: 5 mois
@@ -208,10 +208,10 @@ Multipe replace non exclusive :
       ·  
     9 │    remplace:
    10 │      références à: a
-      │                    ^ ici
+      │                    ˘ ici
    11 │    valeur: 10
-      = Plusieurs remplacements pour la même règle détectés.
-      = Utilisez des « remplace » chainés s'il est question de priorité métier ou ajoutez un attribut « exclusif: oui »
+      = (aide) Plusieurs remplacements pour la même règle détectés.
+      = (aide) Utilisez des « remplace » chainés s'il est question de priorité métier ou ajoutez un attribut « exclusif: oui »
   
   [123]
 
@@ -237,21 +237,21 @@ Multipe replace with only one missing exclusivity attribute:
       ╒══ multiple_replace_one_missing_exclusive/rules.publicodes:13:19
    12 │    remplace:
    13 │      références à: a
-      │                    ^ ici
+      │                    ˘ ici
    14 │    valeur: 10
-      = Plusieurs remplacements pour la même règle détectés.
-      = Utilisez des « remplace » chainés s'il est question de priorité métier ou ajoutez un attribut « exclusif: oui »
+      = (aide) Plusieurs remplacements pour la même règle détectés.
+      = (aide) Utilisez des « remplace » chainés s'il est question de priorité métier ou ajoutez un attribut « exclusif: oui »
   
   [123]
 
 cross-graph cycle (remplace + rend non applicable) — must be detected, not hang :
 
   $ publicodes compile cross-cycle -o -
-  error[E029]: cycle de remplacement détecté
-      ╒══ cross-cycle/rules.publicodes:3:13
+  warning[E029]: cycle de remplacement détecté
+      ╒══ cross-cycle/rules.publicodes:7:24
     2 │    valeur: non
     3 │    remplace: b
-      │              ^ règle 'b' référencée ici
+      │              ˘ règle 'b' référencée ici
     4 │  
     5 │  b:
     6 │    valeur: oui

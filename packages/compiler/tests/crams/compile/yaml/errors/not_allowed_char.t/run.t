@@ -6,6 +6,6 @@ Caractère non valide
     1 │  '
       │  ^ fin de fichier inattendue (il manque un caractère)
     2 │  
-      = Par exemple, `"`, `'`, ou `]`
+      = (aide) Par exemple, `"`, `'`, ou `]`
   
   [123]

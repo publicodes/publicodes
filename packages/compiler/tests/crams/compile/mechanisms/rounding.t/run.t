@@ -4,23 +4,23 @@ Bad types for arrondi :
       ╒══ type_error/rules.publicodes:2:12
     1 │  a:
     2 │    arrondi: "non"
-      │             ^^^^^ est le texte "non"
+      │             ˘˘˘˘˘ est le texte "non"
     3 │  
-      = arrondi doit être un nombre ou un booléen
+      = (aide) arrondi doit être un nombre ou un booléen
   
   error[E022]: type invalide détecté
       ╒══ type_error/rules.publicodes:6:12
     5 │  b:
     6 │    arrondi: 01/2025
-      │             ^^^^^^^ est la date 2025-01
+      │             ˘˘˘˘˘˘˘ est la date 2025-01
     7 │  
-      = arrondi doit être un nombre ou un booléen
+      = (aide) arrondi doit être un nombre ou un booléen
   
   error[E025]: unités non compatibles
-      ╒══ type_error/rules.publicodes:9:11
+      ╒══ type_error/rules.publicodes:10:12
     8 │  c:
     9 │    valeur: 4 $
-      │            ^^^ unité: $
+      │            ˘˘˘ unité: $
    10 │    arrondi: 0.1 €
       │             ˘˘˘˘˘ unité: €
    11 │  
@@ -29,24 +29,24 @@ Bad types for arrondi :
       ╒══ type_error/rules.publicodes:14:11
    13 │    valeur: 5€
    14 │    arrondi:
-      │            ^ valeur attendue ici
+      │            ˘ valeur attendue ici
    15 │  
   
   error[E022]: type invalide détecté
       ╒══ type_error/rules.publicodes:14:3
    13 │    valeur: 5€
    14 │    arrondi:
-      │    ^^^^^^^ est n'importe quelle valeur
+      │    ˘˘˘˘˘˘˘ est n'importe quelle valeur
    15 │  
-      = arrondi doit être un nombre ou un booléen
+      = (aide) arrondi doit être un nombre ou un booléen
   
   error[E022]: type invalide détecté
       ╒══ type_error/rules.publicodes:19:12
    18 │    valeur: 5€
    19 │    arrondi: x
-      │             ^ est n'importe quelle valeur
+      │             ˘ est n'importe quelle valeur
    20 │  
-      = arrondi doit être un nombre ou un booléen
+      = (aide) arrondi doit être un nombre ou un booléen
   
   [123]
 

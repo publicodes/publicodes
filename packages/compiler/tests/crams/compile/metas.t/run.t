@@ -17,15 +17,15 @@ Invalid metas :
     4 │    références:  # Invalid, put in a meta tag
       │    ^^^^^^^^^^ mécanisme invalide
     5 │      - Ma référence
-      = La clé `références` n'est pas valide
-      = Utilisez la clé 'meta' pour ajouter des propriétés personnalisées à une règle
+      = (aide) La clé `références` n'est pas valide
+      = (aide) Utilisez la clé 'meta' pour ajouter des propriétés personnalisées à une règle
   
   error[E030]: meta invalide
       ╒══ invalid-metas/rules.publicodes:11:5
    10 │    meta:
    11 │      titre: bla # Invalid, put at the root of the rule
-      │      ^^^^^ titre
+      │      ˘˘˘˘˘ titre
    12 │    valeur: 1
-      = Cette méta doit être déplacée à la racine de la règle
+      = (aide) Cette méta doit être déplacée à la racine de la règle
   
   [123]

@@ -104,7 +104,7 @@ Cycle imports :
       ╒══ subjects/cycle/main.publicodes:2:13
     1 │  cycle a:
     2 │    importer: cycle a
-      │              ^^^^^^^ modèle 'cycle a' importé ici
+      │              ˘˘˘˘˘˘˘ modèle 'cycle a' importé ici
     3 │  
   
   [123]
@@ -117,8 +117,8 @@ Private reference :
     4 │  out: module b . regle b
       │       ^^^^^^^^^^^^^^^^^^ cette règle est privée
     5 │  
-      = La rêgle `module b . regle b` n'est pas exportée
-      = Ajouter l'attribut public sur la rêgle référencé
+      = (aide) La règle `module b . regle b` n'est pas exportée
+      = (aide) Ajouter l'attribut « public: oui » sur la règle référencée
   
   [123]
 
@@ -130,7 +130,7 @@ Parent reference :
     2 │    valeur: parent ref
       │            ^^^^^^^^^^ cette règle n'est pas accessible
     3 │    public: oui
-      = La rêgle `parent ref` n'est pas accessible depuis ce module
+      = (aide) La règle `parent ref` n'est pas accessible depuis ce module
   
   [123]
 
@@ -142,7 +142,7 @@ Cross reference :
     2 │    valeur: module b . regle b
       │            ^^^^^^^^^^^^^^^^^^ cette règle n'est pas accessible
     3 │    public: oui
-      = La rêgle `module b . regle b` n'est pas accessible depuis ce module
+      = (aide) La règle `module b . regle b` n'est pas accessible depuis ce module
   
   [123]
 
@@ -154,7 +154,7 @@ Missing reference :
     2 │    importer: module missing
       │              ^^^^^^^^^^^^^^ la resource est introuvable
     3 │  
-      = le chemin 'module missing' n'existe pas
+      = (aide) le chemin 'module missing' n'existe pas
   
   error[E033]: la resource est introuvable
       ╒══ subjects/missing/rules.publicodes:5:13
@@ -162,7 +162,7 @@ Missing reference :
     5 │    importer: ./module empty
       │              ^^^^^^^^^^^^^^ la resource est introuvable
     6 │  
-      = le dossier 'subjects/missing/module empty' est vide
+      = (aide) le dossier 'subjects/missing/module empty' est vide
   
   error[E033]: la resource est introuvable
       ╒══ subjects/missing/rules.publicodes:10:13
@@ -170,7 +170,7 @@ Missing reference :
    10 │      paquet: package missing
       │              ^^^^^^^^^^^^^^^ la resource est introuvable
    11 │      modèle: vendored a
-      = le dossier n'a pas été trouvé dans aucun des emplacements suivants : 'vendor/package missing'
+      = (aide) le dossier n'a pas été trouvé dans aucun des emplacements suivants : 'vendor/package missing'
   
   error[E033]: la resource est introuvable
       ╒══ subjects/missing/rules.publicodes:17:13
@@ -178,7 +178,7 @@ Missing reference :
    17 │      modèle: vendored missing
       │              ^^^^^^^^^^^^^^^^ la resource est introuvable
    18 │  
-      = le chemin 'vendor/package a/vendored missing' n'existe pas
+      = (aide) le chemin 'vendor/package a/vendored missing' n'existe pas
   
   error[E034]: champ manquant : modèle
       ╒══ subjects/missing/rules.publicodes:21:3
@@ -208,7 +208,7 @@ Vendor invalid reference :
     3 │    importer: foo/../bar # invalide
       │              ^^^^^^^^^^ chemin invalide
     4 │  
-      = 'foo/../bar' n'est pas une valeur de modèle valide
+      = (aide) 'foo/../bar' n'est pas une valeur de modèle valide
   
   error[E035]: chemin invalide
       ╒══ subjects/vendored invalid/main.publicodes:8:13
@@ -216,7 +216,7 @@ Vendor invalid reference :
     8 │      paquet: ../node_modules/foo # invalide
       │              ^^^^^^^^^^^^^^^^^^^ chemin invalide
     9 │      modèle: bar
-      = '../node_modules/foo' n'est pas une valeur de paquet valide
+      = (aide) '../node_modules/foo' n'est pas une valeur de paquet valide
   
   error[E035]: chemin invalide
       ╒══ subjects/vendored invalid/main.publicodes:15:13
@@ -224,7 +224,7 @@ Vendor invalid reference :
    15 │      modèle: bar/../toot # invalide
       │              ^^^^^^^^^^^ chemin invalide
    16 │  
-      = 'bar/../toot' n'est pas une valeur de modèle valide
+      = (aide) 'bar/../toot' n'est pas une valeur de modèle valide
   
   error[E035]: chemin invalide
       ╒══ subjects/vendored invalid/main.publicodes:21:13
@@ -232,7 +232,7 @@ Vendor invalid reference :
    21 │      modèle: bar/./toot # invalide
       │              ^^^^^^^^^^ chemin invalide
    22 │  
-      = 'bar/./toot' n'est pas une valeur de modèle valide
+      = (aide) 'bar/./toot' n'est pas une valeur de modèle valide
   
   error[E035]: chemin invalide
       ╒══ subjects/vendored invalid/main.publicodes:26:13
@@ -240,7 +240,7 @@ Vendor invalid reference :
    26 │      paquet: ./foo # invalide
       │              ^^^^^ chemin invalide
    27 │      modèle: bar
-      = './foo' n'est pas une valeur de paquet valide
+      = (aide) './foo' n'est pas une valeur de paquet valide
   
   [123]
 

@@ -21,7 +21,7 @@ let illegal_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
       Log.error ~pos ~kind:`Syntax ~code message
         ~hints:
           [ Stdlib.Format.asprintf
-              "La rêgle `%a` n'est pas accessible depuis ce module" Rule_name.pp
+              "La règle `%a` n'est pas accessible depuis ce module" Rule_name.pp
               rule_b ]
       :: acc
     else if
@@ -32,9 +32,9 @@ let illegal_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
       let code, message = Err.private_rule in
       Log.error ~pos ~kind:`Syntax ~code message
         ~hints:
-          [ Stdlib.Format.asprintf "La rêgle `%a` n'est pas exportée"
+          [ Stdlib.Format.asprintf "La règle `%a` n'est pas exportée"
               Rule_name.pp rule_b
-          ; "Ajouter l'attribut public sur la rêgle référencé" ]
+          ; "Ajouter l'attribut « public: oui » sur la règle référencée" ]
       :: acc
     else acc
   in

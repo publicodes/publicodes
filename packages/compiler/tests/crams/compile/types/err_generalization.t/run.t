@@ -6,14 +6,14 @@ Should raise an error:
       ╒══ ./input/rules.publicodes:3:19
     2 │    public: oui
     3 │    valeur: 10 l ** 2 kg
-      │                    ^^^^ unité: kg
+      │                    ˘˘˘˘ unité: kg
     4 │  
   
   error[E041]: l'exposant d'une puissance ne devrait pas avoir d'unité
-      ╒══ ./input/rules.publicodes:7:19
+      ╒══ ./input/rules.publicodes:9:15
     6 │    public: oui
     7 │    valeur: 10 l ** exponent
-      │                    ^^^^^^^^ unité: kg
+      │                    ˘˘˘˘˘˘˘˘ unité: kg
     8 │    avec:
     9 │      exponent: 10 kg
       │                ˘˘˘˘˘ définie ici
@@ -23,14 +23,14 @@ Should raise an error:
       ╒══ ./input/rules.publicodes:13:19
    12 │    public: oui
    13 │    valeur: 10 l ** exponent
-      │                    ^^^^^^^^ unité: kg
+      │                    ˘˘˘˘˘˘˘˘ unité: kg
    14 │    avec:
   
   error[E041]: l'exposant d'une puissance ne devrait pas avoir d'unité
-      ╒══ ./input/rules.publicodes:22:19
+      ╒══ ./input/rules.publicodes:24:15
    21 │    public: oui
    22 │    valeur: 10 l ** exponent
-      │                    ^^^^^^^^ unité: kg
+      │                    ˘˘˘˘˘˘˘˘ unité: kg
    23 │    contexte:
    24 │      exponent: 10 kg
       │                ˘˘˘˘˘ définie ici

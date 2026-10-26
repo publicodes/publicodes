@@ -26,6 +26,6 @@ Objet incomplet #2
     2 │  - 14
     3 │  
       │  ^ l'objet n'est pas fermé
-      = il manque  `}` pour le fermer, ou `,` pour ajouter un élément
+      = (aide) il manque  `}` pour le fermer, ou `,` pour ajouter un élément
   
   [123]

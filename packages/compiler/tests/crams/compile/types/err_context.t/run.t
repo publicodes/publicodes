@@ -4,19 +4,21 @@ Should return a type error when context usage is inconsistent:
       ╒══ ./input/rules.publicodes:5:10
     4 │    contexte:
     5 │      ref: 4 euros
-      │           ^^^^^^^ est le nombre 4.
+      │      ˘˘˘  ^^^^^^^ attendu `le booléan oui`, trouvé `le nombre 4.`
+      │      │
+      │      valeur renseignée pour cette règle incorrecte
     6 │    avec:
     7 │      ref:
     8 │        public: oui
     9 │        valeur: oui
-      │                ˘˘˘ est le booléan oui
+      │                ˘˘˘ le type de la règle est défini ici
    10 │  
   
   error[E025]: unités non compatibles
-      ╒══ ./input/rules.publicodes:20:16
+      ╒══ ./input/rules.publicodes:22:5
    19 │          contexte:
    20 │            ref: 2 euro
-      │                 ^^^^^^ unité: euro
+      │                 ˘˘˘˘˘˘ unité: euro
    21 │    avec:
    22 │      ref:
       │      ˘˘˘ unité: euros

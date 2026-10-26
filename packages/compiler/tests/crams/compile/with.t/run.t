@@ -22,11 +22,11 @@ Nested definitions should be correctly resolved:
 Cycle should be found:
 
   $ publicodes compile ./error/ -o -
-  error[E027]: cycle de dépendance détecté
+  warning[E027]: cycle de dépendance détecté
       ╒══ ./error/cycle.publicodes:4:15
     3 │      b:
     4 │        valeur: b
-      │                ^ la règle se référence elle-même
+      │                ˘ la règle se référence elle-même
     5 │  
   
   [123]

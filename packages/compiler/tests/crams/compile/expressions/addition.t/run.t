@@ -10,8 +10,8 @@ Missing term :
   error[E007]: expression malformée
       ╒══ missing_term/rules.publicodes:1:14
     1 │  an other: 12 +
-      │               ^ une valeur ou une référence sont attendues après l'opérateur `+`
+      │               ˘ une valeur ou une référence sont attendues après l'opérateur `+`
     2 │  
-      = supprimez l'opérateur `+` ou bien ajoutez une expression
+      = (aide) supprimez l'opérateur `+` ou bien ajoutez une expression
   
   [123]

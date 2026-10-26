@@ -27,20 +27,37 @@ let to_diagnostic (log : Log.t) =
   let pos = Mark.pos log in
   let log = Mark.remove log in
   let message = Message.create log.message in
-  let notes = List.map log.hints ~f:Message.create in
-  let labels =
-    match log.labels with
-    | [] ->
+  let notes = List.map log.hints ~f:(fun h -> Message.create ("(aide) " ^ h)) in
+  let primary_labels =
+    match log.primary_label with
+    | Some label ->
+        let message = Message.create label in
         [Label.primary ~range:(pos_to_range pos) message]
-    | labels ->
-        List.mapi labels ~f:(fun i label ->
-            let pos = Mark.pos label in
-            let label = Mark.remove label in
-            let range = pos_to_range pos in
-            if i = 0 then Label.primary ~range (Message.create label)
-            else Label.secondary ~range (Message.create label) )
+    | None ->
+        if List.is_empty log.labels then
+          [Label.primary ~range:(pos_to_range pos) message]
+        else []
   in
-  create ~labels ~notes ~code:log.code Severity.Error message
+  let labels =
+    primary_labels
+    @ List.map log.labels ~f:(fun label ->
+        let pos = Mark.pos label in
+        let label = Mark.remove label in
+        let range = pos_to_range pos in
+        Label.secondary ~range (Message.create label) )
+  in
+  let severity =
+    match log.level with
+    | `Error ->
+        Severity.Error
+    | `Warning ->
+        Severity.Warning
+    | `Debug ->
+        Severity.Note
+    | `Bug ->
+        Severity.Bug
+  in
+  create ~code:log.code ~labels ~notes severity message
 
 let print log =
   let diagnostic = to_diagnostic log in
@@ -61,8 +78,10 @@ let print log =
         ; note_bullet= "=" }
     ; styles=
         { Grace_ansi_renderer.Config.default.styles with
-          primary_label_error= [`Fg (`Hi `Red)]
-        ; secondary_label= [`Fg (`Hi `Cyan)] } }
+          primary_label_error= [`Bold; `Fg (`Hi `Red)]
+        ; line_number= [`Fg (`Hi `Blue)]
+        ; source_border= [`Fg (`Hi `Blue)]
+        ; secondary_label= [`Bold; `Fg (`Hi `Blue)] } }
   in
   Grace_ansi_renderer.pr_diagnostic ~config ~code_to_string diagnostic ;
   Stdlib.Format.print_newline () ;

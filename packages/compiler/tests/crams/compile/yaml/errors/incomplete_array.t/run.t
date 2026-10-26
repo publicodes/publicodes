@@ -8,6 +8,6 @@ Tableau non fermé
     2 │ │  b:
       │ ╰──^ le tableau n'est pas fermé
     3 │    
-      = il manque  `]` pour le fermer, ou `,` pour ajouter un élément
+      = (aide) il manque  `]` pour le fermer, ou `,` pour ajouter un élément
   
   [123]

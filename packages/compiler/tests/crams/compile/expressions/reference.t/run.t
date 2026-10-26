@@ -52,7 +52,7 @@ Should throw an error if a reference to an non-existing rule is made:
     2 │    valeur: b
       │            ^ cette règle n'existe pas
     3 │  
-      = Ajoutez la règle `b` manquante
-      = Vérifiez les erreurs de typos dans le nom de la règle
+      = (aide) Ajoutez la règle `b` manquante
+      = (aide) Vérifiez les erreurs de typos dans le nom de la règle
   
   [123]
