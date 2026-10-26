@@ -290,6 +290,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc8b2583_d7189a66",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-26T15:52:58Z",
+      "side": 1,
+      "message": "C\u0027est même pire que ca, `Rule_name.parents` ne respecte même pas sa propre description. C\u0027est fixed dans un autre commit, et je rebase celui la.",
+      "parentUuid": "741d0496_44da0f0d",
+      "range": {
+        "startLine": 99,
+        "startChar": 6,
+        "endLine": 99,
+        "endChar": 42
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "68373209_415b8b6a",
@@ -363,6 +387,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b44a5352_b2ce567d",
+        "filename": "packages/compiler/lib/eval_tree/replacements.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-26T15:52:58Z",
+      "side": 1,
+      "message": "Sur le sujet du style en général, je comprends toutes les écoles pour le coup, j\u0027ai vraiment pas de préférence. J\u0027ai pas de soucis avec les fonctions super longues, tans que les blocs sont clairs.\n\nPar contre ici on fais pas un check, on remplace des nœuds, et on est déjà dans une fonction `apply_to_node`. Je suis pas convaincue que split une fois de plus va aider la lecture.",
+      "parentUuid": "b9ee03db_e0430691",
+      "range": {
+        "startLine": 98,
+        "startChar": 4,
+        "endLine": 125,
+        "endChar": 26
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "4f348806_d8d3ee85",
         "filename": "packages/compiler/lib/parser/parse_meta.ml",
         "patchSetId": 4
@@ -374,6 +422,30 @@
       "writtenOn": "2026-09-30T14:24:11Z",
       "side": 1,
       "message": "Le corps de cette branche pourrait être factorisé avec celui de `public` et plus généralement pour tous les mécanismes booléens.\n\nJe me demande d\u0027ailleurs pourquoi on ne voudrait pas laisser la possibilité d\u0027avoir `public: non` ou `applicabilité étendue à l\u0027espace de nom: non` ?",
+      "range": {
+        "startLine": 81,
+        "startChar": 5,
+        "endLine": 86,
+        "endChar": 48
+      },
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1bda3400_f7a6f2b9",
+        "filename": "packages/compiler/lib/parser/parse_meta.ml",
+        "patchSetId": 4
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-26T15:52:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4f348806_d8d3ee85",
       "range": {
         "startLine": 81,
         "startChar": 5,
@@ -397,6 +469,24 @@
       "writtenOn": "2026-09-30T14:24:11Z",
       "side": 1,
       "message": "Je pense que ça vaut le coup de séparer les tests de ce mécanisme dans un dossier .t dédié.",
+      "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ebf87259_640ae670",
+        "filename": "packages/compiler/tests/crams/compile/make_not_applicable.t/namespace_applicability/rules.publicodes",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-26T15:52:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "73f7d920_7a5c5e05",
       "revId": "ddfb99b650c518219eaaba70037c5e489d5f15ea",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },

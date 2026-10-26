@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b258e86f_46cfb032",
+        "filename": "packages/compiler/tests/crams/compile/make_not_applicable.t/run.t",
+        "patchSetId": 8
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-26T15:52:58Z",
+      "side": 1,
+      "message": "Ce code viens du \"rends non applicable\", c\u0027est le même que pour le cas simple plus haut. Pourquoi est-ce qu\u0027il faudrait le traiter différemment?",
+      "parentUuid": "0350d99c_97b13fe4",
+      "range": {
+        "startLine": 199,
+        "startChar": 29,
+        "endLine": 199,
+        "endChar": 49
+      },
+      "revId": "98ff744decee799dee41973acd9c051edca1f3f6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7e10085a_d8b51eff",
         "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/applicabilité-espace-nom.test.ts",
         "patchSetId": 8
@@ -37,6 +61,30 @@
       "writtenOn": "2026-10-19T09:00:17Z",
       "side": 1,
       "message": "Il faudrait au moins rajouter un test sur la régression de la propagation du `NotDefined` et vérifier la bonne récupération des missings/parameters variables.\n\nJe pense que ça vaudrait également le coup d\u0027avoir un test qui gère les `applicabilité étendue` imbriquées (comment sont gérées les missings dans ce cas là ?) et avec remplacements.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 2
+      },
+      "revId": "98ff744decee799dee41973acd9c051edca1f3f6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e18083e7_f5c4d79b",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/applicabilité-espace-nom.test.ts",
+        "patchSetId": 8
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-10-26T15:52:58Z",
+      "side": 1,
+      "message": "J\u0027avoue que j\u0027ai du mal a saisir quels tests tu souhaites ajouter.\n\nJe ne suis pas sure que le build des `missing` soit correct. Les règles parentes s\u0027ajoutent en missing, puisqu\u0027elle s\u0027ajoute dans la liste des règles dont on a besoin pour résoudre la règle enfante. Quelque part je me dis que c\u0027est logique qu\u0027elle apparaisse désormais, mais en même temps ca peux être troublant de voir une règle parente listé alors qu\u0027elle n\u0027a pas de rapport direct.\n\nSi on veux éviter cela, le seul moyen que je vois c\u0027est de court-circuiter le runtime, et de ne pas passer par les méthodes `$get` du runtime.",
+      "parentUuid": "7e10085a_d8b51eff",
       "range": {
         "startLine": 1,
         "startChar": 0,
