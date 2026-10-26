@@ -38,6 +38,9 @@ val sexp_of_t : t -> Sexplib0.Sexp.t
 val std : t
 (** Represent a standard input/output. *)
 
+val is_std : t -> bool
+(** [is_std file] checks if the path is a standard input/output. *)
+
 val is_valid_import_str : string -> bool
 (** [is_valid_import_str ~path] checks that a value is a valid Publicode
   module or package *)

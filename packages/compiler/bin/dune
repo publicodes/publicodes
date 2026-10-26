@@ -1,5 +1,6 @@
 (executable
- (enabled_if (<> %{system} linux))
+ (enabled_if
+  (<> %{system} linux))
  (public_name publicodes)
  (name main)
  (libraries unix cmdliner compiler yaml fpath yojson)
@@ -7,16 +8,19 @@
   (pps config.ppx)))
 
 (executable
- (enabled_if (= %{system} linux))
+ (enabled_if
+  (= %{system} linux))
  (public_name publicodes)
  (name main)
  (libraries unix cmdliner compiler yaml fpath yojson)
- (flags (:standard -cclib -static -cclib -no-pie))
+ (flags
+  (:standard -cclib -static -cclib -no-pie))
  (preprocess
   (pps config.ppx)))
 
 (rule
  (targets version.ml)
  (action
-  (with-stdout-to %{targets}
+  (with-stdout-to
+   %{targets}
    (echo "let version = \"%{version:publicodes}\""))))

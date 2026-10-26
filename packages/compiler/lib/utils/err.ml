@@ -53,6 +53,7 @@ module Code = struct
     | Parsing_no_rules
     | Type_missing_enums
     | Type_exponent_with_unit
+    | Internal
   [@@deriving equal, enum, show]
 
   let show = fun code -> Stdlib.Format.sprintf "E%03d" (to_enum code)

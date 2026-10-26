@@ -85,106 +85,107 @@ Check root exports :
 Cycle imports :
 
   $ publicodes compile subjects/cycle -t debug_eval_tree -o -
-  
-  E027 cycle d'import détecté [syntax error]
-       ╒══  subjects/cycle/main.publicodes:2:13 ══
-     1 │ cycle a:
-     2 │   importer: cycle a
-       │             ˘˘˘˘˘˘˘ modèle 'cycle a' importé ici
-       ╒══  cycle a/rules.publicodes:2:13 ══
-     1 │ cycle b:
-     2 │   importer: cycle b
-       │             ˘˘˘˘˘˘˘ modèle 'cycle b' importé ici, début du cycle
-       ╒══  cycle b/rules.publicodes:2:13 ══
-     1 │ cycle c:
-     2 │   importer: cycle c
-       │             ˘˘˘˘˘˘˘ modèle 'cycle c' importé ici
-       ╒══  cycle c/rules.publicodes:2:13 ══
-     1 │ cycle a:
-     2 │   importer: cycle a
-       │             ˘˘˘˘˘˘˘ modèle 'cycle a' importé à nouveau ici
+  error[E027]: cycle d'import détecté
+      ╒══ cycle a/rules.publicodes:2:13
+    1 │  cycle b:
+    2 │    importer: cycle b
+      │              ˘˘˘˘˘˘˘ modèle 'cycle b' importé ici, début du cycle
+    3 │  
+      ╒══ cycle b/rules.publicodes:2:13
+    1 │  cycle c:
+    2 │    importer: cycle c
+      │              ˘˘˘˘˘˘˘ modèle 'cycle c' importé ici
+    3 │  
+      ╒══ cycle c/rules.publicodes:2:13
+    1 │  cycle a:
+    2 │    importer: cycle a
+      │              ˘˘˘˘˘˘˘ modèle 'cycle a' importé à nouveau ici
+    3 │  
+      ╒══ subjects/cycle/main.publicodes:2:13
+    1 │  cycle a:
+    2 │    importer: cycle a
+      │              ˘˘˘˘˘˘˘ modèle 'cycle a' importé ici
+    3 │  
   
   [123]
 
 Private reference :
   $ publicodes compile subjects/private -t debug_eval_tree -o -
+  error[E031]: cette règle est privée
+      ╒══ subjects/private/main.publicodes:4:6
+    3 │  
+    4 │  out: module b . regle b
+      │       ^^^^^^^^^^^^^^^^^^ cette règle est privée
+    5 │  
+      = (aide) La rêgle `module b . regle b` n'est pas exportée
+      = (aide) Ajouter l'attribut public sur la rêgle référencé
   
-  E031 cette règle est privée [syntax error]
-       ╒══  subjects/private/main.publicodes:4:6 ══
-     3 │ 
-     4 │ out: module b . regle b
-       │      ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
-   Hint: La rêgle `module b . regle b` n'est pas
-         exportée
-   Hint: Ajouter l'attribut public sur la rêgle
-         référencé
   [123]
 
 Parent reference :
   $ publicodes compile subjects/parent -t debug_eval_tree -o -
+  error[E032]: cette règle n'est pas accessible
+      ╒══ parent ref/rules.publicodes:2:11
+    1 │  regle d:
+    2 │    valeur: parent ref
+      │            ^^^^^^^^^^ cette règle n'est pas accessible
+    3 │    public: oui
+      = (aide) La rêgle `parent ref` n'est pas accessible depuis ce module
   
-  E032 cette règle n'est pas accessible [syntax
-  error]
-       ╒══  parent ref/rules.publicodes:2:11 ══
-     1 │ regle d:
-     2 │   valeur: parent ref
-       │           ˘˘˘˘˘˘˘˘˘˘
-   Hint: La rêgle `parent ref` n'est pas accessible
-         depuis ce module
   [123]
 
 Cross reference :
   $ publicodes compile subjects/cross -t debug_eval_tree -o -
+  error[E032]: cette règle n'est pas accessible
+      ╒══ cross ref/rules.publicodes:2:11
+    1 │  regle e:
+    2 │    valeur: module b . regle b
+      │            ^^^^^^^^^^^^^^^^^^ cette règle n'est pas accessible
+    3 │    public: oui
+      = (aide) La rêgle `module b . regle b` n'est pas accessible depuis ce module
   
-  E032 cette règle n'est pas accessible [syntax
-  error]
-       ╒══  cross ref/rules.publicodes:2:11 ══
-     1 │ regle e:
-     2 │   valeur: module b . regle b
-       │           ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
-   Hint: La rêgle `module b . regle b` n'est pas
-         accessible depuis ce module
   [123]
 
 Missing reference :
   $ PUBLICODESPATH=vendor publicodes compile subjects/missing -t debug_eval_tree -o -
+  error[E033]: la resource est introuvable
+      ╒══ subjects/missing/rules.publicodes:2:13
+    1 │  module missing:
+    2 │    importer: module missing
+      │              ^^^^^^^^^^^^^^ la resource est introuvable
+    3 │  
+      = (aide) le chemin 'module missing' n'existe pas
   
-  E033 la resource est introuvable [syntax error]
-       ╒══  subjects/missing/rules.publicodes:2:13 ══
-     1 │ module missing:
-     2 │   importer: module missing
-       │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘
-   Hint: le chemin 'module missing' n'existe pas
+  error[E033]: la resource est introuvable
+      ╒══ subjects/missing/rules.publicodes:5:13
+    4 │  module empty:
+    5 │    importer: ./module empty
+      │              ^^^^^^^^^^^^^^ la resource est introuvable
+    6 │  
+      = (aide) le dossier 'subjects/missing/module empty' est vide
   
-  E033 la resource est introuvable [syntax error]
-       ╒══  subjects/missing/rules.publicodes:5:13 ══
-     4 │ module empty:
-     5 │   importer: ./module empty
-       │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘
-   Hint: le dossier 'subjects/missing/module empty' est
-         vide
+  error[E033]: la resource est introuvable
+      ╒══ subjects/missing/rules.publicodes:10:13
+    9 │    importer:
+   10 │      paquet: package missing
+      │              ^^^^^^^^^^^^^^^ la resource est introuvable
+   11 │      modèle: vendored a
+      = (aide) le dossier n'a pas été trouvé dans aucun des emplacements suivants : 'vendor/package missing'
   
-  E033 la resource est introuvable [syntax error]
-       ╒══  subjects/missing/rules.publicodes:10:13 ══
-     9 │   importer:
-    10 │     paquet: package missing
-       │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
-   Hint: le dossier n'a pas été trouvé dans aucun des
-         emplacements suivants : 'vendor/package missing'
+  error[E033]: la resource est introuvable
+      ╒══ subjects/missing/rules.publicodes:17:13
+   16 │      paquet: package a
+   17 │      modèle: vendored missing
+      │              ^^^^^^^^^^^^^^^^ la resource est introuvable
+   18 │  
+      = (aide) le chemin 'vendor/package a/vendored missing' n'existe pas
   
-  E033 la resource est introuvable [syntax error]
-       ╒══  subjects/missing/rules.publicodes:17:13 ══
-    16 │     paquet: package a
-    17 │     modèle: vendored missing
-       │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
-   Hint: le chemin 'vendor/package a/vendored missing'
-         n'existe pas
-  
-  E034 champ manquant : modèle [syntax error]
-       ╒══  subjects/missing/rules.publicodes:21:3 ══
-    20 │   valeur: rule vendored c + 3
-    21 │   importer:
-       │   ˘˘˘˘˘˘˘˘˘
+  error[E034]: champ manquant : modèle
+      ╒══ subjects/missing/rules.publicodes:21:3
+   20 │    valeur: rule vendored c + 3
+   21 │    importer:
+      │    ^^^^^^^^ champ manquant : modèle
+   22 │      paquet: package a
   
   [123]
 
@@ -201,45 +202,46 @@ Vendor reference :
 
 Vendor invalid reference :
   $ PUBLICODESPATH=vendor publicodes compile "subjects/vendored invalid" -t debug_eval_tree -o -
+  error[E035]: chemin invalide
+      ╒══ subjects/vendored invalid/main.publicodes:3:13
+    2 │    valeur: rule vendored a + 3
+    3 │    importer: foo/../bar # invalide
+      │              ^^^^^^^^^^ chemin invalide
+    4 │  
+      = (aide) 'foo/../bar' n'est pas une valeur de modèle valide
   
-  E035 chemin invalide [syntax error]
-       ╒══  subjects/vendored invalid/main.publicodes:3:13 ══
-     2 │   valeur: rule vendored a + 3
-     3 │   importer: foo/../bar # invalide
-       │             ˘˘˘˘˘˘˘˘˘˘˘
-   Hint: 'foo/../bar' n'est pas une valeur de modèle
-         valide
+  error[E035]: chemin invalide
+      ╒══ subjects/vendored invalid/main.publicodes:8:13
+    7 │    importer:
+    8 │      paquet: ../node_modules/foo # invalide
+      │              ^^^^^^^^^^^^^^^^^^^ chemin invalide
+    9 │      modèle: bar
+      = (aide) '../node_modules/foo' n'est pas une valeur de paquet valide
   
-  E035 chemin invalide [syntax error]
-       ╒══  subjects/vendored invalid/main.publicodes:8:13 ══
-     7 │   importer:
-     8 │     paquet: ../node_modules/foo # invalide
-       │             ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
-   Hint: '../node_modules/foo' n'est pas une valeur de
-         paquet valide
+  error[E035]: chemin invalide
+      ╒══ subjects/vendored invalid/main.publicodes:15:13
+   14 │      paquet: package a
+   15 │      modèle: bar/../toot # invalide
+      │              ^^^^^^^^^^^ chemin invalide
+   16 │  
+      = (aide) 'bar/../toot' n'est pas une valeur de modèle valide
   
-  E035 chemin invalide [syntax error]
-       ╒══  subjects/vendored invalid/main.publicodes:15:13 ══
-    14 │     paquet: package a
-    15 │     modèle: bar/../toot # invalide
-       │             ˘˘˘˘˘˘˘˘˘˘˘˘
-   Hint: 'bar/../toot' n'est pas une valeur de modèle
-         valide
+  error[E035]: chemin invalide
+      ╒══ subjects/vendored invalid/main.publicodes:21:13
+   20 │      paquet: package a
+   21 │      modèle: bar/./toot # invalide
+      │              ^^^^^^^^^^ chemin invalide
+   22 │  
+      = (aide) 'bar/./toot' n'est pas une valeur de modèle valide
   
-  E035 chemin invalide [syntax error]
-       ╒══  subjects/vendored invalid/main.publicodes:21:13 ══
-    20 │     paquet: package a
-    21 │     modèle: bar/./toot # invalide
-       │             ˘˘˘˘˘˘˘˘˘˘˘
-   Hint: 'bar/./toot' n'est pas une valeur de modèle
-         valide
+  error[E035]: chemin invalide
+      ╒══ subjects/vendored invalid/main.publicodes:26:13
+   25 │    importer:
+   26 │      paquet: ./foo # invalide
+      │              ^^^^^ chemin invalide
+   27 │      modèle: bar
+      = (aide) './foo' n'est pas une valeur de paquet valide
   
-  E035 chemin invalide [syntax error]
-       ╒══  subjects/vendored invalid/main.publicodes:26:13 ══
-    25 │   importer:
-    26 │     paquet: ./foo # invalide
-       │             ˘˘˘˘˘˘
-   Hint: './foo' n'est pas une valeur de paquet valide
   [123]
 
 Module relative import :
