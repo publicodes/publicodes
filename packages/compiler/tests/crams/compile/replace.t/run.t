@@ -29,11 +29,21 @@ replacement with cycle :
 
   $ publicodes compile cycle  -t debug_eval_tree -o -
   
-  E027 cycle de dépendance détecté [cycle warning]
-  <no
-  source
-  available>
-   Hint: c -> a -> b -> c
+  E029 cycle de remplacement détecté [cycle
+  warning]
+       ╒══  cycle/rules.publicodes:3:13 ══
+     2 │   valeur: 4
+     3 │   remplace: b
+       │             ˘ règle 'b' référencée ici
+       ╒══  cycle/rules.publicodes:7:13 ══
+     6 │   valeur: 5
+     7 │   remplace: c
+       │             ˘ règle 'c' référencée ici
+       ╒══  cycle/rules.publicodes:11:13 ══
+    10 │   valeur: 9
+    11 │   remplace: a
+       │             ˘ règle 'a' référencée de nouveau
+  
   [123]
 
 
@@ -241,9 +251,15 @@ cross-graph cycle (remplace + rend non applicable) — must be detected, not han
 
   $ publicodes compile cross-cycle -o -
   
-  E027 cycle de dépendance détecté [cycle warning]
-  <no
-  source
-  available>
-   Hint: a -> b -> a
+  E029 cycle de remplacement détecté [cycle
+  warning]
+       ╒══  cross-cycle/rules.publicodes:3:13 ══
+     2 │   valeur: non
+     3 │   remplace: b
+       │             ˘ règle 'b' référencée ici
+       ╒══  cross-cycle/rules.publicodes:7:24 ══
+     6 │   valeur: oui
+     7 │   rend non applicable: a
+       │                        ˘ règle 'a' référencée de nouveau
+  
   [123]
