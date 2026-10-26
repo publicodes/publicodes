@@ -86,6 +86,18 @@ let find_value key mapping =
   List.find_map mapping ~f:(fun (k, value) ->
       if String.equal (get_value k) key then Some (Mark.copy k value) else None )
 
+let check_boolean ~pos yaml =
+  let* value = get_scalar ~pos yaml in
+  let pos = Mark.pos value in
+  let value = get_value value in
+  if not (String.equal value "oui" || String.equal value "") then
+    let code, message = Err.invalid_value in
+    Output.fatal_error ~pos ~code ~kind:`Syntax message
+      ~labels:[Mark.mk_pos ~pos "doit valoir `oui` ou être vide"]
+      ~hints:
+        [Printf.sprintf "Remplacez `%s` par `oui` ou supprimez la clée" value]
+  else Output.return ()
+
 let check_authorized_keys ~keys ?(hints = []) mapping =
   let logs =
     List.filter_map mapping ~f:(fun (k, _) ->
