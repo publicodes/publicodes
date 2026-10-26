@@ -32,42 +32,39 @@ Correclty formatted variations :
 Wrongly formatted variations :
 
   $ publicodes compile ./syntax_error -t debug_eval_tree -o -
+  error[E017]: mécanisme invalide
+      ╒══ ./syntax_error/rules.publicodes:5:7
+    4 │        alors: 200
+    5 │        sinon: 300 #KO
+      │        ^^^^^ mécanisme invalide
+    6 │  
   
-  E017 mécanisme invalide [syntax error]
-       ╒══  ./syntax_error/rules.publicodes:5:7 ══
-     4 │       alors: 200
-     5 │       sinon: 300 #KO
-       │       ˘˘˘˘˘˘
-   Hint: La clé `sinon` n'est pas valide
+  error[E017]: mécanisme invalide
+      ╒══ ./syntax_error/rules.publicodes:8:3
+    7 │  b:
+    8 │    variations:
+      │    ^^^^^^^^^^ mécanisme invalide
+    9 │      - si: oui
   
-  E017 mécanisme invalide [syntax error]
-       ╒══  ./syntax_error/rules.publicodes:8:3 ══
-     7 │ b:
-     8 │   variations:
-       │   ˘˘˘˘˘˘˘˘˘˘˘
-   Hint: Une variation doit contenir « si: » et «
-         alors: »
+  error[E017]: mécanisme invalide
+      ╒══ ./syntax_error/rules.publicodes:14:3
+   13 │  c:
+   14 │    variations:
+      │    ^^^^^^^^^^ mécanisme invalide
+   15 │      - sinon: 200 # KO
   
-  E017 mécanisme invalide [syntax error]
-       ╒══  ./syntax_error/rules.publicodes:14:3 ══
-    13 │ c:
-    14 │   variations:
-       │   ˘˘˘˘˘˘˘˘˘˘˘
-   Hint: Une variation doit contenir « si: » et «
-         alors: »
+  error[E017]: mécanisme invalide
+      ╒══ ./syntax_error/rules.publicodes:15:7
+   14 │    variations:
+   15 │      - sinon: 200 # KO
+      │        ^^^^^ mécanisme invalide
+   16 │      - si: oui
   
-  E017 mécanisme invalide [syntax error]
-       ╒══  ./syntax_error/rules.publicodes:15:7 ══
-    14 │   variations:
-    15 │     - sinon: 200 # KO
-       │       ˘˘˘˘˘˘
-   Hint: La clé `sinon` n'est pas valide
+  error[E017]: mécanisme invalide
+      ╒══ ./syntax_error/rules.publicodes:20:3
+   19 │  d:
+   20 │    variations:
+      │    ^^^^^^^^^^ mécanisme invalide
+   21 │      - sinon: 340 # KO
   
-  E017 mécanisme invalide [syntax error]
-       ╒══  ./syntax_error/rules.publicodes:20:3 ══
-    19 │ d:
-    20 │   variations:
-       │   ˘˘˘˘˘˘˘˘˘˘˘
-   Hint: Il doit y avoir au moins une variation en plus de
-         la clause « sinon »
   [123]

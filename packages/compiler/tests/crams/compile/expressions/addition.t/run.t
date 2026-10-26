@@ -7,11 +7,10 @@ Simple addition/soustraction expression :
 Missing term :
 
   $ publicodes compile missing_term
+  error[E007]: expression malformée
+      ╒══ missing_term/rules.publicodes:1:14
+    1 │  an other: 12 +
+      │               ^ une valeur ou une référence sont attendues après l'opérateur `+`
+    2 │  
   
-  E007 expression malformée [syntax error]
-       ╒══  missing_term/rules.publicodes:1:14 ══
-     1 │ an other: 12 +
-       │              ˘ une valeur ou une référence sont attendues après l'opérateur `+`
-   Hint: supprimez l'opérateur `+` ou bien ajoutez une
-         expression
   [123]
