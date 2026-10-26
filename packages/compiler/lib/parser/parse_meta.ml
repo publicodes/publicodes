@@ -45,31 +45,22 @@ let parse_custom_meta ~pos yaml =
 
 let parse mapping =
   let parse_key (key, value) =
-    let scalar_value () = get_scalar ~pos:(Mark.pos key) value in
+    let pos = Mark.pos key in
     match get_value key with
     | "description" ->
-        let* value = scalar_value () in
+        let* value = get_scalar ~pos value in
         Output.return (Description (get_value value))
     | "titre" ->
-        let* value = scalar_value () in
+        let* value = get_scalar ~pos value in
         Output.return (Title (get_value value))
     | "note" ->
-        let* value = scalar_value () in
+        let* value = get_scalar ~pos value in
         Output.return (Note (get_value value))
     | "meta" ->
         parse_custom_meta ~pos:(Mark.pos key) value
     | "public" ->
-        let* value = scalar_value () in
-        let pos = Mark.pos value in
-        let value = get_value value in
-        if not (String.equal value "oui" || String.equal value "") then
-          let code, message = Err.invalid_value in
-          Output.fatal_error ~pos ~code ~kind:`Syntax message
-            ~labels:[Mark.mk_pos ~pos "doit valoir `oui` ou être vide"]
-            ~hints:
-              [ Printf.sprintf "Remplacez `%s` par `oui` ou supprimez la clée"
-                  value ]
-        else Output.return Public
+        let* _ = Parser_utils.check_boolean ~pos value in
+        Output.return Public
     | _ ->
         Output.empty
   in
