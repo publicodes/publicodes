@@ -106,7 +106,7 @@ let parse (filename : File.t) (content : string) : yaml Output.t =
           |> Option.value ~default:(err, [])
         in
         Output.fatal_error message ~pos ~kind:`Yaml ~code:Err.Code.Yaml_parsing
-          ~hints
+          ~primary_label:message ~hints
   in
   let* parser = Yaml.Stream.parser content |> transform_error in
   let* first_token = Yaml.Stream.do_parse parser |> transform_error in

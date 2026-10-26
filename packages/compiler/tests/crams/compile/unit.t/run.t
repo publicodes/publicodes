@@ -115,7 +115,7 @@ Add unit information with `unité` mechanism :
       ╒══ mechanism/rules.publicodes:6:13
     3 │    valeur: 5
     4 │    unité: '%'
-      │           ˘˘˘ unité: %
+      │    ˘˘˘˘˘ unité: %
     5 │  
     6 │  test a: a > 4 € # KO
       │              ˘˘˘ unité: €
@@ -125,25 +125,25 @@ Add unit information with `unité` mechanism :
       ╒══ mechanism/rules.publicodes:13:13
    10 │    valeur: 5
    11 │    unité:
-      │          ˘ unité: aucune
+      │    ˘˘˘˘˘ unité: aucune
    12 │  
    13 │  test b: b + 4 € # KO
       │              ˘˘˘ unité: €
    14 │  
   
   error[E025]: unités non compatibles
-      ╒══ mechanism/rules.publicodes:20:10
+      ╒══ mechanism/rules.publicodes:20:3
    16 │  # Incompatible unit
    17 │  c: 12 €
       │     ˘˘˘˘ unité: €
    18 │  test c:
    19 │    valeur: c
    20 │    unité: kg # KO
-      │           ˘˘ unité: kg
+      │    ˘˘˘˘˘ unité: kg
    21 │  
   
   error[E025]: unités non compatibles
-      ╒══ mechanism/rules.publicodes:30:10
+      ╒══ mechanism/rules.publicodes:30:3
    23 │  # Incompatible infered unit
    24 │  d: 12
       │     ˘˘ unité: €
@@ -151,7 +151,7 @@ Add unit information with `unité` mechanism :
       ·  
    29 │    valeur: d
    30 │    unité: kg # KO
-      │           ˘˘ unité: kg
+      │    ˘˘˘˘˘ unité: kg
    31 │  
   
   [123]
