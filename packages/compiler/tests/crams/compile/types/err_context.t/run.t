@@ -1,15 +1,17 @@
 Should return a type error when context usage is inconsistent:
   $ publicodes compile ./input/ -o - 
   error[E023]: types non cohérents entre eux
-      ╒══ ./input/rules.publicodes:9:15
+      ╒══ ./input/rules.publicodes:5:10
     4 │    contexte:
     5 │      ref: 4 euros
-      │           ˘˘˘˘˘˘˘ est le nombre 4.
+      │      ˘˘˘  ^^^^^^^ attendu `le booléan oui`, trouvé `le nombre 4.`
+      │      │
+      │      valeur renseignée pour cette règle incorrecte
     6 │    avec:
     7 │      ref:
     8 │        public: oui
     9 │        valeur: oui
-      │                ˘˘˘ est le booléan oui
+      │                ˘˘˘ le type de la règle est défini ici
    10 │  
   
   error[E025]: unités non compatibles

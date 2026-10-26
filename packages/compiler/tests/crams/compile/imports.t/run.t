@@ -117,8 +117,8 @@ Private reference :
     4 │  out: module b . regle b
       │       ^^^^^^^^^^^^^^^^^^ cette règle est privée
     5 │  
-      = (aide) La rêgle `module b . regle b` n'est pas exportée
-      = (aide) Ajouter l'attribut public sur la rêgle référencé
+      = (aide) La règle `module b . regle b` n'est pas exportée
+      = (aide) Ajouter l'attribut « public: oui » sur la règle référencée
   
   [123]
 
@@ -130,7 +130,7 @@ Parent reference :
     2 │    valeur: parent ref
       │            ^^^^^^^^^^ cette règle n'est pas accessible
     3 │    public: oui
-      = (aide) La rêgle `parent ref` n'est pas accessible depuis ce module
+      = (aide) La règle `parent ref` n'est pas accessible depuis ce module
   
   [123]
 
@@ -142,7 +142,7 @@ Cross reference :
     2 │    valeur: module b . regle b
       │            ^^^^^^^^^^^^^^^^^^ cette règle n'est pas accessible
     3 │    public: oui
-      = (aide) La rêgle `module b . regle b` n'est pas accessible depuis ce module
+      = (aide) La règle `module b . regle b` n'est pas accessible depuis ce module
   
   [123]
 

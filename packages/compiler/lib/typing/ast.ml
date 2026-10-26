@@ -400,3 +400,11 @@ let literal_to_general typ =
 
 let number_without_unit =  Typed (KNumber [], General)
 
+let get_rule_def_pos ~rule (typing_tree: typing_tree)  =
+  match Hashtbl.find typing_tree rule with
+  | Some (rule_def, _) ->
+      let mark = Mark.get rule_def.name in
+      Output.return (mark.pos)
+  | None ->
+      Output.fatal_bug
+        (Printf.sprintf "The rule definition for '%s' was not found in the typing tree." (Rule_name.to_string rule))
