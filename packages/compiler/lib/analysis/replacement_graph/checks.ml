@@ -1,24 +1,13 @@
 open Base
 open Utils
-open Shared
 open Utils.Output
-module Cycle_analysis = Graph.Cycles.Johnson (Rule_graph)
 
-let cycle_check (graph : Rule_graph.t) : Log.t list =
-  let log_cycle cycle acc =
-    let first_rule_name = List.hd_exn cycle in
-    let cycle = cycle @ [first_rule_name] in
-    let pos = Pos.dummy in
-    let code, message = Err.cycle_detected in
-    let cycle_path =
-      String.concat ~sep:" -> "
-        (List.map cycle ~f:(fun rule ->
-             Stdlib.Format.asprintf "%a" Rule_name.pp rule ) )
-    in
-    let log = Log.warning message ~code ~kind:`Cycle ~pos ~hints:[cycle_path] in
-    log :: acc
-  in
-  Cycle_analysis.fold_cycles log_cycle graph []
+module Cycle_analysis = Cycles.Make (struct
+  include Rule_graph
+
+  let reference ((rule, (_, pos_mark), _) : Rule_graph.edge) =
+    (rule, pos_mark.pos)
+end)
 
 let exclusive_duplicate_check (graph : Rule_graph.t) : Log.t list =
   let log_exclusive_duplicate rule acc =
@@ -63,7 +52,7 @@ let mk_and_checks ast =
   let full_graph =
     Rule_graph.Oper.union replacement_graph make_not_applicable_graph
   in
-  let cycle_logs = cycle_check full_graph in
+  let cycle_logs = Cycle_analysis.check ~error:Err.replace_cycle full_graph in
   let exclusive_duplicate_logs = exclusive_duplicate_check replacement_graph in
   let logs = cycle_logs @ exclusive_duplicate_logs in
   break ~logs (replacement_graph, make_not_applicable_graph)
