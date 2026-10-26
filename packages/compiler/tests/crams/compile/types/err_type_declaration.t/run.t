@@ -3,13 +3,13 @@ Should allow to specify type with `type` key:
 
   $ publicodes compile ./input/ -o -
   error[E023]: types non cohérents entre eux
-      ╒══ ./input/rules.publicodes:13:9
+      ╒══ ./input/rules.publicodes:13:3
    12 │  not compatible type should fail:
    13 │    type: texte
-      │          ^^^^^ est un texte
+      │    ^^^^  ˘˘˘˘˘ est un texte
+      │    │
+      │    est un booléan
    14 │    valeur: 10 > 2
-      │            ˘˘˘˘˘˘ est un booléan
-   15 │  
   
   error[E015]: mauvaise valeure
       ╒══ ./input/rules.publicodes:20:13

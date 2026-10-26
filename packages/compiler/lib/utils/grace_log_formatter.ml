@@ -25,19 +25,25 @@ let to_diagnostic (log : Log.t) =
   let pos = Mark.pos log in
   let log = Mark.remove log in
   let message = Message.create log.message in
+  let primary_label = Label.primary ~range:(pos_to_range pos) message in
   let labels =
-    match log.labels with
-    | [] ->
-        [Label.primary ~range:(pos_to_range pos) message]
-    | labels ->
-        List.mapi labels ~f:(fun i label ->
-            let pos = Mark.pos label in
-            let label = Mark.remove label in
-            let range = pos_to_range pos in
-            if i = 0 then Label.primary ~range (Message.create label)
-            else Label.secondary ~range (Message.create label) )
+    primary_label
+    :: List.map log.labels ~f:(fun label ->
+        let pos = Mark.pos label in
+        let label = Mark.remove label in
+        let range = pos_to_range pos in
+        Label.secondary ~range (Message.create label) )
   in
-  create ~labels ~code:log.code Severity.Error message
+  let severity =
+    match log.level with
+    | `Error ->
+        Severity.Error
+    | `Warning ->
+        Severity.Warning
+    | `Debug ->
+        Severity.Note
+  in
+  create ~labels ~code:log.code severity message
 
 let print log =
   let diagnostic = to_diagnostic log in
@@ -58,7 +64,8 @@ let print log =
     ; styles=
         { Grace_ansi_renderer.Config.default.styles with
           header_error= [`Faint; `Fg (`Hi `Red)]
-        ; header_message= [`Bold; `Fg (`Hi `Red)]
+        ; header_warning= [`Faint; `Fg (`Hi `Yellow)]
+        ; header_message= [`Bold]
         ; source_border= [`Fg (`Hi `Black)]
         ; primary_label_error= [`Fg (`Hi `Red)]
         ; secondary_label= [`Fg (`Hi `Cyan)]

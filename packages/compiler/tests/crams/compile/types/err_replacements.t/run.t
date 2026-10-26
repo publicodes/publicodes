@@ -3,13 +3,7 @@ Should have error when replaces don't match:
   $ publicodes compile ./input -o - -t debug_eval_tree
   error[E023]: types non cohérents entre eux
       ╒══ ./input/rules.publicodes:9:5
-    4 │    remplace: a1
-    5 │    valeur: 10
-      │            ˘˘ avec le nombre 10.
-    6 │  e1: # type: 'toto'
-    7 │    remplace: b1
     8 │    valeur: 'toto'
-      │            ˘˘˘˘˘˘ avec le symbole 'toto'
     9 │  c1: a1 = b1 # erreur: pas possible de comparer un [10] avec ['toto']
       │      ^^   ˘˘ est l'énum ['toto']
       │      │
@@ -59,7 +53,7 @@ Should have error when replaces don't match:
       ·  
    50 │      replace num with text typed def:
    51 │        type: texte
-      │              ˘˘˘˘˘ est un texte
+      │        ˘˘˘˘ est un texte
    52 │        remplace:
   
   error[E023]: types non cohérents entre eux
