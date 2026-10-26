@@ -38,8 +38,3 @@ let add ?(len = 0) ?(line = 0) pos =
       { index= pos.end_pos.index + len
       ; line= pos.end_pos.line + line
       ; column= pos.end_pos.column + len } }
-
-let to_loc (pos : t) : Stdune.Loc.t =
-  Stdune.Loc.create
-    ~start:(Point.to_position pos.start_pos ~file:pos.file)
-    ~stop:(Point.to_position pos.end_pos ~file:pos.file)
