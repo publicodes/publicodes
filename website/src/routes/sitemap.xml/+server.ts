@@ -6,6 +6,6 @@ export const prerender = true;
 
 export const GET: RequestHandler = async () => {
 	return await sitemap.response({
-		origin: 'https://v1.publi.codes'
+		origin: 'https://publi.codes'
 	});
 };

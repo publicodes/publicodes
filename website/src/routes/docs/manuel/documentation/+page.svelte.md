@@ -29,7 +29,7 @@ prix:
 
 <Callout type="tip">
 
-Pour parcourir la documentation d’un jeu de règles, vous pouvez utiliser [l'éditeur en ligne](https://v1.publi.codes/studio).
+Pour parcourir la documentation d’un jeu de règles, vous pouvez utiliser [l'éditeur en ligne](/studio).
 
 Si vous souhaitez publier une documentation directement sur votre site web, vous pouvez vous référer aux guides [Next.JS](/docs/guides/nextjs) ou [Svelte](/docs/guides/svelte).
 

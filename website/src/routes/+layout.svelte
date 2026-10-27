@@ -145,7 +145,7 @@
 			<NavTab href="/bibliotheque">Bibliothèque</NavTab>
 			<NavTab href="/realisations">Réalisations</NavTab>
 			<NavTab href="/studio">Studio</NavTab>
-			<NavTab href="https://publi.codes/blog">Blog</NavTab>
+			<NavTab href="https://next.publi.codes/blog">Blog</NavTab>
 		</ul>
 	</nav>
 {/snippet}
@@ -183,7 +183,7 @@
 						<li>
 							<a
 								target="_blank"
-								href="https://dashboard.simpleanalytics.com/v1.publi.codes"
+								href="https://dashboard.simpleanalytics.com/publi.codes"
 								aria-label="Statistiques de consultation, nouvelle fenêtre"
 								>Statistiques</a>
 						</li>
@@ -196,7 +196,7 @@
 					<p class="font-light text-slate-500">Communauté</p>
 					<ul class="flex flex-col gap-1 font-light">
 						<li>
-							<a href="https://publi.codes/blog">Blog</a>
+							<a href="https://next.publi.codes/blog">Blog</a>
 						</li>
 						<li>
 							<a href="https://github.com/publicodes/publicodes" target="_blank"
