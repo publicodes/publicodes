@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import PublicodesEditor from '$lib/component/publicodes/editor.svelte';
 	import Seo from '$lib/component/seo.svelte';
 	import Tag from '$lib/ui/tag.svelte';
@@ -15,33 +14,26 @@
 `;
 
 	let initialCode: string = $state('');
+	let selectedRuleInDoc: string = $state('');
+
 	function updateUrl(code: string, selectedRule?: string) {
 		const url = new URL(window.location.href);
-
-		url.pathname = '/studio';
+		const params = url.searchParams;
 		if (selectedRule) {
-			url.pathname += '/' + utils.encodeRuleName(selectedRule);
+			params.set('selected', utils.encodeRuleName(selectedRule));
 		}
-
 		if (code !== defaultCode) {
-			url.hash = encodeURIComponent(code);
+			params.set('code', code);
 		}
 		window.history.replaceState({}, '', url.toString());
 	}
 
 	onMount(() => {
-		const codeFromUrl =
-			new URLSearchParams(window.location.search).get('code') ??
-			decodeURIComponent(window.location.hash.substring(1));
-		if (codeFromUrl) {
-			initialCode = codeFromUrl;
-		} else {
-			initialCode = defaultCode;
-		}
+		const url = new URL(window.location.href);
+		const params = url.searchParams;
+		initialCode = params.get('code') || defaultCode;
+		selectedRuleInDoc = params.get('selected') || undefined;
 	});
-
-	const selectedRuleInDoc =
-		utils.decodeRuleName(page.params.rules) || undefined;
 
 	let copied = $state(false);
 	function handleCopyLink() {
