@@ -459,6 +459,6 @@ c: a + 4
 ```
 
 Pour lever une exception plutôt qu'un warning, on peut utiliser l'option
-[`noCycleRuntime`](https://v1.publi.codes/docs/api/publicodes/type-aliases/StrictOptions)
+[`noCycleRuntime`](https://publi.codes/docs/api/publicodes/type-aliases/StrictOptions)
 
 Il est possible de résoudre une référence circulaire avec le mécanisme [`résoudre la référence circulaire`](/docs/mecanismes#résoudre-la-référence-circulaire).

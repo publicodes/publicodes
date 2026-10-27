@@ -58,7 +58,7 @@ Le Net Promoter Score (NPS) est de **{NPSValue}** (cela signifie qu'il y a {NPSV
 
 ### Utilisées et appréciées 🌟
 
-Dans le top, on trouve les [pages d'explications autogénérées](https://publi.codes/) et le [mécanisme `contexte`](https://publi.codes/), avec plus de **70 %** d'utilisateurs et **100 % d'opinions positives** de la part de ces derniers.
+Dans le top, on trouve les [pages d'explications autogénérées](https://publi.codes/) et le [mécanisme `contexte`](https://publi.codes/docs/mecanismes/#contexte), avec plus de **70 %** d'utilisateurs et **100 % d'opinions positives** de la part de ces derniers.
 
 Cela nous conforte dans l'idée de continuer à **améliorer l'existant**, et à améliorer les **performances du mécanisme `contexte`** ([#92](https://github.com/publicodes/publicodes/discussions/92) et [#393](https://github.com/publicodes/publicodes/discussions/393)).
 

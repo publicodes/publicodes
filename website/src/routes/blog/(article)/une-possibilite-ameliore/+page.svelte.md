@@ -45,8 +45,8 @@ Le gros avantage ? **Pas besoin de migrer les modèles existants** pour profiter
 
 Dans cette version 1.7, nous avons conservé le mécanisme `une possibilité` identique - même l'AST reste compatible ! - tout en ajoutant de nouvelles fonctionnalités :
 
-- Une nouvelle méthode [`getPossibilitiesFor`](https://v1.publi.codes/docs/api/publicodes/classes/Engine/#getpossibilitiesfor) pour faciliter l'affichage et la manipulation des possibilités dans vos simulateurs et formulaires
-- Une option stricte [`checkPossibleValues`](https://v1.publi.codes/docs/api/publicodes/type-aliases/strictoptions) qui détecte les valeurs non listées dans les possibilités
+- Une nouvelle méthode [`getPossibilitiesFor`](https://publi.codes/docs/api/publicodes/classes/Engine/#getpossibilitiesfor) pour faciliter l'affichage et la manipulation des possibilités dans vos simulateurs et formulaires
+- Une option stricte [`checkPossibleValues`](https://publi.codes/docs/api/publicodes/type-aliases/strictoptions) qui détecte les valeurs non listées dans les possibilités
 - Le support de nouveaux types dans la liste des possibilités : nombres, textes, et même définition directe de règles
 - L'évaluation de l'applicabilité des possibilités (et la sélection automatique de la valeur si une seule possibilité est applicable)
 

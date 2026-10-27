@@ -13,7 +13,7 @@ Cet été s'est déroulé le premier hackathon Publicodes de
 [Calinou](https://calinou.coop). Ce fut l'occasion de nous retrouver pour
 avancer toustes ensemble sur la refonte de Publicodes.
 
-Le chantier de [Publicodes 2](https://publi.codes/blog/publicodes-v2) a été
+Le chantier de [Publicodes 2](https://next.publi.codes/blog/publicodes-v2) a été
 initié il y a maintenant plus d'un an. En parallèle de leurs travaux externes,
 Johan et Emile ont mis en place le projet, remis à plat, re-designé, et
 implémenté les différentes fonctionnalités. Willow a rejoint l'équipe et

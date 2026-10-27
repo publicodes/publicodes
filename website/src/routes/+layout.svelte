@@ -141,7 +141,7 @@
 		<div class="flex flex-row items-center gap-2 text-xs text-orange-900">
 			Vous êtes sur le site de la version alpha de Publicodes 2
 			<a
-				href="https://v1.publi.codes"
+				href="https://publi.codes"
 				target="_blank"
 				class="border-1 background flex w-fit cursor-pointer items-center whitespace-nowrap rounded-full border border-orange-600 bg-white bg-gradient-to-r px-2.5 py-1 font-sans text-xs font-medium leading-none text-orange-600 duration-100 ease-in-out hover:bg-orange-600 hover:text-white [&:hover_svg]:translate-x-1">
 				Voir la v1
@@ -225,7 +225,7 @@
 						<li>
 							<a
 								target="_blank"
-								href="https://dashboard.simpleanalytics.com/publi.codes"
+								href="https://dashboard.simpleanalytics.com/next.publi.codes"
 								aria-label="Statistiques de consultation, nouvelle fenêtre"
 								>Statistiques</a>
 						</li>
