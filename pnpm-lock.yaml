@@ -204,7 +204,7 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       turbo:
-        specifier: ^2.2.3
+        specifier: ^2.11.3
         version: 2.11.10
       typescript-eslint:
         specifier: ^8.16.0
