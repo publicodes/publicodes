@@ -66,7 +66,7 @@
 				<a href="/docs/" class="max-sm:flex-1">
 					<Button type={'primary'}>Documentation</Button>
 				</a>
-				<a href="/studio" class="max-sm:flex-1">
+				<a href="https://publi.codes/studio" class="max-sm:flex-1">
 					<Button icon={Play} type={'secondary'}>Éditeur en ligne</Button>
 				</a>
 			</div>

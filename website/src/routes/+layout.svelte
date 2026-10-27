@@ -171,7 +171,7 @@
 			<NavTab href="/docs">Docs</NavTab>
 			<NavTab href="/bibliotheque">Bibliothèque</NavTab>
 			<NavTab href="/realisations">Réalisations</NavTab>
-			<NavTab href="/studio">Studio</NavTab>
+			<NavTab href="https://publi.codes/studio">Studio</NavTab>
 
 			<NavTab class="relative" href="/blog">
 				Blog
