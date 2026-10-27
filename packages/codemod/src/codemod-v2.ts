@@ -142,7 +142,7 @@ function removeDoubleQuotes(doc: yaml.Document) {
 		Scalar(_, node) {
 			const value = node.value
 			if (typeof value !== 'string') {
-				return node
+				return
 			}
 			const firstChar = value[0]
 			const lastChar = value[value.length - 1]

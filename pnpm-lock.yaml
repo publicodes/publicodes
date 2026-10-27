@@ -379,9 +379,12 @@ importers:
   packages/codemod:
     dependencies:
       yaml:
-        specifier: ^2.3.4
+        specifier: ^2.6.0
         version: 2.9.1
     devDependencies:
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
       rolldown:
         specifier: 1.0.0-beta.40
         version: 1.0.0-beta.40(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
