@@ -1,5 +1,10 @@
 name: Build Website Docker Image
-on: [push]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'master'
+      - '1.x'
 
 permissions:
   packages: write
@@ -19,7 +24,7 @@ jobs:
               printf %s "$head"
               ;;
             *)
-              printf review-%s "$head" | tr '/' '-'
+              printf preview
               ;;
           esac | xargs -0 printf 'version=%s' >> "$GITHUB_OUTPUT"
       - name: Login to GitHub Container Registry
@@ -43,6 +48,9 @@ jobs:
               ;;
             "1.x")
               printf nzvvdzvZK3FpyYW9Zm6zT
+              ;;
+            *)
+              printf 9g0loPbIM7Q_FhertdZJq
               ;;
           esac | xargs -r0 printf 'application_id=%s' >> "$GITHUB_OUTPUT"
       - name: Dokploy Deployment
