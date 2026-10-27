@@ -49,7 +49,7 @@ jobs:
             "1.x")
               printf nzvvdzvZK3FpyYW9Zm6zT
               ;;
-            "preview")
+            *) # preview
               printf 9g0loPbIM7Q_FhertdZJq
               ;;
           esac | xargs -r0 printf 'application_id=%s' >> "$GITHUB_OUTPUT"
