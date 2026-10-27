@@ -1,5 +1,5 @@
 import path from 'path'
-import openapiJson from './openapi.codegen.json' assert { type: 'json' }
+import openapiJson from './openapi.codegen.json' with { type: 'json' }
 
 export { koaMiddleware } from './middleware/index.js'
 
