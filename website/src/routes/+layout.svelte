@@ -13,6 +13,10 @@
 	import { MenuIcon } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 
+	import {
+		setLastBlogPostDate,
+		showBlogPostIndicator
+	} from '$lib/model/new-blog-post-indicator.svelte';
 	import { fly } from 'svelte/transition';
 	import '../app.css';
 
@@ -21,7 +25,7 @@
 	(globalThis as any).Callout = Callout;
 	/* eslint-enable @typescript-eslint/no-explicit-any */
 
-	const { children } = $props();
+	const { children, data } = $props();
 
 	// Set the locale time to French
 	dayjs.locale('fr');
@@ -31,6 +35,7 @@
 	afterNavigate(() => {
 		showMobileMenu = false;
 	});
+	setLastBlogPostDate(data.lastBlogPostDate);
 	onMount(() => {
 		insertDocsearch('div#search');
 	});
@@ -145,7 +150,21 @@
 			<NavTab href="/bibliotheque">Bibliothèque</NavTab>
 			<NavTab href="/realisations">Réalisations</NavTab>
 			<NavTab href="/studio">Studio</NavTab>
-			<NavTab href="https://next.publi.codes/blog">Blog</NavTab>
+			<NavTab class="relative" href="/blog">
+				Blog
+				{#if showBlogPostIndicator()}
+					<span
+						aria-label="Nouvel article"
+						class="absolute -right-1.5 top-0 flex h-1.5 w-1.5">
+						<span
+							class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-300 opacity-75"
+						></span>
+						<span
+							class="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary-400"
+						></span>
+					</span>
+				{/if}
+			</NavTab>
 		</ul>
 	</nav>
 {/snippet}
@@ -196,7 +215,7 @@
 					<p class="font-light text-slate-500">Communauté</p>
 					<ul class="flex flex-col gap-1 font-light">
 						<li>
-							<a href="https://next.publi.codes/blog">Blog</a>
+							<a href="/blog">Blog</a>
 						</li>
 						<li>
 							<a href="https://github.com/publicodes/publicodes" target="_blank"

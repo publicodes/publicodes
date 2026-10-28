@@ -18,7 +18,7 @@ retours sur les problèmes rencontrés sur le dépôt
 ### Motivation
 
 Les modèles de calculs écrits en Publicodes sont par
-[_design_](https://next.publi.codes/blog/standard-modeles-ouverts#document%C3%A9s-sourc%C3%A9s)
+[_design_](/blog/standard-modeles-ouverts#document%C3%A9s-sourc%C3%A9s)
 implémentés pour être le plus transparent et intelligible possible pour le plus
 grand nombre.
 Cela implique de détailler au maximum les calculs, ce qui peut conduire à une
