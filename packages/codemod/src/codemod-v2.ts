@@ -4,7 +4,16 @@
 import fs from 'fs/promises'
 import { extname, join, relative, sep } from 'node:path'
 import process from 'node:process'
-import yaml, { Scalar, YAMLMap, YAMLOMap, isMap, isScalar, isSeq } from 'yaml'
+import yaml, {
+	Scalar,
+	YAMLMap,
+	YAMLOMap,
+	YAMLSeq,
+	isMap,
+	isNode,
+	isScalar,
+	isSeq,
+} from 'yaml'
 
 // Authorized keys that should not be moved to the `meta` object
 const authorizedKeys = [
@@ -55,6 +64,8 @@ const authorizedKeys = [
 ]
 
 const publicodesExtension = '.publicodes'
+
+const replacementKeys = ['remplace', 'rend non applicable']
 
 const usage = `Usage: @publicodes/codemod [options] <path>...
 
@@ -234,6 +245,7 @@ for (const yamlFile of yamlFiles) {
 	moveNonAuthorizedKeysToMeta(doc)
 	removeDoubleQuotes(doc)
 	processPossibilitesToEnum(doc)
+	splitReplaceReferences(doc)
 	// Convert modified data back to YAML
 	const yamlOutput = yaml.stringify(doc, {
 		keepSourceTokens: true,
@@ -412,5 +424,80 @@ function processPossibilitesToEnum(doc: yaml.Document) {
 				}
 			}
 		},
+	})
+}
+
+/**
+ * Splits the `remplace` and `rend non applicable` entries that reference
+ * several rules, because `références à` only accepts a single rule in v2.
+ *
+ * Each entry is replaced by one entry per referenced rule, the other keys
+ * (`dans`, `sauf dans`, `exclusif`) being duplicated.
+ */
+function splitReplaceReferences(doc: yaml.Document) {
+	yaml.visit(doc, {
+		Map(_, map) {
+			if (!isMap(map)) {
+				return
+			}
+			for (const replacementItem of map.items) {
+				const key = replacementItem.key
+				if (
+					!isScalar(key) ||
+					typeof key.value !== 'string' ||
+					!replacementKeys.includes(key.value)
+				) {
+					continue
+				}
+				if (isSeq(replacementItem.value)) {
+					replacementItem.value.items =
+						replacementItem.value.items.flatMap(splitReferencesItem)
+				} else {
+					const items = splitReferencesItem(replacementItem.value)
+					if (items.length > 1) {
+						// `remplace:` was a single entry with a list of
+						// references: it becomes a list of entries
+						const seq = new YAMLSeq()
+						seq.items = items
+						replacementItem.value = seq
+					} else {
+						replacementItem.value = items[0]
+					}
+				}
+			}
+		},
+	})
+}
+
+/**
+ * Returns the entries replacing `item`: one per rule referenced by its
+ * `références à` list, or `item` itself when it doesn't reference a list.
+ */
+function splitReferencesItem(item: unknown): unknown[] {
+	if (!isMap(item)) {
+		return [item]
+	}
+	const referencesItem = item.items.find(
+		({ key }) => isScalar(key) && key.value === 'références à',
+	)
+	if (referencesItem === undefined || !isSeq(referencesItem.value)) {
+		return [item]
+	}
+	const references = referencesItem.value.items
+	if (references.length <= 1) {
+		// A list of one reference is invalid in v2 too
+		referencesItem.value = references[0] ?? null
+		return [item]
+	}
+	return references.map((reference) => {
+		const itemCopy = item.clone() as YAMLMap
+		const referencesItemCopy = itemCopy.items.find(
+			({ key }) => isScalar(key) && key.value === 'références à',
+		)
+		if (referencesItemCopy !== undefined) {
+			referencesItemCopy.value =
+				isNode(reference) ? reference.clone() : reference
+		}
+		return itemCopy
 	})
 }

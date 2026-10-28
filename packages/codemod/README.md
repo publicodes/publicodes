@@ -54,6 +54,28 @@ Passing the same directory twice is harmless: the duplicate is ignored.
 > [!WARNING]
 > Files are modified **in place**, without any backup. Commit (or stash) your changes before running the codemod.
 
+## Transformations
+
+Among other things, the codemod rewrites the `remplace` and `rend non applicable` mechanisms, because `références à` only accepts a single rule in v2: an entry referencing several rules is split into one entry per rule, the other keys (`dans`, `sauf dans`, `exclusif`) being duplicated.
+
+```yaml
+# v1
+a:
+  remplace:
+    - références à:
+        - b
+        - x
+      sauf dans: y
+
+# v2
+a:
+  remplace:
+    - références à: b
+      sauf dans: y
+    - références à: x
+      sauf dans: y
+```
+
 ## Caveats
 
 1. **This codemod will not update the `package.json` file**. You should update the version of the package manually.
