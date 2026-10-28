@@ -58,7 +58,6 @@ const authorizedKeys = [
 	'durée',
 	'texte',
 	'résoudre la référence circulaire',
-	'une possibilité',
 	'privé',
 	'logarithme',
 ]
@@ -66,6 +65,10 @@ const authorizedKeys = [
 const publicodesExtension = '.publicodes'
 
 const replacementKeys = ['remplace', 'rend non applicable']
+
+// Explains why replacements now need `exclusif: oui` or a chain
+const replacementBlogUrl =
+	'https://next.publi.codes/blog/v2-amelioration-remplacements/'
 
 const usage = `Usage: @publicodes/codemod [options] <path>...
 
@@ -242,10 +245,11 @@ for (const yamlFile of yamlFiles) {
 	})
 	// Apply modifications
 	renameFormuleToValeur(doc)
-	moveNonAuthorizedKeysToMeta(doc)
+	splitReplaceReferences(doc)
+	handleReplacementPriorities(doc, yamlFile)
 	removeDoubleQuotes(doc)
 	processPossibilitesToEnum(doc)
-	splitReplaceReferences(doc)
+	moveNonAuthorizedKeysToMeta(doc)
 	// Convert modified data back to YAML
 	const yamlOutput = yaml.stringify(doc, {
 		keepSourceTokens: true,
@@ -500,4 +504,248 @@ function splitReferencesItem(item: unknown): unknown[] {
 		}
 		return itemCopy
 	})
+}
+
+/** A `remplace` or `rend non applicable` entry of a rule. */
+type ReplacementEntry = {
+	rule: string
+	mechanism: string
+	target: string
+	priority: number | undefined
+	map: YAMLMap | null
+	scalar: Scalar | null
+}
+
+/**
+ * Turns the `priorité` based replacements into the chained replacements of
+ * v2, where `priorité` does not exist anymore: the entry with the highest
+ * priority replaces the target rule, the next one replaces that entry's rule,
+ * and so on. Chaining only happens when the order is unambiguous, i.e. when every rule replacing a given rule defines a distinct `priorité`.
+ */
+function handleReplacementPriorities(doc: yaml.Document, file: string) {
+	const replacements = collectReplacementEntries(doc)
+
+	for (const entry of replacements) {
+		if (findMapItem(entry.map, 'priorité') !== undefined) {
+			entry.map?.delete('priorité')
+		}
+		if (entry.mechanism !== 'remplace' && entry.priority !== undefined) {
+			warn(
+				file,
+				`"${entry.rule}": "priorité" removed from "${entry.mechanism}" ` +
+					`(unsupported), check the order — ${replacementBlogUrl}`,
+			)
+		}
+	}
+
+	// Rules replacing a given rule, in declaration order, before any change
+	const replacersByTarget = new Map<string, string[]>()
+	for (const entry of replacements) {
+		if (entry.mechanism !== 'remplace') {
+			continue
+		}
+		const replacers = replacersByTarget.get(entry.target) ?? []
+		if (!replacers.includes(entry.rule)) {
+			replacers.push(entry.rule)
+		}
+		replacersByTarget.set(entry.target, replacers)
+	}
+
+	for (const [target, replacers] of replacersByTarget) {
+		const entries = replacements.filter(
+			(entry) => entry.mechanism === 'remplace' && entry.target === target,
+		)
+		if (new Set(entries.map((entry) => entry.rule)).size !== entries.length) {
+			warn(
+				file,
+				`"${target}" replaced twice by "${entries[0].rule}", merge the entries`,
+			)
+			continue
+		}
+		if (replacers.length < 2) {
+			continue
+		}
+
+		const priorities = entries.map((entry) => entry.priority)
+		const replacerList = replacers.join(', ')
+
+		if (priorities.some((priority) => priority === undefined)) {
+			warn(
+				file,
+				`"${target}" replaced by ${replacerList} without distinct ` +
+					`"priorité" (v1 order: priority, then alphabetical): ` +
+					`add "exclusif: oui" or chain manually — ${replacementBlogUrl}`,
+			)
+			continue
+		}
+		if (new Set(priorities).size !== priorities.length) {
+			warn(
+				file,
+				`"${target}" replaced by ${replacerList} with equal priorities ` +
+					`(v1 order: alphabetical): add "exclusif: oui" or chain ` +
+					`manually — ${replacementBlogUrl}`,
+			)
+			continue
+		}
+
+		// In v1, the highest `priorité` wins when several replacements are
+		// applicable. In v2, the last replacement of the chain wins, so the
+		// chain goes from the lowest priority up to the highest one.
+		const sorted = [...entries].sort(
+			(a, b) => (a.priority ?? 0) - (b.priority ?? 0),
+		)
+		sorted.forEach((entry, index) => {
+			if (index === 0) {
+				return
+			}
+			const replaced = sorted[index - 1].rule
+			setEntryTarget(entry, replaced)
+			const others = (replacersByTarget.get(replaced) ?? []).filter(
+				(rule) => rule !== entry.rule,
+			)
+			if (others.length > 0) {
+				warn(
+					file,
+					`"${entry.rule}" now replaces "${replaced}", already replaced by ` +
+						`${others.join(', ')}, check the chaining — ${replacementBlogUrl}`,
+				)
+			}
+		})
+		console.log(
+			`Codemod: "${target}" chained (lowest to highest priority): ` +
+				sorted.map((entry) => entry.rule).join(' -> '),
+		)
+	}
+}
+
+/** Returns the pair of `map` whose key is `key`, if any. */
+function findMapItem(map: YAMLMap | null, key: string) {
+	return map?.items.find(
+		({ key: itemKey }) => isScalar(itemKey) && itemKey.value === key,
+	)
+}
+
+/** Changes the rule replaced by `entry`. */
+function setEntryTarget(entry: ReplacementEntry, target: string) {
+	const referencesItem = findMapItem(entry.map, 'références à')
+	if (referencesItem !== undefined) {
+		referencesItem.value = new Scalar(target)
+	} else if (entry.scalar !== null) {
+		entry.scalar.value = target
+	}
+}
+
+/** Logs a warning about the given file. */
+function warn(file: string, message: string) {
+	console.warn(`Codemod warning (${file}): ${message}`)
+}
+
+/** Collects the `remplace` and `rend non applicable` entries of every rule. */
+function collectReplacementEntries(doc: yaml.Document): ReplacementEntry[] {
+	const entries: ReplacementEntry[] = []
+	if (isMap(doc.contents)) {
+		collectRulesReplacements(doc.contents, '', entries)
+	}
+	return entries
+}
+
+/** Collects the replacements of `rules`, whose names are prefixed by `prefix`. */
+function collectRulesReplacements(
+	rules: YAMLMap,
+	prefix: string,
+	entries: ReplacementEntry[],
+) {
+	for (const item of rules.items) {
+		if (!isScalar(item.key) || typeof item.key.value !== 'string') {
+			continue
+		}
+		collectRuleReplacements(
+			item.value,
+			prefix ? `${prefix} . ${item.key.value}` : item.key.value,
+			entries,
+		)
+	}
+}
+
+/** Collects the replacements of a rule, and of the rules nested in its `avec`. */
+function collectRuleReplacements(
+	rule: unknown,
+	name: string,
+	entries: ReplacementEntry[],
+) {
+	if (!isMap(rule)) {
+		return
+	}
+
+	// `priorité` may also be defined next to the mechanism, in which case it
+	// applies to every entry of the rule that doesn't define its own.
+	const rulePriorityItem = findMapItem(rule, 'priorité')
+	const rulePriority = readPriority(rulePriorityItem?.value)
+	let hasReplacement = false
+
+	for (const mechanism of replacementKeys) {
+		const mechanismItem = findMapItem(rule, mechanism)
+		if (mechanismItem === undefined) {
+			continue
+		}
+		const items =
+			isSeq(mechanismItem.value) ?
+				mechanismItem.value.items
+			:	[mechanismItem.value]
+		for (const item of items) {
+			const entry = parseReplacementEntry(item, name, mechanism, rulePriority)
+			if (entry !== null) {
+				entries.push(entry)
+				hasReplacement = true
+			}
+		}
+	}
+
+	// `priorité` is not a rule attribute in v2: it must not be moved to `meta`
+	if (hasReplacement) {
+		rule.delete('priorité')
+	}
+
+	const nestedRules = findMapItem(rule, 'avec')?.value
+	if (isMap(nestedRules)) {
+		collectRulesReplacements(nestedRules, name, entries)
+	}
+}
+
+/** Reads a `priorité` value, or `undefined` if it is not a number. */
+function readPriority(value: unknown): number | undefined {
+	if (!isScalar(value)) {
+		return undefined
+	}
+	const priority = Number(value.value)
+	return Number.isFinite(priority) ? priority : undefined
+}
+
+/** Reads a `remplace` / `rend non applicable` entry, or `null` if unusable. */
+function parseReplacementEntry(
+	item: unknown,
+	rule: string,
+	mechanism: string,
+	rulePriority: number | undefined,
+): ReplacementEntry | null {
+	const entry = (target: string, priority: number | undefined) => ({
+		rule,
+		mechanism,
+		target,
+		priority: priority ?? rulePriority,
+		map: isMap(item) ? item : null,
+		scalar: isScalar(item) ? item : null,
+	})
+
+	if (isScalar(item)) {
+		return typeof item.value === 'string' ? entry(item.value, undefined) : null
+	}
+	if (!isMap(item)) {
+		return null
+	}
+	const target = findMapItem(item, 'références à')?.value
+	if (!isScalar(target) || typeof target.value !== 'string') {
+		return null
+	}
+	return entry(target.value, readPriority(findMapItem(item, 'priorité')?.value))
 }

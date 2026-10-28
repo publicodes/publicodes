@@ -224,11 +224,11 @@ cas de base:
 
 exception 1:
     remplace: cas de base
-    priorité: 2
+    priorité: 1
 
 exception 2:
     remplace: cas de base
-    priorité: 1
+    priorité: 2
 ```
 
 On a :
