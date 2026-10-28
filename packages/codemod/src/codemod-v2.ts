@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 
 import fs from 'fs/promises'
-import { extname, join } from 'node:path'
+import { extname, join, relative, sep } from 'node:path'
 import process from 'node:process'
 import yaml, { Scalar, YAMLMap, YAMLOMap, isMap, isScalar, isSeq } from 'yaml'
 
@@ -56,7 +56,16 @@ const authorizedKeys = [
 
 const publicodesExtension = '.publicodes'
 
-/** Returns the `.publicodes` files contained in the given directory, recursively. */
+const usage = `Usage: @publicodes/codemod [options] <path>...
+
+  <path> can be a directory (walked recursively) or a file to process
+
+Options:
+  -f, --flatten  Move the files contained in the sub-directories of each
+                 directory to its root, prefixing their name with the
+                 sub-directory path (one/rules.publicodes -> one.rules.publicodes)
+  -h, --help     Show this help`
+
 async function findPublicodesFiles(directory: string): Promise<string[]> {
 	const entries = await fs.readdir(directory, { withFileTypes: true })
 	entries.sort((a, b) => a.name.localeCompare(b.name))
@@ -72,18 +81,78 @@ async function findPublicodesFiles(directory: string): Promise<string[]> {
 	return files
 }
 
-const targets = process.argv.slice(2)
+/**
+ * Computes the moves needed to flatten `directory`: every file contained in
+ * one of its sub-directories is moved to the root, its name being prefixed
+ * with the relative path of its directory, separated by dots.
+ */
+function flattenMoves(
+	directory: string,
+	files: string[],
+): { from: string; to: string }[] {
+	return files.flatMap((file) => {
+		const relativePath = relative(directory, file)
+		if (!relativePath.includes(sep)) {
+			return []
+		}
+		return [
+			{
+				from: file,
+				to: join(directory, relativePath.split(sep).join('.')),
+			},
+		]
+	})
+}
+
+/**
+ * Recursively removes the empty sub-directories of `directory`, then returns
+ * whether `directory` itself is empty. It is left untouched.
+ */
+async function removeEmptySubdirectories(directory: string): Promise<boolean> {
+	let isEmpty = true
+	for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
+		if (!entry.isDirectory()) {
+			isEmpty = false
+			continue
+		}
+		const path = join(directory, entry.name)
+		if (await removeEmptySubdirectories(path)) {
+			await fs.rmdir(path)
+		} else {
+			isEmpty = false
+		}
+	}
+	return isEmpty
+}
+
+const targets: string[] = []
+let flatten = false
+
+for (const arg of process.argv.slice(2)) {
+	if (arg === '-h' || arg === '--help') {
+		console.log(usage)
+		process.exit(0)
+	} else if (arg === '-f' || arg === '--flatten') {
+		flatten = true
+	} else if (arg.startsWith('-') && arg !== '-') {
+		console.error(`Codemod: unknown option: ${arg}`)
+		console.error(usage)
+		process.exit(1)
+	} else {
+		targets.push(arg)
+	}
+}
 
 if (targets.length === 0) {
-	console.error('Usage: @publicodes/codemod <path>...')
-	console.error(
-		'  <path> can be a directory (walked recursively) or a file to process',
-	)
+	console.error(usage)
 	process.exit(1)
 }
 
 const yamlFiles: string[] = []
+const moves: { from: string; to: string }[] = []
+const flattenedDirectories: string[] = []
 let failed = false
+let flattenConflict = false
 
 for (const target of targets) {
 	const stats = await fs.stat(target).catch(() => null)
@@ -91,7 +160,12 @@ for (const target of targets) {
 		console.error(`Codemod: no such file or directory: ${target}`)
 		failed = true
 	} else if (stats.isDirectory()) {
-		yamlFiles.push(...(await findPublicodesFiles(target)))
+		const files = await findPublicodesFiles(target)
+		yamlFiles.push(...files)
+		if (flatten) {
+			moves.push(...flattenMoves(target, files))
+			flattenedDirectories.push(target)
+		}
 	} else if (stats.isFile()) {
 		yamlFiles.push(target)
 	}
@@ -99,6 +173,49 @@ for (const target of targets) {
 
 if (yamlFiles.length === 0) {
 	console.error('Codemod: no file to process')
+	process.exit(1)
+}
+
+// Deduplicate and check the moves before touching any file, so that a conflict
+// never leaves the files half-processed and half-moved.
+const destinationBySource = new Map<string, string>()
+const sourceByDestination = new Map<string, string>()
+const checkedMoves: { from: string; to: string }[] = []
+
+for (const { from, to } of moves) {
+	const knownDestination = destinationBySource.get(from)
+	if (knownDestination !== undefined) {
+		if (knownDestination === to) {
+			// Same file reached twice through duplicated or nested targets
+			continue
+		}
+		console.error(
+			`Codemod: cannot flatten: ${from} would be moved to both ${knownDestination} and ${to} (overlapping target directories)`,
+		)
+		flattenConflict = true
+		continue
+	}
+
+	const otherSource = sourceByDestination.get(to)
+	if (otherSource !== undefined) {
+		console.error(
+			`Codemod: cannot flatten: ${otherSource} and ${from} would both be moved to ${to}`,
+		)
+		flattenConflict = true
+		continue
+	}
+
+	destinationBySource.set(from, to)
+	sourceByDestination.set(to, from)
+	checkedMoves.push({ from, to })
+
+	if ((await fs.stat(to).catch(() => null)) !== null) {
+		console.error(`Codemod: cannot flatten: ${to} already exists`)
+		flattenConflict = true
+	}
+}
+
+if (flattenConflict) {
 	process.exit(1)
 }
 
@@ -123,6 +240,15 @@ for (const yamlFile of yamlFiles) {
 	})
 	// Write YAML output
 	await fs.writeFile(yamlFile, yamlOutput)
+}
+
+for (const { from, to } of checkedMoves) {
+	console.log(`Moving file ${from} to ${to}`)
+	await fs.rename(from, to)
+}
+
+for (const directory of flattenedDirectories) {
+	await removeEmptySubdirectories(directory)
 }
 
 console.log(
