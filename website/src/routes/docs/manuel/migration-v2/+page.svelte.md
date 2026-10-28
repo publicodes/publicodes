@@ -12,7 +12,7 @@ Pour rappel, voici les éléments importants embarqués dans la V2.
 
 ### 1) "Tout" est modèle
 
-L'arborescence des fichiers sources des règles est centrale. Désormais, un dossier est un modèle qui contient ses entrées et ses sorties. Réutiliser une règle de ce modèle dans un autre (d'un dossier à l'autre donc) nécessite de l'exporter explicitement via la propriété `public: oui` dans le modèle source, et de l'importer explicitement dans le modèle cible via la macro `importer`.
+L'arborescence des fichiers sources des règles est centrale. Désormais, un dossier est un modèle qui contient ses entrées et ses sorties. Réutiliser une règle de ce modèle dans un autre (d'un dossier à l'autre donc) nécessite de l'exporter explicitement via la propriété `public: oui` dans le modèle source, puis de l'importer dans le modèle cible via le mécanisme `importer`. Pour débuter et tester la V2 sans avoir à gérer les imports/exports, il est possible de placer tous les fichiers de règles à la racine d'un même dossier.
 
 ### 2) Un nombre limité de mécanismes
 
@@ -60,7 +60,7 @@ a:
 
 Dans la V1, lorsqu'une règle n'était pas applicable, toutes ses règles enfants l'étaient également. Dans la V2, une règle peut être non applicable sans que cela n'impacte ses règles enfants. C'est utile dans les cas où on souhaite regrouper sous le même espace nom, des règles qui pourraient être utilisées ailleurs et qui ne sont plus associées à l'applicabilité de la règle parent.
 
-Ainsi, lors de la migration, il est nécessaire de vérifier que des règles enfants dont on souhaite conserver la relation d'applicabilité avec leur parent continuent de l'être, et donc de déplacer la condition d'applicabilité. Potentiellement, ça peut donner lieu à une duplication de ces conditions sur plusieurs règles alors qu'elles étaient auparavant héritées d'une seule règle parent.
+Ainsi, lors de la migration, il est nécessaire de vérifier que des règles enfants dont on souhaite conserver la relation d'applicabilité avec leur parent continuent de l'être, et donc de déplacer la condition d'applicabilité. Potentiellement, ça peut donner lieu à une duplication de ces conditions sur plusieurs règles alors qu'elles étaient auparavant héritées d'une seule règle parent. Néanmoins, il sera possible de retrouver le comportement de la V1 en utilisant le mécanisme `applicabilité étendue à l'espace de nom` au niveau de l'espace nom parent (disponible très bientôt).
 
 ```yaml
 # V1
@@ -89,9 +89,7 @@ c: # applicable
 
 ### 6) Nouvelle gestion des remplacements
 
-TODO.
-
-Cf article https://publi.codes/blog/v2-amelioration-remplacements/
+Le fonctionnement des remplacements a été revu pour être volontairement moins permissif. L'idée est de garantir que les remplacements soient exclusifs, et donc d'éviter des situations où plusieurs règles remplacent la même règle. Il faut alors passer par un chainage des remplacements si un ordre de priorité doit être défini ou bien passer par l'ajout de la propriété `exclusif: oui` si c'est le cas. L'article de blog ["Amélioration des remplacements"](https://publi.codes/blog/v2-amelioration-remplacements/) vous en dit plus !
 
 ## Codemod
 
@@ -106,7 +104,7 @@ npx @publicodes/codemod <path>...
 Ou bien si vous utilisez un package manager js, après avoir installé le package `@publicodes/codemod` :
 
 ```bash
-yarn codemod <path>...
+npm run codemod <path>...
 ```
 
 <Callout type="caution" >
@@ -117,25 +115,40 @@ La commande modifie les fichiers **en place**, sans aucun backup. Il est donc fo
 
 Le codemod gère la transformation des possibilités en énumérations, les guillmets doubles et simples, le transfert des attributs non suportés à la racine d'une règle vers la balise `meta`, la transformation de `formule` en `valeur`.
 
-En revanche, pour le moment, les remplacements et les conditions d'applicabilité doivent être gérés manuellement.
+Il gère également les remplacements : les `références à` listant plusieurs règles sont éclatées en une entrée par règle, et les replacements définis avec une `priorité` sont chainés en partant de la priorité la plus faible, de sorte que la priorité la plus haute l'emporte toujours. Lorsque l'ordre n'est pas déterminé (règles remplaçant la même règle sans `priorité`, ou avec des priorités égales), un avertissement est affiché : c'est à vous de vérifier que ces règles sont exclusives (et d'ajouter `exclusif: oui`) ou de chaîner les remplacements manuellement.
+
+En revanche, pour le moment, les conditions d'applicabilité doivent être gérées manuellement.
+
+<Callout type="info">
+L'option "--flatten" du codemod permet de basculer tous les fichiers de règles de l'arborescence vers la racine d'un même dossier, pour tester la V2 sans avoir à gérer les imports/exports. Il est recommandé de ne pas utiliser cette option pour une migration définitive vers la V2 : le système de module est justement une volonté de la V2 pour faciliter la réutilisation de règles entre modèles, les montées de version, la stabilité de la surface d'API, etc...
+</Callout>
 
 ## Tester la compilation
 
-TODO
+L'étape suivante est de tester la compilation de la base de règles migrée (cf [guide de compilation](https://publi.codes/docs/manuel/compilation)).
 
-Cf https://publi.codes/docs/manuel/compilation/
+En deux mots, il est possible de lancer directement la commande:
 
-- Dépôt "Bac à sable": https://github.com/publicodes/publicodes-road-to-v2.
+```bash
+npx publicodes2 compile <path>...
+```
+
+Ou bien, si vous utilisez un package manager js, après avoir installé le package `@publicodes/cli` :
+
+```bash
+pnpm run publicodes2 compile <path>...
+```
+
+Il existe aussi un dépôt "Bac à sable" qui contient l'environnement complet pour tester la V2. Le plus simple est de le cloner et de remplacer les règles par celles de votre base migrée : https://github.com/publicodes/publicodes-road-to-v2.
 
 ## Points d'attention
 
-TODO
+Quelques points d'attention à garder en tête lors de la migration vers la V2 :
 
-- Gestion du formatage de l'IDE pour les quotes
-- Plus de LSP
+- Les textes sont désormais encadrés par des doubles guillemets, et les possibilités par des simples guillemets. Il faut donc veiller à ce que votre IDE ne les reformate pas automatiquement.
+
+- Il n'y a pas encore de language server pour la V2, mais nous y travaillons ! Pour l'instant, tester le modèle nécessite de le compiler, de comparer les résultats entre la V1 et la V2 (via le script de comparaison dans le bac à sable par exemple). Il sera également possible d'utiliser l'autodoc très bientôt !
 
 ## Poser une question ou reporter un bug
 
-TODO
-
-Directement sur Github ou bien via Matrix.
+Si vous avez des questions ou que vous souhaitez reporter un bug, n'hésitez pas à nous contacter directement à l'adresse [contact@publi.codes](mailto:contact@publi.codes) ou directement via [Matrix](https://matrix.to/#/#publicodes:matrix.org).
