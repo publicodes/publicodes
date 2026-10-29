@@ -11,6 +11,7 @@ dirigeant . auto-entrepreneur:
     icônes: 🚶
 
 dirigeant . auto-entrepreneur . revenu net:
+  titre: Revenu net avant impôt
   public: oui
   arrondi: oui
   unité: €/an
@@ -23,6 +24,7 @@ dirigeant . auto-entrepreneur . revenu net:
     question: Quel revenu avant impôt voulez-vous toucher ?
 
 dirigeant . auto-entrepreneur . revenu net . après impôt:
+  titre: Revenu net après impôt
   unité: €/an
   arrondi: oui
   description: >-
@@ -73,6 +75,7 @@ dirigeant . auto-entrepreneur . Cipav:
         - adhérent = oui
   avec:
     adhérent:
+      titre: Adhérent à la Cipav
       par défaut: non
       description: |
         Depuis le 1er janvier 2018, les auto-entreprises d’activité libérale non
