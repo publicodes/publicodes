@@ -1102,16 +1102,28 @@ describe('the index of the declared API', () => {
 	it('groups the results before the parameters, and names them as the model does', () => {
 		const { container } = renderIndex()
 		const groups = Array.from(
-			container.querySelectorAll('.publicodes-rule-index section'),
+			container.querySelectorAll(
+				'.publicodes-rule-index .publicodes-rule-group',
+			),
 		)
 		expect(
-			groups.map((group) => group.querySelector('h2')?.textContent),
+			groups.map((group) => group.querySelector('h2, summary')?.textContent),
 		).toEqual(['Résultats', 'Paramètres'])
 		expect(
 			Array.from(container.querySelectorAll('.publicodes-rule-index li')).map(
 				(item) => item.textContent,
 			),
 		).toEqual(['Revenu net', 'La part saisie'])
+	})
+
+	it('folds the parameters, and opens them on the reader among them', () => {
+		const folded = renderIndex()
+		const details = (target: HTMLElement) =>
+			target.querySelector<HTMLDetailsElement>('.publicodes-rule-index details')
+		expect(details(folded.container)?.open).toBe(false)
+
+		const inside = renderIndex({ current: 'part' })
+		expect(details(inside.container)?.open).toBe(true)
 	})
 
 	it('leads to each page by the URL the host writes', () => {
@@ -1137,7 +1149,9 @@ describe('the index of the declared API', () => {
 	it('skips a group the model declares nothing in, and prints nothing without an API', () => {
 		const { container } = renderIndex({ parameters: {} })
 		expect(
-			container.querySelectorAll('.publicodes-rule-index section'),
+			container.querySelectorAll(
+				'.publicodes-rule-index .publicodes-rule-group',
+			),
 		).toHaveLength(1)
 
 		const empty = renderIndex({ outputs: {}, parameters: {} })

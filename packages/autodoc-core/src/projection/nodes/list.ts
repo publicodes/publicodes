@@ -57,6 +57,13 @@ const negationOf = (node: Ast.ChainedValue): Ast.ChainedValue | null => {
 /** The minus a subtraction reads with, as `binary-expression` writes it. */
 const MINUS = '−'
 
+/** Ce qu'un terme pèse dans sa somme, en valeur absolue : un terme sans valeur passe après. */
+const magnitude = (node: Ast.ChainedValue, ctx: Ctx): number => {
+	const { id, type } = node.value_mechanism
+	const value = lookupValue(ctx, id, type, unitOf(node.value_mechanism)).value
+	return typeof value === 'number' ? Math.abs(value) : Number.NEGATIVE_INFINITY
+}
+
 export function projectList(
 	node: Ast.ChainedValue,
 	mechanism: ListMechanism,
@@ -71,16 +78,26 @@ export function projectList(
 		unitOf(mechanism),
 	)
 
-	const signs: string[] = []
-	const operands: OperandView[] = mechanism.parameters.map((operand, index) => {
-		// a sum of a negation is a subtraction: `- b` is `− b`, and nothing opens under it
+	// a sum of a negation is a subtraction: `- b` is `− b`, and nothing opens under it
+	const terms = mechanism.parameters.map((operand) => {
 		const negated = keyword === 'somme' ? negationOf(operand) : null
-		const sign =
-			negated !== null ? MINUS
-			: index === 0 ? null
-			: operator
-		signs.push(sign === null ? '' : `${sign} `)
-		const view = projectOperand(negated ?? operand, ctx, sign, null)
+		return {
+			node: negated ?? operand,
+			sign: negated !== null ? MINUS : operator,
+		}
+	})
+	// une somme se lit du plus gros poste au plus petit : c'est la valeur qui classe les
+	// termes, et sans valeur à lire l'ordre de l'auteur reste le seul
+	if (keyword === 'somme' && ctx.trace !== undefined) {
+		terms.sort(
+			(left, right) => magnitude(right.node, ctx) - magnitude(left.node, ctx),
+		)
+	}
+	const signs: string[] = []
+	const operands: OperandView[] = terms.map(({ node, sign }, index) => {
+		const gutter = index === 0 ? null : sign
+		signs.push(gutter === null ? '' : `${gutter} `)
+		const view = projectOperand(node, ctx, gutter, null)
 		const inert = hadNoEffect(keyword, view.value)
 		return { ...view, inert }
 	})

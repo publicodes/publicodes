@@ -5,13 +5,14 @@ import { RuleLink } from './RuleLink'
 
 const GROUPS = [
 	{ role: 'output', label: 'Résultats' },
-	{ role: 'parameter', label: 'Paramètres' },
+	{ role: 'parameter', label: 'Paramètres', collapsible: true },
 ] as const
 
 /**
  * The model's declared API as an index: its results, then the parameters those results
  * need — the compiled module's own exports, so the index lists exactly the rules the
- * model promises a page for.
+ * model promises a page for. The parameters are many wherever the model is real, so they
+ * come folded, and open on the reader standing among them.
  */
 export function RuleIndex({
 	module,
@@ -21,17 +22,22 @@ export function RuleIndex({
 	/** The rule the reader is on: the index marks it rather than leading to it. */
 	current?: string
 }): ReactElement | null {
-	const groups = GROUPS.map(({ role, label }) => ({
-		label,
-		rules: namesOf(role === 'output' ? module.outputs : module.parameters),
-		source: role === 'output' ? module.outputs : module.parameters,
-	})).filter((group) => group.rules.length > 0)
+	const groups = GROUPS.map(({ role, label, ...rest }) => {
+		const source = role === 'output' ? module.outputs : module.parameters
+		const rules = namesOf(source)
+		return {
+			label,
+			rules,
+			source,
+			collapsible: 'collapsible' in rest && rest.collapsible === true,
+			active: current !== undefined && rules.includes(current),
+		}
+	}).filter((group) => group.rules.length > 0)
 	if (groups.length === 0) return null
 	return (
 		<nav className="publicodes-rule-index" aria-label="Règles du modèle">
-			{groups.map(({ label, rules, source }) => (
-				<section key={label}>
-					<h2>{label}</h2>
+			{groups.map(({ label, rules, source, collapsible, active }) => {
+				const list = (
 					<ul>
 						{rules.map((rule) => (
 							<li key={rule}>
@@ -42,8 +48,21 @@ export function RuleIndex({
 							</li>
 						))}
 					</ul>
-				</section>
-			))}
+				)
+				return collapsible ?
+						<details
+							key={label}
+							className="publicodes-rule-group"
+							open={active}
+						>
+							<summary>{label}</summary>
+							{list}
+						</details>
+					:	<section key={label} className="publicodes-rule-group">
+							<h2>{label}</h2>
+							{list}
+						</section>
+			})}
 		</nav>
 	)
 }

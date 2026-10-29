@@ -688,10 +688,19 @@
 .publicodes-rule-index .publicodes-link:focus-visible {
 	text-decoration: underline;
 }
-.publicodes-rule-index section + section {
+.publicodes-rule-index .publicodes-rule-group + .publicodes-rule-group {
 	margin-top: var(--publicodes-space-m);
 }
 /* l'entrée où se trouve le lecteur : un nom, plus un chemin — et pas un lien */
+.publicodes-rule-index summary {
+	cursor: pointer;
+	/* le marqueur du navigateur prend la place de la marge du groupe, pas celle du nom */
+	margin-left: calc(-1 * var(--publicodes-space-xs));
+	padding-left: var(--publicodes-space-xs);
+}
+.publicodes-rule-index summary::marker {
+	color: var(--publicodes-muted);
+}
 .publicodes-rule-index [aria-current='page'] {
 	color: var(--publicodes-ink);
 	font-weight: 600;
@@ -707,6 +716,7 @@
 /* l'étiquette d'un groupe de règles, et celle de la provenance : des majuscules, un cran
    sous le corps, dans l'encre atténuée */
 .publicodes-rule-index h2,
+.publicodes-rule-index summary,
 .publicodes-rule-provenance h2 {
 	margin: 0 0 var(--publicodes-space-s);
 	font-size: var(--publicodes-size-label);
