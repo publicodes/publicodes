@@ -79,7 +79,7 @@ Unit with percent :
 
   $ publicodes compile -t debug_eval_tree -o - percent 
   a:
-    5. % * 15.
+    (5. % * 200.) * 0.01
   
   b:
     (10. % * 50. €) * 0.01
@@ -89,6 +89,12 @@ Unit with percent :
   
   d:
     (4. € / 85. %) * 100.
+  
+  e:
+    (50. % * 20. %) * 0.01
+  
+  f:
+    (50. % * ((50. % * 20. %) * 0.01)) * 0.01
   
   simplification:
     get_context(simplification)

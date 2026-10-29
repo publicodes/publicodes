@@ -35,16 +35,16 @@ let get_unit_exn typ =
     [(10 % * 20 €) * 0.01]. *)
 let transform_percent typ pos op left_value right_value =
   let unit = get_unit_exn typ in
-  let right_typ = left_value.meta in
-  let left_typ = right_value.meta in
-  let right_unit = get_unit_exn right_typ in
+  let left_typ = left_value.meta in
+  let right_typ = right_value.meta in
   let left_unit = get_unit_exn left_typ in
+  let right_unit = get_unit_exn right_typ in
   let op_unit =
     match op with
     | Shared_ast.Mul, _ ->
-        Units.mul right_unit left_unit
+        Units.mul left_unit right_unit
     | Shared_ast.Div, _ ->
-        Units.mul right_unit (Units.inv left_unit)
+        Units.mul left_unit (Units.inv right_unit)
     | _ ->
         failwith "Unexpected operator"
   in
