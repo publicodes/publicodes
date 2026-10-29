@@ -1,0 +1,3 @@
+[submodule "examples/autodoc-playground/vendored/publicodes-road-to-v2"]
+	path = examples/autodoc-playground/vendored/publicodes-road-to-v2
+	url = https://github.com/publicodes/publicodes-road-to-v2.git

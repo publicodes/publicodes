@@ -29,6 +29,7 @@ export default tseslint.config(
 			'build/',
 			'dist/',
 			'**/dist/',
+			'examples/autodoc-playground/vendored/',
 			'examples/',
 			'**/eslint.config.js',
 			'.yarn',
