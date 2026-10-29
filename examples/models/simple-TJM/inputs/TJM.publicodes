@@ -41,4 +41,4 @@ projections . quatre cinquième:
   titre: revenu net au 4/5e
   valeur: revenu net
   contexte:
-    chiffre d'affaires . nombre de jour: chiffre d'affaires . nombre de jour * 4/5
+    chiffre d'affaires . nombre de jour: chiffre d'affaires . nombre de jour * 4 / 5
