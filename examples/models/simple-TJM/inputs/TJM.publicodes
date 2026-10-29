@@ -7,7 +7,7 @@ chiffre d'affaires:
     TJM:
       unité: €/jour
     nombre de jour:
-      par défaut: 16 jour
+      par défaut: 21 jour
 
 auto-entrepreneur:
   par défaut: non
@@ -20,7 +20,7 @@ cotisations:
       variations:
         - si: auto-entrepreneur
           alors: 30%
-        - sinon: 45%
+        - sinon: 40%
 
 charges:
   non applicable si: auto-entrepreneur
@@ -35,16 +35,10 @@ revenu net:
     - (- cotisations)
     - (- charges)
 
-
-exemples:
-exemples . CA élevé:
+projections:
+projections . quatre cinquième:
   public: oui
+  titre: revenu net au 4/5e
   valeur: revenu net
   contexte:
-    chiffre d'affaires . TJM: 600 €/jour
-
-exemples . TJM doublé:
-  public: oui
-  valeur: revenu net
-  contexte:
-    chiffre d'affaires . TJM: chiffre d'affaires . TJM * 2
+    chiffre d'affaires . nombre de jour: chiffre d'affaires . nombre de jour * 4/5
