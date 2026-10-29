@@ -160,9 +160,6 @@ export function finishRow(
 	// what a row opens is one gutter further in, and is projected by whoever holds the
 	// node: a rule here, a mechanism where its operand was read
 	const inner = { ...ctx, depth: ctx.depth + 1 }
-	const explanation =
-		raw.address !== null ? ctx.projectExplanation(raw.address, inner) : null
-	const fiche = explanation ?? raw.detail
 	const label = raw.name ?? term
 	// a mechanism with no written form goes by its name, and its line is what explains it
 	const byName = term !== null && term === raw.named
@@ -178,8 +175,12 @@ export function finishRow(
 		mechanism.kind === 'expr' &&
 		mechanism.parameters.kind === 'constant' &&
 		(node?.chained_mechanisms.length ?? 0) === 0
+	// ce qu'une ligne ouvre, sans projeter sa fiche : une référence qui n'est pas une constante,
+	// ou la fiche que le mécanisme porte déjà. La fiche d'une référence ne décide jamais d'un
+	// chevron — une constante n'en imprime aucune ligne
 	const opens =
-		(raw.address !== null && !constant) || (fiche !== null && fiche.size > 0)
+		(raw.address !== null && !constant) ||
+		(raw.detail !== null && raw.detail.size > 0)
 	// la règle qu'une ligne référence décide elle-même d'une branche : aucun opérateur ne
 	// l'écrit, et sa valeur est un choix parmi d'autres
 	const chosen =
@@ -190,7 +191,14 @@ export function finishRow(
 	const unfolded =
 		ctx.expanded.has(key ?? '') ||
 		(ctx.trace === undefined && (byName || chosen))
-	const detail = opens && key !== null && unfolded ? fiche : null
+	// la fiche ne se projette que si la ligne l'imprime : projetée d'avance, elle coûtait tout
+	// le sous-arbre de chaque ligne refermée — le modèle entier pour une page de six lignes
+	const explanation =
+		opens && unfolded && raw.address !== null ?
+			ctx.projectExplanation(raw.address, inner)
+		:	null
+	const detail =
+		opens && key !== null && unfolded ? (explanation ?? raw.detail) : null
 	return {
 		gutter: keyword ?? operator ?? '',
 		id: raw.id ?? raw.address ?? '',

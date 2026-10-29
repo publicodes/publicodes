@@ -6,10 +6,13 @@ export type FormatType =
 	| { type: 'boolean' }
 	| { type: 'date' }
 
+// construire un formateur coûte ~15 µs, le réutiliser 0,3 : une page en formate des
+// dizaines de milliers, la projection lit toute l'expression pour en garder quelques lignes
+const NUMBERS = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 })
+const DATES = new Intl.DateTimeFormat('fr-FR')
+
 function formatNumber(value: number, unit?: string): string {
-	const formatted = new Intl.NumberFormat('fr-FR', {
-		maximumFractionDigits: 2,
-	}).format(value)
+	const formatted = NUMBERS.format(value)
 
 	return unit ? `${formatted} ${unit}` : formatted
 }
@@ -32,7 +35,7 @@ function formatBoolean(value: boolean): string {
 
 function formatDate(value: string | Date): string {
 	const date = typeof value === 'string' ? new Date(value) : value
-	return date.toLocaleDateString('fr-FR')
+	return DATES.format(date)
 }
 
 export function formatValue(
