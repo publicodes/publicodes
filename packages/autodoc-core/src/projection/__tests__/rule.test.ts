@@ -342,3 +342,33 @@ describe('l’ordre de la chaîne', () => {
 		expect(rows.map((row) => row.gutter)).toEqual(['applicable si', '=', '+'])
 	})
 })
+
+describe('un ordre qui se lit', () => {
+	const doc = build({
+		petit: { value: notDefined() },
+		moyen: { value: notDefined() },
+		gros: { value: notDefined() },
+		total: {
+			value: sum(expr(ref('petit')), expr(ref('moyen')), expr(ref('gros'))),
+		},
+	})
+	// les valeurs se lisent là où le compilateur les écrit : sur le nœud de chaque terme
+	const trace: Trace = {
+		'total.0': { '': 1 },
+		'total.1': { '': 10 },
+		'total.2': { '': 100 },
+	}
+
+	it('classe les termes d’une somme du plus gros poste au plus petit', () => {
+		const rows =
+			projectRule(doc, 'total', { evaluation: { trace } }).equation?.rows ?? []
+		expect(rows.map((row) => row.label)).toEqual(['Gros', 'Moyen', 'Petit'])
+		// le plus gros terme ouvre la somme : c'est lui qui porte le signe égal
+		expect(rows.map((row) => row.gutter)).toEqual(['=', '+', '+'])
+	})
+
+	it('garde l’ordre de l’auteur quand rien n’est calculé', () => {
+		const rows = projectRule(doc, 'total').equation?.rows ?? []
+		expect(rows.map((row) => row.label)).toEqual(['Petit', 'Moyen', 'Gros'])
+	})
+})

@@ -169,8 +169,8 @@ describe('a mechanism a row cannot write out', () => {
 		// middle names the mechanism rather than repeating it
 		const resolved: Trace = { total: { '': 10 }, 'total.1': { '': 6 } }
 		const view = projectRule(doc, 'total', { evaluation: { trace: resolved } })
-		expect(view.equation?.rows[1]?.label).toBe('variations')
-		expect(view.equation?.rows[1]?.termIsMechanism).toBe(true)
+		const mechanism = view.equation?.rows.find((row) => row.termIsMechanism)
+		expect(mechanism?.label).toBe('variations')
 		// the sum's own written form is its operands, not the words of a mechanism
 		expect(view.equation?.inlineTerm).not.toContain('variations')
 	})
