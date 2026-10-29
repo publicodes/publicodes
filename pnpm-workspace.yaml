@@ -1,5 +1,6 @@
 packages:
   - website
+  - examples/autodoc-playground
   - packages/*
   - packages/compiler/tests/runtimes/JS
   - packages/compiler/examples

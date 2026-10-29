@@ -3,3 +3,4 @@ publicodes.yaml
 rule_graph.dot
 rule_graph.png
 *.install
+**/*.schema.ts

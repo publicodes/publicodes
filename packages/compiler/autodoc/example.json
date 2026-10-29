@@ -1,0 +1,1423 @@
+{
+	"a": {
+		"type": "unknown",
+		"id": "671cf31f521a21768557a1d05df98a17",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 0, "line": 1, "column": 1 },
+			"end": { "index": 1, "line": 1, "column": 2 }
+		},
+		"title": "A",
+		"description": "la valeur A",
+		"value_mechanism": {
+			"kind": "value",
+			"type": "unknown",
+			"id": "b330e868a4ee75bdb9673f4b374368bf",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 5, "line": 2, "column": 3 },
+				"end": { "index": 11, "line": 2, "column": 9 }
+			},
+			"parameters": {
+				"value_mechanism": {
+					"kind": "expr",
+					"type": "number",
+					"unit": "€",
+					"id": "dfb3c6796b344957f44c2e7300f71dff",
+					"position": {
+						"file": "ok/rules.publicodes",
+						"start": { "index": 13, "line": 2, "column": 11 },
+						"end": { "index": 17, "line": 2, "column": 15 }
+					},
+					"parameters": {
+						"kind": "constant",
+						"type": "number",
+						"unit": "€",
+						"parameters": { "kind": "number", "value": 10.0, "unit": "€" },
+						"id": "dfb3c6796b344957f44c2e7300f71dff",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 13, "line": 2, "column": 11 },
+							"end": { "index": 17, "line": 2, "column": 15 }
+						}
+					}
+				},
+				"chained_mechanisms": []
+			}
+		},
+		"chained_mechanisms": []
+	},
+	"b": {
+		"type": "number",
+		"unit": "€",
+		"id": "969799a0c994d65e939da3be780d0195",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 56, "line": 5, "column": 1 },
+			"end": { "index": 57, "line": 5, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "sum",
+			"type": "number",
+			"unit": "€",
+			"id": "42af92aad66aef67de55ea117b04b7bb",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 61, "line": 6, "column": 3 },
+				"end": { "index": 66, "line": 6, "column": 8 }
+			},
+			"parameters": [
+				{
+					"value_mechanism": {
+						"kind": "value",
+						"type": "number",
+						"unit": "€",
+						"id": "53c2c6e359fd92fb12891eac38793e59",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 80, "line": 8, "column": 7 },
+							"end": { "index": 86, "line": 8, "column": 13 }
+						},
+						"parameters": {
+							"value_mechanism": {
+								"kind": "expr",
+								"type": "number",
+								"unit": "€",
+								"id": "22e546e7e75af96371f69ad2d8af2964",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 88, "line": 8, "column": 15 },
+									"end": { "index": 89, "line": 8, "column": 16 }
+								},
+								"parameters": {
+									"kind": "ref",
+									"type": "number",
+									"unit": "€",
+									"parameters": "a",
+									"id": "22e546e7e75af96371f69ad2d8af2964",
+									"position": {
+										"file": "ok/rules.publicodes",
+										"start": { "index": 88, "line": 8, "column": 15 },
+										"end": { "index": 89, "line": 8, "column": 16 }
+									}
+								}
+							},
+							"chained_mechanisms": []
+						}
+					},
+					"chained_mechanisms": [
+						{
+							"kind": "context",
+							"type": "number",
+							"unit": "€",
+							"id": "cf6b772cd42698f02d7e852a34313551",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 96, "line": 9, "column": 7 },
+								"end": { "index": 104, "line": 9, "column": 15 }
+							},
+							"parameters": {
+								"a": {
+									"value_mechanism": {
+										"kind": "expr",
+										"type": "number",
+										"unit": "€",
+										"id": "df39a19cbe24fa860540eb7e75d9de92",
+										"position": {
+											"file": "ok/rules.publicodes",
+											"start": { "index": 117, "line": 10, "column": 12 },
+											"end": { "index": 119, "line": 10, "column": 14 }
+										},
+										"parameters": {
+											"kind": "constant",
+											"type": "number",
+											"unit": "€",
+											"parameters": { "kind": "number", "value": 30.0 },
+											"id": "df39a19cbe24fa860540eb7e75d9de92",
+											"position": {
+												"file": "ok/rules.publicodes",
+												"start": { "index": 117, "line": 10, "column": 12 },
+												"end": { "index": 119, "line": 10, "column": 14 }
+											}
+										}
+									},
+									"chained_mechanisms": []
+								}
+							}
+						}
+					]
+				},
+				{
+					"value_mechanism": {
+						"kind": "expr",
+						"type": "number",
+						"unit": "€",
+						"id": "fdf43fcb0f9e59345833e87010cf2284",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 126, "line": 11, "column": 7 },
+							"end": { "index": 127, "line": 11, "column": 8 }
+						},
+						"parameters": {
+							"kind": "ref",
+							"type": "number",
+							"unit": "€",
+							"parameters": "a",
+							"id": "fdf43fcb0f9e59345833e87010cf2284",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 126, "line": 11, "column": 7 },
+								"end": { "index": 127, "line": 11, "column": 8 }
+							}
+						}
+					},
+					"chained_mechanisms": []
+				},
+				{
+					"value_mechanism": {
+						"kind": "expr",
+						"type": "number",
+						"unit": "€",
+						"id": "7645595219f544844a979bd48abe21fa",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 134, "line": 12, "column": 7 },
+							"end": { "index": 135, "line": 12, "column": 8 }
+						},
+						"parameters": {
+							"kind": "ref",
+							"type": "number",
+							"unit": "€",
+							"parameters": "b . c",
+							"id": "7645595219f544844a979bd48abe21fa",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 134, "line": 12, "column": 7 },
+								"end": { "index": 135, "line": 12, "column": 8 }
+							}
+						}
+					},
+					"chained_mechanisms": []
+				}
+			]
+		},
+		"chained_mechanisms": []
+	},
+	"b . c": {
+		"type": "unknown",
+		"id": "8b1fd0195e4732d89a9d8bd2f82b63fd",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 148, "line": 14, "column": 5 },
+			"end": { "index": 149, "line": 14, "column": 6 }
+		},
+		"value_mechanism": {
+			"kind": "expr",
+			"type": "number",
+			"unit": "€",
+			"id": "233d46a39aa61b1b99cbe5c01e0fbf81",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 151, "line": 14, "column": 8 },
+				"end": { "index": 153, "line": 14, "column": 10 }
+			},
+			"parameters": {
+				"kind": "constant",
+				"type": "number",
+				"unit": "€",
+				"parameters": { "kind": "number", "value": 55.0 },
+				"id": "233d46a39aa61b1b99cbe5c01e0fbf81",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 151, "line": 14, "column": 8 },
+					"end": { "index": 153, "line": 14, "column": 10 }
+				}
+			}
+		},
+		"chained_mechanisms": []
+	},
+	"d": {
+		"type": "number",
+		"unit": "€",
+		"id": "52e8c013cde911a60cb1e1d0631c1efe",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 154, "line": 15, "column": 1 },
+			"end": { "index": 155, "line": 15, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "variations",
+			"type": "number",
+			"unit": "€",
+			"id": "70e4c4a5aa0d531d504d903dd427cc22",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 174, "line": 17, "column": 3 },
+				"end": { "index": 184, "line": 17, "column": 13 }
+			},
+			"parameters": {
+				"conditions": [
+					{
+						"if": {
+							"value_mechanism": {
+								"kind": "expr",
+								"type": "number",
+								"unit": "€",
+								"id": "f9ce896d4a9abd3d1b8dbb1c4e297fd7",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 196, "line": 18, "column": 11 },
+									"end": { "index": 202, "line": 18, "column": 17 }
+								},
+								"parameters": {
+									"kind": "gt",
+									"type": "boolean",
+									"parameters": {
+										"left": {
+											"kind": "ref",
+											"type": "number",
+											"unit": "€",
+											"parameters": "a",
+											"id": "b876e832d1c1cfc749952f4c3adf90b7",
+											"position": {
+												"file": "ok/rules.publicodes",
+												"start": { "index": 196, "line": 18, "column": 11 },
+												"end": { "index": 197, "line": 18, "column": 12 }
+											}
+										},
+										"right": {
+											"kind": "constant",
+											"type": "number",
+											"unit": "€",
+											"parameters": { "kind": "number", "value": 20.0 },
+											"id": "12fc410435c3fde2cecced5f92aec122",
+											"position": {
+												"file": "ok/rules.publicodes",
+												"start": { "index": 200, "line": 18, "column": 15 },
+												"end": { "index": 202, "line": 18, "column": 17 }
+											}
+										}
+									},
+									"id": "2f5e60389611c1c6bc3e4e4478f1a702",
+									"position": {
+										"file": "ok/rules.publicodes",
+										"start": { "index": 198, "line": 18, "column": 13 },
+										"end": { "index": 202, "line": 18, "column": 17 }
+									}
+								}
+							},
+							"chained_mechanisms": []
+						},
+						"then": {
+							"value_mechanism": {
+								"kind": "expr",
+								"type": "number",
+								"unit": "€",
+								"id": "0d55b0bd7d204b083e38cceb31742fa5",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 216, "line": 19, "column": 14 },
+									"end": { "index": 220, "line": 19, "column": 18 }
+								},
+								"parameters": {
+									"kind": "constant",
+									"type": "number",
+									"unit": "€",
+									"parameters": {
+										"kind": "number",
+										"value": 20.0,
+										"unit": "€"
+									},
+									"id": "0d55b0bd7d204b083e38cceb31742fa5",
+									"position": {
+										"file": "ok/rules.publicodes",
+										"start": { "index": 216, "line": 19, "column": 14 },
+										"end": { "index": 220, "line": 19, "column": 18 }
+									}
+								}
+							},
+							"chained_mechanisms": []
+						}
+					},
+					{
+						"if": {
+							"value_mechanism": {
+								"kind": "expr",
+								"type": "number",
+								"unit": "€",
+								"id": "be354af8a0b9b89073d0231a78f2d54c",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 231, "line": 20, "column": 11 },
+									"end": { "index": 236, "line": 20, "column": 16 }
+								},
+								"parameters": {
+									"kind": "gt",
+									"type": "number",
+									"unit": "€",
+									"parameters": {
+										"left": {
+											"kind": "ref",
+											"type": "number",
+											"unit": "€",
+											"parameters": "a",
+											"id": "c4907119921e373ccf421389cc13e9ad",
+											"position": {
+												"file": "ok/rules.publicodes",
+												"start": { "index": 231, "line": 20, "column": 11 },
+												"end": { "index": 232, "line": 20, "column": 12 }
+											}
+										},
+										"right": {
+											"kind": "constant",
+											"type": "number",
+											"unit": "€",
+											"parameters": { "kind": "number", "value": 5.0 },
+											"id": "a4177905ea6c46748202c10e2e2bdba2",
+											"position": {
+												"file": "ok/rules.publicodes",
+												"start": { "index": 235, "line": 20, "column": 15 },
+												"end": { "index": 236, "line": 20, "column": 16 }
+											}
+										}
+									},
+									"id": "4fb9ae5096511d41691837ad27846fa6",
+									"position": {
+										"file": "ok/rules.publicodes",
+										"start": { "index": 233, "line": 20, "column": 13 },
+										"end": { "index": 236, "line": 20, "column": 16 }
+									}
+								}
+							},
+							"chained_mechanisms": []
+						},
+						"then": {
+							"value_mechanism": {
+								"kind": "expr",
+								"type": "number",
+								"unit": "€",
+								"id": "4b9b7a91ed4c95bddf9dd12a2f9a10fd",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 250, "line": 21, "column": 14 },
+									"end": { "index": 253, "line": 21, "column": 17 }
+								},
+								"parameters": {
+									"kind": "constant",
+									"type": "number",
+									"unit": "€",
+									"parameters": {
+										"kind": "number",
+										"value": 5.0,
+										"unit": "€"
+									},
+									"id": "4b9b7a91ed4c95bddf9dd12a2f9a10fd",
+									"position": {
+										"file": "ok/rules.publicodes",
+										"start": { "index": 250, "line": 21, "column": 14 },
+										"end": { "index": 253, "line": 21, "column": 17 }
+									}
+								}
+							},
+							"chained_mechanisms": []
+						}
+					}
+				],
+				"else": {
+					"value_mechanism": {
+						"kind": "expr",
+						"type": "number",
+						"unit": "€",
+						"id": "2fcb42f66ae8d0ba5e6662c7776547fa",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 267, "line": 22, "column": 14 },
+							"end": { "index": 268, "line": 22, "column": 15 }
+						},
+						"parameters": {
+							"kind": "constant",
+							"type": "number",
+							"unit": "€",
+							"parameters": { "kind": "number", "value": 0.0 },
+							"id": "2fcb42f66ae8d0ba5e6662c7776547fa",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 267, "line": 22, "column": 14 },
+								"end": { "index": 268, "line": 22, "column": 15 }
+							}
+						}
+					},
+					"chained_mechanisms": []
+				}
+			}
+		},
+		"chained_mechanisms": [
+			{
+				"kind": "type_def",
+				"type": "number",
+				"unit": "€",
+				"id": "43ea7b3cb3bb5028a0b16fbdd73b5741",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 159, "line": 16, "column": 3 },
+					"end": { "index": 163, "line": 16, "column": 7 }
+				},
+				"parameters": { "value": "number" }
+			}
+		]
+	},
+	"e": {
+		"type": "number",
+		"unit": "€",
+		"id": "33974554be77431324881fd453cbbf50",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 269, "line": 23, "column": 1 },
+			"end": { "index": 270, "line": 23, "column": 2 }
+		},
+		"public": true,
+		"meta": { "une meta": "23", "une autre meta": "42" },
+		"value_mechanism": {
+			"kind": "value",
+			"type": "number",
+			"unit": "€",
+			"id": "375265e5a5330ccb98ce30d1dd6d0ae7",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 336, "line": 28, "column": 3 },
+				"end": { "index": 342, "line": 28, "column": 9 }
+			},
+			"parameters": {
+				"value_mechanism": {
+					"kind": "expr",
+					"type": "number",
+					"unit": "€",
+					"id": "b98093565171af625aecadfe1fe747d8",
+					"position": {
+						"file": "ok/rules.publicodes",
+						"start": { "index": 344, "line": 28, "column": 11 },
+						"end": { "index": 349, "line": 28, "column": 16 }
+					},
+					"parameters": {
+						"kind": "add",
+						"type": "number",
+						"unit": "€",
+						"parameters": {
+							"left": {
+								"kind": "ref",
+								"type": "number",
+								"unit": "€",
+								"parameters": "a",
+								"id": "a1a2199e81c13976e98730c176e3ee11",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 344, "line": 28, "column": 11 },
+									"end": { "index": 345, "line": 28, "column": 12 }
+								}
+							},
+							"right": {
+								"kind": "ref",
+								"type": "number",
+								"unit": "€",
+								"parameters": "b",
+								"id": "b30b94f8a1d3a541e69bf18766548f78",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 348, "line": 28, "column": 15 },
+									"end": { "index": 349, "line": 28, "column": 16 }
+								}
+							}
+						},
+						"id": "f95ad0dbbb22c5e8767e609dea16911f",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 346, "line": 28, "column": 13 },
+							"end": { "index": 349, "line": 28, "column": 16 }
+						}
+					}
+				},
+				"chained_mechanisms": []
+			}
+		},
+		"chained_mechanisms": []
+	},
+	"f": {
+		"type": "number",
+		"unit": "€",
+		"id": "6e958ff2e0c6b6af8b7c8a916deceade",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 350, "line": 29, "column": 1 },
+			"end": { "index": 351, "line": 29, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "expr",
+			"type": "number",
+			"unit": "€",
+			"id": "ba22056e27833dff59c87d75403e0c2d",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 353, "line": 29, "column": 4 },
+				"end": { "index": 355, "line": 29, "column": 6 }
+			},
+			"parameters": {
+				"kind": "neg",
+				"type": "number",
+				"unit": "€",
+				"parameters": {
+					"kind": "ref",
+					"type": "number",
+					"unit": "€",
+					"parameters": "e",
+					"id": "100ec86cc10e97b572c01fb694cf12d5",
+					"position": {
+						"file": "ok/rules.publicodes",
+						"start": { "index": 354, "line": 29, "column": 5 },
+						"end": { "index": 355, "line": 29, "column": 6 }
+					}
+				},
+				"id": "ba22056e27833dff59c87d75403e0c2d",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 353, "line": 29, "column": 4 },
+					"end": { "index": 355, "line": 29, "column": 6 }
+				}
+			}
+		},
+		"chained_mechanisms": []
+	},
+	"g": {
+		"type": "number",
+		"unit": "€",
+		"id": "9551bafb02d33f8ee5a742204baab0e2",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 356, "line": 30, "column": 1 },
+			"end": { "index": 357, "line": 30, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "value",
+			"type": "number",
+			"unit": "€",
+			"id": "4718358da0921b79490f05cd21d138d0",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 361, "line": 31, "column": 3 },
+				"end": { "index": 367, "line": 31, "column": 9 }
+			},
+			"parameters": {
+				"value_mechanism": {
+					"kind": "expr",
+					"type": "number",
+					"unit": "€",
+					"id": "d261b92b31edeceb55cf0a21a1159419",
+					"position": {
+						"file": "ok/rules.publicodes",
+						"start": { "index": 369, "line": 31, "column": 11 },
+						"end": { "index": 377, "line": 31, "column": 19 }
+					},
+					"parameters": {
+						"kind": "add",
+						"type": "number",
+						"unit": "€",
+						"parameters": {
+							"left": {
+								"kind": "ref",
+								"type": "number",
+								"unit": "€",
+								"parameters": "b",
+								"id": "4f5e4d136c93ec364521a1a692012790",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 369, "line": 31, "column": 11 },
+									"end": { "index": 370, "line": 31, "column": 12 }
+								}
+							},
+							"right": {
+								"kind": "ref",
+								"type": "number",
+								"unit": "€",
+								"parameters": "g . here",
+								"id": "fa66d0fc6f7588a92efa7e30b3bf8d25",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 373, "line": 31, "column": 15 },
+									"end": { "index": 377, "line": 31, "column": 19 }
+								}
+							}
+						},
+						"id": "e235ed437d08860552f60bc0e91d0421",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 371, "line": 31, "column": 13 },
+							"end": { "index": 377, "line": 31, "column": 19 }
+						}
+					}
+				},
+				"chained_mechanisms": []
+			}
+		},
+		"chained_mechanisms": [
+			{
+				"kind": "context",
+				"type": "number",
+				"unit": "€",
+				"id": "afafc1aab9936444e382cb08fc157307",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 400, "line": 34, "column": 3 },
+					"end": { "index": 408, "line": 34, "column": 11 }
+				},
+				"parameters": {
+					"a": {
+						"value_mechanism": {
+							"kind": "expr",
+							"type": "number",
+							"unit": "€",
+							"id": "210ae98ccf1b505aa542f2e38adc1e09",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 417, "line": 35, "column": 8 },
+								"end": { "index": 418, "line": 35, "column": 9 }
+							},
+							"parameters": {
+								"kind": "constant",
+								"type": "number",
+								"unit": "€",
+								"parameters": { "kind": "number", "value": 2.0 },
+								"id": "210ae98ccf1b505aa542f2e38adc1e09",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 417, "line": 35, "column": 8 },
+									"end": { "index": 418, "line": 35, "column": 9 }
+								}
+							}
+						},
+						"chained_mechanisms": []
+					},
+					"b . c": {
+						"value_mechanism": {
+							"kind": "expr",
+							"type": "number",
+							"unit": "€",
+							"id": "529ed2f0d11cd3de1c855166b00ed38c",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 430, "line": 36, "column": 12 },
+								"end": { "index": 431, "line": 36, "column": 13 }
+							},
+							"parameters": {
+								"kind": "constant",
+								"type": "number",
+								"unit": "€",
+								"parameters": { "kind": "number", "value": 3.0 },
+								"id": "529ed2f0d11cd3de1c855166b00ed38c",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 430, "line": 36, "column": 12 },
+									"end": { "index": 431, "line": 36, "column": 13 }
+								}
+							}
+						},
+						"chained_mechanisms": []
+					},
+					"g . here": {
+						"value_mechanism": {
+							"kind": "expr",
+							"type": "number",
+							"unit": "€",
+							"id": "f6fa180da1df794e59ee03a7fec72a98",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 442, "line": 37, "column": 11 },
+								"end": { "index": 443, "line": 37, "column": 12 }
+							},
+							"parameters": {
+								"kind": "constant",
+								"type": "number",
+								"unit": "€",
+								"parameters": { "kind": "number", "value": 9.0 },
+								"id": "f6fa180da1df794e59ee03a7fec72a98",
+								"position": {
+									"file": "ok/rules.publicodes",
+									"start": { "index": 442, "line": 37, "column": 11 },
+									"end": { "index": 443, "line": 37, "column": 12 }
+								}
+							}
+						},
+						"chained_mechanisms": []
+					}
+				}
+			}
+		]
+	},
+	"g . here": {
+		"type": "unknown",
+		"id": "caf7ef889f1edc979789dd84d850b241",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 390, "line": 33, "column": 5 },
+			"end": { "index": 394, "line": 33, "column": 9 }
+		},
+		"value_mechanism": {
+			"kind": "expr",
+			"type": "number",
+			"unit": "€",
+			"id": "96e452abcb8db5630752b6bc7c8adb61",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 396, "line": 33, "column": 11 },
+				"end": { "index": 397, "line": 33, "column": 12 }
+			},
+			"parameters": {
+				"kind": "constant",
+				"type": "number",
+				"unit": "€",
+				"parameters": { "kind": "number", "value": 5.0 },
+				"id": "96e452abcb8db5630752b6bc7c8adb61",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 396, "line": 33, "column": 11 },
+					"end": { "index": 397, "line": 33, "column": 12 }
+				}
+			}
+		},
+		"chained_mechanisms": []
+	},
+	"h": {
+		"type": "number",
+		"unit": "€",
+		"id": "ff8a9dba81b2dfcabf8b7107ba73c57f",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 444, "line": 38, "column": 1 },
+			"end": { "index": 445, "line": 38, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "value",
+			"type": "number",
+			"unit": "€",
+			"id": "deca5743988cb4963ef1ecbd661bd179",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 449, "line": 39, "column": 3 },
+				"end": { "index": 455, "line": 39, "column": 9 }
+			},
+			"parameters": {
+				"value_mechanism": {
+					"kind": "expr",
+					"type": "number",
+					"unit": "€",
+					"id": "054ea3efdb5eadbd6a68952db6cce7f9",
+					"position": {
+						"file": "ok/rules.publicodes",
+						"start": { "index": 457, "line": 39, "column": 11 },
+						"end": { "index": 459, "line": 39, "column": 13 }
+					},
+					"parameters": {
+						"kind": "constant",
+						"type": "number",
+						"unit": "€",
+						"parameters": { "kind": "number", "value": 30.0 },
+						"id": "054ea3efdb5eadbd6a68952db6cce7f9",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 457, "line": 39, "column": 11 },
+							"end": { "index": 459, "line": 39, "column": 13 }
+						}
+					}
+				},
+				"chained_mechanisms": []
+			}
+		},
+		"chained_mechanisms": [
+			{
+				"kind": "applicable_if",
+				"type": "number",
+				"unit": "aucune",
+				"id": "04ff0686e92917b8722d8a3c065e58bd",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 462, "line": 40, "column": 3 },
+					"end": { "index": 475, "line": 40, "column": 16 }
+				},
+				"parameters": {
+					"value_mechanism": {
+						"kind": "expr",
+						"type": "number",
+						"unit": "€",
+						"id": "c5977727da2862f6fbc361dcbd49fbd7",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 477, "line": 40, "column": 18 },
+							"end": { "index": 483, "line": 40, "column": 24 }
+						},
+						"parameters": {
+							"kind": "gt",
+							"type": "boolean",
+							"parameters": {
+								"left": {
+									"kind": "ref",
+									"type": "number",
+									"unit": "€",
+									"parameters": "g",
+									"id": "d914314173af9efefd78bf8a679f1881",
+									"position": {
+										"file": "ok/rules.publicodes",
+										"start": { "index": 477, "line": 40, "column": 18 },
+										"end": { "index": 478, "line": 40, "column": 19 }
+									}
+								},
+								"right": {
+									"kind": "constant",
+									"type": "number",
+									"unit": "€",
+									"parameters": { "kind": "number", "value": 20.0 },
+									"id": "3598d8309a2f44998cade37eacf5b8b5",
+									"position": {
+										"file": "ok/rules.publicodes",
+										"start": { "index": 481, "line": 40, "column": 22 },
+										"end": { "index": 483, "line": 40, "column": 24 }
+									}
+								}
+							},
+							"id": "18899ffbe32b76257a8c0db9e29dff49",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 479, "line": 40, "column": 20 },
+								"end": { "index": 483, "line": 40, "column": 24 }
+							}
+						}
+					},
+					"chained_mechanisms": []
+				}
+			}
+		]
+	},
+	"i": {
+		"type": "number",
+		"unit": "€",
+		"id": "f9d4cec6e25a0e79506072bcccc6aa93",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 484, "line": 41, "column": 1 },
+			"end": { "index": 485, "line": 41, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "value",
+			"type": "number",
+			"unit": "€",
+			"id": "d24d99cec040687675fac66e5c45707f",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 489, "line": 42, "column": 3 },
+				"end": { "index": 495, "line": 42, "column": 9 }
+			},
+			"parameters": {
+				"value_mechanism": {
+					"kind": "expr",
+					"type": "number",
+					"unit": "€",
+					"id": "2daf2319f6592f55b59a413213ae9c38",
+					"position": {
+						"file": "ok/rules.publicodes",
+						"start": { "index": 497, "line": 42, "column": 11 },
+						"end": { "index": 499, "line": 42, "column": 13 }
+					},
+					"parameters": {
+						"kind": "constant",
+						"type": "number",
+						"unit": "€",
+						"parameters": { "kind": "number", "value": 30.0 },
+						"id": "2daf2319f6592f55b59a413213ae9c38",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 497, "line": 42, "column": 11 },
+							"end": { "index": 499, "line": 42, "column": 13 }
+						}
+					}
+				},
+				"chained_mechanisms": []
+			}
+		},
+		"chained_mechanisms": [
+			{
+				"kind": "not_applicable_if",
+				"type": "number",
+				"unit": "aucune",
+				"id": "1d4170a008fe7e9a5550e66144d9fbc1",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 502, "line": 43, "column": 3 },
+					"end": { "index": 519, "line": 43, "column": 20 }
+				},
+				"parameters": {
+					"value_mechanism": {
+						"kind": "expr",
+						"type": "number",
+						"unit": "€",
+						"id": "a5c8dd1f526a4d376bbfcd7cd54231c4",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 521, "line": 43, "column": 22 },
+							"end": { "index": 527, "line": 43, "column": 28 }
+						},
+						"parameters": {
+							"kind": "gt",
+							"type": "boolean",
+							"parameters": {
+								"left": {
+									"kind": "ref",
+									"type": "number",
+									"unit": "€",
+									"parameters": "g",
+									"id": "49ad0e3621f180134b876e4a3eed89fd",
+									"position": {
+										"file": "ok/rules.publicodes",
+										"start": { "index": 521, "line": 43, "column": 22 },
+										"end": { "index": 522, "line": 43, "column": 23 }
+									}
+								},
+								"right": {
+									"kind": "constant",
+									"type": "number",
+									"unit": "€",
+									"parameters": { "kind": "number", "value": 20.0 },
+									"id": "706db75cdf95b9ed7c4442f0af6c5940",
+									"position": {
+										"file": "ok/rules.publicodes",
+										"start": { "index": 525, "line": 43, "column": 26 },
+										"end": { "index": 527, "line": 43, "column": 28 }
+									}
+								}
+							},
+							"id": "de4083c605783e083759724fb3d0b947",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 523, "line": 43, "column": 24 },
+								"end": { "index": 527, "line": 43, "column": 28 }
+							}
+						}
+					},
+					"chained_mechanisms": []
+				}
+			}
+		]
+	},
+	"j": {
+		"type": "number",
+		"unit": "aucune",
+		"id": "4dd128f83551869d4cd97e1ac99b309b",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 528, "line": 44, "column": 1 },
+			"end": { "index": 529, "line": 44, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "not_defined",
+			"type": "number",
+			"unit": "aucune",
+			"id": "4dd128f83551869d4cd97e1ac99b309b",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 528, "line": 44, "column": 1 },
+				"end": { "index": 529, "line": 44, "column": 2 }
+			}
+		},
+		"chained_mechanisms": [
+			{
+				"kind": "type_def",
+				"type": "unknown",
+				"id": "8d429db374150725a3f896b4de6637ba",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 533, "line": 45, "column": 3 },
+					"end": { "index": 537, "line": 45, "column": 7 }
+				},
+				"parameters": { "value": "number" }
+			},
+			{
+				"kind": "default",
+				"type": "number",
+				"unit": "aucune",
+				"id": "dd2468b224a417fc4bbf3374ee09dd34",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 548, "line": 46, "column": 3 },
+					"end": { "index": 558, "line": 46, "column": 13 }
+				},
+				"parameters": {
+					"value_mechanism": {
+						"kind": "expr",
+						"type": "number",
+						"unit": "aucune",
+						"id": "e9749d8c0d9f8ccbcaaae789a74ac4a5",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 560, "line": 46, "column": 15 },
+							"end": { "index": 562, "line": 46, "column": 17 }
+						},
+						"parameters": {
+							"kind": "constant",
+							"type": "number",
+							"unit": "aucune",
+							"parameters": { "kind": "number", "value": 20.0 },
+							"id": "e9749d8c0d9f8ccbcaaae789a74ac4a5",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 560, "line": 46, "column": 15 },
+								"end": { "index": 562, "line": 46, "column": 17 }
+							}
+						}
+					},
+					"chained_mechanisms": []
+				}
+			}
+		]
+	},
+	"k": {
+		"type": "unknown",
+		"id": "6ce2999031aa6b9dc254713c2dd2bf6b",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 563, "line": 47, "column": 1 },
+			"end": { "index": 564, "line": 47, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "value",
+			"type": "unknown",
+			"id": "d3a5646cd96122c13d28ce493dc5a3a2",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 568, "line": 48, "column": 3 },
+				"end": { "index": 574, "line": 48, "column": 9 }
+			},
+			"parameters": {
+				"value_mechanism": {
+					"kind": "expr",
+					"type": "number",
+					"unit": "aucune",
+					"id": "0ca5948ac06e266f5076c7a1a7611848",
+					"position": {
+						"file": "ok/rules.publicodes",
+						"start": { "index": 576, "line": 48, "column": 11 },
+						"end": { "index": 577, "line": 48, "column": 12 }
+					},
+					"parameters": {
+						"kind": "constant",
+						"type": "number",
+						"unit": "aucune",
+						"parameters": { "kind": "number", "value": 4.0 },
+						"id": "0ca5948ac06e266f5076c7a1a7611848",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 576, "line": 48, "column": 11 },
+							"end": { "index": 577, "line": 48, "column": 12 }
+						}
+					}
+				},
+				"chained_mechanisms": []
+			}
+		},
+		"chained_mechanisms": [
+			{
+				"kind": "ceiling",
+				"type": "number",
+				"unit": "aucune",
+				"id": "24d865e5b12c5b69db0cc0fe177cd3d1",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 580, "line": 49, "column": 3 },
+					"end": { "index": 587, "line": 49, "column": 10 }
+				},
+				"parameters": {
+					"value_mechanism": {
+						"kind": "expr",
+						"type": "number",
+						"unit": "aucune",
+						"id": "b17dc7e427cf8afea464c4a228752bc5",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 589, "line": 49, "column": 12 },
+							"end": { "index": 592, "line": 49, "column": 15 }
+						},
+						"parameters": {
+							"kind": "constant",
+							"type": "number",
+							"unit": "aucune",
+							"parameters": { "kind": "number", "value": 2.3 },
+							"id": "b17dc7e427cf8afea464c4a228752bc5",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 589, "line": 49, "column": 12 },
+								"end": { "index": 592, "line": 49, "column": 15 }
+							}
+						}
+					},
+					"chained_mechanisms": []
+				}
+			}
+		]
+	},
+	"l": {
+		"type": "unknown",
+		"id": "09da53f6baea1b170742ec76f50dd711",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 593, "line": 50, "column": 1 },
+			"end": { "index": 594, "line": 50, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "value",
+			"type": "unknown",
+			"id": "2be8869347e49a63193de6d0098ec37b",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 598, "line": 51, "column": 3 },
+				"end": { "index": 604, "line": 51, "column": 9 }
+			},
+			"parameters": {
+				"value_mechanism": {
+					"kind": "expr",
+					"type": "number",
+					"unit": "aucune",
+					"id": "43b51d25e91301a1f5d231ed694cac7a",
+					"position": {
+						"file": "ok/rules.publicodes",
+						"start": { "index": 606, "line": 51, "column": 11 },
+						"end": { "index": 607, "line": 51, "column": 12 }
+					},
+					"parameters": {
+						"kind": "constant",
+						"type": "number",
+						"unit": "aucune",
+						"parameters": { "kind": "number", "value": 2.0 },
+						"id": "43b51d25e91301a1f5d231ed694cac7a",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 606, "line": 51, "column": 11 },
+							"end": { "index": 607, "line": 51, "column": 12 }
+						}
+					}
+				},
+				"chained_mechanisms": []
+			}
+		},
+		"chained_mechanisms": [
+			{
+				"kind": "floor",
+				"type": "number",
+				"unit": "aucune",
+				"id": "24216a81fc80214620c7a3b2d78493ad",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 610, "line": 52, "column": 3 },
+					"end": { "index": 618, "line": 52, "column": 11 }
+				},
+				"parameters": {
+					"value_mechanism": {
+						"kind": "expr",
+						"type": "number",
+						"unit": "aucune",
+						"id": "b8bee0b4d1909a31172817500746d0a4",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 620, "line": 52, "column": 13 },
+							"end": { "index": 621, "line": 52, "column": 14 }
+						},
+						"parameters": {
+							"kind": "constant",
+							"type": "number",
+							"unit": "aucune",
+							"parameters": { "kind": "number", "value": 3.0 },
+							"id": "b8bee0b4d1909a31172817500746d0a4",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 620, "line": 52, "column": 13 },
+								"end": { "index": 621, "line": 52, "column": 14 }
+							}
+						}
+					},
+					"chained_mechanisms": []
+				}
+			}
+		]
+	},
+	"m": {
+		"type": "number",
+		"unit": "aucune",
+		"id": "27d84601f4a2a551e2ac5cc994c3add6",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 622, "line": 53, "column": 1 },
+			"end": { "index": 623, "line": 53, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "not_defined",
+			"type": "number",
+			"unit": "aucune",
+			"id": "27d84601f4a2a551e2ac5cc994c3add6",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 622, "line": 53, "column": 1 },
+				"end": { "index": 623, "line": 53, "column": 2 }
+			}
+		},
+		"chained_mechanisms": [
+			{
+				"kind": "round_nearest",
+				"type": "unknown",
+				"id": "f3a20b788a484e0ae8daf1d8f8347ad8",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 627, "line": 54, "column": 3 },
+					"end": { "index": 634, "line": 54, "column": 10 }
+				},
+				"parameters": {
+					"value_mechanism": {
+						"kind": "expr",
+						"type": "number",
+						"unit": "aucune",
+						"id": "d79f36416fece81425e0870cd85b023c",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 636, "line": 54, "column": 12 },
+							"end": { "index": 639, "line": 54, "column": 15 }
+						},
+						"parameters": {
+							"kind": "constant",
+							"type": "number",
+							"unit": "aucune",
+							"parameters": { "kind": "number", "value": 2.3 },
+							"id": "d79f36416fece81425e0870cd85b023c",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 636, "line": 54, "column": 12 },
+								"end": { "index": 639, "line": 54, "column": 15 }
+							}
+						}
+					},
+					"chained_mechanisms": []
+				}
+			}
+		]
+	},
+	"n": {
+		"type": "number",
+		"unit": "aucune",
+		"id": "f7a4534321d211a5fef78a02cf4f31c1",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 640, "line": 55, "column": 1 },
+			"end": { "index": 641, "line": 55, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "not_defined",
+			"type": "number",
+			"unit": "aucune",
+			"id": "f7a4534321d211a5fef78a02cf4f31c1",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 640, "line": 55, "column": 1 },
+				"end": { "index": 641, "line": 55, "column": 2 }
+			}
+		},
+		"chained_mechanisms": [
+			{
+				"kind": "round_down",
+				"type": "unknown",
+				"id": "48814d0d42e81b1835e2a955336e4aee",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 645, "line": 56, "column": 3 },
+					"end": { "index": 666, "line": 56, "column": 24 }
+				},
+				"parameters": {
+					"value_mechanism": {
+						"kind": "expr",
+						"type": "number",
+						"unit": "aucune",
+						"id": "9a1277fc15ed4ef68174aca2db3341e2",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 668, "line": 56, "column": 26 },
+							"end": { "index": 671, "line": 56, "column": 29 }
+						},
+						"parameters": {
+							"kind": "constant",
+							"type": "number",
+							"unit": "aucune",
+							"parameters": { "kind": "number", "value": 2.3 },
+							"id": "9a1277fc15ed4ef68174aca2db3341e2",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 668, "line": 56, "column": 26 },
+								"end": { "index": 671, "line": 56, "column": 29 }
+							}
+						}
+					},
+					"chained_mechanisms": []
+				}
+			}
+		]
+	},
+	"o": {
+		"type": "number",
+		"unit": "aucune",
+		"id": "63087e876b62b228ce1ca32f323fa133",
+		"position": {
+			"file": "ok/rules.publicodes",
+			"start": { "index": 672, "line": 57, "column": 1 },
+			"end": { "index": 673, "line": 57, "column": 2 }
+		},
+		"value_mechanism": {
+			"kind": "not_defined",
+			"type": "number",
+			"unit": "aucune",
+			"id": "63087e876b62b228ce1ca32f323fa133",
+			"position": {
+				"file": "ok/rules.publicodes",
+				"start": { "index": 672, "line": 57, "column": 1 },
+				"end": { "index": 673, "line": 57, "column": 2 }
+			}
+		},
+		"chained_mechanisms": [
+			{
+				"kind": "round_up",
+				"type": "unknown",
+				"id": "40a75ee6698b4089c983662b9d877196",
+				"position": {
+					"file": "ok/rules.publicodes",
+					"start": { "index": 677, "line": 58, "column": 3 },
+					"end": { "index": 697, "line": 58, "column": 23 }
+				},
+				"parameters": {
+					"value_mechanism": {
+						"kind": "expr",
+						"type": "number",
+						"unit": "aucune",
+						"id": "9eefb1d8169ec53b896ee6369c28130a",
+						"position": {
+							"file": "ok/rules.publicodes",
+							"start": { "index": 699, "line": 58, "column": 25 },
+							"end": { "index": 702, "line": 58, "column": 28 }
+						},
+						"parameters": {
+							"kind": "constant",
+							"type": "number",
+							"unit": "aucune",
+							"parameters": { "kind": "number", "value": 2.3 },
+							"id": "9eefb1d8169ec53b896ee6369c28130a",
+							"position": {
+								"file": "ok/rules.publicodes",
+								"start": { "index": 699, "line": 58, "column": 25 },
+								"end": { "index": 702, "line": 58, "column": 28 }
+							}
+						}
+					},
+					"chained_mechanisms": []
+				}
+			}
+		]
+	}
+}

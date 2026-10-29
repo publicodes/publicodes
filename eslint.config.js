@@ -28,6 +28,7 @@ export default tseslint.config(
 			'.jj/',
 			'build/',
 			'dist/',
+			'**/dist/',
 			'examples/',
 			'**/eslint.config.js',
 			'.yarn',

@@ -2,15 +2,13 @@
 	"compilerOptions": {
 		"module": "esnext",
 		"target": "esnext",
-
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
 		"resolveJsonModule": true,
 		"useDefineForClassFields": true,
-		"lib": ["ES2020"],
+		"lib": ["ES2021"],
 		"allowJs": false,
-
 		"noImplicitThis": true,
 		"strictBindCallApply": true,
 		"strictFunctionTypes": true,
@@ -22,7 +20,6 @@
 		"isolatedModules": true,
 		"moduleDetection": "force",
 		"noEmit": true,
-
 		/* Linting */
 		"strict": true,
 		"noUnusedLocals": true,
