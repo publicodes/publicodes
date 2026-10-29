@@ -1,5 +1,13 @@
 # @publicodes/cli
 
+## 2.0.0-alpha.6
+
+### Patch Changes
+
+- [#902](https://github.com/publicodes/publicodes/pull/902) [`9caa804`](https://github.com/publicodes/publicodes/commit/9caa8047352985598348b2e192aaba1e7ad6d6f7) Thanks [@EmileRolley](https://github.com/EmileRolley)! - Fix - a `not defined` value now propagates through a negation instead of throwing, a list mechanism keeps the order of its members, and a month-only date keeps its year.
+
+    `publicodes compile -t json` replaces `-t json_doc`: the document is built from the typed AST, and now carries the inferred types and each rule's dependency graph (`referenced_by`, `parameters`).
+
 ## 2.0.0-alpha.5
 
 ### Patch Changes
