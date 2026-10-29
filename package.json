@@ -11,7 +11,7 @@
 		"build:compiler": "turbo run build:compiler",
 		"test:compiler": "turbo run test:compiler",
 		"build:packages": "turbo run build --filter=\\{./packages/*\\}",
-		"build:autodoc-example": "make -C packages/compiler build-autodoc-example",
+		"build:autodoc-example": "make -C packages/compiler build-autodoc-example && make -C examples/autodoc-playground models",
 		"eslint": "eslint --cache --flag v10_config_lookup_from_file",
 		"lint": "prettier --check . && \"$npm_execpath\" run build:packages && \"$npm_execpath\" run eslint . --quiet && turbo run lint --parallel",
 		"format": "\"$npm_execpath\" run build:packages && \"$npm_execpath\" run eslint --fix . && prettier --write . && turbo run format --parallel",
