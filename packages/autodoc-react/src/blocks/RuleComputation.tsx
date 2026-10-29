@@ -17,7 +17,7 @@ export function RuleComputation({
 	return (
 		<section className="publicodes-rule-computation">
 			{view.answer !== null && <Explanation view={view.answer} head />}
-			{(view.equation.rows.length > 0 || view.equation.note !== null) && (
+			{view.equation.rows.length > 0 && (
 				<ExplanationList view={view.equation} />
 			)}
 		</section>

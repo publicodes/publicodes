@@ -131,7 +131,6 @@ export interface EquationView {
 	/** The terms held back from those lines, when there are any. */
 	fold: FoldView | null
 	/** A sentence in place of rows, for a computation that has none to show. */
-	note: string | null
 	/**
 	 * The `contexte` mechanism these lines are read under, when one governs them: the
 	 * values of its lines live at the stack it pushed, in the trace.

@@ -117,8 +117,6 @@ export function finishEquation(
 		size: rows.length,
 		result: mechanism.result,
 		fold,
-		// une feuille vidée de ses lignes n'écrit rien : le lecteur a fermé ce qu'il avait ouvert
-		note: null,
 		contextId: null,
 		header: null,
 		depth: ctx.depth,
@@ -133,6 +131,12 @@ const booleanWordOf = (value: ValueView): string | null =>
 	typeof value.value !== 'boolean' && typeof value.value !== 'number' ? null
 	: value.value ? 'oui'
 	: 'non'
+
+/** Une valeur que le modèle écrit : un littéral, sous les mécanismes qui ne font que le nommer. */
+const isLiteral = (mechanism: Ast.ValueMechanism): boolean =>
+	mechanism.kind === 'value' ?
+		isLiteral(mechanism.parameters.value_mechanism)
+	:	mechanism.kind === 'expr' && mechanism.parameters.kind === 'constant'
 
 /**
  * Finishes a row: what its gutter says, where its control sits, and what opens under
@@ -169,12 +173,12 @@ export function finishRow(
 	// s'ouvre que là où il imprime des lignes.
 	const node = raw.address !== null ? ctx.ast[raw.address] : undefined
 	const mechanism = node?.value_mechanism
-	// le compilateur écrit une constante comme une expression sans opérateur
+	// le compilateur écrit une constante comme une expression sans opérateur, parfois sous un
+	// `valeur` : la ligne porte déjà le chiffre, sa fiche n'aurait qu'à le répéter
 	const constant =
 		mechanism !== undefined &&
-		mechanism.kind === 'expr' &&
-		mechanism.parameters.kind === 'constant' &&
-		(node?.chained_mechanisms.length ?? 0) === 0
+		(node?.chained_mechanisms.length ?? 0) === 0 &&
+		isLiteral(mechanism)
 	// ce qu'une ligne ouvre, sans projeter sa fiche : une référence qui n'est pas une constante,
 	// ou la fiche que le mécanisme porte déjà. La fiche d'une référence ne décide jamais d'un
 	// chevron — une constante n'en imprime aucune ligne

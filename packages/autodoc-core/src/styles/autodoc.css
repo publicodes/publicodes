@@ -618,16 +618,6 @@
 		transition: none;
 	}
 }
-/* a fiche without a computation ends on a sentence, and the sheet closes on it */
-/* une note est une phrase, pas une case : elle prend les colonnes de la fiche à partir des
-   noms, sans quoi la grille la rangerait dans celle des opérateurs, large de son min-content */
-.publicodes-detail__note {
-	grid-column: 2 / -1;
-	padding: var(--publicodes-space-s) 0;
-	font-size: var(--publicodes-size-label);
-	color: var(--publicodes-muted);
-}
-
 /* ── focus: the design owns it, rather than leaving it to the browser ──
    La page et l'index : le lecteur au clavier doit voir où il est dans les deux. */
 .publicodes-rule-page :focus-visible,
