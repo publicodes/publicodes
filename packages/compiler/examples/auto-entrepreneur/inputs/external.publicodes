@@ -1,4 +1,5 @@
 date:
+  titre: Date du calcul
 
 dirigeant:
 dirigeant . exonérations:
@@ -8,8 +9,10 @@ dirigeant . régime social: "auto-entrepreneur"
 
 entreprise:
 entreprise . date de création:
+  titre: Date de création de l’entreprise
 
 entreprise . chiffre d'affaires:
+  titre: Chiffre d’affaires annuel
   public: oui
   somme:
     - BIC
@@ -18,15 +21,19 @@ entreprise . chiffre d'affaires:
     - vente restauration hébergement
 
 entreprise . chiffre d'affaires . BIC:
+  titre: Vente de marchandises
   unité: €/an
 
 entreprise . chiffre d'affaires . service BIC:
+  titre: Prestations de services commerciales
   unité: €/an
 
 entreprise . chiffre d'affaires . service BNC:
+  titre: Prestations de services libérales
   unité: €/an
 
 entreprise . chiffre d'affaires . vente restauration hébergement:
+  titre: Restauration et hébergement
   unité: €/an
 
 entreprise . imposition:
@@ -36,21 +43,28 @@ entreprise . imposition . régime . micro-entreprise . revenu abattu: 60 % * ent
 
 entreprise . activité:
 entreprise . activité . nature:
+  titre: Nature de l’activité
 entreprise . activité . nature . libérale:
 entreprise . activité . nature . libérale . réglementée:
+  titre: Activité libérale réglementée
 entreprise . activités:
 entreprise . activités . revenus mixtes:
 revenu imposable:
 
 entreprise . durée d'activité:
+  titre: Ancienneté de l’activité
 entreprise . durée d'activité . en début d'année:
 entreprise . durée d'activité . années civiles:
+  titre: Années civiles d’activité
 entreprise . durée d'activité . trimestres civils:
+  titre: Trimestres civils d’activité
 
 établissement:
 établissement . commune:
 établissement . commune . département:
+  titre: Département de l’établissement
 établissement . commune . département . outre-mer:
+  titre: Commune d’outre-mer
 
 impôt:
 impôt . foyer fiscal:

@@ -1,4 +1,5 @@
 dirigeant . auto-entrepreneur . cotisations et contributions:
+  titre: Cotisations et contributions sociales
   public: oui
   unité: €/an
   somme:
@@ -149,6 +150,7 @@ dirigeant . auto-entrepreneur . cotisations et contributions . CFP:
       shine.fr: https://www.shine.fr/blog/formation-professionnelle-auto-entrepreneur/
 
 dirigeant . auto-entrepreneur . cotisations et contributions . cotisations:
+  titre: Cotisations sociales
   public: oui
   description: |
     Les cotisations sociales donnent à l’auto-entrepreneur accès à une
