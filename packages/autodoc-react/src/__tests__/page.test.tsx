@@ -1099,16 +1099,17 @@ describe('the index of the declared API', () => {
 			</Autodoc>,
 		)
 
-	it('groups the results before the parameters, and names them as the model does', () => {
+	it('lists the results first, without a label, then the parameters under theirs', () => {
 		const { container } = renderIndex()
 		const groups = Array.from(
 			container.querySelectorAll(
 				'.publicodes-rule-index .publicodes-rule-group',
 			),
 		)
-		expect(
-			groups.map((group) => group.querySelector('h2, summary')?.textContent),
-		).toEqual(['Résultats', 'Paramètres'])
+		// les résultats n'ont pas d'étiquette : ils ouvrent l'index
+		expect(groups.map((group) => group.tagName)).toEqual(['DIV', 'DETAILS'])
+		expect(groups[0].querySelector('h2, summary')).toBeNull()
+		expect(groups[1].querySelector('summary')?.textContent).toBe('Paramètres')
 		expect(
 			Array.from(container.querySelectorAll('.publicodes-rule-index li')).map(
 				(item) => item.textContent,
