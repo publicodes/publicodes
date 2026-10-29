@@ -16,7 +16,11 @@ const pages = createPathNavigation({
 	toUrl,
 })
 
-/** La fiche du modèle, sans contexte — `auto-entrepreneur` montre le calcul, lui. */
+const context = {
+	"chiffre d'affaires . TJM": 800,
+}
+
+/** Le calcul sous un contexte fourni : le TJM du lecteur, et ses 21 jours par défaut. */
 export function SimpleTjmDoc() {
 	return (
 		<Autodoc Link={createPathLink(pages)}>
@@ -25,7 +29,8 @@ export function SimpleTjmDoc() {
 				ast={asAst(ast)}
 				pages={pages}
 				title="simple TJM"
-				start="exemples . CA élevé"
+				start="revenu net"
+				context={context}
 			/>
 		</Autodoc>
 	)

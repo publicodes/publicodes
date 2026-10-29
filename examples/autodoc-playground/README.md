@@ -3,7 +3,9 @@
 Three models documented with `@publicodes/autodoc`: `simple-TJM` and
 `auto-entrepreneur` come from `examples/models`, `ekofest` from the
 [road-to-v2](https://github.com/publicodes/publicodes-road-to-v2) model — 306
-rules, one import, a real one.
+rules, one import, a real one. Each opens on a calculation: `simple-TJM` under a
+TJM the reader did not type, and one of its outputs read under a `contexte` that
+scales the working days.
 
 The compiled models it imports are build outputs, not sources. `ekofest`'s
 sources are a git submodule, so initialise it first:
