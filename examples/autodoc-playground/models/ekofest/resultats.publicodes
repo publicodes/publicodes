@@ -1,0 +1,21 @@
+resultats:
+  titre: Résultats
+
+resultats . bilan total:
+  titre: Bilan Carbone de mon évènement
+  unité: kgCO2e
+  public: oui
+  valeur:
+    somme:
+      - alimentation
+      - transport
+      - infrastructures
+      - hébergement
+      - énergie
+      - communication
+
+resultats . bilan par festivalier:
+  titre: Bilan Carbone par festivalier et par jour
+  unité: kgCO2e
+  public: oui
+  valeur: bilan total / informations . nombre de festivaliers

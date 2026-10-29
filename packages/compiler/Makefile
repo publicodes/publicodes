@@ -10,6 +10,8 @@ EXAMPLES_DIR = examples
 SIMPLE_TJM_DIR = $(EXAMPLES_DIR)/simple-TJM
 SIMPLE_TJM_DEPS = $(SIMPLE_TJM_DIR)/inputs/TJM.publicodes
 AUTO_ENTREPRENEUR_DIR = $(EXAMPLES_DIR)/auto-entrepreneur
+PLAYGROUND_MODELS = ../../examples/autodoc-playground/models
+EKOFEST_DIR = $(PLAYGROUND_MODELS)/ekofest
 AUTO_ENTREPRENEUR_DEPS = \
 	$(AUTO_ENTREPRENEUR_DIR)/inputs/auto-entrepreneur.publicodes \
 	$(AUTO_ENTREPRENEUR_DIR)/inputs/cotisations-et-contributions.publicodes \
@@ -118,7 +120,12 @@ bench-auto-entrepreneur: build $(AUTO_ENTREPRENEUR_DIR)/publicodes-build/index.j
 #> bench-all                | Run all benchmarks
 bench-all: bench-simple-TJM bench-auto-entrepreneur
 
+#> build-autodoc-example   | Compile the models the autodoc playground documents
+.PHONY: build-autodoc-example
 build-autodoc-example: build $(AUTO_ENTREPRENEUR_DIR)/model.publicodes.json \
 	$(AUTO_ENTREPRENEUR_DIR)/model.publicodes.js \
 	$(SIMPLE_TJM_DIR)/model.publicodes.json \
 	$(SIMPLE_TJM_DIR)/model.publicodes.js
+	@echo "Recompiling the ekofest model and its JSON documentation..."
+	$(COMPILER_PATH) compile -C $(EKOFEST_DIR) .
+	$(COMPILER_PATH) compile -t json -C $(EKOFEST_DIR) .
