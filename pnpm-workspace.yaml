@@ -3,7 +3,7 @@ packages:
   - examples/autodoc-playground
   - packages/*
   - packages/compiler/tests/runtimes/JS
-  - packages/compiler/examples
+  - examples/models
   - examples/first-package/
 allowBuilds:
   bun: true

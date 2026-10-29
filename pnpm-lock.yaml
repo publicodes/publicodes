@@ -243,6 +243,27 @@ importers:
 
   examples/first-package: {}
 
+  examples/models:
+    devDependencies:
+      '@mitata/counters':
+        specifier: ^0.0.8
+        version: 0.0.8
+      '@publicodes/cli':
+        specifier: workspace:^
+        version: link:../../packages/cli
+      '@publicodes/tools':
+        specifier: ^1.10.6
+        version: 1.10.6(jiti@2.7.0)(lightningcss@1.32.0)(publicodes@1.10.4)
+      bun:
+        specifier: ^1.3.11
+        version: 1.4.4
+      mitata:
+        specifier: ^1.0.34
+        version: 1.0.34
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+
   packages/autodoc-core:
     devDependencies:
       json-schema-to-typescript:
@@ -388,27 +409,6 @@ importers:
       rolldown:
         specifier: 1.0.0-beta.40
         version: 1.0.0-beta.40(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
-
-  packages/compiler/examples:
-    devDependencies:
-      '@mitata/counters':
-        specifier: ^0.0.8
-        version: 0.0.8
-      '@publicodes/cli':
-        specifier: workspace:^
-        version: link:../../cli
-      '@publicodes/tools':
-        specifier: ^1.10.6
-        version: 1.10.6(jiti@2.7.0)(lightningcss@1.32.0)(publicodes@1.10.4)
-      bun:
-        specifier: ^1.3.11
-        version: 1.3.11
-      mitata:
-        specifier: ^1.0.34
-        version: 1.0.34
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.3
 
   packages/compiler/tests/runtimes/JS:
     devDependencies:

@@ -1,5 +1,5 @@
 {
-	"name": "compiler-examples",
+	"name": "models-examples",
 	"private": true,
 	"version": "2.0.0-alpha.0",
 	"description": "Publicodes JS runtime benchmark on real-world examples",
