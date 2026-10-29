@@ -3,6 +3,7 @@ import {
 	AutoEntrepreneurDoc,
 	basePath as autoBasePath,
 } from './models/auto-entrepreneur'
+import { basePath as ekofestBasePath, EkofestDoc } from './models/ekofest'
 import { basePath as tjmBasePath, SimpleTjmDoc } from './models/simple-TJM'
 
 const MODELS = [
@@ -12,6 +13,7 @@ const MODELS = [
 		Doc: AutoEntrepreneurDoc,
 	},
 	{ name: 'simple-TJM', basePath: tjmBasePath, Doc: SimpleTjmDoc },
+	{ name: 'ekofest', basePath: ekofestBasePath, Doc: EkofestDoc },
 ]
 
 /** Which model the address bar names, so a link to a page is a link to its model too. */
