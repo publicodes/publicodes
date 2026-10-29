@@ -2,7 +2,6 @@ import type * as Ast from '../ast'
 import { NotDefined, type ContextStackId, type TraceValue } from '../trace'
 import {
 	foldLabel,
-	NO_COMPUTATION,
 	NOT_PROVIDED,
 	PARAMETER_INPUT,
 	PARAMETER_NOTE,
@@ -223,8 +222,6 @@ function projectRuleAt(
 				{
 					...projected,
 					result,
-					// une règle sans calcul le dit ; un paramètre, lui, porte le fait sur sa réponse
-					note: projected.size === 0 && state === null ? NO_COMPUTATION : null,
 				},
 				input,
 				ruleName,
@@ -372,7 +369,6 @@ export { projectExpression, projectNode } from './nodes'
 export {
 	CONTEXT_NAME,
 	CONTEXT_VALUE,
-	NO_COMPUTATION,
 	NOT_PROVIDED,
 	PARAMETER_INPUT,
 	PARAMETER_NOTE,

@@ -33,9 +33,6 @@ export function ExplanationList({
 					flush={table}
 				/>
 			))}
-			{view.note !== null && (
-				<p className="publicodes-detail__note">{view.note}</p>
-			)}
 		</>
 	)
 	// a `contexte` mechanism pushes a stack of its own, and its lines are read under it: a

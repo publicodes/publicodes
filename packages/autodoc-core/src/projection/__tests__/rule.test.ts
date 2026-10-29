@@ -93,7 +93,9 @@ describe('projectRule — a rule with no computation of its own', () => {
 	it('dit ce qui entre, et rien d’autre : un paramètre n’a pas de calcul à expliquer', () => {
 		const view = projectRule(doc, 'paramètre', { context: {} })
 		expect(view.answer?.parameterNote).toBeNull()
-		expect(view.equation?.note).toBeNull()
+		expect(view.equation?.rows.map((row) => row.gutter)).toEqual([
+			'paramètre d’entrée',
+		])
 	})
 
 	it('nomme le paramètre sans état quand la page documente le modèle', () => {

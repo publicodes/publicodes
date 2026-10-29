@@ -30,10 +30,6 @@ export const PARAMETER_INPUT = 'paramètre d’entrée'
 export const CONTEXT_NAME = 'contexte'
 export const CONTEXT_VALUE = 'valeur du paramètre'
 
-/** A rule the model does not compute where it is read. */
-export const NO_COMPUTATION =
-	'Cette règle n’a pas de calcul propre : sa valeur vient du contexte.'
-
 /** The fold control's label, which is also its accessible name. */
 export function foldLabel(count: number, expanded: boolean): string {
 	if (expanded) return 'Masquer les termes sans effet'
