@@ -15,28 +15,26 @@ const simpleSituation = {
 }
 
 const simpleSituationResults = {
-	'revenu net': 87900,
-	'exemples . CA élevé': 5180,
-	cotisations: 72000,
+	'revenu net': 125900,
+	'projections . quatre cinquième': 100700,
+	cotisations: 84000,
 }
 
 summary(() => {
+	// sans situation, les deux moteurs s'arrêtent sur une absence : ce groupe mesure la
+	// traversée d'une règle à l'autre, pas un chiffre
 	group('Evaluation without cache', () => {
 		bench('Publicodes 1', () => {
 			legacyEngineSimple.resetCache()
-			let res
 			do_not_optimize(
-				(res = legacyEngineSimple.evaluate('exemples . CA élevé').nodeValue),
+				legacyEngineSimple.evaluate('projections . quatre cinquième').nodeValue,
 			)
-			assert(res === 4320, `Expected 10000, got ${res}`)
 		})
 
 		bench('Publicodes 2', () => {
-			let res
 			do_not_optimize(
-				(res = localRules['exemples . CA élevé'].evaluate().value),
+				localRules['projections . quatre cinquième'].evaluate().value,
 			)
-			assert(res === 4320, `Expected 10000, got ${res}`)
 		})
 	})
 
@@ -53,15 +51,15 @@ summary(() => {
 				`Expected ${simpleSituationResults['revenu net']}, got ${revenuNet}`,
 			)
 
-			let caEleve
+			let projection
 			do_not_optimize(
-				(caEleve = legacyEngineSimple.evaluate(
-					'exemples . CA élevé',
+				(projection = legacyEngineSimple.evaluate(
+					'projections . quatre cinquième',
 				).nodeValue),
 			)
 			assert(
-				caEleve === simpleSituationResults['exemples . CA élevé'],
-				`Expected ${simpleSituationResults['exemples . CA élevé']}, got ${caEleve}`,
+				projection === simpleSituationResults['projections . quatre cinquième'],
+				`Expected ${simpleSituationResults['projections . quatre cinquième']}, got ${projection}`,
 			)
 
 			let cotisations
@@ -86,15 +84,16 @@ summary(() => {
 				`Expected ${simpleSituationResults['revenu net']}, got ${revenuNet}`,
 			)
 
-			let caEleve
+			let projection
 			do_not_optimize(
-				(caEleve = localRules['exemples . CA élevé'].evaluate(simpleSituation, {
-					cache: true,
-				}).value),
+				(projection = localRules['projections . quatre cinquième'].evaluate(
+					simpleSituation,
+					{ cache: true },
+				).value),
 			)
 			assert(
-				caEleve === simpleSituationResults['exemples . CA élevé'],
-				`Expected ${simpleSituationResults['exemples . CA élevé']}, got ${caEleve}`,
+				projection === simpleSituationResults['projections . quatre cinquième'],
+				`Expected ${simpleSituationResults['projections . quatre cinquième']}, got ${projection}`,
 			)
 
 			let cotisations

@@ -1,6 +1,13 @@
 .POSIX:
 .SUFFIXES:
 
+help:
+	@echo "Available targets:"
+	@echo "  models                   | Compile every model, its JS runtime and its JSON documentation"
+	@echo "  bench-all                | Run every benchmark"
+	@echo "  bench-simple-TJM         | Run the benchmark for the simple-TJM model"
+	@echo "  bench-auto-entrepreneur  | Run the benchmark for the auto-entrepreneur model"
+
 # Le compilateur du dépôt compile ces modèles ; `COMPILER=<chemin>` pour un binaire ailleurs.
 COMPILER ?= ../../packages/compiler/_build/default/bin/main.exe
 
