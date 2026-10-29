@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/autodoc-core",
-	"version": "0.0.1",
+	"version": "0.1.0-alpha.0",
 	"description": "Headless UI components for publicodes auto-generated documentation",
 	"sideEffects": [
 		"*.css",
