@@ -15,5 +15,7 @@
 		"lib": ["es2021", "dom"],
 		"isolatedModules": true,
 		"allowJs": true
-	}
+	},
+	"include": ["src"],
+	"exclude": ["vendored"]
 }
