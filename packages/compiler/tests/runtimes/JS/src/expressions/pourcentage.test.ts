@@ -58,7 +58,7 @@ multiplication:
     a: 50W / 200% #25W
     b: 10 %/étoiles * 5 étoiles #50%
     c: 40 kg * 50% #20kg
-    d: 20 * 5% #100%
+    d: 20 * 5% #1
     `
 		expect(a.evaluate().value).toEqual(25)
 		expect(a.unit).toBe('W')
@@ -66,8 +66,25 @@ multiplication:
 		expect(b.unit).toBe('%')
 		expect(c.evaluate().value).toEqual(20)
 		expect(c.unit).toBe('kg')
-		expect(d.evaluate().value).toEqual(100)
-		expect(d.unit).toBe('%')
+		expect(d.evaluate().value).toEqual(1)
+		expect(d.unit).toBe('aucune')
+	})
+
+	it('simplification dans les multiplications - 3', async () => {
+		const { a, e, f, h } = await yaml`
+    a: 5% * 200 # 10
+    e: 50% * 20% # 10%
+    f: 50% * 50% * 20% # 5%
+    h: 50% * 20% * 10 # 1
+    `
+		expect(a.evaluate().value).toEqual(10)
+		expect(a.unit).toBe('aucune')
+		expect(e.evaluate().value).toEqual(10)
+		expect(e.unit).toBe('%')
+		expect(f.evaluate().value).toEqual(5)
+		expect(f.unit).toBe('%')
+		expect(h.evaluate().value).toEqual(1)
+		expect(h.unit).toBe('aucune')
 	})
 
 	it('simplify over exception', async () => {
