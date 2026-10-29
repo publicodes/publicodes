@@ -1,0 +1,80 @@
+/* The playground's shell. It paints its own chrome and takes every colour, size, face and
+   spacing step from the library's tokens, so the two cannot drift apart. Its own widths
+   (the column, the frame) are the host's business and stay here. */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-family: var(--publicodes-font);
+	font-size: var(--publicodes-size-body);
+	line-height: var(--publicodes-leading);
+	color: var(--publicodes-ink);
+	/* the page is the paper: here as in the library, a sheet has no surface of its own */
+	background: var(--publicodes-paper);
+}
+
+/* the models this playground can show */
+.doc-models {
+	display: flex;
+	gap: var(--publicodes-space-m);
+	padding: var(--publicodes-space-m) var(--publicodes-space-l);
+	border-bottom: var(--publicodes-hairline) solid var(--publicodes-muted);
+}
+.doc-models a {
+	font-size: var(--publicodes-size-figure);
+	color: var(--publicodes-blue);
+	text-underline-offset: calc(var(--publicodes-hairline) * 2);
+}
+.doc-models a[aria-current='page'] {
+	color: var(--publicodes-ink);
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.doc-shell {
+	display: grid;
+	grid-template-columns: 220px minmax(0, 1fr);
+	gap: var(--publicodes-space-l);
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: var(--publicodes-space-l);
+	align-items: start;
+}
+
+/* l'index ne défile pas avec la page : il est long, et le lecteur en a besoin en bas de page */
+.doc-index {
+	position: sticky;
+	top: var(--publicodes-space-l);
+	max-height: calc(100vh - var(--publicodes-space-l) * 2);
+	overflow: auto;
+}
+
+.doc-title {
+	font-weight: 700;
+	color: var(--publicodes-ink);
+	margin: 0 0 var(--publicodes-space-m);
+}
+
+/* the shell is one column on a phone: the index would crush the column */
+@media (max-width: 940px) {
+	.doc-shell {
+		grid-template-columns: 1fr;
+		gap: 0;
+		padding: var(--publicodes-space-m) var(--publicodes-space-m)
+			var(--publicodes-space-l);
+	}
+	/* sur une colonne, l'index défile avec la page */
+	.doc-index {
+		position: static;
+		max-height: none;
+		border-bottom: var(--publicodes-hairline) solid var(--publicodes-muted);
+		padding-bottom: var(--publicodes-space-m);
+		margin-bottom: var(--publicodes-space-l);
+	}
+}

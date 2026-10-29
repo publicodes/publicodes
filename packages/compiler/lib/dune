@@ -3,14 +3,16 @@
  (name compiler)
  (public_name publicodes.compiler)
  (libraries
-  parser
-  resolver
+	autodoc
+  base
+  dependency_graph
   analysis
 	typing
   eval_tree
   backends
   utils
-  base
+	parser
+	resolver
   yaml)
  (modules :standard)
  (preprocess

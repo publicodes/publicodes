@@ -1,0 +1,9 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"lib": ["es2021", "dom"],
+		"jsx": "react-jsx",
+		"jsxImportSource": "react"
+	},
+	"include": ["src"]
+}

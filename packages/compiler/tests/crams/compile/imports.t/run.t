@@ -36,7 +36,7 @@ Check root exports :
       /**
        * Evaluate "result" with evaluation trace, and information on
        * missing and needed parameters.
-       * @type {(params?: resultParams, options?: {Options}) => {value: number, needed: Array<keyof resultParams>, missing: Array<keyof resultParams>, trace: {Trace}}}
+       * @type {(params?: resultParams, options?: Options) => {value: number, needed: Array<keyof resultParams>, missing: Array<keyof resultParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
         $evaluate(_result, params, options),
@@ -60,7 +60,7 @@ Check root exports :
       /**
        * Evaluate "module c . regle c" with evaluation trace, and information on
        * missing and needed parameters.
-       * @type {(params?: module_c_·_regle_cParams, options?: {Options}) => {value: number, needed: Array<keyof module_c_·_regle_cParams>, missing: Array<keyof module_c_·_regle_cParams>, trace: {Trace}}}
+       * @type {(params?: module_c_·_regle_cParams, options?: Options) => {value: number, needed: Array<keyof module_c_·_regle_cParams>, missing: Array<keyof module_c_·_regle_cParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
         $evaluate(_module_c_·_regle_c, params, options),
