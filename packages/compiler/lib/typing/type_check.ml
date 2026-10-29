@@ -266,12 +266,36 @@ let get_number_unit_opt = function
   | _ ->
       None
 
-let check_multiply ~pos u1 u2 : Ast.typ Output.t =
+let rec is_unitless_number_literal (expr : Ast.typing_expr) =
+  match fst expr with
+  | Const (Number (_, None)) ->
+      true
+  | Unary_op ((Neg, _), expr) ->
+      is_unitless_number_literal expr
+  | _ ->
+      false
+
+let check_multiply ?(left_is_unitless_literal = false)
+    ?(right_is_unitless_literal = false) ~pos u1 u2 : Ast.typ Output.t =
   let t1, _ = UnionFind.get u1 in
   let t2, _ = UnionFind.get u2 in
   match (get_number_unit_opt t1, get_number_unit_opt t2) with
   | Some unit1, Some unit2 ->
-      let t = Number_unit.multiply unit1 unit2 in
+      let left_is_scalar =
+        left_is_unitless_literal || Number_unit.is_empty unit1
+      in
+      let right_is_scalar =
+        right_is_unitless_literal || Number_unit.is_empty unit2
+      in
+      let t =
+        if
+          (Number_unit.is_percent_only unit1 && right_is_scalar)
+          || (Number_unit.is_percent_only unit2 && left_is_scalar)
+        then
+          (* A percentage multiplied by a unitless value is a unitless value *)
+          Number_unit.concrete Units.empty
+        else Number_unit.multiply unit1 unit2
+      in
       let m = Ast.mk_general ~pos Ast.(KNumber t) in
       Output.return m
   | _, _ ->
@@ -431,7 +455,12 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
       | Mul ->
           let* _ = check_expression_is_any_number left ~pos:left_pos in
           let* _ = check_expression_is_any_number right ~pos:right_pos in
-          let* mul_typ = check_multiply ~pos left_mark.typ right_mark.typ in
+          let* mul_typ =
+            check_multiply ~pos
+              ~left_is_unitless_literal:(is_unitless_number_literal left)
+              ~right_is_unitless_literal:(is_unitless_number_literal right)
+              left_mark.typ right_mark.typ
+          in
           let* _ = check_union mark.typ mul_typ in
           check_union_with_parent_typ ~ctx mark.typ
       | Div ->

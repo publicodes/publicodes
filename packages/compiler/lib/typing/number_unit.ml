@@ -57,6 +57,18 @@ let to_concrete (list : t) : Units.t =
   let normalized = normalize list in
   normalized.concrete
 
+let is_percent_only (t : t) =
+  let normalized = normalize t in
+  List.is_empty normalized.elem
+  && List.is_empty normalized.inv
+  && Units.equal normalized.concrete (Units.parse_unit "%")
+
+let is_empty (t : t) =
+  let normalized = normalize t in
+  List.is_empty normalized.elem
+  && List.is_empty normalized.inv
+  && Units.equal normalized.concrete Units.empty
+
 let multiply (t1 : t) (t2 : t) : t =
   (* Flatten the lists and concatenate them *)
   t1 @ t2

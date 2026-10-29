@@ -1,5 +1,5 @@
-# should be %
-a: 5% * 15
+# should be 'sans unité' (and equal to 10)
+a: 5% * 200
 
 # should be €
 b: 10% * 50 €
@@ -10,10 +10,15 @@ c: 5 %/étoile * 5 étoile
 # should be €
 d: 4 € / 85%
 
+# should be % (and equal to 10%)
+e: 50% * 20%
+
+# should be % (and equal to 5%)
+f: 50% * 50% * 20%
+
 simplification:
   avec:
     inline: 5% * 4€
-
     mechanism:
       produit:
         - 5%
