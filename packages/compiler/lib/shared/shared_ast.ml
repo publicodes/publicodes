@@ -95,7 +95,6 @@ type rule_meta =
   | Note of string
   | Public
   | Custom_meta of Yojson.Safe.t
-  | Module_id of Module_id.t
 [@@deriving equal, show]
 
 type 'ref replace =
@@ -107,6 +106,7 @@ type 'ref replace =
 
 type ('ref, 'mark) rule_def =
   { name: Rule_name.t Mark.pos
+  ; module_id: Module_id.t
   ; value: ('ref, 'mark) value
   ; meta: rule_meta list
   ; replace: 'ref replace list
@@ -188,10 +188,6 @@ let mk_expr mark expr = Mark.add mark expr
 (** Map expression *)
 let has_public_tag rule_def =
   List.exists ~f:(function Public -> true | _ -> false) rule_def.meta
-
-let get_module_id_exn rule_def =
-  List.find_map_exn rule_def.meta ~f:(fun meta ->
-      match meta with Module_id id -> Some id | _ -> None )
 
 let has_value rule_def =
   let value = Mark.remove rule_def.value in
