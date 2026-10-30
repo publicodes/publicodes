@@ -2,7 +2,7 @@
 	"$id": "https://publi.codes/debug.schema.json",
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"title": "Publicode AST",
-	"description": "JSON representation of the AST produced by the Publicodes compiler with the target `json_doc`.",
+	"description": "JSON representation of the AST produced by the Publicodes compiler with the target `json`.",
 	"type": "object",
 	"patternProperties": {
 		".*": {
@@ -18,7 +18,8 @@
 				{ "$ref": "#/$defs/compiler_metadata" },
 				{ "$ref": "#/$defs/evaluable" },
 				{ "$ref": "#/$defs/authored_metadata" },
-				{ "$ref": "#/$defs/rule_graph" }
+				{ "$ref": "#/$defs/rule_graph" },
+				{ "$ref": "#/$defs/replacements" }
 			]
 		},
 		"rule_graph": {
@@ -40,6 +41,61 @@
 				}
 			}
 		},
+		"replacements": {
+			"title": "Replacement declarations",
+			"description": "The replacement clauses written on this rule, mirroring the AST.",
+			"type": "object",
+			"properties": {
+				"replaces": {
+					"title": "Replaces",
+					"type": "array",
+					"items": { "$ref": "#/$defs/replace" }
+				},
+				"makes_not_applicable": {
+					"title": "Makes not applicable",
+					"type": "array",
+					"items": { "$ref": "#/$defs/replace" }
+				}
+			}
+		},
+		"replace": {
+			"title": "Replace clause",
+			"type": "object",
+			"required": [
+				"reference",
+				"only_in",
+				"except_in",
+				"exclusive",
+				"position"
+			],
+			"properties": {
+				"reference": {
+					"title": "Target rule",
+					"description": "The rule this clause replaces or makes not applicable.",
+					"type": "string"
+				},
+				"only_in": {
+					"title": "Only in",
+					"type": "array",
+					"items": { "type": "string" }
+				},
+				"except_in": {
+					"title": "Except in",
+					"type": "array",
+					"items": { "type": "string" }
+				},
+				"exclusive": {
+					"title": "Exclusive",
+					"description": "Only ever true for replacements, never when making not applicable.",
+					"type": "boolean"
+				},
+				"position": {
+					"title": "Position",
+					"$ref": "#/$defs/ast_position"
+				}
+			}
+		},
+
 		"evaluable": {
 			"title": "Chained value",
 			"required": ["value_mechanism", "chained_mechanisms"],
@@ -97,22 +153,26 @@
 				},
 				"position": {
 					"title": "AST node position",
-					"type": "object",
-					"required": ["file", "start", "end"],
-					"properties": {
-						"file": {
-							"title": "Source file",
-							"type": "string"
-						},
-						"start": {
-							"title": "Starting position in the source file",
-							"$ref": "#/$defs/position"
-						},
-						"end": {
-							"title": "Ending position in the source file",
-							"$ref": "#/$defs/position"
-						}
-					}
+					"$ref": "#/$defs/ast_position"
+				}
+			}
+		},
+		"ast_position": {
+			"title": "AST node position",
+			"type": "object",
+			"required": ["file", "start", "end"],
+			"properties": {
+				"file": {
+					"title": "Source file",
+					"type": "string"
+				},
+				"start": {
+					"title": "Starting position in the source file",
+					"$ref": "#/$defs/position"
+				},
+				"end": {
+					"title": "Ending position in the source file",
+					"$ref": "#/$defs/position"
 				}
 			}
 		},
@@ -910,6 +970,21 @@
 							},
 							"parameters": {
 								"type": "string"
+							},
+							"replaced_by": {
+								"title": "Replaced by",
+								"type": "array",
+								"items": {
+									"$ref": "#/$defs/expressions/ref"
+								}
+							},
+							"made_not_applicable_by": {
+								"title": "Made not applicable by",
+								"description": "Takes precedence over `replaced_by`.",
+								"type": "array",
+								"items": {
+									"$ref": "#/$defs/expressions/ref"
+								}
 							}
 						}
 					},
