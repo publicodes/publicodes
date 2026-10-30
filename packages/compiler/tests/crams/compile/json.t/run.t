@@ -1895,3 +1895,670 @@ Correctly handle types:
       ]
     }
   }
+
+Replacements :
+
+  $ publicodes compile ./ok/replacements/ -t json -o -
+  {
+    "base": {
+      "type": "number",
+      "unit": "€",
+      "id": "d93ecbe02aebd5e006a78815581bcad8",
+      "position": {
+        "file": "./ok/replacements/rules.publicodes",
+        "start": { "index": 0, "line": 1, "column": 1 },
+        "end": { "index": 4, "line": 1, "column": 5 }
+      },
+      "value_mechanism": {
+        "kind": "expr",
+        "type": "number",
+        "unit": "€",
+        "id": "d7c8bd3281cf000267163c1245ed8886",
+        "position": {
+          "file": "./ok/replacements/rules.publicodes",
+          "start": { "index": 6, "line": 1, "column": 7 },
+          "end": { "index": 10, "line": 1, "column": 11 }
+        },
+        "parameters": {
+          "kind": "constant",
+          "type": "number",
+          "unit": "€",
+          "parameters": {
+            "kind": "const_number",
+            "value": 10.0,
+            "unit": "€"
+          },
+          "id": "d7c8bd3281cf000267163c1245ed8886",
+          "position": {
+            "file": "./ok/replacements/rules.publicodes",
+            "start": { "index": 6, "line": 1, "column": 7 },
+            "end": { "index": 10, "line": 1, "column": 11 }
+          }
+        }
+      },
+      "chained_mechanisms": []
+    },
+    "e1": {
+      "type": "number",
+      "unit": "€",
+      "id": "85ada36cf32b6b335411b25b614b0291",
+      "position": {
+        "file": "./ok/replacements/rules.publicodes",
+        "start": { "index": 11, "line": 2, "column": 1 },
+        "end": { "index": 13, "line": 2, "column": 3 }
+      },
+      "replaces": [
+        {
+          "reference": "base",
+          "only_in": [],
+          "except_in": [],
+          "exclusive": false,
+          "position": {
+            "file": "./ok/replacements/rules.publicodes",
+            "start": { "index": 27, "line": 3, "column": 13 },
+            "end": { "index": 31, "line": 3, "column": 17 }
+          }
+        }
+      ],
+      "value_mechanism": {
+        "kind": "value",
+        "type": "number",
+        "unit": "€",
+        "id": "c088af5b4e91d38f519c06f0a4f40c58",
+        "position": {
+          "file": "./ok/replacements/rules.publicodes",
+          "start": { "index": 34, "line": 4, "column": 3 },
+          "end": { "index": 40, "line": 4, "column": 9 }
+        },
+        "parameters": {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "number",
+            "unit": "€",
+            "id": "e9d1d90b4312fc9dfb5a9d162ec37375",
+            "position": {
+              "file": "./ok/replacements/rules.publicodes",
+              "start": { "index": 42, "line": 4, "column": 11 },
+              "end": { "index": 45, "line": 4, "column": 14 }
+            },
+            "parameters": {
+              "kind": "constant",
+              "type": "number",
+              "unit": "€",
+              "parameters": {
+                "kind": "const_number",
+                "value": 5.0,
+                "unit": "€"
+              },
+              "id": "e9d1d90b4312fc9dfb5a9d162ec37375",
+              "position": {
+                "file": "./ok/replacements/rules.publicodes",
+                "start": { "index": 42, "line": 4, "column": 11 },
+                "end": { "index": 45, "line": 4, "column": 14 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        }
+      },
+      "chained_mechanisms": []
+    },
+    "e2": {
+      "type": "number",
+      "unit": "€",
+      "id": "5cf466cb47de77b310cea9bfdc55df63",
+      "position": {
+        "file": "./ok/replacements/rules.publicodes",
+        "start": { "index": 46, "line": 5, "column": 1 },
+        "end": { "index": 48, "line": 5, "column": 3 }
+      },
+      "replaces": [
+        {
+          "reference": "e1",
+          "only_in": [],
+          "except_in": [],
+          "exclusive": false,
+          "position": {
+            "file": "./ok/replacements/rules.publicodes",
+            "start": { "index": 62, "line": 6, "column": 13 },
+            "end": { "index": 64, "line": 6, "column": 15 }
+          }
+        }
+      ],
+      "value_mechanism": {
+        "kind": "value",
+        "type": "number",
+        "unit": "€",
+        "id": "d0976413e794d9a5c9222022530e931b",
+        "position": {
+          "file": "./ok/replacements/rules.publicodes",
+          "start": { "index": 93, "line": 8, "column": 3 },
+          "end": { "index": 99, "line": 8, "column": 9 }
+        },
+        "parameters": {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "number",
+            "unit": "€",
+            "id": "a212b7bce754ef9fd127425f9f65ecd6",
+            "position": {
+              "file": "./ok/replacements/rules.publicodes",
+              "start": { "index": 101, "line": 8, "column": 11 },
+              "end": { "index": 104, "line": 8, "column": 14 }
+            },
+            "parameters": {
+              "kind": "constant",
+              "type": "number",
+              "unit": "€",
+              "parameters": {
+                "kind": "const_number",
+                "value": 1.0,
+                "unit": "€"
+              },
+              "id": "a212b7bce754ef9fd127425f9f65ecd6",
+              "position": {
+                "file": "./ok/replacements/rules.publicodes",
+                "start": { "index": 101, "line": 8, "column": 11 },
+                "end": { "index": 104, "line": 8, "column": 14 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        }
+      },
+      "chained_mechanisms": [
+        {
+          "kind": "applicable_if",
+          "type": "number",
+          "unit": "€",
+          "id": "a4401a2765161203a44737f8c114be3e",
+          "position": {
+            "file": "./ok/replacements/rules.publicodes",
+            "start": { "index": 67, "line": 7, "column": 3 },
+            "end": { "index": 80, "line": 7, "column": 16 }
+          },
+          "parameters": {
+            "value_mechanism": {
+              "kind": "expr",
+              "type": "boolean",
+              "id": "ac00bea14a2d1c1573b8d4a39f239652",
+              "position": {
+                "file": "./ok/replacements/rules.publicodes",
+                "start": { "index": 82, "line": 7, "column": 18 },
+                "end": { "index": 90, "line": 7, "column": 26 }
+              },
+              "parameters": {
+                "kind": "gt",
+                "type": "boolean",
+                "parameters": {
+                  "left": {
+                    "kind": "ref",
+                    "type": "enum",
+                    "parameters": "base",
+                    "replaced_by": [
+                      {
+                        "kind": "ref",
+                        "type": "enum",
+                        "parameters": "e1",
+                        "id": "9af6faaaef758c1fe228ef7bdb6217e5",
+                        "position": {
+                          "file": "./ok/replacements/rules.publicodes",
+                          "start": { "index": 82, "line": 7, "column": 18 },
+                          "end": { "index": 86, "line": 7, "column": 22 }
+                        }
+                      }
+                    ],
+                    "id": "9af6faaaef758c1fe228ef7bdb6217e5",
+                    "position": {
+                      "file": "./ok/replacements/rules.publicodes",
+                      "start": { "index": 82, "line": 7, "column": 18 },
+                      "end": { "index": 86, "line": 7, "column": 22 }
+                    }
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "type": "number",
+                    "unit": "€",
+                    "parameters": { "kind": "const_number", "value": 0.0 },
+                    "id": "c04533362fa62abdf8a19e52fc62a6c0",
+                    "position": {
+                      "file": "./ok/replacements/rules.publicodes",
+                      "start": { "index": 89, "line": 7, "column": 25 },
+                      "end": { "index": 90, "line": 7, "column": 26 }
+                    }
+                  }
+                },
+                "id": "ac00bea14a2d1c1573b8d4a39f239652",
+                "position": {
+                  "file": "./ok/replacements/rules.publicodes",
+                  "start": { "index": 82, "line": 7, "column": 18 },
+                  "end": { "index": 90, "line": 7, "column": 26 }
+                }
+              }
+            },
+            "chained_mechanisms": []
+          }
+        }
+      ]
+    },
+    "other": {
+      "type": "number",
+      "unit": "€",
+      "id": "89a60186f8ca0443627bdd5341ad387c",
+      "position": {
+        "file": "./ok/replacements/rules.publicodes",
+        "start": { "index": 105, "line": 9, "column": 1 },
+        "end": { "index": 110, "line": 9, "column": 6 }
+      },
+      "value_mechanism": {
+        "kind": "expr",
+        "type": "number",
+        "unit": "€",
+        "id": "21a169d8d172ad5c8585c8a9b3c9ac33",
+        "position": {
+          "file": "./ok/replacements/rules.publicodes",
+          "start": { "index": 112, "line": 9, "column": 8 },
+          "end": { "index": 116, "line": 9, "column": 12 }
+        },
+        "parameters": {
+          "kind": "constant",
+          "type": "number",
+          "unit": "€",
+          "parameters": {
+            "kind": "const_number",
+            "value": 20.0,
+            "unit": "€"
+          },
+          "id": "21a169d8d172ad5c8585c8a9b3c9ac33",
+          "position": {
+            "file": "./ok/replacements/rules.publicodes",
+            "start": { "index": 112, "line": 9, "column": 8 },
+            "end": { "index": 116, "line": 9, "column": 12 }
+          }
+        }
+      },
+      "chained_mechanisms": []
+    },
+    "a": {
+      "type": "number",
+      "unit": "€",
+      "id": "534235ebfab589b9c8dcde4debd1fea8",
+      "position": {
+        "file": "./ok/replacements/rules.publicodes",
+        "start": { "index": 117, "line": 10, "column": 1 },
+        "end": { "index": 118, "line": 10, "column": 2 }
+      },
+      "replaces": [
+        {
+          "reference": "other",
+          "only_in": [],
+          "except_in": [],
+          "exclusive": true,
+          "position": {
+            "file": "./ok/replacements/rules.publicodes",
+            "start": { "index": 150, "line": 12, "column": 19 },
+            "end": { "index": 155, "line": 12, "column": 24 }
+          }
+        }
+      ],
+      "value_mechanism": {
+        "kind": "value",
+        "type": "number",
+        "unit": "€",
+        "id": "3639c221be645a47d7564695b8292aa9",
+        "position": {
+          "file": "./ok/replacements/rules.publicodes",
+          "start": { "index": 176, "line": 14, "column": 3 },
+          "end": { "index": 182, "line": 14, "column": 9 }
+        },
+        "parameters": {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "number",
+            "unit": "€",
+            "id": "a6b389c436fd60d904159720f74facfe",
+            "position": {
+              "file": "./ok/replacements/rules.publicodes",
+              "start": { "index": 184, "line": 14, "column": 11 },
+              "end": { "index": 189, "line": 14, "column": 16 }
+            },
+            "parameters": {
+              "kind": "constant",
+              "type": "number",
+              "unit": "€",
+              "parameters": {
+                "kind": "const_number",
+                "value": 100.0,
+                "unit": "€"
+              },
+              "id": "a6b389c436fd60d904159720f74facfe",
+              "position": {
+                "file": "./ok/replacements/rules.publicodes",
+                "start": { "index": 184, "line": 14, "column": 11 },
+                "end": { "index": 189, "line": 14, "column": 16 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        }
+      },
+      "chained_mechanisms": []
+    },
+    "b": {
+      "type": "number",
+      "unit": "€",
+      "id": "070ac8e4e223f134deb06fd9c1a8e4e1",
+      "position": {
+        "file": "./ok/replacements/rules.publicodes",
+        "start": { "index": 190, "line": 15, "column": 1 },
+        "end": { "index": 191, "line": 15, "column": 2 }
+      },
+      "replaces": [
+        {
+          "reference": "other",
+          "only_in": [],
+          "except_in": [ "x" ],
+          "exclusive": true,
+          "position": {
+            "file": "./ok/replacements/rules.publicodes",
+            "start": { "index": 223, "line": 17, "column": 19 },
+            "end": { "index": 228, "line": 17, "column": 24 }
+          }
+        }
+      ],
+      "value_mechanism": {
+        "kind": "value",
+        "type": "number",
+        "unit": "€",
+        "id": "952a1d49525375e242409dc6d069c586",
+        "position": {
+          "file": "./ok/replacements/rules.publicodes",
+          "start": { "index": 266, "line": 20, "column": 3 },
+          "end": { "index": 272, "line": 20, "column": 9 }
+        },
+        "parameters": {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "number",
+            "unit": "€",
+            "id": "283fd6259b97ba9b9ae9b80f2a62a572",
+            "position": {
+              "file": "./ok/replacements/rules.publicodes",
+              "start": { "index": 274, "line": 20, "column": 11 },
+              "end": { "index": 277, "line": 20, "column": 14 }
+            },
+            "parameters": {
+              "kind": "constant",
+              "type": "number",
+              "unit": "€",
+              "parameters": {
+                "kind": "const_number",
+                "value": 0.0,
+                "unit": "€"
+              },
+              "id": "283fd6259b97ba9b9ae9b80f2a62a572",
+              "position": {
+                "file": "./ok/replacements/rules.publicodes",
+                "start": { "index": 274, "line": 20, "column": 11 },
+                "end": { "index": 277, "line": 20, "column": 14 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        }
+      },
+      "chained_mechanisms": []
+    },
+    "v": {
+      "type": "boolean",
+      "id": "4e41f59987d8b6a44463c190454e6fab",
+      "position": {
+        "file": "./ok/replacements/rules.publicodes",
+        "start": { "index": 278, "line": 21, "column": 1 },
+        "end": { "index": 279, "line": 21, "column": 2 }
+      },
+      "makes_not_applicable": [
+        {
+          "reference": "other",
+          "only_in": [],
+          "except_in": [],
+          "exclusive": false,
+          "position": {
+            "file": "./ok/replacements/rules.publicodes",
+            "start": { "index": 304, "line": 22, "column": 24 },
+            "end": { "index": 309, "line": 22, "column": 29 }
+          }
+        }
+      ],
+      "value_mechanism": {
+        "kind": "value",
+        "type": "boolean",
+        "id": "4eea29bf0b65411ab2fbc8171b9636bb",
+        "position": {
+          "file": "./ok/replacements/rules.publicodes",
+          "start": { "index": 340, "line": 24, "column": 3 },
+          "end": { "index": 346, "line": 24, "column": 9 }
+        },
+        "parameters": {
+          "value_mechanism": {
+            "kind": "expr",
+            "type": "boolean",
+            "id": "558a99266ec5a46fdd3cfd50485d599b",
+            "position": {
+              "file": "./ok/replacements/rules.publicodes",
+              "start": { "index": 348, "line": 24, "column": 11 },
+              "end": { "index": 351, "line": 24, "column": 14 }
+            },
+            "parameters": {
+              "kind": "constant",
+              "type": "boolean",
+              "parameters": { "kind": "const_boolean", "value": true },
+              "id": "558a99266ec5a46fdd3cfd50485d599b",
+              "position": {
+                "file": "./ok/replacements/rules.publicodes",
+                "start": { "index": 348, "line": 24, "column": 11 },
+                "end": { "index": 351, "line": 24, "column": 14 }
+              }
+            }
+          },
+          "chained_mechanisms": []
+        }
+      },
+      "chained_mechanisms": [
+        {
+          "kind": "applicable_if",
+          "type": "boolean",
+          "id": "48b15246d9cc9adae40936f2d7210244",
+          "position": {
+            "file": "./ok/replacements/rules.publicodes",
+            "start": { "index": 312, "line": 23, "column": 3 },
+            "end": { "index": 325, "line": 23, "column": 16 }
+          },
+          "parameters": {
+            "value_mechanism": {
+              "kind": "expr",
+              "type": "boolean",
+              "id": "2ede71f917c64e73682aeff5d76917f7",
+              "position": {
+                "file": "./ok/replacements/rules.publicodes",
+                "start": { "index": 327, "line": 23, "column": 18 },
+                "end": { "index": 337, "line": 23, "column": 28 }
+              },
+              "parameters": {
+                "kind": "gt",
+                "type": "boolean",
+                "parameters": {
+                  "left": {
+                    "kind": "ref",
+                    "type": "enum",
+                    "parameters": "base",
+                    "replaced_by": [
+                      {
+                        "kind": "ref",
+                        "type": "enum",
+                        "parameters": "e1",
+                        "replaced_by": [
+                          {
+                            "kind": "ref",
+                            "type": "enum",
+                            "parameters": "e2",
+                            "id": "e9b81e862e56b6af5a44c97063c937a1",
+                            "position": {
+                              "file": "./ok/replacements/rules.publicodes",
+                              "start": {
+                                "index": 327,
+                                "line": 23,
+                                "column": 18
+                              },
+                              "end": { "index": 331, "line": 23, "column": 22 }
+                            }
+                          }
+                        ],
+                        "id": "e9b81e862e56b6af5a44c97063c937a1",
+                        "position": {
+                          "file": "./ok/replacements/rules.publicodes",
+                          "start": { "index": 327, "line": 23, "column": 18 },
+                          "end": { "index": 331, "line": 23, "column": 22 }
+                        }
+                      }
+                    ],
+                    "id": "e9b81e862e56b6af5a44c97063c937a1",
+                    "position": {
+                      "file": "./ok/replacements/rules.publicodes",
+                      "start": { "index": 327, "line": 23, "column": 18 },
+                      "end": { "index": 331, "line": 23, "column": 22 }
+                    }
+                  },
+                  "right": {
+                    "kind": "constant",
+                    "type": "number",
+                    "unit": "€",
+                    "parameters": { "kind": "const_number", "value": 100.0 },
+                    "id": "6e5b0379f7c713fbb039ec9d5096a68c",
+                    "position": {
+                      "file": "./ok/replacements/rules.publicodes",
+                      "start": { "index": 334, "line": 23, "column": 25 },
+                      "end": { "index": 337, "line": 23, "column": 28 }
+                    }
+                  }
+                },
+                "id": "2ede71f917c64e73682aeff5d76917f7",
+                "position": {
+                  "file": "./ok/replacements/rules.publicodes",
+                  "start": { "index": 327, "line": 23, "column": 18 },
+                  "end": { "index": 337, "line": 23, "column": 28 }
+                }
+              }
+            },
+            "chained_mechanisms": []
+          }
+        }
+      ]
+    },
+    "x": {
+      "type": "enum",
+      "id": "9c0d3b5c4156d411141d7f7633705cad",
+      "position": {
+        "file": "./ok/replacements/rules.publicodes",
+        "start": { "index": 352, "line": 25, "column": 1 },
+        "end": { "index": 353, "line": 25, "column": 2 }
+      },
+      "value_mechanism": {
+        "kind": "expr",
+        "type": "enum",
+        "id": "977bfd9a898725bc3f741fa89d58704f",
+        "position": {
+          "file": "./ok/replacements/rules.publicodes",
+          "start": { "index": 355, "line": 25, "column": 4 },
+          "end": { "index": 367, "line": 25, "column": 16 }
+        },
+        "parameters": {
+          "kind": "add",
+          "type": "enum",
+          "parameters": {
+            "left": {
+              "kind": "ref",
+              "type": "enum",
+              "parameters": "base",
+              "replaced_by": [
+                {
+                  "kind": "ref",
+                  "type": "enum",
+                  "parameters": "e1",
+                  "replaced_by": [
+                    {
+                      "kind": "ref",
+                      "type": "enum",
+                      "parameters": "e2",
+                      "id": "65aeee0d7f18916e7b8c3d6876230510",
+                      "position": {
+                        "file": "./ok/replacements/rules.publicodes",
+                        "start": { "index": 355, "line": 25, "column": 4 },
+                        "end": { "index": 359, "line": 25, "column": 8 }
+                      }
+                    }
+                  ],
+                  "id": "65aeee0d7f18916e7b8c3d6876230510",
+                  "position": {
+                    "file": "./ok/replacements/rules.publicodes",
+                    "start": { "index": 355, "line": 25, "column": 4 },
+                    "end": { "index": 359, "line": 25, "column": 8 }
+                  }
+                }
+              ],
+              "id": "65aeee0d7f18916e7b8c3d6876230510",
+              "position": {
+                "file": "./ok/replacements/rules.publicodes",
+                "start": { "index": 355, "line": 25, "column": 4 },
+                "end": { "index": 359, "line": 25, "column": 8 }
+              }
+            },
+            "right": {
+              "kind": "ref",
+              "type": "enum",
+              "parameters": "other",
+              "replaced_by": [
+                {
+                  "kind": "ref",
+                  "type": "enum",
+                  "parameters": "a",
+                  "id": "fb38148bed5db7687da523086cd167eb",
+                  "position": {
+                    "file": "./ok/replacements/rules.publicodes",
+                    "start": { "index": 362, "line": 25, "column": 11 },
+                    "end": { "index": 367, "line": 25, "column": 16 }
+                  }
+                }
+              ],
+              "made_not_applicable_by": [
+                {
+                  "kind": "ref",
+                  "type": "enum",
+                  "parameters": "v",
+                  "id": "fb38148bed5db7687da523086cd167eb",
+                  "position": {
+                    "file": "./ok/replacements/rules.publicodes",
+                    "start": { "index": 362, "line": 25, "column": 11 },
+                    "end": { "index": 367, "line": 25, "column": 16 }
+                  }
+                }
+              ],
+              "id": "fb38148bed5db7687da523086cd167eb",
+              "position": {
+                "file": "./ok/replacements/rules.publicodes",
+                "start": { "index": 362, "line": 25, "column": 11 },
+                "end": { "index": 367, "line": 25, "column": 16 }
+              }
+            }
+          },
+          "id": "977bfd9a898725bc3f741fa89d58704f",
+          "position": {
+            "file": "./ok/replacements/rules.publicodes",
+            "start": { "index": 355, "line": 25, "column": 4 },
+            "end": { "index": 367, "line": 25, "column": 16 }
+          }
+        }
+      },
+      "chained_mechanisms": []
+    }
+  }
