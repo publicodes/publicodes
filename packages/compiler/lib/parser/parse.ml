@@ -43,7 +43,9 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
   let* name, {pos} = parse_ref name in
   let name = ctx.current_rule_name @ name in
   let* value = Parse_value.parse_value ~error_if_undefined:false ~pos yaml in
-  let default_meta = if default_to_public then [Public] else [] in
+  let default_meta =
+    if default_to_public then [Mark.mk_pos ~pos:Pos.dummy Public] else []
+  in
   let parsed_rule =
     { name= Mark.mk_pos ~pos (Shared.Rule_name.create_exn name)
     ; module_id= ctx.current_module_id
