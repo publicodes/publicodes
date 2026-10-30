@@ -60,8 +60,9 @@ let extract_outputs (graph : Dependency_graph.t) ~(ast : Shared_ast.typed)
   let output_parameters =
     List.filter_map ast ~f:(fun rule_def ->
         let rule_name = Mark.remove rule_def.name in
-        let module_id = Shared_ast.get_module_id_exn rule_def in
-        if Shared_ast.has_public_tag rule_def && Module_id.is_root module_id
+        if
+          Shared_ast.has_public_tag rule_def
+          && Module_id.is_root rule_def.module_id
         then Some (extract_parameters rule_name ~graph ~ast)
         else None )
   in
