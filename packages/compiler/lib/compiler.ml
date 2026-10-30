@@ -33,6 +33,7 @@ let compile
     | Debug_eval_tree ->
         Backends.to_debug eval_tree outputs
     | Json ->
-        Autodoc.to_json_str typed_ast
+        Autodoc.to_json_str ~replacement_graph ~make_not_applicable_graph
+          typed_ast
   in
   Output.return output_str

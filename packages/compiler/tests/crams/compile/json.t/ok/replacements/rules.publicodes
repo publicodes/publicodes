@@ -1,0 +1,25 @@
+base: 10 €
+e1:
+  remplace: base
+  valeur: 5 €
+e2:
+  remplace: e1
+  applicable si: base > 0
+  valeur: 1 €
+other: 20 €
+a:
+  remplace:
+    références à: other
+    exclusif: oui
+  valeur: 100 €
+b:
+  remplace:
+    références à: other
+    exclusif: oui
+    sauf dans: x
+  valeur: 0 €
+v:
+  rend non applicable: other
+  applicable si: base > 100
+  valeur: oui
+x: base + other

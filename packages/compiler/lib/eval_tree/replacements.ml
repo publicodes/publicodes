@@ -2,13 +2,8 @@ open Base
 open Shared
 open Utils
 
-(* Find all eligible replacements for a rule reference *)
-let find_eligible_replacements ~rule ~reference graph =
-  Replacement_graph.find_replacements ~from:rule ~rule:reference graph
-  |> List.map ~f:fst
-
 let find_eligible_make_not_applicable ~rule ~reference make_not_applicable =
-  Replacement_graph.find_replacements ~from:rule ~rule:reference
+  Replacement_graph.find_transitive_replacements ~from:rule ~rule:reference
     make_not_applicable
   |> List.map ~f:fst
 
@@ -59,47 +54,48 @@ let create_exclusive_replacement_node ~pos ~replacement_list ~node =
   let p = Tree.mk_value ~pos in
   Tree.(p (mk_exclusive_replacement ~target:node ~replacements:replacement_list))
 
-(* Apply rule replacements to a tree *)
+(* Apply rule replacements to a tree. The replacement tree of each reference
+   site is resolved once by [Replacement_graph.resolve_*]; here we only map it
+   to evaluation nodes. *)
 let transform ~(replacement_graph : Replacement_graph.Rule_graph.t)
     ~(make_not_applicable_graph : Replacement_graph.Rule_graph.t) ast rule value
     =
-  (* Apply rule replacements to an evaluation tree *)
-  let rec apply_to_node ~(rule : Rule_name.t) (node : 'a option Tree.value) :
+  let module RG = Replacement_graph in
+  let rec expand ~(rule : Rule_name.t) ~pos ~meta (r : RG.inlined_ref) :
       'a option Tree.value =
+    apply ~rule ~pos ~meta ~target:r.rule r
+      (Tree.mk_value ~pos ~meta (Ref r.rule))
+  and apply ~(rule : Rule_name.t) ~pos ~meta ~target (inlined : RG.inlined_ref)
+      (node : 'a option Tree.value) : 'a option Tree.value =
+    let node =
+      match inlined.replaced_by with
+      | [] ->
+          node
+      | [r] ->
+          create_replace_node ~pos ~meta
+            ~replacing_node:(expand ~rule ~pos ~meta r)
+            ~node
+      | _ ->
+          create_exclusive_replacement_node ~pos ~meta
+            ~replacement_list:(List.map inlined.replaced_by ~f:(fun r -> r.rule))
+            ~node:target
+    in
+    List.fold inlined.made_not_applicable_by ~init:node ~f:(fun node_acc r ->
+        create_make_not_applicable_node ~pos ~meta
+          ~condition_node:(expand ~rule ~pos ~meta r)
+          ~node:node_acc )
+  in
+  let apply_to_node (node : 'a option Tree.value) : 'a option Tree.value =
     let pos = node.pos in
     let meta = node.meta in
     let value =
       match node.value with
       | Ref reference ->
-          let replacement_list =
-            find_eligible_replacements ~rule ~reference replacement_graph
+          let inlined =
+            RG.resolve ~from:rule ~replacement_graph ~make_not_applicable_graph
+              ~rule:reference
           in
-          let node =
-            match replacement_list with
-            | [] ->
-                node
-            | [hd] ->
-                let replacing_node =
-                  apply_to_node ~rule (Tree.mk_value ~pos ~meta (Ref hd))
-                in
-                create_replace_node ~pos ~meta ~replacing_node ~node
-            | _ ->
-                create_exclusive_replacement_node ~pos ~meta ~replacement_list
-                  ~node:reference
-          in
-          let make_not_applicable_list =
-            find_eligible_make_not_applicable ~rule ~reference
-              make_not_applicable_graph
-          in
-          List.fold make_not_applicable_list ~init:node
-            ~f:(fun node_acc condition_rule ->
-              (* Apply make not applicable recursively (to handle transitivity) *)
-              let condition_node =
-                apply_to_node ~rule
-                  (Tree.mk_value ~meta ~pos (Ref condition_rule))
-              in
-              create_make_not_applicable_node ~pos ~meta ~condition_node
-                ~node:node_acc )
+          apply ~rule ~pos ~meta ~target:reference inlined node
       | _ ->
           node
     in
@@ -130,4 +126,4 @@ let transform ~(replacement_graph : Replacement_graph.Rule_graph.t)
         create_applicable_on_namespace_node ~pos ~meta ~parent_rule
           ~node:node_acc )
   in
-  Tree.map_value value ~f:(apply_to_node ~rule)
+  Tree.map_value value ~f:apply_to_node

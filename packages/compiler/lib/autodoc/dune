@@ -2,7 +2,7 @@
  (inline_tests)
  (name autodoc)
  (public_name publicodes.autodoc)
- (libraries base shared typing utils yojson)
+ (libraries base replacement_graph shared typing utils yojson)
  (modules :standard)
  (preprocess
   (pps
