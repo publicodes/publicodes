@@ -236,3 +236,14 @@ Multipe replace with only one missing exclusivity attribute:
          question de priorité métier ou ajoutez un attribut « exclusif: oui
          »
   [123]
+
+cross-graph cycle (remplace + rend non applicable) — must be detected, not hang :
+
+  $ timeout 10 publicodes compile cross-cycle -o -
+  
+  E027 cycle de dépendance détecté [cycle warning]
+  <no
+  source
+  available>
+   Hint: a -> b -> a
+  [123]
