@@ -49,8 +49,8 @@ let illegal_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
   let log_illegal ((rule_a, _), pos, (rule_b, _)) acc =
     let rule_def_a = Shared_ast.find_exn rule_a ast in
     let rule_def_b = Shared_ast.find_exn rule_b ast in
-    let module_a = Shared_ast.get_module_id_exn rule_def_a in
-    let module_b = Shared_ast.get_module_id_exn rule_def_b in
+    let module_a = rule_def_a.module_id in
+    let module_b = rule_def_b.module_id in
     if not (Module_id.is_parent module_a module_b) then
       let code, message = Err.illegal_reference in
       Log.error ~pos ~kind:`Syntax ~code message

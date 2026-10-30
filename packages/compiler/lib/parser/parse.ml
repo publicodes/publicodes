@@ -44,11 +44,11 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
   let name = ctx.current_rule_name @ name in
   let* value = Parse_value.parse_value ~error_if_undefined:false ~pos yaml in
   let default_meta = if default_to_public then [Public] else [] in
-  let module_id = Module_id ctx.current_module_id in
   let parsed_rule =
     { name= Mark.mk_pos ~pos (Shared.Rule_name.create_exn name)
+    ; module_id= ctx.current_module_id
     ; value
-    ; meta= module_id :: default_meta
+    ; meta= default_meta
     ; replace= []
     ; make_not_applicable= [] }
   in
@@ -79,8 +79,9 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
       let* make_not_applicable = parse_make_not_applicable yaml in
       Output.return
         ( [ { name= Mark.mk_pos ~pos (Shared.Rule_name.create_exn name)
+            ; module_id= ctx.current_module_id
             ; value
-            ; meta= module_id :: meta
+            ; meta
             ; replace
             ; make_not_applicable } ]
         @ with_ @ import )

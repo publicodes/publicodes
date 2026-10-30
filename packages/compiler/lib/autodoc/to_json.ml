@@ -31,17 +31,15 @@ let to_unop unop =
 let to_meta meta =
   match meta with
   | Shared_ast.Title title ->
-      Some ("title", `String title)
+      ("title", `String title)
   | Description desc ->
-      Some ("description", `String desc)
+      ("description", `String desc)
   | Note note ->
-      Some ("note", `String note)
+      ("note", `String note)
   | Public ->
-      Some ("public", `Bool true)
-  | Module_id _ ->
-      None
+      ("public", `Bool true)
   | Custom_meta meta ->
-      Some ("meta", Yojson.Safe.to_basic meta)
+      ("meta", Yojson.Safe.to_basic meta)
 
 (** TODO: handle enums and literal values *)
 let to_type (typ : Typ.t) =
@@ -266,7 +264,7 @@ let to_json_entry ({name; value; meta; _} : Shared_ast.typed_rule_def) =
   let typ_opt = (Mark.get value).typ in
   let compiler_metadata = to_compiler_metadata name pos in
   let value = to_mechanism name value in
-  let meta = List.filter_map meta ~f:to_meta in
+  let meta = List.map meta ~f:to_meta in
   ( Shared.Rule_name.to_string name
   , `Assoc (to_type_opt typ_opt @ compiler_metadata @ meta @ value) )
 
