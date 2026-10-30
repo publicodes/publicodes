@@ -55,6 +55,7 @@ let extract_outputs (graph : Dependency_graph.t) ~(ast : Shared_ast.typed)
   let wrap_meta ~is_output (rule_name, parameters) =
     let Shared_ast.{meta; value; _} = Shared_ast.find_exn rule_name ast in
     let Shared_ast.{typ; _} = Mark.get value in
+    let meta = List.map meta ~f:Mark.remove in
     Model_output.{rule_name; parameters; typ; meta; is_output}
   in
   let output_parameters =

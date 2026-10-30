@@ -41,26 +41,29 @@ let parse_custom_meta ~pos yaml =
                   "Ces métas doivent être déplacées à la racine de la règle" )
             ]
           err
-      else Output.return (Custom_meta (Yaml_parser.to_json (`O mapping)))
+      else
+        let meta = Custom_meta (Yaml_parser.to_json (`O mapping)) in
+        Output.return (Mark.mk_pos ~pos meta)
 
 let parse mapping =
   let parse_key (key, value) =
     let pos = Mark.pos key in
+    let ret value = Output.return (Mark.mk_pos ~pos value) in
     match get_value key with
     | "description" ->
         let* value = get_scalar ~pos value in
-        Output.return (Description (get_value value))
+        ret (Description (get_value value))
     | "titre" ->
         let* value = get_scalar ~pos value in
-        Output.return (Title (get_value value))
+        ret (Title (get_value value))
     | "note" ->
         let* value = get_scalar ~pos value in
-        Output.return (Note (get_value value))
+        ret (Note (get_value value))
     | "meta" ->
         parse_custom_meta ~pos:(Mark.pos key) value
     | "public" ->
         let* _ = Parser_utils.check_boolean ~pos value in
-        Output.return Public
+        ret Public
     | _ ->
         Output.empty
   in
