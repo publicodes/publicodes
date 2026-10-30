@@ -102,36 +102,96 @@ let to_const const : Yojson.Basic.t =
   let kind = ("kind", `String kind) in
   `Assoc (kind :: parameters)
 
-let rec expr_to_mapping rule_name
+type graphs =
+  { replacement_graph: Replacement_graph.t
+  ; make_not_applicable_graph: Replacement_graph.t }
+
+let to_names (marks : Rule_name.t Mark.pos list) : Yojson.Basic.t =
+  `List
+    (List.map marks ~f:(fun m ->
+         `String (Shared.Rule_name.show (Mark.remove m)) ) )
+
+(** A « remplace » / « rend non applicable » clause as written on the rule. *)
+let to_replace (r : Replacement_graph.replace) : Yojson.Basic.t =
+  let Shared_ast.{reference; only_in; except_in; exclusive} = r in
+  `Assoc
+    [ ("reference", `String (Shared.Rule_name.show (Mark.remove reference)))
+    ; ("only_in", to_names only_in)
+    ; ("except_in", to_names except_in)
+    ; ("exclusive", `Bool exclusive)
+    ; ("position", snd (to_pos (Mark.pos reference))) ]
+
+(** A replacing rule as a `ref` node: same id/position/type as the reference
+    it replaces (the eval tree shares the node's meta, so the trace value at
+    that id is the replacement's), with its own replacements below it. *)
+let rec to_inlined_ref ~compiler_metadata ~typ
+    (r : Replacement_graph.inlined_ref) : Yojson.Basic.t =
+  let children field l =
+    match List.map l ~f:(to_inlined_ref ~compiler_metadata ~typ) with
+    | [] ->
+        []
+    | l ->
+        [(field, `List l)]
+  in
+  `Assoc
+    ( [("kind", `String "ref")]
+    @ typ
+    @ [("parameters", `String (Shared.Rule_name.show r.rule))]
+    @ children "replaced_by" r.replaced_by
+    @ children "made_not_applicable_by" r.made_not_applicable_by
+    @ compiler_metadata )
+
+(** The replacements inlined at a reference site, resolved once by the compiler,
+    emitted as `ref` nodes attached to the site's own `ref` node. *)
+let ref_replacement_fields ~from ~compiler_metadata ~typ (graphs : graphs)
+    (ref : Rule_name.t) : (string * Yojson.Basic.t) list =
+  let inlined =
+    Replacement_graph.resolve ~from ~replacement_graph:graphs.replacement_graph
+      ~make_not_applicable_graph:graphs.make_not_applicable_graph ~rule:ref
+  in
+  let children field l =
+    match List.map l ~f:(to_inlined_ref ~compiler_metadata ~typ) with
+    | [] ->
+        []
+    | l ->
+        [(field, `List l)]
+  in
+  children "replaced_by" inlined.replaced_by
+  @ children "made_not_applicable_by" inlined.made_not_applicable_by
+
+let rec expr_to_mapping rule_name (graphs : graphs)
     ((expr_value, expr_mark) : Shared_ast.typed_expr) : Yojson.Basic.t =
-  let expr_to_mapping = expr_to_mapping rule_name in
-  let kind, parameters =
+  let expr_to_mapping = expr_to_mapping rule_name graphs in
+  let compiler_metadata = to_compiler_metadata rule_name expr_mark.pos in
+  let typ = match expr_mark.typ with Some typ -> to_type typ | None -> [] in
+  let kind, parameters, replacement_fields =
     match expr_value with
     | Shared_ast.Const const ->
-        ("constant", to_const const)
+        ("constant", to_const const, [])
     | Ref ref ->
-        ("ref", `String (Shared.Rule_name.show ref))
+        ( "ref"
+        , `String (Shared.Rule_name.show ref)
+        , ref_replacement_fields ~from:rule_name ~compiler_metadata ~typ graphs
+            ref )
     | Binary_op ((binop, _), left, right) ->
         ( to_binop binop
         , `Assoc
             [("left", expr_to_mapping left); ("right", expr_to_mapping right)]
-        )
+        , [] )
     | Unary_op ((unop, _), expr) ->
-        (to_unop unop, expr_to_mapping expr)
+        (to_unop unop, expr_to_mapping expr, [])
   in
   let kind = [("kind", `String kind)] in
   let parameters = [("parameters", parameters)] in
-  let compiler_metadata = to_compiler_metadata rule_name expr_mark.pos in
-  let typ = match expr_mark.typ with Some typ -> to_type typ | None -> [] in
-  `Assoc (kind @ typ @ parameters @ compiler_metadata)
+  `Assoc (kind @ typ @ parameters @ replacement_fields @ compiler_metadata)
 
-let rec to_value_mechanism rule_name (value, Shared_ast.{typ; pos}) :
-    Yojson.Basic.t =
-  let to_mechanism = to_mechanism rule_name in
+let rec to_value_mechanism rule_name (graphs : graphs)
+    (value, Shared_ast.{typ; pos}) : Yojson.Basic.t =
+  let to_mechanism = to_mechanism rule_name graphs in
   let kind, parameters =
     match value with
     | Shared_ast.Expr expr ->
-        ("expr", Some (expr_to_mapping rule_name expr))
+        ("expr", Some (expr_to_mapping rule_name graphs expr))
     | Value value ->
         ("value", Some (`Assoc (to_mechanism value)))
     | Is_defined value ->
@@ -214,11 +274,11 @@ let rec to_value_mechanism rule_name (value, Shared_ast.{typ; pos}) :
   `Assoc
     (kind @ to_type_opt typ @ to_compiler_metadata rule_name pos @ parameters)
 
-and to_chained_mechanism name
+and to_chained_mechanism name (graphs : graphs)
     ((mecha, mecha_mark) :
       Shared_ast.typed_chainable_mechanism * Shared_ast.typed_mark ) :
     Yojson.Basic.t =
-  let to_mechanism = to_mechanism name in
+  let to_mechanism = to_mechanism name graphs in
   let (kind : string), (parameters : Yojson.Basic.t) =
     match mecha with
     | Shared_ast.Context contexts ->
@@ -253,23 +313,41 @@ and to_chained_mechanism name
     @ to_compiler_metadata name mecha_mark.pos
     @ parameters )
 
-and to_mechanism name ({value; chainable_mechanisms}, _) :
+and to_mechanism name (graphs : graphs) ({value; chainable_mechanisms}, _) :
     (string * Yojson.Basic.t) list =
-  [ ("value_mechanism", to_value_mechanism name value)
+  [ ("value_mechanism", to_value_mechanism name graphs value)
   ; ( "chained_mechanisms"
-    , `List (List.map chainable_mechanisms ~f:(to_chained_mechanism name)) ) ]
+    , `List
+        (List.map chainable_mechanisms ~f:(to_chained_mechanism name graphs)) )
+  ]
 
-let to_json_entry ({name; value; meta; _} : Shared_ast.typed_rule_def) =
+let to_json_entry (graphs : graphs)
+    ({name; value; meta; replace; make_not_applicable} :
+      Shared_ast.typed_rule_def ) =
   let name, Mark.{pos} = name in
   (* NOTE: we miss the type information in the rule_def, for now we need to
      retrieve it from the value *)
   let typ_opt = (Mark.get value).typ in
   let compiler_metadata = to_compiler_metadata name pos in
-  let value = to_mechanism name value in
+  let value = to_mechanism name graphs value in
   let meta = List.filter_map meta ~f:to_meta in
+  (* The authored clauses only: the replacements active on the rule itself are
+     not emitted until root evaluation applies them. *)
+  let replacements =
+    ( if List.is_empty replace then []
+      else [("replaces", `List (List.map replace ~f:to_replace))] )
+    @
+    if List.is_empty make_not_applicable then []
+    else
+      [ ( "makes_not_applicable"
+        , `List (List.map make_not_applicable ~f:to_replace) ) ]
+  in
   ( Shared.Rule_name.to_string name
-  , `Assoc (to_type_opt typ_opt @ compiler_metadata @ meta @ value) )
+  , `Assoc
+      (to_type_opt typ_opt @ compiler_metadata @ meta @ replacements @ value) )
 
-let to_str (typed_ast : Shared_ast.typed) =
-  let json_entries = `Assoc (List.map typed_ast ~f:to_json_entry) in
+let to_str ~replacement_graph ~make_not_applicable_graph
+    (typed_ast : Shared_ast.typed) =
+  let graphs = {replacement_graph; make_not_applicable_graph} in
+  let json_entries = `Assoc (List.map typed_ast ~f:(to_json_entry graphs)) in
   Yojson.Basic.pretty_to_string json_entries
