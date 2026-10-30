@@ -56,15 +56,14 @@ let mk_and_checks ast =
   let replacement_graph =
     Rule_graph.mk ast ~get_replacement_rules:(fun rule -> rule.replace)
   in
-  let replacement_cycle_logs = cycle_check replacement_graph in
-  let exclusive_duplicate_logs = exclusive_duplicate_check replacement_graph in
   let make_not_applicable_graph =
     Rule_graph.mk ast ~get_replacement_rules:(fun rule ->
         rule.make_not_applicable )
   in
-  let make_not_applicable_cycle_logs = cycle_check make_not_applicable_graph in
-  let logs =
-    replacement_cycle_logs @ make_not_applicable_cycle_logs
-    @ exclusive_duplicate_logs
+  let full_graph =
+    Rule_graph.Oper.union replacement_graph make_not_applicable_graph
   in
+  let cycle_logs = cycle_check full_graph in
+  let exclusive_duplicate_logs = exclusive_duplicate_check replacement_graph in
+  let logs = cycle_logs @ exclusive_duplicate_logs in
   break ~logs (replacement_graph, make_not_applicable_graph)
