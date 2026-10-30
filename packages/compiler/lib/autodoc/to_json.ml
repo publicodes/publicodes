@@ -29,7 +29,7 @@ let to_unop unop =
   Shared.Shared_ast.sexp_of_unary_op unop |> Sexp.to_string |> String.lowercase
 
 let to_meta meta =
-  match meta with
+  match Mark.remove meta with
   | Shared_ast.Title title ->
       ("title", `String title)
   | Description desc ->

@@ -108,7 +108,7 @@ type ('ref, 'mark) rule_def =
   { name: Rule_name.t Mark.pos
   ; module_id: Module_id.t
   ; value: ('ref, 'mark) value
-  ; meta: rule_meta list
+  ; meta: rule_meta Mark.pos list
   ; replace: 'ref replace list
   ; make_not_applicable: 'ref replace list }
 [@@deriving equal, show]
@@ -187,7 +187,7 @@ let mk_expr mark expr = Mark.add mark expr
 
 (** Map expression *)
 let has_public_tag rule_def =
-  List.exists ~f:(function Public -> true | _ -> false) rule_def.meta
+  List.exists ~f:(function Public, _ -> true | _ -> false) rule_def.meta
 
 let has_value rule_def =
   let value = Mark.remove rule_def.value in
