@@ -205,12 +205,12 @@ c: a . b
 ### Désactivation de branche
 
 Il est possible de désactiver l'ensemble des règles définies dans un
-espace de nom, en l'indiquant avec `applicabilité étendue à l'espace de nom`:
+espace de nom, en l'indiquant avec `applicabilité étendue`:
 
 ```publicodes
 CDD:
   valeur: non
-  applicabilité étendue à l'espace de nom: oui
+  applicabilité étendue: oui
 CDD . indemnité de précarité: 1500€ # non applicable
 
 indemnités:
@@ -224,7 +224,7 @@ région: '"Centre"'
 
 aides occitanie:
   applicable si: région = 'Occitanie'
-  applicabilité étendue à l'espace de nom: oui
+  applicabilité étendue: oui
 aides occitanie . subvention vélo : 500 €
 ```
 

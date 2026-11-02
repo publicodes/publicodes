@@ -60,7 +60,7 @@ a:
 
 Dans la V1, lorsqu'une règle n'était pas applicable, toutes ses règles enfants l'étaient également. Dans la V2, une règle peut être non applicable sans que cela n'impacte ses règles enfants. C'est utile dans les cas où on souhaite regrouper sous le même espace nom, des règles qui pourraient être utilisées ailleurs et qui ne sont plus associées à l'applicabilité de la règle parent.
 
-Ainsi, lors de la migration, il est nécessaire de vérifier que des règles enfants dont on souhaite conserver la relation d'applicabilité avec leur parent continuent de l'être, et donc de déplacer la condition d'applicabilité. Potentiellement, ça peut donner lieu à une duplication de ces conditions sur plusieurs règles alors qu'elles étaient auparavant héritées d'une seule règle parent. Néanmoins, il sera possible de retrouver le comportement de la V1 en utilisant le mécanisme `applicabilité étendue à l'espace de nom` au niveau de l'espace nom parent (disponible très bientôt).
+Ainsi, lors de la migration, il est nécessaire de vérifier que des règles enfants dont on souhaite conserver la relation d'applicabilité avec leur parent continuent de l'être, et donc de déplacer la condition d'applicabilité. Potentiellement, ça peut donner lieu à une duplication de ces conditions sur plusieurs règles alors qu'elles étaient auparavant héritées d'une seule règle parent. Néanmoins, il sera possible de retrouver le comportement de la V1 en utilisant le mécanisme `applicabilité étendue` au niveau de l'espace nom parent (disponible très bientôt).
 
 ```yaml
 # V1
