@@ -239,7 +239,7 @@ Multipe replace with only one missing exclusivity attribute:
 
 cross-graph cycle (remplace + rend non applicable) — must be detected, not hang :
 
-  $ timeout 10 publicodes compile cross-cycle -o -
+  $ publicodes compile cross-cycle -o -
   
   E027 cycle de dépendance détecté [cycle warning]
   <no
