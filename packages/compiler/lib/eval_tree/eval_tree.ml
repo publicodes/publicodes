@@ -4,7 +4,7 @@ open Utils
 include Tree
 
 let from_typed_ast ~(make_not_applicable_graph : Replacement_graph.Rule_graph.t)
-    (ast : Shared_ast.inlined) : Typ.t option Tree.t =
+    (ast : Shared_ast.typed) : Typ.t option Tree.t =
   let eval_tree =
     Hashtbl.create
       (module Shared.Rule_name)

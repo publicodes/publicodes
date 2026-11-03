@@ -1,3 +1,3 @@
 open Shared
 
-val to_str : Shared_ast.inlined -> Base.string
+val to_str : Shared_ast.typed -> Base.string

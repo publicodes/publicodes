@@ -101,8 +101,7 @@ let to_const const : Yojson.Basic.t =
 
 let to_name (r : Shared_ast.inlined_ref) = Rule_name.show r.rule
 
-let to_names (marks : Shared_ast.inlined_ref Mark.pos list) :
-    Yojson.Basic.t =
+let to_names (marks : Shared_ast.inlined_ref Mark.pos list) : Yojson.Basic.t =
   `List (List.map marks ~f:(fun m -> `String (to_name (Mark.remove m))))
 
 (** A « remplace » / « rend non applicable » clause as written on the rule. *)
@@ -125,7 +124,7 @@ let rec to_inlined_ref (r : Shared_ast.inlined_ref) : Yojson.Basic.t =
     @ children "made_not_applicable_by" r.made_not_applicable_by )
 
 let rec expr_to_mapping rule_name
-    ((expr_value, expr_mark) : Shared_ast.inlined_expr) : Yojson.Basic.t =
+    ((expr_value, expr_mark) : Shared_ast.typed_expr) : Yojson.Basic.t =
   let expr_to_mapping = expr_to_mapping rule_name in
   let compiler_metadata = to_compiler_metadata rule_name expr_mark.pos in
   let typ = match expr_mark.typ with Some typ -> to_type typ | None -> [] in
@@ -239,7 +238,7 @@ let rec to_value_mechanism rule_name (value, Shared_ast.{typ; pos}) :
 
 and to_chained_mechanism name
     ((mecha, mecha_mark) :
-      Shared_ast.inlined_chainable_mechanism * Shared_ast.typed_mark ) :
+      Shared_ast.typed_chainable_mechanism * Shared_ast.typed_mark ) :
     Yojson.Basic.t =
   let to_mechanism = to_mechanism name in
   let (kind : string), (parameters : Yojson.Basic.t) =
@@ -284,7 +283,7 @@ and to_mechanism name ({value; chainable_mechanisms}, _) :
 
 let to_json_entry
     ({name; value; meta; replace; make_not_applicable; _} :
-      Shared_ast.inlined_rule_def ) =
+      Shared_ast.typed_rule_def ) =
   let name, Mark.{pos} = name in
   (* NOTE: we miss the type information in the rule_def, for now we need to
      retrieve it from the value *)
@@ -307,6 +306,6 @@ let to_json_entry
   , `Assoc
       (to_type_opt typ_opt @ compiler_metadata @ meta @ replacements @ value) )
 
-let to_str (typed_ast : Shared_ast.inlined) =
+let to_str (typed_ast : Shared_ast.typed) =
   let json_entries = `Assoc (List.map typed_ast ~f:to_json_entry) in
   Yojson.Basic.pretty_to_string json_entries

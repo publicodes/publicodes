@@ -56,23 +56,27 @@ type typ = t Utils.Mark.pos UnionFind.elem
 
 type typing_mark = {pos: Utils.Pos.t; typ: typ}
 
-type typing_value = (Shared.Rule_name.t, typing_mark) Shared.Shared_ast.value
+type typing_value =
+  (Shared.Shared_ast.inlined_ref, typing_mark) Shared.Shared_ast.value
 
 type typing_rule_def =
-  (Shared.Rule_name.t, typing_mark) Shared.Shared_ast.rule_def
+  (Shared.Shared_ast.inlined_ref, typing_mark) Shared.Shared_ast.rule_def
 
 type typing_value_mechanism =
-  (Shared.Rule_name.t, typing_mark) Shared.Shared_ast.value_mechanism
+  (Shared.Shared_ast.inlined_ref, typing_mark) Shared.Shared_ast.value_mechanism
 
 type typing_marked_value_mechanism =
   (typing_value_mechanism, typing_mark) Utils.Mark.ed
 
-type typing_expr = (Shared.Rule_name.t, typing_mark) Shared.Shared_ast.expr
+type typing_expr =
+  (Shared.Shared_ast.inlined_ref, typing_mark) Shared.Shared_ast.expr
 
-type typing = (Shared.Rule_name.t, typing_mark) Shared.Shared_ast.t
+type typing = (Shared.Shared_ast.inlined_ref, typing_mark) Shared.Shared_ast.t
 
 type typing_chainable_mechanism =
-  (Shared.Rule_name.t, typing_mark) Shared.Shared_ast.chainable_mechanism
+  ( Shared.Shared_ast.inlined_ref
+  , typing_mark )
+  Shared.Shared_ast.chainable_mechanism
 
 type typing_marked_chainable_mechanism =
   (typing_chainable_mechanism, typing_mark) Utils.Mark.ed

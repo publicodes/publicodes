@@ -2,8 +2,8 @@ open Base
 open Shared
 open Utils
 
-let inline ~replacement_graph ~make_not_applicable_graph (ast : Shared_ast.typed)
-    : Shared_ast.inlined =
+let inline ~replacement_graph ~make_not_applicable_graph
+    (ast : Shared_ast.resolved) : Shared_ast.inlined =
   List.map ast ~f:(fun rule ->
       let from = Mark.remove rule.name in
       let resolve rule =
