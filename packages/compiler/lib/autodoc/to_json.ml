@@ -115,33 +115,18 @@ let to_replace (r : Shared_ast.inlined_ref Shared_ast.replace) :
     ; ("exclusive", `Bool r.exclusive)
     ; to_pos (Mark.pos r.reference) ]
 
-(** A `ref` node: the site's id and position, so the trace value at that id is
-    the value of the rule it names, and that rule's type. *)
-let rec to_ref_node ~compiler_metadata ~typ ~typ_of ~rule ~replaced_by
-    ~made_not_applicable_by : Yojson.Basic.t =
+let rec to_inlined_ref (r : Shared_ast.inlined_ref) : Yojson.Basic.t =
   let children field l =
-    match List.map l ~f:(to_inlined_ref ~compiler_metadata ~typ_of) with
-    | [] ->
-        []
-    | l ->
-        [(field, `List l)]
+    match List.map l ~f:to_inlined_ref with [] -> [] | l -> [(field, `List l)]
   in
   `Assoc
-    ( [("kind", `String "ref")]
-    @ typ
-    @ [("parameters", `String (Rule_name.show rule))]
-    @ children "replaced_by" replaced_by
-    @ children "made_not_applicable_by" made_not_applicable_by
-    @ compiler_metadata )
+    ( [("rule", `String (Rule_name.show r.rule))]
+    @ children "replaced_by" r.replaced_by
+    @ children "made_not_applicable_by" r.made_not_applicable_by )
 
-and to_inlined_ref ~compiler_metadata ~typ_of (r : Shared_ast.inlined_ref) :
-    Yojson.Basic.t =
-  to_ref_node ~compiler_metadata ~typ:(typ_of r.rule) ~typ_of ~rule:r.rule
-    ~replaced_by:r.replaced_by ~made_not_applicable_by:r.made_not_applicable_by
-
-let rec expr_to_mapping rule_name ~typ_of
+let rec expr_to_mapping rule_name
     ((expr_value, expr_mark) : Shared_ast.inlined_expr) : Yojson.Basic.t =
-  let expr_to_mapping = expr_to_mapping rule_name ~typ_of in
+  let expr_to_mapping = expr_to_mapping rule_name in
   let compiler_metadata = to_compiler_metadata rule_name expr_mark.pos in
   let typ = match expr_mark.typ with Some typ -> to_type typ | None -> [] in
   let node kind parameters =
@@ -153,9 +138,7 @@ let rec expr_to_mapping rule_name ~typ_of
   in
   match expr_value with
   | Shared_ast.Ref inlined ->
-      to_ref_node ~compiler_metadata ~typ ~typ_of ~rule:inlined.rule
-        ~replaced_by:inlined.replaced_by
-        ~made_not_applicable_by:inlined.made_not_applicable_by
+      node "ref" (to_inlined_ref inlined)
   | Const const ->
       node "constant" (to_const const)
   | Binary_op ((binop, _), left, right) ->
@@ -165,13 +148,13 @@ let rec expr_to_mapping rule_name ~typ_of
   | Unary_op ((unop, _), expr) ->
       node (to_unop unop) (expr_to_mapping expr)
 
-let rec to_value_mechanism rule_name ~typ_of (value, Shared_ast.{typ; pos}) :
+let rec to_value_mechanism rule_name (value, Shared_ast.{typ; pos}) :
     Yojson.Basic.t =
-  let to_mechanism = to_mechanism rule_name ~typ_of in
+  let to_mechanism = to_mechanism rule_name in
   let kind, parameters =
     match value with
     | Shared_ast.Expr expr ->
-        ("expr", Some (expr_to_mapping rule_name ~typ_of expr))
+        ("expr", Some (expr_to_mapping rule_name expr))
     | Value value ->
         ("value", Some (`Assoc (to_mechanism value)))
     | Is_defined value ->
@@ -254,11 +237,11 @@ let rec to_value_mechanism rule_name ~typ_of (value, Shared_ast.{typ; pos}) :
   `Assoc
     (kind @ to_type_opt typ @ to_compiler_metadata rule_name pos @ parameters)
 
-and to_chained_mechanism name ~typ_of
+and to_chained_mechanism name
     ((mecha, mecha_mark) :
       Shared_ast.inlined_chainable_mechanism * Shared_ast.typed_mark ) :
     Yojson.Basic.t =
-  let to_mechanism = to_mechanism name ~typ_of in
+  let to_mechanism = to_mechanism name in
   let (kind : string), (parameters : Yojson.Basic.t) =
     match mecha with
     | Shared_ast.Context contexts ->
@@ -293,15 +276,13 @@ and to_chained_mechanism name ~typ_of
     @ to_compiler_metadata name mecha_mark.pos
     @ parameters )
 
-and to_mechanism name ~typ_of ({value; chainable_mechanisms}, _) :
+and to_mechanism name ({value; chainable_mechanisms}, _) :
     (string * Yojson.Basic.t) list =
-  [ ("value_mechanism", to_value_mechanism name ~typ_of value)
+  [ ("value_mechanism", to_value_mechanism name value)
   ; ( "chained_mechanisms"
-    , `List
-        (List.map chainable_mechanisms ~f:(to_chained_mechanism name ~typ_of))
-    ) ]
+    , `List (List.map chainable_mechanisms ~f:(to_chained_mechanism name)) ) ]
 
-let to_json_entry ~typ_of
+let to_json_entry
     ({name; value; meta; replace; make_not_applicable; _} :
       Shared_ast.inlined_rule_def ) =
   let name, Mark.{pos} = name in
@@ -309,7 +290,7 @@ let to_json_entry ~typ_of
      retrieve it from the value *)
   let typ_opt = (Mark.get value).typ in
   let compiler_metadata = to_compiler_metadata name pos in
-  let value = to_mechanism name ~typ_of value in
+  let value = to_mechanism name value in
   let meta = List.map meta ~f:to_meta in
   (* The authored clauses only: the replacements active on the rule itself are
      not emitted until root evaluation applies them. *)
@@ -327,10 +308,5 @@ let to_json_entry ~typ_of
       (to_type_opt typ_opt @ compiler_metadata @ meta @ replacements @ value) )
 
 let to_str (typed_ast : Shared_ast.inlined) =
-  let types = Hashtbl.create (module Rule_name) in
-  List.iter typed_ast ~f:(fun rule ->
-      Hashtbl.set types ~key:(Mark.remove rule.name)
-        ~data:(Mark.get rule.value).typ ) ;
-  let typ_of rule = to_type_opt (Option.join (Hashtbl.find types rule)) in
-  let json_entries = `Assoc (List.map typed_ast ~f:(to_json_entry ~typ_of)) in
+  let json_entries = `Assoc (List.map typed_ast ~f:to_json_entry) in
   Yojson.Basic.pretty_to_string json_entries

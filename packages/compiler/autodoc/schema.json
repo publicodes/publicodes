@@ -96,6 +96,29 @@
 			}
 		},
 
+		"inlined_ref": {
+			"title": "Inlined reference",
+			"description": "A rule reference with the rules that replace it at its site, computed by the compiler.",
+			"type": "object",
+			"required": ["rule"],
+			"properties": {
+				"rule": {
+					"title": "Referenced rule",
+					"type": "string"
+				},
+				"replaced_by": {
+					"title": "Replaced by",
+					"type": "array",
+					"items": { "$ref": "#/$defs/inlined_ref" }
+				},
+				"made_not_applicable_by": {
+					"title": "Made not applicable by",
+					"description": "Takes precedence over `replaced_by`.",
+					"type": "array",
+					"items": { "$ref": "#/$defs/inlined_ref" }
+				}
+			}
+		},
 		"evaluable": {
 			"title": "Chained value",
 			"required": ["value_mechanism", "chained_mechanisms"],
@@ -969,23 +992,7 @@
 								"const": "ref"
 							},
 							"parameters": {
-								"type": "string"
-							},
-							"replaced_by": {
-								"title": "Replaced by",
-								"description": "The rules that replace this reference here. Each node carries this one's id and position, so its trace value is the replacement's, and the type of the rule it names.",
-								"type": "array",
-								"items": {
-									"$ref": "#/$defs/expressions/ref"
-								}
-							},
-							"made_not_applicable_by": {
-								"title": "Made not applicable by",
-								"description": "Takes precedence over `replaced_by`.",
-								"type": "array",
-								"items": {
-									"$ref": "#/$defs/expressions/ref"
-								}
+								"$ref": "#/$defs/inlined_ref"
 							}
 						}
 					},

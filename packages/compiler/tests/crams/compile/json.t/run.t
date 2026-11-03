@@ -102,7 +102,7 @@ Valid json doc :
                     "kind": "ref",
                     "type": "number",
                     "unit": "€",
-                    "parameters": "a",
+                    "parameters": { "rule": "a" },
                     "id": "7376ca41dea2a05ace8fc15304576e71",
                     "position": {
                       "file": "./ok/example/rules.publicodes",
@@ -171,7 +171,7 @@ Valid json doc :
                 "kind": "ref",
                 "type": "number",
                 "unit": "€",
-                "parameters": "a",
+                "parameters": { "rule": "a" },
                 "id": "cc6dc6886b3af08a122c0f8a48384c3a",
                 "position": {
                   "file": "./ok/example/rules.publicodes",
@@ -197,7 +197,7 @@ Valid json doc :
                 "kind": "ref",
                 "type": "number",
                 "unit": "€",
-                "parameters": "b . c",
+                "parameters": { "rule": "b . c" },
                 "id": "9dc30d4d4ec44af344fc9beb20db9c0d",
                 "position": {
                   "file": "./ok/example/rules.publicodes",
@@ -285,7 +285,7 @@ Valid json doc :
                         "kind": "ref",
                         "type": "number",
                         "unit": "€",
-                        "parameters": "a",
+                        "parameters": { "rule": "a" },
                         "id": "92ee92803f9b13f9c08ff3a034f65d79",
                         "position": {
                           "file": "./ok/example/rules.publicodes",
@@ -366,7 +366,7 @@ Valid json doc :
                         "kind": "ref",
                         "type": "number",
                         "unit": "€",
-                        "parameters": "a",
+                        "parameters": { "rule": "a" },
                         "id": "4580c231891aacc8f2bac4dcf0649324",
                         "position": {
                           "file": "./ok/example/rules.publicodes",
@@ -513,7 +513,7 @@ Valid json doc :
                   "kind": "ref",
                   "type": "number",
                   "unit": "€",
-                  "parameters": "a",
+                  "parameters": { "rule": "a" },
                   "id": "bd1b6ad52d15466d78052cf7df6f898d",
                   "position": {
                     "file": "./ok/example/rules.publicodes",
@@ -525,7 +525,7 @@ Valid json doc :
                   "kind": "ref",
                   "type": "number",
                   "unit": "€",
-                  "parameters": "b",
+                  "parameters": { "rule": "b" },
                   "id": "1133814094f7e537eb8dc5ec862882b5",
                   "position": {
                     "file": "./ok/example/rules.publicodes",
@@ -574,7 +574,7 @@ Valid json doc :
             "kind": "ref",
             "type": "number",
             "unit": "€",
-            "parameters": "e",
+            "parameters": { "rule": "e" },
             "id": "45cec1888d5c370898070feec68c6cc2",
             "position": {
               "file": "./ok/example/rules.publicodes",
@@ -631,7 +631,7 @@ Valid json doc :
                   "kind": "ref",
                   "type": "number",
                   "unit": "€",
-                  "parameters": "b",
+                  "parameters": { "rule": "b" },
                   "id": "00129db3f6bd9477a966d1f074fd3783",
                   "position": {
                     "file": "./ok/example/rules.publicodes",
@@ -643,7 +643,7 @@ Valid json doc :
                   "kind": "ref",
                   "type": "number",
                   "unit": "€",
-                  "parameters": "g . here",
+                  "parameters": { "rule": "g . here" },
                   "id": "41697ec63e11b929d94198cd48976882",
                   "position": {
                     "file": "./ok/example/rules.publicodes",
@@ -866,7 +866,7 @@ Valid json doc :
                     "kind": "ref",
                     "type": "number",
                     "unit": "€",
-                    "parameters": "g",
+                    "parameters": { "rule": "g" },
                     "id": "8722f95287996850bf3221f5a633522a",
                     "position": {
                       "file": "./ok/example/rules.publicodes",
@@ -975,7 +975,7 @@ Valid json doc :
                     "kind": "ref",
                     "type": "number",
                     "unit": "€",
-                    "parameters": "g",
+                    "parameters": { "rule": "g" },
                     "id": "0d91870b3b92c382721211ad658901a2",
                     "position": {
                       "file": "./ok/example/rules.publicodes",
@@ -1642,7 +1642,7 @@ Correctly handle types:
               "parameters": {
                 "kind": "ref",
                 "type": "boolean",
-                "parameters": "auto-entrepreneur",
+                "parameters": { "rule": "auto-entrepreneur" },
                 "id": "f0fada48f401ed8555fe889afca81cb5",
                 "position": {
                   "file": "./ok/simple-tjm/rules.publicodes",
@@ -1711,7 +1711,7 @@ Correctly handle types:
                         "kind": "ref",
                         "type": "number",
                         "unit": "€",
-                        "parameters": "chiffre d'affaires",
+                        "parameters": { "rule": "chiffre d'affaires" },
                         "id": "2d823e73cfeebbbaab0110c3716112fe",
                         "position": {
                           "file": "./ok/simple-tjm/rules.publicodes",
@@ -2070,35 +2070,12 @@ Replacements — exception chain :
         "parameters": {
           "kind": "ref",
           "type": "enum",
-          "parameters": "base",
-          "replaced_by": [
-            {
-              "kind": "ref",
-              "type": "number",
-              "unit": "€",
-              "parameters": "e1",
-              "replaced_by": [
-                {
-                  "kind": "ref",
-                  "type": "number",
-                  "unit": "€",
-                  "parameters": "e2",
-                  "id": "4c678ce320e0bff394ab2964c670b282",
-                  "position": {
-                    "file": "./ok/replacements/chain/rules.publicodes",
-                    "start": { "index": 77, "line": 8, "column": 4 },
-                    "end": { "index": 81, "line": 8, "column": 8 }
-                  }
-                }
-              ],
-              "id": "4c678ce320e0bff394ab2964c670b282",
-              "position": {
-                "file": "./ok/replacements/chain/rules.publicodes",
-                "start": { "index": 77, "line": 8, "column": 4 },
-                "end": { "index": 81, "line": 8, "column": 8 }
-              }
-            }
-          ],
+          "parameters": {
+            "rule": "base",
+            "replaced_by": [
+              { "rule": "e1", "replaced_by": [ { "rule": "e2" } ] }
+            ]
+          },
           "id": "4c678ce320e0bff394ab2964c670b282",
           "position": {
             "file": "./ok/replacements/chain/rules.publicodes",
@@ -2285,33 +2262,10 @@ Replacements — exclusive candidates :
         "parameters": {
           "kind": "ref",
           "type": "enum",
-          "parameters": "other",
-          "replaced_by": [
-            {
-              "kind": "ref",
-              "type": "number",
-              "unit": "€",
-              "parameters": "b",
-              "id": "a89ab74136030012a6530263347b6f39",
-              "position": {
-                "file": "./ok/replacements/exclusive/rules.publicodes",
-                "start": { "index": 154, "line": 12, "column": 4 },
-                "end": { "index": 159, "line": 12, "column": 9 }
-              }
-            },
-            {
-              "kind": "ref",
-              "type": "number",
-              "unit": "€",
-              "parameters": "a",
-              "id": "a89ab74136030012a6530263347b6f39",
-              "position": {
-                "file": "./ok/replacements/exclusive/rules.publicodes",
-                "start": { "index": 154, "line": 12, "column": 4 },
-                "end": { "index": 159, "line": 12, "column": 9 }
-              }
-            }
-          ],
+          "parameters": {
+            "rule": "other",
+            "replaced_by": [ { "rule": "b" }, { "rule": "a" } ]
+          },
           "id": "a89ab74136030012a6530263347b6f39",
           "position": {
             "file": "./ok/replacements/exclusive/rules.publicodes",
@@ -2432,7 +2386,7 @@ Replacements — scope (« dans » / « sauf dans ») :
         },
         "parameters": {
           "kind": "ref",
-          "parameters": "base",
+          "parameters": { "rule": "base" },
           "id": "032d1215afb35d1387a3a5b53e24fc08",
           "position": {
             "file": "./ok/replacements/scope/rules.publicodes",
@@ -2466,21 +2420,7 @@ Replacements — scope (« dans » / « sauf dans ») :
           "kind": "ref",
           "type": "number",
           "unit": "€",
-          "parameters": "base",
-          "replaced_by": [
-            {
-              "kind": "ref",
-              "type": "number",
-              "unit": "€",
-              "parameters": "e1",
-              "id": "e452ca37b0bf9f787fa095a1d55df5b4",
-              "position": {
-                "file": "./ok/replacements/scope/rules.publicodes",
-                "start": { "index": 87, "line": 8, "column": 4 },
-                "end": { "index": 91, "line": 8, "column": 8 }
-              }
-            }
-          ],
+          "parameters": { "rule": "base", "replaced_by": [ { "rule": "e1" } ] },
           "id": "e452ca37b0bf9f787fa095a1d55df5b4",
           "position": {
             "file": "./ok/replacements/scope/rules.publicodes",
@@ -2593,20 +2533,10 @@ Replacements — « rend non applicable » :
         },
         "parameters": {
           "kind": "ref",
-          "parameters": "base",
-          "made_not_applicable_by": [
-            {
-              "kind": "ref",
-              "type": "boolean",
-              "parameters": "v",
-              "id": "100ff310577cdc8d379173e19843feed",
-              "position": {
-                "file": "./ok/replacements/make-not-applicable/rules.publicodes",
-                "start": { "index": 54, "line": 5, "column": 4 },
-                "end": { "index": 58, "line": 5, "column": 8 }
-              }
-            }
-          ],
+          "parameters": {
+            "rule": "base",
+            "made_not_applicable_by": [ { "rule": "v" } ]
+          },
           "id": "100ff310577cdc8d379173e19843feed",
           "position": {
             "file": "./ok/replacements/make-not-applicable/rules.publicodes",
