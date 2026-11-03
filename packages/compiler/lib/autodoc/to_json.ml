@@ -109,7 +109,7 @@ type graphs =
 let to_names (marks : Rule_name.t Mark.pos list) : Yojson.Basic.t =
   `List
     (List.map marks ~f:(fun m ->
-         `String (Shared.Rule_name.show (Mark.remove m)) ) )
+         `String (Rule_name.show (Mark.remove m)) ) )
 
 (** A « remplace » / « rend non applicable » clause as written on the rule. *)
 let to_replace (r : Replacement_graph.replace) : Yojson.Basic.t =
