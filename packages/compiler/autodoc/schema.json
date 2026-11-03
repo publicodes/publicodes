@@ -973,6 +973,7 @@
 							},
 							"replaced_by": {
 								"title": "Replaced by",
+								"description": "The rules that replace this reference here. Each node carries this one's id and position, so its trace value is the replacement's, and the type of the rule it names.",
 								"type": "array",
 								"items": {
 									"$ref": "#/$defs/expressions/ref"
