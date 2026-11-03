@@ -259,8 +259,8 @@ let rec node_of_tree_val (name : Shared.Rule_name.t)
       node_of_is_not_defined_op id (node_of_tree_val comp)
   | Unary_op ((Is_not_applicable, _), comp) ->
       node_of_is_not_applicable_op id (node_of_tree_val comp)
-  | Ref rule_name ->
-      node_of_ref id (Rule_name.to_string rule_name)
+  | Ref inlined ->
+      node_of_ref id (Rule_name.to_string inlined.rule)
   | Get_context rule_name ->
       node_of_get_ctx id (Rule_name.to_string rule_name)
   | Set_context {context; value} ->

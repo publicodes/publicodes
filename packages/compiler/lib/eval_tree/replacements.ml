@@ -55,8 +55,8 @@ let create_exclusive_replacement_node ~pos ~replacement_list ~node =
   Tree.(p (mk_exclusive_replacement ~target:node ~replacements:replacement_list))
 
 let rec transform_inline_replacements ~(rule : Rule_name.t) ~pos ~meta ~target
-    (inlined : Replacement_graph.inlined_ref) (node : 'a option Tree.value) :
-    'a option Tree.value =
+    (inlined : Shared_ast.inlined_ref) (node : 'a option Tree.value)
+    : 'a option Tree.value =
   let node =
     match inlined.replaced_by with
     | [] ->
@@ -75,16 +75,16 @@ let rec transform_inline_replacements ~(rule : Rule_name.t) ~pos ~meta ~target
         ~condition_node:(expand ~rule ~pos ~meta r)
         ~node:node_acc )
 
-and expand ~(rule : Rule_name.t) ~pos ~meta (r : Replacement_graph.inlined_ref)
-    : 'a option Tree.value =
+and expand ~(rule : Rule_name.t) ~pos ~meta
+    (r : Shared_ast.inlined_ref) : 'a option Tree.value =
   transform_inline_replacements ~rule ~pos ~meta ~target:r.rule r
-    (Tree.mk_value ~pos ~meta (Ref r.rule))
+    (Tree.mk_value ~pos ~meta (Ref r))
 
 let transform_extended_parent_applicability ~make_not_applicable_graph ~meta
     ~pos ast rule value =
   let parents_applicable_on_namespace =
     Shared_ast.parents_applicable_on_namespace ast rule
-    |> List.map ~f:(fun (rule_def : Shared_ast.typed_rule_def) ->
+    |> List.map ~f:(fun (rule_def : Shared_ast.inlined_rule_def) ->
         Mark.remove rule_def.name )
   in
   (* Use them all to correctly list eligible make_not_applicable, even
@@ -96,35 +96,39 @@ let transform_extended_parent_applicability ~make_not_applicable_graph ~meta
           find_eligible_make_not_applicable ~rule ~reference:parent
             make_not_applicable_graph
         in
-        let init = Tree.mk_value ~meta ~pos (Ref parent) in
+        let init =
+          Tree.mk_value ~meta ~pos
+            (Ref
+               Shared_ast.
+                 {rule= parent; replaced_by= []; made_not_applicable_by= []} )
+        in
         List.fold make_not_applicable_list ~init
           ~f:(fun node_acc condition_rule ->
             (* Apply make not applicable recursively (to handle transitivity) *)
             let condition_node =
-              Tree.mk_value ~meta ~pos (Ref condition_rule)
+              Tree.mk_value ~meta ~pos
+                (Ref
+                   Shared_ast.
+                     { rule= condition_rule
+                     ; replaced_by= []
+                     ; made_not_applicable_by= [] } )
             in
             create_make_not_applicable_node ~pos ~meta ~condition_node
               ~node:node_acc )
       in
       create_applicable_on_namespace_node ~pos ~meta ~parent_rule ~node:node_acc )
 
-(* Apply rule replacements to a tree. The replacement tree of each reference
-   site is resolved once by [Replacement_graph.resolve_*]; here we only map it
-   to evaluation nodes. *)
-let transform ~(replacement_graph : Replacement_graph.Rule_graph.t)
-    ~(make_not_applicable_graph : Replacement_graph.Rule_graph.t) ast rule value
-    =
+(* Apply rule replacements to a tree. Each reference already carries the rules
+   that replace it at its site; here we only map them to evaluation nodes. *)
+let transform ~(make_not_applicable_graph : Replacement_graph.Rule_graph.t) ast
+    rule value =
   Tree.map_value value ~f:(fun node ->
       let pos = node.pos in
       let meta = node.meta in
       let value =
         match node.value with
-        | Ref reference ->
-            let inlined =
-              Replacement_graph.resolve ~from:rule ~replacement_graph
-                ~make_not_applicable_graph ~rule:reference
-            in
-            transform_inline_replacements ~rule ~pos ~meta ~target:reference
+        | Ref inlined ->
+            transform_inline_replacements ~rule ~pos ~meta ~target:inlined.rule
               inlined node
         | _ ->
             node

@@ -22,9 +22,12 @@ let compile
     Analysis.extract_outputs dependency_graph ~ast:typed_ast
       ~warn_types:(not default_to_public)
   in
+  let inlined_ast =
+    Analysis.Inline_replacements.inline ~replacement_graph ~make_not_applicable_graph
+      typed_ast
+  in
   let eval_tree =
-    Eval_tree.from_typed_ast typed_ast ~replacement_graph
-      ~make_not_applicable_graph
+    Eval_tree.from_typed_ast inlined_ast ~make_not_applicable_graph
   in
   let output_str =
     match output_type with
@@ -33,7 +36,6 @@ let compile
     | Debug_eval_tree ->
         Backends.to_debug eval_tree outputs
     | Json ->
-        Autodoc.to_json_str ~replacement_graph ~make_not_applicable_graph
-          typed_ast
+        Autodoc.to_json_str inlined_ast
   in
   Output.return output_str

@@ -44,7 +44,7 @@ type ('ref, 'mark) naked_expr =
 [@@deriving equal, compare, show, sexp]
 
 and ('ref, 'mark) expr = (('ref, 'mark) naked_expr, 'mark) Mark.ed
-[@@deriving equal, compare, show, sexp]
+[@@deriving equal, compare, show, sexp, map]
 
 type ('ref, 'mark) value_mechanism =
   | Expr of ('ref, 'mark) expr
@@ -88,6 +88,7 @@ and ('ref, 'mark) naked_value =
 [@@deriving equal, show, sexp]
 
 and ('ref, 'mark) value = (('ref, 'mark) naked_value, 'mark) Mark.ed
+[@@deriving map]
 
 type rule_meta =
   | Title of string
@@ -103,7 +104,7 @@ type 'ref replace =
   ; only_in: 'ref Mark.pos list
   ; except_in: 'ref Mark.pos list
   ; exclusive: bool }
-[@@deriving equal, show, sexp, compare]
+[@@deriving equal, show, sexp, compare, map]
 
 type ('ref, 'mark) rule_def =
   { name: Rule_name.t Mark.pos
@@ -112,11 +113,11 @@ type ('ref, 'mark) rule_def =
   ; meta: rule_meta Mark.pos list
   ; replace: 'ref replace list
   ; make_not_applicable: 'ref replace list }
-[@@deriving equal, show]
+[@@deriving equal, show, map]
 
 (** {1} AST type definitions *)
 
-type ('ref, 'mark) t = ('ref, 'mark) rule_def list [@@deriving equal, show]
+type ('ref, 'mark) t = ('ref, 'mark) rule_def list [@@deriving equal, show, map]
 
 (** {2} AST with resolved rule names *)
 
@@ -149,6 +150,30 @@ type typed_value_mechanism = (Rule_name.t, typed_mark) value_mechanism
 type typed_chainable_mechanism = (Rule_name.t, typed_mark) chainable_mechanism
 
 type typed = (Rule_name.t, typed_mark) t [@@deriving equal, show]
+
+(** {3} AST with the replacements inlined at each reference site *)
+
+(** A reference to a rule, with the rules that replace it at this site. The
+    root is the referenced rule itself, so [Ref] holds one of these. *)
+type inlined_ref =
+  { rule: Rule_name.t
+  ; replaced_by: inlined_ref list
+  ; made_not_applicable_by: inlined_ref list }
+[@@deriving equal, compare, show, sexp]
+
+type inlined_rule_def = (inlined_ref, typed_mark) rule_def
+
+type inlined_value = (inlined_ref, typed_mark) value
+
+type inlined_expr = (inlined_ref, typed_mark) expr
+
+type inlined_value_mechanism =
+  (inlined_ref, typed_mark) value_mechanism
+
+type inlined_chainable_mechanism =
+  (inlined_ref, typed_mark) chainable_mechanism
+
+type inlined = (inlined_ref, typed_mark) t [@@deriving equal, show]
 
 let binary_op_to_string = function
   | Add ->

@@ -63,7 +63,7 @@ let transform_percent typ pos op left_value right_value =
              ) ) )
 
 let rec transform ?(undefined = Tree.const_not_defined)
-    (value : Shared_ast.typed_value) : Typ.t option Tree.value =
+    (value : Shared_ast.inlined_value) : Typ.t option Tree.value =
   let node, _ = value in
   let node_value, Shared_ast.{pos; typ} = node.value in
   let value =
@@ -78,7 +78,9 @@ let rec transform ?(undefined = Tree.const_not_defined)
 
 and transform_expr
     ((expr, {pos; typ}) :
-      (Shared.Rule_name.t, Shared_ast.typed_mark) Shared_ast.expr ) =
+      ( Shared_ast.inlined_ref
+      , Shared_ast.typed_mark )
+      Shared_ast.expr ) =
   let mk_value = Tree.mk_value ~meta:typ ~pos in
   match expr with
   | Const value ->
@@ -95,12 +97,14 @@ and transform_expr
       mk_value (Binary_op (op, transform_expr left, transform_expr right))
   | Unary_op ((Neg, {pos}), expr) ->
       mk_value (Unary_op (Mark.mk_pos ~pos Tree.Neg, transform_expr expr))
-  | Ref name ->
-      mk_value (Ref name)
+  | Ref inlined ->
+      mk_value (Ref inlined)
 
 and transform_mechanism_value
     ((node, {pos; typ}) :
-      ( (Shared.Rule_name.t, Shared_ast.typed_mark) Shared_ast.value_mechanism
+      ( ( Shared_ast.inlined_ref
+        , Shared_ast.typed_mark )
+        Shared_ast.value_mechanism
       , Shared_ast.typed_mark )
       Mark.ed ) =
   match node with
@@ -154,7 +158,8 @@ and transform_mechanism_value
 and unfold_chainable_mechanism ~init mechanisms =
   mechanisms
   |> List.sort ~compare:(fun (a, _) (b, _) ->
-      Shared_ast.compare_chainable_mechanism Shared.Rule_name.compare
+      Shared_ast.compare_chainable_mechanism
+        Shared_ast.compare_inlined_ref
         Shared_ast.compare_typed_mark a b )
   |> List.fold_right ~init
        ~f:(fun
@@ -314,8 +319,11 @@ and transform_context ~pos ~typ context value =
   Tree.mk_value ~pos ~meta:typ
     (Set_context
        { context=
-           List.map context ~f:(fun (rule_name, value) ->
-               (rule_name, transform value) )
+           List.map context ~f:(fun (name, value) ->
+               ( Mark.map
+                   ~f:(fun (r : Shared_ast.inlined_ref) -> r.rule)
+                   name
+               , transform value ) )
        ; value } )
 
 and transform_default ~pos ~typ default value =

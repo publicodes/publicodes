@@ -14,20 +14,11 @@ val find_transitive_replacements :
   -> t
   -> (Rule_name.t * replace Utils.Mark.pos) list
 
-(** A reference to a rule with the replacements inlined at its site — the same
-    shape as the JSON `ref` node: [rule] is its [parameters], and the two lists
-    its [replaced_by] / [made_not_applicable_by]. The root of a site is an
-    [inlined_ref] whose [rule] is the referenced rule itself. *)
-type inlined_ref =
-  { rule: Rule_name.t
-  ; replaced_by: inlined_ref list
-  ; made_not_applicable_by: inlined_ref list }
-
 val resolve :
      from:Rule_name.t
   -> replacement_graph:t
   -> make_not_applicable_graph:t
   -> rule:Rule_name.t
-  -> inlined_ref
+  -> Shared_ast.inlined_ref
 
 module Rule_graph = Rule_graph

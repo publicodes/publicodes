@@ -2,9 +2,9 @@ open Base
 
 type pos_mark = {pos: Pos.t} [@@deriving equal, compare, show, sexp]
 
-type ('a, 'm) ed = 'a * 'm [@@deriving equal, compare, show, sexp]
+type ('a, 'm) ed = 'a * 'm [@@deriving equal, compare, show, sexp, map]
 
-type 'a pos = ('a, pos_mark) ed [@@deriving equal, compare, show, sexp]
+type 'a pos = ('a, pos_mark) ed [@@deriving equal, compare, show, sexp, map]
 
 let add m e = (e, m)
 

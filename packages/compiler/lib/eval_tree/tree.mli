@@ -23,7 +23,7 @@ type 'meta naked_value =
   | Condition of 'meta value * 'meta value * 'meta value
   | Binary_op of binary_op Mark.pos * 'meta value * 'meta value
   | Unary_op of unary_op Mark.pos * 'meta value
-  | Ref of Rule_name.t
+  | Ref of Shared_ast.inlined_ref
   | Get_context of Rule_name.t
   | Set_context of 'meta context
   | Round of (Shared_ast.rounding * 'meta value * 'meta value)
