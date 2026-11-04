@@ -238,7 +238,6 @@ let mk ast ~replacement_graph ~make_not_applicable_graph =
             let pos =
               Shared_ast.get_applicable_on_namespace_exn parent |> Mark.get
             in
-            (* FIXME: position to the mecanism when we store those *)
             Mark.add pos (name, context_stack) )
       in
       let references =
