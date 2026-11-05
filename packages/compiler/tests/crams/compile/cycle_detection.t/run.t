@@ -109,5 +109,16 @@ Without context, the cycle is detected:
     83 │       valeur: cotisation
        │               ˘˘˘˘˘˘˘˘˘˘ règle 'avec rend non applicable . cotisation' référencée de nouveau
   
+  
+  E027 cycle de dépendance détecté [cycle warning]
+       ╒══  ./error/rules.publicodes:92:15 ══
+    91 │     a:
+    92 │       valeur: b + c +d
+       │               ˘˘ règle 'une seule erreur pas deux . b' référencée ici
+       ╒══  ./error/rules.publicodes:96:15 ══
+    95 │     b:
+    96 │       valeur: a
+       │               ˘ règle 'une seule erreur pas deux . a' référencée de nouveau
+  
   [123]
 
