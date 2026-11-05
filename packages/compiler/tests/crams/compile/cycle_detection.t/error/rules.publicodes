@@ -85,3 +85,16 @@ avec rend non applicable:
     plafond bis: # should fail
       rend non applicable: plafond
       valeur: plafond = 10
+
+une seule erreur pas deux:
+  avec:
+    a:
+      valeur: b + c +d
+      contexte:
+        c: 10
+    b:
+      valeur: a
+      contexte:
+        d: 20
+    c:
+    d:
