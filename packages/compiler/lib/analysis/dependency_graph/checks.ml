@@ -7,42 +7,55 @@ module Cycle_analysis = Graph.Cycles.Johnson (Rule_graph)
 let cycle_check (graph : Rule_graph.t) : Log.t list =
   let log_cycle cycle acc =
     let cycle = List.rev cycle in
-    match cycle with
-    | first_rule :: second_rule :: _ ->
-        let _, first_ref_pos, _ =
-          Rule_graph.find_edge graph first_rule second_rule
-        in
-        let cycle_full = cycle @ [first_rule] in
-        let edges =
-          List.map
-            (List.zip_exn cycle (List.tl_exn cycle_full))
-            ~f:(fun (a, b) ->
-              let _, pos, _ = Rule_graph.find_edge graph a b in
-              (pos, b) )
-        in
-        let labels =
-          List.sort edges ~compare:(fun (p1, _) (p2, _) -> Pos.compare p1 p2)
-          |> List.mapi ~f:(fun i (pos, (ref, _)) ->
-              let is_last = i = List.length edges - 1 in
-              let label =
-                Printf.sprintf "règle '%s' référencée "
-                  (Rule_name.to_string ref)
-                ^ if is_last then "de nouveau" else "ici"
-              in
-              Mark.mk_pos ~pos label )
-        in
-        let code, message = Err.cycle_detected in
-        Log.warning message ~code ~kind:`Cycle ~pos:first_ref_pos ~labels :: acc
-    | [rule] ->
-        let _, pos, _ = Rule_graph.find_edge graph rule rule in
-        let code, message = Err.cycle_detected in
-        Log.warning message ~code ~kind:`Cycle ~pos
-          ~labels:[Mark.mk_pos ~pos "la règle se référence elle-même"]
-        :: acc
-    | [] ->
-        acc
+    let cycle_rule_names = List.map cycle ~f:fst in
+    if
+      (* skip duplicate cycle errors because of different contexts *)
+      List.map acc ~f:fst
+      |> List.exists ~f:(fun acc_names ->
+          List.length acc_names = List.length cycle_rule_names
+          && List.for_all acc_names ~f:(fun name ->
+              List.exists cycle_rule_names ~f:(Rule_name.equal name) ) )
+    then acc
+    else
+      match cycle with
+      | first_rule :: second_rule :: _ ->
+          let _, first_ref_pos, _ =
+            Rule_graph.find_edge graph first_rule second_rule
+          in
+          let cycle_full = cycle @ [first_rule] in
+          let edges =
+            List.map
+              (List.zip_exn cycle (List.tl_exn cycle_full))
+              ~f:(fun (a, b) ->
+                let _, pos, _ = Rule_graph.find_edge graph a b in
+                (pos, b) )
+          in
+          let labels =
+            List.sort edges ~compare:(fun (p1, _) (p2, _) -> Pos.compare p1 p2)
+            |> List.mapi ~f:(fun i (pos, (ref, _)) ->
+                let is_last = i = List.length edges - 1 in
+                let label =
+                  Printf.sprintf "règle '%s' référencée "
+                    (Rule_name.to_string ref)
+                  ^ if is_last then "de nouveau" else "ici"
+                in
+                Mark.mk_pos ~pos label )
+          in
+          let code, message = Err.cycle_detected in
+          ( cycle_rule_names
+          , Log.warning message ~code ~kind:`Cycle ~pos:first_ref_pos ~labels )
+          :: acc
+      | [rule] ->
+          let _, pos, _ = Rule_graph.find_edge graph rule rule in
+          let code, message = Err.cycle_detected in
+          ( cycle_rule_names
+          , Log.warning message ~code ~kind:`Cycle ~pos
+              ~labels:[Mark.mk_pos ~pos "la règle se référence elle-même"] )
+          :: acc
+      | [] ->
+          acc
   in
-  Cycle_analysis.fold_cycles log_cycle graph []
+  Cycle_analysis.fold_cycles log_cycle graph [] |> List.map ~f:snd
 
 let illegal_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
     Log.t list =
