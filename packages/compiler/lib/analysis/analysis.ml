@@ -1,6 +1,7 @@
 open Utils
 open Output.Let_syntax
 module Dependency_graph = Dependency_graph
+module Inline_replacements = Inline_replacements
 module Replacement_graph = Replacement_graph
 
 type t =

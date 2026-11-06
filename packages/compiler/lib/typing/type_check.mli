@@ -5,7 +5,6 @@
     that the [typing_tree] is updated in place and enriched with the inferred
     types. *)
 
-val type_check : Ast.typing_tree -> Replacement_graph.t -> unit Utils.Output.t
-(** [type_check typing_tree replacement_graph] infers types of the internal
-    [typing_tree] and returns possible type errors as the [typing_tree] is
-    updated in place. *)
+val type_check : Ast.typing_tree -> unit Utils.Output.t
+(** [type_check typing_tree] infers types of the internal [typing_tree] and
+    returns possible type errors as the [typing_tree] is updated in place. *)

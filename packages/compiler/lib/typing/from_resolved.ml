@@ -2,7 +2,7 @@ open Base
 open Shared
 open Utils
 
-let rec transform_expr (expr : Shared_ast.resolved_expr) : Ast.typing_expr =
+let rec transform_expr (expr : Shared_ast.inlined_expr) : Ast.typing_expr =
   let expr, ({Mark.pos} as mark) = expr in
   let mk = Ast.from_mark mark in
   match expr with
@@ -35,7 +35,7 @@ let rec transform_expr (expr : Shared_ast.resolved_expr) : Ast.typing_expr =
       let value = transform_expr value in
       (Unary_op (op, value), mk (Ast.mk_any ~pos))
 
-and transform_value_mechanism (value : Shared_ast.resolved_value_mechanism) :
+and transform_value_mechanism (value : Shared_ast.inlined_value_mechanism) :
     Ast.typing_value_mechanism =
   match value with
   | Expr expr ->
@@ -98,7 +98,7 @@ and transform_value_mechanism (value : Shared_ast.resolved_value_mechanism) :
       Variations (variations, value)
 
 and transform_chainable_mechanism
-    (chainable : Shared_ast.resolved_chainable_mechanism) :
+    (chainable : Shared_ast.inlined_chainable_mechanism) :
     Ast.typing_chainable_mechanism =
   match chainable with
   | Context values ->
@@ -130,7 +130,7 @@ and transform_chainable_mechanism
       let value = transform_value value in
       Round (rounding, value)
 
-and transform_value (value : Shared_ast.resolved_value) : Ast.typing_value =
+and transform_value (value : Shared_ast.inlined_value) : Ast.typing_value =
   let {Shared_ast.value; chainable_mechanisms}, ({Mark.pos} as mark) = value in
   let value =
     let value, ({Mark.pos} as mark) = value in
@@ -146,13 +146,13 @@ and transform_value (value : Shared_ast.resolved_value) : Ast.typing_value =
   ( {Shared_ast.value; chainable_mechanisms}
   , Ast.mk_any ~pos |> Ast.from_mark mark )
 
-let transform_rule_def (rule_def : Shared_ast.resolved_rule_def) :
+let transform_rule_def (rule_def : Shared_ast.inlined_rule_def) :
     Ast.typing_rule_def =
   let {Shared_ast.value; _} = rule_def in
   let value = transform_value value in
   {rule_def with value}
 
-let from_resolved (ast : Shared_ast.resolved) : Ast.typing_tree =
+let from_resolved (ast : Shared_ast.inlined) : Ast.typing_tree =
   List.map ast ~f:transform_rule_def
   |> List.map ~f:(fun rule_def ->
       let Shared_ast.{name; _} = rule_def in

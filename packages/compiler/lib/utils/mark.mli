@@ -14,10 +14,10 @@
 type pos_mark = {pos: Pos.t} [@@deriving equal, compare, show, sexp]
 
 (** [('a, 'm) ed] is a value of type ['a] annotated with a mark of type ['m]. *)
-type ('a, 'm) ed = 'a * 'm [@@deriving equal, compare, show, sexp]
+type ('a, 'm) ed = 'a * 'm [@@deriving equal, compare, show, sexp, map]
 
 (** ['a pos] is a value annotated with only a source position. *)
-type 'a pos = ('a, pos_mark) ed [@@deriving equal, compare, show, sexp]
+type 'a pos = ('a, pos_mark) ed [@@deriving equal, compare, show, sexp, map]
 
 val add : 'm -> 'a -> ('a, 'm) ed
 (** [add mark node] annotates [node] with [mark]. *)
