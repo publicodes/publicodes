@@ -1,0 +1,8 @@
+base:
+e1:
+  remplace: base
+  valeur: 5 €
+e2:
+  remplace: e1
+  valeur: 1 €
+x: base

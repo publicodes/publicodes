@@ -1,0 +1,12 @@
+other:
+a:
+  remplace:
+    références à: other
+    exclusif: oui
+  valeur: 100 €
+b:
+  remplace:
+    références à: other
+    exclusif: oui
+  valeur: 0 €
+x: other

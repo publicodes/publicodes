@@ -65,7 +65,7 @@ export const constant = (value: number): Node =>
 	node({ kind: 'constant', parameters: { kind: 'const_number', value } })
 
 export const ref = (address: string): Node =>
-	node({ kind: 'ref', parameters: address })
+	node({ kind: 'ref', parameters: { rule: address } })
 
 export const binary = (
 	kind: Ast.BinaryOperationExpression['kind'],
