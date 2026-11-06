@@ -56,7 +56,7 @@ export function expressionText(
 		case 'constant':
 			return expression.parameters ? constantText(expression.parameters) : ''
 		case 'ref':
-			return displayName(ast, expression.parameters)
+			return displayName(ast, expression.parameters.rule)
 		case 'neg':
 			return `−${expressionText(ast, expression.parameters)}`
 		default: {

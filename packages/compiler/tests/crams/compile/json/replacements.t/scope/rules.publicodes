@@ -1,0 +1,8 @@
+base:
+e1:
+  remplace:
+    références à: base
+    sauf dans: x
+  valeur: 5 €
+x: base
+y: base
