@@ -62,6 +62,107 @@ let error_typ_invalid ?(hints = []) (u1 : Ast.typ) =
   let labels = to_label u1 in
   Output.fatal_error ~pos:p1 ~hints ~kind:`Type ~code ~labels message
 
+
+let rec is_unitless_number_literal (expr : Ast.typing_expr) =
+  match fst expr with
+  | Const (Number (_, None)) ->
+      true
+  | Unary_op ((Neg, _), expr) ->
+      is_unitless_number_literal expr
+  | _ ->
+      false
+
+let is_unitless_literal_value ((naked, _) : Ast.typing_value) =
+(** Same as {!is_unitless_number_literal}, for a mechanism value. *)
+  match fst naked.value with
+  | Expr expr ->
+      is_unitless_number_literal expr
+  | _ ->
+      false
+
+let is_plain_number_unit ~is_unitless_literal u =
+  Number_unit.is_empty u
+  || (is_unitless_literal && Number_unit.is_unconstrained u)
+
+let unit_of (typ : Ast.typ) =
+  match UnionFind.get typ with
+  | Ast.Typed (Ast.KNumber u, _), _ ->
+      Some u
+  | _ ->
+      None
+
+let is_percent_with_plain_number ~left_is_unitless_literal
+    ~right_is_unitless_literal (typ1 : Ast.typ) (typ2 : Ast.typ) =
+  match (unit_of typ1, unit_of typ2) with
+  | Some u1, Some u2 ->
+      let left_is_percent_right_is_plain =
+        Number_unit.is_percent_only u1
+        && is_plain_number_unit ~is_unitless_literal:right_is_unitless_literal
+             u2
+      in
+      let right_is_percent_left_is_plain =
+        Number_unit.is_percent_only u2
+        && is_plain_number_unit ~is_unitless_literal:left_is_unitless_literal u1
+      in
+      left_is_percent_right_is_plain || right_is_percent_left_is_plain
+  | _ ->
+      false
+
+let percent_unit_error ~pos1 u1 ~pos2 u2 =
+  let code, message = Err.type_unit_incoherence in
+  let label ~pos u =
+    let unit =
+      if Number_unit.is_unconstrained u then "aucune"
+      else Number_unit.to_string u
+    in
+    Mark.mk_pos ~pos (Stdlib.Format.asprintf "unité: %s" unit)
+  in
+  let labels = [label ~pos:pos1 u1; label ~pos:pos2 u2] in
+  Output.fatal_error ~pos:pos1 ~kind:`Type ~code ~labels message
+
+let check_percent_unit_compatibility ~pos1 ~pos2 ~left_is_unitless_literal
+    ~right_is_unitless_literal (typ1 : Ast.typ) (typ2 : Ast.typ) =
+  if
+    is_percent_with_plain_number ~left_is_unitless_literal
+      ~right_is_unitless_literal typ1 typ2
+  then
+    let u1 = Option.value_exn (unit_of typ1) in
+    let u2 = Option.value_exn (unit_of typ2) in
+    percent_unit_error ~pos1 u1 ~pos2 u2
+  else Output.return ()
+
+let check_percent_unit_compatibility_in_list (elements : (Ast.typ * bool) list)
+    =
+(** Same rule as {!check_percent_unit_compatibility}, for list mechanisms:
+    fails when the list mixes percentages and plain numbers. *)
+  let has_percent =
+    List.exists elements ~f:(fun (typ, _) ->
+        Option.exists (unit_of typ) ~f:Number_unit.is_percent_only )
+  in
+  let has_plain_number =
+    List.exists elements ~f:(fun (typ, is_unitless_literal) ->
+        Option.exists (unit_of typ)
+          ~f:(is_plain_number_unit ~is_unitless_literal) )
+  in
+  if has_percent && has_plain_number then
+    let pos_of (typ : Ast.typ) = UnionFind.get typ |> Mark.pos in
+    let percent =
+      List.find_map_exn elements ~f:(fun (typ, _) ->
+          Option.map (unit_of typ) ~f:(fun u -> (typ, u))
+          |> Option.filter ~f:(fun (_, u) -> Number_unit.is_percent_only u) )
+    in
+    let plain =
+      List.find_map_exn elements ~f:(fun (typ, is_unitless_literal) ->
+          Option.map (unit_of typ) ~f:(fun u -> (typ, u))
+          |> Option.filter ~f:(fun (_, u) ->
+              is_plain_number_unit ~is_unitless_literal u ) )
+    in
+    let percent_typ, percent_unit = percent in
+    let plain_typ, plain_unit = plain in
+    percent_unit_error ~pos1:(pos_of percent_typ) percent_unit
+      ~pos2:(pos_of plain_typ) plain_unit
+  else Output.return ()
+
 let error_pow_exponent_with_unit (typ : Ast.typ) ~(pos : Pos.t) =
   let elem = UnionFind.get typ in
   let code, message = Err.pow_exponent_with_unit in
@@ -266,12 +367,27 @@ let get_number_unit_opt = function
   | _ ->
       None
 
-let check_multiply ~pos u1 u2 : Ast.typ Output.t =
+let check_multiply ?(left_is_unitless_literal = false)
+    ?(right_is_unitless_literal = false) ~pos u1 u2 : Ast.typ Output.t =
   let t1, _ = UnionFind.get u1 in
   let t2, _ = UnionFind.get u2 in
   match (get_number_unit_opt t1, get_number_unit_opt t2) with
   | Some unit1, Some unit2 ->
-      let t = Number_unit.multiply unit1 unit2 in
+      let left_is_scalar =
+        left_is_unitless_literal || Number_unit.is_empty unit1
+      in
+      let right_is_scalar =
+        right_is_unitless_literal || Number_unit.is_empty unit2
+      in
+      let t =
+        if
+          (Number_unit.is_percent_only unit1 && right_is_scalar)
+          || (Number_unit.is_percent_only unit2 && left_is_scalar)
+        then
+          (* A percentage multiplied by a unitless value is a unitless value *)
+          Number_unit.concrete Units.empty
+        else Number_unit.multiply unit1 unit2
+      in
       let m = Ast.mk_general ~pos Ast.(KNumber t) in
       Output.return m
   | _, _ ->
@@ -408,6 +524,8 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
   | Binary_op (op, ((_, left_mark) as left), ((_, right_mark) as right)) -> (
       let Ast.{pos= left_pos; _} = left_mark in
       let Ast.{pos= right_pos; _} = right_mark in
+      let left_is_unitless_literal = is_unitless_number_literal left in
+      let right_is_unitless_literal = is_unitless_number_literal right in
       match Mark.remove op with
       | And | Or ->
           let* _ = Ast.mk_bool ~pos |> check_union mark.typ in
@@ -421,6 +539,10 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
       | Add | Sub | Max | Min ->
           let* left = check_expression_is_any_number left ~pos:left_pos in
           let* right = check_expression_is_any_number right ~pos:right_pos in
+          let* _ =
+            check_percent_unit_compatibility ~pos1:left_pos ~pos2:right_pos
+              ~left_is_unitless_literal ~right_is_unitless_literal left right
+          in
           let* _ = check_generalize left right in
           let _ =
             (* Operation on number must generalize from literals to number *)
@@ -431,7 +553,10 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
       | Mul ->
           let* _ = check_expression_is_any_number left ~pos:left_pos in
           let* _ = check_expression_is_any_number right ~pos:right_pos in
-          let* mul_typ = check_multiply ~pos left_mark.typ right_mark.typ in
+          let* mul_typ =
+            check_multiply ~pos ~left_is_unitless_literal
+              ~right_is_unitless_literal left_mark.typ right_mark.typ
+          in
           let* _ = check_union mark.typ mul_typ in
           check_union_with_parent_typ ~ctx mark.typ
       | Div ->
@@ -502,7 +627,14 @@ and check_value_mechanism (value : Ast.typing_marked_value_mechanism) ~ctx =
   | Average [] | Sum [] | Min_of [] | Max_of [] | Product [] ->
       Output.return ()
   | Average values | Sum values | Min_of values | Max_of values ->
-      let* _ = check_each values ~mk_wip:(fun () -> Ast.mk_any_number ~pos) in
+      let* typs =
+        check_each values ~mk_wip:(fun () -> Ast.mk_any_number ~pos)
+      in
+      let* _ =
+        check_percent_unit_compatibility_in_list
+          (List.map2_exn typs values ~f:(fun typ value ->
+               (typ, is_unitless_literal_value value) ) )
+      in
       let fst_pos = Ast.get_first_element_pos_exn values in
       let sum_typ = Ast.mk_number ~unit:None ~pos:fst_pos in
       let* _ =
@@ -515,10 +647,25 @@ and check_value_mechanism (value : Ast.typing_marked_value_mechanism) ~ctx =
       let* typs =
         check_each values ~mk_wip:(fun () -> Ast.mk_any_number ~pos)
       in
+      let typed_values =
+        List.map2_exn typs values ~f:(fun typ value ->
+            (typ, is_unitless_literal_value value) )
+      in
       let* product_typ =
-        match typs with
-        | hd :: rest ->
-            Output.fold rest ~init:hd ~f:(check_multiply ~pos)
+        match typed_values with
+        | (hd, hd_is_unitless_literal) :: rest ->
+            let* product_typ, _ =
+              Output.fold rest
+                ~init:(hd, hd_is_unitless_literal)
+                ~f:(fun (left, left_is_unitless_literal)
+                    (right, right_is_unitless_literal) ->
+                  let* product_typ =
+                    check_multiply ~pos ~left_is_unitless_literal
+                      ~right_is_unitless_literal left right
+                  in
+                  Output.return (product_typ, false) )
+            in
+            Output.return product_typ
         | [] ->
             failwith "unreachable"
       in

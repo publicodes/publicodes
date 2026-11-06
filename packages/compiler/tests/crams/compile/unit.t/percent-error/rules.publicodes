@@ -1,3 +1,26 @@
 
 # should have error
 e: 5%/an + 4€/an
+
+# should have error: a percentage and a unitless value are not compatible
+f: 100% - 1
+
+# should have error: same, with the unitless value on the left
+g: 1 - 40%
+
+# should have error: percentages and unitless values cannot be mixed in a list
+h:
+  somme:
+    - 100%
+    - 1
+
+# should have error: same for the other list mechanisms
+i:
+  moyenne:
+    - 40%
+    - 1
+
+j:
+  le minimum de:
+    - 40%
+    - 1
