@@ -27,6 +27,7 @@ let rec extract_parameters ?(done_ = []) ((rule_name, ctxs) as cur_vertex)
         match Mark.remove value.value with
         | Root_finding root_finding ->
             List.map root_finding.with_ ~f:Mark.remove
+            |> List.map ~f:(fun Shared_ast.{rule; _} -> rule)
         | _ ->
             []
       in
@@ -38,7 +39,7 @@ let rec extract_parameters ?(done_ = []) ((rule_name, ctxs) as cur_vertex)
             | Root_finding root_finding ->
                 if
                   List.map root_finding.with_ ~f:Mark.remove
-                  |> List.exists ~f:(fun a ->
+                  |> List.exists ~f:(fun Shared_ast.{rule= a; _} ->
                       List.map done_ ~f:fst
                       |> List.exists ~f:(fun b -> Rule_name.equal a b) )
                 then Some succ_rule_name

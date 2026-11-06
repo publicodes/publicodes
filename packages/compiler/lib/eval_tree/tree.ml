@@ -34,7 +34,7 @@ and 'meta context =
 [@@deriving show]
 
 and 'meta root_finding =
-  {with_: Rule_name.t list; tolerance: float; min: float; max: float}
+  {with_: Shared_ast.inlined_ref list; tolerance: float; min: float; max: float}
 [@@deriving show]
 
 (** NOTE: do we really need to have a generic meta type here as we only build

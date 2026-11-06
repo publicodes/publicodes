@@ -284,7 +284,8 @@ let rec node_of_tree_val (name : Shared.Rule_name.t)
       node_of_exclusive_replacement id target replacements
   | Root_finding {with_; tolerance; min; max} ->
       let with_ =
-        List.map with_ ~f:(fun with_ -> Tstr (Rule_name.to_string with_))
+        List.map with_ ~f:(fun Shared_ast.{rule; _} ->
+            Tstr (Rule_name.to_string rule) )
       in
       node_of_root_finding id name (Tlist with_) tolerance min max
 

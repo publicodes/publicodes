@@ -36,7 +36,7 @@ and 'meta context =
 [@@deriving show]
 
 and 'meta root_finding =
-  {with_: Rule_name.t list; tolerance: float; min: float; max: float}
+  {with_: Shared_ast.inlined_ref list; tolerance: float; min: float; max: float}
 [@@deriving show]
 
 and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.t}
@@ -96,7 +96,7 @@ val mk_exclusive_replacement :
   target:Rule_name.t -> replacements:Rule_name.t list -> 'meta naked_value
 
 val mk_root_finding :
-     with_:Rule_name.t list
+     with_:Shared_ast.inlined_ref list
   -> tolerance:float
   -> min:float
   -> max:float

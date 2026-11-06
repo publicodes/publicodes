@@ -1,8 +1,8 @@
 open Base
 open Utils
 open Output.Let_syntax
-open Parser_utils
 open Shared.Shared_ast
+open Parser_utils
 
 exception Invalid_rule_name of string
 
