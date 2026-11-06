@@ -101,6 +101,28 @@ let to_const const : Yojson.Basic.t =
 
 let to_name (r : Shared_ast.inlined_ref) = Rule_name.show r.rule
 
+let to_names (marks : Shared_ast.inlined_ref Mark.pos list) : Yojson.Basic.t =
+  `List (List.map marks ~f:(fun m -> `String (to_name (Mark.remove m))))
+
+(** A « remplace » / « rend non applicable » clause as written on the rule. *)
+let to_replace (r : Shared_ast.inlined_ref Shared_ast.replace) :
+    Yojson.Basic.t =
+  `Assoc
+    [ ("reference", `String (to_name (Mark.remove r.reference)))
+    ; ("only_in", to_names r.only_in)
+    ; ("except_in", to_names r.except_in)
+    ; ("exclusive", `Bool r.exclusive)
+    ; to_pos (Mark.pos r.reference) ]
+
+let rec to_inlined_ref (r : Shared_ast.inlined_ref) : Yojson.Basic.t =
+  let children field l =
+    match List.map l ~f:to_inlined_ref with [] -> [] | l -> [(field, `List l)]
+  in
+  `Assoc
+    ( [("rule", `String (Rule_name.show r.rule))]
+    @ children "replaced_by" r.replaced_by
+    @ children "made_not_applicable_by" r.made_not_applicable_by )
+
 let rec expr_to_mapping rule_name
     ((expr_value, expr_mark) : Shared_ast.typed_expr) : Yojson.Basic.t =
   let expr_to_mapping = expr_to_mapping rule_name in
@@ -115,7 +137,7 @@ let rec expr_to_mapping rule_name
   in
   match expr_value with
   | Shared_ast.Ref inlined ->
-      node "ref" (`String (Rule_name.show inlined.rule))
+      node "ref" (to_inlined_ref inlined)
   | Const const ->
       node "constant" (to_const const)
   | Binary_op ((binop, _), left, right) ->
@@ -259,7 +281,9 @@ and to_mechanism name ({value; chainable_mechanisms}, _) :
   ; ( "chained_mechanisms"
     , `List (List.map chainable_mechanisms ~f:(to_chained_mechanism name)) ) ]
 
-let to_json_entry ({name; value; meta; _} : Shared_ast.typed_rule_def) =
+let to_json_entry
+    ({name; value; meta; replace; make_not_applicable; _} :
+      Shared_ast.typed_rule_def ) =
   let name, Mark.{pos} = name in
   (* NOTE: we miss the type information in the rule_def, for now we need to
      retrieve it from the value *)
@@ -267,8 +291,20 @@ let to_json_entry ({name; value; meta; _} : Shared_ast.typed_rule_def) =
   let compiler_metadata = to_compiler_metadata name pos in
   let value = to_mechanism name value in
   let meta = List.map meta ~f:to_meta in
+  (* The authored clauses only: the replacements active on the rule itself are
+     not emitted until root evaluation applies them. *)
+  let replacements =
+    ( if List.is_empty replace then []
+      else [("replaces", `List (List.map replace ~f:to_replace))] )
+    @
+    if List.is_empty make_not_applicable then []
+    else
+      [ ( "makes_not_applicable"
+        , `List (List.map make_not_applicable ~f:to_replace) ) ]
+  in
   ( Rule_name.to_string name
-  , `Assoc (to_type_opt typ_opt @ compiler_metadata @ meta @ value) )
+  , `Assoc
+      (to_type_opt typ_opt @ compiler_metadata @ meta @ replacements @ value) )
 
 let to_str (typed_ast : Shared_ast.typed) =
   let json_entries = `Assoc (List.map typed_ast ~f:to_json_entry) in

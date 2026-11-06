@@ -49,13 +49,13 @@ const expr = (id: string, parameters: unknown) => ({
 	chained_mechanisms: [],
 })
 
-const ref = (id: string, parameters: string) => ({
+const ref = (id: string, rule: string) => ({
 	kind: 'ref',
 	id,
 	type: 'number',
 	unit: '€',
 	position,
-	parameters,
+	parameters: { rule },
 })
 
 const constant = (id: string, value: number) => ({
