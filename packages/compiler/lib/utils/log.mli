@@ -23,7 +23,7 @@ type level = [`Error | `Warning | `Debug] [@@deriving equal]
 type log =
   { kind: kind
   ; level: level
-  ; message: string (* ; labels: string Mark.pos list *)
+  ; message: string
   ; hints: string list
   ; labels: string Mark.pos list
   ; code: Err.Code.t option }

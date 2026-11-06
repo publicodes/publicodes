@@ -13,21 +13,19 @@ Affiche une erreur si le dossier est vide :
 Affiche une erreur si le fichier est vide :
 
   $ publicodes compile empty_file
-  
-  E039
-  aucune règle trouvée dans le fichier ou le stream [yaml error]
-       ╒══  empty_file/rules.publicodes:1:1 ══
+  error[E039]: aucune règle trouvée dans le fichier ou le stream
+      ╒══ empty_file/rules.publicodes:1:1
+    1 │  
+      │  ^ aucune règle trouvée dans le fichier ou le stream
   
   [123]
 
 Affiche une erreur si le stream stdin est vide :
 
   $ publicodes compile -
-  
-  E039
-  aucune règle trouvée dans le fichier ou le stream [yaml error]
-  <no
-  source
-  available>
+  error[E039]: aucune règle trouvée dans le fichier ou le stream
+      ╒══ unknown:1:1
+    1 │  
+      │  ^ aucune règle trouvée dans le fichier ou le stream
   
   [123]

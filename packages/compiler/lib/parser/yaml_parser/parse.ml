@@ -65,17 +65,32 @@ let print_token =
   | Nothing ->
       "Nothing"
 
+(** Returns the byte index of the character at the given [target] code point
+    index in the [content] UTF-8 string.
+
+    @example [byte_index_of_char_index "éa" 1] returns 2, because the character
+    at code point index 1 is 'a', which starts at byte index 2 in the UTF-8
+    encoding of "éa". *)
+let byte_index_of_char_index content target =
+  let byte_index = ref 0 in
+  let content_utf8 = String.Utf8.of_string content in
+  for _i = 0 to target - 1 do
+    let decoded = String.Utf8.get content_utf8 ~byte_pos:!byte_index in
+    byte_index := !byte_index + Uchar.Utf8.byte_length decoded
+  done ;
+  !byte_index
+
 let parse (filename : File.t) (content : string) : yaml Output.t =
   (* Create a parser from the content *)
   let pos_from_mark Event.{start_mark; end_mark} =
     Pos.
       { file= filename
       ; start_pos=
-          { index= start_mark.index
+          { index= byte_index_of_char_index content start_mark.index
           ; line= start_mark.line + 1
           ; column= start_mark.column + 1 }
       ; end_pos=
-          { index= end_mark.index
+          { index= byte_index_of_char_index content end_mark.index
           ; line= end_mark.line + 1
           ; column= end_mark.column + 1 } }
   in

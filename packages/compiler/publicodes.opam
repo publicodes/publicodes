@@ -41,6 +41,7 @@ depends: [
   "yaml"
   "jingoo" {>= "1.5.3" & < "1.6"}
   "yojson"
+  "grace" {>= "0.4.1" & < "0.5"}
   "ocaml-lsp-server" {with-dev-setup}
   "ocamlformat" {>= "0.28.1" & with-dev-setup}
   "ppx_inline_test" {with-test}

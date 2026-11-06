@@ -21,11 +21,13 @@ let equal one two = Fpath.equal one two
 
 let compare one two = Fpath.compare one two
 
-let t_of_sexp path = String.t_of_sexp path |> of_string_exn
+let t_of_sexp path = of_string_exn (String.t_of_sexp path)
 
-let sexp_of_t path = to_intern path |> String.sexp_of_t
+let sexp_of_t path = String.sexp_of_t (to_intern path)
 
 let std = of_string_exn "-"
+
+let is_std file = equal file std
 
 let read_file file_path =
   let read ic = In_channel.input_all ic in

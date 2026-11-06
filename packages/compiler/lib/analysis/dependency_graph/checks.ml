@@ -2,47 +2,12 @@ open Base
 open Utils
 open Shared
 open Utils.Output
-module Cycle_analysis = Graph.Cycles.Johnson (Rule_graph)
 
-let cycle_check (graph : Rule_graph.t) : Log.t list =
-  let log_cycle cycle acc =
-    let cycle = List.rev cycle in
-    match cycle with
-    | first_rule :: second_rule :: _ ->
-        let _, first_ref_pos, _ =
-          Rule_graph.find_edge graph first_rule second_rule
-        in
-        let cycle_full = cycle @ [first_rule] in
-        let edges =
-          List.map
-            (List.zip_exn cycle (List.tl_exn cycle_full))
-            ~f:(fun (a, b) ->
-              let _, pos, _ = Rule_graph.find_edge graph a b in
-              (pos, b) )
-        in
-        let labels =
-          List.sort edges ~compare:(fun (p1, _) (p2, _) -> Pos.compare p1 p2)
-          |> List.mapi ~f:(fun i (pos, (ref, _)) ->
-              let is_last = i = List.length edges - 1 in
-              let label =
-                Printf.sprintf "règle '%s' référencée "
-                  (Rule_name.to_string ref)
-                ^ if is_last then "de nouveau" else "ici"
-              in
-              Mark.mk_pos ~pos label )
-        in
-        let code, message = Err.cycle_detected in
-        Log.warning message ~code ~kind:`Cycle ~pos:first_ref_pos ~labels :: acc
-    | [rule] ->
-        let _, pos, _ = Rule_graph.find_edge graph rule rule in
-        let code, message = Err.cycle_detected in
-        Log.warning message ~code ~kind:`Cycle ~pos
-          ~labels:[Mark.mk_pos ~pos "la règle se référence elle-même"]
-        :: acc
-    | [] ->
-        acc
-  in
-  Cycle_analysis.fold_cycles log_cycle graph []
+module Cycle_analysis = Cycles.Make (struct
+  include Rule_graph
+
+  let reference ((_, pos, (rule, _)) : Rule_graph.edge) = (rule, pos)
+end)
 
 let illegal_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
     Log.t list =
@@ -56,7 +21,7 @@ let illegal_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
       Log.error ~pos ~kind:`Syntax ~code message
         ~hints:
           [ Stdlib.Format.asprintf
-              "La rêgle `%a` n'est pas accessible depuis ce module" Rule_name.pp
+              "La règle `%a` n'est pas accessible depuis ce module" Rule_name.pp
               rule_b ]
       :: acc
     else if
@@ -67,9 +32,9 @@ let illegal_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
       let code, message = Err.private_rule in
       Log.error ~pos ~kind:`Syntax ~code message
         ~hints:
-          [ Stdlib.Format.asprintf "La rêgle `%a` n'est pas exportée"
+          [ Stdlib.Format.asprintf "La règle `%a` n'est pas exportée"
               Rule_name.pp rule_b
-          ; "Ajouter l'attribut public sur la rêgle référencé" ]
+          ; "Ajouter l'attribut « public: oui » sur la règle référencée" ]
       :: acc
     else acc
   in
@@ -132,7 +97,7 @@ let unused_context_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
 
 let mk_and_checks ast ~replacement_graph ~make_not_applicable_graph =
   let graph = Rule_graph.mk ast ~replacement_graph ~make_not_applicable_graph in
-  let cycle_logs = cycle_check graph in
+  let cycle_logs = Cycle_analysis.check graph in
   let access_logs = illegal_check ast graph in
   let context_logs = unused_context_check ast graph in
   let logs = cycle_logs @ access_logs @ context_logs in

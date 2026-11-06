@@ -194,8 +194,10 @@ let format_hints hints =
   else
     let hint_docs =
       List.map hints ~f:(fun hint ->
-          box ~indent:7
-            (seq (tag `Decoration (text " Hint: ")) (tag `Hint (text hint))) )
+          hbox
+            (seq
+               (tag `Decoration (verbatim " Hint: "))
+               (tag `Hint (text hint)) ) )
     in
     vbox (concat ~sep:cut hint_docs)
 
@@ -232,12 +234,11 @@ let print (log : Log.t) =
          | [] ->
              [format_code_excerpt ~pos:position level_tag]
          | labels ->
-             (* FIXME: should show the position too *)
-             List.map
-               ~f:(fun label ->
-                 let message = Mark.remove label in
-                 let pos = Mark.pos label in
-                 format_code_excerpt ~pos ~message level_tag )
+             (* [format_code_excerpt ~pos:position level_tag] *)
+             (List.map ~f:(fun label ->
+                  let message = Mark.remove label in
+                  let pos = Mark.pos label in
+                  format_code_excerpt ~pos ~message level_tag ) )
                labels ) )
   in
   let hints_doc = format_hints hints in
