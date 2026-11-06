@@ -28,6 +28,82 @@ soustraction:
 		expect(soustraction.unit).toBe('%')
 	})
 
+	it('addition et soustraction de pourcentages', async () => {
+		const { a, c } = await yaml`
+    a: 100% - 40%
+    c: 40% + 5%
+    `
+		expect(a.evaluate().value).toEqual(60)
+		expect(a.unit).toBe('%')
+		expect(c.evaluate().value).toEqual(45)
+		expect(c.unit).toBe('%')
+	})
+
+	it('pourcentage et valeur sans unité sont incompatibles', () => {
+		expect(yaml`
+a: 100% - 1
+`).rejects.toThrowError('unités non compatibles')
+		expect(yaml`
+b: 1 - 40%
+`).rejects.toThrowError('unités non compatibles')
+		expect(yaml`
+c: 50% + 1
+`).rejects.toThrowError('unités non compatibles')
+	})
+
+	it('mélange de pourcentages et de valeurs sans unité dans une liste', async () => {
+		const { somme, moyenne, minimum, maximum } = await yaml`
+    somme:
+      somme:
+        - 40%
+        - 5%
+
+    moyenne:
+      moyenne:
+        - 40%
+        - 5%
+
+    minimum:
+      le minimum de:
+        - 40%
+        - 5%
+
+    maximum:
+      le maximum de:
+        - 40%
+        - 5%
+    `
+		expect(somme.evaluate().value).toEqual(45)
+		expect(somme.unit).toBe('%')
+		expect(moyenne.evaluate().value).toEqual(22.5)
+		expect(moyenne.unit).toBe('%')
+		expect(minimum.evaluate().value).toEqual(5)
+		expect(minimum.unit).toBe('%')
+		expect(maximum.evaluate().value).toEqual(40)
+		expect(maximum.unit).toBe('%')
+	})
+
+	it('mélange de pourcentages et de valeurs sans unité dans une liste (erreur)', () => {
+		expect(yaml`
+a:
+  somme:
+    - 100%
+    - 1
+`).rejects.toThrowError('unités non compatibles')
+		expect(yaml`
+b:
+  moyenne:
+    - 40%
+    - 1
+`).rejects.toThrowError('unités non compatibles')
+		expect(yaml`
+c:
+  le minimum de:
+    - 40%
+    - 1
+`).rejects.toThrowError('unités non compatibles')
+	})
+
 	it('simplification dans les multiplications', async () => {
 		const { multiplication } = await yaml`
 
@@ -109,5 +185,35 @@ multiplication:
     `
 		expect(a.evaluate().value).toEqual(1)
 		expect(a.unit).toBe('€')
+	})
+
+	it('le mécanisme produit se comporte comme la multiplication', async () => {
+		const { a, b, c, d } = await yaml`
+    a:
+      produit:
+        - 5%
+        - 200
+    b:
+      produit:
+        - 20
+        - 5%
+    c:
+      produit:
+        - 50%
+        - 20%
+    d:
+      produit:
+        - 50%
+        - 50%
+        - 20%
+    `
+		expect(a.evaluate().value).toEqual(10)
+		expect(a.unit).toBe('aucune')
+		expect(b.evaluate().value).toEqual(1)
+		expect(b.unit).toBe('aucune')
+		expect(c.evaluate().value).toEqual(10)
+		expect(c.unit).toBe('%')
+		expect(d.evaluate().value).toEqual(5)
+		expect(d.unit).toBe('%')
 	})
 })

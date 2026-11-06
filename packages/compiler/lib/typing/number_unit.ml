@@ -69,6 +69,14 @@ let is_empty (t : t) =
   && List.is_empty normalized.inv
   && Units.equal normalized.concrete Units.empty
 
+let is_unconstrained (t : t) =
+(** A unit that is not inferred yet, e.g. the literal [1] which can either be a
+    plain number or a percentage. *)
+  let normalized = normalize t in
+  Units.equal normalized.concrete Units.empty
+  && List.is_empty normalized.inv
+  && not (List.is_empty normalized.elem)
+
 let multiply (t1 : t) (t2 : t) : t =
   (* Flatten the lists and concatenate them *)
   t1 @ t2

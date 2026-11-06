@@ -26,6 +26,8 @@ let get_unit_exn typ =
   | _ ->
       failwith "No unit"
 
+let percent_power unit = Map.find unit "%" |> Option.value ~default:0
+
 (** [transform_percent typ pos op left_value right_value] transforms a
     binary operation and handles the case where there is a percentage involved
     by multiplying by 100 to convert to the correct unit.
@@ -51,16 +53,34 @@ let transform_percent typ pos op left_value right_value =
   let expr = Binary_op (op, left_value, right_value) in
   if Units.equal op_unit unit then expr
   else
-    let percent_pow_from = Map.find op_unit "%" |> Option.value ~default:0 in
-    let percent_pow_to = Map.find unit "%" |> Option.value ~default:0 in
-    Binary_op
-      ( Mark.mk_pos ~pos Shared_ast.Mul
-      , Tree.mk_value ~meta:typ ~pos expr
-      , Tree.mk_value ~pos ~meta:(Some (Typ.TNumber (Some Units.empty)))
-          (Const
-             (Number
-                (100. **. Float.of_int (percent_pow_to - percent_pow_from), None)
-             ) ) )
+    let factor =
+      100. **. Float.of_int (percent_power unit - percent_power op_unit)
+    in
+    let factor_value factor =
+      Tree.mk_value ~pos ~meta:(Some (Typ.TNumber (Some Units.empty)))
+        (Const (Number (factor, None)))
+    in
+    let scale value factor =
+      Tree.mk_value ~pos ~meta:value.meta
+        (Binary_op (Mark.mk_pos ~pos Shared_ast.Mul, value, factor_value factor))
+    in
+    let left_has_percent = percent_power left_unit <> 0 in
+    let right_has_percent = percent_power right_unit <> 0 in
+    match op with
+    | Shared_ast.Mul, _ when left_has_percent ->
+        Binary_op (op, scale left_value factor, right_value)
+    | Shared_ast.Mul, _ when right_has_percent ->
+        Binary_op (op, left_value, scale right_value factor)
+    | Shared_ast.Div, _ when right_has_percent ->
+        (* [x / y %] is multiplied by [100], i.e. divided by [0.01] *)
+        Binary_op (op, left_value, scale right_value (1. /. factor))
+    | Shared_ast.Div, _ when left_has_percent ->
+        Binary_op (op, scale left_value factor, right_value)
+    | _ ->
+        Binary_op
+          ( Mark.mk_pos ~pos Shared_ast.Mul
+          , Tree.mk_value ~meta:typ ~pos expr
+          , factor_value factor )
 
 let rec transform ?(undefined = Tree.const_not_defined)
     (value : Shared_ast.typed_value) : Typ.t option Tree.value =

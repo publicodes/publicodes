@@ -16,6 +16,9 @@ e: 50% * 20%
 # should be % (and equal to 5%)
 f: 50% * 50% * 20%
 
+# should be % (and equal to 60%)
+g: 100% - 40%
+
 simplification:
   avec:
     inline: 5% * 4€

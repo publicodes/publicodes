@@ -79,31 +79,34 @@ Unit with percent :
 
   $ publicodes compile -t debug_eval_tree -o - percent 
   a:
-    (5. % * 200.) * 0.01
+    (5. % * 0.01) * 200.
   
   b:
-    (10. % * 50. €) * 0.01
+    (10. % * 0.01) * 50. €
   
   c:
     5. %/étoile * 5. étoile
   
   d:
-    (4. € / 85. %) * 100.
+    4. € / (85. % * 0.01)
   
   e:
-    (50. % * 20. %) * 0.01
+    (50. % * 0.01) * 20. %
   
   f:
-    (50. % * ((50. % * 20. %) * 0.01)) * 0.01
+    (50. % * 0.01) * ((50. % * 0.01) * 20. %)
+  
+  g:
+    100. % - 40. %
   
   simplification:
     get_context(simplification)
   
   simplification . inline:
-    (5. % * 4. €) * 0.01
+    (5. % * 0.01) * 4. €
   
   simplification . mechanism:
-    (5. % * 4. €) * 0.01
+    (5. % * 0.01) * 4. €
 
 Unit with percent error:
 
@@ -118,6 +121,61 @@ Unit with percent error:
      2 │ # should have error
      3 │ e: 5%/an + 4€/an
        │            ˘˘˘˘˘ unité: €/an
+  
+  
+  E025 unités non compatibles [type error]
+       ╒══  percent-error/rules.publicodes:6:4 ══
+     5 │ # should have error: a percentage and a unitless value are not compatible
+     6 │ f: 100% - 1
+       │    ˘˘˘˘˘ unité: %
+       ╒══  percent-error/rules.publicodes:6:11 ══
+     5 │ # should have error: a percentage and a unitless value are not compatible
+     6 │ f: 100% - 1
+       │           ˘ unité: aucune
+  
+  
+  E025 unités non compatibles [type error]
+       ╒══  percent-error/rules.publicodes:9:4 ══
+     8 │ # should have error: same, with the unitless value on the left
+     9 │ g: 1 - 40%
+       │    ˘˘ unité: aucune
+       ╒══  percent-error/rules.publicodes:9:8 ══
+     8 │ # should have error: same, with the unitless value on the left
+     9 │ g: 1 - 40%
+       │        ˘˘˘ unité: %
+  
+  
+  E025 unités non compatibles [type error]
+       ╒══  percent-error/rules.publicodes:14:7 ══
+    13 │   somme:
+    14 │     - 100%
+       │       ˘˘˘˘ unité: %
+       ╒══  percent-error/rules.publicodes:15:7 ══
+    14 │     - 100%
+    15 │     - 1
+       │       ˘ unité: aucune
+  
+  
+  E025 unités non compatibles [type error]
+       ╒══  percent-error/rules.publicodes:20:7 ══
+    19 │   moyenne:
+    20 │     - 40%
+       │       ˘˘˘ unité: %
+       ╒══  percent-error/rules.publicodes:21:7 ══
+    20 │     - 40%
+    21 │     - 1
+       │       ˘ unité: aucune
+  
+  
+  E025 unités non compatibles [type error]
+       ╒══  percent-error/rules.publicodes:25:7 ══
+    24 │   le minimum de:
+    25 │     - 40%
+       │       ˘˘˘ unité: %
+       ╒══  percent-error/rules.publicodes:26:7 ══
+    25 │     - 40%
+    26 │     - 1
+       │       ˘ unité: aucune
   
   [123]
 

@@ -45,7 +45,7 @@ b:
 a:
   le maximum de:
     - 10 %
-    - 4.4
+    - 4.4 %
     - b
 b:
   non applicable si: oui
