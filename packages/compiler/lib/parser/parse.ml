@@ -20,8 +20,7 @@ let authorized_keys =
     ; "est applicable"
     ; "est non applicable" ]
   (* To implement *)
-  @ [ "barème"
-    ; "grille"
+  @ [ "grille"
     ; "inversion numérique"
     ; "taux progressif"
     ; "durée"

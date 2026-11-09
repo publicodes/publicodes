@@ -148,7 +148,8 @@ let chainable_mechanisms =
         ; fn=
             (fun ~pos ~parse value ->
               let+ value = parse ~pos value in
-              Round (Up, value) ) } ) ]
+              Round (Up, value) ) } )
+    ; ("barème", {on_root= false; fn= Mecha_scale.parse}) ]
 
 let find_parse_mechanism ~pos ~is_root hashtbl name =
   let {on_root; fn} = Hashtbl.find_exn hashtbl name in
