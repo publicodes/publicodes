@@ -1,0 +1,13 @@
+revenu imposable: 54126 €
+impôt sur le revenu:
+  valeur: revenu imposable
+  barème:
+    - taux: 0%
+      plafond: 9807
+    - taux: 14%
+      plafond: 27086
+    - taux: 30%
+      plafond: 72617
+    - taux: 41%
+      plafond: 153783
+    - taux: 45%

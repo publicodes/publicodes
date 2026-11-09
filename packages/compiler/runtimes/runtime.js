@@ -997,6 +997,42 @@ function $root_finding(
 	return value
 }
 
+/**
+ * Returns the scale amount for the value, given the list of slice, and the
+ * remaining rate.
+ *
+ * @param {Value} value
+ * @param {[Value, Value][]} scales
+ * @param {Value} remaining_rate
+ * @param {Context} ctx
+ * @param {RuleName[]} params
+ * @returns {Value}
+ */
+function $scale(value, scales, remaining_rate, ctx, params) {
+	// TODO: handle undefined nonapplicable
+	scales = scales.sort((a, b) => {
+		return a[0] - b[0]
+	})
+	let result = 0
+	let slice = 0
+	let rem = 0
+	let last_ceiling = 0
+	scales.forEach(([ceiling, rate]) => {
+		slice = ceiling - last_ceiling
+		if (value < slice) {
+			rem = value
+			value = 0
+		} else {
+			rem = slice
+			value -= slice
+		}
+		result += rem * (rate / 100)
+		last_ceiling = ceiling
+	})
+	result += value * (remaining_rate / 100)
+	return result
+}
+
 export const p = {
 	NotDefined,
 	NotApplicable,

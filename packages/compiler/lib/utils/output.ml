@@ -168,3 +168,11 @@ let to_exn (output : 'a t) =
 
 let of_opt ~log opt : 'a t =
   match opt with None -> (None, [log]) | Some value -> return value
+
+let map_opt opt ~f =
+  match opt with
+  | Some value ->
+      let value, logs = f value in
+      return ~logs value
+  | None ->
+      return None
