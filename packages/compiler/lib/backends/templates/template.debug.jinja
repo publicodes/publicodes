@@ -128,6 +128,13 @@ root_finding(@{{ node_value.rule }}, [
 		@{{ c }}{%- if !loop.last -%}, {% endif -%}
 	{%- endfor -%}
 	], {{ node_value.min }}, {{ node_value.max }}, {{ node_value.tolerance }})
+{%- case "scale" -%}
+scale({{ fmt_operand(node_value.value) }}, [
+	{%- for c in node_value.scales -%}
+		[{{ fmt_operand(c.ceiling) }}, {{ fmt_operand(c.rate) }}]{%- if !loop.last -%}, {% endif -%}
+	{%- endfor -%}
+	]
+	{%- if node_value.remaining_rate %}, {{ fmt_operand(node_value.remaining_rate) }}{% endif %})
 {%- endswitch %}
 {%- endmacro %}
 
