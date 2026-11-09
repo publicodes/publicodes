@@ -252,6 +252,8 @@ and to_chained_mechanism name
         ("ceiling", `Assoc (to_mechanism value))
     | Floor value ->
         ("floor", `Assoc (to_mechanism value))
+    | Abatement value ->
+        ("abatement", `Assoc (to_mechanism value))
     | Round (Up, value) ->
         ("round_up", `Assoc (to_mechanism value))
     | Round (Down, value) ->
