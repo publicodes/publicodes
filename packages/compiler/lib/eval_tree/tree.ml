@@ -105,6 +105,8 @@ let binop_gt ~pos = mk_binop ~pos Shared_ast.Gt
 
 let binop_add ~pos = mk_binop ~pos Shared_ast.Add
 
+let binop_sub ~pos = mk_binop ~pos Shared_ast.Sub
+
 let binop_mul ~pos = mk_binop ~pos Shared_ast.Mul
 
 let binop_div ~pos = mk_binop ~pos Shared_ast.Div
