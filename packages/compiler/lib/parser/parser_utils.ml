@@ -17,6 +17,22 @@ let get_scalar ~pos (value : yaml) =
              tableau a été trouvé."
           ; "Vérifiez l'indentation." ]
 
+let get_object ~pos (value : yaml) =
+  match value with
+  | `O m ->
+      Output.return m
+  | _ ->
+      let code, err = Err.parsing_should_be_object in
+      Output.fatal_error ~pos ~code ~kind:`Syntax err
+
+let get_array ~pos (value : yaml) =
+  match value with
+  | `A a ->
+      Output.return a
+  | _ ->
+      let code, err = Err.parsing_should_be_array in
+      Output.fatal_error ~pos ~code ~kind:`Syntax err
+
 let parse_array ~pos
     ~(parse :
           ?error_if_undefined:bool
