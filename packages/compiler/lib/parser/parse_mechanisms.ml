@@ -116,6 +116,12 @@ let chainable_mechanisms =
             (fun ~pos ~parse value ->
               let+ value = parse ~pos value in
               Floor value ) } )
+    ; ( "abattement"
+      , { on_root= false
+        ; fn=
+            (fun ~pos ~parse value ->
+              let+ value = parse ~pos value in
+              Abatement value ) } )
     ; ( "par défaut"
       , { on_root= false
         ; fn=

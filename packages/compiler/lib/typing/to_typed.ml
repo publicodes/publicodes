@@ -149,6 +149,9 @@ and to_chainable_mechanism (chainable : Ast.typing_chainable_mechanism) :
   | Floor value ->
       let+ value = to_value value in
       Shared_ast.Floor value
+  | Abatement value ->
+      let+ value = to_value value in
+      Shared_ast.Abatement value
   | Round (rounding, value) ->
       let+ value = to_value value in
       Shared_ast.Round (rounding, value)
