@@ -181,7 +181,9 @@ and unfold_chainable_mechanism ~init mechanisms =
          | Default default ->
              transform_default ~pos ~typ default acc
          | Round round ->
-             transform_round ~pos ~typ round acc )
+             transform_round ~pos ~typ round acc
+         | Abatement value ->
+             transform_abatement ~pos ~typ value acc )
 
 (** [transform_fold ~pos ~typ ?init ~f values] returns [f (... f (f (f init e1) e2) e3...) en],
     where [e1..en] are the transformed elements of [values] and [init] is the
@@ -298,6 +300,23 @@ and transform_floor ~pos ~typ floor value =
                  (p (binop_lt ~pos value floor)) ) )
          ~then_:floor ~else_:value ) )
 
+and transform_abatement ~pos ~typ abatement value =
+  (* FIXME: each node probably need it's own type, not just the condition *)
+  let p = Tree.mk_value ~pos ~meta:typ in
+  let _, {Shared_ast.typ= abatement_typ; _} = abatement in
+  let abatement = transform abatement in
+  match abatement_typ with
+  | Some (TNumber (Some unit)) | Some (Literal (LNumber (_, Some unit), _)) ->
+      let abatement =
+        if Units.is_percent unit then
+          let op = Mark.mk_pos Shared_ast.Mul ~pos in
+          p (transform_percent typ pos op value abatement)
+        else abatement
+      in
+      Tree.(p (binop_sub ~pos value abatement))
+  | _ ->
+      failwith "unreachable"
+
 and transform_ceiling ~pos ~typ ceil value =
   (* FIXME: each node probably need it's own type, not just the condition *)
   let p = Tree.mk_value ~pos ~meta:typ in
@@ -383,7 +402,7 @@ and transform_round ~pos ~typ round value =
     | Some (TNumber (Some unit))
     | Some (Literal (LNumber (_, Some unit), _))
     | Some (TEnum ((LNumber (_, Some unit), _) :: _))
-      when Units.equal unit (Units.parse_unit "décimales") ->
+      when Units.is_decimal unit ->
         p
           (binop_pow ~pos
              (p (Const (Tree.Number (10., None))))

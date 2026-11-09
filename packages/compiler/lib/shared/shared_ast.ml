@@ -84,6 +84,7 @@ and ('ref, 'mark) chainable_mechanism =
   | Ceiling of ('ref, 'mark) value
   | Floor of ('ref, 'mark) value
   | Round of (rounding * ('ref, 'mark) value)
+  | Abatement of ('ref, 'mark) value
 [@@deriving equal, compare, show, sexp]
 
 and ('ref, 'mark) naked_value =

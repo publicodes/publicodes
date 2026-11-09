@@ -65,6 +65,14 @@ let parse_unit (unit : string) : t =
 
 let equal (unit1 : t) (unit2 : t) : bool = Map.equal Int.equal unit1 unit2
 
+let percent = parse_unit "%"
+
+let is_percent (unit : t) : bool = Map.equal Int.equal unit percent
+
+let decimal = parse_unit "décimales"
+
+let is_decimal (unit : t) : bool = Map.equal Int.equal unit decimal
+
 let same_class (unit1 : t) (unit2 : t) : bool =
   (* Remove '%' unit in both and compare *)
   let unit1 = Map.remove unit1 "%" in

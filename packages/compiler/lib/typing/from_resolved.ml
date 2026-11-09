@@ -131,6 +131,9 @@ and transform_chainable_mechanism
   | Round (rounding, value) ->
       let value = transform_value value in
       Round (rounding, value)
+  | Abatement value ->
+      let value = transform_value value in
+      Abatement value
 
 and transform_value (value : Shared_ast.resolved_value) : Ast.typing_value =
   let {Shared_ast.value; chainable_mechanisms}, ({Mark.pos} as mark) = value in
