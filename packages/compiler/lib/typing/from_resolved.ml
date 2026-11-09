@@ -111,6 +111,15 @@ and transform_chainable_mechanism
             (ref, value) )
       in
       Context values
+  | Scale (scales, remaining_rate) ->
+      let scales =
+        List.map scales ~f:(fun {ceiling; rate} ->
+            let ceiling = transform_value ceiling in
+            let rate = transform_value rate in
+            {Shared_ast.ceiling; rate} )
+      in
+      let remaining_rate = Option.map remaining_rate ~f:transform_value in
+      Scale (scales, remaining_rate)
   | Applicable_if value ->
       let value = transform_value value in
       Applicable_if value

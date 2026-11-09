@@ -130,6 +130,16 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
           Round (rounding, precision)
       | Type t ->
           Output.return (Type t)
+      | Scale (scales, remaining_rate) ->
+          let* scales =
+            List.map scales ~f:(fun {ceiling; rate} ->
+                let* ceiling = map_value ceiling in
+                let+ rate = map_value rate in
+                {ceiling; rate} )
+            |> Output.all_keep_logs
+          in
+          let+ remaining_rate = Output.map_opt remaining_rate ~f:map_value in
+          Scale (scales, remaining_rate)
     in
     Mark.copy mechanism_mark mechanism
   and map_value_mechanism

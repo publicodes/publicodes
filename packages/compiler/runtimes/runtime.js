@@ -997,6 +997,61 @@ function $root_finding(
 	return value
 }
 
+/**
+ * Returns the scale amount for the value, given the list of slice, and the
+ * remaining rate.
+ *
+ * @param {Value} value
+ * @param {[Value, Value][]} scales
+ * @param {Value} remaining_rate
+ * @param {Context} ctx
+ * @param {RuleName[]} params
+ * @returns {Value}
+ */
+function $scale(value, scales, remaining_rate, ctx, params) {
+	if (isNotDefined(value) || isNotDefined(remaining_rate)) {
+		return NotDefined
+	}
+	if (
+		scales.find(([ceiling, rate]) => {
+			return isNotDefined(ceiling) || isNotDefined(rate)
+		})
+	) {
+		return NotDefined
+	}
+	if (isNotApplicable(value)) {
+		return NotApplicable
+	}
+
+	scales = scales
+		.filter(([ceiling, rate]) => {
+			return !isNotApplicable(ceiling) && !isNotApplicable(rate)
+		})
+		.sort(([ceiling_a, rate_a], [ceiling_b, rate_b]) => {
+			return ceiling_a - ceiling_b
+		})
+	let result = 0
+	let last_ceiling = 0
+	let step_ceiling = 0
+	let cur_amount = 0
+	scales.forEach(([ceiling, rate]) => {
+		step_ceiling = ceiling - last_ceiling
+		if (value < step_ceiling) {
+			cur_amount = value
+			value = 0
+		} else {
+			cur_amount = step_ceiling
+			value -= step_ceiling
+		}
+		result += cur_amount * (rate / 100)
+		last_ceiling = ceiling
+	})
+	if (!isNotApplicable(remaining_rate)) {
+		result += value * (remaining_rate / 100)
+	}
+	return result
+}
+
 export const p = {
 	NotDefined,
 	NotApplicable,
