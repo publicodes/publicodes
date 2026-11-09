@@ -107,3 +107,5 @@ val fold_right : 'a list -> f:('a -> 'b -> 'b t) -> init:'b -> 'b t
 val to_exn : 'a t -> 'a
 
 val of_opt : log:Log.t -> 'a option -> 'a t
+
+val map_opt : 'a option -> f:('a -> 'b t) -> 'b option t
