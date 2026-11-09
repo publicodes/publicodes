@@ -680,6 +680,62 @@ and check_chainable_mechanism
       in
       let* _ = check_union wip mark.typ in
       check_union_with_parent_typ ~ctx mark.typ
+  | Scale (scales, remaining_rate) ->
+      let wip = Ast.mk_number ~unit:None ~pos in
+      let* _ =
+        List.map scales ~f:(fun {ceiling; rate} ->
+            let* _ =
+              let* _ = check_value ceiling ~ctx:{ctx with parent_typ= None} in
+              let _, value_mark = ceiling in
+              let typ, _ = UnionFind.get value_mark.typ in
+              match get_number_unit_opt typ with
+              | None ->
+                  let hints = ["plafond doit être un nombre"] in
+                  error_typ_invalid ~hints value_mark.typ
+              | Some _ ->
+                  check_union value_mark.typ wip
+            in
+            let* _ =
+              let* _ = check_value rate ~ctx:{ctx with parent_typ= None} in
+              let _, value_mark = rate in
+              let typ, _ = UnionFind.get value_mark.typ in
+              match get_number_unit_opt typ with
+              | None ->
+                  let hints = ["taux doit être un nombre"] in
+                  error_typ_invalid ~hints value_mark.typ
+              | Some unit ->
+                  let concrete = Number_unit.to_concrete unit in
+                  if Units.is_percent concrete then Output.return ()
+                  else
+                    let hints = ["taux doit être un pourcentage"] in
+                    error_typ_invalid ~hints value_mark.typ
+            in
+            Output.return () )
+        |> Output.all_okay
+      in
+      let* _ =
+        match remaining_rate with
+        | None ->
+            Output.return ()
+        | Some remaining_rate -> (
+            let* _ =
+              check_value remaining_rate ~ctx:{ctx with parent_typ= None}
+            in
+            let _, value_mark = remaining_rate in
+            let typ, _ = UnionFind.get value_mark.typ in
+            match get_number_unit_opt typ with
+            | None ->
+                let hints = ["taux doit être un nombre"] in
+                error_typ_invalid ~hints value_mark.typ
+            | Some unit ->
+                let concrete = Number_unit.to_concrete unit in
+                if Units.is_percent concrete then Output.return ()
+                else
+                  let hints = ["taux doit être un pourcentage"] in
+                  error_typ_invalid ~hints value_mark.typ )
+      in
+      let* _ = check_union wip mark.typ in
+      check_union_with_parent_typ ~ctx mark.typ
 
 and check_contexts (chainables : Ast.typing_marked_chainable_mechanism list)
     ~ctx =
