@@ -260,6 +260,23 @@ and to_chained_mechanism name
         ("round_down", `Assoc (to_mechanism value))
     | Round (Nearest, value) ->
         ("round_nearest", `Assoc (to_mechanism value))
+    | Scale (scales, remaining_rate) ->
+        let scales =
+          List.map scales ~f:(fun {ceiling; rate} ->
+              let ceiling = `Assoc (to_mechanism ceiling) in
+              let rate = `Assoc (to_mechanism rate) in
+              `Assoc [("ceiling", ceiling); ("rate", rate)] )
+        in
+        let remaining_rate =
+          match remaining_rate with
+          | Some remaining_rate ->
+              `Assoc (to_mechanism remaining_rate)
+          | None ->
+              `Null
+        in
+        ( "scale"
+        , `Assoc [("scales", `List scales); ("remaining_rate", remaining_rate)]
+        )
   in
   let kind = [("kind", `String kind)] in
   let parameters = [("parameters", parameters)] in

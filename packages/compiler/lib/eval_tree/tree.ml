@@ -27,6 +27,7 @@ type 'meta naked_value =
   | Round of (Shared_ast.rounding * 'meta value * 'meta value)
   | Exclusive_replacement of (Rule_name.t * Rule_name.t list)
   | Root_finding of 'meta root_finding
+  | Scale of 'meta value * 'meta scale list * 'meta value option
 [@@deriving show]
 
 and 'meta context =
@@ -36,6 +37,8 @@ and 'meta context =
 and 'meta root_finding =
   {with_: Rule_name.t list; tolerance: float; min: float; max: float}
 [@@deriving show]
+
+and 'meta scale = {ceiling: 'meta value; rate: 'meta value} [@@deriving show]
 
 (** NOTE: do we really need to have a generic meta type here as we only build
     the eval tree with meta = Shared.Typ.t? *)
@@ -78,6 +81,16 @@ let rec map_value ~(f : 'a value -> 'a value) (c : 'a value) : 'a value =
         c.value
     | Root_finding {with_; tolerance; min; max} ->
         Root_finding {with_; tolerance; min; max}
+    | Scale (value, scales, remaining_rate) ->
+        let value = map_value ~f value in
+        let scales =
+          List.map scales ~f:(fun {ceiling; rate} ->
+              let ceiling = map_value ~f ceiling in
+              let rate = map_value ~f rate in
+              {ceiling; rate} )
+        in
+        let remaining_rate = Option.map remaining_rate ~f:(map_value ~f) in
+        Scale (value, scales, remaining_rate)
   in
   f {c with value= new_value}
 
@@ -124,6 +137,9 @@ let mk_exclusive_replacement ~target ~replacements =
 
 let mk_root_finding ~with_ ~tolerance ~min ~max =
   Root_finding {with_; tolerance; min; max}
+
+let mk_scale ~value ~scales ~remaining_rate =
+  Scale (value, scales, remaining_rate)
 
 let const_not_applicable = Const Not_applicable
 

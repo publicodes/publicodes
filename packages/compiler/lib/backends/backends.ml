@@ -234,6 +234,11 @@ let node_of_root_finding id rule with_ tolerance min max =
        ; ("min", Tfloat min)
        ; ("max", Tfloat max) ]
 
+let node_of_scale id value scales remaining_rate =
+  node_of id "scale"
+  @@ Tobj
+       [("value", value); ("scales", scales); ("remaining_rate", remaining_rate)]
+
 let rec node_of_tree_val (name : Shared.Rule_name.t)
     ({value; pos; _} : Typ.t option Eval_tree.value) =
   let id = Shared.Id.hash name pos in
@@ -287,6 +292,22 @@ let rec node_of_tree_val (name : Shared.Rule_name.t)
         List.map with_ ~f:(fun with_ -> Tstr (Rule_name.to_string with_))
       in
       node_of_root_finding id name (Tlist with_) tolerance min max
+  | Scale (value, scales, remaining_rate) ->
+      let value = node_of_tree_val value in
+      let scales =
+        List.map scales ~f:(fun {ceiling; rate} ->
+            let ceiling = node_of_tree_val ceiling in
+            let rate = node_of_tree_val rate in
+            Tobj [("ceiling", ceiling); ("rate", rate)] )
+      in
+      let remaining_rate =
+        match remaining_rate with
+        | Some remaining_rate ->
+            node_of_tree_val remaining_rate
+        | None ->
+            Tnull
+      in
+      node_of_scale id value (Tlist scales) remaining_rate
 
 let from_rules eval_tree =
   let rules =

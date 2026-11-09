@@ -64,6 +64,10 @@ let from_rule_def (rule_def : Shared_ast.resolved_rule_def) : t list =
         get_contexts acc v
     | Type _ ->
         acc
+    | Scale (scales, remaining_rate) ->
+        List.concat_map scales ~f:(fun {ceiling; rate} -> [ceiling; rate])
+        @ Option.to_list remaining_rate
+        |> List.fold ~init:acc ~f:(fun acc value -> get_contexts acc value)
   and get_contexts_in_value
       (value : (Rule_name.t, Mark.pos_mark) Shared_ast.naked_value) acc : t list
       =

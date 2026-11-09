@@ -183,7 +183,9 @@ and unfold_chainable_mechanism ~init mechanisms =
          | Round round ->
              transform_round ~pos ~typ round acc
          | Abatement value ->
-             transform_abatement ~pos ~typ value acc )
+             transform_abatement ~pos ~typ value acc
+         | Scale (scales, remaining_rate) ->
+             transform_scale ~pos ~typ scales remaining_rate acc )
 
 (** [transform_fold ~pos ~typ ?init ~f values] returns [f (... f (f (f init e1) e2) e3...) en],
     where [e1..en] are the transformed elements of [values] and [init] is the
@@ -316,6 +318,16 @@ and transform_abatement ~pos ~typ abatement value =
       Tree.(p (binop_sub ~pos value abatement))
   | _ ->
       failwith "unreachable"
+
+and transform_scale ~pos ~typ scales remaining_rate value =
+  let scales =
+    List.map scales ~f:(fun {ceiling; rate} ->
+        let ceiling = transform ceiling in
+        let rate = transform rate in
+        {ceiling; rate} )
+  in
+  let remaining_rate = Option.map remaining_rate ~f:transform in
+  Tree.mk_value ~pos ~meta:typ (mk_scale ~scales ~value ~remaining_rate)
 
 and transform_ceiling ~pos ~typ ceil value =
   (* FIXME: each node probably need it's own type, not just the condition *)
