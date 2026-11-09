@@ -216,6 +216,16 @@
 				["{{ c }}", {{ fmt_method(c) }}]{%- if !loop.last -%}, {% endif -%}
 			{%- endfor -%}
 		], {{ node_value.min }}, {{ node_value.max }}, {{ node_value.tolerance }}, ctx, params)
+	{%- case "scale" -%}
+		$scale({{ fmt_node(node_value.value) }}, [
+			{%- for c in node_value.scales -%}
+				[{{ fmt_node(c.ceiling) }}, {{ fmt_node(c.rate) }}]{%- if !loop.last -%}, {% endif -%}
+			{%- endfor -%}
+		], {% if node_value.remaining_rate -%}
+			{{ fmt_node(node_value.remaining_rate) }}
+		{%- else -%}
+			0.0
+		{% endif -%}, ctx, params)
 	{%- default -%}
 		>>>> Templating error: unknown rule type "{{ rule_type }}" <<<<
 	{%- endswitch -%}
