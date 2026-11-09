@@ -73,6 +73,10 @@ and ('ref, 'mark) root_finding =
   {with_: 'ref Mark.pos list; tolerance: float; min: float; max: float}
 [@@deriving equal, compare, show, sexp]
 
+and ('ref, 'mark) scale =
+  {ceiling: ('ref, 'mark) value; rate: ('ref, 'mark) value}
+[@@deriving equal, compare, show, sexp]
+
 (* The order of chainable mechanisms matters here: it is used to determine the
    precedence of the mechanisms (first ones are applied first) *)
 and ('ref, 'mark) chainable_mechanism =
@@ -85,6 +89,7 @@ and ('ref, 'mark) chainable_mechanism =
   | Floor of ('ref, 'mark) value
   | Round of (rounding * ('ref, 'mark) value)
   | Abatement of ('ref, 'mark) value
+  | Scale of ('ref, 'mark) scale list * ('ref, 'mark) value option
 [@@deriving equal, compare, show, sexp]
 
 and ('ref, 'mark) naked_value =

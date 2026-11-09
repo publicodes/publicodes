@@ -115,7 +115,8 @@ let chainable_mechanisms =
     ; ( "arrondi au supérieur"
       , fun ~pos ~parse value ->
           let+ value = parse ~pos value in
-          Round (Up, value) ) ]
+          Round (Up, value) )
+    ; ("barème", Mecha_scale.parse) ]
 
 let parse_value_mechanism ~pos ~parse ~is_root mapping :
     ('a, 'mark) value_mechanism Mark.pos Output.t =

@@ -29,6 +29,7 @@ type 'meta naked_value =
   | Round of (Shared_ast.rounding * 'meta value * 'meta value)
   | Exclusive_replacement of (Rule_name.t * Rule_name.t list)
   | Root_finding of 'meta root_finding
+  | Scale of 'meta value * 'meta scale list * 'meta value option
 [@@deriving show]
 
 and 'meta context =
@@ -38,6 +39,8 @@ and 'meta context =
 and 'meta root_finding =
   {with_: Rule_name.t list; tolerance: float; min: float; max: float}
 [@@deriving show]
+
+and 'meta scale = {ceiling: 'meta value; rate: 'meta value} [@@deriving show]
 
 and 'meta value = {value: 'meta naked_value; meta: 'meta; pos: Pos.t}
 [@@deriving show]
@@ -102,6 +105,12 @@ val mk_root_finding :
   -> tolerance:float
   -> min:float
   -> max:float
+  -> 'meta naked_value
+
+val mk_scale :
+     value:'meta value
+  -> scales:'meta scale list
+  -> remaining_rate:'meta value option
   -> 'meta naked_value
 
 val const_not_applicable : 'meta naked_value

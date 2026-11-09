@@ -356,48 +356,44 @@ cotisations pour un SMIC:
 
 ## `barème`
 
-TODO: pas encore implementé en version 2.0
-
 Par son utilisation dans le calcul de l’impôt sur le revenu.
 
 L’assiette est décomposée en plusieurs tranches, qui sont multipliées par un
 taux spécifique et enfin additionnées pour donner le résultat.
 
-Les tranches sont souvent exprimées sous forme de facteurs d’une variable
-que l’on appelle `multiplicateur`, par exemple une fois le plafond de la
-sécurité sociale.
+Les plafonds sont traités dans l'ordre croissant, et une seule tranche peut
+omettre cette valeur, pour calculer le reste.
 
 ### Exemple
 
 ```publicodes title="Sans multiplicateur"
 revenu imposable: 54126 €
 impôt sur le revenu:
+  valeur: revenu imposable
   barème:
-    assiette: revenu imposable
-    tranches:
-      - taux: 0%
-        plafond: 9807 €
-      - taux: 14%
-        plafond: 27086 €
-      - taux: 30%
-        plafond: 72617 €
-      - taux: 41%
-        plafond: 153783 €
-      - taux: 45%
+    - taux: 0%
+      plafond: 9807 €
+    - taux: 14%
+      plafond: 27086 €
+    - taux: 30%
+      plafond: 72617 €
+    - taux: 41%
+      plafond: 153783 €
+    - taux: 45%
 ```
 
 ```publicodes title="Avec multiplicateur"
 assiette retraite: 54004 €
 plafond sécurité sociale: 41136 €
 cotisation retraite:
+  valeur: assiette retraite
   barème:
-    assiette: assiette retraite
+    - taux: 17.75%
+      plafond: 1 * multiplicateur
+    - taux: 0.6%
+  avec:
     multiplicateur: plafond sécurité sociale
-    tranches:
-      - taux: 17.75%
-        plafond: 1
-      - taux: 0.6%
-  arrondi: oui
+  arrondi au supérieur: oui
 ```
 
 ## `grille`

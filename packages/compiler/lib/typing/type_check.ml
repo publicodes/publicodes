@@ -680,6 +680,30 @@ and check_chainable_mechanism
       in
       let* _ = check_union wip mark.typ in
       check_union_with_parent_typ ~ctx mark.typ
+  | Scale (scales, remaining_rate) ->
+      let wip = Ast.mk_number ~unit:None ~pos in
+      let* _ =
+        List.map scales ~f:(fun {ceiling; rate} ->
+            let* _ = check_value ceiling ~ctx:{ctx with parent_typ= Some wip} in
+            let* _ =
+              let {Ast.pos; _} = Mark.get rate in
+              let wip_rate = Ast.mk_number ~unit:(Some Units.percent) ~pos in
+              check_value rate ~ctx:{ctx with parent_typ= Some wip_rate}
+            in
+            Output.return () )
+        |> Output.all_okay
+      in
+      let* _ =
+        match remaining_rate with
+        | None ->
+            Output.return ()
+        | Some remaining_rate ->
+            let {Ast.pos; _} = Mark.get remaining_rate in
+            let wip_rate = Ast.mk_number ~unit:(Some Units.percent) ~pos in
+            check_value remaining_rate ~ctx:{ctx with parent_typ= Some wip_rate}
+      in
+      let* _ = check_union wip mark.typ in
+      check_union_with_parent_typ ~ctx mark.typ
 
 and check_contexts (chainables : Ast.typing_marked_chainable_mechanism list)
     ~ctx =
