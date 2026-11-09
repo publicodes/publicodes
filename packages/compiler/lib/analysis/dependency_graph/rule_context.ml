@@ -59,6 +59,7 @@ let from_rule_def (rule_def : Shared_ast.resolved_rule_def) : t list =
     | Default v
     | Ceiling v
     | Floor v
+    | Abatement v
     | Round (_, v) ->
         get_contexts acc v
     | Type _ ->

@@ -463,8 +463,6 @@ taux réduction de cotisation:
 
 ## `abattement`
 
-TODO: pas encore implementé en version 2.0
-
 **Mécanisme chaîné** ([plus d’infos](/docs/manuel/mecanismes#mécanismes-chaînés))
 
 Permet de réduire le montant d’une valeur.

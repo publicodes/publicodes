@@ -148,6 +148,7 @@ and find_references_in_chainable (context_stack : Rule_context.t list)
   | Default v
   | Ceiling v
   | Floor v
+  | Abatement v
   | Round (_, v)
   | Applicable_if v
   | Not_applicable_if v ->

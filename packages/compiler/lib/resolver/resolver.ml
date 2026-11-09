@@ -109,6 +109,9 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
       | Floor value ->
           let+ value = map_value value in
           Floor value
+      | Abatement value ->
+          let+ value = map_value value in
+          Abatement value
       | Context context ->
           let+ context =
             List.map context ~f:(fun (ref, value) ->

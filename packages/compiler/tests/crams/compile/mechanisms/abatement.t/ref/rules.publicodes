@@ -1,0 +1,4 @@
+revenu imposable:
+  valeur: 10000€
+  abattement: tax
+tax: 2000€
