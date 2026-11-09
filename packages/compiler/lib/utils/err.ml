@@ -54,6 +54,7 @@ module Code = struct
     | Type_missing_enums
     | Type_exponent_with_unit
     | Invalid_root_finding
+    | Invalid_scale
   [@@deriving equal, enum, show]
 
   let show = fun code -> Stdlib.Format.sprintf "E%03d" (to_enum code)
@@ -197,6 +198,8 @@ let invalid_root_finding with_ rule ctx =
           with_ rule
   in
   (Code.Invalid_root_finding, msg)
+
+let invalid_scale msg = (Code.Invalid_scale, msg)
 
 let no_rules =
   (Code.Parsing_no_rules, "aucune règle trouvée dans le fichier ou le stream")

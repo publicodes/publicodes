@@ -155,6 +155,10 @@ and find_references_in_chainable (context_stack : Rule_context.t list)
       find_references v
   | Type _ ->
       []
+  | Scale (scales, remaining_rate) ->
+      List.concat_map scales ~f:(fun {ceiling; rate} -> [ceiling; rate])
+      @ Option.to_list remaining_rate
+      |> List.fold ~init:[] ~f:(fun acc v -> acc @ find_references v)
 
 and find_references_in_value (only_in_chainable : bool)
     (context_stack : Rule_context.t list) (current_rule : Rule_name.t)

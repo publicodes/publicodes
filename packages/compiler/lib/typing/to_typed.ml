@@ -155,6 +155,16 @@ and to_chainable_mechanism (chainable : Ast.typing_chainable_mechanism) :
   | Round (rounding, value) ->
       let+ value = to_value value in
       Shared_ast.Round (rounding, value)
+  | Scale (scales, remaining_rate) ->
+      let* scales =
+        List.map scales ~f:(fun {ceiling; rate} ->
+            let* ceiling = to_value ceiling in
+            let+ rate = to_value rate in
+            {Shared_ast.ceiling; rate} )
+        |> Output.all_keep_logs
+      in
+      let+ remaining_rate = Output.map_opt remaining_rate ~f:to_value in
+      Shared_ast.Scale (scales, remaining_rate)
 
 and to_value (value : Ast.typing_value) : Shared_ast.typed_value Output.t =
   let {Shared_ast.value; chainable_mechanisms}, mark = value in
