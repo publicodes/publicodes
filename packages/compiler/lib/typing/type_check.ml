@@ -266,6 +266,12 @@ let get_number_unit_opt = function
   | _ ->
       None
 
+let get_number_unit_exn = function
+  | Ast.Typed (KNumber unit, _) ->
+      unit
+  | _ ->
+      failwith "No number unit"
+
 let check_multiply ~pos u1 u2 : Ast.typ Output.t =
   let t1, _ = UnionFind.get u1 in
   let t2, _ = UnionFind.get u2 in
@@ -643,6 +649,23 @@ and check_chainable_mechanism
       in
       let* _ = check_union value_typ mark.typ in
       check_union_with_parent_typ ~ctx mark.typ
+  | Abatement value ->
+      let {Ast.pos; _} = Mark.get value in
+      let* _ =
+        let wip = Ast.mk_number ~unit:None ~pos in
+        check_value value ~ctx:{ctx with parent_typ= Some wip}
+      in
+      let wip = Ast.mk_number ~unit:None ~pos in
+      let _, value_mark = value in
+      let typ, _ = UnionFind.get value_mark.typ in
+      let* _ =
+        let concrete = get_number_unit_exn typ |> Number_unit.to_concrete in
+        if Units.is_percent concrete || Units.is_decimal concrete then
+          Output.return ()
+        else check_union value_mark.typ wip
+      in
+      let* _ = check_union wip mark.typ in
+      check_union_with_parent_typ ~ctx mark.typ
   | Round (_, value) ->
       let* _ = check_value value ~ctx:{ctx with parent_typ= None} in
       let _, value_mark = value in
@@ -654,8 +677,7 @@ and check_chainable_mechanism
           match get_number_unit_opt typ with
           | Some unit ->
               let concrete = Number_unit.to_concrete unit in
-              if Units.equal concrete (Units.parse_unit "décimales") then
-                Output.return ()
+              if Units.is_decimal concrete then Output.return ()
               else check_union value_mark.typ wip
           | None ->
               let hints = ["arrondi doit être un nombre ou un booléen"] in
