@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ab2a6a40_720b93ae",
+        "filename": "packages/compiler/lib/analysis/dependency_graph/checks.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-10T16:16:55Z",
+      "side": 1,
+      "message": "Tout ceci est très malin.",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "f6633af9_adbc9ca6",
         "filename": "packages/compiler/lib/eval_tree/tree.mli",
         "patchSetId": 9
@@ -133,6 +150,24 @@
       "writtenOn": "2026-11-10T16:10:09Z",
       "side": 1,
       "message": "Ajouter des cas de tests :\n- où l’inversion ne converge pas\n- où il y a un `par défaut` sur la règle\n- de manière générale, l’implication avec les différents mécanisme chainé (`plafond` `applicable si` `arrondi` etc, etc)",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a763bc53_e1584c45",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/root-finding.test.ts",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-10T16:16:55Z",
+      "side": 1,
+      "message": "Il faudrait également tester les paramètres listés pour chaque output. C’est pas possible en cram avec la vue debug.\n\nTypiquement pour : \n\n```yaml\na: \n  b + 10\nb: \n  inversion numérique: a\n```\n\nIl faudrait que `b` soit listé en paramètre de `a` et `a` en paramètre de `b`.\nC’est vraiment un mécanisme chelou...",
+      "parentUuid": "c0f05d4b_69e5cf30",
       "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
