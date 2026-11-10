@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f6633af9_adbc9ca6",
+        "filename": "packages/compiler/lib/eval_tree/tree.mli",
+        "patchSetId": 9
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-10T16:10:09Z",
+      "side": 1,
+      "message": "Ok je sais que je casse un peu la sémantique actuelle, mais je me pose la question : à quelle point peut-on tout simplement utiliser les mécanismes plafond, plancher et arrondi présent sur la règle au lieu de ces trois valeurs ?\n\nVraiment une question ouverte, j’entends que ce soit pas la même chose. On pourrait imaginer supporter les deux et prendre les valeurs des mécanismes chainé sur la règle si les paramètres ne sont pas renseigné sur l’inversion. \n\nPour une autre PR",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8dc3f880_cc9214bd",
+        "filename": "packages/compiler/lib/parser/mecha_root_finding.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-10T16:10:09Z",
+      "side": 1,
+      "message": "On pourrait imaginer un petit helper pour récupérer une clé et attribuer une valeur par défaut si elle n’existe pas (peut-être existe-t-il déjà, je n’ai pas vérifié)",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "35874906_9281539f",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-10T16:10:09Z",
+      "side": 1,
+      "message": "À la première lecture, je me suis dit qu’il aurait été plus simple de parser les `inversion numérique` comme on parse les remplace, et j’ai compris que si on voulait l’exclusivité avec les autres mécanismes, ta solution était la bonne.",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4c22c751_db91c47e",
+        "filename": "packages/compiler/lib/parser/parse_mechanisms.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-10T16:10:09Z",
+      "side": 1,
+      "message": "_pinaillage_ plutôt qu’un tuple, peut-être utiliser un objet nommé avec un défaut ? (à voir si ça clarifie la lecture)",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "994a26f2_a32a37c9",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 9
+      },
+      "lineNbr": 903,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-10T16:10:09Z",
+      "side": 1,
+      "message": "Obligé de passer par une serialisation json ? Pourquoi ne pas copier les clés, ou encore plus efficace, passer par un prototype (d’ailleurs je pense qu’on devrait passer par une chaine de prototype pour le chainage des contexte en général ce serait vachement plus efficace)\n```ts\nconst ctx \u003d Object.create({}, initCtx)\n```\nOu un truc du style",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "94796bc6_5214ec51",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 9
+      },
+      "lineNbr": 953,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-10T16:10:09Z",
+      "side": 1,
+      "message": "j",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2e4e3a0c_e4e28154",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 9
+      },
+      "lineNbr": 992,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-10T16:10:09Z",
+      "side": 1,
+      "message": "Fallback est `undefined` pas `NotDefined` non ? Ou c’est la même valeur ?",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c0f05d4b_69e5cf30",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/root-finding.test.ts",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-10T16:10:09Z",
+      "side": 1,
+      "message": "Ajouter des cas de tests :\n- où l’inversion ne converge pas\n- où il y a un `par défaut` sur la règle\n- de manière générale, l’implication avec les différents mécanisme chainé (`plafond` `applicable si` `arrondi` etc, etc)",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d57d7efb_a2af63a1",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/root-finding.test.ts",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-10T16:10:09Z",
+      "side": 1,
+      "message": "Dans l’idéal ce cas devrait throw à la compilation (type). A minima je dirai qu’il devrait throw au runtime.",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
