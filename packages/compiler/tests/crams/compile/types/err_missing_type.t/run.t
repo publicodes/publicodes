@@ -36,4 +36,16 @@ Seould correctly report missing type information for public rules:
          
          résultat paramètre:
            type: nombre
+  
+  E024
+  information de type manquante pour ce résultat [type warning]
+       ╒══  ./input/rules.publicodes:10:1 ══
+     9 │ 
+    10 │ rend non applicable:
+       │ ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘
+   Hint: Spécifiez le type de la règle.
+   Hint: Par exemple :
+         
+         rend non applicable:
+           type: nombre
 

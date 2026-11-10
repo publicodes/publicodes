@@ -679,15 +679,6 @@ and check_value value ~ctx =
   let* _ = check_union chainable_typ value_mark.typ in
   check_union_with_parent_typ ~ctx value_mark.typ
 
-and check_make_not_applicable
-    (make_not_applicable : 'ref Shared_ast.replace list) ~ptyp =
-  match make_not_applicable with
-  | [] ->
-      Output.return ()
-  | hd :: _ ->
-      let typ = Ast.mk_any_bool ~pos:(Mark.pos hd.reference) in
-      check_union typ ptyp
-
 and check_rule_def rule_def ~ctx =
   let rule_name = Mark.remove rule_def.name in
   let _, typing_state = Hashtbl.find_exn ctx.ast rule_name in
@@ -696,12 +687,8 @@ and check_rule_def rule_def ~ctx =
     Ast.set_typing_state ctx.ast rule_def Ast.Doing ;
     let Shared_ast.{value; name= current_rule, _; _} = rule_def in
     let res =
-      let* _ =
-        let ctx = reset_context ctx ~current_rule in
-        check_value value ~ctx
-      in
-      let _, mark = value in
-      check_make_not_applicable rule_def.make_not_applicable ~ptyp:mark.typ
+      let ctx = reset_context ctx ~current_rule in
+      check_value value ~ctx
     in
     match res with
     | None, logs ->

@@ -6,3 +6,6 @@ résultat:
   valeur: résultat paramètre
 
 résultat paramètre:
+
+rend non applicable:
+  rend non applicable: résultat paramètre
