@@ -154,8 +154,9 @@ let missing_parent_rule =
 
 let missing_rule = (Code.Resolver_missing_rule, "cette règle n'existe pas")
 
-let duplicate_rule =
-  (Code.Resolver_duplicate_rule, "cette règle existe en double")
+let duplicate_rule rule =
+  ( Code.Resolver_duplicate_rule
+  , Printf.sprintf "la règle `%s` est définie plusieurs fois" rule )
 
 let malformed_expression =
   (Code.Parsing_missing_closing_paren, "expression malformée")

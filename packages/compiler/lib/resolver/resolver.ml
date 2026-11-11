@@ -28,16 +28,24 @@ let check_orphan_rules ~rule_names ast =
 
 let check_duplicate_rules ast =
   let duplicate_logs name rules =
-    let labels =
-      List.map rules ~f:(fun rule ->
-          let pos = Mark.pos rule.name in
-          Mark.mk_pos ~pos "définie ici" )
-    in
-    let code, message = Err.duplicate_rule in
-    Log.error message ~code ~labels ~kind:`Syntax
-      ~hints:
-        [ Stdlib.Format.asprintf "La règle `%a` est définie plusieurs fois"
-            Rule_name.pp name ]
+    match List.rev rules with
+    | last_def :: tl ->
+        let labels =
+          List.map tl ~f:(fun rule ->
+              let pos = Mark.pos rule.name in
+              Mark.mk_pos ~pos "définie ici" )
+        in
+        let pos = Mark.pos last_def.name in
+        let name = Rule_name.to_string name in
+        let code, message = Err.duplicate_rule name in
+        let primary_label =
+          Some (Printf.sprintf "`%s` est redéfinie ici" name)
+        in
+        Log.error message ~pos ~code ~labels ~kind:`Syntax ~primary_label
+          ~hints:
+            ["une règle ne peut être définie qu'une seule fois dans un module"]
+    | _ ->
+        failwith "duplicate_logs: empty list of rules"
   in
   let warn_if_duplicate rule_name =
     let matching_defs =
