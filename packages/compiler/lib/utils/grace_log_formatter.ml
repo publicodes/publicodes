@@ -4,8 +4,8 @@ open! Grace
 let pos_to_range (pos : Pos.t) : Range.t =
   let source, index_start, index_end =
     if File.is_std pos.file then
-      (** FIXME: [File.t] should contains the file content to be able to read
-          again the stdin content. *)
+      (* FIXME: [File.t] should contains the file content to be able to read
+         again the stdin content. *)
       ( `String Source.{name= None; content= ""}
       , Byte_index.of_int 0
       , Byte_index.of_int 0 )
@@ -34,7 +34,8 @@ let to_diagnostic (log : Log.t) =
         let message = Message.create label in
         [Label.primary ~range:(pos_to_range pos) message]
     | None ->
-        if List.is_empty log.labels then
+        (* FIXME: logs should have optionnal pos instead of using [Pos.dummy]. *)
+        if List.is_empty log.labels && not (Pos.equal pos Pos.dummy) then
           [Label.primary ~range:(pos_to_range pos) message]
         else []
   in

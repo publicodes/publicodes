@@ -182,8 +182,8 @@ let import_cycle = (Code.Cycle_detected, "cycle d'import détecté")
 let unused_context =
   (Code.Unused_context, "certaines règles du contexte sont non utilisées")
 
-let no_rules =
-  (Code.Parsing_no_rules, "aucune règle trouvée dans le fichier ou le stream")
+let no_rules_in file =
+  (Code.Parsing_no_rules, Printf.sprintf "aucune règle trouvée dans `%s`" file)
 
 let pow_exponent_with_unit =
   ( Code.Type_exponent_with_unit

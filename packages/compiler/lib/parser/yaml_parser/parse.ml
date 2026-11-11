@@ -83,6 +83,7 @@ let byte_index_of_char_index content target =
 
 let parse (filename : File.t) (content : string) : yaml Output.t =
   (* Create a parser from the content *)
+  let filename_to_show = File.to_intern filename in
   let point_from_mark (mark : Yaml.Stream.Mark.t) =
     Pos.Point.
       { index= byte_index_of_char_index content mark.index
@@ -132,16 +133,11 @@ let parse (filename : File.t) (content : string) : yaml Output.t =
   let rec parse_stream () =
     let stream_start, _ = !current_token in
     match stream_start with
-    | Event.Stream_start _ -> (
+    | Event.Stream_start _ ->
         let* result = parse_document () in
-        let* stream_end, _ = next () in
-        match stream_end with
-        | Event.Stream_end ->
-            Output.return result
-        | token ->
-            unexpected_token_error token "the end of stream" )
+        Output.return result
     | _ ->
-        fatal_error_from_current_token Err.no_rules
+        fatal_error_from_current_token (Err.no_rules_in filename_to_show)
   and parse_document () =
     let* document_start, _ = next () in
     match document_start with
@@ -154,8 +150,10 @@ let parse (filename : File.t) (content : string) : yaml Output.t =
             Output.return result
         | token ->
             unexpected_token_error token "the end of file" )
+    | Nothing | Stream_end ->
+        Output.return (`O [])
     | _ ->
-        fatal_error_from_current_token Err.no_rules
+        fatal_error_from_current_token (Err.no_rules_in filename_to_show)
   and parse_node () =
     let event, pos = !current_token in
     match event with
