@@ -1,11 +1,11 @@
 Caractère non valide
 
   $ publicodes compile input
+  error[E001]: fin de fichier inattendue (il manque un caractère)
+      ╒══ input/rules.publicodes:1:1
+    1 │  '
+      │  ^ fin de fichier inattendue (il manque un caractère)
+    2 │  
+      = (aide) Par exemple, `"`, `'`, ou `]`
   
-  E001
-  fin de fichier inattendue (il manque un caractère) [yaml error]
-       ╒══  input/rules.publicodes:1:1 ══
-     1 │ '
-       │ ˘
-   Hint: Par exemple, `"`, `'`, ou `]`
   [123]

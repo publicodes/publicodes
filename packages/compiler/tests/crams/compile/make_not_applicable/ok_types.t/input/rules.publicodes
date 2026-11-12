@@ -1,0 +1,9 @@
+make not applicable on different type:
+  valeur: boolean rule
+  avec:
+    number rule:
+      type: nombre
+      rend non applicable: boolean rule
+
+    boolean rule:
+      type: booléen

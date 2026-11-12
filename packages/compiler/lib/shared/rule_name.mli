@@ -115,3 +115,10 @@ val make_reserved : string -> t
 
 		Reserved rule names are only used for internal representation and cannot be
 		matching any user-defined rule name. *)
+
+val find_closest : t -> t list -> t option
+(** [find_closest rule_name candidates] finds the closest rule name to [rule_name]
+    in the list of [candidates].
+
+    @note It uses the Levenshtein distance on the last part of the rule names,
+    because we want to catch omitted namespaces. *)

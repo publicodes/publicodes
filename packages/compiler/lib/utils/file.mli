@@ -1,4 +1,4 @@
-type t = Fpath.t
+type t
 
 val of_string : string -> (t, [`Msg of string]) result
 (** [of_string path] converts the [path] as string to t as a result. *)
@@ -31,12 +31,15 @@ val equal : t -> t -> bool
 val compare : t -> t -> int
 (** [equal one two] compares the two paths. *)
 
-val t_of_sexp : Sexplib0.Sexp.t -> Fpath.t
+val t_of_sexp : Sexplib0.Sexp.t -> t
 
-val sexp_of_t : Fpath.t -> Sexplib0.Sexp.t
+val sexp_of_t : t -> Sexplib0.Sexp.t
 
 val std : t
 (** Represent a standard input/output. *)
+
+val is_std : t -> bool
+(** [is_std file] checks if the path is a standard input/output. *)
 
 val is_valid_import_str : string -> bool
 (** [is_valid_import_str ~path] checks that a value is a valid Publicode

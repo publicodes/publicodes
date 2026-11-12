@@ -33,17 +33,14 @@ let get_missing_type_warnings_opt ({rule_name; typ; _} : Model_output.t) ~ast :
       let pos = Shared_ast.get_pos_exn ast rule_name in
       Some
         (Log.warning ~code ~pos ~kind:`Type
-           ~hints:
-             [ "Spécifiez le type de la règle."
-             ; Stdlib.Format.asprintf "Par exemple :\n\n%a:\n  type: nombre"
-                 Rule_name.pp rule_name ]
+           ~hints:["spécifiez le type de la règle (ex : `type: nombre`)"]
            message )
   | Some (TNumber None) ->
       let code, message = Err.missing_output_type in
       let pos = Shared_ast.get_pos_exn ast rule_name in
       Some
         (Log.warning ~code ~pos ~kind:`Type
-           ~hints:["Spécifiez l'unité de la règle. Par exemple : `unité: €`"]
+           ~hints:["spécifiez l'unité de la règle (ex : `unité: €`)"]
            message )
   | Some _ ->
       None

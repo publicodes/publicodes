@@ -68,6 +68,7 @@ let divide (t1 : t) (t2 : t) : t =
 
 let any () = [make (Variable (Any.mk ()))]
 
+(* TODO: use same structure as the diagnostic for type errors *)
 let unify ~pos1 ~pos2 (u1 : t) (u2 : t) =
   let n1 = normalize u1 in
   let n2 = normalize u2 in

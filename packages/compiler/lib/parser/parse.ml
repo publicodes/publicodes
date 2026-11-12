@@ -32,10 +32,11 @@ let authorized_keys =
     ; "logarithme" ]
 
 type context =
-  { current_rule_name: string list (* the rule name currently parsed *)
-  ; files: File.t list (* list of parsed files paths to detect cycles *)
-  ; current_module_id: Shared.Module_id.t (* the module id genealogy *)
+  { files: File.t list (* list of parsed files paths to detect cycles *)
   ; next_module_id: int ref (* the next module id to be assigned *)
+  ; current_file: File.t option (* the current file being parsed *)
+  ; current_rule_name: string list (* the rule name currently parsed *)
+  ; current_module_id: Shared.Module_id.t (* the module id genealogy *)
   ; current_package: File.t option (* the current package path *)
   ; current_module: File.t (* the current module path *) }
 
@@ -294,6 +295,7 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
               ~ctx:
                 { ctx with
                   files= ctx.files @ [filename]
+                ; current_file= Some filename
                 ; current_module_id= new_module_id } )
     |> Output.all_keep_logs
   in
@@ -322,11 +324,15 @@ and parse_make_not_applicable mapping =
 and parse_rules ~default_to_public ~pos ~ctx yaml =
   match yaml with
   | `O [] ->
-      let code, message =
-        if List.is_empty ctx.current_rule_name then Err.yaml_empty_file
-        else Err.parsing_should_be_object
-      in
-      Output.fatal_error ~code ~pos ~kind:`Syntax message
+      if List.is_empty ctx.current_rule_name then
+        let filepath =
+          Option.value ctx.current_file ~default:(List.last_exn ctx.files)
+        in
+        let code, message = Err.no_rules_in (File.to_intern filepath) in
+        Output.return ~logs:[Log.warning ~code message] []
+      else
+        let code, message = Err.parsing_should_be_object in
+        Output.fatal_error ~code ~pos ~kind:`Syntax message
   | `O mapping ->
       let+ rules =
         List.map ~f:(parse_rule ~default_to_public ~ctx) mapping
@@ -339,10 +345,11 @@ and parse_rules ~default_to_public ~pos ~ctx yaml =
 
 let from_files ~default_to_public ~module_path input_files =
   let ctx =
-    { current_rule_name= []
-    ; files= []
-    ; current_module_id= Shared.Module_id.empty
+    { files= []
     ; next_module_id= ref 0
+    ; current_file= None
+    ; current_rule_name= []
+    ; current_module_id= Shared.Module_id.empty
     ; current_package= None
     ; current_module= module_path }
   in

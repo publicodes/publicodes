@@ -53,6 +53,7 @@ module Code = struct
     | Parsing_no_rules
     | Type_missing_enums
     | Type_exponent_with_unit
+    | Internal
   [@@deriving equal, enum, show]
 
   let show = fun code -> Stdlib.Format.sprintf "E%03d" (to_enum code)
@@ -151,10 +152,14 @@ let private_rule = (Code.Private_rule, "cette règle est privée")
 let missing_parent_rule =
   (Code.Resolver_missing_parent_rule, "règle parente manquante")
 
-let missing_rule = (Code.Resolver_missing_rule, "cette règle n'existe pas")
+let missing_rule name =
+  ( Code.Resolver_missing_rule
+  , Printf.sprintf "la règle `%s` est introuvable dans le module courant" name
+  )
 
-let duplicate_rule =
-  (Code.Resolver_duplicate_rule, "cette règle existe en double")
+let duplicate_rule rule =
+  ( Code.Resolver_duplicate_rule
+  , Printf.sprintf "la règle `%s` est définie plusieurs fois" rule )
 
 let malformed_expression =
   (Code.Parsing_missing_closing_paren, "expression malformée")
@@ -181,8 +186,8 @@ let import_cycle = (Code.Cycle_detected, "cycle d'import détecté")
 let unused_context =
   (Code.Unused_context, "certaines règles du contexte sont non utilisées")
 
-let no_rules =
-  (Code.Parsing_no_rules, "aucune règle trouvée dans le fichier ou le stream")
+let no_rules_in file =
+  (Code.Parsing_no_rules, Printf.sprintf "aucune règle trouvée dans `%s`" file)
 
 let pow_exponent_with_unit =
   ( Code.Type_exponent_with_unit

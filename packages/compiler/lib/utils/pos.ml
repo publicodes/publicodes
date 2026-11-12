@@ -7,9 +7,6 @@ module Point = struct
   let pp ppf {index; line; column} =
     Stdlib.Format.fprintf ppf "line %d, column %d, (i %d)" line column index
 
-  let of_position Lexing.{pos_cnum; pos_bol; pos_lnum; _} =
-    {index= pos_cnum; line= pos_lnum + 1; column= pos_cnum - pos_bol + 1}
-
   let to_position {index; line; column} ~file =
     Lexing.
       { pos_fname= File.to_intern file
@@ -38,8 +35,3 @@ let add ?(len = 0) ?(line = 0) pos =
       { index= pos.end_pos.index + len
       ; line= pos.end_pos.line + line
       ; column= pos.end_pos.column + len } }
-
-let to_loc (pos : t) : Stdune.Loc.t =
-  Stdune.Loc.create
-    ~start:(Point.to_position pos.start_pos ~file:pos.file)
-    ~stop:(Point.to_position pos.end_pos ~file:pos.file)
