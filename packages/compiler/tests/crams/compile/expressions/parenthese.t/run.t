@@ -28,18 +28,18 @@ Invalid parenthesis expression :
       │      ^ caractère invalide
     2 │  b: 4 ()
   
-  error[E002]: mot clé inattendu : Tokens.LPAREN
+  error[E002]: mot clé inattendu : (
       ╒══ missing/rules.publicodes:2:6
     1 │  a: (
     2 │  b: 4 ()
-      │       ^ mot clé inattendu : Tokens.LPAREN
+      │       ^ mot clé inattendu : (
     3 │  c: 6)
   
-  error[E002]: mot clé inattendu : Tokens.RPAREN
+  error[E002]: mot clé inattendu : )
       ╒══ missing/rules.publicodes:3:5
     2 │  b: 4 ()
     3 │  c: 6)
-      │      ^ mot clé inattendu : Tokens.RPAREN
+      │      ^ mot clé inattendu : )
     4 │  d: (4 + (3 * 2) - 4)
   
   [123]
