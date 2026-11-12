@@ -19,8 +19,11 @@ let get_scalar ~pos (value : yaml) =
 
 let parse_array ~pos
     ~(parse :
-       ?error_if_undefined:bool -> pos:Pos.t -> yaml -> Ast.value Output.t )
-    (yaml : yaml) =
+          ?error_if_undefined:bool
+       -> ?is_root:bool
+       -> pos:Pos.t
+       -> yaml
+       -> Ast.value Output.t ) (yaml : yaml) =
   match yaml with
   | `A seq ->
       let* parsed_nodes =
