@@ -152,7 +152,10 @@ let private_rule = (Code.Private_rule, "cette règle est privée")
 let missing_parent_rule =
   (Code.Resolver_missing_parent_rule, "règle parente manquante")
 
-let missing_rule = (Code.Resolver_missing_rule, "cette règle n'existe pas")
+let missing_rule name =
+  ( Code.Resolver_missing_rule
+  , Printf.sprintf "la règle `%s` est introuvable dans le module courant" name
+  )
 
 let duplicate_rule rule =
   ( Code.Resolver_duplicate_rule

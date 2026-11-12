@@ -60,8 +60,33 @@ let check_duplicate_rules ast =
   |> List.stable_dedup ~compare:Rule_name.compare
   |> List.filter_map ~f:warn_if_duplicate
 
-let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
-    resolved_rule_def Output.t =
+let output_missing_rule_error missing_rule ~context_rule ~pos ~rule_names
+    ~rule_positions =
+  let missing_rule_name = Rule_name.to_string missing_rule in
+  let code, message = Err.missing_rule missing_rule_name in
+  let suggestion =
+    Set.to_list rule_names
+    |> List.filter ~f:(fun r -> not (Rule_name.equal r context_rule))
+    |> Rule_name.find_closest missing_rule
+  in
+  let hints, labels =
+    match suggestion with
+    | Some suggestion ->
+        let suggestion_pos = Map.find_exn rule_positions suggestion in
+        ( []
+        , [ Mark.mk_pos ~pos:suggestion_pos
+              (Printf.sprintf "règle similaire `%s` définie ici"
+                 (Rule_name.to_string suggestion) ) ] )
+    | None ->
+        ( [Printf.sprintf "Ajoutez la règle `%s` manquante" missing_rule_name]
+        , [] )
+  in
+  Output.fatal_error message ~kind:`Syntax ~pos ~code ~labels ~hints
+    ~primary_label:"règle introuvable"
+
+let resolve_rule ~rule_names ~rule_positions
+    (rule : (string list, Mark.pos_mark) rule_def) : resolved_rule_def Output.t
+    =
   let context_rule = Mark.remove rule.name in
   let resolve_ref ~pos ref =
     let resolved_ref =
@@ -69,14 +94,9 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
     in
     match resolved_ref with
     | None ->
-        let code, message = Err.missing_rule in
-        let missing_rule_name = Rule_name.create_exn ref in
-        (* TODO: add to suggest closest rule name *)
-        Output.fatal_error ~pos ~kind:`Syntax ~code message
-          ~hints:
-            [ Stdlib.Format.asprintf "Ajoutez la règle `%a` manquante"
-                Rule_name.pp missing_rule_name
-            ; "Vérifiez les erreurs de typos dans le nom de la règle" ]
+        let missing_rule = Rule_name.create_exn ref in
+        output_missing_rule_error missing_rule ~context_rule ~pos ~rule_names
+          ~rule_positions
     | Some ref ->
         Output.return ref
   in
@@ -242,17 +262,36 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
   in
   Output.return {rule with value; replace; make_not_applicable}
 
-let from_parsed_ast (ast : Parser.Ast.t) : resolved Output.t =
-  let rule_names =
-    Set.of_list
+(** [get_rule_names ast] returns a set of all rule names in the AST. *)
+let get_rule_names ast =
+  List.map ast ~f:(fun rule -> Mark.remove rule.name)
+  |> Set.of_list (module Rule_name)
+
+(** [get_rule_positions ast] returns a map from rule names to their positions in
+    the source code used to add labels to error messages. *)
+let get_rule_positions ast =
+  let res =
+    Map.of_alist
       (module Rule_name)
-      (List.map ast ~f:(fun rule -> Mark.remove rule.name))
+      (List.map ast ~f:(fun rule ->
+           (Mark.remove rule.name, Mark.pos rule.name) ) )
   in
-  let orphan_logs = check_orphan_rules ~rule_names ast in
+  match res with
+  | `Ok map ->
+      map
+  | `Duplicate_key _ ->
+      (* NOTE: The logs are handled in [check_duplicate_rules]. However,
+           this might be a good place to do it instead. *)
+      Map.empty (module Rule_name)
+
+let from_parsed_ast (ast : Parser.Ast.t) : resolved Output.t =
+  let rule_names = get_rule_names ast in
+  let rule_positions = get_rule_positions ast in
+  let orphan_logs = check_orphan_rules ast ~rule_names in
   let duplicate_logs = check_duplicate_rules ast in
   let+ ast =
     ast
-    |> List.map ~f:(resolve_rule ~rule_names)
+    |> List.map ~f:(resolve_rule ~rule_names ~rule_positions)
     |> Output.all_keep_logs
     |> Output.add_logs ~logs:(orphan_logs @ duplicate_logs)
   in
