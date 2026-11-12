@@ -101,6 +101,24 @@
       "message": "Aah, je comprends mieux ce que j’ai lu jusqu’à présent, et les choix effectués.\n\nJe pense qu’il faudrait mieux les traiter par ordre de lecture, quand bien même ça implique devoir passer par des variables intermédiaires si des plafonds peuvent s’inverser.\n\nJe pense que ça rend la lecture plus claire, et ça simplifie drôlement le code.\n\nJe ne vois pas de cas d’usage ou on a envie d’avoir un ordre dynamique... tu en as un en tête ?",
       "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "27ff4a30_976098ab",
+        "filename": "website/src/routes/docs/mecanismes/+page.svelte.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-12T16:26:48Z",
+      "side": 1,
+      "message": "En fait toute la magie de cet implémentation c\u0027est que chaque plafond et chaque taux est un évaluable complet. La principale vertue c\u0027est qu\u0027on peux reproduire le multiplicateur, sans avoir besoin de ce paramètre supplémentaire comme en V1 (et tellement plus). Par contre, on ne peux pas du tout se baser sur l\u0027ordre spécifié. Ca implique également d\u0027avoir une méthode runtime dédié, puisqu\u0027il n\u0027est pas possible de le traiter avec un eval_tree direct.",
+      "parentUuid": "e7a032b6_96bf9e60",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
