@@ -125,7 +125,6 @@ let to_string ?(sep = ", ") = function
       |> String.concat ~sep
       |> Stdlib.Format.asprintf "l'énum [%s]"
 
-
 (* Definitions *)
 
 type typ = t Mark.pos UnionFind.elem
@@ -173,7 +172,7 @@ let get_sorted_rule_defs (typing_tree : typing_tree) : typing_rule_def list =
          -> Pos.compare p1 p2 )
 
 let get_sorted_chainable_mechanisms chainable_mechanisms =
-  (** FIXME: is this correct? *)
+  (* FIXME: is this correct? *)
   let compare_typing_mark _ _ = 0 in
   List.sort chainable_mechanisms ~compare:(fun (a, _) (b, _) ->
       Shared_ast.compare_chainable_mechanism Shared.Rule_name.compare
@@ -251,23 +250,24 @@ let mk_bool = mk_general KBool
 
 let mk_date = mk_general KDate
 
-let mk_number ~(unit: Units.t option) ~pos =
-  let unit = match unit with
+let mk_number ~(unit : Units.t option) ~pos =
+  let unit =
+    match unit with
     | Some u ->
         Number_unit.concrete u
     | None ->
         Number_unit.any ()
   in
-  mk_typed ~pos (KNumber (unit)) General
+  mk_typed ~pos (KNumber unit) General
 
-let mk_number_without_unit ~pos = mk_typed ~pos (KNumber ([])) General
+let mk_number_without_unit ~pos = mk_typed ~pos (KNumber []) General
 
 let mk_enum_precision values =
   let values =
     (* Normalize values by removing duplicates. *)
     values
-    |> List.stable_dedup ~compare:(fun (lit1, _) (lit2, _) -> compare_literal
-    lit1 lit2)
+    |> List.stable_dedup ~compare:(fun (lit1, _) (lit2, _) ->
+        compare_literal lit1 lit2 )
     |> sort_enum
   in
   Enum values
@@ -385,26 +385,24 @@ let is_bool = function Typed (KBool, _) -> true | _ -> false
 let is_typ_number_with_unit typ =
   let t, _ = UnionFind.get typ in
   match t with
-  | Typed  (KNumber u, _) when not (Number_unit.is_any u) ->
+  | Typed (KNumber u, _) when not (Number_unit.is_any u) ->
       true
   | _ ->
       false
 
 let literal_to_general typ =
   let t, _ = UnionFind.get typ in
-  match t with
-  | Typed (k, Literal _) ->
-      Typed (k, General)
-  | _ ->
-      t
+  match t with Typed (k, Literal _) -> Typed (k, General) | _ -> t
 
-let number_without_unit =  Typed (KNumber [], General)
+let number_without_unit = Typed (KNumber [], General)
 
-let get_rule_def_pos ~rule (typing_tree: typing_tree)  =
+let get_rule_def_pos ~rule (typing_tree : typing_tree) =
   match Hashtbl.find typing_tree rule with
   | Some (rule_def, _) ->
       let mark = Mark.get rule_def.name in
-      Output.return (mark.pos)
+      Output.return mark.pos
   | None ->
       Output.fatal_bug
-        (Printf.sprintf "The rule definition for '%s' was not found in the typing tree." (Rule_name.to_string rule))
+        (Printf.sprintf
+           "The rule definition for '%s' was not found in the typing tree."
+           (Rule_name.to_string rule) )

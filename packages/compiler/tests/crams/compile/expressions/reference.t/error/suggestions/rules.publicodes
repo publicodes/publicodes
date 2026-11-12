@@ -1,0 +1,12 @@
+output:
+  public: oui
+  valeur: reference
+  avec:
+    reference: 10
+
+test: parnt
+
+test2: refrence # should suggest `output . reference`
+
+parent:
+  valeur: parnt # parent rule should not be suggested
