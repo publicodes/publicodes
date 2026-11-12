@@ -22,7 +22,7 @@
 (license MIT)
 
 (documentation https://publi.codes)
-(version 2.0.0-alpha.5)
+(version 2.0.0-alpha.6)
 (package
  (name publicodes)
  (synopsis "Compiler for the Publicodes language")
