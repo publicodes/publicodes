@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18057f8e_3fb13aa6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-12T14:22:14Z",
+      "side": 1,
+      "message": "Il manque peut-être quelques cram test en nack, au niveau des types, si j’ai un abattement dans une unité non compatible / un test non compatible. Sinon c’est top !",
+      "revId": "98c00fb272cf60049594b0940ac4dfccdb7ad737",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8188e1b8_268f81bf",
+        "filename": "packages/compiler/lib/analysis/dependency_graph/rule_context.ml",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-12T14:22:14Z",
+      "side": 1,
+      "message": "`Deduction` me semble plus juste en anglais ?",
+      "revId": "98c00fb272cf60049594b0940ac4dfccdb7ad737",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8727bf0d_89c387a0",
+        "filename": "packages/compiler/lib/eval_tree/transform_value.ml",
+        "patchSetId": 3
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-12T14:22:14Z",
+      "side": 1,
+      "message": "Dans la V1, l’abattement fait aussi un plancher: 0, de tel sorte à ce que la valeur ne puisse pas être inférieure à 0. Veut-on garder ce comportement ? Je dirait oui...",
+      "revId": "98c00fb272cf60049594b0940ac4dfccdb7ad737",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f6621914_be693050",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/abattement.test.ts",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-12T14:22:14Z",
+      "side": 1,
+      "message": "Ils sont top ces tests, rien à redire ! Ah, si, tient, un cas limite auquel je pense juste maintenant, que se passe-t-il si on fait un abattement en pourcentage... sur une valeure en pourcentage (ça peut être un cram test et pas un test js)",
+      "revId": "98c00fb272cf60049594b0940ac4dfccdb7ad737",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
