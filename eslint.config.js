@@ -26,6 +26,7 @@ export default tseslint.config(
 	{
 		ignores: [
 			'.jj/',
+			'**/*.local/',
 			'build/',
 			'dist/',
 			'**/dist/',
