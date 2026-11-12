@@ -46,13 +46,50 @@ over siblings:
 Should throw an error if a reference to an non-existing rule is made:
 
   $ publicodes compile ./error/unknown-reference/ -o -
-  error[E020]: cette règle n'existe pas
+  error[E020]: la règle `b` est introuvable dans le module courant
       ╒══ ./error/unknown-reference/main.publicodes:2:11
     1 │  a:
     2 │    valeur: b
-      │            ^ cette règle n'existe pas
+      │            ^ règle introuvable
     3 │  
       = (aide) Ajoutez la règle `b` manquante
-      = (aide) Vérifiez les erreurs de typos dans le nom de la règle
+  
+  [123]
+
+
+Should show a suggestion for a rule name if a reference to a non-existing rule is made:
+
+  $ publicodes compile ./error/suggestions/ -o -
+  error[E020]: la règle `parnt` est introuvable dans le module courant
+      ╒══ ./error/suggestions/rules.publicodes:7:7
+    6 │  
+    7 │  test: parnt
+      │        ^^^^^ règle introuvable
+    8 │  
+    9 │  test2: refrence # should suggest `output . reference`
+   10 │  
+   11 │  parent:
+      │  ˘˘˘˘˘˘ règle similaire `parent` définie ici
+   12 │    valeur: parnt # parent rule should not be suggested
+  
+  error[E020]: la règle `refrence` est introuvable dans le module courant
+      ╒══ ./error/suggestions/rules.publicodes:9:8
+    4 │    avec:
+    5 │      reference: 10
+      │      ˘˘˘˘˘˘˘˘˘ règle similaire `output . reference` définie ici
+    6 │  
+    7 │  test: parnt
+    8 │  
+    9 │  test2: refrence # should suggest `output . reference`
+      │         ^^^^^^^^ règle introuvable
+   10 │  
+  
+  error[E020]: la règle `parnt` est introuvable dans le module courant
+      ╒══ ./error/suggestions/rules.publicodes:12:11
+   11 │  parent:
+   12 │    valeur: parnt # parent rule should not be suggested
+      │            ^^^^^ règle introuvable
+   13 │  
+      = (aide) Ajoutez la règle `parnt` manquante
   
   [123]

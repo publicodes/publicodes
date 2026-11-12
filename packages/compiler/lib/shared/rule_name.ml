@@ -103,3 +103,32 @@ let resolve ~rule_names ~current name =
       else None
 
 let make_reserved uid = [Printf.sprintf "__%s" uid]
+
+let find_closest rule_name candidates =
+  (* We want to focus on the last part of the rule name, as the typo may simply
+     omit the namespace. *)
+  let get_baserule rule_name =
+    match List.rev rule_name with [] -> "" | last :: _ -> last
+  in
+  let target = get_baserule rule_name in
+  let max_distance =
+    match String.length target with
+    | 0 | 1 | 2 ->
+        0
+    | 3 | 4 ->
+        1
+    | 5 | 6 ->
+        2
+    | _ ->
+        3
+  in
+  let sorted_candidates =
+    List.map candidates ~f:(fun candidate ->
+        let dist = String.edit_distance target (get_baserule candidate) in
+        (candidate, dist) )
+    |> List.filter ~f:(fun (_, dist) -> Int.(dist <= max_distance))
+    |> List.sort ~compare:(fun (_, dist_a) (_, dist_b) ->
+        Int.compare dist_a dist_b )
+    |> List.map ~f:fst
+  in
+  List.hd sorted_candidates
