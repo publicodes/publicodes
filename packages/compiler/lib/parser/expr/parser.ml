@@ -24,7 +24,7 @@ let rec parse (expression : Tokens.t Mark.pos list) =
     | (EOF, _) :: [] ->
         return result
     | (token, Mark.{pos; _}) :: _ ->
-        let code, message = Err.unexpected_token (Tokens.show token) in
+        let code, message = Err.unexpected_token (Tokens.to_string token) in
         raise_syntax_error ~pos ~code message
   with SyntaxError log -> (None, [log])
 
