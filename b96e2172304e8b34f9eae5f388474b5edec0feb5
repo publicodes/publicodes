@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b1bfc314_aa50ed97",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-12T15:57:45Z",
+      "side": 1,
+      "message": "Commencer la lecture de cette revue par le dernier commentaire, il indique ma grille de lecture",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2f54c6ca_80103382",
+        "filename": "packages/compiler/lib/backends/templates/template.debug.jinja",
+        "patchSetId": 5
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-12T15:57:45Z",
+      "side": 1,
+      "message": "Alors j’aurais préféré avoir une transformation en code publicodes plutôt que d’utiliser un runtime spécifique : \n- On essaye de garder le runtime minimale pour faciliter l’ajout de backend, et surtout éviter de devoir vérifier la validité de l’implémentation du runtime. Passer par des mécanismes existant permet d’éviter cela (en v1, il me semble qu’on transforme bien statiquement le mécanisme barème).\n- Par ailleurs `barème` est un mécanisme lié à un métier. Dans le futur on pourrait imaginer qu’il existe dans publicodes une façon de définir des mécanismes custom. `Barème` ferait alors parti de la bibliothèque standard. Et il s’exprimerait en composition de mécanisme de base. \nCf « 3. Réécrire les mécanismes de liste » dans la [discussion suivante](https://github.com/publicodes/publicodes/discussions/566)\n\nBref, si c’est exprimable sans runtime spécifique, on préfère cette solution qui a moins d’implication en terme d’archi.",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a64e50b1_d032eb42",
+        "filename": "packages/compiler/lib/parser/mecha_scale.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-12T15:57:45Z",
+      "side": 1,
+      "message": "J’ai lu rapidement, mais j’ai l’impression que tu ferai mieux de parser toutes les tranches du début avec parse_scale (et ne pas permettre d’avoir un Some_, None), et la dernière avec parse_remaining_state. Plutôt que de filter (ça parait bizarre de dire qu’une seule tranche peut omettre plafond. C’est seulement la dernière)",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "694b66c3_47002ed6",
+        "filename": "packages/compiler/lib/typing/type_check.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 692,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-12T15:57:45Z",
+      "side": 1,
+      "message": "Pas très familier avec la nouvelle api de vérification de type, tu vérifie bien ici que les types sont cohérent _entre eux_ ? Ou que chacun d’entre eux est cohérent avec le parent ? (je parle des types de montant).",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "cc456fe7_84e439a0",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/bareme.test.ts",
+        "patchSetId": 5
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-12T15:57:45Z",
+      "side": 1,
+      "message": "_pinaillage_ Alors certes, c’est bien d’avoir dest test réalistes, mais pour la personne qui relit, ça peut être pas mal d’avoir des valeurs facile à calculer... ça permet de mieux vérifier si l’implementation est bonne.",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7a032b6_96bf9e60",
+        "filename": "website/src/routes/docs/mecanismes/+page.svelte.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-12T15:57:45Z",
+      "side": 1,
+      "message": "Aah, je comprends mieux ce que j’ai lu jusqu’à présent, et les choix effectués.\n\nJe pense qu’il faudrait mieux les traiter par ordre de lecture, quand bien même ça implique devoir passer par des variables intermédiaires si des plafonds peuvent s’inverser.\n\nJe pense que ça rend la lecture plus claire, et ça simplifie drôlement le code.\n\nJe ne vois pas de cas d’usage ou on a envie d’avoir un ordre dynamique... tu en as un en tête ?",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
