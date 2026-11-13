@@ -7,37 +7,29 @@ open Parse_types
 
 let parse_variation ~pos ~(parse : parse_value_fn) yaml =
   match yaml with
-  | `O mapping -> (
+  | `O mapping ->
       let* _ = check_authorized_keys ~keys:["si"; "alors"] mapping in
-      let if_ = find_value "si" mapping in
-      let then_ = find_value "alors" mapping in
-      match (if_, then_) with
-      | Some (if_, {pos= pos_if}), Some (then_, {pos= pos_then}) ->
-          let* if_ = parse ~pos:pos_if if_ in
-          let+ then_ = parse ~pos:pos_then then_ in
-          {if_; then_}
-      | _ ->
-          let code, message = Err.parsing_invalid_mechanism in
-          Output.fatal_error ~pos ~kind:`Syntax ~code
-            ~hints:["Une variation doit contenir « si: » et « alors: »"]
-            message )
+      let* if_ =
+        map_value ~pos mapping "si" ~f:(fun (if_, {pos}) -> parse ~pos if_)
+      in
+      let+ then_ =
+        map_value ~pos mapping "alors" ~f:(fun (then_, {pos}) ->
+            parse ~pos then_ )
+      in
+      {if_; then_}
   | _ ->
       let code, message = Err.parsing_should_be_object in
       Output.fatal_error ~pos ~kind:`Syntax ~code message
 
-let parse_else_clause ~(parse : parse_value_fn) (yaml : yaml) =
+let parse_else_clause ~pos ~(parse : parse_value_fn) (yaml : yaml) =
   match yaml with
-  | `O mapping -> (
+  | `O mapping ->
       (* let* _ = check_authorized_keys ~keys:["sinon"] mapping in *)
-      let else_ = find_value "sinon" mapping in
-      match else_ with
-      | Some (else_, {pos}) ->
-          let+ else_ = parse ~pos else_ in
-          else_
-      | None ->
-          failwith "Internal error: missing 'sinon' key" )
+      map_value ~pos mapping "sinon" ~f:(fun (else_, {pos}) ->
+          parse ~pos else_ )
   | _ ->
-      failwith "Internal error: not an object"
+      let code, message = Err.parsing_should_be_object in
+      Output.fatal_error ~pos ~kind:`Syntax ~code message
 
 let parse ~pos ~(parse : parse_value_fn) (yaml : yaml) =
   match yaml with
@@ -70,7 +62,7 @@ let parse ~pos ~(parse : parse_value_fn) (yaml : yaml) =
       in
       let+ else_clause =
         if has_else_clause then
-          let+ else_clause = parse_else_clause ~parse last_elem in
+          let+ else_clause = parse_else_clause ~parse ~pos last_elem in
           Some else_clause
         else Output.return None
       in

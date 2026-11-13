@@ -180,12 +180,12 @@ Missing reference :
    Hint: le chemin 'vendor/package a/vendored missing'
          n'existe pas
   
-  E034 champ manquant : modèle [syntax error]
+  E017 mécanisme invalide [syntax error]
        ╒══  subjects/missing/rules.publicodes:21:3 ══
     20 │   valeur: rule vendored c + 3
     21 │   importer:
        │   ˘˘˘˘˘˘˘˘˘
-  
+   Hint: clef `modèle` attendue
   [123]
 
 Vendor reference :
