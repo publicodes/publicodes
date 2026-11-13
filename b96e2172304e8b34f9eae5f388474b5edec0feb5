@@ -119,6 +119,24 @@
       "parentUuid": "e7a032b6_96bf9e60",
       "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "21f0457d_c4601344",
+        "filename": "website/src/routes/docs/mecanismes/+page.svelte.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-13T13:39:47Z",
+      "side": 1,
+      "message": "[C’est déjà le cas en publicodes 1](https://publi.codes/studio/?code\u003d%0A%23+Bienvenue+dans+le+bac+%C3%A0+sable+du+langage+publicode+!%0A%23+Pour+apprendre+le+langage+%3A%0A%23+%3D%3E+https%3A%2F%2Fpubli.codes%2Fdocs%2Ftutoriel%0Aa%3A+%0A++bar%C3%A8me%3A%0A++++assiette%3A+100%E2%82%AC%0A++++tranches%3A%0A++++++-+taux%3A+10%25%0A++++++++plafond%3A+b%0A++++++-+taux%3A+20%25%0A++++++++plafond%3A+50%E2%82%AC%0A++avec%3A%0A++++b%3A+%0A++++++non+applicable+si%3A+oui\u0026selected\u003da)\n\nEt on se base sur l’ordre spécifié. C’est juste que si une tranche a un plafond supérieur à l’autre elle est ignorée. Et c’est un comportement tout à fait ok je trouve. Car réordonner les tranches me parait plus surprenant. Sans compter tout les désavantages que j’ai pointé sur le besoin d’avoir un runtime spécifique en l’état actuel.",
+      "parentUuid": "27ff4a30_976098ab",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
   ]
 }
