@@ -45,16 +45,14 @@ Wrongly formatted variations :
      7 │ b:
      8 │   variations:
        │   ˘˘˘˘˘˘˘˘˘˘˘
-   Hint: Une variation doit contenir « si: » et «
-         alors: »
+   Hint: clef `alors` attendue
   
   E017 mécanisme invalide [syntax error]
        ╒══  ./syntax_error/rules.publicodes:14:3 ══
     13 │ c:
     14 │   variations:
        │   ˘˘˘˘˘˘˘˘˘˘˘
-   Hint: Une variation doit contenir « si: » et «
-         alors: »
+   Hint: clef `si` attendue
   
   E017 mécanisme invalide [syntax error]
        ╒══  ./syntax_error/rules.publicodes:15:7 ══

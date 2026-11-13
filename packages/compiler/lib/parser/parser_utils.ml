@@ -125,3 +125,19 @@ let parse_one_or_many ~f yaml =
   | _ ->
       let+ value = f yaml in
       [value]
+
+(* [map_value ~pos ~f ?default mapping key] map the yaml object
+  [mapping] [key] value with [fn]. Error if the key is missing on the
+  object, or return the [default] value when provided. *)
+let map_value ~pos ~f ?default (mapping : mapping) key =
+  match find_value key mapping with
+  | Some value ->
+      f value
+  | None -> (
+    match default with
+    | Some default ->
+        Output.return default
+    | None ->
+        let code, message = Err.parsing_invalid_mechanism in
+        let hint = Stdlib.Format.asprintf "clef `%s` attendue" key in
+        Output.fatal_error ~pos ~kind:`Syntax ~code message ~hints:[hint] )

@@ -6,46 +6,28 @@ open Shared.Shared_ast
 
 exception Invalid_rule_name of string
 
-let parse_context_references ~key mapping =
-  match find_value key mapping with
-  | None ->
-      Output.return []
-  | Some (value, Mark.{pos}) -> (
-    match value with
-    | `Scalar ref ->
-        let+ ref = parse_ref ref in
-        [ref]
-    | `A refs ->
-        parse_refs ~pos refs
-    | `O _ ->
-        let code, message = Err.parsing_should_not_be_object in
-        Output.fatal_error ~pos ~kind:`Syntax ~code message )
+let parse_context_references = function
+  | `Scalar ref, _ ->
+      let+ ref = parse_ref ref in
+      [ref]
+  | `A refs, Mark.{pos} ->
+      parse_refs ~pos refs
+  | `O _, Mark.{pos} ->
+      let code, message = Err.parsing_should_not_be_object in
+      Output.fatal_error ~pos ~kind:`Syntax ~code message
 
-let parse_exclusive mapping =
-  match find_value "exclusif" mapping with
-  | None ->
+let parse_exclusive (value, Mark.{pos}) =
+  let* scalar = get_scalar ~pos value in
+  match get_value scalar with
+  | "oui" ->
+      Output.return true
+  | "non" ->
       Output.return false
-  | Some (value, Mark.{pos}) -> (
-      let* scalar = get_scalar ~pos value in
-      let value = get_value scalar in
-      match value with
-      | "oui" ->
-          Output.return true
-      | "non" ->
-          Output.return false
-      | _ ->
-          let code, message = Err.parsing_invalid_mechanism in
-          Output.fatal_error ~pos ~kind:`Syntax ~code
-            ~hints:["doit valoir « oui » ou « non »"]
-            message )
-
-let no_reference_error ~pos =
-  let code, message = Err.parsing_invalid_mechanism in
-  Output.fatal_error ~pos ~kind:`Syntax ~code
-    ~hints:
-      [ "Il manque la règle à remplacer"
-      ; "Précisez-la avec « références à: ... »" ]
-    message
+  | _ ->
+      let code, message = Err.parsing_invalid_mechanism in
+      Output.fatal_error ~pos ~kind:`Syntax ~code
+        ~hints:["doit valoir « oui » ou « non »"]
+        message
 
 let multiple_references_error ~pos =
   let code, message = Err.parsing_invalid_mechanism in
@@ -56,17 +38,12 @@ let multiple_references_error ~pos =
          remplacer plusieurs règles" ]
     message
 
-let parse_reference ~pos mapping =
-  match find_value "références à" mapping with
-  | None ->
-      no_reference_error ~pos
-  | Some (value, Mark.{pos}) -> (
-    match value with
-    | `A _ ->
-        multiple_references_error ~pos
-    | yaml ->
-        let* scalar = get_scalar ~pos yaml in
-        parse_ref scalar )
+let parse_reference = function
+  | `A _, Mark.{pos} ->
+      multiple_references_error ~pos
+  | yaml, Mark.{pos} ->
+      let* scalar = get_scalar ~pos yaml in
+      parse_ref scalar
 
 let parse_replace ~pos yaml =
   match yaml with
@@ -79,10 +56,19 @@ let parse_replace ~pos yaml =
           ~keys:["références à"; "dans"; "sauf dans"; "exclusif"]
           mapping
       in
-      let reference = parse_reference ~pos mapping in
-      let only_in = parse_context_references ~key:"dans" mapping in
-      let except_in = parse_context_references ~key:"sauf dans" mapping in
-      let exclusive = parse_exclusive mapping in
+      let reference =
+        map_value ~pos mapping "références à" ~f:parse_reference
+      in
+      let only_in =
+        map_value ~pos ~default:[] mapping "dans" ~f:parse_context_references
+      in
+      let except_in =
+        map_value ~pos ~default:[] mapping "sauf dans"
+          ~f:parse_context_references
+      in
+      let exclusive =
+        map_value ~pos ~default:false mapping "exclusif" ~f:parse_exclusive
+      in
       let+ reference, only_in, except_in, exclusive =
         Output.combine_4 reference only_in except_in exclusive
       in
@@ -102,9 +88,16 @@ let parse_make_not_applicable ~pos yaml =
           ~keys:["références à"; "dans"; "sauf dans"]
           mapping
       in
-      let reference = parse_reference ~pos mapping in
-      let only_in = parse_context_references ~key:"dans" mapping in
-      let except_in = parse_context_references ~key:"sauf dans" mapping in
+      let reference =
+        map_value ~pos mapping "références à" ~f:parse_reference
+      in
+      let only_in =
+        map_value ~pos ~default:[] mapping "dans" ~f:parse_context_references
+      in
+      let except_in =
+        map_value ~pos ~default:[] mapping "sauf dans"
+          ~f:parse_context_references
+      in
       let+ reference, only_in, except_in =
         Output.combine_3 reference only_in except_in
       in
