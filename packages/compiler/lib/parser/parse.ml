@@ -70,17 +70,27 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
       let* meta = Parse_meta.parse yaml in
       let meta = default_meta @ meta in
       let* with_ =
-        parse_with ~default_to_public
-          ~ctx:{ctx with current_rule_name= name}
-          yaml
+        map_value ~pos ~default:[] yaml "avec" ~f:(fun (rules, {pos}) ->
+            parse_rules ~default_to_public ~pos
+              ~ctx:{ctx with current_rule_name= name}
+              rules )
       in
       let* import =
-        parse_import ~default_to_public
+        parse_import ~pos ~default_to_public
           ~ctx:{ctx with current_rule_name= name}
           yaml
       in
-      let* replace = parse_replace yaml in
-      let* make_not_applicable = parse_make_not_applicable yaml in
+      let* replace =
+        map_value ~pos ~default:[] yaml "remplace" ~f:(fun (replace, {pos}) ->
+            parse_one_or_many ~f:(Parse_replace.parse_replace ~pos) replace )
+      in
+      let* make_not_applicable =
+        map_value ~pos ~default:[] yaml "rend non applicable"
+          ~f:(fun (make_not_applicable, {pos}) ->
+            parse_one_or_many
+              ~f:(Parse_replace.parse_make_not_applicable ~pos)
+              make_not_applicable )
+      in
       Output.return
         ( [ { name= Mark.mk_pos ~pos (Shared.Rule_name.create_exn name)
             ; module_id= ctx.current_module_id
@@ -93,15 +103,7 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
       (* Should not happen because already checked by parse_value*)
       Output.empty
 
-and parse_with ~default_to_public ~ctx mapping =
-  let rules = find_value "avec" mapping in
-  match rules with
-  | None ->
-      Output.return []
-  | Some (rules, {pos}) ->
-      parse_rules ~default_to_public ~pos ~ctx rules
-
-and parse_import ~default_to_public ~ctx mapping =
+and parse_import ~pos ~default_to_public ~ctx mapping =
   let parse_package value pos =
     let* scalar = get_scalar ~pos value in
     let value = get_value scalar in
@@ -156,10 +158,7 @@ and parse_import ~default_to_public ~ctx mapping =
       | Ok package ->
           Output.return package
   in
-  match find_value "importer" mapping with
-  | None ->
-      Output.return []
-  | Some (value, {pos}) ->
+  map_value ~pos ~default:[] mapping "importer" ~f:(fun (value, {pos}) ->
       let* package, (module_, pos) =
         let check_module value =
           match File.of_string value with
@@ -181,23 +180,20 @@ and parse_import ~default_to_public ~ctx mapping =
             let value = get_value scalar in
             let* module_ = check_module value in
             Output.return (ctx.current_package, (module_, Mark.pos scalar))
-        | `O mapping -> (
+        | `O mapping ->
             let* module_ =
-              let code, message = Err.parsing_missing_value "modèle" in
-              let log = Log.error ~pos ~code ~kind:`Syntax message in
-              let* value = find_value "modèle" mapping |> Output.of_opt ~log in
-              let* scalar = get_scalar ~pos (Mark.remove value) in
-              let value = get_value scalar in
-              let pos = Mark.pos scalar in
+              let* value, pos =
+                map_value ~pos mapping "modèle" ~f:(fun (value, {pos}) ->
+                    let+ scalar = get_scalar ~pos value in
+                    (get_value scalar, Mark.pos scalar) )
+              in
               let* module_ = check_module value in
               Output.return (module_, pos)
             in
-            match find_value "paquet" mapping with
-            | None ->
-                Output.return (ctx.current_package, module_)
-            | Some (package, {pos}) ->
-                let* package = parse_package package pos in
-                Output.return (Some package, module_) )
+            map_value ~pos ~default:(ctx.current_package, module_)
+              mapping "paquet" ~f:(fun (package, {pos}) ->
+                let+ package = parse_package package pos in
+                (Some package, module_) )
       in
       let* module_ =
         match File.relativize ctx.current_module module_ with
@@ -240,7 +236,7 @@ and parse_import ~default_to_public ~ctx mapping =
       let input_files = List.map ~f:(fun value -> value) input_files in
       parse_files ~default_to_public ~pos
         ~ctx:{ctx with current_package= package; current_module= module_}
-        input_files
+        input_files )
 
 and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
   let module_id = !(ctx.next_module_id) in
@@ -302,24 +298,6 @@ and parse_files ~default_to_public ~ctx ?(pos = Pos.dummy) input_files =
   List.fold
     ~f:(fun acc program -> Ast.merge acc program)
     ~init:[] unresolved_programs
-
-and parse_replace mapping =
-  let replace = find_value "remplace" mapping in
-  match replace with
-  | None ->
-      Output.return []
-  | Some (replace, {pos}) ->
-      parse_one_or_many ~f:(Parse_replace.parse_replace ~pos) replace
-
-and parse_make_not_applicable mapping =
-  let make_not_applicable = find_value "rend non applicable" mapping in
-  match make_not_applicable with
-  | None ->
-      Output.return []
-  | Some (make_not_applicable, {pos}) ->
-      parse_one_or_many
-        ~f:(Parse_replace.parse_make_not_applicable ~pos)
-        make_not_applicable
 
 and parse_rules ~default_to_public ~pos ~ctx yaml =
   match yaml with

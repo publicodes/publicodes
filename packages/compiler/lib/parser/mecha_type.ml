@@ -20,23 +20,16 @@ let parse_symbol ~pos yaml =
       Output.fatal_error ~pos ~kind:`Syntax ~code message
 
 let parse_possibility ~pos (mapping : Yaml_parser.mapping) =
-  match Parser_utils.find_value "une possibilité" mapping with
-  | Some value -> (
-      let pos = Mark.pos value in
-      match Mark.remove value with
-      | `A consts ->
-          let* symbols =
-            (* FIXME: we should handle all the literals here, not just symbols. *)
-            List.map consts ~f:(parse_symbol ~pos) |> Output.all_keep_logs
-          in
-          Output.return (Shared_ast.Type (Mark.mk_pos ~pos (TEnum symbols)))
-      | _ ->
-          let code, message = Err.parsing_should_be_array in
-          Output.fatal_error ~pos ~kind:`Syntax ~code message )
-  | None ->
-      let code, message = Err.parsing_invalid_mechanism in
-      Output.fatal_error ~pos ~kind:`Syntax ~code message
-        ~hints:["clef `une possibilité` attendue"]
+  Parser_utils.map_value ~pos mapping "une possibilité" ~f:(function
+    | `A consts, Mark.{pos} ->
+        let* symbols =
+          (* FIXME: we should handle all the literals here, not just symbols. *)
+          List.map consts ~f:(parse_symbol ~pos) |> Output.all_keep_logs
+        in
+        Output.return (Shared_ast.Type (Mark.mk_pos ~pos (TEnum symbols)))
+    | _ ->
+        let code, message = Err.parsing_should_be_array in
+        Output.fatal_error ~pos ~kind:`Syntax ~code message )
 
 let parse_type ~pos ~parse:_ value =
   match value with
