@@ -1,4 +1,4 @@
-# !/usr/bin/awk -f
+#!/usr/bin/awk -f
 
 # Active when we are inside the rules object
 /const rules = \{/ { in_rules = 1; next }
