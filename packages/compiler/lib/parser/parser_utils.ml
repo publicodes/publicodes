@@ -19,8 +19,11 @@ let get_scalar ~pos (value : yaml) =
 
 let parse_array ~pos
     ~(parse :
-       ?error_if_undefined:bool -> pos:Pos.t -> yaml -> Ast.value Output.t )
-    (yaml : yaml) =
+          ?error_if_undefined:bool
+       -> ?is_root:bool
+       -> pos:Pos.t
+       -> yaml
+       -> Ast.value Output.t ) (yaml : yaml) =
   match yaml with
   | `A seq ->
       let* parsed_nodes =
@@ -122,3 +125,29 @@ let parse_one_or_many ~f yaml =
   | _ ->
       let+ value = f yaml in
       [value]
+
+(* [map_value ~pos ~f ?default mapping key] map the yaml object
+  [mapping] [key] value with [fn]. Error if the key is missing on the
+  object, or return the [default] value when provided. *)
+let map_value ~pos ~f ?default (mapping : mapping) key =
+  match find_value key mapping with
+  | Some value ->
+      f value
+  | None -> (
+    match default with
+    | Some default ->
+        Output.return default
+    | None ->
+        let code, message = Err.parsing_invalid_mechanism in
+        let hint = Stdlib.Format.asprintf "clef `%s` attendue" key in
+        Output.fatal_error ~pos ~kind:`Syntax ~code message ~hints:[hint] )
+
+let get_float ~pos value =
+  match Float.of_string_opt value with
+  | Some value ->
+      Output.return value
+  | None ->
+      let code, message = Err.invalid_value in
+      Output.fatal_error ~pos ~kind:`Syntax ~code
+        ~hints:["valeure flotante invalide"]
+        message

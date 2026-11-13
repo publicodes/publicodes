@@ -7,42 +7,55 @@ module Cycle_analysis = Graph.Cycles.Johnson (Rule_graph)
 let cycle_check (graph : Rule_graph.t) : Log.t list =
   let log_cycle cycle acc =
     let cycle = List.rev cycle in
-    match cycle with
-    | first_rule :: second_rule :: _ ->
-        let _, first_ref_pos, _ =
-          Rule_graph.find_edge graph first_rule second_rule
-        in
-        let cycle_full = cycle @ [first_rule] in
-        let edges =
-          List.map
-            (List.zip_exn cycle (List.tl_exn cycle_full))
-            ~f:(fun (a, b) ->
-              let _, pos, _ = Rule_graph.find_edge graph a b in
-              (pos, b) )
-        in
-        let labels =
-          List.sort edges ~compare:(fun (p1, _) (p2, _) -> Pos.compare p1 p2)
-          |> List.mapi ~f:(fun i (pos, (ref, _)) ->
-              let is_last = i = List.length edges - 1 in
-              let label =
-                Printf.sprintf "règle '%s' référencée "
-                  (Rule_name.to_string ref)
-                ^ if is_last then "de nouveau" else "ici"
-              in
-              Mark.mk_pos ~pos label )
-        in
-        let code, message = Err.cycle_detected in
-        Log.warning message ~code ~kind:`Cycle ~pos:first_ref_pos ~labels :: acc
-    | [rule] ->
-        let _, pos, _ = Rule_graph.find_edge graph rule rule in
-        let code, message = Err.cycle_detected in
-        Log.warning message ~code ~kind:`Cycle ~pos
-          ~labels:[Mark.mk_pos ~pos "la règle se référence elle-même"]
-        :: acc
-    | [] ->
-        acc
+    let cycle_rule_names = List.map cycle ~f:fst in
+    if
+      (* skip duplicate cycle errors because of different contexts *)
+      List.map acc ~f:fst
+      |> List.exists ~f:(fun acc_names ->
+          List.length acc_names = List.length cycle_rule_names
+          && List.for_all acc_names ~f:(fun name ->
+              List.exists cycle_rule_names ~f:(Rule_name.equal name) ) )
+    then acc
+    else
+      match cycle with
+      | first_rule :: second_rule :: _ ->
+          let _, first_ref_pos, _ =
+            Rule_graph.find_edge graph first_rule second_rule
+          in
+          let cycle_full = cycle @ [first_rule] in
+          let edges =
+            List.map
+              (List.zip_exn cycle (List.tl_exn cycle_full))
+              ~f:(fun (a, b) ->
+                let _, pos, _ = Rule_graph.find_edge graph a b in
+                (pos, b) )
+          in
+          let labels =
+            List.sort edges ~compare:(fun (p1, _) (p2, _) -> Pos.compare p1 p2)
+            |> List.mapi ~f:(fun i (pos, (ref, _)) ->
+                let is_last = i = List.length edges - 1 in
+                let label =
+                  Printf.sprintf "règle '%s' référencée "
+                    (Rule_name.to_string ref)
+                  ^ if is_last then "de nouveau" else "ici"
+                in
+                Mark.mk_pos ~pos label )
+          in
+          let code, message = Err.cycle_detected in
+          ( cycle_rule_names
+          , Log.warning message ~code ~kind:`Cycle ~pos:first_ref_pos ~labels )
+          :: acc
+      | [rule] ->
+          let _, pos, _ = Rule_graph.find_edge graph rule rule in
+          let code, message = Err.cycle_detected in
+          ( cycle_rule_names
+          , Log.warning message ~code ~kind:`Cycle ~pos
+              ~labels:[Mark.mk_pos ~pos "la règle se référence elle-même"] )
+          :: acc
+      | [] ->
+          acc
   in
-  Cycle_analysis.fold_cycles log_cycle graph []
+  Cycle_analysis.fold_cycles log_cycle graph [] |> List.map ~f:snd
 
 let illegal_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
     Log.t list =
@@ -130,10 +143,60 @@ let unused_context_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
             in
             Log.error ~labels ~kind:`Syntax ~code message ) )
 
+let root_finding_check (ast : Shared_ast.resolved) (graph : Rule_graph.t) :
+    Log.t list =
+  let graph = Rule_graph.Oper.transitive_closure graph in
+  Rule_graph.fold_vertex
+    (fun (rule_name, ctxs) acc ->
+      let rule_def = Shared_ast.find_exn rule_name ast in
+      let new_ctx = Rule_context.from_rule_def rule_def in
+      let ctxs = Rule_context.stack_concat new_ctx ctxs in
+      let value, _ = rule_def.value in
+      let value, _ = value.value in
+      (* already has its value, root_finding end *)
+      if Rule_context.stack_contains ctxs rule_name then acc
+      else
+        match value with
+        | Root_finding {with_; _} ->
+            let missing =
+              List.filter with_ ~f:(fun (from, _) ->
+                  let deps =
+                    Rule_graph.root_vertex from |> Rule_graph.succ graph
+                  in
+                  not
+                    (List.exists deps ~f:(fun (to_, _) ->
+                         Rule_name.equal from to_ ) ) )
+            in
+            acc
+            @ List.map missing ~f:(fun (with_, {Mark.pos}) ->
+                let ctxs =
+                  if List.is_empty ctxs then None
+                  else
+                    let rules_str =
+                      List.map ctxs ~f:(fun ctxs ->
+                          Rule_context.rules ctxs |> List.map ~f:fst
+                          |> List.map ~f:Rule_name.to_string
+                          |> List.map ~f:(Stdlib.Format.asprintf "'%s'")
+                          |> String.concat ~sep:", " )
+                      |> String.concat ~sep:", "
+                    in
+                    Some rules_str
+                in
+                let code, message =
+                  let rule = Rule_name.show rule_name in
+                  let with_ = Rule_name.show with_ in
+                  Err.invalid_root_finding with_ rule ctxs
+                in
+                Log.error ~kind:`Syntax ~pos ~code message )
+        | _ ->
+            acc )
+    graph []
+
 let mk_and_checks ast ~replacement_graph ~make_not_applicable_graph =
   let graph = Rule_graph.mk ast ~replacement_graph ~make_not_applicable_graph in
   let cycle_logs = cycle_check graph in
   let access_logs = illegal_check ast graph in
   let context_logs = unused_context_check ast graph in
-  let logs = cycle_logs @ access_logs @ context_logs in
+  let root_finding_logs = root_finding_check ast graph in
+  let logs = cycle_logs @ access_logs @ context_logs @ root_finding_logs in
   break ~logs graph
