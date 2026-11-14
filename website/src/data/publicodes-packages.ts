@@ -67,6 +67,12 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
 		description: "Aides et coût d'une rénovation thermique"
 	},
 	{
+		npm: 'conventions-collectives',
+		maintainer: 'conventions-collectives',
+		description:
+			'Les conventions collectives françaises (salaires minima, cotisations conventionnelles) en règles Publicodes versionnées, qui étendent modele-social'
+	},
+	{
 		npm: '@abc-transitionbascarbone/calculateur-tourisme',
 		maintainer: 'abc',
 		description:
