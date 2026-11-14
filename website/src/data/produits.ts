@@ -164,6 +164,14 @@ const rawProduits = [
 		img: plusFraisAuTravailImg
 	},
 	{
+		slug: 'conventions-collectives',
+		name: 'conventions-collectives',
+		description:
+			'Les conventions collectives françaises (salaires minima, cotisations conventionnelles) en règles Publicodes versionnées, qui étendent modele-social.',
+		url: 'https://www.npmjs.com/package/conventions-collectives',
+		github: 'https://github.com/publipay/conventions-collectives'
+	},
+	{
 		slug: 'calinou',
 		name: 'Calinou'
 	}
