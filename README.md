@@ -38,5 +38,8 @@ npm install publicodes
   le montant du chômage partiel.
 - **[Nos Gestes Climat](https://nosgestesclimat.fr)** utilise publicodes pour proposer un calculateur d'empreinte climat personnel de référence complètement ouvert
 - **[Code du travail numérique](https://code.travail.gouv.fr)** utilise publicodes pour des simulateur d'indemnité de licenciement et de durée de préavis de retraite.
+- **[conventions-collectives](https://www.npmjs.com/package/conventions-collectives)** est un paquet npm qui utilise publicodes
+  pour spécifier les conventions collectives françaises (salaires minimaux, cotisations conventionnelles),
+  en règles versionnées qui étendent `modele-social`.
 - **[futur.eco](https://futur.eco/)** utilise publicodes pour calculer les bilans
   carbone d'un grand nombre d'activités, plats, transports ou biens.
