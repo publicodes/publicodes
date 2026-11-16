@@ -2,7 +2,7 @@ string lit: "Test"
 
 number lit: 12
 
-can't compare string with number:
+can't compare string with number écordè:
   valeur: string lit > number lit
 
 d: string lit = "pas Test"

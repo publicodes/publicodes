@@ -41,30 +41,30 @@ let%test_unit "parse obj" =
              ( Mark.mk_pos
                  ~pos:
                    { start_pos= {line= 2; column= 3; index= 3}
-                   ; end_pos= {line= 2; column= 11; index= 11}
+                   ; end_pos= {line= 2; column= 11; index= 12}
                    ; file }
                  {value= "ma règle"; style= `Plain}
              , (* Value *)
                `Scalar
                  (Mark.mk_pos
                     ~pos:
-                      { start_pos= {line= 2; column= 12; index= 12}
-                      ; end_pos= {line= 2; column= 12; index= 12}
+                      { start_pos= {line= 2; column= 12; index= 13}
+                      ; end_pos= {line= 2; column= 12; index= 13}
                       ; file }
                     {value= ""; style= `Plain} ) )
            ; (* Key *)
              ( Mark.mk_pos
                  ~pos:
-                   { start_pos= {line= 3; column= 3; index= 15}
-                   ; end_pos= {line= 3; column= 4; index= 16}
+                   { start_pos= {line= 3; column= 3; index= 16}
+                   ; end_pos= {line= 3; column= 4; index= 17}
                    ; file }
                  {value= "b"; style= `Plain}
              , (* Value *)
                `Scalar
                  (Mark.mk_pos
                     ~pos:
-                      { start_pos= {line= 4; column= 5; index= 22}
-                      ; end_pos= {line= 4; column= 6; index= 23}
+                      { start_pos= {line= 4; column= 5; index= 23}
+                      ; end_pos= {line= 4; column= 6; index= 24}
                       ; file }
                     {value= "2"; style= `Plain} ) ) ] )
   | None ->

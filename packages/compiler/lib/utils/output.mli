@@ -57,8 +57,14 @@ val fatal_error :
   -> code:Err.Code.t
   -> ?hints:string list
   -> ?labels:string Mark.pos list
+  -> ?primary_label:string
   -> string
   -> 'a t
+
+val fatal_bug : ?pos:Pos.t -> string -> 'a t
+(** [fatal_bug ?pos message] creates a fatal bug log with the given message and
+    optional position (defaults to [Pos.dummy]). This function is intended for
+    internal compiler errors that should never happen. *)
 
 val ignore_logs : 'a * Log.t list -> 'a * 'c list
 (** [ignore_logs (x, logs)] returns [(x, [])], effectively discarding the logs. *)

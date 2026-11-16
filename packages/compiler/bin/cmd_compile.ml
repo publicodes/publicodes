@@ -60,9 +60,9 @@ let cmd =
     let* _ =
       if String.is_empty change_directory then Ok ()
       else if not (Stdlib.Sys.file_exists change_directory) then
-        Error (`Msg "Directory does not exists")
+        Error (`Msg "directory does not exists")
       else if not (Stdlib.Sys.is_directory change_directory) then
-        Error (`Msg "Directory is not a directory")
+        Error (`Msg "directory is not a directory")
       else (
         Stdlib.Sys.chdir change_directory ;
         Ok () )
@@ -71,15 +71,16 @@ let cmd =
       let* input_files, module_path =
         if String.equal input "-" then Ok ([File.std], File.of_string_exn "./")
         else
+          (* TODO: should use the log rendering to display the error messages? *)
           match Utils.File.gather_module input with
           | Error (Invalid_path _) ->
-              Error (`Msg "Path is invalid")
+              Error (`Msg "path is invalid")
           | Error (Not_found _) ->
-              Error (`Msg "Path does not exists")
+              Error (`Msg "path does not exists")
           | Error (Is_not_directory _) ->
-              Error (`Msg "Path is not a directory")
+              Error (`Msg "path is not a directory")
           | Error (Empty_directory _) ->
-              Error (`Msg "Directory does not contains Publicodes files")
+              Error (`Msg "directory does not contains Publicodes files")
           | Ok files ->
               Ok (files, File.of_string_exn input)
       in

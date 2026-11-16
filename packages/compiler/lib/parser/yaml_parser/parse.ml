@@ -65,19 +65,36 @@ let print_token =
   | Nothing ->
       "Nothing"
 
+(** [byte_index_of_char_index content target] returns the byte index of
+    the character at the given [target] code point index in the [content] UTF-8
+    string.
+
+    @example [byte_index_of_char_index "éa" 1] returns 2, because the character
+    at code point index 1 is 'a', which starts at byte index 2 in the UTF-8
+    encoding of "éa". *)
+let byte_index_of_char_index content target =
+  let byte_index = ref 0 in
+  let content_utf8 = String.Utf8.of_string content in
+  for _i = 0 to target - 1 do
+    let decoded = String.Utf8.get content_utf8 ~byte_pos:!byte_index in
+    byte_index := !byte_index + Uchar.Utf8.byte_length decoded
+  done ;
+  !byte_index
+
 let parse (filename : File.t) (content : string) : yaml Output.t =
   (* Create a parser from the content *)
+  let filename_to_show = File.to_intern filename in
+  let point_from_mark (mark : Yaml.Stream.Mark.t) =
+    Pos.Point.
+      { index= byte_index_of_char_index content mark.index
+      ; line= mark.line + 1
+      ; column= mark.column + 1 }
+  in
   let pos_from_mark Event.{start_mark; end_mark} =
     Pos.
       { file= filename
-      ; start_pos=
-          { index= start_mark.index
-          ; line= start_mark.line + 1
-          ; column= start_mark.column + 1 }
-      ; end_pos=
-          { index= end_mark.index
-          ; line= end_mark.line + 1
-          ; column= end_mark.column + 1 } }
+      ; start_pos= point_from_mark start_mark
+      ; end_pos= point_from_mark end_mark }
   in
   let transform_error ?(pos = Pos.beginning_of_file filename) result =
     match result with
@@ -90,7 +107,7 @@ let parse (filename : File.t) (content : string) : yaml Output.t =
           |> Option.value ~default:(err, [])
         in
         Output.fatal_error message ~pos ~kind:`Yaml ~code:Err.Code.Yaml_parsing
-          ~hints
+          ~primary_label:message ~hints
   in
   let* parser = Yaml.Stream.parser content |> transform_error in
   let* first_token = Yaml.Stream.do_parse parser |> transform_error in
@@ -116,16 +133,11 @@ let parse (filename : File.t) (content : string) : yaml Output.t =
   let rec parse_stream () =
     let stream_start, _ = !current_token in
     match stream_start with
-    | Event.Stream_start _ -> (
+    | Event.Stream_start _ ->
         let* result = parse_document () in
-        let* stream_end, _ = next () in
-        match stream_end with
-        | Event.Stream_end ->
-            Output.return result
-        | token ->
-            unexpected_token_error token "the end of stream" )
+        Output.return result
     | _ ->
-        fatal_error_from_current_token Err.no_rules
+        fatal_error_from_current_token (Err.no_rules_in filename_to_show)
   and parse_document () =
     let* document_start, _ = next () in
     match document_start with
@@ -138,8 +150,10 @@ let parse (filename : File.t) (content : string) : yaml Output.t =
             Output.return result
         | token ->
             unexpected_token_error token "the end of file" )
+    | Nothing | Stream_end ->
+        Output.return (`O [])
     | _ ->
-        fatal_error_from_current_token Err.no_rules
+        fatal_error_from_current_token (Err.no_rules_in filename_to_show)
   and parse_node () =
     let event, pos = !current_token in
     match event with

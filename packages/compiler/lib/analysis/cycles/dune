@@ -1,0 +1,7 @@
+(library
+ (name cycles)
+ (public_name publicodes.analysis.cycles)
+ (libraries utils shared base ocamlgraph)
+ (modules :standard)
+ (preprocess
+  (pps ppx_deriving.show ppx_compare sedlex.ppx ppx_assert)))

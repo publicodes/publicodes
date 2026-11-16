@@ -22,8 +22,7 @@
    (echo "|}")
    (echo "let runtime = {|")
    (cat ../../runtimes/runtime.js)
-   (echo "|}"))
-))
+   (echo "|}"))))
 
 (rule
  (with-stdout-to
@@ -31,5 +30,4 @@
   (progn
    (echo "let template = {|")
    (cat ./templates/template.debug.jinja)
-   (echo "|}"))
-))
+   (echo "|}"))))

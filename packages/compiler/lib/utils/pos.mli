@@ -2,15 +2,13 @@
 
 module Point : sig
   (** [index] is the byte index in the file. [line] and [column] are the line and
-		column numbers in the file. The first line and column are 1.
+		column numbers in the file in code points.
 
 		@note The [index] is in 0-based index. The [line] and [column] are in
 		1-based index. *)
   type t = {index: int; line: int; column: int} [@@deriving equal]
 
   val pp : Format.formatter -> t -> unit
-
-  val of_position : Lexing.position -> t
 
   val to_position : t -> file:File.t -> Lexing.position
 
@@ -32,6 +30,3 @@ val add : ?len:int -> ?line:int -> t -> t
 val merge : t -> t -> t
 (** [merge pos1 pos2] merges two positions into a single position.
     If the positions are from different files, an exception is raised. *)
-
-val to_loc : t -> Stdune.Loc.t
-(** Convert a position to a Stdune location. *)

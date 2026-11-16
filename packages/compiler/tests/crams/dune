@@ -1,3 +1,5 @@
 (cram
  (applies_to :whole_subtree)
- (deps %{bin:publicodes} (glob_files ./scripts/*)))
+ (deps
+  %{bin:publicodes}
+  (glob_files ./scripts/*)))

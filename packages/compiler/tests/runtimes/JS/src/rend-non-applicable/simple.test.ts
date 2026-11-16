@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'bun:test'
+import { describe, test, expect } from 'bun:test'
 import { p, yaml } from '../compile'
 
 describe('Rend non applicable > simple', () => {
-	it('si règle vrai', async () => {
+	test('si règle vrai', async () => {
 		const { 'à payer': àPayer } = await yaml`
       impôt: 1000€
       à payer: impôt
@@ -12,7 +12,8 @@ describe('Rend non applicable > simple', () => {
       `
 		expect(p.isNotApplicable(àPayer.evaluate().value)).toBeTrue()
 	})
-	it('si règle vaut non', async () => {
+
+	test('si règle vaut non', async () => {
 		const { 'à payer': àPayer } = await yaml`
       impôt: 1000€
       à payer: impôt
@@ -23,7 +24,7 @@ describe('Rend non applicable > simple', () => {
 		expect(àPayer.evaluate().value).toBe(1000)
 	})
 
-	it('si règle non applicable', async () => {
+	test('si règle non applicable', async () => {
 		const { 'à payer': àPayer } = await yaml`
       impôt: 1000€
       à payer: impôt
@@ -34,7 +35,7 @@ describe('Rend non applicable > simple', () => {
 		expect(àPayer.evaluate().value).toBe(1000)
 	})
 
-	it('si règle non définie', async () => {
+	test('si règle non définie', async () => {
 		const r = await yaml`
       impôt: 1000€
       à payer: impôt
@@ -42,6 +43,31 @@ describe('Rend non applicable > simple', () => {
         rend non applicable: impôt
       `
 		expect(r['à payer'].evaluate().value).toBe(1000)
-		expect(r['exilé fiscal'].type).toBe('boolean')
+		expect(r['exilé fiscal'].type).toBe('unknown')
+	})
+
+	test('avec des règles de types différents', async () => {
+		const { result } = await yaml`
+result:
+  valeur: bool
+  avec:
+    number:
+      rend non applicable: bool
+
+    bool:
+      valeur: oui
+`
+
+		expect(result.evaluate().value).toEqual(true)
+		expect(
+			result.evaluate({ 'result . number': p.NotApplicable }).value,
+		).toEqual(true)
+		expect(result.evaluate({ 'result . number': false }).value).toEqual(true)
+		expect(result.evaluate({ 'result . number': true }).value).toEqual(
+			p.NotApplicable,
+		)
+		expect(result.evaluate({ 'result . number': 10 }).value).toEqual(
+			p.NotApplicable,
+		)
 	})
 })

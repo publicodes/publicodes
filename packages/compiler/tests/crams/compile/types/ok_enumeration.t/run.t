@@ -1,30 +1,6 @@
 Replacements should be correctly be inferred in enumerations:
 
   $ publicodes compile ./input/ -o - | ../../../scripts/get_rule_types.awk
-  
-  E024
-  information de type manquante pour ce résultat [type warning]
-       ╒══  ./input/rules.publicodes:31:1 ══
-    30 │   public: oui
-    31 │ c4: # type unknown
-       │ ˘˘˘
-   Hint: Spécifiez le type de la règle.
-   Hint: Par exemple :
-         
-         c4:
-           type: nombre
-  
-  E024
-  information de type manquante pour ce résultat [type warning]
-       ╒══  ./input/rules.publicodes:79:5 ══
-    78 │       valeur: c
-    79 │     c: # type unknown
-       │     ˘˘
-   Hint: Spécifiez le type de la règle.
-   Hint: Par exemple :
-         
-         same rule replaced with different types . c:
-           type: nombre
   'a1':
     value: (10.000000|20.000000)
     type: "number",

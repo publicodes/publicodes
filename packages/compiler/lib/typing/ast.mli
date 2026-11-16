@@ -192,3 +192,12 @@ val is_typ_number_with_unit : typ -> bool
 
 val number_without_unit : t
 (** [number_without_unit] is a type representing a number without a unit. *)
+
+(** {2 Accessors} *)
+
+val get_rule_def_pos :
+  rule:Shared.Rule_name.t -> typing_tree -> Utils.Pos.t Utils.Output.t
+(** [get_rule_def_pos ~rule ast] returns the position of the rule definition of [rule] in the typing tree
+    [ast].
+
+    @raise Not_found if the rule definition is not found in the typing tree. *)

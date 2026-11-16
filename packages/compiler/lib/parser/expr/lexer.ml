@@ -67,9 +67,16 @@ let update_acc (lexbuf : lexbuf) : unit =
   let _ = Utf8.lexeme lexbuf in
   ()
 
-(* match !code_buffer with
-  | None -> failwith "Lexer update outside of a lexing context"
-  | Some buf -> Buffer.add_string buf (Utf8.lexeme lexbuf) *)
+let get_positions lexbuf =
+  let start_char, end_char = Sedlexing.lexing_positions lexbuf in
+  let start_byte, end_byte = Sedlexing.lexing_bytes_positions lexbuf in
+  let point char_pos byte_pos =
+    Pos.Point.
+      { index= byte_pos.Lexing.pos_cnum
+      ; line= char_pos.Lexing.pos_lnum + 1
+      ; column= char_pos.Lexing.pos_cnum - char_pos.Lexing.pos_bol + 1 }
+  in
+  (point start_char start_byte, point end_char end_byte)
 
 (** [lex_one lexbuf] tokenizes the input [lexbuf] and returns the next token.
     This function recursively processes the input stream, skipping whitespace
@@ -81,15 +88,11 @@ let update_acc (lexbuf : lexbuf) : unit =
     @raise Invalid_token if an unrecognized or malformed token is encountered *)
 let rec lex_one (lexbuf : lexbuf) : Tokens.t Mark.pos =
   let with_pos token =
-    let start_pos, end_pos = Sedlexing.lexing_positions lexbuf in
+    let pos = Sedlexing.lexing_position_curr lexbuf in
+    let start_pos, end_pos = get_positions lexbuf in
     (* Asserts it has a valid filename. *)
-    let file = File.of_string_exn start_pos.pos_fname in
-    let pos =
-      Pos.
-        { file
-        ; start_pos= Pos.Point.of_position start_pos
-        ; end_pos= Pos.Point.of_position end_pos }
-    in
+    let file = File.of_string_exn pos.pos_fname in
+    let pos = Pos.{file; start_pos; end_pos} in
     Mark.mk_pos ~pos token
   in
   match%sedlex lexbuf with
@@ -197,11 +200,8 @@ let lex (source : string Mark.pos) : Tokens.t Mark.pos list Output.t =
           lex_loop (token :: acc)
     with Invalid_token _ ->
       let token_pos =
-        let start_pos, end_pos = Sedlexing.lexing_positions lexbuf in
-        Pos.
-          { file= pos.file
-          ; start_pos= Pos.Point.of_position start_pos
-          ; end_pos= Pos.Point.of_position end_pos }
+        let start_pos, end_pos = get_positions lexbuf in
+        Pos.{file= pos.file; start_pos; end_pos}
       in
       let code, message = Err.expr_lex_invalid_expression in
       fatal_error ~pos:token_pos ~kind:`Lex ~code message

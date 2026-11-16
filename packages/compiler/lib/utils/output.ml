@@ -61,8 +61,15 @@ let combine_4 a b c d =
       (None, logs)
 
 (* Interrupt compilation *)
-let fatal_error ~pos ~kind ~code ?(hints = []) ?(labels = []) message =
-  let log = Log.error ~pos ~kind ~hints ~code ~labels message in
+let fatal_error ~pos ~kind ~code ?(hints = []) ?(labels = []) ?primary_label
+    message =
+  let log = Log.error ~pos ~kind ~hints ~code ~labels ~primary_label message in
+  (None, [log])
+
+let fatal_bug ?(pos = Pos.dummy) message =
+  let log =
+    Log.error ~pos ~code:Err.Code.Internal message |> Log.with_level `Bug
+  in
   (None, [log])
 
 let ignore_logs (x_opt, _) = (x_opt, [])
@@ -101,7 +108,7 @@ open Let_syntax
 
 let print_logs (output : 'a t) =
   List.sort ~compare:Log.compare (logs output)
-  |> List.iter ~f:(fun log -> Log_formatter.print log)
+  |> List.iter ~f:(fun log -> Grace_log_formatter.print log)
 
 let sprintf_logs (output : 'a t) =
   output |> logs
