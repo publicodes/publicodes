@@ -7,7 +7,7 @@
 
 <ul
 	class="grid grid-flow-row grid-cols-1 justify-center gap-4 md:grid-cols-2
- xl:grid-cols-3 xl:gap-4">
+ xl:grid-cols-3">
 	{#each packages as { name, version, modified, description, maintainer }}
 		<li
 			class="relative flex rounded-sm

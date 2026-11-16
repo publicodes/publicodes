@@ -37,12 +37,12 @@
 
 <div
 	role="list"
-	class="grid grid-cols-1 gap-8 pb-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+	class="grid grid-cols-1 gap-4 pb-16 md:grid-cols-2 xl:grid-cols-3">
 	{#each displayedProduit as { img, name, description, url, pkg }}
 		{#if url && description}
 			<Card {img} {url} role="listitem">
 				{#snippet title()}
-					<h2>{name}</h2>
+					<h2 class="text-xl">{name}</h2>
 				{/snippet}
 				<p class="flex-1">{description}</p>
 				{#if pkg.length > 0}
