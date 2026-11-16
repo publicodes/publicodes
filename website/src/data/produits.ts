@@ -8,6 +8,7 @@ import jagisImg from './logos/jagis.webp';
 import teeImg from './logos/TEE.webp';
 import abcImg from './logos/ABC.png';
 import plusFraisAuTravailImg from './logos/plus-frais-au-travail.png';
+import publipayImg from './logos/publipay.png';
 
 const rawProduits = [
 	{
@@ -164,12 +165,13 @@ const rawProduits = [
 		img: plusFraisAuTravailImg
 	},
 	{
-		slug: 'conventions-collectives',
-		name: 'conventions-collectives',
+		slug: 'publipay',
+		name: 'Publipay',
 		description:
-			'Les conventions collectives françaises (salaires minima, cotisations conventionnelles) en règles Publicodes versionnées, qui étendent modele-social.',
-		url: 'https://www.npmjs.com/package/conventions-collectives',
-		github: 'https://github.com/publipay/conventions-collectives'
+			'Simulateur de fiche de paie gratuit, calculé dans votre navigateur.',
+		url: 'https://www.publipay.fr',
+		github: 'https://github.com/publipay',
+		img: publipayImg
 	},
 	{
 		slug: 'calinou',
