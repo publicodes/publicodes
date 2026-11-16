@@ -16,7 +16,7 @@ let extract_parameters rule_name ~graph ~ast : Rule_name.t * Rule_name.t list =
         is_parameter dep_rule_name ~ast )
     |> List.map ~f:fst
   in
-  (rule_name, List.stable_dedup parameter_rules ~compare:Rule_name.compare)
+  (rule_name, List.dedup_and_sort parameter_rules ~compare:Rule_name.compare)
 
 let add_self_dependencies_for_parameters ~(graph : Dependency_graph.t)
     ~(ast : Shared_ast.typed) : unit =
