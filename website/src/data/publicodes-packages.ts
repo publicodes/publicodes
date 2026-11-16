@@ -33,7 +33,7 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
 	{
 		npm: 'modele-social',
 		maintainer: 'mon-entreprise',
-		users: ['estime', 'karburan', 'troopay']
+		users: ['estime', 'karburan', 'troopay', 'publipay']
 	},
 	{
 		npm: 'futureco-data',
@@ -68,7 +68,7 @@ export const publicodesPackages: readonly PublicodesPackage[] = [
 	},
 	{
 		npm: 'conventions-collectives',
-		maintainer: 'conventions-collectives',
+		maintainer: 'publipay',
 		description:
 			'Les conventions collectives françaises (salaires minima, cotisations conventionnelles) en règles Publicodes versionnées, qui étendent modele-social'
 	},
