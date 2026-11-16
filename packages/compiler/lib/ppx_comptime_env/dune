@@ -1,0 +1,5 @@
+(library
+ (name ppx_comptime_env)
+ (public_name publicodes.ppx_comptime_env)
+ (kind ppx_rewriter)
+ (libraries ppxlib))
