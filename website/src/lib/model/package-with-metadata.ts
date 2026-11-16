@@ -30,9 +30,10 @@ async function fetchPackageMetadata(
 ): Promise<PublicodesPackageWithMetadata> {
 	const response = await fetch(`${NPM_REGISTRY_URL}/${pkg.npm}`);
 	const data = await response.json();
-	const description =
-		data.description.startsWith('<div') || data.description.startsWith('> [!')
-			? (pkg.description ?? '')
+	const description = pkg.description
+		? pkg.description
+		: data.description.startsWith('<div') || data.description.startsWith('> [!')
+			? ''
 			: data.description;
 	const maintener = produits.find((produit) => produit.slug === pkg.maintainer);
 	if (!maintener) {
