@@ -18,6 +18,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3bb9dc2_0a3293a2",
+        "filename": "packages/compiler/lib/analysis/dependency_graph/checks.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-16T15:08:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ab2a6a40_720b93ae",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f6633af9_adbc9ca6",
@@ -31,6 +49,24 @@
       "writtenOn": "2026-11-10T16:10:09Z",
       "side": 1,
       "message": "Ok je sais que je casse un peu la sémantique actuelle, mais je me pose la question : à quelle point peut-on tout simplement utiliser les mécanismes plafond, plancher et arrondi présent sur la règle au lieu de ces trois valeurs ?\n\nVraiment une question ouverte, j’entends que ce soit pas la même chose. On pourrait imaginer supporter les deux et prendre les valeurs des mécanismes chainé sur la règle si les paramètres ne sont pas renseigné sur l’inversion. \n\nPour une autre PR",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ee332381_3caac010",
+        "filename": "packages/compiler/lib/eval_tree/tree.mli",
+        "patchSetId": 9
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-16T15:08:12Z",
+      "side": 1,
+      "message": "Débattu par chat interposé avec toute l\u0027équipe. En gros pourquoi pas, mais compliqué de rendre ce comportement prédictible et clair. L\u0027ordre des mécanismes impacte beaucoup.\n\nEn premier lieu je me suis dis \"berk\". En second lieu un truc comme: L\u0027interaction me semble intéressante, et c\u0027est en accord avec les objectifs de `plancher`, etc. Mais maintenant je sais que c\u0027est bien une mauvaise idée. Considérons cet exemple:\n\n```yaml\na: b + 10\nb:\n  inversion numérique:\n    avec:\n      - a\n    min: 0\n    max: 1000\n    tolerance: 0.1\n```\n\nOn se dis qu\u0027en spécifiant des interactions on pourrais presque avoir:\n\n```yaml\na: b + 10\nb:\n  inversion numérique: a\n  plancher: 0\n  plafond: 1000\n  arrondi: 0.1\n```\n\n`plancher` spécifie que la valeur minimale sera `0`, `plafond` que la valeur maximale sera `1000`, et `arrondi` que le résultat sera arrondis à la décimale. `inversion numérique` n\u0027aurais donc aucun intérêt à chercher une valeur en dessous de `0`? Mais en fait biensur que si, parce que si le résultat de l\u0027équation est `-10`, et que `plancher` le ramène à `0`, ce n\u0027est pas du tout la même chose que si `inversion numérique` avais échoué a calculer le résultat puisque se bornant à `0`.\n\nLa sémantique de `min`, `max` et `tolerance` indique: \"je sais qu\u0027en aucun cas la valeur ne sort de ces bornes, donc si ca arrives, gagnons du temps, bail out, stop tout\". Et on throw sur ca parce que c\u0027est qu\u0027il y a une erreur de modélisation.\n\nPar contre ce qu\u0027on pourrais imaginer c\u0027est d\u0027avoir justement un/des mécanismes de bail out, de garde fou. Ce qui en langage de programmation correspond à un `assert` :\n\n```yaml\na: b + 10\nb:\n  inversion numérique: a\n  affirme:\n    min: 0\n    max: 1000\n    precision: 0.1\n```\n\nCe mécanismes chainé cause une exception au runtime si la valeur passé sort des bornes, ou si la précision de la valeur excède `0.1`. On peux l\u0027utiliser partout pour s\u0027assurer que le moteur se comporte plutôt comme on si attends.\n\nEt pour le coup la oui, `inversion numérique` pourrais lire ces valeurs pour calibrer son algorithme, comme une optimisation, puisqu\u0027il ne servirais a rien de produire un output qui ne match pas cette assomption.",
+      "parentUuid": "f6633af9_adbc9ca6",
       "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
@@ -52,6 +88,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ad6e887_41651027",
+        "filename": "packages/compiler/lib/parser/mecha_root_finding.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-16T15:08:12Z",
+      "side": 1,
+      "message": "Yes j\u0027ai tenté plusieurs fois de produire un helper convenient. Je pense y être enfin parvenue cette fois ci. Je passe ca dans un commit dédié, en amont de celui ci.",
+      "parentUuid": "8dc3f880_cc9214bd",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "35874906_9281539f",
@@ -69,6 +123,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "afa906db_23a94a8a",
+        "filename": "packages/compiler/lib/parser/parse.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-16T15:08:12Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "35874906_9281539f",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4c22c751_db91c47e",
@@ -82,6 +154,24 @@
       "writtenOn": "2026-11-10T16:10:09Z",
       "side": 1,
       "message": "_pinaillage_ plutôt qu’un tuple, peut-être utiliser un objet nommé avec un défaut ? (à voir si ça clarifie la lecture)",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1de951a8_7f194ec6",
+        "filename": "packages/compiler/lib/parser/parse_mechanisms.ml",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-16T15:08:12Z",
+      "side": 1,
+      "message": "complêtement. J\u0027ai sortie ca sur un commit en amont",
+      "parentUuid": "4c22c751_db91c47e",
       "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
@@ -105,6 +195,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "77662390_32ed259b",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 9
+      },
+      "lineNbr": 903,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-16T15:08:12Z",
+      "side": 1,
+      "message": "C\u0027est que je ne parviens pas a trouver de bonnes méthodes. Il semblerais que `{ ...ctx }`, `Object.create(ctx)`, et `Object.assign({}, ctx)` soient de bons candidats. Pourtant ils refusent tous les troix de copier les Symbol `TypeError: Cannot convert a symbol to a number`.",
+      "parentUuid": "994a26f2_a32a37c9",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "94796bc6_5214ec51",
         "filename": "packages/compiler/runtimes/runtime.js",
         "patchSetId": 9
@@ -116,6 +224,24 @@
       "writtenOn": "2026-11-10T16:10:09Z",
       "side": 1,
       "message": "j",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9b54525f_340ea614",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 9
+      },
+      "lineNbr": 953,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-16T15:08:12Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "94796bc6_5214ec51",
       "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
@@ -133,6 +259,24 @@
       "writtenOn": "2026-11-10T16:10:09Z",
       "side": 1,
       "message": "Fallback est `undefined` pas `NotDefined` non ? Ou c’est la même valeur ?",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "924a4617_7087e3a3",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 9
+      },
+      "lineNbr": 992,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-16T15:08:12Z",
+      "side": 1,
+      "message": "non tu as raison, je dois bien check `undefined` ici. Ou alors changer l\u0027API de `uniroot`. Mais en tout cas pas check `NotDefined`.",
+      "parentUuid": "2e4e3a0c_e4e28154",
       "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
@@ -174,6 +318,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3f71d3b2_0bd71e02",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/root-finding.test.ts",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-16T15:08:12Z",
+      "side": 1,
+      "message": "\u003e où il y a un par défaut sur la règle\n\ncelui la je vois pas, un `par défaut` sur la rêgle avec l\u0027inversion numérique? ou sur l\u0027un de ses withs?\n\n\u003e l faudrait que b soit listé en paramètre de a et a en paramètre de b.\n\nRAF",
+      "parentUuid": "a763bc53_e1584c45",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "d57d7efb_a2af63a1",
         "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/root-finding.test.ts",
         "patchSetId": 9
@@ -185,6 +347,24 @@
       "writtenOn": "2026-11-10T16:10:09Z",
       "side": 1,
       "message": "Dans l’idéal ce cas devrait throw à la compilation (type). A minima je dirai qu’il devrait throw au runtime.",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "190bed11_3dd5a03c",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/root-finding.test.ts",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-16T15:08:12Z",
+      "side": 1,
+      "message": "Pourquoi? si les deux valeurs sont présentes, alors on prends le premier, ici `a`. Pourquoi ca devrais throw?",
+      "parentUuid": "d57d7efb_a2af63a1",
       "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
