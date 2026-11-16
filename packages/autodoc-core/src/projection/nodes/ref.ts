@@ -11,15 +11,16 @@ export function projectRef(
 	expression: Ast.ReferenceExpression,
 	ctx: Ctx,
 ): RawOperand {
-	const name = displayName(ctx.ast, expression.parameters)
+	const rule = expression.parameters.rule
+	const name = displayName(ctx.ast, rule)
 	// une référence vaut ce que vaut la règle qu'elle nomme, type et unité compris : le
 	// compilateur ne les écrit pas toujours sur le nœud, notamment dans ce qu'un `contexte` lie
-	const target = ctx.ast[expression.parameters]?.value_mechanism
+	const target = ctx.ast[rule]?.value_mechanism
 	return {
 		id: null,
 		name,
-		address: expression.parameters,
-		description: ctx.ast[expression.parameters]?.description ?? null,
+		address: rule,
+		description: ctx.ast[rule]?.description ?? null,
 		term: name,
 		named: null,
 		value: lookupValue(

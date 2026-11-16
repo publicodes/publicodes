@@ -16,17 +16,16 @@ let to_pos (pos : Pos.t) : string * Yojson.Basic.t =
       ; ("end", `Assoc (to_point pos.end_pos)) ] )
 
 let to_compiler_metadata name pos : (string * Yojson.Basic.t) list =
-  let id_str = Shared.Id.hash name pos |> Shared.Id.to_string in
+  let id_str = Id.hash name pos |> Id.to_string in
   let id = ("id", `String id_str) in
   let pos = to_pos pos in
   [id; pos]
 
 let to_binop binop =
-  Shared.Shared_ast.sexp_of_binary_op binop
-  |> Sexp.to_string |> String.lowercase
+  Shared_ast.sexp_of_binary_op binop |> Sexp.to_string |> String.lowercase
 
 let to_unop unop =
-  Shared.Shared_ast.sexp_of_unary_op unop |> Sexp.to_string |> String.lowercase
+  Shared_ast.sexp_of_unary_op unop |> Sexp.to_string |> String.lowercase
 
 let to_meta meta =
   match Mark.remove meta with
@@ -50,7 +49,7 @@ let to_type (typ : Typ.t) =
       [("type", `String "number")]
   | Literal (LNumber (_, Some unit), _) | TNumber (Some unit) ->
       [ ("type", `String "number")
-      ; ("unit", `String (Stdlib.Format.asprintf "%a" Shared.Units.pp unit)) ]
+      ; ("unit", `String (Stdlib.Format.asprintf "%a" Units.pp unit)) ]
   | Literal (LString _, _) | TString ->
       [("type", `String "text")]
   | Literal (LBool _, _) | TBool ->
@@ -76,9 +75,7 @@ let to_const const : Yojson.Basic.t =
         let unit =
           match unit with
           | Some unit ->
-              [ ( "unit"
-                , `String (Stdlib.Format.asprintf "%a" Shared.Units.pp unit) )
-              ]
+              [("unit", `String (Stdlib.Format.asprintf "%a" Units.pp unit))]
           | None ->
               []
         in
@@ -102,28 +99,53 @@ let to_const const : Yojson.Basic.t =
   let kind = ("kind", `String kind) in
   `Assoc (kind :: parameters)
 
+let to_name (r : Shared_ast.inlined_ref) = Rule_name.show r.rule
+
+let to_names (marks : Shared_ast.inlined_ref Mark.pos list) : Yojson.Basic.t =
+  `List (List.map marks ~f:(fun m -> `String (to_name (Mark.remove m))))
+
+(** A « remplace » / « rend non applicable » clause as written on the rule. *)
+let to_replace (r : Shared_ast.inlined_ref Shared_ast.replace) :
+    Yojson.Basic.t =
+  `Assoc
+    [ ("reference", `String (to_name (Mark.remove r.reference)))
+    ; ("only_in", to_names r.only_in)
+    ; ("except_in", to_names r.except_in)
+    ; ("exclusive", `Bool r.exclusive)
+    ; to_pos (Mark.pos r.reference) ]
+
+let rec to_inlined_ref (r : Shared_ast.inlined_ref) : Yojson.Basic.t =
+  let children field l =
+    match List.map l ~f:to_inlined_ref with [] -> [] | l -> [(field, `List l)]
+  in
+  `Assoc
+    ( [("rule", `String (Rule_name.show r.rule))]
+    @ children "replaced_by" r.replaced_by
+    @ children "made_not_applicable_by" r.made_not_applicable_by )
+
 let rec expr_to_mapping rule_name
     ((expr_value, expr_mark) : Shared_ast.typed_expr) : Yojson.Basic.t =
   let expr_to_mapping = expr_to_mapping rule_name in
-  let kind, parameters =
-    match expr_value with
-    | Shared_ast.Const const ->
-        ("constant", to_const const)
-    | Ref ref ->
-        ("ref", `String (Shared.Rule_name.show ref))
-    | Binary_op ((binop, _), left, right) ->
-        ( to_binop binop
-        , `Assoc
-            [("left", expr_to_mapping left); ("right", expr_to_mapping right)]
-        )
-    | Unary_op ((unop, _), expr) ->
-        (to_unop unop, expr_to_mapping expr)
-  in
-  let kind = [("kind", `String kind)] in
-  let parameters = [("parameters", parameters)] in
   let compiler_metadata = to_compiler_metadata rule_name expr_mark.pos in
   let typ = match expr_mark.typ with Some typ -> to_type typ | None -> [] in
-  `Assoc (kind @ typ @ parameters @ compiler_metadata)
+  let node kind parameters =
+    `Assoc
+      ( [("kind", `String kind)]
+      @ typ
+      @ [("parameters", parameters)]
+      @ compiler_metadata )
+  in
+  match expr_value with
+  | Shared_ast.Ref inlined ->
+      node "ref" (to_inlined_ref inlined)
+  | Const const ->
+      node "constant" (to_const const)
+  | Binary_op ((binop, _), left, right) ->
+      node (to_binop binop)
+        (`Assoc
+           [("left", expr_to_mapping left); ("right", expr_to_mapping right)] )
+  | Unary_op ((unop, _), expr) ->
+      node (to_unop unop) (expr_to_mapping expr)
 
 let rec to_value_mechanism rule_name (value, Shared_ast.{typ; pos}) :
     Yojson.Basic.t =
@@ -224,7 +246,7 @@ and to_chained_mechanism name
     | Shared_ast.Context contexts ->
         let contexts : (string * Yojson.Basic.t) list =
           List.map contexts ~f:(function (key, _pos), value ->
-              (Shared.Rule_name.show key, `Assoc (to_mechanism value)) )
+              (to_name key, `Assoc (to_mechanism value)) )
         in
         ("context", `Assoc contexts)
     | Applicable_if value ->
@@ -259,7 +281,9 @@ and to_mechanism name ({value; chainable_mechanisms}, _) :
   ; ( "chained_mechanisms"
     , `List (List.map chainable_mechanisms ~f:(to_chained_mechanism name)) ) ]
 
-let to_json_entry ({name; value; meta; _} : Shared_ast.typed_rule_def) =
+let to_json_entry
+    ({name; value; meta; replace; make_not_applicable; _} :
+      Shared_ast.typed_rule_def ) =
   let name, Mark.{pos} = name in
   (* NOTE: we miss the type information in the rule_def, for now we need to
      retrieve it from the value *)
@@ -267,8 +291,20 @@ let to_json_entry ({name; value; meta; _} : Shared_ast.typed_rule_def) =
   let compiler_metadata = to_compiler_metadata name pos in
   let value = to_mechanism name value in
   let meta = List.map meta ~f:to_meta in
-  ( Shared.Rule_name.to_string name
-  , `Assoc (to_type_opt typ_opt @ compiler_metadata @ meta @ value) )
+  (* The authored clauses only: the replacements active on the rule itself are
+     not emitted until root evaluation applies them. *)
+  let replacements =
+    ( if List.is_empty replace then []
+      else [("replaces", `List (List.map replace ~f:to_replace))] )
+    @
+    if List.is_empty make_not_applicable then []
+    else
+      [ ( "makes_not_applicable"
+        , `List (List.map make_not_applicable ~f:to_replace) ) ]
+  in
+  ( Rule_name.to_string name
+  , `Assoc
+      (to_type_opt typ_opt @ compiler_metadata @ meta @ replacements @ value) )
 
 let to_str (typed_ast : Shared_ast.typed) =
   let json_entries = `Assoc (List.map typed_ast ~f:to_json_entry) in

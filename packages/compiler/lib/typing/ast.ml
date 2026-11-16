@@ -125,29 +125,28 @@ let to_string ?(sep = ", ") = function
       |> String.concat ~sep
       |> Stdlib.Format.asprintf "l'énum [%s]"
 
-
 (* Definitions *)
 
 type typ = t Mark.pos UnionFind.elem
 
 type typing_mark = {pos: Pos.t; typ: typ}
 
-type typing_value = (Rule_name.t, typing_mark) Shared_ast.value
+type typing_value = (Shared_ast.inlined_ref, typing_mark) Shared_ast.value
 
-type typing_rule_def = (Rule_name.t, typing_mark) Shared_ast.rule_def
+type typing_rule_def = (Shared_ast.inlined_ref, typing_mark) Shared_ast.rule_def
 
 type typing_value_mechanism =
-  (Rule_name.t, typing_mark) Shared_ast.value_mechanism
+  (Shared_ast.inlined_ref, typing_mark) Shared_ast.value_mechanism
 
 type typing_marked_value_mechanism =
   (typing_value_mechanism, typing_mark) Mark.ed
 
-type typing_expr = (Rule_name.t, typing_mark) Shared_ast.expr
+type typing_expr = (Shared_ast.inlined_ref, typing_mark) Shared_ast.expr
 
-type typing = (Rule_name.t, typing_mark) Shared_ast.t
+type typing = (Shared_ast.inlined_ref, typing_mark) Shared_ast.t
 
 type typing_chainable_mechanism =
-  (Rule_name.t, typing_mark) Shared_ast.chainable_mechanism
+  (Shared_ast.inlined_ref, typing_mark) Shared_ast.chainable_mechanism
 
 type typing_marked_chainable_mechanism =
   (typing_chainable_mechanism, typing_mark) Mark.ed
@@ -173,10 +172,10 @@ let get_sorted_rule_defs (typing_tree : typing_tree) : typing_rule_def list =
          -> Pos.compare p1 p2 )
 
 let get_sorted_chainable_mechanisms chainable_mechanisms =
-  (** FIXME: is this correct? *)
+  (* FIXME: is this correct? *)
   let compare_typing_mark _ _ = 0 in
   List.sort chainable_mechanisms ~compare:(fun (a, _) (b, _) ->
-      Shared_ast.compare_chainable_mechanism Shared.Rule_name.compare
+      Shared_ast.compare_chainable_mechanism Shared_ast.compare_inlined_ref
         compare_typing_mark a b )
 
 let get_first_element_pos_exn values =
@@ -251,23 +250,24 @@ let mk_bool = mk_general KBool
 
 let mk_date = mk_general KDate
 
-let mk_number ~(unit: Units.t option) ~pos =
-  let unit = match unit with
+let mk_number ~(unit : Units.t option) ~pos =
+  let unit =
+    match unit with
     | Some u ->
         Number_unit.concrete u
     | None ->
         Number_unit.any ()
   in
-  mk_typed ~pos (KNumber (unit)) General
+  mk_typed ~pos (KNumber unit) General
 
-let mk_number_without_unit ~pos = mk_typed ~pos (KNumber ([])) General
+let mk_number_without_unit ~pos = mk_typed ~pos (KNumber []) General
 
 let mk_enum_precision values =
   let values =
     (* Normalize values by removing duplicates. *)
     values
-    |> List.stable_dedup ~compare:(fun (lit1, _) (lit2, _) -> compare_literal
-    lit1 lit2)
+    |> List.stable_dedup ~compare:(fun (lit1, _) (lit2, _) ->
+        compare_literal lit1 lit2 )
     |> sort_enum
   in
   Enum values
@@ -385,18 +385,13 @@ let is_bool = function Typed (KBool, _) -> true | _ -> false
 let is_typ_number_with_unit typ =
   let t, _ = UnionFind.get typ in
   match t with
-  | Typed  (KNumber u, _) when not (Number_unit.is_any u) ->
+  | Typed (KNumber u, _) when not (Number_unit.is_any u) ->
       true
   | _ ->
       false
 
 let literal_to_general typ =
   let t, _ = UnionFind.get typ in
-  match t with
-  | Typed (k, Literal _) ->
-      Typed (k, General)
-  | _ ->
-      t
+  match t with Typed (k, Literal _) -> Typed (k, General) | _ -> t
 
-let number_without_unit =  Typed (KNumber [], General)
-
+let number_without_unit = Typed (KNumber [], General)

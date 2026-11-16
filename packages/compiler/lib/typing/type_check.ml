@@ -10,21 +10,17 @@ open Output.Let_syntax
     separate this clearly. *)
 type typing_context =
   { ast: Ast.typing_tree
-  ; replacements: Replacement_graph.Rule_graph.t
   ; rules_type: Ast.typing_value Rule_name.Hashtbl.t
-  ; current_rule: Rule_name.t option
   ; parent_typ: Ast.typ option }
 
-let get_init_context ~ast ~replacements =
+let get_init_context ~ast =
   { ast
-  ; replacements
   ; rules_type= Hashtbl.create (module Shared.Rule_name) ~growth_allowed:true
-  ; current_rule= None
   ; parent_typ= None }
 
-let reset_context ?current_rule ?parent_typ ctx =
+let reset_context ?parent_typ ctx =
   Hashtbl.clear ctx.rules_type ;
-  {ctx with current_rule; parent_typ}
+  {ctx with parent_typ}
 
 let to_label (typ : Ast.typ) =
   let typ, Mark.{pos} = UnionFind.get typ in
@@ -371,26 +367,22 @@ let rec check_expression (expr : Ast.typing_expr) ~ctx =
   match expr with
   | Const _ ->
       check_union_with_parent_typ ~ctx mark.typ
-  | Ref ref ->
+  | Ref {Shared_ast.rule; replaced_by; _} ->
+      let rec flatten nodes =
+        List.concat_map nodes ~f:(fun node ->
+            node.Shared_ast.rule :: flatten node.replaced_by )
+      in
       let* _ =
         let* value =
-          match Hashtbl.find ctx.rules_type ref with
+          match Hashtbl.find ctx.rules_type rule with
           | Some value ->
               Output.return value
           | None ->
-              let* rule_def = get_checked_rule_def ref in
+              let* rule_def = get_checked_rule_def rule in
               Output.return rule_def.value
         in
         let value_mark = Mark.get value in
-        let replacements =
-          match ctx.current_rule with
-          | Some from ->
-              Replacement_graph.find_transitive_replacements ctx.replacements
-                ~from ~rule:ref
-              |> List.map ~f:Mark.remove
-          | None ->
-              []
-        in
+        let replacements = flatten replaced_by in
         let* typ =
           Output.fold_no_interrupt replacements ~init:value_mark.typ
             ~f:(fun ptyp ref ->
@@ -649,7 +641,7 @@ and check_contexts (chainables : Ast.typing_marked_chainable_mechanism list)
       | Context values ->
           let* _ =
             List.map values ~f:(fun ((ref, _), value) ->
-                check_context_entry ref value )
+                check_context_entry ref.Shared_ast.rule value )
             |> Output.all_okay
           in
           Output.return ()
@@ -694,10 +686,10 @@ and check_rule_def rule_def ~ctx =
   if not (Ast.is_todo typing_state) then Output.return ()
   else (
     Ast.set_typing_state ctx.ast rule_def Ast.Doing ;
-    let Shared_ast.{value; name= current_rule, _; _} = rule_def in
+    let Shared_ast.{value; _} = rule_def in
     let res =
       let* _ =
-        let ctx = reset_context ctx ~current_rule in
+        let ctx = reset_context ctx in
         check_value value ~ctx
       in
       let _, mark = value in
@@ -711,8 +703,8 @@ and check_rule_def rule_def ~ctx =
         Ast.set_typing_state ctx.ast rule_def Ast.Done ;
         Output.break ~logs () )
 
-let type_check ast replacements : unit Output.t =
-  let ctx = get_init_context ~ast ~replacements in
+let type_check ast : unit Output.t =
+  let ctx = get_init_context ~ast in
   let* _ =
     Ast.get_sorted_rule_defs ast
     |> List.map ~f:(check_rule_def ~ctx)

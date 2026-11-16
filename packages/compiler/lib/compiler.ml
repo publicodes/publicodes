@@ -17,14 +17,17 @@ let compile
   let* {replacement_graph; make_not_applicable_graph; dependency_graph} =
     Analysis.mk_and_checks resolved_ast
   in
-  let* typed_ast = Typing.type_check resolved_ast replacement_graph in
+  let inlined_ast =
+    Analysis.Inline_replacements.inline ~replacement_graph
+      ~make_not_applicable_graph resolved_ast
+  in
+  let* typed_ast = Typing.type_check inlined_ast in
   let* outputs =
     Analysis.extract_outputs dependency_graph ~ast:typed_ast
       ~warn_types:(not default_to_public)
   in
   let eval_tree =
-    Eval_tree.from_typed_ast typed_ast ~replacement_graph
-      ~make_not_applicable_graph
+    Eval_tree.from_typed_ast typed_ast ~make_not_applicable_graph
   in
   let output_str =
     match output_type with
