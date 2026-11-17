@@ -73,6 +73,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "32130963_5b33c306",
+        "filename": "packages/compiler/lib/eval_tree/tree.mli",
+        "patchSetId": 9
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-17T10:57:45Z",
+      "side": 1,
+      "message": "Oh la tuile je t\u0027avais répondu sur element, mais mon message a été perdu 😞\n\n\n\u003e Mais en fait biensur que si, parce que si le résultat de l\u0027équation est -10, et que plancher le ramène à 0, ce n\u0027est pas du tout la même chose que si inversion numérique avais échoué a calculer le résultat puisque se bornant à 0.\n\nC’est là que le bat blesse. En publicodes, c’est la même chose puisque les mécanismes chainé plafond plancher et arrondi sont appliqués sur la valeur du contexte.\n\nPar conséquent, j’arguerait que dans la version actuel,\n\n```yaml\na: b + 10\nb:\n  inversion numérique: a\n  plancher: 0\n  plafond: 1000\n  arrondi: 0.1\n```\n\nne convergera jamais, comme si plafond et plancher était directement min et max sur l’inversion.\n\nMais je suis quand même pour avoir les deux mécanismes, car je n’ai pas envie de polluer ma règle avec des considération d’optimisation de performance (pas de plancher à 0, si ça n’a pas de sens d’un point de vue métier). \n\nEn revanche, utiliser les contraintes sémantiques de la règle pour restreindre l’espace de recherche par défaut, je dirait... meeeh, pourquoi pas ? \n\nMais comme optim si on en a besoin un jour.",
+      "parentUuid": "ee332381_3caac010",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8dc3f880_cc9214bd",
         "filename": "packages/compiler/lib/parser/mecha_root_finding.ml",
         "patchSetId": 9
@@ -207,6 +225,24 @@
       "side": 1,
       "message": "C\u0027est que je ne parviens pas a trouver de bonnes méthodes. Il semblerais que `{ ...ctx }`, `Object.create(ctx)`, et `Object.assign({}, ctx)` soient de bons candidats. Pourtant ils refusent tous les troix de copier les Symbol `TypeError: Cannot convert a symbol to a number`.",
       "parentUuid": "994a26f2_a32a37c9",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c477905b_c060b91d",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 9
+      },
+      "lineNbr": 903,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-17T10:57:45Z",
+      "side": 1,
+      "message": "On a des symboles dans l\u0027objet context ? Et dans tout les cas ça devrait passer, testé sur node : \n\n```\n\u003e const b \u003d Symbol(\"p\")\nundefined\n\u003e const o \u003d { b }\nundefined\n\u003e o\n{ b: Symbol(p) }\n\u003e c \u003d Object.create(o)\n{}\n\u003e c.b\nSymbol(p)\n\u003e\n```\n\n(j\u0027ai testé sur le navigateur également)",
+      "parentUuid": "77662390_32ed259b",
       "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
@@ -401,6 +437,24 @@
       "side": 1,
       "message": "On a mentionné que ca pourrais throw si les différentes évaluation ne sont pas concordantes. Mais ca implique de faire la moulinette plusieurs fois. Est-ce qu\u0027on veux vraiment cela?",
       "parentUuid": "190bed11_3dd5a03c",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fb01851c_f936a771",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/root-finding.test.ts",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1039374
+      },
+      "writtenOn": "2026-11-17T10:57:45Z",
+      "side": 1,
+      "message": "J\u0027aurais tendance à dire oui. Car cette moulinette est censé aller extrémement vite car les autres valeurs seront normalement à `undefined`. \n\nMais bon, c\u0027est pas urgentissime, ça peut être ajouté comme nice to have dans une issue github...",
+      "parentUuid": "b1ca44b4_84136c6c",
       "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
