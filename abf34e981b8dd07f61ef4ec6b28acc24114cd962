@@ -89,6 +89,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "96763a86_9b1cdece",
+        "filename": "packages/compiler/lib/eval_tree/tree.mli",
+        "patchSetId": 9
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-17T13:54:09Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "32130963_5b33c306",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8dc3f880_cc9214bd",
@@ -243,6 +261,24 @@
       "side": 1,
       "message": "On a des symboles dans l\u0027objet context ? Et dans tout les cas ça devrait passer, testé sur node : \n\n```\n\u003e const b \u003d Symbol(\"p\")\nundefined\n\u003e const o \u003d { b }\nundefined\n\u003e o\n{ b: Symbol(p) }\n\u003e c \u003d Object.create(o)\n{}\n\u003e c.b\nSymbol(p)\n\u003e\n```\n\n(j\u0027ai testé sur le navigateur également)",
       "parentUuid": "77662390_32ed259b",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3a1199de_9e582864",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 9
+      },
+      "lineNbr": 903,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-17T13:54:09Z",
+      "side": 1,
+      "message": "Je rate quelque chose?\n\n```js\nconst ctx \u003d {foo: \"bar\"}\nconsole.log(ctx)\nconst next \u003d Object.create(ctx)\nconsole.log(next)\n```\n\n```\n{ foo: \u0027bar\u0027 }\n{}\n```\n\nJ\u0027ai ca dans les tests, donc ca pête. Et j\u0027ai la même chose sur programmiz Js online",
+      "parentUuid": "c477905b_c060b91d",
       "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
@@ -455,6 +491,24 @@
       "side": 1,
       "message": "J\u0027aurais tendance à dire oui. Car cette moulinette est censé aller extrémement vite car les autres valeurs seront normalement à `undefined`. \n\nMais bon, c\u0027est pas urgentissime, ça peut être ajouté comme nice to have dans une issue github...",
       "parentUuid": "b1ca44b4_84136c6c",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8fbb08dd_69cd2583",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/root-finding.test.ts",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-17T13:54:09Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "fb01851c_f936a771",
       "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
