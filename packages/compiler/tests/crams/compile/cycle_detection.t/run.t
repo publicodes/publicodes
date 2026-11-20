@@ -1,9 +1,9 @@
 Cycle analysis should  be context-sensitive:
   $ publicodes compile ./ok/ -t debug_eval_tree -o -
   cotisation:
-    if (@plafond != not_applicable) && (((10. % * @salaire brut) * 0.01) > @plafond)
+    if (@plafond != not_applicable) && (((10. % * 0.01) * @salaire brut) > @plafond)
     then @plafond
-    else (10. % * @salaire brut) * 0.01
+    else (10. % * 0.01) * @salaire brut
   
   plafond:
     with: {
