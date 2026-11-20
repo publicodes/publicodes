@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/autodoc-react",
-	"version": "0.0.1",
+	"version": "0.1.0-alpha.0",
 	"description": "React bindings for @publicodes/autodoc-core",
 	"license": "MIT",
 	"types": "dist/index.d.ts",
