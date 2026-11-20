@@ -71,6 +71,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "467f9ff4_a6b6370f",
+        "filename": "packages/compiler/lib/typing/type_check.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 692,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-20T09:54:32Z",
+      "side": 1,
+      "message": "Oui, ici le `Some wip` est le `wip` de la ligne 689. Il est mergé avec tous les `plafonds`, et a la fin est mergé avec `mark.typ` ligne 710. Ca assure que tous sont des nombres, et leurs unités sont unifiés.",
+      "parentUuid": "694b66c3_47002ed6",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "cc456fe7_84e439a0",
         "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/bareme.test.ts",
         "patchSetId": 5
