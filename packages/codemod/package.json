@@ -1,6 +1,6 @@
 {
 	"name": "@publicodes/codemod",
-	"version": "2.0.0",
+	"version": "2.0.1-alpha.0",
 	"packageManager": "pnpm@12.15.0",
 	"type": "module",
 	"engines": {
