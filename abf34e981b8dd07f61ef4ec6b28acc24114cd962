@@ -321,6 +321,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "efc943e7_a10688fd",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 9
+      },
+      "lineNbr": 903,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-23T13:48:29Z",
+      "side": 1,
+      "message": "Typiquement:\n\n```js\nconst parent \u003d {\n  foo: \"bar\"\n}\nconst child \u003d Object.create(parent)\ndelete child.foo\nfor (let key in child) {\n  console.log(key) # foo\n}\n```\n\nUn peu difficile de trouver une solution la maintenant. Je propose d\u0027avancer et d\u0027ouvrir un ticket pour tracker ce sujet. C\u0027est vraiment spécifique a l\u0027inversion numérique. Pour l\u0027instant ca me semble pas critique",
+      "parentUuid": "2f51919d_205bbeec",
+      "revId": "abf34e981b8dd07f61ef4ec6b28acc24114cd962",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "94796bc6_5214ec51",
         "filename": "packages/compiler/runtimes/runtime.js",
         "patchSetId": 9
