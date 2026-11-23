@@ -147,7 +147,8 @@ type resolved = (Rule_name.t, Mark.pos_mark) t [@@deriving equal, show]
 type inlined_ref =
   { rule: Rule_name.t
   ; replaced_by: inlined_ref list
-  ; made_not_applicable_by: inlined_ref list }
+  ; made_not_applicable_by: inlined_ref list
+  ; made_applicable_by: inlined_ref list }
 [@@deriving equal, compare, show, sexp]
 
 type inlined_rule_def = (inlined_ref, Mark.pos_mark) rule_def
@@ -248,3 +249,16 @@ let get_applicable_on_namespace_exn rule_def =
   List.find_exn
     ~f:(function Applicable_on_namespace, _ -> true | _ -> false)
     rule_def.meta
+
+(*
+let get_applicable_on_namespace_opt rule_def =
+  List.find_map
+    ~f:(function Applicable_on_namespace, pos -> Some pos | _ -> None)
+    rule_def.meta
+*)
+
+let children (ast : resolved) parent_name =
+  (* TODO: optimize list matching *)
+  List.filter ast ~f:(fun {name; _} ->
+      Mark.remove name |> Rule_name.parents
+      |> List.exists ~f:(Rule_name.equal parent_name) )
