@@ -6,7 +6,7 @@ type t = Rule_graph.t
 
 type replace = Rule_graph.replacement
 
-val mk_and_checks : Shared_ast.resolved -> (t * t) Utils.Output.t
+val mk_and_checks : Shared_ast.resolved -> (t * t * t) Utils.Output.t
 
 val find_replacements :
      from:Rule_name.t

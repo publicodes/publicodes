@@ -14,21 +14,22 @@ let compile
     {input_files; module_path; output_type; default_to_public; without_trace} =
   let* ast = Parser.parse_files ~default_to_public ~module_path input_files in
   let* resolved_ast = Resolver.from_parsed_ast ast in
-  let* {replacement_graph; make_not_applicable_graph; dependency_graph} =
+  let* { replacement_graph
+       ; make_not_applicable_graph
+       ; make_applicable_graph
+       ; dependency_graph } =
     Analysis.mk_and_checks resolved_ast
   in
   let inlined_ast =
     Analysis.Inline_replacements.inline ~replacement_graph
-      ~make_not_applicable_graph resolved_ast
+      ~make_not_applicable_graph ~make_applicable_graph resolved_ast
   in
   let* typed_ast = Typing.type_check inlined_ast in
   let* outputs =
     Analysis.extract_outputs dependency_graph ~ast:typed_ast
       ~warn_types:(not default_to_public)
   in
-  let eval_tree =
-    Eval_tree.from_typed_ast typed_ast ~make_not_applicable_graph
-  in
+  let eval_tree = Eval_tree.from_typed_ast typed_ast in
   let output_str =
     match output_type with
     | Js ->

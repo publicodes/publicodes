@@ -60,10 +60,24 @@ let mk_and_checks ast =
     Rule_graph.mk ast ~get_replacement_rules:(fun rule ->
         rule.make_not_applicable )
   in
+  let make_applicable_graph =
+    Rule_graph.mk ast ~get_replacement_rules:(fun rule ->
+        if Shared_ast.has_applicable_on_namespace_tag rule then
+          Mark.remove rule.name |> Shared_ast.children ast
+          |> List.map ~f:(fun child ->
+              Shared_ast.
+                { reference= child.name
+                ; only_in= []
+                ; except_in= []
+                ; exclusive= false } )
+        else [] )
+  in
   let full_graph =
     Rule_graph.Oper.union replacement_graph make_not_applicable_graph
+    |> Rule_graph.Oper.union make_applicable_graph
   in
   let cycle_logs = cycle_check full_graph in
   let exclusive_duplicate_logs = exclusive_duplicate_check replacement_graph in
   let logs = cycle_logs @ exclusive_duplicate_logs in
-  break ~logs (replacement_graph, make_not_applicable_graph)
+  break ~logs
+    (replacement_graph, make_not_applicable_graph, make_applicable_graph)

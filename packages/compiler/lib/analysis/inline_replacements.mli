@@ -3,6 +3,7 @@ open Shared
 val inline :
      replacement_graph:Replacement_graph.t
   -> make_not_applicable_graph:Replacement_graph.t
+  -> make_applicable_graph:Replacement_graph.t
   -> Shared_ast.resolved
   -> Shared_ast.inlined
 (** [inline ~replacement_graph ~make_not_applicable_graph ast] fills each

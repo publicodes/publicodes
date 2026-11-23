@@ -6,6 +6,7 @@ module Replacement_graph = Replacement_graph
 type t =
   { replacement_graph: Replacement_graph.t
   ; make_not_applicable_graph: Replacement_graph.t
+  ; make_applicable_graph: Replacement_graph.t
   ; dependency_graph: Dependency_graph.t }
 
 val mk_and_checks : Shared_ast.resolved -> t Utils.Output.t
