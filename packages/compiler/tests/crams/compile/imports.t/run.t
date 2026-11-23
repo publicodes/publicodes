@@ -1,6 +1,11 @@
 Nominal imports :
 
   $ publicodes compile subjects/ok -t debug_eval_tree -o -
+  __result:
+    if is_not_defined ctx_value
+    then @result
+    else ctx_value
+  
   module a:
     if is_not_defined ctx_value
     then get_context(module a)
@@ -53,7 +58,7 @@ Check root exports :
        * @type {(params?: resultParams, options?: Options) => {value: number, needed: Array<keyof resultParams>, missing: Array<keyof resultParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
-        $evaluate("result", _result, params, options),
+        $evaluate(_______result, params, options),
       /** @type {"number"} */
       type: "number",
       /** @type {"aucune"} */
@@ -77,7 +82,7 @@ Check root exports :
        * @type {(params?: module_c_·_regle_cParams, options?: Options) => {value: number, needed: Array<keyof module_c_·_regle_cParams>, missing: Array<keyof module_c_·_regle_cParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
-        $evaluate("module c . regle c", _module_c_·_regle_c, params, options),
+        $evaluate(_______module_c______regle_c, params, options),
       /** @type {"number"} */
       type: "number",
       /** @type {"aucune"} */
