@@ -13,7 +13,9 @@ type t =
 let compile
     {input_files; module_path; output_type; default_to_public; without_trace} =
   let* ast = Parser.parse_files ~default_to_public ~module_path input_files in
-  let* resolved_ast = Resolver.from_parsed_ast ast in
+  let* resolved_ast =
+    Resolver.from_parsed_ast ast |> Output.map ~f:Resolver.add_export_references
+  in
   let* { replacement_graph
        ; make_not_applicable_graph
        ; make_applicable_graph
