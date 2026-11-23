@@ -13,7 +13,7 @@ Pow mechanism should be correctly parsed:
        * @type {(params?: aParams, options?: Options) => {value: number, needed: Array<keyof aParams>, missing: Array<keyof aParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
-        $evaluate("a", _a, params, options),
+        $evaluate(_______a, params, options),
       /** @type {"number"} */
       type: "number",
       /** @type {"aucune"} */
@@ -36,7 +36,7 @@ Pow mechanism should be correctly parsed:
        * @type {(params?: bParams, options?: Options) => {value: 4.000000, needed: Array<keyof bParams>, missing: Array<keyof bParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
-        $evaluate("b", _b, params, options),
+        $evaluate(_______b, params, options),
       /** @type {"number"} */
       type: "number",
       /** @type {"euros"} */

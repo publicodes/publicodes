@@ -1437,6 +1437,12 @@ Valid json doc :
 
   $ publicodes compile . -o - | ../../../scripts/get_functions.awk
   
+  function _______e(ctx, params, ctxValue) {
+    return /** @type {number} */ (
+      $ret("7e77086df4934e0ea94c9a505c56df35", ctx, $cond(
+        $ret("7e77086df4934e0ea94c9a505c56df35", ctx, (isNotDefined($ret("7e77086df4934e0ea94c9a505c56df35", ctx, ctxValue)))), () => $ret("7e77086df4934e0ea94c9a505c56df35", ctx, $ref("e", _e, ctx, params)), () => $ret("7e77086df4934e0ea94c9a505c56df35", ctx, ctxValue)))
+    )
+  
   function _a(ctx, params, ctxValue) {
     return /** @type {10.000000} */ (
       $ret("3064b365e18c8aae561f3ae8173791bc", ctx, $cond(

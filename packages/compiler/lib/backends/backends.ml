@@ -332,9 +332,11 @@ let from_output eval_tree
     get_rule_str_unit eval_tree rule_name
     |> function None -> Tnull | Some str -> Tstr str
   in
+  let reference = Rule_name.as_reference rule_name in
   Tobj
     [ ("rule_type", rule_type)
     ; ("rule_name", Tstr (Rule_name.to_string rule_name))
+    ; ("evaluate", Tstr (Rule_name.to_string reference))
     ; ("title", title)
     ; ("description", description)
     ; ("return_type", return_type)
