@@ -472,6 +472,40 @@ Valid json doc :
         }
       ]
     },
+    "__e": {
+      "type": "number",
+      "unit": "€",
+      "id": "7e77086df4934e0ea94c9a505c56df35",
+      "position": {
+        "file": "./rules.publicodes",
+        "start": { "index": 269, "line": 23, "column": 1 },
+        "end": { "index": 270, "line": 23, "column": 2 }
+      },
+      "value_mechanism": {
+        "kind": "expr",
+        "type": "number",
+        "unit": "€",
+        "id": "7e77086df4934e0ea94c9a505c56df35",
+        "position": {
+          "file": "./rules.publicodes",
+          "start": { "index": 269, "line": 23, "column": 1 },
+          "end": { "index": 270, "line": 23, "column": 2 }
+        },
+        "parameters": {
+          "kind": "ref",
+          "type": "number",
+          "unit": "€",
+          "parameters": { "rule": "e" },
+          "id": "7e77086df4934e0ea94c9a505c56df35",
+          "position": {
+            "file": "./rules.publicodes",
+            "start": { "index": 269, "line": 23, "column": 1 },
+            "end": { "index": 270, "line": 23, "column": 2 }
+          }
+        }
+      },
+      "chained_mechanisms": []
+    },
     "e": {
       "type": "number",
       "unit": "€",
@@ -1436,6 +1470,12 @@ Valid json doc :
   }
 
   $ publicodes compile . -o - | ../../../scripts/get_functions.awk
+  
+  function _______e(ctx, params, ctxValue) {
+    return /** @type {number} */ (
+      $ret("7e77086df4934e0ea94c9a505c56df35", ctx, $cond(
+        $ret("7e77086df4934e0ea94c9a505c56df35", ctx, (isNotDefined($ret("7e77086df4934e0ea94c9a505c56df35", ctx, ctxValue)))), () => $ret("7e77086df4934e0ea94c9a505c56df35", ctx, $ref("e", _e, ctx, params)), () => $ret("7e77086df4934e0ea94c9a505c56df35", ctx, ctxValue)))
+    )
   
   function _a(ctx, params, ctxValue) {
     return /** @type {10.000000} */ (

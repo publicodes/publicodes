@@ -2,7 +2,7 @@ import { describe, it, expect } from 'bun:test'
 import { p, yaml } from '../compile'
 
 describe('Mécanisme > applicabilité étendue', () => {
-	it.skip('simple', async () => {
+	it('simple', async () => {
 		const engine = await yaml`
 a:
   applicabilité étendue: oui
@@ -15,7 +15,7 @@ a:
 		expect(subject.missing.length).toBe(0)
 	})
 
-	it.skip('parent non-définie', async () => {
+	it('parent non-définie', async () => {
 		const engine = await yaml`
 a:
   applicabilité étendue: oui
@@ -29,7 +29,7 @@ a:
 		expect(subject.missing).toEqual(['a'])
 	})
 
-	it.skip('dépendances de parents', async () => {
+	it('dépendances de parents', async () => {
 		const engine = await yaml`
 a:
   applicabilité étendue: oui
@@ -50,7 +50,7 @@ c:
 		expect(subject2.value).toBe(42)
 	})
 
-	it.skip('dépendances de parents non définie', async () => {
+	it('dépendances de parents non définie', async () => {
 		const engine = await yaml`
 a:
   applicabilité étendue: oui
