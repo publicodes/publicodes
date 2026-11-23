@@ -270,7 +270,7 @@ const rules = {
      * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: Options) => {value: {{ fmt_ts_type(out.return_type, false) }}, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>, trace: Trace}}
      */
     evaluate: (params = {}, options) =>
-      $evaluate("{{ out.rule_name }}", {{ fmt_method(out.rule_name) }}, params, options),
+      $evaluate({{ fmt_method(out.evaluate) }}, params, options),
     /** @type \{"{{ fmt_ts_type(out.rule_type, true) }}"} */
     type: "{{ fmt_ts_type(out.rule_type, true) }}",
     {%- if out.unit %}

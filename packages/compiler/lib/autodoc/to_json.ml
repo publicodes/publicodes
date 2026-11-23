@@ -323,5 +323,10 @@ let to_json_entry
       (to_type_opt typ_opt @ compiler_metadata @ meta @ replacements @ value) )
 
 let to_str (typed_ast : Shared_ast.typed) =
+  let typed_ast =
+    List.filter typed_ast ~f:(fun ent ->
+        let name = Mark.remove ent.name in
+        not (Rule_name.is_reserved name) )
+  in
   let json_entries = `Assoc (List.map typed_ast ~f:to_json_entry) in
   Yojson.Basic.pretty_to_string json_entries
