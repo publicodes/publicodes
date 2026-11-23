@@ -102,4 +102,7 @@ let resolve ~rule_names ~current name =
       if List.exists potential_matches ~f:(equal current) then Some current
       else None
 
-let make_reserved uid = [Printf.sprintf "__%s" uid]
+let reserved_prefix = "__"
+
+let as_reference name =
+  [String.concat ~sep:reserved_prefix name |> Printf.sprintf "__%s"]

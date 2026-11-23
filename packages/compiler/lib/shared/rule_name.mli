@@ -110,8 +110,5 @@ val resolve : rule_names:Set.t -> current:t -> string list -> t option
 			resolve ~rule_names ~current:["a"; "b"] ["e"] = None
 		]} *)
 
-val make_reserved : string -> t
-(** [make_reserved name] creates a reserved rule name from [name].
-
-		Reserved rule names are only used for internal representation and cannot be
-		matching any user-defined rule name. *)
+val as_reference : t -> t
+(* [as_reference name] returns a reference name *)

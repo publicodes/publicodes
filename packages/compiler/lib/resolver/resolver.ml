@@ -257,3 +257,26 @@ let from_parsed_ast (ast : Parser.Ast.t) : resolved Output.t =
     |> Output.add_logs ~logs:(orphan_logs @ duplicate_logs)
   in
   ast
+
+let add_export_references (ast : resolved) : resolved =
+  ast
+  @ List.filter_map ast ~f:(fun rule_def ->
+      if
+        Shared_ast.has_public_tag rule_def
+        && Module_id.is_root rule_def.module_id
+      then
+        let name, pos = rule_def.name in
+        let value =
+          Shared_ast.
+            {value= (Expr (Ref name, pos), pos); chainable_mechanisms= []}
+        in
+        let name = Rule_name.as_reference name in
+        Some
+          Shared_ast.
+            { name= Mark.copy rule_def.name name
+            ; value= Mark.copy rule_def.value value
+            ; module_id= rule_def.module_id
+            ; meta= []
+            ; replace= []
+            ; make_not_applicable= [] }
+      else None )
