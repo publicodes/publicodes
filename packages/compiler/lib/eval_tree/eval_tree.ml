@@ -3,8 +3,7 @@ open Shared
 open Utils
 include Tree
 
-let from_typed_ast ~(make_not_applicable_graph : Replacement_graph.Rule_graph.t)
-    (ast : Shared_ast.typed) : Typ.t option Tree.t =
+let from_typed_ast (ast : Shared_ast.typed) : Typ.t option Tree.t =
   let eval_tree =
     Hashtbl.create
       (module Shared.Rule_name)
@@ -14,9 +13,6 @@ let from_typed_ast ~(make_not_applicable_graph : Replacement_graph.Rule_graph.t)
       let rule_name = Mark.remove name in
       let value =
         Transform_value.transform ~undefined:(Get_context rule_name) value
-      in
-      let value =
-        Replacements.transform ~make_not_applicable_graph ast rule_name value
       in
       let _ = Hashtbl.add eval_tree ~key:rule_name ~data:value in
       eval_tree )
