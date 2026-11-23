@@ -1,6 +1,11 @@
 Simple reference in value:
 
   $ publicodes compile ./ok/simple -t debug_eval_tree -o -
+  __b__a:
+    if is_not_defined ctx_value
+    then @b . a
+    else ctx_value
+  
   b:
     if is_not_defined ctx_value
     then get_context(b)
