@@ -54,7 +54,8 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
     ; value
     ; meta= default_meta
     ; replace= []
-    ; make_not_applicable= [] }
+    ; make_not_applicable= []
+    ; make_applicable= [] }
   in
   match yaml with
   | `Scalar _ ->
@@ -97,7 +98,8 @@ let rec parse_rule ~default_to_public ~ctx (name, yaml) =
             ; value
             ; meta
             ; replace
-            ; make_not_applicable } ]
+            ; make_not_applicable
+            ; make_applicable= [] } ]
         @ with_ @ import )
   | `A _ ->
       (* Should not happen because already checked by parse_value*)

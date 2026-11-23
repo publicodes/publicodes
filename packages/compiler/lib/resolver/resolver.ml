@@ -243,7 +243,10 @@ let resolve_rule ~rule_names (rule : (string list, Mark.pos_mark) rule_def) :
   let* make_not_applicable =
     List.map ~f:map_replace rule.make_not_applicable |> Output.all_keep_logs
   in
-  Output.return {rule with value; replace; make_not_applicable}
+  let* make_applicable =
+    List.map ~f:map_replace rule.make_applicable |> Output.all_keep_logs
+  in
+  Output.return {rule with value; replace; make_not_applicable; make_applicable}
 
 let from_parsed_ast (ast : Parser.Ast.t) : resolved Output.t =
   let rule_names =
@@ -258,5 +261,22 @@ let from_parsed_ast (ast : Parser.Ast.t) : resolved Output.t =
     |> List.map ~f:(resolve_rule ~rule_names)
     |> Output.all_keep_logs
     |> Output.add_logs ~logs:(orphan_logs @ duplicate_logs)
+  in
+  let ast =
+    List.map ast ~f:(fun rule ->
+        let make_applicable =
+          rule.make_applicable
+          @
+          if has_applicable_on_namespace_tag rule then
+            Mark.remove rule.name |> Shared_ast.children ast
+            |> List.map ~f:(fun child ->
+                Shared_ast.
+                  { reference= child.name
+                  ; only_in= []
+                  ; except_in= []
+                  ; exclusive= false } )
+          else []
+        in
+        {rule with make_applicable} )
   in
   ast

@@ -2,6 +2,7 @@ a:
   applicabilité étendue: oui
   avec:
     b: 42
+c: a . b
 
 a1:
   applicabilité étendue: oui
@@ -10,3 +11,4 @@ a1:
 c1:
   valeur: oui
   rend non applicable: a1
+d1: a1 . b1

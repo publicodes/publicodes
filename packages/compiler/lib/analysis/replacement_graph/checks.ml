@@ -52,6 +52,11 @@ let exclusive_duplicate_check (graph : Rule_graph.t) : Log.t list =
   in
   Rule_graph.fold_vertex log_exclusive_duplicate graph []
 
+type t =
+  { replacement_graph: Rule_graph.t
+  ; make_not_applicable_graph: Rule_graph.t
+  ; make_applicable_graph: Rule_graph.t }
+
 let mk_and_checks ast =
   let replacement_graph =
     Rule_graph.mk ast ~get_replacement_rules:(fun rule -> rule.replace)
@@ -60,10 +65,15 @@ let mk_and_checks ast =
     Rule_graph.mk ast ~get_replacement_rules:(fun rule ->
         rule.make_not_applicable )
   in
+  let make_applicable_graph =
+    Rule_graph.mk ast ~get_replacement_rules:(fun rule -> rule.make_applicable)
+  in
   let full_graph =
     Rule_graph.Oper.union replacement_graph make_not_applicable_graph
+    |> Rule_graph.Oper.union make_applicable_graph
   in
   let cycle_logs = cycle_check full_graph in
   let exclusive_duplicate_logs = exclusive_duplicate_check replacement_graph in
   let logs = cycle_logs @ exclusive_duplicate_logs in
-  break ~logs (replacement_graph, make_not_applicable_graph)
+  break ~logs
+    {replacement_graph; make_not_applicable_graph; make_applicable_graph}
