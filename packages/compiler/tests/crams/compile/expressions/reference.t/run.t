@@ -2,35 +2,53 @@ Simple reference in value:
 
   $ publicodes compile ./ok/simple -t debug_eval_tree -o -
   b:
-    get_context(b)
+    if is_not_defined ctx_value
+    then get_context(b)
+    else ctx_value
   
   b . a:
-    @b . c
+    if is_not_defined ctx_value
+    then @b . c
+    else ctx_value
   
   b . c:
-    @c
+    if is_not_defined ctx_value
+    then @c
+    else ctx_value
   
   c:
-    5.
+    if is_not_defined ctx_value
+    then 5.
+    else ctx_value
 
 Should correctly resolve relative references by prioritizing direct children
 over siblings:
 
   $ publicodes compile ./ok/relative-references -t debug_eval_tree -o -
   a:
-    @a . b + (@a . c + @d)
+    if is_not_defined ctx_value
+    then @a . b + (@a . c + @d)
+    else ctx_value
   
   a . b:
-    get_context(a . b)
+    if is_not_defined ctx_value
+    then get_context(a . b)
+    else ctx_value
   
   a . c:
-    get_context(a . c)
+    if is_not_defined ctx_value
+    then get_context(a . c)
+    else ctx_value
   
   b:
-    get_context(b)
+    if is_not_defined ctx_value
+    then get_context(b)
+    else ctx_value
   
   d:
-    get_context(d)
+    if is_not_defined ctx_value
+    then get_context(d)
+    else ctx_value
 	b:
 	  get_context(b)
 

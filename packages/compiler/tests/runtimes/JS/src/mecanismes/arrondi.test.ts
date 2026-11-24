@@ -167,4 +167,15 @@ a:
 
 		expect(a.evaluate({ a: 1.4 }).value).toBe(1)
 	})
+
+	test('remplace la valeur', async () => {
+		const { a } = await yaml`
+a:
+  valeur: 1.1 * 2
+  arrondi: oui
+`
+
+		expect(a.evaluate().value).toBe(2)
+		expect(a.evaluate({ a: 1.4 }).value).toBe(1)
+	})
 })

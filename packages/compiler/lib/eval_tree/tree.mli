@@ -9,6 +9,7 @@ type constant =
   | Date of Shared_ast.date
   | Not_defined
   | Not_applicable
+  | Ctx_value
 [@@deriving show]
 
 type binary_op = Shared_ast.binary_op [@@deriving show]
@@ -107,6 +108,8 @@ val mk_root_finding :
 val const_not_applicable : 'meta naked_value
 
 val const_not_defined : 'meta naked_value
+
+val const_ctx_value : 'meta naked_value
 
 val const_false : 'meta naked_value
 
