@@ -2,69 +2,107 @@ Simple base type (bool, number, date) :
 
   $ publicodes compile base  -t debug_eval_tree -o -
   a:
-    12.
+    if is_not_defined ctx_value
+    then 12.
+    else ctx_value
   
   b:
-    true
+    if is_not_defined ctx_value
+    then true
+    else ctx_value
   
   c:
-    false
+    if is_not_defined ctx_value
+    then false
+    else ctx_value
   
   d:
-    Shared_ast.Day {day = 11; year = 2024; month = 6}
+    if is_not_defined ctx_value
+    then Shared_ast.Day {day = 11; year = 2024; month = 6}
+    else ctx_value
   
   e:
-    Shared_ast.Month {month = 8; year = 2025}
+    if is_not_defined ctx_value
+    then Shared_ast.Month {month = 8; year = 2025}
+    else ctx_value
 
 
 String :
 
   $ publicodes compile string  -t debug_eval_tree -o -
   a:
-    "bla"
+    if is_not_defined ctx_value
+    then "bla"
+    else ctx_value
   
   b:
-    "'foo'bar'"
+    if is_not_defined ctx_value
+    then "'foo'bar'"
+    else ctx_value
   
   c:
-    "bla"foo"
+    if is_not_defined ctx_value
+    then "bla"foo"
+    else ctx_value
 
 Symbol :
 
   $ publicodes compile symbol  -t debug_eval_tree -o -
   a:
-    'ouaha ouhah'
+    if is_not_defined ctx_value
+    then 'ouaha ouhah'
+    else ctx_value
   
   b:
-    'No : "foo"'
+    if is_not_defined ctx_value
+    then 'No : "foo"'
+    else ctx_value
   
   c:
-    'boo'hou'
+    if is_not_defined ctx_value
+    then 'boo'hou'
+    else ctx_value
 
 
 Number with unit :
 
   $ publicodes compile number_with_unit  -t debug_eval_tree -o -
   a:
-    12. €
+    if is_not_defined ctx_value
+    then 12. €
+    else ctx_value
   
   b:
-    3.5 €
+    if is_not_defined ctx_value
+    then 3.5 €
+    else ctx_value
   
   c:
-    4. kgCO2e/an
+    if is_not_defined ctx_value
+    then 4. kgCO2e/an
+    else ctx_value
   
   d:
-    5. %/an
+    if is_not_defined ctx_value
+    then 5. %/an
+    else ctx_value
   
   e:
-    64465.55 h.kW/maison
+    if is_not_defined ctx_value
+    then 64465.55 h.kW/maison
+    else ctx_value
   
   kg par m²:
-    3. kg/m^2
+    if is_not_defined ctx_value
+    then 3. kg/m^2
+    else ctx_value
   
   pound:
-    4. £
+    if is_not_defined ctx_value
+    then 4. £
+    else ctx_value
   
   yen:
-    5. ¥
+    if is_not_defined ctx_value
+    then 5. ¥
+    else ctx_value

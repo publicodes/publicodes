@@ -15,7 +15,7 @@ Valid :
        * @type {(params?: outParams, options?: Options) => {value: number, needed: Array<keyof outParams>, missing: Array<keyof outParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
-        $evaluate(_out, params, options),
+        $evaluate("out", _out, params, options),
       /** @type {"number"} */
       type: "number",
       /** @type {"aucune"} */
@@ -39,7 +39,7 @@ Valid :
        * @type {(params?: cParams, options?: Options) => {value: number, needed: Array<keyof cParams>, missing: Array<keyof cParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
-        $evaluate(_c, params, options),
+        $evaluate("c", _c, params, options),
       /** @type {"number"} */
       type: "number",
       /** @type {"aucune"} */

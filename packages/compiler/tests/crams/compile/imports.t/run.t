@@ -2,25 +2,39 @@ Nominal imports :
 
   $ publicodes compile subjects/ok -t debug_eval_tree -o -
   module a:
-    get_context(module a)
+    if is_not_defined ctx_value
+    then get_context(module a)
+    else ctx_value
   
   module a . regle a:
-    10.
+    if is_not_defined ctx_value
+    then 10.
+    else ctx_value
   
   module b:
-    get_context(module b)
+    if is_not_defined ctx_value
+    then get_context(module b)
+    else ctx_value
   
   module b . regle b:
-    10.
+    if is_not_defined ctx_value
+    then 10.
+    else ctx_value
   
   module c:
-    get_context(module c)
+    if is_not_defined ctx_value
+    then get_context(module c)
+    else ctx_value
   
   module c . regle c:
-    get_context(module c . regle c)
+    if is_not_defined ctx_value
+    then get_context(module c . regle c)
+    else ctx_value
   
   result:
-    @module c . regle c
+    if is_not_defined ctx_value
+    then @module c . regle c
+    else ctx_value
 
 Check root exports :
 
@@ -39,7 +53,7 @@ Check root exports :
        * @type {(params?: resultParams, options?: Options) => {value: number, needed: Array<keyof resultParams>, missing: Array<keyof resultParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
-        $evaluate(_result, params, options),
+        $evaluate("result", _result, params, options),
       /** @type {"number"} */
       type: "number",
       /** @type {"aucune"} */
@@ -63,7 +77,7 @@ Check root exports :
        * @type {(params?: module_c_·_regle_cParams, options?: Options) => {value: number, needed: Array<keyof module_c_·_regle_cParams>, missing: Array<keyof module_c_·_regle_cParams>, trace: Trace}}
        */
       evaluate: (params = {}, options) =>
-        $evaluate(_module_c_·_regle_c, params, options),
+        $evaluate("module c . regle c", _module_c_·_regle_c, params, options),
       /** @type {"number"} */
       type: "number",
       /** @type {"aucune"} */
@@ -191,13 +205,19 @@ Missing reference :
 Vendor reference :
   $ PUBLICODESPATH=vendor publicodes compile subjects/vendored -t debug_eval_tree -o -
   out:
-    @out . rule vendored a + 3.
+    if is_not_defined ctx_value
+    then @out . rule vendored a + 3.
+    else ctx_value
   
   out . rule vendored a:
-    @out . rule vendored a . rule vendored b
+    if is_not_defined ctx_value
+    then @out . rule vendored a . rule vendored b
+    else ctx_value
   
   out . rule vendored a . rule vendored b:
-    10.
+    if is_not_defined ctx_value
+    then 10.
+    else ctx_value
 
 Vendor invalid reference :
   $ PUBLICODESPATH=vendor publicodes compile "subjects/vendored invalid" -t debug_eval_tree -o -
@@ -245,64 +265,102 @@ Vendor invalid reference :
 Module relative import :
   $ publicodes compile "subjects/relative" -t debug_eval_tree -o -
   out:
-    @out . regle relative
+    if is_not_defined ctx_value
+    then @out . regle relative
+    else ctx_value
   
   out . regle relative:
-    20.
+    if is_not_defined ctx_value
+    then 20.
+    else ctx_value
   
   out2:
-    @out2 . regle relative
+    if is_not_defined ctx_value
+    then @out2 . regle relative
+    else ctx_value
   
   out2 . regle relative:
-    20.
+    if is_not_defined ctx_value
+    then 20.
+    else ctx_value
   
   out3:
-    @out3 . regle relative
+    if is_not_defined ctx_value
+    then @out3 . regle relative
+    else ctx_value
   
   out3 . regle relative:
-    @out3 . regle relative . regle relative 2
+    if is_not_defined ctx_value
+    then @out3 . regle relative . regle relative 2
+    else ctx_value
   
   out3 . regle relative . regle relative 2:
-    30.
+    if is_not_defined ctx_value
+    then 30.
+    else ctx_value
 
 Module relative import with ./ :
   $ publicodes compile "./subjects/relative" -t debug_eval_tree -o -
   out:
-    @out . regle relative
+    if is_not_defined ctx_value
+    then @out . regle relative
+    else ctx_value
   
   out . regle relative:
-    20.
+    if is_not_defined ctx_value
+    then 20.
+    else ctx_value
   
   out2:
-    @out2 . regle relative
+    if is_not_defined ctx_value
+    then @out2 . regle relative
+    else ctx_value
   
   out2 . regle relative:
-    20.
+    if is_not_defined ctx_value
+    then 20.
+    else ctx_value
   
   out3:
-    @out3 . regle relative
+    if is_not_defined ctx_value
+    then @out3 . regle relative
+    else ctx_value
   
   out3 . regle relative:
-    @out3 . regle relative . regle relative 2
+    if is_not_defined ctx_value
+    then @out3 . regle relative . regle relative 2
+    else ctx_value
   
   out3 . regle relative . regle relative 2:
-    30.
+    if is_not_defined ctx_value
+    then 30.
+    else ctx_value
 
 Vendor relative import :
   $ PUBLICODESPATH=./vendor publicodes compile "subjects/vendored relative" -t debug_eval_tree -o -
   out:
-    @out . rule vendored d
+    if is_not_defined ctx_value
+    then @out . rule vendored d
+    else ctx_value
   
   out . rule vendored d:
-    @out . rule vendored d . rule vendored e
+    if is_not_defined ctx_value
+    then @out . rule vendored d . rule vendored e
+    else ctx_value
   
   out . rule vendored d . rule vendored e:
-    40.
+    if is_not_defined ctx_value
+    then 40.
+    else ctx_value
 
 Vendor distant :
   $ publicodes compile -C "subjects/distant/src" main -t debug_eval_tree -o -
   module a:
-    get_context(module a)
+    if is_not_defined ctx_value
+    then get_context(module a)
+    else ctx_value
   
   module a . rule a:
-    10.
+    if is_not_defined ctx_value
+    then 10.
+    else ctx_value

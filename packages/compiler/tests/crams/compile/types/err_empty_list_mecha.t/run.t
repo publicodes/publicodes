@@ -2,13 +2,21 @@ should correctly handle empty mechanisms:
 
   $ publicodes compile ./input/ -t debug_eval_tree -o - 
   max of:
-    not_applicable
+    if is_not_defined ctx_value
+    then not_applicable
+    else ctx_value
   
   min of:
-    not_applicable
+    if is_not_defined ctx_value
+    then not_applicable
+    else ctx_value
   
   product:
-    not_applicable
+    if is_not_defined ctx_value
+    then not_applicable
+    else ctx_value
   
   sum:
-    not_applicable
+    if is_not_defined ctx_value
+    then not_applicable
+    else ctx_value

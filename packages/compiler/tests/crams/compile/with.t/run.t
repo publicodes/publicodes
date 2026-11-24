@@ -2,22 +2,34 @@ Nested definitions should be correctly resolved:
 
   $ publicodes compile ./ok/ -t debug_eval_tree -o -
   a:
-    get_context(a)
+    if is_not_defined ctx_value
+    then get_context(a)
+    else ctx_value
   
   a . a:
-    get_context(a . a)
+    if is_not_defined ctx_value
+    then get_context(a . a)
+    else ctx_value
   
   a . a . a:
-    @a . a
+    if is_not_defined ctx_value
+    then @a . a
+    else ctx_value
   
   b:
-    get_context(b)
+    if is_not_defined ctx_value
+    then get_context(b)
+    else ctx_value
   
   b . b:
-    @b . b . b
+    if is_not_defined ctx_value
+    then @b . b . b
+    else ctx_value
   
   b . b . b:
-    get_context(b . b . b)
+    if is_not_defined ctx_value
+    then get_context(b . b . b)
+    else ctx_value
 
 Cycle should be found:
 

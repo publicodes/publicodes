@@ -159,6 +159,8 @@
 		NotApplicable
 	{%- case "not_defined" -%}
 		NotDefined
+	{%- case "ctx_value" -%}
+		ctxValue
 	{%- case "round" -%}
 		$round("{{ node_value.mode }}", {{ fmt_node(node_value.number) }}, () => {{ fmt_node(node_value.precision) }})
 	{%- case "condition" -%}
@@ -225,7 +227,7 @@
 {%- for rule_type, rule_name, rule_node in rules %}
 
 /** @type {(ctx: Context, params: RuleName[]) => {{ fmt_ts_type(rule_type) }}} */
-function {{ fmt_method(rule_name) }}(ctx, params) {
+function {{ fmt_method(rule_name) }}(ctx, params, ctxValue) {
   return /** @type \{{{ fmt_ts_type(rule_type, false)}}\} */ (
     {%- call indentret ("    ") -%}
     {{ fmt_node(rule_node) }}
@@ -268,7 +270,7 @@ const rules = {
      * @type {(params?: {{ fmt_type(out.rule_name) }}, options?: Options) => {value: {{ fmt_ts_type(out.return_type, false) }}, needed: Array<keyof {{ fmt_type(out.rule_name) }}>, missing: Array<keyof {{ fmt_type(out.rule_name) }}>, trace: Trace}}
      */
     evaluate: (params = {}, options) =>
-      $evaluate({{ fmt_method(out.rule_name) }}, params, options),
+      $evaluate("{{ out.rule_name }}", {{ fmt_method(out.rule_name) }}, params, options),
     /** @type \{"{{ fmt_ts_type(out.rule_type, true) }}"} */
     type: "{{ fmt_ts_type(out.rule_type, true) }}",
     {%- if out.unit %}
