@@ -2,13 +2,19 @@
 Simple multiplication without unit :
   $ publicodes compile -o - -t debug_eval_tree simple-multiplication-without-unit
   a:
-    5. €
+    if is_not_defined ctx_value
+    then 5. €
+    else ctx_value
   
   b:
-    3. * @a
+    if is_not_defined ctx_value
+    then 3. * @a
+    else ctx_value
   
   c:
-    @b + 4. $
+    if is_not_defined ctx_value
+    then @b + 4. $
+    else ctx_value
 
 Simple addition unit with unit :
 
@@ -79,25 +85,39 @@ Unit with percent :
 
   $ publicodes compile -t debug_eval_tree -o - percent 
   a:
-    5. % * 15.
+    if is_not_defined ctx_value
+    then 5. % * 15.
+    else ctx_value
   
   b:
-    (10. % * 50. €) * 0.01
+    if is_not_defined ctx_value
+    then (10. % * 50. €) * 0.01
+    else ctx_value
   
   c:
-    5. %/étoile * 5. étoile
+    if is_not_defined ctx_value
+    then 5. %/étoile * 5. étoile
+    else ctx_value
   
   d:
-    (4. € / 85. %) * 100.
+    if is_not_defined ctx_value
+    then (4. € / 85. %) * 100.
+    else ctx_value
   
   simplification:
-    get_context(simplification)
+    if is_not_defined ctx_value
+    then get_context(simplification)
+    else ctx_value
   
   simplification . inline:
-    (5. % * 4. €) * 0.01
+    if is_not_defined ctx_value
+    then (5. % * 4. €) * 0.01
+    else ctx_value
   
   simplification . mechanism:
-    (5. % * 4. €) * 0.01
+    if is_not_defined ctx_value
+    then (5. % * 4. €) * 0.01
+    else ctx_value
 
 Unit with percent error:
 

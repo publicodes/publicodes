@@ -12,7 +12,8 @@ let from_typed_ast (ast : Shared_ast.typed) : Typ.t option Tree.t =
   List.fold ast ~init:eval_tree ~f:(fun eval_tree Shared_ast.{name; value; _} ->
       let rule_name = Mark.remove name in
       let value =
-        Transform_value.transform ~undefined:(Get_context rule_name) value
+        Transform_value.transform ~undefined:(Get_context rule_name)
+          ~is_root:true value
       in
       let _ = Hashtbl.add eval_tree ~key:rule_name ~data:value in
       eval_tree )

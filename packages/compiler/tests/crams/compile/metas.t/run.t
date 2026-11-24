@@ -2,10 +2,14 @@ Valid metas :
 
   $ publicodes compile valid-metas  -t debug_eval_tree -o -
   a:
-    5.
+    if is_not_defined ctx_value
+    then 5.
+    else ctx_value
   
   b:
-    5. €
+    if is_not_defined ctx_value
+    then 5. €
+    else ctx_value
 
 
 Invalid metas :

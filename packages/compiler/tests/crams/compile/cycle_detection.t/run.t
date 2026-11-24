@@ -1,19 +1,27 @@
 Cycle analysis should  be context-sensitive:
   $ publicodes compile ./ok/ -t debug_eval_tree -o -
   cotisation:
-    if (@plafond != not_applicable) && (((10. % * @salaire brut) * 0.01) > @plafond)
+    if (@plafond != not_applicable) && (if is_not_defined ctx_value
+      then (10. % * @salaire brut) * 0.01
+      else ctx_value > @plafond)
     then @plafond
-    else (10. % * @salaire brut) * 0.01
+    else if is_not_defined ctx_value
+      then (10. % * @salaire brut) * 0.01
+      else ctx_value
   
   plafond:
     with: {
       salaire brut = 1000. €
       plafond = 10.
     } in
-    @cotisation
+    if is_not_defined ctx_value
+    then @cotisation
+    else ctx_value
   
   salaire brut:
-    10000. €
+    if is_not_defined ctx_value
+    then 10000. €
+    else ctx_value
 
 Without context, the cycle is detected:
   $ publicodes compile ./error/ -t debug_eval_tree -o -
