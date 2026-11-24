@@ -2,22 +2,32 @@ Multiple definitions
 
   $ publicodes compile input -t debug_eval_tree -o -
   a:
-    get_context(a)
+    if is_not_defined ctx_value
+    then get_context(a)
+    else ctx_value
   
   b:
-    get_context(b)
+    if is_not_defined ctx_value
+    then get_context(b)
+    else ctx_value
   
   c:
-    if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
-    then @b
-    else not_applicable
+    if is_not_defined ctx_value
+    then if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+      then @b
+      else not_applicable
+    else ctx_value
   
   x:
-    @c
+    if is_not_defined ctx_value
+    then @c
+    else ctx_value
   
   y:
-    if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
-    then @c
-    else not_applicable + if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
-    then @x
-    else not_applicable
+    if is_not_defined ctx_value
+    then if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+      then @c
+      else not_applicable + if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+      then @x
+      else not_applicable
+    else ctx_value

@@ -1,26 +1,38 @@
 Ok :
   $ publicodes compile -t debug_eval_tree ok_simple -o -
   a:
-    @b + 10.
+    if is_not_defined ctx_value
+    then @b + 10.
+    else ctx_value
   
   b:
-    root_finding(@b, [@a], -1000000., 100000000., 0.1)
+    if is_not_defined ctx_value
+    then root_finding(@b, [@a], -1000000., 100000000., 0.1)
+    else ctx_value
 
 Ok :
   $ publicodes compile -t debug_eval_tree ok_verbose -o -
   a:
-    @b + 10.
+    if is_not_defined ctx_value
+    then @b + 10.
+    else ctx_value
   
   b:
-    root_finding(@b, [@a], 0., 100000., 0.1)
+    if is_not_defined ctx_value
+    then root_finding(@b, [@a], 0., 100000., 0.1)
+    else ctx_value
 
 Ok :
   $ publicodes compile -t debug_eval_tree ok_array -o -
   a:
-    @b + 10.
+    if is_not_defined ctx_value
+    then @b + 10.
+    else ctx_value
   
   b:
-    root_finding(@b, [@a], -1000000., 100000000., 0.1)
+    if is_not_defined ctx_value
+    then root_finding(@b, [@a], -1000000., 100000000., 0.1)
+    else ctx_value
 
 Ok :
   $ publicodes compile -t debug_eval_tree ok_context_1 -o -
@@ -28,19 +40,27 @@ Ok :
     with: {
       b = 10.
     } in
-    @b + (@c + (@d + 10.))
+    if is_not_defined ctx_value
+    then @b + (@c + (@d + 10.))
+    else ctx_value
   
   b:
-    get_context(b)
+    if is_not_defined ctx_value
+    then get_context(b)
+    else ctx_value
   
   c:
-    get_context(c)
+    if is_not_defined ctx_value
+    then get_context(c)
+    else ctx_value
   
   d:
     with: {
       c = 10.
     } in
-    root_finding(@d, [@a], 0., 100000., 0.1)
+    if is_not_defined ctx_value
+    then root_finding(@d, [@a], 0., 100000., 0.1)
+    else ctx_value
 
 Ok :
   $ publicodes compile -t debug_eval_tree ok_context_2 -o -
@@ -48,13 +68,19 @@ Ok :
     with: {
       c = 15.
     } in
-    @c + 10.
+    if is_not_defined ctx_value
+    then @c + 10.
+    else ctx_value
   
   b:
-    @c + 10.
+    if is_not_defined ctx_value
+    then @c + 10.
+    else ctx_value
   
   c:
-    root_finding(@c, [@b], 0., 100000., 0.1)
+    if is_not_defined ctx_value
+    then root_finding(@c, [@b], 0., 100000., 0.1)
+    else ctx_value
 
 Ok :
   $ publicodes compile --default-to-public ok_params -o - | ../../../scripts/get_params.awk

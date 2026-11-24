@@ -2,22 +2,34 @@ Valid parenthesis expression :
 
   $ publicodes compile simple -t debug_eval_tree -o -
   a:
-    4.5
+    if is_not_defined ctx_value
+    then 4.5
+    else ctx_value
   
   b:
-    4.5 + 3.
+    if is_not_defined ctx_value
+    then 4.5 + 3.
+    else ctx_value
   
   c:
-    4.
+    if is_not_defined ctx_value
+    then 4.
+    else ctx_value
   
   d:
-    4. + 5.
+    if is_not_defined ctx_value
+    then 4. + 5.
+    else ctx_value
   
   e:
-    - 3.
+    if is_not_defined ctx_value
+    then - 3.
+    else ctx_value
   
   f:
-    - 4. - 3.
+    if is_not_defined ctx_value
+    then - 4. - 3.
+    else ctx_value
 
 Invalid parenthesis expression :
 
