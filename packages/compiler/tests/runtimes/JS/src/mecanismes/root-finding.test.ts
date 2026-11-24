@@ -157,7 +157,7 @@ b:
 a: b + 10
 b:
   inversion numérique: a
-  arrondi: 0.1
+  arrondi au supérieur: 0.1
 `
 		expect(engine['b'].evaluate({ a: 12.555 }).value).toBeCloseTo(2.6)
 	})
