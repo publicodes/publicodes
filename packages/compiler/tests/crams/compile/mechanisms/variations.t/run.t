@@ -2,32 +2,44 @@ Correclty formatted variations :
 
   $ publicodes compile ./ok -t debug_eval_tree -o -
   cond1:
-    get_context(cond1)
+    if is_not_defined ctx_value
+    then get_context(cond1)
+    else ctx_value
   
   cond2:
-    get_context(cond2)
+    if is_not_defined ctx_value
+    then get_context(cond2)
+    else ctx_value
   
   cond3:
-    get_context(cond3)
+    if is_not_defined ctx_value
+    then get_context(cond3)
+    else ctx_value
   
   multiple:
-    if @cond1 = true
-    then 200.
-    else if @cond2 = true
-      then 300.
-      else if @cond3 = true
-        then 400.
-        else 500.
+    if is_not_defined ctx_value
+    then if @cond1 = true
+      then 200.
+      else if @cond2 = true
+        then 300.
+        else if @cond3 = true
+          then 400.
+          else 500.
+    else ctx_value
   
   sans sinon:
-    if @cond1 = true
-    then 200.
-    else not_applicable
+    if is_not_defined ctx_value
+    then if @cond1 = true
+      then 200.
+      else not_applicable
+    else ctx_value
   
   simple:
-    if @cond1 = true
-    then 200.
-    else 300.
+    if is_not_defined ctx_value
+    then if @cond1 = true
+      then 200.
+      else 300.
+    else ctx_value
 
 Wrongly formatted variations :
 

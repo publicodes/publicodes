@@ -56,25 +56,37 @@ Ok arrondi :
     round to: if true
       then 1.
       else not_applicable
-    get_context(a)
+    if is_not_defined ctx_value
+    then get_context(a)
+    else ctx_value
   
   arrondi à la dizaine:
     round to: 10.
-    33.4167
+    if is_not_defined ctx_value
+    then 33.4167
+    else ctx_value
   
   b:
     round down to: 5. €
-    43. €
+    if is_not_defined ctx_value
+    then 43. €
+    else ctx_value
   
   c:
     round up to: 10. ** (- 4. décimales)
-    get_context(c)
+    if is_not_defined ctx_value
+    then get_context(c)
+    else ctx_value
   
   d:
     round to: if (is_not_defined @est arrondi) || ((@est arrondi = false) || (@est arrondi = not_applicable))
       then not_applicable
       else 0.1
-    4.65 €
+    if is_not_defined ctx_value
+    then 4.65 €
+    else ctx_value
   
   est arrondi:
-    get_context(est arrondi)
+    if is_not_defined ctx_value
+    then get_context(est arrondi)
+    else ctx_value

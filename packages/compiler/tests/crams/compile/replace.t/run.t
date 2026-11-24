@@ -2,26 +2,38 @@ valid simple replacement :
 
   $ publicodes compile replace  -t debug_eval_tree -o -
   a:
-    4.
+    if is_not_defined ctx_value
+    then 4.
+    else ctx_value
   
   b:
-    5.
+    if is_not_defined ctx_value
+    then 5.
+    else ctx_value
   
   c:
-    get_context(c)
+    if is_not_defined ctx_value
+    then get_context(c)
+    else ctx_value
   
   d:
-    get_context(d)
+    if is_not_defined ctx_value
+    then get_context(d)
+    else ctx_value
   
   x:
-    if @a != not_applicable
-    then @a
-    else @b
+    if is_not_defined ctx_value
+    then if @a != not_applicable
+      then @a
+      else @b
+    else ctx_value
   
   y:
-    if @c != not_applicable
-    then @c
-    else @d
+    if is_not_defined ctx_value
+    then if @c != not_applicable
+      then @c
+      else @d
+    else ctx_value
 
 
 
@@ -42,71 +54,101 @@ transitivity in replacement :
 
   $ publicodes compile transitivity  -t debug_eval_tree -o -
   a:
-    4.
+    if is_not_defined ctx_value
+    then 4.
+    else ctx_value
   
   b:
-    5.
+    if is_not_defined ctx_value
+    then 5.
+    else ctx_value
   
   c:
-    get_context(c)
+    if is_not_defined ctx_value
+    then get_context(c)
+    else ctx_value
   
   x:
-    if if @a != not_applicable
-      then @a
-      else @b != not_applicable
-    then if @a != not_applicable
-      then @a
-      else @b
-    else @c
+    if is_not_defined ctx_value
+    then if if @a != not_applicable
+        then @a
+        else @b != not_applicable
+      then if @a != not_applicable
+        then @a
+        else @b
+      else @c
+    else ctx_value
 
 
 transitivity in replacement and exclusivity :
 
   $ publicodes compile transitivity_and_exclusivity  -t debug_eval_tree -o -
   a:
-    10.
+    if is_not_defined ctx_value
+    then 10.
+    else ctx_value
   
   b:
-    5.
+    if is_not_defined ctx_value
+    then 5.
+    else ctx_value
   
   c:
-    10.
+    if is_not_defined ctx_value
+    then 10.
+    else ctx_value
   
   c prime:
     if (is_not_defined @c != not_applicable) || (((@c != not_applicable) = false) || ((@c != not_applicable) = not_applicable))
-    then 15.
+    then if is_not_defined ctx_value
+      then 15.
+      else ctx_value
     else not_applicable
   
   x:
-    if exclusive_replacement(@b, [@c prime, @c]) != not_applicable
-    then exclusive_replacement(@b, [@c prime, @c])
-    else @a
+    if is_not_defined ctx_value
+    then if exclusive_replacement(@b, [@c prime, @c]) != not_applicable
+      then exclusive_replacement(@b, [@c prime, @c])
+      else @a
+    else ctx_value
 
 
 replacement dans / sauf dans :
 
   $ publicodes compile dans_sauf_dans  -t debug_eval_tree -o -
   a:
-    get_context(a)
+    if is_not_defined ctx_value
+    then get_context(a)
+    else ctx_value
   
   b:
-    get_context(b)
+    if is_not_defined ctx_value
+    then get_context(b)
+    else ctx_value
   
   c:
-    get_context(c)
+    if is_not_defined ctx_value
+    then get_context(c)
+    else ctx_value
   
   x:
-    if @b != not_applicable
-    then @b
-    else @c
+    if is_not_defined ctx_value
+    then if @b != not_applicable
+      then @b
+      else @c
+    else ctx_value
   
   y:
-    @c
+    if is_not_defined ctx_value
+    then @c
+    else ctx_value
   
   z:
-    if @a != not_applicable
-    then @a
-    else @c
+    if is_not_defined ctx_value
+    then if @a != not_applicable
+      then @a
+      else @c
+    else ctx_value
 
 
 Multiple definitions :
@@ -128,28 +170,40 @@ Multiple definitions v2 :
 
   $ publicodes compile multiple_definitions_v2  -t debug_eval_tree -o -
   a:
-    get_context(a)
+    if is_not_defined ctx_value
+    then get_context(a)
+    else ctx_value
   
   a':
     if (is_not_defined true) || ((true = false) || (true = not_applicable))
-    then get_context(a')
+    then if is_not_defined ctx_value
+      then get_context(a')
+      else ctx_value
     else not_applicable
   
   b:
-    get_context(b)
+    if is_not_defined ctx_value
+    then get_context(b)
+    else ctx_value
   
   c:
-    exclusive_replacement(@b, [@a', @a])
+    if is_not_defined ctx_value
+    then exclusive_replacement(@b, [@a', @a])
+    else ctx_value
   
   x:
-    @c
+    if is_not_defined ctx_value
+    then @c
+    else ctx_value
   
   y:
-    if @a != not_applicable
-    then @a
-    else @c + if @a != not_applicable
-    then @a
-    else @x
+    if is_not_defined ctx_value
+    then if @a != not_applicable
+      then @a
+      else @c + if @a != not_applicable
+      then @a
+      else @x
+    else ctx_value
 
 Type mismatch :
 
@@ -172,18 +226,26 @@ Multiple replace exclusive :
 
   $ publicodes compile multiple_replace_exclusive  -t debug_eval_tree -o -
   a:
-    10.
+    if is_not_defined ctx_value
+    then 10.
+    else ctx_value
   
   b:
-    5.
+    if is_not_defined ctx_value
+    then 5.
+    else ctx_value
   
   c:
     if (is_not_defined @b != not_applicable) || (((@b != not_applicable) = false) || ((@b != not_applicable) = not_applicable))
-    then 10.
+    then if is_not_defined ctx_value
+      then 10.
+      else ctx_value
     else not_applicable
   
   x:
-    exclusive_replacement(@a, [@c, @b])
+    if is_not_defined ctx_value
+    then exclusive_replacement(@a, [@c, @b])
+    else ctx_value
 
 
 Multipe replace non exclusive :
@@ -210,16 +272,24 @@ Multiple replace unrespected exclusivity :
 
   $ publicodes compile multiple_replace_unrespected_exclusive  -t debug_eval_tree -o -
   a:
-    10.
+    if is_not_defined ctx_value
+    then 10.
+    else ctx_value
   
   b:
-    5.
+    if is_not_defined ctx_value
+    then 5.
+    else ctx_value
   
   c:
-    10.
+    if is_not_defined ctx_value
+    then 10.
+    else ctx_value
   
   x:
-    exclusive_replacement(@a, [@c, @b])
+    if is_not_defined ctx_value
+    then exclusive_replacement(@a, [@c, @b])
+    else ctx_value
 
 Multipe replace with only one missing exclusivity attribute:
 

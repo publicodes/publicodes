@@ -75,6 +75,9 @@ not_applicable
 {%- case "not_defined" -%}
 not_defined
 
+{%- case "ctx_value" -%}
+ctx_value
+
 {%- case "round" -%}
 round {% if node_value.mode != "nearest" %}{{ node_value.mode }} {% endif %}to:
 {%- call indent ("  ") %} {{ fmt_node(node_value.precision) }}
