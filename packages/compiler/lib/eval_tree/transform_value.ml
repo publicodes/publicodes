@@ -62,7 +62,7 @@ let transform_percent typ pos op left_value right_value =
                 (100. **. Float.of_int (percent_pow_to - percent_pow_from), None)
              ) ) )
 
-let rec transform ?(undefined = Tree.const_not_defined)
+let rec transform ?(undefined = Tree.const_not_defined) ?(is_root = false)
     (value : Shared_ast.typed_value) : Typ.t option Tree.value =
   let node, _ = value in
   let node_value, Shared_ast.{pos; typ} = node.value in
@@ -74,6 +74,7 @@ let rec transform ?(undefined = Tree.const_not_defined)
     | _ ->
         transform_mechanism_value node.value
   in
+  let value = if is_root then bypass_context_value ~pos ~typ value else value in
   unfold_chainable_mechanism ~init:value node.chainable_mechanisms
 
 and transform_expr
@@ -396,3 +397,12 @@ and transform_round ~pos ~typ round value =
         transform precision
   in
   p (Round (rounding, precision, value))
+
+and bypass_context_value ~pos ~typ node =
+  let p = Tree.mk_value ~pos ~meta:typ in
+  (* if (is_not_defined ctx_value) then node else ctx_value *)
+  Tree.(
+    p
+      (mk_condition
+         ~cond:(p (unop_is_not_defined ~pos (p const_ctx_value)))
+         ~then_:node ~else_:(p const_ctx_value) ) )

@@ -10,6 +10,7 @@ type constant =
   | Date of Shared_ast.date
   | Not_defined
   | Not_applicable
+  | Ctx_value
 [@@deriving show]
 
 type binary_op = Shared_ast.binary_op [@@deriving show]
@@ -126,6 +127,8 @@ let mk_root_finding ~with_ ~tolerance ~min ~max =
 let const_not_applicable = Const Not_applicable
 
 let const_not_defined = Const Not_defined
+
+let const_ctx_value = Const Ctx_value
 
 let const_false = Const (Bool false)
 
