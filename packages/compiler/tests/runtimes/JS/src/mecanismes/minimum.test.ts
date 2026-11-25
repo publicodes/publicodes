@@ -40,7 +40,7 @@ b:
 a:
   le minimum de:
     - 10 %
-    - 4.4
+    - 4.4 %
     - b
 b:
   non applicable si: oui
