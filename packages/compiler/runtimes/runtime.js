@@ -194,7 +194,8 @@ function $mul(l, right) {
  * @throws {RuntimeError} if the right operand is evaluated to zero.
  *
  * @specification
- * The division operation is defined as follows by order of precedence:
+ * The euclidean division operation is defined as follows by order of
+ * precedence:
  * - ∀ x. div(0, x) = 0
  * - ∀ x. div(x, 0) = throw RuntimeError('Division by zero')
  * - ∀ x. div(NotDefined, x) = div(x, NotDefined) = NotDefined
@@ -221,6 +222,80 @@ function $div(l, right) {
 	}
 
 	return l / r
+}
+
+/**
+ * @param {number | NotDefined | NotApplicable} l
+ * @param {() => number | NotDefined | NotApplicable} right
+ * @returns {number | NotApplicable | NotDefined}
+ *
+ * @throws {RuntimeError} if the right operand is evaluated to zero.
+ *
+ * @specification
+ * The division operation is defined as follows by order of precedence:
+ * - ∀ x. floor_div(0, x) = 0
+ * - ∀ x. floor_div(x, 0) = throw RuntimeError('Division by zero')
+ * - ∀ x. floor_div(NotDefined, x) = floor_div(x, NotDefined) = NotDefined
+ * - ∀ x. floor_div(NotApplicable, x) = floor_div(x, NotApplicable) = NotApplicable
+ * - ∀ x, y. floor_div(x, y) = floor(x / y)
+ */
+function $floor_div(l, right) {
+	if (l === 0) {
+		return 0
+	}
+
+	const r = right()
+	if (r === 0) {
+		// TODO: improve information provided in the error
+		throw new RuntimeError(`Division by zero: ${String(l)} / ${String(r)}`)
+	}
+
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
+	}
+
+	if (isNotApplicable(l) || isNotApplicable(r)) {
+		return NotApplicable
+	}
+
+	return (l - (l % r)) / r
+}
+
+/**
+ * @param {number | NotDefined | NotApplicable} l
+ * @param {() => number | NotDefined | NotApplicable} right
+ * @returns {number | NotApplicable | NotDefined}
+ *
+ * @throws {RuntimeError} if the right operand is evaluated to zero.
+ *
+ * @specification
+ * The modulo operation is defined as follows by order of precedence:
+ * - ∀ x. mod(0, x) = 0
+ * - ∀ x. mod(x, 0) = throw RuntimeError('Division by zero')
+ * - ∀ x. mod(NotDefined, x) = mod(x, NotDefined) = NotDefined
+ * - ∀ x. mod(NotApplicable, x) = mod(x, NotApplicable) = NotApplicable
+ * - ∀ x, y. mod(x, y) = x % y
+ */
+function $mod(l, right) {
+	if (l === 0) {
+		return 0
+	}
+
+	const r = right()
+	if (r === 0) {
+		// TODO: improve information provided in the error
+		throw new RuntimeError(`Division by zero: ${String(l)} / ${String(r)}`)
+	}
+
+	if (isNotDefined(l) || isNotDefined(r)) {
+		return NotDefined
+	}
+
+	if (isNotApplicable(l) || isNotApplicable(r)) {
+		return NotApplicable
+	}
+
+	return l % r
 }
 
 /**

@@ -38,15 +38,13 @@ let unit_symbol =
   [%sedlex.regexp? Utf8 ('$' | sc (* Currencies *) | Chars "°%")]
 
 let unit_identifier =
-  [%sedlex.regexp?
-    (letter | unit_symbol), Star any_char, Star (hspace, char, Star any_char)]
+  [%sedlex.regexp? letter, Star any_char, Star (hspace, char, Star any_char)]
 
 let number_with_unit =
   [%sedlex.regexp?
     ( number
     , Opt hspace
-    , Opt '/'
-    , unit_identifier
+    , (unit_symbol | '/', unit_identifier | unit_identifier)
     , Star (Opt hspace, Chars "./", unit_identifier) )]
 
 (* RuleName *)
@@ -103,6 +101,10 @@ let rec lex_one (lexbuf : lexbuf) : Tokens.t Mark.pos =
       update_acc lexbuf ; with_pos MUL
   | "/" ->
       update_acc lexbuf ; with_pos DIV
+  | "//" ->
+      update_acc lexbuf ; with_pos FLOORDIV
+  | "/%" ->
+      update_acc lexbuf ; with_pos MOD
   | "**" ->
       update_acc lexbuf ; with_pos POW
   | ">" ->

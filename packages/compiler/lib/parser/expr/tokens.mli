@@ -3,6 +3,8 @@ type t =
   | SUB
   | MUL
   | DIV
+  | FLOORDIV
+  | MOD
   | POW
   | GT
   | LT
