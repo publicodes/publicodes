@@ -40,4 +40,16 @@ division:
 			'Division by zero: 3 / 0',
 		)
 	})
+
+	it('division et modulo', async () => {
+		const engine = await yaml`
+
+division: 5 // 2
+modulo: 5 /% 2
+both: 5 // 2 + 5 /% 2
+`
+		expect(engine.division.evaluate().value).toEqual(2)
+		expect(engine.modulo.evaluate().value).toEqual(1)
+		expect(engine.both.evaluate().value).toEqual(3)
+	})
 })
