@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "96123cff_b800cbb8",
+        "filename": "packages/compiler/lib/analysis/dependency_graph/rule_context.ml",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T15:51:10Z",
+      "side": 1,
+      "message": "bof? https://www.wordreference.com/fren/abattement",
+      "parentUuid": "8188e1b8_268f81bf",
+      "revId": "98c00fb272cf60049594b0940ac4dfccdb7ad737",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "8727bf0d_89c387a0",
         "filename": "packages/compiler/lib/eval_tree/transform_value.ml",
         "patchSetId": 3
@@ -48,6 +66,24 @@
       "writtenOn": "2026-11-12T14:22:14Z",
       "side": 1,
       "message": "Dans la V1, l’abattement fait aussi un plancher: 0, de tel sorte à ce que la valeur ne puisse pas être inférieure à 0. Veut-on garder ce comportement ? Je dirait oui...",
+      "revId": "98c00fb272cf60049594b0940ac4dfccdb7ad737",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "83998a96_bb63f3b7",
+        "filename": "packages/compiler/lib/eval_tree/transform_value.ml",
+        "patchSetId": 3
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T15:51:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8727bf0d_89c387a0",
       "revId": "98c00fb272cf60049594b0940ac4dfccdb7ad737",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
@@ -65,6 +101,24 @@
       "writtenOn": "2026-11-12T14:22:14Z",
       "side": 1,
       "message": "Ils sont top ces tests, rien à redire ! Ah, si, tient, un cas limite auquel je pense juste maintenant, que se passe-t-il si on fait un abattement en pourcentage... sur une valeure en pourcentage (ça peut être un cram test et pas un test js)",
+      "revId": "98c00fb272cf60049594b0940ac4dfccdb7ad737",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "788218e0_c5ea57e4",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/abattement.test.ts",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T15:51:10Z",
+      "side": 1,
+      "message": "J\u0027ai ajouté un test. 20% avec un abattement de 10% ca donne 18, toujours en pourcentage. Ca me semble plutot logique. Tu en penses quoi?",
+      "parentUuid": "f6621914_be693050",
       "revId": "98c00fb272cf60049594b0940ac4dfccdb7ad737",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
