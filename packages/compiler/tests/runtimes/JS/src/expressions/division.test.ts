@@ -40,4 +40,56 @@ division:
 			'Division by zero: 3 / 0',
 		)
 	})
+
+	it('division et modulo', async () => {
+		const engine = await yaml`
+
+division: 5 // 2
+modulo: 5 /% 2
+both: 5 // 2 + 5 /% 2
+`
+		expect(engine.division.evaluate().value).toEqual(2)
+		expect(engine.modulo.evaluate().value).toEqual(1)
+		expect(engine.both.evaluate().value).toEqual(3)
+	})
+
+	it('spécification modulo', async () => {
+		const engine = await yaml`
+a: 117 /% 17
+b: -117 /% 17
+c: -117 /% -17
+d: 117 /% -17
+e: 12.7 /% 3.5
+`
+		const subjects = [
+			['a', 15],
+			['b', -15],
+			['c', -15],
+			['d', 15],
+			['e', 2.2],
+		]
+		subjects.forEach(([name, expected]) => {
+			expect(engine[name].evaluate().value).toBeCloseTo(expected)
+		})
+	})
+
+	it('spécification quotient', async () => {
+		const engine = await yaml`
+a: 117 // 17
+b: -117 // 17
+c: -117 // -17
+d: 117 // -17
+e: 12.7 // 3.5
+`
+		const subjects = [
+			['a', 6],
+			['b', -6],
+			['c', 6],
+			['d', -6],
+			['e', 3],
+		]
+		subjects.forEach(([name, expected]) => {
+			expect(engine[name].evaluate().value).toBeCloseTo(expected)
+		})
+	})
 })
