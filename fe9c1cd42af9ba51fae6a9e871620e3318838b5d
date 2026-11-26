@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "ce8e4d73_f379beda",
+        "filename": "packages/compiler/lib/analysis/inline_replacements.mli",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T16:06:44Z",
+      "side": 1,
+      "message": "fixed!\n\n\u003e We should use the same type than returned by Replacement_graph.mk_and_checks.\n\nwhich one?",
+      "parentUuid": "5163c9b6_6b3ed2cd",
+      "range": {
+        "startLine": 9,
+        "startChar": 5,
+        "endLine": 9,
+        "endChar": 61
+      },
+      "revId": "fe9c1cd42af9ba51fae6a9e871620e3318838b5d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "ee7f82c3_7b538617",
         "filename": "packages/compiler/lib/analysis/replacement_graph/checks.ml",
         "patchSetId": 1
@@ -54,6 +78,30 @@
       "writtenOn": "2026-11-26T12:11:25Z",
       "side": 1,
       "message": "remark: it feels that the transformation should be done in a desugaring pass before verification.",
+      "range": {
+        "startLine": 65,
+        "startChar": 7,
+        "endLine": 73,
+        "endChar": 15
+      },
+      "revId": "fe9c1cd42af9ba51fae6a9e871620e3318838b5d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e7a99448_361dfa4c",
+        "filename": "packages/compiler/lib/analysis/replacement_graph/checks.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T16:06:44Z",
+      "side": 1,
+      "message": "wdym? which transformation?",
+      "parentUuid": "ee7f82c3_7b538617",
       "range": {
         "startLine": 65,
         "startChar": 7,
@@ -87,6 +135,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6b8b51b_23248049",
+        "filename": "packages/compiler/lib/analysis/replacement_graph/replacement_graph.mli",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T16:06:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8e174dc1_368c0048",
+      "range": {
+        "startLine": 9,
+        "startChar": 43,
+        "endLine": 9,
+        "endChar": 54
+      },
+      "revId": "fe9c1cd42af9ba51fae6a9e871620e3318838b5d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "2915e106_2dfa5f35",
@@ -100,6 +172,30 @@
       "writtenOn": "2026-11-26T12:11:25Z",
       "side": 1,
       "message": "remark: I don\u0027t know why it stayed in the `Analysis` module, this should be a standalone transformation pass.",
+      "range": {
+        "startLine": 24,
+        "startChar": 13,
+        "endLine": 24,
+        "endChar": 39
+      },
+      "revId": "fe9c1cd42af9ba51fae6a9e871620e3318838b5d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ef5c53b8_e4d77c2a",
+        "filename": "packages/compiler/lib/compiler.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T16:06:44Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "2915e106_2dfa5f35",
       "range": {
         "startLine": 24,
         "startChar": 13,
