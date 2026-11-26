@@ -21,12 +21,13 @@ nombre négatif: -10.5
 Les opérations arithmétiques de base sont supportées :
 
 ```publicodes
-somme: 1 + 2
-soustraction: 3 - 4
-multiplication: 5 * 6
-division: 7 / 8
-division entière: 11 // 2
-puissance: 2 ** 10
+somme: 1 + 2                # 3
+soustraction: 3 - 4         # -1
+multiplication: 5 * 6       # 30
+division euclidienne: 7 / 8 # 0.875
+division entière: 11 // 2   # 5
+modulo: 11 /% 2             # 1
+puissance: 2 ** 10          # 1024
 ```
 
 **À noter** : il faut systématiquement un espace avant et après un opérateur.

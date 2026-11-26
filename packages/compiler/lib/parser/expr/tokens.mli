@@ -2,7 +2,9 @@ type t =
   | ADD
   | SUB
   | MUL
+  | DIVE
   | DIV
+  | MOD
   | POW
   | GT
   | LT

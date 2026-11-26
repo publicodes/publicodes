@@ -4,7 +4,9 @@ type t =
   | ADD
   | SUB
   | MUL
+  | DIVE
   | DIV
+  | MOD
   | POW
   | GT
   | LT
@@ -31,8 +33,12 @@ let to_string = function
       "-"
   | MUL ->
       "*"
-  | DIV ->
+  | DIVE ->
       "/"
+  | DIV ->
+      "//"
+  | MOD ->
+      "/%"
   | POW ->
       "**"
   | GT ->

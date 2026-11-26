@@ -72,8 +72,12 @@ let from_op : Shared.Shared_ast.binary_op -> tvalue = function
       Tstr "sub"
   | Mul ->
       Tstr "mul"
+  | DivEucl ->
+      Tstr "div_euclidean"
   | Div ->
       Tstr "div"
+  | Mod ->
+      Tstr "mod"
   | Pow ->
       Tstr "pow"
   | Eq ->
@@ -98,7 +102,7 @@ let from_op : Shared.Shared_ast.binary_op -> tvalue = function
       Tstr "max"
 
 let is_lazy : Shared_ast.binary_op -> bool = function
-  | And | Or | Lt | Gt | GtEq | LtEq | Pow | Div | Mul ->
+  | And | Or | Lt | Gt | GtEq | LtEq | Pow | DivEucl | Div | Mod | Mul ->
       true
   | Add | Sub | Eq | NotEq | Min | Max ->
       false
