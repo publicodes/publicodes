@@ -101,3 +101,16 @@ let%test_unit "Lex Expressions with" =
     ; DIV
     ; BOOLEAN true
     ; EOF ]
+
+let%test_unit "Lex Expressions division and remainder" =
+  let tokens = lex (Mark.mk_pos ~pos:Pos.dummy "12 // 2 + 7 /% 2") |> to_exn in
+  [%test_eq: Tokens.t list]
+    (List.map ~f:Mark.remove tokens)
+    [ NUMBER (12., None)
+    ; FLOORDIV
+    ; NUMBER (2., None)
+    ; ADD
+    ; NUMBER (7., None)
+    ; MOD
+    ; NUMBER (2., None)
+    ; EOF ]

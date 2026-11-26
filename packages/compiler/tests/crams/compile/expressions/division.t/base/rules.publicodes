@@ -1,0 +1,3 @@
+division: 5 // 3
+modulo: 5 /% 3
+both: 5 // 3 + 5 /% 3
