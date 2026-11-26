@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "0f5591e2_2f6f8909",
+        "filename": "packages/compiler/lib/backends/templates/template.debug.jinja",
+        "patchSetId": 5
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T15:51:10Z",
+      "side": 1,
+      "message": "Je pense aussi qu\u0027il est préférable d\u0027avoir le plus d\u0027implem eval_tree purs. Par contre ici l\u0027implémentation est suffisamment complexe pour mériter qu\u0027on lui dédie un algorithme lisible. Je ne trouve pas que l\u0027implémentation de la v1 soit particulièrement enviable, donc je ne pense pas pouvoir nous baser dessus:\n\n\"Le plafond de la tranche n°2 a une valeur inférieure à celui de la tranche précédente\"\n\nLorsque le plafond d\u0027une tranche est non-applicable.\n\n\"Le plafond de la tranche n°3 a une valeur inférieure à celui de la tranche précédente\"\n\nLorsqu\u0027un plafond est supérieur au suivant. Ne pete qu\u0027au runtime ssi l’assiette atteint cette tranche.\n\n\nJe vais essayer de casse-tête dessus quelques jours, mais a vue de nez c\u0027est pas possible sans variables intermédiaires, et ca me semble difficile en pur eval_tree.",
+      "parentUuid": "2f54c6ca_80103382",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "a64e50b1_d032eb42",
         "filename": "packages/compiler/lib/parser/mecha_scale.ml",
         "patchSetId": 5
@@ -48,6 +66,24 @@
       "writtenOn": "2026-11-12T15:57:45Z",
       "side": 1,
       "message": "J’ai lu rapidement, mais j’ai l’impression que tu ferai mieux de parser toutes les tranches du début avec parse_scale (et ne pas permettre d’avoir un Some_, None), et la dernière avec parse_remaining_state. Plutôt que de filter (ça parait bizarre de dire qu’une seule tranche peut omettre plafond. C’est seulement la dernière)",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cd9c8adc_1df68f14",
+        "filename": "packages/compiler/lib/parser/mecha_scale.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T15:51:10Z",
+      "side": 1,
+      "message": "J\u0027ai revu tout ce code.",
+      "parentUuid": "a64e50b1_d032eb42",
       "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
@@ -87,6 +123,24 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "98d94395_19dea0ea",
+        "filename": "packages/compiler/lib/typing/type_check.ml",
+        "patchSetId": 5
+      },
+      "lineNbr": 692,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T15:51:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "467f9ff4_a6b6370f",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "cc456fe7_84e439a0",
@@ -100,6 +154,24 @@
       "writtenOn": "2026-11-12T15:57:45Z",
       "side": 1,
       "message": "_pinaillage_ Alors certes, c’est bien d’avoir dest test réalistes, mais pour la personne qui relit, ça peut être pas mal d’avoir des valeurs facile à calculer... ça permet de mieux vérifier si l’implementation est bonne.",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7e6e4158_db266b9b",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/bareme.test.ts",
+        "patchSetId": 5
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T15:51:10Z",
+      "side": 1,
+      "message": "J\u0027avais repris les exemples de la docs, mais effectivement c\u0027est pas le plus facile a vérifier. J\u0027ai ré-écris tous les tests",
+      "parentUuid": "cc456fe7_84e439a0",
       "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
@@ -153,6 +225,24 @@
       "side": 1,
       "message": "[C’est déjà le cas en publicodes 1](https://publi.codes/studio/?code\u003d%0A%23+Bienvenue+dans+le+bac+%C3%A0+sable+du+langage+publicode+!%0A%23+Pour+apprendre+le+langage+%3A%0A%23+%3D%3E+https%3A%2F%2Fpubli.codes%2Fdocs%2Ftutoriel%0Aa%3A+%0A++bar%C3%A8me%3A%0A++++assiette%3A+100%E2%82%AC%0A++++tranches%3A%0A++++++-+taux%3A+10%25%0A++++++++plafond%3A+b%0A++++++-+taux%3A+20%25%0A++++++++plafond%3A+50%E2%82%AC%0A++avec%3A%0A++++b%3A+%0A++++++non+applicable+si%3A+oui\u0026selected\u003da)\n\nEt on se base sur l’ordre spécifié. C’est juste que si une tranche a un plafond supérieur à l’autre elle est ignorée. Et c’est un comportement tout à fait ok je trouve. Car réordonner les tranches me parait plus surprenant. Sans compter tout les désavantages que j’ai pointé sur le besoin d’avoir un runtime spécifique en l’état actuel.",
       "parentUuid": "27ff4a30_976098ab",
+      "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bf2227f9_94286a99",
+        "filename": "website/src/routes/docs/mecanismes/+page.svelte.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-26T15:51:10Z",
+      "side": 1,
+      "message": "Non elle n\u0027est pas ignoré, ca pète a l\u0027évaluation:\n\nhttps://publi.codes/studio/?code\u003drevenu+imposable%3A+154126+%E2%82%AC%0Aimp%C3%B4t+sur+le+revenu%3A%0A++bar%C3%A8me%3A%0A++++assiette%3A+revenu+imposable%0A++++tranches%3A%0A++++++-+taux%3A+14%25%0A++++++++plafond%3A+80086+%E2%82%AC%0A++++++-+taux%3A+30%25%0A++++++++plafond%3A+72617+%E2%82%AC%0A++++++-+taux%3A+45%25\u0026selected\u003dimp%C3%B4t-sur-le-revenu\n\nC\u0027est peut être mieux que de ré-ordonner à la volée, mais c\u0027est plus compliqué que de simplement l\u0027ignorer. Je ne sais pas ce qui est préférable.",
+      "parentUuid": "21f0457d_c4601344",
       "revId": "b96e2172304e8b34f9eae5f388474b5edec0feb5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     }
