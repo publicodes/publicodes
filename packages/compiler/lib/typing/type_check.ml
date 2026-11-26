@@ -438,7 +438,7 @@ and check_expression (expr : Ast.typing_expr) ~ctx =
           let* mul_typ = check_multiply ~pos left_mark.typ right_mark.typ in
           let* _ = check_union mark.typ mul_typ in
           check_union_with_parent_typ ~ctx mark.typ
-      | Div ->
+      | DivEucl | Div | Mod ->
           let* _ = check_expression_is_any_number left ~pos:left_pos in
           let* _ = check_expression_is_any_number right ~pos:right_pos in
           let* div_typ = check_divide ~pos left_mark.typ right_mark.typ in

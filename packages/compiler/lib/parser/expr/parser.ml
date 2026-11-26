@@ -114,12 +114,25 @@ and parse_multiplicative tokens ctx :
         mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos Mul, left, right))
       in
       (ast, rest)
-  | (DIV, {pos}) :: rest ->
-      let right, rest = parse_multiplicative rest (token_at ~pos DIV) in
+  | ((DIVE as kind), {pos}) :: rest
+  | ((DIV as kind), {pos}) :: rest
+  | ((MOD as kind), {pos}) :: rest ->
+      let right, rest = parse_multiplicative rest (token_at ~pos kind) in
       let right_pos = Mark.pos right in
       let pos = Pos.merge left_pos right_pos in
+      let binop : Shared_ast.binary_op =
+        match kind with
+        | DIVE ->
+            DivEucl
+        | DIV ->
+            Div
+        | MOD ->
+            Mod
+        | _ ->
+            failwith "unreachable"
+      in
       let ast =
-        mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos Div, left, right))
+        mk_expr ~pos Shared_ast.(Binary_op (Mark.mk_pos ~pos binop, left, right))
       in
       (ast, rest)
   | _ ->
