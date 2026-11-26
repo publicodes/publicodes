@@ -83,7 +83,7 @@ let%test_unit "Lex Expressions" =
     ; NUMBER (4.5, Some "€")
     ; MUL
     ; NUMBER (10., Some "%")
-    ; DIV
+    ; DIVE
     ; RULE_NAME "règle"
     ; EOF ]
 
@@ -98,6 +98,19 @@ let%test_unit "Lex Expressions with" =
     ; RULE_NAME "az"
     ; DOT
     ; RULE_NAME "mo"
-    ; DIV
+    ; DIVE
     ; BOOLEAN true
+    ; EOF ]
+
+let%test_unit "Lex Expressions euclidean and remainder" =
+  let tokens = lex (Mark.mk_pos ~pos:Pos.dummy "12 // 2 + 7 /% 2") |> to_exn in
+  [%test_eq: Tokens.t list]
+    (List.map ~f:Mark.remove tokens)
+    [ NUMBER (12., None)
+    ; DIV
+    ; NUMBER (2., None)
+    ; ADD
+    ; NUMBER (7., None)
+    ; MOD
+    ; NUMBER (2., None)
     ; EOF ]

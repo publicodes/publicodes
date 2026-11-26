@@ -18,7 +18,9 @@ type binary_op =
   | Add
   | Sub
   | Mul
+  | DivEucl
   | Div
+  | Mod
   | Pow
   | Gt
   | Lt
@@ -189,8 +191,12 @@ let binary_op_to_string = function
       "-"
   | Mul ->
       "*"
-  | Div ->
+  | DivEucl ->
       "/"
+  | Div ->
+      "//"
+  | Mod ->
+      "/%"
   | Pow ->
       "**"
   | Gt ->

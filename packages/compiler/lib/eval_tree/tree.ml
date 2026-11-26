@@ -109,7 +109,7 @@ let binop_sub ~pos = mk_binop ~pos Shared_ast.Sub
 
 let binop_mul ~pos = mk_binop ~pos Shared_ast.Mul
 
-let binop_div ~pos = mk_binop ~pos Shared_ast.Div
+let binop_div_eucl ~pos = mk_binop ~pos Shared_ast.DivEucl
 
 let binop_max ~pos = mk_binop ~pos Shared_ast.Max
 
