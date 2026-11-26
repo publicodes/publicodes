@@ -78,7 +78,8 @@ val binop_add : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
 val binop_mul : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
-val binop_div : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
+val binop_div_eucl :
+  pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 
 val binop_max : pos:Pos.t -> 'meta value -> 'meta value -> 'meta naked_value
 

@@ -43,7 +43,7 @@ let transform_percent typ pos op left_value right_value =
     match op with
     | Shared_ast.Mul, _ ->
         Units.mul right_unit left_unit
-    | Shared_ast.Div, _ ->
+    | Shared_ast.DivEucl, _ ->
         Units.mul right_unit (Units.inv left_unit)
     | _ ->
         failwith "Unexpected operator"
@@ -84,7 +84,7 @@ and transform_expr
   | Const value ->
       mk_value (Const (convert_constant value))
   | Binary_op (((Shared_ast.Mul, _) as op), left, right)
-  | Binary_op (((Shared_ast.Div, _) as op), left, right) ->
+  | Binary_op (((Shared_ast.DivEucl, _) as op), left, right) ->
       let left_value = transform_expr left in
       let right_value = transform_expr right in
       let with_transformed_percent =
@@ -250,7 +250,7 @@ and transform_average ~pos ~typ nodes =
         List.fold counts ~init ~f:(fun acc node ->
             p ~meta:typ (Tree.binop_add ~pos acc node) )
       in
-      p ~meta:typ (Tree.binop_div ~pos sum count)
+      p ~meta:typ (Tree.binop_div_eucl ~pos sum count)
 
 and transform_applicable_if ~pos ~typ condition value =
   (* FIXME: each node probably need it's own type, not just the condition *)
