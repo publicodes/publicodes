@@ -102,7 +102,7 @@ type rule_meta =
   | Note of string
   | Public
   | Custom_meta of Yojson.Safe.t
-  | Applicable_on_namespace
+  | Make_namespace_applicable
 [@@deriving equal, show]
 
 type 'ref replace =
@@ -238,7 +238,7 @@ let get_pos_exn (ast : ('ref, 'mark) t) (rule_name : Rule_name.t) : Pos.t =
 
 let has_applicable_on_namespace_tag rule_def =
   List.exists
-    ~f:(function Applicable_on_namespace, _ -> true | _ -> false)
+    ~f:(function Make_namespace_applicable, _ -> true | _ -> false)
     rule_def.meta
 
 let parents_applicable_on_namespace ast rule_name =
@@ -248,13 +248,13 @@ let parents_applicable_on_namespace ast rule_name =
 
 let get_applicable_on_namespace_exn rule_def =
   List.find_exn
-    ~f:(function Applicable_on_namespace, _ -> true | _ -> false)
+    ~f:(function Make_namespace_applicable, _ -> true | _ -> false)
     rule_def.meta
 
 (*
 let get_applicable_on_namespace_opt rule_def =
   List.find_map
-    ~f:(function Applicable_on_namespace, pos -> Some pos | _ -> None)
+    ~f:(function Make_namespace_applicable, pos -> Some pos | _ -> None)
     rule_def.meta
 *)
 

@@ -6,7 +6,12 @@ open Yaml_parser
 open Parser_utils
 
 let reserved_meta =
-  ["description"; "titre"; "public"; "meta"; "note"; "applicabilité étendue"]
+  [ "description"
+  ; "titre"
+  ; "public"
+  ; "meta"
+  ; "note"
+  ; "rend la branche applicable" ]
 
 let parse_custom_meta ~pos yaml =
   match yaml with
@@ -65,9 +70,9 @@ let parse mapping =
     | "public" ->
         let* _ = Parser_utils.check_boolean ~pos value in
         ret Public
-    | "applicabilité étendue" ->
+    | "rend la branche applicable" ->
         let* _ = Parser_utils.check_boolean ~pos value in
-        ret Applicable_on_namespace
+        ret Make_namespace_applicable
     | _ ->
         Output.empty
   in

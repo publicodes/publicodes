@@ -39,7 +39,7 @@ let to_meta meta =
       ("public", `Bool true)
   | Custom_meta meta ->
       ("meta", Yojson.Safe.to_basic meta)
-  | Applicable_on_namespace ->
+  | Make_namespace_applicable ->
       ("applicable_on_namespace", `Bool true)
 
 (** TODO: handle enums and literal values *)

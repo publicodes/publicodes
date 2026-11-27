@@ -129,7 +129,7 @@ let metas_of_meta (meta : Shared_ast.rule_meta list) =
                (meta_of_type_value "custom" @@ Tstr (Yojson.Safe.to_string meta))
          | Public ->
              None
-         | Applicable_on_namespace ->
+         | Make_namespace_applicable ->
              Some (meta_of_type_value "applicable_on_namespace" @@ Tbool true) )
     )
 
