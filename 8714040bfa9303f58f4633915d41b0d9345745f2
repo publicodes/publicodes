@@ -1,0 +1,182 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7eb0ece2_a44cc63f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T16:09:31Z",
+      "side": 1,
+      "message": "Nice, the proxy solution looks good to me!",
+      "revId": "8714040bfa9303f58f4633915d41b0d9345745f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3fc1278c_b6cb59be",
+        "filename": "packages/compiler/lib/compiler.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T16:09:31Z",
+      "side": 1,
+      "message": "Autant profiter du `let*` en ayant :\n\n```ocaml\n  let* resolved_ast \u003d Resolver.from_parsed_ast ast in\n  let resolved_ast \u003d Resolver.add_export_references resolved_ast in\n```",
+      "range": {
+        "startLine": 16,
+        "startChar": 2,
+        "endLine": 18,
+        "endChar": 4
+      },
+      "revId": "8714040bfa9303f58f4633915d41b0d9345745f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "aa7217d0_b2e382d9",
+        "filename": "packages/compiler/lib/resolver/resolver.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T16:09:31Z",
+      "side": 1,
+      "message": "On pourrait avoir une fonction helper du style `Shared_ast.mk_rule_def` pour éviter à devoir modifier ce code à chaque fois que la définition de `rule_def` change.",
+      "range": {
+        "startLine": 299,
+        "startChar": 9,
+        "endLine": 305,
+        "endChar": 35
+      },
+      "revId": "8714040bfa9303f58f4633915d41b0d9345745f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5337907e_085a8d11",
+        "filename": "packages/compiler/lib/resolver/resolver.mli",
+        "patchSetId": 8
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T16:09:31Z",
+      "side": 1,
+      "message": "Je pense que ça vaut le coup de détailler un peu plus ce que fait la transformation et pourquoi elle est \nnécessaire. Et peut-être dire un mot sur l\u0027autre option écartée pour l\u0027instant (concernant le fait de passer directement par le runtime) histoire d\u0027avoir une trace de nos réflexions.",
+      "range": {
+        "startLine": 12,
+        "startChar": 4,
+        "endLine": 13,
+        "endChar": 18
+      },
+      "revId": "8714040bfa9303f58f4633915d41b0d9345745f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4751fe8c_860597fd",
+        "filename": "packages/compiler/lib/shared/rule_name.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T16:09:31Z",
+      "side": 1,
+      "message": "La version précédente ne fonctionnait pas ?",
+      "range": {
+        "startLine": 108,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 68
+      },
+      "revId": "8714040bfa9303f58f4633915d41b0d9345745f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "12cb0e61_7b6d3140",
+        "filename": "packages/compiler/lib/shared/rule_name.mli",
+        "patchSetId": 8
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T16:09:31Z",
+      "side": 1,
+      "message": "Je ne comprend pas trop l\u0027utilité de ces trois fonctions et pour moi le terme `reference` est ambiguë ici parce que l\u0027on pourrait croire que l\u0027on peut parler d\u0027une référence classique et non d\u0027un nom interne.",
+      "range": {
+        "startLine": 113,
+        "startChar": 0,
+        "endLine": 120,
+        "endChar": 56
+      },
+      "revId": "8714040bfa9303f58f4633915d41b0d9345745f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2ce5562e_5fdffb90",
+        "filename": "packages/compiler/tests/crams/compile/json/example.t/run.t",
+        "patchSetId": 8
+      },
+      "lineNbr": 1440,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T16:09:31Z",
+      "side": 1,
+      "message": "C\u0027est un peu l\u0027enfer le nom là, on ne pourrait pas avoir un nom plus simple ?",
+      "range": {
+        "startLine": 1440,
+        "startChar": 11,
+        "endLine": 1440,
+        "endChar": 19
+      },
+      "revId": "8714040bfa9303f58f4633915d41b0d9345745f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f2ab131f_3dc30e0f",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/applicabilité-espace-nom.test.ts",
+        "patchSetId": 8
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T16:09:31Z",
+      "side": 1,
+      "message": "Il y a une raison particulière pour ne pas simplement faire `expect(subject.value).toEqual(p.NotApplicable)` ?\n\nJe serai pour utiliser systématiquement `toEqual` aussi pour éviter de mauvaises surprises.",
+      "range": {
+        "startLine": 44,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 53
+      },
+      "revId": "8714040bfa9303f58f4633915d41b0d9345745f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
