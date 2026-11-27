@@ -1437,63 +1437,76 @@ Valid json doc :
 
   $ publicodes compile . -o - | ../../../scripts/get_functions.awk
   
-  function _a(ctx, params) {
-    return /** @type {10.000000} */ (
-      $ret("8c53200048a761596ecae3e1e3bf0d41", ctx, 10.)
-    )
-  
-  function _b(ctx, params) {
+  function _______e(ctx, params, ctxValue) {
     return /** @type {number} */ (
-      $ret("ff79a2db81cac7b17e568fcd2d7edf5a", ctx, $add(
-        $ret("ff79a2db81cac7b17e568fcd2d7edf5a", ctx, $add(
-          $ret("f5c30e4e84bf738d213540cfb36bf2a4", ctx, ((ctx) => $ret("607482e8a1a50f7f33a94672c51e4bba", ctx, $ref("a", _a, ctx, params)))(
-          			{
-          				...ctx,
-          				_context_stack: ctx._context_stack + "-f5c30e4e84bf738d213540cfb36bf2a4",
-          					"a": $ret("cbbb38b3c23969c6db449330c9fb3586", ctx, 30.),
-          			}
-          		)),
-          $ret("4fd650849b843a93fc12a8a17768e33b", ctx, $ref("a", _a, ctx, params)))),
-        $ret("0619c80afde2af8cffee7f4efe428260", ctx, $ref("b . c", _b_·_c, ctx, params))))
+      $ret("7e77086df4934e0ea94c9a505c56df35", ctx, $cond(
+        $ret("7e77086df4934e0ea94c9a505c56df35", ctx, (isNotDefined($ret("7e77086df4934e0ea94c9a505c56df35", ctx, ctxValue)))), () => $ret("7e77086df4934e0ea94c9a505c56df35", ctx, $ref("e", _e, ctx, params)), () => $ret("7e77086df4934e0ea94c9a505c56df35", ctx, ctxValue)))
     )
   
-  function _b_·_c(ctx, params) {
+  function _a(ctx, params, ctxValue) {
+    return /** @type {10.000000} */ (
+      $ret("3064b365e18c8aae561f3ae8173791bc", ctx, $cond(
+        $ret("3064b365e18c8aae561f3ae8173791bc", ctx, (isNotDefined($ret("3064b365e18c8aae561f3ae8173791bc", ctx, ctxValue)))), () => $ret("8c53200048a761596ecae3e1e3bf0d41", ctx, 10.), () => $ret("3064b365e18c8aae561f3ae8173791bc", ctx, ctxValue)))
+    )
+  
+  function _b(ctx, params, ctxValue) {
+    return /** @type {number} */ (
+      $ret("ff79a2db81cac7b17e568fcd2d7edf5a", ctx, $cond(
+        $ret("ff79a2db81cac7b17e568fcd2d7edf5a", ctx, (isNotDefined($ret("ff79a2db81cac7b17e568fcd2d7edf5a", ctx, ctxValue)))), () => $ret("ff79a2db81cac7b17e568fcd2d7edf5a", ctx, $add(
+          $ret("ff79a2db81cac7b17e568fcd2d7edf5a", ctx, $add(
+            $ret("f5c30e4e84bf738d213540cfb36bf2a4", ctx, ((ctx) => $ret("607482e8a1a50f7f33a94672c51e4bba", ctx, $ref("a", _a, ctx, params)))(
+            			{
+            				...ctx,
+            				_context_stack: ctx._context_stack + "-f5c30e4e84bf738d213540cfb36bf2a4",
+            					"a": $ret("cbbb38b3c23969c6db449330c9fb3586", ctx, 30.),
+            			}
+            		)),
+            $ret("4fd650849b843a93fc12a8a17768e33b", ctx, $ref("a", _a, ctx, params)))),
+          $ret("0619c80afde2af8cffee7f4efe428260", ctx, $ref("b . c", _b_·_c, ctx, params)))), () => $ret("ff79a2db81cac7b17e568fcd2d7edf5a", ctx, ctxValue)))
+    )
+  
+  function _b_·_c(ctx, params, ctxValue) {
     return /** @type {55.000000} */ (
-      $ret("b11107b71fb9389430e680fcb5514f4e", ctx, 55.)
+      $ret("b11107b71fb9389430e680fcb5514f4e", ctx, $cond(
+        $ret("b11107b71fb9389430e680fcb5514f4e", ctx, (isNotDefined($ret("b11107b71fb9389430e680fcb5514f4e", ctx, ctxValue)))), () => $ret("b11107b71fb9389430e680fcb5514f4e", ctx, 55.), () => $ret("b11107b71fb9389430e680fcb5514f4e", ctx, ctxValue)))
     )
   
-  function _d(ctx, params) {
+  function _d(ctx, params, ctxValue) {
     return /** @type {number} */ (
       $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, $cond(
-        $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, $eq(
-          $ret("3e9f5aabfb2e4591854a0c92f1ebd7e2", ctx, $gt(
-            $ret("b3db789b60d2cc2cd3b1fa0033f12c6a", ctx, $ref("a", _a, ctx, params)),
-            () => $ret("d7f3aa0c5a448fb5365bad3bdb8d6e7e", ctx, 20.))),
-          $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, true))), () => $ret("aaa25f4d8aa80b47f775e710e30192cd", ctx, 20.), () => $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, $cond(
+        $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, (isNotDefined($ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, ctxValue)))), () => $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, $cond(
           $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, $eq(
-            $ret("78a1c83468d98579acf02c7aed917ddc", ctx, $gt(
-              $ret("85ed9e46d68d10be3651ce2d1839fa5c", ctx, $ref("a", _a, ctx, params)),
-              () => $ret("2d28879da7cf4680704d99a1424281ed", ctx, 5.))),
-            $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, true))), () => $ret("ba827429653151b7b75a1fa3b9435406", ctx, 5.), () => $ret("d55e2265821f803a64844f20cc15fecd", ctx, 0.)))))
+            $ret("3e9f5aabfb2e4591854a0c92f1ebd7e2", ctx, $gt(
+              $ret("b3db789b60d2cc2cd3b1fa0033f12c6a", ctx, $ref("a", _a, ctx, params)),
+              () => $ret("d7f3aa0c5a448fb5365bad3bdb8d6e7e", ctx, 20.))),
+            $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, true))), () => $ret("aaa25f4d8aa80b47f775e710e30192cd", ctx, 20.), () => $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, $cond(
+            $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, $eq(
+              $ret("78a1c83468d98579acf02c7aed917ddc", ctx, $gt(
+                $ret("85ed9e46d68d10be3651ce2d1839fa5c", ctx, $ref("a", _a, ctx, params)),
+                () => $ret("2d28879da7cf4680704d99a1424281ed", ctx, 5.))),
+              $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, true))), () => $ret("ba827429653151b7b75a1fa3b9435406", ctx, 5.), () => $ret("d55e2265821f803a64844f20cc15fecd", ctx, 0.))))), () => $ret("c52608930469dcbd5d92ae1c48d2ace7", ctx, ctxValue)))
     )
   
-  function _e(ctx, params) {
+  function _e(ctx, params, ctxValue) {
     return /** @type {number} */ (
-      $ret("9a680db42b58c703053d621e7191e015", ctx, $add(
-        $ret("9be2e75819f7db42f75121c6d6433b89", ctx, $ref("a", _a, ctx, params)),
-        $ret("2ef088a137d75c50707049c690c2f01a", ctx, $ref("b", _b, ctx, params))))
+      $ret("e51f09b0d0bbf019f47e6a298146e686", ctx, $cond(
+        $ret("e51f09b0d0bbf019f47e6a298146e686", ctx, (isNotDefined($ret("e51f09b0d0bbf019f47e6a298146e686", ctx, ctxValue)))), () => $ret("9a680db42b58c703053d621e7191e015", ctx, $add(
+          $ret("9be2e75819f7db42f75121c6d6433b89", ctx, $ref("a", _a, ctx, params)),
+          $ret("2ef088a137d75c50707049c690c2f01a", ctx, $ref("b", _b, ctx, params)))), () => $ret("e51f09b0d0bbf019f47e6a298146e686", ctx, ctxValue)))
     )
   
-  function _f(ctx, params) {
+  function _f(ctx, params, ctxValue) {
     return /** @type {number} */ (
-      $ret("afebb17f3986bbf956d14603535413a1", ctx, $neg($ret("ea02a8ba13e92750eaa1c6daee71a830", ctx, $ref("e", _e, ctx, params))))
+      $ret("afebb17f3986bbf956d14603535413a1", ctx, $cond(
+        $ret("afebb17f3986bbf956d14603535413a1", ctx, (isNotDefined($ret("afebb17f3986bbf956d14603535413a1", ctx, ctxValue)))), () => $ret("afebb17f3986bbf956d14603535413a1", ctx, $neg($ret("ea02a8ba13e92750eaa1c6daee71a830", ctx, $ref("e", _e, ctx, params)))), () => $ret("afebb17f3986bbf956d14603535413a1", ctx, ctxValue)))
     )
   
-  function _g(ctx, params) {
+  function _g(ctx, params, ctxValue) {
     return /** @type {number} */ (
-      $ret("c9c2121f4542e313f9af1159395edbef", ctx, ((ctx) => $ret("08ecce99ccb92d3a0a1ac628f7003c3d", ctx, $add(
-        $ret("ec34c2632f530167d897fdea46c00755", ctx, $ref("b", _b, ctx, params)),
-        $ret("e6d37e231ed7853fc48ebf4549a2d0b5", ctx, $ref("g . here", _g_·_here, ctx, params)))))(
+      $ret("c9c2121f4542e313f9af1159395edbef", ctx, ((ctx) => $ret("fd1451ad08c7725a7baa87c03cda4d46", ctx, $cond(
+        $ret("fd1451ad08c7725a7baa87c03cda4d46", ctx, (isNotDefined($ret("fd1451ad08c7725a7baa87c03cda4d46", ctx, ctxValue)))), () => $ret("08ecce99ccb92d3a0a1ac628f7003c3d", ctx, $add(
+          $ret("ec34c2632f530167d897fdea46c00755", ctx, $ref("b", _b, ctx, params)),
+          $ret("e6d37e231ed7853fc48ebf4549a2d0b5", ctx, $ref("g . here", _g_·_here, ctx, params)))), () => $ret("fd1451ad08c7725a7baa87c03cda4d46", ctx, ctxValue))))(
       			{
       				...ctx,
       				_context_stack: ctx._context_stack + "-c9c2121f4542e313f9af1159395edbef",
@@ -1504,12 +1517,13 @@ Valid json doc :
       		))
     )
   
-  function _g_·_here(ctx, params) {
+  function _g_·_here(ctx, params, ctxValue) {
     return /** @type {5.000000} */ (
-      $ret("7e070350e9f6c4d8c975a188e3fa4d21", ctx, 5.)
+      $ret("7e070350e9f6c4d8c975a188e3fa4d21", ctx, $cond(
+        $ret("7e070350e9f6c4d8c975a188e3fa4d21", ctx, (isNotDefined($ret("7e070350e9f6c4d8c975a188e3fa4d21", ctx, ctxValue)))), () => $ret("7e070350e9f6c4d8c975a188e3fa4d21", ctx, 5.), () => $ret("7e070350e9f6c4d8c975a188e3fa4d21", ctx, ctxValue)))
     )
   
-  function _h(ctx, params) {
+  function _h(ctx, params, ctxValue) {
     return /** @type {30.000000} */ (
       $ret("41f7633e7a4fe3ce1d9e2baaabd3bde1", ctx, $cond(
         $ret("41f7633e7a4fe3ce1d9e2baaabd3bde1", ctx, $or(
@@ -1526,10 +1540,11 @@ Valid json doc :
               $ret("4206ec76ab8b78e1e846fceaf1a6d56d", ctx, $gt(
                 $ret("d352c3c8c35a48e08bc0a2b72baaf34c", ctx, $ref("g", _g, ctx, params)),
                 () => $ret("8bf3bcd66982408fdac9409788b5130b", ctx, 20.))),
-              $ret("41f7633e7a4fe3ce1d9e2baaabd3bde1", ctx, NotApplicable))))))), () => $ret("41f7633e7a4fe3ce1d9e2baaabd3bde1", ctx, NotApplicable), () => $ret("6160c0395a8f8ab524dcb2b05a96ef2d", ctx, 30.)))
+              $ret("41f7633e7a4fe3ce1d9e2baaabd3bde1", ctx, NotApplicable))))))), () => $ret("41f7633e7a4fe3ce1d9e2baaabd3bde1", ctx, NotApplicable), () => $ret("bc10fa45a9b3180f6fe289024ec912e1", ctx, $cond(
+          $ret("bc10fa45a9b3180f6fe289024ec912e1", ctx, (isNotDefined($ret("bc10fa45a9b3180f6fe289024ec912e1", ctx, ctxValue)))), () => $ret("6160c0395a8f8ab524dcb2b05a96ef2d", ctx, 30.), () => $ret("bc10fa45a9b3180f6fe289024ec912e1", ctx, ctxValue)))))
     )
   
-  function _i(ctx, params) {
+  function _i(ctx, params, ctxValue) {
     return /** @type {30.000000} */ (
       $ret("04410a4612806663e6baad1d699490bd", ctx, $cond(
         $ret("04410a4612806663e6baad1d699490bd", ctx, $or(
@@ -1546,16 +1561,19 @@ Valid json doc :
               $ret("4e8f3c7e54a41ef1516e23c3de9d3480", ctx, $gt(
                 $ret("0a67dc065b57d1803c14b8ab845da1c8", ctx, $ref("g", _g, ctx, params)),
                 () => $ret("22d9f8357c2091866956ba7b9efba8c0", ctx, 20.))),
-              $ret("04410a4612806663e6baad1d699490bd", ctx, NotApplicable))))))), () => $ret("0ac14150e7642a3985c11859d84a1a31", ctx, 30.), () => $ret("04410a4612806663e6baad1d699490bd", ctx, NotApplicable)))
+              $ret("04410a4612806663e6baad1d699490bd", ctx, NotApplicable))))))), () => $ret("6c9bf2821477f83615a4b0f6798717ce", ctx, $cond(
+          $ret("6c9bf2821477f83615a4b0f6798717ce", ctx, (isNotDefined($ret("6c9bf2821477f83615a4b0f6798717ce", ctx, ctxValue)))), () => $ret("0ac14150e7642a3985c11859d84a1a31", ctx, 30.), () => $ret("6c9bf2821477f83615a4b0f6798717ce", ctx, ctxValue))), () => $ret("04410a4612806663e6baad1d699490bd", ctx, NotApplicable)))
     )
   
-  function _j(ctx, params) {
+  function _j(ctx, params, ctxValue) {
     return /** @type {number} */ (
       $ret("bf3fc036b1e0afe09e9cbe118e38feb0", ctx, $cond(
-        $ret("bf3fc036b1e0afe09e9cbe118e38feb0", ctx, (isNotDefined($ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, $get("j", ctx, params))))), () => $ret("e5d045027455ff26040f109c5564cb35", ctx, 20.), () => $ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, $get("j", ctx, params))))
+        $ret("bf3fc036b1e0afe09e9cbe118e38feb0", ctx, (isNotDefined($ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, $cond(
+          $ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, (isNotDefined($ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, ctxValue)))), () => $ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, $get("j", ctx, params)), () => $ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, ctxValue)))))), () => $ret("e5d045027455ff26040f109c5564cb35", ctx, 20.), () => $ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, $cond(
+          $ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, (isNotDefined($ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, ctxValue)))), () => $ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, $get("j", ctx, params)), () => $ret("0b51594e439e3ef80b60ac6d6ec38993", ctx, ctxValue)))))
     )
   
-  function _k(ctx, params) {
+  function _k(ctx, params, ctxValue) {
     return /** @type {2.300000} */ (
       $ret("cbfde12b14aab7ca62b1a3bd44791e05", ctx, $cond(
         $ret("cbfde12b14aab7ca62b1a3bd44791e05", ctx, $and(
@@ -1563,11 +1581,13 @@ Valid json doc :
             $ret("64bde61212d177b7485e3acc6cd75993", ctx, 2.3),
             $ret("cbfde12b14aab7ca62b1a3bd44791e05", ctx, NotApplicable))),
           () => $ret("cbfde12b14aab7ca62b1a3bd44791e05", ctx, $gt(
-            $ret("0b466fb90c009cb71c7e069063d77d6a", ctx, 4.),
-            () => $ret("64bde61212d177b7485e3acc6cd75993", ctx, 2.3))))), () => $ret("64bde61212d177b7485e3acc6cd75993", ctx, 2.3), () => $ret("0b466fb90c009cb71c7e069063d77d6a", ctx, 4.)))
+            $ret("929bb3b02af3b428e0871af04bebea0e", ctx, $cond(
+              $ret("929bb3b02af3b428e0871af04bebea0e", ctx, (isNotDefined($ret("929bb3b02af3b428e0871af04bebea0e", ctx, ctxValue)))), () => $ret("0b466fb90c009cb71c7e069063d77d6a", ctx, 4.), () => $ret("929bb3b02af3b428e0871af04bebea0e", ctx, ctxValue))),
+            () => $ret("64bde61212d177b7485e3acc6cd75993", ctx, 2.3))))), () => $ret("64bde61212d177b7485e3acc6cd75993", ctx, 2.3), () => $ret("929bb3b02af3b428e0871af04bebea0e", ctx, $cond(
+          $ret("929bb3b02af3b428e0871af04bebea0e", ctx, (isNotDefined($ret("929bb3b02af3b428e0871af04bebea0e", ctx, ctxValue)))), () => $ret("0b466fb90c009cb71c7e069063d77d6a", ctx, 4.), () => $ret("929bb3b02af3b428e0871af04bebea0e", ctx, ctxValue)))))
     )
   
-  function _l(ctx, params) {
+  function _l(ctx, params, ctxValue) {
     return /** @type {3.000000} */ (
       $ret("355217a0bf6aee14ae02e524cf1db217", ctx, $cond(
         $ret("355217a0bf6aee14ae02e524cf1db217", ctx, $and(
@@ -1575,21 +1595,26 @@ Valid json doc :
             $ret("f109c2fe444e06719d9f110fe1cc064c", ctx, 3.),
             $ret("355217a0bf6aee14ae02e524cf1db217", ctx, NotApplicable))),
           () => $ret("355217a0bf6aee14ae02e524cf1db217", ctx, $lt(
-            $ret("7d2d86b774a2e716038399da627aa9cd", ctx, 2.),
-            () => $ret("f109c2fe444e06719d9f110fe1cc064c", ctx, 3.))))), () => $ret("f109c2fe444e06719d9f110fe1cc064c", ctx, 3.), () => $ret("7d2d86b774a2e716038399da627aa9cd", ctx, 2.)))
+            $ret("61ee4d5fe6ae5d9bd8f5fe887d913ab0", ctx, $cond(
+              $ret("61ee4d5fe6ae5d9bd8f5fe887d913ab0", ctx, (isNotDefined($ret("61ee4d5fe6ae5d9bd8f5fe887d913ab0", ctx, ctxValue)))), () => $ret("7d2d86b774a2e716038399da627aa9cd", ctx, 2.), () => $ret("61ee4d5fe6ae5d9bd8f5fe887d913ab0", ctx, ctxValue))),
+            () => $ret("f109c2fe444e06719d9f110fe1cc064c", ctx, 3.))))), () => $ret("f109c2fe444e06719d9f110fe1cc064c", ctx, 3.), () => $ret("61ee4d5fe6ae5d9bd8f5fe887d913ab0", ctx, $cond(
+          $ret("61ee4d5fe6ae5d9bd8f5fe887d913ab0", ctx, (isNotDefined($ret("61ee4d5fe6ae5d9bd8f5fe887d913ab0", ctx, ctxValue)))), () => $ret("7d2d86b774a2e716038399da627aa9cd", ctx, 2.), () => $ret("61ee4d5fe6ae5d9bd8f5fe887d913ab0", ctx, ctxValue)))))
     )
   
-  function _m(ctx, params) {
+  function _m(ctx, params, ctxValue) {
     return /** @type {number} */ (
-      $ret("139111f18d0fde6a00af968527f2b807", ctx, $round("nearest", $ret("35a79ca25226bd7a44b834a77cdf59ca", ctx, $get("m", ctx, params)), () => $ret("b4deafa85c38cdc602b0c120fc8d2211", ctx, 2.3)))
+      $ret("139111f18d0fde6a00af968527f2b807", ctx, $round("nearest", $ret("35a79ca25226bd7a44b834a77cdf59ca", ctx, $cond(
+        $ret("35a79ca25226bd7a44b834a77cdf59ca", ctx, (isNotDefined($ret("35a79ca25226bd7a44b834a77cdf59ca", ctx, ctxValue)))), () => $ret("35a79ca25226bd7a44b834a77cdf59ca", ctx, $get("m", ctx, params)), () => $ret("35a79ca25226bd7a44b834a77cdf59ca", ctx, ctxValue))), () => $ret("b4deafa85c38cdc602b0c120fc8d2211", ctx, 2.3)))
     )
   
-  function _n(ctx, params) {
+  function _n(ctx, params, ctxValue) {
     return /** @type {number} */ (
-      $ret("937738b161e750aa70276f7c7ffc729e", ctx, $round("down", $ret("1660062f1fd3e699853fea79f3b0a1ec", ctx, $get("n", ctx, params)), () => $ret("dfb36252a0bc10b16ced275825540b0d", ctx, 2.3)))
+      $ret("937738b161e750aa70276f7c7ffc729e", ctx, $round("down", $ret("1660062f1fd3e699853fea79f3b0a1ec", ctx, $cond(
+        $ret("1660062f1fd3e699853fea79f3b0a1ec", ctx, (isNotDefined($ret("1660062f1fd3e699853fea79f3b0a1ec", ctx, ctxValue)))), () => $ret("1660062f1fd3e699853fea79f3b0a1ec", ctx, $get("n", ctx, params)), () => $ret("1660062f1fd3e699853fea79f3b0a1ec", ctx, ctxValue))), () => $ret("dfb36252a0bc10b16ced275825540b0d", ctx, 2.3)))
     )
   
-  function _o(ctx, params) {
+  function _o(ctx, params, ctxValue) {
     return /** @type {number} */ (
-      $ret("27287304c72e15930d3d73c8ad8af7e2", ctx, $round("up", $ret("48cc205da162ade87c9160a7ef78664d", ctx, $get("o", ctx, params)), () => $ret("0d24e8b18fc3c30944b34f9a5a2b17d1", ctx, 2.3)))
+      $ret("27287304c72e15930d3d73c8ad8af7e2", ctx, $round("up", $ret("48cc205da162ade87c9160a7ef78664d", ctx, $cond(
+        $ret("48cc205da162ade87c9160a7ef78664d", ctx, (isNotDefined($ret("48cc205da162ade87c9160a7ef78664d", ctx, ctxValue)))), () => $ret("48cc205da162ade87c9160a7ef78664d", ctx, $get("o", ctx, params)), () => $ret("48cc205da162ade87c9160a7ef78664d", ctx, ctxValue))), () => $ret("0d24e8b18fc3c30944b34f9a5a2b17d1", ctx, 2.3)))
     )

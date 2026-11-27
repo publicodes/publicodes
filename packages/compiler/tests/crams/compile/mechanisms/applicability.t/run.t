@@ -2,40 +2,56 @@ Should correctly transform `applicable si` mechanism:
 
   $ publicodes compile ./applicable_if -t debug_eval_tree -o -
   condition:
-    get_context(condition)
+    if is_not_defined ctx_value
+    then get_context(condition)
+    else ctx_value
   
   test:
     if (is_not_defined @condition) || ((@condition = false) || (@condition = not_applicable))
     then not_applicable
-    else 10.
+    else if is_not_defined ctx_value
+      then 10.
+      else ctx_value
 
 Should correctly transform `est applicable` mechanism:
 
   $ publicodes compile ./is_applicable -t debug_eval_tree -o -
   a:
-    @b != not_applicable
+    if is_not_defined ctx_value
+    then @b != not_applicable
+    else ctx_value
   
   b:
-    10.
+    if is_not_defined ctx_value
+    then 10.
+    else ctx_value
 
 Should correctly transform `est non applicable` mechanism:
 
   $ publicodes compile ./is_not_applicable	 -t debug_eval_tree -o -
   a:
-    @b = not_applicable
+    if is_not_defined ctx_value
+    then @b = not_applicable
+    else ctx_value
   
   b:
-    10.
+    if is_not_defined ctx_value
+    then 10.
+    else ctx_value
 
 Should correctly transform `non applicable si` mechanism:
 
   $ publicodes compile ./not_applicable_if -t debug_eval_tree -o -
   condition:
-    get_context(condition)
+    if is_not_defined ctx_value
+    then get_context(condition)
+    else ctx_value
   
   test:
     if (is_not_defined @condition) || ((@condition = false) || (@condition = not_applicable))
-    then 10.
+    then if is_not_defined ctx_value
+      then 10.
+      else ctx_value
     else not_applicable
 
 Should correctly detect namespace cycle:

@@ -2,7 +2,9 @@ Simple addition/soustraction expression :
 
   $ publicodes compile simple -t debug_eval_tree -o -
   simple expression:
-    12. + 4.5
+    if is_not_defined ctx_value
+    then 12. + 4.5
+    else ctx_value
 
 Missing term :
 

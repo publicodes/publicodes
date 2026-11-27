@@ -2,22 +2,32 @@ multiple on same rule ok :
 
   $ publicodes compile input -t debug_eval_tree -o -
   a:
-    get_context(a)
+    if is_not_defined ctx_value
+    then get_context(a)
+    else ctx_value
   
   b:
-    get_context(b)
+    if is_not_defined ctx_value
+    then get_context(b)
+    else ctx_value
   
   c:
-    get_context(c)
+    if is_not_defined ctx_value
+    then get_context(c)
+    else ctx_value
   
   x:
-    get_context(x)
+    if is_not_defined ctx_value
+    then get_context(x)
+    else ctx_value
   
   y:
-    if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
-    then if (@b = not_applicable) || ((is_not_defined @b) || (@b = false))
-      then if (@c = not_applicable) || ((is_not_defined @c) || (@c = false))
-        then @x
+    if is_not_defined ctx_value
+    then if (@a = not_applicable) || ((is_not_defined @a) || (@a = false))
+      then if (@b = not_applicable) || ((is_not_defined @b) || (@b = false))
+        then if (@c = not_applicable) || ((is_not_defined @c) || (@c = false))
+          then @x
+          else not_applicable
         else not_applicable
       else not_applicable
-    else not_applicable
+    else ctx_value

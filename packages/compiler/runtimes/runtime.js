@@ -666,22 +666,21 @@ const globalCache = {}
  * @returns {Value}
  */
 function $ref(rule, fn, ctx, params) {
-	if (rule in ctx || rule in ctx._global) {
-		return $get(rule, ctx, params)
-	}
+	const ctxValue =
+		rule in ctx || rule in ctx._global ? $get(rule, ctx, params) : NotDefined
 
 	if (ctx._options.cache) {
 		const cache = globalCache[rule] ?? new WeakMap()
 		if (cache.has(ctx)) {
 			return cache.get(ctx)
 		}
-		const value = fn(ctx, params)
+		const value = fn(ctx, params, ctxValue)
 		cache.set(ctx, value)
 		globalCache[rule] = cache
 		return value
 	}
 
-	return fn(ctx, params)
+	return fn(ctx, params, ctxValue)
 }
 
 /**
@@ -700,7 +699,7 @@ function $evaluate(fn, _global, options = {}) {
 	/** @type {RuleName[]} */
 	const params = []
 	const ctx = { _global, _options: options, _trace: {}, _context_stack: '' }
-	const value = fn(ctx, params)
+	const value = fn(ctx, params, NotDefined)
 	const needed = Array.from(new Set(params))
 	const missing = needed.filter((p) => !(p in _global))
 

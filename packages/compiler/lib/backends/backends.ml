@@ -167,6 +167,8 @@ let node_of_not_applicable id = node_of id "not_applicable" @@ Tnull
 
 let node_of_not_defined id = node_of id "not_defined" @@ Tnull
 
+let node_of_ctx_value id = node_of id "ctx_value" @@ Tnull
+
 let node_of_round id (mode : Shared_ast.rounding) (value_rule : tvalue)
     (precision_rule : tvalue) =
   let rounding_mode =
@@ -253,6 +255,8 @@ let rec node_of_tree_val (name : Shared.Rule_name.t)
       node_of_not_applicable id
   | Const Not_defined ->
       node_of_not_defined id
+  | Const Ctx_value ->
+      node_of_ctx_value id
   | Round (mode, precision, value) ->
       node_of_round id mode (node_of_tree_val value)
         (node_of_tree_val precision)
@@ -328,9 +332,11 @@ let from_output eval_tree
     get_rule_str_unit eval_tree rule_name
     |> function None -> Tnull | Some str -> Tstr str
   in
+  let reference = Rule_name.as_reference rule_name in
   Tobj
     [ ("rule_type", rule_type)
     ; ("rule_name", Tstr (Rule_name.to_string rule_name))
+    ; ("evaluate", Tstr (Rule_name.to_string reference))
     ; ("title", title)
     ; ("description", description)
     ; ("return_type", return_type)
