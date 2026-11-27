@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a330b645_69acbc87",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T15:50:56Z",
+      "side": 1,
+      "message": "Merci, ça me parait être la meilleure solution pour l\u0027instant effectivement 👍",
+      "revId": "b5b524d78bec4a2297a04adc1d539df368aa67da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "01e71ef0_ce9985cf",
+        "filename": "packages/compiler/lib/eval_tree/transform_value.ml",
+        "patchSetId": 6
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T15:50:56Z",
+      "side": 1,
+      "message": "Pour moi le nom induit en erreur, ça devrait plutôt être `use_context_value_if_defined` ou quelque chose du style.\n\nÇa pourrait bien de rajouter de la documentation dans le code (je sais pas si c\u0027est le meilleure endroit ici) concernant la `Ctx_value` et à quoi elle correspond vu que ça dépend de l\u0027implémentation du runtime. Et également dans la doc du site pour expliquer que les mécanismes chaînés sont bien appliqués sur les valeurs du contexte etc..",
+      "range": {
+        "startLine": 424,
+        "startChar": 4,
+        "endLine": 424,
+        "endChar": 24
+      },
+      "revId": "b5b524d78bec4a2297a04adc1d539df368aa67da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ccb2e5be_1bf911f8",
+        "filename": "packages/compiler/lib/eval_tree/transform_value.mli",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T15:50:56Z",
+      "side": 1,
+      "message": "Il faudrait documenter à quoi fait référence `is_root` ici",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 15
+      },
+      "revId": "b5b524d78bec4a2297a04adc1d539df368aa67da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "52072eaf_a9fcc870",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 6
+      },
+      "lineNbr": 696,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T15:50:56Z",
+      "side": 1,
+      "message": "La documentation n\u0027est plus à jours.",
+      "range": {
+        "startLine": 687,
+        "startChar": 1,
+        "endLine": 696,
+        "endChar": 23
+      },
+      "revId": "b5b524d78bec4a2297a04adc1d539df368aa67da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4ccc43d7_9501c057",
+        "filename": "packages/compiler/tests/runtimes/JS/src/mecanismes/arrondi.test.ts",
+        "patchSetId": 6
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T15:50:56Z",
+      "side": 1,
+      "message": "\"l\u0027arrondi doit s\u0027appliquer sur la valeur du contexte\".",
+      "range": {
+        "startLine": 171,
+        "startChar": 7,
+        "endLine": 171,
+        "endChar": 25
+      },
+      "revId": "b5b524d78bec4a2297a04adc1d539df368aa67da",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
