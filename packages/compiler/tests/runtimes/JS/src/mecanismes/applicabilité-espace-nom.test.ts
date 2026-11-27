@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'bun:test'
 import { p, yaml } from '../compile'
 
-describe('Mécanisme > applicabilité étendue', () => {
+describe('Mécanisme > rend la branche applicable', () => {
 	it('simple', async () => {
 		const engine = await yaml`
 a:
-  applicabilité étendue: oui
+  rend la branche applicable: oui
   valeur: oui
   avec:
     b: 42
@@ -18,7 +18,7 @@ a:
 	it('parent non-définie', async () => {
 		const engine = await yaml`
 a:
-  applicabilité étendue: oui
+  rend la branche applicable: oui
   avec:
     b: 42
 `
@@ -32,7 +32,7 @@ a:
 	it('dépendances de parents', async () => {
 		const engine = await yaml`
 a:
-  applicabilité étendue: oui
+  rend la branche applicable: oui
   applicable si: c
   valeur: oui
   avec:
@@ -53,7 +53,7 @@ c:
 	it('dépendances de parents non définie', async () => {
 		const engine = await yaml`
 a:
-  applicabilité étendue: oui
+  rend la branche applicable: oui
   applicable si: c
   avec:
     b: 42
