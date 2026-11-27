@@ -1,11 +1,11 @@
 a:
-  applicabilité étendue: oui
+  rend la branche applicable: oui
   avec:
     b: 42
 c: a . b
 
 a1:
-  applicabilité étendue: oui
+  rend la branche applicable: oui
   avec:
     b1: 42
 c1:

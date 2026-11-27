@@ -65,7 +65,7 @@ Should correctly detect namespace cycle:
        │                      ˘ règle 'a . b' référencée ici
        ╒══  ./namespace_cycle/rules.publicodes:4:3 ══
      3 │   non applicable si: b
-     4 │   applicabilité étendue: oui
-       │   ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ règle 'a' référencée de nouveau
+     4 │   rend la branche applicable: oui
+       │   ˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘˘ règle 'a' référencée de nouveau
   
   [123]

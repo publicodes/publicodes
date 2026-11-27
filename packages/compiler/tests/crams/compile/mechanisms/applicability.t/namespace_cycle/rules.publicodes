@@ -1,7 +1,7 @@
 a:
   valeur: 10
   non applicable si: b
-  applicabilité étendue: oui
+  rend la branche applicable: oui
   avec:
     b: oui
 
