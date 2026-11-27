@@ -65,6 +65,30 @@
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "562f92e3_03a3288d",
+        "filename": "packages/compiler/lib/analysis/inline_replacements.mli",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-27T13:29:03Z",
+      "side": 1,
+      "message": "It is harder to unpack a hidden type from Checks. Keep this for now",
+      "parentUuid": "ce8e4d73_f379beda",
+      "range": {
+        "startLine": 9,
+        "startChar": 5,
+        "endLine": 9,
+        "endChar": 61
+      },
+      "revId": "fe9c1cd42af9ba51fae6a9e871620e3318838b5d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ee7f82c3_7b538617",
@@ -102,6 +126,30 @@
       "side": 1,
       "message": "wdym? which transformation?",
       "parentUuid": "ee7f82c3_7b538617",
+      "range": {
+        "startLine": 65,
+        "startChar": 7,
+        "endLine": 73,
+        "endChar": 15
+      },
+      "revId": "fe9c1cd42af9ba51fae6a9e871620e3318838b5d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1c17b7a3_28c16d70",
+        "filename": "packages/compiler/lib/analysis/replacement_graph/checks.ml",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1039372
+      },
+      "writtenOn": "2026-11-27T13:29:03Z",
+      "side": 1,
+      "message": "Another pass for the resolver, then here use .make_applicable",
+      "parentUuid": "e7a99448_361dfa4c",
       "range": {
         "startLine": 65,
         "startChar": 7,
