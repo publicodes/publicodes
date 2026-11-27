@@ -19,6 +19,8 @@ type binary_op =
   | Sub
   | Mul
   | Div
+  | FloorDiv
+  | Mod
   | Pow
   | Gt
   | Lt
@@ -191,6 +193,10 @@ let binary_op_to_string = function
       "*"
   | Div ->
       "/"
+  | FloorDiv ->
+      "//"
+  | Mod ->
+      "/%"
   | Pow ->
       "**"
   | Gt ->

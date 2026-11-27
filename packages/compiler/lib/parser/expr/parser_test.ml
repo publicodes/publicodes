@@ -122,3 +122,27 @@ let%test_unit "Parse (10 + 5 ** 2) / b" =
                         , p @@ Const (Number (5., None))
                         , p @@ Const (Number (2., None)) ) ) ) )
           , rule ["b"] ) ) )
+
+let%test_unit "Parse 5 // 3 + 5 /% 3" =
+  [%test_eq: (string list, Mark.pos_mark) SA.expr]
+    (parse
+       [ NUMBER (5., None)
+       ; FLOORDIV
+       ; NUMBER (3., None)
+       ; ADD
+       ; NUMBER (5., None)
+       ; MOD
+       ; NUMBER (3., None) ] )
+    (p
+       (Binary_op
+          ( pop Add
+          , p
+              (Binary_op
+                 ( pop FloorDiv
+                 , p @@ Const (Number (5., None))
+                 , p @@ Const (Number (3., None)) ) )
+          , p
+              (Binary_op
+                 ( pop Mod
+                 , p @@ Const (Number (5., None))
+                 , p @@ Const (Number (3., None)) ) ) ) ) )

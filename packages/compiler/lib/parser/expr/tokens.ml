@@ -5,6 +5,8 @@ type t =
   | SUB
   | MUL
   | DIV
+  | FLOORDIV
+  | MOD
   | POW
   | GT
   | LT
@@ -33,6 +35,10 @@ let to_string = function
       "*"
   | DIV ->
       "/"
+  | FLOORDIV ->
+      "//"
+  | MOD ->
+      "/%"
   | POW ->
       "**"
   | GT ->
@@ -75,7 +81,19 @@ let to_string = function
       "non"
 
 let is_operator = function
-  | ADD | SUB | MUL | DIV | POW | GT | LT | GTE | LTE | EQ | NEQ ->
+  | ADD
+  | SUB
+  | MUL
+  | DIV
+  | FLOORDIV
+  | MOD
+  | POW
+  | GT
+  | LT
+  | GTE
+  | LTE
+  | EQ
+  | NEQ ->
       true
   | _ ->
       false
