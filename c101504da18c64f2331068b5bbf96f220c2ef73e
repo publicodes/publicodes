@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "83fbe320_f9415189",
+        "filename": "packages/compiler/lib/shared/shared_ast.ml",
+        "patchSetId": 8
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T15:38:46Z",
+      "side": 1,
+      "message": "Je suis plutôt pour garder `Div` pour la division (opérateur `/`) et utiliser `FloorDiv` ou `Quotient` pour l\u0027opérateur `//`.",
+      "range": {
+        "startLine": 21,
+        "startChar": 4,
+        "endLine": 21,
+        "endChar": 11
+      },
+      "revId": "c101504da18c64f2331068b5bbf96f220c2ef73e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e9d1e6a_6cd6ccaa",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 8
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T15:38:46Z",
+      "side": 1,
+      "message": "C\u0027est pas la même implémentation que pour la v1 (cf. https://github.com/publicodes/publicodes/blob/1.x/packages/core/src/mecanisms/operation.ts#L14), c\u0027est voulu ? Le résultat diverge pour `-117 // 17` du coup.",
+      "range": {
+        "startLine": 261,
+        "startChar": 7,
+        "endLine": 261,
+        "endChar": 25
+      },
+      "revId": "c101504da18c64f2331068b5bbf96f220c2ef73e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "65e530bc_d868c941",
+        "filename": "packages/compiler/runtimes/runtime.js",
+        "patchSetId": 8
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T15:38:46Z",
+      "side": 1,
+      "message": "Si on se base sur l\u0027opérateur JS il va falloir bien définir le calcul dans la documentation car on ne pourra pas le faire avec Python par exemple vu que les opérateurs n\u0027ont pas la même spécification.",
+      "range": {
+        "startLine": 298,
+        "startChar": 0,
+        "endLine": 298,
+        "endChar": 13
+      },
+      "revId": "c101504da18c64f2331068b5bbf96f220c2ef73e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "4e1b6ed0_71e57e84",
+        "filename": "packages/compiler/tests/runtimes/JS/src/expressions/division.test.ts",
+        "patchSetId": 8
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1039373
+      },
+      "writtenOn": "2026-11-27T15:38:46Z",
+      "side": 1,
+      "message": "Je pense qu\u0027il va falloir tester les edges cases listés dans https://fr.wikipedia.org/wiki/Modulo_(op%C3%A9ration)#Les_diff%C3%A9rentes_d%C3%A9finitions_en_informatique histoire d\u0027expliciter les comportements voulus.",
+      "range": {
+        "startLine": 44,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 39
+      },
+      "revId": "c101504da18c64f2331068b5bbf96f220c2ef73e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735"
+    }
+  ]
+}
